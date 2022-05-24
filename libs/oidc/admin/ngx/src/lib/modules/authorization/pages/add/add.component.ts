@@ -5,6 +5,7 @@ import { map, mergeMap, Observable, toArray } from 'rxjs';
 
 import { IClientData, Role, User } from '@tamu-gisc/oidc/common';
 import { ClientService, RolesService, UserRoleService, UsersService } from '@tamu-gisc/oidc/admin/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-add',
@@ -22,7 +23,8 @@ export class AddComponent implements OnInit {
     private readonly clientService: ClientService,
     private readonly roleService: RolesService,
     private readonly userService: UsersService,
-    private readonly userRoleService: UserRoleService
+    private readonly userRoleService: UserRoleService,
+    private notificationService: NotificationService
   ) {}
 
   public ngOnInit() {
@@ -48,14 +50,16 @@ export class AddComponent implements OnInit {
   }
 
   public submit() {
+    const fv = this.form.getRawValue();
+
     const ent = {
-      userGuid: this.form.controls.user.value,
-      role_id: this.form.controls.role.value,
-      client_id: this.form.controls.client.value
+      userGuid: fv.user,
+      role_id: fv.role,
+      client_id: fv.client
     };
 
-    this.userRoleService.insert(ent).subscribe((result) => {
-      console.log('Updated', result);
+    this.userRoleService.insert(ent).subscribe(() => {
+      this.notificationService.preset('add_user_role');
     });
   }
 }

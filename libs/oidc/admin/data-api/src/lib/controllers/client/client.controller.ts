@@ -13,12 +13,7 @@ export class ClientController extends BaseController<Client> {
 
   @Get()
   @UseGuards(AdminGuard)
-  public get() {
+  public getClients() {
     return this.clientService.getEntities();
-  }
-
-  @Get('/auth')
-  public getAuth() {
-    return 200;
   }
 }

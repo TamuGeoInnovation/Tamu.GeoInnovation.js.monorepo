@@ -1,46 +1,5 @@
 # OIDC Ngx Common Routes
 
-# tamu-gisc/ngx-authentication-guard
-
-## Motivation
-
-This was created for use within `gisday-angular` but I felt it could be useful for any client Angular project. This guard will lock resources behind a user login.
-
-## Library Scope
-
-`@tamu-gisc/oidc/ngx`
-
-## Guards
-
-- AuthenticationGuard
-
-## Using
-
-```
-import {AuthenticationGuard } from '@tamu-gisc/oidc/ngx';
-
-const routes: Routes = [
-  ...,
-  {
-    path: 'account',
-    canActivate: [AuthenticationGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
-  }
-];
-
-@NgModule({
-  imports: [
-    ...,
-    RouterModule.forRoot(routes, routeOptions),
-  ],
-  declarations: [AppComponent],
-  providers: [],
-  bootstrap: [AppComponent]
-})
-```
-
-# tamu-gisc/ngx-post-login-redirect
-
 This library contains a couple of logic-less routes and components that can be imported into an Angular application that utilizes the `angular-auth-oidc-client` for certain authentication flows. It is meant to be used in conjunction with the built-in `angular-auth-oidc-client` router guards for auto-login and redirection.
 
 ## Motivation

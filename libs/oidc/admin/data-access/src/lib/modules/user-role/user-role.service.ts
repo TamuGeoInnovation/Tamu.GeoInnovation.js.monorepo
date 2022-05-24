@@ -18,7 +18,7 @@ export class UserRoleService {
     return this.http.get<Array<Partial<ISimplifiedUserRoleResponse>>>(`${this.resource}`);
   }
 
-  public get(guid) {
+  public getOne(guid) {
     return this.http.get<Partial<NewUserRole>>(`${this.resource}/${guid}`);
   }
 

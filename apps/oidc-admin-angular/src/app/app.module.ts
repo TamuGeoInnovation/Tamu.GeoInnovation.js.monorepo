@@ -4,22 +4,20 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
 import { AuthModule, AuthInterceptor, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AuthenticationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
+import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 
 const routes: Routes = [
-  {
-    path: '',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.LandingModule)
-  },
   {
     path: 'stats',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.StatsModule),
@@ -63,6 +61,7 @@ export function getHighlightLanguages() {
 
 @NgModule({
   imports: [
+    Angulartics2Module.forRoot(),
     AuthModule.forRoot({
       config: {
         authority: environment.idp_url,
@@ -83,12 +82,14 @@ export function getHighlightLanguages() {
     BrowserAnimationsModule,
     EnvironmentModule,
     LocalStoreModule,
+    NotificationModule,
     UILayoutModule,
     HttpClientModule,
     AuthRoutingModule
   ],
   declarations: [AppComponent],
   providers: [
+    NotificationService,
     {
       provide: env,
       useValue: environment

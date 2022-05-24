@@ -7,10 +7,6 @@ import { IAuthorizationGuardUser } from '../../oidc-common';
 export class AdminGuard extends AuthGuard('jwt') {
   private ADMIN_LEVEL = '99';
 
-  constructor() {
-    super();
-  }
-
   public canActivate(context: ExecutionContext) {
     return super.canActivate(context);
   }
@@ -32,4 +28,3 @@ export class AdminGuard extends AuthGuard('jwt') {
     }
   }
 }
-

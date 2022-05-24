@@ -33,13 +33,9 @@ export class RolesService {
   }
 
   public createRole(newRole: Partial<Role>) {
-    return this.http
-      .post<Partial<Role>>(this.resource, newRole, {
-        withCredentials: true
-      })
-      .subscribe((newestRole) => {
-        console.log('Added role', newestRole);
-      });
+    return this.http.post<Partial<Role>>(this.resource, newRole, {
+      withCredentials: true
+    });
   }
 
   public deleteRole(role: Role) {

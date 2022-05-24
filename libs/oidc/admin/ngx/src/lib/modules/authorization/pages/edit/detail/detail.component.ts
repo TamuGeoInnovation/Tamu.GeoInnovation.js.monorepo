@@ -6,6 +6,7 @@ import { filter, map, mergeMap, Observable, switchMap, tap, toArray } from 'rxjs
 
 import { IClientData, NewUserRole, Role, User } from '@tamu-gisc/oidc/common';
 import { ClientService, RolesService, UserRoleService, UsersService } from '@tamu-gisc/oidc/admin/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-detail',
@@ -25,7 +26,8 @@ export class DetailComponent implements OnInit {
     private readonly clientService: ClientService,
     private readonly roleService: RolesService,
     private readonly userService: UsersService,
-    private readonly userRoleService: UserRoleService
+    private readonly userRoleService: UserRoleService,
+    private notificationService: NotificationService
   ) {}
 
   public ngOnInit() {
@@ -53,13 +55,11 @@ export class DetailComponent implements OnInit {
       .pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
-        switchMap((guid) => this.userRoleService.get(guid)),
+        switchMap((guid) => this.userRoleService.getOne(guid)),
         tap((userRole) => {
           this.form.controls.client.setValue(userRole.client.id);
           this.form.controls.role.setValue(userRole.role.guid);
           this.form.controls.user.setValue(userRole.user.guid);
-
-          return userRole;
         })
       )
       .subscribe((userRole) => {
@@ -68,15 +68,16 @@ export class DetailComponent implements OnInit {
   }
 
   public submit() {
+    const rv = this.form.getRawValue();
+
     const ent = {
-      userGuid: this.form.controls.user.value,
-      role_id: this.form.controls.role.value,
-      client_id: this.form.controls.client.value
+      userGuid: rv.user,
+      role_id: rv.role,
+      client_id: rv.client
     };
 
-    this.userRoleService.insert(ent).subscribe((result) => {
-      console.log('Updated', result);
+    this.userRoleService.insert(ent).subscribe(() => {
+      this.notificationService.preset('edit_user_role');
     });
   }
 }
-

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 import { Role } from '@tamu-gisc/oidc/common';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-edit-role',
@@ -14,7 +15,7 @@ import { Role } from '@tamu-gisc/oidc/common';
 export class EditRoleComponent implements OnInit {
   public $roles: Observable<Array<Partial<Role>>>;
 
-  constructor(private readonly rolesService: RolesService) {}
+  constructor(private readonly rolesService: RolesService, private notificationService: NotificationService) {}
 
   public ngOnInit(): void {
     this.fetchRoles();
@@ -23,7 +24,7 @@ export class EditRoleComponent implements OnInit {
   public deleteRole(role: Role) {
     console.log('deleteRole', role);
     this.rolesService.deleteRole(role).subscribe(() => {
-      console.log('Deleted ', role.guid);
+      this.notificationService.preset('deleted_role');
       this.fetchRoles();
     });
   }

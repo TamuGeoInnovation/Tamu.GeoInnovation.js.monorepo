@@ -1135,3 +1135,15 @@ th {
 tr:nth-child(even) {
   background-color: #f7f7f7;
 }
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+
+  tamu-gisc-select {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+  }
+}
