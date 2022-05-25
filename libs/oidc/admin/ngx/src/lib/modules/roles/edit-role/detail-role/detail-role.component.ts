@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, switchMap } from 'rxjs/operators';
 
 import { Role } from '@tamu-gisc/oidc/common';
 import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
@@ -34,15 +34,23 @@ export class DetailRoleComponent implements OnInit {
   public ngOnInit() {
     if (this.route.snapshot.params.roleGuid) {
       this.roleGuid = this.route.snapshot.params.roleGuid;
-      this.roleService.getRole(this.roleGuid).subscribe((role) => {
-        this.role = role;
-        this.form.patchValue(this.role);
-        this.form.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
-          this.roleService
-            .updateRole(this.form.getRawValue())
-            .subscribe(() => [this.notificationService.preset('edit_role')]);
+
+      this.roleService
+        .getRole(this.roleGuid)
+        .pipe(
+          switchMap((role) => {
+            this.role = role;
+            this.form.patchValue(this.role);
+
+            return this.form.valueChanges.pipe(debounceTime(1000));
+          }),
+          switchMap(() => {
+            return this.roleService.updateRole(this.form.getRawValue());
+          })
+        )
+        .subscribe(() => {
+          this.notificationService.preset('edit_role');
         });
-      });
     }
   }
 }
