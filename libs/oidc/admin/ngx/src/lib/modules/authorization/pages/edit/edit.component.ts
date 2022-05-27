@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, startWith, Subject, switchMap } from 'rxjs';
 
 import { ISimplifiedUserRoleResponse } from '@tamu-gisc/oidc/common';
 import { UserRoleService } from '@tamu-gisc/oidc/admin/data-access';
@@ -12,19 +12,25 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit {
+  private _$refresh: Subject<boolean> = new Subject();
   public $userRoles: Observable<Array<Partial<ISimplifiedUserRoleResponse>>>;
 
   constructor(private readonly userRoleService: UserRoleService, private notificationService: NotificationService) {}
 
   public ngOnInit() {
-    this.$userRoles = this.userRoleService.getAll();
+    this.$userRoles = this._$refresh.pipe(
+      startWith(true),
+      switchMap(() => {
+        return this.userRoleService.getAll();
+      })
+    );
   }
 
   public deleteEntity(entity) {
     this.userRoleService.delete(entity.guid).subscribe(() => {
       this.notificationService.preset('deleted_user_role');
 
-      this.$userRoles = this.userRoleService.getAll();
+      this._$refresh.next(undefined);
     });
   }
 }

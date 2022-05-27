@@ -1,8 +1,8 @@
 export const environment = {
-  production: false,
+  production: true,
   port: 27000,
   globalPrefix: '',
-  allowedOrigins: ['https://idp-admin-dev.geoservices.tamu.edu'],
+  allowedOrigins: ['https://idp-dev.geoservices.tamu.edu'],
   jwksUrl: 'https://idp-dev.geoservices.tamu.edu/oidc/jwks'
 };
 
