@@ -2,58 +2,46 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
+import { AuthModule, AuthInterceptor, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
+import { AuthenticationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
+import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { AppComponent } from './app.component';
-import * as environment from '../environments/environment';
+import { environment } from '../environments/environment';
 
 const routes: Routes = [
   {
     path: 'stats',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.StatsModule),
-    canActivate: [AuthGuard]
+    canActivate: [AutoLoginPartialRoutesGuard]
   },
   {
     path: 'users',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.UsersModule),
-    canActivate: [AuthGuard]
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   },
   {
     path: 'roles',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.RolesModule),
-    canActivate: [AuthGuard]
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   },
   {
-    path: 'client-metadata',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ClientMetadataModule),
-    canActivate: [AuthGuard]
+    path: 'clients',
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ClientsModule),
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   },
   {
-    path: 'grant-types',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.GrantTypesModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'response-types',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ResponseTypesModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'token-auth-methods',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.TokenAuthMethodsModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'access',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.AccessTokenModule),
-    canActivate: [AuthGuard]
+    path: 'authorization',
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.AuthorizationModule),
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   }
 ];
 
@@ -73,21 +61,40 @@ export function getHighlightLanguages() {
 
 @NgModule({
   imports: [
+    Angulartics2Module.forRoot(),
+    AuthModule.forRoot({
+      config: {
+        authority: environment.idp_url,
+        redirectUrl: window.location.origin + '/auth/callback',
+        secureRoutes: [environment.api_url],
+        postLogoutRedirectUri: window.location.origin,
+        clientId: environment.client_id,
+        scope: 'openid offline_access profile email',
+        responseType: 'code',
+        silentRenew: true,
+        useRefreshToken: true,
+        logLevel: environment.production ? LogLevel.None : LogLevel.Debug,
+        autoUserInfo: false
+      }
+    }),
     BrowserModule,
     RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
     BrowserAnimationsModule,
     EnvironmentModule,
     LocalStoreModule,
+    NotificationModule,
     UILayoutModule,
-    HttpClientModule
+    HttpClientModule,
+    AuthRoutingModule
   ],
   declarations: [AppComponent],
   providers: [
+    NotificationService,
     {
       provide: env,
       useValue: environment
     },
-    AuthInterceptorProvider
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

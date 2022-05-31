@@ -4,11 +4,11 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
-import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
+import { AuthModule, LogLevel, AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LoginGuard, LogoutGuard, AdminGuard, AuthenticationGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
@@ -68,7 +68,7 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    canActivate: [AuthenticationGuard],
+    canActivate: [AutoLoginPartialRoutesGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
   },
   {

@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { UserModule, UserService } from '@tamu-gisc/oidc/common';
 
 // TODO: Reimplement these security measures (recommended by NestJS)
 // import * as rateLimit from 'express-rate-limit';
@@ -146,7 +147,7 @@ async function bootstrap() {
 
   const providerRoutePrefix = 'oidc';
 
-  await app.listen(environment.port, () => {
+  await app.listen(environment.port, async () => {
     console.log(`Running... http://localhost:${environment.port}/${providerRoutePrefix}/.well-known/openid-configuration`);
 
     // TODO: Sets default client metadata in the database
@@ -154,8 +155,7 @@ async function bootstrap() {
     //   if (argv.setup) {
     //     const clientMetadataService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
     //     const roleService = app.select(RoleModule).get(RoleService, { strict: true });
-    //     const userService = app.select(UserModule).get(UserService, { strict: true });
-
+    // const userService = app.select(UserModule).get(UserService, { strict: true });
     //     try {
     //       // Insert default Grant Types
     //       await clientMetadataService.insertDefaultGrantTypes();
@@ -170,9 +170,8 @@ async function bootstrap() {
     //       // Create Admin user with known password
     //       await userService.insertDefaultAdmin(argv.e, argv.p);
     //       // Insert the secret questions for others to register
-    //       await userService.insertDefaultSecretQuestions();
+    // await userService.insertDefaultSecretQuestions();
     //       // TODO: Add field to User that will prompt a user to change their password on next login
-
     //       console.log('Defaults setup complete');
     //     } catch (err) {
     //       console.log(err);

@@ -1,24 +1,36 @@
-import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body, UseGuards, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Req,
+  Res,
+  Post,
+  HttpException,
+  HttpStatus,
+  Body,
+  UseGuards,
+  Delete,
+  UnprocessableEntityException
+} from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 
 import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
+import { AdminGuard } from '../../guards/admin/admin.guard';
 
 import { urlFragment, urlHas } from '../../utils/web/url-utils';
 import { User, UserRole } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 
 @Controller('user')
+@UseGuards(AdminGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(AdminRoleGuard)
   @Get('all')
   public async usersAllGet() {
-    return this.userService.userRepo.find({
-      relations: ['account', 'userRoles']
-    });
+    return this.userService.userRepo.find();
   }
 
   @UseGuards(AdminRoleGuard)
@@ -232,33 +244,6 @@ export class UserController {
       if (disable2fa) {
         return res.sendStatus(200);
       }
-    }
-  }
-
-  /**
-   * Assigns a role to a user for a particular clientId.
-   * Will save newly created UserRole entity object
-   */
-  @Post('role/api')
-  public async addUserRolePost(@Body() body, @Req() req: Request) {
-    const { email } = body;
-
-    const existingUser = await this.userService.userRepo.findOne({
-      where: {
-        email: email
-      }
-    });
-
-    if (existingUser) {
-      const roles = await this.userService.roleRepo.find();
-
-      const requestedRole = roles.find((value) => {
-        if (req.body.role.level === Number(value.level)) {
-          return value;
-        }
-      });
-
-      await this.userService.insertUserRole(existingUser, requestedRole, body.client.name);
     }
   }
 

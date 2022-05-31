@@ -13,6 +13,7 @@ This library contains a series of utilities used in the OIDC provider NestJS app
 ### Guards
 
 - JwtGuard
+- AdminGuard
 
 ## Setup
 
@@ -31,7 +32,7 @@ import * as env from '../environments/environment';
 export class AppModule {}
 ```
 
-This configuration takes care of initializing passport and registering a global JWT passport strategy that is implemented by the `JwtGuard`.
+This configuration takes care of initializing passport and registering a global JWT passport strategy that is implemented by both `JwtGuard` and `AdminGuard`.
 
 ## Utilization
 
@@ -51,3 +52,5 @@ export class PuppiesController {
   }
 }
 ```
+
+`AdminGuard` acts similar to the `JwtGuard` but will check to see if the validated JWT has an admin level role associated with the client.

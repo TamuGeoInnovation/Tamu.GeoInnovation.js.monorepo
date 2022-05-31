@@ -1,0 +1,8 @@
+<form class="form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="form-row">
+    <tamu-gisc-select formControlName="client" [data]="$clients | async" [displayTemplate]="'client_name'" [valueTemplate]="'client_id'"> </tamu-gisc-select>
+    <tamu-gisc-select formControlName="role" [data]="$roles | async" [displayTemplate]="'name'" [valueTemplate]="'guid'"> </tamu-gisc-select>
+    <tamu-gisc-select formControlName="user" [data]="$users | async" [displayTemplate]="'email'" [valueTemplate]="'guid'"> </tamu-gisc-select>
+  </div>
+  <tamu-gisc-button value="Update" type="submit"></tamu-gisc-button>
+</form>

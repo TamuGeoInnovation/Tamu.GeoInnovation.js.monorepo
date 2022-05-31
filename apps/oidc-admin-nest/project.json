@@ -16,7 +16,8 @@
           ],
           "extractLicenses": false,
           "inspect": false,
-          "optimization": true
+          "optimization": true,
+          "generatePackageJson": true
         },
         "development": {
           "fileReplacements": [
@@ -27,7 +28,8 @@
           ],
           "extractLicenses": false,
           "inspect": false,
-          "optimization": true
+          "optimization": true,
+          "generatePackageJson": true
         }
       },
       "options": {
@@ -36,7 +38,6 @@
         "tsConfig": "apps/oidc-admin-nest/tsconfig.app.json",
         "assets": [
           "apps/oidc-admin-nest/src/assets",
-          "apps/oidc-admin-nest/src/package.json",
           {
             "glob": "**/*",
             "input": "./libs/assets/powershell",

@@ -4,7 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { DetailRoleComponent } from './detail-role.component';
 
@@ -17,7 +16,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule],
+  imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule],
   declarations: [DetailRoleComponent],
   exports: [RouterModule]
 })

@@ -1,7 +1,6 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { OidcClientModule, OidcClientController, TokenExchangeMiddleware } from '@tamu-gisc/oidc/client';
 import {
   AccessToken,
   Account,
@@ -17,24 +16,27 @@ import {
   SecretAnswer,
   UserPasswordReset,
   UserPasswordHistory,
-  ClientMetadataModule,
   RoleModule,
   UserModule,
-  BackchannelLogoutUri
+  BackchannelLogoutUri,
+  Client,
+  NewUserRole,
+  UserRoleModule
 } from '@tamu-gisc/oidc/common';
-import { AccessTokenModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
+import { ClientModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
+import { EnvironmentModule } from '@tamu-gisc/common/nest/environment';
+import { AuthModule } from '@tamu-gisc/oidc/common';
 
-import { dbConfig } from '../environments/environment';
-import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
+import { dbConfig, environment } from '../environments/environment';
 
 @Module({
   imports: [
-    OidcClientModule.forRoot({
-      host: OIDC_IDP_ISSUER_URL
-    }),
+    EnvironmentModule.forRoot(environment),
+    AuthModule.forRoot({ jwksUrl: environment.jwksUrl }),
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
+        Client,
         AccessToken,
         Account,
         BackchannelLogoutUri,
@@ -50,27 +52,17 @@ import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
         User,
         UserModule,
         UserPasswordReset,
-        UserPasswordHistory
+        UserPasswordHistory,
+        NewUserRole
       ]
     }),
-    AccessTokenModule,
-    ClientMetadataModule,
     RoleModule,
     StatsModule,
-    UserModule
+    ClientModule,
+    UserModule,
+    UserRoleModule
   ],
   controllers: [],
   providers: []
 })
-export class AppModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(TokenExchangeMiddleware)
-      .exclude(
-        { path: 'oidc/login', method: RequestMethod.GET },
-        { path: 'oidc/logout', method: RequestMethod.GET },
-        { path: 'oidc/auth/callback', method: RequestMethod.GET }
-      )
-      .forRoutes(OidcClientController);
-  }
-}
+export class AppModule {}

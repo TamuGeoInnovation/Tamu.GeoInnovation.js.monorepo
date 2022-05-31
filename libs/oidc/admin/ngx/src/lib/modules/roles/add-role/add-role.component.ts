@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 
@@ -10,7 +11,11 @@ import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 })
 export class AddRoleComponent implements OnInit {
   public form: FormGroup;
-  constructor(private fb: FormBuilder, private roleService: RolesService) {}
+  constructor(
+    private fb: FormBuilder,
+    private roleService: RolesService,
+    private notificationService: NotificationService
+  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -20,6 +25,8 @@ export class AddRoleComponent implements OnInit {
   }
 
   public submitAddRole() {
-    this.roleService.createRole(this.form.value);
+    this.roleService.createRole(this.form.value).subscribe(() => {
+      this.notificationService.preset('add_role');
+    });
   }
 }
