@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 
 import { debounceTime, switchMap } from 'rxjs/operators';
 
-import { Role } from '@tamu-gisc/oidc/common';
 import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -15,7 +14,6 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 })
 export class DetailRoleComponent implements OnInit {
   public roleGuid: string;
-  public role: Partial<Role>;
   public form: FormGroup;
 
   constructor(
@@ -39,8 +37,7 @@ export class DetailRoleComponent implements OnInit {
         .getRole(this.roleGuid)
         .pipe(
           switchMap((role) => {
-            this.role = role;
-            this.form.patchValue(this.role);
+            this.form.patchValue(role);
 
             return this.form.valueChanges.pipe(debounceTime(1000));
           }),
