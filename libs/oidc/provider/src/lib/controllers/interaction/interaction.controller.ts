@@ -41,13 +41,20 @@ export class InteractionController {
         }
 
         case 'consent': {
-          return res.render('interaction', {
+          const locals = {
             client,
             uid,
             details: prompt.details,
             params,
-            title: 'Authorize',
+            title: 'GeoInnovation Service Center SSO',
             session: session ? console.log(session) : undefined
+          };
+          return res.render('interaction', locals, (err, html) => {
+            if (err) throw err;
+            res.render('_layout-simple', {
+              ...locals,
+              body: html
+            });
           });
         }
 
