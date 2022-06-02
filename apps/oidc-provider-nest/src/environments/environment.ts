@@ -6,3 +6,4 @@ export const environment = {
 };
 
 export { localDbConfig as dbConfig } from './ormconfig';
+export { ADMIN_DEFAULTS } from './secrets';

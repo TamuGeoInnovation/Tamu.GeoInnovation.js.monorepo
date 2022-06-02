@@ -4,8 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { JWK } from 'node-jose';
 import { Configuration, JWKS, Provider, ResourceServer } from 'oidc-provider';
 
-import { AccountService } from '@tamu-gisc/oidc/common';
-import { UserRoleService } from '@tamu-gisc/oidc/common';
+import { AccountService, UserRoleService } from '@tamu-gisc/oidc/common';
+import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 
 import { OidcAdapter } from '../../adapters/oidc.adapter';
 
@@ -19,7 +19,11 @@ export class OidcProviderService {
   // TODO: Get file name / path from environment
   private pathToJWKS = 'idp_keystore.json';
 
-  constructor(private readonly accountService: AccountService, private readonly userRoleService: UserRoleService) {
+  constructor(
+    private readonly accountService: AccountService,
+    private readonly userRoleService: UserRoleService,
+    private readonly env: EnvironmentService
+  ) {
     this.getJWKSFromFile().then((jwks) => {
       this.generateProviderConfiguration(jwks).then((providerConfig) => {
         this.provider = new Provider(this.issuerUrl, providerConfig);
@@ -222,22 +226,10 @@ export class OidcProviderService {
       jwks: JSON.parse(jwks),
       clients: [
         {
-          client_id: 'angularCodeRefreshTokens',
-          client_secret: '...',
-          grant_types: ['refresh_token', 'authorization_code'],
-          redirect_uris: ['http://localhost:4204'],
-          response_types: ['code'],
-          token_endpoint_auth_method: 'none',
-          post_logout_redirect_uris: ['http://localhost:4204'] // cannot log out if you don't set this. Note uri(s) is plural and takes an array
-        },
-        {
-          client_id: 'gisday',
-          client_secret: '...',
-          grant_types: ['refresh_token', 'authorization_code'],
-          redirect_uris: ['http://localhost:4200'],
-          response_types: ['code'],
-          token_endpoint_auth_method: 'none',
-          post_logout_redirect_uris: ['http://localhost:4200'] // cannot log out if you don't set this. Note uri(s) is plural and takes an array
+          client_id: this.env.value('client_id'),
+          redirect_uris: this.env.value('redirect_uris'),
+          token_endpoint_auth_method: this.env.value('token_endpoint_auth_method'),
+          post_logout_redirect_uris: this.env.value('post_logout_redirect_uris')
         }
       ],
       cookies: {

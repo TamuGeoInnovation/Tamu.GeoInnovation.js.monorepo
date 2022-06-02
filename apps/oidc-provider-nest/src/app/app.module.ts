@@ -33,11 +33,13 @@ import {
   BackchannelLogoutUri
 } from '@tamu-gisc/oidc/common';
 import { InteractionModule, OidcModule } from '@tamu-gisc/oidc/provider';
+import { EnvironmentModule } from '@tamu-gisc/common/nest/environment';
 
-import { dbConfig } from '../environments/environment';
+import { dbConfig, ADMIN_DEFAULTS } from '../environments/environment';
 
 @Module({
   imports: [
+    EnvironmentModule.forRoot(ADMIN_DEFAULTS),
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
