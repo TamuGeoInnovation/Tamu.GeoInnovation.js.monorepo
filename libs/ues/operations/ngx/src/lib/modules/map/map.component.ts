@@ -96,14 +96,14 @@ export class MapComponent implements OnInit, OnDestroy {
         [esri.IdentityManager, esri.OAuthInfoConstructor, esri.MapImageLayerConstructor]
       ]) => {
         const item = new MapImageLayer({
-          url: 'https://ues-arc-test.apogee.tamu.edu/arcgis/rest/services/Test/UES_Operations/MapServer',
+          url: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/rest/services/Production_UES_Operations_Map/MapServer',
           listMode: 'show'
         });
 
         const UesOAuthInfo = new OAuthInfo({
-          appId: 'pijbJycQQiA7IQqY',
+          appId: 'L62AfPSK3ADzREz0',
           popup: false,
-          portalUrl: 'https://ues-arc-test.apogee.tamu.edu/arcgis',
+          portalUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis',
           preserveUrlHash: true,
           authNamespace: 'tamu'
         });
