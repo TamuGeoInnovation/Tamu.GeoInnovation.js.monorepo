@@ -15,6 +15,94 @@ export class UserRoleService {
     private readonly userRepo: UserRepo
   ) {}
 
+  public async insertDefaultRoles() {
+    const existing = await this.roleRepo.count();
+
+    if (existing) {
+      return;
+    }
+
+    await this.roleRepo
+      .create({
+        name: 'Admin',
+        level: '99'
+      })
+      .save();
+
+    await this.roleRepo
+      .create({
+        name: 'Manager',
+        level: '80'
+      })
+      .save();
+  }
+
+  public async insertDefaultUserRole(defaultEmail: string, defaultClientId: string, defaultRedirectUris: string[]) {
+    const defaultUser = await this.userRepo.findOne({
+      where: {
+        email: defaultEmail
+      }
+    });
+
+    const adminRole = await this.roleRepo.findOne({
+      where: {
+        name: 'Admin',
+        level: '99'
+      }
+    });
+
+    const defaultClient = await this.clientRepo.findOne({
+      where: {
+        id: defaultClientId
+      }
+    });
+
+    const existingDefaultUserRole = await this.userRoleRepo.count({
+      where: {
+        user: defaultUser,
+        role: adminRole,
+        client: defaultClient
+      }
+    });
+
+    if (existingDefaultUserRole) {
+      return;
+    }
+
+    if (!defaultClient) {
+      // Client doesn't exist, create it
+      const client = this.clientRepo.create({
+        id: defaultClientId,
+        data: JSON.stringify({
+          client_id: defaultClientId,
+          client_name: defaultClientId,
+          redirect_uris: defaultRedirectUris
+        }),
+        expiresAt: null,
+        consumedAt: null
+      });
+
+      await this.clientRepo.save(client).then((val) => {
+        this.userRoleRepo
+          .create({
+            client: val,
+            user: defaultUser,
+            role: adminRole
+          })
+          .save();
+      });
+    } else {
+      // Since existingDefaultUserRole doesn't exist, create it
+      await this.userRoleRepo
+        .create({
+          client: defaultClient,
+          user: defaultUser,
+          role: adminRole
+        })
+        .save();
+    }
+  }
+
   public getRoles(accountGuid) {
     return this.userRoleRepo
       .createQueryBuilder('user_role')
@@ -44,6 +132,7 @@ export class UserRoleService {
       mergeMap((userRoles) => userRoles),
       map((userRole) => {
         const clientData = JSON.parse(userRole.client.data);
+
         const ret: ISimplifiedUserRoleResponse = {
           guid: userRole.guid,
           role: {

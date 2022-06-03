@@ -1,13 +1,13 @@
-import { HttpService, NotImplementedException } from '@nestjs/common';
-import { Injectable } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 
 import { hash, compare } from 'bcrypt';
 import * as deepmerge from 'deepmerge';
 
+import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
+
 import { Mailer } from '../../utils/email/mailer.util';
 import { SHA1HashUtils } from '../../utils/security/sha1hash.util';
 import { TwoFactorAuthUtils } from '../../utils/security/twofactorauth.util';
-
 import {
   Account,
   User,
@@ -42,38 +42,68 @@ export class UserService {
     public readonly answerRepo: SecretAnswerRepo,
     public readonly passwordResetRepo: UserPasswordResetRepo,
     public readonly passwordHistoryRepo: UserPasswordHistoryRepo,
-    private readonly httpService: HttpService
+    private readonly httpService: HttpService,
+    private readonly env: EnvironmentService
   ) {}
 
   public async insertDefaultAdmin() {
-    throw new NotImplementedException();
+    const adminEmail = this.env.value('email');
+
+    const existing = await this.userRepo.findOne({
+      where: {
+        email: adminEmail
+      }
+    });
+
+    if (existing) {
+      return;
+    }
+
+    const account = this.accountRepo.create({
+      name: 'Administrator'
+    });
+
+    await this.userRepo
+      .create({
+        account: account,
+        email: adminEmail,
+        password: await hash(this.env.value('password'), SHA1HashUtils.SALT_ROUNDS),
+        added: new Date(Date.now()),
+        updatedAt: new Date(Date.now())
+      })
+      .save();
   }
 
   public async insertDefaultSecretQuestions() {
-    const questions = [
-      {
-        questionText: 'What was the house number and street name you lived in as a child?'
-      },
-      {
-        questionText: 'What were the last four digits of your childhood telephone number?'
-      },
-      {
-        questionText: 'What elementary school did you attend?'
-      },
-      {
-        questionText: 'In what town or city was your first full time job?'
-      },
-      {
-        questionText: 'In what town or city did you meet your spouse or partner?'
-      },
-      {
-        questionText: 'What is the middle name of your oldest child?'
-      }
-    ];
+    const existing = await this.questionRepo.count();
+    if (existing) {
+      return;
+    } else {
+      const questions = [
+        {
+          questionText: 'What was the house number and street name you lived in as a child?'
+        },
+        {
+          questionText: 'What were the last four digits of your childhood telephone number?'
+        },
+        {
+          questionText: 'What elementary school did you attend?'
+        },
+        {
+          questionText: 'In what town or city was your first full time job?'
+        },
+        {
+          questionText: 'In what town or city did you meet your spouse or partner?'
+        },
+        {
+          questionText: 'What is the middle name of your oldest child?'
+        }
+      ];
 
-    questions.forEach((question: Partial<SecretQuestion>) => {
-      this.questionRepo.create(question).save();
-    });
+      questions.forEach((question: Partial<SecretQuestion>) => {
+        this.questionRepo.create(question).save();
+      });
+    }
   }
 
   /**
