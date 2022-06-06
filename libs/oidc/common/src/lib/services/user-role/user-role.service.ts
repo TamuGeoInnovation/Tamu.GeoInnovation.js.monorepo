@@ -16,25 +16,46 @@ export class UserRoleService {
   ) {}
 
   public async insertDefaultRoles() {
-    const existing = await this.roleRepo.count();
+    // TODO: We prevent another role from being created outside of this method
+    // with a role equal to or greater than Admin level 99? - Aaron (6/6/22)
 
-    if (existing) {
+    // Look for an Admin role with this level
+    const existingAdmin = await this.roleRepo.findOne({
+      where: {
+        level: '99'
+      }
+    });
+
+    // If this level exists, do nothing
+    if (existingAdmin) {
       return;
+    } else {
+      // Role at this level not found, create it
+      await this.roleRepo
+        .create({
+          name: 'Admin',
+          level: '99'
+        })
+        .save();
     }
 
-    await this.roleRepo
-      .create({
-        name: 'Admin',
-        level: '99'
-      })
-      .save();
-
-    await this.roleRepo
-      .create({
+    const existingManager = await this.roleRepo.findOne({
+      where: {
         name: 'Manager',
         level: '80'
-      })
-      .save();
+      }
+    });
+
+    if (existingManager) {
+      return;
+    } else {
+      await this.roleRepo
+        .create({
+          name: 'Manager',
+          level: '80'
+        })
+        .save();
+    }
   }
 
   public async insertDefaultUserRole(defaultEmail: string, defaultClientId: string, defaultRedirectUris: string[]) {
@@ -57,6 +78,7 @@ export class UserRoleService {
       }
     });
 
+    // Find an existing UserRole with this combination of user, role, and client
     const existingDefaultUserRole = await this.userRoleRepo.count({
       where: {
         user: defaultUser,
@@ -65,13 +87,15 @@ export class UserRoleService {
       }
     });
 
+    // If UserRole exists, do nothing
     if (existingDefaultUserRole) {
       return;
     }
 
+    // See if client exists
     if (!defaultClient) {
       // Client doesn't exist, create it
-      const client = this.clientRepo.create({
+      const _client = this.clientRepo.create({
         id: defaultClientId,
         data: JSON.stringify({
           client_id: defaultClientId,
@@ -82,15 +106,16 @@ export class UserRoleService {
         consumedAt: null
       });
 
-      await this.clientRepo.save(client).then((val) => {
-        this.userRoleRepo
-          .create({
-            client: val,
-            user: defaultUser,
-            role: adminRole
-          })
-          .save();
-      });
+      // Save client to db first
+      const client = await this.clientRepo.save(_client);
+
+      await this.userRoleRepo
+        .create({
+          client,
+          user: defaultUser,
+          role: adminRole
+        })
+        .save();
     } else {
       // Since existingDefaultUserRole doesn't exist, create it
       await this.userRoleRepo

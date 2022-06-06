@@ -100,9 +100,11 @@ export class UserService {
         }
       ];
 
-      questions.forEach((question: Partial<SecretQuestion>) => {
-        this.questionRepo.create(question).save();
+      const promises = questions.map((question: Partial<SecretQuestion>) => {
+        return this.questionRepo.create(question).save();
       });
+
+      await Promise.allSettled(promises);
     }
   }
 
