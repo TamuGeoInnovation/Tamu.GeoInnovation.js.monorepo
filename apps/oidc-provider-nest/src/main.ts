@@ -6,9 +6,10 @@ import 'tslib'; // Required for package.json auto-generation
 import * as express from 'express';
 import cookieParser from 'cookie-parser';
 
+import { UserModule, UserRoleModule, UserRoleService, UserService } from '@tamu-gisc/oidc/common';
+
 import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-import { UserModule, UserService } from '@tamu-gisc/oidc/common';
+import { environment, ADMIN_DEFAULTS } from './environments/environment';
 
 // TODO: Reimplement these security measures (recommended by NestJS)
 // import * as rateLimit from 'express-rate-limit';
@@ -151,34 +152,24 @@ async function bootstrap() {
     console.log(`Running... http://localhost:${environment.port}/${providerRoutePrefix}/.well-known/openid-configuration`);
 
     // TODO: Sets default client metadata in the database
-    // setTimeout(async () => {
-    //   if (argv.setup) {
-    //     const clientMetadataService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
-    //     const roleService = app.select(RoleModule).get(RoleService, { strict: true });
-    // const userService = app.select(UserModule).get(UserService, { strict: true });
-    //     try {
-    //       // Insert default Grant Types
-    //       await clientMetadataService.insertDefaultGrantTypes();
-    //       // Insert default Responses Types
-    //       await clientMetadataService.insertDefaultResponseTypes();
-    //       // Insert default Token Auth Methods
-    //       await clientMetadataService.insertDefaultTokenEndpointAuthMethods();
-    //       // Create ClientMetadata for oidc-idp-admin (angular site)
-    //       await clientMetadataService.insertClientMetadataForAdminSite(argv.n, argv.t, argv.r, argv.b);
-    //       // Insert default Roles
-    //       await roleService.insertDefaultUserRoles();
-    //       // Create Admin user with known password
-    //       await userService.insertDefaultAdmin(argv.e, argv.p);
-    //       // Insert the secret questions for others to register
-    // await userService.insertDefaultSecretQuestions();
-    //       // TODO: Add field to User that will prompt a user to change their password on next login
-    //       console.log('Defaults setup complete');
-    //     } catch (err) {
-    //       console.log(err);
-    //       throw new Error('Error setting up defaults.');
-    //     }
-    //   }
-    // }, 3000);
+    setTimeout(async () => {
+      const roleService = app.select(UserRoleModule).get(UserRoleService, { strict: true });
+      const userService = app.select(UserModule).get(UserService, { strict: true });
+
+      // Insert default Roles
+      await roleService.insertDefaultRoles();
+
+      // Create Admin user with known password
+      await userService.insertDefaultAdmin();
+
+      // Create Admin user role on default site
+      await roleService.insertDefaultUserRole(ADMIN_DEFAULTS.email, ADMIN_DEFAULTS.client_id, ADMIN_DEFAULTS.redirect_uris);
+
+      // Insert the secret questions for others to register
+      await userService.insertDefaultSecretQuestions();
+
+      // TODO: Add field to User that will prompt a user to change their password on next login
+    }, 3000);
   });
 }
 

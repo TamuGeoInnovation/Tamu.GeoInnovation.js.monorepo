@@ -15,6 +15,119 @@ export class UserRoleService {
     private readonly userRepo: UserRepo
   ) {}
 
+  public async insertDefaultRoles() {
+    // TODO: We prevent another role from being created outside of this method
+    // with a role equal to or greater than Admin level 99? - Aaron (6/6/22)
+
+    // Look for an Admin role with this level
+    const existingAdmin = await this.roleRepo.findOne({
+      where: {
+        level: '99'
+      }
+    });
+
+    // If this level exists, do nothing
+    if (existingAdmin) {
+      return;
+    } else {
+      // Role at this level not found, create it
+      await this.roleRepo
+        .create({
+          name: 'Admin',
+          level: '99'
+        })
+        .save();
+    }
+
+    const existingManager = await this.roleRepo.findOne({
+      where: {
+        name: 'Manager',
+        level: '80'
+      }
+    });
+
+    if (existingManager) {
+      return;
+    } else {
+      await this.roleRepo
+        .create({
+          name: 'Manager',
+          level: '80'
+        })
+        .save();
+    }
+  }
+
+  public async insertDefaultUserRole(defaultEmail: string, defaultClientId: string, defaultRedirectUris: string[]) {
+    const defaultUser = await this.userRepo.findOne({
+      where: {
+        email: defaultEmail
+      }
+    });
+
+    const adminRole = await this.roleRepo.findOne({
+      where: {
+        name: 'Admin',
+        level: '99'
+      }
+    });
+
+    const defaultClient = await this.clientRepo.findOne({
+      where: {
+        id: defaultClientId
+      }
+    });
+
+    // Find an existing UserRole with this combination of user, role, and client
+    const existingDefaultUserRole = await this.userRoleRepo.count({
+      where: {
+        user: defaultUser,
+        role: adminRole,
+        client: defaultClient
+      }
+    });
+
+    // If UserRole exists, do nothing
+    if (existingDefaultUserRole) {
+      return;
+    }
+
+    // See if client exists
+    if (!defaultClient) {
+      // Client doesn't exist, create it
+      const _client = this.clientRepo.create({
+        id: defaultClientId,
+        data: JSON.stringify({
+          client_id: defaultClientId,
+          client_name: defaultClientId,
+          redirect_uris: defaultRedirectUris
+        }),
+        expiresAt: null,
+        consumedAt: null
+      });
+
+      // Save client to db first
+      const client = await this.clientRepo.save(_client);
+
+      await this.userRoleRepo
+        .create({
+          client,
+          user: defaultUser,
+          role: adminRole
+        })
+        .save();
+    } else {
+      // Since existingDefaultUserRole doesn't exist, create it
+      await this.userRoleRepo
+        .create({
+          client: defaultClient,
+          user: defaultUser,
+          role: adminRole
+        })
+        .save();
+    }
+  }
+
   public getRoles(accountGuid) {
     return this.userRoleRepo
       .createQueryBuilder('user_role')
@@ -44,6 +157,7 @@ export class UserRoleService {
       mergeMap((userRoles) => userRoles),
       map((userRole) => {
         const clientData = JSON.parse(userRole.client.data);
+
         const ret: ISimplifiedUserRoleResponse = {
           guid: userRole.guid,
           role: {
