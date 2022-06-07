@@ -9,8 +9,8 @@ import { IMailroomEmailOutbound, MailroomAttachment, MailroomEmail } from '@tamu
 export class AppService {
   constructor(@InjectRepository(MailroomEmail) private repo: Repository<MailroomEmail>) {}
 
-  public getData(): { message: string } {
-    return { message: 'Welcome to mailroom-nest!' };
+  public getData() {
+    return 200;
   }
 
   public async insertMailroomEmail(body: IMailroomEmailOutbound, files?: Express.Multer.File[]) {
