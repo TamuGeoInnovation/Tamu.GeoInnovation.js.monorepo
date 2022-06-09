@@ -3,3 +3,5 @@ export const environment = {
   port: 27000,
   globalPrefix: ''
 };
+
+export { prod as DB_CONFIG } from './ormconfig';
