@@ -6,15 +6,14 @@ import { Repository } from 'typeorm';
 import { MailroomReject } from '../entities/all.entities';
 
 @Catch()
-export class NoRecipientFilter implements ExceptionFilter {
+export class MailroomExceptionFilter implements ExceptionFilter {
   @InjectRepository(MailroomReject)
   public repo: Repository<MailroomReject>;
 
   public catch(exception: HttpException, host: ArgumentsHost) {
+    console.log('MailroomExceptionFilter');
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-
-    const errorMessage = 'No recipient provided';
 
     const reject: Partial<MailroomReject> = {
       reason: exception.message
@@ -23,7 +22,7 @@ export class NoRecipientFilter implements ExceptionFilter {
 
     response.json({
       timestamp: new Date().toISOString(),
-      errorMessage
+      exception: exception.message
     });
   }
 }
