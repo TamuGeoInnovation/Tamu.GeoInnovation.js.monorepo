@@ -1,8 +1,9 @@
 export interface IMailroomEmailOutbound {
-  recipientEmail: string;
-  subjectLine: string;
-  emailBodyText: string;
-  emailBodyHtml?: string;
+  to: string;
+  from: string;
+  subject: string;
+  text: string;
+  html?: string;
 }
 
 export interface INodeMailerSendMailResponse {
@@ -12,6 +13,20 @@ export interface INodeMailerSendMailResponse {
   rejected: string[];
   pending: string[];
   response: string;
+}
+
+export interface ITamuRelayResponse {
+  accepted: string[];
+  rejected: string[];
+  envelopeTime: number;
+  messageTime: number;
+  messageSize: number;
+  response: string;
+  envelope: {
+    from: string;
+    to: string[];
+  };
+  messageId: string;
 }
 
 export enum EmailStatus {

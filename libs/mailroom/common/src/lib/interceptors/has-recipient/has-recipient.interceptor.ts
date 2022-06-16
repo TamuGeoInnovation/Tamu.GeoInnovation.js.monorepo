@@ -28,13 +28,10 @@ export class HasRecipientInterceptor implements NestInterceptor {
       } else {
         // No recipient emails found; throw error
         throw new Error('No recipient email provided');
-        // return { error: 'No recipient email provided' };
       }
     } else {
       // No request or request body; throw error
-      // TODO: should we check query params here or something?
       throw new Error('No request body; request probably not multipart/form-data');
-      // return { error: 'No recipient email provided' };
     }
   }
 }

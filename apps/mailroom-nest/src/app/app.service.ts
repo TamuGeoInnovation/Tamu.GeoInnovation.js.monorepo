@@ -22,16 +22,18 @@ export class AppService {
       });
 
       const email = getRepository(MailroomEmail).create({
-        from: body.recipientEmail,
-        content: body.emailBodyText,
+        to: body.to,
+        from: body.from,
+        content: body.text,
         attachments
       });
 
       await email.save();
     } else {
       const email = getRepository(MailroomEmail).create({
-        from: body.recipientEmail,
-        content: body.emailBodyText
+        to: body.to,
+        from: body.from,
+        content: body.text
       });
 
       await email.save();
