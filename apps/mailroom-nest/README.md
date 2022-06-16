@@ -2,10 +2,48 @@
 
 App that can handle sending plain emails and emails with attachments via simple POST request. By using **mailroom-nest** individual apps won't need to worry about implementing email sending functionality themselves, enabling individual apps to focus on their own objective.
 
+## Kinds of emails
+
+- Email from a customer to a team member (Kissing bug, geoservices, etc)
+- Email from a service to a customer (IdP password reset, verification links, news letter)
+
 ## POST request
 
+To send an email without any attachments, use a standard POST request to the root route:
+
+```
+{
+	"to": "atharmon@tamu.edu",
+	"from": "giscadmin@gsvcs.tamu.edu",
+    "subject": "Test of Mailroom",
+	"text": "This is a test of the Mailroom app"
+}
 ```
 
+To send an email _with_ attachments, use a POST multipart/form-data request to the `/attachments` route:
+
+```
+{
+	"to": "atharmon@tamu.edu",
+	"from": "giscadmin@gsvcs.tamu.edu",
+    "subject": "Test of Mailroom",
+	"text": "This is a test of the Mailroom app",
+    "file1": Any file here,
+    "file2": Any file here,
+    "fileN": ....
+}
+```
+
+## OutboundPipe
+
+The `OutboundPipe` is an important piece of the application that will transform the POSTed `body`. The pipe will take a body and kind of morph it into the following type:
+
+```
+{
+    emailBodyText: string;
+    recipientEmail: string;
+    subjectLine: string;
+}
 ```
 
 ## HasRecipientInterceptor
