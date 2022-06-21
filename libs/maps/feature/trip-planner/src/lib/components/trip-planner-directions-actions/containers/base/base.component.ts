@@ -69,7 +69,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
           .join('');
 
         // Get travel mode from result
-        params.mode = result.params && result.params.travelMode ? result.params.travelMode : 1;
+        params.mode = result.params && result.params.travelMode.id ? result.params.travelMode.id : 1;
 
         if (result.timeMode !== 'now') {
           params.time = result.timeMode;

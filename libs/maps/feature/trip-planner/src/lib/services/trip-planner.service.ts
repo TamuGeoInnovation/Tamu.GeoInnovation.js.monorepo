@@ -1764,7 +1764,7 @@ export class TripPlannerService implements OnDestroy {
      * Group of paths that have been identified as a separate travel mode,
      * populate their respective container created by createObject()
      *
-     * @param {Array<{}>} paths Array of X,Y location pair objects
+     * @param {Array<{}>} paths Array of X,Y location pair objectstrip
      * @param {number} index Route segment index reference. If it doesn't exist, one will be created
      */
     const pathGroups = (paths: number[][], index: number) => {
