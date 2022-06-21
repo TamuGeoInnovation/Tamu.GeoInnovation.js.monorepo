@@ -243,6 +243,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/rest/support/Stop',
       name: 'Stop'
+    },
+    {
+      class: 'esri/core/Collection',
+      name: 'Collection'
     }
   ];
 

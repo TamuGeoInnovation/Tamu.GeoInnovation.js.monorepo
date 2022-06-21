@@ -12,7 +12,8 @@ import {
   throwError,
   zip,
   Subject,
-  fromEventPattern
+  fromEventPattern,
+  pipe
 } from 'rxjs';
 import {
   catchError,
@@ -25,7 +26,8 @@ import {
   tap,
   toArray,
   takeUntil,
-  take
+  take,
+  withLatestFrom
 } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
@@ -60,6 +62,7 @@ import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
 
 import esri = __esri;
+import { response } from 'express';
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerService implements OnDestroy {
@@ -461,7 +464,10 @@ export class TripPlannerService implements OnDestroy {
     // Combine module provider require and map service store to keep a reference and execute
     // additional methods when both streams complete.
     zip(
-      moduleProvider.require(['route', 'RouteParameters', 'FeatureSet', 'Graphic', 'networkService', 'Stop'], true),
+      moduleProvider.require(
+        ['route', 'RouteParameters', 'FeatureSet', 'Graphic', 'networkService', 'Stop', 'Collection'],
+        true
+      ),
       mapService.store
     )
       .pipe(takeUntil(this.$destroy))
@@ -472,6 +478,7 @@ export class TripPlannerService implements OnDestroy {
         this._Modules.Graphic = modules.Graphic;
         this._Modules.networkService = modules.networkService;
         this._Modules.Stop = modules.Stop;
+        this._Modules.Collection = modules.Collection;
 
         // Locally store instance of map and view, allowing direct map and view manipulation
         this._map = instance.map;
@@ -1056,18 +1063,7 @@ export class TripPlannerService implements OnDestroy {
                 outSpatialReference: {
                   wkid: 4326
                 },
-                stops: new this._Modules.FeatureSet({
-                  features: stopsAndMode.stops.map((feature) => {
-                    return new this._Modules.Stop({
-                      name: feature.attributes.name,
-                      geometry: {
-                        type: 'point',
-                        latitude: feature.geometry.latitude,
-                        longitude: feature.geometry.longitude
-                      } as unknown as esri.GeometryProperties
-                    });
-                  })
-                }),
+                stops: this.graphicsToStopsCollection(stopsAndMode.stops),
                 travelMode: this.getTravelModeById(supportedTravelModes, stopsAndMode.mode.mode),
                 returnDirections: true,
                 returnZ: false
@@ -1080,6 +1076,7 @@ export class TripPlannerService implements OnDestroy {
           switchMap((trip) => {
             // If the current trip does not have a split definition, return a
             // single formed task.
+
             if (!trip.modeSource || !trip.modeSource.split) {
               const t = [
                 {
@@ -1087,18 +1084,7 @@ export class TripPlannerService implements OnDestroy {
                     outSpatialReference: {
                       wkid: 4326
                     },
-                    stops: new this._Modules.FeatureSet({
-                      features: trip.stops.map((feature) => {
-                        return new this._Modules.Stop({
-                          name: feature.attributes.name,
-                          geometry: {
-                            type: 'point',
-                            latitude: feature.geometry.latitude,
-                            longitude: feature.geometry.longitude
-                          } as unknown as esri.GeometryProperties
-                        });
-                      })
-                    }),
+                    stops: this.graphicsToStopsCollection(trip.stops),
                     travelMode: this.getTravelModeById(supportedTravelModes, trip.params.travelMode.id),
                     returnDirections: true,
                     returnZ: false
@@ -1126,20 +1112,10 @@ export class TripPlannerService implements OnDestroy {
                     outSpatialReference: {
                       wkid: 4326
                     },
-                    stops: new this._Modules.FeatureSet({
-                      features: stops.map((feature) => {
-                        return new this._Modules.Stop({
-                          name: feature.attributes.name,
-                          geometry: {
-                            type: 'point',
-                            latitude: feature.geometry.latitude,
-                            longitude: feature.geometry.longitude
-                          } as unknown as esri.GeometryProperties
-                        });
-                      })
-                    }),
+                    stops: this.graphicsToStopsCollection(trip.stops),
                     travelMode: this.getTravelModeById(supportedTravelModes, travelMode),
                     returnDirections: true,
+                    returnRoutes: true,
                     returnZ: false
                   })
                 };
@@ -1183,256 +1159,16 @@ export class TripPlannerService implements OnDestroy {
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
                     return from(this._Modules.route.solve(this.connection.url(), t.params as esri.RouteParameters)).pipe(
+                      this.handleTripTaskSuccess(t.params),
                       catchError((err) => {
-                        // Get the travel mode for the failed request found in the error object.
-                        const responseTravelMode = err.details.requestOptions.query.travelMode;
-
-                        // Find the matching result base don the response travel mode.
-                        const matchedResult = previousState.find((r) => r.params.travelMode === responseTravelMode);
-
-                        return of(
-                          new TripResult({
-                            ...matchedResult,
-                            isError: true,
-                            isProcessing: false,
-                            error: err,
-                            isFulfilled: true
-                          })
-                        );
+                        return this.handleTripTaskFail(err, rq.trip, t.params);
                       })
                     );
-                  }),
-                  toArray()
+                  })
                 )
               ]);
             }),
-            mergeMap((responses) => {
-              const results = responses.flat() as unknown[] as RouteResult[];
-
-              // If any one of the route result responses at this stage is of type TripResult, it is a result an error condition.
-              const anyError = results.find((r) => r instanceof TripResult);
-
-              // Handle any trip results error=ing out.
-              if (anyError) {
-                // Make shallow copy of response trip result.
-                // This already contains the trip result error.
-                const failedResult = new TripResult(results[0] as unknown as TripResultProperties);
-
-                // Report failed trip result.
-                this.tripTaskFail(failedResult);
-
-                return of(failedResult);
-              }
-
-              // Handle single-request trip results
-              if (results.length <= 1) {
-                return of(results[0]);
-              } else {
-                // Handle multi-request trip results
-                const merged = results.reduce(
-                  (result, curr) => {
-                    result.routeName = curr.routeResults[0].routeName;
-                    result.directions.totalDriveTime += curr.routeResults[0].directions.totalDriveTime;
-                    result.directions.totalLength += curr.routeResults[0].directions.totalLength;
-                    result.directions.totalTime += curr.routeResults[0].directions.totalTime;
-
-                    result.directions.features = [
-                      ...result.directions.features,
-                      ...curr.routeResults[0].directions.features
-                    ];
-
-                    return result;
-                  },
-                  { directions: { features: [], totalDriveTime: 0, totalLength: 0, totalTime: 0 }, routeName: undefined }
-                );
-
-                return of({
-                  routeResults: [merged]
-                });
-              }
-            }),
-            mergeMap((response) => {
-              if (response instanceof TripResult && response.isError) {
-                return of(response);
-              } else {
-                // If request was successful, value will be TripTask result. In which case, create a new Trip Result
-                // and append the result property
-                const matchedResult = previousState.find(
-                  (r) => r.params.travelMode.toString() === (response as RouteResult).routeResults[0].routeName
-                );
-
-                return of(true).pipe(
-                  switchMap((): Observable<TripModeSwitch[]> => {
-                    return of(
-                      (response as RouteResult).routeResults[0].directions.features.reduce((acc, curr): TripModeSwitch[] => {
-                        // Determine the speed category for the current feature.
-                        const currFeatureSpeedCategory = this.speed(curr);
-
-                        // Stores a index reference to the most recently modified accumulated mode switch array, if any.
-                        // This is used to test against current feature speed categories and appending.
-                        const newestAccumulatedIndex = acc.length > 0 ? acc.length - 1 : 0;
-
-                        // Using newestAccumulatedIndex, stores reference to the actual array object.
-                        const newestAccumulated: TripModeSwitch = acc[newestAccumulatedIndex];
-
-                        // If the current graphic has the same speed category as the last accumulated mode switch
-                        // keep adding graphics to that object's `graphics` array.
-                        if (newestAccumulated && newestAccumulated.type === currFeatureSpeedCategory) {
-                          acc[newestAccumulatedIndex] = {
-                            type: newestAccumulated.type,
-                            graphics: [...newestAccumulated.graphics, curr]
-                          } as TripModeSwitch;
-
-                          // For the current mode switch, insert the current feature graphic into the graphics object.
-                          return acc;
-                        } else {
-                          // If this block was entered, it means the current feature does not have the same speed category as the
-                          // `newestAccumulatedIndex` (the last item in the accumulated array).
-                          //
-                          // This is either because `newestAccumulatedIndex` is an array with zero mode switch objects and as such the `mode` (first route results feature being iterated)
-                          // for the non-existent object is `undefined`. If this is the case, then the switch index should be zero, to add the first mode switch to the accumulated array.
-                          //
-                          // Alternatively, the current feature is of the opposing speed category (e.g. previous was walking, and is now not_walking).
-                          // If this is the case, we want to add another mode switch on the index after the last mode switch. A simple n + 1. In this way, it will not overwrite the
-                          // last mode switch.
-                          const switchIndex =
-                            newestAccumulated && newestAccumulated.type
-                              ? newestAccumulatedIndex + 1
-                              : newestAccumulatedIndex;
-
-                          acc[switchIndex] = {
-                            type: currFeatureSpeedCategory,
-                            graphics: [curr]
-                          } as TripModeSwitch;
-
-                          // Return the mode switches array with a new mode switch object.
-                          return acc;
-                        }
-                      }, [])
-                    );
-                  }),
-                  switchMap((modeSwitches: TripModeSwitch[]) => {
-                    const baseDate =
-                      this._TravelOptions.getValue().requested_time != null
-                        ? new Date(this._TravelOptions.getValue().requested_time)
-                        : new Date();
-                    const { travelMode } = matchedResult.params;
-
-                    let minutesToCur = 0;
-
-                    return forkJoin([
-                      from(modeSwitches).pipe(
-                        concatMap((modeSwitch) => {
-                          modeSwitch.graphics = modeSwitch.graphics.map((graphic: esri.Graphic) => {
-                            graphic.attributes.relativeTime = minutesToCur;
-                            graphic.attributes.dateToHere = new Date(baseDate.getTime() + minutesToCur * 60 * 1000);
-                            minutesToCur = minutesToCur + graphic.attributes.time;
-
-                            return graphic;
-                          });
-
-                          if (modeSwitch.type === 'not_walking') {
-                            switch (this.getRuleForModes([parseInt(travelMode, 10)])) {
-                              // TODO: This is BETA.
-                              // case this.rule_bus:
-                              //   return this.busService.annotateBusGraphic(modeSwitch);
-                              default:
-                                return of(modeSwitch);
-                            }
-                          } else {
-                            return of(modeSwitch);
-                          }
-                        }),
-                        toArray()
-                      ),
-                      of(baseDate)
-                    ]);
-                  }),
-                  switchMap((argument: [TripModeSwitch[], Date]) => {
-                    const [modeSwitches, baseDate] = argument;
-
-                    // Flatten the modeSwitches graphics.
-                    const features: esri.Graphic[] = modeSwitches.reduce((acc, curr) => {
-                      if (curr.graphics && curr.graphics.length > 0) {
-                        return [...acc, ...curr.graphics];
-                      } else {
-                        return acc;
-                      }
-                    }, []);
-
-                    const firstStopName = this._Stops.value[0].attributes.name;
-                    const lastStopName = this._Stops.value[this._Stops.value.length - 1].attributes.name;
-
-                    const firstTime = timeStringForDate(baseDate);
-                    const lastTime = timeStringForDate(
-                      new Date(baseDate.getTime() + features[features.length - 1].attributes.relativeTime * 60 * 1000)
-                    );
-
-                    // Setting the text on these should update the response directions as `features` are a reference to those.
-                    if (this._TravelOptions.getValue().time_mode === 'arrive') {
-                      features[0].attributes.text = `Start at ${firstStopName} at ${lastTime}`;
-
-                      features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${firstTime}`;
-                    } else {
-                      features[0].attributes.text = `Start at ${firstStopName} at ${firstTime}`;
-
-                      features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${lastTime}`;
-                    }
-
-                    const features_length = features.length;
-                    // Overwrite total travel time to be the relative time of the last item in the features array.
-                    // This ensures it applies the additional time padding such as bus linger time and traffic multipliers.
-                    if (features_length > 0 && features[0].attributes.relativeTime != null) {
-                      (<RouteResult>response).routeResults[0].directions.totalDriveTime =
-                        features[features_length - 1].attributes.relativeTime;
-                      (<RouteResult>response).routeResults[0].directions.totalTime =
-                        features[features_length - 1].attributes.relativeTime;
-                    }
-
-                    if (modeSwitches && modeSwitches.length > 0) {
-                      const anyHasResultLinger = modeSwitches.filter((ms) => {
-                        return ms && ms.results && ms.results.bus;
-                      });
-
-                      if (anyHasResultLinger.length > 0) {
-                        const totalLinger = modeSwitches.reduce((acc, curr) => {
-                          if (curr.results && curr.results.bus) {
-                            return acc + curr.results.bus.linger_minutes;
-                          } else {
-                            return acc;
-                          }
-                        }, 0);
-
-                        (<RouteResult>response).routeResults[0].directions.totalDriveTime += totalLinger;
-                        (<RouteResult>response).routeResults[0].directions.totalTime += totalLinger;
-                      }
-                    }
-
-                    const timeMode = this._TravelOptions.getValue().time_mode || 'now';
-                    const requestedTime = this._TravelOptions.getValue().requested_time;
-
-                    const result = this.aggregateDirections(
-                      new TripResult({
-                        ...matchedResult,
-                        result: response as RouteResult,
-                        directions: (<RouteResult>response).routeResults[0].directions,
-                        isProcessing: false,
-                        isFulfilled: true,
-                        modeSwitches: modeSwitches,
-                        timeMode: timeMode,
-                        requestedTime: requestedTime
-                      })
-                    );
-
-                    // Report successful trip result.
-                    this.tripTaskSuccess(result);
-
-                    return of(result);
-                  })
-                );
-              }
-            }),
-            scan((results: TripResult[], result: TripResult) => {
+            scan((results: TripResult[], [result]) => {
               // From the accumulated value, filter out those that are marked as fulfilled.
               const oldCompletedResults = results.filter((r) => r.isFulfilled);
 
@@ -1457,9 +1193,6 @@ export class TripPlannerService implements OnDestroy {
             }, [])
           )
         ]).subscribe(
-          // (res) => {
-          //   console.log('emit');
-          // })
           (res) => {
             this.result = res.flat();
           },
@@ -1474,11 +1207,9 @@ export class TripPlannerService implements OnDestroy {
                 if (!item.error) {
                   return {
                     travelMode: item.params.travelMode,
-                    speed:
-                      item.result.routeResults[0].directions.totalLength /
-                      (item.result.routeResults[0].directions.totalTime / 60),
-                    totalTime: item.result.routeResults[0].directions.totalTime,
-                    totalDistance: item.result.routeResults[0].directions.totalLength
+                    speed: item.result.directions.totalLength / (item.result.directions.totalTime / 60),
+                    totalTime: item.result.directions.totalTime,
+                    totalDistance: item.result.directions.totalLength
                   };
                 } else {
                   return {
@@ -1501,11 +1232,260 @@ export class TripPlannerService implements OnDestroy {
   }
 
   /**
+   * This is a separation of logic from the main `executeTripTask` jumbo method.
+   *
+   * Binds the result with the original task parameters to remove the need to figure out
+   * which response corresponds to which route result later in the stream.
+   *
+   * The motivation for this is because in 4.23, the route result no longer returns the travel mode.
+   *
+   * TODO: There is another method with a similar name and they might be merged later. Reducing mental load for now.
+   *
+   *
+   */
+  private handleTripTaskSuccess(originalTaskParams: esri.supportRouteParameters) {
+    return pipe(
+      map((res: esri.RouteSolveResult) => {
+        const results = res.routeResults.flat();
+
+        // Handle single-request trip results
+        if (results.length <= 1) {
+          return {
+            routeResults: results as Array<esri.RouteResult>
+          };
+        } else {
+          // Handle multi-request trip results
+          const merged = results.reduce(
+            (result, curr) => {
+              result.routeName = curr.routeName;
+              result.directions.totalDriveTime += curr.directions.totalDriveTime;
+              result.directions.totalLength += curr.directions.totalLength;
+              result.directions.totalTime += curr.directions.totalTime;
+
+              result.directions.features = [...result.directions.features, ...curr.directions.features];
+
+              return result;
+            },
+            { directions: { features: [], totalDriveTime: 0, totalLength: 0, totalTime: 0 }, routeName: undefined }
+          );
+
+          return {
+            routeResults: [merged] as Array<esri.RouteResult>
+          };
+        }
+      }),
+      map((result): SuccessTripResultWithOriginalTaskParams => {
+        return {
+          params: originalTaskParams,
+          result: result
+        };
+      }),
+      withLatestFrom(this.Result),
+      mergeMap(([res, previousState]) => {
+        // If request was successful, value will be TripTask result. In which case, create a new Trip Result
+        // and append the result property
+        const matchedResult = previousState.find((r) => r.params.travelMode.id === res.params.travelMode.id.toString());
+
+        return of(true).pipe(
+          switchMap((): Observable<TripModeSwitch[]> => {
+            return of(
+              res.result.routeResults[0].directions.features.reduce((acc, curr): TripModeSwitch[] => {
+                // Determine the speed category for the current feature.
+                const currFeatureSpeedCategory = this.speed(curr);
+
+                // Stores a index reference to the most recently modified accumulated mode switch array, if any.
+                // This is used to test against current feature speed categories and appending.
+                const newestAccumulatedIndex = acc.length > 0 ? acc.length - 1 : 0;
+
+                // Using newestAccumulatedIndex, stores reference to the actual array object.
+                const newestAccumulated: TripModeSwitch = acc[newestAccumulatedIndex];
+
+                // If the current graphic has the same speed category as the last accumulated mode switch
+                // keep adding graphics to that object's `graphics` array.
+                if (newestAccumulated && newestAccumulated.type === currFeatureSpeedCategory) {
+                  acc[newestAccumulatedIndex] = {
+                    type: newestAccumulated.type,
+                    graphics: [...newestAccumulated.graphics, curr]
+                  } as TripModeSwitch;
+
+                  // For the current mode switch, insert the current feature graphic into the graphics object.
+                  return acc;
+                } else {
+                  // If this block was entered, it means the current feature does not have the same speed category as the
+                  // `newestAccumulatedIndex` (the last item in the accumulated array).
+                  //
+                  // This is either because `newestAccumulatedIndex` is an array with zero mode switch objects and as such the `mode` (first route results feature being iterated)
+                  // for the non-existent object is `undefined`. If this is the case, then the switch index should be zero, to add the first mode switch to the accumulated array.
+                  //
+                  // Alternatively, the current feature is of the opposing speed category (e.g. previous was walking, and is now not_walking).
+                  // If this is the case, we want to add another mode switch on the index after the last mode switch. A simple n + 1. In this way, it will not overwrite the
+                  // last mode switch.
+                  const switchIndex =
+                    newestAccumulated && newestAccumulated.type ? newestAccumulatedIndex + 1 : newestAccumulatedIndex;
+
+                  acc[switchIndex] = {
+                    type: currFeatureSpeedCategory,
+                    graphics: [curr]
+                  } as TripModeSwitch;
+
+                  // Return the mode switches array with a new mode switch object.
+                  return acc;
+                }
+              }, [])
+            );
+          }),
+          switchMap((modeSwitches: TripModeSwitch[]) => {
+            const baseDate =
+              this._TravelOptions.getValue().requested_time != null
+                ? new Date(this._TravelOptions.getValue().requested_time)
+                : new Date();
+
+            const travelMode = matchedResult.params.travelMode.id;
+
+            let minutesToCur = 0;
+
+            return forkJoin([
+              from(modeSwitches).pipe(
+                concatMap((modeSwitch) => {
+                  modeSwitch.graphics = modeSwitch.graphics.map((graphic: esri.Graphic) => {
+                    graphic.attributes.relativeTime = minutesToCur;
+                    graphic.attributes.dateToHere = new Date(baseDate.getTime() + minutesToCur * 60 * 1000);
+                    minutesToCur = minutesToCur + graphic.attributes.time;
+
+                    return graphic;
+                  });
+
+                  if (modeSwitch.type === 'not_walking') {
+                    switch (this.getRuleForModes([parseInt(travelMode, 10)])) {
+                      // case this.rule_bus:
+                      //   return this.busService.annotateBusGraphic(modeSwitch);
+                      // case this.rule_drive:
+                      // TODO this.inrixService.annotateDriveFeature(graphic, modeSwitch, dateToHere).subscribe((f_new: esri.Graphic) => res(f_new)); break;
+                      default:
+                        return of(modeSwitch);
+                    }
+                  } else {
+                    return of(modeSwitch);
+                  }
+                }),
+                toArray()
+              ),
+              of(baseDate)
+            ]);
+          }),
+          switchMap((argument: [TripModeSwitch[], Date]) => {
+            const [modeSwitches, baseDate] = argument;
+
+            // Flatten the modeSwitches graphics.
+            const features: esri.Graphic[] = modeSwitches.reduce((acc, curr) => {
+              if (curr.graphics && curr.graphics.length > 0) {
+                return [...acc, ...curr.graphics];
+              } else {
+                return acc;
+              }
+            }, []);
+
+            const firstStopName = this._Stops.value[0].attributes.name;
+            const lastStopName = this._Stops.value[this._Stops.value.length - 1].attributes.name;
+
+            const firstTime = timeStringForDate(baseDate);
+            const lastTime = timeStringForDate(
+              new Date(baseDate.getTime() + features[features.length - 1].attributes.relativeTime * 60 * 1000)
+            );
+
+            // Setting the text on these should update the response directions as `features` are a reference to those.
+            if (this._TravelOptions.getValue().time_mode === 'arrive') {
+              features[0].attributes.text = `Start at ${firstStopName} at ${lastTime}`;
+
+              features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${firstTime}`;
+            } else {
+              features[0].attributes.text = `Start at ${firstStopName} at ${firstTime}`;
+
+              features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${lastTime}`;
+            }
+
+            const features_length = features.length;
+            // Overwrite total travel time to be the relative time of the last item in the features array.
+            // This ensures it applies the additional time padding such as bus linger time and traffic multipliers.
+            if (features_length > 0 && features[0].attributes.relativeTime != null) {
+              res.result.routeResults[0].directions.totalDriveTime = features[features_length - 1].attributes.relativeTime;
+              res.result.routeResults[0].directions.totalTime = features[features_length - 1].attributes.relativeTime;
+            }
+
+            if (modeSwitches && modeSwitches.length > 0) {
+              const anyHasResultLinger = modeSwitches.filter((ms) => {
+                return ms && ms.results && ms.results.bus;
+              });
+
+              if (anyHasResultLinger.length > 0) {
+                const totalLinger = modeSwitches.reduce((acc, curr) => {
+                  if (curr.results && curr.results.bus) {
+                    return acc + curr.results.bus.linger_minutes;
+                  } else {
+                    return acc;
+                  }
+                }, 0);
+
+                res.result.routeResults[0].directions.totalDriveTime += totalLinger;
+                res.result.routeResults[0].directions.totalTime += totalLinger;
+              }
+            }
+
+            const timeMode = this._TravelOptions.getValue().time_mode || 'now';
+            const requestedTime = this._TravelOptions.getValue().requested_time;
+
+            const result = this.aggregateDirections(
+              new TripResult({
+                ...matchedResult,
+                result: res.result.routeResults[0],
+                directions: res.result.routeResults[0].directions,
+                isProcessing: false,
+                isFulfilled: true,
+                modeSwitches: modeSwitches,
+                timeMode: timeMode,
+                requestedTime: requestedTime
+              })
+            );
+
+            // Report successful trip result.
+            this.reportTaskSuccessType(result);
+
+            return of(result);
+          })
+        );
+      }),
+      tap((r) => {
+        this.handleTripTaskSuccess(r.params);
+      })
+    );
+  }
+
+  private handleTripTaskFail(
+    error: esri.Error,
+    statePlaceholder: TripResult,
+    originalTaskParams: esri.supportRouteParameters
+  ) {
+    return of(
+      new TripResult({
+        ...statePlaceholder,
+        isError: true,
+        isProcessing: false,
+        error: error,
+        isFulfilled: true
+      })
+    ).pipe(
+      tap((r) => {
+        this.reportTaskFailType(r);
+      })
+    );
+  }
+
+  /**
    * Callback executed after a successful trip task.
    *
    * Reports success status to Google Analytics.
    */
-  private tripTaskSuccess(result: TripResult) {
+  private reportTaskSuccessType(result: TripResult) {
     // Do not assign new this.result value here as it will be done further down the chain.
 
     // Route creation analytics tracking
@@ -1536,7 +1516,7 @@ export class TripPlannerService implements OnDestroy {
    *
    * @param {TripResult} rs TripResult class instance containing error details
    */
-  private tripTaskFail(rs: TripResult) {
+  private reportTaskFailType(rs: TripResult) {
     const tripResult = new TripResult(rs);
 
     try {
@@ -1628,8 +1608,7 @@ export class TripPlannerService implements OnDestroy {
       map((results) => {
         // Filter out only the trip result for the current state travel mode.
         return results.filter(
-          (result) =>
-            (result.params && result.params.travelMode.toString()) === this._TravelOptions.value.travel_mode.toString()
+          (result) => (result.params && result.params.travelMode.id) === this._TravelOptions.value.travel_mode.toString()
         );
       }),
       mergeMap((results) => {
@@ -1788,19 +1767,20 @@ export class TripPlannerService implements OnDestroy {
      * @param {Array<{}>} paths Array of X,Y location pair objects
      * @param {number} index Route segment index reference. If it doesn't exist, one will be created
      */
-    const pathGroups = (paths: [][], index: number) => {
+    const pathGroups = (paths: number[][], index: number) => {
       routeSegments[index] = {
-        mode: this.speed(result.result.routeResults[0].directions.features[index]),
+        mode: this.speed(result.result.directions.features[index]),
         paths: paths
       };
     };
 
-    result.result.routeResults[0].directions.features.forEach((el, i, arr) => {
+    result.result.directions.features.forEach((el, i, arr) => {
+      const geometry = el.geometry as esri.Polyline;
       // If not the first element and mode is the same, append all
       if (i !== 0 && this.speed(arr[i]) === routeSegments[routeSegments.length - 1].mode) {
-        routeSegments[routeSegments.length - 1].paths.push(...el.geometry.paths[0]);
+        routeSegments[routeSegments.length - 1].paths.push(...geometry.paths[0]);
       } else {
-        pathGroups([...el.geometry.paths[0]], i);
+        pathGroups([...geometry.paths[0]], i);
       }
     });
 
@@ -1915,9 +1895,7 @@ export class TripPlannerService implements OnDestroy {
 
           this.busService.removeAllFromMap();
 
-          const bus_features = result.result.routeResults[0].directions.features.filter(
-            (feature) => feature.attributes.bus != null
-          );
+          const bus_features = result.result.directions.features.filter((feature) => feature.attributes.bus != null);
           // Only show buses if we are viewing the bus mode and the time mode is now (don't have historical or projected data for buses)
           if (bus_features.length > 0 && result.timeMode === 'now') {
             bus_features.forEach((feature) => {
@@ -1925,7 +1903,7 @@ export class TripPlannerService implements OnDestroy {
             });
           }
 
-          // this.aggregateDirections(result.result.routeResults[0].directions)
+          // this.aggregateDirections(result.result.directions)
           //   .then((res: esri.DirectionsFeatureSet) => {
           //     // Create new result with included directions
           //     const routeWithDirections = Object.assign(result, { directions: res });
@@ -2583,6 +2561,25 @@ export class TripPlannerService implements OnDestroy {
       }
     });
   }
+
+  private graphicsToStopsCollection(tripPoints: Array<TripPoint>) {
+    const collection = new (this._Modules.Collection as any)();
+
+    const stops = tripPoints.map((feature) => {
+      return new this._Modules.Stop({
+        name: feature.attributes.name,
+        geometry: {
+          type: 'point',
+          latitude: (feature.geometry as esri.Point).latitude,
+          longitude: (feature.geometry as esri.Point).longitude
+        } as unknown as esri.GeometryProperties
+      });
+    });
+
+    collection.addMany(stops);
+
+    return collection;
+  }
 }
 
 /**
@@ -2893,4 +2890,14 @@ interface TripPlannerModules {
   route: esri.route;
   networkService: esri.networkService;
   Stop: esri.StopConstructor;
+  Collection: esri.Collection['constructor'];
+}
+
+interface SuccessTripResultWithOriginalTaskParams {
+  result: Partial<esri.RouteSolveResult>;
+  params: esri.supportRouteParameters;
+}
+interface FailTripResultWithOriginalTaskParams {
+  result: TripResult;
+  params: esri.supportRouteParameters;
 }
