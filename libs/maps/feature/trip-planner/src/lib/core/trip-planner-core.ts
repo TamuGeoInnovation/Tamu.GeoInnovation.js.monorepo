@@ -51,8 +51,8 @@ export class TripResult {
   }
 
   public stopsToArray(): number[][] {
-    if (this.params.stops && (<esri.FeatureSet>this.params.stops).features) {
-      return (<esri.FeatureSet>this.params.stops).features.map((f) => {
+    if (this.params.stops && (<esri.Collection>this.params.stops).length > 0) {
+      return (<esri.Collection>this.params.stops).toArray().map((f) => {
         if (f.geometry) {
           // Return a concatenated pipe separated string of latitude and longitude coordinates for reporting
           return [

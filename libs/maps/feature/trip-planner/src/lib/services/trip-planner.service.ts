@@ -1238,10 +1238,6 @@ export class TripPlannerService implements OnDestroy {
    * which response corresponds to which route result later in the stream.
    *
    * The motivation for this is because in 4.23, the route result no longer returns the travel mode.
-   *
-   * TODO: There is another method with a similar name and they might be merged later. Reducing mental load for now.
-   *
-   *
    */
   private handleTripTaskSuccess(originalTaskParams: esri.supportRouteParameters) {
     return pipe(
