@@ -1167,8 +1167,7 @@ export class TripPlannerService implements OnDestroy {
                       })
                     );
                   }),
-                  toArray(),
-                  map((taskResults) => taskResults.flat(2))
+                  toArray()
                 )
               ]).pipe(
                 this.handleTripTaskSuccess(),
