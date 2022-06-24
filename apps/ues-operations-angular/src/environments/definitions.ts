@@ -92,6 +92,13 @@ export const Definitions = {
     url: `${Connections.inforUrl}/3`,
     popupComponent: Popups.ParkingKioskPopupComponent
   },
+  TRANSPORTATION_PARKING: {
+    id: 'transportation-parking',
+    layerId: 'transportation-parking-layer',
+    name: 'Transportation Parking',
+    url: `${Connections.tsMainUrl}/6`,
+    popupComponent: Popups.ParkingKioskPopupComponent
+  },
   EMERGENCY_PHONES: {
     id: 'emergency-phones',
     layerId: 'emergency-phones-layer',
@@ -341,6 +348,86 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.DeptName}',
+    searchActive: false
+  },
+  {
+    source: 'all-parking',
+    name: 'Parking',
+    url: `${Definitions.TRANSPORTATION_PARKING.url}`,
+    queryParams: {
+      ...commonQueryParams,
+      returnGeometry: true,
+      resultRecordCount: '*',
+      outFields: `GIS.TS.ParkingLots.FAC_CODE,
+      GIS.TS.ParkingLots.LotName,
+      GIS.TS.SpacePnt_Count.UB,
+      GIS.TS.SpacePnt_Count.Visitor_H_C
+      `,
+      where: {
+        keys: ['1'],
+        operators: ['=']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.LotName}',
+    searchActive: false
+  },
+  {
+    source: 'visitor-parking',
+    name: 'Visitor Parking',
+    url: `${Definitions.TRANSPORTATION_PARKING.url}`,
+    queryParams: {
+      ...commonQueryParams,
+      returnGeometry: true,
+      resultRecordCount: '*',
+      outFields: `GIS.TS.ParkingLots.FAC_CODE,
+      GIS.TS.ParkingLots.LotName,
+      GIS.TS.ParkingLots.LotType
+      `,
+      where: {
+        keys: ['GIS.TS.ParkingLots.LotType', 'GIS.TS.ParkingLots.LotType'],
+        operators: ['=', '=']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.LotName}',
+    searchActive: false
+  },
+  {
+    source: 'night-parking',
+    name: 'Night Parking',
+    url: `https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
+    queryParams: {
+      ...commonQueryParams,
+      returnGeometry: true,
+      resultRecordCount: '*',
+      outFields: `GIS.TS.ParkingLots.FAC_CODE,
+      GIS.TS.ParkingLots.LotName,
+      GIS.TS.Lot_Use.Night_Lot`,
+      where: {
+        keys: ['Night_Lot'],
+        operators: ['=']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.LotName}',
+    searchActive: false
+  },
+  {
+    source: 'one-parking',
+    name: 'Parking',
+    url: `${Definitions.TRANSPORTATION_PARKING.url}`,
+    queryParams: {
+      ...commonQueryParams,
+      returnGeometry: true,
+      resultRecordCount: '*',
+      outFields: `GIS.TS.ParkingLots.AggieMap,
+      GIS.TS.ParkingLots.FAC_CODE,
+      GIS.TS.ParkingLots.LotName,
+      GIS.TS.SpacePnt_Count.UB`
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.LotName}',
     searchActive: false
   },
   {
