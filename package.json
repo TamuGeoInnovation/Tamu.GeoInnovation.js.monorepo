@@ -77,7 +77,7 @@
     "form-data": "^4.0.0",
     "fs-extra": "^9.0.0",
     "geojson-utils": "https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.geojsonutils.git",
-    "got": "^11.3.0",
+    "got": "^11.8.5",
     "helmet": "^3.23.3",
     "interactjs": "^1.9.19",
     "jsonwebtoken": "^8.5.1",
