@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { of, Observable, from, BehaviorSubject } from 'rxjs';
-import { switchMap, take, filter, reduce } from 'rxjs/operators';
+import { of, Observable, from, BehaviorSubject, forkJoin } from 'rxjs';
+import { switchMap, take, filter, reduce, map, mergeMap, toArray } from 'rxjs/operators';
 
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { SearchService, SearchResult, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
@@ -8,13 +8,6 @@ import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
-
-// Search source references used to retrieve all parking lots.
-// const allParking = ['all-parking-garages', 'all-parking-lots'];
-const allParking = ['all-parking'];
-
-// Search source references used to retrieve a single parking location.
-let oneParking: SearchSource;
 
 @Injectable({ providedIn: 'root' })
 export class ParkingService {
@@ -91,8 +84,6 @@ export class ParkingService {
     private settings: SettingsService,
     private environment: EnvironmentService
   ) {
-    oneParking = this.environment.value('SearchSources').find((source) => source.source === 'one-parking');
-
     this.settings.init(this.settingsConfig).subscribe((res: ParkingOptions) => {
       this._ParkingOptions.next(res);
     });
@@ -103,9 +94,11 @@ export class ParkingService {
    * alphabetics and numerics.
    */
   public getParkingPermits(): Observable<ParkingFeature[]> {
+    const source = this.environment.value('SearchSources').find((source) => source.source === 'all-parking');
+
     return this.search
       .search<ParkingFeature>({
-        sources: allParking,
+        sources: [source],
         values: [1],
         stateful: false
       })
@@ -203,96 +196,123 @@ export class ParkingService {
     // parking in lot 15.
     const includedParkingOptions = [
       {
-        sqlColumn: 'GIS.TS.ParkingLots.FAC_CODE',
-        include: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined,
-        value: parkingOptions.Permit,
-        operator: '='
+        searchSource: 'all-parking',
+        sqlColumns: ['GIS.TS.ParkingLots.FAC_CODE'],
+        include: parkingOptions.Use_Permit === true,
+        values: [parkingOptions.Permit],
+        operators: ['=']
       },
       {
-        sqlColumn: 'TS_GIS.dbo.LOTS.Visitor_Lot',
-        include: !parkingOptions.Use_Permit,
-        value: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined ? 1 : 0,
-        operator: '='
+        searchSource: 'visitor-parking',
+        sqlColumns: ['TS_GIS.dbo.LOTS.Visitor_Lot'],
+        include: parkingOptions.Use_Permit === false,
+        values: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined ? [1] : [0],
+        operators: ['=']
       },
       {
-        sqlColumn: 'TS_GIS.dbo.LOTS.Night_Lot',
-        include: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined && date.getHours() >= 17,
-        value: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined ? 1 : 0,
-        operator: '='
+        searchSource: 'night-parking',
+        sqlColumns: ['Night_Lot'],
+        include:
+          parkingOptions.Permit !== undefined &&
+          parkingOptions.Use_Permit &&
+          ((date.getHours() >= 17 && date.getHours() <= 23) || (date.getHours() >= 0 && date.getHours() <= 4)),
+        values: parkingOptions.Use_Permit && parkingOptions.Permit !== undefined ? [1] : [0],
+        operators: ['=']
       },
       {
-        sqlColumn: 'TS_GIS.dbo.LOTS.UB_Lot',
-        include: parkingOptions.UB > 0,
-        value: parkingOptions.UB > 0 ? 1 : 0,
-        operator: '='
+        sqlColumns: ['TS_GIS.dbo.LOTS.UB_Lot'],
+        // This is not supported at the moment but will be in the future. Never include it in the search queries.
+        include: false,
+        values: parkingOptions.UB > 0 ? [1] : [0],
+        operators: ['=']
       },
       {
-        sqlColumn: 'GIS.TS.SpacePnt_Count.UB',
-        include: parkingOptions.UB > 0 ? 1 : 0,
-        value: parkingOptions.UB > 0 ? 1 : 0,
-        operator: parkingOptions.UB > 0 ? '>=' : '='
+        sqlColumns: ['GIS.TS.SpacePnt_Count.UB'],
+        include: false,
+        // This is not supported at the moment but will be in the future. Never include it in the search queries.
+        values: parkingOptions.UB > 0 ? [1] : [0],
+        operators: parkingOptions.UB > 0 ? ['>='] : ['=']
       },
       {
-        sqlColumn: 'GIS.TS.SpacePnt_Count.H_C',
+        sqlColumns: ['GIS.TS.SpacePnt_Count.H_C'],
         // Assume if user has parking permit, they've already pre-determined whether that permit suits their needs.
         // This will remain the case until the search service is updated to allow more flexibility in composing SQL queries.
         include: false,
         // include: parkingOptions.H_C > 0 && parkingOptions.Use_Permit && parkingOptions.Permit !== undefined,
-        value: parkingOptions.H_C > 0 ? 1 : 0,
-        operator: parkingOptions.H_C > 0 ? '>=' : '='
+        values: parkingOptions.H_C > 0 ? [1] : [0],
+        operators: parkingOptions.H_C > 0 ? ['>='] : ['=']
       },
       {
-        sqlColumn: 'GIS.TS.SpacePnt_Count.Visitor_H_C',
-        include: parkingOptions.Visitor_H_C > 0 && !parkingOptions.Use_Permit,
-        value: parkingOptions.H_C > 0 ? 1 : 0,
-        operator: parkingOptions.Visitor_H_C > 0 ? '>=' : '='
+        searchSource: 'all-parking',
+        sqlColumns: ['GIS.TS.SpacePnt_Count.Visitor_H_C'],
+        include: parkingOptions.Visitor_H_C > 0 && parkingOptions.Use_Permit === false,
+        values: parkingOptions.H_C > 0 ? [1] : [0],
+        operators: parkingOptions.Visitor_H_C > 0 ? ['>='] : ['=']
       }
-    ]
-      .filter((option) => {
-        return option.include;
-      })
-      .map((option) => {
-        return {
-          key: option.sqlColumn,
-          value: option.value,
-          operator: option.operator
-        };
-      });
+    ].filter((option) => {
+      return option.include;
+    });
 
-    // Base source with selected keys and operators.
-    const composedSource: SearchSource = JSON.parse(JSON.stringify(oneParking));
-    composedSource.queryParams.where = {
-      keys: includedParkingOptions.map((po) => po.key),
-      operators: includedParkingOptions.map((po) => po.operator)
-    };
-
-    return this.search
-      .search<ParkingFeature>({
-        sources: [composedSource],
-        values: [includedParkingOptions.map((po) => po.value)],
-        stateful: false
-      })
-      .pipe(
-        switchMap((res) => {
-          const normalized = this.normalizeAttributeKeys(res.features());
-
-          return from(
-            this.moduleProvider.require(['Graphic']).then(([Graphic]: [esri.GraphicConstructor]): ParkingFeature[] => {
-              // Parking lots/decks can be multi-polygon features. Our utilities only support basic polygons, so
-              // this set of features must be converted into Esri Graphics that will calculate the centroid of each.
-              const flattened = normalized.map((f) => {
-                return new Graphic({ attributes: f.attributes, geometry: { type: 'polygon', ...f.geometry } });
-              });
-
-              if (flattened.length > 0) {
-                return flattened;
-              } else {
-                return undefined;
-              }
-            })
-          );
-        })
+    const queries = includedParkingOptions.map((incl) => {
+      let source = (this.environment.value('SearchSources') as Array<SearchSource>).find(
+        (s) => s.source === incl.searchSource
       );
+
+      if (source !== undefined) {
+        source = JSON.parse(JSON.stringify(source));
+      } else {
+        throw new Error('No search source found for parking restriction.');
+      }
+
+      source.queryParams.where = {
+        keys: incl.sqlColumns,
+        operators: incl.operators
+      };
+
+      return this.search.search<ParkingFeature>({
+        sources: [source],
+        values: [incl.values],
+        stateful: false
+      });
+    });
+
+    return forkJoin(queries).pipe(
+      mergeMap((results) => results),
+      switchMap((res) => from(this.normalizeAttributeKeys(res.features()))),
+      reduce((acc, curr) => {
+        if (acc[curr.attributes.LotName] !== undefined) {
+          acc[curr.attributes.LotName].count++;
+          acc[curr.attributes.LotName].attributes = { ...acc[curr.attributes.LotName].attributes, ...curr.attributes };
+        } else {
+          acc[curr.attributes.LotName] = { count: 1 };
+          acc[curr.attributes.LotName].attributes = curr.attributes;
+          acc[curr.attributes.LotName].geometry = curr.geometry;
+        }
+
+        return acc;
+      }, {}),
+      switchMap((filtered) => {
+        return from(Object.entries(filtered)).pipe(
+          filter(([key, value]: [string, { count: number; attributes: unknown; geometry: unknown }]) => {
+            return value.count === queries.length;
+          }),
+          map(([key, value]) => {
+            return {
+              attributes: value.attributes,
+              geometry: value.geometry
+            } as ParkingFeature;
+          }),
+          switchMap((f) => {
+            return from(this.moduleProvider.require(['Graphic'])).pipe(
+              map(([Graphic]) => {
+                return new Graphic({ attributes: f.attributes, geometry: { type: 'polygon', ...f.geometry } });
+              })
+            );
+          }),
+          toArray()
+        );
+      })
+    );
   }
 
   /**

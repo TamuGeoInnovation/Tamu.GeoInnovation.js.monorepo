@@ -11,6 +11,7 @@ export const Connections = {
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
   departmentUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
+  tsPermitSelectUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/PermitSelect/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson'
 };
@@ -406,24 +407,56 @@ export const SearchSources: SearchSource[] = [
     url: `${Definitions.TRANSPORTATION_PARKING.url}`,
     queryParams: {
       ...commonQueryParams,
-      returnGeometry: false,
+      returnGeometry: true,
       resultRecordCount: '*',
-      outFields: `GIS.TS.ParkingLots.AggieMap,
-      GIS.TS.ParkingLots.FAC_CODE,
+      outFields: `GIS.TS.ParkingLots.FAC_CODE,
       GIS.TS.ParkingLots.LotName,
       GIS.TS.SpacePnt_Count.UB,
-      GIS.TS.SpacePnt_Count.H_C,
-      GIS.TS.SpacePnt_Count.Visitor_H_C,
-      TS_GIS.dbo.LOTS.Night_Lot,
-      TS_GIS.dbo.LOTS.Visitor_Lot,
-      TS_GIS.dbo.LOTS.AVP_Lot,
-      TS_GIS.dbo.LOTS.UB_Lot,
-      TS_GIS.dbo.LOTS.Break_Lot,
-      TS_GIS.dbo.LOTS.Summer_Lot,
-      TS_GIS.dbo.LOTS.PrepaidSumm_Lot
+      GIS.TS.SpacePnt_Count.Visitor_H_C
       `,
       where: {
         keys: ['1'],
+        operators: ['=']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.LotName}',
+    searchActive: false
+  },
+  {
+    source: 'visitor-parking',
+    name: 'Visitor Parking',
+    url: `${Definitions.TRANSPORTATION_PARKING.url}`,
+    queryParams: {
+      ...commonQueryParams,
+      returnGeometry: true,
+      resultRecordCount: '*',
+      outFields: `GIS.TS.ParkingLots.FAC_CODE,
+      GIS.TS.ParkingLots.LotName,
+      GIS.TS.ParkingLots.LotType
+      `,
+      where: {
+        keys: ['GIS.TS.ParkingLots.LotType', 'GIS.TS.ParkingLots.LotType'],
+        operators: ['=', '=']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.LotName}',
+    searchActive: false
+  },
+  {
+    source: 'night-parking',
+    name: 'Night Parking',
+    url: `https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
+    queryParams: {
+      ...commonQueryParams,
+      returnGeometry: true,
+      resultRecordCount: '*',
+      outFields: `GIS.TS.ParkingLots.FAC_CODE,
+      GIS.TS.ParkingLots.LotName,
+      GIS.TS.Lot_Use.Night_Lot`,
+      where: {
+        keys: ['Night_Lot'],
         operators: ['=']
       }
     },
@@ -442,17 +475,7 @@ export const SearchSources: SearchSource[] = [
       outFields: `GIS.TS.ParkingLots.AggieMap,
       GIS.TS.ParkingLots.FAC_CODE,
       GIS.TS.ParkingLots.LotName,
-      GIS.TS.SpacePnt_Count.UB,
-      GIS.TS.SpacePnt_Count.H_C,
-      GIS.TS.SpacePnt_Count.Visitor_H_C,
-      TS_GIS.dbo.LOTS.Night_Lot,
-      TS_GIS.dbo.LOTS.Visitor_Lot,
-      TS_GIS.dbo.LOTS.AVP_Lot,
-      TS_GIS.dbo.LOTS.UB_Lot,
-      TS_GIS.dbo.LOTS.Break_Lot,
-      TS_GIS.dbo.LOTS.Summer_Lot,
-      TS_GIS.dbo.LOTS.PrepaidSumm_Lot
-      `
+      GIS.TS.SpacePnt_Count.UB`
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.LotName}',
