@@ -93,7 +93,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
             handle.remove();
           };
 
-          return fromEventPattern<esri.MapViewKeyUpEvent>(add, remove).pipe(withLatestFrom(this.$mapView));
+          return fromEventPattern<esri.ViewKeyUpEvent>(add, remove).pipe(withLatestFrom(this.$mapView));
         }),
         takeUntil(this._$destroy)
       )

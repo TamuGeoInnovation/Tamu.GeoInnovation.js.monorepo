@@ -33,7 +33,7 @@ export class TripPlannerModeSwitchComponent implements OnInit {
       this.mode_header = '';
       return;
     }
-    let { travelMode } = this.result.params;
+    let travelMode = this.result.params.travelMode.id;
 
     // `walking` refers to the segment speed identification by the trip planner `speed` fn as part of a
     // successful trip query

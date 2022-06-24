@@ -284,62 +284,59 @@ export class InterventionComponent implements OnInit, OnDestroy {
           return this.vs.updateValveState(valve, valveState.code);
         })
       )
-    ])
-      .pipe(
-        finalize(() => {
-          this.formSubmitting.next(false);
-          this.formSubmittingType.next('create');
-        })
-      )
-      .subscribe(
-        () => {
-          if (type === 'create') {
-            if (formValue.OBJECTID === '') {
-              this.ns.toast({
-                id: 'intervention-create-success',
-                message: 'Intervention event was created.',
-                title: 'Created intervention event'
-              });
-            } else {
-              this.ns.toast({
-                id: 'intervention-update-success',
-                message: 'Intervention event was updated.',
-                title: 'Updated intervention event'
-              });
-            }
-          } else if (type === 'delete') {
+    ]).subscribe({
+      next: ([interventionResults, valveStateResults]) => {
+        if (type === 'create') {
+          if (formValue.OBJECTID === '') {
             this.ns.toast({
-              id: 'intervention-delete-success',
-              message: 'Intervention event was deleted.',
-              title: 'Deleted intervention event'
+              id: 'intervention-create-success',
+              message: 'Intervention event was created.',
+              title: 'Created intervention event'
+            });
+          } else {
+            this.ns.toast({
+              id: 'intervention-update-success',
+              message: 'Intervention event was updated.',
+              title: 'Updated intervention event'
             });
           }
-
-          this.router.navigate(['details', formValue.ValveNumber]);
-        },
-        () => {
-          if (type === 'create') {
-            if (formValue.OBJECTID === '') {
-              this.ns.toast({
-                id: 'intervention-create-error',
-                message: 'An error ocurred creating intervention event.',
-                title: 'Error creating intervention event'
-              });
-            } else {
-              this.ns.toast({
-                id: 'intervention-update-error',
-                message: 'An error ocurred updating intervention event.',
-                title: 'Error updating intervention event'
-              });
-            }
-          } else if (type === 'delete') {
-            this.ns.toast({
-              id: 'intervention-delete-error',
-              message: 'An error ocurred deleting intervention event.',
-              title: 'Error deleting intervention event'
-            });
-          }
+        } else if (type === 'delete') {
+          this.ns.toast({
+            id: 'intervention-delete-success',
+            message: 'Intervention event was deleted.',
+            title: 'Deleted intervention event'
+          });
         }
-      );
+
+        this.router.navigate(['details', formValue.ValveNumber]);
+      },
+      error: (type) => {
+        if (type === 'create') {
+          if (formValue.OBJECTID === '') {
+            this.ns.toast({
+              id: 'intervention-create-error',
+              message: 'An error ocurred creating intervention event.',
+              title: 'Error creating intervention event'
+            });
+          } else {
+            this.ns.toast({
+              id: 'intervention-update-error',
+              message: 'An error ocurred updating intervention event.',
+              title: 'Error updating intervention event'
+            });
+          }
+        } else if (type === 'delete') {
+          this.ns.toast({
+            id: 'intervention-delete-error',
+            message: 'An error ocurred deleting intervention event.',
+            title: 'Error deleting intervention event'
+          });
+        }
+      },
+      complete: () => {
+        this.formSubmitting.next(false);
+        this.formSubmittingType.next('create');
+      }
+    });
   }
 }

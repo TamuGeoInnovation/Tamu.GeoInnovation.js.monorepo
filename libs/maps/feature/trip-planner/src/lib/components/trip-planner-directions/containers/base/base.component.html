@@ -18,13 +18,9 @@
 
   <!-- User Instructions  -->
   <div id="direction-feedback" *ngIf="result?.isProcessing || !result?.directions || result?.isError">
-    <p *ngIf="!result?.directions && !result?.isError && !result?.isProcessing">
-      Please select two points for written step-by-step directions.
-    </p>
+    <p *ngIf="!result?.directions && !result?.isError && !result?.isProcessing">Please select two points for written step-by-step directions.</p>
 
-    <p class="error" *ngIf="result?.isError && !result?.isProcessing">
-      No reasonable route was found! Please try again with different points.
-    </p>
+    <p class="error" *ngIf="result?.isError && !result?.isProcessing">No reasonable route was found! Please try again with different points.</p>
 
     <div *ngIf="result?.isProcessing" class="spinning-loader"></div>
 
