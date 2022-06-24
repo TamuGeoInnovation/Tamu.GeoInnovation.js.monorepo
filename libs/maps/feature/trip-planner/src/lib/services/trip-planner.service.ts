@@ -1111,7 +1111,7 @@ export class TripPlannerService implements OnDestroy {
                     outSpatialReference: {
                       wkid: 4326
                     },
-                    stops: this.graphicsToStopsCollection(trip.stops),
+                    stops: this.graphicsToStopsCollection(stops),
                     travelMode: this.getTravelModeById(supportedTravelModes, travelMode),
                     returnDirections: true,
                     returnRoutes: true,
@@ -1158,16 +1158,26 @@ export class TripPlannerService implements OnDestroy {
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
                     return from(this._Modules.route.solve(this.connection.url(), t.params as esri.RouteParameters)).pipe(
-                      this.handleTripTaskSuccess(t.params),
-                      catchError((err) => {
-                        return this.handleTripTaskFail(err, rq.trip, t.params);
+                      map((result) => {
+                        return {
+                          result,
+                          params: t.params,
+                          trip: rq.trip
+                        };
                       })
                     );
-                  })
+                  }),
+                  toArray(),
+                  map((taskResults) => taskResults.flat(2))
                 )
-              ]);
+              ]).pipe(
+                this.handleTripTaskSuccess(),
+                catchError((err) => {
+                  return this.handleTripTaskFail(err, rq.trip);
+                })
+              );
             }),
-            scan((results: TripResult[], [result]) => {
+            scan((results: TripResult[], result) => {
               // From the accumulated value, filter out those that are marked as fulfilled.
               const oldCompletedResults = results.filter((r) => r.isFulfilled);
 
@@ -1238,48 +1248,58 @@ export class TripPlannerService implements OnDestroy {
    *
    * The motivation for this is because in 4.23, the route result no longer returns the travel mode.
    */
-  private handleTripTaskSuccess(originalTaskParams: esri.supportRouteParameters) {
+  private handleTripTaskSuccess() {
     return pipe(
-      map((res: esri.RouteSolveResult) => {
-        const results = res.routeResults.flat();
+      map(
+        (
+          res: Array<Array<{ result: esri.RouteSolveResult; trip: TripResult; params: esri.supportRouteParameters }>>
+        ): SuccessTripResultWithOriginalTaskParams => {
+          const flattened = res.flat(3);
 
-        // Handle single-request trip results
-        if (results.length <= 1) {
-          return {
-            routeResults: results as Array<esri.RouteResult>
-          };
-        } else {
-          // Handle multi-request trip results
-          const merged = results.reduce(
-            (result, curr) => {
-              result.routeName = curr.routeName;
-              result.directions.totalDriveTime += curr.directions.totalDriveTime;
-              result.directions.totalLength += curr.directions.totalLength;
-              result.directions.totalTime += curr.directions.totalTime;
+          // Handle single-request trip results
+          if (flattened.length <= 1) {
+            const results = flattened.reduce((acc, curr) => {
+              return [...acc, ...curr.result.routeResults.flat()];
+            }, []);
 
-              result.directions.features = [...result.directions.features, ...curr.directions.features];
+            return {
+              result: {
+                routeResults: results as Array<esri.RouteResult>
+              },
+              trip: flattened[0].trip
+            };
+          } else {
+            // Handle multi-request trip results
+            const merged = flattened.reduce(
+              (result, curr) => {
+                const flattened = curr.result.routeResults.flat();
 
-              return result;
-            },
-            { directions: { features: [], totalDriveTime: 0, totalLength: 0, totalTime: 0 }, routeName: undefined }
-          );
+                result.routeName = flattened[0].routeName;
+                result.directions.totalDriveTime += flattened[0].directions.totalDriveTime;
+                result.directions.totalLength += flattened[0].directions.totalLength;
+                result.directions.totalTime += flattened[0].directions.totalTime;
 
-          return {
-            routeResults: [merged] as Array<esri.RouteResult>
-          };
+                result.directions.features = [...result.directions.features, ...flattened[0].directions.features];
+
+                return result;
+              },
+              { directions: { features: [], totalDriveTime: 0, totalLength: 0, totalTime: 0 }, routeName: undefined }
+            );
+
+            return {
+              result: {
+                routeResults: [merged] as Array<esri.RouteResult>
+              },
+              trip: flattened[0].trip
+            };
+          }
         }
-      }),
-      map((result): SuccessTripResultWithOriginalTaskParams => {
-        return {
-          params: originalTaskParams,
-          result: result
-        };
-      }),
+      ),
       withLatestFrom(this.Result),
       mergeMap(([res, previousState]) => {
         // If request was successful, value will be TripTask result. In which case, create a new Trip Result
         // and append the result property
-        const matchedResult = previousState.find((r) => r.params.travelMode.id === res.params.travelMode.id.toString());
+        const matchedResult = previousState.find((r) => r.params.travelMode.id === res.trip.modeSource.mode.toString());
 
         return of(true).pipe(
           switchMap((): Observable<TripModeSwitch[]> => {
@@ -1448,18 +1468,11 @@ export class TripPlannerService implements OnDestroy {
             return of(result);
           })
         );
-      }),
-      tap((r) => {
-        this.handleTripTaskSuccess(r.params);
       })
     );
   }
 
-  private handleTripTaskFail(
-    error: esri.Error,
-    statePlaceholder: TripResult,
-    originalTaskParams: esri.supportRouteParameters
-  ) {
+  private handleTripTaskFail(error: esri.Error, statePlaceholder: TripResult) {
     return of(
       new TripResult({
         ...statePlaceholder,
@@ -2890,5 +2903,5 @@ interface TripPlannerModules {
 
 interface SuccessTripResultWithOriginalTaskParams {
   result: Partial<esri.RouteSolveResult>;
-  params: esri.supportRouteParameters;
+  trip: TripResult;
 }
