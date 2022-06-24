@@ -8,7 +8,7 @@ import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/e
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { SecureLayersService } from '../data-access/data-access/secure-layers.service';
+import { SecureLayersService } from '../data-access/secure-layers/secure-layers.service';
 
 import esri = __esri;
 

@@ -7,7 +7,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 @Injectable({
   providedIn: 'root'
 })
-export class SecureLayers {
+export class SecureLayersService {
   private resource: string;
 
   constructor(private readonly env: EnvironmentService, private readonly http: HttpClient) {
@@ -15,6 +15,6 @@ export class SecureLayers {
   }
 
   public getLayers() {
-    return this.http.get<LayerSource>(this.resource);
+    return this.http.get<LayerSource>(this.resource, { withCredentials: true });
   }
 }
