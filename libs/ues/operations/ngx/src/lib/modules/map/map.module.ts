@@ -3,23 +3,25 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import {
-  AggiemapNgxSharedUiStructuralModule,
   ModalComponent,
   ReportBadRouteComponent,
-  AggiemapFormsModule
+  AggiemapFormsModule,
+  AggiemapNgxSharedUiStructuralModule,
+  TransportationModule,
+  BusListComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import { AggiemapSidebarModule, SidebarTripPlannerComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
+import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
+import { SidebarTripPlannerComponent, AggiemapSidebarModule } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   AggiemapNgxUiMobileModule,
-  OmnisearchComponent,
+  AggiemapNgxUiMobileComponent,
   TripPlannerBottomComponent,
   TripPlannerTopComponent,
-  MobileSidebarComponent,
   MainMobileSidebarComponent,
-  AggiemapNgxUiMobileComponent
+  MobileSidebarComponent,
+  OmnisearchComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/mobile';
 
-import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 import { EsriMapModule, EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
@@ -42,8 +44,8 @@ import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/po
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
-import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 
+import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 import { MapComponent } from './map.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
@@ -64,6 +66,7 @@ const routes: Routes = [
         canActivateChild: [DesktopGuard],
         children: [
           { path: '', component: SidebarReferenceComponent },
+          { path: 'bus', component: BusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
           { path: 'trip/options', component: TripPlannerOptionsComponent }
         ]
@@ -123,20 +126,21 @@ const routes: Routes = [
     AggiemapNgxPopupsModule,
     MapsFeatureAccessibilityModule,
     MapsFeatureCoordinatesModule,
-    AggiemapNgxUiMobileModule,
-    AggiemapNgxSharedUiStructuralModule,
     UIClipboardModule,
     UIDragModule,
     UILayoutModule,
     UIFormsModule,
     PipesModule,
     SearchModule,
+    AggiemapNgxUiMobileModule,
+    AggiemapNgxSharedUiStructuralModule,
     AggiemapSidebarModule,
     AggiemapFormsModule,
     SettingsModule,
     SidebarModule,
     UITamuBrandingModule,
-    UESCoreUIModule
+    UESCoreUIModule,
+    TransportationModule
   ],
   declarations: [MapComponent],
   providers: [EsriModuleProviderService, EsriMapService, TripPlannerService, BusService]
