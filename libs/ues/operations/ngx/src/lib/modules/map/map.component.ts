@@ -4,9 +4,11 @@ import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
+import { SecureLayersService } from '../data-access/secure-layers/secure-layers.service';
 
 import esri = __esri;
 
@@ -23,7 +25,12 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private responsiveService: ResponsiveService, private environment: EnvironmentService) {}
+  constructor(
+    private responsiveService: ResponsiveService,
+    private environment: EnvironmentService,
+    private readonly sl: SecureLayersService,
+    private readonly ms: EsriMapService
+  ) {}
 
   public ngOnInit() {
     const connections = this.environment.value('Connections');
@@ -97,7 +104,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._destroy$.next(undefined);
+    this._destroy$.next(true);
     this._destroy$.complete();
   }
 
@@ -139,6 +146,10 @@ export class MapComponent implements OnInit, OnDestroy {
       .catch((err) => {
         throw new Error(err);
       });
+
+    this.sl.getLayers().subscribe((res) => {
+      this.ms.loadLayers([res]);
+    });
   }
 
   /**
