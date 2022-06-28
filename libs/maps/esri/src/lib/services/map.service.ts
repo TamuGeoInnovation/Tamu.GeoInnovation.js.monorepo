@@ -94,14 +94,14 @@ export class EsriMapService {
    * @param {esri.TileLayerConstructor} TileLayer
    * @param {esri.BasemapConstructor} Basemap
    */
-  private next(
+  private async next(
     Properties: MapProperties,
     ViewProps: ViewProperties,
     Map: esri.MapConstructor,
     MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
     TileLayer: esri.TileLayerConstructor,
     Basemap: esri.BasemapConstructor
-  ): void {
+  ): Promise<void> {
     const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
 
@@ -116,8 +116,10 @@ export class EsriMapService {
       view: this._modules.view
     });
 
+    const layerSources: Array<LayerSource> = this.environment.value('LayerSources');
+
     // Filter list of layers that need to be added on map load
-    this.loadLayers(this.environment.value('LayerSources'));
+    await this.loadLayers(layerSources);
 
     // Load feature list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
@@ -205,7 +207,7 @@ export class EsriMapService {
     const mProps = JSON.parse(JSON.stringify(mapProperties));
 
     // Check if the basemap property is a string, which will autocast
-    // Or if the basemap property contains a list of baselayers which need instantiation based on type.
+    // Or if the basemap property contains a list of base layers which need instantiation based on type.
     if (typeof mProps.basemap === 'string') {
       return mProps;
     } else if (typeof mProps.basemap === 'object') {
@@ -270,7 +272,9 @@ export class EsriMapService {
    *
    * @param {LayerSource[]} sources
    */
-  public loadLayers(sources: LayerSource[]) {
+  public async loadLayers(sources: LayerSource[]) {
+    await this.registerIdentityAuthInfos(sources);
+
     sources.forEach((source) => {
       this.findLayerOrCreateFromSource(source);
     });
@@ -470,6 +474,64 @@ export class EsriMapService {
     });
 
     return mapped;
+  }
+
+  /**
+   * Identifies layer sources with authentication requirements and initializes their
+   * auth infos against the identity service. This step allows the ArcGIS JS API to make
+   * authenticated requests to secure resources.
+   */
+  private async registerIdentityAuthInfos(sources: LayerSource[]) {
+    const sourcesWithAuthInfo = sources.filter((s) => {
+      return s.auth;
+    });
+
+    if (sourcesWithAuthInfo.length > 0) {
+      return this.moduleProvider
+        .require(['IdentityManager', 'OAuthInfo'])
+        .then(([IdentityManager, OAuthInfo]: [esri.IdentityManager, esri.OAuthInfoConstructor]) => {
+          const sourcesNotYetInIdentityManager = sourcesWithAuthInfo.filter((source) => {
+            const identityManagerInfo = IdentityManager.findOAuthInfo(source.auth.info.portalUrl);
+
+            // We want to filter out the only the OAuthInfos **NOT** already registered in the IdentityService.
+            if (identityManagerInfo !== undefined) {
+              return false;
+            } else {
+              return true;
+            }
+          });
+
+          // Return early
+          if (sourcesNotYetInIdentityManager.length === 0) {
+            return;
+          }
+
+          const infos = sourcesNotYetInIdentityManager.map((source) => {
+            return new OAuthInfo(source.auth.info);
+          });
+
+          IdentityManager.registerOAuthInfos(infos);
+
+          const sourcesWithImmediateCredentialResolve = sourcesNotYetInIdentityManager.filter(
+            (source) => source.auth.forceCredentialFetch
+          );
+
+          // Return early
+          if (sourcesWithImmediateCredentialResolve.length === 0) {
+            return;
+          }
+
+          sourcesWithImmediateCredentialResolve.forEach((source) => {
+            const url = source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl;
+
+            IdentityManager.getCredential(url);
+          });
+
+          return;
+        });
+    } else {
+      return;
+    }
   }
 
   private getChildLayers(parent: IPortalLayer, args: IResolveUnloadedLayersProperties) {

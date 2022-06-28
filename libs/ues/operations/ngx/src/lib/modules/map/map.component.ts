@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { from, Subject, zip } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { MapServiceInstance, MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -23,12 +23,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(
-    private responsiveService: ResponsiveService,
-    private environment: EnvironmentService,
-    private readonly ms: EsriMapService,
-    private readonly mp: EsriModuleProviderService
-  ) {}
+  constructor(private responsiveService: ResponsiveService, private environment: EnvironmentService) {}
 
   public ngOnInit() {
     const connections = this.environment.value('Connections');
@@ -89,30 +84,6 @@ export class MapComponent implements OnInit, OnDestroy {
         }
       }
     };
-
-    // TODO: Layers apparently need to be added to the map instance before the OAuthInfos are added
-    zip([from(this.mp.require(['IdentityManager', 'OAuthInfo']))]).subscribe(
-      ([[IdentityManager, OAuthInfo]]: [[esri.IdentityManager, esri.OAuthInfoConstructor]]) => {
-        const UesOAuthInfo = new OAuthInfo({
-          appId: 'L62AfPSK3ADzREz0',
-          popup: false,
-          portalUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis',
-          preserveUrlHash: true,
-          authNamespace: 'tamu'
-        });
-
-        const ItOAuthInfo = new OAuthInfo({
-          appId: '8l92BfKYXJK7GOIm',
-          popup: false,
-          portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
-          preserveUrlHash: true,
-          authNamespace: 'tamu'
-        });
-
-        IdentityManager.registerOAuthInfos([UesOAuthInfo, ItOAuthInfo]);
-        IdentityManager.getCredential(UesOAuthInfo.portalUrl + '/sharing');
-      }
-    );
 
     // Set loader phrases and display a random one.
     const phrases = [

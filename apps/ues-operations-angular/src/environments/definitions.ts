@@ -122,9 +122,18 @@ export const LayerSources: LayerSource[] = [
     id: 'ues-map-server',
     title: 'UES Operations',
     popupComponent: Popups.BuildingPopupComponent,
-    native: {
-      outFields: ['*']
-    }
+    auth: {
+      info: {
+        appId: 'L62AfPSK3ADzREz0',
+        popup: false,
+        portalUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis',
+        preserveUrlHash: true,
+        authNamespace: 'tamu'
+      },
+      forceCredentialFetch: true,
+      overrideCredentialUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/sharing'
+    },
+    native: {}
   },
   {
     type: 'unknown',
@@ -132,6 +141,15 @@ export const LayerSources: LayerSource[] = [
     title: 'Fiber Paths',
     url: 'https://arcfiber-2p-app.customers.ads.tamu.edu/server/rest/services/FiberInfrastructure/MapServer',
     popupComponent: Popups.BuildingPopupComponent,
+    auth: {
+      info: {
+        appId: '8l92BfKYXJK7GOIm',
+        popup: false,
+        portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
+        preserveUrlHash: true,
+        authNamespace: 'tamu'
+      }
+    },
     native: {
       outFields: ['*'],
       minScale: 100000,

@@ -326,6 +326,29 @@ export type LayerSource = LayerSourceType & {
    * @deprecated Categorization is now done through group layers
    */
   category?: string;
+
+  auth?: {
+    /**
+     * OAuthInfo for the layer source
+     */
+    info: esri.OAuthInfoProperties;
+
+    /**
+     * Indicates if the map service will attempt to fetch credentials immediately.
+     *
+     * The cases where this is necessary is unknown at the moment, but some layer services
+     * do not trigger the OAuth flow automatically and enabling this will kick start that process.
+     */
+    forceCredentialFetch?: boolean;
+
+    /**
+     * The reasons are unknown at the moment but some layer services do not correctly resolve the `/sharing` endpoint
+     * and in those cases this property can be used to manually assert that URL.
+     *
+     * Only has an effect if `forceCredentialFetch` is enabled.
+     */
+    overrideCredentialUrl?: string;
+  };
 };
 
 export interface LegendItem {
