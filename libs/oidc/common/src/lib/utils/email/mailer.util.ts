@@ -65,7 +65,7 @@ export class Mailer {
     if (toConsole) {
       return Mailer.transporter.sendMail(email).then((response) => Mailer.emailToConsole(response));
     } else {
-      return Mailer.transporter.sendMail(email).then((response) => Mailer.emailToResponse(response));
+      return Mailer.transporter.sendMail(email).then((response) => Mailer.emailToResponse(response, email));
     }
   }
 
@@ -95,7 +95,12 @@ export class Mailer {
         }
       });
     } else {
-      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
+      // We want the Multer type passed down so we can write it better to the db
+      const emailWithMulter = {
+        ...email,
+        attachments
+      };
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response, emailWithMulter));
     }
   }
 
@@ -159,11 +164,14 @@ export class Mailer {
     }
   }
 
-  public static emailToResponse(response) {
+  public static emailToResponse(response, email) {
     if (Mailer.service === 'ethereal') {
       return nodemailer.getTestMessageUrl(response);
     } else {
-      return response;
+      return {
+        response,
+        email
+      };
     }
   }
 }

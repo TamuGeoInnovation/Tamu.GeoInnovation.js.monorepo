@@ -17,14 +17,14 @@ export class AppService {
     if (files) {
       const attachments: Partial<MailroomAttachment>[] = files.map((file) => {
         return getRepository(MailroomAttachment).create({
-          blob: file
+          blob: file.buffer
         });
       });
 
       const email = getRepository(MailroomEmail).create({
         to: body.to,
         from: body.from,
-        content: body.text,
+        text: body.text,
         attachments
       });
 
@@ -33,7 +33,7 @@ export class AppService {
       const email = getRepository(MailroomEmail).create({
         to: body.to,
         from: body.from,
-        content: body.text
+        text: body.text
       });
 
       await email.save();

@@ -11,7 +11,7 @@ import { DB_CONFIG } from '../environments/environment';
 @Module({
   imports: [
     TypeOrmModule.forRoot({ ...DB_CONFIG, entities: [MailroomEmail, MailroomAttachment, MailroomReject] }),
-    TypeOrmModule.forFeature([MailroomEmail, MailroomReject])
+    TypeOrmModule.forFeature([MailroomEmail, MailroomAttachment, MailroomReject])
   ],
   controllers: [AppController],
   providers: [AppService]

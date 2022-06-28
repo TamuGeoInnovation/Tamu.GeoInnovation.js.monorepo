@@ -4,6 +4,7 @@ export interface IMailroomEmailOutbound {
   subject: string;
   text: string;
   html?: string;
+  attachments?: Express.Multer.File[];
 }
 
 export interface INodeMailerSendMailResponse {

@@ -1,45 +1,16 @@
-import {
-  Entity,
-  BaseEntity,
-  PrimaryGeneratedColumn,
-  PrimaryColumn,
-  CreateDateColumn,
-  BeforeUpdate,
-  BeforeInsert,
-  Column,
-  OneToMany,
-  ManyToOne
-} from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 
-import { Express } from 'express';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Multer } from 'multer';
+import 'multer'; // Without this, get `Namespace 'global.Express' has no exported member 'Multer'.`
 
 import { EmailStatus } from '../types/mail.types';
-
-import { v4 as guid } from 'uuid';
 
 @Entity()
 export class MailroomBaseEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   public id: number;
 
-  @PrimaryColumn()
-  public guid: string;
-
   @CreateDateColumn()
   public created: Date;
-
-  @BeforeUpdate()
-  @BeforeInsert()
-  private setValues(): void {
-    if (this.guid === undefined) {
-      this.guid = guid();
-    }
-    if (this.created === undefined) {
-      this.created = new Date();
-    }
-  }
 }
 
 @Entity({
@@ -48,16 +19,25 @@ export class MailroomBaseEntity extends BaseEntity {
 export class MailroomEmail extends MailroomBaseEntity implements IMailroomEmail {
   // Reason for length of 320:  https://stackoverflow.com/a/49645137
   @Column({ type: 'nvarchar', length: 320, nullable: false })
+  public to: string;
+
+  @Column({ type: 'nvarchar', length: 320, nullable: false })
   public from: string;
 
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
-  public content?: string;
+  public text?: string;
+
+  @Column({ type: 'nvarchar', length: '320', nullable: true })
+  public subject?: string;
 
   @OneToMany(() => MailroomAttachment, (s) => s.blob, { cascade: true })
   public attachments?: MailroomAttachment[];
 
   @Column({ type: 'tinyint', nullable: true })
   public deliveryStatus?: EmailStatus;
+
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public relayResponse?: string;
 }
 
 @Entity({
@@ -67,8 +47,8 @@ export class MailroomAttachment extends MailroomBaseEntity implements IMailroomA
   @ManyToOne(() => MailroomEmail, (email) => email.attachments)
   public email: MailroomEmail;
 
-  @Column({ type: 'varbinary', nullable: false })
-  public blob: Express.Multer.File;
+  @Column({ type: 'varbinary', length: 'MAX', nullable: false })
+  public blob: Buffer;
 
   @Column({ type: 'nvarchar', length: 32, nullable: true })
   public mimeType: string;
@@ -86,6 +66,8 @@ export class MailroomReject extends MailroomBaseEntity implements IMailroomRejec
 // Abstract interfaces to prevent circular dependencies and any entity initialization errors due to ordering.
 //
 export interface IMailroomEmail extends MailroomBaseEntity {
+  to: string;
+
   from: string;
 
   content?: string;
@@ -94,7 +76,7 @@ export interface IMailroomEmail extends MailroomBaseEntity {
 }
 
 export interface IMailroomAttachment extends MailroomBaseEntity {
-  blob: Express.Multer.File;
+  blob: Buffer;
 }
 
 export interface IMailroomReject extends MailroomBaseEntity {

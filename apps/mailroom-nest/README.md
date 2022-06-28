@@ -34,7 +34,7 @@ To send an email _with_ attachments, use a POST multipart/form-data request to t
 }
 ```
 
-## OutboundPipe
+## DEPRECATED OutboundPipe
 
 The `OutboundPipe` is an important piece of the application that will transform the POSTed `body`. The pipe will take a body and kind of morph it into the following type:
 
@@ -46,7 +46,7 @@ The `OutboundPipe` is an important piece of the application that will transform 
 }
 ```
 
-## HasRecipientInterceptor
+## DEPRECATED HasRecipientInterceptor
 
 This interceptor will look through a request and see if it has those fields required to send an email through the TAMU SMTP relay; if something is missing it will throw an error which is then picked up by the `MailroomExceptionFilter` which will then handle inserting the error message in the database.
 

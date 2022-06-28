@@ -4,57 +4,43 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { tap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 
-import { MailroomEmail } from '../../entities/all.entities';
-import { ITamuRelayResponse } from '../../types/mail.types';
+import { MailroomAttachment, MailroomEmail } from '../../entities/all.entities';
+import { IMailroomEmailOutbound, ITamuRelayResponse } from '../../types/mail.types';
 
 @Injectable()
 export class LogToDatabaseInterceptor implements NestInterceptor {
   @InjectRepository(MailroomEmail)
   public repo: Repository<MailroomEmail>;
 
+  @InjectRepository(MailroomAttachment)
+  public attachmentsRepo: Repository<MailroomAttachment>;
+
   public intercept(context: ExecutionContext, next: CallHandler) {
-    // const request = context.switchToHttp().getRequest();
-    // console.log('LogToDatabaseInterceptor', request.body);
-
-    // Hasn't been through the pipe to transform request into MailroomOutbound
-    // const email: Partial<MailroomEmail> = {
-    //   content: 'Joe mamma',
-    //   from: 'joemamma@gmail.com',
-    //   deliveryStatus: EmailStatus.Accepted
-    // };
-    // this.repo.create(email).save();
-
     return next.handle().pipe(
-      tap((response: ITamuRelayResponse) => {
-        // response here contains a MailroomOutbout object
-        // Many different ways to check
-        // const email: Partial<MailroomEmail> = {
-        //   content: 'Joe mamma',
-        //   from: 'joemamma@gmail.com',
-        //   deliveryStatus: EmailStatus.Accepted
-        // };
-        // this.repo.create(email).save();
-        // {
-        //   accepted: [ 'aplecore@gmail.com' ],
-        //   rejected: [],
-        //   envelopeTime: 284,
-        //   messageTime: 374,
-        //   messageSize: 614,
-        //   response: '250 2.0.0 3gmmve69kt-1 Message accepted for delivery',
-        //   envelope: { from: 'giscaccounts@tamu.edu', to: [ 'aplecore@gmail.com' ] },
-        //   messageId: '<b52abe95-833d-22d1-edb0-a89e77041323@tamu.edu>'
-        // }
-        // console.log(response);
-        // if (response.rejected.length > 0) {
-        //   console.warn('Rejected', response.rejected);
-        // }
-        // if (response.accepted.length > 0) {
-        //   console.log('Accepted');
-        // }
+      tap(async (value: { response: ITamuRelayResponse; email: IMailroomEmailOutbound }) => {
+        const outbound = await this.repo
+          .create({
+            relayResponse: JSON.stringify(value.response),
+            text: value.email.text,
+            subject: value.email.subject,
+            to: value.email.to,
+            from: value.email.from
+          })
+          .save();
 
-        this.repo.create({});
+        if (value.email.attachments) {
+          const attachments: Array<Express.Multer.File> = value.email.attachments;
 
-        // console.log('LogToDatabaseInterceptor inside of the handle observable', response);
+          attachments.forEach((attachment) => {
+            this.attachmentsRepo
+              .create({
+                email: outbound,
+                mimeType: attachment.mimetype,
+                blob: attachment.buffer
+              })
+              .save();
+          });
+        }
       })
     );
   }
