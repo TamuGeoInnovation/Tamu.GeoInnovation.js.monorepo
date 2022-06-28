@@ -364,6 +364,19 @@ export class EsriMapService {
           return new GroupLayer(props as esri.GroupLayerProperties);
         }
       });
+    } else if (source.type === 'unknown') {
+      return this.moduleProvider.require(['Layer']).then(async ([L]: [esri.LayerConstructor]) => {
+        return L.fromArcGISServerUrl({
+          url: source.url,
+          properties: {
+            outFields: ['*']
+          }
+        }).then((l) => {
+          delete props.type;
+
+          return Object.assign(l, props);
+        });
+      });
     } else if (source.type === 'map-server') {
       return this.http
         .get(`${source.url}`, { params: { f: 'pjson' } })

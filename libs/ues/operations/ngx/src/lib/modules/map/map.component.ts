@@ -90,16 +90,9 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     };
 
-    zip([this.ms.store, from(this.mp.require(['IdentityManager', 'OAuthInfo', 'MapImageLayer']))]).subscribe(
-      ([instances, [IdentityManager, OAuthInfo, MapImageLayer]]: [
-        MapServiceInstance,
-        [esri.IdentityManager, esri.OAuthInfoConstructor, esri.MapImageLayerConstructor]
-      ]) => {
-        const item = new MapImageLayer({
-          url: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/rest/services/Production_UES_Operations_Map/MapServer',
-          listMode: 'show'
-        });
-
+    // TODO: Layers apparently need to be added to the map instance before the OAuthInfos are added
+    zip([from(this.mp.require(['IdentityManager', 'OAuthInfo']))]).subscribe(
+      ([[IdentityManager, OAuthInfo]]: [[esri.IdentityManager, esri.OAuthInfoConstructor]]) => {
         const UesOAuthInfo = new OAuthInfo({
           appId: 'L62AfPSK3ADzREz0',
           popup: false,
@@ -118,8 +111,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
         IdentityManager.registerOAuthInfos([UesOAuthInfo, ItOAuthInfo]);
         IdentityManager.getCredential(UesOAuthInfo.portalUrl + '/sharing');
-
-        instances.map.add(item);
       }
     );
 

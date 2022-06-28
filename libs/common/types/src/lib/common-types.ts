@@ -231,6 +231,20 @@ interface PortalMapServerLayerSourceProperties {
   };
 }
 
+interface UnknownLayerSourceProperties {
+  type: 'unknown';
+
+  /**
+   * Portal service base URL. The schema for the service will be pulled and all layers contained in the definition
+   * will be loaded.
+   *
+   * Example: https://service.domain/arcgis/rest/services/Folder/Folder/MapServer
+   */
+  url: string;
+
+  native?: any;
+}
+
 export type LayerSourceType =
   | FeatureLayerSourceProperties
   | SceneLayerSourceProperties
@@ -239,7 +253,8 @@ export type LayerSourceType =
   | GraphicLayerSourceProperties
   | GroupLayerSourceProperties
   | MapImageLayerSourceProperties
-  | PortalMapServerLayerSourceProperties;
+  | PortalMapServerLayerSourceProperties
+  | UnknownLayerSourceProperties;
 
 /**
  * Describes the properties for each layer source used by a layer factory to add layers to the map as required.
