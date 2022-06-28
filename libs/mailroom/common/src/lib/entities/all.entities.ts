@@ -16,7 +16,7 @@ export class MailroomBaseEntity extends BaseEntity {
 @Entity({
   name: 'emails'
 })
-export class MailroomEmail extends MailroomBaseEntity implements IMailroomEmail {
+export class MailroomEmail extends MailroomBaseEntity {
   // Reason for length of 320:  https://stackoverflow.com/a/49645137
   @Column({ type: 'nvarchar', length: 320, nullable: false })
   public to: string;
@@ -43,7 +43,7 @@ export class MailroomEmail extends MailroomBaseEntity implements IMailroomEmail 
 @Entity({
   name: 'attachments'
 })
-export class MailroomAttachment extends MailroomBaseEntity implements IMailroomAttachment {
+export class MailroomAttachment extends MailroomBaseEntity {
   @ManyToOne(() => MailroomEmail, (email) => email.attachments)
   public email: MailroomEmail;
 
@@ -57,28 +57,7 @@ export class MailroomAttachment extends MailroomBaseEntity implements IMailroomA
 @Entity({
   name: 'rejects'
 })
-export class MailroomReject extends MailroomBaseEntity implements IMailroomReject {
+export class MailroomReject extends MailroomBaseEntity {
   @Column({ type: 'nvarchar', length: 1024, nullable: true })
   public reason?: string;
-}
-
-//
-// Abstract interfaces to prevent circular dependencies and any entity initialization errors due to ordering.
-//
-export interface IMailroomEmail extends MailroomBaseEntity {
-  to: string;
-
-  from: string;
-
-  content?: string;
-
-  attachments?: MailroomAttachment[];
-}
-
-export interface IMailroomAttachment extends MailroomBaseEntity {
-  blob: Buffer;
-}
-
-export interface IMailroomReject extends MailroomBaseEntity {
-  reason?: string;
 }

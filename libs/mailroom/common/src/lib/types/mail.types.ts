@@ -7,15 +7,6 @@ export interface IMailroomEmailOutbound {
   attachments?: Express.Multer.File[];
 }
 
-export interface INodeMailerSendMailResponse {
-  messageId: string;
-  envelope: string;
-  accepted: string[];
-  rejected: string[];
-  pending: string[];
-  response: string;
-}
-
 export interface ITamuRelayResponse {
   accepted: string[];
   rejected: string[];
