@@ -15,8 +15,8 @@
         "tsConfig": "apps/mailroom-angular/tsconfig.app.json",
         "aot": false,
         "assets": [
-          "apps/oidc-admin-angular/src/favicon.ico",
-          "apps/oidc-admin-angular/src/assets",
+          "apps/mailroom-angular/src/favicon.ico",
+          "apps/mailroom-angular/src/assets",
           {
             "glob": "**/*",
             "input": "./libs/assets/powershell",
@@ -37,13 +37,13 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
             }
           ],
           "fileReplacements": [
