@@ -73,6 +73,8 @@
     "kissingbug-angular-e2e": "apps/kissingbug-angular-e2e",
     "kissingbug-ngx": "libs/kissingbug/ngx",
     "kissingbug-sass": "libs/kissingbug/sass",
+    "mailroom-angular": "apps/mailroom-angular",
+    "mailroom-angular-e2e": "apps/mailroom-angular-e2e",
     "mailroom-common": "libs/mailroom/common",
     "mailroom-nest": "apps/mailroom-nest",
     "maps-esri": "libs/maps/esri",

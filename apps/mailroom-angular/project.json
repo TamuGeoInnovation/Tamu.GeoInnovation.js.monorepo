@@ -1,0 +1,102 @@
+{
+  "projectType": "application",
+  "root": "apps/mailroom-angular",
+  "sourceRoot": "apps/mailroom-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/mailroom-angular",
+        "index": "apps/mailroom-angular/src/index.html",
+        "main": "apps/mailroom-angular/src/main.ts",
+        "polyfills": "apps/mailroom-angular/src/polyfills.ts",
+        "tsConfig": "apps/mailroom-angular/tsconfig.app.json",
+        "aot": false,
+        "assets": [
+          "apps/oidc-admin-angular/src/favicon.ico",
+          "apps/oidc-admin-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ],
+        "styles": ["apps/mailroom-angular/src/styles.scss"],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/mailroom-angular/src/environments/environment.ts",
+              "with": "apps/mailroom-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "mailroom-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "mailroom-angular:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "mailroom-angular:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/mailroom-angular/src/**/*.ts", "apps/mailroom-angular/src/**/*.html"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/mailroom-angular"],
+      "options": {
+        "jestConfig": "apps/mailroom-angular/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

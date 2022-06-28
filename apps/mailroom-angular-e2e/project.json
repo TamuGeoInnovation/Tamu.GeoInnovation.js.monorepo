@@ -1,0 +1,29 @@
+{
+  "root": "apps/mailroom-angular-e2e",
+  "sourceRoot": "apps/mailroom-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/mailroom-angular-e2e/cypress.json",
+        "devServerTarget": "mailroom-angular:serve:development",
+        "tsConfig": "apps/mailroom-angular-e2e/tsconfig.json"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "mailroom-angular:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/mailroom-angular-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["mailroom-angular"]
+}
