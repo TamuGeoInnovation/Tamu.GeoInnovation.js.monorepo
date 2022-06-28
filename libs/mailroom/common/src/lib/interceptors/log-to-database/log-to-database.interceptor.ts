@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 
 import { MailroomAttachment, MailroomEmail } from '../../entities/all.entities';
-import { IMailroomEmailOutbound, ITamuRelayResponse } from '../../types/mail.types';
+import { EmailStatus, IMailroomEmailOutbound, ITamuRelayResponse } from '../../types/mail.types';
 
 @Injectable()
 export class LogToDatabaseInterceptor implements NestInterceptor {
@@ -18,16 +18,19 @@ export class LogToDatabaseInterceptor implements NestInterceptor {
   public intercept(context: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       tap(async (value: { response: ITamuRelayResponse; email: IMailroomEmailOutbound }) => {
+        // create a save the email / relay response to db
         const outbound = await this.repo
           .create({
             relayResponse: JSON.stringify(value.response),
             text: value.email.text,
             subject: value.email.subject,
             to: value.email.to,
-            from: value.email.from
+            from: value.email.from,
+            deliveryStatus: value.response.accepted.length > 0 ? EmailStatus.Accepted : EmailStatus.Rejected
           })
           .save();
 
+        // if attachments are present, save each one to the db
         if (value.email.attachments) {
           const attachments: Array<Express.Multer.File> = value.email.attachments;
 

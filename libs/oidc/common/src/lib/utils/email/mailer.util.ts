@@ -74,6 +74,7 @@ export class Mailer {
     attachments: Array<Express.Multer.File>,
     toConsole?: boolean
   ) {
+    // Map attachments to the format used by NodeMailer
     const embeddedImages = attachments.map((file) => {
       return {
         filename: file.originalname,
@@ -95,11 +96,12 @@ export class Mailer {
         }
       });
     } else {
-      // We want the Multer type passed down so we can write it better to the db
+      // We want the Multer type passed down so we can write it to the db
       const emailWithMulter = {
         ...email,
         attachments
       };
+
       return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response, emailWithMulter));
     }
   }
@@ -161,17 +163,15 @@ export class Mailer {
   public static emailToConsole(response) {
     if (Mailer.service === 'ethereal') {
       console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+    } else {
+      throw new Error('Cannot print email to console unless using ethereal');
     }
   }
 
   public static emailToResponse(response, email) {
-    if (Mailer.service === 'ethereal') {
-      return nodemailer.getTestMessageUrl(response);
-    } else {
-      return {
-        response,
-        email
-      };
-    }
+    return {
+      response,
+      email
+    };
   }
 }
