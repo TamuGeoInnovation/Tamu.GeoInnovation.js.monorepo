@@ -72,6 +72,7 @@
       "@tamu-gisc/gisday/platform/ngx/data-access": ["libs/gisday/platform/ngx/data-access/src/index.ts"],
       "@tamu-gisc/kissingbug/ngx": ["libs/kissingbug/ngx/src/index.ts"],
       "@tamu-gisc/mailroom/common": ["libs/mailroom/common/src/index.ts"],
+      "@tamu-gisc/mailroom/ngx": ["libs/mailroom/ngx/src/index.ts"],
       "@tamu-gisc/maps/esri": ["libs/maps/esri/src/index.ts"],
       "@tamu-gisc/maps/feature/accessibility": ["libs/maps/feature/accessibility/src/index.ts"],
       "@tamu-gisc/maps/feature/coordinates": ["libs/maps/feature/coordinates/src/index.ts"],
