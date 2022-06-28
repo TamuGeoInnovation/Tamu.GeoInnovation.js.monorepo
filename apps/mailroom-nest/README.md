@@ -41,22 +41,6 @@ The file attachments can be named anything, all file based parameters supplied i
 
 If you define the optional `html` property do note that it will override the contents of the email as defined by the `text` property i.e. when `html` is defined then that is the contents of the email and not the `text` property.
 
-## DEPRECATED OutboundPipe
-
-The `OutboundPipe` is an important piece of the application that will transform the POSTed `body`. The pipe will take a body and kind of morph it into the following type:
-
-```
-{
-    emailBodyText: string;
-    recipientEmail: string;
-    subjectLine: string;
-}
-```
-
-## DEPRECATED HasRecipientInterceptor
-
-This interceptor will look through a request and see if it has those fields required to send an email through the TAMU SMTP relay; if something is missing it will throw an error which is then picked up by the `MailroomExceptionFilter` which will then handle inserting the error message in the database.
-
 ## Delivery Status
 
 Each email request received by **mailroom-nest** that doesn't throw an error will be saved in the `emails` table. The `MailroomEmail` entity has a property `deliveryStatus` which is of enum `EmailStatus`. At the moment those values indicate the following: 1 = Accepted, the email has been accepted by the TAMU SMTP relay and should be on its way, and 2 = Rejected, the email was rejected by the relay. I do not think we currently are logging those rejected emails in the `rejects` table as of 6/10/22.
