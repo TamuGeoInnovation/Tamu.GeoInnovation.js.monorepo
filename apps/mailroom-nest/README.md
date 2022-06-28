@@ -9,6 +9,8 @@ App that can handle sending plain emails and emails with attachments via simple 
 
 ## POST request
 
+The structure you should be sending the POST request should mimic that of the `IMailroomEmailOutbound` found here `libs\mailroom\common\src\lib\types\mail.types.ts`. This structure is used by the internal `NodeMailer` lib.
+
 To send an email without any attachments, use a standard POST request to the root route:
 
 ```
@@ -16,7 +18,8 @@ To send an email without any attachments, use a standard POST request to the roo
 	"to": "atharmon@tamu.edu",
 	"from": "giscadmin@gsvcs.tamu.edu",
     "subject": "Test of Mailroom",
-	"text": "This is a test of the Mailroom app"
+	"text": "This is a test of the Mailroom app",
+    (optional)"html": "<html><h1>Hello</h1><p>Blah blah</p></html>"
 }
 ```
 
@@ -33,6 +36,10 @@ To send an email _with_ attachments, use a POST multipart/form-data request to t
     "fileN": ....
 }
 ```
+
+The file attachments can be named anything, all file based parameters supplied in the request will end up in an array handled by NestJS. The `attachments` property of `IMailroomEmailOutbound` is for internal use and not something used by NodeMailer.
+
+If you define the optional `html` property do note that it will override the contents of the email as defined by the `text` property i.e. when `html` is defined then that is the contents of the email and not the `text` property.
 
 ## DEPRECATED OutboundPipe
 
