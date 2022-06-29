@@ -76,6 +76,7 @@
     "mailroom-angular": "apps/mailroom-angular",
     "mailroom-angular-e2e": "apps/mailroom-angular-e2e",
     "mailroom-common": "libs/mailroom/common",
+    "mailroom-data-access": "libs/mailroom/data-access",
     "mailroom-nest": "apps/mailroom-nest",
     "mailroom-ngx": "libs/mailroom/ngx",
     "maps-esri": "libs/maps/esri",

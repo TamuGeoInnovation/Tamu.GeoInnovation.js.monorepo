@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/mailroom/data-access",
+  "sourceRoot": "libs/mailroom/data-access/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/mailroom/data-access"],
+      "options": {
+        "jestConfig": "libs/mailroom/data-access/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/mailroom/data-access/src/**/*.ts", "libs/mailroom/data-access/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}
