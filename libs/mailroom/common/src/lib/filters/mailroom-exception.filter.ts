@@ -6,6 +6,11 @@ import { Repository } from 'typeorm';
 
 import { MailroomReject } from '../entities/all.entities';
 
+/**
+ * MailroomExceptionFilter handles errors that pop up in the proces of sending an email.
+ * These errors are then logged in a database under the table `rejects`.
+ * Note that this filter is applied on routes at the moment and not at the controller level.
+ */
 @Catch()
 export class MailroomExceptionFilter implements ExceptionFilter {
   @InjectRepository(MailroomReject)

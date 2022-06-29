@@ -34,8 +34,8 @@ export class LogToDatabaseInterceptor implements NestInterceptor {
         if (value.email.attachments) {
           const attachments: Array<Express.Multer.File> = value.email.attachments;
 
-          attachments.forEach((attachment) => {
-            this.attachmentsRepo
+          const attachmentEntities = attachments.map((attachment) => {
+            return this.attachmentsRepo
               .create({
                 email: outbound,
                 mimeType: attachment.mimetype,
@@ -43,6 +43,8 @@ export class LogToDatabaseInterceptor implements NestInterceptor {
               })
               .save();
           });
+
+          Promise.allSettled(attachmentEntities);
         }
       })
     );
