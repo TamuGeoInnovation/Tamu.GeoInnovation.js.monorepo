@@ -28,10 +28,10 @@ To send an email without any attachments, use a standard POST request to the roo
 
 ```
 {
-	"to": "atharmon@tamu.edu",
-	"from": "giscadmin@gsvcs.tamu.edu",
+    "to": "atharmon@tamu.edu",
+    "from": "giscadmin@gsvcs.tamu.edu",
     "subject": "Test of Mailroom",
-	"text": "This is a test of the Mailroom app",
+    "text": "This is a test of the Mailroom app",
     (optional)"html": "<html><h1>Hello</h1><p>Blah blah</p></html>"
 }
 ```
@@ -40,10 +40,10 @@ To send an email _with_ attachments, use a POST multipart/form-data request to t
 
 ```
 {
-	"to": "atharmon@tamu.edu",
-	"from": "giscadmin@gsvcs.tamu.edu",
+    "to": "atharmon@tamu.edu",
+    "from": "giscadmin@gsvcs.tamu.edu",
     "subject": "Test of Mailroom",
-	"text": "This is a test of the Mailroom app",
+    "text": "This is a test of the Mailroom app",
     "file1": Any file here,
     "file2": Any file here,
     "fileN": ....
