@@ -246,7 +246,7 @@ interface UnknownLayerSourceProperties {
    */
   url: string;
 
-  native?: any;
+  native?: { [key: string]: boolean | number | string };
 }
 
 export type LayerSourceType =
