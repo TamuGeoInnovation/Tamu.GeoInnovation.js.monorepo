@@ -380,6 +380,8 @@ export class EsriMapService {
       });
     } else if (source.type === 'map-server') {
       if (source.auth) {
+        // Identity manager should have AuthInfos registered to it at this point. Query the identity manager
+        // to fetch the associated access token to make a raw GET request for the layer's JSON source.
         return this.moduleProvider
           .require(['IdentityManager'])
           .then(([IdentityManager]: [esri.IdentityManager]) => {
@@ -529,6 +531,9 @@ export class EsriMapService {
 
           IdentityManager.registerOAuthInfos(infos);
 
+          // Some layer sources may  have been marked to resolve credentials immediately, otherwise the layers might prompt
+          // for additional login prompts. Filter out only the layer sources that have that requirement and fetch the credentials
+          // from the server.
           const sourcesWithImmediateCredentialResolve = sourcesNotYetInIdentityManager.filter(
             (source) => source.auth.forceCredentialFetch
           );
