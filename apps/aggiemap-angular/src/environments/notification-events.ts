@@ -1,19 +1,18 @@
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export const NotificationEvents: NotificationProperties[] = [
-  // {
-  //   id: 'changelog-update',
-  //   title: "Aggiemap Has Been Updated",
-  //   range: [0, 9999999999999],
-  //   acknowledge: false,
-  //   message: 'Aggiemap has received a major update! Press me to be re-directed to the Aggiemap changelog to find out more.',
-  //   imgUrl: './assets/images/text-lines.svg',
-  //   imgAltText: 'Newspaper Icon',
-  //   action: {
-  //     type: 'route',
-  //     value: 'changelog'
-  //   }
-  // },
+  {
+    id: 'changelog-update',
+    title: 'Aggiemap Has Been Updated',
+    acknowledge: false,
+    message: 'Aggiemap has received a major update! Press me to be re-directed to the Aggiemap changelog to find out more.',
+    imgUrl: './assets/images/text-lines.svg',
+    imgAltText: 'Newspaper Icon',
+    action: {
+      type: 'route',
+      value: 'changelog'
+    }
+  },
   {
     id: 'move_in',
     title: 'Move-In',
