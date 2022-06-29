@@ -1,7 +1,7 @@
 import { Injectable, Component, Type } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
@@ -371,10 +371,7 @@ export class EsriMapService {
     } else if (source.type === 'unknown') {
       return this.moduleProvider.require(['Layer']).then(async ([L]: [esri.LayerConstructor]) => {
         return L.fromArcGISServerUrl({
-          url: source.url,
-          properties: {
-            outFields: ['*']
-          }
+          url: source.url
         }).then((l) => {
           delete props.type;
 
@@ -382,16 +379,36 @@ export class EsriMapService {
         });
       });
     } else if (source.type === 'map-server') {
-      return this.http
-        .get(`${source.url}`, { params: { f: 'pjson' } })
-        .toPromise()
-        .then((res: { layers: Array<IPortalLayer> }) => {
-          return this.resolveUnloadedLayers({
-            layers: res.layers,
-            source: source
+      if (source.auth) {
+        return this.moduleProvider
+          .require(['IdentityManager'])
+          .then(([IdentityManager]: [esri.IdentityManager]) => {
+            return IdentityManager.getCredential(
+              source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl
+            );
+          })
+          .then((cred) => {
+            return this.resolveLayerFromJsonp(source, { f: 'pjson', token: cred.token });
           });
-        });
+      } else {
+        return this.resolveLayerFromJsonp(source, { f: 'pjson' });
+      }
     }
+  }
+
+  /**
+   * Fetches the raw JSON from a source url and passes the resulting JSON
+   * to another method that resolves the individual layers.
+   */
+  private resolveLayerFromJsonp(source, props: { [key: string]: string | number | boolean }) {
+    return lastValueFrom(this.http.get(source.url, { params: { ...props } })).then(
+      (res: { layers: Array<IPortalLayer> }) => {
+        return this.resolveUnloadedLayers({
+          layers: res.layers,
+          source: source
+        });
+      }
+    );
   }
 
   /**

@@ -117,11 +117,11 @@ const commonLayerProps = {
 
 export const LayerSources: LayerSource[] = [
   {
-    type: 'unknown',
+    type: 'map-server',
     url: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/rest/services/Production_UES_Operations_Map/MapServer',
     id: 'ues-map-server',
     title: 'UES Operations',
-    popupComponent: Popups.BuildingPopupComponent,
+    visible: false,
     auth: {
       info: {
         appId: 'L62AfPSK3ADzREz0',
@@ -133,14 +133,19 @@ export const LayerSources: LayerSource[] = [
       forceCredentialFetch: true,
       overrideCredentialUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/sharing'
     },
-    native: {}
+    native: {
+      defaultFeatureLayerProperties: {
+        visible: false,
+        popupComponent: Popups.BaseDirectionsComponent,
+        outFields: ['*']
+      }
+    }
   },
   {
-    type: 'unknown',
+    type: 'map-server',
     id: 'fiber-paths-layer',
     title: 'Fiber Paths',
     url: 'https://arcfiber-2p-app.customers.ads.tamu.edu/server/rest/services/FiberInfrastructure/MapServer',
-    popupComponent: Popups.BuildingPopupComponent,
     auth: {
       info: {
         appId: '8l92BfKYXJK7GOIm',
@@ -148,14 +153,15 @@ export const LayerSources: LayerSource[] = [
         portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
         preserveUrlHash: true,
         authNamespace: 'tamu'
-      }
+      },
+      overrideCredentialUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal/sharing'
     },
     native: {
-      outFields: ['*'],
-      minScale: 100000,
-      maxScale: 0,
-      popupEnabled: false,
-      legendEnabled: false
+      defaultFeatureLayerProperties: {
+        visible: false,
+        popupComponent: Popups.BaseDirectionsComponent,
+        outFields: ['*']
+      }
     }
   },
   {

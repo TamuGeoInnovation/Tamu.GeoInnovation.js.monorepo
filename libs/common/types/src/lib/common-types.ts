@@ -342,10 +342,8 @@ export type LayerSource = LayerSourceType & {
     forceCredentialFetch?: boolean;
 
     /**
-     * The reasons are unknown at the moment but some layer services do not correctly resolve the `/sharing` endpoint
+     * The reasons are unknown at the moment but the identity service cannot find token service endpoint in some instances
      * and in those cases this property can be used to manually assert that URL.
-     *
-     * Only has an effect if `forceCredentialFetch` is enabled.
      */
     overrideCredentialUrl?: string;
   };
