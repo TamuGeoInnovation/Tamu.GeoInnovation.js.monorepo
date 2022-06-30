@@ -30,13 +30,13 @@ export class MailroomEmail extends MailroomBaseEntity {
   @Column({ type: 'nvarchar', length: '320', nullable: true })
   public subject?: string;
 
-  @OneToMany(() => MailroomAttachment, (s) => s.blob, { cascade: true })
+  @OneToMany(() => MailroomAttachment, (s) => s.email, { cascade: true })
   public attachments?: MailroomAttachment[];
 
   @Column({ type: 'tinyint', nullable: true })
   public deliveryStatus?: EmailStatus;
 
-  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true, select: false })
   public relayResponse?: string;
 }
 
