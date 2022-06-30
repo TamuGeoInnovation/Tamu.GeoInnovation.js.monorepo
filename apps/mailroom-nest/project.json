@@ -11,7 +11,14 @@
         "outputPath": "dist/apps/mailroom-nest",
         "main": "apps/mailroom-nest/src/main.ts",
         "tsConfig": "apps/mailroom-nest/tsconfig.app.json",
-        "assets": ["apps/mailroom-nest/src/assets"]
+        "assets": [
+          "apps/mailroom-nest/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ]
       },
       "configurations": {
         "production": {
@@ -23,7 +30,20 @@
               "replace": "apps/mailroom-nest/src/environments/environment.ts",
               "with": "apps/mailroom-nest/src/environments/environment.prod.ts"
             }
-          ]
+          ],
+          "generatePackageJson": true
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/mailroom-nest/src/environments/environment.ts",
+              "with": "apps/mailroom-nest/src/environments/environment.dev.ts"
+            }
+          ],
+          "generatePackageJson": true
         }
       }
     },

@@ -5,12 +5,12 @@ import { MailroomEmail, MailroomAttachment, MailroomReject } from '@tamu-gisc/ma
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { config } from '../environments/ormconfig';
+import { DB_CONFIG } from '../environments/environment';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({ ...config, entities: [MailroomEmail, MailroomAttachment, MailroomReject] }),
-    TypeOrmModule.forFeature([MailroomEmail, MailroomReject])
+    TypeOrmModule.forRoot({ ...DB_CONFIG, entities: [MailroomEmail, MailroomAttachment, MailroomReject] }),
+    TypeOrmModule.forFeature([MailroomEmail, MailroomAttachment, MailroomReject])
   ],
   controllers: [AppController],
   providers: [AppService]

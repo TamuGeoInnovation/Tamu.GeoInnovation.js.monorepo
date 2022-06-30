@@ -1,8 +1,9 @@
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
-import { User, UserPasswordReset } from '../../entities/all.entity';
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+
+import { User, UserPasswordReset } from '../../entities/all.entity';
 
 export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
 
@@ -60,27 +61,20 @@ export class Mailer {
     }
   }
 
-  public static sendEmail(info: IMailroomEmailOutbound, toConsole?: boolean) {
-    const mailOptions = {
-      to: info.recipientEmail,
-      subject: info.subjectLine,
-      text: info.emailBodyText,
-      html: info.emailBodyHtml,
-      from: '"GISC Mailroom" <giscaccounts@tamu.edu>'
-    };
-
+  public static sendEmail(email: IMailroomEmailOutbound, toConsole?: boolean) {
     if (toConsole) {
-      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
+      return Mailer.transporter.sendMail(email).then((response) => Mailer.emailToConsole(response));
     } else {
-      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
+      return Mailer.transporter.sendMail(email).then((response) => Mailer.emailToResponse(response, email));
     }
   }
 
   public static sendEmailWithAttachments(
-    info: IMailroomEmailOutbound,
-    attachments: Array<{ originalname: string; buffer: string }>,
+    email: IMailroomEmailOutbound,
+    attachments: Array<Express.Multer.File>,
     toConsole?: boolean
   ) {
+    // Map attachments to the format used by NodeMailer
     const embeddedImages = attachments.map((file) => {
       return {
         filename: file.originalname,
@@ -89,10 +83,7 @@ export class Mailer {
     });
 
     const mailOptions = {
-      to: info.recipientEmail,
-      subject: info.subjectLine,
-      text: info.emailBodyText,
-      from: '"GISC Mailroom" <giscaccounts@tamu.edu>',
+      ...email,
       attachments: embeddedImages
     };
 
@@ -105,7 +96,13 @@ export class Mailer {
         }
       });
     } else {
-      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
+      // We want the Multer type passed down so we can write it to the db
+      const emailWithMulter = {
+        ...email,
+        attachments
+      };
+
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response, emailWithMulter));
     }
   }
 
@@ -166,14 +163,15 @@ export class Mailer {
   public static emailToConsole(response) {
     if (Mailer.service === 'ethereal') {
       console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+    } else {
+      throw new Error('Cannot print email to console unless using ethereal');
     }
   }
 
-  public static emailToResponse(response) {
-    if (Mailer.service === 'ethereal') {
-      return nodemailer.getTestMessageUrl(response);
-    } else {
-      return;
-    }
+  public static emailToResponse(response, email) {
+    return {
+      response,
+      email
+    };
   }
 }
