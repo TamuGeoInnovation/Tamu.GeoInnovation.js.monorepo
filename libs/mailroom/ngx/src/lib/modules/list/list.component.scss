@@ -1,0 +1,39 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+td, th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+      
+}
+
+tr {
+    // border-top: 0.6px solid #dddddd;
+    color: rgb(32,33,36);
+    display:flex;
+    box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
+  }
+
+.to {
+    padding-right: 32px;
+}
+
+span {
+    &.material-symbols-outlined {
+        align-self: center;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+input[type=text] {
+    float: right;
+    padding: 6px;
+    border: none;
+    margin-top: 8px;
+    margin-right: 16px;
+    font-size: 17px;
+  }
