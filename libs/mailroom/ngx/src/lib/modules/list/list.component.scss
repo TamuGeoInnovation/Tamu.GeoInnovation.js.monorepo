@@ -7,18 +7,26 @@ table {
 td, th {
     padding-top: 10px;
     padding-bottom: 10px;
-      
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
 tr {
-    // border-top: 0.6px solid #dddddd;
     color: rgb(32,33,36);
     display:flex;
     box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
+    
   }
 
+.selectable {
+    :hover {
+        background-color: rgb(194, 219, 255);
+        cursor: pointer;
+    }
+}
+
 .to {
-    padding-right: 32px;
+    padding-right: 48px;
 }
 
 span {
@@ -29,6 +37,12 @@ span {
     }
 }
 
+.subject-and-text {
+    flex-grow: 20;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 input[type=text] {
     float: right;
     padding: 6px;
@@ -36,4 +50,7 @@ input[type=text] {
     margin-top: 8px;
     margin-right: 16px;
     font-size: 17px;
+
+    color: rgb(32,33,36);
+    box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
   }

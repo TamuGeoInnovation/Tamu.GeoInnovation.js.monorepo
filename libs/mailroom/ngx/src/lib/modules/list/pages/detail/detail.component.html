@@ -1,0 +1,10 @@
+
+<div>
+    <h3>{{ ($email | async)?.subject }}</h3>
+
+    <div {{($email | async)}} class="from-and-to">
+        <span class="material-symbols-outlined">arrow_right_alt</span>
+        <p>{{ ($email | async)?.to }}</p>
+
+    </div>
+</div>
