@@ -15,7 +15,7 @@ export class AppController {
 
   @Post()
   @UseFilters(MailroomExceptionFilter)
-  @UseInterceptors(LogToDatabaseInterceptor)
+  @UseInterceptors(AnyFilesInterceptor(), LogToDatabaseInterceptor)
   public async sendEmail(@Body() body: IMailroomEmailOutbound) {
     return Mailer.sendEmail(body);
   }
