@@ -26,43 +26,43 @@ export const Definitions = {
     id: 'domestic-cold-water',
     layerId: 'domestic-cold-water-layer',
     name: 'Domestic Cold Water',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/1'
+    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/1'
   },
   WELL_SITES: {
     id: 'well-sites',
     layerId: 'well-sites-layer',
     name: 'Well Sites',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/5'
+    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/5'
   },
   FIRE_HYDRANTS: {
     id: 'fire-hydrants',
     layerId: 'fire-hydrants-layer',
     name: 'Fire Hydrants',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/6'
+    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/6'
   },
   UES_NATURAL_GAS_METERS: {
     id: 'ues-natural-gas-meters',
     layerId: 'ues-natural-gas-meters-layer',
     name: 'UES Natural Gas Meters',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/29'
+    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/29'
   },
   GENERATORS: {
     id: 'generator',
     layerId: 'generator-layer',
     name: 'Generators',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/38'
+    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/38'
   },
   TRANSFORMER: {
     id: 'transformer',
     layerId: 'transformer-layer',
     name: 'Transformers',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/39'
+    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/39'
   },
   ELECTRICAL_MANHOLES: {
     id: 'electrical-manholes',
     layerId: 'electrical-manholes-layer',
     name: 'Electrical Manholes',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/41'
+    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/41'
   },
   POINTS_OF_INTEREST: {
     id: 'poi',
