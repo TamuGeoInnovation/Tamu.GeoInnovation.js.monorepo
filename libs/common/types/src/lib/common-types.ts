@@ -231,6 +231,24 @@ interface PortalMapServerLayerSourceProperties {
   };
 }
 
+/**
+ * Represents an statically unknown layer source type. The casted layer type will be determined by
+ * the API since this layer source is resolved using `Layer.fromArcGISServerUrl`.
+ */
+interface UnknownLayerSourceProperties {
+  type: 'unknown';
+
+  /**
+   * Portal service base URL. The schema for the service will be pulled and all layers contained in the definition
+   * will be loaded.
+   *
+   * Example: https://service.domain/arcgis/rest/services/Folder/Folder/MapServer
+   */
+  url: string;
+
+  native?: { [key: string]: boolean | number | string };
+}
+
 export type LayerSourceType =
   | FeatureLayerSourceProperties
   | SceneLayerSourceProperties
@@ -239,7 +257,8 @@ export type LayerSourceType =
   | GraphicLayerSourceProperties
   | GroupLayerSourceProperties
   | MapImageLayerSourceProperties
-  | PortalMapServerLayerSourceProperties;
+  | PortalMapServerLayerSourceProperties
+  | UnknownLayerSourceProperties;
 
 /**
  * Describes the properties for each layer source used by a layer factory to add layers to the map as required.
@@ -311,7 +330,34 @@ export type LayerSource = LayerSourceType & {
    * @deprecated Categorization is now done through group layers
    */
   category?: string;
+
+  /**
+   * Optional auth info used to register with the ArcGIS JS API's Identity Manager for accessing
+   * protected resources.
+   */
+  auth?: LayerSourceAuthInfo;
 };
+
+interface LayerSourceAuthInfo {
+  /**
+   * OAuthInfo for the layer source
+   */
+  info: esri.OAuthInfoProperties;
+
+  /**
+   * Indicates if the map service will attempt to fetch credentials immediately.
+   *
+   * The cases where this is necessary is unknown at the moment, but some layer services
+   * do not trigger the OAuth flow automatically and enabling this will kick start that process.
+   */
+  forceCredentialFetch?: boolean;
+
+  /**
+   * The reasons are unknown at the moment but the identity service cannot find token service endpoint in some instances
+   * and in those cases this property can be used to manually assert that URL.
+   */
+  overrideCredentialUrl?: string;
+}
 
 export interface LegendItem {
   /**

@@ -1,7 +1,7 @@
 import { Injectable, Component, Type } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
@@ -94,14 +94,14 @@ export class EsriMapService {
    * @param {esri.TileLayerConstructor} TileLayer
    * @param {esri.BasemapConstructor} Basemap
    */
-  private next(
+  private async next(
     Properties: MapProperties,
     ViewProps: ViewProperties,
     Map: esri.MapConstructor,
     MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
     TileLayer: esri.TileLayerConstructor,
     Basemap: esri.BasemapConstructor
-  ): void {
+  ): Promise<void> {
     const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
 
@@ -116,8 +116,10 @@ export class EsriMapService {
       view: this._modules.view
     });
 
+    const layerSources: Array<LayerSource> = this.environment.value('LayerSources');
+
     // Filter list of layers that need to be added on map load
-    this.loadLayers(this.environment.value('LayerSources'));
+    await this.loadLayers(layerSources);
 
     // Load feature list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
@@ -205,7 +207,7 @@ export class EsriMapService {
     const mProps = JSON.parse(JSON.stringify(mapProperties));
 
     // Check if the basemap property is a string, which will autocast
-    // Or if the basemap property contains a list of baselayers which need instantiation based on type.
+    // Or if the basemap property contains a list of base layers which need instantiation based on type.
     if (typeof mProps.basemap === 'string') {
       return mProps;
     } else if (typeof mProps.basemap === 'object') {
@@ -270,7 +272,9 @@ export class EsriMapService {
    *
    * @param {LayerSource[]} sources
    */
-  public loadLayers(sources: LayerSource[]) {
+  public async loadLayers(sources: LayerSource[]) {
+    await this.registerIdentityAuthInfos(sources);
+
     sources.forEach((source) => {
       this.findLayerOrCreateFromSource(source);
     });
@@ -364,17 +368,49 @@ export class EsriMapService {
           return new GroupLayer(props as esri.GroupLayerProperties);
         }
       });
-    } else if (source.type === 'map-server') {
-      return this.http
-        .get(`${source.url}`, { params: { f: 'pjson' } })
-        .toPromise()
-        .then((res: { layers: Array<IPortalLayer> }) => {
-          return this.resolveUnloadedLayers({
-            layers: res.layers,
-            source: source
-          });
+    } else if (source.type === 'unknown') {
+      return this.moduleProvider.require(['Layer']).then(async ([L]: [esri.LayerConstructor]) => {
+        return L.fromArcGISServerUrl({
+          url: source.url
+        }).then((l) => {
+          delete props.type;
+
+          return Object.assign(l, props);
         });
+      });
+    } else if (source.type === 'map-server') {
+      if (source.auth) {
+        // Identity manager should have AuthInfos registered to it at this point. Query the identity manager
+        // to fetch the associated access token to make a raw GET request for the layer's JSON source.
+        return this.moduleProvider
+          .require(['IdentityManager'])
+          .then(([IdentityManager]: [esri.IdentityManager]) => {
+            return IdentityManager.getCredential(
+              source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl
+            );
+          })
+          .then((cred) => {
+            return this.resolveLayerFromJsonp(source, { f: 'pjson', token: cred.token });
+          });
+      } else {
+        return this.resolveLayerFromJsonp(source, { f: 'pjson' });
+      }
     }
+  }
+
+  /**
+   * Fetches the raw JSON from a source url and passes the resulting JSON
+   * to another method that resolves the individual layers.
+   */
+  private resolveLayerFromJsonp(source, props: { [key: string]: string | number | boolean }) {
+    return lastValueFrom(this.http.get(source.url, { params: { ...props } })).then(
+      (res: { layers: Array<IPortalLayer> }) => {
+        return this.resolveUnloadedLayers({
+          layers: res.layers,
+          source: source
+        });
+      }
+    );
   }
 
   /**
@@ -457,6 +493,67 @@ export class EsriMapService {
     });
 
     return mapped;
+  }
+
+  /**
+   * Identifies layer sources with authentication requirements and initializes their
+   * auth infos against the identity service. This step allows the ArcGIS JS API to make
+   * authenticated requests to secure resources.
+   */
+  private async registerIdentityAuthInfos(sources: LayerSource[]) {
+    const sourcesWithAuthInfo = sources.filter((s) => {
+      return s.auth;
+    });
+
+    if (sourcesWithAuthInfo.length > 0) {
+      return this.moduleProvider
+        .require(['IdentityManager', 'OAuthInfo'])
+        .then(([IdentityManager, OAuthInfo]: [esri.IdentityManager, esri.OAuthInfoConstructor]) => {
+          const sourcesNotYetInIdentityManager = sourcesWithAuthInfo.filter((source) => {
+            const identityManagerInfo = IdentityManager.findOAuthInfo(source.auth.info.portalUrl);
+
+            // We want to filter out the only the OAuthInfos **NOT** already registered in the IdentityService.
+            if (identityManagerInfo !== undefined) {
+              return false;
+            } else {
+              return true;
+            }
+          });
+
+          // Return early
+          if (sourcesNotYetInIdentityManager.length === 0) {
+            return;
+          }
+
+          const infos = sourcesNotYetInIdentityManager.map((source) => {
+            return new OAuthInfo(source.auth.info);
+          });
+
+          IdentityManager.registerOAuthInfos(infos);
+
+          // Some layer sources may  have been marked to resolve credentials immediately, otherwise the layers might prompt
+          // for additional login prompts. Filter out only the layer sources that have that requirement and fetch the credentials
+          // from the server.
+          const sourcesWithImmediateCredentialResolve = sourcesNotYetInIdentityManager.filter(
+            (source) => source.auth.forceCredentialFetch
+          );
+
+          // Return early
+          if (sourcesWithImmediateCredentialResolve.length === 0) {
+            return;
+          }
+
+          sourcesWithImmediateCredentialResolve.forEach((source) => {
+            const url = source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl;
+
+            IdentityManager.getCredential(url);
+          });
+
+          return;
+        });
+    } else {
+      return;
+    }
   }
 
   private getChildLayers(parent: IPortalLayer, args: IResolveUnloadedLayersProperties) {
