@@ -4,7 +4,7 @@
   position: fixed;
   bottom: 0;
   z-index: 999;
-  @include transform(translateY(100%) translateX(0));
+  @include transform(translateY(100%));
 
   &.left {
     left: 2.5rem;
@@ -12,6 +12,7 @@
 
   &.center {
     left: 50%;
+    @include transform(translateY(100%) translateX(-50%));
   }
 
   &.right {
