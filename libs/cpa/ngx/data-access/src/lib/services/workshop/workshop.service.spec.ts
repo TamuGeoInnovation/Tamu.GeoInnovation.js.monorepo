@@ -1,25 +1,53 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { WorkshopService } from './workshop.service';
 
+const mockEnvironment = {
+  value: jest.fn()
+};
+
 describe('WorkshopService', () => {
-  beforeEach(() =>
+  let service: WorkshopService;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, EnvironmentModule],
+      imports: [HttpClientTestingModule],
       providers: [
+        WorkshopService,
         {
-          provide: env,
-          useValue: { api_url: 'https://' }
+          provide: EnvironmentService,
+          useValue: mockEnvironment
         }
       ]
-    })
-  );
+    });
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
 
-  it('should be created', () => {
-    const service: WorkshopService = TestBed.get(WorkshopService);
-    expect(service).toBeTruthy();
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  it('should call createWorkshop() and return a new workshop', () => {
+    const dummyStringValue = 'Foo';
+    const dummyResponse = [
+      {
+        name: 'Foo',
+        workshops: []
+      }
+    ];
+
+    mockEnvironment.value.mockReturnValue(dummyStringValue);
+    service = TestBed.inject(WorkshopService);
+
+    service.createWorkshop({ guid: 'bruh' }).subscribe((response) => {
+      expect(response[0].name).toBe('Foo');
+    });
+
+    const req = httpTestingController.expectOne({ method: 'POST', url: 'Fooworkshops' });
+    req.flush(dummyResponse);
   });
 });

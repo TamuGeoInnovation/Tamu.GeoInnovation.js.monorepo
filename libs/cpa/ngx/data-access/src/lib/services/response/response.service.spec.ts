@@ -1,25 +1,53 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { ResponseService } from './response.service';
 
+const mockEnvironment = {
+  value: jest.fn()
+};
+
 describe('ResponseService', () => {
-  beforeEach(() =>
+  let service: ResponseService;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [EnvironmentModule, HttpClientTestingModule],
+      imports: [HttpClientTestingModule],
       providers: [
+        ResponseService,
         {
-          provide: env,
-          useValue: { api_url: 'https://' }
+          provide: EnvironmentService,
+          useValue: mockEnvironment
         }
       ]
-    })
-  );
+    });
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
 
-  it('should be created', () => {
-    const service: ResponseService = TestBed.get(ResponseService);
-    expect(service).toBeTruthy();
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  it('should call createResponse() and return a new response', () => {
+    const dummyStringValue = 'Foo';
+    const dummyResponse = [
+      {
+        name: 'Foo',
+        workshops: []
+      }
+    ];
+
+    mockEnvironment.value.mockReturnValue(dummyStringValue);
+    service = TestBed.inject(ResponseService);
+
+    service.createResponse({ shapes: { Foo: 'Foo' } }).subscribe((response) => {
+      expect(response[0].name).toBe('Foo');
+    });
+
+    const req = httpTestingController.expectOne({ method: 'POST', url: `${service.resource}` });
+    req.flush(dummyResponse);
   });
 });
