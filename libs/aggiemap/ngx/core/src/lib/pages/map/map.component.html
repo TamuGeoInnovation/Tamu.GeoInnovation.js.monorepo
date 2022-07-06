@@ -7,6 +7,7 @@
       <p><a title="" routerLink="/instructions" tabindex="0">Map Instructions</a></p>
       <p><a title="" routerLink="/directory" tabindex="0">Building Directory</a></p>
       <p><a title="" href="https://aggiemap.tamu.edu/feedback.asp" tabindex="0">Feedback</a></p>
+      <p><a tabindex="0" (click)="openBetaModal()" *ngIf="isDev | async">Beta Branch</a></p>
       <p><a title="" routerLink="/about" tabindex="0">About</a></p>
       <p><a title="" href="https://aggiemap.tamu.edu/movein/" tabindex="0">Move-in Parking App</a></p>
       <p><a title="" href="https://aggiemap.tamu.edu/graduation/arrival" tabindex="0">Graduation Parking App</a></p>

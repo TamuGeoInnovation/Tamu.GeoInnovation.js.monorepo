@@ -23,7 +23,7 @@ export class SettingsService {
    * @param config Initialization configuration
    * @returns Initialized settings observable
    */
-  public init(config: SettingsInitializationConfig): Observable<CompoundSettings> {
+  public init(config: SettingsInitializationConfig): Observable<SimpleSettingBranch> {
     // Stored settings will be a flat
     const storageInjected: CompoundSettings = Object.keys(config.settings).reduce((acc, curr) => {
       acc[curr] = { ...config.settings[curr], storage: config.storage };

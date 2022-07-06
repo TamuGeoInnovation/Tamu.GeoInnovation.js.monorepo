@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, ReplaySubject, Observable } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
@@ -8,6 +8,10 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { BetaPromptComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 @Component({
@@ -23,13 +27,22 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public threeDLayers: Array<LayerSource>;
 
+  public isDev: Observable<boolean>;
+
   private _destroy$: Subject<boolean> = new Subject();
   private _connections: { [key: string]: string };
 
-  constructor(private responsiveService: ResponsiveService, private env: EnvironmentService) {}
+  constructor(
+    private responsiveService: ResponsiveService,
+    private env: EnvironmentService,
+    private readonly ms: ModalService,
+    private readonly ss: SettingsService,
+    private readonly ts: TestingService
+  ) {}
 
   public ngOnInit() {
     this._connections = this.env.value('Connections');
+    this.isDev = this.ts.get('isTesting');
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile = value;
@@ -99,6 +112,27 @@ export class MapComponent implements OnInit, OnDestroy {
       'Howdy Ags!'
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
+
+    this.ss
+      .init({
+        storage: {
+          subKey: 'modals'
+        },
+        settings: {
+          beta_acknowledge: {
+            value: false,
+            persistent: true
+          }
+        }
+      })
+      .pipe(
+        filter((settings) => {
+          return settings['beta_acknowledge'] === false;
+        })
+      )
+      .subscribe(() => {
+        this.openBetaModal();
+      });
   }
 
   public ngOnDestroy() {
@@ -161,4 +195,23 @@ export class MapComponent implements OnInit, OnDestroy {
       throw new Error('No event provided.');
     }
   };
+
+  public openBetaModal() {
+    this.ms
+      .open<boolean>(BetaPromptComponent)
+      .pipe(
+        filter((acknowledged) => {
+          return acknowledged;
+        })
+      )
+      .subscribe(() => {
+        this.updateModalSettings();
+      });
+  }
+
+  private updateModalSettings() {
+    this.ss.updateSettings({
+      beta_acknowledge: true
+    });
+  }
 }
