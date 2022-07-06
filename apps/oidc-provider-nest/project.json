@@ -12,6 +12,7 @@
         "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
         "assets": [
           "apps/oidc-provider-nest/src/assets",
+          "apps/oidc-provider-nest/src/package.json",
           {
             "glob": "**/*",
             "input": "./libs/assets/powershell",
@@ -30,7 +31,7 @@
           "extractLicenses": false,
           "inspect": false,
           "optimization": true,
-          "generatePackageJson": true
+          "generatePackageJson": false
         },
         "development": {
           "fileReplacements": [
@@ -42,7 +43,7 @@
           "extractLicenses": false,
           "inspect": false,
           "optimization": false,
-          "generatePackageJson": true
+          "generatePackageJson": false
         }
       },
       "outputs": ["{options.outputPath}"]
