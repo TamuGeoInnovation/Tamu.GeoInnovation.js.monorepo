@@ -24,7 +24,7 @@ export interface IMailroomEmailOutbound {
 
 This structure is used by the internal `NodeMailer` lib.
 
-To send an email without any attachments, use a standard POST request to the root route:
+You can send a plain email without attachments using a standard POST request to the root route (json or url encoded body):
 
 ```
 {
@@ -36,7 +36,7 @@ To send an email without any attachments, use a standard POST request to the roo
 }
 ```
 
-To send an email _with_ attachments, use a POST multipart/form-data request to the `/attachments` route:
+You can use multipart/form-data to send a plain email or one _with_ attachments so long as you send the request to `/form`:
 
 ```
 {
