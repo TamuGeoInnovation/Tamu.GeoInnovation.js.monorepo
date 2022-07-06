@@ -1,3 +1,4 @@
+
 # TAMU GISC Ngx Toast Notifications
 
 This library allows developers to quickly invoke toast-style notifications prompts with a couple display strategies such as on-demand, time-restricted, and recurring.
@@ -17,11 +18,11 @@ This library allows developers to quickly invoke toast-style notifications promp
 ### Components
 
 - NotificationContainerComponent
-- NotificationItemComponent
 
 ### Interfaces
 
 - NotificationProperties
+- NotificationAction
 
 # Setup
 
