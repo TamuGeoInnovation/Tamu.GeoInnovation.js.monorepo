@@ -20,10 +20,10 @@ export class AppController {
     return Mailer.sendEmail(body);
   }
 
-  @Post('attachments')
+  @Post('form')
   @UseFilters(MailroomExceptionFilter)
   @UseInterceptors(AnyFilesInterceptor(), LogToDatabaseInterceptor)
-  public async sendEmailWithAttachments(
+  public async sendEmailFromFormWithAttachments(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() body: IMailroomEmailOutbound
   ) {
