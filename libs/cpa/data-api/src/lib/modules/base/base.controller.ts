@@ -1,5 +1,7 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, UseGuards } from '@nestjs/common';
 import { BaseEntity, DeepPartial } from 'typeorm';
+
+import { JwtGuard } from '@tamu-gisc/oidc/common';
 
 import { BaseService } from './base.service';
 
@@ -21,6 +23,7 @@ export class BaseController<T extends BaseEntity> {
     });
   }
 
+  @UseGuards(JwtGuard)
   @Post('')
   public insert(@Body() body: DeepPartial<T>) {
     if (body) {

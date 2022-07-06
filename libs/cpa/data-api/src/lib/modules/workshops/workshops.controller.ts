@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Delete, Param, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Patch, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Workshop } from '@tamu-gisc/cpa/common/entities';
+import { JwtGuard } from '@tamu-gisc/oidc/common';
 
 import { BaseController } from '../base/base.controller';
 import { IWorkshopExtractedSnapshots, WorkshopsService } from './workshops.service';
@@ -15,6 +16,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Adds a snapshot to a workshop
    */
+  @UseGuards(JwtGuard)
   @Post('snapshot')
   public async addSnapshot(@Body() body: IWorkshopSnapshotPayload) {
     return await this.service.addNewSnapshot(body);
@@ -23,6 +25,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Sets snapshots for a workshop from an array of snapshot guids
    */
+  @UseGuards(JwtGuard)
   @Post('snapshots')
   public async setSnapshots(@Body() body: IWorkshopSnapshotsPayload) {
     return await this.service.setSnapshots(body);
@@ -31,6 +34,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Deletes a snapshot from a workshop
    */
+  @UseGuards(JwtGuard)
   @Delete('snapshot/:workshopGuid/:snapshotGuid')
   public async deleteSnapshot(@Param() params: IWorkshopSnapshotPayload) {
     return await this.service.removeWorkshopSnapshot(params);
@@ -39,6 +43,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Deletes a snapshot from a workshop
    */
+  @UseGuards(JwtGuard)
   @Delete('scenario/:workshopGuid/:scenarioGuid')
   public async deleteScenario(@Param() params: IWorkshopScenarioPayload) {
     return await this.service.removeWorkshopScenario(params);
@@ -47,6 +52,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Sets scenarios for a workshop from an array of snapshot guids
    */
+  @UseGuards(JwtGuard)
   @Post('scenarios')
   public async setScenarios(@Body() body: IWorkshopScenariosPayload) {
     return await this.service.setScenarios(body);
@@ -55,6 +61,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Adds a Scenario to a workshop
    */
+  @UseGuards(JwtGuard)
   @Post('scenario')
   public async addScenario(@Body() body: IWorkshopScenarioPayload) {
     return await this.service.addNewScenario(body);
@@ -63,6 +70,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Adds a contextual Snapshot to a workshop
    */
+  @UseGuards(JwtGuard)
   @Post('context')
   public async addContext(@Body() body: IWorkshopSnapshotPayload) {
     return await this.service.addNewContextSnapshot(body);
@@ -71,6 +79,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Deletes a contextual Snapshot from a workshop
    */
+  @UseGuards(JwtGuard)
   @Delete('context/:workshopGuid/:snapshotGuid')
   public async deleteContext(@Param() params: IWorkshopSnapshotPayload) {
     return await this.service.removeWorkshopContextSnapshot(params);
@@ -87,6 +96,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Updates an existing workshop record with provided body key-values.
    */
+  @UseGuards(JwtGuard)
   @Patch(':guid')
   public async updateOne(@Body() body, @Param() params) {
     return await this.service.updateWorkshop(body, params);
@@ -95,6 +105,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   /**
    * Removes an existing workshop record.
    */
+  @UseGuards(JwtGuard)
   @Delete(':guid')
   public async deleteOne(@Param() params) {
     return await this.service.deleteWorkshop(params);

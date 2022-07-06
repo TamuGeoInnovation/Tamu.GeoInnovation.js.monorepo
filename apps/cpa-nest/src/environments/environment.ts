@@ -7,3 +7,4 @@ export const environment = {
 };
 
 export const config = c;
+export const jwksUrl = 'http://localhost:4001/oidc/jwks';
