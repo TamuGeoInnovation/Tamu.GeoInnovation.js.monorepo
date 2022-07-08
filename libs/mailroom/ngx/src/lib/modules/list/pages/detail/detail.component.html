@@ -1,10 +1,17 @@
 
 <div>
-    <h3>{{ ($email | async)?.subject }}</h3>
-
-    <div {{($email | async)}} class="from-and-to">
-        <span class="material-symbols-outlined">arrow_right_alt</span>
+    <h3>{{ ($email | async)?.from }}</h3>
+    <div style="display: flex; flex-direction: row;">
+        <p style="margin-right: 8px;">to:</p>
+        
         <p>{{ ($email | async)?.to }}</p>
-
+    </div>
+    <div>
+        <h3>{{ ($email | async)?.subject }}</h3>
+        <p>{{ ($email | async)?.text }}</p>
+    </div>
+    <div *ngFor="let attachment of ($email | async)?.attachments">
+        <!-- <p>{{ attachmentToImage(attachment) }}</p> -->
+        <img class="attachment" [style.backgroundImage]="'url('+attachmentToImage(attachment)+')'" />
     </div>
 </div>

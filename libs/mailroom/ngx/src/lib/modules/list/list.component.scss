@@ -18,10 +18,21 @@ tr {
     
   }
 
+  .div-row {
+    display: flex;
+    flex-grow: 1;
+  }
+
 .selectable {
     :hover {
         background-color: rgb(194, 219, 255);
         cursor: pointer;
+        .toolbar {
+            display: contents;
+        }
+        #datetime {
+            display: none;
+        }
     }
 }
 
@@ -41,6 +52,16 @@ span {
     flex-grow: 20;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.toolbar {
+    display: none;
+    &span {
+        :hover {
+            background-color: chocolate;
+        }
+    }
+
 }
 
 input[type=text] {
