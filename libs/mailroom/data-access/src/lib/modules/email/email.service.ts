@@ -24,4 +24,8 @@ export class EmailService {
   public getEmails() {
     return this.http.get<Array<MailroomEmail>>(`${this.resource}/all`);
   }
+
+  public deleteEmail(emailId: number) {
+    return this.http.delete(`${this.resource}/${emailId}`);
+  }
 }

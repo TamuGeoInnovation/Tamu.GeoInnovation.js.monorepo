@@ -25,4 +25,12 @@ export class AppService {
       relations: ['attachments']
     });
   }
+
+  public async deleteEmail(id: string) {
+    const email = await this.emailRepo.findOne(id, {
+      relations: ['attachments']
+    });
+
+    return this.emailRepo.remove(email);
+  }
 }

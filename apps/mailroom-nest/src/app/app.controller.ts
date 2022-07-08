@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseFilters, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UploadedFiles, UseFilters, UseInterceptors } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 import 'multer';
@@ -25,6 +25,11 @@ export class AppController {
   @Get(':id')
   public getEmail(@Param('id') id) {
     return this.service.getEmail(id);
+  }
+
+  @Delete(':id')
+  public deleteEmail(@Param('id') id) {
+    return this.service.deleteEmail(id);
   }
 
   @Post()

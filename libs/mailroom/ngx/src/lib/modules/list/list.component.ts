@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { filter, switchMap, tap, Observable } from 'rxjs';
+import { shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 
 import { EmailService } from '@tamu-gisc/mailroom/data-access';
 import { MailroomEmail } from '@tamu-gisc/mailroom/common';
@@ -11,14 +12,25 @@ import { MailroomEmail } from '@tamu-gisc/mailroom/common';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  private _$refresh: Subject<boolean> = new Subject();
   public $emails: Observable<Array<MailroomEmail>>;
-  public searchString: string;
 
   constructor(public readonly emailService: EmailService) {}
 
   public ngOnInit() {
-    this.$emails = this.emailService.getEmails().pipe();
-    // switchMap((emails) => emails)
-    // filter((email) => email.to.includes(this.searchString))
+    this.$emails = this._$refresh.pipe(
+      startWith(true),
+      switchMap(() => {
+        return this.emailService.getEmails().pipe(shareReplay(1));
+      })
+    );
+  }
+
+  public deleteEmail(email: MailroomEmail) {
+    this.emailService.deleteEmail(email.id).subscribe(() => {
+      // this.notificationService.preset();
+
+      this._$refresh.next(true);
+    });
   }
 }

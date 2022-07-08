@@ -4,6 +4,11 @@ import 'multer'; // Without this, get `Namespace 'global.Express' has no exporte
 
 import { EmailStatus } from '../types/mail.types';
 
+export class MSSQLImage {
+  public type: 'jpg' | 'png';
+  public data: Uint8Array;
+}
+
 @Entity()
 export class MailroomBaseEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
@@ -44,11 +49,11 @@ export class MailroomEmail extends MailroomBaseEntity {
   name: 'attachments'
 })
 export class MailroomAttachment extends MailroomBaseEntity {
-  @ManyToOne(() => MailroomEmail, (email) => email.attachments)
+  @ManyToOne(() => MailroomEmail, (email) => email.attachments, { onDelete: 'CASCADE' })
   public email: MailroomEmail;
 
   @Column({ type: 'varbinary', length: 'MAX', nullable: false })
-  public blob: Buffer;
+  public blob: Buffer & MSSQLImage;
 
   @Column({ type: 'nvarchar', length: 32, nullable: true })
   public mimeType: string;
