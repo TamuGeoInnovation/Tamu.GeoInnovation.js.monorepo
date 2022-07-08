@@ -60,8 +60,9 @@ export function getHighlightLanguages() {
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: {
-        languages: getHighlightLanguages(),
-        lineNumbers: true
+        coreLibraryLoader: () => import('highlight.js/lib/core'),
+        lineNumbersLoader: () => import('highlightjs-line-numbers.js'),
+        languages: getHighlightLanguages()
       }
     },
     {
