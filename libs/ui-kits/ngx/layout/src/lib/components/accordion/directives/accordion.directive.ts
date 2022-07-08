@@ -1,11 +1,11 @@
-import { Directive, Input, HostBinding, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, HostBinding, TemplateRef, ViewContainerRef, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[giscAccordion]'
 })
-export class AccordionDirective {
+export class AccordionDirective implements OnInit {
   @Input()
   public expanded = false;
 
@@ -14,14 +14,13 @@ export class AccordionDirective {
     return this.expanded;
   }
 
-  @Input()
-  public set giscAccordion(v) {
+  private _$destroy: Subject<boolean> = new Subject();
+
+  constructor(private templateRef: TemplateRef<unknown>, private viewContainer: ViewContainerRef) {}
+
+  public ngOnInit(): void {
     this.viewContainer.createEmbeddedView(this.templateRef, {
       $implicit: this
     });
   }
-
-  private _$destroy: Subject<boolean> = new Subject();
-
-  constructor(private templateRef: TemplateRef<unknown>, private viewContainer: ViewContainerRef) {}
 }
