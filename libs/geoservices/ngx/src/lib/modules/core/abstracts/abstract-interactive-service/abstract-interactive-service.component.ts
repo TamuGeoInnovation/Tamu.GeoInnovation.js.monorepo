@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 abstract class AbstractInteractiveService<S, R> {
@@ -11,12 +11,10 @@ abstract class AbstractInteractiveService<S, R> {
   selector: 'tamu-gisc-abstract-interactive-service',
   template: ''
 })
-export class AbstractInteractiveServiceComponent<S, R> extends AbstractInteractiveService<S, R> implements OnInit {
+export class AbstractInteractiveServiceComponent<S, R> extends AbstractInteractiveService<S, R> {
   public service: S;
 
   constructor() {
     super();
   }
-
-  public ngOnInit() {}
 }
