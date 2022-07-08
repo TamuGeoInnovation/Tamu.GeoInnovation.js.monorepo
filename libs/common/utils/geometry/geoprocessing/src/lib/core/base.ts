@@ -55,7 +55,10 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       .filter((setting) => {
         // Filter out any setting transformer entries that explicity define exclusion
         // for building the query string.
-        return this.settings[setting].excludeParams !== false && this.settings[setting].value !== undefined;
+        return (
+          (this.settings[setting].excludeParams === undefined || this.settings[setting].excludeParams === false) &&
+          this.settings[setting].value !== undefined
+        );
       })
       .map((key) => {
         return `${key}=${this.settings[key].value}`;
