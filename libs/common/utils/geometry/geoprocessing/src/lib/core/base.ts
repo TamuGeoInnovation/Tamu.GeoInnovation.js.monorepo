@@ -65,7 +65,9 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     const request = ajax({
       url: this.settings.serviceUrl.value + this.queryString,
       method: 'GET',
-      responseType: this.settings.format.value as XMLHttpRequestResponseType
+      responseType: this.settings.format.value as XMLHttpRequestResponseType,
+      // TODO: `crossDomain` is deprecated in v8. Add header exception on web server
+      crossDomain: true
     }).pipe(
       switchMap((response) => {
         return this.handleResponse(response);
