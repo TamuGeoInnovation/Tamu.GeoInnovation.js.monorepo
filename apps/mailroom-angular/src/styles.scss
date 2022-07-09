@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    font-family: arial, sans-serif;
+
+}
+
+span {
+    &.material-symbols-outlined {
+        align-self: center;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}

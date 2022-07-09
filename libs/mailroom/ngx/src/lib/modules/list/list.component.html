@@ -1,4 +1,6 @@
+
 <table>
+    <h2>mailroom-angular</h2>
 
     <div class="selectable">
 
@@ -12,7 +14,7 @@
                 <td id="datetime">{{ email.created | date:'short' }}</td>
             </div>
             <td class="toolbar">
-                <span class="material-symbols-outlined" (click)="deleteEmail(email)">delete</span>
+                <span class="material-symbols-outlined" (click)="deleteEmail(email)" title="Delete email">delete</span>
             </td>
         </tr>
     </div>

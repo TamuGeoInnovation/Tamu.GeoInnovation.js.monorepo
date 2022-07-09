@@ -1,17 +1,22 @@
 
-<div>
-    <h3>{{ ($email | async)?.from }}</h3>
+<div class="container">
     <div style="display: flex; flex-direction: row;">
-        <p style="margin-right: 8px;">to:</p>
-        
+        <p>{{ ($email | async)?.from }}</p>
+        <span class="material-symbols-outlined">arrow_right_alt</span>
         <p>{{ ($email | async)?.to }}</p>
+        <span id="spanner"></span>
+        <span id="delete" class="material-symbols-outlined" title="Delete email">delete</span>
+
     </div>
     <div>
-        <h3>{{ ($email | async)?.subject }}</h3>
+        <h2>{{ ($email | async)?.subject }}</h2>
         <p>{{ ($email | async)?.text }}</p>
     </div>
-    <div *ngFor="let attachment of ($email | async)?.attachments">
-        <!-- <p>{{ attachmentToImage(attachment) }}</p> -->
-        <img class="attachment" [style.backgroundImage]="'url('+attachmentToImage(attachment)+')'" />
-    </div>
+    <h2 *ngIf="($email | async)?.attachments?.length > 0" id="attachment-header">Attachments</h2>
+    <ul class="column-thing">
+        <li *ngFor="let attachment of ($email | async)?.attachments">
+            <img class="attachment-image" [style.backgroundImage]="'url('+attachmentToImage(attachment)+')'" />
+        </li>
+    </ul>
+    
 </div>

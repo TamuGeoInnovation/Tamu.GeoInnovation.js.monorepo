@@ -1,10 +1,9 @@
 table {
-    font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
   }
   
-td, th {
+td, th, h2 {
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 16px;
@@ -38,14 +37,6 @@ tr {
 
 .to {
     padding-right: 48px;
-}
-
-span {
-    &.material-symbols-outlined {
-        align-self: center;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
 }
 
 .subject-and-text {
