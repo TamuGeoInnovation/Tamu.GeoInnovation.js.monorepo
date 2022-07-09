@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { EmailService } from '@tamu-gisc/mailroom/data-access';
 import { MailroomEmail } from '@tamu-gisc/mailroom/common';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-list',
@@ -15,7 +16,7 @@ export class ListComponent implements OnInit {
   private _$refresh: Subject<boolean> = new Subject();
   public $emails: Observable<Array<MailroomEmail>>;
 
-  constructor(public readonly emailService: EmailService) {}
+  constructor(public readonly emailService: EmailService, private ns: NotificationService) {}
 
   public ngOnInit() {
     this.$emails = this._$refresh.pipe(
@@ -28,8 +29,7 @@ export class ListComponent implements OnInit {
 
   public deleteEmail(email: MailroomEmail) {
     this.emailService.deleteEmail(email.id).subscribe(() => {
-      // this.notificationService.preset();
-
+      this.ns.preset('deleted_email_response');
       this._$refresh.next(true);
     });
   }
