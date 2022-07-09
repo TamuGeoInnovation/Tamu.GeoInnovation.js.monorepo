@@ -1,22 +1,19 @@
-
 <table>
-    <h2>mailroom-angular</h2>
+  <h2>mailroom-angular</h2>
 
-    <div class="selectable">
-
-        <tr *ngFor="let email of $emails | async" >
-            <div class="div-row" [routerLink]="['detail/' + email.id]" >
-                <td>{{email.id}}</td>
-                <td>{{email.from}}</td>
-                <span class="material-symbols-outlined">arrow_right_alt</span>
-                <td class="to">{{email.to}}</td>
-                <td class="subject-and-text">{{email.subject}} - {{email.text}}</td>
-                <td id="datetime">{{ email.created | date:'short' }}</td>
-            </div>
-            <td class="toolbar">
-                <span class="material-symbols-outlined" (click)="deleteEmail(email)" title="Delete email">delete</span>
-            </td>
-        </tr>
-    </div>
-
+  <div class="selectable">
+    <tr *ngFor="let email of $emails | async">
+      <div class="div-row" [routerLink]="['detail/' + email.id]">
+        <td>{{email.id}}</td>
+        <td>{{email.from}}</td>
+        <span class="material-symbols-outlined">arrow_right_alt</span>
+        <td class="to">{{email.to}}</td>
+        <td class="subject-and-text">{{email.subject}} - {{email.text}}</td>
+        <td id="datetime">{{ email.created | date:'short' }}</td>
+      </div>
+      <td class="toolbar">
+        <span class="material-symbols-outlined" (click)="deleteEmail(email)" title="Delete email">delete</span>
+      </td>
+    </tr>
+  </div>
 </table>

@@ -1,68 +1,68 @@
 table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-td, th, h2 {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 16px;
-    padding-right: 16px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th,
+h2 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 tr {
-    color: rgb(32,33,36);
-    display:flex;
-    box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
-    
-  }
+  color: rgb(32, 33, 36);
+  display: flex;
+  box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
+}
 
-  .div-row {
-    display: flex;
-    flex-grow: 1;
-  }
+.div-row {
+  display: flex;
+  flex-grow: 1;
+}
 
 .selectable {
-    :hover {
-        background-color: rgb(194, 219, 255);
-        cursor: pointer;
-        .toolbar {
-            display: contents;
-        }
-        #datetime {
-            display: none;
-        }
+  :hover {
+    background-color: rgb(194, 219, 255);
+    cursor: pointer;
+    .toolbar {
+      display: contents;
     }
+    #datetime {
+      display: none;
+    }
+  }
 }
 
 .to {
-    padding-right: 48px;
+  padding-right: 48px;
 }
 
 .subject-and-text {
-    flex-grow: 20;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  flex-grow: 20;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .toolbar {
-    display: none;
-    &span {
-        :hover {
-            background-color: chocolate;
-        }
+  display: none;
+  &span {
+    :hover {
+      background-color: chocolate;
     }
-
+  }
 }
 
-input[type=text] {
-    float: right;
-    padding: 6px;
-    border: none;
-    margin-top: 8px;
-    margin-right: 16px;
-    font-size: 17px;
+input[type='text'] {
+  float: right;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
 
-    color: rgb(32,33,36);
-    box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
-  }
+  color: rgb(32, 33, 36);
+  box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
+}
