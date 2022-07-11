@@ -1,10 +1,18 @@
+<div class="to-inbox" [routerLink]="['../..']">
+  <span style="padding-left: 0px;" class="material-symbols-outlined" title="Back to inbox">arrow_back</span>
+  <p>Back to inbox</p>
+</div>
+
 <div class="container">
-  <div style="display: flex; flex-direction: row">
+
+  
+  
+  <div class="info-container">
     <p>{{ ($email | async)?.from }}</p>
     <span class="material-symbols-outlined">arrow_right_alt</span>
     <p>{{ ($email | async)?.to }}</p>
     <span id="spanner"></span>
-    <span id="delete" class="material-symbols-outlined" title="Delete email">delete</span>
+    <span id="delete" class="material-symbols-outlined" title="Delete email" (click)="deleteEmail()">delete</span>
   </div>
   <div>
     <h2>{{ ($email | async)?.subject }}</h2>

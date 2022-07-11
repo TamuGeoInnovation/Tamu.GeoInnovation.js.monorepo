@@ -3,7 +3,16 @@
   width: 100%;
 }
 
-.from-and-to {
+.to-inbox {
+  display: inline-flex; 
+  align-items: flex-start; 
+  margin-left: 5%;
+  margin-bottom: 16px; 
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.info-container {
   display: flex;
   flex-direction: row;
 }
