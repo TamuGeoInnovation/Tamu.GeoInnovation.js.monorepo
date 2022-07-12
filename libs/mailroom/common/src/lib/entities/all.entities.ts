@@ -32,6 +32,9 @@ export class MailroomEmail extends MailroomBaseEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public text?: string;
 
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public html?: string;
+
   @Column({ type: 'nvarchar', length: '320', nullable: true })
   public subject?: string;
 
