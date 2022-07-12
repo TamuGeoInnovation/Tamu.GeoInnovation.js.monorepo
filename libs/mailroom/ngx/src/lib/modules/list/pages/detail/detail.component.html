@@ -1,12 +1,9 @@
 <div class="to-inbox" [routerLink]="['../..']">
-  <span style="padding-left: 0px;" class="material-symbols-outlined" title="Back to inbox">arrow_back</span>
+  <span style="padding-left: 0px" class="material-symbols-outlined" title="Back to inbox">arrow_back</span>
   <p>Back to inbox</p>
 </div>
 
 <div class="container">
-
-  
-  
   <div class="info-container">
     <p>{{ ($email | async)?.from }}</p>
     <span class="material-symbols-outlined">arrow_right_alt</span>
@@ -18,7 +15,12 @@
     <h2>{{ ($email | async)?.subject }}</h2>
     <p>{{ ($email | async)?.text }}</p>
   </div>
-  <h2 *ngIf="($email | async)?.attachments?.length > 0" id="attachment-header">Attachments</h2>
+  <ng-container>
+    <ng-container *ngIf="($email | async)?.attachments?.length > 0">
+  
+      <h2 id="attachment-header">Attachments</h2>
+    </ng-container>
+</ng-container>
   <ul class="column-thing">
     <li *ngFor="let attachment of ($email | async)?.attachments">
       <img class="attachment-image" [style.backgroundImage]="'url('+attachmentToImage(attachment)+')'" />
