@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Buffer } from 'buffer';
-
 import { map, Observable, shareReplay, switchMap } from 'rxjs';
 
 import { EmailService } from '@tamu-gisc/mailroom/data-access';
@@ -43,7 +42,6 @@ export class DetailComponent implements OnInit {
   }
 
   public deleteEmail() {
-    console.log('Deleting email...');
     this.service.deleteEmail(this.emailId).subscribe(() => {
       this.ns.preset('deleted_email_response');
 

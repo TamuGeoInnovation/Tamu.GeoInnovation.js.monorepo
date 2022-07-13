@@ -8,7 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class EmailService {
-  public resource = 'http://localhost:3333';
+  public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
     this.resource = this.env.value('api_url');
