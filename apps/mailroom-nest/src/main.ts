@@ -16,7 +16,7 @@ async function bootstrap() {
 
   const port = environment.port || 3333;
 
-  Mailer.build('tamu-relay');
+  Mailer.build('tamu-relay', environment.dev);
 
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port);
