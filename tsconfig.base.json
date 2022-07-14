@@ -25,6 +25,7 @@
       "@tamu-gisc/aggiemap/ngx/ui/shared": ["libs/aggiemap/ngx/ui/shared/src/index.ts"],
       "@tamu-gisc/common/nest/environment": ["libs/common/nest/environment/src/index.ts"],
       "@tamu-gisc/common/nest/guards": ["libs/common/nest/guards/src/index.ts"],
+      "@tamu-gisc/common/nest/services": ["libs/common/nest/services/src/index.ts"],
       "@tamu-gisc/common/ngx/auth": ["libs/common/ngx/auth/src/index.ts"],
       "@tamu-gisc/common/ngx/environment": ["libs/common/ngx/environment/src/index.ts"],
       "@tamu-gisc/common/ngx/local-store": ["libs/common/ngx/local-store/src/index.ts"],
