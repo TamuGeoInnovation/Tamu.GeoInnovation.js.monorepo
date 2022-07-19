@@ -9,13 +9,16 @@ import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 export class MailerService {
   constructor(private readonly env: EnvironmentService) {}
 
-  public sendMail(mailConfig: IMailroomEmailOutbound) {
-    // TODO: Need the environment service to get the address of the mailroom-nest instance from environment file
+  public async sendMail(mailConfig: IMailroomEmailOutbound) {
     const mailroomUrl = this.env.value('mailroomUrl');
+
     return got
       .post(mailroomUrl, {
         json: mailConfig
       })
-      .json();
+      .json()
+      .catch((e) => {
+        console.warn('ERROR CANNOT CONNECT TO MAILROOM', e.code);
+      });
   }
 }
