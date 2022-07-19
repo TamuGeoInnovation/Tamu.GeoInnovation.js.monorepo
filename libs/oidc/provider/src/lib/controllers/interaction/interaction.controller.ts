@@ -5,12 +5,17 @@ import { InteractionResults } from 'oidc-provider';
 import * as otplib from 'otplib';
 
 import { urlHas, urlFragment, UserService, Mailer, TwoFactorAuthUtils } from '@tamu-gisc/oidc/common';
+import { MailerService } from '@tamu-gisc/common/nest/services';
 
 import { OidcProviderService } from '../../services/provider/provider.service';
 
 @Controller('interaction')
 export class InteractionController {
-  constructor(private providerService: OidcProviderService, private userService: UserService) {}
+  constructor(
+    private providerService: OidcProviderService,
+    private userService: UserService,
+    private mailerService: MailerService
+  ) {}
 
   @Get(':uid')
   public async interactionGet(@Req() req: Request, @Res() res: Response) {
@@ -136,7 +141,16 @@ export class InteractionController {
     if (locals.method) {
       if (locals.method === 'totp') {
         const token = otplib.totp.generate(user.secret2fa);
-        Mailer.sendTokenByEmail(user, token);
+
+        this.mailerService.sendMail({
+          to: user.email,
+          from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
+          subject: 'Hello from the IdP',
+          text: `Your two-step verification code is: ${token}`,
+          html:
+            `<p>Your two-step verification code is: <b>${token}</b></p>` +
+            `<p>Use this code to complete loggin in with GISC</p>`
+        });
       }
     }
 
