@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 import { UserModule, UserRoleModule, UserRoleService, UserService } from '@tamu-gisc/oidc/common';
 
 import { AppModule } from './app/app.module';
-import { environment, ADMIN_DEFAULTS } from './environments/environment';
+import { environment } from './environments/environment';
 
 // TODO: Reimplement these security measures (recommended by NestJS)
 // import * as rateLimit from 'express-rate-limit';
@@ -163,7 +163,7 @@ async function bootstrap() {
       await userService.insertDefaultAdmin();
 
       // Create Admin user role on default site
-      await roleService.insertDefaultUserRole(ADMIN_DEFAULTS.email, ADMIN_DEFAULTS.client_id, ADMIN_DEFAULTS.redirect_uris);
+      await roleService.insertDefaultUserRole(environment.email, environment.client_id, environment.redirect_uris);
 
       // Insert the secret questions for others to register
       await userService.insertDefaultSecretQuestions();
