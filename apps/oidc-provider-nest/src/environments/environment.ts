@@ -6,7 +6,8 @@ export const environment = {
   globalPrefix: '',
   allowedOrigins: '*',
   ...SECRETS.ADMIN_DEFAULTS,
-  mailroomUrl: SECRETS.MAILROOM_URL
+  mailroomUrl: SECRETS.MAILROOM.URL,
+  mailroomFromAddress: SECRETS.MAILROOM.FROM_EMAIL_ADDRESS
 };
 
 export { localDbConfig as dbConfig } from './ormconfig';
