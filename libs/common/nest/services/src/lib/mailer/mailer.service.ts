@@ -10,7 +10,14 @@ export class MailerService {
   constructor(private readonly env: EnvironmentService) {}
 
   public async sendMail(mailConfig: IMailroomEmailOutbound) {
+    // Get mailroom server url and the from address for this app from env file
     const mailroomUrl = this.env.value('mailroomUrl');
+    const fromAddress = this.env.value('mailroomFromAddress');
+
+    // If we have a from address, set the from email address to that value
+    if (fromAddress) {
+      mailConfig.from = fromAddress;
+    }
 
     return got
       .post(mailroomUrl, {
@@ -18,7 +25,7 @@ export class MailerService {
       })
       .json()
       .catch((e) => {
-        console.warn('ERROR CANNOT CONNECT TO MAILROOM', e.code);
+        console.warn('ERROR', e.code);
       });
   }
 }
