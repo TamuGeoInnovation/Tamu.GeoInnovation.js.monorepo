@@ -4,8 +4,8 @@ import { hash, compare } from 'bcrypt';
 import * as deepmerge from 'deepmerge';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
+import { MailerService } from '@tamu-gisc/common/nest/services';
 
-import { Mailer } from '../../utils/email/mailer.util';
 import { SHA1HashUtils } from '../../utils/security/sha1hash.util';
 import { TwoFactorAuthUtils } from '../../utils/security/twofactorauth.util';
 import {
@@ -43,7 +43,8 @@ export class UserService {
     public readonly passwordResetRepo: UserPasswordResetRepo,
     public readonly passwordHistoryRepo: UserPasswordHistoryRepo,
     private readonly httpService: HttpService,
-    private readonly env: EnvironmentService
+    private readonly env: EnvironmentService,
+    private mailerService: MailerService
   ) {}
 
   public async insertDefaultAdmin() {
@@ -129,7 +130,13 @@ export class UserService {
     user.password = await hash(user.password, SHA1HashUtils.SALT_ROUNDS);
     const newUser = await this.userRepo.save(user);
     if (newUser) {
-      Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
+      this.mailerService.sendMail({
+        to: newUser.email,
+        from: '',
+        subject: 'Your newly created GeoInnovation Service Center account',
+        text: 'An account for GeoInnovation Service Center has been created with this email address.',
+        html: `An account for GeoInnovation Service Center has been created with this email address. </br><a href="http://localhost:4001/user/register/${newUser.guid}">Verify email</a>`
+      });
 
       const _usedPassword: Partial<UserPasswordHistory> = {
         user: newUser,
@@ -436,7 +443,15 @@ export class UserService {
     user.password = await hash(newPassword, SHA1HashUtils.SALT_ROUNDS);
     user.updatedAt = new Date();
     this.userRepo.save(user);
-    Mailer.sendPasswordResetConfirmationEmail(user.email);
+
+    this.mailerService.sendMail({
+      from: '',
+      to: user.email,
+      subject: 'GeoInnovation Service Center password reset',
+      text: 'Your password to GeoInnovation Service Center has been reset.',
+      html: 'Your password to GeoInnovation Service Center has been reset.'
+    });
+
     const _newUsedPassword: Partial<UserPasswordHistory> = {
       user: user,
       usedPassword: user.password
