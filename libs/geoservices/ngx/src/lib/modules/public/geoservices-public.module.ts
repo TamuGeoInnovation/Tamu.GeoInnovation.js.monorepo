@@ -14,13 +14,17 @@ const routes: Routes = [
     component: GeoservicesPublicComponent,
     children: [
       {
-        path: '',
-        pathMatch: 'full',
-        loadChildren: () => import('./pages/landing/landing.module').then((m) => m.LandingModule)
+        path: 'pricing',
+        loadChildren: () => import('./pages/pricing/pricing.module').then((m) => m.PricingModule)
       },
       {
         path: 'services',
         loadChildren: () => import('./pages/services/services.module').then((m) => m.ServicesModule)
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        loadChildren: () => import('./pages/landing/landing.module').then((m) => m.LandingModule)
       }
     ]
   }
