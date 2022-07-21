@@ -21,7 +21,7 @@ $warning-color: #ffca28;
 $lightened-alert-color: lighten($alert-color, 25%);
 $lightened-warning-color: lighten($warning-color, 25%);
 
-$primary-text-color: #62707d;
+$primary-text-color: #333333;
 
 @import 'libs/sass/modules/forms';
 
@@ -76,7 +76,7 @@ h2,
 h3.alt,
 h4.alt,
 h5.alt {
-  color: #2d3e4c;
+  color: #202020;
 }
 
 h2,
@@ -114,6 +114,7 @@ a,
   text-decoration: none;
   font-weight: 500;
   cursor: pointer;
+  display: flex;
 
   &:hover {
     text-decoration: underline;
@@ -872,10 +873,33 @@ tamu-gisc-checkbox-group {
 //
 
 .card {
-  border: 1pt solid lighten($inactive-color, 20%);
+  border: 1pt solid lighten($inactive-color, 40%);
   border-radius: 5pt;
-  padding: 0 1rem;
-  padding-bottom: 0.5rem;
+  padding: 1rem 1.5rem;
   box-sizing: border-box;
   background: #ffffff;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+// Tooltip overrides
+
+tamu-gisc-tooltip {
+  font-weight: 500;
+
+  .tooltip-container {
+    padding: 0.5rem 0.75rem;
+
+    p {
+      margin: 0.5rem 0;
+    }
+  }
+
+  .material-icons {
+    font-size: 1.1rem;
+    color: $inactive-color;
+
+    &:hover {
+      color: initial;
+    }
+  }
 }
