@@ -28,10 +28,14 @@ export class ListComponent implements OnInit {
   }
 
   public deleteEmail(email: MailroomEmail) {
-    this.emailService.deleteEmail(email.id).subscribe(() => {
-      this.ns.preset('deleted_email_response');
+    this.emailService.deleteEmail(email.id).subscribe((removed) => {
+      if (removed) {
+        this.ns.preset('deleted_email_success');
 
-      this._$refresh.next(true);
+        this._$refresh.next(true);
+      } else {
+        this.ns.preset('deleted_email_failure');
+      }
     });
   }
 }
