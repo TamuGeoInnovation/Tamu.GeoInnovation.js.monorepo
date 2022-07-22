@@ -6,10 +6,10 @@ table {
 td,
 th,
 h2 {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 tr {
@@ -37,13 +37,19 @@ tr {
 }
 
 .to {
-  padding-right: 48px;
+  min-width: 0;
+  padding-right: 2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .subject-and-text {
+  min-width: 0;
   flex-grow: 20;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toolbar {

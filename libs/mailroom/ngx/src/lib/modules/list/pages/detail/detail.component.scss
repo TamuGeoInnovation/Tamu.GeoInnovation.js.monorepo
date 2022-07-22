@@ -6,9 +6,9 @@
 .to-inbox {
   display: inline-flex;
   align-items: flex-start;
-  margin-left: 5%;
-  margin-bottom: 16px;
-  margin-top: 10px;
+  margin-left: 5rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
   cursor: pointer;
 
   span {
@@ -31,8 +31,6 @@
 }
 
 .container {
-  padding-left: 16px;
-  padding-right: 16px;
   display: flex;
   flex-direction: column;
   padding-left: 20%;
