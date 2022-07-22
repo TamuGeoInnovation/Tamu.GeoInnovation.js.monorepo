@@ -3,6 +3,7 @@ import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-k
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import esri = __esri;
+import LayerSearchSource from 'esri/widgets/Search/LayerSearchSource';
 
 export const Connections = {
   basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
@@ -115,6 +116,20 @@ const commonLayerProps = {
   popupEnabled: false
 };
 
+const OAuthInfos = {
+  ues: {
+    info: {
+      appId: 'L62AfPSK3ADzREz0',
+      popup: false,
+      portalUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis',
+      preserveUrlHash: true,
+      authNamespace: 'tamu'
+    },
+    forceCredentialFetch: true,
+    overrideCredentialUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/sharing'
+  }
+};
+
 export const LayerSources: LayerSource[] = [
   {
     type: 'map-server',
@@ -122,17 +137,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ues-map-server',
     title: 'UES Operations',
     visible: false,
-    auth: {
-      info: {
-        appId: 'L62AfPSK3ADzREz0',
-        popup: false,
-        portalUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis',
-        preserveUrlHash: true,
-        authNamespace: 'tamu'
-      },
-      forceCredentialFetch: true,
-      overrideCredentialUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/sharing'
-    },
+    auth: OAuthInfos.ues,
     native: {
       defaultFeatureLayerProperties: {
         visible: false,
@@ -142,27 +147,14 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'map-server',
+    type: 'feature',
     id: 'fiber-paths-layer',
-    title: 'Fiber Paths',
-    url: 'https://arcfiber-2p-app.customers.ads.tamu.edu/server/rest/services/FiberInfrastructure/MapServer',
-    auth: {
-      info: {
-        appId: '8l92BfKYXJK7GOIm',
-        popup: false,
-        portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
-        preserveUrlHash: true,
-        authNamespace: 'tamu'
-      },
-      overrideCredentialUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal/sharing'
-    },
-    native: {
-      defaultFeatureLayerProperties: {
-        visible: false,
-        popupComponent: Popups.BaseDirectionsComponent,
-        outFields: ['*']
-      }
-    }
+    title: 'IT Fiber Paths',
+    url: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/rest/services/Hosted/Fiber_Paths_UES/FeatureServer/1',
+    visible: false,
+    popupComponent: Popups.BasePopupComponent,
+    auth: OAuthInfos.ues,
+    native: { ...commonLayerProps }
   },
   {
     type: 'group',
