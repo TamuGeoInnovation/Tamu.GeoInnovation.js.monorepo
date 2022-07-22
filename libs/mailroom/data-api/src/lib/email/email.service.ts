@@ -3,15 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import { MailroomAttachment, MailroomEmail, MailroomReject } from '@tamu-gisc/mailroom/common';
+import { MailroomEmail } from '@tamu-gisc/mailroom/common';
 
 @Injectable()
 export class EmailService {
-  constructor(
-    @InjectRepository(MailroomEmail) private emailRepo: Repository<MailroomEmail>,
-    @InjectRepository(MailroomAttachment) private attachmentRepo: Repository<MailroomAttachment>,
-    @InjectRepository(MailroomReject) private rejectRepo: Repository<MailroomReject>
-  ) {}
+  constructor(@InjectRepository(MailroomEmail) private emailRepo: Repository<MailroomEmail>) {}
 
   public getAllEmails() {
     return this.emailRepo.find();
