@@ -27,6 +27,8 @@ export class EmailService {
       relations: ['attachments']
     });
 
-    return this.emailRepo.remove(email);
+    const removed = (await this.emailRepo.remove(email)) ? true : false;
+
+    return removed;
   }
 }

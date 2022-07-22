@@ -16,7 +16,6 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 })
 export class DetailComponent implements OnInit {
   public $email: Observable<MailroomEmail>;
-  private emailId: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,7 +28,6 @@ export class DetailComponent implements OnInit {
     this.$email = this.route.params.pipe(
       map((params) => params['id']),
       switchMap((id) => {
-        this.emailId = id;
         return this.service.getEmailWithAttachment(id);
       }),
       shareReplay(1)
@@ -42,10 +40,21 @@ export class DetailComponent implements OnInit {
   }
 
   public deleteEmail() {
-    this.service.deleteEmail(this.emailId).subscribe(() => {
-      this.ns.preset('deleted_email_response');
+    this.$email
+      .pipe(
+        map((email) => email.id),
+        switchMap((id) => {
+          return this.service.deleteEmail(id);
+        })
+      )
+      .subscribe((removed) => {
+        if (removed) {
+          this.ns.preset('deleted_email_success');
 
-      this.location.back();
-    });
+          this.location.back();
+        } else {
+          this.ns.preset('deleted_email_failure');
+        }
+      });
   }
 }
