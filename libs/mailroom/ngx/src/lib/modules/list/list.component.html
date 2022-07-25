@@ -5,7 +5,6 @@
 
   <ng-template #emailsList>
     <div class="selectable">
-
       <tr *ngFor="let email of $emails | async">
         <div class="div-row" [routerLink]="['detail/' + email.id]">
           <td>{{email.id}}</td>

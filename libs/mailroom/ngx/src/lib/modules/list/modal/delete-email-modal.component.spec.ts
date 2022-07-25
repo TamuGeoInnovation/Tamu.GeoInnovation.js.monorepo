@@ -22,4 +22,3 @@ describe('DeleteEmailModalComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
