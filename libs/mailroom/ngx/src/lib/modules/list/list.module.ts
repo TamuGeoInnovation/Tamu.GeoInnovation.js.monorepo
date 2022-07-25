@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { ListComponent } from './list.component';
 import { DetailComponent } from './pages/detail/detail.component';
+import { DeleteEmailModalComponent } from './modal/delete-email-modal.component';
 
 const routes: Routes = [
   {
@@ -17,7 +18,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [ListComponent, DetailComponent],
+  declarations: [ListComponent, DetailComponent, DeleteEmailModalComponent],
   imports: [CommonModule, RouterModule.forChild(routes)]
 })
 export class ListModule {}
