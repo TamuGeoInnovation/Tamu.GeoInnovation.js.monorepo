@@ -9,7 +9,9 @@
     <span class="material-symbols-outlined">arrow_right_alt</span>
     <p>{{ ($email | async)?.to }}</p>
     <span id="spanner"></span>
-    <span id="delete" class="material-symbols-outlined" title="Delete email" (click)="deleteEmail()">delete</span>
+    <ng-container *ngIf="($email | async) as email"> 
+      <span id="delete" class="material-symbols-outlined" title="Delete email" (click)="deleteEmail(email)">delete</span>
+    </ng-container>
   </div>
   <div>
     <h2>{{ ($email | async)?.subject }}</h2>

@@ -8,6 +8,9 @@ import { map, Observable, shareReplay, switchMap } from 'rxjs';
 import { EmailService } from '@tamu-gisc/mailroom/data-access';
 import { MailroomAttachment, MailroomEmail } from '@tamu-gisc/mailroom/common';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+
+import { DeleteEmailModalComponent } from '../../modal/delete-email-modal.component';
 
 @Component({
   selector: 'tamu-gisc-detail',
@@ -19,16 +22,17 @@ export class DetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private service: EmailService,
+    private location: Location,
+    private emailService: EmailService,
     private ns: NotificationService,
-    private location: Location
+    private readonly modal: ModalService
   ) {}
 
   public ngOnInit() {
     this.$email = this.route.params.pipe(
       map((params) => params['id']),
       switchMap((id) => {
-        return this.service.getEmailWithAttachment(id);
+        return this.emailService.getEmailWithAttachment(id);
       }),
       shareReplay(1)
     );
@@ -39,21 +43,24 @@ export class DetailComponent implements OnInit {
     return `"data:${attachment.mimeType};base64,${base64}"`;
   }
 
-  public deleteEmail() {
-    this.$email
-      .pipe(
-        map((email) => email.id),
-        switchMap((id) => {
-          return this.service.deleteEmail(id);
-        })
-      )
-      .subscribe((removed) => {
-        if (removed) {
-          this.ns.preset('deleted_email_success');
+  public deleteEmail(email: MailroomEmail) {
+    this.modal
+      .open<{ deleteEmail: boolean }>(DeleteEmailModalComponent, {
+        data: {
+          message: email.id
+        }
+      })
+      .subscribe((proceedWithDelete) => {
+        if (proceedWithDelete) {
+          this.emailService.deleteEmail(email.id).subscribe((removed) => {
+            if (removed) {
+              this.ns.preset('deleted_email_success');
 
-          this.location.back();
-        } else {
-          this.ns.preset('deleted_email_failure');
+              this.location.back();
+            } else {
+              this.ns.preset('deleted_email_failure');
+            }
+          });
         }
       });
   }
