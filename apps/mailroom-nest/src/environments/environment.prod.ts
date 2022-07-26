@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  dev: false,
   port: 27000,
   globalPrefix: ''
 };

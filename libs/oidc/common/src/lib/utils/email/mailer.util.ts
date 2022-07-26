@@ -13,16 +13,7 @@ export class Mailer {
 
   // https://dev.to/chandrapantachhetri/sending-emails-securely-using-node-js-nodemailer-smtp-gmail-and-oauth2-g3a
   // 2LO https://nodemailer.com/smtp/oauth2/#oauth-2lo
-  public static build(
-    service: NodeMailerServices,
-    config?: {
-      user: string;
-      accessToken: string;
-      clientId: string;
-      clientSecret: string;
-      refreshToken: string;
-    }
-  ) {
+  public static build(service: NodeMailerServices, dev: boolean) {
     Mailer.service = service;
 
     switch (service) {
@@ -40,7 +31,7 @@ export class Mailer {
         break;
       case 'tamu-relay':
         Mailer.transporter = nodemailer.createTransport({
-          host: 'smtp-relay.tamu.edu',
+          host: dev ? 'relay.tamu.edu' : 'smtp-relay.tamu.edu',
           port: 25,
           secure: false,
           ignoreTLS: true
@@ -54,7 +45,13 @@ export class Mailer {
           secure: true,
           auth: {
             type: 'OAuth2',
-            ...config
+            config: {
+              user: '',
+              accessToken: '',
+              clientId: '',
+              clientSecret: '',
+              refreshToken: ''
+            }
           }
         });
         break;
