@@ -8,9 +8,8 @@ describe('AbstractInteractiveServiceComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AbstractInteractiveServiceComponent ]
-    })
-    .compileComponents();
+      declarations: [AbstractInteractiveServiceComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

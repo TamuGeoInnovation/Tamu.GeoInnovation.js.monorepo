@@ -8,9 +8,8 @@ describe('InteractiveGeocoderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InteractiveGeocoderComponent ]
-    })
-    .compileComponents();
+      declarations: [InteractiveGeocoderComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

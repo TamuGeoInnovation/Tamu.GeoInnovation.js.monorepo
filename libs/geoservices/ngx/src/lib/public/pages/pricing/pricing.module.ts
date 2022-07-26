@@ -20,4 +20,3 @@ const routes: Routes = [
   declarations: [PricingComponent]
 })
 export class PricingModule {}
-
