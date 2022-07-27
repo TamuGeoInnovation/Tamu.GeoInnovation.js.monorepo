@@ -1,0 +1,23 @@
+{
+  "root": "libs/mailroom/data-api",
+  "sourceRoot": "libs/mailroom/data-api/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/mailroom/data-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/mailroom/data-api"],
+      "options": {
+        "jestConfig": "libs/mailroom/data-api/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
