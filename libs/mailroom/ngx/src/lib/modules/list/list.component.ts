@@ -29,8 +29,9 @@ export class ListComponent implements OnInit {
     this.$emails = this._$refresh.pipe(
       startWith(true),
       switchMap(() => {
-        return this.emailService.getEmails().pipe(shareReplay(1));
-      })
+        return this.emailService.getEmails();
+      }),
+      shareReplay(1)
     );
   }
 
