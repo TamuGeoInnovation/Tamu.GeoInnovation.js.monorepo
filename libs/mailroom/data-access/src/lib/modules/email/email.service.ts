@@ -23,6 +23,6 @@ export class EmailService {
   }
 
   public deleteEmail(emailId: number) {
-    return this.http.delete(`${this.resource}/${emailId}`);
+    return this.http.delete<boolean>(`${this.resource}/${emailId}`);
   }
 }

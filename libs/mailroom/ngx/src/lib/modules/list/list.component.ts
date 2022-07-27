@@ -36,22 +36,18 @@ export class ListComponent implements OnInit {
 
   public deleteEmail(email: MailroomEmail) {
     this.modal
-      .open<{ deleteEmail: boolean }>(DeleteEmailModalComponent, {
+      .open<{ deleted: boolean }>(DeleteEmailModalComponent, {
         data: {
           message: email.id
         }
       })
-      .subscribe((proceedWithDelete) => {
-        if (proceedWithDelete) {
-          this.emailService.deleteEmail(email.id).subscribe((removed) => {
-            if (removed) {
-              this.ns.preset('deleted_email_success');
+      .subscribe(({ deleted }) => {
+        if (deleted) {
+          this.ns.preset('deleted_email_success');
 
-              this._$refresh.next(true);
-            } else {
-              this.ns.preset('deleted_email_failure');
-            }
-          });
+          this._$refresh.next(true);
+        } else {
+          this.ns.preset('deleted_email_failure');
         }
       });
   }
