@@ -1,1 +1,29 @@
-<p>contact-form works!</p>
+<form [formGroup]="form" class="container12" (submit)="sendMessage()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Contact Details</p>
+      </div>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Your name" formControlName="fullName" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Your email address" formControlName="email" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Subject" formControlName="subject" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox type="textarea" placeholder="Message body" formControlName="body" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-button value="Send message" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>

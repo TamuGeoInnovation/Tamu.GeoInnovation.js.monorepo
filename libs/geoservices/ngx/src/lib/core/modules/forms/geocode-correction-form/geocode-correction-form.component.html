@@ -1,1 +1,31 @@
-<p>geocode-correction-form works!</p>
+<form [formGroup]="form" class="container12" (submit)="sendMessage()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Address Correction Details</p>
+      </div>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Street address" formControlName="address" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection row">
+      <tamu-gisc-textbox placeholder="City" formControlName="city" floatLabel="true"></tamu-gisc-textbox>
+      <tamu-gisc-select formControlName="status" [data]="states" displayTemplate="name" valueTemplate="abbreviation" placeholder="Select state"></tamu-gisc-select>
+      <tamu-gisc-textbox placeholder="Zip" formControlName="zip" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Correct Latitude" formControlName="correctedLat" floatLabel="true" type="number"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Correct Longitude" formControlName="correctedLon" floatLabel="true" type="number"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-button value="Submit correction" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>
