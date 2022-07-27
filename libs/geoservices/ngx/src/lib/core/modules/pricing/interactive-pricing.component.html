@@ -17,7 +17,7 @@
           <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
             <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
             <div id="snap-scen-help-text">
-              <p>Requires enrollment in our partner program which reduces the cost of all services to $0 for unlimited records in batches of 2,500 records at a time. <a href="">Learn more about our partner program</a></p>
+              <p>Requires enrollment in our partner program which reduces the cost of all services to $0 for unlimited records in batches of 2,500 records at a time. <a [routerLink]="['/pricing']" fragment="partner-program">Learn more about our partner program</a></p>
             </div>
           </tamu-gisc-tooltip>
         </p>
@@ -31,7 +31,7 @@
     </form>
   </div>
 
-  <div class="column6 pre-2">
+  <div class="column5 pre-2">
     <div class="card">
       <table>
         <tbody>
