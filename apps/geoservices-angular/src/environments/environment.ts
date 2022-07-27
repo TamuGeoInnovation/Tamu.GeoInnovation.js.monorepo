@@ -19,3 +19,5 @@ export const api_url = `${window.location.protocol}//${window.location.hostname}
 
 export const covid_api_url = `http://localhost:3333/api/`;
 export const auth_url = covid_api_url;
+
+export * from './definitions';

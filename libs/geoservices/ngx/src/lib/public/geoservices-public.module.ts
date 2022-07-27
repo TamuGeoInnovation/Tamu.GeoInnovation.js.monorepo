@@ -22,6 +22,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/services/services.module').then((m) => m.ServicesModule)
       },
       {
+        path: 'contact',
+        loadChildren: () => import('./pages/contact/contact.module').then((m) => m.ContactModule)
+      },
+      {
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('./pages/landing/landing.module').then((m) => m.LandingModule)

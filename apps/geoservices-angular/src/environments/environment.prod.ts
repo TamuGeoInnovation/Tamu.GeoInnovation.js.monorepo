@@ -6,3 +6,5 @@ export const api_url = `${window.location.protocol}//${window.location.hostname}
 
 export const covid_api_url = `https://nodes.geoservices.tamu.edu/api/covid/`;
 export const auth_url = covid_api_url;
+
+export * from './definitions';

@@ -1,0 +1,40 @@
+<section class="content-fill-pad">
+  <div class="container12 trailer-2">
+    <div class="column12 flex flex-row">
+      <div>
+        <h1 class="trailer-1">Contact Us</h1>
+        <h3>The students, faculty, and staff who develop and run the Texas A&M GeoServices site do nothing but research and develop geoprocessing algorithms on a full time basis. If you have questions about any of the services offered by our site please do not hesitate to contact us. We are generally available during the workday and (more frequently than we would like) at all hours of the night. If you have a question, there is a really good chance that one of us will be online or at our desk to answer.</h3>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="form" class="container12" (submit)="sendMessage()">
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Contact Details</p>
+        </div>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox placeholder="Your name" formControlName="fullName" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox placeholder="Your email address" formControlName="email" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox placeholder="Subject" formControlName="subject" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox type="textarea" placeholder="Message body" formControlName="body" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-button value="Send message" type="submit"></tamu-gisc-button>
+      </div>
+    </div>
+  </form>
+</section>
