@@ -7,10 +7,12 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import * as WebFont from 'webfontloader';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { Angulartics2Module } from 'angulartics2';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
+import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -48,6 +50,7 @@ export function getHighlightLanguages() {
 @NgModule({
   imports: [
     BrowserModule,
+    Angulartics2Module.forRoot(),
     RouterModule.forRoot(routes, {
       scrollPositionRestoration: 'enabled',
       relativeLinkResolution: 'corrected',
@@ -56,7 +59,8 @@ export function getHighlightLanguages() {
     BrowserAnimationsModule,
     HighlightPlusModule,
     EnvironmentModule,
-    LocalStoreModule
+    LocalStoreModule,
+    NotificationModule
   ],
   declarations: [AppComponent],
   providers: [

@@ -36,11 +36,6 @@
               <a href="">K-Nearest Search</a>
               <p class="dropdown__menu__descriptor">Find the 5, 10, 15, i.e. k-closest things to a geographic location.</p>
             </li> -->
-
-            <!-- <li>
-              <a href="">Drag &amp; Drop Mapping</a>
-              <p class="dropdown__menu__descriptor">Quick and painless online CSV mapping.</p>
-            </li> -->
           </ul>
         </li>
         <li>
@@ -57,15 +52,15 @@
               <p class="dropdown__menu__descriptor">Need help running or using our services in your application?</p>
             </li>
             <li>
-              <a href="">Bug Reporting</a>
+              <a [routerLink]="['./contact/bug-report']">Bug Reporting</a>
               <p class="dropdown__menu__descriptor">Found a pesky bug? Report it to us and we'll squash it.</p>
             </li>
             <li>
-              <a href="">Submit Address Correction</a>
+              <a [routerLink]="['./contact/address-correction']">Submit Address Correction</a>
               <p class="dropdown__menu__descriptor">Help us keep our database as up to date and accurate as possible by correcting less-than-perfect results.</p>
             </li>
             <li>
-              <a href="">Contact Us</a>
+              <a [routerLink]="['./contact']">Contact Us</a>
               <p class="dropdown__menu__descriptor">Talk to a human for any inquiries!</p>
             </li>
           </ul>
