@@ -17,8 +17,12 @@
     <h2>{{ ($email | async)?.subject }}</h2>
     <p>{{ ($email | async)?.text }}</p>
   </div>
-  <ng-container *ngIf="($email | async)?.attachments?.length > 0">
-    <h2 id="attachment-header">Attachments</h2>
+  <ng-container *ngIf="($email | async) as email">
+    <ng-container *ngIf="email.attachments as attachments">
+      <ng-container *ngIf="attachments.length > 0">
+        <h2 id="attachment-header">Attachments</h2>
+      </ng-container>
+    </ng-container>
   </ng-container>
   <ul class="column-thing">
     <li *ngFor="let attachment of ($email | async)?.attachments">
