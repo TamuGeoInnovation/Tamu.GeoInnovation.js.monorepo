@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -19,7 +20,7 @@ export class GeocodeCorrectionFormComponent implements OnInit {
     this.form = this.fb.group({
       address: ['', Validators.required],
       city: ['', Validators.required],
-      state: ['', Validators.required],
+      state: [null, Validators.required],
       zip: ['', Validators.required],
       correctedLat: ['', Validators.required],
       correctedLon: ['', Validators.required]
