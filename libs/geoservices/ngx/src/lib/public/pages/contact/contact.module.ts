@@ -10,6 +10,11 @@ const routes: Routes = [
     component: ContactComponent,
     children: [
       {
+        path: 'address-correction',
+        loadChildren: () =>
+          import('./pages/address-correction/address-correction.module').then((m) => m.AddressCorrectionModule)
+      },
+      {
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('./pages/contact-us/contact-us.module').then((m) => m.ContactUsModule)
