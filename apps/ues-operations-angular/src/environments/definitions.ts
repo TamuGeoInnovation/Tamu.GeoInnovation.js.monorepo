@@ -3,7 +3,6 @@ import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-k
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import esri = __esri;
-import LayerSearchSource from 'esri/widgets/Search/LayerSearchSource';
 
 export const Connections = {
   basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
