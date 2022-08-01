@@ -1,0 +1,62 @@
+.attachment {
+  height: 100%;
+  width: 100%;
+}
+
+.to-inbox {
+  display: inline-flex;
+  align-items: flex-start;
+  margin-left: 5rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  cursor: pointer;
+
+  span {
+    padding-left: 0px;
+  }
+}
+
+.info-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.attachments-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#attachment-header {
+  padding-top: 16px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+.column-thing {
+  column-count: 2;
+  padding-inline-start: 0;
+  li {
+    list-style: none;
+  }
+}
+
+.attachment-image {
+  width: 100%;
+  height: 30rem;
+  background-size: contain;
+  object-fit: contain;
+  background-repeat: no-repeat;
+}
+
+#spanner {
+  flex-grow: 20;
+}
+
+#delete {
+  cursor: pointer;
+}

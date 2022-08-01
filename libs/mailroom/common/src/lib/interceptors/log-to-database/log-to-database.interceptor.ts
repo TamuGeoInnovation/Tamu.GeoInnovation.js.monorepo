@@ -23,6 +23,7 @@ export class LogToDatabaseInterceptor implements NestInterceptor {
           .create({
             relayResponse: JSON.stringify(value.response),
             text: value.email.text,
+            html: value.email.html,
             subject: value.email.subject,
             to: value.email.to,
             from: value.email.from,

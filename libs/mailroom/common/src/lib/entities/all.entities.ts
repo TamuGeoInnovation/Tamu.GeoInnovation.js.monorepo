@@ -4,6 +4,11 @@ import 'multer'; // Without this, get `Namespace 'global.Express' has no exporte
 
 import { EmailStatus } from '../types/mail.types';
 
+export class MSSQLImage {
+  public type: 'jpg' | 'png';
+  public data: Uint8Array;
+}
+
 @Entity()
 export class MailroomBaseEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
@@ -27,16 +32,19 @@ export class MailroomEmail extends MailroomBaseEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public text?: string;
 
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public html?: string;
+
   @Column({ type: 'nvarchar', length: '320', nullable: true })
   public subject?: string;
 
-  @OneToMany(() => MailroomAttachment, (s) => s.blob, { cascade: true })
+  @OneToMany(() => MailroomAttachment, (s) => s.email, { cascade: true })
   public attachments?: MailroomAttachment[];
 
   @Column({ type: 'tinyint', nullable: true })
   public deliveryStatus?: EmailStatus;
 
-  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true, select: false })
   public relayResponse?: string;
 }
 
@@ -44,11 +52,11 @@ export class MailroomEmail extends MailroomBaseEntity {
   name: 'attachments'
 })
 export class MailroomAttachment extends MailroomBaseEntity {
-  @ManyToOne(() => MailroomEmail, (email) => email.attachments)
+  @ManyToOne(() => MailroomEmail, (email) => email.attachments, { onDelete: 'CASCADE' })
   public email: MailroomEmail;
 
   @Column({ type: 'varbinary', length: 'MAX', nullable: false })
-  public blob: Buffer;
+  public blob: Buffer & MSSQLImage;
 
   @Column({ type: 'nvarchar', length: 32, nullable: true })
   public mimeType: string;

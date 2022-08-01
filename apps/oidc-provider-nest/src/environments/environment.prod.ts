@@ -6,7 +6,7 @@ export const environment = {
   globalPrefix: '',
   allowedOrigins: '/tamu.edu$/',
   ...SECRETS.ADMIN_DEFAULTS,
-  mailroomUrl: SECRETS.MAILROOM.URL,
+  mailroomUrl: SECRETS.MAILROOM.URL_PROD,
   mailroomFromAddress: SECRETS.MAILROOM.FROM_EMAIL_ADDRESS
 };
 

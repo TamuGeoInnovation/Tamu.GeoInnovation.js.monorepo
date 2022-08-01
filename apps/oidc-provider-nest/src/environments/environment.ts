@@ -6,7 +6,7 @@ export const environment = {
   globalPrefix: '',
   allowedOrigins: '*',
   ...SECRETS.ADMIN_DEFAULTS,
-  mailroomUrl: SECRETS.MAILROOM.URL,
+  mailroomUrl: SECRETS.MAILROOM.URL_DEV,
   mailroomFromAddress: SECRETS.MAILROOM.FROM_EMAIL_ADDRESS
 };
 

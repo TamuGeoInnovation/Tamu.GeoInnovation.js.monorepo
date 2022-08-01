@@ -1,0 +1,68 @@
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th,
+h2 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.default {
+  display: block;
+  font-size: larger;
+  text-align: center;
+}
+
+tr {
+  color: rgb(32, 33, 36);
+  display: flex;
+  box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
+}
+
+.div-row {
+  display: flex;
+  flex-grow: 1;
+}
+
+.selectable {
+  :hover {
+    background-color: rgb(194, 219, 255);
+    cursor: pointer;
+    .toolbar {
+      display: contents;
+    }
+    #datetime {
+      display: none;
+    }
+  }
+}
+
+.to {
+  min-width: 0;
+  padding-right: 2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subject-and-text {
+  min-width: 0;
+  flex-grow: 20;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toolbar {
+  display: none;
+  &span {
+    :hover {
+      background-color: chocolate;
+    }
+  }
+}

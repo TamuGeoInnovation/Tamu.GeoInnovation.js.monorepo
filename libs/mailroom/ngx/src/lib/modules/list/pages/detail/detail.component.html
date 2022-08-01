@@ -1,0 +1,32 @@
+<div class="to-inbox" [routerLink]="['../..']">
+  <span class="material-symbols-outlined" title="Back to inbox">arrow_back</span>
+  <p>Back to inbox</p>
+</div>
+
+<div class="container">
+  <div class="info-container">
+    <p>{{ ($email | async)?.from }}</p>
+    <span class="material-symbols-outlined">arrow_right_alt</span>
+    <p>{{ ($email | async)?.to }}</p>
+    <span id="spanner"></span>
+    <ng-container *ngIf="($email | async) as email">
+      <span id="delete" class="material-symbols-outlined" title="Delete email" (click)="deleteEmail(email)">delete</span>
+    </ng-container>
+  </div>
+  <div>
+    <h2>{{ ($email | async)?.subject }}</h2>
+    <p>{{ ($email | async)?.text }}</p>
+  </div>
+  <ng-container *ngIf="($email | async) as email">
+    <ng-container *ngIf="email.attachments as attachments">
+      <ng-container *ngIf="attachments.length > 0">
+        <h2 id="attachment-header">Attachments</h2>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <ul class="column-thing">
+    <li *ngFor="let attachment of ($email | async)?.attachments">
+      <img class="attachment-image" [style.backgroundImage]="'url('+attachmentToImage(attachment)+')'" />
+    </li>
+  </ul>
+</div>
