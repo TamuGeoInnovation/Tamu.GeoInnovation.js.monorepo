@@ -142,7 +142,7 @@ export class InteractionController {
       if (locals.method === 'totp') {
         const token = otplib.totp.generate(user.secret2fa);
 
-        this.mailerService.sendMail({
+        await this.mailerService.sendMail({
           to: user.email,
           from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
           subject: 'Hello from the IdP',

@@ -130,7 +130,7 @@ export class UserService {
     user.password = await hash(user.password, SHA1HashUtils.SALT_ROUNDS);
     const newUser = await this.userRepo.save(user);
     if (newUser) {
-      this.mailerService.sendMail({
+      await this.mailerService.sendMail({
         to: newUser.email,
         from: '',
         subject: 'Your newly created GeoInnovation Service Center account',
@@ -444,7 +444,7 @@ export class UserService {
     user.updatedAt = new Date();
     this.userRepo.save(user);
 
-    this.mailerService.sendMail({
+    await this.mailerService.sendMail({
       from: '',
       to: user.email,
       subject: 'GeoInnovation Service Center password reset',
