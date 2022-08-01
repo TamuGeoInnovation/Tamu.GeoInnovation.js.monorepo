@@ -8,7 +8,7 @@
           <a [routerLink]="['services']" routerLinkActive="router-link-active" class="dropdown__link">Services <span class="material-icons">keyboard_arrow_down</span></a>
           <ul class="dropdown__menu">
             <li>
-              <a href="">Address Processing</a>
+              <a [routerLink]="['services/address-processing']" routerLinkActive="router-link-active">Address Processing</a>
               <p class="dropdown__menu__descriptor">Turn unstructured data into neat columns of address fields.</p>
             </li>
 
@@ -18,24 +18,14 @@
             </li>
 
             <li>
-              <a href="">Reverse Geocoding</a>
+              <a [routerLink]="['services/reverse-geocoding']" routerLinkActive="router-link-active">Reverse Geocoding</a>
               <p class="dropdown__menu__descriptor">Convert latitude and longitude data into postal address values.</p>
             </li>
-            <!-- 
-            <li>
-              <a href="">Geocode Correction</a>
-              <p class="dropdown__menu__descriptor">Fix improperly geocoded addresses.</p>
-            </li> -->
 
             <li>
-              <a href="">Census Intersection</a>
+              <a [routerLink]="['services/census-intersection']" routerLinkActive="router-link-active">Census Intersection</a>
               <p class="dropdown__menu__descriptor">Associate census variables with latitude and longitude data.</p>
             </li>
-
-            <!-- <li>
-              <a href="">K-Nearest Search</a>
-              <p class="dropdown__menu__descriptor">Find the 5, 10, 15, i.e. k-closest things to a geographic location.</p>
-            </li> -->
           </ul>
         </li>
         <li>
