@@ -15,6 +15,10 @@ const routes: Routes = [
           import('./pages/address-correction/address-correction.module').then((m) => m.AddressCorrectionModule)
       },
       {
+        path: 'bug-report',
+        loadChildren: () => import('./pages/bug-report/bug-report.module').then((m) => m.BugReportModule)
+      },
+      {
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('./pages/contact-us/contact-us.module').then((m) => m.ContactUsModule)

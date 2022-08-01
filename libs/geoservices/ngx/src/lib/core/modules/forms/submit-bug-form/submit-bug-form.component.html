@@ -1,1 +1,25 @@
-<p>submit-bug-form works!</p>
+<form [formGroup]="form" class="container12" (submit)="sendMessage()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Bug Details</p>
+      </div>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Your Name" formControlName="fullName" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Your email address" formControlName="email" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox type="textarea" placeholder="Bug details" formControlName="body" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-button value="Submit bug report" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>
