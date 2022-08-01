@@ -36,11 +36,11 @@ import {
 import { InteractionModule, OidcModule } from '@tamu-gisc/oidc/provider';
 import { EnvironmentModule } from '@tamu-gisc/common/nest/environment';
 
-import { dbConfig, ADMIN_DEFAULTS } from '../environments/environment';
+import { dbConfig, environment } from '../environments/environment';
 
 @Module({
   imports: [
-    EnvironmentModule.forRoot(ADMIN_DEFAULTS),
+    EnvironmentModule.forRoot(environment),
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [

@@ -1,6 +1,8 @@
 import { Module, NestModule, HttpModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CommonNestServicesModule } from '@tamu-gisc/common/nest/services';
+
 import { UserController } from '../../controllers/user/user.controller';
 import { UserService } from '../../services/user/user.service';
 import { StaticAccountService } from '../../services/account/account.service';
@@ -35,7 +37,8 @@ import {
       UserPasswordResetRepo,
       UserPasswordHistoryRepo
     ]),
-    HttpModule
+    HttpModule,
+    CommonNestServicesModule
   ],
   controllers: [UserController],
   providers: [UserService, StaticAccountService],
