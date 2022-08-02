@@ -1,8 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { HighlightPlusModule } from 'ngx-highlightjs/plus';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UILayoutCodeModule } from '@tamu-gisc/ui-kits/ngx/layout/code';
 
 import { AddressProcessingComponent } from './address-processing.component';
-import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
@@ -12,7 +17,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    HighlightPlusModule,
+    UILayoutModule,
+    UILayoutCodeModule
+  ],
   declarations: [AddressProcessingComponent]
 })
 export class AddressProcessingModule {}
