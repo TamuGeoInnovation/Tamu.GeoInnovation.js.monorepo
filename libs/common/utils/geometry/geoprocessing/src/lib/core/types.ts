@@ -147,7 +147,7 @@ export interface ICensusIntersectionOptions {
   censusYear: '1990' | '2000' | '2010';
   lat: number;
   lon: number;
-  s?: boolean;
+  s?: string;
   format?: 'csv' | 'tsv' | 'xml' | 'json';
   notStore?: boolean;
 }

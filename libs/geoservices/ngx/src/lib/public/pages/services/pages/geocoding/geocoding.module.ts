@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UILayoutCodeModule } from '@tamu-gisc/ui-kits/ngx/layout/code';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
-import { GeoservicesCoreNgxModule } from '../../../../../core/geoservices-core-ngx.module';
 import { GeocodingComponent } from './geocoding.component';
 
 const routes: Routes = [
@@ -23,13 +21,10 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    FormsModule,
     ReactiveFormsModule,
     HighlightPlusModule,
-    GeoservicesCoreNgxModule,
     UILayoutModule,
-    UILayoutCodeModule,
-    UIFormsModule
+    UILayoutCodeModule
   ],
   declarations: [GeocodingComponent]
 })
