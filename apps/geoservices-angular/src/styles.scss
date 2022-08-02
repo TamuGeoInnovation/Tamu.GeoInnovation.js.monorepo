@@ -656,6 +656,10 @@ input[type='submit'] {
   &.small {
     height: 4.5rem;
   }
+
+  &.medium {
+    height: 5rem;
+  }
 }
 
 // Targets the service page "hero" header with logo
