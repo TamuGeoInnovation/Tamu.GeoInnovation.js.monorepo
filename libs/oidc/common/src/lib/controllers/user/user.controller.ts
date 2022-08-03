@@ -1,22 +1,8 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Req,
-  Res,
-  Post,
-  HttpException,
-  HttpStatus,
-  Body,
-  UseGuards,
-  Delete,
-  UnprocessableEntityException
-} from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body, UseGuards, Delete } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 
-import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 import { AdminGuard } from '../../guards/admin/admin.guard';
 
 import { urlFragment, urlHas } from '../../utils/web/url-utils';
@@ -24,23 +10,23 @@ import { User, UserRole } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 
 @Controller('user')
-@UseGuards(AdminGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(AdminGuard)
   @Get('all')
   public async usersAllGet() {
     return this.userService.userRepo.find();
   }
 
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(AdminGuard)
   @Delete(':guid')
   public async deleteUser(@Param() params) {
     const userGuid = params.guid;
     return this.userService.removeUser(userGuid);
   }
 
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(AdminGuard)
   @Post('role')
   public async assignRole(@Body() body) {
     const user = await this.userService.userRepo.findOne({
@@ -445,6 +431,7 @@ export class UserController {
   }
 
   @Get(':guid')
+  @UseGuards(AdminGuard)
   public async userGet(@Param() params) {
     return this.userService.userRepo.findOne({
       where: {
