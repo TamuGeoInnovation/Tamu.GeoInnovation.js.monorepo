@@ -48,8 +48,8 @@ export class MapComponent implements OnInit, OnDestroy {
     // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.
     // https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/274
     const preferencesString = localStorage.getItem('user-preferences');
-    const { experiments } = preferencesString !== null ? JSON.parse(preferencesString) : { experiments: null };
-    const { basemap_url } = experiments;
+    const preferencesSettings = preferencesString !== null ? JSON.parse(preferencesString) : { experiments: null };
+    const experimentSettings = preferencesSettings.experiments || {};
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile = value;
@@ -60,7 +60,7 @@ export class MapComponent implements OnInit, OnDestroy {
             baseLayers: [
               {
                 type: 'TileLayer',
-                url: basemap_url ? basemap_url : this._connections['basemapUrl'],
+                url: experimentSettings.basemap_url ? experimentSettings.basemap_url : this._connections['basemapUrl'],
                 spatialReference: {
                   wkid: 102100
                 },
