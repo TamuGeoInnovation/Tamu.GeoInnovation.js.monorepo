@@ -33,7 +33,9 @@ import {
   BusListComponent,
   ModalComponent,
   ReportBadRouteComponent,
-  AggiemapFormsModule
+  AggiemapFormsModule,
+  ExperimentsModule,
+  ExperimentsListComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import {
   AggiemapSidebarModule,
@@ -73,7 +75,8 @@ const routes: Routes = [
           { path: '', component: SidebarReferenceComponent },
           { path: 'bus', component: BusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
-          { path: 'trip/options', component: TripPlannerOptionsComponent }
+          { path: 'trip/options', component: TripPlannerOptionsComponent },
+          { path: 'experiments', component: ExperimentsListComponent }
         ]
       },
       {
@@ -150,7 +153,8 @@ const routes: Routes = [
     AggiemapNgxUiMobileModule,
     MapsFeatureCoordinatesModule,
     AggiemapFormsModule,
-    MapsFeaturePerspectiveModule
+    MapsFeaturePerspectiveModule,
+    ExperimentsModule
   ],
   declarations: [MapComponent]
 })
