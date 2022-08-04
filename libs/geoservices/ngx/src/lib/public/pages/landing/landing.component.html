@@ -1,4 +1,4 @@
-<section class="content-fill-pad" style="background: linear-gradient(-45deg, #e1e4fe, #e1fef2, #fac5f7)">
+<section class="content-fill-pad" style="background: linear-gradient(45deg, #ffffff, #c3d6fd, #e3d6fa, #ffd4d4, #d1eee2)">
   <div class="container12">
     <div class="column8">
       <h1>Geo-Enablement At Your Fingertips</h1>
@@ -33,7 +33,7 @@
         <div class="product-tiles__tile__description">
           <p>If you instead have latitude and longitude value pairs, reverse geocoding turns those pairs into a human-readable address that can be used to identify nearby street names, places, subdivisions, counties, cities, etc.</p>
 
-          <a href="http://">Learn more about reverse geocoding ></a>
+          <a [routerLink]="['services/reverse-geocoding']" routerLinkActive="router-link-active">Learn more about reverse geocoding ></a>
         </div>
       </div>
 
@@ -43,7 +43,7 @@
         <div class="product-tiles__tile__description">
           <p>Clean up that messy data. Our address parsing and normalization services will help you turn unstructured address data into neat and tidy columns of address fields. Choose from a variety of output formats that conform to the specification of your application.</p>
 
-          <a href="http://">Learn more about address processing ></a>
+          <a [routerLink]="['services/address-processing']" routerLinkActive="router-link-active">Learn more about address processing ></a>
         </div>
       </div>
 
@@ -53,18 +53,14 @@
         <div class="product-tiles__tile__description">
           <p>Take it one step further and process geocoded data by intersecting it with Census tract boundaries to receive Census tract data.</p>
 
-          <a href="http://">Learn more about census intersection ></a>
+          <a [routerLink]="['services/census-intersection']" routerLinkActive="router-link-active">Learn more about census intersection ></a>
         </div>
       </div>
-    </div>
-
-    <div class="column12 flex flex-row justify-center">
-      <div class="button">Explore All Services</div>
     </div>
   </div>
 </section>
 
-<section style="background: white" class="content-fill-pad">
+<section style="background: #f5f5f5" class="content-fill-pad">
   <div class="container12 flex flex-row align-center">
     <div class="column5">
       <h2>Simple. Flexible. Affordable.</h2>
