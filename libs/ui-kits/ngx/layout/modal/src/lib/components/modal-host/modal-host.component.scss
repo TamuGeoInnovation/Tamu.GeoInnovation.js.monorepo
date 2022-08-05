@@ -32,6 +32,10 @@
   border-radius: 3pt;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   padding: 1.25rem 2rem 2.5rem 2rem;
+  max-width: 75%;
+  max-height: 95%;
+  box-sizing: border-box;
+  overflow-y: scroll;
 
   header {
     display: flex;
