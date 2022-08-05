@@ -4,18 +4,6 @@
 
 This monorepo is maintained by the Texas A&M GeoInnovation Service Center and contains everything related to the Aggiemap platform. The goal of this platform is to create a re-usable set of building blocks that can be used not only for the purposes of the public-facing website @ aggiemap.tamu.edu but also on various projects ranging from derivatives of Aggiemap for campus operations (utilities and energy services, transportation), multidisciplinary applications, and internal websites and services for use within our service center. We invite anyone in the Aggie community to contribute and share their feedback.
 
-## Repository Structure
-
-This repository is powered by [Nx](https://nx.dev/). It provides the development tooling that enables many applications and libraries to co-exist in the same repository.
-
-Of interest are two root-level directories `apps` and `libs`. `apps` contains application entry points but contain very little actual logic. This is by design. 
-
-`libs` on the other hand contain all the business logic for any given application. Libraries can be used in one or many different applications and it's this flexibility that allows to create re-usable units across the entire repository.
-
-Nx supports multiple frameworks but we primarily use Angular for front-end and NestJS for back-end API's due to their opinionated nature and shared style and architectural patterns.
-
-While there is a long list of applications in the `apps` directory, some of them require secret configuration files not included in version control, for security purposes, that effectively "break" them. The main Aggiemap application does not require any special configuration or setup apart from the basic installation steps listed below.
-
 ## Installation
 
 1. Clone this repo
@@ -43,9 +31,4 @@ As you make changes to the project, the local web server will automatically rebu
 
 If you would like to contribute, please be sure to read the[ contribution guidelines](CONTRIBUTING.md). 
 
-
-## I can't contribute but have feedback about Aggiemap
-
-That's OK! We value any and all feedback. If your feedback relates to a bug in Aggiemap, please [submit an issue](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues). Issues are a place for feature or bug discourse and anything you post in there is PUBLIC for everyone to see!
-
-For general questions or feedback that requires private communication, please email gis@tamu.edu.
+For general questions, feedback, or inquiries that requires private communication, please email gis@tamu.edu.
