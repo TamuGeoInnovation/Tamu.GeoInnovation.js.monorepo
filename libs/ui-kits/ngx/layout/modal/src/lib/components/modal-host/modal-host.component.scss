@@ -24,7 +24,8 @@
 
 .modal--container {
   background-color: #fafafa;
-  display: block;
+  display: flex;
+  flex-direction: column;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -35,7 +36,7 @@
   max-width: 75%;
   max-height: 95%;
   box-sizing: border-box;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   header {
     display: flex;
@@ -57,3 +58,4 @@
     }
   }
 }
+
