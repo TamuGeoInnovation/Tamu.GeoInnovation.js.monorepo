@@ -5,17 +5,14 @@ We're pumped that you're considering contributing, thank you! As a member of the
 #### Table of Contents
 ---
 
-[How can I contribute?](#how-can-i-contribute)
+How can I contribute?
 - [Reporting issues/bugs](#reporting-issuesbugs)
 - [Suggesting enhancements](#suggesting-enhancements)
 - [Pull requests](#pull-requests)
 - [General feedback](#general-feedback-or-inquiries)
 
 
-### How can I contribute?
-
-
-#### Reporting issues/bugs
+### Reporting issues/bugs
 ---
 
 Despite our best efforts, bugs will occasionally slip through the cracks. If you find one, from text issues to functionality issues please [submit an issue](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues). Issues allow us to keep track of and prioritize fixes. Before submitting an issue, please take a quick stroll through the posted issues and check if it has been submitted already.
@@ -34,7 +31,7 @@ When submitting an issue, please try to be as descriptive as possible and includ
 
 As the issue gets picked up, we might reach out for more information and you might receive emails from us.
 
-#### Suggesting enhancements
+### Suggesting enhancements
 ---
 
 Aggiemap is far from perfect; if you have any ideas for features or changes that would improve the usability and experience we would love to hear from you. Like bugs, enhancements are tracked as [issues with the "enhancement" label](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement).
@@ -53,7 +50,7 @@ Additionally, the following would be particularly useful for UI, design, and com
 - Animations
 
 
-#### Pull requests
+### Pull requests
 ---
 
 In order to make everyone's life easier, there are some guidelines that must be followed to ensure that contributions improve not only the functionality but also the quality of the code base to maintain some resemblance of maintainability and extensibility.
@@ -63,7 +60,7 @@ Pull requests should be born out of bug reports or feature suggestions or enhanc
 - Users will benefit from
 - Benefits the quality of the codebase
 
-##### Format
+#### Format
 
 In your PR, please be as descriptive as possible, providing screenshots as necessary to illustrate your changes.
 
@@ -93,21 +90,21 @@ Given that in a monorepo it's not uncommon to cross app/lib boundaries in a PR, 
 
 In cases where a PR affects various projects, and quite likely, the entire workspace, the project name can be omitted.
 
-##### PR atomicity
+#### PR atomicity
 
 It can be a difficult habit to break but it is imperative to maintaining a clean and meaningful merge history that is traceable, easily `bisect`able. Limit the scope of a pull request to only one feature/change.
 
-##### Commit messages and history
+#### Commit messages and history
 
 We are all about keeping clean and meaningful commit history. Please make sure all of your commit messages are descriptive and relevant to the changes made. Avoid overly concise and vague first-line messages like "fixes" or "fixed bug". Try and keep your first-line character count under 72 and use separate lines to include additional details as needed.
 
 Your resulting commit history should describe a journey from beginning to end.
 
-##### Style guide
+#### Style guide
 
 Please review and follow the [code style guide](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/wiki/Style-Guide). The overall goal for following a style guide is to ensure consistency and improve readability.
 
-##### Repository Structure
+#### Repository Structure
 
 This repository is powered by [Nx](https://nx.dev/). It provides the development tooling that enables many applications and libraries to co-exist in the same repository.
 
@@ -119,7 +116,7 @@ Nx supports multiple frameworks but we primarily use Angular for front-end and N
 
 While there is a long list of applications in the `apps` directory, some of them require secret configuration files not included in version control, for security purposes, that effectively "break" them. The main Aggiemap application does not require any special configuration or setup apart from the basic installation steps listed below.
 
-##### Regressions and status checks
+#### Regressions and status checks
 
 All changes cannot break Aggiemap or other applications. Continuous integration pipelines will catch most show-stopping problems but keep in mind the potential for downstream breaking changes. 
 
@@ -129,11 +126,11 @@ Nx provides a nifty interactive dependency graph tool that allows you to select 
 
 
 
-##### Unit tests
+#### Unit tests
 
 This is an area where we could see a lot of improvement. Unit tests are NOT required at the moment, but are highly appreciated. Unit tests are written with Jest and e2e tests with Cypress.
 
-#### General feedback or inquiries
+### General feedback or inquiries
 ---
 
 For general questions, feedback, or inquiries that require private communication, please email gis@tamu.edu.
