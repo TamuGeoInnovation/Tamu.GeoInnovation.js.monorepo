@@ -1,50 +1,34 @@
 # AggieMap & Friends Monorepo
 
-![CircleCI](https://img.shields.io/circleci/build/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/master)
-![Coveralls github](https://img.shields.io/coveralls/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo)
-![https://aggiemap.tamu.edu](https://img.shields.io/website?url=https%3A%2F%2Faggiemap.tamu.edu)
+![AggieMap Logo](/libs/assets/images/logo/TAM-PrimaryMarkBB.svg) [![Build Status](https://dev.azure.com/tamugeoinnovation/tamu.geoinnovation.js.monorepo/_apis/build/status/Monorepo?branchName=development)](https://dev.azure.com/tamugeoinnovation/tamu.geoinnovation.js.monorepo/_apis/build/status/Monorepo?branchName=development) ![Coveralls github](https://img.shields.io/coveralls/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo)
 
-![AggieMap Logo](/libs/assets/images/logo/TAM-PrimaryMarkBB.svg)
+This monorepo is maintained by the Texas A&M GeoInnovation Service Center and contains everything related to the Aggiemap platform. The goal of this platform is to create a reusable set of building blocks that can be used not only for the public-facing website @ aggiemap.tamu.edu but also on various projects ranging from derivatives of Aggiemap for campus operations (utilities and energy services, transportation), multidisciplinary applications, and internal websites and services within our service center. We invite anyone in the Aggie community to contribute and share their feedback.
 
-# Installation
+## Installation
 
 1. Clone this repo
-2. `npm install` from the root of the directory
+2. Install [Node and NPM](https://nodejs.org/en/)
+3. On the repo root, install dependencies with `npm ci`
+4. Run an application
 
-# Creating a new app
+## Running an application
 
-1. Use `ng g app myapp --style=scss` to scaffold the app
+All applications are "served" locally with a simple command with the pattern:
 
-# Create NestJS app
+`nx run [project-name]:serve`
 
-1. `nx list @nrwl/nest`
-2. `ng g @nrwl/nest:application`
+The project name is exactly the name of the directory. For example, the command to run Aggiemap locally is:
 
-# Create NestJS modules / controllers / services / etc
+`nx run aggiemap-angular:serve`
 
-1. `nx list @nestjs/schematics`
-2. `ng g @nestjs/schematics:service`
-3. `ng g @nestjs/schematics:module test --source-root=libs/two/data-api/src/lib/modules --dry-run`
+*Note: On macOS systems it might be required to prepend the command with `npx`*
 
-# Creating libraries
+Once the application is running, it will be available locally @ http://localhost:4200.
 
-1. `ng g @nrwl/web:library`
+As you make changes to the project, the local web server will automatically rebuild affected chunks and refresh the page.
 
-# Viewing on mobile device
+## Contributing
 
-1. Use `ng serve --aot --project=myapp --host 0.0.0.0`
+If you would like to contribute, please read the[ contribution guidelines](CONTRIBUTING.md). 
 
-# Running AggieMap
-
-Run `ng serve --project=aggiemap-angular --aot` to start a local webserver at https://localhost:4200.
-
-As you make changes to the project, the local webserver will automatically rebuild and, if AggieMap is open in a webbrowser, the page will reload automatically
-
-# Submitting Pull Requests
-
-When submitting PRs be sure that your changes pass Continuous Integration.
-
-# Starting inspector on localhost:7777 failed: address already in use
-
-1. https://github.com/nrwl/nx/issues/1248
-2. Use `ng serve {projectname} --configuration=development` to launch
+For general questions, feedback, or inquiries that require private communication, please email gis@tamu.edu.
