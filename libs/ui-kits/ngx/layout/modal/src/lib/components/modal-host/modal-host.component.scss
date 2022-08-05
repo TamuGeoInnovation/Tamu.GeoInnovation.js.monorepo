@@ -34,8 +34,8 @@
   border-radius: 3pt;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   padding: 1.25rem 0 2.5rem 0;
-  max-width: 95%;
   max-height: 95%;
+  max-width: 95%;
   box-sizing: border-box;
 
   header,
@@ -69,6 +69,18 @@
 
   .modal--body {
     overflow-y: auto;
+  }
+}
+
+@media screen and (min-width: 550px) {
+  .modal--container {
+    max-width: 75%;
+  }
+}
+
+@media screen and (min-width: 767px) {
+  .modal--container {
+    max-width: 60%;
   }
 }
 
