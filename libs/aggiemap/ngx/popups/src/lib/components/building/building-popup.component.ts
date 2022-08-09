@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
-import { v4 as guid } from 'uuid';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
@@ -15,8 +14,6 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   styleUrls: ['../base/base.popup.component.scss']
 })
 export class BuildingPopupComponent extends BaseDirectionsComponent implements OnInit {
-  public proctorURL: string;
-
   constructor(
     private rtr: Router,
     private rt: ActivatedRoute,
@@ -29,8 +26,6 @@ export class BuildingPopupComponent extends BaseDirectionsComponent implements O
 
   public ngOnInit() {
     super.ngOnInit();
-
-    this.proctorURL = `https://proctorlist.tamu.edu/?utm_source=aggiemap`;
   }
 
   public startDirections() {
@@ -39,24 +34,5 @@ export class BuildingPopupComponent extends BaseDirectionsComponent implements O
         this.data.attributes.BldgAbbr ? this.data.attributes.BldgAbbr : this.data.attributes.Abbrev
       }`
     );
-  }
-
-  public buildingProctorClick() {
-    const label = {
-      guid: guid(),
-      date: Date.now(),
-      value: {
-        number: this.data.attributes.Number,
-        abbreviation: this.data.attributes.BldgAbbr ? this.data.attributes.BldgAbbr : this.data.attributes.Abbrev
-      }
-    };
-
-    this.anl.eventTrack.next({
-      action: 'Building Proctor',
-      properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
-      }
-    });
   }
 }
