@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
@@ -135,10 +135,11 @@ export class MapComponent implements OnInit, OnDestroy {
       .pipe(
         filter((settings) => {
           return settings['beta_acknowledge'] === false;
-        })
+        }),
+        withLatestFrom(this.isDev)
       )
-      .subscribe(() => {
-        this.openBetaModal();
+      .subscribe(([settingValue, isDev]) => {
+        this.openBetaModal(isDev);
       });
   }
 
@@ -203,17 +204,19 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   };
 
-  public openBetaModal() {
-    this.ms
-      .open<boolean>(BetaPromptComponent)
-      .pipe(
-        filter((acknowledged) => {
-          return acknowledged;
-        })
-      )
-      .subscribe(() => {
-        this.updateModalSettings();
-      });
+  public openBetaModal(shouldOpen: boolean) {
+    if (shouldOpen) {
+      this.ms
+        .open<boolean>(BetaPromptComponent)
+        .pipe(
+          filter((acknowledged) => {
+            return acknowledged;
+          })
+        )
+        .subscribe(() => {
+          this.updateModalSettings();
+        });
+    }
   }
 
   private updateModalSettings() {
