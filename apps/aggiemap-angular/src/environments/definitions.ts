@@ -5,7 +5,7 @@ import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import esri = __esri;
 
 export const Connections = {
-  basemapUrl: 'https://fac-arc.apogee.tamu.edu/arcgis/rest/services/Testing/TAMU_BaseMap_2022/MapServer',
+  basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
