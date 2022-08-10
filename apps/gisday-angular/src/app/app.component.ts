@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
-import { environment } from '../environments/environment.dev';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'tamu-gisc-root',
