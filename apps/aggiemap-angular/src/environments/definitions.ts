@@ -55,7 +55,7 @@ export const Definitions = {
     id: 'surface-lots',
     layerId: 'surface-lots-layer',
     name: 'Surface Lots',
-    url: `${Connections.basemapUrl}/12`,
+    url: `${Connections.basemapUrl}/8`,
     popupComponent: Popups.ParkingLotPopupComponent
   },
   VISITOR_PARKING: {
@@ -501,7 +501,7 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'parking-lot',
     name: 'Parking Lot',
-    url: `${Connections.basemapUrl}/12`,
+    url: `${Connections.basemapUrl}/8`,
     queryParams: {
       ...commonQueryParams,
       where: {
