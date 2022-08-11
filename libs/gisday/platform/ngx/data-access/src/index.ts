@@ -1,5 +1,4 @@
 // Guards
-export * from './lib/modules/guards/login-guard/login-guard.guard';
 export * from './lib/modules/guards/logout-guard/logout-guard.guard';
 export * from './lib/modules/guards/admin-guard/admin.guard';
 
