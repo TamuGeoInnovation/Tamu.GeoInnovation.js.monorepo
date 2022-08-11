@@ -31,10 +31,6 @@
   </div>
 
   <div class="account-register-prompt">
-    <%if (!devMode) { %>
-    <p>Don't have an account? <a href="../user/register">Get started</a>.</p>
-    <%} else { %>
-    <p>Don't have an account? <a href="../user/register">Get started</a>.</p>
-    <%} %>
+    <p>Don't have an account? <a href="../user/register?returnUrl=<%= returnUrl %>">Get started</a>.</p>
   </div>
 </form>

@@ -25,6 +25,10 @@ export class InteractionController {
 
       const name = prompt.name;
 
+      const hostname = urlFragment(client.redirectUris[0], 'hostname');
+      const host = urlFragment(client.redirectUris[0], 'host');
+      const protocol = urlFragment(client.redirectUris[0], 'protocol');
+
       switch (name) {
         case 'login': {
           const locals = {
@@ -33,7 +37,8 @@ export class InteractionController {
             error: false,
             interaction: true,
             devMode: urlHas(req.path, 'dev', true),
-            requestingHost: urlFragment(client.redirectUris[0], 'hostname')
+            requestingHost: hostname,
+            returnUrl: `${protocol}//${host}`
           };
 
           return res.render('user-info', locals, (err, html) => {

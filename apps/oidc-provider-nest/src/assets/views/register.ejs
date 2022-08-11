@@ -1,4 +1,6 @@
 <form autocomplete="off" action="/user/register" method="post">
+  <input type="hidden" name="returnUrl" value="<%= returnUrl %>" />
+
   <% if (error) {%>
     <ul>
     <% message.map((errorMessage) => { %>
