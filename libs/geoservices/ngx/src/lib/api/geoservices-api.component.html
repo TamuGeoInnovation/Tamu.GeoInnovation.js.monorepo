@@ -29,22 +29,38 @@
 
       <div class="menu-item" [routerLink]="['reverse-geocoding']" routerLinkActive="active">
         <span class="material-icons">settings_backup_restore</span>
-        <p>Reverse Geocoding</p>
+        <ul>
+          <li>Reverse Geocoding</li>
+          <ul>
+            <li scrollTo="#overview">Overview</li>
+            <li scrollTo="#parameters">Parameters</li>
+            <li scrollTo="#response">Response</li>
+          </ul>
+        </ul>
       </div>
 
-      <div class="menu-item">
+      <div class="menu-item" [routerLink]="['address-processing']" routerLinkActive="active">
         <span class="material-icons">apartment</span>
-        <p>Address Processing</p>
+        <ul>
+          <li>Address Processing</li>
+          <ul>
+            <li scrollTo="#overview">Overview</li>
+            <li scrollTo="#parameters">Parameters</li>
+            <li scrollTo="#response">Response</li>
+          </ul>
+        </ul>
       </div>
 
-      <div class="menu-item">
+      <div class="menu-item" [routerLink]="['census-intersection']" routerLinkActive="active">
         <span class="material-icons">group</span>
-        <p>Census Intersection</p>
-      </div>
-
-      <div class="menu-item">
-        <span class="material-icons">blur_linear</span>
-        <p>K-Nearest</p>
+        <ul>
+          <li>Census Intersection</li>
+          <ul>
+            <li scrollTo="#overview">Overview</li>
+            <li scrollTo="#parameters">Parameters</li>
+            <li scrollTo="#response">Response</li>
+          </ul>
+        </ul>
       </div>
     </div>
   </div>
