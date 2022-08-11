@@ -13,17 +13,32 @@ export const routes: Route[] = [
     component: GeoservicesApiComponent,
     children: [
       {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'geocoding'
-      },
-      {
         path: 'getting-started',
         loadChildren: () => import('./pages/implementations/implementations.module').then((m) => m.ImplementationsModule)
       },
       {
         path: 'geocoding',
         loadChildren: () => import('./pages/geocoding/geocoding.module').then((m) => m.GeocodingModule)
+      },
+      {
+        path: 'reverse-geocoding',
+        loadChildren: () =>
+          import('./pages/reverse-geocoding/reverse-geocoding.module').then((m) => m.ReverseGeocodingModule)
+      },
+      {
+        path: 'address-processing',
+        loadChildren: () =>
+          import('./pages/address-processing/address-processing.module').then((m) => m.AddressProcessingModule)
+      },
+      {
+        path: 'census-intersection',
+        loadChildren: () =>
+          import('./pages/census-intersection/census-intersection.module').then((m) => m.CensusIntersectionModule)
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'getting-started'
       }
     ]
   }
