@@ -8,7 +8,7 @@ import { AuthModule, LogLevel, AutoLoginPartialRoutesGuard } from 'angular-auth-
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
@@ -73,7 +73,7 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    canActivate: [LoginGuard],
+    canActivate: [AutoLoginPartialRoutesGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule)
   },
   {
