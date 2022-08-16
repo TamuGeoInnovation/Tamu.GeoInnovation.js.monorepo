@@ -2,16 +2,24 @@
   <h1 class="section-header">Address Processing API <span class="section-header-api-version">| {{ apiVersion }}</span></h1>
 
   <div class="section-content">
-    <p>The following web services provide access to the Texas A&M Geoservices address processing system. The versions below are the simplified APIs and offer reduced input parameters and output values than do the <a href="http://" target="_blank" rel="noopener noreferrer">advanced Geocoding APIs</a> which provide additional metadata about the internal working of the Texas A&M Geoservices Geocoder as well as advanced options for requesting specific computational options, reference data sources, output hierarchies, etc. (i.e., all the <a href="http://" target="_blank" rel="noopener noreferrer">science under the hood</a>).</p>
-
-    <p>Most people probably don't need or care about the internal workings of geocoding systems, but they are provided in the advanced APIs in hopes that more people start to! If you are brave, <a href="http://" target="_blank" rel="noopener noreferrer"> here to view the advanced versions of the API's</a>.</p>
-
     <div class="service-endpoint">
       <div class="service-verb get">GET</div>
       <div class="service-address">{{ url }}</div>
     </div>
 
     <p><a href="http://" target="_blank" rel="noopener noreferrer">Looking for an older version?</a></p>
+
+    <p>Address processing is a combination of two processes bundled into one: address parsing and address normalization.</p>
+
+    <p><strong>Address parsing</strong> is the process of dividing a single address string into its individual component parts. A set of rules have been developed using tokenization on white spaces between words, the ordering of the tokens, and a series of alias tables to determine each of the individual address components.</p>
+
+    <p>The Texas A&M Geoservices Geocoder uses a deterministic token-based context-aware substitution table strategy to parse the input data. A set of rules have been developed using tokenization on white spaces between words, the ordering of the tokens, and a series of alias tables to determine each of the individual address components.</p>
+
+    <p><strong>Address normalization</strong> converts pieces of an input address into their standardized equivalents. Once the type of the tokens have been identified, normalization is performed with more alias tables to make a best effort attempt to normalize the components to the desired output format. Currently, we have fairly compliant implementations of the <a href="http://pe.usps.gov/text/pub28/welcome.htm">USPS Publication 28 Standard</a>, the <a href="http://www.census.gov/geo/www/tiger/">US Census TIGER/Line Address Format</a>, the address format used by the <a href="http://portal.lacounty.gov/wps/portal/cio/home">Los Angeles County Chief Information Office</a>.</p>
+
+    <h3>CASS Certification</h3>
+
+    <p>Note: Please note that this software is <strong>not </strong><a href="http://www.usps.com/ncsc/addressservices/certprograms/cass.htm">USPS CASS Certified</a> but works fairly well on most normal address data and is constantly being improved. If you encounter any problems or find any cases where the software fails, <a [routerLink]="['/contact/address-correction']">we would like to hear about it</a> so we can work to improve the quality of the services.</p>
   </div>
 </section>
 
@@ -31,7 +39,7 @@
         <td>apiKey *</td>
         <td>
           <div>
-            <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key.</div>
+            <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key</div>
             <div class="faux-link" scrollTo="#apiKey">More details</div>
           </div>
         </td>
@@ -42,7 +50,7 @@
         <td>version *</td>
         <td>
           <div>
-            <div>Target API version.</div>
+            <div>Target API version</div>
             <div class="faux-link" scrollTo="#version">More details</div>
           </div>
         </td>
@@ -50,113 +58,69 @@
       </tr>
 
       <tr>
-        <td>streetAddress</td>
+        <td>nonParsedStreetAddress</td>
         <td>
           <div>
-            <div>Non-parsed street address value.</div>
-            <div class="faux-link" scrollTo="#streetAddress">More details</div>
+            <div>Non-parsed street address value</div>
+            <div class="faux-link" scrollTo="#nonParsedAddress">More details</div>
           </div>
         </td>
         <td></td>
       </tr>
 
       <tr>
-        <td>city</td>
+        <td>nonParsedCity</td>
         <td>
           <div>
-            <div>City value.</div>
-            <div class="faux-link" scrollTo="#city">More details</div>
+            <div>Non-parsed city value</div>
+            <div class="faux-link" scrollTo="#nonParsedCity">More details</div>
           </div>
         </td>
         <td></td>
       </tr>
 
       <tr>
-        <td>state</td>
+        <td>nonParsedState</td>
         <td>
           <div>
             <div>State abbreviation code</div>
-            <div class="faux-link" scrollTo="#state">More details</div>
+            <div class="faux-link" scrollTo="#nonParsedState">More details</div>
           </div>
         </td>
         <td></td>
       </tr>
 
       <tr>
-        <td>zip</td>
+        <td>nonParsedZip</td>
         <td>
           <div>
-            <div>Zip code number.</div>
-            <div class="faux-link" scrollTo="#zip">More details</div>
+            <div>Zip code number</div>
+            <div class="faux-link" scrollTo="#nonParsedZip">More details</div>
           </div>
         </td>
         <td></td>
       </tr>
 
       <tr>
-        <td>allowTies</td>
+        <td>addressFormat</td>
         <td>
           <div>
-            <div>Flag indicating to return ties as valid results or handle using the <code class="secondary">tieBreakingStrategy</code> parameter.</div>
-            <div class="faux-link" scrollTo="#allowTies">More details</div>
+            <div>Output address format</div>
+            <div class="faux-link" scrollTo="#addressFormat">More details</div>
           </div>
         </td>
-        <td>false</td>
+        <td>USPSPublication28</td>
       </tr>
 
       <tr>
-        <td>tieBreakingStrategy</td>
+        <td>responseFormat</td>
         <td>
           <div>
-            <div>Describes the strategy used to break ties and not return ties as valid results. Requires <code class="secondary">allowTies</code> to be true.</div>
-            <div class="faux-link" scrollTo="#tieBreakingStrategy">More details</div>
-          </div>
-        </td>
-        <td>flipACoin</td>
-      </tr>
-
-      <tr>
-        <td>census</td>
-        <td>
-          <div>
-            <div>Describes whether or not census variables will be calculated for the geocode.</div>
-            <div class="faux-link" scrollTo="#census">More details</div>
-          </div>
-        </td>
-        <td>false</td>
-      </tr>
-
-      <tr>
-        <td>censusYear</td>
-        <td>
-          <div>
-            <div>Year or list of years of census data to intersect with.</div>
-            <div class="faux-link" scrollTo="#censusYear">More details</div>
-          </div>
-        </td>
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>format</td>
-        <td>
-          <div>
-            <div>Response return format.</div>
-            <div class="faux-link" scrollTo="#format">More details</div>
+            <div>Response return format</div>
+            <div class="faux-link" scrollTo="#responseFormat">More details</div>
           </div>
         </td>
         <td>json</td>
-      </tr>
-
-      <tr>
-        <td>includeHeader</td>
-        <td>
-          <div>
-            <div>Describes whether or not to include column headers for text (cvs/tsv) output formats.</div>
-            <div class="faux-link" scrollTo="#includeHeader">More details</div>
-          </div>
-        </td>
-        <td>false</td>
       </tr>
 
       <tr>
@@ -190,7 +154,7 @@
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
 
-      <p>Every geocoding API call requires an accompanying API key and is unique for every registered user on the platform. Each request will deduct one credit from your account balance.</p>
+      <p>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform. Each request will deduct one credit from your account balance.</p>
 
       <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
     </div>
@@ -207,33 +171,35 @@
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
-      <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
+      <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a address processing request.</p>
     </div>
   </div>
 
-  <div class="parameter-detail-container" id="streetAddress">
+  <div class="parameter-detail-container" id="nonParsedAddress">
     <div class="parameter-detail-header">
       <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>streetAddress</h3>
+      <h3>nonParsedAddress</h3>
       <div class="parameter-detail-header-badges"></div>
     </div>
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Non-parsed street address.</p>
+      <p>Example: 3620 North Vermont Ave W.</p>
     </div>
   </div>
 
-  <div class="parameter-detail-container" id="city">
+  <div class="parameter-detail-container" id="nonParsedCity">
     <div class="parameter-detail-header">
       <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>city</h3>
+      <h3>nonParsedCity</h3>
       <div class="parameter-detail-header-badges"></div>
     </div>
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>City value, case-insensitive. Examples:</p>
+
       <ul>
         <li>Los Angeles</li>
         <li>San Francisco</li>
@@ -242,16 +208,17 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container" id="state">
+  <div class="parameter-detail-container" id="nonParsedState">
     <div class="parameter-detail-header">
       <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>state</h3>
+      <h3>nonParsedState</h3>
       <div class="parameter-detail-header-badges"></div>
     </div>
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Two-letter U.S. state code, case-insensitive. Examples:</p>
+
       <ul>
         <li>CA</li>
         <li>TX</li>
@@ -260,10 +227,10 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container" id="zip">
+  <div class="parameter-detail-container" id="nonParsedZip">
     <div class="parameter-detail-header">
       <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>zip</h3>
+      <h3>nonParsedZip</h3>
       <div class="parameter-detail-header-badges"></div>
     </div>
 
@@ -278,85 +245,174 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container" id="allowTies">
+  <div class="parameter-detail-container" id="addressFormat">
     <div class="parameter-detail-header">
       <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>allowTies</h3>
+      <h3>addressFormat</h3>
       <div class="parameter-detail-header-badges"></div>
     </div>
 
     <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
-      <p>Flag to indicate to return ties as valid results or handle using the tieBreakingStrategy parameter. Ties are allowed by default. if <code class="secondary">false</code> is provided, a valid strategy for <code class="secondary">tieBreakingStrategy</code> must also be provided.</p>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="tieBreakingStrategy">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>tieBreakingStrategy</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
-      <p>The name of the tie-breaking strategy to use when ties are found. Supported values:</p>
-      <ul>
-        <li>
-          flipACoin
-          <ul>
-            <li>Choose and return one of the ties at random.</li>
-          </ul>
-        </li>
-        <li>
-          revertToHierarchy
-          <ul>
-            <li>Fail on a tie and match to the next level of the geographic hierarchy - parcel, then street, then ZIP, then city, etc.</li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="census">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>census</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 2.93</p>
-      <p>Describes whether census variables should be calculated for the requested geocode.</p>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="censusYear">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>censusYear</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 2.96</p>
-      <p>Pipe-separated list of supported census data years to intersect with. Available years include:</p>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p>Users can select which output format they would like their data placed into. Currently we are fairly compliant with the following address formats.</p>
 
       <ul>
-        <li>1990</li>
-        <li>2000</li>
-        <li>2010</li>
-        <li>allAvailable</li>
+        <li><a href="http://pe.usps.gov/text/pub28/welcome.htm">USPS Publication 28 Address Standard</a></li>
+        <li><a href="http://www.census.gov/geo/www/tiger/">US Census TIGER/Line Address Format</a></li>
+        <li><a href="http://portal.lacounty.gov/wps/portal/cio/home">Los Angeles County Chief Information Office</a></li>
       </ul>
 
-      <p>The value <code class="secondary">allAvailable</code> is a shorthand for all of the supported years.</p>
+      <p>The main difference between these formats is the granularity that the address components are broken up into. The following table lists the address components that each address format reports. An X means the format supports a separate field for the address component, while a - means that the address component is not supported. When a component is not supported, it will instead be contained as part of the Name field.</p>
+
+      <div *giscAccordion="let parent;">
+        <div class="pill" [giscAccordionHeader]="parent">
+          <div *ngIf="!parent.expanded"><span>Show Comparison Table</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+          <div *ngIf="parent.expanded"><span>Hide Comparison Table</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+        </div>
+
+        <div class="attribute-node" *giscAccordionContent="parent.expanded">
+          <table id="addressFormatTable">
+            <thead>
+              <tr>
+                <th>Address Component</th>
+                <th>USPSPublication28</th>
+                <th>USCensusTiger</th>
+                <th>LACounty</th>
+                <th>Examples</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Number</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>123</td>
+              </tr>
+
+              <tr>
+                <td>Number Fractional</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>1/2</td>
+              </tr>
+
+              <tr>
+                <td>Pre-Directional</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>North, S, E, West</td>
+              </tr>
+
+              <tr>
+                <td>Pre-Qualifier</td>
+                <td><span class="material-icons">remove</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>Old, New, Business</td>
+              </tr>
+
+              <tr>
+                <td>Pre-Type</td>
+                <td><span class="material-icons">remove</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>Route, US HWY, Avenue, Via, Paseo</td>
+              </tr>
+
+              <tr>
+                <td>Pre-Article</td>
+                <td><span class="material-icons">remove</span></td>
+                <td><span class="material-icons">remove</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>La, De La, Del</td>
+              </tr>
+
+              <tr>
+                <td>Name</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>Main</td>
+              </tr>
+
+              <tr>
+                <td>Post-Article</td>
+                <td><span class="material-icons">remove</span></td>
+                <td><span class="material-icons">remove</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>La, De La, Del</td>
+              </tr>
+
+              <tr>
+                <td>Suffix</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>Street, Blvd</td>
+              </tr>
+
+              <tr>
+                <td>Post-Qualifier</td>
+                <td><span class="material-icons">remove</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>Private, Bypass</td>
+              </tr>
+
+              <tr>
+                <td>Post Directional</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>North, S, E, West</td>
+              </tr>
+
+              <tr>
+                <td>Suite Type</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>Apt, Suite, FL</td>
+              </tr>
+
+              <tr>
+                <td>Suite Number</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>24A</td>
+              </tr>
+
+              <tr>
+                <td>Post Office Box Type</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>PO Box, RR, HC</td>
+              </tr>
+
+              <tr>
+                <td>Post Office Box Number</td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td><span class="material-icons">check</span></td>
+                <td>0255</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="parameter-detail-container" id="format">
+  <div class="parameter-detail-container" id="responseFormat">
     <div class="parameter-detail-header">
       <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>format</h3>
+      <h3>responseFormat</h3>
       <div class="parameter-detail-header-badges"></div>
     </div>
 
@@ -2016,3 +2072,4 @@
     </tamu-gisc-tab>
   </tamu-gisc-tabs>
 </section>
+
