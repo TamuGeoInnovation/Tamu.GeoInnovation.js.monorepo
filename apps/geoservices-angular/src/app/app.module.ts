@@ -54,7 +54,8 @@ export function getHighlightLanguages() {
     RouterModule.forRoot(routes, {
       scrollPositionRestoration: 'enabled',
       relativeLinkResolution: 'corrected',
-      anchorScrolling: 'enabled'
+      anchorScrolling: 'enabled',
+      scrollOffset: [0, 64]
     }),
     BrowserAnimationsModule,
     HighlightPlusModule,
