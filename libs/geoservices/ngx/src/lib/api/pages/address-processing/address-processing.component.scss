@@ -4,7 +4,16 @@
     &:nth-child(3),
     &:nth-child(4) {
       text-align: center;
+
+      .material-icons {
+        &.success {
+          color: hsl(223, 75%, 67%);
+        }
+
+        &.unavailable {
+          color: #ef5350;
+        }
+      }
     }
   }
 }
-

@@ -163,17 +163,21 @@ export interface IKNearestOptions {
   notStore?: boolean;
 }
 
+export type AddressProcessingAddressFormat = 'USPSPublication28' | 'USCensusTiger' | 'LACounty';
+
 export interface IAddressParsingOptions {
   apiKey: string;
-  version: '4.10';
+  version: '5.0';
   nonParsedStreetAddress?: string;
-  nonParsedCity?: string;
-  nonParsedState?: string;
-  nonParsedZip?: string;
-  addressFormat?: 'USPSPublication28' | 'USCensusTiger' | 'LACounty';
+  nonParsedStreetCity?: string;
+  nonParsedStreetState?: string;
+  nonParsedStreetZIP?: string;
+  addressFormat?: Array<AddressProcessingAddressFormat>;
   responseFormat?: 'csv' | 'tsv' | 'xml' | 'json';
+  includeHeader?: boolean;
   notStore?: boolean;
 }
+
 //
 // Results
 //
@@ -372,36 +376,75 @@ export interface IKNearestFeatureRecord {
 }
 
 export interface IAddressParsingResult {
-  TransactionId: string;
-  Version: string;
-  QueryStatusCode: string;
-  StreetAddresses: Array<IAddressParsingStreetAddressRecord>;
+  statusCode: number;
+  message: string;
+  error: string | null;
+  data: {
+    version: {
+      major: number;
+      minor: number;
+      build: number;
+      revision: number;
+      majorRevision: number;
+      minorRevision: number;
+    };
+    timeTaken: number;
+    transactionGuid: string;
+    apiHost: string;
+    clientHost: string;
+    queryStatusCode: string;
+    inputParameterSet: {
+      streetAddress: string;
+      city: string;
+      state: string;
+      zip: string;
+      version: string | null;
+      apiKey: string | null;
+      dontStoreTransactionDetails: boolean | null;
+      addressFormatTypes: Array<AddressProcessingAddressFormat>;
+      multiThreading: boolean | null;
+      includeHeader: boolean | null;
+      verbose: boolean | null;
+      outputFormat: string | null;
+    };
+    results: Array<IAddressParsingStreetAddressRecord>;
+  };
 }
 
 export interface IAddressParsingStreetAddressRecord {
-  Number: string;
-  NumberFractional: string;
-  PreDirectional: string;
-  PreQualifier: string;
-  PreType: string;
-  PreArticle: string;
-  StreetName: string;
-  Suffix: string;
-  PostArticle: string;
-  PostQualifier: string;
-  PostDirectional: string;
-  SuiteType: string;
-  SuiteNumber: string;
-  City: string;
-  State: string;
-  ZIP: string;
-  ZIPPlus1: string;
-  ZIPPlus2: string;
-  ZIPPlus3: string;
-  ZIPPlus4: string;
-  ZIPPlus5: string;
-  PostOfficeBoxType: string;
-  PostOfficeBoxNumber: string;
+  timeTaken: number;
+  exceptionOcurred: boolean;
+  errorMessage: string | null;
+  parsedAddress: {
+    addressLocationType: string;
+    addressFormatType: AddressProcessingAddressFormat;
+    number: string;
+    numberFractional: string | null;
+    preDirectional: string | null;
+    preQualifier: string | null;
+    preType: string | null;
+    preArticle: string;
+    name: string;
+    postArticle: string;
+    postQualifier: string;
+    postDirectional: string;
+    suffix: string;
+    suiteType: string;
+    suiteNumber: string;
+    city: string;
+    minorCivilDivision: string | null;
+    consolidatedCity: string | null;
+    countySubRegion: string | null;
+    county: string | null;
+    state: string;
+    zip: string;
+    zipPlus1: string;
+    zipPlus2: string;
+    zipPlus3: string;
+    zipPlus4: string;
+    zipPlus5: string;
+    country: string | null;
+  };
 }
 
 //

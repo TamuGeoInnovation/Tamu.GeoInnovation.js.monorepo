@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AddressParser } from '@tamu-gisc/common/utils/geometry/geoprocessing';
+import { AddressProcessor } from '@tamu-gisc/common/utils/geometry/geoprocessing';
 
 @Component({
   selector: 'tamu-gisc-address-processing',
@@ -8,15 +8,18 @@ import { AddressParser } from '@tamu-gisc/common/utils/geometry/geoprocessing';
   styleUrls: ['./address-processing.component.scss']
 })
 export class AddressProcessingComponent {
-  public apiVersion: '4.10' = '4.10';
-  public url = 'https://geoservices.tamu.edu/Services/AddressNormalization/WebService/v04_01/Rest';
+  public apiVersion = '5.0';
+  public url = 'https://geoservices.tamu.edu/Api/AddressNormalization/V5/';
 
   public apiKey = 'demo';
 
-  public runner: AddressParser = new AddressParser({
+  public runner: AddressProcessor = new AddressProcessor({
     apiKey: this.apiKey,
-    version: '4.10',
-    nonParsedStreetAddress: '9355 Burton Way'
+    version: '5.0',
+    nonParsedStreetAddress: '123 Old Del Mar',
+    nonParsedStreetCity: 'Los Angeles',
+    nonParsedStreetState: 'California',
+    nonParsedStreetZIP: '900890255',
+    addressFormat: ['USPSPublication28', 'USCensusTiger', 'LACounty']
   });
 }
-

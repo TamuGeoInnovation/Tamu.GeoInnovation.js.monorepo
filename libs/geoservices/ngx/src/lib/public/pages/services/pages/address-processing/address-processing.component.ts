@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AddressParser } from '@tamu-gisc/common/utils/geometry/geoprocessing';
 import { Observable, of, switchMap } from 'rxjs';
+
+import { AddressProcessor } from '@tamu-gisc/common/utils/geometry/geoprocessing';
 
 @Component({
   selector: 'tamu-gisc-address-processing',
@@ -8,13 +9,13 @@ import { Observable, of, switchMap } from 'rxjs';
   styleUrls: ['./address-processing.component.scss']
 })
 export class AddressProcessingComponent implements OnInit {
-  private address: AddressParser;
+  private address: AddressProcessor;
   public result: Observable<string>;
 
   public ngOnInit(): void {
-    this.address = new AddressParser({
+    this.address = new AddressProcessor({
       apiKey: 'demo',
-      version: '4.10',
+      version: '5.0',
       nonParsedStreetAddress: '9355 Burton Way'
     });
 

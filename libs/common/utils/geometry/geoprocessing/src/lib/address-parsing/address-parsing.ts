@@ -1,7 +1,7 @@
 import { IAddressParsingOptions, TransformersMap, IAddressParsingResult, ApiResponseFormat } from '../core/types';
 import { ApiBase } from '../core/base';
 
-export class AddressParser extends ApiBase<
+export class AddressProcessor extends ApiBase<
   TransformersMap<IAddressParsingOptions>,
   IAddressParsingOptions,
   IAddressParsingResult
@@ -13,7 +13,7 @@ export class AddressParser extends ApiBase<
 
     this.settings = {
       serviceUrl: {
-        value: 'https://geoservices.tamu.edu/Services/AddressNormalization/WebService/v04_01/Rest/?',
+        value: 'https://prod.geoservices.tamu.edu/Api/AddressNormalization/V5/?',
         excludeParams: true
       },
       format: {
@@ -24,7 +24,7 @@ export class AddressParser extends ApiBase<
         value: 'json'
       },
       version: {
-        value: '4.10'
+        value: '5.0'
       }
     };
 
