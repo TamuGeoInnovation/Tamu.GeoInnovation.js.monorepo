@@ -465,137 +465,91 @@
           </thead>
           <tbody>
             <tr>
-              <td>statusCode</td>
-              <td>
-                <div>
-                  <div>A standard HTTP code returned by the API that describes the result of the request.</div>
-                  <div class="faux-link" scrollTo="#responseStatusCode">More details</div>
-                </div>
-              </td>
-              <td>Number</td>
-            </tr>
-
-            <tr>
-              <td>message</td>
-              <td>
-                <div>
-                  <div>A standard HTTP code returned by the API that describes the result of the request.</div>
-                  <div class="faux-link" scrollTo="#responseStatusCode">More details</div>
-                </div>
-              </td>
-              <td>Number</td>
-            </tr>
-
-            <tr>
               <td>version</td>
               <td>
                 <div>
-                  <div>This field will report the full (major, minor, patch) version number used in the processing of the input parameters.</div>
+                  <div>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</div>
                   <div class="faux-link" scrollTo="#responseVersion">More details</div>
+                </div>
+              </td>
+              <td>ApiVersion</td>
+            </tr>
+
+            <tr>
+              <td>timeTaken</td>
+              <td>
+                <div>
+                  <div>Time required to execute the transaction, reported in milliseconds.</div>
+                  <div class="faux-link" scrollTo="#responseTimeTaken">More details</div>
+                </div>
+              </td>
+              <td>Number</td>
+            </tr>
+
+            <tr>
+              <td>transactionGuid</td>
+              <td>
+                <div>
+                  <div>Unique ID assigned to the response.</div>
+                  <div class="faux-link" scrollTo="#responseTransactionGuid">More details</div>
                 </div>
               </td>
               <td>String</td>
             </tr>
 
             <tr>
-              <td>TransactionId</td>
+              <td>apiHost</td>
               <td>
                 <div>
-                  <div>Unique ID assigned to the response.</div>
-                  <div class="faux-link" scrollTo="#responseTransactionId">More details</div>
+                  <div>Public hostname where the transaction was executed.</div>
+                  <div class="faux-link" scrollTo="#responseApiHost">More details</div>
                 </div>
               </td>
               <td>String</td>
             </tr>
+
             <tr>
-              <td>Version</td>
+              <td>clientHost</td>
               <td>
                 <div>
-                  <div>This field will report the full (major, minor, patch) version number used in the processing of the input parameters.</div>
-                  <div class="faux-link" scrollTo="#responseVersion2">More details</div>
+                  <div>Public hostname where the transaction was executed.</div>
+                  <div class="faux-link" scrollTo="#responseClientHost">More details</div>
                 </div>
               </td>
               <td>String</td>
             </tr>
+
             <tr>
-              <td>QueryStatusCodeValue</td>
+              <td>queryStatusCode</td>
               <td>
                 <div>
                   <div>The value for the response status code.</div>
-                  <div class="faux-link" scrollTo="#responseQueryStatusCodeValue">More details</div>
+                  <div class="faux-link" scrollTo="#responseQueryStatusCode">More details</div>
                 </div>
               </td>
-              <td>Number</td>
+              <td>Enumerable&lt;String&gt;</td>
             </tr>
+
             <tr>
-              <td>FeatureMatchingResultType</td>
+              <td>inputParameterSet</td>
               <td>
                 <div>
-                  <div>Geocode match type.</div>
-                  <div class="faux-link" scrollTo="#responseFeatureMatchingResultType">More details</div>
+                  <div>Object representing the serialized input parameters the transaction was executed against.</div>
+                  <div class="faux-link" scrollTo="#responseInputParameterSet">More details</div>
                 </div>
               </td>
-              <td>String</td>
+              <td>AddressProcessSerializedInputs</td>
             </tr>
+
             <tr>
-              <td>FeatureMatchingResultCount</td>
+              <td>results</td>
               <td>
                 <div>
-                  <div>Number of ambiguous geocodes that matched the input parameters.</div>
-                  <div class="faux-link" scrollTo="#responseFeatureMatchingResultCount">More details</div>
+                  <div>Processed addresses, one for each input <code>addressFormat</code>.</div>
+                  <div class="faux-link" scrollTo="#responseResults">More details</div>
                 </div>
               </td>
-              <td>String</td>
-            </tr>
-            <tr>
-              <td>TimeTaken</td>
-              <td>
-                <div>
-                  <div>Geocode processing time (ms).</div>
-                  <div class="faux-link" scrollTo="#responseTimeTaken">More details</div>
-                </div>
-              </td>
-              <td>String</td>
-            </tr>
-            <tr>
-              <td>ExceptionOccurred</td>
-              <td>
-                <div>
-                  <div>Describes whether or not census variables will be calculated for the geocode.</div>
-                  <div class="faux-link" scrollTo="#responseExceptionOccurred">More details</div>
-                </div>
-              </td>
-              <td>String</td>
-            </tr>
-            <tr>
-              <td>Exception</td>
-              <td>
-                <div>
-                  <div>Indicates if any exceptions ocurred in the geocode.</div>
-                  <div class="faux-link" scrollTo="#responseException">More details</div>
-                </div>
-              </td>
-              <td>String</td>
-            </tr>
-            <tr>
-              <td>InputAddress</td>
-              <td>
-                <div>
-                  <div>Parsed input address</div>
-                  <div class="faux-link" scrollTo="#responseAddress">More details</div>
-                </div>
-              </td>
-              <td>Address</td>
-            </tr>
-            <tr>
-              <td>OutputGeocodes</td>
-              <td>
-                <div>
-                  <div>Collection of geocodes of size equal to <code class="secondary">FeatureMatchingResultCount</code>.</div>
-                  <div class="faux-link" scrollTo="#responseOutputGeocodes">More details</div>
-                </div>
-              </td>
-              <td>Array&lt;OutputGeocode&gt;</td>
+              <td>Array&lt;AddressRecordResult&gt;</td>
             </tr>
           </tbody>
         </table>
@@ -607,138 +561,80 @@
             <span class="material-icons permalink" title="Link to here">link</span>
             <h3>version</h3>
             <div class="parameter-detail-header-badges">
-              <code>Number</code>
+              <code>ApiVersion</code>
             </div>
           </div>
 
           <div class="parameter-detail-content">
-            <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
+            <p>Expresses the exact API version that was used to execute the transaction. This object contains the following fields:</p>
+
+            <ul>
+              <li>major</li>
+              <li>minor</li>
+              <li>build</li>
+              <li>revision</li>
+              <li>majorRevision</li>
+              <li>minorRevision</li>
+            </ul>
           </div>
         </div>
       </div>
 
       <div>
-        <div class="parameter-detail-container" id="responseTransactionId">
+        <div class="parameter-detail-container" id="responseTimeTaken">
           <div class="parameter-detail-header">
             <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>TransactionId</h3>
+            <h3>timeTaken</h3>
+            <div class="parameter-detail-header-badges">
+              <code>Number</code>
+            </div>
+          </div>
+
+          <div class="parameter-detail-content">
+            <p>Total time taken to process the entire transaction (including all address format types), expressed in milliseconds.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="parameter-detail-container" id="responseApiHost">
+          <div class="parameter-detail-header">
+            <span class="material-icons permalink" title="Link to here">link</span>
+            <h3>apiHost</h3>
             <div class="parameter-detail-header-badges">
               <code>String</code>
             </div>
           </div>
 
           <div class="parameter-detail-content">
-            <p>Unique ID assigned to the response. Unless the <code class="secondary">notStore</code> parameter was set to false, the ID will be able to be stored in your transaction history for lookup.</p>
+            <p>The public hostname of the API service.</p>
           </div>
         </div>
       </div>
 
       <div>
-        <div class="parameter-detail-container" id="responseVersion2">
+        <div class="parameter-detail-container" id="responseClientHost">
           <div class="parameter-detail-header">
             <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>Version</h3>
-            <div class="parameter-detail-header-badges">
-              <code>Number</code>
-            </div>
-          </div>
-
-          <div class="parameter-detail-content">
-            <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="parameter-detail-container" id="responseQueryStatusCodeValue">
-          <div class="parameter-detail-header">
-            <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>QueryStatusCodeValue</h3>
-            <div class="parameter-detail-header-badges">
-              <code>Number</code>
-            </div>
-          </div>
-
-          <div class="parameter-detail-content">
-            <p>A numeric code representing the state of the response. values and their names include:</p>
-
-            <table>
-              <thead>
-                <tr>
-                  <th>Code</th>
-                  <th>Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>200</td>
-                  <td>Success</td>
-                </tr>
-                <tr>
-                  <td>400</td>
-                  <td>API Key Error</td>
-                </tr>
-                <tr>
-                  <td>401</td>
-                  <td>API Key Missing</td>
-                </tr>
-                <tr>
-                  <td>402</td>
-                  <td>API Key Not Activated</td>
-                </tr>
-                <tr>
-                  <td>450</td>
-                  <td>General Non-Profit Error</td>
-                </tr>
-                <tr>
-                  <td>451</td>
-                  <td>Non-Profit Not Confirmed</td>
-                </tr>
-                <tr>
-                  <td>470</td>
-                  <td>Quota Exceeded Error</td>
-                </tr>
-                <tr>
-                  <td>471</td>
-                  <td>Anonymous Quota Exceeded</td>
-                </tr>
-                <tr>
-                  <td>472</td>
-                  <td>Paid Quota Exceeded</td>
-                </tr>
-                <tr>
-                  <td>480</td>
-                  <td>Version Missing</td>
-                </tr>
-                <tr>
-                  <td>481</td>
-                  <td>Version Invalid</td>
-                </tr>
-                <tr>
-                  <td>500</td>
-                  <td>General Failure</td>
-                </tr>
-                <tr>
-                  <td>501</td>
-                  <td>Internal Error</td>
-                </tr>
-                <tr>
-                  <td>0</td>
-                  <td>Unknown</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="parameter-detail-container" id="responseFeatureMatchingResultType">
-          <div class="parameter-detail-header">
-            <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>FeatureMatchingResultType</h3>
+            <h3>clientHost</h3>
             <div class="parameter-detail-header-badges">
               <code>String</code>
+            </div>
+          </div>
+
+          <div class="parameter-detail-content">
+            <p>The public hostname of the API service.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="parameter-detail-container" id="responseQueryStatusCode">
+          <div class="parameter-detail-header">
+            <span class="material-icons permalink" title="Link to here">link</span>
+            <h3>queryStatusCode</h3>
+            <div class="parameter-detail-header-badges">
+              <code>Enumerable&lt;QueryStatusCode&gt;</code>
             </div>
           </div>
 
@@ -755,11 +651,11 @@
               <tbody>
                 <tr>
                   <td>Unknown</td>
-                  <td>Description goes here.</td>
+                  <td>General catch-all for uncaught internal API errors.</td>
                 </tr>
                 <tr>
                   <td>Success</td>
-                  <td>Description goes here.</td>
+                  <td>Query completed without errors.</td>
                 </tr>
                 <tr>
                   <td>Ambiguous</td>
@@ -804,1277 +700,538 @@
       </div>
 
       <div>
-        <div class="parameter-detail-container" id="responseFeatureMatchingResultCount">
+        <div class="parameter-detail-container" id="responseInputParameterSet">
           <div class="parameter-detail-header">
             <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>FeatureMatchingResultCount</h3>
+            <h3>inputParameterSet</h3>
             <div class="parameter-detail-header-badges">
-              <code>Number</code>
+              <code>AddressProcessSerializedInputs</code>
             </div>
           </div>
 
           <div class="parameter-detail-content">
-            <p>Number of ambiguous geocodes that matched the input parameters.</p>
-          </div>
-        </div>
-      </div>
+            <p>Parameters serialized from the client query parameters and utilized to execute the transaction.</p>
 
-      <div>
-        <div class="parameter-detail-container" id="responseTimeTaken">
-          <div class="parameter-detail-header">
-            <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>TimeTaken</h3>
-            <div class="parameter-detail-header-badges">
-              <code>Number</code>
-            </div>
-          </div>
-
-          <div class="parameter-detail-content">
-            <p>Geocode processing time in milliseconds.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="parameter-detail-container" id="responseExceptionOccurred">
-          <div class="parameter-detail-header">
-            <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>ExceptionOccurred</h3>
-            <div class="parameter-detail-header-badges">
-              <code>Boolean</code>
-            </div>
-          </div>
-
-          <div class="parameter-detail-content">
-            <p>String boolean describing if an exception ocurred in the processing of the geocode.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="parameter-detail-container" id="responseException">
-          <div class="parameter-detail-header">
-            <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>Exception</h3>
-            <div class="parameter-detail-header-badges">
-              <code>String</code>
-            </div>
-          </div>
-
-          <div class="parameter-detail-content">
-            <p>Description of the exception, if any.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="parameter-detail-container" id="responseAddress">
-          <div class="parameter-detail-header">
-            <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>InputAddress</h3>
-            <div class="parameter-detail-header-badges">
-              <code>Address</code>
-            </div>
-          </div>
-
-          <div class="parameter-detail-content">
-            <p>Object containing the parsed input address parameters.</p>
-
-            <div class="attribute-list">
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">StreetAddress</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Parsed input street address, if any.</p>
-                </div>
+            <div *giscAccordion="let parent;">
+              <div class="pill" [giscAccordionHeader]="parent">
+                <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
               </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">City</div>
-                  <code class="secondary">String</code>
+              <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">streetAddress</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input address for the executed transaction.</p>
+                  </div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Parsed input city, if any.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">city</div>
+                    <code class="secondary">String</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">State</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Parsed input state code, if any.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">Zip</div>
-                  <code class="secondary">Number</code>
+                  <div class="attribute-description">
+                    <p>Input city for the executed transaction.</p>
+                  </div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Parsed input zip code, if any.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">state</div>
+                    <code class="secondary">String</code>
+                  </div>
 
-      <div>
-        <div class="parameter-detail-container" id="responseOutputGeocodes">
-          <div class="parameter-detail-header">
-            <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>OutputGeocodes</h3>
-            <div class="parameter-detail-header-badges">
-              <code>Array&lt;OutputGeocode&gt;</code>
-            </div>
-          </div>
-
-          <div class="parameter-detail-content">
-            <p>Array of geocodes matching the input parameters. Arrays will be of size equal to <code class="secondary">FeatureMatchingResultCount</code>. A geocode object is described as:</p>
-
-            <div class="attribute-list">
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">OutputGeocode</div>
-                  <code class="secondary">Geocode</code>
+                  <div class="attribute-description">
+                    <p>Input state for the executed transaction.</p>
+                  </div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Collection of geocodes and associated metadata.</p>
-
-                  <div *giscAccordion="let parent;">
-                    <div class="pill" [giscAccordionHeader]="parent">
-                      <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                      <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                    </div>
-
-                    <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">Latitude</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Latitude value for the matched geocode.</p>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">Longitude</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Longitude value for the matched geocode.</p>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">NAACCRGISCoordinateQualityCode</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Numeric code value for the associated NACCR GIS Coordinate Quality code. The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
-
-                          <div *giscAccordion="let parent;">
-                            <div class="pill" [giscAccordionHeader]="parent">
-                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                            </div>
-
-                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
-                              <p>The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
-
-                              <p>These codes describe information about:</p>
-
-                              <ul>
-                                <li>The quality of the reference feature matched to - parcel vs. street intersection</li>
-                                <li>The type of input data submitted - ZIP centroid of an address vs. ZIP centroid of a PO box</li>
-                              </ul>
-
-                              <table>
-                                <thead>
-                                  <tr>
-                                    <th>Code</th>
-                                    <th>Value</th>
-                                    <th>Description</th>
-                                  </tr>
-                                </thead>
-
-                                <tbody>
-                                  <tr>
-                                    <td>98</td>
-                                    <td>Unknown</td>
-                                    <td>Latitude and longitude assigned, but coordinate quality is unknown</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>00</td>
-                                    <td>AddressPoint</td>
-                                    <td>Coordinates derived from local government-maintained address points, which are based on property parcel locations, not interpolation over a street segment’s address range</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>01</td>
-                                    <td>GPS</td>
-                                    <td>Coordinates assigned by Global Positioning System (GPS)</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>02</td>
-                                    <td>Parcel</td>
-                                    <td>Coordinates are match of house number and street, and based on property parcel location</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>03</td>
-                                    <td>StreetSegmentInterpolation</td>
-                                    <td>Coordinates are match of house number and street, interpolated over the matching street segment’s address range</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>04</td>
-                                    <td>StreetIntersection</td>
-                                    <td>Coordinates are street intersections</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>05</td>
-                                    <td>StreetCentroid</td>
-                                    <td>Coordinates are at mid-point of street segment (missing or invalid building number)</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>06</td>
-                                    <td>AddressZIPPlus4Centroid</td>
-                                    <td>Coordinates are address ZIP code+4 centroid</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>07</td>
-                                    <td>AddressZIPPlus2Centroid</td>
-                                    <td>Coordinates are address ZIP code+2 centroid</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>08</td>
-                                    <td>ManualLookup</td>
-                                    <td>Coordinates were obtained manually by looking up a location on a paper or electronic map</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>08</td>
-                                    <td>AddressZIPCentroid</td>
-                                    <td>Coordinates are address 5-digit ZIP code centroid</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>10</td>
-                                    <td>POBoxZIPCentroid</td>
-                                    <td>Coordinates are point ZIP code of Post Office Box or Rural Route</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>11</td>
-                                    <td>CityCentroid</td>
-                                    <td>Coordinates are centroid of address city (when address ZIP code is unknown or invalid, and there are multiple ZIP codes for the city)</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>12</td>
-                                    <td>CountyCentroid</td>
-                                    <td>Coordinates are centroid of county</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>99</td>
-                                    <td>Unmatchable</td>
-                                    <td>Latitude and longitude are not assigned, but geocoding was attempted; unable to assign coordinates based on available information</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td></td>
-                                    <td>Missing</td>
-                                    <td>GIS Coordinate Quality not coded</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">NAACCRGISCoordinateQualityType</div>
-                          <code class="secondary">String</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Code name for the associated NACCR GIS Coordinate Quality code. The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
-
-                          <p>See <code class="secondary">NAACCRGISCoordinateQualityCode</code> for reference values.</p>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">MatchScore</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Match percentage between input data and reference feature.</p>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">MatchType</div>
-                          <code class="secondary">String</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Geocode match type.</p>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">FeatureMatchingResultType</div>
-                          <code class="secondary">String</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Geocode feature match type.</p>
-
-                          <div *giscAccordion="let parent;">
-                            <div class="pill" [giscAccordionHeader]="parent">
-                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                            </div>
-
-                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
-                              <table>
-                                <thead>
-                                  <tr>
-                                    <th>Value</th>
-                                    <th>Description</th>
-                                  </tr>
-                                </thead>
-
-                                <tbody>
-                                  <tr>
-                                    <td>success</td>
-                                    <td>Only one match</td>
-                                  </tr>
-                                  <tr>
-                                    <td>ambiguous</td>
-                                    <td>More than one match, all returned</td>
-                                  </tr>
-                                  <tr>
-                                    <td>brokenTie</td>
-                                    <td>More than one match, the tie was broken, and only one result was returned</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">FeatureMatchingResultCount</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Number of geocodes that matched the supplied parameters.</p>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">FeatureMatchingGeographyType</div>
-                          <code class="secondary">String</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Geographic level of the output.</p>
-
-                          <div *giscAccordion="let parent;">
-                            <div class="pill" [giscAccordionHeader]="parent">
-                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                            </div>
-
-                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
-                              <table>
-                                <thead>
-                                  <tr>
-                                    <th>Type</th>
-                                    <th>Description</th>
-                                  </tr>
-                                </thead>
-
-                                <tbody>
-                                  <tr>
-                                    <td>Parcel centroid</td>
-                                    <td>An exact match was found to a parcel and its centroid is returned as output.</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Street segment</td>
-                                    <td>A match was found to the street segment and the address range associated with the segment was used to interpolate a point to return as output.</td>
-                                  </tr>
-                                  <tr>
-                                    <td>ZCTA</td>
-                                    <td>A match was found to the ZIP portion of the address and its centroid was returned as output.</td>
-                                  </tr>
-                                  <tr>
-                                    <td>City</td>
-                                    <td>A match was found to the ZIP portion of the address and its centroid was returned as output.</td>
-                                  </tr>
-                                  <tr>
-                                    <td>County Subregion</td>
-                                    <td>A match was found to the city portion of the address in the county subregion reference data set and its centroid was returned as output.</td>
-                                  </tr>
-                                  <tr>
-                                    <td>County</td>
-                                    <td>A match was found to the city portion of the address in the county reference data set and its centroid was returned as output.</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Unmatchable</td>
-                                    <td>A match could not be found for the input.</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">RegionSize</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Area of the spatial uncertainty of the geocode.</p>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">RegionSizeUnits</div>
-                          <code class="secondary">String</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Units of area of spatial uncertainty of the geocode.</p>
-
-                          <div *giscAccordion="let parent;">
-                            <div class="pill" [giscAccordionHeader]="parent">
-                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                            </div>
-
-                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
-                              <p>The areas units include:</p>
-                              <ul>
-                                <li>square meters (m)</li>
-                                <li>square kilometers (km)</li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">MatchedLocationType</div>
-                          <code class="secondary">String</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Type of input data identified.</p>
-
-                          <div *giscAccordion="let parent;">
-                            <div class="pill" [giscAccordionHeader]="parent">
-                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                            </div>
-
-                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
-                              <table>
-                                <thead>
-                                  <tr>
-                                    <th>Type</th>
-                                    <th>Description</th>
-                                  </tr>
-                                </thead>
-
-                                <tbody>
-                                  <tr>
-                                    <td>StreetAddress</td>
-                                    <td>The matched input data was a postal street address Example: 3620 South Vermont Ave, Los Angeles, CA 90089-0255</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>PostOfficeBox</td>
-                                    <td>The matched input data was a Post Office Box address Example: PO Box 0255, Los Angeles, CA 90089-0255</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>RuralRoute</td>
-                                    <td>The matched input data was a Rural Route address Example: RR 13 Box 2, Los Angeles, CA 90089-0255</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>StarRoute</td>
-                                    <td>The matched input data was a Star Route address Example: Star Route 13 Box 2, Los Angeles, CA 90089-0255</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>HighwayContractRoute</td>
-                                    <td>The matched input data was a Highway Contract Route address Example: HC 13 Box 2, Los Angeles, CA 90089-0255</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>Intersection</td>
-                                    <td>The matched input data was an intersection of two or more streets Example: 36th and Vermont, Los Angeles, CA</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>NamedPlace</td>
-                                    <td>The matched input data was a named place Example: USC GIS Research Laboratory, Los Angeles, CA</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>RelativeDirection</td>
-                                    <td>The matched input data was a relative direction Example: 1 mile south of downtown Los Angeles</td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>Unmatchable</td>
-                                    <td>A match could not be found for the input</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">Exception</div>
-                          <code class="secondary">String</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Description of the ocurred description, if any, in processing of the geocode.</p>
-                        </div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">ErrorMessage</div>
-                          <code class="secondary">String</code>
-                        </div>
-
-                        <div class="attribute-description">
-                          <p>Error message, if any, associated in the processing of the geocode.</p>
-                        </div>
-                      </div>
-                    </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">zip</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input zip for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">version</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Requested API version for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">apiKey</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input customer apiKey for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">dontStoreTransactionDetails</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input option to prevent storing the transaction in account.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">addressFormatTypes</div>
+                    <code class="secondary">Array&lt;String&gt;</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Requested address processing format types. Will be a list containing one or many of the following:</p>
+
+                    <ul>
+                      <li>USPSPublication28</li>
+                      <li>USCensusTiger</li>
+                      <li>LACounty</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">multiThreading</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input request for multi-threaded processing of the transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">includeHeader</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input request to include column names as the first row header when requesting <code>csv</code> as the <code>responseFormat</code>.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">verbose</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input request to return a verbose transaction response.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">outputFormat</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input request for the format of the returned transaction response.</p>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">CensusValues</div>
-                  <code class="secondary">Array&lt;CensusValue&gt;</code>
+      <div>
+        <div class="parameter-detail-container" id="responseResults">
+          <div class="parameter-detail-header">
+            <span class="material-icons permalink" title="Link to here">link</span>
+            <h3>results</h3>
+            <div class="parameter-detail-header-badges">
+              <code>Array&lt;AddressRecordResult&gt;</code>
+            </div>
+          </div>
+
+          <div class="parameter-detail-content">
+            <p>A list of results based on the input address and the total number of input <code>addressFormat</code>'s.</p>
+
+            <p>Each result will be wrapped in a parent status object:</p>
+
+            <div *giscAccordion="let parent;">
+              <div class="pill" [giscAccordionHeader]="parent">
+                <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+              </div>
+
+              <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">timeTaken</div>
+                    <code class="secondary">Number</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Time to process the input address for a single <code>addressFormat</code>.</p>
+                  </div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>A collection of computed census values.</p>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">exceptionOccurred</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
 
-                  <div *giscAccordion="let parent;">
-                    <div class="pill" [giscAccordionHeader]="parent">
-                      <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                      <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                    </div>
+                  <div class="attribute-description">
+                    <p>Describes if there was an error processing the input address for an addressFormat.</p>
+                  </div>
+                </div>
 
-                    <div *giscAccordionContent="parent.expanded">
-                      <div class="attribute-list">
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">errorMessage</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Text message describing the exception, if any.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">parsedAddress</div>
+                    <code class="secondary">ProcessedAddressRecord</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>The processed address result for an input address for a single <code>addressFormat</code>.</p>
+
+                    <div *giscAccordion="let parent;" expanded="true">
+                      <div class="pill" [giscAccordionHeader]="parent">
+                        <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                        <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                      </div>
+
+                      <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
                         <div class="attribute-unit">
                           <div class="attribute-header">
-                            <div class="attribute-name">CensusYear</div>
+                            <div class="attribute-name">addressLocationType</div>
                             <code class="secondary">String</code>
                           </div>
 
                           <div class="attribute-description">
-                            <p>Year of the census data returned.</p>
+                            <!-- <p>Input address for the executed transaction.</p> -->
                           </div>
                         </div>
 
                         <div class="attribute-unit">
                           <div class="attribute-header">
-                            <div class="attribute-name">CensusTimeTaken</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Time taken to process the census record.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">NAACCRCensusTractCertaintyCode</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Certainty code for the Census tract assignment in NAACCR standard.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">NAACCRCensusTractCertaintyType</div>
+                            <div class="attribute-name">addressFormatType</div>
                             <code class="secondary">String</code>
                           </div>
 
                           <div class="attribute-description">
-                            <p>Name of the certainty code for the Census tract assignment in NAACCR standard.</p>
+                            <!-- <p>Input city for the executed transaction.</p> -->
                           </div>
                         </div>
 
                         <div class="attribute-unit">
                           <div class="attribute-header">
-                            <div class="attribute-name">CensusBlock</div>
+                            <div class="attribute-name">number</div>
                             <code class="secondary">String</code>
                           </div>
 
                           <div class="attribute-description">
-                            <p>Census block value for the output point.</p>
+                            <!-- <p>Input state for the executed transaction.</p> -->
                           </div>
                         </div>
 
                         <div class="attribute-unit">
                           <div class="attribute-header">
-                            <div class="attribute-name">CensusBlockGroup</div>
+                            <div class="attribute-name">numberFractional</div>
                             <code class="secondary">String</code>
                           </div>
 
                           <div class="attribute-description">
-                            <p>Census block group value for the output point.</p>
+                            <!-- <p>Input zip for the executed transaction.</p> -->
                           </div>
                         </div>
 
                         <div class="attribute-unit">
                           <div class="attribute-header">
-                            <div class="attribute-name">CensusTract</div>
+                            <div class="attribute-name">preDirectional</div>
                             <code class="secondary">String</code>
                           </div>
 
                           <div class="attribute-description">
-                            <p>Census tract value for the output point.</p>
+                            <!-- <p>Requested API version for the executed transaction.</p> -->
                           </div>
                         </div>
 
                         <div class="attribute-unit">
                           <div class="attribute-header">
-                            <div class="attribute-name">CensusCountyFips</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census county fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">CensusStateFips</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census state fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">CensusCbsaFips</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census core base statistical area fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">CensusCbsaMicro</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census core base statistical area micropolitan flag for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">CensusMcdFips</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census minor civil division fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">CensusMetDivFips</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census metropolitan division fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">CensusMsaFips</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census metropolitan statistical area fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">CensusPlaceFips</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census place fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">ExceptionOccured</div>
-                            <code class="secondary">Boolean</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Describes whether or not census variables will be calculated for the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Exception</div>
+                            <div class="attribute-name">preQualifier</div>
                             <code class="secondary">String</code>
                           </div>
 
                           <div class="attribute-description">
-                            <p>Indicates if any exceptions ocurred in the geocode.</p>
+                            <!-- <p>Input customer apiKey for the executed transaction.</p> -->
                           </div>
                         </div>
 
                         <div class="attribute-unit">
                           <div class="attribute-header">
-                            <div class="attribute-name">ErrorMessage</div>
+                            <div class="attribute-name">preType</div>
                             <code class="secondary">String</code>
                           </div>
 
                           <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                            <!-- <p>Input option to prevent storing the transaction in account.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">preArticle</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Requested address processing format types. Will be a list containing one or many of the following:</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">name</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for multi-threaded processing of the transaction.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">postArticle</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request to include column names as the first row header when requesting <code>xml</code> as the <code>responseFormat</code>.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">postQualifier</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request to return a verbose transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">postDirectional</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">suffix</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">suiteType</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">suiteNumber</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">city</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">minorCivilDivision</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">consolidatedCity</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">countySubRegion</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">county</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">state</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">zip</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">zipPlus1</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">zipPlus2</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">zipPlus3</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">zipPlus4</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">zipPlus5</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">ParsedAddress</div>
-                  <code class="secondary">AddressParsed</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Parsed address from the input parameters.</p>
-
-                  <div *giscAccordion="let parent;">
-                    <div class="pill" [giscAccordionHeader]="parent">
-                      <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                      <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                    </div>
-
-                    <div *giscAccordionContent="parent.expanded">
-                      <div class="attribute-list">
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Name</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Year of the census data returned.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Number</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Time taken to process the census record.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">NumberFractional</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Certainty code for the Census tract assignment in NAACCR standard.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PreDirectional</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Name of the certainty code for the Census tract assignment in NAACCR standard.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PreQualifier</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census block value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PreType</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census block group value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PreArticle</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census tract value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PostArticle</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census county fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PostQualifier</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census state fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Suffix</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census core base statistical area fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PostDirectional</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census core base statistical area micropolitan flag for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">SuiteType</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census minor civil division fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">SuiteNumber</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census metropolitan division fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PostOfficeBoxType</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census metropolitan statistical area fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PostOfficeBoxNumber</div>
-                            <code class="secondary">Number</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Census place fips value for the output point.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">City</div>
-                            <code class="secondary">Boolean</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Describes whether or not census variables will be calculated for the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">ConsolidatedCity</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Indicates if any exceptions ocurred in the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">MinorCivilDivision</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">CountySubRegion</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">County</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">State</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Zip</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">ZipPlus1</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">ZipPlus2</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">ZipPlus3</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">ZipPlus4</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">ZipPlus5</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Area</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">AreaType</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">GeometrySRID</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Geometry</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Source</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">Vintage</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PrimaryIdField</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">PrimaryIdValue</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">SecondaryIdField</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">SecondaryIdValue</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <p>Error message, if any, associated in the processing of the geocode.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">MatchedAddress</div>
-                  <code class="secondary">AddressMatch</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Address matched from the input parameters</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">ReferenceFeature</div>
-                  <code class="secondary">AddressFeature</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Matched feature from the input parameters</p>
                 </div>
               </div>
             </div>
