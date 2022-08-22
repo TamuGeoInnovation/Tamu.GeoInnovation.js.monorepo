@@ -3,6 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { LayerSource } from '@tamu-gisc/common/types';
+export * from './secrets';
 
 export const environment = {
   production: false
@@ -18,7 +19,7 @@ export const environment = {
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
 
 export const api_url = 'http://localhost:1337';
-export const email_server_url = 'http://localhost:4005';
+export const email_server_url = 'http://mailroom.dev.gsvcs.lan/api/';
 
 export const SearchSources = [];
 export const LayerSources: LayerSource[] = [];

@@ -92,7 +92,7 @@ export class ContactComponent implements OnInit {
         .join('');
 
       const outboundMail: IMailroomEmailOutbound = {
-        to: this.contactForm.get('email').value,
+        to: this.environment.value('email_to_account'),
         from: this.environment.value('email_from_account'),
         subject: 'Kissing Bugs contact page email',
         text: '',

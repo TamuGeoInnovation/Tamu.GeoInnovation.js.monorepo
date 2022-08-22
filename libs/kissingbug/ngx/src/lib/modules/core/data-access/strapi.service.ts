@@ -57,6 +57,6 @@ export class StrapiService {
   }
 
   public sendEmailAsMultipartFormdata(mail) {
-    return this.http.post(`${this.environment.value('email_server_url')}/form`, mail);
+    return this.http.post(`${this.resource}/emails`, mail);
   }
 }
