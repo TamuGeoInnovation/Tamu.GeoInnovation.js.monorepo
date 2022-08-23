@@ -1,72 +1,72 @@
-<tamu-gisc-drawer layout="fixed" width="20rem">
-  <div class="content">
-    <p class="sidebar-section-title">Geoservices API's</p>
-    <div class="sidebar-menu">
-      <div class="menu-item" [routerLink]="['getting-started']" routerLinkActive="active">
-        <span class="material-icons">code</span>
-        <ul>
-          <li>Getting Started</li>
+<div class="sidebar">
+  <tamu-gisc-drawer layout="relative" width="17rem">
+    <div class="content">
+      <p class="sidebar-section-title">Geoservices API's</p>
+      <div class="sidebar-menu">
+        <div class="menu-item" [routerLink]="['getting-started']" routerLinkActive="active">
+          <span class="material-icons">code</span>
           <ul>
-            <li scrollTo="#overview">Overview</li>
-            <li scrollTo="#authentication">Authentication</li>
-            <li scrollTo="#quota-rate-limits">Quota and Rate Limits</li>
-            <li scrollTo="#raw-requests">Raw Requests</li>
-            <li scrollTo="#library-sdks">Libraries &amp; SDK's</li>
+            <li>Getting Started</li>
+            <ul>
+              <li scrollTo="#overview">Overview</li>
+              <li scrollTo="#authentication">Authentication</li>
+              <li scrollTo="#quota-rate-limits">Quota and Rate Limits</li>
+              <li scrollTo="#raw-requests">Raw Requests</li>
+              <li scrollTo="#library-sdks">Libraries &amp; SDK's</li>
+            </ul>
           </ul>
-        </ul>
-      </div>
-      <div class="menu-item" [routerLink]="['geocoding']" routerLinkActive="active">
-        <span class="material-icons">my_location</span>
-        <ul>
-          <li>Geocoding</li>
+        </div>
+        <div class="menu-item" [routerLink]="['geocoding']" routerLinkActive="active">
+          <span class="material-icons">my_location</span>
           <ul>
-            <li scrollTo="#overview">Overview</li>
-            <li scrollTo="#parameters">Parameters</li>
-            <li scrollTo="#response">Response</li>
+            <li>Geocoding</li>
+            <ul>
+              <li scrollTo="#overview">Overview</li>
+              <li scrollTo="#parameters">Parameters</li>
+              <li scrollTo="#response">Response</li>
+            </ul>
           </ul>
-        </ul>
-      </div>
+        </div>
 
-      <div class="menu-item" [routerLink]="['reverse-geocoding']" routerLinkActive="active">
-        <span class="material-icons">settings_backup_restore</span>
-        <ul>
-          <li>Reverse Geocoding</li>
+        <div class="menu-item" [routerLink]="['reverse-geocoding']" routerLinkActive="active">
+          <span class="material-icons">settings_backup_restore</span>
           <ul>
-            <li scrollTo="#overview">Overview</li>
-            <li scrollTo="#parameters">Parameters</li>
-            <li scrollTo="#response">Response</li>
+            <li>Reverse Geocoding</li>
+            <ul>
+              <li scrollTo="#overview">Overview</li>
+              <li scrollTo="#parameters">Parameters</li>
+              <li scrollTo="#response">Response</li>
+            </ul>
           </ul>
-        </ul>
-      </div>
+        </div>
 
-      <div class="menu-item" [routerLink]="['address-processing']" routerLinkActive="active">
-        <span class="material-icons">apartment</span>
-        <ul>
-          <li>Address Processing</li>
+        <div class="menu-item" [routerLink]="['address-processing']" routerLinkActive="active">
+          <span class="material-icons">apartment</span>
           <ul>
-            <li scrollTo="#overview">Overview</li>
-            <li scrollTo="#parameters">Parameters</li>
-            <li scrollTo="#response">Response</li>
+            <li>Address Processing</li>
+            <ul>
+              <li scrollTo="#overview">Overview</li>
+              <li scrollTo="#parameters">Parameters</li>
+              <li scrollTo="#response">Response</li>
+            </ul>
           </ul>
-        </ul>
-      </div>
+        </div>
 
-      <div class="menu-item" [routerLink]="['census-intersection']" routerLinkActive="active">
-        <span class="material-icons">group</span>
-        <ul>
-          <li>Census Intersection</li>
+        <div class="menu-item" [routerLink]="['census-intersection']" routerLinkActive="active">
+          <span class="material-icons">group</span>
           <ul>
-            <li scrollTo="#overview">Overview</li>
-            <li scrollTo="#parameters">Parameters</li>
-            <li scrollTo="#response">Response</li>
+            <li>Census Intersection</li>
+            <ul>
+              <li scrollTo="#overview">Overview</li>
+              <li scrollTo="#parameters">Parameters</li>
+              <li scrollTo="#response">Response</li>
+            </ul>
           </ul>
-        </ul>
+        </div>
       </div>
     </div>
-  </div>
-</tamu-gisc-drawer>
-
-<div style="width: 20rem"></div>
+  </tamu-gisc-drawer>
+</div>
 
 <div id="root">
   <router-outlet></router-outlet>

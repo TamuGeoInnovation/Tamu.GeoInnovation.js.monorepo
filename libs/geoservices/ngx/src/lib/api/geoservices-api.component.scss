@@ -7,3 +7,8 @@
   height: inherit;
   width: 100%;
 }
+
+#root {
+  max-height: 100%;
+  overflow-y: auto;
+}
