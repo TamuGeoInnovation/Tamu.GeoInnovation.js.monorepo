@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
@@ -48,6 +48,9 @@ export class BusListComponent implements OnInit, OnDestroy {
         const grouped = groupBy(sorted, 'Group.Name', 'Group');
 
         return of(grouped);
+      }),
+      map((grouped) => {
+        return grouped.reverse();
       }),
       tap(() => {
         setTimeout(() => {
