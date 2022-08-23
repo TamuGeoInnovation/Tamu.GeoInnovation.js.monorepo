@@ -376,7 +376,7 @@ export const SearchSources: SearchSource[] = [
     featuresLocation: 'features',
     displayTemplate: '{attributes.DeptName}',
     popupComponent: 'BasePopupComponent',
-    searchActive: true,
+    searchActive: false,
     altLookup: {
       source: 'building-exact',
       reference: {
