@@ -32,7 +32,7 @@ $primary-text-color: #333333;
 html {
   height: 100%;
   width: 100%;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.5;
   font-family: $primary-font-family;
   color: $primary-text-color;
@@ -367,7 +367,8 @@ table {
 // Main content container in sidebar layouts
 #root {
   @include flex(1);
-  margin: 0rem 5rem;
+
+  padding: 0 3rem;
   box-sizing: border-box;
   max-width: 80rem; // Limit container widths, a little over 1140px
 }
@@ -382,6 +383,7 @@ table {
 
   margin-top: 1rem;
   margin-bottom: 1rem;
+  overflow-x: hidden;
 
   .service-verb,
   .service-address {
