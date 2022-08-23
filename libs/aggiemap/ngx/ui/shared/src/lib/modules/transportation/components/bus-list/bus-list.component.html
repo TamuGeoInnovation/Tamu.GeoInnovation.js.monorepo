@@ -4,7 +4,7 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <div *ngIf="loaded !== true" class="flex flex-column justify-center align-center leader-2 trailer-2">
+  <div *ngIf="(routes | async) === null" class="flex flex-column justify-center align-center leader-2 trailer-2">
     <div class="spinning-loader"></div>
   </div>
 
