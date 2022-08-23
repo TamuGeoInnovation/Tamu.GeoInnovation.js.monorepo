@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 
 import toHex from 'colornames';
 
@@ -634,7 +634,16 @@ export class BusService {
 
           if (symbols == null || symbols.indexOf('route') !== -1) {
             this._busLayer.getValue().add(route_graphic);
+
+            // Zoom to bus line geometry when added;
+            this.mapService.store
+              .pipe(
+                take(1),
+                map((instances) => instances.view)
+              )
+              .subscribe((m) => m.goTo(route_graphic));
           }
+
           if (symbols == null || symbols.indexOf('stops') !== -1) {
             this._busLayer.getValue().addMany(stops);
           }
@@ -726,6 +735,7 @@ export class BusService {
               source: busGraphics,
               listMode: 'hide',
               geometryType: 'point',
+              title: 'AggieSpirit Live Location',
               fields: [
                 {
                   name: 'id',
@@ -758,8 +768,8 @@ export class BusService {
                 symbol: new PictureMarkerSymbol({
                   url: `${window.location.href.replace(this.location.path(), '')}/assets/images/busDir.png`,
                   angle: 0,
-                  height: 35,
-                  width: 35
+                  height: 30,
+                  width: 30
                 }),
                 visualVariables: [
                   {
