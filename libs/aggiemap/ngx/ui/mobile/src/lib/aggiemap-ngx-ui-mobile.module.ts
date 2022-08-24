@@ -15,6 +15,7 @@ import { OmnisearchComponent } from './components/omnisearch/omnisearch.componen
 import { MobileSidebarComponent } from './components/mobile-sidebar/mobile-sidebar.component';
 import { MainMobileSidebarComponent } from './components/main-mobile-sidebar/main-mobile-sidebar.component';
 import { BusListBottomComponent } from './components/bus-list-bottom/bus-list-bottom.component';
+import { BusTimetableBottomComponent } from './components/bus-timetable-bottom/bus-timetable-bottom.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { BusListBottomComponent } from './components/bus-list-bottom/bus-list-bo
     OmnisearchComponent,
     MobileSidebarComponent,
     MainMobileSidebarComponent,
-    BusListBottomComponent
+    BusListBottomComponent,
+    BusTimetableBottomComponent
   ],
   exports: [
     AggiemapNgxUiMobileComponent,
@@ -43,7 +45,8 @@ import { BusListBottomComponent } from './components/bus-list-bottom/bus-list-bo
     OmnisearchComponent,
     MobileSidebarComponent,
     MainMobileSidebarComponent,
-    BusListBottomComponent
+    BusListBottomComponent,
+    BusTimetableBottomComponent
   ]
 })
 export class AggiemapNgxUiMobileModule {}

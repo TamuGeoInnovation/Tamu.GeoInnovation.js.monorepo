@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -12,6 +12,9 @@ import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
   styleUrls: ['./bus-list.component.scss']
 })
 export class BusListComponent implements OnInit, OnDestroy {
+  @Input()
+  public selectionAction: 'in-place' | 'navigate' = 'in-place';
+
   public routes: Observable<Group<TSRoute>[]>;
 
   public responsive: ResponsiveSnapshot;

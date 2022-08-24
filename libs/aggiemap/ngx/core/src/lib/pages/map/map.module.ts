@@ -30,7 +30,6 @@ import { MapsFeaturePerspectiveModule } from '@tamu-gisc/maps/feature/perspectiv
 import {
   AggiemapNgxSharedUiStructuralModule,
   TransportationModule,
-  BusListComponent,
   ModalComponent,
   ReportBadRouteComponent,
   AggiemapFormsModule,
@@ -41,7 +40,8 @@ import {
   AggiemapSidebarModule,
   AggiemapSidebarComponent,
   SidebarReferenceComponent,
-  SidebarTripPlannerComponent
+  SidebarTripPlannerComponent,
+  SidebarBusListComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   AggiemapNgxUiMobileModule,
@@ -51,7 +51,8 @@ import {
   MobileSidebarComponent,
   MainMobileSidebarComponent,
   AggiemapNgxUiMobileComponent,
-  BusListBottomComponent
+  BusListBottomComponent,
+  BusTimetableBottomComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/mobile';
 
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
@@ -74,7 +75,7 @@ const routes: Routes = [
         canActivateChild: [DesktopGuard],
         children: [
           { path: '', component: SidebarReferenceComponent },
-          { path: 'bus', component: BusListComponent },
+          { path: 'bus', component: SidebarBusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
           { path: 'trip/options', component: TripPlannerOptionsComponent },
           { path: 'experiments', component: ExperimentsListComponent }
@@ -110,6 +111,17 @@ const routes: Routes = [
               { path: '', component: MainMobileSidebarComponent },
               { path: 'legend', component: LegendComponent },
               { path: 'layers', component: LayerListComponent }
+            ]
+          },
+          {
+            path: 'bus/:route',
+            children: [
+              { path: '', component: OmnisearchComponent },
+              {
+                path: '',
+                component: BusTimetableBottomComponent,
+                outlet: 'outlet-2'
+              }
             ]
           },
           {
