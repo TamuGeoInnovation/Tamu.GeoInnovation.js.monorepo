@@ -26,4 +26,12 @@
 .list-title {
   font-weight: bold;
   font-size: 1.1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .material-icons {
+    padding-right: 0.5rem;
+    font-size: 1.3rem;
+  }
 }

@@ -25,6 +25,11 @@ export class MainMobileSidebarComponent {
       path: 'layers'
     },
     {
+      name: 'Bus Routes',
+      type: 'router-path',
+      path: '/map/m/bus'
+    },
+    {
       name: 'Building Directory',
       type: 'router-path',
       path: '../../../../../directory'

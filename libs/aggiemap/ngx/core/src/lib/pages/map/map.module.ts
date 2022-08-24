@@ -116,7 +116,6 @@ const routes: Routes = [
           {
             path: 'bus/:route',
             children: [
-              { path: '', component: OmnisearchComponent },
               {
                 path: '',
                 component: BusTimetableBottomComponent,
@@ -127,7 +126,6 @@ const routes: Routes = [
           {
             path: 'bus',
             children: [
-              { path: '', component: OmnisearchComponent },
               {
                 path: '',
                 component: BusListBottomComponent,
