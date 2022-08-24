@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -17,12 +16,7 @@ export class BusListComponent implements OnInit, OnDestroy {
 
   public responsive: ResponsiveSnapshot;
 
-  constructor(
-    private busService: BusService,
-    private responsiveService: ResponsiveService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private busService: BusService, private responsiveService: ResponsiveService) {}
 
   public ngOnInit(): void {
     this.responsive = this.responsiveService.snapshot;
@@ -57,9 +51,5 @@ export class BusListComponent implements OnInit, OnDestroy {
     // When the user navigates away from the component, any and all bus
     // features drawn on the map.
     this.busService.removeAllFromMap();
-  }
-
-  public backAction(): void {
-    this.router.navigate(['../'], { relativeTo: this.route });
   }
 }
