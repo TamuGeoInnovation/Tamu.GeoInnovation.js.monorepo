@@ -1,7 +1,10 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, timer, Observable, NEVER } from 'rxjs';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';
+
+import { v4 as guid } from 'uuid';
+import { Angulartics2 } from 'angulartics2';
 
 import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -48,7 +51,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
     private busService: BusService,
     private readonly router: Router,
     private readonly rt: ActivatedRoute,
-    private readonly cd: ChangeDetectorRef
+    private readonly analytics: Angulartics2
   ) {}
 
   public ngOnInit() {
@@ -132,6 +135,8 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
    * Either removes or adds the bound route features to/from the map.
    */
   public toggleRoute(): void {
+    this.reportToggleRoute(this.route.ShortName);
+
     if (this.selection === 'route') {
       this.router.navigate([this.route.ShortName], { relativeTo: this.rt });
     }
@@ -143,5 +148,21 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.selection === 'in-place') {
       this.busService.toggleMapRoute(this.route.ShortName);
     }
+  }
+
+  private reportToggleRoute(shortName: string) {
+    const label = {
+      guid: guid(),
+      date: Date.now(),
+      value: shortName
+    };
+
+    this.analytics.eventTrack.next({
+      action: 'Bus Route Load',
+      properties: {
+        category: 'UI Interaction',
+        label: JSON.stringify(label)
+      }
+    });
   }
 }
