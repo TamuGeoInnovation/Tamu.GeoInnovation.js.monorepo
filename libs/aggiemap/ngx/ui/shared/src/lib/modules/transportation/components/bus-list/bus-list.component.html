@@ -6,6 +6,6 @@
   <p class="group-name">{{ group.identity['Name'] }}</p>
 
   <div class="routes">
-    <tamu-gisc-bus-route *ngFor="let route of group.items" [route]="route" [selection]="selectionAction" (click)="reportSelection(route.ShortName)"></tamu-gisc-bus-route>
+    <tamu-gisc-bus-route *ngFor="let route of group.items" [route]="route" [selection]="selectionAction"></tamu-gisc-bus-route>
   </div>
 </div>
