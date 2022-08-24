@@ -50,7 +50,8 @@ import {
   TripPlannerTopComponent,
   MobileSidebarComponent,
   MainMobileSidebarComponent,
-  AggiemapNgxUiMobileComponent
+  AggiemapNgxUiMobileComponent,
+  BusListBottomComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/mobile';
 
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
@@ -109,6 +110,17 @@ const routes: Routes = [
               { path: '', component: MainMobileSidebarComponent },
               { path: 'legend', component: LegendComponent },
               { path: 'layers', component: LayerListComponent }
+            ]
+          },
+          {
+            path: 'bus',
+            children: [
+              { path: '', component: OmnisearchComponent },
+              {
+                path: '',
+                component: BusListBottomComponent,
+                outlet: 'outlet-2'
+              }
             ]
           }
         ]
