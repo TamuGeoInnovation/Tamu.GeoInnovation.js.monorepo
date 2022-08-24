@@ -1,7 +1,8 @@
 .draggable {
   position: absolute;
   background: #ffffff;
-  top: calc(100% - 5.25rem);
+  top: calc(100% - 10rem);
+  min-height: 10rem;
   border-top-right-radius: 0.5rem;
   border-top-left-radius: 0.5rem;
   overflow: hidden;
@@ -15,8 +16,8 @@
 
 #list-results {
   padding: 0 0.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   border-top: none;
   margin-top: 0;
   box-sizing: border-box;
