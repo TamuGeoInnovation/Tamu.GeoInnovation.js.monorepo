@@ -22,6 +22,8 @@ export class BusListComponent implements OnInit, OnDestroy {
   constructor(private busService: BusService, private responsiveService: ResponsiveService) {}
 
   public ngOnInit(): void {
+    const catOrder = ['On Campus', 'Off Campus', 'Game Day'];
+
     this.responsive = this.responsiveService.snapshot;
 
     this.routes = this.busService.getRoutes().pipe(
@@ -45,7 +47,9 @@ export class BusListComponent implements OnInit, OnDestroy {
         return of(grouped);
       }),
       map((grouped) => {
-        return grouped.reverse();
+        return catOrder.map((cat) => {
+          return grouped.find((g) => (g.identity as TSRoute).Name === cat);
+        });
       })
     );
   }
