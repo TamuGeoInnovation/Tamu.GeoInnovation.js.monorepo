@@ -30,6 +30,29 @@
           "sourceMap": false,
           "vendorChunk": false
         },
+        "staging": {
+          "outputHashing": "all",
+          "budgets": [
+            {
+              "maximumError": "5mb",
+              "maximumWarning": "2mb",
+              "type": "initial"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/aggiemap-angular/src/environments/environment.ts",
+              "with": "apps/aggiemap-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "aot": true,
+          "buildOptimizer": true,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "optimization": true,
+          "sourceMap": false,
+          "vendorChunk": false
+        },
         "development": {
           "outputHashing": "all",
           "budgets": [
