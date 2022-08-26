@@ -26,11 +26,9 @@ export class PortraitGalleryComponent implements OnInit {
 
     this.dataSource.portraits.forEach((item: IStrapiPagePortrait, i) => {
       if (i === 0 || i % this.rowLength !== 0) {
-        console.log(i, 'pushing item', item);
         items.push(item);
       }
       if (i !== 0 && i % this.rowLength === 0) {
-        console.log(i, 'reached row limit');
         this.rowItems.push(items);
         items = [];
         items.push(item);
@@ -38,7 +36,5 @@ export class PortraitGalleryComponent implements OnInit {
     });
 
     this.rowItems.push(items);
-
-    console.log('rowItems', this.rowItems);
   }
 }

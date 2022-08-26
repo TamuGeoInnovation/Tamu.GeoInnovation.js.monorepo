@@ -102,6 +102,13 @@ li {
   line-height: 31px;
 }
 
+a {
+    text-decoration: none;
+    color: #1976d2;
+    display: inline-block;
+    position: relative;
+}
+
 article.container {
   padding-bottom: 10em;
 }

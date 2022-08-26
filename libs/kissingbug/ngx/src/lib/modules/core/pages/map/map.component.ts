@@ -143,9 +143,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             if (featureLayer) {
               this.map.remove(featureLayer);
             }
-
-            const countyLayer = observer[0];
-            const bugCounts = observer[1];
+            const [countyLayer, bugCounts] = observer;
 
             const featureData = countyLayer.features.map((feature) => {
               const found = bugCounts.find((element) => {
@@ -227,13 +225,10 @@ export class MapComponent implements OnInit, AfterViewInit {
 
                     if (graphics.length > 0) {
                       const graphic = graphics[0].graphic as esri.Graphic;
-
                       if (highlight) {
                         highlight.remove();
                       }
-
                       highlight = layerView.highlight(graphic);
-
                       this.currentCounty = {
                         name: graphic.attributes['NAME'],
                         count: graphic.attributes['Count']
@@ -277,12 +272,12 @@ export class MapComponent implements OnInit, AfterViewInit {
       };
     });
 
-    const renderer = ({
+    const renderer = {
       type: 'class-breaks',
       field: 'Count',
       defaultSymbol: { type: 'simple-fill' },
       classBreakInfos: bins
-    } as unknown) as esri.ClassBreaksRenderer;
+    } as unknown as esri.ClassBreaksRenderer;
 
     return renderer;
   }
