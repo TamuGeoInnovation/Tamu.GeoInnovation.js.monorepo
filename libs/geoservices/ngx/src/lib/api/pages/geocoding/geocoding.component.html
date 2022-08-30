@@ -1064,43 +1064,91 @@
               <td>version</td>
               <td>
                 <div>
-                  <div>This field will report the full (major, minor, patch) version number used in the processing of the input parameters.</div>
-                  <div class="faux-link" scrollTo="#responseVersion">Details</div>
+                  <div>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</div>
+                  <div class="faux-link" scrollTo="#responseVersion">More details</div>
                 </div>
               </td>
-              <td>String</td>
+              <td>ApiVersion</td>
             </tr>
+
             <tr>
-              <td>TransactionId</td>
+              <td>timeTaken</td>
               <td>
                 <div>
-                  <div>Unique ID assigned to the response.</div>
-                  <div class="faux-link" scrollTo="#responseTransactionId">Details</div>
-                </div>
-              </td>
-              <td>String</td>
-            </tr>
-            <tr>
-              <td>Version</td>
-              <td>
-                <div>
-                  <div>This field will report the full (major, minor, patch) version number used in the processing of the input parameters.</div>
-                  <div class="faux-link" scrollTo="#responseVersion2">Details</div>
-                </div>
-              </td>
-              <td>String</td>
-            </tr>
-            <tr>
-              <td>QueryStatusCodeValue</td>
-              <td>
-                <div>
-                  <div>The value for the response status code.</div>
-                  <div class="faux-link" scrollTo="#responseQueryStatusCodeValue">Details</div>
+                  <div>Time required to execute the transaction, reported in milliseconds.</div>
+                  <div class="faux-link" scrollTo="#responseTimeTaken">More details</div>
                 </div>
               </td>
               <td>Number</td>
             </tr>
+
             <tr>
+              <td>transactionGuid</td>
+              <td>
+                <div>
+                  <div>Unique ID assigned to the response.</div>
+                  <div class="faux-link" scrollTo="#responseTransactionGuid">More details</div>
+                </div>
+              </td>
+              <td>String</td>
+            </tr>
+
+            <tr>
+              <td>apiHost</td>
+              <td>
+                <div>
+                  <div>Server name that processed the transaction.</div>
+                  <div class="faux-link" scrollTo="#responseApiHost">More details</div>
+                </div>
+              </td>
+              <td>String</td>
+            </tr>
+
+            <tr>
+              <td>clientHost</td>
+              <td>
+                <div>
+                  <div>Public hostname where the transaction was executed.</div>
+                  <div class="faux-link" scrollTo="#responseClientHost">More details</div>
+                </div>
+              </td>
+              <td>String</td>
+            </tr>
+
+            <tr>
+              <td>queryStatusCode</td>
+              <td>
+                <div>
+                  <div>The value for the response status code.</div>
+                  <div class="faux-link" scrollTo="#responseQueryStatusCode">More details</div>
+                </div>
+              </td>
+              <td>Enumerable&lt;String&gt;</td>
+            </tr>
+
+            <tr>
+              <td>inputParameterSet</td>
+              <td>
+                <div>
+                  <div>Object representing the serialized input parameters the transaction was executed against.</div>
+                  <div class="faux-link" scrollTo="#responseInputParameterSet">More details</div>
+                </div>
+              </td>
+              <td>GeocodeSerializedInputs</td>
+            </tr>
+
+            <tr>
+              <td>results</td>
+              <td>
+                <div>
+                  <div>Processed geocode results. The number of results in this collection are equal to the number of matches and input parameters that describe how ties should be handled..</div>
+                  <div class="faux-link" scrollTo="#responseResults">More details</div>
+                </div>
+              </td>
+              <td>Array&lt;GeocodeRecordResult&gt;</td>
+            </tr>
+
+            <!-- <tr>
               <td>FeatureMatchingResultType</td>
               <td>
                 <div>
@@ -1109,7 +1157,9 @@
                 </div>
               </td>
               <td>String</td>
-            </tr>
+            </tr> -->
+
+            <!-- 
             <tr>
               <td>FeatureMatchingResultCount</td>
               <td>
@@ -1119,8 +1169,9 @@
                 </div>
               </td>
               <td>String</td>
-            </tr>
-            <tr>
+            </tr> -->
+
+            <!-- <tr>
               <td>TimeTaken</td>
               <td>
                 <div>
@@ -1129,7 +1180,8 @@
                 </div>
               </td>
               <td>String</td>
-            </tr>
+            </tr> -->
+            <!-- 
             <tr>
               <td>ExceptionOccurred</td>
               <td>
@@ -1139,8 +1191,9 @@
                 </div>
               </td>
               <td>String</td>
-            </tr>
-            <tr>
+            </tr> -->
+
+            <!-- <tr>
               <td>Exception</td>
               <td>
                 <div>
@@ -1149,8 +1202,9 @@
                 </div>
               </td>
               <td>String</td>
-            </tr>
-            <tr>
+            </tr> -->
+
+            <!-- <tr>
               <td>InputAddress</td>
               <td>
                 <div>
@@ -1159,8 +1213,9 @@
                 </div>
               </td>
               <td>Address</td>
-            </tr>
-            <tr>
+            </tr> -->
+
+            <!-- <tr>
               <td>OutputGeocodes</td>
               <td>
                 <div>
@@ -1169,7 +1224,7 @@
                 </div>
               </td>
               <td>Array&lt;OutputGeocode&gt;</td>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
       </div>
@@ -1180,127 +1235,688 @@
             <span class="material-icons permalink" title="Link to here">link</span>
             <h3>version</h3>
             <div class="parameter-detail-header-badges">
-              <code>Number</code>
+              <code>ApiVersion</code>
             </div>
           </div>
 
           <div class="parameter-detail-content">
-            <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
+            <p>Expresses the exact API version that was used to execute the transaction. This object contains the following fields:</p>
+
+            <ul>
+              <li>major</li>
+              <li>minor</li>
+              <li>build</li>
+              <li>revision</li>
+              <li>majorRevision</li>
+              <li>minorRevision</li>
+            </ul>
           </div>
         </div>
       </div>
 
       <div>
-        <div class="parameter-detail-container" id="responseTransactionId">
+        <div class="parameter-detail-container" id="responseTimeTaken">
           <div class="parameter-detail-header">
             <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>TransactionId</h3>
+            <h3>timeTaken</h3>
+            <div class="parameter-detail-header-badges">
+              <code>Number</code>
+            </div>
+          </div>
+
+          <div class="parameter-detail-content">
+            <p>Total time taken to process the entire transaction (including all address format types), expressed in milliseconds.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="parameter-detail-container" id="responseApiHost">
+          <div class="parameter-detail-header">
+            <span class="material-icons permalink" title="Link to here">link</span>
+            <h3>apiHost</h3>
             <div class="parameter-detail-header-badges">
               <code>String</code>
             </div>
           </div>
 
           <div class="parameter-detail-content">
-            <p>Unique ID assigned to the response. Unless the <code class="secondary">notStore</code> parameter was set to false, the ID will be able to be stored in your transaction history for lookup.</p>
+            <p>The public hostname of the API service.</p>
           </div>
         </div>
       </div>
 
       <div>
-        <div class="parameter-detail-container" id="responseVersion2">
+        <div class="parameter-detail-container" id="responseClientHost">
           <div class="parameter-detail-header">
             <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>Version</h3>
+            <h3>clientHost</h3>
             <div class="parameter-detail-header-badges">
-              <code>Number</code>
+              <code>String</code>
             </div>
           </div>
 
           <div class="parameter-detail-content">
-            <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
+            <p>The public hostname of the API service.</p>
           </div>
         </div>
       </div>
 
       <div>
-        <div class="parameter-detail-container" id="responseQueryStatusCodeValue">
+        <div class="parameter-detail-container" id="responseQueryStatusCode">
           <div class="parameter-detail-header">
             <span class="material-icons permalink" title="Link to here">link</span>
-            <h3>QueryStatusCodeValue</h3>
+            <h3>queryStatusCode</h3>
             <div class="parameter-detail-header-badges">
-              <code>Number</code>
+              <code>Enumerable&lt;QueryStatusCode&gt;</code>
             </div>
           </div>
 
           <div class="parameter-detail-content">
-            <p>A numeric code representing the state of the response. values and their names include:</p>
+            <p>Transaction query status code. Values include:</p>
 
             <table>
               <thead>
                 <tr>
-                  <th>Code</th>
-                  <th>Name</th>
+                  <th>Group</th>
+                  <th>Code Value</th>
+                  <th>Code Name</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
+                  <td>Success</td>
                   <td>200</td>
                   <td>Success</td>
                 </tr>
+
                 <tr>
+                  <td>API Key Errors</td>
                   <td>400</td>
                   <td>API Key Error</td>
                 </tr>
+
                 <tr>
+                  <td>API Key Errors</td>
                   <td>401</td>
                   <td>API Key Missing</td>
                 </tr>
+
                 <tr>
+                  <td>API Key Errors</td>
                   <td>402</td>
+                  <td>API Key Invalid</td>
+                </tr>
+
+                <tr>
+                  <td>API Key Errors</td>
+                  <td>403</td>
                   <td>API Key Not Activated</td>
                 </tr>
+
                 <tr>
-                  <td>450</td>
-                  <td>General Non-Profit Error</td>
-                </tr>
-                <tr>
+                  <td>Non-Profit Errors</td>
                   <td>451</td>
-                  <td>Non-Profit Not Confirmed</td>
+                  <td>Non Profit Not Confirmed</td>
                 </tr>
+
                 <tr>
+                  <td>Non-Profit Errors</td>
+                  <td>450</td>
+                  <td>Non Profit Error</td>
+                </tr>
+
+                <tr>
+                  <td>Quota Errors</td>
                   <td>470</td>
                   <td>Quota Exceeded Error</td>
                 </tr>
+
                 <tr>
+                  <td>Quota Errors</td>
                   <td>471</td>
                   <td>Anonymous Quota Exceeded</td>
                 </tr>
+
                 <tr>
+                  <td>Quota Errors</td>
                   <td>472</td>
                   <td>Paid Quota Exceeded</td>
                 </tr>
+
                 <tr>
+                  <td>Version Errors</td>
                   <td>480</td>
                   <td>Version Missing</td>
                 </tr>
+
                 <tr>
+                  <td>Version Errors</td>
                   <td>481</td>
                   <td>Version Invalid</td>
                 </tr>
+
                 <tr>
+                  <td>Internal Errors</td>
                   <td>500</td>
-                  <td>General Failure</td>
+                  <td>Failure</td>
                 </tr>
+
                 <tr>
+                  <td>Internal Errors</td>
                   <td>501</td>
                   <td>Internal Error</td>
                 </tr>
+
                 <tr>
+                  <td>Unknown Errors</td>
                   <td>0</td>
                   <td>Unknown</td>
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="parameter-detail-container" id="responseParsedAddress">
+          <div class="parameter-detail-header">
+            <span class="material-icons permalink" title="Link to here">link</span>
+            <h3>parsedAddress</h3>
+            <div class="parameter-detail-header-badges">
+              <code>String</code>
+            </div>
+          </div>
+
+          <div class="parameter-detail-content">
+            <p>The processed address result for an input address, used for executing the resulting geocodes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="parameter-detail-container" id="responseInputParameterSet">
+          <div class="parameter-detail-header">
+            <span class="material-icons permalink" title="Link to here">link</span>
+            <h3>inputParameterSet</h3>
+            <div class="parameter-detail-header-badges">
+              <code>AddressProcessSerializedInputs</code>
+            </div>
+          </div>
+
+          <div class="parameter-detail-content">
+            <p>Parameters serialized from the client query parameters and utilized to execute the transaction.</p>
+
+            <div *giscAccordion="let parent;">
+              <div class="pill" [giscAccordionHeader]="parent">
+                <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+              </div>
+
+              <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">streetAddress</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input address for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">city</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input city for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">state</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input state for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">zip</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input zip for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">version</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Requested API version for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">apiKey</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input customer apiKey for the executed transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">dontStoreTransactionDetails</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input option to prevent storing the transaction in account.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">allowTies</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>allowTies</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">tieHandlingStrategyType</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>tieBreakingStrategy</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">relaxableAttributes</div>
+                    <code class="secondary">Array&lt;String&gt;</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>relaxableAttributes</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">relaxation</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>relaxation</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">substring</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>substringMAtching</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">soundex</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>soundex</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">soundexAttributes</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Comma-delimited list describing the parsed value of the <code>soundexAttributes</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">referenceSources</div>
+                    <code class="secondary">Array&lt;String&gt;</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>referenceSources</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">featureMatchingSelectionMethod</div>
+                    <code class="secondary">null</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>featureMatchingSelectionMethod</code> input parameter if the <code>hierarchy</code> parameter is enabled.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">attributeWeightingScheme</div>
+                    <code class="secondary">AttributeWeightingScheme</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the scheme used to weigh address attributes.</p>
+
+                    <div *giscAccordion="let parent;">
+                      <div class="pill" [giscAccordionHeader]="parent">
+                        <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                        <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                      </div>
+
+                      <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">number</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">numberParity</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">preDirectional</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">preType</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">preQualifier</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">preArticle</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">name</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">postArticle</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">suffix</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">postDirectional</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">postQualifier</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">city</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">zip</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">zipPlus4</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">state</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">totalWeight</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">minimumMatchScore</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>minScore</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">confidenceLevels</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>confidenceLevels</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">aliasTables</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>aliasTables</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">aliasTables</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>aliasTables</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">multiThreading</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input request for multi-threaded processing of the transaction.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">censusYears</div>
+                    <code class="secondary">Array&lt;Number&gt;</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>censusYears</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">includeHeader</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input request to include column names as the first row header when requesting <code>csv</code> as the <code>responseFormat</code>.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">verbose</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input request to return a verbose transaction response.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">outputCensusVariables</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>outputCensusVariables</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">outputReferenceFeatureGeometry</div>
+                    <code class="secondary">Boolean</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Describes the parsed value of the <code>outputReferenceFeatureGeometry</code> input parameter.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">outputFormat</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Input request for the format of the returned transaction response.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2672,3 +3288,4 @@
 <!-- <pre>
   <code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/test.md' | codeFromUrl | async"></code>
 </pre> -->
+
