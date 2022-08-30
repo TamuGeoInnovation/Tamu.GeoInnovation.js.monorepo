@@ -11,6 +11,8 @@ import { AddressMatchTypeAttributeListComponent } from './fragments/common/addre
 import { ReferenceFeatureAttributeListComponent } from './fragments/common/reference-feature-attribute-list/reference-feature-attribute-list.component';
 import { ReferenceFeatureInterpolationTypeAttributeListComponent } from './fragments/common/reference-feature-interpolation-type-attribute-list/reference-feature-interpolation-type-attribute-list.component';
 import { ReferenceFeatureInterpolationSubTypeAttributeListComponent } from './fragments/common/reference-feature-interpolation-sub-type-attribute-list/reference-feature-interpolation-sub-type-attribute-list.component';
+import { ApiVersionFragmentComponent } from './fragments/common/api-version-fragment/api-version-fragment.component';
+import { QueryStatusFragmentComponent } from './fragments/common/query-status-fragment/query-status-fragment.component';
 
 @NgModule({
   imports: [CommonModule, HighlightPlusModule, UILayoutModule],
@@ -20,7 +22,9 @@ import { ReferenceFeatureInterpolationSubTypeAttributeListComponent } from './fr
     AddressMatchTypeAttributeListComponent,
     ReferenceFeatureAttributeListComponent,
     ReferenceFeatureInterpolationTypeAttributeListComponent,
-    ReferenceFeatureInterpolationSubTypeAttributeListComponent
+    ReferenceFeatureInterpolationSubTypeAttributeListComponent,
+    ApiVersionFragmentComponent,
+    QueryStatusFragmentComponent
   ],
   exports: [
     ResponseViewerComponent,
@@ -28,7 +32,9 @@ import { ReferenceFeatureInterpolationSubTypeAttributeListComponent } from './fr
     AddressMatchTypeAttributeListComponent,
     ReferenceFeatureAttributeListComponent,
     ReferenceFeatureInterpolationTypeAttributeListComponent,
-    ReferenceFeatureInterpolationSubTypeAttributeListComponent
+    ReferenceFeatureInterpolationSubTypeAttributeListComponent,
+    ApiVersionFragmentComponent,
+    QueryStatusFragmentComponent
   ]
 })
 export class ApiComponentsModule {}

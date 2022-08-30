@@ -524,10 +524,10 @@
               <td>
                 <div>
                   <div>The value for the response status code.</div>
-                  <div class="faux-link" scrollTo="#responseQueryStatusCode">More details</div>
+                  <div class="faux-link" scrollTo="#responseQueryStatusCode">See details</div>
                 </div>
               </td>
-              <td>Enumerable&lt;String&gt;</td>
+              <td>Enumerable&lt;QueryStatusCode&gt;</td>
             </tr>
 
             <tr>
@@ -566,16 +566,7 @@
           </div>
 
           <div class="parameter-detail-content">
-            <p>Expresses the exact API version that was used to execute the transaction. This object contains the following fields:</p>
-
-            <ul>
-              <li>major</li>
-              <li>minor</li>
-              <li>build</li>
-              <li>revision</li>
-              <li>majorRevision</li>
-              <li>minorRevision</li>
-            </ul>
+            <tamu-gisc-api-version-fragment></tamu-gisc-api-version-fragment>
           </div>
         </div>
       </div>
@@ -655,62 +646,7 @@
           </div>
 
           <div class="parameter-detail-content">
-            <p>Matching type associated with the resulting geocodes. values include:</p>
-
-            <table>
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Unknown</td>
-                  <td>General catch-all for uncaught internal API errors.</td>
-                </tr>
-                <tr>
-                  <td>Success</td>
-                  <td>Query completed without errors.</td>
-                </tr>
-                <tr>
-                  <td>Ambiguous</td>
-                  <td>Description goes here.</td>
-                </tr>
-                <tr>
-                  <td>BrokenTie</td>
-                  <td>Description goes here.</td>
-                </tr>
-                <tr>
-                  <td>Composite</td>
-                  <td>Description goes here.</td>
-                </tr>
-                <tr>
-                  <td>Nearby</td>
-                  <td>Description goes here.</td>
-                </tr>
-                <tr>
-                  <td>LessThanMinimumScore</td>
-                  <td>Description goes here.</td>
-                </tr>
-                <tr>
-                  <td>InvalidFeature</td>
-                  <td>Description goes here.</td>
-                </tr>
-                <tr>
-                  <td>NullFeature</td>
-                  <td>Description goes here.</td>
-                </tr>
-                <tr>
-                  <td>Unmatchable</td>
-                  <td>Description goes here.</td>
-                </tr>
-                <tr>
-                  <td>ExceptionOcurred</td>
-                  <td>Description goes here.</td>
-                </tr>
-              </tbody>
-            </table>
+            <tamu-gisc-query-status-fragment></tamu-gisc-query-status-fragment>
           </div>
         </div>
       </div>
@@ -891,66 +827,61 @@
           <div class="parameter-detail-content">
             <p>A list of results based on the input address and the total number of input <code>addressFormat</code>'s.</p>
 
-            <p>Each result will be wrapped in a parent status object:</p>
+            <p>
+              <strong>The AddressRecordResult object:</strong>
+            </p>
 
-            <div *giscAccordion="let parent;">
-              <div class="pill" [giscAccordionHeader]="parent">
-                <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+            <div class="attribute-list">
+              <div class="attribute-unit">
+                <div class="attribute-header">
+                  <div class="attribute-name">timeTaken</div>
+                  <code class="secondary">Number</code>
+                </div>
+
+                <div class="attribute-description">
+                  <p>Time to process the input address for a single <code>addressFormat</code>.</p>
+                </div>
               </div>
 
-              <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
-                <div class="attribute-unit">
-                  <div class="attribute-header">
-                    <div class="attribute-name">timeTaken</div>
-                    <code class="secondary">Number</code>
-                  </div>
-
-                  <div class="attribute-description">
-                    <p>Time to process the input address for a single <code>addressFormat</code>.</p>
-                  </div>
+              <div class="attribute-unit">
+                <div class="attribute-header">
+                  <div class="attribute-name">exceptionOccurred</div>
+                  <code class="secondary">Boolean</code>
                 </div>
 
-                <div class="attribute-unit">
-                  <div class="attribute-header">
-                    <div class="attribute-name">exceptionOccurred</div>
-                    <code class="secondary">Boolean</code>
-                  </div>
+                <div class="attribute-description">
+                  <p>Describes if there was an error processing the input address for an addressFormat.</p>
+                </div>
+              </div>
 
-                  <div class="attribute-description">
-                    <p>Describes if there was an error processing the input address for an addressFormat.</p>
-                  </div>
+              <div class="attribute-unit">
+                <div class="attribute-header">
+                  <div class="attribute-name">errorMessage</div>
+                  <code class="secondary">String</code>
                 </div>
 
-                <div class="attribute-unit">
-                  <div class="attribute-header">
-                    <div class="attribute-name">errorMessage</div>
-                    <code class="secondary">String</code>
-                  </div>
+                <div class="attribute-description">
+                  <p>Text message describing the exception, if any.</p>
+                </div>
+              </div>
 
-                  <div class="attribute-description">
-                    <p>Text message describing the exception, if any.</p>
-                  </div>
+              <div class="attribute-unit">
+                <div class="attribute-header">
+                  <div class="attribute-name">parsedAddress</div>
+                  <code class="secondary">Address</code>
                 </div>
 
-                <div class="attribute-unit">
-                  <div class="attribute-header">
-                    <div class="attribute-name">parsedAddress</div>
-                    <code class="secondary">Address</code>
-                  </div>
+                <div class="attribute-description">
+                  <p>The processed address result for an input address for a single <code>addressFormat</code>.</p>
 
-                  <div class="attribute-description">
-                    <p>The processed address result for an input address for a single <code>addressFormat</code>.</p>
+                  <div *giscAccordion="let parent;" expanded="true">
+                    <div class="pill" [giscAccordionHeader]="parent">
+                      <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                      <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                    </div>
 
-                    <div *giscAccordion="let parent;" expanded="true">
-                      <div class="pill" [giscAccordionHeader]="parent">
-                        <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                        <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                      </div>
-
-                      <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
-                        <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
-                      </div>
+                    <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
+                      <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
                     </div>
                   </div>
                 </div>
