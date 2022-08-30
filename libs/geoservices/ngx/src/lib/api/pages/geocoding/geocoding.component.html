@@ -296,7 +296,7 @@
         <td>
           <div>
             <div>Describes whether to use substring matching.</div>
-            <div class="faux-link" scrollTo="#substringMatching">Details</div>
+            <div class="faux-link" scrollTo="#substringMAtching">Details</div>
           </div>
         </td>
         <td>true</td>
@@ -827,16 +827,139 @@
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 5.0</p>
-      <p>Describes whether attribute relaxation will be used.</p>
+      <p>This option directs the geocoder to try alternative versions of the input data in the case when an exact match can not be found. In particular, attributes of the input address are removed from the query, first one at a time and then in combination with each other. Attribute relaxation is performed (if the option is selected) on the following address attributes:</p>
 
-      <p>Allowed values:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Attribute</th>
+          </tr>
+        </thead>
 
-      <ul>
-        <li>true</li>
-        <li>false</li>
-      </ul>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Street predirectional</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Street postdirectional</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Street suffix</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>City</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Zip</td>
+          </tr>
+        </tbody>
+      </table>
 
-      <p>If this parameter is not provided, a default of <code class="secondary">true</code> will be used.</p>
+      <p>An example of the first few iterations it will try are listed in the next table:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Pre</th>
+            <th>Name</th>
+            <th>Suffix</th>
+            <th>Post</th>
+            <th>Zip</th>
+            <th>City</th>
+            <th>State</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>3620</td>
+            <td>S</td>
+            <td>Vermont</td>
+            <td>Ave</td>
+            <td>N</td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td></td>
+            <td>Vermont</td>
+            <td>Ave</td>
+            <td>N</td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td>S</td>
+            <td>Vermont</td>
+            <td>Ave</td>
+            <td></td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td>S</td>
+            <td>Vermont</td>
+            <td></td>
+            <td>N</td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td></td>
+            <td>Vermont</td>
+            <td>Ave</td>
+            <td></td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td></td>
+            <td>Vermont</td>
+            <td></td>
+            <td>N</td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td>S</td>
+            <td>Vermont</td>
+            <td></td>
+            <td></td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td></td>
+            <td>Vermont</td>
+            <td></td>
+            <td></td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -874,7 +997,37 @@
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 5.0</p>
-      <p>Describes whether substring matching will be used.</p>
+      <p>This option directs the geocoder to use substring matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data are incomplete (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows examples of this strategy:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Query</th>
+            <th>Reference Feature</th>
+            <th>Match</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Vermont</td>
+            <td><strong>Vermont</strong></td>
+            <td>Yes</td>
+          </tr>
+
+          <tr>
+            <td>Verm</td>
+            <td><strong>Ver</strong>mont</td>
+            <td>Yes</td>
+          </tr>
+
+          <tr>
+            <td>Mont</td>
+            <td>Ver<strong>mont</strong></td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
 
       <p>Allowed values:</p>
 
@@ -896,7 +1049,43 @@
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 5.0</p>
-      <p>Describes whether soundex will be used.</p>
+      <p>This option directs the geocoder to use soundex matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data have minor misspellings (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows (e.g. s of this strategy):</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Query</th>
+            <th>Query Soundex</th>
+            <th>Reference Feature</th>
+            <th>Reference Feature Soundex</th>
+            <th>Match</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Vermont</td>
+            <td>V655</td>
+            <td>Vermont</td>
+            <td><strong>V655</strong></td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Vermond</td>
+            <td>V655</td>
+            <td>Vermont</td>
+            <td><strong>V655</strong></td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Varnend</td>
+            <td>V655</td>
+            <td>Vermont</td>
+            <td><strong>V655</strong></td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
 
       <p>Allowed values:</p>
 
@@ -983,7 +1172,32 @@
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 5.0</p>
-      <p>Describes whether to return the full geometry of the reference feature. Please note that this will generate a large response payload.</p>
+      <p>Including this option in either the batch processing or API will result in the geometry of the reference feature used for interpolation being returned along with the geocode result. This option is only applicable when using the API in verbose mode, or when the optional reference feature fields are selected in a batch process. It is not recommended that this option be selected unless you have a specific need for the underlying reference feature geometry.</p>
+
+      <p>You can always return to the site and easily get the reference feature geometry for any specific geocode of interest.</p>
+
+      <p><strong>Why not include reference geometry as output</strong></p>
+
+      <table>
+        <tbody>
+          <tr>
+            <td>Geometry format</td>
+            <td>The geometry of the reference feature will be reported in <a href="http://www.opengeospatial.org/standards/gml" target="_blank">OGC GML</a>.</td>
+          </tr>
+          <tr>
+            <td>Geometry text size</td>
+            <td><a href="http://www.opengeospatial.org/standards/gml" target="_blank">OGC GML</a> is extremely verbose. This means that there will be a lot text returned if the geometry is a complex object such as a ZIP code, city or state.</td>
+          </tr>
+          <tr>
+            <td>CSV files in batch mode (and TSV)</td>
+            <td>CSV files may become unusable due to the amount of text returned for a GML geometry.</td>
+          </tr>
+          <tr>
+            <td>Access database files in batch mode (mdb and accdb)</td>
+            <td>Access data files may grow beyond the maximum file size of 2GB and become unusable due to the amount of text returned for a GML geometry.</td>
+          </tr>
+        </tbody>
+      </table>
 
       <p>Allowed values:</p>
 
@@ -2116,46 +2330,6 @@
                       </table>
 
                       <p>Soundex("Vermonnt") = V655 = Soundex("Vermont").</p>
-
-                      <p class="leader-1"><strong>About Soundex Matching</strong></p>
-
-                      <p>This option directs the geocoder to use soundex matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data have minor misspellings (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows (e.g. s of this strategy):</p>
-
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Query</th>
-                            <th>Query Soundex</th>
-                            <th>Reference Feature</th>
-                            <th>Reference Feature Soundex</th>
-                            <th>Match</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr>
-                            <td>Vermont</td>
-                            <td>V655</td>
-                            <td>Vermont</td>
-                            <td>V655</td>
-                            <td>yes</td>
-                          </tr>
-                          <tr>
-                            <td>Vermond</td>
-                            <td>V655</td>
-                            <td>Vermont</td>
-                            <td>V655</td>
-                            <td>yes</td>
-                          </tr>
-                          <tr>
-                            <td>Varnend</td>
-                            <td>V655</td>
-                            <td>Vermont</td>
-                            <td>V655</td>
-                            <td>yes</td>
-                          </tr>
-                        </tbody>
-                      </table>
                     </div>
                   </div>
                 </div>
@@ -2481,6 +2655,39 @@
 
                         <div class="attribute-description">
                           <p>Micro Level Analysis Match Status</p>
+                        </div>
+                      </div>
+
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">penaltyCode</div>
+                          <code class="secondary">String</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <!-- <p>// TODO: </p> -->
+                        </div>
+                      </div>
+
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">penaltyCodeSummary</div>
+                          <code class="secondary">String</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <!-- <p>// TODO: </p> -->
+                        </div>
+                      </div>
+
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">penaltyCodeDetails</div>
+                          <code class="secondary">String</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <!-- <p>// TODO: </p> -->
                         </div>
                       </div>
                     </div>
