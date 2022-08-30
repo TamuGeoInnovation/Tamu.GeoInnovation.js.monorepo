@@ -9,7 +9,7 @@ import { Geocoder } from '@tamu-gisc/common/utils/geometry/geoprocessing';
 })
 export class GeocodingComponent {
   public apiVersion = '5.0';
-  public url = 'https://prod.geoservices.tamu.edu/Api/Geocode/V5/';
+  public url = 'https://prod.geoservices.tamu.edu/api/geocode/v5';
 
   public apiKey = 'demo';
 
