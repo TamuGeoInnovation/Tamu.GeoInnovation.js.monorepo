@@ -2,14 +2,16 @@
   <h1 class="section-header">Geocoding API <span class="section-header-api-version">| {{ apiVersion }}</span></h1>
 
   <div class="section-content">
-    <p>The following web services provide access to the Texas A&M Geoservices geocoding system. The versions below are the simplified APIs and offer reduced input parameters and output values than do the <a href="http://" target="_blank" rel="noopener noreferrer">advanced Geocoding APIs</a> which provide additional metadata about the internal working of the Texas A&M Geoservices Geocoder as well as advanced options for requesting specific computational options, reference data sources, output hierarchies, etc. (i.e., all the <a href="http://" target="_blank" rel="noopener noreferrer">science under the hood</a>).</p>
-
     <div class="service-endpoint">
       <div class="service-verb get">GET</div>
       <div class="service-address">{{ url }}</div>
     </div>
 
     <p><a href="http://" target="_blank" rel="noopener noreferrer">Looking for an older version?</a></p>
+
+    <p>Geocoding is the process of converting non-spatial locational data into its corresponding spatial representation, most typically converting postal address data into geographic coordinates (latitude and longitude). The Texas A&amp;M, NAACCR, NCI Geocoder represents the current version of research-based geocoding software and is continually being improved. The services available on this site allow a user to process a single address (parsed or non-parsed) as well as a database of records in batch.</p>
+
+    <p>If you encounter any problems or find any cases where the software fails, we would like to hear about it so we can work to improve the quality of the services. Please <a href="/contact">let us know</a>.</p>
   </div>
 </section>
 
@@ -30,7 +32,7 @@
         <td>
           <div>
             <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key.</div>
-            <div class="faux-link" scrollTo="#apiKey">More details</div>
+            <div class="faux-link" scrollTo="#apiKey">Details</div>
           </div>
         </td>
         <td></td>
@@ -41,7 +43,7 @@
         <td>
           <div>
             <div>Target API version.</div>
-            <div class="faux-link" scrollTo="#version">More details</div>
+            <div class="faux-link" scrollTo="#version">Details</div>
           </div>
         </td>
         <td>{{ apiVersion }}</td>
@@ -52,7 +54,7 @@
         <td>
           <div>
             <div>Non-parsed street address value.</div>
-            <div class="faux-link" scrollTo="#streetAddress">More details</div>
+            <div class="faux-link" scrollTo="#streetAddress">Details</div>
           </div>
         </td>
         <td></td>
@@ -63,7 +65,7 @@
         <td>
           <div>
             <div>City value.</div>
-            <div class="faux-link" scrollTo="#city">More details</div>
+            <div class="faux-link" scrollTo="#city">Details</div>
           </div>
         </td>
         <td></td>
@@ -73,8 +75,8 @@
         <td>state</td>
         <td>
           <div>
-            <div>State abbreviation code</div>
-            <div class="faux-link" scrollTo="#state">More details</div>
+            <div>State abbreviation code.</div>
+            <div class="faux-link" scrollTo="#state">Details</div>
           </div>
         </td>
         <td></td>
@@ -85,51 +87,29 @@
         <td>
           <div>
             <div>Zip code number.</div>
-            <div class="faux-link" scrollTo="#zip">More details</div>
+            <div class="faux-link" scrollTo="#zip">Details</div>
           </div>
         </td>
         <td></td>
       </tr>
 
       <tr>
-        <td>allowTies</td>
-        <td>
-          <div>
-            <div>Flag indicating to return ties as valid results or handle using the <code class="secondary">tieBreakingStrategy</code> parameter.</div>
-            <div class="faux-link" scrollTo="#allowTies">More details</div>
-          </div>
-        </td>
-        <td>false</td>
-      </tr>
-
-      <tr>
-        <td>tieBreakingStrategy</td>
-        <td>
-          <div>
-            <div>Describes the strategy used to break ties and not return ties as valid results. Requires <code class="secondary">allowTies</code> to be true.</div>
-            <div class="faux-link" scrollTo="#tieBreakingStrategy">More details</div>
-          </div>
-        </td>
-        <td>flipACoin</td>
-      </tr>
-
-      <tr>
         <td>census</td>
         <td>
           <div>
-            <div>Describes whether or not census variables will be calculated for the geocode.</div>
-            <div class="faux-link" scrollTo="#census">More details</div>
+            <div>Describes whether census variables will be calculated for the geocode.</div>
+            <div class="faux-link" scrollTo="#census">Details</div>
           </div>
         </td>
         <td>false</td>
       </tr>
 
       <tr>
-        <td>censusYear</td>
+        <td>censusYears</td>
         <td>
           <div>
             <div>Year or list of years of census data to intersect with.</div>
-            <div class="faux-link" scrollTo="#censusYear">More details</div>
+            <div class="faux-link" scrollTo="#censusYear">Details</div>
           </div>
         </td>
         <td></td>
@@ -139,8 +119,8 @@
         <td>format</td>
         <td>
           <div>
-            <div>Response return format.</div>
-            <div class="faux-link" scrollTo="#format">More details</div>
+            <div>Response output format.</div>
+            <div class="faux-link" scrollTo="#format">Details</div>
           </div>
         </td>
         <td>json</td>
@@ -151,7 +131,7 @@
         <td>
           <div>
             <div>Describes whether or not to include column headers for text (cvs/tsv) output formats.</div>
-            <div class="faux-link" scrollTo="#includeHeader">More details</div>
+            <div class="faux-link" scrollTo="#includeHeader">Details</div>
           </div>
         </td>
         <td>false</td>
@@ -162,7 +142,238 @@
         <td>
           <div>
             <div>Describes whether the geocode transaction details will be stored in your account.</div>
-            <div class="faux-link" scrollTo="#notStore">More details</div>
+            <div class="faux-link" scrollTo="#notStore">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>verbose</td>
+        <td>
+          <div>
+            <div>Output full details (parse address, matched address, reference feature address and details).</div>
+            <div class="faux-link" scrollTo="#verbose">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>ShouldOutputParsedAddress</td>
+        <td>
+          <div>
+            <div>Describes if the output parsed address should be included in the response.</div>
+            <div class="faux-link" scrollTo="#shouldOutputParsedAddress">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>ShouldOutputMatchedAddress</td>
+        <td>
+          <div>
+            <div>Describes if the output matched address should be included in the response.</div>
+            <div class="faux-link" scrollTo="#shouldOutputMatchedAddress">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>ShouldOutputReferenceFeature</td>
+        <td>
+          <div>
+            <div>Describes if the output reference feature should be included in the response.</div>
+            <div class="faux-link" scrollTo="#shouldOutputReferenceFeature">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>ShouldOutputReferenceFeatureAddress</td>
+        <td>
+          <div>
+            <div>Describes if the output reference feature address should be included in the response.</div>
+            <div class="faux-link" scrollTo="#shouldOutputReferenceFeatureAddress">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>allowTies</td>
+        <td>
+          <div>
+            <div>Flag indicating to return ties as valid results or handle using the <code class="secondary">tieBreakingStrategy</code> parameter.</div>
+            <div class="faux-link" scrollTo="#allowTies">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>tieBreakingStrategy</td>
+        <td>
+          <div>
+            <div>Describes the strategy used to break ties and not return ties as valid results. Requires <code class="secondary">allowTies</code> to be true.</div>
+            <div class="faux-link" scrollTo="#tieBreakingStrategy">Details</div>
+          </div>
+        </td>
+        <td>chooseFirstOne</td>
+      </tr>
+
+      <tr>
+        <td>confidenceLevels</td>
+        <td>
+          <div>
+            <div>Sets minimum confidence level accepted for "Open Addresses Source Matches".</div>
+            <div class="faux-link" scrollTo="#confidenceLevels">Details</div>
+          </div>
+        </td>
+        <td>5</td>
+      </tr>
+
+      <tr>
+        <td>minScore</td>
+        <td>
+          <div>
+            <div>Sets minimum accepted match score.</div>
+            <div class="faux-link" scrollTo="#minScore">Details</div>
+          </div>
+        </td>
+        <td>95</td>
+      </tr>
+
+      <tr>
+        <td>exhaustiveSearch</td>
+        <td>
+          <div>
+            <div>returns all matched geocodes for an input query.</div>
+            <div class="faux-link" scrollTo="#exhaustiveSearch">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>aliasTables</td>
+        <td>
+          <div>
+            <div>Describes whether to utilize city alias tables in result scoring.</div>
+            <div class="faux-link" scrollTo="#aliasTables">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>attributeRelaxation</td>
+        <td>
+          <div>
+            <div>Describes whether to use attribute relaxation.</div>
+            <div class="faux-link" scrollTo="#attributeRelaxation">Details</div>
+          </div>
+        </td>
+        <td>true</td>
+      </tr>
+
+      <tr>
+        <td>relaxableAttributes</td>
+        <td>
+          <div>
+            <div>List of allowable attributes that should be relaxed. Only applies if <code class="secondary">attributeRelaxation</code> is enabled.</div>
+            <div class="faux-link" scrollTo="#relaxableAttributes">Details</div>
+          </div>
+        </td>
+        <td>pre, suffix, post, city, zip</td>
+      </tr>
+
+      <tr>
+        <td>substringMAtching</td>
+        <td>
+          <div>
+            <div>Describes whether to use substring matching.</div>
+            <div class="faux-link" scrollTo="#substringMatching">Details</div>
+          </div>
+        </td>
+        <td>true</td>
+      </tr>
+
+      <tr>
+        <td>soundex</td>
+        <td>
+          <div>
+            <div>Describes whether to use soundex.</div>
+            <div class="faux-link" scrollTo="#soundex">Details</div>
+          </div>
+        </td>
+        <td>true</td>
+      </tr>
+
+      <tr>
+        <td>soundexableAttributes</td>
+        <td>
+          <div>
+            <div>List of allowable attributes to be soundex'ed. Only applies if <code class="secondary">soundex</code> is enabled.</div>
+            <div class="faux-link" scrollTo="#soundexableAttributes">Details</div>
+          </div>
+        </td>
+        <td>name, city</td>
+      </tr>
+
+      <tr>
+        <td>hierarchy</td>
+        <td>
+          <div>
+            <div>Feature matching hierarchy strategy to use.</div>
+            <div class="faux-link" scrollTo="#hierarchy">Details</div>
+          </div>
+        </td>
+        <td>featureMatchingSelectionMethod</td>
+      </tr>
+
+      <tr>
+        <td>referenceDataSources</td>
+        <td>
+          <div>
+            <div>Reference data sources to use.</div>
+            <div class="faux-link" scrollTo="#referenceDataSources">Details</div>
+          </div>
+        </td>
+        <td>all</td>
+      </tr>
+
+      <tr>
+        <td>geometry</td>
+        <td>
+          <div>
+            <div>Returns geometry of reference feature.</div>
+            <div class="faux-link" scrollTo="#geometry">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>multithreadedGeocoder</td>
+        <td>
+          <div>
+            <div>Describes whether to run reference sources in parallel.</div>
+            <div class="faux-link" scrollTo="#multithreadedGeocoder">Details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+
+      <tr>
+        <td>outputStatistics</td>
+        <td>
+          <div>
+            <div>Describes whether to return processing statistics and information (json/xml) only.</div>
+            <div class="faux-link" scrollTo="#outputStatistics">Details</div>
           </div>
         </td>
         <td>false</td>
@@ -191,21 +402,6 @@
       <p>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform. Each request will deduct one credit from your account balance.</p>
 
       <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
-
-      <!-- <p>Example URL:</p> -->
-
-      <!-- <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">
-            {{ url }}?<strong>apiKey={{ apiKey }}&</strong>version={{ apiVersion }}&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json
-          </div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -221,22 +417,6 @@
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
-
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">
-            {{ url }}?apiKey={{ apiKey }}&<strong>version={{ apiVersion }}</strong
-            >&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json
-          </div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -250,19 +430,6 @@
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Non-parsed street address.</p>
-
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>streetAddress=9355 Burton Way</strong>&city=Beverly Hills&state=ca&zip=90210&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -281,19 +448,6 @@
         <li>San Francisco</li>
         <li>New York</li>
       </ul>
-
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>city=Beverly Hills</strong>&streetAddress=9355 Burton Way&state=ca&zip=90210&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&city=Beverly Hills&streetAddress=9355 Burton Way&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -312,19 +466,6 @@
         <li>TX</li>
         <li>NY</li>
       </ul>
-
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>state=ca</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&zip=90210&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&state=ca&streetAddress=9355 Burton Way&city=Beverly Hills&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -343,85 +484,6 @@
         <li>90007</li>
         <li>77840</li>
       </ul>
-
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>zip=90210</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + 'apiKey=' + apiKey + '&version=' + apiVersion + '&zip=90210&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="allowTies">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>allowTies</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
-      <p>Flag to indicate to return ties as valid results or handle using the tieBreakingStrategy parameter. Ties are allowed by default. if <code class="secondary">false</code> is provided, a valid strategy for <code class="secondary">tieBreakingStrategy</code> must also be provided.</p>
-
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>allowTies=true</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + 'apiKey=' + apiKey + '&version=' + apiVersion + '&allowTies=true&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="tieBreakingStrategy">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>tieBreakingStrategy</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
-      <p>The name of the tie-breaking strategy to use when ties are found. Supported values:</p>
-      <ul>
-        <li>
-          flipACoin
-          <ul>
-            <li>Choose and return one of the ties at random.</li>
-          </ul>
-        </li>
-        <li>
-          revertToHierarchy
-          <ul>
-            <li>Fail on a tie and match to the next level of the geographic hierarchy - parcel, then street, then ZIP, then city, etc.</li>
-          </ul>
-        </li>
-      </ul>
-
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>tieBreakingStrategy=flipACoin</strong>&allowTies=false&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&tieBreakingStrategy=flipACoin&allowTies=false&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -434,33 +496,25 @@
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.93</p>
-      <p>Describes whether census variables should be calculated for the requested geocode.</p>
+      <p>Describes whether census variables should be calculated for the requested geocode. Allowed values are:</p>
 
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>census=false</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&census=false&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
     </div>
   </div>
 
-  <div class="parameter-detail-container" id="censusYear">
+  <div class="parameter-detail-container" id="censusYears">
     <div class="parameter-detail-header">
       <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>censusYear</h3>
+      <h3>censusYears</h3>
       <div class="parameter-detail-header-badges"></div>
     </div>
 
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 2.96</p>
-      <p>Pipe-separated list of supported census data years to intersect with. Available years include:</p>
+      <p>Comma-separated list of supported census data years to intersect with. Available years include:</p>
 
       <ul>
         <li>1990</li>
@@ -470,19 +524,63 @@
       </ul>
 
       <p>The value <code class="secondary">allAvailable</code> is a shorthand for all of the supported years.</p>
+    </div>
+  </div>
 
-      <!-- <p>Example URL:</p>
+  <div class="parameter-detail-container" id="includeHeader">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>includeHeader</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
 
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>censusYear=1990|2000</strong>&census=true&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&censusYear=1990|2000&census=true&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.96</p>
+      <p>Includes field names as the first row when the output format is <code class="secondary">csv</code> or <code class="secondary">tsv</code>. Allowed values include:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="notStore">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>notStore</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.8</p>
+      <p>Describes if transaction details should not be stored in your account history.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="verbose">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>verbose</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Outputs full transaction details including:</p>
+
+      <ul>
+        <li>Parsed address</li>
+        <li>Matched address</li>
+        <li>references feature address and associated details</li>
+      </ul>
+
+      <p>Allowed values include:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
     </div>
   </div>
 
@@ -504,46 +602,441 @@
         <li>json</li>
       </ul>
 
-      <p>JSON is response type is only available in API version 2.96 and newer.</p>
-
-      <!-- <p>Example URL:</p>
-
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>format=json</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&format=json&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
+      <p><code class="secondary">json</code> response type is only available in API version 2.96 and newer.</p>
     </div>
   </div>
 
-  <div class="parameter-detail-container" id="notStore">
+  <div class="parameter-detail-container" id="shouldOutputParsedAddress">
     <div class="parameter-detail-header">
       <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>notStore</h3>
+      <h3>ShouldOutputParsedAddress</h3>
       <div class="parameter-detail-header-badges"></div>
     </div>
 
     <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 2.8</p>
-      <p>Describes if transaction details should not be stored in your account history.</p>
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Outputs the parsed address from query inputs.</p>
 
-      <!-- <p>Example URL:</p>
+      <p>Allowed values include:</p>
 
-      <div class="service-endpoint">
-        <div class="service-verb get">GET</div>
-        <div class="service-address">
-          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>notStore=false</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
-          <div class="url-actions">
-            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&notStore=false&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
-            <span class="material-icons action alt" title="Run">play_circle_outline</span>
-          </div>
-        </div>
-      </div> -->
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="shouldOutputMatchedAddress">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>ShouldOutputMatchedAddress</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Outputs geocode matched address from parsed address.</p>
+
+      <p>Allowed values include:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="shouldOutputReferenceFeature">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>ShouldOutputReferenceFeature</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Outputs reference feature used in geocode transaction.</p>
+
+      <p>Allowed values include:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="shouldOutputReferenceFeatureAddress">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>ShouldOutputReferenceFeatureAddress</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Outputs address of the matched reference feature.</p>
+
+      <p>Allowed values include:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="allowTies">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>allowTies</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
+      <p>Flag to indicate to return ties as valid results or handle using the <code class="secondary">tieBreakingStrategy</code> parameter. Ties are allowed by default. if <code class="secondary">false</code> is provided, a valid strategy for <code class="secondary">tieBreakingStrategy</code> must also be provided.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="tieBreakingStrategy">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>tieBreakingStrategy</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
+      <p>The name of the tie-breaking strategy to use when ties are found. Supported values:</p>
+      <ul>
+        <li>
+          chooseFirstOne
+          <ul>
+            <li>Return the first one.</li>
+          </ul>
+        </li>
+        <li>
+          flipACoin
+          <ul>
+            <li>Choose and return one of the ties at random.</li>
+          </ul>
+        </li>
+        <li>
+          revertToHierarchy
+          <ul>
+            <li>Fail on a tie and match to the next level of the geographic hierarchy - parcel, then street, then ZIP, then city, etc.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="confidenceLevels">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>confidenceLevels</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes the minimum confidence level accepted for Open Address Source Matches.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>Numeric value between <code class="secondary">1</code> through <code class="secondary">8</code>, inclusive.</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">5</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="minScore">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>minScore</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Sets the minimum acceptance match score.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>Double digit numeric value between <code class="secondary">00</code> through <code class="secondary">100</code>, inclusive.</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">95</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="exhaustiveSearch">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>exhaustiveSearch</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Returns all matched geocodes for an input query</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">false</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="aliasTables">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>aliasTables</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Determines whether city alias tables are utilized in result scoring.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">false</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="attributeRelaxation">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>attributeRelaxation</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes whether attribute relaxation will be used.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">true</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="relaxableAttributes">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>relaxableAttributes</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>List of attributes allowed to be relaxed when <code class="secondary">attributeRelaxation</code> is enabled.</p>
+
+      <p>Value is a comma separated list of any of the following attributes:</p>
+
+      <ul>
+        <li>pre</li>
+        <li>suffix</li>
+        <li>post</li>
+        <li>city</li>
+        <li>zip</li>
+      </ul>
+
+      <p>If this parameter is not provided, by default all of the above listed attributes will be relaxed.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="substringMAtching">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>substringMAtching</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes whether substring matching will be used.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">true</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="soundex">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>soundex</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes whether soundex will be used.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">true</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="soundexableAttributes">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>soundexableAttributes</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Attributes allowed to be soundex'ed; only applies if <code class="secondary">soundex</code> is enabled.</p>
+
+      <p>Value is a comma separated list of any of the following attributes:</p>
+
+      <ul>
+        <li>name</li>
+        <li>city</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">name,city</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="hierarchy">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>hierarchy</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes the feature matching hierarchy that will be used.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>uncertaintyBased</li>
+        <li>featureMatchingSelectionMethod</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">featureMatchingSelectionMethod</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="referenceDataSources">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>referenceDataSources</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes the data sources to use.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>all</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">all</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="geometry">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>geometry</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes whether to return the full geometry of the reference feature. Please note that this will generate a large response payload.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">false</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="multithreadedGeocoder">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>multithreadedGeocoder</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes whether to run reference sources in parallel.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">false</code> will be used.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="outputStatistics">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>outputStatistics</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 5.0</p>
+      <p>Describes whether to return processing statistics and information. This option is only valid for <code class="secondary">json</code> and <code class="secondary">xml</code> output formats.</p>
+
+      <p>Allowed values:</p>
+
+      <ul>
+        <li>true</li>
+        <li>false</li>
+      </ul>
+
+      <p>If this parameter is not provided, a default of <code class="secondary">false</code> will be used.</p>
     </div>
   </div>
 </section>
@@ -572,7 +1065,7 @@
               <td>
                 <div>
                   <div>This field will report the full (major, minor, patch) version number used in the processing of the input parameters.</div>
-                  <div class="faux-link" scrollTo="#responseVersion">More details</div>
+                  <div class="faux-link" scrollTo="#responseVersion">Details</div>
                 </div>
               </td>
               <td>String</td>
@@ -582,7 +1075,7 @@
               <td>
                 <div>
                   <div>Unique ID assigned to the response.</div>
-                  <div class="faux-link" scrollTo="#responseTransactionId">More details</div>
+                  <div class="faux-link" scrollTo="#responseTransactionId">Details</div>
                 </div>
               </td>
               <td>String</td>
@@ -592,7 +1085,7 @@
               <td>
                 <div>
                   <div>This field will report the full (major, minor, patch) version number used in the processing of the input parameters.</div>
-                  <div class="faux-link" scrollTo="#responseVersion2">More details</div>
+                  <div class="faux-link" scrollTo="#responseVersion2">Details</div>
                 </div>
               </td>
               <td>String</td>
@@ -602,7 +1095,7 @@
               <td>
                 <div>
                   <div>The value for the response status code.</div>
-                  <div class="faux-link" scrollTo="#responseQueryStatusCodeValue">More details</div>
+                  <div class="faux-link" scrollTo="#responseQueryStatusCodeValue">Details</div>
                 </div>
               </td>
               <td>Number</td>
@@ -612,7 +1105,7 @@
               <td>
                 <div>
                   <div>Geocode match type.</div>
-                  <div class="faux-link" scrollTo="#responseFeatureMatchingResultType">More details</div>
+                  <div class="faux-link" scrollTo="#responseFeatureMatchingResultType">Details</div>
                 </div>
               </td>
               <td>String</td>
@@ -622,7 +1115,7 @@
               <td>
                 <div>
                   <div>Number of ambiguous geocodes that matched the input parameters.</div>
-                  <div class="faux-link" scrollTo="#responseFeatureMatchingResultCount">More details</div>
+                  <div class="faux-link" scrollTo="#responseFeatureMatchingResultCount">Details</div>
                 </div>
               </td>
               <td>String</td>
@@ -632,7 +1125,7 @@
               <td>
                 <div>
                   <div>Geocode processing time (ms).</div>
-                  <div class="faux-link" scrollTo="#responseTimeTaken">More details</div>
+                  <div class="faux-link" scrollTo="#responseTimeTaken">Details</div>
                 </div>
               </td>
               <td>String</td>
@@ -642,7 +1135,7 @@
               <td>
                 <div>
                   <div>Describes whether or not census variables will be calculated for the geocode.</div>
-                  <div class="faux-link" scrollTo="#responseExceptionOccurred">More details</div>
+                  <div class="faux-link" scrollTo="#responseExceptionOccurred">Details</div>
                 </div>
               </td>
               <td>String</td>
@@ -652,7 +1145,7 @@
               <td>
                 <div>
                   <div>Indicates if any exceptions ocurred in the geocode.</div>
-                  <div class="faux-link" scrollTo="#responseException">More details</div>
+                  <div class="faux-link" scrollTo="#responseException">Details</div>
                 </div>
               </td>
               <td>String</td>
@@ -662,7 +1155,7 @@
               <td>
                 <div>
                   <div>Parsed input address</div>
-                  <div class="faux-link" scrollTo="#responseAddress">More details</div>
+                  <div class="faux-link" scrollTo="#responseAddress">Details</div>
                 </div>
               </td>
               <td>Address</td>
@@ -672,7 +1165,7 @@
               <td>
                 <div>
                   <div>Collection of geocodes of size equal to <code class="secondary">FeatureMatchingResultCount</code>.</div>
-                  <div class="faux-link" scrollTo="#responseOutputGeocodes">More details</div>
+                  <div class="faux-link" scrollTo="#responseOutputGeocodes">Details</div>
                 </div>
               </td>
               <td>Array&lt;OutputGeocode&gt;</td>
@@ -2179,4 +2672,3 @@
 <!-- <pre>
   <code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/test.md' | codeFromUrl | async"></code>
 </pre> -->
-
