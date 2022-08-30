@@ -1,0 +1,185 @@
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">address</div>
+    <code class="secondary">Address</code>
+  </div>
+
+  <div class="attribute-description">
+    <!-- <p>Input address for the executed transaction.</p> -->
+    <div *giscAccordion="let parent;">
+      <div class="pill" [giscAccordionHeader]="parent">
+        <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+        <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+      </div>
+
+      <div class="attribute-node" *giscAccordionContent="parent.expanded">
+        <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">area</div>
+    <code class="secondary">number</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Area of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">areaType</div>
+    <code class="secondary">String</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Area metric of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">geometrySRID</div>
+    <code class="secondary">String</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Geometry SRID of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">geometry</div>
+    <code class="secondary">ReferenceGeometry</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Resulting output reference feature geometry, if expressed in input parameters.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">source</div>
+    <code class="secondary">String</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Source of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">vintage</div>
+    <code class="secondary">Number</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Vintage of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">serverName</div>
+    <code class="secondary">String</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Name of server responsible for processing reference feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">primaryIdField</div>
+    <code class="secondary">String</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Name of the primary Id field of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">primaryIdValue</div>
+    <code class="secondary">String</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Value of the primary Id field of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">secondaryIdField</div>
+    <code class="secondary">String</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Name of the secondary Id field of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">secondaryIdValue</div>
+    <code class="secondary">String</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Value of the secondary Id field of the matched feature.</p>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">interpolationType</div>
+    <code class="secondary">Enumerable&lt;InterpolationType&gt;</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Interpolation type of the matched feature.</p>
+
+    <div *giscAccordion="let parent;">
+      <div class="pill" [giscAccordionHeader]="parent">
+        <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+        <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+      </div>
+
+      <div class="attribute-node" *giscAccordionContent="parent.expanded">
+        <tamu-gisc-reference-feature-interpolation-type-attribute-list></tamu-gisc-reference-feature-interpolation-type-attribute-list>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="attribute-unit">
+  <div class="attribute-header">
+    <div class="attribute-name">interpolationSubType</div>
+    <code class="secondary">Enumerable&lt;InterpolationSubType&gt;</code>
+  </div>
+
+  <div class="attribute-description">
+    <p>Interpolation sub-type of the matched feature.</p>
+
+    <div *giscAccordion="let parent;">
+      <div class="pill" [giscAccordionHeader]="parent">
+        <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+        <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+      </div>
+
+      <div class="attribute-node" *giscAccordionContent="parent.expanded">
+        <tamu-gisc-reference-feature-interpolation-sub-type-attribute-list></tamu-gisc-reference-feature-interpolation-sub-type-attribute-list>
+      </div>
+    </div>
+  </div>
+</div>

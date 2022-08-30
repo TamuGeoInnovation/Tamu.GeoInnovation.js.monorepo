@@ -597,6 +597,22 @@
       </div>
 
       <div>
+        <div class="parameter-detail-container" id="responseTransactionGuid">
+          <div class="parameter-detail-header">
+            <span class="material-icons permalink" title="Link to here">link</span>
+            <h3>transactionGuid</h3>
+            <div class="parameter-detail-header-badges">
+              <code>String</code>
+            </div>
+          </div>
+
+          <div class="parameter-detail-content">
+            <p>Unique ID generated for a given transaction.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
         <div class="parameter-detail-container" id="responseApiHost">
           <div class="parameter-detail-header">
             <span class="material-icons permalink" title="Link to here">link</span>
@@ -920,7 +936,7 @@
                 <div class="attribute-unit">
                   <div class="attribute-header">
                     <div class="attribute-name">parsedAddress</div>
-                    <code class="secondary">ProcessedAddressRecord</code>
+                    <code class="secondary">Address</code>
                   </div>
 
                   <div class="attribute-description">
@@ -933,302 +949,7 @@
                       </div>
 
                       <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">addressLocationType</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input address for the executed transaction.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">addressFormatType</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input city for the executed transaction.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">number</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input state for the executed transaction.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">numberFractional</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input zip for the executed transaction.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">preDirectional</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Requested API version for the executed transaction.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">preQualifier</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input customer apiKey for the executed transaction.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">preType</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input option to prevent storing the transaction in account.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">preArticle</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Requested address processing format types. Will be a list containing one or many of the following:</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">name</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for multi-threaded processing of the transaction.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">postArticle</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request to include column names as the first row header when requesting <code>xml</code> as the <code>responseFormat</code>.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">postQualifier</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request to return a verbose transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">postDirectional</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">suffix</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">suiteType</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">suiteNumber</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">city</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">minorCivilDivision</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">consolidatedCity</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">countySubRegion</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">county</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">state</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">zip</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">zipPlus1</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">zipPlus2</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">zipPlus3</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">zipPlus4</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
-
-                        <div class="attribute-unit">
-                          <div class="attribute-header">
-                            <div class="attribute-name">zipPlus5</div>
-                            <code class="secondary">String</code>
-                          </div>
-
-                          <div class="attribute-description">
-                            <!-- <p>Input request for the format of the returned transaction response.</p> -->
-                          </div>
-                        </div>
+                        <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
                       </div>
                     </div>
                   </div>
@@ -1252,4 +973,3 @@
     </tamu-gisc-tab>
   </tamu-gisc-tabs>
 </section>
-

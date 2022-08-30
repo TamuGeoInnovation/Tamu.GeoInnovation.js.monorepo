@@ -9,7 +9,7 @@ import { AddressProcessor } from '@tamu-gisc/common/utils/geometry/geoprocessing
 })
 export class AddressProcessingComponent {
   public apiVersion = '5.0';
-  public url = 'https://geoservices.tamu.edu/Api/AddressNormalization/V5/';
+  public url = 'https://prod.geoservices.tamu.edu/api/addressnormalization/v5';
 
   public apiKey = 'demo';
 
