@@ -1,1 +1,485 @@
-<p>census-intersection works!</p>
+<section class="internal" id="overview">
+  <h1 class="section-header">Census Intersection API <span class="section-header-api-version">| {{ apiVersion }}</span></h1>
+
+  <div class="section-content">
+    <div class="service-endpoint">
+      <div class="service-verb get">GET</div>
+      <div class="service-address">{{ url }}</div>
+    </div>
+
+    <p><a href="http://" target="_blank" rel="noopener noreferrer">Looking for an older version?</a></p>
+
+    <p>Point-in-polygon intersection is the process of assigning an input coordinate the values from an areal unit within which it resides. The Texas A&M Point-in-Polygon Census Intersection Service will assign Census 1990, 2000, or 2010 geographic variables to input coordinates (latitude and longitude pairs).</p>
+
+    <div class="info-block leader-2">
+      <p class="info-block__header">New for V5</p>
+      <p class="info-block__body">The Texas A&M Census Intersection Service stores the Census 1990, 2000, and 2010 tabulation block, block group, and tract information in a SQL Server Spatial database along with other Census data as available by year. Census values are returned by performing a spatial intersect using the input coordinates.</p>
+    </div>
+  </div>
+</section>
+
+<section id="parameters">
+  <h2>Service Parameters</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>apiKey *</td>
+        <td>
+          <div>
+            <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key</div>
+            <div class="faux-link" scrollTo="#apiKey">More details</div>
+          </div>
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>version *</td>
+        <td>
+          <div>
+            <div>Target API version.</div>
+            <div class="faux-link" scrollTo="#version">More details</div>
+          </div>
+        </td>
+        <td>{{ apiVersion }}</td>
+      </tr>
+
+      <tr>
+        <td>censusYears</td>
+        <td>
+          <div>
+            <div>Comma (,) separated list of the year of census data to intersect with, or "allAvailable"</div>
+            <div class="faux-link" scrollTo="#censusYears">More details</div>
+          </div>
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>lat</td>
+        <td>
+          <div>
+            <div>The latitude of the input coordinate.</div>
+            <div class="faux-link" scrollTo="#latitude">More details</div>
+          </div>
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>lon</td>
+        <td>
+          <div>
+            <div>The longitude of the input coordinate.</div>
+            <div class="faux-link" scrollTo="#longitude">More details</div>
+          </div>
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>s</td>
+        <td>
+          <div>
+            <div>Abbreviation of state.</div>
+            <div class="faux-link" scrollTo="#state">More details</div>
+          </div>
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>format</td>
+        <td>
+          <div>
+            <div>Response return format.</div>
+            <div class="faux-link" scrollTo="#format">More details</div>
+          </div>
+        </td>
+        <td>json</td>
+      </tr>
+
+      <tr>
+        <td>notStore</td>
+        <td>
+          <div>
+            <div>Describes whether the geocode transaction details will be stored in your account.</div>
+            <div class="faux-link" scrollTo="#notStore">More details</div>
+          </div>
+        </td>
+        <td>false</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>* marked parameters are required.</p>
+</section>
+
+<section>
+  <h2>Parameter Details</h2>
+
+  <div class="parameter-detail-container" id="apiKey">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>apiKey</h3>
+      <div class="parameter-detail-header-badges">
+        <code class="high-contrast">Required</code>
+      </div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+
+      <p>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform. Each request will deduct one credit from your account balance.</p>
+
+      <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="version">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>version</h3>
+      <div class="parameter-detail-header-badges">
+        <code class="high-contrast">Required</code>
+      </div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a address processing request.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="censusYears">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>censusYears</h3>
+      <div class="parameter-detail-header-badges">
+        <code class="high-contrast">Required</code>
+      </div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <tamu-gisc-census-years-parameter-fragment></tamu-gisc-census-years-parameter-fragment>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="latitude">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>lat</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p>Latitude value for the input coordinate.</p>
+
+      <p><strong>Example:</strong></p>
+      <ul>
+        <li>34.0726207994348</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="longitude">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>lon</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p>Longitude value for the input coordinate.</p>
+
+      <p><strong>Example:</strong></p>
+      <ul>
+        <li>-118.397965182076</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="state">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>s</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p>Abbreviated, two-letter U.S. state code, case-insensitive. Including this field reduces processing time.</p>
+
+      <p><strong>Examples:</strong></p>
+
+      <ul>
+        <li>CA</li>
+        <li>TX</li>
+        <li>NY</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="format">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>format</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p>Value describing the geocode response format.</p>
+
+      <p><strong>Supported response formats:</strong></p>
+      <ul>
+        <li>csv</li>
+        <li>tsv</li>
+        <li>xml</li>
+        <li>json</li>
+      </ul>
+
+      <p>JSON is response type is only available in API version 2.96 and newer.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container" id="notStore">
+    <div class="parameter-detail-header">
+      <span class="material-icons permalink" title="Link to here">link</span>
+      <h3>notStore</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.8</p>
+      <p>Describes if transaction details should not be stored in your account history.</p>
+    </div>
+  </div>
+</section>
+
+<section id="response">
+  <h2>Response</h2>
+
+  <p>Response contents depend with the requested <span class="faux-link" scrollTo="#format">response format</span>.</p>
+
+  <tamu-gisc-tabs>
+    <tamu-gisc-tab label="JSON">
+      <div>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'json'"></tamu-gisc-response-viewer>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Description</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>version</td>
+              <td>
+                <div>
+                  <div>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</div>
+                  <div class="faux-link" scrollTo="#responseVersion">More details</div>
+                </div>
+              </td>
+              <td>ApiVersion</td>
+            </tr>
+
+            <tr>
+              <td>timeTaken</td>
+              <td>
+                <div>
+                  <div>Time required to execute the transaction, reported in milliseconds.</div>
+                  <div class="faux-link" scrollTo="#responseTimeTaken">More details</div>
+                </div>
+              </td>
+              <td>Number</td>
+            </tr>
+
+            <tr>
+              <td>transactionGuid</td>
+              <td>
+                <div>
+                  <div>Unique ID assigned to the response.</div>
+                  <div class="faux-link" scrollTo="#responseTransactionGuid">More details</div>
+                </div>
+              </td>
+              <td>String</td>
+            </tr>
+
+            <tr>
+              <td>apiHost</td>
+              <td>
+                <div>
+                  <div>Server name that processed the transaction.</div>
+                  <div class="faux-link" scrollTo="#responseApiHost">More details</div>
+                </div>
+              </td>
+              <td>String</td>
+            </tr>
+
+            <tr>
+              <td>clientHost</td>
+              <td>
+                <div>
+                  <div>Public hostname where the transaction was executed.</div>
+                  <div class="faux-link" scrollTo="#responseClientHost">More details</div>
+                </div>
+              </td>
+              <td>String</td>
+            </tr>
+
+            <tr>
+              <td>queryStatusCode</td>
+              <td>
+                <div>
+                  <div>The value for the response status code.</div>
+                  <div class="faux-link" scrollTo="#responseQueryStatusCode">See details</div>
+                </div>
+              </td>
+              <td>Enumerable&lt;QueryStatusCode&gt;</td>
+            </tr>
+
+            <tr>
+              <td>results</td>
+              <td>
+                <div>
+                  <div>Processed census intersections, one for each census year provided.</div>
+                  <div class="faux-link" scrollTo="#responseResults">More details</div>
+                </div>
+              </td>
+              <td>Array&lt;CensusRecord&gt;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="parameter-detail-container" id="responseVersion">
+        <div class="parameter-detail-header">
+          <span class="material-icons permalink" title="Link to here">link</span>
+          <h3>version</h3>
+          <div class="parameter-detail-header-badges">
+            <code>ApiVersion</code>
+          </div>
+        </div>
+
+        <div class="parameter-detail-content">
+          <tamu-gisc-api-version-fragment></tamu-gisc-api-version-fragment>
+        </div>
+      </div>
+
+      <div class="parameter-detail-container" id="responseTimeTaken">
+        <div class="parameter-detail-header">
+          <span class="material-icons permalink" title="Link to here">link</span>
+          <h3>timeTaken</h3>
+          <div class="parameter-detail-header-badges">
+            <code>Number</code>
+          </div>
+        </div>
+
+        <div class="parameter-detail-content">
+          <p>Total time taken to process the entire transaction (including all address format types), expressed in milliseconds.</p>
+        </div>
+      </div>
+
+      <div class="parameter-detail-container" id="responseTransactionGuid">
+        <div class="parameter-detail-header">
+          <span class="material-icons permalink" title="Link to here">link</span>
+          <h3>transactionGuid</h3>
+          <div class="parameter-detail-header-badges">
+            <code>String</code>
+          </div>
+        </div>
+
+        <div class="parameter-detail-content">
+          <p>Unique ID generated for a given transaction.</p>
+        </div>
+      </div>
+
+      <div class="parameter-detail-container" id="responseApiHost">
+        <div class="parameter-detail-header">
+          <span class="material-icons permalink" title="Link to here">link</span>
+          <h3>apiHost</h3>
+          <div class="parameter-detail-header-badges">
+            <code>String</code>
+          </div>
+        </div>
+
+        <div class="parameter-detail-content">
+          <p>The public hostname of the API service.</p>
+        </div>
+      </div>
+
+      <div class="parameter-detail-container" id="responseClientHost">
+        <div class="parameter-detail-header">
+          <span class="material-icons permalink" title="Link to here">link</span>
+          <h3>clientHost</h3>
+          <div class="parameter-detail-header-badges">
+            <code>String</code>
+          </div>
+        </div>
+
+        <div class="parameter-detail-content">
+          <p>The public hostname of the API service.</p>
+        </div>
+      </div>
+
+      <div class="parameter-detail-container" id="responseQueryStatusCode">
+        <div class="parameter-detail-header">
+          <span class="material-icons permalink" title="Link to here">link</span>
+          <h3>queryStatusCode</h3>
+          <div class="parameter-detail-header-badges">
+            <code>Enumerable&lt;QueryStatusCode&gt;</code>
+          </div>
+        </div>
+
+        <div class="parameter-detail-content">
+          <tamu-gisc-query-status-fragment></tamu-gisc-query-status-fragment>
+        </div>
+      </div>
+
+      <div class="parameter-detail-container" id="responseResults">
+        <div class="parameter-detail-header">
+          <span class="material-icons permalink" title="Link to here">link</span>
+          <h3>results</h3>
+          <div class="parameter-detail-header-badges">
+            <code>Array&lt;CensusRecord&gt;</code>
+          </div>
+        </div>
+
+        <div class="parameter-detail-content">
+          <p>A collection of associated census records; one for each of the years provided <code>censusYears</code> in the input parameters.</p>
+
+          <p><strong>The CensusRecord object:</strong></p>
+
+          <div class="attribute-list">
+            <tamu-gisc-census-record-fragment></tamu-gisc-census-record-fragment>
+          </div>
+        </div>
+      </div>
+    </tamu-gisc-tab>
+
+    <tamu-gisc-tab label="CSV/TSV">
+      <div>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'tsv'"></tamu-gisc-response-viewer>
+      </div>
+    </tamu-gisc-tab>
+    <tamu-gisc-tab label="XML">
+      <div>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'xml'"></tamu-gisc-response-viewer>
+      </div>
+    </tamu-gisc-tab>
+  </tamu-gisc-tabs>
+</section>

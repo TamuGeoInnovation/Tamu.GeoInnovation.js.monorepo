@@ -378,7 +378,7 @@ table {
   @include flex-direction(row);
   border: 1.5pt solid;
   border-color: #e0e0e0;
-  border-radius: 5px;
+  border-radius: 5pt;
   overflow: hidden;
 
   margin-top: 1rem;
@@ -911,5 +911,24 @@ tamu-gisc-tooltip {
     &:hover {
       color: initial;
     }
+  }
+}
+
+.info-block {
+  background: lighten($active-color, 27%);
+  padding: 1rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1pt solid lighten($active-color, 15%);
+  border-radius: 5pt;
+
+  .info-block__body,
+  .info-block__header {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-block__header {
+    font-weight: 600;
   }
 }
