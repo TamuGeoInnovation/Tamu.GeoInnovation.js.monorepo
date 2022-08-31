@@ -13,6 +13,8 @@ import { ReferenceFeatureInterpolationTypeAttributeListComponent } from './fragm
 import { ReferenceFeatureInterpolationSubTypeAttributeListComponent } from './fragments/common/reference-feature-interpolation-sub-type-attribute-list/reference-feature-interpolation-sub-type-attribute-list.component';
 import { ApiVersionFragmentComponent } from './fragments/common/api-version-fragment/api-version-fragment.component';
 import { QueryStatusFragmentComponent } from './fragments/common/query-status-fragment/query-status-fragment.component';
+import { CensusYearsParameterFragmentComponent } from './fragments/common/census-years-parameter-fragment/census-years-parameter-fragment.component';
+import { CensusRecordFragmentComponent } from './fragments/common/census-record-fragment/census-record-fragment.component';
 
 @NgModule({
   imports: [CommonModule, HighlightPlusModule, UILayoutModule],
@@ -24,7 +26,9 @@ import { QueryStatusFragmentComponent } from './fragments/common/query-status-fr
     ReferenceFeatureInterpolationTypeAttributeListComponent,
     ReferenceFeatureInterpolationSubTypeAttributeListComponent,
     ApiVersionFragmentComponent,
-    QueryStatusFragmentComponent
+    QueryStatusFragmentComponent,
+    CensusYearsParameterFragmentComponent,
+    CensusRecordFragmentComponent
   ],
   exports: [
     ResponseViewerComponent,
@@ -34,7 +38,9 @@ import { QueryStatusFragmentComponent } from './fragments/common/query-status-fr
     ReferenceFeatureInterpolationTypeAttributeListComponent,
     ReferenceFeatureInterpolationSubTypeAttributeListComponent,
     ApiVersionFragmentComponent,
-    QueryStatusFragmentComponent
+    QueryStatusFragmentComponent,
+    CensusYearsParameterFragmentComponent,
+    CensusRecordFragmentComponent
   ]
 })
 export class ApiComponentsModule {}
