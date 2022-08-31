@@ -369,14 +369,6 @@ table {
   color: $inactive-color;
 }
 
-// Main content container in sidebar layouts
-#root {
-  @include flex(1);
-
-  padding: 0 3rem;
-  box-sizing: border-box;
-}
-
 .service-endpoint {
   @include flexbox;
   @include flex-direction(row);
