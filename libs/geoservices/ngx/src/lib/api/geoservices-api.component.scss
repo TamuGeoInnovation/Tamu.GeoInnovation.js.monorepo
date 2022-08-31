@@ -11,6 +11,10 @@
 #root {
   max-height: 100%;
   overflow-y: auto;
+
+  .flexible-container {
+    max-width: 80rem;
+  }
 }
 
 .product-logo {
