@@ -1,0 +1,144 @@
+<p>The main difference between these formats is the granularity that the address components are broken up into. The following table lists the address components that each address format reports. An X means the format supports a separate field for the address component, while a - means that the address component is not supported. When a component is not supported, it will instead be contained as part of the Name field.</p>
+
+<div *giscAccordion="let parent;">
+  <div class="pill" [giscAccordionHeader]="parent">
+    <div *ngIf="!parent.expanded"><span>Show Comparison Table</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+    <div *ngIf="parent.expanded"><span>Hide Comparison Table</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+  </div>
+
+  <div class="attribute-node" *giscAccordionContent="parent.expanded">
+    <table id="addressFormatTable">
+      <thead>
+        <tr>
+          <th>Address Component</th>
+          <th>USPSPublication28</th>
+          <th>USCensusTiger</th>
+          <th>LACounty</th>
+          <th>Examples</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Number</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>123</td>
+        </tr>
+
+        <tr>
+          <td>Number Fractional</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>1/2</td>
+        </tr>
+
+        <tr>
+          <td>Pre-Directional</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>North, S, E, West</td>
+        </tr>
+
+        <tr>
+          <td>Pre-Qualifier</td>
+          <td><span class="material-icons unavailable">cancel</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>Old, New, Business</td>
+        </tr>
+
+        <tr>
+          <td>Pre-Type</td>
+          <td><span class="material-icons unavailable">cancel</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>Route, US HWY, Avenue, Via, Paseo</td>
+        </tr>
+
+        <tr>
+          <td>Pre-Article</td>
+          <td><span class="material-icons unavailable">cancel</span></td>
+          <td><span class="material-icons unavailable">cancel</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>La, De La, Del</td>
+        </tr>
+
+        <tr>
+          <td>Name</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>Main</td>
+        </tr>
+
+        <tr>
+          <td>Post-Article</td>
+          <td><span class="material-icons unavailable">cancel</span></td>
+          <td><span class="material-icons unavailable">cancel</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>La, De La, Del</td>
+        </tr>
+
+        <tr>
+          <td>Suffix</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>Street, Blvd</td>
+        </tr>
+
+        <tr>
+          <td>Post-Qualifier</td>
+          <td><span class="material-icons unavailable">cancel</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>Private, Bypass</td>
+        </tr>
+
+        <tr>
+          <td>Post Directional</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>North, S, E, West</td>
+        </tr>
+
+        <tr>
+          <td>Suite Type</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>Apt, Suite, FL</td>
+        </tr>
+
+        <tr>
+          <td>Suite Number</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>24A</td>
+        </tr>
+
+        <tr>
+          <td>Post Office Box Type</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>PO Box, RR, HC</td>
+        </tr>
+
+        <tr>
+          <td>Post Office Box Number</td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td><span class="material-icons success">check_circle</span></td>
+          <td>0255</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

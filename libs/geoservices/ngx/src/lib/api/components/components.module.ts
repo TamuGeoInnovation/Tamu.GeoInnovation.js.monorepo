@@ -15,6 +15,7 @@ import { ApiVersionFragmentComponent } from './fragments/common/api-version-frag
 import { QueryStatusFragmentComponent } from './fragments/common/query-status-fragment/query-status-fragment.component';
 import { CensusYearsParameterFragmentComponent } from './fragments/common/census-years-parameter-fragment/census-years-parameter-fragment.component';
 import { CensusRecordFragmentComponent } from './fragments/common/census-record-fragment/census-record-fragment.component';
+import { AddressFormatFragmentComponent } from './fragments/address-normalization/address-format-fragment/address-format-fragment.component';
 
 @NgModule({
   imports: [CommonModule, HighlightPlusModule, UILayoutModule],
@@ -28,7 +29,8 @@ import { CensusRecordFragmentComponent } from './fragments/common/census-record-
     ApiVersionFragmentComponent,
     QueryStatusFragmentComponent,
     CensusYearsParameterFragmentComponent,
-    CensusRecordFragmentComponent
+    CensusRecordFragmentComponent,
+    AddressFormatFragmentComponent
   ],
   exports: [
     ResponseViewerComponent,
@@ -40,7 +42,8 @@ import { CensusRecordFragmentComponent } from './fragments/common/census-record-
     ApiVersionFragmentComponent,
     QueryStatusFragmentComponent,
     CensusYearsParameterFragmentComponent,
-    CensusRecordFragmentComponent
+    CensusRecordFragmentComponent,
+    AddressFormatFragmentComponent
   ]
 })
 export class ApiComponentsModule {}
