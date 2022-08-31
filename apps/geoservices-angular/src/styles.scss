@@ -296,7 +296,12 @@ table {
 
     &.active {
       color: $active-color;
-      font-weight: 500;
+
+      .category {
+        // Does effectively the same thing as bolding but without changing
+        // the container size
+        text-shadow: 0px 0px 1px $active-color;
+      }
 
       ul > li + ul {
         display: block;
