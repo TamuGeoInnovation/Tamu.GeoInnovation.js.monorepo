@@ -3,17 +3,25 @@
 :host {
   @include flexbox;
   @include flex-direction(row);
-
   height: inherit;
-  width: 100%;
 }
 
 #root {
+  @include flexbox;
+  @include flex-direction(row);
+  width: 100%;
+}
+
+#documentation-container {
+  @include flex(1);
   max-height: 100%;
   overflow-y: auto;
+  padding: 0 3rem;
+  box-sizing: border-box;
 
   .flexible-container {
     max-width: 80rem;
+    padding-left: 5%;
   }
 }
 
@@ -38,4 +46,10 @@
       }
     }
   }
+}
+
+img.logo {
+  cursor: pointer;
+  max-width: 12rem;
+  margin: 0 auto;
 }
