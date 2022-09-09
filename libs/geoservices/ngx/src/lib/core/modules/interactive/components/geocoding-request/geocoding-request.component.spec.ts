@@ -8,9 +8,8 @@ describe('GeocodingRequestComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GeocodingRequestComponent ]
-    })
-    .compileComponents();
+      declarations: [GeocodingRequestComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

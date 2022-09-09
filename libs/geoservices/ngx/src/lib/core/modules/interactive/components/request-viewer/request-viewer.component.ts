@@ -25,4 +25,3 @@ export class RequestViewerComponent implements OnInit, AfterViewInit {
     this.url = this.request.getUrl();
   }
 }
-
