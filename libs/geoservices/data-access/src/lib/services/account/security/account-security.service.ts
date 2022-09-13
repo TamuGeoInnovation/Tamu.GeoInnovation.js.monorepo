@@ -12,7 +12,7 @@ export class AccountSecurityService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = `${this.env.value('api_url')}`;
+    this.resource = `${this.env.value('legacy_api_url')}`;
   }
 
   /**

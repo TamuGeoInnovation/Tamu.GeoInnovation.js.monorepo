@@ -11,7 +11,7 @@ export class AccountDetailsService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = this.env.value('api_url') + 'userServices/getDetails';
+    this.resource = this.env.value('legacy_api_url') + 'userServices/getDetails';
   }
 
   public getDetails() {
@@ -30,7 +30,7 @@ export class AccountDetailsService {
   }
 
   private _updateAccount(d: IAccountDetails) {
-    return this.http.get(`${this.env.value('api_url')}userServices/updateAccountData`, {
+    return this.http.get(`${this.env.value('legacy_api_url')}userServices/updateAccountData`, {
       withCredentials: true,
       params: {
         UserName: d.UserName
@@ -39,7 +39,7 @@ export class AccountDetailsService {
   }
 
   private _updateCompany(d: IAccountDetails) {
-    return this.http.get(`${this.env.value('api_url')}userServices/updateCompanyData`, {
+    return this.http.get(`${this.env.value('legacy_api_url')}userServices/updateCompanyData`, {
       withCredentials: true,
       params: {
         Organization: d.Organization,
@@ -50,7 +50,7 @@ export class AccountDetailsService {
   }
 
   private _updateContact(d: IAccountDetails) {
-    return this.http.get(`${this.env.value('api_url')}userServices/updateContactData`, {
+    return this.http.get(`${this.env.value('legacy_api_url')}userServices/updateContactData`, {
       withCredentials: true,
       params: {
         FirstName: d.FirstName,
@@ -64,7 +64,7 @@ export class AccountDetailsService {
   }
 
   private _updateMailing(d: IAccountDetails) {
-    return this.http.get(`${this.env.value('api_url')}userServices/updateMailingData`, {
+    return this.http.get(`${this.env.value('legacy_api_url')}userServices/updateMailingData`, {
       withCredentials: true,
       params: {
         StreetAddress1: d.Address1,
