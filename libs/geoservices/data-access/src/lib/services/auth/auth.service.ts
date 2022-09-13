@@ -12,7 +12,7 @@ export class AuthService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = this.env.value('api_url') + 'login';
+    this.resource = this.env.value('legacy_api_url') + 'login';
   }
 
   /**
@@ -20,7 +20,7 @@ export class AuthService {
    */
   public state() {
     return this.http
-      .get<ILoggedInResponse>(this.env.value('api_url') + 'userServices/getDetails', {
+      .get<ILoggedInResponse>(this.env.value('legacy_api_url') + 'userServices/getDetails', {
         withCredentials: true
       })
       .pipe(

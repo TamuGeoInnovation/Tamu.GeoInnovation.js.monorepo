@@ -15,9 +15,7 @@ export const environment = {
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
 
-export const api_url = `${window.location.protocol}//${window.location.hostname}/geoservices.tamu.edu/rest/`;
-
-export const covid_api_url = `http://localhost:3333/api/`;
-export const auth_url = covid_api_url;
+export const api_url = `http://localhost:3333`;
+export const legacy_api_url = `${window.location.protocol}//${window.location.hostname}/geoservices.tamu.edu/rest/`;
 
 export * from './definitions';

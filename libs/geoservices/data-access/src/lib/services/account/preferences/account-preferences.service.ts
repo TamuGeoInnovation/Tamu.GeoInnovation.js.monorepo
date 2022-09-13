@@ -13,7 +13,7 @@ export class AccountPreferencesService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient, private details: AccountDetailsService) {
-    this.resource = `${this.env.value('api_url')}userServices/updateNotificationData`;
+    this.resource = `${this.env.value('legacy_api_url')}userServices/updateNotificationData`;
   }
 
   public getNotificationPreferences(): Observable<IAccountPreferences> {
