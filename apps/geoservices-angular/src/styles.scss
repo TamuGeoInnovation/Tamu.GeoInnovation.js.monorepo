@@ -134,6 +134,10 @@ ul {
   margin-left: 1rem;
   list-style-position: inside;
 
+  &.roman {
+    list-style: upper-roman;
+  }
+
   li {
     margin: 0.5rem 0;
   }
@@ -667,7 +671,7 @@ input[type='submit'] {
   padding: 0.75rem 1rem;
   border-radius: 99rem;
   color: #fafafa;
-  background: #536dfe !important;
+  background: #536dfe;
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   @include transition(0.3s box-shadow);

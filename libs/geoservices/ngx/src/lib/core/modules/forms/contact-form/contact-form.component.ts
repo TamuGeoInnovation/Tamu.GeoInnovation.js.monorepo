@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
@@ -12,6 +13,9 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
 })
 export class ContactFormComponent implements OnInit {
   public form: FormGroup;
+
+  public submissionState: ReplaySubject<string> = new ReplaySubject();
+  public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Send message');
 
   constructor(
     private readonly fb: FormBuilder,
@@ -35,6 +39,8 @@ export class ContactFormComponent implements OnInit {
 
   public sendMessage() {
     this.form.disable();
+    this.submissionState.next('pending');
+    this.submissionStateText.next('Sending...');
 
     const value = this.form.getRawValue();
 
@@ -45,20 +51,13 @@ export class ContactFormComponent implements OnInit {
         body: `${value.body}`
       })
       .subscribe({
-        complete: () => {
-          this.ns.toast({
-            id: 'contact-message-sent',
-            title: 'Message sent successfully',
-            message:
-              'Your message was received. A member of our team will review it and get back to you as soon as possible.'
-          });
+        next: (res) => {
+          this.submissionState.next('complete');
         },
         error: (err) => {
-          this.ns.toast({
-            id: 'contact-message-fail',
-            title: 'Message failed to send',
-            message: 'Your message could not be sent. Please try again later. '
-          });
+          this.submissionState.next('error');
+          this.submissionStateText.next('Send message');
+          this.form.enable();
         }
       });
   }
