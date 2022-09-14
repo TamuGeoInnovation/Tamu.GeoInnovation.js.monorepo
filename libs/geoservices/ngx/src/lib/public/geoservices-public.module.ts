@@ -26,6 +26,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/contact/contact.module').then((m) => m.ContactModule)
       },
       {
+        path: 'about',
+        loadChildren: () => import('./pages/about/about.module').then((m) => m.AboutModule)
+      },
+      {
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('./pages/landing/landing.module').then((m) => m.LandingModule)
