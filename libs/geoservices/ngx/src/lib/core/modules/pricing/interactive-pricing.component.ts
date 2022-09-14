@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { combineLatest, map, Observable, shareReplay, startWith, tap } from 'rxjs';
 
 @Component({
@@ -91,7 +92,7 @@ export class InteractivePricingComponent implements OnInit {
     }
   ];
 
-  constructor(private readonly fb: FormBuilder) {}
+  constructor(private readonly fb: FormBuilder, private readonly route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -101,6 +102,27 @@ export class InteractivePricingComponent implements OnInit {
       partnerProgram: [false],
       sla: [false]
     });
+
+    const snapParams = this.route.snapshot.queryParams;
+
+    // Allow to create initial pricing model from direct links to this page from other parts of the website.
+    if (Object.keys(snapParams).length > 0) {
+      const toPatch: { [key: string]: unknown } = {};
+
+      if (snapParams.recurring !== undefined) {
+        toPatch.isRecurring = snapParams.recurring === 'true';
+      }
+
+      if (snapParams.partner !== undefined) {
+        toPatch.partnerProgram = snapParams.partner === 'true';
+      }
+
+      if (snapParams.sla !== undefined) {
+        toPatch.sla = snapParams.sla === 'true';
+      }
+
+      this.form.patchValue(toPatch);
+    }
 
     this.selectedCreditTier = this.form.get('creditCount').valueChanges.pipe(
       startWith(this.form.get('creditCount').value),
@@ -200,3 +222,4 @@ interface IntervalOption {
   label: string;
   unit: string;
 }
+

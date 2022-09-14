@@ -88,7 +88,7 @@
         <tamu-gisc-tab label="Recurring">
           <p>In need of a consistent number of records every month? A monthly recurring plan is the way to go. We can help you figure out what credit subscription works best for you project and your budget!</p>
 
-          <a routerLink="./pricing">View pricing ></a>
+          <a routerLink="./pricing" [queryParams]="{recurring: true}">View pricing ></a>
         </tamu-gisc-tab>
 
         <tamu-gisc-tab label="Partnerships">
@@ -201,3 +201,4 @@
     </div>
   </div>
 </section>
+
