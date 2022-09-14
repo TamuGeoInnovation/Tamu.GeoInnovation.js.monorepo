@@ -28,12 +28,14 @@ export class ContactFormComponent implements OnInit {
   }
 
   public sendMessage() {
+    this.form.disable();
+
     const value = this.form.getRawValue();
 
     this.cs
       .postFormMessage({
         from: value.email,
-        subject: `Contact - ${value.subject} ${value.fullName !== '' ? ' - from ' + value.fullName : ''}`,
+        subject: `Contact - ${value.subject} ${value.fullName !== '' ? '- from ' + value.fullName : ''}`,
         body: `${value.body}`
       })
       .subscribe({
