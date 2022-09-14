@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
@@ -15,7 +16,8 @@ export class ContactFormComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly ns: NotificationService,
-    private readonly cs: ContactService
+    private readonly cs: ContactService,
+    private readonly route: ActivatedRoute
   ) {}
 
   public ngOnInit(): void {
@@ -25,6 +27,10 @@ export class ContactFormComponent implements OnInit {
       subject: ['', Validators.required],
       body: ['', Validators.required]
     });
+
+    if (this.route.snapshot.queryParams.subject !== undefined) {
+      this.form.patchValue({ subject: this.route.snapshot.queryParams.subject });
+    }
   }
 
   public sendMessage() {

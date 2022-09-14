@@ -61,7 +61,7 @@
       <div class="qa-block" id="sla-info">
         <h3>Do you offer Service Level Agreements?</h3>
 
-        <p>Yes we do. If you anticipate needing to process a large amo t of records for a long period of time for which manually adding credits via the partner forms on the website would not be an acceptable option such as in a scheduled, automated, or web-service type process, we offer service level agreements whereby a user can pay one set price per month and process up to a certain amount of records (including unlimited). For information about this option or for a pricing quote, please <a href="">contact us</a>.</p>
+        <p>Yes we do. If you anticipate needing to process a large amo t of records for a long period of time for which manually adding credits via the partner forms on the website would not be an acceptable option such as in a scheduled, automated, or web-service type process, we offer service level agreements whereby a user can pay one set price per month and process up to a certain amount of records (including unlimited). For information about this option or for a pricing quote, please <a routerLink="/contact" [queryParams]="{subject: 'SLA Inquiry'}">contact us</a>.</p>
       </div>
 
       <div class="qa-block" id="refund-policy">
@@ -78,7 +78,7 @@
     <div class="column10 flex flex-column align-center">
       <h2 class="trailer-2">Have Additional Questions?</h2>
 
-      <div class="button snug">Send us a message</div>
+      <a href="/contact" class="button">Send us a message</a>
     </div>
   </div>
 </section>
