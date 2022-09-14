@@ -23,7 +23,18 @@
     </div>
 
     <div class="form-collection column">
-      <tamu-gisc-button value="Send message" type="submit"></tamu-gisc-button>
+      <ng-container *ngIf="(submissionState | async) as ss">
+        <ng-container *ngIf="ss === 'complete' || ss === 'error'">
+          <div class="inform-context trailer-1 flex justify-center" [ngClass]="{alert: ss === 'error' }">
+            <span *ngIf="ss === 'error'"><strong>There was a problem submitting your message. Please try again or try again at a later time.</strong></span>
+            <span *ngIf="ss === 'complete'"><strong>Your message has been received. We will respond as soon as we can.</strong></span>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="(submissionState | async) === null || (submissionState | async) === 'pending'">
+        <tamu-gisc-button [value]="submissionStateText | async" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+      </ng-container>
     </div>
   </div>
 </form>

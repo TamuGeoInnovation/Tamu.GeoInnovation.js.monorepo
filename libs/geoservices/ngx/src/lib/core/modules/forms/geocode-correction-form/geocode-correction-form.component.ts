@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -14,6 +15,9 @@ export class GeocodeCorrectionFormComponent implements OnInit {
   public form: FormGroup;
 
   public states = STATES_TITLECASE;
+
+  public submissionState: ReplaySubject<string> = new ReplaySubject();
+  public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Submit correction');
 
   constructor(
     private readonly fb: FormBuilder,
@@ -36,6 +40,8 @@ export class GeocodeCorrectionFormComponent implements OnInit {
 
   public sendMessage() {
     this.form.disable();
+    this.submissionState.next('pending');
+    this.submissionStateText.next('Sending...');
 
     const value = this.form.getRawValue();
 
@@ -54,19 +60,13 @@ export class GeocodeCorrectionFormComponent implements OnInit {
         `
       })
       .subscribe({
-        complete: () => {
-          this.ns.toast({
-            id: 'correction-message-sent',
-            title: 'Correction message sent successfully',
-            message: 'Thank you for your feedback!'
-          });
+        next: (res) => {
+          this.submissionState.next('complete');
         },
         error: (err) => {
-          this.ns.toast({
-            id: 'correction-message-fail',
-            title: 'Message failed to send',
-            message: 'Your correction message could not be sent. Please try again later. '
-          });
+          this.submissionState.next('error');
+          this.submissionStateText.next('Submit correction');
+          this.form.enable();
         }
       });
   }

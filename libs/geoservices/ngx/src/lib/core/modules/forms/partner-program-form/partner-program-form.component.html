@@ -1,1 +1,105 @@
-<p>partner-program-form works!</p>
+<form [formGroup]="form" class="container12" (submit)="sendMessage()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Your Contact Information</p>
+      </div>
+    </div>
+
+    <div class="form-collection row">
+      <tamu-gisc-textbox placeholder="First Name" formControlName="firstName" floatLabel="true"></tamu-gisc-textbox>
+      <tamu-gisc-textbox placeholder="Last Name" formControlName="lastName" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Email Address" formControlName="email" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Phone Number" formControlName="phoneNumber" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Organization" formControlName="organization" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Department" formControlName="department" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Position" formControlName="position" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Website" formControlName="website" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Your Mailing Address</p>
+      </div>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Street Address" formControlName="mailingStreetAddress" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Street Address 2" formControlName="mailingStreetAddressTwo" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection row">
+      <tamu-gisc-textbox placeholder="City" formControlName="mailingCity" floatLabel="true"></tamu-gisc-textbox>
+      <tamu-gisc-select formControlName="mailingState" [data]="states" displayTemplate="name" valueTemplate="abbreviation" placeholder="Select state"></tamu-gisc-select>
+      <tamu-gisc-textbox placeholder="Zip" formControlName="mailingZip" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Partner Information</p>
+      </div>
+    </div>
+
+    <div class="form-collection column">
+      <p>Partner Type</p>
+      <tamu-gisc-select formControlName="partnerType" [data]="partnerTypes" [displayTemplate]="'label'" [valueTemplate]="'value'"> </tamu-gisc-select>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Website containing attribution of our services" formControlName="partnerWebsite" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox type="textarea" placeholder="Description of your organization" formControlName="partnerOrgDescription" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox type="textarea" placeholder="Description of the use of our services" formControlName="partnerUsageDescription" floatLabel="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <p>I agree to the terms of use and the partner terms outlined on this page.</p>
+      <tamu-gisc-radio-group formControlName="partnerTermsOfUseAgree" [options]="termsOfUseOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
+    </div>
+  </div>
+
+  <div class="form-collection column">
+    <ng-container *ngIf="(submissionState | async) as ss">
+      <ng-container *ngIf="ss === 'complete' || ss === 'error'">
+        <div class="inform-context trailer-1 flex justify-center" [ngClass]="{alert: ss === 'error' }">
+          <span *ngIf="ss === 'error'"><strong>There was a problem submitting your application. Please try again or try again at a later time.</strong></span>
+          <span *ngIf="ss === 'complete'"><strong>Your application has been received. We will review and respond to your request as soon as we can.</strong></span>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="(submissionState | async) === null || (submissionState | async) === 'pending'">
+      <tamu-gisc-button [value]="submissionStateText | async" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+    </ng-container>
+  </div>
+</form>

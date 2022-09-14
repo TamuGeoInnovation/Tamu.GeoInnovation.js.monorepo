@@ -222,4 +222,3 @@ interface IntervalOption {
   label: string;
   unit: string;
 }
-

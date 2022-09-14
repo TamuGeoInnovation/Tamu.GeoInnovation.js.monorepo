@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-submit-bug-form',
@@ -11,6 +12,9 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
 })
 export class SubmitBugFormComponent implements OnInit {
   public form: FormGroup;
+
+  public submissionState: ReplaySubject<string> = new ReplaySubject();
+  public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Submit bug report');
 
   constructor(
     private readonly fb: FormBuilder,
@@ -29,6 +33,8 @@ export class SubmitBugFormComponent implements OnInit {
 
   public sendMessage() {
     this.form.disable();
+    this.submissionState.next('pending');
+    this.submissionStateText.next('Sending...');
 
     const value = this.form.getRawValue();
 
@@ -39,19 +45,13 @@ export class SubmitBugFormComponent implements OnInit {
         body: value.body
       })
       .subscribe({
-        complete: () => {
-          this.ns.toast({
-            id: 'bug-report-message-sent',
-            title: 'Bug report sent successfully',
-            message: 'Thank you for your feedback!'
-          });
+        next: (res) => {
+          this.submissionState.next('complete');
         },
         error: (err) => {
-          this.ns.toast({
-            id: 'bug-report-message-fail',
-            title: 'Message failed to send',
-            message: 'Your correction message could not be sent. Please try again later.'
-          });
+          this.submissionState.next('error');
+          this.submissionStateText.next('Submit bug report');
+          this.form.enable();
         }
       });
   }
