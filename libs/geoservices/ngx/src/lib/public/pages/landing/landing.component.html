@@ -76,19 +76,19 @@
         <tamu-gisc-tab label="Free Usage">
           <p>Every registered users receives an initial 2,500 credits free of charge simply for registering. These credits may be used for any service we offer and is a great way to test our suite of services to determine if they're right for you.</p>
 
-          <a href="http://">Create an account ></a>
+          <a href="https://geoservices.tamu.edu/Signup/">Create an account ></a>
         </tamu-gisc-tab>
 
         <tamu-gisc-tab label="Credit Packs">
           <p>Credit packs are the perfect solution if you have a known and/or fixed number of records that require processing.</p>
 
-          <a href="http://">View credit pack pricing ></a>
+          <a routerLink="./pricing">View pricing ></a>
         </tamu-gisc-tab>
 
         <tamu-gisc-tab label="Recurring">
           <p>In need of a consistent number of records every month? A monthly recurring plan is the way to go. We can help you figure out what credit subscription works best for you project and your budget!</p>
 
-          <a href="http://">View recurring plan pricing ></a>
+          <a routerLink="./pricing">View pricing ></a>
         </tamu-gisc-tab>
 
         <tamu-gisc-tab label="Partnerships">
@@ -100,7 +100,7 @@
         <tamu-gisc-tab label="SLA's">
           <p>If you anticipate needing to process a large amount of records for a long period of time for which manually adding credits via the partner forms on the website would not be an acceptable option such as in a scheduled, automated, or web-service type process, we offer service level agreements whereby a user can pay one set price per month and geocode up to a certain amount of records (including unlimited).</p>
 
-          <a href="http://">Inquire about SLA's ></a>
+          <a routerLink="./contact" [queryParams]="{subject: 'SLA Inquiry'}">Inquire about SLA's ></a>
         </tamu-gisc-tab>
       </tamu-gisc-tabs>
     </div>
@@ -190,14 +190,14 @@
   </div>
 </section>
 
-<section class="content-fill-pad">
+<section class="content-fill-pad" style="background-color: #f5f5f5">
   <div class="container12">
     <div class="column12 flex flex-column align-center section-header">
       <h2>Take Our Services For A Spin</h2>
     </div>
 
     <div class="column12 flex flex-row justify-center">
-      <div class="button">Create a Free Account</div>
+      <a href="https://geoservices.tamu.edu/Signup/" class="button">Create a Free Account</a>
     </div>
   </div>
 </section>
