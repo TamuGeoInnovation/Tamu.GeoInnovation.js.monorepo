@@ -138,6 +138,16 @@ ul {
     list-style: upper-roman;
   }
 
+  &.alphabetic {
+    &.lowercase {
+      list-style: lower-alpha;
+    }
+
+    &.uppercase {
+      list-style: upper-alpha;
+    }
+  }
+
   li {
     margin: 0.5rem 0;
   }
@@ -960,5 +970,14 @@ tamu-gisc-tooltip {
 
   .info-block__header {
     font-weight: 600;
+  }
+}
+
+.contact-block {
+  margin-bottom: 1rem;
+
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }

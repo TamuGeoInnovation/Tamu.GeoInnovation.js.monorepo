@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContactComponent } from './contact.component';
+import { TermsOfUseComponent } from './terms-of-use.component';
 
-describe('ContactComponent', () => {
-  let component: ContactComponent;
-  let fixture: ComponentFixture<ContactComponent>;
+describe('TermsOfUseComponent', () => {
+  let component: TermsOfUseComponent;
+  let fixture: ComponentFixture<TermsOfUseComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ContactComponent]
+      declarations: [TermsOfUseComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ContactComponent);
+    fixture = TestBed.createComponent(TermsOfUseComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
