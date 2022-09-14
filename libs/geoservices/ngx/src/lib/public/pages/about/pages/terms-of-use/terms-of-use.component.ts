@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./terms-of-use.component.scss']
 })
 export class TermsOfUseComponent {}
-
