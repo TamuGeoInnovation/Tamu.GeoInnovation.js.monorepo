@@ -33,7 +33,7 @@ export class ContactFormComponent implements OnInit {
     this.cs
       .postFormMessage({
         from: value.email,
-        subject: `${value.subject} - ${value.fullName}`,
+        subject: `Contact - ${value.subject} ${value.fullName !== '' ? ' - from ' + value.fullName : ''}`,
         body: `${value.body}`
       })
       .subscribe({

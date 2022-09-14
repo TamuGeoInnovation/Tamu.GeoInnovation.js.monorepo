@@ -8,6 +8,6 @@ export class ContactController {
 
   @Post()
   public sendMessage(@Body() body: ContactMessageDto) {
-    return { payload: JSON.stringify(body) };
+    return this.cs.sendMessage(body);
   }
 }
