@@ -64,3 +64,9 @@ secrets.ts
 !.env.sample
 
 .angular
+
+.env
+.env.local
+.env.dev
+.env.staging
+.env.prod
