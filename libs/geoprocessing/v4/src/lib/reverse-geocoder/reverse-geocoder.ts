@@ -1,6 +1,10 @@
-import { ApiBase } from '../core/base';
-
-import { TransformersMap, IReverseGeocoderOptions, IGeocodeResult, ApiResponseFormat } from '../core/types';
+import {
+  TransformersMap,
+  IReverseGeocoderOptions,
+  IGeocodeResult,
+  ApiResponseFormat,
+  ApiBase
+} from '@tamu-gisc/geoprocessing/core';
 
 export class ReverseGeocoder extends ApiBase<IReverseGeocoderTransformers, IReverseGeocoderOptions, IGeocodeResult> {
   public responseType = ApiResponseFormat.Text;

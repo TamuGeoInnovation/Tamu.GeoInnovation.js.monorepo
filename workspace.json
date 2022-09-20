@@ -31,7 +31,6 @@
     "common-utils-geometry": "libs/common/utils/geometry",
     "common-utils-geometry-esri": "libs/common/utils/geometry/esri",
     "common-utils-geometry-generic": "libs/common/utils/geometry/generic",
-    "common-utils-geometry-geoprocessing": "libs/common/utils/geometry/geoprocessing",
     "common-utils-number": "libs/common/utils/number",
     "common-utils-object": "libs/common/utils/object",
     "common-utils-routing": "libs/common/utils/routing",
