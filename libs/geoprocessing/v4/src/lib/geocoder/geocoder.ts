@@ -1,11 +1,5 @@
-import {
-  IGeocodeResult,
-  IGeocoderOptions,
-  TransformersMap,
-  IAdvancedGeocoderFourZeroOneOptions,
-  ApiResponseFormat,
-  ApiBase
-} from '@tamu-gisc/geoprocessing/core';
+import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing/core';
+import { IAdvancedGeocoderFourZeroOneOptions, IGeocodeResult, IGeocoderOptions } from '../interfaces/v4.interfaces';
 
 export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, IGeocodeResult> {
   public responseType = ApiResponseFormat.Code;

@@ -1,10 +1,6 @@
-import {
-  TransformersMap,
-  IKNearestOptions,
-  ApiResponseFormat,
-  IKNearestResult,
-  ApiBase
-} from '@tamu-gisc/geoprocessing/core';
+import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing/core';
+
+import { IKNearestOptions, IKNearestResult } from '../interfaces/v4.interfaces';
 
 export class KNearest extends ApiBase<TransformersMap<IKNearestOptions>, IKNearestOptions, IKNearestResult> {
   public responseType = ApiResponseFormat.Text;

@@ -1,10 +1,6 @@
-import {
-  TransformersMap,
-  ICensusIntersectionOptions,
-  ApiResponseFormat,
-  ICensusIntersectionResult,
-  ApiBase
-} from '@tamu-gisc/geoprocessing/core';
+import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing/core';
+
+import { ICensusIntersectionOptions, ICensusIntersectionResult } from '../interfaces/v4.interfaces';
 
 export class CensusIntersection extends ApiBase<
   TransformersMap<ICensusIntersectionOptions>,
