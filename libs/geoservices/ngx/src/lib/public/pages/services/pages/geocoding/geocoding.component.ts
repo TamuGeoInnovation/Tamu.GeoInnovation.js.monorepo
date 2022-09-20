@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { Geocoder } from '@tamu-gisc/common/utils/geometry/geoprocessing';
+import { Geocoder } from '@tamu-gisc/geoprocessing/v4';
 
 @Component({
   selector: 'tamu-gisc-geocoding',

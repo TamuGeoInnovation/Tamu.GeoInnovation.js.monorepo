@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AddressProcessor } from '@tamu-gisc/common/utils/geometry/geoprocessing';
+import { AddressProcessor } from '@tamu-gisc/geoprocessing/v4';
 
 @Component({
   selector: 'tamu-gisc-address-processing',

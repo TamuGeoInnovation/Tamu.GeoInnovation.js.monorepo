@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { ApiBase, TransformersMap } from '@tamu-gisc/common/utils/geometry/geoprocessing';
+import { ApiBase, TransformersMap } from '@tamu-gisc/geoprocessing/core';
 
 @Component({
   selector: 'tamu-gisc-response-viewer',

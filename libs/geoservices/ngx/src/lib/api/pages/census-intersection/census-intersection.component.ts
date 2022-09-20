@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { CensusIntersection } from '@tamu-gisc/common/utils/geometry/geoprocessing';
+import { CensusIntersection } from '@tamu-gisc/geoprocessing/v4';
 
 @Component({
   selector: 'tamu-gisc-census-intersection',
