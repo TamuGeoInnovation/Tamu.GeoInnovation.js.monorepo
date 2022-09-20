@@ -1,5 +1,19 @@
 //////////////////////////////////////////////////////////////////////
 //
+// Standard Input Options
+//
+//////////////////////////////////////////////////////////////////////
+
+export interface ICommonServiceOptions {
+  /**
+   * Retrieve your API key @ https://geoservices.tamu.edu/UserServices/Profile/
+   */
+  apiKey: string;
+  version?: '5.0';
+}
+
+//////////////////////////////////////////////////////////////////////
+//
 // Standard result wrapper
 //
 // All geoprocessing requests are wrapped in this response object
@@ -13,15 +27,17 @@ export interface ITransactionResult<InputParametersType, ResultType> {
   data: ITransactionData<InputParametersType, ResultType>;
 }
 
+export interface IPlatformVersion {
+  major: number;
+  minor: number;
+  build: number;
+  revision: number;
+  majorRevision: number;
+  minorRevision: number;
+}
+
 export interface ITransactionData<InputParametersType, ResultType> {
-  version: {
-    major: number;
-    minor: number;
-    build: number;
-    revision: number;
-    majorRevision: number;
-    minorRevision: number;
-  };
+  version: IPlatformVersion;
   timeTaken: number;
   transactionGuid: string;
   apiHost: string;
@@ -40,9 +56,7 @@ export interface ITransactionData<InputParametersType, ResultType> {
 
 export type AddressProcessingAddressFormat = 'USPSPublication28' | 'USCensusTiger' | 'LACounty';
 
-export interface IAddressProcessingOptions {
-  apiKey: string;
-  version: '5.0';
+export interface IAddressProcessingOptions extends ICommonServiceOptions {
   nonParsedStreetAddress?: string;
   nonParsedStreetCity?: string;
   nonParsedStreetState?: string;
@@ -68,40 +82,42 @@ export interface IAddressProcessingDeserializedInputParametersMap {
   outputFormat: string | null;
 }
 
+export interface IParsedAddress {
+  addressLocationType: string;
+  addressFormatType: AddressProcessingAddressFormat;
+  number: string;
+  numberFractional: string | null;
+  preDirectional: string | null;
+  preQualifier: string | null;
+  preType: string | null;
+  preArticle: string;
+  name: string;
+  postArticle: string;
+  postQualifier: string;
+  postDirectional: string;
+  suffix: string;
+  suiteType: string;
+  suiteNumber: string;
+  city: string;
+  minorCivilDivision: string | null;
+  consolidatedCity: string | null;
+  countySubRegion: string | null;
+  county: string | null;
+  state: string;
+  zip: string;
+  zipPlus1: string;
+  zipPlus2: string;
+  zipPlus3: string;
+  zipPlus4: string;
+  zipPlus5: string;
+  country: string | null;
+}
+
 export interface IAddressProcessingStreetAddressRecord {
   timeTaken: number;
   exceptionOcurred: boolean;
   errorMessage: string | null;
-  parsedAddress: {
-    addressLocationType: string;
-    addressFormatType: AddressProcessingAddressFormat;
-    number: string;
-    numberFractional: string | null;
-    preDirectional: string | null;
-    preQualifier: string | null;
-    preType: string | null;
-    preArticle: string;
-    name: string;
-    postArticle: string;
-    postQualifier: string;
-    postDirectional: string;
-    suffix: string;
-    suiteType: string;
-    suiteNumber: string;
-    city: string;
-    minorCivilDivision: string | null;
-    consolidatedCity: string | null;
-    countySubRegion: string | null;
-    county: string | null;
-    state: string;
-    zip: string;
-    zipPlus1: string;
-    zipPlus2: string;
-    zipPlus3: string;
-    zipPlus4: string;
-    zipPlus5: string;
-    country: string | null;
-  };
+  parsedAddress: IParsedAddress;
 }
 
 export type AddressProcessingResult = ITransactionResult<
@@ -115,12 +131,10 @@ export type AddressProcessingResult = ITransactionResult<
 //
 /////////////////////////////////////////////
 
-export interface ICensusIntersectionOptions {
-  apiKey: string;
-  version: '5.0';
+export interface ICensusIntersectionOptions extends ICommonServiceOptions {
   lat: number;
   lon: number;
-  censusYears: Array<'1990' | '2000' | '2010' | 'allAvailable'>;
+  censusYears: 'allAvailable' | Array<'1990' | '2000' | '2010' | '2020'>;
   s?: string;
   format?: 'csv' | 'tsv' | 'xml' | 'json';
   notStore?: boolean;
@@ -152,9 +166,7 @@ export type CensusIntersectionResult = ITransactionResult<undefined, ICensusInte
 //
 /////////////////////////////////////////////
 
-export interface IReverseGeocoderOptions {
-  version?: '5.0';
-  apiKey: string;
+export interface IReverseGeocoderOptions extends ICommonServiceOptions {
   latitude: number;
   longitude: number;
   state?: string;
@@ -176,198 +188,153 @@ interface IReverseGeocodeRecord {
 
 export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocodeRecord>;
 
-export interface IGeocoderThreeZeroOneOptions {
-  version: '3.01';
-  apiKey: string;
+/////////////////////////////////////////////
+//
+// Geocoding
+//
+/////////////////////////////////////////////
+
+export interface IGeocodeOptions extends ICommonServiceOptions {
   streetAddress?: string;
   city?: string;
   state?: string;
   zip?: number;
   census?: boolean;
-  censusYear?: '1990' | '2000' | '2010';
-  format?: 'csv' | 'tsv' | 'xml' | 'kml' | 'googleMapsUrl';
+  censusYears?: 'allAvailable' | Array<'1990' | '2000' | '2010' | '2020'>;
+  format?: 'csv' | 'tsv' | 'xml' | 'json';
   includeHeader?: boolean;
   notStore?: boolean;
-}
-
-export interface IGeocoderFourZeroOneOptions
-  extends Omit<IGeocoderThreeZeroOneOptions, 'version' | 'format' | 'censusYear' | 'format'> {
-  version: '4.01';
-  allowTies?: boolean;
-  tieBreakingStrategy?: 'flipACoin' | 'revertToHierarchy';
-  censusYear?: 'allAvailable' | Array<'1990' | '2000' | '2010'>;
-  geom?: boolean;
   verbose?: boolean;
-  format?: 'csv' | 'tsv' | 'xml' | 'json';
+  shouldOutputParsedAddress?: boolean;
+  shouldOutputMatchedAddress?: boolean;
+  shouldOutputReferenceFeature?: boolean;
+  shouldOutputReferenceFeatureAddress?: boolean;
+
+  /**
+   * Defaults to `false`
+   */
+  allowTies?: boolean;
+
+  /**
+   * Defaults to `chooseFirstOne`
+   */
+  tieBreakingStrategy?: 'chooseFirstOne' | 'flipACoin' | 'revertToHierarchy';
+
+  /**
+   * Defaults to `5`
+   */
+  confidenceLevels?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+
+  /**
+   * Defaults to `95`;
+   */
+  minScore?: number;
+
+  exhaustiveSearch?: boolean;
+  aliasTables?: boolean;
+  attributeRelaxation?: boolean;
+  relaxableAttributes?: Array<'pre' | 'suffix' | 'post' | 'city' | 'zip'>;
+  substringMAtching?: boolean;
+  soundex?: boolean;
+  soundexableAttributes?: Array<'name' | 'city'>;
+  hierarchy?: boolean;
+  geometry?: boolean;
+  multithreadedGeocoder?: boolean;
+  outputStatistics?: boolean;
 }
 
-export interface IAdvancedGeocoderFourZeroOneOptions extends IGeocoderFourZeroOneOptions {
-  r?: boolean;
-  ratts?: Array<'pre' | 'suffix' | 'post' | 'city' | 'zip'>;
-  sub?: boolean;
-  sou?: boolean;
-  souatts?: Array<'name' | 'city'>;
-  h?: 'uncertaintyBased' | 'u' | 'f' | 'FeatureMatchingSelectionMethod';
-  refs?:
-    | 'all'
-    | Array<
-        | 'countyParcelData'
-        | 'OpenAddresses'
-        | 'navteqAddressPoints2017'
-        | 'navteqAddressPoints2016'
-        | 'navteqAddressPoints2014'
-        | 'navteqAddressPoints2013'
-        | 'navteqAddressPoints2012'
-        | 'parcelCentroids'
-        | 'boundarySolutionsParcelCentroids'
-        | 'parcelGeometries'
-        | 'navteqStreets2012'
-        | 'navteqStreets2008'
-        | 'tiger2016'
-        | 'tiger2015'
-        | 'tiger2010'
-        | 'zipPlus4'
-        | 'census2010Places'
-        | 'census2008Places'
-        | 'census2000Places'
-        | 'census2010ConsolidatedCities'
-        | 'census2008ConsolidatedCities'
-        | 'census2000ConsolidatedCities'
-        | 'census2000MCDs'
-        | 'census2010ZCTAs'
-        | 'census2008ZCTAs'
-        | 'census2000ZCTAs'
-        | 'zcdZips2013'
-        | 'zcdZips2013'
-        | 'census2008CountySubRegions'
-        | 'census2000CountySubRegions'
-        | 'census2010Counties'
-        | 'census2008Counties'
-        | 'census2000Counties'
-        | 'census2010States'
-        | 'census2008States'
-      >;
-}
-
-export type IGeocoderOptions =
-  | IGeocoderThreeZeroOneOptions
-  | IGeocoderFourZeroOneOptions
-  | IAdvancedGeocoderFourZeroOneOptions;
-
-//
-// Results
-//
-export interface IGeocoderFourZeroOneResultMetadata {
-  version: string;
-  TransactionId: string;
-  Version: string;
-  QueryStatusCodeValue: string;
-  FeatureMatchingResultType: string;
-  FeatureMatchingResultCount: string;
-  TimeTaken: string;
-  ExceptionOccured: string;
-  Exception: string;
-}
-
-export interface IGeocodeResultInputAddress {
-  StreetAddress: string;
-  City: string;
-  State: string;
-  Zip: string;
-}
-
-export interface IGeocodeResultOutputGeocode {
-  OutputGeocode: {
-    Latitude: string;
-    Longitude: string;
-    NAACCRGISCoordinateQualityCode: string;
-    NAACCRGISCoordinateQualityType: string;
-    MatchScore: string;
-    MatchType: string;
-    FeatureMatchingResultType: string;
-    FeatureMatchingResultCount: string;
-    FeatureMatchingGeographyType: string;
-    RegionSize: string;
-    RegionSizeUnits: string;
-    MatchedLocationType: string;
-    ExceptionOccured: string;
-    Exception: string;
-    ErrorMessage: string;
+export interface IGeocodeDeserializedInputParametersMap {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string;
+  version: IPlatformVersion;
+  apiKey: string;
+  dontStoreTransactionDetails: boolean;
+  allowTies: boolean;
+  tieHandlingStrategyType: string;
+  relaxableAttributes: Array<string>;
+  relaxation: boolean;
+  substring: boolean;
+  soundex: boolean;
+  soundexAttributes: string;
+  referenceSources: Array<string>;
+  featureMatchingSelectionMethod: string;
+  attributeWeightingScheme: {
+    number: number;
+    numberParity: number;
+    preDirectional: number;
+    preType: number;
+    preQualifier: number;
+    preArticle: number;
+    name: number;
+    postArticle: number;
+    suffix: number;
+    postDirectional: number;
+    postQualifier: number;
+    city: number;
+    zip: number;
+    zipPlus4: number;
+    state: number;
+    totalWeight: number;
   };
+  minimumMatchScore: number;
+  confidenceLevels: number;
+  exhaustiveSearch: boolean;
+  aliasTables: boolean;
+  multiThreading: boolean;
+  censusYears: Array<number>;
+  includeHeader: boolean;
+  verbose: boolean;
+  outputCensusVariables: boolean;
+  outputReferenceFeatureGeometry: boolean;
+  outputFormat: string;
 }
 
-export interface IGeocodeResultCensusValue {
-  CensusYear: 'NineteenNinety' | 'TwoThousand' | 'TwoThousandTen';
-  CensusTimeTaken: string;
-  NAACCRCensusTractCertaintyType: string;
-  CensusBlock: string;
-  CensusBlockGroup: string;
-  CensusTract: string;
-  CensusCountyFips: string;
-  CensusStateFips: string;
-  CensusCbsaFips: string;
-  CensusCbsaMicro: string;
-  CensusMcdFips: string;
-  CensusMetDivFips: string;
-  CensusMsaFips: string;
-  CensusPlaceFips: string;
-  ExceptionOccured: string;
-  Exception: string;
-  ErrorMessage: string;
+export interface IGeocodeReferenceFeature {
+  address: IParsedAddress;
+  area: number;
+  areaType: string;
+  geometrySRID: string;
+  geometry: string;
+  source: string;
+  vintage: number;
+  serverName: string;
+  primaryIdField: string;
+  primaryIdValue: string;
+  secondaryIdField: string;
+  secondaryIdValue: string;
+  interpolationType: string;
+  interpolationSubType: string;
 }
 
-export interface IGecodeResultParsedAddress {
-  Name: string;
-  Number: string;
-  NumberFractional: string;
-  PreDirectional: string;
-  PreQualifier: string;
-  PreType: string;
-  PreArticle: string;
-  PostArticle: string;
-  PostQualifier: string;
-  Suffix: string;
-  PostDirectional: string;
-  SuiteType: string;
-  SuiteNumber: string;
-  PostOfficeBoxType: string;
-  PostOfficeBoxNumber: string;
-  City: string;
-  ConsolidatedCity: string;
-  MinorCivilDivision: string;
-  CountySubRegion: string;
-  County: string;
-  State: string;
-  Zip: string;
-  ZipPlus1: string;
-  ZipPlus2: string;
-  ZipPlus3: string;
-  ZipPlus4: string;
-  ZipPlus5: string;
+export interface IGeocodeNAACCR {
+  gisCoordinateQualityCode: string;
+  gisCoordinateQualityType: string;
+  censusTractCertaintyCode: string;
+  censusTractCertaintyType: string;
+  microMatchStatus: string;
+  penaltyCode: string;
+  penaltyCodeSummary: string;
+  penaltyCodeDetails: string;
 }
 
-export interface IGeocodeResultReferenceFeature extends IGecodeResultParsedAddress {
-  Area: string;
-  AreaType: string;
-  GeometrySRID: string;
-  Geometry: string;
-  Source: string;
-  Vintage: string;
-  PrimaryIdField: string;
-  PrimaryIdValue: string;
-  SecondaryIdField: string;
-  SecondaryIdValue: string;
+export interface IGeocodeRecord {
+  latitude: number;
+  longitude: number;
+  matchScore: number;
+  geocodeQualityType: string;
+  featureMatchingGeographyType: string;
+  matchType: string;
+  matchedLocationType: string;
+  featureMatchingResultType: string;
+  naaccr: IGeocodeNAACCR;
+  queryStatusCodes: string;
+  tieHandlingStrategyType: string;
+  featureMatchingSelectionMethod: string;
+  censusRecords: Array<ICensusIntersectionRecord>;
+  matchedAddress: IParsedAddress;
+  referenceFeature: IGeocodeReferenceFeature;
 }
 
-export interface IGeocodeResult extends IGeocoderFourZeroOneResultMetadata {
-  InputAddress: IGeocodeResultInputAddress;
-  OutputGeocodes: Array<IGeocodeResultOutputGeocode>;
-  CensusValues: Array<{
-    CensusValue1: IGeocodeResultCensusValue;
-    CensusValue2: IGeocodeResultCensusValue;
-    CensusValue3: IGeocodeResultCensusValue;
-  }>;
-  ParsedAddress: IGecodeResultParsedAddress;
-  MatchedAddress: IGecodeResultParsedAddress;
-  ReferenceFeature: IGeocodeResultReferenceFeature;
-}
+export type GeocodeResult = ITransactionResult<IGeocodeDeserializedInputParametersMap, IGeocodeRecord>;
