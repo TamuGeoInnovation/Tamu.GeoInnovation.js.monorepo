@@ -65,6 +65,7 @@
       "@tamu-gisc/dev-tools/responsive": ["libs/dev-tools/responsive/src/index.ts"],
       "@tamu-gisc/geoprocessing/core": ["libs/geoprocessing/core/src/index.ts"],
       "@tamu-gisc/geoprocessing/v4": ["libs/geoprocessing/v4/src/index.ts"],
+      "@tamu-gisc/geoprocessing/v5": ["libs/geoprocessing/v5/src/index.ts"],
       "@tamu-gisc/geoservices/data-access": ["libs/geoservices/data-access/src/index.ts"],
       "@tamu-gisc/geoservices/data-api": ["libs/geoservices/data-api/src/index.ts"],
       "@tamu-gisc/geoservices/ngx": ["libs/geoservices/ngx/src/index.ts"],
