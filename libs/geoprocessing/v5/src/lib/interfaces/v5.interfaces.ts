@@ -1,8 +1,10 @@
+//////////////////////////////////////////////////////////////////////
 //
 // Standard result wrapper
 //
 // All geoprocessing requests are wrapped in this response object
 //
+//////////////////////////////////////////////////////////////////////
 
 export interface ITransactionResult<InputParametersType, ResultType> {
   statusCode: number;
@@ -30,7 +32,11 @@ export interface ITransactionData<InputParametersType, ResultType> {
   results: Array<ResultType>;
 }
 
+/////////////////////////////////////////////
+//
 // Address Normalization
+//
+/////////////////////////////////////////////
 
 export type AddressProcessingAddressFormat = 'USPSPublication28' | 'USCensusTiger' | 'LACounty';
 
@@ -103,93 +109,42 @@ export type AddressProcessingResult = ITransactionResult<
   IAddressProcessingStreetAddressRecord
 >;
 
+/////////////////////////////////////////////
+//
+// Census Intersection
+//
+/////////////////////////////////////////////
+
 export interface ICensusIntersectionOptions {
   apiKey: string;
-  version: '4.10';
-  censusYear: '1990' | '2000' | '2010';
+  version: '5.0';
   lat: number;
   lon: number;
+  censusYears: Array<'1990' | '2000' | '2010' | 'allAvailable'>;
   s?: string;
   format?: 'csv' | 'tsv' | 'xml' | 'json';
   notStore?: boolean;
 }
 
-export interface ICensusIntersectionResult {
-  TransactionId: string;
-  Version: string;
-  QueryStatusCode: string;
-  TimeTaken: string;
-  Exception: string;
-  ErrorMessage: string;
-  CensusRecords: Array<ICensusIntersectionCensusRecord>;
-}
-
 export interface ICensusIntersectionCensusRecord {
-  TransactionId: string;
-  Version: string;
-  QueryStatusCode: string;
-  TimeTaken: string;
-  Exception: string;
-  ErrorMessage: string;
-  CensusYear: string;
-  CensusBlock: string;
-  CensusBlockGroup: string;
-  CensusTract: string;
-  CensusPlaceFips: string;
-  CensusMcdFips: string;
-  CensusMsaFips: string;
-  CensusCbsaFips: string;
-  CensusCbsaMicro: string;
-  CensusMetDivFips: string;
-  CensusCountyFips: string;
-  CensusStateFips: string;
+  censusYear: number;
+  geoLocationId: string;
+  censusBlock: string;
+  censusBlockGroup: string;
+  censusTract: string;
+  censusPlaceFips: string;
+  censusMcdFips: string;
+  censusMsaFips: string;
+  censusMetDivFips: string;
+  censusCbsaFips: string;
+  censusCbsaMicro: string;
+  censusCountyFips: string;
+  censusStateFips: string;
+  exceptionOccurred: boolean;
+  exceptionMessage: string;
 }
 
-export interface IKNearestOptions {
-  apiKey: string;
-  version: '4.10';
-  lat: number;
-  lon: number;
-  k: number;
-  table: 'AQMDs' | 'MammographyClinics' | 'RadiationFacilities';
-  format?: 'csv' | 'tsv' | 'json' | 'xml';
-  notStore?: boolean;
-}
-
-export interface IKNearestResult {
-  TransactionId: string;
-  Version: string;
-  QueryStatusCode: string;
-  TimeTaken: string;
-  Exception: string;
-  ErrorMessage: string;
-  NearestFeatures: Array<IKNearestFeatureRecord>;
-}
-
-export interface IKNearestFeatureRecord {
-  TransactionId: string;
-  Version: string;
-  QueryStatusCode: string;
-  TimeTaken: string;
-  Exception: string;
-  ErrorMessage: string;
-  FeatureId: string;
-  Latitude: string;
-  Longitude: string;
-  Distance: string;
-}
-
-export interface IReverseGeocoderOptions {
-  version?: '4.10';
-  apiKey: string;
-  lat: number;
-  lon: number;
-  state?: string;
-  geom?: boolean;
-  includeHeader?: boolean;
-  notStore?: boolean;
-  format?: 'csv' | 'tsv' | 'xml' | 'json';
-}
+export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersectionCensusRecord>;
 
 interface IReverseGeocodeResultStreetAddress {
   TransactionId: string;

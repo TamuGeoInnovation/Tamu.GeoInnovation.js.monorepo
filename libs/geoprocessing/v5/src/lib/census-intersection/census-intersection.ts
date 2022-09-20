@@ -1,11 +1,11 @@
 import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing/core';
 
-import { ICensusIntersectionOptions, ICensusIntersectionResult } from '../interfaces/v5.interfaces';
+import { ICensusIntersectionOptions, CensusIntersectionResult } from '../interfaces/v5.interfaces';
 
 export class CensusIntersection extends ApiBase<
   TransformersMap<ICensusIntersectionOptions>,
   ICensusIntersectionOptions,
-  ICensusIntersectionResult
+  CensusIntersectionResult
 > {
   public responseType = ApiResponseFormat.Text;
 
@@ -14,14 +14,21 @@ export class CensusIntersection extends ApiBase<
 
     this.settings = {
       serviceUrl: {
-        value: 'https://geoservices.tamu.edu/Services/CensusIntersection/WebService/v04_01/HTTP/?',
+        value: 'https://prod.geoservices.tamu.edu/Api/CensusIntersection/V5/?',
         excludeParams: true
       },
       format: {
         value: 'json'
       },
       version: {
-        value: '4.10'
+        value: '5.0'
+      },
+      censusYears: {
+        target: 'censusYears',
+        value: undefined,
+        fn: (years) => {
+          return years.join(',');
+        }
       }
     };
 
