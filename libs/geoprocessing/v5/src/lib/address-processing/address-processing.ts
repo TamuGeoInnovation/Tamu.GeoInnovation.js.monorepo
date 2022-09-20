@@ -1,15 +1,15 @@
 import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing/core';
 
-import { IAddressParsingOptions, IAddressParsingResult } from '../interfaces/v4.interfaces';
+import { IAddressProcessingOptions, AddressProcessingResult } from '../interfaces/v5.interfaces';
 
-export class AddressProcessor extends ApiBase<
-  TransformersMap<IAddressParsingOptions>,
-  IAddressParsingOptions,
-  IAddressParsingResult
+export class AddressProcessing extends ApiBase<
+  TransformersMap<IAddressProcessingOptions>,
+  IAddressProcessingOptions,
+  AddressProcessingResult
 > {
   public responseType = ApiResponseFormat.Text;
 
-  constructor(options: IAddressParsingOptions) {
+  constructor(options: IAddressProcessingOptions) {
     super(options);
 
     this.settings = {

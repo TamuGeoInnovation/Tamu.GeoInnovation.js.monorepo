@@ -1,6 +1,40 @@
+//
+// Standard result wrapper
+//
+// All geoprocessing requests are wrapped in this response object
+//
+
+export interface ITransactionResult<InputParametersType, ResultType> {
+  statusCode: number;
+  message: string;
+  error: string | null;
+  data: ITransactionData<InputParametersType, ResultType>;
+}
+
+export interface ITransactionData<InputParametersType, ResultType> {
+  version: {
+    major: number;
+    minor: number;
+    build: number;
+    revision: number;
+    majorRevision: number;
+    minorRevision: number;
+  };
+  timeTaken: number;
+  transactionGuid: string;
+  apiHost: string;
+  clientHost: string;
+  queryStatusCode: string;
+  inputParameterSet: InputParametersType;
+
+  results: Array<ResultType>;
+}
+
+// Address Normalization
+
 export type AddressProcessingAddressFormat = 'USPSPublication28' | 'USCensusTiger' | 'LACounty';
 
-export interface IAddressParsingOptions {
+export interface IAddressProcessingOptions {
   apiKey: string;
   version: '5.0';
   nonParsedStreetAddress?: string;
@@ -13,43 +47,22 @@ export interface IAddressParsingOptions {
   notStore?: boolean;
 }
 
-export interface IAddressParsingResult {
-  statusCode: number;
-  message: string;
-  error: string | null;
-  data: {
-    version: {
-      major: number;
-      minor: number;
-      build: number;
-      revision: number;
-      majorRevision: number;
-      minorRevision: number;
-    };
-    timeTaken: number;
-    transactionGuid: string;
-    apiHost: string;
-    clientHost: string;
-    queryStatusCode: string;
-    inputParameterSet: {
-      streetAddress: string;
-      city: string;
-      state: string;
-      zip: string;
-      version: string | null;
-      apiKey: string | null;
-      dontStoreTransactionDetails: boolean | null;
-      addressFormatTypes: Array<AddressProcessingAddressFormat>;
-      multiThreading: boolean | null;
-      includeHeader: boolean | null;
-      verbose: boolean | null;
-      outputFormat: string | null;
-    };
-    results: Array<IAddressParsingStreetAddressRecord>;
-  };
+export interface IAddressProcessingDeserializedInputParametersMap {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string;
+  version: string | null;
+  apiKey: string | null;
+  dontStoreTransactionDetails: boolean | null;
+  addressFormatTypes: Array<AddressProcessingAddressFormat>;
+  multiThreading: boolean | null;
+  includeHeader: boolean | null;
+  verbose: boolean | null;
+  outputFormat: string | null;
 }
 
-export interface IAddressParsingStreetAddressRecord {
+export interface IAddressProcessingStreetAddressRecord {
   timeTaken: number;
   exceptionOcurred: boolean;
   errorMessage: string | null;
@@ -84,6 +97,11 @@ export interface IAddressParsingStreetAddressRecord {
     country: string | null;
   };
 }
+
+export type AddressProcessingResult = ITransactionResult<
+  IAddressProcessingDeserializedInputParametersMap,
+  IAddressProcessingStreetAddressRecord
+>;
 
 export interface ICensusIntersectionOptions {
   apiKey: string;

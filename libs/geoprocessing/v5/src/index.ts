@@ -1,4 +1,4 @@
-export { Geocoder } from './lib/geocoder/geocoder';
-export { ReverseGeocoder } from './lib/reverse-geocoder/reverse-geocoder';
+export { Geocode } from './lib/geocode/geocode';
+export { ReverseGeocode } from './lib/reverse-geocode/reverse-geocode';
 export { CensusIntersection } from './lib/census-intersection/census-intersection';
-export { AddressProcessor } from './lib/address-parsing/address-parsing';
+export { AddressProcessing } from './lib/address-processing/address-processing';
