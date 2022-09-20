@@ -126,7 +126,7 @@ export interface ICensusIntersectionOptions {
   notStore?: boolean;
 }
 
-export interface ICensusIntersectionCensusRecord {
+export interface ICensusIntersectionRecord {
   censusYear: number;
   geoLocationId: string;
   censusBlock: string;
@@ -144,32 +144,37 @@ export interface ICensusIntersectionCensusRecord {
   exceptionMessage: string;
 }
 
-export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersectionCensusRecord>;
+export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersectionRecord>;
 
-interface IReverseGeocodeResultStreetAddress {
-  TransactionId: string;
-  Version: string;
-  QueryStatusCode: string;
-  TimeTaken: string;
-  Exception: string;
-  ErrorMessage: string;
-  APN: string;
-  StreetAddress: string;
-  City: string;
-  State: string;
-  Zip: string;
-  ZipPlus4: string;
+/////////////////////////////////////////////
+//
+// Reverse Geocoding
+//
+/////////////////////////////////////////////
+
+export interface IReverseGeocoderOptions {
+  version?: '5.0';
+  apiKey: string;
+  latitude: number;
+  longitude: number;
+  state?: string;
+  notStore?: boolean;
+  format?: 'csv' | 'tsv' | 'xml' | 'json';
 }
 
-export interface IReverseGeocodeResult {
-  TransactionId: string;
-  Version: string;
-  QueryStatusCode: string;
-  TimeTaken: string;
-  Exception: string;
-  ErrorMessage: string;
-  StreetAddresses: Array<IReverseGeocodeResultStreetAddress>;
+interface IReverseGeocodeRecord {
+  timeTaken: number;
+  exceptionOccurred: boolean;
+  errorMessage: string;
+  apn: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip: string;
+  zipPlus4: string;
 }
+
+export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocodeRecord>;
 
 export interface IGeocoderThreeZeroOneOptions {
   version: '3.01';
