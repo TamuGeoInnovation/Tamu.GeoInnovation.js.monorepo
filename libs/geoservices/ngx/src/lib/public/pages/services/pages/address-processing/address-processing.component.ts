@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
 
-import { AddressProcessor } from '@tamu-gisc/common/utils/geometry/geoprocessing';
+import { AddressProcessor } from '@tamu-gisc/geoprocessing/v4';
 
 @Component({
   selector: 'tamu-gisc-address-processing',
