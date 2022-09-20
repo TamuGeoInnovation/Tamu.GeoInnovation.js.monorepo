@@ -1,8 +1,8 @@
 import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing/core';
 
-import { IReverseGeocodeResult, IReverseGeocoderOptions } from '../interfaces/v5.interfaces';
+import { ReverseGeocodeResult, IReverseGeocoderOptions } from '../interfaces/v5.interfaces';
 
-export class ReverseGeocode extends ApiBase<IReverseGeocoderTransformers, IReverseGeocoderOptions, IReverseGeocodeResult> {
+export class ReverseGeocode extends ApiBase<IReverseGeocoderTransformers, IReverseGeocoderOptions, ReverseGeocodeResult> {
   public responseType = ApiResponseFormat.Text;
 
   constructor(options: IReverseGeocoderOptions) {
@@ -10,14 +10,14 @@ export class ReverseGeocode extends ApiBase<IReverseGeocoderTransformers, IRever
 
     this.settings = {
       serviceUrl: {
-        value: 'https://geoservices.tamu.edu/Services/ReverseGeocoding/WebService/v04_01/HTTP/default.aspx?',
+        value: 'https://prod.geoservices.tamu.edu/Api/ReverseGeocoding/V5/?',
         excludeParams: true
       },
       format: {
         value: 'json'
       },
       version: {
-        value: '4.10'
+        value: '5.0'
       }
     };
 
