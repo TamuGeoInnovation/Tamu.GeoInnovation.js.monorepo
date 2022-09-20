@@ -1,8 +1,8 @@
 import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing/core';
 
-import { IReverseGeocodeResult, IReverseGeocoderOptions } from '../interfaces/v4.interfaces';
+import { IReverseGeocodeResult, IReverseGeocoderOptions } from '../interfaces/v5.interfaces';
 
-export class ReverseGeocoder extends ApiBase<IReverseGeocoderTransformers, IReverseGeocoderOptions, IReverseGeocodeResult> {
+export class ReverseGeocode extends ApiBase<IReverseGeocoderTransformers, IReverseGeocoderOptions, IReverseGeocodeResult> {
   public responseType = ApiResponseFormat.Text;
 
   constructor(options: IReverseGeocoderOptions) {
