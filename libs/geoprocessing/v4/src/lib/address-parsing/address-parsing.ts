@@ -1,5 +1,10 @@
-import { IAddressParsingOptions, TransformersMap, IAddressParsingResult, ApiResponseFormat } from '../core/types';
-import { ApiBase } from '../core/base';
+import {
+  IAddressParsingOptions,
+  TransformersMap,
+  IAddressParsingResult,
+  ApiResponseFormat,
+  ApiBase
+} from '@tamu-gisc/geoprocessing/core';
 
 export class AddressProcessor extends ApiBase<
   TransformersMap<IAddressParsingOptions>,
