@@ -37,6 +37,12 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
         fn: (attrs) => {
           return attrs ? attrs.join(',') : attrs;
         }
+      },
+      refs: {
+        value: undefined,
+        fn: function () {
+          this.value = this.value instanceof Array ? this.value.join(',') : this.value;
+        }
       }
     };
 

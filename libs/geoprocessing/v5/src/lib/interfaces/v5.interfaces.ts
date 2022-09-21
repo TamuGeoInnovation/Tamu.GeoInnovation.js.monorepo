@@ -238,6 +238,38 @@ export interface IGeocodeOptions extends ICommonServiceOptions {
   soundex?: boolean;
   soundexableAttributes?: Array<'name' | 'city'>;
   hierarchy?: boolean;
+  /**
+   * Reference data sources
+   */
+  refs?:
+    | 'all'
+    | Array<
+        | 'MicrosoftFootprints'
+        | 'CountyParcelData'
+        | 'NavteqAddressPoints2022'
+        | 'NavteqAddressPoints2021'
+        | 'NavteqAddressPoints2017'
+        | 'OpenAddresses'
+        | 'NavteqAddressPoints2016'
+        | 'NavteqAddressPoints2014'
+        | 'NavteqAddressPoints2013'
+        | 'NavteqAddressPoints2012'
+        | 'BoundarySolutionsParcelCentroids'
+        | 'NavteqStreets2008'
+        | 'NavteqStreets2012'
+        | 'NavteqStreets2021'
+        | 'Census2016TigerLines'
+        | 'Census2015TigerLines'
+        | 'Census2010TigerLines'
+        | 'USPSTigerZipPlus4'
+        | 'ZipCodeDownloadZips2013'
+        | 'Census2010ZCTAs'
+        | 'Census2010Places'
+        | 'Census2010ConsolidatedCities'
+        | 'Census2010CountySubRegions'
+        | 'Census2010Counties'
+        | 'Census2010States'
+      >;
   geometry?: boolean;
   multithreadedGeocoder?: boolean;
   outputStatistics?: boolean;
