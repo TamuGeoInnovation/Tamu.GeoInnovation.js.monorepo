@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { ReverseGeocoder } from '@tamu-gisc/geoprocessing/v4';
+import { ReverseGeocode } from '@tamu-gisc/geoprocessing/v5';
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding',
@@ -13,12 +13,9 @@ export class ReverseGeocodingComponent {
 
   public apiKey = 'demo';
 
-  public runner: ReverseGeocoder = new ReverseGeocoder({
+  public runner: ReverseGeocode = new ReverseGeocode({
     apiKey: this.apiKey,
-    lat: 34.0726207994348,
-    lon: 118.397965182076,
-    version: '4.10',
-    state: 'ca',
-    notStore: false
+    latitude: 30.610487,
+    longitude: -96.327766
   });
 }

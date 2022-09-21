@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { Geocoder } from '@tamu-gisc/geoprocessing/v4';
+import { Geocode } from '@tamu-gisc/geoprocessing/v5';
 
 @Component({
   selector: 'tamu-gisc-geocoding',
@@ -10,19 +10,25 @@ import { Geocoder } from '@tamu-gisc/geoprocessing/v4';
   styleUrls: ['./geocoding.component.scss']
 })
 export class GeocodingComponent implements OnInit {
-  private geocode: Geocoder;
+  private geocode: Geocode;
   public result: Observable<string>;
 
   public ngOnInit(): void {
-    this.geocode = new Geocoder({
+    this.geocode = new Geocode({
       apiKey: 'demo',
-      version: '4.01',
-      streetAddress: '9355 Burton Way',
-      city: 'Beverly Hills',
-      state: 'ca',
-      zip: 99210
+      streetAddress: '1207 Winding Road',
+      city: 'College Station',
+      state: 'tx',
+      zip: 77840,
+      census: true,
+      censusYears: 'allAvailable',
+      refs: ['MicrosoftFootprints']
     });
 
-    this.result = this.geocode.execute().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
+    this.result = this.geocode.execute().pipe(
+      switchMap((r) => {
+        return of(JSON.stringify(r, null, '   '));
+      })
+    );
   }
 }
