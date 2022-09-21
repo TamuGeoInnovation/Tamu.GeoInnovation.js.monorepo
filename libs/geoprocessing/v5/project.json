@@ -3,17 +3,6 @@
   "sourceRoot": "libs/geoprocessing/v5/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nrwl/node:package",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/geoprocessing/v5",
-        "tsConfig": "libs/geoprocessing/v5/tsconfig.lib.json",
-        "packageJson": "libs/geoprocessing/v5/package.json",
-        "main": "libs/geoprocessing/v5/src/index.ts",
-        "assets": ["libs/geoprocessing/v5/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
@@ -27,6 +16,17 @@
       "options": {
         "jestConfig": "libs/geoprocessing/v5/jest.config.js",
         "passWithNoTests": true
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/geoprocessing/v5",
+        "tsConfig": "libs/geoprocessing/v5/tsconfig.lib.json",
+        "packageJson": "libs/geoprocessing/v5/package.json",
+        "main": "libs/geoprocessing/v5/src/index.ts",
+        "assets": ["libs/geoprocessing/v5/*.md"]
       }
     }
   },

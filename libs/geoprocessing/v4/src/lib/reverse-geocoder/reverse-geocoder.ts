@@ -1,4 +1,4 @@
-import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing/core';
+import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing-core';
 
 import { IReverseGeocodeResult, IReverseGeocoderOptions } from '../interfaces/v4.interfaces';
 
