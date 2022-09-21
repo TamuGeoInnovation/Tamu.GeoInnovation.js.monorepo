@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Geocoder } from '@tamu-gisc/geoprocessing/v4';
+import { Geocode } from '@tamu-gisc/geoprocessing/v5';
 
 @Component({
   selector: 'tamu-gisc-geocoding',
@@ -13,16 +13,14 @@ export class GeocodingComponent {
 
   public apiKey = 'demo';
 
-  public runner: Geocoder = new Geocoder({
+  public runner: Geocode = new Geocode({
     apiKey: this.apiKey,
-    version: '4.01',
-    streetAddress: '9355 Burton Way',
-    city: 'Beverly Hills',
-    state: 'ca',
-    zip: 90210,
-    includeHeader: true,
+    streetAddress: '1207 Winding Road',
+    city: 'College Station',
+    state: 'tx',
+    zip: 77840,
     census: true,
-    censusYear: 'allAvailable',
-    verbose: true
+    censusYears: 'allAvailable',
+    refs: ['MicrosoftFootprints']
   });
 }

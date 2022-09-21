@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
 
-import { CensusIntersection } from '@tamu-gisc/geoprocessing/v4';
+import { CensusIntersection } from '@tamu-gisc/geoprocessing/v5';
 
 @Component({
   selector: 'tamu-gisc-census-intersection',
@@ -18,8 +18,7 @@ export class CensusIntersectionComponent implements OnInit {
       lat: 34.0726207996348,
       lon: -118.397965182076,
       s: 'CA',
-      censusYear: '2010',
-      version: '4.10'
+      censusYears: 'allAvailable'
     });
 
     this.result = this.intersection.execute().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));

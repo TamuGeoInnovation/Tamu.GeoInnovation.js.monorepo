@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { CensusIntersection } from '@tamu-gisc/geoprocessing/v4';
+import { CensusIntersection } from '@tamu-gisc/geoprocessing/v5';
 
 @Component({
   selector: 'tamu-gisc-census-intersection',
@@ -15,11 +15,9 @@ export class CensusIntersectionComponent {
 
   public runner: CensusIntersection = new CensusIntersection({
     apiKey: this.apiKey,
-    version: '4.10',
-    censusYear: '1990',
     lat: 34.0726207994348,
     lon: 118.397965182076,
     s: 'CA',
-    notStore: false
+    censusYears: 'allAvailable'
   });
 }
