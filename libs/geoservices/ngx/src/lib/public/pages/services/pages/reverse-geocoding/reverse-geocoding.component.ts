@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
 
-import { ReverseGeocode } from '@tamu-gisc/geoprocessing/v5';
+import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding',
@@ -19,6 +19,6 @@ export class ReverseGeocodingComponent implements OnInit {
       longitude: -96.327766
     });
 
-    this.result = this.geocoder.execute().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
+    this.result = this.geocoder.asObservable().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
   }
 }
