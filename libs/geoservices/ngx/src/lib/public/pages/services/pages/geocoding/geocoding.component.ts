@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { Geocode } from '@tamu-gisc/geoprocessing/v5';
+import { Geocode } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
   selector: 'tamu-gisc-geocoding',
@@ -25,7 +25,7 @@ export class GeocodingComponent implements OnInit {
       refs: ['MicrosoftFootprints']
     });
 
-    this.result = this.geocode.execute().pipe(
+    this.result = this.geocode.asObservable().pipe(
       switchMap((r) => {
         return of(JSON.stringify(r, null, '   '));
       })

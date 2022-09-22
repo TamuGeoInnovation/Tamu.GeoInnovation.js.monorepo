@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { ApiBase, TransformersMap } from '@tamu-gisc/geoprocessing/core';
+import { ApiBase, TransformersMap } from '@tamu-gisc/geoprocessing-core';
 
 @Component({
   selector: 'tamu-gisc-response-viewer',
@@ -19,7 +19,7 @@ export class ResponseViewerComponent<Type extends object, Res extends object> im
   public ngOnInit() {
     this.runner.patchOptions({ format: this.format });
 
-    this.runner.execute().subscribe((res) => {
+    this.runner.asObservable().subscribe((res) => {
       if (res instanceof XMLDocument) {
         const serialized = new XMLSerializer().serializeToString(res);
 

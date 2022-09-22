@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
 
-import { AddressProcessing } from '@tamu-gisc/geoprocessing/v5';
+import { AddressProcessing } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
   selector: 'tamu-gisc-address-processing',
@@ -22,6 +22,6 @@ export class AddressProcessingComponent implements OnInit {
       addressFormat: ['USPSPublication28']
     });
 
-    this.result = this.address.execute().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
+    this.result = this.address.asObservable().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
   }
 }
