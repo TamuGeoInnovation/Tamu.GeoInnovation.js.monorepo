@@ -1,6 +1,7 @@
-import { Observable, of } from 'rxjs';
-import { ajax, AjaxResponse } from 'rxjs/ajax';
+import { Observable, of, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+
+import axios, { AxiosPromise, ResponseType } from 'axios';
 
 import { GeoservicesError } from './errors';
 
@@ -9,8 +10,6 @@ import { Transformer, TransformersMap, CallBack, ApiResponseFormat } from './typ
 export abstract class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
   private _options: object;
   public settings: T & { serviceUrl: Transformer<string, T>; format: Transformer<string, T> };
-
-  public queryString: string;
 
   public abstract responseType: ApiResponseFormat;
 
@@ -35,23 +34,54 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     this.calculateDefaults();
   }
 
+  private get _request() {
+    return (
+      axios({
+        method: 'GET',
+        url: this.settings.serviceUrl.value,
+        responseType: this.settings.format.value as ResponseType,
+        params: this.getUrlOptions()
+      }) as AxiosPromise<Res>
+    ).then((d) => d.data);
+  }
+
+  public asPromise(): Promise<Res> {
+    return this._request;
+  }
+
+  public asObservable(): Observable<Res> {
+    return of(null).pipe(
+      switchMap(() => {
+        return from(this._request).pipe(
+          switchMap((response) => {
+            return this.handleResponse(response);
+          })
+        );
+      })
+    );
+  }
+
+  public asCallback(callbackFn: CallBack<Res>) {
+    this._request.then((data) => callbackFn(null, data)).catch((err) => callbackFn(err, null));
+  }
+
   /**
-   * Geocode an address.
-   *
-   * Can return response in various the types:
-   *
-   *  - Observable: No method overload
-   *  - Promise: `true` for method overload
-   *  - Callback: Callback function for method overload
-   *
-   *  Defaults to Observable.
+   * Returns the service endpoint
    */
-  public execute(promiseOrCallback?: false): Observable<Res>;
-  public execute(promiseOrCallback?: true): Promise<Res>;
-  public execute(promiseOrCallback?: CallBack<Res>): void;
-  public execute(promiseOrCallback?: undefined | boolean | CallBack<Res>): Observable<Res> | Promise<Res> | void {
+  public getServiceUrl() {
+    return this.settings.serviceUrl.value;
+  }
+
+  /**
+   * Get list of service options based on the conditions that the property values are not:
+   *
+   * - null
+   * - undefined
+   * - marked as excluded
+   */
+  public getUrlOptions(): { [key: string]: string | number | boolean } {
     // Generate the geocode query string based on patched defaults and calculated defaults.
-    this.queryString = Object.keys(this.settings)
+    return Object.keys(this.settings)
       .filter((setting) => {
         // Filter out any setting transformer entries that explicity define exclusion
         // for building the query string.
@@ -60,41 +90,11 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
           this.settings[setting].value !== undefined
         );
       })
-      .map((key) => {
-        return `${key}=${this.settings[key].value}`;
-      })
-      .join('&');
+      .reduce((acc, key) => {
+        acc[key] = this.settings[key].value;
 
-    const request = ajax({
-      url: this.settings.serviceUrl.value + this.queryString,
-      method: 'GET',
-      responseType: this.settings.format.value as XMLHttpRequestResponseType,
-      // TODO: `crossDomain` is deprecated in v8. Add header exception on web server
-      crossDomain: true
-    }).pipe(
-      switchMap((response) => {
-        return this.handleResponse(response);
-      })
-    );
-
-    if (promiseOrCallback === undefined || (typeof promiseOrCallback === 'boolean' && promiseOrCallback === false)) {
-      return request as unknown as Observable<Res>;
-    }
-
-    if (typeof promiseOrCallback === 'boolean' && promiseOrCallback === true) {
-      return request.toPromise() as unknown as Promise<Res>;
-    }
-
-    if (promiseOrCallback instanceof Object) {
-      request.subscribe(
-        (res) => {
-          promiseOrCallback(undefined, res as unknown as Res);
-        },
-        (err) => {
-          promiseOrCallback(err, undefined);
-        }
-      );
-    }
+        return acc;
+      }, {});
   }
 
   /**
@@ -146,7 +146,7 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
   // consistent responses
   //
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private handleResponse(response: AjaxResponse<any>): Observable<Res> {
+  private handleResponse(response): Observable<Res> {
     if (this.responseType === ApiResponseFormat.Text) {
       if (
         (response.response && response.response.QueryStatusCode === 'Success') ||
@@ -160,14 +160,14 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       }
     } else if (this.responseType === ApiResponseFormat.Code) {
       if (
-        (response.response && response.response.QueryStatusCodeValue === '200') ||
+        response.statusCode === 200 ||
         (typeof response.response === 'string' && response.response.length > 0) ||
         (response.response instanceof XMLDocument &&
           response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
       ) {
-        return of(response.response);
+        return of(response);
       } else {
-        return new GeoservicesError<Res>(response.response).throw();
+        return new GeoservicesError<Res>(response.statusCode).throw();
       }
     }
   }

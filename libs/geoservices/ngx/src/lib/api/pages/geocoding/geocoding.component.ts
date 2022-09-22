@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Geocode } from '@tamu-gisc/geoprocessing/v5';
+import { Geocode } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
   selector: 'tamu-gisc-geocoding',
