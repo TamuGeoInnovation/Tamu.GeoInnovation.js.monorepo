@@ -26,6 +26,12 @@ export class AddressProcessing extends ApiBase<
       },
       version: {
         value: '5.0'
+      },
+      addressFormat: {
+        value: undefined,
+        fn: function () {
+          this.value = this.value instanceof Array ? this.value.join(',') : this.value;
+        }
       }
     };
 
