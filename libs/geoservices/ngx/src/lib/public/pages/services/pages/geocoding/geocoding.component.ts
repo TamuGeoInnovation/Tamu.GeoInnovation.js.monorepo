@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 
 import { Geocode } from '@tamu-gisc/geoprocessing-v5';
 
@@ -18,7 +18,7 @@ export class GeocodingComponent implements OnInit {
       apiKey: 'demo',
       streetAddress: '1207 Winding Road',
       city: 'College Station',
-      state: 'tx',
+      state: 'TX',
       zip: 77840,
       census: true,
       censusYears: 'allAvailable',
@@ -28,6 +28,9 @@ export class GeocodingComponent implements OnInit {
     this.result = this.geocode.asObservable().pipe(
       switchMap((r) => {
         return of(JSON.stringify(r, null, '   '));
+      }),
+      catchError((err) => {
+        return of(err.toRenderableJSON(true));
       })
     );
   }
