@@ -1,11 +1,11 @@
 import { Observable, of, from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
-import axios, { AxiosPromise, ResponseType } from 'axios';
-
-import { GeoservicesError } from './errors';
+import axios, { AxiosError, AxiosPromise, ResponseType } from 'axios';
 
 import { Transformer, TransformersMap, CallBack, ApiResponseFormat } from './types';
+import { GeoservicesError } from './errors';
+import { getXmlStatusCode } from './utils';
 
 export abstract class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
   private _options: object;
@@ -18,6 +18,32 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       throw new Error('No API options were provided.');
     } else {
       this._options = { ...options };
+    }
+  }
+  private get _request() {
+    return (
+      axios({
+        method: 'GET',
+        url: this.settings.serviceUrl.value,
+        responseType: this.xhrResponseType,
+        params: this.getUrlOptions()
+      }) as AxiosPromise<Res>
+    ).catch(this.handleResponse);
+  }
+
+  /**
+   * Supported service response types don't match up with Axio's response types
+   * so this will return the correct response type defaulting to `json`;
+   */
+  private get xhrResponseType(): ResponseType {
+    const f = this.settings.format.value;
+
+    if (f === 'csv' || f === 'tsv') {
+      return 'text';
+    } else if (f === 'xml') {
+      return 'document';
+    } else {
+      return 'json';
     }
   }
 
@@ -34,26 +60,15 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     this.calculateDefaults();
   }
 
-  private get _request() {
-    return (
-      axios({
-        method: 'GET',
-        url: this.settings.serviceUrl.value,
-        responseType: this.settings.format.value as ResponseType,
-        params: this.getUrlOptions()
-      }) as AxiosPromise<Res>
-    ).then((d) => d.data);
-  }
-
   public asPromise(): Promise<Res> {
-    return this._request;
+    return this._request.then(this.handleResponse);
   }
 
   public asObservable(): Observable<Res> {
     return of(null).pipe(
       switchMap(() => {
         return from(this._request).pipe(
-          switchMap((response) => {
+          map((response) => {
             return this.handleResponse(response);
           })
         );
@@ -62,7 +77,9 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
   }
 
   public asCallback(callbackFn: CallBack<Res>) {
-    this._request.then((data) => callbackFn(null, data)).catch((err) => callbackFn(err, null));
+    this.asPromise()
+      .then((data) => callbackFn(null, data as Res))
+      .catch((err) => callbackFn(err, null));
   }
 
   /**
@@ -142,33 +159,46 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     });
   }
 
-  // `response` is of type `any` because the API versions handled by this library do not return
-  // consistent responses
-  //
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private handleResponse(response): Observable<Res> {
-    if (this.responseType === ApiResponseFormat.Text) {
-      if (
-        (response.response && response.response.QueryStatusCode === 'Success') ||
-        (typeof response.response === 'string' && response.response.length > 0) ||
-        (response.response instanceof XMLDocument &&
-          response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
-      ) {
-        return of(response.response);
-      } else {
-        return new GeoservicesError<Res>(response.response).throw();
-      }
-    } else if (this.responseType === ApiResponseFormat.Code) {
-      if (
-        response.statusCode === 200 ||
-        (typeof response.response === 'string' && response.response.length > 0) ||
-        (response.response instanceof XMLDocument &&
-          response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
-      ) {
-        return of(response);
-      } else {
-        return new GeoservicesError<Res>(response.statusCode).throw();
+  private handleResponse(response): Res {
+    // Handle native errors
+    if (response instanceof AxiosError) {
+      throw new GeoservicesError(response);
+    }
+
+    // Handles JSON response type non-error responses
+    else if (response.data.statusCode === 200) {
+      return response.data;
+    }
+
+    // Handle CSV/TSV (text) response type non-error responses
+    else if (
+      response.config.responseType === 'text' &&
+      typeof response.data === 'string' &&
+      (response.data as string).length > 0
+    ) {
+      return response.data;
+    }
+
+    // Handle XML string non-error responses (node)
+    else if (response.config.responseType === 'document' && typeof response.data === 'string') {
+      const xmlStatusCode = getXmlStatusCode(response.data);
+
+      if (xmlStatusCode === 200) {
+        return response.data;
       }
     }
+
+    // Handle XML document non-error responses (browser)
+    else if (response.config.responseType === 'document' && window !== undefined) {
+      const serializedDocument = new XMLSerializer().serializeToString(response.data);
+      const xmlStatusCode = getXmlStatusCode(serializedDocument);
+
+      if (xmlStatusCode === 200) {
+        return serializedDocument as unknown as Res;
+      }
+    }
+
+    // Default when unhandled response condition met
+    throw new GeoservicesError(response);
   }
 }

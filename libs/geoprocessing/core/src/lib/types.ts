@@ -1,7 +1,9 @@
+import { GeoservicesError } from './errors';
+
 /**
  * Standard callback function signature interface
  */
-export type CallBack<T> = (err?: any, res?: T) => void;
+export type CallBack<T> = (err?: GeoservicesError, res?: T) => void;
 
 /**
  * Maps a flat interface and for every key entry,
@@ -51,20 +53,6 @@ export interface Transformer<U, O> {
    */
   fn?: (...args) => void;
 }
-
-//
-// Errors
-//
-export interface INormalizedGeoservicesJsonError<T> {
-  statusCode?: number | string;
-  error?: string;
-  message?: string;
-  response?: T;
-}
-
-export type NormalizedGeoservicesTextError = string;
-
-export type NormalizedXMLError = XMLDocument;
 
 export enum ApiResponseFormat {
   /**

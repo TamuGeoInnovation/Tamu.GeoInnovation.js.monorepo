@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, switchMap } from 'rxjs';
+import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { CensusIntersection } from '@tamu-gisc/geoprocessing-v5';
 
@@ -21,6 +21,13 @@ export class CensusIntersectionComponent implements OnInit {
       censusYears: 'allAvailable'
     });
 
-    this.result = this.intersection.asObservable().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
+    this.result = this.intersection.asObservable().pipe(
+      switchMap((r) => {
+        return of(JSON.stringify(r, null, '   '));
+      }),
+      catchError((err) => {
+        return of(err.toRenderableJSON(true));
+      })
+    );
   }
 }
