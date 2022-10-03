@@ -19,3 +19,29 @@
     }
   }
 }
+
+@media only screen and (max-width: 767px) {
+  .product-tiles {
+    .product-tiles__tile {
+      width: 100%;
+    }
+  }
+
+  .feature-tile-container {
+    @include justify-content(space-between);
+    .feature-tile {
+      width: 48%;
+      box-sizing: border-box;
+      margin: 0.5rem 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 478px) {
+  .feature-tile-container {
+    @include justify-content(space-between);
+    .feature-tile {
+      width: 100%;
+    }
+  }
+}

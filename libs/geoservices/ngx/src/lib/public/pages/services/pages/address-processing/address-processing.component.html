@@ -1,13 +1,11 @@
 <section class="content-fill-pad" style="background: linear-gradient(90deg, #ffffff, #d1eee2)">
-  <div class="container12">
-    <div class="flex flex-row">
-      <div class="intro-logo">
-        <img class="service-logo medium" src="assets/img/graphics/services/address-processing.svg" alt="Address Processing Service Logo" />
-      </div>
-      <div>
-        <h1>Address Processing</h1>
-        <h4>Turn messy unstructured data into neat rows and columns.</h4>
-      </div>
+  <div class="container12 flex flex-row">
+    <div class="intro-logo">
+      <img class="service-logo medium" src="assets/img/graphics/services/address-processing.svg" alt="Address Processing Service Logo" />
+    </div>
+    <div>
+      <h1>Address Processing</h1>
+      <h4>Turn messy unstructured data into neat rows and columns.</h4>
     </div>
   </div>
 </section>
@@ -26,19 +24,17 @@
 </section>
 
 <section class="content-fill-pad" style="background: #f5f5f5">
-  <div class="container12 flex justify-center">
-    <div class="column8 text-content text-content--center">
+  <div class="container12 flex flex-row justify-center">
+    <div class="column6 text-content text-content--center">
       <h2>User-Friendly API</h2>
       <h4>Built by developers, for developers</h4>
       <p>Our address-processing service provides a simple, unified, language-agnostic REST API that enables developers to easily integrate our geocoding service into custom applications. We provide a handful of first-party libraries for common programming langues that further accelerates development so you can spend less time worrying about the intricacies of the API and more time focusing on what matters; your application.</p>
     </div>
 
-    <div class="flex flex-column align-center">
-      <div class="column7">
-        <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/services/address-processing/sample.js' | codeFromUrl | async" [result]="result"></tamu-gisc-code-runner>
-      </div>
+    <div class="flex flex-column align-center sample-container">
+      <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/services/address-processing/sample.js' | codeFromUrl | async" [result]="result"></tamu-gisc-code-runner>
 
-      <a [routerLink]="['/api/address-processing']">Read the documentation ></a>
+      <a [routerLink]="['/api/address-processing']" class="leader-1">Read the documentation ></a>
     </div>
   </div>
 </section>

@@ -1,13 +1,11 @@
 <section class="content-fill-pad" style="background: linear-gradient(90deg, #ffffff, #c3d6fd)">
-  <div class="container12">
-    <div class="flex flex-row">
-      <div class="intro-logo">
-        <img class="service-logo medium" src="assets/img/graphics/services/geocoding.svg" alt="Geocoding Service Logo" />
-      </div>
-      <div>
-        <h1>Geocoding</h1>
-        <h4>Make address data work for you.</h4>
-      </div>
+  <div class="container12 flex flex-row">
+    <div class="intro-logo">
+      <img class="service-logo medium" src="assets/img/graphics/services/geocoding.svg" alt="Geocoding Service Logo" />
+    </div>
+    <div>
+      <h1>Geocoding</h1>
+      <h4>Make address data work for you.</h4>
     </div>
   </div>
 </section>
@@ -25,33 +23,18 @@
   </div>
 </section>
 
-<!-- <section class="content-fill-pad" style="background: #ffffff">
-  <div class="container12 flex flex-row-reverse align-right">
-    <div class="column6 text-content text-content--right">
-      <h2>Desktop Client</h2>
-      <h4>Process data locally</h4>
-      <p>Have some data you don't want to upload to our servers? Make use of our standalone desktop geocoder to execute batch geocoding processes from your local computer.</p>
-
-      <p class="faux-link">Download the desktop client ></p>
-    </div>
-    <div></div>
-  </div>
-</section> -->
-
 <section class="content-fill-pad" style="background: #f5f5f5">
-  <div class="container12 flex justify-center">
-    <div class="column8 text-content text-content--center">
+  <div class="container12 flex flex-row justify-center">
+    <div class="column6 text-content text-content--center">
       <h2>User-Friendly API</h2>
       <h4>Built by developers, for developers</h4>
       <p>Our geocoding service provides a simple, unified, language-agnostic REST API that enables developers to easily integrate our geocoding service into custom applications. We provide a handful of first-party libraries for common programming langues that further accelerates development so you can spend less time worrying about the intricacies of the API and more time focusing on what matters; your application.</p>
     </div>
 
-    <div class="flex flex-column align-center">
-      <div class="column7">
-        <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/services/geocoding/sample.js' | codeFromUrl | async" [result]="result"></tamu-gisc-code-runner>
-      </div>
+    <div class="flex flex-column align-center sample-container">
+      <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/services/geocoding/sample.js' | codeFromUrl | async" [result]="result"></tamu-gisc-code-runner>
 
-      <a [routerLink]="['/api/geocoding']">Read the documentation ></a>
+      <a [routerLink]="['/api/geocoding']" class="leader-1">Read the documentation ></a>
     </div>
   </div>
 </section>

@@ -43,7 +43,7 @@ ul {
   }
 
   p {
-    white-space: nowrap;
+    text-align: center;
     // Apply an inline separator to all links except the last
     &:not(:last-child) {
       &::after {
@@ -61,4 +61,15 @@ ul {
 
 .attribute {
   margin-top: 0.5rem;
+}
+
+@media only screen and (min-width: 100px) {
+  .copyright,
+  .legal,
+  .attribute {
+    div[class^='column-'] {
+      margin-bottom: 0;
+      display: none;
+    }
+  }
 }
