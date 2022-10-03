@@ -52,3 +52,15 @@ table {
 em {
   font-size: 0.75rem;
 }
+
+@media only screen and (max-width: 477px) {
+  table {
+    tr {
+      td {
+        &:first-child {
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}

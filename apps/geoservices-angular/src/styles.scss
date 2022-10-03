@@ -754,6 +754,7 @@ tamu-gisc-step-toggle {
 
   p {
     margin: 0.3rem;
+    margin-top: 0;
   }
 
   &.active {
@@ -765,11 +766,11 @@ tamu-gisc-step-toggle {
     &::after {
       content: '';
       height: 1pt;
-      width: 5rem;
       position: absolute;
       top: 50%;
-      left: 120%;
+      left: 150%;
       background: #e0e0e0;
+      transform: translateX(-125%);
     }
   }
 }
@@ -979,5 +980,50 @@ tamu-gisc-tooltip {
   p {
     margin-top: 0;
     margin-bottom: 0;
+  }
+}
+
+// Natural breakpoints are 768px, 478px
+
+@media only screen and (min-width: 960px) {
+  tamu-gisc-step-toggle {
+    &:not(:last-child) {
+      &::after {
+        width: 50%;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  html {
+    font-size: 14px;
+  }
+
+  .container12 {
+    &.flex-row,
+    &.flex-row-reverse {
+      flex-direction: column;
+    }
+  }
+
+  .section-header {
+    text-align: center;
+  }
+
+  .intro-logo {
+    margin-left: 0;
+  }
+}
+
+@media only screen and (max-width: 477px) {
+  section {
+    &.content-fill-pad {
+      padding-bottom: 4rem;
+    }
+  }
+
+  tamu-gisc-step-toggle {
+    padding: 0.5rem;
   }
 }
