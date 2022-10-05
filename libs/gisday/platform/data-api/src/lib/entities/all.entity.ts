@@ -14,7 +14,8 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
-  Repository
+  Repository,
+  AfterLoad
 } from 'typeorm';
 import { v4 as guid } from 'uuid';
 
@@ -233,25 +234,27 @@ export class OldEvent extends GISDayEntity {
     super();
   }
 }
-
 @Entity({
   name: 'event_broadcast'
 })
 export class EventBroadcast extends GuidIdentity {
-  @Column({ nullable: false })
-  public presenterUrl: string;
+  @Column({ nullable: true })
+  public presenterUrl?: string;
 
-  @Column({ nullable: false })
-  public password: string;
+  @Column({ nullable: true })
+  public password?: string;
 
-  @Column({ nullable: false })
-  public phoneNumber: string;
+  @Column({ nullable: true })
+  public phoneNumber?: string;
 
-  @Column({ nullable: false })
-  public meetingId: string;
+  @Column({ nullable: true })
+  public meetingId?: string;
 
-  @Column({ nullable: false })
-  public publicUrl: string;
+  @Column({ nullable: true })
+  public publicUrl?: string;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public details?: string;
 }
 
 @Entity({
@@ -259,32 +262,63 @@ export class EventBroadcast extends GuidIdentity {
 })
 export class EventLocation extends GuidIdentity {
   @Column({ nullable: true })
-  public room: string;
+  public room?: string;
 
   @Column({ nullable: true })
-  public building: string;
+  public building?: string;
 
   @Column({ nullable: true })
-  public capacity: number;
+  public capacity?: number;
 
   @Column({ nullable: true })
-  public link: string;
+  public link?: string;
 }
 
 @Entity({
-  name: 'events'
+  name: 'events',
+  database: 'gisday_bridge_test'
 })
 export class Event extends GISDayEntity {
-  @ManyToMany(() => Speaker, { cascade: true })
-  @JoinTable({ name: 'event_speakers' })
+  @ManyToMany(() => Speaker, { cascade: true, nullable: true })
+  @JoinTable({
+    name: 'event_speakers'
+    // joinColumn: {
+    //   name: 'eventGuid',
+    //   referencedColumnName: 'guid'
+    // },
+    // inverseJoinColumn: {
+    //   name: 'speakerGuid',
+    //   referencedColumnName: 'guid'
+    // }
+  })
   public speakers?: Speaker[];
 
   @ManyToMany(() => Sponsor, { cascade: true })
-  @JoinTable({ name: 'event_sponsors' })
+  @JoinTable({
+    name: 'event_sponsors'
+    // joinColumn: {
+    //   name: 'eventGuid',
+    //   referencedColumnName: 'guid'
+    // },
+    // inverseJoinColumn: {
+    //   name: 'sponsorGuid',
+    //   referencedColumnName: 'guid'
+    // }
+  })
   public sponsors?: Sponsor[];
 
-  @ManyToMany(() => Tag, { cascade: true })
-  @JoinTable({ name: 'event_tags' })
+  @ManyToMany(() => Tag, { cascade: true, nullable: true })
+  @JoinTable({
+    name: 'event_tags'
+    // joinColumn: {
+    //   name: 'eventGuid',
+    //   referencedColumnName: 'guid'
+    // },
+    // inverseJoinColumn: {
+    //   name: 'tagGuid',
+    //   referencedColumnName: 'guid'
+    // }
+  })
   public tags?: Tag[];
 
   @ManyToMany(() => CourseCredit, { cascade: true })
@@ -302,7 +336,7 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true })
   public name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
 
   @Column({ nullable: true })
@@ -311,11 +345,15 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true })
   public endTime: string;
 
-  @Column({ nullable: true })
-  public observedAttendeeStart: number;
+  // TODO: Should we remove these? They don't seem to be used often
+  // @Column({ nullable: true })
+  // public observedAttendeeStart: number;
+
+  // @Column({ nullable: true })
+  // public observedAttendeeEnd: number;
 
   @Column({ nullable: true })
-  public observedAttendeeEnd: number;
+  public capacity: number;
 
   @Column({ nullable: true })
   public googleDriveUrl: string;
@@ -332,20 +370,28 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true })
   public presentationType: string;
 
-  @Column({ nullable: false, default: true })
+  @Column({ nullable: true, default: true })
   public isAcceptingRsvps: boolean;
 
-  @Column({ nullable: false, default: false })
+  @Column({ nullable: true, default: false })
   public isBringYourOwnDevice: boolean;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'MAX' })
   public requirements: string;
 
-  public hasRsvp = false;
+  /**
+   * Returns the day of week using Date.getDay() given the event's startTime
+   * Remember, Date.getDay() returns the DAY OF THE WEEK (1-7), not the DAY in the MONTH
+   */
+  public day: number;
 
-  constructor() {
-    super();
+  @AfterLoad()
+  public setDay() {
+    const date = new Date(this.startTime);
+    this.day = date.getDay();
   }
+
+  public hasRsvp = false;
 }
 
 @Entity({

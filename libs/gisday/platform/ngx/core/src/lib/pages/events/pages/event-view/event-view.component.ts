@@ -1,23 +1,26 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
-import { shareReplay, takeUntil } from 'rxjs/operators';
+import { concatMap, filter, mergeAll, shareReplay, switchMap, takeUntil, tap, toArray } from 'rxjs/operators';
 
 import { Event, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { EventResponse, EventService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { flatten } from '@nestjs/common';
 
 @Component({
   selector: 'tamu-gisc-event-view',
-  templateUrl: './event-view.component.html',
+  templateUrl: './event-view-new.component.html',
   styleUrls: ['./event-view.component.scss']
 })
-export class EventViewComponent implements OnDestroy {
-  public $events: Observable<Partial<EventResponse>>;
+export class EventViewComponent implements OnInit, OnDestroy {
+  public $events: Observable<Array<Partial<Event>>>;
   public $tags: Observable<Array<Partial<Tag>>>;
   private _$destroy: Subject<boolean> = new Subject();
   public filterTags: string[] = [];
 
-  constructor(private readonly eventService: EventService, private readonly tagService: TagService) {
+  constructor(private readonly eventService: EventService, private readonly tagService: TagService) {}
+
+  public ngOnInit() {
     this.fetchEvents();
     this.fetchTags();
   }
@@ -28,7 +31,13 @@ export class EventViewComponent implements OnDestroy {
   }
 
   public fetchEvents() {
-    this.$events = this.eventService.getEventsByDay().pipe(takeUntil(this._$destroy), shareReplay(1));
+    this.$events = this.eventService.getEvents().pipe(
+      // switchMap((events) => events),
+      // tap((event) => console.log(event.day)),
+      // concatMap(),
+      takeUntil(this._$destroy),
+      shareReplay(1)
+    );
   }
 
   public fetchTags() {
@@ -47,6 +56,19 @@ export class EventViewComponent implements OnDestroy {
         }
       });
     }
+  }
+
+  /**
+   * Returns an observable of Event[] that only contains those Events of the day specified (day 1, day 2, day 3)
+   * @param dayNum
+   * @returns
+   */
+  public getDay(dayNum: number) {
+    return this.$events.pipe(
+      switchMap((events) => events),
+      filter((event) => event.day == dayNum),
+      toArray()
+    );
   }
 
   public filterEventsByFilterTags(event: Event) {

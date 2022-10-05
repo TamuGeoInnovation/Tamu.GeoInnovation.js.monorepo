@@ -14,7 +14,15 @@ export class EventController extends BaseController<Event> {
 
   @Get('/all')
   public async getEvents() {
-    return this.eventProvider.getEntitiesWithRelations('event');
+    return this.eventProvider.eventRepo.find({
+      where: {
+        season: '2020'
+      },
+      relations: ['speakers', 'tags', 'sponsors', 'location', 'broadcast'],
+      order: {
+        startTime: 'ASC'
+      }
+    });
   }
 
   @Get('/:guid/rsvps')

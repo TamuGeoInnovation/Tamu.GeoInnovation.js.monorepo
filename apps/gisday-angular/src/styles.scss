@@ -54,6 +54,9 @@ html {
   -webkit-font-smoothing: antialiased;
   font-family: $body-font;
   color: $gisday-font-primary;
+
+  scroll-behavior: smooth;
+
 }
 
 body {

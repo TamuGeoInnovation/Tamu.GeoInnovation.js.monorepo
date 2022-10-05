@@ -1,0 +1,122 @@
+<section>
+  <div id="event-content">
+    <div id="sub-nav-container">
+      <div class="container12 leader-3 trailer-3">
+        <h1 class="trailer-1">Event Sessions</h1>
+        <p class="sub-section-heading">Want to see a special session or topic?</p>
+        <p>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdqnC_rYGEd2PG3VYCzXmn6F3zRS-7Lsy9jhB7IR3FiXd9s4g/viewform" target="_blank">Submit a presentation</a> or
+          <a href="">Contact us</a>
+          to find out how to recommend or request a special session.
+        </p>
+        <p><strong>Note:</strong> All times are in Central Standard Time (CST).</p>
+        <p><br /></p>
+        <div id="links-container">
+          <p>
+            <a [routerLink]="['/sessions']" fragment="day1">Day 1</a>
+          </p>
+          <p>
+            <a [routerLink]="['/sessions']" fragment="day2">Day 2</a>
+          </p>
+          <p>
+            <a [routerLink]="['/sessions']" fragment="day3">Day 3</a>
+          </p>
+
+          <p>
+            <a class="md-link" ui-sref="agenda()" href="#!/agenda">Agenda View</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="container12 trailer-3" id="sessions-container">
+      <div>
+        <div id="default-content" class="column8" *ngIf="$events">
+          <div id="day1" class="card">
+            <h2>November 14</h2>
+            <div *ngFor="let event of (getDay(1) | async)" [routerLink]="['/sessions/details', event.guid]">
+              <div class="row" *ngIf="filterEventsByFilterTags(event)">
+                <div class="input-control">
+                  <div class="checkbox-custom-input">
+                    <input #eventCheck type="checkbox" [checked]="event.hasRsvp" />
+                    <i></i>
+                  </div>
+                </div>
+                <div class="event-time">
+                  <span>{{event.startTime | date: 'h:mm a'}}</span>
+                  <span id="detail-time"> - {{event.endTime | date: 'h:mm a'}}</span>
+                </div>
+                <div class="event-name">
+                  <p>{{event.name}}</p>
+                  <p>{{event.location?.building}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="day2" class="card">
+            <h2>November 15</h2>
+            <div *ngFor="let event of (getDay(2) | async)" [routerLink]="['/sessions/details', event.guid]">
+              <div class="row" *ngIf="filterEventsByFilterTags(event)">
+                <div class="input-control">
+                  <div class="checkbox-custom-input">
+                    <input #eventCheck type="checkbox" [checked]="event.hasRsvp" />
+                    <i></i>
+                  </div>
+                </div>
+                <div class="event-time">
+                  <span>{{event.startTime | date: 'h:mm a'}}</span>
+                  <span id="detail-time"> - {{event.endTime | date: 'h:mm a'}}</span>
+                </div>
+                <div class="event-name">
+                  <p>{{event.name}}</p>
+                  <p>{{event.location?.building}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="day3" class="card">
+            <h2>November 16</h2>
+            <div *ngFor="let event of (getDay(3) | async)" [routerLink]="['/sessions/details', event.guid]">
+              <div class="row" *ngIf="filterEventsByFilterTags(event)">
+                <div class="input-control">
+                  <div class="checkbox-custom-input">
+                    <input #eventCheck type="checkbox" [checked]="event.hasRsvp" />
+                    <i></i>
+                  </div>
+                </div>
+                <div class="event-time">
+                  <span>{{event.startTime | date: 'h:mm a'}}</span>
+                  <span id="detail-time"> - {{event.endTime | date: 'h:mm a'}}</span>
+                </div>
+                <div class="event-name">
+                  <p>{{event.name}}</p>
+                  <p>{{event.location?.building}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="filter-container" class="column4" *ngIf="$events">
+        <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
+        <div id="filters" class="card">
+          <h2 class="trailer-1">Filters</h2>
+
+          <div class="row" *ngFor="let tag of ($tags | async)">
+            <div class="input-control">
+              <div class="checkbox-custom-input">
+                <input #checkbox type="checkbox" (click)="applyOrRemoveTag(tag, checkbox.checked)" />
+                <i></i>
+              </div>
+            </div>
+            <div class="filter-name">
+              <p>{{tag.name}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -20,7 +20,7 @@ import { BaseProvider } from '../../providers/_base/base-provider';
 @Injectable()
 export class EventProvider extends BaseProvider<Event> {
   constructor(
-    private readonly eventRepo: EventRepo,
+    public readonly eventRepo: EventRepo,
     private readonly eventLocationRepo: EventLocationRepo,
     private readonly eventBroadcastRepo: EventBroadcastRepo,
     private readonly speakerRepo: SpeakerRepo,
@@ -31,8 +31,8 @@ export class EventProvider extends BaseProvider<Event> {
     super(eventRepo, 'event');
   }
 
-  public async getEvents() {
-    return await this.getEntitiesWithRelations('event');
+  public getEvents() {
+    return this.getEntitiesWithRelations('event');
   }
 
   public async insertEvent(_newEvent: DeepPartial<Event>) {

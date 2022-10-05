@@ -9,6 +9,14 @@ export class TagProvider extends BaseProvider<Tag> {
     super(tagRepo);
   }
 
+  public async getTags() {
+    return this.tagRepo.find({
+      order: {
+        name: 'ASC'
+      }
+    });
+  }
+
   public async insertTags(_tags: Array<Partial<Tag>>) {
     const tags = this.tagRepo.create(_tags);
 
