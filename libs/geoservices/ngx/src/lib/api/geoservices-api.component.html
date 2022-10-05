@@ -1,5 +1,5 @@
 <div id="root">
-  <div class="sidebar">
+  <div class="sidebar" *ngIf="(this.mobile | async) === false">
     <tamu-gisc-drawer layout="relative" width="17rem">
       <div class="content">
         <p class="sidebar-section-title">
@@ -30,7 +30,6 @@
                 <li scrollTo="#overview">Overview</li>
                 <li scrollTo="#parameters">Parameters</li>
                 <li scrollTo="#response">Response</li>
-                <li scrollTo="#examples">Examples</li>
               </ul>
             </ul>
           </div>
