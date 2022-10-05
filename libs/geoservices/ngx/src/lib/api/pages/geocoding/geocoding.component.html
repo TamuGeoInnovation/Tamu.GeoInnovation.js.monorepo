@@ -44,7 +44,7 @@
     <ng-container attr-description>Target API version.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
 
       <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a address processing request.</p>
     </ng-container>
@@ -59,7 +59,7 @@
     <ng-container attr-description>Non-parsed street address value.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
 
       <p>Example: 9355 Burton Way</p>
     </ng-container>
@@ -74,9 +74,9 @@
     <ng-container attr-description>City value, case-insensitive.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
 
-      <p>Examples:</p>
+      <p><span class="attr-body-heading">Examples</span>:</p>
 
       <ul>
         <li>Los Angeles</li>
@@ -95,9 +95,9 @@
     <ng-container attr-description>Two-letter U.S. state code, case-insensitive.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
 
-      <p>Examples:</p>
+      <p><span class="attr-body-heading">Examples</span>:</p>
 
       <ul>
         <li>CA</li>
@@ -116,9 +116,9 @@
     <ng-container attr-description>Numeric zip code. Does not support Zip + 4.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
 
-      <p>Examples:</p>
+      <p><span class="attr-body-heading">Examples</span>:</p>
 
       <ul>
         <li>90210</li>
@@ -137,7 +137,7 @@
     <ng-container attr-description>Describes whether census variables will be calculated for the geocode.</ng-container>
 
     <ng-container attr-body>
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -168,9 +168,9 @@
     <ng-container attr-description>Describes whether or not to include column headers for text (cvs/tsv) output formats. </ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.96</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.96</p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -197,7 +197,7 @@
     <ng-container attr-description>Output full details (parse address, matched address, reference feature address and details). </ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
       <p>When <code>true</code>, Outputs full transaction details including:</p>
 
@@ -207,7 +207,7 @@
         <li>Referenced feature address and associated details</li>
       </ul>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -225,10 +225,10 @@
     <ng-container attr-description>Response return format.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
       <p>Value describing the geocode response format.</p>
 
-      <p><strong>Supported response formats:</strong></p>
+      <p><span class="attr-body-heading">Supported response formats</span>:</p>
       <ul>
         <li>csv</li>
         <li>tsv</li>
@@ -249,10 +249,11 @@
     <ng-container attr-description>Describes if the output parsed address should be included in the response.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
+
       <p>Outputs the parsed address from query inputs.</p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -270,10 +271,10 @@
     <ng-container attr-description>Describes if the output matched address should be included in the response.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
       <p>Outputs geocode matched address from parsed address.</p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -291,10 +292,10 @@
     <ng-container attr-description>Describes if the output reference feature should be included in the response.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
       <p>Outputs reference feature used in geocode transaction.p/p></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -312,11 +313,10 @@
     <ng-container attr-description>Describes if the output reference feature address should be included in the response.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
       <p>Outputs address of the matched reference feature.</p>
-      p
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -334,11 +334,11 @@
     <ng-container attr-description>Flag indicating to return ties as valid results or handle using the <code>tieBreakingStrategy</code> parameter.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 4.0</p>
 
       <p>Flag to indicate to return ties as valid results orphandle using the <code class="secondary">tieBreakingStrategy</code> parameter. Ties are allowed by default. if <code class="secondary">false</code> is provided, a valid strategy for <code class="secondary">tieBreakingStrategy</code> must also be provided.</p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -356,11 +356,11 @@
     <ng-container attr-description>Describes the strategy used to break ties and not return ties as valid results. Requires <code>allowTies</code> to be <code class="secondary">true</code>.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 4.0</p>
 
       <p>Flag to indicate to return ties as valid results or handle using the <code class="secondary">tieBreakingStrategy</code> parameter. Ties are allowed by default. if <code class="secondary">false</code> is provided, a valid strategy for <code class="secondary">tieBreakingStrategy</code> must also be provided.</p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li>
@@ -394,13 +394,13 @@
     <ng-container attr-description>Sets minimum confidence level accepted for "Open Addresses Source Matches"</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
       <p>Describes the minimum confidence level accepted for Open Address Source Matches.</p>
 
-      <p>Default: <code>5</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>5</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li>Numeric value <code class="secondary">1</code> through <code class="secondary">8</code>.</li>
@@ -417,11 +417,11 @@
     <ng-container attr-description>Sets minimum accepted match score.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Default: <code>95</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>95</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li>Double digit numeric value between <code class="secondary">00</code> through <code class="secondary">100</code>, inclusive.</li>
@@ -438,9 +438,9 @@
     <ng-container attr-description> Returns all matched geocodes for an input query.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -458,9 +458,9 @@
     <ng-container attr-description>Describes whether to utilize city alias tables in result scoring.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -478,7 +478,7 @@
     <ng-container attr-description>Describes whether to use attribute relaxation.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
       <p>This option directs the geocoder to try alternative versions of the input data in the case when an exact match can not be found. In particular, attributes of the input address are removed from the query, first one at a time and then in combination with each other. Attribute relaxation is performed (if the option is selected) on the following address attributes:</p>
 
@@ -614,7 +614,7 @@
         </tbody>
       </table>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -632,11 +632,11 @@
     <ng-container attr-description>List of allowable attributes that should be relaxed. Only applies if <code>attributeRelaxation</code> is enabled.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Default: <code>pre,suffix,post,city,zip</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>pre,suffix,post,city,zip</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>pre</code></li>
@@ -657,7 +657,7 @@
     <ng-container attr-description>Describes whether to use substring matching.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
       <p>This option directs the geocoder to use substring matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data are incomplete (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows examples of this strategy:</p>
 
@@ -691,9 +691,9 @@
         </tbody>
       </table>
 
-      <p>Default: <code>true</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>true</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -711,7 +711,7 @@
     <ng-container attr-description>Describes whether to use soundex.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
       <p>This option directs the geocoder to use soundex matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data have minor misspellings (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows (e.g. s of this strategy):</p>
 
@@ -751,9 +751,9 @@
         </tbody>
       </table>
 
-      <p>Default: <code>false</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>false</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -771,11 +771,11 @@
     <ng-container attr-description>List of allowable attributes to be soundex'ed. Only applies if <code>soundex</code> is enabled.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Default: <code>name,city</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>name,city</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>name</code></li>
@@ -793,11 +793,11 @@
     <ng-container attr-description>Describes the feature matching hierarchy that will be used.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Default: <code>featureMatchingSelectionMethod</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>featureMatchingSelectionMethod</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>uncertaintyBased</code></li>
@@ -815,11 +815,11 @@
     <ng-container attr-description>List of reference data sources to use.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Default: <code>all</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>all</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>all</code></li>
@@ -836,13 +836,13 @@
     <ng-container attr-description>Returns geometry of reference feature.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
       <p>Including this option in either the batch processing or API will result in the geometry of the reference feature used for interpolation being returned along with the geocode result. This option is only applicable when using the API in verbose mode, or when the optional reference feature fields are selected in a batch process. It is not recommended that this option be selected unless you have a specific need for the underlying reference feature geometry.</p>
 
       <p>You can always return to the site and easily get the reference feature geometry for any specific geocode of interest.</p>
 
-      <p><strong>Why not include reference geometry as output</strong></p>
+      <p><span class="attr-body-heading">Why not include reference geometry as output?</span></p>
 
       <table>
         <tbody>
@@ -865,9 +865,9 @@
         </tbody>
       </table>
 
-      <p>Default: <code>false</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>false</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -885,11 +885,11 @@
     <ng-container attr-description>Describes whether to run reference sources in parallel.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Default: <code>false</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>false</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -907,11 +907,11 @@
     <ng-container attr-description>Describes whether to return processing statistics and information for XML and JSON response formats.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 5.0.0</p>
 
-      <p>Default: <code>false</code></p>
+      <p><span class="attr-body-heading">Default</span>: <code>false</code></p>
 
-      <p>Allowed Values:</p>
+      <p><span class="attr-body-heading">Allowed Values</span>:</p>
 
       <ul>
         <li><code>true</code></li>
@@ -1478,7 +1478,7 @@
 
     <ng-container attr-body>
       <p>
-        <strong>The Geocode object:</strong>
+        <span class="attr-body-heading">The Geocode object:</span>
       </p>
 
       <div class="attribute-list">

@@ -11,14 +11,15 @@ $lightened-inactive-color: lighten($inactive-color, 25%);
   .service-attribute-accordion {
     border: 1pt solid $lightened-inactive-color;
     border-radius: 7pt;
-    padding: 0.5rem 1rem;
     margin: 0.5rem 0 1rem 0;
+    overflow: hidden;
 
     .attribute-heading {
       @include flexbox();
       @include flex-direction(row);
       @include justify-content(space-between);
       @include align-items(center);
+      padding: 0.5rem 1rem;
 
       .attribute-title-breakdown {
         @include flexbox();
@@ -74,7 +75,14 @@ $lightened-inactive-color: lighten($inactive-color, 25%);
     }
 
     .attribute-body {
-      margin-left: 0.5rem;
+      border-top: 1pt solid $lightened-inactive-color;
+      padding: 0 1rem 0.5rem 1rem;
+      background: lighten($lightened-inactive-color, 13%);
+
+      .attr-body-heading {
+        margin-bottom: 0;
+        font-weight: 500;
+      }
     }
   }
 }
