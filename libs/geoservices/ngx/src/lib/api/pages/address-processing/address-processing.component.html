@@ -52,7 +52,7 @@
     <ng-container attr-description>Target API version.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
 
       <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a address processing request.</p>
     </ng-container>
@@ -67,10 +67,11 @@
     <ng-container attr-description>Non-parsed street address value.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
 
       <p>Non-parsed street address.</p>
-      <p>Example: 3620 North Vermont Ave W.</p>
+
+      <p><span class="attr-body-heading">Example</span>: 3620 North Vermont Ave W.</p>
     </ng-container>
   </tamu-gisc-service-attribute-accordion>
 
@@ -83,7 +84,7 @@
     <ng-container attr-description>Non-parsed city value.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
       <p>City value, case-insensitive. Examples:</p>
 
       <ul>
@@ -103,7 +104,8 @@
     <ng-container attr-description> State abbreviation code.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
       <p>Two-letter U.S. state code, case-insensitive. Examples:</p>
 
       <ul>
@@ -123,8 +125,10 @@
     <ng-container attr-description>Zip code number.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
       <p>Numeric zip code. Does not support Zip + 4. Allowed examples:</p>
+
       <ul>
         <li>90210</li>
         <li>90007</li>
@@ -142,7 +146,8 @@
     <ng-container attr-description>Output address format.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
       <p>Users can select which output format they would like their data placed into. Currently we are fairly compliant with the following address formats.</p>
 
       <ul>
@@ -164,10 +169,10 @@
     <ng-container attr-description>Response return format.</ng-container>
 
     <ng-container attr-body>
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
       <p>Value describing the geocode response format.</p>
 
-      <p><strong>Supported response formats:</strong></p>
+      <p><span class="attr-body-heading">Supported response formats:</span></p>
       <ul>
         <li>csv</li>
         <li>tsv</li>
@@ -273,153 +278,144 @@
     <ng-container attr-description>Object representing the serialized input parameters the transaction was executed against.</ng-container>
 
     <ng-container attr-body>
-      <p>Parameters serialized from the client query parameters and utilized to execute the transaction.</p>
+      <div class="attribute-list">
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">streetAddress</div>
+            <code class="secondary">String</code>
+          </div>
 
-      <div *giscAccordion="let parent;">
-        <div class="pill" [giscAccordionHeader]="parent">
-          <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-          <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+          <div class="attribute-description">
+            <p>Input address for the executed transaction.</p>
+          </div>
         </div>
 
-        <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">streetAddress</div>
-              <code class="secondary">String</code>
-            </div>
-
-            <div class="attribute-description">
-              <p>Input address for the executed transaction.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">city</div>
+            <code class="secondary">String</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">city</div>
-              <code class="secondary">String</code>
-            </div>
+          <div class="attribute-description">
+            <p>Input city for the executed transaction.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Input city for the executed transaction.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">state</div>
+            <code class="secondary">String</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">state</div>
-              <code class="secondary">String</code>
-            </div>
+          <div class="attribute-description">
+            <p>Input state for the executed transaction.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Input state for the executed transaction.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">zip</div>
+            <code class="secondary">String</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">zip</div>
-              <code class="secondary">String</code>
-            </div>
+          <div class="attribute-description">
+            <p>Input zip for the executed transaction.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Input zip for the executed transaction.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">version</div>
+            <code class="secondary">String</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">version</div>
-              <code class="secondary">String</code>
-            </div>
+          <div class="attribute-description">
+            <p>Requested API version for the executed transaction.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Requested API version for the executed transaction.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">apiKey</div>
+            <code class="secondary">String</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">apiKey</div>
-              <code class="secondary">String</code>
-            </div>
+          <div class="attribute-description">
+            <p>Input customer apiKey for the executed transaction.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Input customer apiKey for the executed transaction.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">dontStoreTransactionDetails</div>
+            <code class="secondary">String</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">dontStoreTransactionDetails</div>
-              <code class="secondary">String</code>
-            </div>
+          <div class="attribute-description">
+            <p>Input option to prevent storing the transaction in account.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Input option to prevent storing the transaction in account.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">addressFormatTypes</div>
+            <code class="secondary">Array&lt;String&gt;</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">addressFormatTypes</div>
-              <code class="secondary">Array&lt;String&gt;</code>
-            </div>
+          <div class="attribute-description">
+            <p>Requested address processing format types. Will be a list containing one or many of the following:</p>
 
-            <div class="attribute-description">
-              <p>Requested address processing format types. Will be a list containing one or many of the following:</p>
+            <ul>
+              <li>USPSPublication28</li>
+              <li>USCensusTiger</li>
+              <li>LACounty</li>
+            </ul>
 
-              <ul>
-                <li>USPSPublication28</li>
-                <li>USCensusTiger</li>
-                <li>LACounty</li>
-              </ul>
+            <tamu-gisc-address-format-fragment></tamu-gisc-address-format-fragment>
+          </div>
+        </div>
 
-              <tamu-gisc-address-format-fragment></tamu-gisc-address-format-fragment>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">multiThreading</div>
+            <code class="secondary">Boolean</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">multiThreading</div>
-              <code class="secondary">Boolean</code>
-            </div>
+          <div class="attribute-description">
+            <p>Input request for multi-threaded processing of the transaction.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Input request for multi-threaded processing of the transaction.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">includeHeader</div>
+            <code class="secondary">Boolean</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">includeHeader</div>
-              <code class="secondary">Boolean</code>
-            </div>
+          <div class="attribute-description">
+            <p>Input request to include column names as the first row header when requesting <code>csv</code> as the <code>responseFormat</code>.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Input request to include column names as the first row header when requesting <code>csv</code> as the <code>responseFormat</code>.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">verbose</div>
+            <code class="secondary">Boolean</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">verbose</div>
-              <code class="secondary">Boolean</code>
-            </div>
+          <div class="attribute-description">
+            <p>Input request to return a verbose transaction response.</p>
+          </div>
+        </div>
 
-            <div class="attribute-description">
-              <p>Input request to return a verbose transaction response.</p>
-            </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">outputFormat</div>
+            <code class="secondary">String</code>
           </div>
 
-          <div class="attribute-unit">
-            <div class="attribute-header">
-              <div class="attribute-name">outputFormat</div>
-              <code class="secondary">String</code>
-            </div>
-
-            <div class="attribute-description">
-              <p>Input request for the format of the returned transaction response.</p>
-            </div>
+          <div class="attribute-description">
+            <p>Input request for the format of the returned transaction response.</p>
           </div>
         </div>
       </div>
@@ -432,13 +428,13 @@
       <div class="attribute-title-type">Array&lt;AddressRecordResult&gt;</div>
     </ng-container>
 
-    <ng-container attr-description>Result reverse geocode.</ng-container>
+    <ng-container attr-description>Address processing results.</ng-container>
 
     <ng-container attr-body>
       <p>A list of results based on the input address and the total number of input <code>addressFormat</code>'s.</p>
 
       <p>
-        <strong>The AddressRecordResult object:</strong>
+        <span class="attr-body-heading">The AddressRecordResult object:</span>
       </p>
 
       <div class="attribute-list">
