@@ -8,9 +8,8 @@ describe('ServiceAttributeAccordionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ServiceAttributeAccordionComponent ]
-    })
-    .compileComponents();
+      declarations: [ServiceAttributeAccordionComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
