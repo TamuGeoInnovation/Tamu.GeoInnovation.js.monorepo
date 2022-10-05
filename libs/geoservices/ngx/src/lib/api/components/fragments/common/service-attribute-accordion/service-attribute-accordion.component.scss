@@ -1,0 +1,80 @@
+@import 'libs/sass/mixins';
+
+// TODO:
+// These colors are copy-pasted from the main geoservices style sheet.
+// Need to separate them.
+$active-color: hsl(223, 75%, 67%);
+$inactive-color: hsl(223, 15%, 60%);
+$lightened-inactive-color: lighten($inactive-color, 25%);
+
+::ng-deep {
+  .service-attribute-accordion {
+    border: 1pt solid $lightened-inactive-color;
+    border-radius: 7pt;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 0 1rem 0;
+
+    .attribute-heading {
+      @include flexbox();
+      @include flex-direction(row);
+      @include justify-content(space-between);
+      @include align-items(center);
+
+      .attribute-title-breakdown {
+        @include flexbox();
+        @include flex-direction(row);
+        @include align-items(center);
+        margin-bottom: 0.25rem;
+        font-size: 1.1rem;
+
+        .attribute-title-key,
+        .attribute-title-type,
+        .attribute-title-badge {
+          margin-right: 0.75rem;
+        }
+
+        .attribute-title-key,
+        .attribute-title-type,
+        .attribute-title-badge {
+          font-family: monospace;
+        }
+
+        .attribute-title-key {
+          font-weight: 600;
+        }
+
+        .attribute-title-type {
+          font-size: 1rem;
+          font-weight: 500;
+        }
+
+        .attribute-title-type {
+          color: $inactive-color;
+        }
+
+        .attribute-title-badge {
+          font-weight: 400;
+          font-size: 0.8rem;
+          background: $active-color;
+          color: #ffffff;
+          border: none;
+          padding: 0.1rem 0.5rem;
+          border-radius: 4pt;
+        }
+      }
+
+      .attribute-toggle {
+        @include no-select();
+        font-size: 1.2rem;
+
+        .material-icons {
+          font-size: inherit;
+        }
+      }
+    }
+
+    .attribute-body {
+      margin-left: 0.5rem;
+    }
+  }
+}

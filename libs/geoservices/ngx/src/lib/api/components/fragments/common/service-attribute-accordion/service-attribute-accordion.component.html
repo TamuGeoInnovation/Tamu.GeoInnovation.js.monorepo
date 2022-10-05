@@ -1,0 +1,21 @@
+<div class="service-attribute-accordion" *giscAccordion="let parent;">
+  <div class="attribute-heading">
+    <div class="attribute-title">
+      <div class="attribute-title-breakdown">
+        <ng-content select="[attr-title]"></ng-content>
+      </div>
+      <div class="attribute-title-description">
+        <ng-content select="[attr-description]"></ng-content>
+      </div>
+    </div>
+    <div class="attribute-toggle" *ngIf="collapsable" [giscAccordionHeader]="parent">
+      <span *ngIf="!parent.expanded" class="material-icons action alt">add</span>
+      <span *ngIf="parent.expanded" class="material-icons action alt">remove</span>
+    </div>
+  </div>
+
+  <div class="attribute-body" *giscAccordionContent="parent.expanded">
+    <ng-content select="[attr-body]"></ng-content>
+  </div>
+</div>
+
