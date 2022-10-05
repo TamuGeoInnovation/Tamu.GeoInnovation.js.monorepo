@@ -16,3060 +16,2190 @@
 </section>
 
 <section id="parameters">
-  <h2>Service Parameters</h2>
+  <h2 class="trailer-1" id="parameters">Input Parameters</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Parameter</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>apiKey *</td>
-        <td>
-          <div>
-            <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key.</div>
-            <div class="faux-link" scrollTo="#apiKey">See details</div>
-          </div>
-        </td>
-      </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">apiKey</div>
+      <div class="attribute-title-type">String</div>
+      <div class="attribute-title-badge">Required</div>
+    </ng-container>
 
-      <tr>
-        <td>version *</td>
-        <td>
-          <div>
-            <div>Target API version.</div>
-            <div class="faux-link" scrollTo="#version">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-description>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform.</ng-container>
 
-      <tr>
-        <td>streetAddress</td>
-        <td>
-          <div>
-            <div>Non-parsed street address value.</div>
-            <div class="faux-link" scrollTo="#streetAddress">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-body>
+      <p>Each request will deduct one credit from your account balance</p>
 
-      <tr>
-        <td>city</td>
-        <td>
-          <div>
-            <div>City value.</div>
-            <div class="faux-link" scrollTo="#city">See details</div>
-          </div>
-        </td>
-      </tr>
+      <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <tr>
-        <td>state</td>
-        <td>
-          <div>
-            <div>State abbreviation code.</div>
-            <div class="faux-link" scrollTo="#state">See details</div>
-          </div>
-        </td>
-      </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">version</div>
+      <div class="attribute-title-type">String</div>
+      <div class="attribute-title-badge">Required</div>
+    </ng-container>
 
-      <tr>
-        <td>zip</td>
-        <td>
-          <div>
-            <div>Zip code number.</div>
-            <div class="faux-link" scrollTo="#zip">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-description>Target API version.</ng-container>
 
-      <tr>
-        <td>census</td>
-        <td>
-          <div>
-            <div>Describes whether census variables will be calculated for the geocode.</div>
-            <div class="faux-link" scrollTo="#census">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
 
-      <tr>
-        <td>censusYears</td>
-        <td>
-          <div>
-            <div>Year or list of years of census data to intersect with.</div>
-            <div class="faux-link" scrollTo="#censusYears">See details</div>
-          </div>
-        </td>
-      </tr>
+      <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a address processing request.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <tr>
-        <td>format</td>
-        <td>
-          <div>
-            <div>Response output format.</div>
-            <div class="faux-link" scrollTo="#format">See details</div>
-          </div>
-        </td>
-      </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">streetAddress</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-      <tr>
-        <td>includeHeader</td>
-        <td>
-          <div>
-            <div>Describes whether or not to include column headers for text (cvs/tsv) output formats.</div>
-            <div class="faux-link" scrollTo="#includeHeader">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-description>Non-parsed street address value.</ng-container>
 
-      <tr>
-        <td>notStore</td>
-        <td>
-          <div>
-            <div>Describes whether the geocode transaction details will be stored in your account.</div>
-            <div class="faux-link" scrollTo="#notStore">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
 
-      <tr>
-        <td>verbose</td>
-        <td>
-          <div>
-            <div>Output full details (parse address, matched address, reference feature address and details).</div>
-            <div class="faux-link" scrollTo="#verbose">See details</div>
-          </div>
-        </td>
-      </tr>
+      <p>Example: 9355 Burton Way</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <tr>
-        <td>ShouldOutputParsedAddress</td>
-        <td>
-          <div>
-            <div>Describes if the output parsed address should be included in the response.</div>
-            <div class="faux-link" scrollTo="#shouldOutputParsedAddress">See details</div>
-          </div>
-        </td>
-      </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">city</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-      <tr>
-        <td>ShouldOutputMatchedAddress</td>
-        <td>
-          <div>
-            <div>Describes if the output matched address should be included in the response.</div>
-            <div class="faux-link" scrollTo="#shouldOutputMatchedAddress">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-description>City value, case-insensitive.</ng-container>
 
-      <tr>
-        <td>ShouldOutputReferenceFeature</td>
-        <td>
-          <div>
-            <div>Describes if the output reference feature should be included in the response.</div>
-            <div class="faux-link" scrollTo="#shouldOutputReferenceFeature">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
 
-      <tr>
-        <td>ShouldOutputReferenceFeatureAddress</td>
-        <td>
-          <div>
-            <div>Describes if the output reference feature address should be included in the response.</div>
-            <div class="faux-link" scrollTo="#shouldOutputReferenceFeatureAddress">See details</div>
-          </div>
-        </td>
-      </tr>
+      <p>Examples:</p>
 
-      <tr>
-        <td>allowTies</td>
-        <td>
-          <div>
-            <div>
-              Flag indicating to return ties as valid results or handle using the <code class="secondary">tieBreakingStrategy</code>
-              parameter.
-            </div>
-            <div class="faux-link" scrollTo="#allowTies">See details</div>
-          </div>
-        </td>
-      </tr>
+      <ul>
+        <li>Los Angeles</li>
+        <li>san francisco</li>
+        <li>New York</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <tr>
-        <td>tieBreakingStrategy</td>
-        <td>
-          <div>
-            <div>Describes the strategy used to break ties and not return ties as valid results. Requires <code class="secondary">allowTies</code> to be true.</div>
-            <div class="faux-link" scrollTo="#tieBreakingStrategy">See details</div>
-          </div>
-        </td>
-      </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">state</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-      <tr>
-        <td>confidenceLevels</td>
-        <td>
-          <div>
-            <div>Sets minimum confidence level accepted for "Open Addresses Source Matches".</div>
-            <div class="faux-link" scrollTo="#confidenceLevels">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-description>Two-letter U.S. state code, case-insensitive.</ng-container>
 
-      <tr>
-        <td>minScore</td>
-        <td>
-          <div>
-            <div>Sets minimum accepted match score.</div>
-            <div class="faux-link" scrollTo="#minScore">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
 
-      <tr>
-        <td>exhaustiveSearch</td>
-        <td>
-          <div>
-            <div>returns all matched geocodes for an input query.</div>
-            <div class="faux-link" scrollTo="#exhaustiveSearch">See details</div>
-          </div>
-        </td>
-      </tr>
+      <p>Examples:</p>
 
-      <tr>
-        <td>aliasTables</td>
-        <td>
-          <div>
-            <div>Describes whether to utilize city alias tables in result scoring.</div>
-            <div class="faux-link" scrollTo="#aliasTables">See details</div>
-          </div>
-        </td>
-      </tr>
+      <ul>
+        <li>CA</li>
+        <li>tx</li>
+        <li>Ny</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <tr>
-        <td>attributeRelaxation</td>
-        <td>
-          <div>
-            <div>Describes whether to use attribute relaxation.</div>
-            <div class="faux-link" scrollTo="#attributeRelaxation">See details</div>
-          </div>
-        </td>
-      </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">zip</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
 
-      <tr>
-        <td>relaxableAttributes</td>
-        <td>
-          <div>
-            <div>
-              List of allowable attributes that should be relaxed. Only applies if <code class="secondary">attributeRelaxation</code>
-              is enabled.
-            </div>
-            <div class="faux-link" scrollTo="#relaxableAttributes">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-description>Numeric zip code. Does not support Zip + 4.</ng-container>
 
-      <tr>
-        <td>substringMAtching</td>
-        <td>
-          <div>
-            <div>Describes whether to use substring matching.</div>
-            <div class="faux-link" scrollTo="#substringMAtching">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
 
-      <tr>
-        <td>soundex</td>
-        <td>
-          <div>
-            <div>Describes whether to use soundex.</div>
-            <div class="faux-link" scrollTo="#soundex">See details</div>
-          </div>
-        </td>
-      </tr>
+      <p>Examples:</p>
 
-      <tr>
-        <td>soundexableAttributes</td>
-        <td>
-          <div>
-            <div>List of allowable attributes to be soundex'ed. Only applies if <code class="secondary">soundex</code> is enabled.</div>
-            <div class="faux-link" scrollTo="#soundexableAttributes">See details</div>
-          </div>
-        </td>
-      </tr>
+      <ul>
+        <li>90210</li>
+        <li>90007</li>
+        <li>77840</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <tr>
-        <td>hierarchy</td>
-        <td>
-          <div>
-            <div>Feature matching hierarchy strategy to use.</div>
-            <div class="faux-link" scrollTo="#hierarchy">See details</div>
-          </div>
-        </td>
-      </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">census</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
 
-      <tr>
-        <td>referenceDataSources</td>
-        <td>
-          <div>
-            <div>Reference data sources to use.</div>
-            <div class="faux-link" scrollTo="#referenceDataSources">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-description>Describes whether census variables will be calculated for the geocode.</ng-container>
 
-      <tr>
-        <td>geometry</td>
-        <td>
-          <div>
-            <div>Returns geometry of reference feature.</div>
-            <div class="faux-link" scrollTo="#geometry">See details</div>
-          </div>
-        </td>
-      </tr>
+    <ng-container attr-body>
+      <p>Allowed Values:</p>
 
-      <tr>
-        <td>multithreadedGeocoder</td>
-        <td>
-          <div>
-            <div>Describes whether to run reference sources in parallel.</div>
-            <div class="faux-link" scrollTo="#multithreadedGeocoder">See details</div>
-          </div>
-        </td>
-      </tr>
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <tr>
-        <td>outputStatistics</td>
-        <td>
-          <div>
-            <div>Describes whether to return processing statistics and information (json/xml) only.</div>
-            <div class="faux-link" scrollTo="#outputStatistics">See details</div>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">censusYears</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-  <p>* marked parameters are required.</p>
-</section>
+    <ng-container attr-description>Year or list of years of census data to intersect with.</ng-container>
 
-<section>
-  <h2>Parameter Details</h2>
+    <ng-container attr-body>
+      <tamu-gisc-census-years-parameter-fragment></tamu-gisc-census-years-parameter-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="apiKey">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>apiKey</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">includeHeader</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform. Each request will deduct one credit from your account balance.</p>
+    <ng-container attr-description>Describes whether or not to include column headers for text (cvs/tsv) output formats. </ng-container>
 
-        <p>Find your API key in your <a href="http://" rel="noopener noreferrer" target="_blank">account settings</a>. Don't have an account? <a href="http://" rel="noopener noreferrer" target="_blank">Making</a> an account is fast, easy, and free.</p>
-      </div>
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 2.96</p>
 
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.0+</p>
+      <p>Allowed Values:</p>
 
-          <h4>Required</h4>
-          <p>True</p>
-        </div>
-      </div>
-    </div>
-  </div>
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="version">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>version</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">notStore</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
-      </div>
+    <ng-container attr-description>Describes whether the geocode transaction details will be stored in your account.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.0+</p>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">verbose</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
 
-          <h4>Required</h4>
-          <p>True</p>
-        </div>
-      </div>
-    </div>
-  </div>
+    <ng-container attr-description>Output full details (parse address, matched address, reference feature address and details). </ng-container>
 
-  <div class="parameter-detail-container" id="streetAddress">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>streetAddress</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
 
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Non-parsed street address.</p>
-      </div>
+      <p>When <code>true</code>, Outputs full transaction details including:</p>
 
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.0+</p>
+      <ul>
+        <li>Parsed address</li>
+        <li>Matched address</li>
+        <li>Referenced feature address and associated details</li>
+      </ul>
 
-          <h4>Required</h4>
-          <p>False</p>
+      <p>Allowed Values:</p>
 
-          <h4>Example</h4>
-          <p>9355 Burton Way</p>
-        </div>
-      </div>
-    </div>
-  </div>
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="city">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>city</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">format</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>City value, case-insensitive.</p>
-      </div>
+    <ng-container attr-description>Response return format.</ng-container>
 
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.0+</p>
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p>Value describing the geocode response format.</p>
 
-          <h4>Required</h4>
-          <p>False</p>
+      <p><strong>Supported response formats:</strong></p>
+      <ul>
+        <li>csv</li>
+        <li>tsv</li>
+        <li>xml</li>
+        <li>json</li>
+      </ul>
 
-          <h4>Examples</h4>
+      <p>JSON is response type is only available in API version 2.96 and newer.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">shouldOutputParsedAddress</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes if the output parsed address should be included in the response.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p>Outputs the parsed address from query inputs.</p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">shouldOutputMatchedAddress</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes if the output matched address should be included in the response.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p>Outputs geocode matched address from parsed address.</p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">shouldOutputReferenceFeature</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes if the output reference feature should be included in the response.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p>Outputs reference feature used in geocode transaction.p/p></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">shouldOutputReferenceFeatureAddress</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes if the output reference feature address should be included in the response.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+      <p>Outputs address of the matched reference feature.</p>
+      p
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">allowTies</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Flag indicating to return ties as valid results or handle using the <code>tieBreakingStrategy</code> parameter.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
+
+      <p>Flag to indicate to return ties as valid results orphandle using the <code class="secondary">tieBreakingStrategy</code> parameter. Ties are allowed by default. if <code class="secondary">false</code> is provided, a valid strategy for <code class="secondary">tieBreakingStrategy</code> must also be provided.</p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">tieBreakingStrategy</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes the strategy used to break ties and not return ties as valid results. Requires <code>allowTies</code> to be <code class="secondary">true</code>.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
+
+      <p>Flag to indicate to return ties as valid results or handle using the <code class="secondary">tieBreakingStrategy</code> parameter. Ties are allowed by default. if <code class="secondary">false</code> is provided, a valid strategy for <code class="secondary">tieBreakingStrategy</code> must also be provided.</p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li>
+          <code>chooseFirstOne</code>
           <ul>
-            <li>Los Angeles</li>
-            <li>San Francisco</li>
-            <li>New York</li>
+            <li>Return the first one.</li>
           </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="state">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>state</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Two-letter U.S. state code, case-insensitive. (e.g. s):</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Examples</h4>
+        </li>
+        <li>
+          <code>flipACoin</code>
           <ul>
-            <li>CA</li>
-            <li>tx</li>
-            <li>Ny</li>
+            <li>Choose and return one of the ties at random.</li>
           </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="zip">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>zip</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Numeric zip code. Does not support Zip + 4.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Examples</h4>
+        </li>
+        <li>
+          <code>revertToHierarchy</code>
           <ul>
-            <li>90210</li>
-            <li>90007</li>
-            <li>77840</li>
+            <li>Fail on a tie and match to the next level of the geographic hierarchy - parcel, then street, then ZIP, then city, etc.</li>
           </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="census">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>census</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Describes whether census variables should be calculated for the requested geocode.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.93+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="censusYears">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>censusYears</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <tamu-gisc-census-years-parameter-fragment></tamu-gisc-census-years-parameter-fragment>
-  </div>
-
-  <div class="parameter-detail-container" id="includeHeader">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>includeHeader</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Includes field names as the first row when the output format is <code class="secondary">csv</code> or <code class="secondary">tsv</code>.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.96+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="notStore">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>notStore</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>By default, all transaction details are stored in your account history. Use this option to indicate if transaction details should not be stored in your account history.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.8+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="verbose">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>verbose</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Outputs full transaction details including:</p>
-
-        <ul>
-          <li>Parsed address</li>
-          <li>Matched address</li>
-          <li>Referenced feature address and associated details</li>
-        </ul>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="format">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>format</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Value describing the geocode response format.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>2.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>json</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>csv</code></li>
-            <li><code>tsv</code></li>
-            <li><code> xml</code></li>
-            <li><code>json</code></li>
-          </ul>
-
-          <p class="leader-1"><code class="secondary">json</code> response type is only available in API versions 2.96+.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="shouldOutputParsedAddress">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>ShouldOutputParsedAddress</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Outputs the parsed address from query inputs.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="shouldOutputMatchedAddress">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>ShouldOutputMatchedAddress</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Outputs geocode matched address from parsed address.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="parameter-detail-container" id="shouldOutputReferenceFeature">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>ShouldOutputReferenceFeature</h3>
-        <div class="parameter-detail-header-badges"></div>
-      </div>
-
-      <div class="parameter-detail-content">
-        <div class="parameter-description">
-          <p>Outputs reference feature used in geocode transaction.</p>
-        </div>
-
-        <div class="parameter-attributes">
-          <div class="attributes-content">
-            <h4>API Version</h4>
-            <p>5.0+</p>
-
-            <h4>Required</h4>
-            <p>False</p>
-
-            <h4>Default</h4>
-            <p><code>false</code></p>
-
-            <h4>Allowed Values</h4>
-            <ul>
-              <li><code>true</code></li>
-              <li><code>false</code></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="parameter-detail-container" id="shouldOutputReferenceFeatureAddress">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>ShouldOutputReferenceFeatureAddress</h3>
-        <div class="parameter-detail-header-badges"></div>
-      </div>
-
-      <div class="parameter-detail-content">
-        <div class="parameter-description">
-          <p>Outputs address of the matched reference feature.</p>
-        </div>
-
-        <div class="parameter-attributes">
-          <div class="attributes-content">
-            <h4>API Version</h4>
-            <p>5.0+</p>
-
-            <h4>Required</h4>
-            <p>False</p>
-
-            <h4>Default</h4>
-            <p><code>false</code></p>
-
-            <h4>Allowed Values</h4>
-            <ul>
-              <li><code>true</code></li>
-              <li><code>false</code></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="parameter-detail-container" id="allowTies">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>allowTies</h3>
-        <div class="parameter-detail-header-badges"></div>
-      </div>
-
-      <div class="parameter-detail-content">
-        <div class="parameter-description">
-          <p>Flag to indicate to return ties as valid results or handle using the <code class="secondary">tieBreakingStrategy</code> parameter. Ties are allowed by default. if <code class="secondary">false</code> is provided, a valid strategy for <code class="secondary">tieBreakingStrategy</code> must also be provided.</p>
-        </div>
-
-        <div class="parameter-attributes">
-          <div class="attributes-content">
-            <h4>API Version</h4>
-            <p>4.0+</p>
-
-            <h4>Required</h4>
-            <p>False</p>
-
-            <h4>Default</h4>
-            <p><code>false</code></p>
-
-            <h4>Allowed Values</h4>
-            <ul>
-              <li><code>true</code></li>
-              <li><code>false</code></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="parameter-detail-container" id="tieBreakingStrategy">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>tieBreakingStrategy</h3>
-        <div class="parameter-detail-header-badges"></div>
-      </div>
-
-      <div class="parameter-detail-content">
-        <div class="parameter-description">
-          <p>The name of the tie-breaking strategy to use when ties are found.</p>
-          <ul>
-            <li>
-              chooseFirstOne
-              <ul>
-                <li>Return the first one.</li>
-              </ul>
-            </li>
-            <li>
-              flipACoin
-              <ul>
-                <li>Choose and return one of the ties at random.</li>
-              </ul>
-            </li>
-            <li>
-              revertToHierarchy
-              <ul>
-                <li>Fail on a tie and match to the next level of the geographic hierarchy - parcel, then street, then ZIP, then city, etc.</li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-
-        <div class="parameter-attributes">
-          <div class="attributes-content">
-            <h4>API Version</h4>
-            <p>4.0+</p>
-
-            <h4>Required</h4>
-            <p>False</p>
-
-            <h4>Default</h4>
-            <p><code>chooseFirstOne</code></p>
-
-            <h4>Allowed Values</h4>
-            <ul>
-              <li><code>chooseFirstOne</code></li>
-              <li><code>flipACoin</code></li>
-              <li><code>revertToHierarchy</code></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="confidenceLevels">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>confidenceLevels</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Describes the minimum confidence level accepted for Open Address Source Matches.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>5</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li>Numeric value <code class="secondary">1</code> through <code class="secondary">8</code>.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="minScore">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>minScore</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Sets the minimum acceptance match score.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>95</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li>Double digit numeric value between <code class="secondary">00</code> through <code class="secondary">100</code>, inclusive.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="exhaustiveSearch">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>exhaustiveSearch</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Returns all matched geocodes for an input query</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="aliasTables">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>aliasTables</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Determines whether city alias tables are utilized in result scoring.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="attributeRelaxation">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>attributeRelaxation</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>This option directs the geocoder to try alternative versions of the input data in the case when an exact match can not be found. In particular, attributes of the input address are removed from the query, first one at a time and then in combination with each other. Attribute relaxation is performed (if the option is selected) on the following address attributes:</p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Attribute</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Street predirectional</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Street postdirectional</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Street suffix</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>City</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>Zip</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>An example of the first few iterations it will try are listed in the next table:</p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Number</th>
-              <th>Pre</th>
-              <th>Name</th>
-              <th>Suffix</th>
-              <th>Post</th>
-              <th>Zip</th>
-              <th>City</th>
-              <th>State</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>3620</td>
-              <td>S</td>
-              <td>Vermont</td>
-              <td>Ave</td>
-              <td>N</td>
-              <td>90089</td>
-              <td>Los Angeles</td>
-              <td>Ca</td>
-            </tr>
-            <tr>
-              <td>3620</td>
-              <td></td>
-              <td>Vermont</td>
-              <td>Ave</td>
-              <td>N</td>
-              <td>90089</td>
-              <td>Los Angeles</td>
-              <td>Ca</td>
-            </tr>
-            <tr>
-              <td>3620</td>
-              <td>S</td>
-              <td>Vermont</td>
-              <td>Ave</td>
-              <td></td>
-              <td>90089</td>
-              <td>Los Angeles</td>
-              <td>Ca</td>
-            </tr>
-            <tr>
-              <td>3620</td>
-              <td>S</td>
-              <td>Vermont</td>
-              <td></td>
-              <td>N</td>
-              <td>90089</td>
-              <td>Los Angeles</td>
-              <td>Ca</td>
-            </tr>
-            <tr>
-              <td>3620</td>
-              <td></td>
-              <td>Vermont</td>
-              <td>Ave</td>
-              <td></td>
-              <td>90089</td>
-              <td>Los Angeles</td>
-              <td>Ca</td>
-            </tr>
-            <tr>
-              <td>3620</td>
-              <td></td>
-              <td>Vermont</td>
-              <td></td>
-              <td>N</td>
-              <td>90089</td>
-              <td>Los Angeles</td>
-              <td>Ca</td>
-            </tr>
-            <tr>
-              <td>3620</td>
-              <td>S</td>
-              <td>Vermont</td>
-              <td></td>
-              <td></td>
-              <td>90089</td>
-              <td>Los Angeles</td>
-              <td>Ca</td>
-            </tr>
-            <tr>
-              <td>3620</td>
-              <td></td>
-              <td>Vermont</td>
-              <td></td>
-              <td></td>
-              <td>90089</td>
-              <td>Los Angeles</td>
-              <td>Ca</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="relaxableAttributes">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>relaxableAttributes</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Comma-separated list of attributes allowed to be relaxed when <code class="secondary">attributeRelaxation</code> is enabled.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>pre,suffix,post,city,zip</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>pre</code></li>
-            <li><code>suffix</code></li>
-            <li><code>post</code></li>
-            <li><code>city</code></li>
-            <li><code>zip</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="substringMAtching">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>substringMAtching</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>This option directs the geocoder to use substring matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data are incomplete (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows examples of this strategy:</p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Query</th>
-              <th>Reference Feature</th>
-              <th>Match</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Vermont</td>
-              <td><strong>Vermont</strong></td>
-              <td>Yes</td>
-            </tr>
-
-            <tr>
-              <td>Verm</td>
-              <td><strong>Ver</strong>mont</td>
-              <td>Yes</td>
-            </tr>
-
-            <tr>
-              <td>Mont</td>
-              <td>Ver<strong>mont</strong></td>
-              <td>Yes</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>true</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="soundex">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>soundex</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>This option directs the geocoder to use soundex matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data have minor misspellings (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows (e.g. s of this strategy):</p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Query</th>
-              <th>Query Soundex</th>
-              <th>Reference Feature</th>
-              <th>Reference Feature Soundex</th>
-              <th>Match</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Vermont</td>
-              <td>V655</td>
-              <td>Vermont</td>
-              <td><strong>V655</strong></td>
-              <td>Yes</td>
-            </tr>
-            <tr>
-              <td>Vermond</td>
-              <td>V655</td>
-              <td>Vermont</td>
-              <td><strong>V655</strong></td>
-              <td>Yes</td>
-            </tr>
-            <tr>
-              <td>Varnend</td>
-              <td>V655</td>
-              <td>Vermont</td>
-              <td><strong>V655</strong></td>
-              <td>Yes</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="soundexableAttributes">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>soundexableAttributes</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Comma-separated list of attributes allowed to be soundex'ed; only applies if <code class="secondary">soundex</code> is enabled.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>name,city</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>name</code></li>
-            <li><code>city</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="hierarchy">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>hierarchy</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Describes the feature matching hierarchy that will be used.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>featureMatchingSelectionMethod</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>uncertaintyBased</code></li>
-            <li><code>featureMatchingSelectionMethod</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="referenceDataSources">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>referenceDataSources</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Describes the data sources to use.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>all</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>all</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="geometry">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>geometry</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Including this option in either the batch processing or API will result in the geometry of the reference feature used for interpolation being returned along with the geocode result. This option is only applicable when using the API in verbose mode, or when the optional reference feature fields are selected in a batch process. It is not recommended that this option be selected unless you have a specific need for the underlying reference feature geometry.</p>
-
-        <p>You can always return to the site and easily get the reference feature geometry for any specific geocode of interest.</p>
-
-        <p><strong>Why not include reference geometry as output</strong></p>
-
-        <table>
-          <tbody>
-            <tr>
-              <td>Geometry format</td>
-              <td>The geometry of the reference feature will be reported in <a href="http://www.opengeospatial.org/standards/gml" target="_blank">OGC GML</a>.</td>
-            </tr>
-            <tr>
-              <td>Geometry text size</td>
-              <td><a href="http://www.opengeospatial.org/standards/gml" target="_blank">OGC GML</a> is extremely verbose. This means that there will be a lot text returned if the geometry is a complex object such as a ZIP code, city or state.</td>
-            </tr>
-            <tr>
-              <td>CSV files in batch mode (and TSV)</td>
-              <td>CSV files may become unusable due to the amount of text returned for a GML geometry.</td>
-            </tr>
-            <tr>
-              <td>Access database files in batch mode (mdb and accdb)</td>
-              <td>Access data files may grow beyond the maximum file size of 2GB and become unusable due to the amount of text returned for a GML geometry.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="multithreadedGeocoder">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>multithreadedGeocoder</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Describes whether to run reference sources in parallel.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="parameter-detail-container" id="outputStatistics">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>outputStatistics</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
-
-    <div class="parameter-detail-content">
-      <div class="parameter-description">
-        <p>Describes whether to return processing statistics and information. This option is only valid for <code class="secondary">json</code> and <code class="secondary">xml</code> output formats.</p>
-      </div>
-
-      <div class="parameter-attributes">
-        <div class="attributes-content">
-          <h4>API Version</h4>
-          <p>5.0+</p>
-
-          <h4>Required</h4>
-          <p>False</p>
-
-          <h4>Default</h4>
-          <p><code>false</code></p>
-
-          <h4>Allowed Values</h4>
-          <ul>
-            <li><code>true</code></li>
-            <li><code>false</code></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+        </li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">confidenceLevels</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
+
+    <ng-container attr-description>Sets minimum confidence level accepted for "Open Addresses Source Matches"</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Describes the minimum confidence level accepted for Open Address Source Matches.</p>
+
+      <p>Default: <code>5</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li>Numeric value <code class="secondary">1</code> through <code class="secondary">8</code>.</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">minScore</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
+
+    <ng-container attr-description>Sets minimum accepted match score.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Default: <code>95</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li>Double digit numeric value between <code class="secondary">00</code> through <code class="secondary">100</code>, inclusive.</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">exhaustiveSearch</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description> Returns all matched geocodes for an input query.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">aliasTables</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes whether to utilize city alias tables in result scoring.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">attributeRelaxation</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes whether to use attribute relaxation.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>This option directs the geocoder to try alternative versions of the input data in the case when an exact match can not be found. In particular, attributes of the input address are removed from the query, first one at a time and then in combination with each other. Attribute relaxation is performed (if the option is selected) on the following address attributes:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Attribute</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Street predirectional</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Street postdirectional</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Street suffix</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>City</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Zip</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>An example of the first few iterations it will try are listed in the next table:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Pre</th>
+            <th>Name</th>
+            <th>Suffix</th>
+            <th>Post</th>
+            <th>Zip</th>
+            <th>City</th>
+            <th>State</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>3620</td>
+            <td>S</td>
+            <td>Vermont</td>
+            <td>Ave</td>
+            <td>N</td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td></td>
+            <td>Vermont</td>
+            <td>Ave</td>
+            <td>N</td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td>S</td>
+            <td>Vermont</td>
+            <td>Ave</td>
+            <td></td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td>S</td>
+            <td>Vermont</td>
+            <td></td>
+            <td>N</td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td></td>
+            <td>Vermont</td>
+            <td>Ave</td>
+            <td></td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td></td>
+            <td>Vermont</td>
+            <td></td>
+            <td>N</td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td>S</td>
+            <td>Vermont</td>
+            <td></td>
+            <td></td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+          <tr>
+            <td>3620</td>
+            <td></td>
+            <td>Vermont</td>
+            <td></td>
+            <td></td>
+            <td>90089</td>
+            <td>Los Angeles</td>
+            <td>Ca</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">relaxableAttributes</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>List of allowable attributes that should be relaxed. Only applies if <code>attributeRelaxation</code> is enabled.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Default: <code>pre,suffix,post,city,zip</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>pre</code></li>
+        <li><code>suffix</code></li>
+        <li><code>post</code></li>
+        <li><code>city</code></li>
+        <li><code>zip</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">substringMatching</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes whether to use substring matching.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>This option directs the geocoder to use substring matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data are incomplete (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows examples of this strategy:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Query</th>
+            <th>Reference Feature</th>
+            <th>Match</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Vermont</td>
+            <td><strong>Vermont</strong></td>
+            <td>Yes</td>
+          </tr>
+
+          <tr>
+            <td>Verm</td>
+            <td><strong>Ver</strong>mont</td>
+            <td>Yes</td>
+          </tr>
+
+          <tr>
+            <td>Mont</td>
+            <td>Ver<strong>mont</strong></td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Default: <code>true</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">soundex</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes whether to use soundex.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>This option directs the geocoder to use soundex matching techniques to test for matches in the database. Using this approach increases the likelihood of finding a match if the input data or reference data have minor misspellings (the recall is increased). However, using this also increases the chances that wrong results are returned (the precision is decreased). The following table shows (e.g. s of this strategy):</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Query</th>
+            <th>Query Soundex</th>
+            <th>Reference Feature</th>
+            <th>Reference Feature Soundex</th>
+            <th>Match</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Vermont</td>
+            <td>V655</td>
+            <td>Vermont</td>
+            <td><strong>V655</strong></td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Vermond</td>
+            <td>V655</td>
+            <td>Vermont</td>
+            <td><strong>V655</strong></td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Varnend</td>
+            <td>V655</td>
+            <td>Vermont</td>
+            <td><strong>V655</strong></td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Default: <code>false</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">soundexableAttributes</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>List of allowable attributes to be soundex'ed. Only applies if <code>soundex</code> is enabled.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Default: <code>name,city</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>name</code></li>
+        <li><code>city</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">hierarchy</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes the feature matching hierarchy that will be used.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Default: <code>featureMatchingSelectionMethod</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>uncertaintyBased</code></li>
+        <li><code>featureMatchingSelectionMethod</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">referenceDataSources</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>List of reference data sources to use.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Default: <code>all</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>all</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">geometry</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Returns geometry of reference feature.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Including this option in either the batch processing or API will result in the geometry of the reference feature used for interpolation being returned along with the geocode result. This option is only applicable when using the API in verbose mode, or when the optional reference feature fields are selected in a batch process. It is not recommended that this option be selected unless you have a specific need for the underlying reference feature geometry.</p>
+
+      <p>You can always return to the site and easily get the reference feature geometry for any specific geocode of interest.</p>
+
+      <p><strong>Why not include reference geometry as output</strong></p>
+
+      <table>
+        <tbody>
+          <tr>
+            <td>Geometry format</td>
+            <td>The geometry of the reference feature will be reported in <a href="http://www.opengeospatial.org/standards/gml" target="_blank">OGC GML</a>.</td>
+          </tr>
+          <tr>
+            <td>Geometry text size</td>
+            <td><a href="http://www.opengeospatial.org/standards/gml" target="_blank">OGC GML</a> is extremely verbose. This means that there will be a lot text returned if the geometry is a complex object such as a ZIP code, city or state.</td>
+          </tr>
+          <tr>
+            <td>CSV files in batch mode (and TSV)</td>
+            <td>CSV files may become unusable due to the amount of text returned for a GML geometry.</td>
+          </tr>
+          <tr>
+            <td>Access database files in batch mode (mdb and accdb)</td>
+            <td>Access data files may grow beyond the maximum file size of 2GB and become unusable due to the amount of text returned for a GML geometry.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Default: <code>false</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">multithreadedGeocoder</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes whether to run reference sources in parallel.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Default: <code>false</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">outputStatistics</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes whether to return processing statistics and information for XML and JSON response formats.</ng-container>
+
+    <ng-container attr-body>
+      <p class="parameter-detail-content-version">Since API Version: 5.0.0</p>
+
+      <p>Default: <code>false</code></p>
+
+      <p>Allowed Values:</p>
+
+      <ul>
+        <li><code>true</code></li>
+        <li><code>false</code></li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 </section>
 
 <section id="response">
   <h2>Response</h2>
 
-  <p>Response contents depend with the requested <span class="faux-link" scrollTo="#format">response format</span>.</p>
+  <p>The following represents the response structure when requesting JSON format.</p>
 
   <!-- <tamu-gisc-tabs> -->
   <!-- <tamu-gisc-tab label="JSON"> -->
-  <div>
-    <!-- <tamu-gisc-response-viewer [format]="'json'" [runner]="runner"></tamu-gisc-response-viewer> -->
+  <!-- <div> -->
+  <!-- <tamu-gisc-response-viewer [format]="'json'" [runner]="runner"></tamu-gisc-response-viewer> -->
+  <!-- </div> -->
 
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Description</th>
-          <th>Type</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>version</td>
-          <td>
-            <div>
-              <div>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</div>
-              <div class="faux-link" scrollTo="#responseVersion">See details</div>
-            </div>
-          </td>
-          <td>ApiVersion</td>
-        </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">version</div>
+      <div class="attribute-title-type">ApiVersion</div>
+    </ng-container>
 
-        <tr>
-          <td>timeTaken</td>
-          <td>
-            <div>
-              <div>Time required to execute the transaction, reported in milliseconds.</div>
-              <div class="faux-link" scrollTo="#responseTimeTaken">See details</div>
-            </div>
-          </td>
-          <td>Number</td>
-        </tr>
+    <ng-container attr-description>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</ng-container>
 
-        <tr>
-          <td>transactionGuid</td>
-          <td>
-            <div>
-              <div>Unique ID assigned to the response.</div>
-              <div class="faux-link" scrollTo="#responseTransactionGuid">See details</div>
-            </div>
-          </td>
-          <td>String</td>
-        </tr>
+    <ng-container attr-body>
+      <tamu-gisc-api-version-fragment></tamu-gisc-api-version-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-        <tr>
-          <td>apiHost</td>
-          <td>
-            <div>
-              <div>Server name that processed the transaction.</div>
-              <div class="faux-link" scrollTo="#responseApiHost">See details</div>
-            </div>
-          </td>
-          <td>String</td>
-        </tr>
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">timeTaken</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
 
-        <tr>
-          <td>clientHost</td>
-          <td>
-            <div>
-              <div>Public hostname where the transaction was executed.</div>
-              <div class="faux-link" scrollTo="#responseClientHost">See details</div>
-            </div>
-          </td>
-          <td>String</td>
-        </tr>
+    <ng-container attr-description>Time required to execute the transaction, reported in milliseconds.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-        <tr>
-          <td>queryStatusCode</td>
-          <td>
-            <div>
-              <div>The value for the response status code.</div>
-              <div class="faux-link" scrollTo="#responseQueryStatusCode">See details</div>
-            </div>
-          </td>
-          <td>Enumerable&lt;QueryStatusCode&gt;</td>
-        </tr>
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">transactionGuid</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-        <tr>
-          <td>inputParameterSet</td>
-          <td>
-            <div>
-              <div>Object representing the serialized input parameters the transaction was executed against.</div>
-              <div class="faux-link" scrollTo="#responseInputParameterSet">See details</div>
-            </div>
-          </td>
-          <td>GeocodeSerializedInputs</td>
-        </tr>
+    <ng-container attr-description>Unique ID assigned to the response.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-        <tr>
-          <td>results</td>
-          <td>
-            <div>
-              <div>Processed geocode results. The number of results in this collection are equal to the number of matches and input parameters that describe how ties should be handled.</div>
-              <div class="faux-link" scrollTo="#responseResults">See details</div>
-            </div>
-          </td>
-          <td>Array&lt;Geocode&gt;</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">apiHost</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-  <div>
-    <div class="parameter-detail-container" id="responseVersion">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>version</h3>
-        <div class="parameter-detail-header-badges">
-          <code>ApiVersion</code>
+    <ng-container attr-description>Server name that processed the transaction.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">clientHost</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Public hostname where the transaction was executed. </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">queryStatusCode</div>
+      <div class="attribute-title-type">Enumerable&lt;QueryStatusCode&gt;</div>
+    </ng-container>
+
+    <ng-container attr-description>The value for the response status code.</ng-container>
+
+    <ng-container attr-body>
+      <tamu-gisc-query-status-fragment></tamu-gisc-query-status-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">inputParameterSet</div>
+      <div class="attribute-title-type">GeocodeSerializedInputs</div>
+    </ng-container>
+
+    <ng-container attr-description>Object representing the serialized input parameters the transaction was executed against.</ng-container>
+
+    <ng-container attr-body>
+      <div class="attribute-list">
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">streetAddress</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input address for the executed transaction.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="parameter-detail-content">
-        <!-- <tamu-gisc-api-version-fragment></tamu-gisc-api-version-fragment> -->
-      </div>
-    </div>
-  </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">city</div>
+            <code class="secondary">String</code>
+          </div>
 
-  <div>
-    <div class="parameter-detail-container" id="responseTimeTaken">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>timeTaken</h3>
-        <div class="parameter-detail-header-badges">
-          <code>Number</code>
+          <div class="attribute-description">
+            <p>Input city for the executed transaction.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="parameter-detail-content">
-        <p>Total time taken to process the entire transaction (including all address format types), expressed in milliseconds.</p>
-      </div>
-    </div>
-  </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">state</div>
+            <code class="secondary">String</code>
+          </div>
 
-  <div>
-    <div class="parameter-detail-container" id="responseTransactionGuid">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>transactionGuid</h3>
-        <div class="parameter-detail-header-badges">
-          <code>String</code>
+          <div class="attribute-description">
+            <p>Input state for the executed transaction.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="parameter-detail-content">
-        <p>Unique ID generated for a given transaction.</p>
-      </div>
-    </div>
-  </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">zip</div>
+            <code class="secondary">String</code>
+          </div>
 
-  <div>
-    <div class="parameter-detail-container" id="responseApiHost">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>apiHost</h3>
-        <div class="parameter-detail-header-badges">
-          <code>String</code>
+          <div class="attribute-description">
+            <p>Input zip for the executed transaction.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="parameter-detail-content">
-        <p>The public hostname of the API service.</p>
-      </div>
-    </div>
-  </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">version</div>
+            <code class="secondary">String</code>
+          </div>
 
-  <div>
-    <div class="parameter-detail-container" id="responseClientHost">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>clientHost</h3>
-        <div class="parameter-detail-header-badges">
-          <code>String</code>
+          <div class="attribute-description">
+            <p>Requested API version for the executed transaction.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="parameter-detail-content">
-        <p>The public hostname of the API service.</p>
-      </div>
-    </div>
-  </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">apiKey</div>
+            <code class="secondary">String</code>
+          </div>
 
-  <div>
-    <div class="parameter-detail-container" id="responseQueryStatusCode">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>queryStatusCode</h3>
-        <div class="parameter-detail-header-badges">
-          <code>Enumerable&lt;QueryStatusCode&gt;</code>
+          <div class="attribute-description">
+            <p>Input customer apiKey for the executed transaction.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="parameter-detail-content">
-        <!-- <tamu-gisc-query-status-fragment></tamu-gisc-query-status-fragment> -->
-      </div>
-    </div>
-  </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">dontStoreTransactionDetails</div>
+            <code class="secondary">String</code>
+          </div>
 
-  <div>
-    <div class="parameter-detail-container" id="responseParsedAddress">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>parsedAddress</h3>
-        <div class="parameter-detail-header-badges">
-          <code>String</code>
+          <div class="attribute-description">
+            <p>Input option to prevent storing the transaction in account.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="parameter-detail-content">
-        <p>The processed address result for an input address, used for executing the resulting geocodes.</p>
-      </div>
-    </div>
-  </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">allowTies</div>
+            <code class="secondary">Boolean</code>
+          </div>
 
-  <div>
-    <div class="parameter-detail-container" id="responseInputParameterSet">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>inputParameterSet</h3>
-        <div class="parameter-detail-header-badges">
-          <code>AddressProcessSerializedInputs</code>
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>allowTies</code> input parameter.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="parameter-detail-content">
-        <div>
-          <p>Parameters serialized from the client query parameters and utilized to execute the transaction.</p>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">tieHandlingStrategyType</div>
+            <code class="secondary">String</code>
+          </div>
 
-          <div *giscAccordion="let parent;">
-            <div [giscAccordionHeader]="parent" class="pill">
-              <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-              <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-            </div>
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>tieBreakingStrategy</code> input parameter.</p>
+          </div>
+        </div>
 
-            <div *giscAccordionContent="parent.expanded" class="attribute-list" defaultDisplay="block">
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">streetAddress</div>
-                  <code class="secondary">String</code>
-                </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">relaxableAttributes</div>
+            <code class="secondary">Array&lt;String&gt;</code>
+          </div>
 
-                <div class="attribute-description">
-                  <p>Input address for the executed transaction.</p>
-                </div>
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>relaxableAttributes</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">relaxation</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>relaxation</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">substring</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>substringMAtching</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">soundex</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>soundex</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">soundexAttributes</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Comma-delimited list describing the parsed value of the <code>soundexAttributes</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">referenceSources</div>
+            <code class="secondary">Array&lt;String&gt;</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>referenceSources</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">featureMatchingSelectionMethod</div>
+            <code class="secondary">null</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>featureMatchingSelectionMethod</code> input parameter if the <code>hierarchy</code> parameter is enabled.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">attributeWeightingScheme</div>
+            <code class="secondary">AttributeWeightingScheme</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the scheme used to weigh address attributes.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
               </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">city</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Input city for the executed transaction.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">state</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Input state for the executed transaction.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">zip</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Input zip for the executed transaction.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">version</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Requested API version for the executed transaction.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">apiKey</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Input customer apiKey for the executed transaction.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">dontStoreTransactionDetails</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Input option to prevent storing the transaction in account.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">allowTies</div>
-                  <code class="secondary">Boolean</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>allowTies</code> input parameter.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">tieHandlingStrategyType</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>tieBreakingStrategy</code> input parameter.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">relaxableAttributes</div>
-                  <code class="secondary">Array&lt;String&gt;</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>relaxableAttributes</code> input parameter.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">relaxation</div>
-                  <code class="secondary">Boolean</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>relaxation</code> input parameter.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">substring</div>
-                  <code class="secondary">Boolean</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>substringMAtching</code> input parameter.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">soundex</div>
-                  <code class="secondary">Boolean</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>soundex</code> input parameter.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">soundexAttributes</div>
-                  <code class="secondary">String</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Comma-delimited list describing the parsed value of the <code>soundexAttributes</code> input parameter.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">referenceSources</div>
-                  <code class="secondary">Array&lt;String&gt;</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>referenceSources</code> input parameter.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">featureMatchingSelectionMethod</div>
-                  <code class="secondary">null</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>featureMatchingSelectionMethod</code> input parameter if the <code>hierarchy</code> parameter is enabled.</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">attributeWeightingScheme</div>
-                  <code class="secondary">AttributeWeightingScheme</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Describes the scheme used to weigh address attributes.</p>
-
-                  <div *giscAccordion="let parent;">
-                    <div [giscAccordionHeader]="parent" class="pill">
-                      <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                      <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                    </div>
-
-                    <div *giscAccordionContent="parent.expanded" class="attribute-list" defaultDisplay="block">
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">number</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">numberParity</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">preDirectional</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">preType</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">preQualifier</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">preArticle</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">name</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">postArticle</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">suffix</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">postDirectional</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">postQualifier</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">city</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">zip</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">zipPlus4</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">state</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-
-                      <div class="attribute-unit">
-                        <div class="attribute-header">
-                          <div class="attribute-name">totalWeight</div>
-                          <code class="secondary">Number</code>
-                        </div>
-
-                        <div class="attribute-description"></div>
-                      </div>
-                    </div>
+              <div *giscAccordionContent="parent.expanded" class="attribute-list" defaultDisplay="block">
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">number</div>
+                    <code class="secondary">Number</code>
                   </div>
-                </div>
-              </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">minimumMatchScore</div>
-                  <code class="secondary">String</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>minScore</code> input parameter.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">numberParity</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">confidenceLevels</div>
-                  <code class="secondary">String</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>confidenceLevels</code> input parameter.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">preDirectional</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">aliasTables</div>
-                  <code class="secondary">String</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>aliasTables</code> input parameter.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">preType</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">aliasTables</div>
-                  <code class="secondary">String</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>aliasTables</code> input parameter.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">preQualifier</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">multiThreading</div>
-                  <code class="secondary">Boolean</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Input request for multi-threaded processing of the transaction.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">preArticle</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">censusYears</div>
-                  <code class="secondary">Array&lt;Number&gt;</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>censusYears</code> input parameter.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">name</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">includeHeader</div>
-                  <code class="secondary">Boolean</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Input request to include column names as the first row header when requesting <code>csv</code> as the <code>responseFormat</code>.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">postArticle</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">verbose</div>
-                  <code class="secondary">Boolean</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Input request to return a verbose transaction response.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">suffix</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">outputCensusVariables</div>
-                  <code class="secondary">Boolean</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>outputCensusVariables</code> input parameter.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">postDirectional</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">outputReferenceFeatureGeometry</div>
-                  <code class="secondary">Boolean</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Describes the parsed value of the <code>outputReferenceFeatureGeometry</code> input parameter.</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">postQualifier</div>
+                    <code class="secondary">Number</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">outputFormat</div>
-                  <code class="secondary">String</code>
+                  <div class="attribute-description"></div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Input request for the format of the returned transaction response.</p>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">city</div>
+                    <code class="secondary">Number</code>
+                  </div>
+
+                  <div class="attribute-description"></div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">zip</div>
+                    <code class="secondary">Number</code>
+                  </div>
+
+                  <div class="attribute-description"></div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">zipPlus4</div>
+                    <code class="secondary">Number</code>
+                  </div>
+
+                  <div class="attribute-description"></div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">state</div>
+                    <code class="secondary">Number</code>
+                  </div>
+
+                  <div class="attribute-description"></div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">totalWeight</div>
+                    <code class="secondary">Number</code>
+                  </div>
+
+                  <div class="attribute-description"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div>
-    <div class="parameter-detail-container" id="responseResults">
-      <div class="parameter-detail-header">
-        <span class="material-icons permalink" title="Link to here">link</span>
-        <h3>results</h3>
-        <div class="parameter-detail-header-badges">
-          <code>Array&lt;Geocode&gt;</code>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">minimumMatchScore</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>minScore</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">confidenceLevels</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>confidenceLevels</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">aliasTables</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>aliasTables</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">aliasTables</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>aliasTables</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">multiThreading</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input request for multi-threaded processing of the transaction.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">censusYears</div>
+            <code class="secondary">Array&lt;Number&gt;</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>censusYears</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">includeHeader</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input request to include column names as the first row header when requesting <code>csv</code> as the <code>responseFormat</code>.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">verbose</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input request to return a verbose transaction response.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">outputCensusVariables</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>outputCensusVariables</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">outputReferenceFeatureGeometry</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the parsed value of the <code>outputReferenceFeatureGeometry</code> input parameter.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">outputFormat</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input request for the format of the returned transaction response.</p>
+          </div>
         </div>
       </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <div class="parameter-detail-content">
-        <div>
-          <p>Array of geocodes matching the input parameters. Processed geocode results. The number of results in this collection are equal to the number of matches and input parameters that describe how ties should be handled.</p>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">results</div>
+      <div class="attribute-title-type">Array&lt;Geocode&gt;</div>
+    </ng-container>
 
-          <p>
-            <strong>The Geocode object:</strong>
-          </p>
+    <ng-container attr-description>Processed geocode results. The number of results in this collection are equal to the number of matches and input parameters that describe how ties should be handled.</ng-container>
 
-          <div class="attribute-list">
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">latitude</div>
-                <code class="secondary">Number</code>
+    <ng-container attr-body>
+      <p>
+        <strong>The Geocode object:</strong>
+      </p>
+
+      <div class="attribute-list">
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">latitude</div>
+            <code class="secondary">Number</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Latitude value for the matched geocode.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">longitude</div>
+            <code class="secondary">Number</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Longitude value for the matched geocode.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">matchScore</div>
+            <code class="secondary">Number</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Match percentage between input data and reference feature.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">geocodeQualityType</div>
+            <code class="secondary">Enumerable&lt;GeocodeQualityType&gt;</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Geocode quality type code.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Expand possible values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Collapse possible values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
               </div>
 
-              <div class="attribute-description">
-                <p>Latitude value for the matched geocode.</p>
+              <div *giscAccordionContent="parent.expanded" class="attribute-node" defaultDisplay="block">
+                <p>A full list of quality codes is as follows</p>
+                <ul>
+                  <li>Unmatchable</li>
+                  <li>Unknown</li>
+                  <li>AddressPoint</li>
+                  <li>GPS</li>
+                  <li>CountyParcel</li>
+                  <li>RoofTop</li>
+                  <li>ParcelCentroid</li>
+                  <li>PrimaryStructureEntrance</li>
+                  <li>DrivewayEntrance</li>
+                  <li>BuildingFrontDoor</li>
+                  <li>BuildingCentroid</li>
+                  <li>ExactParcelCentroidPoint</li>
+                  <li>ExactParcelCentroid</li>
+                  <li>NearestParcelCentroidPoint</li>
+                  <li>NearestParcelCentroid</li>
+                  <li>ActualLotInterpolation</li>
+                  <li>UniformLotInterpolation</li>
+                  <li>AddressRangeInterpolation</li>
+                  <li>StreetIntersection</li>
+                  <li>StreetCentroid</li>
+                  <li>ZCTAPlus5Centroid</li>
+                  <li>ZCTAPlus4Centroid</li>
+                  <li>ZCTAPlus3Centroid</li>
+                  <li>ZCTAPlus2Centroid</li>
+                  <li>ZCTAPlus1Centroid</li>
+                  <li>ZCTACentroid</li>
+                  <li>USPSZipPlus5LineCentroid</li>
+                  <li>USPSZipPlus4LineCentroid</li>
+                  <li>USPSZipPlus5AreaCentroid</li>
+                  <li>USPSZipPlus4AreaCentroid</li>
+                  <li>USPSZipPlus3AreaCentroid</li>
+                  <li>USPSZipPlus2AreaCentroid</li>
+                  <li>USPSZipPlus1AreaCentroid</li>
+                  <li>USPSZipAreaCentroid</li>
+                  <li>CityCentroid</li>
+                  <li>ConsolidatedCityCentroid</li>
+                  <li>CountySubdivisionCentroid</li>
+                  <li>CountyCentroid</li>
+                  <li>StateCentroid</li>
+                  <li>CountryCentroid</li>
+                  <li>DynamicFeatureCompositionCentroid</li>
+                </ul>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">longitude</div>
-                <code class="secondary">Number</code>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">featureMatchingGeographyType</div>
+            <code class="secondary">Enumerable&lt;FeatureMatchingGeographyType&gt;</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Geocode feature match type.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
               </div>
 
-              <div class="attribute-description">
-                <p>Longitude value for the matched geocode.</p>
+              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Value</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td>Address Point</td>
+                      <td>A exact match was found to an address point and its coordinates are returned as output.</td>
+                    </tr>
+
+                    <tr>
+                      <td>Parcel centroid</td>
+                      <td>A exact match was found to a parcel and its centroid is returned as output.</td>
+                    </tr>
+
+                    <tr>
+                      <td>Street segment</td>
+                      <td>A match was found to the street segment and the address range associated with the segment was used to interpolate a point to return as output.</td>
+                    </tr>
+
+                    <tr>
+                      <td>ZCTA</td>
+                      <td>A match was found to the ZIP portion of the address and its centroid was returned as output.</td>
+                    </tr>
+
+                    <tr>
+                      <td>City</td>
+                      <td>A match was found to the city portion of the address and its centroid was returned as output.</td>
+                    </tr>
+
+                    <tr>
+                      <td>County subregion</td>
+                      <td>A match was found to the city portion of the address in the county subregion reference data set and its centroid was returned as output.</td>
+                    </tr>
+
+                    <tr>
+                      <td>County</td>
+                      <td>A match was found to the city portion of the address in the county reference data set and its centroid was returned as output.</td>
+                    </tr>
+
+                    <tr>
+                      <td>Unmatchable</td>
+                      <td>A match could not be found for the input.</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">matchScore</div>
-                <code class="secondary">Number</code>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">matchType</div>
+            <code class="secondary">Enumerable&lt;GeocodeMatchType&gt;</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Geocode feature match type.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
               </div>
 
-              <div class="attribute-description">
-                <p>Match percentage between input data and reference feature.</p>
+              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+                <p><strong>Exact</strong></p>
+
+                <p>The input date exactly matched a feature in the reference data source:</p>
+
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>Input</td>
+                      <td>3620 S Vermont Ave, Los Angeles, CA 90089-0255</td>
+                    </tr>
+                    <tr>
+                      <td>Reference</td>
+                      <td>3620 S Vermont Ave, Los Angeles, CA 90089-0255</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <p><strong>Relaxed</strong></p>
+
+                <p>One or more of the input data attributes had to be removed to find a match in the reference data source:</p>
+
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>Input</td>
+                      <td>3620 Vermont Ave, Los Angeles, CA 90089-0255</td>
+                    </tr>
+                    <tr>
+                      <td>Reference</td>
+                      <td>3620 S Vermont Ave, Los Angeles, CA 90089-0255</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <p>South is missing from input and is present in reference.</p>
+
+                <p><strong>Soundex</strong></p>
+
+                <p>One or more of the input data attributes had to be matched with soundex to find a match in the reference data source:</p>
+
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>Input</td>
+                      <td>3620 S Vermonnt Ave, Los Angeles, CA 90089-0255</td>
+                    </tr>
+                    <tr>
+                      <td>Reference</td>
+                      <td>3620 S Vermont Ave, Los Angeles, CA 90089-0255</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <p>Soundex("Vermonnt") = V655 = Soundex("Vermont").</p>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">geocodeQualityType</div>
-                <code class="secondary">Enumerable&lt;GeocodeQualityType&gt;</code>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">matchedLocationType</div>
+            <code class="secondary">Enumerable&lt;AddressMatchType&gt;</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Type of input data identified.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
               </div>
 
-              <div class="attribute-description">
-                <p>Geocode quality type code.</p>
+              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+                <tamu-gisc-address-match-type-attribute-list></tamu-gisc-address-match-type-attribute-list>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Expand possible values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Collapse possible values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">featureMatchingResultType</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>The result type for the geocode output.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+              </div>
+
+              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td>Success</td>
+                      <td>A exact match was found</td>
+                    </tr>
+
+                    <tr>
+                      <td>Unmatchable</td>
+                      <td>A match could not be found for the input</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">naaccr</div>
+            <code class="secondary">NaaccrQualityMetrics</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes the North American Association of Central Cancer Registries (NAACCR) quality metrics that are computed and returned along with geocodes produced by the TAMU Geocoder.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+              </div>
+
+              <div *giscAccordionContent="parent.expanded" class="attribute-list">
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">gisCoordinateQualityCode</div>
+                    <code class="secondary">String</code>
                   </div>
 
-                  <div *giscAccordionContent="parent.expanded" class="attribute-node" defaultDisplay="block">
-                    <p>A full list of quality codes is as follows</p>
+                  <div class="attribute-description">
+                    <p>The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
+
+                    <p>These codes describe information about:</p>
+
                     <ul>
-                      <li>Unmatchable</li>
-                      <li>Unknown</li>
-                      <li>AddressPoint</li>
-                      <li>GPS</li>
-                      <li>CountyParcel</li>
-                      <li>RoofTop</li>
-                      <li>ParcelCentroid</li>
-                      <li>PrimaryStructureEntrance</li>
-                      <li>DrivewayEntrance</li>
-                      <li>BuildingFrontDoor</li>
-                      <li>BuildingCentroid</li>
-                      <li>ExactParcelCentroidPoint</li>
-                      <li>ExactParcelCentroid</li>
-                      <li>NearestParcelCentroidPoint</li>
-                      <li>NearestParcelCentroid</li>
-                      <li>ActualLotInterpolation</li>
-                      <li>UniformLotInterpolation</li>
-                      <li>AddressRangeInterpolation</li>
-                      <li>StreetIntersection</li>
-                      <li>StreetCentroid</li>
-                      <li>ZCTAPlus5Centroid</li>
-                      <li>ZCTAPlus4Centroid</li>
-                      <li>ZCTAPlus3Centroid</li>
-                      <li>ZCTAPlus2Centroid</li>
-                      <li>ZCTAPlus1Centroid</li>
-                      <li>ZCTACentroid</li>
-                      <li>USPSZipPlus5LineCentroid</li>
-                      <li>USPSZipPlus4LineCentroid</li>
-                      <li>USPSZipPlus5AreaCentroid</li>
-                      <li>USPSZipPlus4AreaCentroid</li>
-                      <li>USPSZipPlus3AreaCentroid</li>
-                      <li>USPSZipPlus2AreaCentroid</li>
-                      <li>USPSZipPlus1AreaCentroid</li>
-                      <li>USPSZipAreaCentroid</li>
-                      <li>CityCentroid</li>
-                      <li>ConsolidatedCityCentroid</li>
-                      <li>CountySubdivisionCentroid</li>
-                      <li>CountyCentroid</li>
-                      <li>StateCentroid</li>
-                      <li>CountryCentroid</li>
-                      <li>DynamicFeatureCompositionCentroid</li>
+                      <li>The quality of the reference feature matched to - parcel vs street intersection.</li>
+                      <li>The type of input data submitted - ZIP centroid of an address vs ZIP centroid of a PO Box.</li>
                     </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">featureMatchingGeographyType</div>
-                <code class="secondary">Enumerable&lt;FeatureMatchingGeographyType&gt;</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Geocode feature match type.</p>
-
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                  </div>
-
-                  <div *giscAccordionContent="parent.expanded" class="attribute-node">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Value</th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <td>Address Point</td>
-                          <td>A exact match was found to an address point and its coordinates are returned as output.</td>
-                        </tr>
-
-                        <tr>
-                          <td>Parcel centroid</td>
-                          <td>A exact match was found to a parcel and its centroid is returned as output.</td>
-                        </tr>
-
-                        <tr>
-                          <td>Street segment</td>
-                          <td>A match was found to the street segment and the address range associated with the segment was used to interpolate a point to return as output.</td>
-                        </tr>
-
-                        <tr>
-                          <td>ZCTA</td>
-                          <td>A match was found to the ZIP portion of the address and its centroid was returned as output.</td>
-                        </tr>
-
-                        <tr>
-                          <td>City</td>
-                          <td>A match was found to the city portion of the address and its centroid was returned as output.</td>
-                        </tr>
-
-                        <tr>
-                          <td>County subregion</td>
-                          <td>A match was found to the city portion of the address in the county subregion reference data set and its centroid was returned as output.</td>
-                        </tr>
-
-                        <tr>
-                          <td>County</td>
-                          <td>A match was found to the city portion of the address in the county reference data set and its centroid was returned as output.</td>
-                        </tr>
-
-                        <tr>
-                          <td>Unmatchable</td>
-                          <td>A match could not be found for the input.</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">matchType</div>
-                <code class="secondary">Enumerable&lt;GeocodeMatchType&gt;</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Geocode feature match type.</p>
-
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                  </div>
-
-                  <div *giscAccordionContent="parent.expanded" class="attribute-node">
-                    <p><strong>Exact</strong></p>
-
-                    <p>The input date exactly matched a feature in the reference data source:</p>
-
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td>Input</td>
-                          <td>3620 S Vermont Ave, Los Angeles, CA 90089-0255</td>
-                        </tr>
-                        <tr>
-                          <td>Reference</td>
-                          <td>3620 S Vermont Ave, Los Angeles, CA 90089-0255</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                    <p><strong>Relaxed</strong></p>
-
-                    <p>One or more of the input data attributes had to be removed to find a match in the reference data source:</p>
-
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td>Input</td>
-                          <td>3620 Vermont Ave, Los Angeles, CA 90089-0255</td>
-                        </tr>
-                        <tr>
-                          <td>Reference</td>
-                          <td>3620 S Vermont Ave, Los Angeles, CA 90089-0255</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                    <p>South is missing from input and is present in reference.</p>
-
-                    <p><strong>Soundex</strong></p>
-
-                    <p>One or more of the input data attributes had to be matched with soundex to find a match in the reference data source:</p>
-
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td>Input</td>
-                          <td>3620 S Vermonnt Ave, Los Angeles, CA 90089-0255</td>
-                        </tr>
-                        <tr>
-                          <td>Reference</td>
-                          <td>3620 S Vermont Ave, Los Angeles, CA 90089-0255</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                    <p>Soundex("Vermonnt") = V655 = Soundex("Vermont").</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">matchedLocationType</div>
-                <code class="secondary">Enumerable&lt;AddressMatchType&gt;</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Type of input data identified.</p>
-
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                  </div>
-
-                  <div *giscAccordionContent="parent.expanded" class="attribute-node">
-                    <tamu-gisc-address-match-type-attribute-list></tamu-gisc-address-match-type-attribute-list>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">featureMatchingResultType</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>The result type for the geocode output.</p>
-
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                  </div>
-
-                  <div *giscAccordionContent="parent.expanded" class="attribute-node">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Type</th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <td>Success</td>
-                          <td>A exact match was found</td>
-                        </tr>
-
-                        <tr>
-                          <td>Unmatchable</td>
-                          <td>A match could not be found for the input</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">naaccr</div>
-                <code class="secondary">NaaccrQualityMetrics</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Describes the North American Association of Central Cancer Registries (NAACCR) quality metrics that are computed and returned along with geocodes produced by the TAMU Geocoder.</p>
-
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                  </div>
-
-                  <div *giscAccordionContent="parent.expanded" class="attribute-list">
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">gisCoordinateQualityCode</div>
-                        <code class="secondary">String</code>
+                    <div *giscAccordion="let parent;">
+                      <div [giscAccordionHeader]="parent" class="pill">
+                        <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                        <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
+                      <div *giscAccordionContent="parent.expanded" class="attribute-list">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Code</th>
+                              <th>Value</th>
+                              <th>Description</th>
+                            </tr>
+                          </thead>
 
-                        <p>These codes describe information about:</p>
-
-                        <ul>
-                          <li>The quality of the reference feature matched to - parcel vs street intersection.</li>
-                          <li>The type of input data submitted - ZIP centroid of an address vs ZIP centroid of a PO Box.</li>
-                        </ul>
-
-                        <div *giscAccordion="let parent;">
-                          <div [giscAccordionHeader]="parent" class="pill">
-                            <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                            <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                          </div>
-
-                          <div *giscAccordionContent="parent.expanded" class="attribute-list">
-                            <table>
-                              <thead>
-                                <tr>
-                                  <th>Code</th>
-                                  <th>Value</th>
-                                  <th>Description</th>
-                                </tr>
-                              </thead>
-
-                              <tbody>
-                                <tr>
-                                  <td>98</td>
-                                  <td>Unknown</td>
-                                  <td>Latitude and longitude are assigned, but coordinate quality is unknown</td>
-                                </tr>
-                                <tr>
-                                  <td>00</td>
-                                  <td>AddressPoint</td>
-                                  <td>Coordinates derived from local government-maintained address points, which are based on property parcel locations, not interpolation over a street segment’s address range</td>
-                                </tr>
-                                <tr>
-                                  <td>01</td>
-                                  <td>GPS</td>
-                                  <td>Coordinates assigned by Global Positioning System (GPS)</td>
-                                </tr>
-                                <tr>
-                                  <td>02</td>
-                                  <td>Parcel</td>
-                                  <td>Coordinates are match of house number and street, and based on property parcel location</td>
-                                </tr>
-                                <tr>
-                                  <td>03</td>
-                                  <td>StreetSegmentInterpolation</td>
-                                  <td>Coordinates are match of house number and street, interpolated over the matching street segment’s address range</td>
-                                </tr>
-                                <tr>
-                                  <td>04</td>
-                                  <td>StreetIntersection</td>
-                                  <td>Coordinates are street intersections</td>
-                                </tr>
-                                <tr>
-                                  <td>05</td>
-                                  <td>StreetCentroid</td>
-                                  <td>Coordinates are at mid-point of street segment (missing or invalid building number)</td>
-                                </tr>
-                                <tr>
-                                  <td>06</td>
-                                  <td>AddressZIPPlus4Centroid</td>
-                                  <td>Coordinates are address ZIP code+4 centroid</td>
-                                </tr>
-                                <tr>
-                                  <td>07</td>
-                                  <td>AddressZIPPlus2Centroid</td>
-                                  <td>Coordinates are address ZIP code+2 centroid</td>
-                                </tr>
-                                <tr>
-                                  <td>08</td>
-                                  <td>ManualLookup</td>
-                                  <td>Coordinates were obtained manually by looking up a location on a paper or electronic map</td>
-                                </tr>
-                                <tr>
-                                  <td>09</td>
-                                  <td>AddressZIPCentroid</td>
-                                  <td>Coordinates are address 5-digit ZIP code centroid</td>
-                                </tr>
-                                <tr>
-                                  <td>10</td>
-                                  <td>POBoxZIPCentroid</td>
-                                  <td>Coordinates are point ZIP code of Post Office Box or Rural Route</td>
-                                </tr>
-                                <tr>
-                                  <td>11</td>
-                                  <td>CityCentroid</td>
-                                  <td>Coordinates are centroid of address city (when address ZIP code is unknown or invalid, and there are multiple ZIP codes for the city)</td>
-                                </tr>
-                                <tr>
-                                  <td>12</td>
-                                  <td>CountyCentroid</td>
-                                  <td>Coordinates are centroid of county</td>
-                                </tr>
-                                <tr>
-                                  <td>99</td>
-                                  <td>Unmatchable</td>
-                                  <td>Latitude and longitude are not assigned, but geocoding was attempted; unable to assign coordinates based on available information</td>
-                                </tr>
-                                <tr>
-                                  <td></td>
-                                  <td>Missing</td>
-                                  <td>GIS Coordinate Quality not coded</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">gisCoordinateQualityType</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Coordinate quality value for a <code>gisCoordinateQualityCode</code>.</p>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">censusTractCertaintyCode</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>The NAACCR Census Tract Certainty Codes provide an indication of the level of accuracy one can expect from the Census data associated with a geocode.</p>
-
-                        <p>These codes describe information about:</p>
-
-                        <ul>
-                          <li>The quality of the reference feature matched to - parcel vs street intersection</li>
-                          <li>The type of input data submitted - ZIP centroid of an address vs ZIP centroid of a PO Box</li>
-                          <li>The relationship between the Census geographies matched to and the reference feature used to produce the geocode - Residence City Or ZIP With One Census Tract</li>
-                        </ul>
-
-                        <div *giscAccordion="let parent;">
-                          <div [giscAccordionHeader]="parent" class="pill">
-                            <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                            <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
-                          </div>
-
-                          <div *giscAccordionContent="parent.expanded" class="attribute-list">
-                            <table>
-                              <thead>
-                                <tr>
-                                  <th>Code</th>
-                                  <th>Value</th>
-                                  <th>Description</th>
-                                </tr>
-                              </thead>
-
-                              <tbody>
-                                <tr>
-                                  <td></td>
-                                  <td>Unknown</td>
-                                  <td>Unknown</td>
-                                </tr>
-                                <tr>
-                                  <td>1</td>
-                                  <td>ResidenceStreetAddress</td>
-                                  <td>Census tract based on complete and valid street address of residence</td>
-                                </tr>
-                                <tr>
-                                  <td>2</td>
-                                  <td>ResidenceZIPPlus4</td>
-                                  <td>Census tract based on residence ZIP + 4</td>
-                                </tr>
-                                <tr>
-                                  <td>3</td>
-                                  <td>ResidenceZIPPlus2</td>
-                                  <td>Census tract based on residence ZIP + 2</td>
-                                </tr>
-                                <tr>
-                                  <td>4</td>
-                                  <td>ResidenceZIP</td>
-                                  <td>Census tract based on residence ZIP code only</td>
-                                </tr>
-                                <tr>
-                                  <td>5</td>
-                                  <td>POBoxZIP</td>
-                                  <td>Census tract based on ZIP code of P.O. Box</td>
-                                </tr>
-                                <tr>
-                                  <td>6</td>
-                                  <td>ResidenceCityOrZIPWithOneCensusTract</td>
-                                  <td>Census tract/BNA based on residence city where city has only one census tract, or based on residence ZIP code where ZIP code has only one census tract</td>
-                                </tr>
-                                <tr>
-                                  <td>9</td>
-                                  <td>Missing</td>
-                                  <td>Not assigned, geocoding attempted</td>
-                                </tr>
-                                <tr>
-                                  <td>10</td>
-                                  <td>Unmatchable</td>
-                                  <td>Geocoding attempted, unable to assign</td>
-                                </tr>
-                                <tr>
-                                  <td></td>
-                                  <td>NotAttempted</td>
-                                  <td>Not assigned, geocoding not attempted</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">censusTractCertaintyType</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Census tract certainty value for a <code>censusTractCertaintyCode</code>.</p>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">microMatchStatus</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Micro Level Analysis Match Status</p>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">penaltyCode</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <!-- <p>// TODO: </p> -->
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">penaltyCodeSummary</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <!-- <p>// TODO: </p> -->
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">penaltyCodeDetails</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <!-- <p>// TODO: </p> -->
+                          <tbody>
+                            <tr>
+                              <td>98</td>
+                              <td>Unknown</td>
+                              <td>Latitude and longitude are assigned, but coordinate quality is unknown</td>
+                            </tr>
+                            <tr>
+                              <td>00</td>
+                              <td>AddressPoint</td>
+                              <td>Coordinates derived from local government-maintained address points, which are based on property parcel locations, not interpolation over a street segment's address range</td>
+                            </tr>
+                            <tr>
+                              <td>01</td>
+                              <td>GPS</td>
+                              <td>Coordinates assigned by Global Positioning System (GPS)</td>
+                            </tr>
+                            <tr>
+                              <td>02</td>
+                              <td>Parcel</td>
+                              <td>Coordinates are match of house number and street, and based on property parcel location</td>
+                            </tr>
+                            <tr>
+                              <td>03</td>
+                              <td>StreetSegmentInterpolation</td>
+                              <td>Coordinates are match of house number and street, interpolated over the matching street segment's address range</td>
+                            </tr>
+                            <tr>
+                              <td>04</td>
+                              <td>StreetIntersection</td>
+                              <td>Coordinates are street intersections</td>
+                            </tr>
+                            <tr>
+                              <td>05</td>
+                              <td>StreetCentroid</td>
+                              <td>Coordinates are at mid-point of street segment (missing or invalid building number)</td>
+                            </tr>
+                            <tr>
+                              <td>06</td>
+                              <td>AddressZIPPlus4Centroid</td>
+                              <td>Coordinates are address ZIP code+4 centroid</td>
+                            </tr>
+                            <tr>
+                              <td>07</td>
+                              <td>AddressZIPPlus2Centroid</td>
+                              <td>Coordinates are address ZIP code+2 centroid</td>
+                            </tr>
+                            <tr>
+                              <td>08</td>
+                              <td>ManualLookup</td>
+                              <td>Coordinates were obtained manually by looking up a location on a paper or electronic map</td>
+                            </tr>
+                            <tr>
+                              <td>09</td>
+                              <td>AddressZIPCentroid</td>
+                              <td>Coordinates are address 5-digit ZIP code centroid</td>
+                            </tr>
+                            <tr>
+                              <td>10</td>
+                              <td>POBoxZIPCentroid</td>
+                              <td>Coordinates are point ZIP code of Post Office Box or Rural Route</td>
+                            </tr>
+                            <tr>
+                              <td>11</td>
+                              <td>CityCentroid</td>
+                              <td>Coordinates are centroid of address city (when address ZIP code is unknown or invalid, and there are multiple ZIP codes for the city)</td>
+                            </tr>
+                            <tr>
+                              <td>12</td>
+                              <td>CountyCentroid</td>
+                              <td>Coordinates are centroid of county</td>
+                            </tr>
+                            <tr>
+                              <td>99</td>
+                              <td>Unmatchable</td>
+                              <td>Latitude and longitude are not assigned, but geocoding was attempted; unable to assign coordinates based on available information</td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td>Missing</td>
+                              <td>GIS Coordinate Quality not coded</td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">queryStatusCodes</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <!-- // TODO: Insert query status code component if they are the same as the parent. -->
-                <p>This differs from the parent `queryStatusCode` in that it represents the status for a geocode result.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">tieHandlingStrategyType</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Tie handling strategy used for a geocode result.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">featureMatchingSelectionMethod</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>The Texas A&M, NAACCR, NCI, Geocoding System allows the user to choose if they want the "best" geocode returned for an address to be chosen dynamically based on an accuracy metric calculated by the geocoder, or statically always in the same order. Details about each of the available methods can be found in the following publication.</p>
-
-                <p><a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1467-9671.2010.01211.x/abstract">Goldberg, D. W., Cockburn, M. G. (2010). Improving geocode accuracy with candidate selection criteria. Transactions in GIS. Vol. 14 (S1), pp. 129-146.</a></p>
-
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Show Possible Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Hide Possible Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">gisCoordinateQualityType</div>
+                    <code class="secondary">String</code>
                   </div>
 
-                  <div *giscAccordionContent="parent.expanded" class="attribute-node">
+                  <div class="attribute-description">
+                    <p>Coordinate quality value for a <code>gisCoordinateQualityCode</code>.</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">censusTractCertaintyCode</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>The NAACCR Census Tract Certainty Codes provide an indication of the level of accuracy one can expect from the Census data associated with a geocode.</p>
+
+                    <p>These codes describe information about:</p>
+
                     <ul>
-                      <li>FeatureClassBased</li>
-                      <li>UncertaintySingleFeatureArea</li>
-                      <li>UncertaintyMultiFeatureGraviational</li>
-                      <li>UncertaintyMultiFeatureTopological</li>
+                      <li>The quality of the reference feature matched to - parcel vs street intersection</li>
+                      <li>The type of input data submitted - ZIP centroid of an address vs ZIP centroid of a PO Box</li>
+                      <li>The relationship between the Census geographies matched to and the reference feature used to produce the geocode - Residence City Or ZIP With One Census Tract</li>
                     </ul>
+
+                    <div *giscAccordion="let parent;">
+                      <div [giscAccordionHeader]="parent" class="pill">
+                        <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                        <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                      </div>
+
+                      <div *giscAccordionContent="parent.expanded" class="attribute-list">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Code</th>
+                              <th>Value</th>
+                              <th>Description</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <tr>
+                              <td></td>
+                              <td>Unknown</td>
+                              <td>Unknown</td>
+                            </tr>
+                            <tr>
+                              <td>1</td>
+                              <td>ResidenceStreetAddress</td>
+                              <td>Census tract based on complete and valid street address of residence</td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <td>ResidenceZIPPlus4</td>
+                              <td>Census tract based on residence ZIP + 4</td>
+                            </tr>
+                            <tr>
+                              <td>3</td>
+                              <td>ResidenceZIPPlus2</td>
+                              <td>Census tract based on residence ZIP + 2</td>
+                            </tr>
+                            <tr>
+                              <td>4</td>
+                              <td>ResidenceZIP</td>
+                              <td>Census tract based on residence ZIP code only</td>
+                            </tr>
+                            <tr>
+                              <td>5</td>
+                              <td>POBoxZIP</td>
+                              <td>Census tract based on ZIP code of P.O. Box</td>
+                            </tr>
+                            <tr>
+                              <td>6</td>
+                              <td>ResidenceCityOrZIPWithOneCensusTract</td>
+                              <td>Census tract/BNA based on residence city where city has only one census tract, or based on residence ZIP code where ZIP code has only one census tract</td>
+                            </tr>
+                            <tr>
+                              <td>9</td>
+                              <td>Missing</td>
+                              <td>Not assigned, geocoding attempted</td>
+                            </tr>
+                            <tr>
+                              <td>10</td>
+                              <td>Unmatchable</td>
+                              <td>Geocoding attempted, unable to assign</td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td>NotAttempted</td>
+                              <td>Not assigned, geocoding not attempted</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">censusRecords</div>
-                <code class="secondary">Array&lt;CensusRecord&gt;</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>A list of associated census records; one for each of the years provided <code>censusYears</code> in the input parameters.</p>
-
-                <p><strong>The CensusRecord object:</strong></p>
-
-                <tamu-gisc-census-record-fragment></tamu-gisc-census-record-fragment>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">matchedAddress</div>
-                <code class="secondary">Address</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Parsed matched result address from <code>inputParameterSet</code> used in the processing of the geocode.</p>
-
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">censusTractCertaintyType</div>
+                    <code class="secondary">String</code>
                   </div>
 
-                  <div *giscAccordionContent="parent.expanded" class="attribute-list">
-                    <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
+                  <div class="attribute-description">
+                    <p>Census tract certainty value for a <code>censusTractCertaintyCode</code>.</p>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">referenceFeature</div>
-                <code class="secondary">ReferenceFeature</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Reference feature used in the processing of a geocode.</p>
-
-                <div *giscAccordion="let parent;">
-                  <div [giscAccordionHeader]="parent" class="pill">
-                    <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                    <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">microMatchStatus</div>
+                    <code class="secondary">String</code>
                   </div>
 
-                  <div *giscAccordionContent="parent.expanded" class="attribute-list">
-                    <tamu-gisc-reference-feature-attribute-list></tamu-gisc-reference-feature-attribute-list>
+                  <div class="attribute-description">
+                    <p>Micro Level Analysis Match Status</p>
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">penaltyCode</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <!-- <p>// TODO: </p> -->
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">penaltyCodeSummary</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <!-- <p>// TODO: </p> -->
+                  </div>
+                </div>
+
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">penaltyCodeDetails</div>
+                    <code class="secondary">String</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <!-- <p>// TODO: </p> -->
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">queryStatusCodes</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <!-- // TODO: Insert query status code component if they are the same as the parent. -->
+            <p>This differs from the parent `queryStatusCode` in that it represents the status for a geocode result.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">tieHandlingStrategyType</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Tie handling strategy used for a geocode result.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">featureMatchingSelectionMethod</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>The Texas A&M, NAACCR, NCI, Geocoding System allows the user to choose if they want the "best" geocode returned for an address to be chosen dynamically based on an accuracy metric calculated by the geocoder, or statically always in the same order. Details about each of the available methods can be found in the following publication.</p>
+
+            <p><a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1467-9671.2010.01211.x/abstract">Goldberg, D. W., Cockburn, M. G. (2010). Improving geocode accuracy with candidate selection criteria. Transactions in GIS. Vol. 14 (S1), pp. 129-146.</a></p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Possible Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Possible Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+              </div>
+
+              <div *giscAccordionContent="parent.expanded" class="attribute-node">
+                <ul>
+                  <li>FeatureClassBased</li>
+                  <li>UncertaintySingleFeatureArea</li>
+                  <li>UncertaintyMultiFeatureGraviational</li>
+                  <li>UncertaintyMultiFeatureTopological</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">censusRecords</div>
+            <code class="secondary">Array&lt;CensusRecord&gt;</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>A list of associated census records; one for each of the years provided <code>censusYears</code> in the input parameters.</p>
+
+            <p><strong>The CensusRecord object:</strong></p>
+
+            <tamu-gisc-census-record-fragment></tamu-gisc-census-record-fragment>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">matchedAddress</div>
+            <code class="secondary">Address</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Parsed matched result address from <code>inputParameterSet</code> used in the processing of the geocode.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+              </div>
+
+              <div *giscAccordionContent="parent.expanded" class="attribute-list">
+                <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">referenceFeature</div>
+            <code class="secondary">ReferenceFeature</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Reference feature used in the processing of a geocode.</p>
+
+            <div *giscAccordion="let parent;">
+              <div [giscAccordionHeader]="parent" class="pill">
+                <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+              </div>
+
+              <div *giscAccordionContent="parent.expanded" class="attribute-list">
+                <tamu-gisc-reference-feature-attribute-list></tamu-gisc-reference-feature-attribute-list>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
   <!-- </tamu-gisc-tab> -->
 
   <!-- <tamu-gisc-tab label="CSV/TSV">
