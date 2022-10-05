@@ -13,144 +13,50 @@
   </div>
 </section>
 
-<section id="parameters">
-  <h2>Service Parameters</h2>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Parameter</th>
-        <th>Description</th>
-        <!-- <th>Default</th> -->
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>apiKey *</td>
-        <td>
-          <div>
-            <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key</div>
-            <div class="faux-link" scrollTo="#apiKey">See details</div>
-          </div>
-        </td>
-        <!-- <td></td> -->
-      </tr>
-
-      <tr>
-        <td>version *</td>
-        <td>
-          <div>
-            <div>Target API version.</div>
-            <div class="faux-link" scrollTo="#version">See details</div>
-          </div>
-        </td>
-        <!-- <td>{{ apiVersion }}</td> -->
-      </tr>
-
-      <tr>
-        <td>latitude</td>
-        <td>
-          <div>
-            <div>The latitude of the input coordinate.</div>
-            <div class="faux-link" scrollTo="#latitude">See details</div>
-          </div>
-        </td>
-        <!-- <td></td> -->
-      </tr>
-
-      <tr>
-        <td>longitude</td>
-        <td>
-          <div>
-            <div>The longitude of the input coordinate.</div>
-            <div class="faux-link" scrollTo="#longitude">See details</div>
-          </div>
-        </td>
-        <!-- <td></td> -->
-      </tr>
-
-      <tr>
-        <td>state</td>
-        <td>
-          <div>
-            <div>Abbreviation of state.</div>
-            <div class="faux-link" scrollTo="#state">See details</div>
-          </div>
-        </td>
-        <!-- <td></td> -->
-      </tr>
-
-      <tr>
-        <td>format</td>
-        <td>
-          <div>
-            <div>Response return format.</div>
-            <div class="faux-link" scrollTo="#format">See details</div>
-          </div>
-        </td>
-        <!-- <td>json</td> -->
-      </tr>
-
-      <tr>
-        <td>notStore</td>
-        <td>
-          <div>
-            <div>Describes whether the geocode transaction details will be stored in your account.</div>
-            <div class="faux-link" scrollTo="#notStore">See details</div>
-          </div>
-        </td>
-        <!-- <td>false</td> -->
-      </tr>
-    </tbody>
-  </table>
-
-  <p>* marked parameters are required.</p>
-</section>
-
 <section>
-  <h2>Parameter Details</h2>
+  <h2 class="trailer-1" id="parameters">Input Parameters</h2>
 
-  <div class="parameter-detail-container" id="apiKey">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>apiKey</h3>
-      <div class="parameter-detail-header-badges">
-        <code class="high-contrast">Required</code>
-      </div>
-    </div>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">apiKey</div>
+      <div class="attribute-title-type">String</div>
+      <div class="attribute-title-badge">Required</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+    <ng-container attr-description>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform.</ng-container>
 
-      <p>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform. Each request will deduct one credit from your account balance.</p>
+    <ng-container attr-body>
+      <p>Each request will deduct one credit from your account balance</p>
 
       <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
-    </div>
-  </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="version">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>version</h3>
-      <div class="parameter-detail-header-badges">
-        <code class="high-contrast">Required</code>
-      </div>
-    </div>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">version</div>
+      <div class="attribute-title-type">String</div>
+      <div class="attribute-title-badge">Required</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
+    <ng-container attr-description>Target API version.</ng-container>
+
+    <ng-container attr-body>
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+
       <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a address processing request.</p>
-    </div>
-  </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="latitude">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>latitude</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">latitude</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
+    <ng-container attr-description>Latitude value for the input coordinate.</ng-container>
+
+    <ng-container attr-body>
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Latitude value for the input coordinate.</p>
 
@@ -158,17 +64,18 @@
       <ul>
         <li>34.0726207994348</li>
       </ul>
-    </div>
-  </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="longitude">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>longitude</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">longitude</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
+    <ng-container attr-description>Longitude value for the input coordinate.</ng-container>
+
+    <ng-container attr-body>
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Longitude value for the input coordinate.</p>
 
@@ -176,17 +83,18 @@
       <ul>
         <li>-118.397965182076</li>
       </ul>
-    </div>
-  </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="state">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>state</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">state</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
+    <ng-container attr-description>Abbreviated state for the input coordinate.</ng-container>
+
+    <ng-container attr-body>
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Abbreviated, two-letter U.S. state code, case-insensitive. Including this field reduces processing time.</p>
 
@@ -197,17 +105,18 @@
         <li>TX</li>
         <li>NY</li>
       </ul>
-    </div>
-  </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="format">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>format</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">format</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
+    <ng-container attr-description>Response return format.</ng-container>
+
+    <ng-container attr-body>
       <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Value describing the geocode response format.</p>
 
@@ -220,325 +129,208 @@
       </ul>
 
       <p>JSON is response type is only available in API version 2.96 and newer.</p>
-    </div>
-  </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-  <div class="parameter-detail-container" id="notStore">
-    <div class="parameter-detail-header">
-      <span class="material-icons permalink" title="Link to here">link</span>
-      <h3>notStore</h3>
-      <div class="parameter-detail-header-badges"></div>
-    </div>
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">notStore</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
 
-    <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 2.8</p>
-      <p>Describes if transaction details should not be stored in your account history.</p>
-    </div>
-  </div>
+    <ng-container attr-description>Describes whether the geocode transaction details will be stored in your account.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
 </section>
 
 <section id="response">
   <h2>Response</h2>
 
-  <p>Response contents depend with the requested <span class="faux-link" scrollTo="#format">response format</span>.</p>
+  <p>The following represents the response structure when requesting JSON format.</p>
 
-  <tamu-gisc-tabs>
-    <tamu-gisc-tab label="JSON">
-      <div>
-        <tamu-gisc-response-viewer [runner]="runner" [format]="'json'"></tamu-gisc-response-viewer>
+  <!-- <tamu-gisc-tabs>
+    <tamu-gisc-tab label="JSON"> -->
+  <!-- <div> -->
+  <!-- <tamu-gisc-response-viewer [runner]="runner" [format]="'json'"></tamu-gisc-response-viewer> -->
+  <!-- </div> -->
 
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Description</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>version</td>
-              <td>
-                <div>
-                  <div>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</div>
-                  <div class="faux-link" scrollTo="#responseVersion">See details</div>
-                </div>
-              </td>
-              <td>ApiVersion</td>
-            </tr>
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">version</div>
+      <div class="attribute-title-type">ApiVersion</div>
+    </ng-container>
 
-            <tr>
-              <td>timeTaken</td>
-              <td>
-                <div>
-                  <div>Time required to execute the transaction, reported in milliseconds.</div>
-                  <div class="faux-link" scrollTo="#responseTimeTaken">See details</div>
-                </div>
-              </td>
-              <td>Number</td>
-            </tr>
+    <ng-container attr-description>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</ng-container>
 
-            <tr>
-              <td>transactionGuid</td>
-              <td>
-                <div>
-                  <div>Unique ID assigned to the response.</div>
-                  <div class="faux-link" scrollTo="#responseTransactionGuid">See details</div>
-                </div>
-              </td>
-              <td>String</td>
-            </tr>
+    <ng-container attr-body>
+      <tamu-gisc-api-version-fragment></tamu-gisc-api-version-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-            <tr>
-              <td>apiHost</td>
-              <td>
-                <div>
-                  <div>Server name that processed the transaction.</div>
-                  <div class="faux-link" scrollTo="#responseApiHost">See details</div>
-                </div>
-              </td>
-              <td>String</td>
-            </tr>
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">timeTaken</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
 
-            <tr>
-              <td>clientHost</td>
-              <td>
-                <div>
-                  <div>Public hostname where the transaction was executed.</div>
-                  <div class="faux-link" scrollTo="#responseClientHost">See details</div>
-                </div>
-              </td>
-              <td>String</td>
-            </tr>
+    <ng-container attr-description>Time required to execute the transaction, reported in milliseconds.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-            <tr>
-              <td>queryStatusCode</td>
-              <td>
-                <div>
-                  <div>The value for the response status code.</div>
-                  <div class="faux-link" scrollTo="#responseQueryStatusCode">See details</div>
-                </div>
-              </td>
-              <td>Enumerable&lt;QueryStatusCode&gt;</td>
-            </tr>
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">transactionGuid</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
 
-            <tr>
-              <td>results</td>
-              <td>
-                <div>
-                  <div>Result reverse geocode.</div>
-                  <div class="faux-link" scrollTo="#responseResults">See details</div>
-                </div>
-              </td>
-              <td>Array&lt;ReverseGeocode&gt;</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <ng-container attr-description>Unique ID assigned to the response.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
 
-      <div class="parameter-detail-container" id="responseVersion">
-        <div class="parameter-detail-header">
-          <span class="material-icons permalink" title="Link to here">link</span>
-          <h3>version</h3>
-          <div class="parameter-detail-header-badges">
-            <code>ApiVersion</code>
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">apiHost</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Server name that processed the transaction.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">clientHost</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Public hostname where the transaction was executed. </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">queryStatusCode</div>
+      <div class="attribute-title-type">Enumerable&lt;QueryStatusCode&gt;</div>
+    </ng-container>
+
+    <ng-container attr-description>The value for the response status code.</ng-container>
+
+    <ng-container attr-body>
+      <tamu-gisc-query-status-fragment></tamu-gisc-query-status-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">results</div>
+      <div class="attribute-title-type">Array&lt;ReverseGeocode&gt;</div>
+    </ng-container>
+
+    <ng-container attr-description>Result reverse geocode.</ng-container>
+
+    <ng-container attr-body>
+      <p>
+        <strong>The ReverseGeocode object:</strong>
+      </p>
+
+      <div class="attribute-list">
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">timeTaken</div>
+            <code class="secondary">Number</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Time to process the input address for a single <code>addressFormat</code>.</p>
           </div>
         </div>
 
-        <div class="parameter-detail-content">
-          <tamu-gisc-api-version-fragment></tamu-gisc-api-version-fragment>
-        </div>
-      </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">exceptionOccurred</div>
+            <code class="secondary">Boolean</code>
+          </div>
 
-      <div class="parameter-detail-container" id="responseTimeTaken">
-        <div class="parameter-detail-header">
-          <span class="material-icons permalink" title="Link to here">link</span>
-          <h3>timeTaken</h3>
-          <div class="parameter-detail-header-badges">
-            <code>Number</code>
+          <div class="attribute-description">
+            <p>Describes if there was an error processing the input address for an addressFormat.</p>
           </div>
         </div>
 
-        <div class="parameter-detail-content">
-          <p>Total time taken to process the entire transaction (including all address format types), expressed in milliseconds.</p>
-        </div>
-      </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">errorMessage</div>
+            <code class="secondary">String</code>
+          </div>
 
-      <div class="parameter-detail-container" id="responseTransactionGuid">
-        <div class="parameter-detail-header">
-          <span class="material-icons permalink" title="Link to here">link</span>
-          <h3>transactionGuid</h3>
-          <div class="parameter-detail-header-badges">
-            <code>String</code>
+          <div class="attribute-description">
+            <p>Text message describing the exception, if any.</p>
           </div>
         </div>
 
-        <div class="parameter-detail-content">
-          <p>Unique ID generated for a given transaction.</p>
-        </div>
-      </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">apn</div>
+            <code class="secondary">String</code>
+          </div>
 
-      <div class="parameter-detail-container" id="responseApiHost">
-        <div class="parameter-detail-header">
-          <span class="material-icons permalink" title="Link to here">link</span>
-          <h3>apiHost</h3>
-          <div class="parameter-detail-header-badges">
-            <code>String</code>
+          <div class="attribute-description">
+            <p></p>
           </div>
         </div>
 
-        <div class="parameter-detail-content">
-          <p>The public hostname of the API service.</p>
-        </div>
-      </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">streetAddress</div>
+            <code class="secondary">String</code>
+          </div>
 
-      <div class="parameter-detail-container" id="responseClientHost">
-        <div class="parameter-detail-header">
-          <span class="material-icons permalink" title="Link to here">link</span>
-          <h3>clientHost</h3>
-          <div class="parameter-detail-header-badges">
-            <code>String</code>
+          <div class="attribute-description">
+            <p>Closest street address to the input point.</p>
           </div>
         </div>
 
-        <div class="parameter-detail-content">
-          <p>The public hostname of the API service.</p>
-        </div>
-      </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">city</div>
+            <code class="secondary">String</code>
+          </div>
 
-      <div class="parameter-detail-container" id="responseQueryStatusCode">
-        <div class="parameter-detail-header">
-          <span class="material-icons permalink" title="Link to here">link</span>
-          <h3>queryStatusCode</h3>
-          <div class="parameter-detail-header-badges">
-            <code>Enumerable&lt;QueryStatusCode&gt;</code>
+          <div class="attribute-description">
+            <p>Closest city to the input point.</p>
           </div>
         </div>
 
-        <div class="parameter-detail-content">
-          <tamu-gisc-query-status-fragment></tamu-gisc-query-status-fragment>
-        </div>
-      </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">state</div>
+            <code class="secondary">String</code>
+          </div>
 
-      <div class="parameter-detail-container" id="responseResults">
-        <div class="parameter-detail-header">
-          <span class="material-icons permalink" title="Link to here">link</span>
-          <h3>results</h3>
-          <div class="parameter-detail-header-badges">
-            <code>Array&lt;ReverseGeocode&gt;</code>
+          <div class="attribute-description">
+            <p>Abbreviated, two-letter state code that is closest to the input point.</p>
           </div>
         </div>
 
-        <div class="parameter-detail-content">
-          <p>A collection of reverse geocode results.</p>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">zip</div>
+            <code class="secondary">String</code>
+          </div>
 
-          <p>
-            <strong>The ReverseGeocode object:</strong>
-          </p>
+          <div class="attribute-description">
+            <p>Closest ZIP Code to the input point.</p>
+          </div>
+        </div>
 
-          <div class="attribute-list">
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">timeTaken</div>
-                <code class="secondary">Number</code>
-              </div>
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">zip</div>
+            <code class="secondary">String</code>
+          </div>
 
-              <div class="attribute-description">
-                <p>Time to process the input address for a single <code>addressFormat</code>.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">exceptionOccurred</div>
-                <code class="secondary">Boolean</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Describes if there was an error processing the input address for an addressFormat.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">errorMessage</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Text message describing the exception, if any.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">apn</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p></p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">streetAddress</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Closest street address to the input point.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">city</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Closest city to the input point.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">state</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Abbreviated, two-letter state code that is closest to the input point.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">zip</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Closest ZIP Code to the input point.</p>
-              </div>
-            </div>
-
-            <div class="attribute-unit">
-              <div class="attribute-header">
-                <div class="attribute-name">zip</div>
-                <code class="secondary">String</code>
-              </div>
-
-              <div class="attribute-description">
-                <p>Closest ZIP+4 to the input point.</p>
-              </div>
-            </div>
+          <div class="attribute-description">
+            <p>Closest ZIP+4 to the input point.</p>
           </div>
         </div>
       </div>
-    </tamu-gisc-tab>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+  <!-- </tamu-gisc-tab>
 
     <tamu-gisc-tab label="CSV/TSV">
       <div>
@@ -550,5 +342,5 @@
         <tamu-gisc-response-viewer [runner]="runner" [format]="'xml'"></tamu-gisc-response-viewer>
       </div>
     </tamu-gisc-tab>
-  </tamu-gisc-tabs>
+  </tamu-gisc-tabs> -->
 </section>
