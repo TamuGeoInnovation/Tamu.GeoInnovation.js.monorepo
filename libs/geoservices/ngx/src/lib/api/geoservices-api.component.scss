@@ -34,6 +34,13 @@
     opacity: 0.75;
     @include transition(filter 0.5s);
   }
+
+  &.color {
+    img {
+      filter: none;
+      opacity: 1;
+    }
+  }
 }
 
 .menu-item {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 
@@ -10,6 +10,7 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 })
 export class GeoservicesApiComponent implements OnInit {
   public mobile: Observable<boolean>;
+  public mobileNavToggle: Subject<boolean> = new Subject();
 
   constructor(private readonly rs: ResponsiveService) {}
   public ngOnInit(): void {
