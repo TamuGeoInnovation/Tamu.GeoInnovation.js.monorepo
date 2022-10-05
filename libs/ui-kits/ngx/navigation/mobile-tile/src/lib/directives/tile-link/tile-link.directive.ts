@@ -52,4 +52,3 @@ export enum LocationType {
   INTERNAL,
   EXTERNAL
 }
-

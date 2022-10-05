@@ -21,4 +21,3 @@ export class ServiceAttributeAccordionComponent {
   @Input()
   public collapsable = true;
 }
-
