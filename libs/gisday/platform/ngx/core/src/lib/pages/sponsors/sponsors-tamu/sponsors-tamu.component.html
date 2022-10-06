@@ -4,40 +4,45 @@
       <h1 class="trailer-1">Interested in Becoming a Sponsor?</h1>
       <p class="sub-section-heading">Are you interested in joining the TxGIS Day family? There are many different ways to get involved from career fair opportunities with paths to recruitment, expo booths, panelist sessions, and topic session presentations, from partnerships all the way to sponsorships.</p>
 
-      <div id="plaque-container" class="column12 flex flex-row justify-center content-block ends leader-3 trailer-2">
-        <div class="plaque" (click)="changeRank('point')" rank="point">
+      <div id="swappable-content-container" class="column12 flex flex-row justify-center content-block ends">
+        <div class="swap-content-toggle plaque" rank="point" (click)="changeRank('point')">
           <h2>Point</h2>
           <div class="border"></div>
           <img src="../assets/images/icons/location.svg" class="default" />
           <img src="../assets/images/icons/location-color.svg" class="active" />
+          <br />
           <p class="point">$256</p>
-          <p class="cta">View Perks</p>
+          <p class="cta">View perks</p>
         </div>
-        <div class="plaque" (click)="changeRank('line')" rank="line">
+        <div class="swap-content-toggle plaque active" rank="line" (click)="changeRank('line')">
           <h2>Line</h2>
           <div class="border"></div>
           <img src="../assets/images/icons/connection.svg" class="default" />
           <img src="../assets/images/icons/connection-color.svg" class="active" />
+          <br />
           <p class="line">$512</p>
-          <p class="cta">View Perks</p>
+          <p class="cta">View perks</p>
         </div>
-        <div class="plaque" (click)="changeRank('poly')" rank="poly">
+        <div class="swap-content-toggle plaque active" rank="polygon" (click)="changeRank('polygon')">
           <h2>Polygon</h2>
           <div class="border"></div>
           <img src="../assets/images/icons/polygon.svg" class="default" />
           <img src="../assets/images/icons/polygon-color.svg" class="active" />
+          <br />
           <p class="poly">$1,024</p>
           <p class="cta">View Perks</p>
         </div>
-        <div class="plaque" (click)="changeRank('raster')" rank="raster">
+        <div class="swap-content-toggle plaque active" rank="raster" (click)="changeRank('raster')">
           <h2>Raster</h2>
           <div class="border"></div>
           <img src="../assets/images/icons/grid.svg" class="default" />
           <img src="../assets/images/icons/grid-color.svg" class="active" />
+          <br />
           <p class="raster">$2,048</p>
           <p class="cta">View Perks</p>
         </div>
       </div>
+
       <div>
         <a href="https://goo.gl/forms/HlOQOhwD1LpoMAv22" class="button secondary column4 leader-2 trailer-2" target="_blank">Find Out More Information</a>
       </div>
@@ -133,7 +138,7 @@
           <a href="https://www.txamfoundation.com/give.aspx?c_id=6&d_id=36&sd_id=1426&amt=512" class="button secondary column4 leader-2" target="_blank">Sign up as a Line Sponsor</a>
         </div>
 
-        <div class="content-block polygon" rank="poly">
+        <div class="content-block polygon" rank="polygon">
           <p>Help us sponsor the refreshments and get a booth, a medium logo on our website & other marketing materials, plus recognition on our social media & other GIS events.</p>
 
           <p>As a Polygon sponsor, enjoy the following benefits:</p>
