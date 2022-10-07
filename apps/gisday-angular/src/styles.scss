@@ -1292,6 +1292,10 @@ div#links-container {
       color: #ffffff;
       margin-top: -5%;
     }
+
+    &.default {
+      background: $gisday-gray-primary;
+    }
   }
 
   .details {
