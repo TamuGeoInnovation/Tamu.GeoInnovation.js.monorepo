@@ -9,13 +9,16 @@ import {
   SpeakerRepo,
   SpeakerInfoRepo,
   UniversityRepo,
-  EntityRelationsLUT
+  EntityRelationsLUT,
+  EventRepo
 } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
+import { distinct, filter, from, map, switchMap, tap, toArray } from 'rxjs';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
   constructor(
+    private readonly eventRepo: EventRepo,
     private readonly speakerRepo: SpeakerRepo,
     public readonly speakerInfoRepo: SpeakerInfoRepo,
     public readonly uniRepo: UniversityRepo
@@ -28,20 +31,43 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: guid
       },
-      relations: ['speakerInfo']
+      relations: ['speakerInfo', 'speakerInfo.university']
     });
 
     return speaker;
   }
 
   public async getPresenters() {
-    const speakers = await this.speakerRepo.getPresenters();
+    const speakers = from(
+      this.eventRepo.find({
+        // select: ['guid', 'speakers'],
+        where: {
+          season: '2020'
+        },
+        relations: ['speakers', 'speakers.speakerInfo', 'speakers.speakerInfo.university']
+      })
+    ).pipe(
+      switchMap((events) => events),
+      filter((event) => event.speakers != null),
+      switchMap((event) => event.speakers),
+      distinct(({ guid }) => guid),
+      filter((speaker) => speaker.isActive),
+      // tap((speaker) => (speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.data.toString())),
+      toArray()
+    );
 
-    speakers.forEach((speaker) => {
-      if (speaker.speakerInfo.blob) {
-        speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.data.toString();
-      }
-    });
+    // const speakers = await this.speakerRepo.find({
+    //   where: {
+    //     isActive: true
+    //   },
+    //   relations: ['speakerInfo']
+    // });
+
+    // speakers.forEach((speaker) => {
+    //   if (speaker.speakerInfo.blob) {
+    //     speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.data.toString();
+    //   }
+    // });
 
     return speakers;
   }
