@@ -2,7 +2,7 @@
   <div class="container12 small-partition">
     <div class="column12">
       <h1 class="trailer-1">Poster Competition</h1>
-      <p class="sub-section-heading">Wednesday, November 18</p>
+      <p class="sub-section-heading">Wednesday, November 16th</p>
     </div>
   </div>
 
@@ -10,90 +10,92 @@
     <div class="column4">
       <div id="index-container">
         <ul id="topic-index">
-          <li><a [routerLink]="['/competitions/posters']" fragment="one">Prizes</a></li>
-          <li><a [routerLink]="['/competitions/posters']" fragment="two">Registration, Abstract &amp; Poster Submission</a></li>
-          <li><a [routerLink]="['/competitions/posters']" fragment="three">Eligibility</a></li>
-          <li><a [routerLink]="['/competitions/posters']" fragment="four">Poster Display Setup</a></li>
-          <li><a [routerLink]="['/competitions/posters']" fragment="five">Poster Competition</a></li>
-          <li><a [routerLink]="['/competitions/posters']" fragment="six">First Place Award Announcement</a></li>
-          <li><a [routerLink]="['/competitions/posters']" fragment="seven">Competition Rules</a></li>
-          <li><a [routerLink]="['/competitions/posters']" fragment="eight">Additional Information</a></li>
-          <li><a [routerLink]="['/competitions/posters']" fragment="nine">Submit Your Poster</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="one">Prizes</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="two">Registration, Abstract &amp; Poster Submission</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="three">Eligibility</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="four">Poster Display Setup</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="five">Poster Competition</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="six">First Place Award Announcement</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="seven">Competition Rules</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="eight">Additional Information</a></li>
+          <li><a [routerLink]="['/competitions/posters/']" fragment="nine">Submit Your Poster</a></li>
         </ul>
       </div>
     </div>
     <div class="column8">
       <div class="trailer-4">
-        <p>
-          Each year, TxGIS Day hosts a geospatial student poster exhibition and competition. This event is judged by a panel of audience members and experts in the field.
-        </p>
-        <p>
-          We invite all students from Texas A&amp;M University and the Health Science Center to submit their ongoing or completed geospatial work. Participants will have the opportunity to win prizes (best team or individual submission) proudly sponsored by the following organization:
-        </p>
+        <p>Each year, TxGIS Day hosts a geospatial student poster exhibition and competition. This event is judged by a panel of audience members and experts in the field.</p>
+        <p>We invite all students from colleges and universities in Texas to submit their ongoing or completed geospatial work. Participants will have the opportunity to win prizes as listed below.</p>
 
-        <div class="icon-grid">
-          <div class="icon-item">
-            <img src="/assets/images/sponsors/TAMU_Library_Logo_2018.svg" alt="TAMU Libraries Logo" />
-          </div>
+        <div class="flex flex-row leader-3">
+          <a [routerLink]="['/competitions/posters/gallery']" class="button primary">View the Gallery</a>
+
+          <a [routerLink]="['/login']" id="ctl00_ContentPlaceHolderBody_btnVoteNotLoggedIn" class="button primary">Login to Submit Your Vote</a>
         </div>
       </div>
 
       <div class="trailer-4" id="one">
         <h2 class="trailer-1">Prizes</h2>
-        <p>
-          Great prizes will be awarded to first, second and third place entries!
-        </p>
+        <p>Great prizes will be awarded to first, second and third place entries!</p>
 
-        <ul>
-          <li>
-            <span>1<sup>st</sup> Prize</span>&nbsp;<span>$200</span>
-          </li>
-          <li>
-            <span>2<sup>nd</sup> Prize</span>&nbsp;<span>$100</span>
-          </li>
-          <li>
-            <span>3<sup>rd</sup> Prize</span>&nbsp;<span>$50</span>
-          </li>
-          <li><span>Audience Favorite Prize</span>&nbsp;<span>$50</span></li>
-        </ul>
-        <p>
-          <strong>*</strong>&nbsp;
-          <span
-            >Prizes provided by the
+        <div class="tabs">
+          <div class="swap-content-toggle tab active" view-name="tamu-participants" tabindex="1">
+            <h3>TAMU Winners</h3>
+          </div>
+        </div>
 
-            <a href="http://library.tamu.edu/" target="_blank">
-              <span>University Libraries.</span>
-            </a>
-          </span>
-        </p>
+        <div class="tab-content-blocks">
+          <div class="content-block visible" view="tamu-participants">
+            <ul>
+              <li>
+                <span class="aggie-weight-3">1<sup>st</sup> Prize</span>&nbsp;<span>$200</span>
+              </li>
+              <li>
+                <span class="aggie-weight-3">2<sup>nd</sup> Prize</span>&nbsp;<span>$100</span>
+              </li>
+              <li>
+                <span class="aggie-weight-3">3<sup>rd</sup> Prize</span>&nbsp;<span>$50</span>
+              </li>
+              <li><span class="aggie-weight-3">Audience Favorite Prize</span>&nbsp;<span>$50</span></li>
+            </ul>
+            <p>
+              <strong>*</strong>&nbsp; Prizes for Texas A&amp;M Students provided by the <a href="https://geosat.tamu.edu/" target="_blank" noopener="" noreferrer=""> <span class="aggie-weight-3">TAMU Center for Geospatial Sciences, Applications and Technology (GEOSAT)</span></a
+              >.
+            </p>
+          </div>
+
+          <div class="icon-grid leader-1 trailer-1">
+            <div class="icon-item">
+              <a href="https://geosat.tamu.edu/" target="_blank" noopener="" noreferrer="">
+                <img src="/assets/images/sponsors/logo_geosat_02.png" style="background: #500000" alt="TAMU GEOSAT" />
+              </a>
+              <p>Texas A&amp;M Center for Geospatial Sciences, Applications and Technology</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="trailer-4" id="two">
         <h2 class="trailer-1">Registration, Abstract &amp; Poster Submission</h2>
         <ul>
-          <li>Date: November 9, 2020</li>
-          <li>Time: Midnight</li>
-          <li>Abstract and poster (powerpoint or pdf file) should be submitted electronically to a cloud service (Google Drive, Dropbox, Box, etc.) by the deadline. Submit the abstract &amp; shareable link to the poster file by clicking the submit button below. Please bring and have your poster displayed <em>before</em> the competition starts on Wednesday, November 18, 2020 at 11:15 a.m.</li>
+          <li>Date: November 9, 2022</li>
+          <li>Time: 11:59PM Central Time</li>
+          <li>Abstract and poster (powerpoint or pdf file) should be submitted electronically to a cloud service (Google Drive, Dropbox, Box, etc.) by the deadline. Submit the abstract &amp; shareable link to the poster file by clicking the submit button below.</li>
         </ul>
       </div>
 
       <div class="trailer-4" id="three">
         <h2 class="trailer-1">Eligibility</h2>
         <ul>
-          <li>
-            The TxGIS Day poster competition is open to all current TAMU graduate and undergraduate students.
-          </li>
+          <li>The TxGIS Day poster competition is open to all current graduate and undergraduate students.</li>
         </ul>
       </div>
 
       <div class="trailer-4" id="four">
-        <h2 class="trailer-1">Poster Display Setup</h2>
+        <h2 class="trailer-1">Poster Display</h2>
 
         <ul>
-          <li>Date: November 18, 2020</li>
-          <li>Time: 10:45 a.m. - 11:15 a.m.</li>
-          <li>Location: Memorial Student Center (MSC), Room 2400</li>
-          <li>If you are in class at that time, please bring by your poster to the TAMU GeoInnovation Service Center (CSA 305) on November 17 from 12:00-05:00 p.m.</li>
+          <li>In 2022, all posters will be displayed in an online virtual poster gallery.</li>
         </ul>
       </div>
 
@@ -101,17 +103,16 @@
         <h2 class="trailer-1">Poster Competition</h2>
         <p>You are encouraged to attend to discuss your project, but it is not mandatory to participate.</p>
         <ul>
-          <li>Date: November 18, 2020</li>
-          <li>Session Time: 11:15 a.m. - 1:15 p.m.</li>
-          <li>Judging Time: 11:15 a.m. - 12:00 p.m.</li>
-          <li>Location: Memorial Student Center (MSC), Room 2400</li>
+          <li>Date: November 16, 2022</li>
+          <li>Session/Judging Time: 11:0 a.m. - 12:00 p.m.</li>
+          <li>Location: Online via Zoom</li>
         </ul>
       </div>
 
       <div class="trailer-4" id="six">
         <h2 class="trailer-1">First Place Award Announcement</h2>
 
-        <p>Winners will be announced on Wednesday, November 18 at the GIS Industry Panel &amp; Lunch &amp; Awards session.</p>
+        <p>Winners will be announced on Wednesday, November 17 at the TxGIS Day Awards session.</p>
       </div>
 
       <div class="trailer-4" id="seven">
@@ -122,7 +123,7 @@
           <li>Submission may be of ongoing or completed work.</li>
           <li>Submissions may be for individual or team work.</li>
           <li>You may submit unlimited entries per person.</li>
-          <li>A map is not required on your submission, but you are submitting to a TxGIS Day Competition, so...</li>
+          <li>A map is not required on your submission, but you are submitting to a GIS Day Competition, so...</li>
           <li>Submissions should include introduction, objectives, approach, results, discussion, and conclusions (or their equivalents).</li>
           <li>Submissions must include a clear statement on the Map Geodetics. This should identify the Projected CRS, Datum, etc.</li>
           <li>Submissions must clearly state map scale.</li>
@@ -134,7 +135,7 @@
           <li>Submisisons must be original - unique work.</li>
           <li>Submissions must be a poster of size: 36"W X 24"H.</li>
           <li>Submissions should use landscape orientation (PREFERRED).</li>
-          <li>Submissions must be in pdf or jpeg format; pdf format is PREFERRED.</li>
+          <li>Submissions must be in pdf or jpeg format - pdf format is PREFERRED.</li>
           <li>Submissions may not to exceed 10MB.</li>
           <li>Winners do not have to be present to win but maintain the responsibility of collecting any prizes that are won in the contest.</li>
           <li>Winners will be responsible for any government taxes.</li>
@@ -146,10 +147,11 @@
       <div class="trailer-3" id="eight">
         <h2 class="trailer-1">Additional Information</h2>
 
-        <p>For any questions regarding the poster competition details, please email <a href="mailto:gis@tamu.edu?subject=GIS Competition Question" target="_top">the TxGIS Day Committee</a></p>
+        <p>
+          For any questions regarding the poster competition details, please use our
+          <a [routerLink]="['/contact']">Contact Form</a> to send the GIS Day Committee a message.
+        </p>
       </div>
-
-      <a id="nine" class="button primary trailer-3" href="">Submit Your Poster</a>
     </div>
   </div>
 </section>
