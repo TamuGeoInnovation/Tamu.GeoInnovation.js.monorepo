@@ -1,1 +1,191 @@
-<p>presentation works!</p>
+<section>
+  <div class="container12 small-partition">
+    <div class="column12">
+      <h1 class="trailer-1">Presentation Competition</h1>
+      <p class="sub-section-heading">Tuesday, November 16th</p>
+    </div>
+  </div>
+
+  <div class="container12 flex flex-row">
+    <div class="column4">
+      <div id="index-container">
+        <ul id="topic-index">
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="one">Prizes</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="two">Registration and Abstract Submission</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="three">Eligibility</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="four">Finalist Selection</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="five">Presentation Competition Session</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="six">First Place Announcement</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="seven">Abstract Guidelines</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="eight">Presentation Guidelines</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="nine">Judging</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="ten">Competition Rules</a></li>
+          <li><a [routerLink]="['/competitions/presentation/']" fragment="eleven">Additional Information</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="column8">
+      <div>
+        <a class="button primary trailer-3" onclick="postData(); return false;" href="">Submit Your Presentation</a>
+
+        <div class="trailer-4">
+          <p>Each year, TxGIS Day hosts a geospatial student research presentation exhibition and competition. This event is judged by a panel of audience members and experts in the field.</p>
+          <p>There are two presentation competitions based on student status:</p>
+          <ul>
+            <li>Undergraduate student research presentations</li>
+            <li>Graduate student research presentations</li>
+          </ul>
+          <p>We invite all students from colleges and universities in Texas to submit their geospatial work. Participants will have the opportunity to win prizes (best team or individual submission).</p>
+        </div>
+
+        <div class="trailer-4" id="one">
+          <h2 class="trailer-1">Prizes</h2>
+          <p>Great prizes will be awarded to first, second and third place entries!</p>
+
+          <div class="tabs">
+            <div class="swap-content-toggle tab active" view-name="tamu-participants" tabindex="1">
+              <h3>TAMU Winners</h3>
+            </div>
+          </div>
+
+          <div class="tab-content-blocks">
+            <div class="content-block visible" view="tamu-participants">
+              <ul>
+                <li>
+                  <span class="aggie-weight-3">1<sup>st</sup> Prize</span>&nbsp;<span>$200</span>
+                </li>
+                <li>
+                  <span class="aggie-weight-3">2<sup>nd</sup> Prize</span>&nbsp;<span>$100</span>
+                </li>
+                <li>
+                  <span class="aggie-weight-3">3<sup>rd</sup> Prize</span>&nbsp;<span>$50</span>
+                </li>
+              </ul>
+
+              <p>
+                <strong>*</strong>&nbsp; Prizes for Texas A&amp;M Students provided by the <a href="https://geosat.tamu.edu/" target="_blank" noopener="" noreferrer=""> <span class="aggie-weight-3">TAMU Center for Geospatial Sciences, Applications and Technology (GEOSAT)</span></a
+                >.
+              </p>
+            </div>
+
+            <div class="icon-grid leader-1 trailer-1">
+              <div class="icon-item">
+                <a href="https://geosat.tamu.edu/" target="_blank" noopener="" noreferrer="">
+                  <img src="/assets/images/sponsors/logo_geosat_02.png" style="background: #500000" alt="TAMU GEOSAT" />
+                </a>
+                <p>Texas A&amp;M Center for Geospatial Sciences, Applications and Technology</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="trailer-4" id="two">
+          <h2 class="trailer-1">Registration and Abstract Submission</h2>
+          <ul>
+            <li>Date: November 9, 2022</li>
+            <li>Time: 11:59PM Central Time</li>
+            <li>Location: Online</li>
+          </ul>
+        </div>
+
+        <div class="trailer-4" id="three">
+          <h2 class="trailer-1">Eligibility</h2>
+          <p>Only current graduate and undergraduate students are eligible to participate in this competition.</p>
+        </div>
+
+        <div class="trailer-4" id="four">
+          <h2 class="trailer-1">Finalist Selection</h2>
+          <ul>
+            <li>Finalists will be notified on November 13, 2022</li>
+            <li>Finalists will be expected to present an oral presentation at the Presentation Competition Session (Tuesday, November 15th)</li>
+            <li>Only finalists will be allowed to present at the Presentation Competition Session</li>
+          </ul>
+        </div>
+
+        <div class="trailer-4" id="five">
+          <h2 class="trailer-1">Presentation Competition Session</h2>
+          <p>All finalists will be required to deliver a 15 minute oral presentation.</p>
+
+          <p>Undergraduate student presentation competition session details:</p>
+          <ul>
+            <li>Date: November 15, 2022</li>
+            <li>Time: 2:00pm - 3:15pm</li>
+            <li>Location: Online via Zoom</li>
+          </ul>
+
+          <p>Graduate student presentation competition session details:</p>
+          <ul>
+            <li>Date: November 15, 2022</li>
+            <li>Time: 3:30pm - 4:45pm</li>
+            <li>Location: Online via Zoom</li>
+          </ul>
+        </div>
+
+        <div class="trailer-4" id="six">
+          <h2 class="trailer-1">First Place Award Announcement</h2>
+
+          <p>Winners will be announced on Wednesday, November 16 at the TxGIS Day Awards session.</p>
+        </div>
+
+        <div class="trailer-4" id="seven">
+          <h2 class="trailer-1">Abstract Guidelines</h2>
+          <ul>
+            <li>Any GIS and Remote Sensing work will be accepted</li>
+            <li>Submit an abstract of your individual or team work</li>
+            <li>Submit ongoing or completed work</li>
+            <li>Abstracts should include introduction, objectives, approach, results, discussion, and conclusions (or their equivalents)</li>
+            <li>Word limit: 500 words or less</li>
+            <li>No figures, tables, or references</li>
+          </ul>
+        </div>
+
+        <div class="trailer-4" id="eight">
+          <h2 class="trailer-1">Presentation Guidelines</h2>
+          <ul>
+            <li>10 minute oral presentation + 5 minutes for questions</li>
+            <li>Powerpoint encouraged</li>
+            <li>Presentation should include introduction, objectives, approach, results, discussion, and conclusions (or their equivalents)</li>
+            <li>Only individuals and/or teams selected as finalists will present in the competition session</li>
+          </ul>
+        </div>
+
+        <div class="trailer-4" id="nine">
+          <h2 class="trailer-1">Judging</h2>
+          <p>All finalists and the winner will be selected by a panel of faculty and industry guests.</p>
+          <ul>
+            <li>Finalists selection criteria: Contribution to or use of GIS as described in abstract</li>
+            <li>Overall winner: Quality of abstract and oral presentation</li>
+          </ul>
+        </div>
+
+        <div class="trailer-4" id="ten">
+          <h2 class="trailer-1">Competition Rules</h2>
+          <ul>
+            <li>Any GIS and/or Remote Sensing work will be accepted.</li>
+            <li>Submission may be of ongoing or completed work.</li>
+            <li>Submissions may be for individual or team work.</li>
+            <li>You may submit unlimited entries per person.</li>
+            <li>A map is not required on your submission, but you are submitting to a GIS Day Competition, so...</li>
+            <li>Abstract submissions should include introduction, objectives, approach, results, discussion, and conclusions (or their equivalents).</li>
+            <li>Submisisons must be original - unique work.</li>
+            <li>Abstract submissions must be in pdf format.</li>
+            <li>Abstract Submissions may not to exceed 10MB.</li>
+            <li>Winners do not have to be present to win but maintain the responsibility of collecting any prizes that are won in the contest.</li>
+            <li>Winners will be responsible for any government taxes.</li>
+            <li>Only individuals and/or teams selected as finalists will present in the competition session.</li>
+            <li>Prizes - 1st, 2nd and 3rd place prizes will be awarded.</li>
+            <li>Only one (1) prize can be awarded per entry (even if an entry has multiple authors, only one prize is awarded).</li>
+          </ul>
+        </div>
+
+        <div class="trailer-3" id="eleven">
+          <h2 class="trailer-1">Additional Information</h2>
+          <p>For any questions regarding the presentation competition details, please use our <a [routerLink]="['/contact']">Contact Form</a> to send the GIS Day Committee a message.</p>
+        </div>
+
+        <a class="button primary trailer-3" onclick="postData(); return false;" href="">Submit Your Presentation</a>
+      </div>
+    </div>
+  </div>
+</section>
+
