@@ -18,4 +18,12 @@ export class UserSubmissionsService extends BaseService<UserSubmission> {
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
     super(env1, http1, oidcSecurityService, 'user-submission');
   }
+
+  public getPresentations() {
+    return this.http1.get<Array<Partial<UserSubmission>>>(`${this.resource}/presentations`);
+  }
+
+  public getPosters() {
+    return this.http1.get<Array<Partial<UserSubmission>>>(`${this.resource}/posters`);
+  }
 }

@@ -37,6 +37,10 @@ const routes: Routes = [
         loadChildren: () => import('./posters/posters.module').then((m) => m.PostersModule)
       },
       {
+        path: 'posters/gallery',
+        loadChildren: () => import('./posters/gallery/gallery.module').then((m) => m.GalleryModule)
+      },
+      {
         path: 'vgi',
         loadChildren: () => import('./vgi/vgi.module').then((m) => m.VgiModule)
       },
