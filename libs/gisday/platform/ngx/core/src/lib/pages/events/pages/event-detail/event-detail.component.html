@@ -49,7 +49,7 @@
             <h3>
               Registration (
               <span title="Number of registered participants">{{numOfRsvps | async}}0 /</span>
-              <span title="Total session capacity"> {{event.capacity}}100</span>
+              <span title="Total session capacity"> {{event.capacity}}</span>
               )
             </h3>
             <p *ngIf="event.requiresRsvp === true || event.requiresRsvp === null">This is a limited-seating event. Register to reserve your seat.</p>

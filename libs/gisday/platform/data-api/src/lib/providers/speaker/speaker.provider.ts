@@ -27,14 +27,14 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async getPresenter(guid: string) {
-    const speaker = await this.speakerRepo.findOne({
-      where: {
-        guid: guid
-      },
-      relations: ['speakerInfo', 'speakerInfo.university']
-    });
-
-    return speaker;
+    return from(
+      this.speakerRepo.findOne({
+        where: {
+          guid: guid
+        },
+        relations: ['speakerInfo']
+      })
+    );
   }
 
   public async getPresenters() {
@@ -42,7 +42,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       this.eventRepo.find({
         // select: ['guid', 'speakers'],
         where: {
-          season: '2020'
+          season: '2022'
         },
         relations: ['speakers', 'speakers.speakerInfo', 'speakers.speakerInfo.university']
       })
@@ -52,7 +52,6 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       switchMap((event) => event.speakers),
       distinct(({ guid }) => guid),
       filter((speaker) => speaker.isActive),
-      // tap((speaker) => (speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.data.toString())),
       toArray()
     );
 

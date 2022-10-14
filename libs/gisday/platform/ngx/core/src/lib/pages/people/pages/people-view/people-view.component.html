@@ -3,12 +3,14 @@
   <div class="profile" *ngFor="let people of ($people | async | orderBy: 'lastName':'asc')" [routerLink]="['/presenters/details', people.guid]">
     <div class="class-banner" *ngIf="people.speakerInfo.university" [ngStyle]=" { 'background': '#'+people.speakerInfo.university.hexTriplet+'' }">{{people.speakerInfo.university.acronym}} {{ people.speakerInfo.graduationYear?.substr(2,2) }}</div>
     <div *ngIf="people.speakerInfo">
-      <div class="image" *ngIf="people.speakerInfo.base64representation; else defaultImage" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(people.speakerInfo.base64representation)+')'  } "></div>
-      <div class="image default" defaultImage>
-        <svg style="margin-top: 3.8rem" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-        </svg>
-      </div>
+      <div class="image" *ngIf="people.speakerInfo.blob; else defaultImage" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(people.speakerInfo?.blob?.data)+')'  } "></div>
+      <ng-template #defaultImage>
+        <div class="image default">
+          <svg style="margin-top: 3.8rem" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+          </svg>
+        </div>
+      </ng-template>
     </div>
     <div class="image-description">
       <div class="name">{{people.firstName}} {{people.lastName}}</div>

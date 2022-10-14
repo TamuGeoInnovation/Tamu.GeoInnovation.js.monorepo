@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -25,8 +26,8 @@ export class PeopleDetailsComponent implements OnInit {
     );
   }
 
-  public unwrapPhoto(base64: string) {
-    const ret = `"data:image/jpg;base64,${base64}"`;
-    return ret;
+  public unwrapPhoto(byteArray) {
+    const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
+    return `data:image/png;base64,${buffer}`;
   }
 }
