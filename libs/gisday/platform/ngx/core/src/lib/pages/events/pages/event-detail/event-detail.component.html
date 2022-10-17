@@ -48,7 +48,7 @@
           <div>
             <h3>
               Registration (
-              <span title="Number of registered participants">{{numOfRsvps | async}}0 /</span>
+              <span title="Number of registered participants">{{numOfRsvps | async}} /</span>
               <span title="Total session capacity"> {{event.capacity}}</span>
               )
             </h3>
@@ -69,7 +69,7 @@
             </ng-template>
           </div>
         </div>
-        <div class="trailer-2 ng-scope" *ngIf="event.speakers">
+        <div class="trailer-2 ng-scope" *ngIf="event.speakers.length > 0">
           <div class="border-divider leader-2 trailer-2"></div>
           <h3>Presenters</h3>
           <div class="flex flex-row leader-1 justify-between">
@@ -82,7 +82,7 @@
               </div>
               <div class="details">
                 <div class="name">
-                  <a *ngIf="presenter" href="../presenters"> {{presenter.firstName}} {{presenter.lastName}} </a>
+                  <a *ngIf="presenter" href="/presenters/details/{{presenter.guid}}"> {{presenter.firstName}} {{presenter.lastName}} </a>
                 </div>
                 <div class="organization">{{presenter.organization}}</div>
                 <div class="role">{{presenter.role}}</div>
