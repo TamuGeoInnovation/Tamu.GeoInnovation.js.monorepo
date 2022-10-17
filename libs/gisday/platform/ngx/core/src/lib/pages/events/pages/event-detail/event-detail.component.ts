@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 
 import { Event } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckinService, EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -28,8 +28,7 @@ export class EventDetailComponent implements OnInit {
   public ngOnInit(): void {
     this.$event = this.route.params.pipe(
       map((params) => params['guid']),
-      switchMap((eventGuid) => this.eventService.getEntityWithRelations(eventGuid)),
-      tap((event) => console.log('event', event))
+      switchMap((eventGuid) => this.eventService.getEntityWithRelations(eventGuid))
     );
   }
 

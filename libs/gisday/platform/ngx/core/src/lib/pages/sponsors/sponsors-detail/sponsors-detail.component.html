@@ -1,1 +1,8 @@
-<tamu-gisc-detail-view [viewTitle]="viewTitle"></tamu-gisc-detail-view>
+<section *ngIf="($sponsor | async) as sponsor">
+  <div class="container12 leader-3 trailer-1 flex flex-row">
+    <h1 class="session-title">{{sponsor.name}}</h1>
+  </div>
+  <div class="container12 trailer-3">
+    <p [innerHTML]="sponsor.description | markdownParse"></p>
+  </div>
+</section>
