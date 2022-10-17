@@ -24,4 +24,3 @@ export class GalleryComponent implements OnInit {
     return this.sanitizer.sanitize(SecurityContext.URL, link);
   }
 }
-
