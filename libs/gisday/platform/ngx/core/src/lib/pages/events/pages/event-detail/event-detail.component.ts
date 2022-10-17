@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer';
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -28,7 +30,7 @@ export class EventDetailComponent implements OnInit {
   public ngOnInit(): void {
     this.$event = this.route.params.pipe(
       map((params) => params['guid']),
-      switchMap((eventGuid) => this.eventService.getEntityWithRelations(eventGuid))
+      switchMap((eventGuid) => this.eventService.getEvent(eventGuid))
     );
   }
 
@@ -38,5 +40,10 @@ export class EventDetailComponent implements OnInit {
 
   public checkin() {
     // this.checkinService.insertUserCheckin(this.eventGuid);
+  }
+
+  public unwrapPhoto(byteArray) {
+    const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
+    return `data:image/png;base64,${buffer}`;
   }
 }
