@@ -13,21 +13,20 @@ export class UserSubmissionProvider extends BaseProvider<UserSubmission> {
   }
 
   public async insertUserSubmission(accountGuid: string, _userSubmission: Partial<UserSubmission>) {
-    const submissionType = await this.submissionTypeRepo.findOne({
-      where: {
-        guid: _userSubmission.submissionType
-      }
-    });
+    // const submissionType = await this.submissionTypeRepo.findOne({
+    //   where: {
+    //     guid: _userSubmission.submissionType
+    //   }
+    // });
 
-    if (submissionType) {
-      _userSubmission.accountGuid = accountGuid;
-      _userSubmission.submissionType = submissionType;
+    // if (submissionType) {
+    _userSubmission.accountGuid = accountGuid;
 
-      const userSubmission = this.userSubmissionRepo.create(_userSubmission);
+    const userSubmission = this.userSubmissionRepo.create(_userSubmission);
 
-      return this.userSubmissionRepo.save(userSubmission);
-    } else {
-      throw new UnprocessableEntityException(null, 'Could not find submission type');
-    }
+    return this.userSubmissionRepo.save(userSubmission);
+    // } else {
+    // throw new UnprocessableEntityException(null, 'Could not find submission type');
+    // }
   }
 }

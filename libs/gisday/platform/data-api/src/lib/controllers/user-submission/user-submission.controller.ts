@@ -10,6 +10,26 @@ export class UserSubmissionController extends BaseController<UserSubmission> {
     super(userSubmissionProvider);
   }
 
+  @Get('presentations')
+  public async getPresentations() {
+    return this.userSubmissionProvider.userSubmissionRepo.find({
+      where: {
+        type: 'Presentation',
+        season: '2020'
+      }
+    });
+  }
+
+  @Get('posters')
+  public async getPosters() {
+    return this.userSubmissionProvider.userSubmissionRepo.find({
+      where: {
+        type: 'Poster',
+        season: '2020'
+      }
+    });
+  }
+
   @Get('all')
   public async getUserSubmissions(@Request() req) {
     if (req.user) {
