@@ -531,15 +531,14 @@ export class Speaker extends GISDayEntity {
   @Column({ nullable: true })
   public organization: string;
 
+  @Column({ nullable: true })
+  public isActive: boolean;
+
   @OneToOne(() => SpeakerInfo, { cascade: true, nullable: true })
   @JoinColumn()
-  public speakerInfo: SpeakerInfo;
+  public speakerInfo?: SpeakerInfo;
 
   public inEvent?: boolean;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -741,9 +740,11 @@ export class UserSubmission extends GISDayEntity {
   @Column({ nullable: false })
   public link: string;
 
-  @OneToOne(() => SubmissionType, { cascade: true, eager: true })
-  @JoinColumn()
-  public submissionType: SubmissionType; // Submission Type?
+  // @OneToOne(() => SubmissionType, { cascade: true })
+  // @JoinColumn()
+  // public submissionType: SubmissionType; // Submission Type?
+  @Column({ name: 'submissionType', nullable: true })
+  public type: string;
 
   constructor() {
     super();
