@@ -275,8 +275,7 @@ export class EventLocation extends GuidIdentity {
 }
 
 @Entity({
-  name: 'events',
-  database: 'gisday_bridge_test'
+  name: 'events'
 })
 export class Event extends GISDayEntity {
   @ManyToMany(() => Speaker, { cascade: true, nullable: true })
