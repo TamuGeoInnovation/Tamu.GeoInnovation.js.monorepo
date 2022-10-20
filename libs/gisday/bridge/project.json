@@ -1,0 +1,23 @@
+{
+  "root": "libs/gisday/bridge",
+  "sourceRoot": "libs/gisday/bridge/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/gisday/bridge/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/gisday/bridge"],
+      "options": {
+        "jestConfig": "libs/gisday/bridge/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

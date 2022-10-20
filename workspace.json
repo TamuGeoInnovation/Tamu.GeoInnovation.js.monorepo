@@ -57,6 +57,7 @@
     "geoservices-ngx": "libs/geoservices/ngx",
     "gisday-angular": "apps/gisday-angular",
     "gisday-angular-e2e": "apps/gisday-angular-e2e",
+    "gisday-bridge": "libs/gisday/bridge",
     "gisday-bridge-nest": "apps/gisday-bridge-nest",
     "gisday-competitions-angular": "apps/gisday-competitions-angular",
     "gisday-competitions-angular-e2e": "apps/gisday-competitions-angular-e2e",
