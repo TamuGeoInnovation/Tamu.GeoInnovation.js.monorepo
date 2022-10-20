@@ -1,0 +1,52 @@
+{
+  "root": "apps/gisday-bridge-nest",
+  "sourceRoot": "apps/gisday-bridge-nest/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/gisday-bridge-nest",
+        "main": "apps/gisday-bridge-nest/src/main.ts",
+        "tsConfig": "apps/gisday-bridge-nest/tsconfig.app.json",
+        "assets": ["apps/gisday-bridge-nest/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-bridge-nest/src/environments/environment.ts",
+              "with": "apps/gisday-bridge-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "gisday-bridge-nest:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/gisday-bridge-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/gisday-bridge-nest"],
+      "options": {
+        "jestConfig": "apps/gisday-bridge-nest/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
