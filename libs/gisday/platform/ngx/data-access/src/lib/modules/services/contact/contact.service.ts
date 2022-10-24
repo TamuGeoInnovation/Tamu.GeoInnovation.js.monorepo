@@ -21,4 +21,3 @@ export class ContactService {
     return this.http.post(`${this.environment.value('email_server_url')}/`, body);
   }
 }
-

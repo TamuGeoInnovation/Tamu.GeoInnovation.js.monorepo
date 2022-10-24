@@ -998,7 +998,7 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['broadcast', 'location', 'tags', 'speakers'],
+  event: ['speakers', 'tags', 'sponsors', 'location', 'broadcast'],
   speaker: ['speakerInfo', 'speakerInfo.university'],
   getRelation: (entity?: string) => {
     if (!entity) {
@@ -1011,144 +1011,168 @@ export const EntityRelationsLUT = {
 
 export type EntityName = 'event' | 'speaker';
 
-export class CommonRepo<T> extends Repository<T> {}
+export const GISDAY_ENTITIES = [
+  CheckIn,
+  Class,
+  CourseCredit,
+  Event,
+  EventBroadcast,
+  EventLocation,
+  InitialSurveyQuestion,
+  InitialSurveyResponse,
+  QuestionType,
+  RsvpType,
+  Speaker,
+  SpeakerInfo,
+  SpeakerRole,
+  SubmissionType,
+  Sponsor,
+  Tag,
+  UserClass,
+  UserInfo,
+  UserRsvp,
+  Submission,
+  University
+];
 
-@EntityRepository(CheckIn)
-export class CheckInRepo extends CommonRepo<CheckIn> {}
+// export class CommonRepo<T> extends Repository<T> {}
 
-@EntityRepository(Class)
-export class ClassRepo extends CommonRepo<Class> {}
+// @EntityRepository(CheckIn)
+// export class CheckInRepo extends CommonRepo<CheckIn> {}
 
-@EntityRepository(CourseCredit)
-export class CourseCreditRepo extends CommonRepo<CourseCredit> {}
+// @EntityRepository(Class)
+// export class ClassRepo extends CommonRepo<Class> {}
 
-@EntityRepository(Event)
-export class EventRepo extends CommonRepo<Event> {
-  public async getAllCurrentSeasonByStartTime() {
-    return getConnection()
-      .getRepository(Event)
-      .createQueryBuilder('events')
-      .leftJoinAndSelect('events.tags', 'tags')
-      .leftJoinAndSelect('events.speakers', 'speakers')
-      .orderBy('startTime', 'ASC')
-      .where(`events.season = :season`, {
-        season: '2022'
-      })
-      .getMany();
-  }
-}
+// @EntityRepository(CourseCredit)
+// export class CourseCreditRepo extends CommonRepo<CourseCredit> {}
 
-@EntityRepository(EventLocation)
-export class EventLocationRepo extends CommonRepo<EventLocation> {}
+// @EntityRepository(Event)
+// export class EventRepo extends CommonRepo<Event> {
+//   public async getAllCurrentSeasonByStartTime() {
+//     return getConnection()
+//       .getRepository(Event)
+//       .createQueryBuilder('events')
+//       .leftJoinAndSelect('events.tags', 'tags')
+//       .leftJoinAndSelect('events.speakers', 'speakers')
+//       .orderBy('startTime', 'ASC')
+//       .where(`events.season = :season`, {
+//         season: '2022'
+//       })
+//       .getMany();
+//   }
+// }
 
-@EntityRepository(EventBroadcast)
-export class EventBroadcastRepo extends CommonRepo<EventBroadcast> {}
+// @EntityRepository(EventLocation)
+// export class EventLocationRepo extends CommonRepo<EventLocation> {}
 
-@EntityRepository(InitialSurveyQuestion)
-export class InitialSurveyQuestionRepo extends CommonRepo<InitialSurveyQuestion> {}
+// @EntityRepository(EventBroadcast)
+// export class EventBroadcastRepo extends CommonRepo<EventBroadcast> {}
 
-@EntityRepository(InitialSurveyResponse)
-export class InitialSurveyRepo extends CommonRepo<InitialSurveyResponse> {}
+// @EntityRepository(InitialSurveyQuestion)
+// export class InitialSurveyQuestionRepo extends CommonRepo<InitialSurveyQuestion> {}
 
-@EntityRepository(QuestionType)
-export class QuestionTypeRepo extends CommonRepo<QuestionType> {}
+// @EntityRepository(InitialSurveyResponse)
+// export class InitialSurveyRepo extends CommonRepo<InitialSurveyResponse> {}
 
-@EntityRepository(Speaker)
-export class SpeakerRepo extends CommonRepo<Speaker> {
-  public async getPresenter(speakerGuid: string) {
-    return getConnection()
-      .getRepository(Speaker)
-      .createQueryBuilder('speaker')
-      .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
-      .leftJoinAndSelect('speakerInfo.university', 'university')
-      .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
-      .where(`speaker.guid = :guid`, {
-        guid: speakerGuid
-      })
-      .getOne();
-  }
+// @EntityRepository(QuestionType)
+// export class QuestionTypeRepo extends CommonRepo<QuestionType> {}
 
-  public async getPresenters() {
-    return getConnection()
-      .getRepository(Speaker)
-      .createQueryBuilder('speaker')
-      .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
-      .leftJoinAndSelect('speakerInfo.university', 'university')
-      .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
-      .where('speaker.season = :season', {
-        season: '2020'
-      })
-      .getMany();
-  }
-}
+// @EntityRepository(Speaker)
+// export class SpeakerRepo extends CommonRepo<Speaker> {
+//   public async getPresenter(speakerGuid: string) {
+//     return getConnection()
+//       .getRepository(Speaker)
+//       .createQueryBuilder('speaker')
+//       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+//       .leftJoinAndSelect('speakerInfo.university', 'university')
+//       .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
+//       .where(`speaker.guid = :guid`, {
+//         guid: speakerGuid
+//       })
+//       .getOne();
+//   }
 
-@EntityRepository(SpeakerRole)
-export class SpeakerRoleRepo extends CommonRepo<SpeakerRole> {}
+//   public async getPresenters() {
+//     return getConnection()
+//       .getRepository(Speaker)
+//       .createQueryBuilder('speaker')
+//       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+//       .leftJoinAndSelect('speakerInfo.university', 'university')
+//       .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
+//       .where('speaker.season = :season', {
+//         season: '2020'
+//       })
+//       .getMany();
+//   }
+// }
 
-@EntityRepository(SpeakerInfo)
-export class SpeakerInfoRepo extends CommonRepo<SpeakerInfo> {}
+// @EntityRepository(SpeakerRole)
+// export class SpeakerRoleRepo extends CommonRepo<SpeakerRole> {}
 
-@EntityRepository(Sponsor)
-export class SponsorRepo extends CommonRepo<Sponsor> {}
+// @EntityRepository(SpeakerInfo)
+// export class SpeakerInfoRepo extends CommonRepo<SpeakerInfo> {}
 
-@EntityRepository(SubmissionType)
-export class SubmissionTypeRepo extends CommonRepo<SubmissionType> {}
+// @EntityRepository(Sponsor)
+// export class SponsorRepo extends CommonRepo<Sponsor> {}
 
-@EntityRepository(RsvpType)
-export class RsvpTypeRepo extends CommonRepo<RsvpType> {}
+// @EntityRepository(SubmissionType)
+// export class SubmissionTypeRepo extends CommonRepo<SubmissionType> {}
 
-@EntityRepository(Tag)
-export class TagRepo extends CommonRepo<Tag> {}
+// @EntityRepository(RsvpType)
+// export class RsvpTypeRepo extends CommonRepo<RsvpType> {}
 
-@EntityRepository(University)
-export class UniversityRepo extends CommonRepo<University> {}
+// @EntityRepository(Tag)
+// export class TagRepo extends CommonRepo<Tag> {}
 
-@EntityRepository(UserClass)
-export class UserClassRepo extends CommonRepo<UserClass> {
-  public async getUsersClasses(accountGuid: string) {
-    return getConnection()
-      .getRepository(UserClass)
-      .createQueryBuilder('userClass')
-      .leftJoinAndSelect('userClass.class', 'class')
-      .where(`userClass.accountGuid = :guid`, {
-        guid: accountGuid
-      })
-      .getMany();
-  }
-}
+// @EntityRepository(University)
+// export class UniversityRepo extends CommonRepo<University> {}
 
-@EntityRepository(UserInfo)
-export class UserInfoRepo extends CommonRepo<UserInfo> {}
+// @EntityRepository(UserClass)
+// export class UserClassRepo extends CommonRepo<UserClass> {
+//   public async getUsersClasses(accountGuid: string) {
+//     return getConnection()
+//       .getRepository(UserClass)
+//       .createQueryBuilder('userClass')
+//       .leftJoinAndSelect('userClass.class', 'class')
+//       .where(`userClass.accountGuid = :guid`, {
+//         guid: accountGuid
+//       })
+//       .getMany();
+//   }
+// }
 
-@EntityRepository(UserRsvp)
-export class UserRsvpRepo extends CommonRepo<UserRsvp> {
-  public async getUserRsvps(accountGuid: string) {
-    return getConnection()
-      .getRepository(UserRsvp)
-      .createQueryBuilder('userRsvp')
-      .leftJoinAndSelect('userRsvp.event', 'event')
-      .leftJoinAndSelect('userRsvp.rsvpType', 'rsvpType')
-      .where(`userRsvp.accountGuid = :guid`, {
-        guid: accountGuid
-      })
-      .getMany();
-  }
-}
+// @EntityRepository(UserInfo)
+// export class UserInfoRepo extends CommonRepo<UserInfo> {}
 
-@EntityRepository(Submission)
-export class UserSubmissionRepo extends CommonRepo<Submission> {}
+// @EntityRepository(UserRsvp)
+// export class UserRsvpRepo extends CommonRepo<UserRsvp> {
+//   public async getUserRsvps(accountGuid: string) {
+//     return getConnection()
+//       .getRepository(UserRsvp)
+//       .createQueryBuilder('userRsvp')
+//       .leftJoinAndSelect('userRsvp.event', 'event')
+//       .leftJoinAndSelect('userRsvp.rsvpType', 'rsvpType')
+//       .where(`userRsvp.accountGuid = :guid`, {
+//         guid: accountGuid
+//       })
+//       .getMany();
+//   }
+// }
 
-@EntityRepository(SignageSubmission)
-export class SignageSubmissionRepo extends CommonRepo<SignageSubmission> {}
+// @EntityRepository(Submission)
+// export class UserSubmissionRepo extends CommonRepo<Submission> {}
 
-@EntityRepository(StormwaterSubmission)
-export class StormwaterSubmissionRepo extends CommonRepo<StormwaterSubmission> {}
+// @EntityRepository(SignageSubmission)
+// export class SignageSubmissionRepo extends CommonRepo<SignageSubmission> {}
 
-@EntityRepository(SidewalkSubmission)
-export class SidewalkSubmissionRepo extends CommonRepo<SidewalkSubmission> {}
+// @EntityRepository(StormwaterSubmission)
+// export class StormwaterSubmissionRepo extends CommonRepo<StormwaterSubmission> {}
 
-@EntityRepository(ManholeSubmission)
-export class ManholeSubmissionRepo extends CommonRepo<ManholeSubmission> {}
+// @EntityRepository(SidewalkSubmission)
+// export class SidewalkSubmissionRepo extends CommonRepo<SidewalkSubmission> {}
+
+// @EntityRepository(ManholeSubmission)
+// export class ManholeSubmissionRepo extends CommonRepo<ManholeSubmission> {}
 
 export interface IGeoJsonFeature {
   type: string;
