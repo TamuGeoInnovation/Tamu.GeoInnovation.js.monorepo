@@ -16,7 +16,7 @@ import {
   UserClass,
   UserInfo,
   UserRsvp,
-  UserSubmission,
+  Submission,
   SubmissionType,
   University,
   CheckInModule,
@@ -68,7 +68,7 @@ import { dbConfig } from '../environments/environment';
         UserClass,
         UserInfo,
         UserRsvp,
-        UserSubmission,
+        Submission,
         University
       ]
     }),
