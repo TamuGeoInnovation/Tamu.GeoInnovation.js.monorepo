@@ -3,7 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs';
 
-import { UserSubmission } from '@tamu-gisc/gisday/platform/data-api';
+import { Submission } from '@tamu-gisc/gisday/platform/data-api';
 import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
@@ -12,7 +12,7 @@ import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-acce
   styleUrls: ['./gallery.component.scss']
 })
 export class GalleryComponent implements OnInit {
-  public $posters: Observable<Array<Partial<UserSubmission>>>;
+  public $posters: Observable<Array<Partial<Submission>>>;
 
   constructor(private submissionService: UserSubmissionsService, private sanitizer: DomSanitizer) {}
 

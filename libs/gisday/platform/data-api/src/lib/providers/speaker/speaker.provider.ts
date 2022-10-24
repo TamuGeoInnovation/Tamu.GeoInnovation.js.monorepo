@@ -2,6 +2,7 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 import { DeepPartial } from 'typeorm';
 import { Request } from 'express';
+import { distinct, filter, from, switchMap, toArray } from 'rxjs';
 
 import {
   Speaker,
@@ -13,7 +14,6 @@ import {
   EventRepo
 } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
-import { distinct, filter, from, map, switchMap, tap, toArray } from 'rxjs';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {

@@ -445,17 +445,52 @@ export class InitialSurveyResponse extends GISDayEntity {
 }
 
 @Entity({
+  name: 'event_rating_questions'
+})
+export class EventRatingQuestion extends GISDayEntity {
+  @Column({ nullable: true })
+  public userEditable: boolean;
+
+  @Column({ nullable: true })
+  public type: 'scale-normal' | 'boolean' | 'text' | 'multiple-option' | string;
+
+  @Column({ nullable: true })
+  public text: string;
+
+  @Column({ nullable: true })
+  public options: string; // Should be | (pipe) delimited
+}
+
+@Entity({
+  name: 'event_rating_responses'
+})
+export class EventRatingResponse extends GISDayEntity {
+  @ManyToOne(() => Event, { cascade: false, nullable: true })
+  @JoinColumn()
+  public event: Event;
+
+  @ManyToOne(() => EventRatingQuestion, { cascade: false, nullable: true }) // Maybe many-to-many?
+  @JoinColumn()
+  public question: EventRatingQuestion;
+
+  //TODO: Add the user / account guid
+
+  @Column({ nullable: true, length: 'max' })
+  public response: string;
+}
+
+@Entity({
   name: 'universities'
 })
 export class University extends GuidIdentity {
-  @Column()
+  @Column({ nullable: true })
   public name: string;
 
-  @Column()
+  @Column({ nullable: true })
   public acronym?: string;
 
-  @Column()
-  public hexTriplet: string;
+  @Column({ nullable: true })
+  public hexTriplet?: string;
 }
 
 @Entity({
@@ -505,10 +540,6 @@ export class SpeakerInfo extends GuidIdentity {
   public blob: MSSQLImage;
 
   public base64representation: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -541,6 +572,32 @@ export class Speaker extends GISDayEntity {
 }
 
 @Entity({
+  name: 'organizations'
+})
+export class Organization extends GISDayEntity {
+  @Column({ nullable: true })
+  public name: string;
+
+  @Column({ nullable: true })
+  public website: string;
+
+  @Column({ nullable: true })
+  public logoUrl: string;
+
+  @Column({ nullable: true, length: 'max' })
+  public text: string;
+
+  @Column({ nullable: true })
+  public contactFirstName: string;
+
+  @Column({ nullable: true })
+  public contactLastName: string;
+
+  @Column({ nullable: true })
+  public contactEmail: string;
+}
+
+@Entity({
   name: 'tags'
 })
 export class Tag extends GuidIdentity {
@@ -548,10 +605,6 @@ export class Tag extends GuidIdentity {
   public name: string;
 
   public inEvent?: boolean;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -571,30 +624,28 @@ export class Sponsor extends GISDayEntity {
   public contactEmail: string;
 
   @Column({ nullable: true })
+  public contactName: string;
+
+  @Column({ nullable: true, length: 'max' })
   public description: string;
 
   @Column({ nullable: true })
-  public sponsorshipLevel: 'point' | 'line' | 'polygon' | 'raster';
+  public sponsorshipLevel: 'point' | 'line' | 'polygon' | 'raster' | string;
 
-  constructor() {
-    super();
-  }
+  @Column({ nullable: true })
+  public sponsorshipAmount: string;
 }
 
 @Entity({
   name: 'checkins'
 })
 export class CheckIn extends GISDayEntity {
-  @OneToOne(() => Event, { cascade: true, eager: true })
+  @ManyToOne(() => Event, { cascade: false })
   @JoinColumn()
   public event: Event;
 
   @Column({ nullable: false })
   public accountGuid: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -614,23 +665,19 @@ export class Class extends GISDayEntity {
   public code: string;
 
   public userInClass = false;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
   name: 'course_credits'
 })
 export class CourseCredit extends GISDayEntity {
-  @ManyToOne(() => Class, { cascade: true })
+  @ManyToOne(() => Event, { cascade: false, nullable: true })
   @JoinColumn()
-  public class: Class;
+  public event?: Event;
 
-  constructor() {
-    super();
-  }
+  @ManyToOne(() => Class, { cascade: false, nullable: true })
+  @JoinColumn()
+  public class?: Class;
 }
 
 @Entity({
@@ -720,34 +767,60 @@ export class UserRsvp extends GISDayEntity {
   }
 }
 
+// @Entity({
+//   name: 'submissions'
+// })
+// export class UserSubmission extends GISDayEntity {
+//   @Column({ nullable: false })
+//   public accountGuid: string; // User
+
+//   @Column({ nullable: false })
+//   public title: string;
+
+//   @Column({ nullable: false })
+//   public author: string;
+
+//   @Column({ nullable: false })
+//   public abstract: string;
+
+//   @Column({ nullable: false })
+//   public link: string;
+
+//   // @OneToOne(() => SubmissionType, { cascade: true })
+//   // @JoinColumn()
+//   // public submissionType: SubmissionType; // Submission Type?
+//   @Column({ name: 'submissionType', nullable: true })
+//   public type: string;
+
+//   constructor() {
+//     super();
+//   }
+// }
+
 @Entity({
   name: 'submissions'
 })
-export class UserSubmission extends GISDayEntity {
-  @Column({ nullable: false })
+export class Submission extends GISDayEntity {
+  @Column({ nullable: true })
   public accountGuid: string; // User
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public title: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true, length: 'max' })
   public author: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true, length: 'max' })
   public abstract: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public link: string;
 
-  // @OneToOne(() => SubmissionType, { cascade: true })
-  // @JoinColumn()
-  // public submissionType: SubmissionType; // Submission Type?
-  @Column({ name: 'submissionType', nullable: true })
-  public type: string;
+  @Column({ nullable: true })
+  public submissionType: 'Poster' | 'Presentation' | string;
 
-  constructor() {
-    super();
-  }
+  @Column({ nullable: true })
+  public studentType: 'Undergraduate' | 'Graduate' | string;
 }
 
 @Entity({
@@ -1062,8 +1135,8 @@ export class UserRsvpRepo extends CommonRepo<UserRsvp> {
   }
 }
 
-@EntityRepository(UserSubmission)
-export class UserSubmissionRepo extends CommonRepo<UserSubmission> {}
+@EntityRepository(Submission)
+export class UserSubmissionRepo extends CommonRepo<Submission> {}
 
 @EntityRepository(SignageSubmission)
 export class SignageSubmissionRepo extends CommonRepo<SignageSubmission> {}
