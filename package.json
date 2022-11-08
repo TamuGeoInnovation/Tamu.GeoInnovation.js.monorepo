@@ -133,7 +133,7 @@
     "@nrwl/nest": "13.7.1",
     "@nrwl/node": "13.7.1",
     "@nrwl/tao": "13.7.1",
-    "@nrwl/web": "13.7.1",
+    "@nrwl/web": "15.0.12",
     "@nrwl/workspace": "13.7.1",
     "@schematics/angular": "13.2.0",
     "@types/arcgis-js-api": "~4.23.0",
