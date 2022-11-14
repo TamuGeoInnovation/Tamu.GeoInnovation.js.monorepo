@@ -21,6 +21,21 @@ export class FormService {
     this.resource = `${this.env.value('api_url')}/form`;
   }
 
+  public getFormForActiveSeason(): Observable<CompetitionForm> {
+    return this.http.get<CompetitionSeason>(`${this.resource}/active`).pipe(
+      pluck('form'),
+      catchError((err) => {
+        this.ns.toast({
+          id: 'submission-form-load-failure',
+          title: 'Failed to Load Season Form',
+          message: `There was an error loading the competitions submission form for this season. Please try again later. (${err.status})`
+        });
+
+        throw new Error(`Failed loading season form.`);
+      })
+    );
+  }
+
   public getFormForSeason(seasonName: string): Observable<CompetitionForm> {
     return this.http.get<CompetitionSeason>(`${this.resource}/${seasonName}`).pipe(
       pluck('form'),

@@ -16,7 +16,6 @@ export class SubmissionComponent implements OnInit {
   constructor(private readonly fs: FormService) {}
 
   public ngOnInit() {
-    const year = new Date().getFullYear().toString();
-    this.model = this.fs.getFormForSeason(year).pipe(pluck('model'));
+    this.model = this.fs.getFormForActiveSeason().pipe(pluck('model'));
   }
 }
