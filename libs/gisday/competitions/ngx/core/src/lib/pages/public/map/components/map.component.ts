@@ -29,6 +29,9 @@ export class MapComponent implements OnInit {
           wkid: 102100
         },
         zoom: 15,
+        constraints: {
+          maxZoom: 18
+        },
         popup: {
           dockOptions: {
             buttonEnabled: false,
@@ -66,6 +69,50 @@ export class MapComponent implements OnInit {
                 size: 10,
                 color: '#ffc5c5'
               }
+            }
+          }
+        },
+        {
+          type: 'feature',
+          id: 'water-meter-layer',
+          title: 'Water Meter Rough Locations',
+          url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/WaterMetersTAMU/FeatureServer/0`,
+          listMode: 'show',
+          loadOnInit: true,
+          visible: true,
+          native: {
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'simple-marker',
+                style: 'circle',
+                size: 10,
+                color: '#42A5F5',
+                outline: {
+                  width: '4',
+                  color: '#90CAF9'
+                }, 
+              },
+            }, 
+            featureReduction: {
+              type: 'cluster', 
+              labelingInfo: [
+                {
+                  deconflictionStrategy: "none",
+                  labelExpressionInfo: {
+                    expression: "Text($feature.cluster_count, '#,###')"
+                  },
+                  symbol: {
+                    type: "text",
+                    color: "#E3F2FD",
+                    font: {
+                      family: "Noto Sans",
+                      size: "14px"
+                    }
+                  },
+                  labelPlacement: "center-center"
+                }
+              ],
             }
           }
         }
