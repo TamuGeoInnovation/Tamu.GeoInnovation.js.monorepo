@@ -5,7 +5,7 @@
     <div class="block-input">
       <div class="block-input-presentation" *ngIf="(file | async) === undefined">
         <div class="material-icons">photo_camera</div>
-        <p class="title">Upload Sign Photo</p>
+        <p class="title">Upload Photo</p>
         <p class="description">Tap to take a picture</p>
       </div>
 
@@ -17,22 +17,17 @@
       <p class="label">{{c.get('title').value}}</p>
       <div class="statused-form-input column">
         <div [ngSwitch]="c.get('type').value">
-          <tamu-gisc-select [formControl]="c.get('value')" [valueTemplate]="'value'" [displayTemplate]="'name'"
-            [data]="c.get('options').value" *ngSwitchCase="'select'"></tamu-gisc-select>
+          <tamu-gisc-select [formControl]="c.get('value')" [valueTemplate]="'value'" [displayTemplate]="'name'" [data]="c.get('options').value" *ngSwitchCase="'select'"></tamu-gisc-select>
           <tamu-gisc-textbox [formControl]="c.get('value')" *ngSwitchCase="'text'"></tamu-gisc-textbox>
           <div *ngSwitchDefault>This question does not have a valid input type.</div>
         </div>
       </div>
     </div>
 
-    <p class="rules-text">By submitting, you agree that you have read and understand the competition <a
-        href="https://txgisday.org/competitions/vgi/" target="_blank" rel="noopener noreferrer">rules and
-        guidelines.</a></p>
+    <p class="rules-text">By submitting, you agree that you have read and understand the competition <a href="https://txgisday.org/competitions/vgi/" target="_blank" rel="noopener noreferrer">rules and guidelines.</a></p>
 
-    <div class="button" role="button" (click)="submitResponse()"
-      [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1">
-      <div class="progress" *ngIf="(submissionStatus | async) !== -1"
-        [style.width.%]="(submissionProgress | async) * 100"></div>
+    <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1">
+      <div class="progress" *ngIf="(submissionStatus | async) !== -1" [style.width.%]="(submissionProgress | async) * 100"></div>
       <div class="status-text" [ngSwitch]="(submissionStatus | async)">
         <div *ngSwitchCase="1">Submitting...</div>
         <div *ngSwitchCase="-1">Error!</div>

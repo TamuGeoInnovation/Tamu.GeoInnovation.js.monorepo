@@ -17,7 +17,6 @@
 
   // Target the kprojected route component
   & > :nth-child(2) {
-    @include flex-grow(1);
     // Find a way to put this in a base class. Not all views need padding (e.g. maps)
     // padding: 1rem;
     overflow-y: auto;

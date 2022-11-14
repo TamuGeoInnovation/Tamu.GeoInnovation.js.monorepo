@@ -1,5 +1,7 @@
 <div id="mobile-app-viewport">
-  <router-outlet></router-outlet>
+  <div id="content-viewport">
+    <router-outlet></router-outlet>
+  </div>
 
   <tamu-gisc-mobile-navigation-tab>
     <tamu-gisc-mobile-nav-tab [route]="'map'" [icon]="'map'" [label]="'Map'"></tamu-gisc-mobile-nav-tab>

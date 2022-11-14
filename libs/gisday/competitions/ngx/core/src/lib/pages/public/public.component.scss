@@ -14,3 +14,10 @@
   display: flex;
   background: rgba(250, 250, 250, 0.31);
 }
+
+#content-viewport {
+  @include flexbox();
+  @include flex-grow(1);
+  @include flex-direction(column);
+  overflow: scroll;
+}
