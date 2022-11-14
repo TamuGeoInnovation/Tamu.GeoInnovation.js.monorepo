@@ -22,4 +22,36 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       'SELECT RIGHT(userGuid, 4) as [identity], userGuid as guid, COUNT(userGuid) as points FROM submissions GROUP BY userGuid ORDER BY points DESC'
     );
   }
+
+  public async getLeaderBoardForActiveSeason() {
+    const subs = await this.submissionRepo
+      .createQueryBuilder('submissions')
+      .leftJoin('submissions.season', 'season')
+      .select('RIGHT(submissions.userGuid, 4)', 'identity')
+      .addSelect('submissions.userGuid', 'guid')
+      .addSelect('COUNT(submissions.userGuid)', 'points')
+      .groupBy('submissions.userGuid')
+      .orderBy('points', 'DESC')
+      .where('season.active = :seasonActivity')
+      .setParameter('seasonActivity', true)
+      .getRawMany();
+
+    return subs;
+  }
+
+  public async getLeaderBoardItemsForSeason(season?: string) {
+    const subs = await this.submissionRepo
+      .createQueryBuilder('submissions')
+      .leftJoin('submissions.season', 'season')
+      .select('RIGHT(submissions.userGuid, 4)', 'identity')
+      .addSelect('submissions.userGuid', 'guid')
+      .addSelect('COUNT(submissions.userGuid)', 'points')
+      .groupBy('submissions.userGuid')
+      .orderBy('points', 'DESC')
+      .where('season.year = :season')
+      .setParameter('season', season)
+      .getRawMany();
+
+    return subs;
+  }
 }

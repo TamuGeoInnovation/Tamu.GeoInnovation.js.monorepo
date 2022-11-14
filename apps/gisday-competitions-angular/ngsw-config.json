@@ -35,7 +35,7 @@
   "dataGroups": [
     {
       "name": "api",
-      "urls": ["https://gisday.tamu.edu/Rest/**"],
+      "urls": ["https://txgisday.org/Rest/**"],
       "cacheConfig": {
         "maxSize": 10,
         "maxAge": "5m",

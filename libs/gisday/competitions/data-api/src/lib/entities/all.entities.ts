@@ -80,6 +80,9 @@ export class CompetitionSeason extends GISDayCompetitionBaseEntity implements IC
   @Column()
   public year: string;
 
+  @Column({ default: false })
+  public active: boolean;
+
   @OneToOne(() => CompetitionForm, { cascade: true, nullable: true })
   @JoinColumn()
   public form?: CompetitionForm;

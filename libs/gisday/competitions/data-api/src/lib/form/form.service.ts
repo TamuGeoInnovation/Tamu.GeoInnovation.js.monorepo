@@ -27,4 +27,13 @@ export class FormService extends BaseService<CompetitionForm> {
       ]
     });
   }
+
+  public async getActiveSeason() {
+    return this.seasonRepo.findOne({
+      relations: ['form'],
+      where: {
+        active: true
+      }
+    });
+  }
 }

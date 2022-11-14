@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 
 import { CompetitionSubmission } from '../entities/all.entities';
 import { BaseController } from '../_base/base.controller';
@@ -10,8 +10,18 @@ export class LeaderboardController extends BaseController<CompetitionSubmission>
     super(service);
   }
 
+  @Get('/season')
+  public getLeaderBoardForSeason(@Body() { season }) {
+    return this.service.getLeaderBoardItemsForSeason(season);
+  }
+
+  @Get('/all')
+  public get() {
+    return this.service.getAllLeaderboardItems();
+  }
+
   @Get()
   public getLeaderboard() {
-    return this.service.getAllLeaderboardItems();
+    return this.service.getLeaderBoardForActiveSeason();
   }
 }

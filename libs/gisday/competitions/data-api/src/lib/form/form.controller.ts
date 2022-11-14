@@ -11,6 +11,17 @@ export class FormController extends BaseController<CompetitionForm> {
     super(service);
   }
 
+  @Get('active')
+  public async getFormForActiveSeason() {
+    const season = await this.service.getActiveSeason();
+
+    if (season) {
+      return season;
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
   @Get(':year')
   public async getForm(@Param() params) {
     const season = await this.service.getSeason(params.year);
