@@ -1,4 +1,17 @@
-import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body, UseGuards, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Req,
+  Res,
+  Post,
+  HttpException,
+  HttpStatus,
+  Body,
+  UseGuards,
+  Delete,
+  Render
+} from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
@@ -94,7 +107,8 @@ export class UserController {
       error: false,
       questions: questions,
       devMode: urlHas(req.path, 'dev', true),
-      requestingHost: urlFragment('', 'hostname')
+      requestingHost: urlFragment('', 'hostname'),
+      returnUrl: req.query.returnUrl
     };
 
     return res.render('register', locals, (err, html) => {
@@ -113,7 +127,8 @@ export class UserController {
    *
    */
   @Post('register')
-  public async registerPost(@Body() body, @Req() req: Request, @Res() res: Response) {
+  @Render('post-registration-redirect')
+  public async registerPost(@Body() body, @Req() req: Request) {
     try {
       const _user: Partial<User> = {
         email: body.email,
@@ -129,7 +144,9 @@ export class UserController {
 
       await this.userService.insertSecretAnswers(secretQuestion1, secretQuestion2, secretanswer1, secretanswer2, userEnt);
 
-      return res.send(`Welcome aboard, ${userEnt.account.name}!`);
+      return {
+        redirectUrl: body.returnUrl
+      };
     } catch (err) {
       throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
     }
