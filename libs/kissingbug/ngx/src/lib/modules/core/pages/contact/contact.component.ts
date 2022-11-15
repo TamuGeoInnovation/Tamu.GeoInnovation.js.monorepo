@@ -5,6 +5,9 @@ import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
+import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
 import { StrapiService } from '../../data-access/strapi.service';
 import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
 
@@ -21,7 +24,12 @@ export class ContactComponent implements OnInit {
   public contactForm: FormGroup;
   public today: Date = new Date(Date.now());
 
-  constructor(private titleService: Title, private ss: StrapiService, private fb: FormBuilder) {
+  constructor(
+    private titleService: Title,
+    private ss: StrapiService,
+    private fb: FormBuilder,
+    private environment: EnvironmentService
+  ) {
     this.contactForm = this.fb.group(
       {
         application: new FormControl('KissingBug'),
@@ -63,20 +71,48 @@ export class ContactComponent implements OnInit {
       const formData = new FormData();
       const fileControls = [this.contactForm.controls.file1, this.contactForm.controls.file2];
 
-      const controls = Object.keys(this.contactForm.value);
-      controls.forEach((controlName) => {
-        if (!controlName.includes('file')) {
-          formData.append(controlName, this.contactForm.get(controlName).value);
-        }
+      // Construct our IMailroomEmailOutbound
+      const allKeys = Object.keys(this.contactForm.value);
+
+      // Don't include any file controls and values for the HTML portion
+      const keys = allKeys.filter((key) => this.contactForm.controls[key].value !== '' && !key.includes('file'));
+
+      const htmlValue = keys
+        .map((key, index) => {
+          const value = this.contactForm.controls[key].value;
+
+          if (index === 0) {
+            return `<ul><li><b>${key}</b>: ${value}</li>`;
+          } else if (index === keys.length - 1) {
+            return `<li><b>${key}</b>: ${value}</li></ul>`;
+          } else {
+            return `<li><b>${key}</b>: ${value}</li>`;
+          }
+        })
+        .join('');
+
+      const outboundMail: IMailroomEmailOutbound = {
+        to: this.environment.value('email_to_account'),
+        from: this.environment.value('email_from_account'),
+        subject: 'Kissing Bugs contact page email',
+        text: '',
+        html: htmlValue
+      };
+
+      // Convert IMailroomEmailOutbound to FormData so we can also handle attachments
+      const mailroomOutboundKeys = Object.keys(outboundMail);
+      mailroomOutboundKeys.forEach((key) => {
+        formData.append(key, outboundMail[key]);
       });
 
+      // Don't forget any files
       fileControls.forEach((fileControl, i) => {
         if (fileControl.value && fileControl.value !== '') {
           formData.append(`file${i}`, fileControl.value, fileControl.value.name);
         }
       });
 
-      this.ss.sendEmail(formData).subscribe(() => {
+      this.ss.sendEmailAsMultipartFormdata(formData).subscribe(() => {
         this.contactForm.reset();
       });
     } else {

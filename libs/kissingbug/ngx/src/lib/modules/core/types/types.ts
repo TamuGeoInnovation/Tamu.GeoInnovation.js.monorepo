@@ -6,7 +6,6 @@ export type StrapiSingleTypes =
   | 'map'
   | 'team'
   | 'faq'
-  | 'resources'
   | 'knowledge'
   | 'contact'
   | 'navigation'

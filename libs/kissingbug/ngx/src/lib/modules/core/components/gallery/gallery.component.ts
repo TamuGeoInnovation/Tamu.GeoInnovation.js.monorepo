@@ -38,11 +38,9 @@ export class GalleryComponent implements OnInit {
 
     this.dataSource.items.forEach((item: IStrapiPageFeature, i) => {
       if (i === 0 || i % this.rowLength !== 0) {
-        console.log(i, 'pushing item', item);
         items.push(item);
       }
       if (i !== 0 && i % this.rowLength === 0) {
-        console.log(i, 'reached row limit');
         this.rowItems.push(items);
         items = [];
         items.push(item);

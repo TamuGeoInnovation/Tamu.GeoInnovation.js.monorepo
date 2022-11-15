@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 import {
   IStrapiPageResponse,
@@ -51,7 +52,11 @@ export class StrapiService {
     return this.http.get<IStrapiBugCount[]>(`${this.resource}/bug-submissions/speciesByMonth/${speciesGuid}/${month}`);
   }
 
-  public sendEmail(body: FormData) {
-    return this.http.post(`${this.environment.value('email_server_url')}/`, body);
+  public sendEmail(mail: IMailroomEmailOutbound) {
+    return this.http.post(`${this.environment.value('email_server_url')}/`, mail);
+  }
+
+  public sendEmailAsMultipartFormdata(mail) {
+    return this.http.post(`${this.resource}/emails`, mail);
   }
 }

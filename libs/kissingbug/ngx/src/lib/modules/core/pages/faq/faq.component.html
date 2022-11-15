@@ -6,8 +6,8 @@
     <div *ngIf="(pageContents | async)?.body">
       <tamu-gisc-kissingbug-dynamic-zone *ngFor="let item of (pageContents | async)?.body" [dataSource]="item"> </tamu-gisc-kissingbug-dynamic-zone>
     </div>
-    <div *ngFor="let question of (pageComponents | async)" class="qacontainer" [ngClass]="question.expanded ? 'qacontainer expanded' : 'qacontainer'" (click)="expandContainer(question)">
-      <div class="question" tabindex="0" aria-role="button">
+    <div *ngFor="let question of (pageComponents | async)" class="qacontainer" [ngClass]="question.expanded ? 'qacontainer expanded' : 'qacontainer'">
+      <div class="question" tabindex="0" aria-role="button" (click)="expandContainer(question)">
         <p>{{ question.text }}</p>
       </div>
       <div class="answer">
