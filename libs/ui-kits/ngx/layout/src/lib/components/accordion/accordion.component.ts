@@ -31,4 +31,12 @@ export class AccordionComponent implements AfterContentInit {
       resize: this.resize
     });
   }
+
+  public toggle() {
+    this.comm.update({
+      animate: this.animate,
+      expanded: !this.expanded,
+      resize: this.resize
+    });
+  }
 }

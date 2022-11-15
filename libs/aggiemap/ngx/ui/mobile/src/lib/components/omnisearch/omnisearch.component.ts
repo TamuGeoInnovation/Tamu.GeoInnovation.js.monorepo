@@ -186,7 +186,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
     if ('id' in this.route.snapshot.params) {
       this.router.navigate(['map/d/trip']);
     } else if (this.searchComponentLeftAction === 'menu') {
-      this.router.navigate(['../sidebar'], { relativeTo: this.route });
+      this.router.navigate(['map/m/sidebar']);
     } else {
       this.clearFocus();
     }

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 
+import { Angulartics2 } from 'angulartics2';
+import { v4 as guid } from 'uuid';
+
 interface MenuItem {
   name: string;
   type: 'link-internal' | 'link-external' | 'router-path' | 'outlet';
@@ -23,6 +26,11 @@ export class MainMobileSidebarComponent {
       name: 'Layers',
       type: 'outlet',
       path: 'layers'
+    },
+    {
+      name: 'Bus Routes',
+      type: 'router-path',
+      path: '/map/m/bus'
     },
     {
       name: 'Building Directory',
@@ -63,4 +71,22 @@ export class MainMobileSidebarComponent {
       path: '../../../../../changelog'
     }
   ];
+
+  constructor(private analytics: Angulartics2) {}
+
+  public reportNavigation(name: string) {
+    const label = {
+      guid: guid(),
+      date: Date.now(),
+      value: name
+    };
+
+    this.analytics.eventTrack.next({
+      action: 'Mobile Sidebar Selection',
+      properties: {
+        category: 'UI Interaction',
+        label: JSON.stringify(label)
+      }
+    });
+  }
 }

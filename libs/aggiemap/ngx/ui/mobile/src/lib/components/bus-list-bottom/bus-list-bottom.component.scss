@@ -1,0 +1,37 @@
+.draggable {
+  position: absolute;
+  background: #ffffff;
+  top: calc(100% - 10rem);
+  min-height: 10rem;
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+  touch-action: none;
+  pointer-events: initial;
+  width: 100%;
+  z-index: 10;
+  padding-top: 0.5rem;
+}
+
+#list-results {
+  padding: 0 0.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-top: none;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+.list-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .material-icons {
+    padding-right: 0.5rem;
+    font-size: 1.3rem;
+  }
+}

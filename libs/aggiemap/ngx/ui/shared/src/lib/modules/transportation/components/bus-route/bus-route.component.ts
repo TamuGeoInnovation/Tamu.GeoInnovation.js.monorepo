@@ -1,20 +1,34 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, timer, Observable, NEVER } from 'rxjs';
-import { switchMap, takeUntil, shareReplay, distinctUntilChanged } from 'rxjs/operators';
+import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';
+
+import { v4 as guid } from 'uuid';
+import { Angulartics2 } from 'angulartics2';
 
 import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
+import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
   selector: 'tamu-gisc-bus-route',
   templateUrl: './bus-route.component.html',
   styleUrls: ['./bus-route.component.scss']
 })
-export class BusRouteComponent implements OnInit, OnDestroy {
+export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Provided TSRoute object from the parent component.
    */
   @Input()
   public route: TSRoute;
+
+  @Input()
+  public selection: 'route' | 'in-place' = 'in-place';
+
+  @Input()
+  public eagerLoad = false;
+
+  @ViewChild(AccordionComponent, { static: false })
+  public accordion;
 
   /**
    * Describes whether or not any given bus route is drawn on the map.
@@ -33,7 +47,12 @@ export class BusRouteComponent implements OnInit, OnDestroy {
    */
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private busService: BusService) {}
+  constructor(
+    private busService: BusService,
+    private readonly router: Router,
+    private readonly rt: ActivatedRoute,
+    private readonly analytics: Angulartics2
+  ) {}
 
   public ngOnInit() {
     // Each route makes a subscription to this function that returns a boolean
@@ -87,6 +106,21 @@ export class BusRouteComponent implements OnInit, OnDestroy {
     });
   }
 
+  public ngAfterViewInit(): void {
+    this.busService.busLayer
+      .pipe(
+        filter((l) => l !== null),
+        take(1)
+      )
+      .subscribe(() => {
+        if (this.eagerLoad) {
+          this.toggleRoute();
+
+          this.accordion.toggle();
+        }
+      });
+  }
+
   public ngOnDestroy() {
     this._destroy$.next(true);
     this._destroy$.complete();
@@ -101,10 +135,34 @@ export class BusRouteComponent implements OnInit, OnDestroy {
    * Either removes or adds the bound route features to/from the map.
    */
   public toggleRoute(): void {
+    this.reportToggleRoute(this.route.ShortName);
+
+    if (this.selection === 'route') {
+      this.router.navigate([this.route.ShortName], { relativeTo: this.rt });
+    }
+
     if (!this.isLoading) {
       this.isLoading = true;
     }
 
-    this.busService.toggleMapRoute(this.route.ShortName);
+    if (this.selection === 'in-place') {
+      this.busService.toggleMapRoute(this.route.ShortName);
+    }
+  }
+
+  private reportToggleRoute(shortName: string) {
+    const label = {
+      guid: guid(),
+      date: Date.now(),
+      value: shortName
+    };
+
+    this.analytics.eventTrack.next({
+      action: 'Bus Route Load',
+      properties: {
+        category: 'UI Interaction',
+        label: JSON.stringify(label)
+      }
+    });
   }
 }

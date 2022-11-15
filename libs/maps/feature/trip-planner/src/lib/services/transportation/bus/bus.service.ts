@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin, from, Observable, of, BehaviorSubject } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
+import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
 import toHex from 'colornames';
+import { v4 as guid } from 'uuid';
+import { Angulartics2 } from 'angulartics2';
 
 import { Point as LatLon } from '@tamu-gisc/common/types';
 import { EsriMapService, MapServiceInstance, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
@@ -41,7 +43,8 @@ export class BusService {
     private http: HttpClient,
     private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService,
-    private location: Location
+    private location: Location,
+    private readonly analytics: Angulartics2
   ) {
     from(this.mapService.store).subscribe((mapInstance: MapServiceInstance) => {
       this._map = mapInstance.map;
@@ -68,10 +71,21 @@ export class BusService {
    */
   public getRoutes(): Observable<TSRoute[]> {
     const routes_url = this.base_url + '/';
+
     if (this._routes != null) {
       return of(this._routes);
     }
+
     return this.http.get(routes_url).pipe(
+      catchError(() => {
+        this.reportFailedRequest('Routes', '*');
+        return timer(1000).pipe(
+          switchMap(() => {
+            return this.http.get(routes_url);
+          })
+        );
+      }),
+      shareReplay(),
       tap((routes: TSRoute[]) => {
         this._routes = routes;
       })
@@ -81,11 +95,23 @@ export class BusService {
   public waypointsForRoute(short_name: string): Observable<Waypoint[]> {
     const waypoints_url = `${this.base_url}/${short_name}/route`;
     const matching_waypoints = this.waypoint_map.filter((el) => el.short_name === short_name);
+
     if (matching_waypoints.length > 0 && matching_waypoints[0].stops != null) {
       return of(matching_waypoints[0].waypoints);
     }
+
     return forkJoin([
-      this.http.get(waypoints_url),
+      this.http.get(waypoints_url).pipe(
+        catchError(() => {
+          this.reportFailedRequest('Waypoints', short_name);
+
+          return timer(1000).pipe(
+            switchMap(() => {
+              return this.http.get(waypoints_url);
+            })
+          );
+        })
+      ),
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
       switchMap(
@@ -119,11 +145,23 @@ export class BusService {
   private stopsForRoute(short_name: string): Observable<BusStop[]> {
     const stops_url = `${this.base_url}/${short_name}/stops`;
     const matching_routes = this.stop_map.filter((el) => el.short_name === short_name);
+
     if (matching_routes.length > 0 && matching_routes[0].stops != null) {
       return of(matching_routes[0].stops);
     }
+
     return forkJoin([
-      this.http.get(stops_url),
+      this.http.get(stops_url).pipe(
+        catchError(() => {
+          this.reportFailedRequest('Stops', short_name);
+
+          return timer(1000).pipe(
+            switchMap(() => {
+              return this.http.get(stops_url);
+            })
+          );
+        })
+      ),
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
       switchMap(
@@ -166,6 +204,15 @@ export class BusService {
       of(matching_routes[0].timetable);
     }
     return this.http.get(timetable_url).pipe(
+      catchError(() => {
+        this.reportFailedRequest(`Date Timetable;${date_string}`, short_name);
+
+        return timer(1000).pipe(
+          switchMap(() => {
+            return this.http.get(timetable_url);
+          })
+        );
+      }),
       switchMap((timetable_raw: TSTimetable[]) => {
         const timetable: TimetableEntry[][] = [];
         for (const timetable_row_json of timetable_raw) {
@@ -504,7 +551,17 @@ export class BusService {
     const timetable_url = `${this.base_url}/${short_name}/buses`;
 
     return forkJoin([
-      this.http.get(timetable_url),
+      this.http.get(timetable_url).pipe(
+        catchError(() => {
+          this.reportFailedRequest(`Buses`, short_name);
+
+          return timer(1000).pipe(
+            switchMap(() => {
+              return this.http.get(timetable_url);
+            })
+          );
+        })
+      ),
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
       map((argument: [TSBus[], [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]]) => {
@@ -840,6 +897,22 @@ export class BusService {
    */
   public removeAllFromMap() {
     this._busLayer.getValue().removeAll();
+  }
+
+  private reportFailedRequest(type: string, route: string) {
+    const label = {
+      guid: guid(),
+      date: Date.now(),
+      value: `${type}|${route}`
+    };
+
+    this.analytics.eventTrack.next({
+      action: 'Bus Fail',
+      properties: {
+        category: 'Network Request',
+        label: JSON.stringify(label)
+      }
+    });
   }
 }
 

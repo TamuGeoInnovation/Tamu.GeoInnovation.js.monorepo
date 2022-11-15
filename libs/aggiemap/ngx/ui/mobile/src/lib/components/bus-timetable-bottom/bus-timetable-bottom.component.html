@@ -1,0 +1,11 @@
+<div class="draggable" draggable [draggableIdentifier]="identifier">
+  <div class="handle"></div>
+
+  <div id="list-results">
+    <p class="list-title"><span class="material-icons" (click)="routeReturn()">arrow_back</span> AggieSpirit Timetable</p>
+
+    <ng-container *ngIf="(busRoute | async) as rt">
+      <tamu-gisc-bus-route [route]="rt" [eagerLoad]="true"></tamu-gisc-bus-route>
+    </ng-container>
+  </div>
+</div>

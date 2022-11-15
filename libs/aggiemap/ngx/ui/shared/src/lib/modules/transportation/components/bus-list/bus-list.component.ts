@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
@@ -13,20 +12,18 @@ import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
   styleUrls: ['./bus-list.component.scss']
 })
 export class BusListComponent implements OnInit, OnDestroy {
+  @Input()
+  public selectionAction: 'in-place' | 'navigate' = 'in-place';
+
   public routes: Observable<Group<TSRoute>[]>;
 
   public responsive: ResponsiveSnapshot;
 
-  public loaded: boolean;
-
-  constructor(
-    private busService: BusService,
-    private responsiveService: ResponsiveService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private busService: BusService, private responsiveService: ResponsiveService) {}
 
   public ngOnInit(): void {
+    const catOrder = ['On Campus', 'Off Campus', 'Game Day'];
+
     this.responsive = this.responsiveService.snapshot;
 
     this.routes = this.busService.getRoutes().pipe(
@@ -49,10 +46,10 @@ export class BusListComponent implements OnInit, OnDestroy {
 
         return of(grouped);
       }),
-      tap(() => {
-        setTimeout(() => {
-          this.loaded = true;
-        }, 0);
+      map((grouped) => {
+        return catOrder.map((cat) => {
+          return grouped.find((g) => (g.identity as TSRoute).Name === cat);
+        });
       })
     );
   }
@@ -61,9 +58,5 @@ export class BusListComponent implements OnInit, OnDestroy {
     // When the user navigates away from the component, any and all bus
     // features drawn on the map.
     this.busService.removeAllFromMap();
-  }
-
-  public backAction(): void {
-    this.router.navigate(['../'], { relativeTo: this.route });
   }
 }

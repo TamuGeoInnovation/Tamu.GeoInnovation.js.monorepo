@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AggiemapNgxSharedUiStructuralModule, TransportationModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
 import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
@@ -14,6 +14,8 @@ import { TripPlannerBottomComponent } from './components/trip-planner-bottom/tri
 import { OmnisearchComponent } from './components/omnisearch/omnisearch.component';
 import { MobileSidebarComponent } from './components/mobile-sidebar/mobile-sidebar.component';
 import { MainMobileSidebarComponent } from './components/main-mobile-sidebar/main-mobile-sidebar.component';
+import { BusListBottomComponent } from './components/bus-list-bottom/bus-list-bottom.component';
+import { BusTimetableBottomComponent } from './components/bus-timetable-bottom/bus-timetable-bottom.component';
 
 @NgModule({
   imports: [
@@ -23,7 +25,8 @@ import { MainMobileSidebarComponent } from './components/main-mobile-sidebar/mai
     MapsFeatureTripPlannerModule,
     UIDragModule,
     SearchModule,
-    UITamuBrandingModule
+    UITamuBrandingModule,
+    TransportationModule
   ],
   declarations: [
     AggiemapNgxUiMobileComponent,
@@ -31,7 +34,9 @@ import { MainMobileSidebarComponent } from './components/main-mobile-sidebar/mai
     TripPlannerBottomComponent,
     OmnisearchComponent,
     MobileSidebarComponent,
-    MainMobileSidebarComponent
+    MainMobileSidebarComponent,
+    BusListBottomComponent,
+    BusTimetableBottomComponent
   ],
   exports: [
     AggiemapNgxUiMobileComponent,
@@ -39,7 +44,9 @@ import { MainMobileSidebarComponent } from './components/main-mobile-sidebar/mai
     TripPlannerBottomComponent,
     OmnisearchComponent,
     MobileSidebarComponent,
-    MainMobileSidebarComponent
+    MainMobileSidebarComponent,
+    BusListBottomComponent,
+    BusTimetableBottomComponent
   ]
 })
 export class AggiemapNgxUiMobileModule {}
