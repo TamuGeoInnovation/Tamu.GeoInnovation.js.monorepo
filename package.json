@@ -115,7 +115,7 @@
     "zone.js": "0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "13.2.1",
+    "@angular-devkit/build-angular": "13.3.10",
     "@angular-eslint/eslint-plugin": "~13.0.1",
     "@angular-eslint/eslint-plugin-template": "~13.0.1",
     "@angular-eslint/template-parser": "~13.0.1",
@@ -133,7 +133,7 @@
     "@nrwl/nest": "13.7.1",
     "@nrwl/node": "13.7.1",
     "@nrwl/tao": "13.7.1",
-    "@nrwl/web": "13.7.1",
+    "@nrwl/web": "15.2.1",
     "@nrwl/workspace": "13.7.1",
     "@schematics/angular": "13.2.0",
     "@types/arcgis-js-api": "~4.23.0",
