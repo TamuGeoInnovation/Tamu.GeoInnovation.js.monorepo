@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, map, Observable, shareReplay, startWith, tap } from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, startWith, tap, withLatestFrom } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-interactive-pricing',
@@ -16,15 +16,15 @@ export class InteractivePricingComponent implements OnInit {
   public selectedTierCost: Observable<number>;
 
   public isRecurring: Observable<boolean>;
+  public frequencyType: Observable<FREQUENCY>;
   public isSLA: Observable<boolean>;
   public partnerPricing: Observable<boolean>;
   public recurringInterval: Observable<IntervalOption>;
 
-  public recurringIntervalOptions = [
-    { value: 0, label: 'Monthly', unit: 'mo' },
-    { value: 1, label: 'Every three months', unit: '3 mos' },
-    { value: 2, label: 'Every six months', unit: '6 mos' },
-    { value: 3, label: 'Every twelve months', unit: 'yr' }
+  public frequencyOptions: Array<IntervalOption> = [
+    { value: FREQUENCY.ONE_TIME, label: 'One-time', unit: null },
+    { value: FREQUENCY.RECURRING_MONTHLY, label: 'Monthly', unit: 'mo' },
+    { value: FREQUENCY.RECURRING_YEARLY, label: 'Yearly', unit: 'yr' }
   ];
 
   public yesNoOptions = [
@@ -97,8 +97,7 @@ export class InteractivePricingComponent implements OnInit {
   public ngOnInit(): void {
     this.form = this.fb.group({
       creditCount: [500],
-      isRecurring: [false],
-      recurringInterval: [0],
+      frequency: [FREQUENCY.ONE_TIME],
       partnerProgram: [false],
       sla: [false]
     });
@@ -139,8 +138,12 @@ export class InteractivePricingComponent implements OnInit {
       shareReplay()
     );
 
-    this.isRecurring = this.form.get('isRecurring').valueChanges.pipe(
-      startWith(this.form.get('isRecurring').value),
+    this.frequencyType = this.form.get('frequency').valueChanges.pipe(startWith(this.form.get('frequency').value));
+
+    this.isRecurring = this.frequencyType.pipe(
+      map((frequency) => {
+        return frequency === FREQUENCY.RECURRING_MONTHLY || frequency === FREQUENCY.RECURRING_YEARLY;
+      }),
       tap((recurring) => {
         if (recurring) {
           this.form.patchValue({
@@ -155,10 +158,9 @@ export class InteractivePricingComponent implements OnInit {
       shareReplay()
     );
 
-    this.recurringInterval = this.form.get('recurringInterval').valueChanges.pipe(
-      startWith(this.form.get('recurringInterval').value),
-      map((interval) => {
-        return this.recurringIntervalOptions.find((opt) => opt.value === interval);
+    this.recurringInterval = this.frequencyType.pipe(
+      map((freq: FREQUENCY) => {
+        return this.frequencyOptions.find((opt) => opt.value === freq);
       }),
       shareReplay()
     );
@@ -196,7 +198,7 @@ export class InteractivePricingComponent implements OnInit {
     );
 
     this.isSLA = this.form.get('sla').valueChanges.pipe(
-      startWith(this.form.get('sla')),
+      startWith(this.form.get('sla').value),
       tap((sla) => {
         if (sla) {
           this.form.patchValue({ partnerProgram: false });
@@ -218,7 +220,13 @@ interface PricingTier {
 type PricingTiers = Array<PricingTier>;
 
 interface IntervalOption {
-  value: number;
+  value: string;
   label: string;
   unit: string;
+}
+
+enum FREQUENCY {
+  ONE_TIME = 'ONE_TIME',
+  RECURRING_MONTHLY = 'RECURRING_MONTHLY',
+  RECURRING_YEARLY = 'RECURRING_YEARLY'
 }

@@ -1,7 +1,18 @@
 <label [for]="formControlName">{{label}}</label>
-<input type="range" [name]="formControlName" [id]="formControlName + 'range'" [(ngModel)]="value" [disabled]="disabled" [min]="min" [max]="max" [step]="step" />
+<input type="range" [name]="formControlName" [id]="formControlName + 'range'" [(ngModel)]="value" [disabled]="disabled"
+  [min]="min" [max]="max" [step]="step" />
 
-<div class="labels">
+<div class="labels" *ngIf="limitFormat === 'none'">
   <div>{{min}}</div>
   <div>{{max}}</div>
+</div>
+
+<div class="labels" *ngIf="limitFormat === 'currency'">
+  <div>{{min | currency}}</div>
+  <div>{{max | currency}}</div>
+</div>
+
+<div class="labels" *ngIf="limitFormat === 'number'">
+  <div>{{min | number}}</div>
+  <div>{{max | number}}</div>
 </div>

@@ -36,4 +36,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> {
 
   @Input()
   public label: string;
+
+  @Input()
+  public limitFormat: 'currency' | 'number' | 'none' = 'number';
 }
