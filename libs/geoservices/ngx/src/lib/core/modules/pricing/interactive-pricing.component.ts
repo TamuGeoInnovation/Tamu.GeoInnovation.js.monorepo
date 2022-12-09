@@ -138,7 +138,9 @@ export class InteractivePricingComponent implements OnInit {
       shareReplay()
     );
 
-    this.frequencyType = this.form.get('frequency').valueChanges.pipe(startWith(this.form.get('frequency').value));
+    this.frequencyType = this.form
+      .get('frequency')
+      .valueChanges.pipe(startWith(this.form.get('frequency').value), shareReplay());
 
     this.isRecurring = this.frequencyType.pipe(
       map((frequency) => {
