@@ -8,8 +8,7 @@
 
       <div class="form-collection column">
         <p class="byop-question">How often do you need points?</p>
-        <tamu-gisc-radio-group [options]="frequencyOptions" displayPath="label" valuePath="value"
-          formControlName="frequency"></tamu-gisc-radio-group>
+        <tamu-gisc-radio-group [options]="frequencyOptions" displayPath="label" valuePath="value" formControlName="frequency"></tamu-gisc-radio-group>
       </div>
 
       <!-- <div class="form-collection column" *ngIf="(isRecurring | async) === false">
@@ -25,11 +24,9 @@
         <tamu-gisc-radio-group [options]="yesNoOptions" displayPath="label" valuePath="value" formControlName="partnerProgram"></tamu-gisc-radio-group>
       </div> -->
 
-      <div class="form-collection column"
-        *ngIf="(isRecurring | async) === true && (frequencyType | async) === 'RECURRING_YEARLY'">
+      <div class="form-collection column" *ngIf="(isRecurring | async) === true && (frequencyType | async) === 'RECURRING_YEARLY'">
         <p class="byop-question">Are you looking for a service level agreement?</p>
-        <tamu-gisc-radio-group [options]="yesNoOptions" displayPath="label" valuePath="value" formControlName="sla">
-        </tamu-gisc-radio-group>
+        <tamu-gisc-radio-group [options]="yesNoOptions" displayPath="label" valuePath="value" formControlName="sla"> </tamu-gisc-radio-group>
       </div>
     </form>
   </div>
@@ -44,8 +41,7 @@
               <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
                 <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
                 <div id="snap-scen-help-text">
-                  <p>One credit equals one transaction using any of our services. Batch transactions are credited per
-                    processed record.</p>
+                  <p>One credit equals one transaction using any of our services. Batch transactions are credited per processed record.</p>
                 </div>
               </tamu-gisc-tooltip>
             </td>
@@ -55,8 +51,7 @@
           <tr>
             <td>Frequency</td>
             <td>
-              <ng-container *ngIf="(isRecurring | async) else oneTimeText">{{(recurringInterval | async)?.label}}
-              </ng-container>
+              <ng-container *ngIf="(isRecurring | async) else oneTimeText">{{(recurringInterval | async)?.label}} </ng-container>
               <ng-template #oneTimeText>
                 <ng-container *ngIf="(partnerPricing | async) === false; else batchedReload">One-time</ng-container>
               </ng-template>
@@ -71,8 +66,7 @@
               <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
                 <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
                 <div id="snap-scen-help-text">
-                  <p>Get access to geocoding, reverse geocoding, address processing, census intersection, k-nearest, and
-                    geocode correction tools.</p>
+                  <p>Get access to geocoding, reverse geocoding, address processing, census intersection, k-nearest, and geocode correction tools.</p>
                 </div>
               </tamu-gisc-tooltip>
             </td>
@@ -103,8 +97,7 @@
               <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
                 <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
                 <div id="snap-scen-help-text">
-                  <p>We are able to comply with your data's export controls and process some or all of it within the
-                    TAMU network or offsite on the cloud.</p>
+                  <p>We are able to comply with your data's export controls and process some or all of it within the TAMU network or offsite on the cloud.</p>
                 </div>
               </tamu-gisc-tooltip>
             </td>
@@ -125,19 +118,21 @@
 
       <div class="flex flex-row justify-between align-end" id="total_cost">
         <h3>
-          <strong>Total cost: ${{(selectedTierCost | async) | number }}<ng-container *ngIf="isRecurring | async">
-              /{{(recurringInterval | async)?.unit}}</ng-container></strong>
+          <strong>Total cost: ${{(selectedTierCost | async) | number }}<ng-container *ngIf="isRecurring | async"> /{{(recurringInterval | async)?.unit}}</ng-container></strong>
         </h3>
 
         <em *ngIf="(isSLA | async) === true"><strong>*</strong> Optional services</em>
       </div>
+
+      <div class="flex flex-row justify-center leader-2 trailer-1">
+        <a [href]="ctaLink | async" class="button secondary" [target]="'_self'" id="ctaButton">{{ ctaText|async }}</a>
+      </div>
     </div>
 
-    <div class="card leader-2" id="freeCTA">
+    <div class="card leader-2 cta" id="freeCTA">
       <h3>Try Before You Buy</h3>
 
-      <p>All users start with 2,500 <em>free</em>, zero-commitment credits, usable on any of our services. Use this
-        initial quota to determine if our services are right for you.</p>
+      <p>All users start with 2,500 <em>free</em>, zero-commitment credits, usable on any of our services. Use this initial quota to determine if our services are right for you.</p>
 
       <a class="trailer-1" [routerLink]="['/api/getting-started']">Get Started ></a>
     </div>

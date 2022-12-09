@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, map, Observable, shareReplay, startWith, tap, withLatestFrom } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map, shareReplay, startWith, tap } from 'rxjs/operators';
+
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-interactive-pricing',
@@ -20,6 +23,8 @@ export class InteractivePricingComponent implements OnInit {
   public isSLA: Observable<boolean>;
   public partnerPricing: Observable<boolean>;
   public recurringInterval: Observable<IntervalOption>;
+  public ctaText: Observable<string>;
+  public ctaLink: Observable<string>;
 
   public frequencyOptions: Array<IntervalOption> = [
     { value: FREQUENCY.ONE_TIME, label: 'One-time', unit: null },
@@ -92,7 +97,11 @@ export class InteractivePricingComponent implements OnInit {
     }
   ];
 
-  constructor(private readonly fb: FormBuilder, private readonly route: ActivatedRoute) {}
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly route: ActivatedRoute,
+    private readonly env: EnvironmentService
+  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -207,6 +216,40 @@ export class InteractivePricingComponent implements OnInit {
         }
       }),
       shareReplay()
+    );
+
+    this.ctaText = combineLatest([this.recurringInterval, this.isSLA]).pipe(
+      map(([interval, sla]) => {
+        // return text for ech frequency type and special case for when SLA is selected
+        if (sla && interval.value === FREQUENCY.RECURRING_YEARLY) {
+          return 'Contact Us for SLA Pricing';
+        }
+
+        switch (interval.value) {
+          case FREQUENCY.ONE_TIME:
+            return 'Checkout';
+          case FREQUENCY.RECURRING_MONTHLY:
+            return 'Subscribe Monthly';
+          case FREQUENCY.RECURRING_YEARLY:
+            return 'Subscribe Yearly';
+        }
+      })
+    );
+
+    this.ctaLink = combineLatest([this.selectedCreditTier, this.frequencyType]).pipe(
+      map(([tier, frequency]) => {
+        const baseUrl = `${this.env.value('accounts_url', false)}/UserServices/Payments/Make`;
+
+        // return link for each frequency type
+        switch (frequency) {
+          case FREQUENCY.ONE_TIME:
+            return `${baseUrl}/SinglePayment.aspx?plan=${tier.points}&cost=${tier.oneTimeCost}&paymentType=OneTime&billingPeriod=ONETIME`;
+          case FREQUENCY.RECURRING_MONTHLY:
+            return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.recurringCost}&paymentType=Recurring&billingPeriod=MONT`;
+          case FREQUENCY.RECURRING_YEARLY:
+            return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.recurringCost}&paymentType=Recurring&billingPeriod=YEAR`;
+        }
+      })
     );
   }
 }
