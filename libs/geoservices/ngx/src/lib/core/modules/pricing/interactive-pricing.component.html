@@ -118,7 +118,7 @@
 
       <div class="flex flex-row justify-between align-end" id="total_cost">
         <h3 *ngIf="(isSLA | async) === false">
-          <strong>Total cost: ${{(selectedTierCost | async) | number }}<ng-container *ngIf="isRecurring | async"> /{{(recurringInterval | async)?.unit}}</ng-container></strong>
+          <strong>Total cost: {{(selectedTierCost | async) | currency }}<ng-container *ngIf="isRecurring | async"> /{{(recurringInterval | async)?.unit}}</ng-container></strong>
         </h3>
 
         <em *ngIf="(isSLA | async) === true"><strong>*</strong> Optional services</em>
