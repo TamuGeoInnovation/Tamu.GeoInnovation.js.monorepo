@@ -80,7 +80,7 @@
     "got": "^11.8.5",
     "helmet": "^3.23.3",
     "interactjs": "^1.9.19",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "jszip": "^3.6.0",
     "jwks-rsa": "^2.0.5",
     "jwt-decode": "^3.1.2",
