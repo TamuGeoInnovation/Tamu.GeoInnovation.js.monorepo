@@ -29,6 +29,7 @@ input[type='range'] {
     height: 1.25rem;
     width: 1.25rem;
     outline: 1px solid #053a5f;
+    position: relative;
   }
 
   &::-moz-range-thumb {
@@ -56,6 +57,15 @@ input[type='range'] {
     outline: 2px solid #053a5f;
     outline-offset: 1px;
   }
+}
+
+output {
+  position: relative;
+  bottom: -1.25rem;
+  padding: 0.75rem 0.75rem;
+  background: #fff;
+  border-radius: 5pt;
+  filter: drop-shadow(0px 2px 5px rgba(0, 0, 0, 0.15));
 }
 
 label,
