@@ -1,4 +1,13 @@
-import { Component, Input, forwardRef, ChangeDetectionStrategy, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  forwardRef,
+  ChangeDetectionStrategy,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -63,6 +72,9 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   @Input()
   public limitFormat: 'currency' | 'number' | 'none' = 'none';
 
+  @Input()
+  public showTooltip = false;
+
   /**
    * When provided, each native step in the slider will be mapped to a custom
    * value and display string. This is useful when the slider is used to select
@@ -90,8 +102,53 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   @Input()
   public customDataMap: RangeInputDataMap;
 
+  @ViewChild('rangeElement', { static: true })
+  public input: ElementRef;
+
+  @ViewChild('liveValue', { static: true })
+  public liveValue: ElementRef;
+
   public minDisplay: string | number;
   public maxDisplay: string | number;
+
+  public override get value(): number {
+    return this.getInternalValue();
+  }
+
+  public override set value(value: number) {
+    this.setInternalValue(value);
+
+    if (this.showTooltip) {
+      if (this.customDataMap) {
+        this.liveValue.nativeElement.innerText = this.customDataMap[value].display;
+      } else {
+        this.liveValue.nativeElement.innerText = value;
+      }
+
+      // The slider thumb offsets from 0% to 100% of the thumb width from the left side of the slider.
+      // This causes the tooltip to either be offset too far to the left at 0% range select or too far
+      // to the right at 100% range select.
+      //
+      // 8px is the approximate half-width of the slider thumb. This is used to offset the tooltip anchor
+      // point to the center of the thumb.
+
+      // On the left, half tooltip width - half width of the thumb
+      // On the right, half tooltip width + half width of the thumb.
+      const thumbOffset = this.offsetDirection * this.offsetRatio * 8;
+
+      // To position the tooltip in the center of the slider thumb, we need to know the width of the tooltip.
+      // Half of the tooltip width is the anchor point relative to the thumb
+      const halfTooltipWidth = this.liveValue.nativeElement.offsetWidth / 2;
+
+      // thumbOffset can be negative or positive which is why it makes sense to add the two values together.
+      const tooltipOffset = halfTooltipWidth + thumbOffset;
+
+      // Set the tooltip position to the center of the slider.
+      // This is based on the fact that the slider is broken down into even steps from 0 to max
+      // and the tooltip is positioned as a percentage of the slider width minus half the width of the tooltip.
+      this.liveValue.nativeElement.style.left = `calc(${(this.value / this.max) * 100}% - ${tooltipOffset}px)`;
+    }
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.customDataMap && changes.customDataMap.currentValue !== undefined) {
@@ -114,6 +171,36 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
         this.minDisplay = this.min;
         this.maxDisplay = this.max;
       }
+    }
+  }
+
+  /**
+   * Offsets are different depending on the current point in the slider (before or after the midpoint).
+   *
+   * Before the midpoint, the offset is negative. After the midpoint, the offset is positive.
+   */
+  private get offsetDirection(): number {
+    const position = this.value / this.max;
+
+    if (position === 0.5) {
+      return 0;
+    } else {
+      return position > 0.5 ? 1 : -1;
+    }
+  }
+
+  /**
+   * The offset ratio is the percentage of the slider relative to the midpoint.
+   *
+   * At either end, the offset ratio is 1. At the midpoint, the offset ratio is 0.
+   */
+  private get offsetRatio(): number {
+    if (this.offsetDirection === 0) {
+      return 0;
+    } else if (this.offsetDirection === 1) {
+      return (this.value - this.max / 2) / (this.max / 2);
+    } else {
+      return (this.max / 2 - this.value) / (this.max / 2);
     }
   }
 }

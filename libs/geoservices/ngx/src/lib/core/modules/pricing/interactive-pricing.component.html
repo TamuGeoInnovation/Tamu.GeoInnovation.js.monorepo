@@ -3,7 +3,7 @@
     <form [formGroup]="form">
       <div class="form-collection column">
         <p class="byop-question">How many credits do you need?</p>
-        <tamu-gisc-range formControlName="creditCount" [customDataMap]="pricingSliderDataMap | async" [limitFormat]="'none'"></tamu-gisc-range>
+        <tamu-gisc-range formControlName="creditCount" [customDataMap]="pricingSliderDataMap | async" [limitFormat]="'none'" [showTooltip]="true"></tamu-gisc-range>
       </div>
 
       <div class="form-collection column">
