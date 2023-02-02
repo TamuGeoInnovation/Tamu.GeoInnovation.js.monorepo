@@ -26,8 +26,8 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
   private get _authorized(): Observable<boolean | UrlTree> {
     return this.auth.state().pipe(
       switchMap((s) => {
-        if (s === true) {
-          return of(s);
+        if (s.loggedIn === true) {
+          return of(s.loggedIn);
         } else {
           return of(this.router.parseUrl('api'));
         }
