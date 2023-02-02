@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -18,14 +18,26 @@ export class AuthService {
   /**
    * Returns logged in state
    */
-  public state() {
+  public state(): Observable<LoggedInState> {
     return this.http
       .get<ILoggedInResponse>(this.env.value('legacy_api_url') + 'userServices/getDetails', {
         withCredentials: true
       })
       .pipe(
-        switchMap((res) => {
-          return of(res.Status === undefined);
+        map((res) => {
+          let loggedIn = true;
+
+          if (res.Status) {
+            loggedIn = false;
+          }
+
+          if (res.result) {
+            loggedIn = false;
+          }
+
+          return {
+            loggedIn
+          };
         })
       );
   }
@@ -45,5 +57,10 @@ export class AuthService {
 }
 
 interface ILoggedInResponse {
-  Status: string;
+  Status?: string;
+  result?: string;
+}
+
+export interface LoggedInState {
+  loggedIn: boolean;
 }

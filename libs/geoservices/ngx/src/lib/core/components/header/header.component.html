@@ -28,19 +28,14 @@
             </li>
           </ul>
         </li>
+
         <li>
           <a [routerLink]="['pricing']">Pricing</a>
         </li>
-        <!-- <li>
-          <a href="">News</a>
-        </li> -->
+
         <li class="dropdown">
           <a href="">Support <span class="material-icons">keyboard_arrow_down</span></a>
           <ul class="dropdown__menu">
-            <!-- <li>
-              <a href="">Tutorials</a>
-              <p class="dropdown__menu__descriptor">Need help running or using our services in your application?</p>
-            </li> -->
             <li>
               <a [routerLink]="['./contact/bug-report']">Bug Reporting</a>
               <p class="dropdown__menu__descriptor">Found a pesky bug? Report it to us and we'll squash it.</p>
@@ -55,12 +50,48 @@
             </li>
           </ul>
         </li>
+
         <li>
           <a [routerLink]="['api']">Docs</a>
         </li>
       </ul>
 
-      <a href="https://geoservices.tamu.edu/Login/">Login</a>
+      <a [href]="url + '/Login/'" *ngIf="(loggedIn | async)?.loggedIn === false; else loggedInMenuOptions">Login</a>
+
+      <ng-template #loggedInMenuOptions>
+        <ul>
+          <li class="dropdown offset-left">
+            <a [routerLink]="['services']" routerLinkActive="router-link-active" class="dropdown__link">Account <span class="material-icons">keyboard_arrow_down</span></a>
+
+            <ul class="dropdown__menu">
+              <li>
+                <a [href]="url + '/UserServices/Profile'">Settings</a>
+                <p class="dropdown__menu__descriptor">View and update personal, security, and billing information.</p>
+              </li>
+
+              <li>
+                <a [href]="url + '/UserServices/Databases/Current/'">Databases</a>
+                <p class="dropdown__menu__descriptor">Upload and manage your existing databases.</p>
+              </li>
+
+              <li>
+                <a [href]="url + '/UserServices/Processes/'">Processes</a>
+                <p class="dropdown__menu__descriptor">View ongoing and previous batch processes.</p>
+              </li>
+
+              <li>
+                <a [href]="url + '/UserServices/UsageHistory/Transactions/'">Transactions</a>
+                <p class="dropdown__menu__descriptor">See where all of your service credits have been used.</p>
+              </li>
+
+              <li>
+                <a [href]="url + '/Logout'">Logout</a>
+                <p class="dropdown__menu__descriptor">Securely end your session.</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </ng-template>
     </div>
   </nav>
 </header>

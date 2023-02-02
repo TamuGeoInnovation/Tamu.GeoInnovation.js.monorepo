@@ -118,5 +118,18 @@ nav {
         @include transform(translate3d(-50%, 0, 0) rotate3d(1, 0, 0, 0deg));
       }
     }
+
+    &.offset-left {
+      .dropdown__menu {
+        @include transform(translate3d(-100%, 0, 0) rotate3d(1, 0, 0, -15deg));
+        left: 100%;
+      }
+
+      &:hover {
+        > .dropdown__menu {
+          @include transform(translate3d(-100%, 0, 0) rotate3d(1, 0, 0, 0deg));
+        }
+      }
+    }
   }
 }
