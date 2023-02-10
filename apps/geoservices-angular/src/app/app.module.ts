@@ -24,7 +24,7 @@ const routes: Routes = [
     // canActivateChild: [AuthGuard]
   },
   {
-    path: 'api',
+    path: 'docs',
     loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesApiModule)
   },
   {
