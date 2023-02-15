@@ -35,7 +35,7 @@
       <tamu-gisc-tile-icon><div class="material-icons">help_outline</div></tamu-gisc-tile-icon>
       <tamu-gisc-tile-title>Support</tamu-gisc-tile-title>
       <tamu-gisc-tile-submenu *giscTileSubmenu>
-        <p tamuGiscTileLink location="api">API Documentation</p>
+        <p tamuGiscTileLink location="docs">API Documentation</p>
         <p tamuGiscTileLink location="contact/bug-report">Bug Reporting</p>
         <p tamuGiscTileLink location="contact/address-correction">Submit Address Correction</p>
         <p tamuGiscTileLink location="contact">Contact Us</p>
@@ -44,7 +44,7 @@
 
     <tamu-gisc-tile>
       <tamu-gisc-tile-icon><div class="material-icons">person_outline</div></tamu-gisc-tile-icon>
-      <tamu-gisc-tile-title tamuGiscTileLink location="https://geoservices.tamu.edu/Login/">Login</tamu-gisc-tile-title>
+      <tamu-gisc-tile-title tamuGiscTileLink [location]="url + '/Login/'">Login</tamu-gisc-tile-title>
     </tamu-gisc-tile>
   </tamu-gisc-tile-navigation>
 </ng-container>
