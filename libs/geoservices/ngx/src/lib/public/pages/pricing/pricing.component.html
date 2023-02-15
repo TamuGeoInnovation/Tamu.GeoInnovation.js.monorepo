@@ -12,9 +12,7 @@
 <section class="content-fill-pad" style="background: #ffffff">
   <div class="container12 flex flex-column justify-center trailer-4">
     <h2 class="trailer-2">Build Your Own Plan</h2>
-    <h3>It is often said that you get what you pay for, but when it comes to our services we would strongly argue we are
-      the exception. Our goal is simple &mdash; empower the masses with easy-to-use and affordable geoprocessing tools.
-      It's why we have some of the lowest rates in the industry.</h3>
+    <h3>It is often said that you get what you pay for, but when it comes to our services we would strongly argue we are the exception. Our goal is simple &mdash; empower the masses with easy-to-use and affordable geoprocessing tools. It's why we have some of the lowest rates in the industry.</h3>
   </div>
 
   <tamu-gisc-interactive-pricing></tamu-gisc-interactive-pricing>
@@ -27,9 +25,7 @@
 
       <div class="qa-block" id="free-tier">
         <h3>Do you offer a free tier?</h3>
-        <p>It depends on how much processing you need to do. Most users will never have to pay to use our services as
-          they are provided <strong>free of charge</strong> in allotments of 2,500 transactions. To take advantage of
-          this, users must enroll in our <a [routerLink]="['.']" fragment="partner-program">Partner Program</a>.</p>
+        <p>It depends on how much processing you need to do. Most users will never have to pay to use our services as they are provided <strong>free of charge</strong> in allotments of 2,500 transactions. To take advantage of this, users must enroll in our <a [routerLink]="['.']" fragment="partner-program">Partner Program</a>.</p>
       </div>
 
       <div class="qa-block" id="more-credit-options">
@@ -45,62 +41,41 @@
       <div class="qa-block" id="partner-program">
         <h3>What is the Partner Program?</h3>
 
-        <p>The partner program grants participants an unlimited number of credits in batches of 2,500. Once you run out
-          of credits, simply log into your account and <a
-            href="https://geoservices.tamu.edu/UserServices/Payments/Partners/">click one button</a> to top off your
-          balance as frequently as you need. In return all we ask is that you link to our site from yours, or cite us in
-          your work if a link is not possible. To meet the objective of the program, all links and citations must be
-          publicly accessible.</p>
+        <p>The partner program grants participants an unlimited number of credits in batches of 2,500. Once you run out of credits, simply log into your account and <a [href]="url + '/UserServices/Payments/Partners/'">click one button</a> to top off your balance as frequently as you need. In return all we ask is that you link to our site from yours, or cite us in your work if a link is not possible. To meet the objective of the program, all links and citations must be publicly accessible.</p>
 
-        <a routerLink="/contact/partnership">Join the Partner Program</a>
+        <!-- TODO: This has an angular form that can be used in the future. For now, redirect to legacy accounts -->
+        <!-- <a routerLink="/contact/partnership">Join the Partner Program</a> -->
+        <a [href]="url + '/UserServices/Profile/RequestPartnerStatus.aspx'">Join the Partner Program</a>
       </div>
 
       <div class="qa-block" id="more-credits-actions">
         <h3>How do I get more credits?</h3>
 
-        <p>If you are a partner who would rather not have to manually add more credits by continually requesting them
-          through the site, or you need to process more records than are allocated in batches under the partner program,
-          or you are a user who would just like to donate some money to help improve our services, you can purchase
-          credits online using your credit or PayPal account according to our service rates.</p>
+        <p>If you are a partner who would rather not have to manually add more credits by continually requesting them through the site, or you need to process more records than are allocated in batches under the partner program, or you are a user who would just like to donate some money to help improve our services, you can purchase credits online using your credit or PayPal account according to our service rates.</p>
       </div>
 
       <div class="qa-block" id="service-throttle">
         <h3>Do you throttle your services?</h3>
 
-        <p>Yes, in a way. We throttle the free usage of our services to batches of 2,500 records at a time to ensure
-          that all free users get the same level of service given our available computing resources. Users who sign up
-          as partners can process as many records as they like, they just need to re-fill their account by submitting a
-          form from within their account once their balance drops below 2,500 records.</p>
+        <p>Yes, in a way. We throttle the free usage of our services to batches of 2,500 records at a time to ensure that all free users get the same level of service given our available computing resources. Users who sign up as partners can process as many records as they like, they just need to re-fill their account by submitting a form from within their account once their balance drops below 2,500 records.</p>
       </div>
 
       <div class="qa-block" id="sla-info">
         <h3>Do you offer Service Level Agreements?</h3>
 
-        <p>Yes we do. If you anticipate needing to process a large amo t of records for a long period of time for which
-          manually adding credits via the partner forms on the website would not be an acceptable option such as in a
-          scheduled, automated, or web-service type process, we offer service level agreements whereby a user can pay
-          one set price per month and process up to a certain amount of records (including unlimited). For information
-          about this option or for a pricing quote, please <a routerLink="/contact"
-            [queryParams]="{subject: 'SLA Inquiry'}">contact us</a>.</p>
+        <p>Yes we do. If you anticipate needing to process a large amo t of records for a long period of time for which manually adding credits via the partner forms on the website would not be an acceptable option such as in a scheduled, automated, or web-service type process, we offer service level agreements whereby a user can pay one set price per month and process up to a certain amount of records (including unlimited). For information about this option or for a pricing quote, please <a routerLink="/contact" [queryParams]="{subject: 'SLA Inquiry'}">contact us</a>.</p>
       </div>
 
       <div class="qa-block" id="refund-policy">
         <h3>What is your refund policy?</h3>
 
-        <p>Unfortunately we are not able to provide refunds to customers who make payments to use our services. This
-          policy is in place because we provide our users the ability to process as much data as they wish for free
-          under the terms of the Partner Program. As such, any and all users have both the ability and ample opportunity
-          to test the quality of our services to ensure that they will meet their particular needs before making any
-          form of purchase. Our services are provided as-is and each individual user is responsible for and advised to
-          determine if our services will meet their specific needs prior to making a payment. For questions or concerns
-          about this policy, please feel free to contact us using the contact form.</p>
+        <p>Unfortunately we are not able to provide refunds to customers who make payments to use our services. This policy is in place because we provide our users the ability to process as much data as they wish for free under the terms of the Partner Program. As such, any and all users have both the ability and ample opportunity to test the quality of our services to ensure that they will meet their particular needs before making any form of purchase. Our services are provided as-is and each individual user is responsible for and advised to determine if our services will meet their specific needs prior to making a payment. For questions or concerns about this policy, please feel free to contact us using the contact form.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="content-fill-pad"
-  style="border-top: 4pt solid; border-image: linear-gradient(to right, #ecccb9, #a574f5) 1; background-color: #ffffff">
+<section class="content-fill-pad" style="border-top: 4pt solid; border-image: linear-gradient(to right, #ecccb9, #a574f5) 1; background-color: #ffffff">
   <div class="container12 flex flex-row-reverse justify-around">
     <div class="column10 flex flex-column align-center">
       <h2 class="trailer-2 text-content text-content--center">Have Additional Questions?</h2>

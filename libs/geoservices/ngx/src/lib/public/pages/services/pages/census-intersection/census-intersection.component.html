@@ -36,7 +36,7 @@
     <div class="flex flex-column align-center sample-container">
       <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/services/census-intersection/sample.js' | codeFromUrl | async" [result]="result"></tamu-gisc-code-runner>
 
-      <a [routerLink]="['/api/census-intersection']" class="leader-1">Read the documentation ></a>
+      <a [routerLink]="['/docs/census-intersection']" class="leader-1">Read the documentation ></a>
     </div>
   </div>
 </section>
@@ -96,7 +96,7 @@
         </tamu-gisc-step>
       </tamu-gisc-stepper>
 
-      <p class="faux-link">Upload a database ></p>
+      <a [href]="url">Upload a database ></a>
     </div>
   </div>
 </section>

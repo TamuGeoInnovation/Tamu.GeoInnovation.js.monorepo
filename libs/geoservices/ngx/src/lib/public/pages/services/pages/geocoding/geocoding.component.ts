@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
 import { Geocode } from '@tamu-gisc/geoprocessing-v5';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-geocoding',
@@ -12,6 +13,10 @@ import { Geocode } from '@tamu-gisc/geoprocessing-v5';
 export class GeocodingComponent implements OnInit {
   private geocode: Geocode;
   public result: Observable<string>;
+
+  public url: string;
+
+  constructor(private readonly env: EnvironmentService) {}
 
   public ngOnInit(): void {
     this.geocode = new Geocode({
@@ -33,5 +38,7 @@ export class GeocodingComponent implements OnInit {
         return of(err.toRenderableJSON(true));
       })
     );
+
+    this.url = this.env.value('accounts_url') + '/UserServices/Databases/Upload/Step1.aspx';
   }
 }

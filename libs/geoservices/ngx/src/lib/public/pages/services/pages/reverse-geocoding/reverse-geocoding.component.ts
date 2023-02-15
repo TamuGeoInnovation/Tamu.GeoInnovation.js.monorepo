@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding',
@@ -11,6 +12,10 @@ import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
 export class ReverseGeocodingComponent implements OnInit {
   private geocoder: ReverseGeocode;
   public result: Observable<string>;
+
+  public url: string;
+
+  constructor(private readonly env: EnvironmentService) {}
 
   public ngOnInit(): void {
     this.geocoder = new ReverseGeocode({
@@ -27,5 +32,7 @@ export class ReverseGeocodingComponent implements OnInit {
         return of(err.toRenderableJSON(true));
       })
     );
+
+    this.url = this.env.value('accounts_url') + '/UserServices/Databases/Upload/Step1.aspx';
   }
 }

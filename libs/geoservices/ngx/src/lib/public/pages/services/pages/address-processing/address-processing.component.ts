@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { AddressProcessing } from '@tamu-gisc/geoprocessing-v5';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-address-processing',
@@ -11,6 +12,10 @@ import { AddressProcessing } from '@tamu-gisc/geoprocessing-v5';
 export class AddressProcessingComponent implements OnInit {
   private address: AddressProcessing;
   public result: Observable<string>;
+
+  public url: string;
+
+  constructor(private readonly env: EnvironmentService) {}
 
   public ngOnInit(): void {
     this.address = new AddressProcessing({
@@ -30,5 +35,7 @@ export class AddressProcessingComponent implements OnInit {
         return of(err.toRenderableJSON(true));
       })
     );
+
+    this.url = this.env.value('accounts_url') + '/UserServices/Databases/Upload/Step1.aspx';
   }
 }

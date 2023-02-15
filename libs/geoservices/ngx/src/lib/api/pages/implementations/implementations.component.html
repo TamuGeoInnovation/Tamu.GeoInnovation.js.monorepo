@@ -31,7 +31,7 @@
 <section id="authentication">
   <h2>Authentication</h2>
 
-  <p>All Geoservices API's require an API key to process requests. If you have a Geoservices account, your key will be located in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a> page. If you don't yet have an account, <a href="http://" target="_blank" rel="noopener noreferrer">creating one</a> is easy and free.</p>
+  <p>All Geoservices API's require an API key to process requests. If you have a Geoservices account, your key will be located in your <a [href]="url + '/UserServices/Profile/'" target="_blank" rel="noopener noreferrer">account settings</a> page. If you don't yet have an account, <a [href]="url + '/Signup/'" target="_blank" rel="noopener noreferrer">creating one</a> is easy and free.</p>
 
   <p>Please note that your API key is the secret key to your account and credit balance. Releasing your API key could lead to malicious parties using up your quota. Please ensure you don't expose your API key in public-facing web applications or store them in version control. Should your key become compromised, please contact us and we can issue a new API key.</p>
 </section>
