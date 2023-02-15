@@ -9,7 +9,7 @@ import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
 })
 export class ReverseGeocodingComponent {
   public apiVersion = '5.0';
-  public url = 'https://prod.geoservices.tamu.edu/api/reversegeocoding/v5';
+  public url = 'https://geoservices.tamu.edu/api/reversegeocoding/v5';
 
   public apiKey = 'demo';
 
