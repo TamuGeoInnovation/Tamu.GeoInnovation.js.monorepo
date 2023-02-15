@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
-import { debounceTime, map, shareReplay, startWith, tap, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, map, shareReplay, startWith, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -93,6 +93,7 @@ export class InteractivePricingComponent implements OnInit {
   public pricingSliderDataMap: Observable<RangeInputDataMap>;
 
   constructor(
+    private readonly router: Router,
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly env: EnvironmentService
@@ -249,12 +250,12 @@ export class InteractivePricingComponent implements OnInit {
       })
     );
 
-    this.ctaLink = combineLatest([this.selectedCreditTier, this.frequencyType]).pipe(
+    this.ctaLink = combineLatest([this.selectedCreditTier, this.frequencyType, this.isSLA]).pipe(
       // Throw away any events that occur within 100ms of each other because we only care about the last event in quick succession
       // due to the fact that selected tier can change before the frequency type has been updated which will cause errors
       // resolving the cta link.
       debounceTime(0),
-      map(([tier, frequency]) => {
+      map(([tier, frequency, sla]) => {
         const baseUrl = `${this.env.value('accounts_url', false)}/UserServices/Payments/Make`;
 
         // return link for each frequency type
@@ -265,6 +266,10 @@ export class InteractivePricingComponent implements OnInit {
           case FREQUENCY.RECURRING_MONTHLY:
             return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.frequency.monthly}&paymentType=Recurring&billingPeriod=MONT`;
           case FREQUENCY.RECURRING_YEARLY:
+            if (sla) {
+              return `/contact?subject=SLA%20Inquiry%20-%20${tier.points.toLocaleString()}%20Credits`;
+            }
+
             return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.frequency.yearly}&paymentType=Recurring&billingPeriod=YEAR`;
         }
       })
@@ -289,6 +294,19 @@ export class InteractivePricingComponent implements OnInit {
       monthly: base - base * DISCOUNT_FACTOR.RECURRING_MONTHLY,
       yearly: base * 12 - base * 12 * DISCOUNT_FACTOR.RECURRING_YEARLY
     };
+  }
+
+  public navigateCtaAction() {
+    this.ctaLink.pipe(take(1)).subscribe((link) => {
+      // If link starts with protocol use window location to navigate to link, otherwise use
+      // angular router to navigate to internal route
+
+      if (link.startsWith('http') === false) {
+        this.router.navigateByUrl(link);
+      }
+
+      window.location.href = link;
+    });
   }
 }
 
@@ -321,3 +339,4 @@ enum DISCOUNT_FACTOR {
   RECURRING_MONTHLY = 0.05,
   RECURRING_YEARLY = 0.1
 }
+

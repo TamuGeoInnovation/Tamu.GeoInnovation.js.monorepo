@@ -125,7 +125,7 @@
       </div>
 
       <div class="flex flex-row justify-center leader-2 trailer-1">
-        <a [href]="ctaLink | async" class="button secondary" [target]="'_self'" id="ctaButton">{{ ctaText|async }}</a>
+        <p class="button secondary" id="ctaButton" (click)="navigateCtaAction()">{{ ctaText | async }}</p>
       </div>
     </div>
 
@@ -138,3 +138,4 @@
     </div>
   </div>
 </div>
+
