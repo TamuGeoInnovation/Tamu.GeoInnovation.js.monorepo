@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -38,6 +38,11 @@ export class AuthService {
           return {
             loggedIn
           };
+        }),
+        catchError(() => {
+          return of({
+            loggedIn: false
+          });
         })
       );
   }
@@ -64,3 +69,4 @@ interface ILoggedInResponse {
 export interface LoggedInState {
   loggedIn: boolean;
 }
+
