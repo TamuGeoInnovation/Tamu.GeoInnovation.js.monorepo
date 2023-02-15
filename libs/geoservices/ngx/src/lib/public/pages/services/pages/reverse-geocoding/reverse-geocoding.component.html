@@ -32,7 +32,17 @@
     </div>
 
     <div class="flex flex-column align-center sample-container">
-      <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/services/reverse-geocoding/sample.js' | codeFromUrl | async" [result]="result"></tamu-gisc-code-runner>
+      <tamu-gisc-tabs>
+        <tamu-gisc-tab [label]="'JS'">
+          <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/services/reverse-geocoding/sample.js' | codeFromUrl | async"></tamu-gisc-code-runner>
+        </tamu-gisc-tab>
+        <tamu-gisc-tab [label]="'cURL'">
+          <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/services/reverse-geocoding/sample.curl' | codeFromUrl | async"></tamu-gisc-code-runner>
+        </tamu-gisc-tab>
+        <tamu-gisc-tab [label]="'Result'">
+          <tamu-gisc-code-runner [code]="result | async"></tamu-gisc-code-runner>
+        </tamu-gisc-tab>
+      </tamu-gisc-tabs>
 
       <a [routerLink]="['/docs/reverse-geocoding']" class="leader-1">Read the documentation ></a>
     </div>
