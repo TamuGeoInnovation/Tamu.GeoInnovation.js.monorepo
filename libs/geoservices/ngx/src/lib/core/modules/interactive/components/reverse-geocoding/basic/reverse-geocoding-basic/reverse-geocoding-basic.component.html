@@ -1,0 +1,34 @@
+<div class="card">
+  <form [formGroup]="form" (submit)="processInteractiveQuery()">
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Demo</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Longitude (e.g. -118.397965182076)'" formControlName="lon"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Latitude (e.g. 34.0726207994348)'" formControlName="lat"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state"></tamu-gisc-select>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+        </div>
+
+        <div>
+          <pre>
+            {{result | async | json}}
+          </pre>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+

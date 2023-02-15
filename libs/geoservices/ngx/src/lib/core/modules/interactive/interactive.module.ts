@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { RequestViewerComponent } from './components/request-viewer/request-viewer.component';
-import { GeocodingRequestComponent } from './components/geocoding-request/geocoding-request.component';
-import { RequestBaseComponent } from './components/request-base/request-base.component';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { ReverseGeocodingBasicComponent } from './components/reverse-geocoding/basic/reverse-geocoding-basic/reverse-geocoding-basic.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [RequestViewerComponent, GeocodingRequestComponent, RequestBaseComponent],
-  imports: [CommonModule],
-  exports: [RequestViewerComponent, GeocodingRequestComponent]
+  imports: [CommonModule, ReactiveFormsModule, UIFormsModule],
+  declarations: [ReverseGeocodingBasicComponent],
+  exports: [ReverseGeocodingBasicComponent]
 })
 export class GeoservicesCoreInteractiveModule {}
+
