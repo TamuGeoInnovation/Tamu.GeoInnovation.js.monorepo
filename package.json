@@ -94,7 +94,7 @@
     "ngx-highlightjs": "^4.0.2",
     "ngx-lightbox": "^2.4.1",
     "ngx-webstorage-service": "^4.1.0",
-    "node-jose": "^2.0.0",
+    "node-jose": "^2.2.0",
     "nodemailer": "^6.4.16",
     "oidc-provider": "^7.10.6",
     "openid-client": "^3.15.3",
