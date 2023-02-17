@@ -1,4 +1,4 @@
-import { DataTask, DataTaskStatus } from '@tamu-gisc/veoride/common/entities';
+import { DataTask, DataTaskStatus, Log, LogType, ResourceType } from '@tamu-gisc/veoride/common/entities';
 
 import { VeorideDataCompilerConfiguration } from '../interfaces/configuration.interface';
 import { VeorideStatusChangesCompiler } from './status-changes.compiler';
@@ -43,16 +43,20 @@ export class VeorideDataCompilerManager {
 
     try {
       const nowTime = Date.now();
+
       console.log(`Found queued data request. Processing ${queued.id}`);
       await this.processTask(queued);
+
       const finishTime = Date.now();
       const seconds = (finishTime - nowTime) / 1000;
+
       this.updateTaskStatus(queued, DataTaskStatus.COMPLETE);
       console.log(`Finished processing data task: ${queued.id} in ${seconds} seconds.`);
+
       this.processing = false;
     } catch (err) {
       console.log(`Error processing data task: ${err}`);
-      await this.updateTaskStatus(queued, DataTaskStatus.FAILED);
+      await this.updateTaskStatus(queued, DataTaskStatus.FAILED, err.message);
       this.processing = false;
     }
   }
@@ -96,9 +100,11 @@ export class VeorideDataCompilerManager {
     }
   }
 
-  private async updateTaskStatus(task: DataTask, status: DataTaskStatus) {
+  private async updateTaskStatus(task: DataTask, status: DataTaskStatus, message?: string) {
     try {
       task.status = status;
+
+      this.logDataTask(task, status, message);
 
       return task.save();
     } catch (err) {
@@ -113,6 +119,24 @@ export class VeorideDataCompilerManager {
       return new VeorideStatusChangesCompiler(task);
     } else {
       throw new Error(`Could not determine resource type from task: ${JSON.stringify(task)}`);
+    }
+  }
+
+  private logDataTask(task: DataTask, status: DataTaskStatus, message?: string) {
+    if (status === DataTaskStatus.QUEUED || status === DataTaskStatus.PROCESSING || status === DataTaskStatus.COMPLETE) {
+      Log.record({
+        resource: ResourceType.DATA_TASK,
+        type: LogType.INFO,
+        category: 'data-task-status',
+        message: `Data task ${task.id} is ${status}`
+      });
+    } else if (status === DataTaskStatus.FAILED) {
+      Log.record({
+        resource: ResourceType.DATA_TASK,
+        type: LogType.ERROR,
+        category: 'data-task-status',
+        message: `Data task ${task.id} is ${status}. ${message}`
+      });
     }
   }
 }
