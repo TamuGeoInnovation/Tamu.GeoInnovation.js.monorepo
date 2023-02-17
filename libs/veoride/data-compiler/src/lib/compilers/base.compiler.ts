@@ -109,7 +109,7 @@ export class VeorideDataCompilerManager {
   private fetchResourceCompiler(task: DataTask): VeorideTripsCompiler | VeorideStatusChangesCompiler {
     if (task.resource === 'trips') {
       return new VeorideTripsCompiler(task);
-    } else if (task.resource === 'status_changes') {
+    } else if (task.resource === 'status-changes' || task.resource === 'status_changes') {
       return new VeorideStatusChangesCompiler(task);
     } else {
       throw new Error(`Could not determine resource type from task: ${JSON.stringify(task)}`);
