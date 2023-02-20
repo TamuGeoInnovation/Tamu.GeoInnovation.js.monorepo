@@ -8,7 +8,7 @@ import { DataTaskRequestPayloadDto, DataTaskStatusPayloadDto, TasksService } fro
 
 @Injectable()
 export class StatusChangesService {
-  public resource_name = 'status_changes';
+  public resource_name = 'status-changes';
 
   constructor(
     @Inject(DATASETS_STORE) private readonly datasetsLocation: string,

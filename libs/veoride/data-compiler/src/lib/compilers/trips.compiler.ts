@@ -9,7 +9,14 @@ export class VeorideTripsCompiler extends AbstractVeorideDataCompiler<Trip> {
     super(task, Trip, 'trip');
   }
   public select(builder: SelectQueryBuilder<Trip>, params: ITripQueryParams) {
-    builder.where(`${this.alias}.end_time <= :time`, { time: params.end_time }).orderBy(`${this.alias}.end_time`, 'ASC');
+    builder.where(`${this.alias}.end_time <= :end_time`, { end_time: params.end_time });
+
+    if (params.start_time) {
+      builder.andWhere(`${this.alias}.start_time >= :start_time`);
+      builder.setParameter('start_time', params.start_time);
+    }
+
+    builder.orderBy(`${this.alias}.end_time`, 'ASC');
 
     return builder;
   }
@@ -17,4 +24,5 @@ export class VeorideTripsCompiler extends AbstractVeorideDataCompiler<Trip> {
 
 interface ITripQueryParams {
   end_time: number;
+  start_time?: number;
 }

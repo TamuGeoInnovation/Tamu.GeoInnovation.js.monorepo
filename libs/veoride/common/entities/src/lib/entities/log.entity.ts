@@ -53,7 +53,7 @@ export class Log extends BaseEntity {
 
     l.count = options.count;
     l.message = options.message;
-    l.details = (options.details as unknown) as string;
+    l.details = options.details as unknown as string;
 
     return l.save();
   }
@@ -75,7 +75,8 @@ export enum LogType {
 export enum ResourceType {
   TRIP = 'trip',
   STATUS_CHANGE = 'status change',
-  VEHICLE = 'vehicle'
+  VEHICLE = 'vehicle',
+  DATA_TASK = 'data task'
 }
 interface CreateLogEntryDto extends Partial<Omit<Log, 'collectedTime' | 'details'>> {
   collectedTime?: number | string;

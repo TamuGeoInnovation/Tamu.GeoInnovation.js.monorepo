@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
-import { Trip, StatusChange, DataTask } from '@tamu-gisc/veoride/common/entities';
+import { Trip, StatusChange, DataTask, Log } from '@tamu-gisc/veoride/common/entities';
 import { VeorideDataCompilerManager } from '@tamu-gisc/veoride/data-compiler';
 
 import { dbConfig, managerConfig } from './environments/environment';
@@ -19,6 +19,6 @@ connect()
 function connect() {
   return createConnection({
     ...dbConfig,
-    entities: [Trip, StatusChange, DataTask]
+    entities: [Trip, StatusChange, DataTask, Log]
   });
 }
