@@ -24,7 +24,7 @@ export class StatusChangesService {
     const request = await this.tasksService.repo
       .create({
         resource: this.resource_name,
-        parameters: JSON.stringify(params.queryParams),
+        parameters: JSON.stringify(shallow_params),
         requester: params.userId
       })
       .save();
