@@ -34,6 +34,11 @@ export class VeorideDataCompilerManager {
 
     this.processing = true;
 
+    // At service start up, check for any tasks that are marked as processing.
+    // If they are, mark them as failed because the service likely restarted or crashed due to that specific task
+    // and want to avoid re-trying it.
+    await this.checkStalledAndMarkFailed();
+
     const queued = await this.checkTaskQueue();
 
     if (queued === undefined) {
@@ -58,6 +63,30 @@ export class VeorideDataCompilerManager {
       console.log(`Error processing data task: ${err}`);
       await this.updateTaskStatus(queued, DataTaskStatus.FAILED, err.message);
       this.processing = false;
+    }
+  }
+
+  private async checkStalledAndMarkFailed() {
+    try {
+      const tasks = await DataTask.find({
+        where: {
+          status: DataTaskStatus.PROCESSING
+        }
+      });
+
+      if (tasks.length === 0) {
+        return;
+      }
+
+      console.log(`Found ${tasks.length} stalled data tasks. Marking as failed.`);
+
+      const updated = tasks.map((task) => {
+        return this.updateTaskStatus(task, DataTaskStatus.FAILED, 'Task stalled.');
+      });
+
+      return Promise.all(updated);
+    } catch (err) {
+      throw new Error(`Could not check for stalled data tasks: ${err.message}`);
     }
   }
 
