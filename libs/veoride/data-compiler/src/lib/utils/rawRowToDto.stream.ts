@@ -2,19 +2,40 @@ import { Transform } from 'stream';
 
 export class RawDataRowToDto extends Transform {
   private _entity;
+  public isPaused;
+  public pushedLength;
 
   constructor(entity) {
-    super({ objectMode: true });
-
+    super({ objectMode: true, readableHighWaterMark: 1, writableHighWaterMark: 1 });
+    this.isPaused = false;
+    this.pushedLength = 0;
     this._entity = entity;
   }
 
-  public _transform(chunk, encoding, callback) {
-    // Call the expected static method in the provided entity to transform the
-    // raw row into a dto
-    const dto = this._entity.rawToDto(chunk);
+  _transform(chunk, encoding, callback) {
+    if (this.isPaused) {
+      this.once('resume', () => {
+        this._transform(chunk, encoding, callback);
+      });
+      return;
+    }
 
-    this.push(dto);
+    // Implement your transformation logic here
+    const transformedChunk = this._entity.rawToDto(chunk);
+    this.push(transformedChunk);
+    this.pushedLength += transformedChunk.length; // increment the length of data that has been pushed
+
+    if (this.pushedLength >= 16 * 1024) {
+      // Change the value to adjust the data amount
+      this.isPaused = true;
+      this.pushedLength = 0;
+
+      this.once('drain', () => {
+        this.isPaused = false;
+        this.emit('resume');
+      });
+    }
+
     callback();
   }
 }

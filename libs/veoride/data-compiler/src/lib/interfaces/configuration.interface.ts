@@ -8,4 +8,9 @@ export interface VeorideDataCompilerConfiguration {
    * Interval to check for new data requests, in seconds.
    */
   checkInterval: number;
+
+  /**
+   * Threshold for old data requests files that should be removed from disk.
+   */
+  staleThreshold: number;
 }
