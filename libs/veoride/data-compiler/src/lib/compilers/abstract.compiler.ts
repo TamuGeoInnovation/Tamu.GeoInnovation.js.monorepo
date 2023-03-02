@@ -1,4 +1,5 @@
 import { createWriteStream, promises, constants } from 'fs';
+import { pipeline } from 'stream';
 import { BaseEntity, getRepository, ObjectType, SelectQueryBuilder } from 'typeorm';
 import { ReadStream } from 'typeorm/platform/PlatformTools';
 
@@ -54,14 +55,12 @@ export abstract class AbstractVeorideDataCompiler<T extends BaseEntity> {
             const stringify = new Stringify('json');
             const dtoer = new RawDataRowToDto(this.entity);
 
-            readStream.pipe(dtoer).pipe(stringify).pipe(writeStream);
-
-            writeStream.on('error', (err) => {
-              throw new Error(err.message);
-            });
-
-            writeStream.on('close', () => {
-              r();
+            pipeline(readStream, dtoer, stringify, writeStream, (err) => {
+              if (err) {
+                rj(err.message);
+              } else {
+                r();
+              }
             });
           });
       } catch (err) {
