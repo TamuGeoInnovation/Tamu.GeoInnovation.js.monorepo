@@ -90,7 +90,13 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           })
       );
 
-      this.formValid = combineLatest([this.form.statusChanges, this.file.pipe(filter((e) => e !== undefined))]).pipe(
+      // Some seasons will not request anything more than an image for the survey. In this case, the form control size will be zero and there
+      // will be no form controls to ever emit form statusChanges. If that's the case, emit a VALID state for the form statusChanges so the
+      // only other thing to check is the image input change.
+      this.formValid = combineLatest([
+        this.form.controls.length > 0 ? this.form.statusChanges : of('VALID'),
+        this.file.pipe(filter((e) => e !== undefined))
+      ]).pipe(
         map(([formValid, fileValid]) => {
           return formValid === 'VALID' && fileValid !== undefined;
         })

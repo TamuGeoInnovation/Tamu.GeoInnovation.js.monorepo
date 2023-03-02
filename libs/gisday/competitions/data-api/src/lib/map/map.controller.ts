@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 
 import { BaseController } from '../_base/base.controller';
 import { CompetitionSubmission } from '../entities/all.entities';
@@ -11,12 +11,12 @@ export class MapController extends BaseController<CompetitionSubmission> {
   }
 
   @Get()
-  public getLocations() {
-    return this.service.getLocations();
+  public getLocations(@Body() { season }) {
+    return this.service.getLocations(season);
   }
 
   @Get('geojson')
-  public getFeatureCollection() {
-    return this.service.getLocations(true);
+  public getFeatureCollection(@Body() { season }) {
+    return this.service.getLocations(season, true);
   }
 }

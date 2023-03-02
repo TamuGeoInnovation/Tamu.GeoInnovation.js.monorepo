@@ -11,13 +11,23 @@ export class MapService extends BaseService<CompetitionSubmission> {
     super(submissionRepo);
   }
 
-  public async getLocations(geoJson = false) {
-    const submissions = await this.submissionRepo
+  public async getLocations(seasonId?: string, geoJson = false) {
+    const query = this.submissionRepo
       .createQueryBuilder('submissions')
       .leftJoinAndSelect('submissions.location', 'location')
       .leftJoinAndSelect('submissions.validationStatus', 'validationStatus')
-      .orderBy('submissions.created', 'ASC')
-      .getMany();
+      .leftJoin('submissions.season', 'season')
+      .orderBy('submissions.created', 'ASC');
+
+    if (seasonId !== undefined) {
+      query.where('season.year = :seasonId');
+      query.setParameter('seasonId', seasonId);
+    } else {
+      query.where('season.active = :active');
+      query.setParameter('active', true);
+    }
+
+    const submissions = await query.getMany();
 
     if (geoJson) {
       if (submissions) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 
 import { CompetitionSeason } from '../entities/all.entities';
 import { GetSeasonStatisticsDto } from '../dtos/dtos';
@@ -14,5 +14,15 @@ export class SeasonController extends BaseController<CompetitionSeason> {
   @Get(':guid/statistics')
   public getStatisticsForSeason(@Param() params: GetSeasonStatisticsDto) {
     return this.service.getSeasonStatistics(params.guid);
+  }
+
+  @Put('/disable/all')
+  public disableAllSeasons() {
+    return this.service.disableAllSeasons();
+  }
+
+  @Put('/enable')
+  public setActiveSeason(@Body() { guid }) {
+    return this.service.setActiveSeason(guid);
   }
 }
