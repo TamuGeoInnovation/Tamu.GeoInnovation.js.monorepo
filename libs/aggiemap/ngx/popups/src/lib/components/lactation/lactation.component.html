@@ -2,7 +2,8 @@
   <div class="feature-style-1" tabindex="0">Lactation Room</div>
   <div class="feature-style-2" tabindex="0">Building Name: {{ data.attributes.Name }}</div>
   <div class="feature-style-2" tabindex="0">Building Number: {{ data.attributes.BldgNum }}</div>
+  <div class="feature-style-2" tabindex="0">Availability: {{ data.attributes.MapDisplay }}</div>
   <div class="feature-style-2" tabindex="0">
-    <a href="https://studentlife.tamu.edu/wrc/resources/breastfeeding/lactationspace/" target="_blank">Additional Information</a>
+    <a [href]="data.attributes.Notes" target="_blank">Additional Information</a>
   </div>
 </div>
