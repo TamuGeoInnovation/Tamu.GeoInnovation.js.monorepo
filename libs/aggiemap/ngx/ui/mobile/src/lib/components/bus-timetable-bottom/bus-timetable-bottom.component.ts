@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, mergeMap, Observable, take, withLatestFrom } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   templateUrl: './bus-timetable-bottom.component.html',
   styleUrls: ['./bus-timetable-bottom.component.scss']
 })
-export class BusTimetableBottomComponent implements OnInit {
+export class BusTimetableBottomComponent implements OnInit, OnDestroy {
   public identifier: string;
 
   public selectedRoute: Observable<string>;
@@ -42,6 +42,10 @@ export class BusTimetableBottomComponent implements OnInit {
       }),
       take(1)
     );
+  }
+
+  public ngOnDestroy(): void {
+    this.ds.unregister(this.identifier);
   }
 
   public routeReturn() {
