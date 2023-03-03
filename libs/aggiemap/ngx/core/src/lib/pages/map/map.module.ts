@@ -118,6 +118,10 @@ const routes: Routes = [
             children: [
               {
                 path: '',
+                component: OmnisearchComponent
+              },
+              {
+                path: '',
                 component: BusTimetableBottomComponent,
                 outlet: 'outlet-2'
               }
@@ -126,6 +130,10 @@ const routes: Routes = [
           {
             path: 'bus',
             children: [
+              {
+                path: '',
+                component: OmnisearchComponent
+              },
               {
                 path: '',
                 component: BusListBottomComponent,

@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
@@ -30,7 +30,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
   /**
    * Determines when the search bar will slide out of view.
    */
-  public hideSearchBar: boolean;
+  public hideSearchBar: Observable<boolean>;
 
   /**
    * Stores as a value, as material icon class string. If provided, it will render in the search bar as the left action
@@ -77,13 +77,11 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
       this.geolocation = true;
     }
 
-    this.dragService.states.pipe(takeUntil(this._destroy$)).subscribe((states) => {
-      // Listen for drag states and set the hideBar value to true if any element on the screen
-      // exceeds 60% relative drag position.
-      //
-      // This will trigger the search bar to slide up out of view.
-      this.hideSearchBar = states.some((state) => state.dragPercentage > 60);
-    });
+    this.hideSearchBar = this.dragService.states.pipe(
+      map((states) => {
+        return states.some((state) => state.dragPercentage > 60);
+      })
+    );
 
     // Preserve last route path.
     this.history
