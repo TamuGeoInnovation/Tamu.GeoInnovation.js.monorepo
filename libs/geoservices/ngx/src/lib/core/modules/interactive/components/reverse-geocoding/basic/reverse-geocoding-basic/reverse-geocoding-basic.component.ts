@@ -32,10 +32,6 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
     });
   }
 
-  public processInteractiveQuery() {
-    this.querySubmit.next('query');
-  }
-
   public getQuery() {
     return pipe(
       switchMap(() => {
@@ -144,9 +140,5 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
         });
       })
     );
-  }
-
-  public clearResult() {
-    this.reset.next('reset');
   }
 }
