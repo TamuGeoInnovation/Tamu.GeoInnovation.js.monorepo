@@ -1,37 +1,119 @@
 <div class="card">
-  <form [formGroup]="form" (submit)="processInteractiveQuery()">
-    <div class="form-section">
-      <div class="form-section-toolbar">
-        <div class="form-section-name">Demo</div>
-      </div>
+  <ng-container *ngIf="(result | async) === null; else resultContainer">
+    <div [@inOutAnimation]>
+      <div class="animating-container">
+        <form [formGroup]="form" (submit)="processInteractiveQuery()">
+          <div class="form-section">
+            <div class="form-section-toolbar">
+              <div class="form-section-name">Demo</div>
+            </div>
 
-      <div class="form-section-body">
-        <div class="form-collection row">
-          <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Longitude (e.g. -118.397965182076)'" formControlName="lon"></tamu-gisc-textbox>
-        </div>
+            <div class="form-section-body">
+              <div class="form-collection row">
+                <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Longitude (e.g. -118.397965182076)'" formControlName="lon"></tamu-gisc-textbox>
+              </div>
 
-        <div class="form-collection row">
-          <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Latitude (e.g. 34.0726207994348)'" formControlName="lat"></tamu-gisc-textbox>
-        </div>
+              <div class="form-collection row">
+                <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Latitude (e.g. 34.0726207994348)'" formControlName="lat"></tamu-gisc-textbox>
+              </div>
 
-        <div class="form-collection row">
-          <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state"></tamu-gisc-select>
-        </div>
+              <div class="form-collection row">
+                <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state"></tamu-gisc-select>
+              </div>
 
-        <div class="form-collection row">
-          <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
-        </div>
-
-        <div>
-          <pre>
-            {{result | async | json}}
-          </pre>
-        </div>
+              <div class="form-collection row">
+                <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
-  </form>
-</div>
+  </ng-container>
 
-<!-- <div class="card">
-  <pre>{{result | async | json}}</pre>
-</div> -->
+  <ng-template #resultContainer>
+    <div *ngIf="result | async as res" [@inOutAnimation]>
+      <div class="animating-container">
+        <tamu-gisc-tabs>
+          <tamu-gisc-tab label="Result">
+            <div>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>Status</strong>
+                    </td>
+                    <td>{{res?.message}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>Time Taken</strong>
+                    </td>
+                    <td>{{res?.data?.timeTaken | number}} ms</td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>Transaction Guid</strong>
+                    </td>
+                    <td>{{res?.data?.transactionGuid}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>APN</strong>
+                    </td>
+                    <td>{{res?.data?.results?.[0].apn}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>Address</strong>
+                    </td>
+                    <td>{{res?.data?.results?.[0].streetAddress}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>City</strong>
+                    </td>
+                    <td>{{res?.data?.results?.[0].city}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>State</strong>
+                    </td>
+                    <td>{{res?.data?.results?.[0].state}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>Zip</strong>
+                    </td>
+                    <td>{{res?.data?.results?.[0].zip}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <strong>Zip+4</strong>
+                    </td>
+                    <td>{{res?.data?.results?.[0].zipPlus4}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </tamu-gisc-tab>
+          <tamu-gisc-tab label="Map">
+            <ng-container *ngIf="mapConfig | async as cnf">
+              <tamu-gisc-esri-map [config]="cnf"></tamu-gisc-esri-map>
+            </ng-container>
+          </tamu-gisc-tab>
+        </tamu-gisc-tabs>
+
+        <tamu-gisc-button [value]="'Reset'" [type]="'button'" (click)="clearResult()" [look]="'secondary'"></tamu-gisc-button>
+      </div>
+    </div>
+  </ng-template>
+</div>
