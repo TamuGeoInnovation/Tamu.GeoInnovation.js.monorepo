@@ -92,6 +92,14 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType> implemen
     );
   }
 
+  public processInteractiveQuery() {
+    this.querySubmit.next('query');
+  }
+
+  public clearResult() {
+    this.reset.next('reset');
+  }
+
   public abstract buildForm(): FormGroup;
 
   public abstract getQuery(): (source: unknown) => Observable<ResultType>;
