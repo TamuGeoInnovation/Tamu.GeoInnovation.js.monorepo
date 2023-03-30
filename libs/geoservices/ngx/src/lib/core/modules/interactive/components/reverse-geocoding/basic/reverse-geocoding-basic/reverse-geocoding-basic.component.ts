@@ -44,8 +44,8 @@ export class ReverseGeocodingBasicComponent implements OnInit {
 
   public ngOnInit(): void {
     this.form = this.fb.group({
-      lat: [null, Validators.required],
-      lon: [null, Validators.required],
+      lat: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
+      lon: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
       state: [null]
     });
 
