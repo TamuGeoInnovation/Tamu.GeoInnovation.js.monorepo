@@ -115,7 +115,7 @@ export interface IParsedAddress {
 
 export interface IAddressProcessingStreetAddressRecord {
   timeTaken: number;
-  exceptionOcurred: boolean;
+  exceptionOccurred: boolean;
   errorMessage: string | null;
   parsedAddress: IParsedAddress;
 }

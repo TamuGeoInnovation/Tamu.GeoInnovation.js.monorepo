@@ -47,7 +47,7 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
     return this.fb.group({
       lat: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
       lon: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
-      censusYear: [2020, [Validators.required]],
+      censusYear: [null, [Validators.required]],
       state: [null]
     });
   }
@@ -153,6 +153,7 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
             ]
           }
         } as CensusIntersectionResult).pipe(delay(1000));
+
         // const form = this.form.getRawValue();
         //
         // return new CensusIntersection({
