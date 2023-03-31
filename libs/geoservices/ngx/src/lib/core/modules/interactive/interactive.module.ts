@@ -10,6 +10,7 @@ import { ReverseGeocodingBasicComponent } from './components/reverse-geocoding/b
 import { CensusIntersectionBasicComponent } from './components/census-intersection/basic/census-intersection-basic/census-intersection-basic.component';
 import { AddressProcessingBasicComponent } from './components/address-processing/basic/address-processing-basic/address-processing-basic.component';
 import { GeocodingBasicComponent } from './components/geocoding/basic/geocoding-basic/geocoding-basic.component';
+import { InteractiveResponseMetadataComponent } from './components/common/interactive-response-metadata/interactive-response-metadata.component';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, EsriMapModule],
@@ -17,7 +18,8 @@ import { GeocodingBasicComponent } from './components/geocoding/basic/geocoding-
     ReverseGeocodingBasicComponent,
     CensusIntersectionBasicComponent,
     AddressProcessingBasicComponent,
-    GeocodingBasicComponent
+    GeocodingBasicComponent,
+    InteractiveResponseMetadataComponent
   ],
   exports: [
     ReverseGeocodingBasicComponent,

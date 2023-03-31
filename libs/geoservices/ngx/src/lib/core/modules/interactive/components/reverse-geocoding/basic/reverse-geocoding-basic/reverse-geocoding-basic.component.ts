@@ -8,7 +8,7 @@ import { ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 
-import { BaseInteractiveGeoprocessingComponent } from '../../../base-interactive-geoprocessing/base-interactive-geoprocessing.component';
+import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 
 import esri = __esri;
 

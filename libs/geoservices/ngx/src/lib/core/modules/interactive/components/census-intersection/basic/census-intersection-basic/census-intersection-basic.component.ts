@@ -7,7 +7,7 @@ import { CensusIntersection, CensusIntersectionResult } from '@tamu-gisc/geoproc
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-import { BaseInteractiveGeoprocessingComponent } from '../../../base-interactive-geoprocessing/base-interactive-geoprocessing.component';
+import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 
 @Component({
   selector: 'tamu-gisc-census-intersection-basic',
