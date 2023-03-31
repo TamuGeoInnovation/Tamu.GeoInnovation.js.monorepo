@@ -155,12 +155,12 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
         } as CensusIntersectionResult).pipe(delay(1000));
 
         // const form = this.form.getRawValue();
-        //
+
         // return new CensusIntersection({
         //   apiKey: 'demo',
         //   lat: form.lat,
         //   lon: form.lon,
-        //   censusYears: [form.censusYear]
+        //   censusYears: form.censusYear === 'allAvailable' ? 'allAvailable' : [form.censusYear]
         // }).asObservable();
       })
     );

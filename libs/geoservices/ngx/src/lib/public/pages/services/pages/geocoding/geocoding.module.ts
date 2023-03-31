@@ -9,6 +9,7 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UILayoutCodeModule } from '@tamu-gisc/ui-kits/ngx/layout/code';
 
 import { GeocodingComponent } from './geocoding.component';
+import { GeoservicesCoreInteractiveModule } from '../../../../../core/modules/interactive/interactive.module';
 
 const routes: Routes = [
   {
@@ -24,7 +25,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     HighlightPlusModule,
     UILayoutModule,
-    UILayoutCodeModule
+    UILayoutCodeModule,
+    GeoservicesCoreInteractiveModule
   ],
   declarations: [GeocodingComponent]
 })
