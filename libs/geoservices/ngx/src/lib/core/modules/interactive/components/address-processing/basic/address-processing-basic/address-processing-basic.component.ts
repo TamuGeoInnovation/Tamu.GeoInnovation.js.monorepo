@@ -6,7 +6,7 @@ import { delay, map, switchMap } from 'rxjs/operators';
 import { AddressProcessing, AddressProcessingResult } from '@tamu-gisc/geoprocessing-v5';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-import { BaseInteractiveGeoprocessingComponent } from '../../../base-interactive-geoprocessing/base-interactive-geoprocessing.component';
+import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 
 @Component({
   selector: 'tamu-gisc-address-processing-basic',
