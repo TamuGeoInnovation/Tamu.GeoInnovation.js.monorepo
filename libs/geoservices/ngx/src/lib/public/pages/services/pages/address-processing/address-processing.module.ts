@@ -8,6 +8,7 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UILayoutCodeModule } from '@tamu-gisc/ui-kits/ngx/layout/code';
 
 import { AddressProcessingComponent } from './address-processing.component';
+import { GeoservicesCoreInteractiveModule } from '../../../../../core/modules/interactive/interactive.module';
 
 const routes: Routes = [
   {
@@ -23,7 +24,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     HighlightPlusModule,
     UILayoutModule,
-    UILayoutCodeModule
+    UILayoutCodeModule,
+    GeoservicesCoreInteractiveModule
   ],
   declarations: [AddressProcessingComponent]
 })

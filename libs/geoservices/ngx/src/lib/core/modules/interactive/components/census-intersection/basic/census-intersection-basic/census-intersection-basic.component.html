@@ -38,31 +38,6 @@
   <ng-template #resultContainer>
     <div *ngIf="result | async as res" [@inOutAnimation]>
       <div class="animating-container">
-        <!-- <table>
-          <tbody>
-            <tr>
-              <td>
-                <strong>Status</strong>
-              </td>
-              <td>{{res?.message}}</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Time Taken</strong>
-              </td>
-              <td>{{res?.data?.timeTaken | number}} ms</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Transaction Guid</strong>
-              </td>
-              <td>{{res?.data?.transactionGuid}}</td>
-            </tr>
-          </tbody>
-        </table> -->
-
         <tamu-gisc-tabs>
           <tamu-gisc-tab *ngFor="let cr of (result | async)?.data?.results" [label]="cr.censusYear">
             <table>
