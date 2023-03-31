@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-interactive-response-metadata',
   templateUrl: './interactive-response-metadata.component.html',
   styleUrls: ['./interactive-response-metadata.component.scss']
 })
-export class InteractiveResponseMetadataComponent implements OnInit {
+export class InteractiveResponseMetadataComponent {
+  @Input()
+  public status: string;
 
-  constructor() { }
+  @Input()
+  public timeTaken: number;
 
-  ngOnInit(): void {
-  }
-
+  @Input()
+  public guid: string;
 }
+
