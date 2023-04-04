@@ -251,12 +251,14 @@ table {
 }
 
 .material-icons-container {
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     margin: 0 0.3rem;
   }
 }
 
-.material-icons {
+.material-icons,
+.material-icons-outlined {
   color: inherit;
   font-size: 1.4rem;
   @include transition(color 0.3s);
@@ -300,7 +302,8 @@ table {
     // Have material icons inherit the color from the sidebar menu item,
     // instead of using global styles which are OK, but not 100% in line
     // with the application color scheme.
-    .material-icons {
+    .material-icons,
+    .material-icons-outlined {
       color: inherit;
     }
 
@@ -609,7 +612,8 @@ table {
     display: inline-block;
     vertical-align: middle;
 
-    &.material-icons {
+    &.material-icons,
+    &.material-icons-outlined {
       margin-left: 0.2rem;
     }
   }
@@ -748,7 +752,8 @@ tamu-gisc-step-toggle {
   color: lighten($inactive-color, 10%);
   @include no-select();
 
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     font-size: 1.75rem;
   }
 
@@ -830,7 +835,8 @@ tamu-gisc-step-toggle {
   border: 2pt solid $lightened-inactive-color;
   border-style: dashed;
 
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     font-size: 2.5rem;
   }
 
@@ -873,7 +879,8 @@ tamu-gisc-checkbox-group {
 
 .select-collection {
   @include align-items(center);
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     flex: 0 !important;
     opacity: 0.5;
 
@@ -945,7 +952,8 @@ tamu-gisc-tooltip {
     }
   }
 
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     font-size: 1.1rem;
     color: $inactive-color;
 

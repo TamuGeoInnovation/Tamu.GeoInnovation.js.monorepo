@@ -1,9 +1,9 @@
-<div class="flex flex-row" *ngIf="status !== undefined || guid !== undefined || timeTaken !== undefined">
+<div class="flex flex-row justify-between" *ngIf="status !== undefined || guid !== undefined || timeTaken !== undefined">
   <div class="material-icons-container">
     <tamu-gisc-tooltip positioningStrategy="fixed" [position]="'top'" *ngIf="status !== undefined">
       <tamu-gisc-tooltip-trigger>
         <ng-container [ngSwitch]="status">
-          <div class="material-icons action" *ngSwitchCase="'Success'">check_circle</div>
+          <div class="material-icons-outlined action" *ngSwitchCase="'Success'">check_circle</div>
           <div class="material-icons action error" *ngSwitchDefault>cancel</div>
         </ng-container>
       </tamu-gisc-tooltip-trigger>
@@ -27,5 +27,9 @@
       <p class="tooltip-text">GUID: {{guid}}</p>
     </tamu-gisc-tooltip>
   </div>
-</div>
 
+  <div class="material-icons-container flex flex-row" id="action-links">
+    <a class="flex flex-row align-center action-link" (click)="reset()"><span class="material-icons-outlined action">restart_alt</span>Reset</a>
+    <a class="flex flex-row align-center action-link" (click)="fullResponse()"><span class="material-icons-outlined action">receipt_long</span>Full Response</a>
+  </div>
+</div>
