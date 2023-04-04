@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-interactive-response-metadata',
@@ -14,5 +14,18 @@ export class InteractiveResponseMetadataComponent {
 
   @Input()
   public guid: string;
-}
 
+  @Output()
+  public resetTrigger: EventEmitter<null> = new EventEmitter();
+
+  @Output()
+  public fullResponseTrigger: EventEmitter<null> = new EventEmitter();
+
+  public reset() {
+    this.resetTrigger.emit(null);
+  }
+
+  public fullResponse() {
+    this.fullResponseTrigger.emit(null);
+  }
+}

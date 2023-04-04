@@ -1,7 +1,22 @@
-.material-icons {
+:host {
+  width: 100%;
+  margin-top: 1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.material-icons,
+.material-icons-outlined {
   font-size: 1.4rem;
 }
 
 .tooltip-text {
   font-size: 0.8rem;
+}
+
+#action-links {
+  .action-link {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
 }

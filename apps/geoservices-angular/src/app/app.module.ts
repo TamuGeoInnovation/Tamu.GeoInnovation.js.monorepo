@@ -35,7 +35,7 @@ const routes: Routes = [
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Ubuntu:300,400,500,600', 'Muli:300,400']
+    families: ['Material Icons', 'Material Icons Outlined', 'Ubuntu:300,400,500,600', 'Muli:300,400']
   }
 });
 

@@ -106,4 +106,3 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType> implemen
 
   public abstract getBaseMapConfig(): (source: unknown) => Observable<MapConfig>;
 }
-
