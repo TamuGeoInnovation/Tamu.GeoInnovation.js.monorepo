@@ -11,6 +11,10 @@ import { CensusIntersectionBasicComponent } from './components/census-intersecti
 import { AddressProcessingBasicComponent } from './components/address-processing/basic/address-processing-basic/address-processing-basic.component';
 import { GeocodingBasicComponent } from './components/geocoding/basic/geocoding-basic/geocoding-basic.component';
 import { InteractiveResponseMetadataComponent } from './components/common/interactive-response-metadata/interactive-response-metadata.component';
+import { AddressProcessingAdvancedComponent } from './components/address-processing/advanced/address-processing-advanced/address-processing-advanced.component';
+import { CensusIntersectionAdvancedComponent } from './components/census-intersection/advanced/census-intersection-advanced/census-intersection-advanced.component';
+import { GeocodingAdvancedComponent } from './components/geocoding/advanced/geocoding-advanced/geocoding-advanced.component';
+import { ReverseGeocodingAdvancedComponent } from './components/reverse-geocoding/advanced/reverse-geocoding-advanced/reverse-geocoding-advanced.component';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, EsriMapModule],
@@ -19,13 +23,21 @@ import { InteractiveResponseMetadataComponent } from './components/common/intera
     CensusIntersectionBasicComponent,
     AddressProcessingBasicComponent,
     GeocodingBasicComponent,
-    InteractiveResponseMetadataComponent
+    InteractiveResponseMetadataComponent,
+    AddressProcessingAdvancedComponent,
+    CensusIntersectionAdvancedComponent,
+    GeocodingAdvancedComponent,
+    ReverseGeocodingAdvancedComponent
   ],
   exports: [
     ReverseGeocodingBasicComponent,
     CensusIntersectionBasicComponent,
     AddressProcessingBasicComponent,
-    GeocodingBasicComponent
+    GeocodingBasicComponent,
+    AddressProcessingAdvancedComponent,
+    CensusIntersectionAdvancedComponent,
+    GeocodingAdvancedComponent,
+    ReverseGeocodingAdvancedComponent
   ]
 })
 export class GeoservicesCoreInteractiveModule {}
