@@ -12,6 +12,10 @@ import { GeoservicesCoreInteractiveModule } from '../../../../../core/modules/in
 
 const routes: Routes = [
   {
+    path: 'interactive',
+    loadChildren: () => import('./pages/interactive/interactive.module').then((m) => m.InteractiveModule)
+  },
+  {
     path: '',
     component: ReverseGeocodingComponent
   }
@@ -30,4 +34,3 @@ const routes: Routes = [
   declarations: [ReverseGeocodingComponent]
 })
 export class ReverseGeocodingModule {}
-

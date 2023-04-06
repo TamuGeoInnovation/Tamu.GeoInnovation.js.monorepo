@@ -113,7 +113,7 @@
         </tamu-gisc-tabs>
 
         <div class="flex flex-row">
-          <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()"></tamu-gisc-interactive-response-metadata>
+          <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToResults()"></tamu-gisc-interactive-response-metadata>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe } from 'rxjs';
 import { delay, map, switchMap, take, tap } from 'rxjs/operators';
 
@@ -41,8 +42,13 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
     }
   ];
 
-  constructor(private fb: FormBuilder, private readonly ms: EsriMapService) {
-    super(fb, ms);
+  constructor(
+    private fb: FormBuilder,
+    private readonly ms: EsriMapService,
+    private readonly rt: Router,
+    private readonly ar: ActivatedRoute
+  ) {
+    super(fb, ms, rt, ar);
   }
 
   public buildForm() {
@@ -380,4 +386,3 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
     );
   }
 }
-
