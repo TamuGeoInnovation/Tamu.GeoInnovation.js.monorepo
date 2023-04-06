@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
 
@@ -29,8 +30,13 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
     }
   ];
 
-  constructor(private readonly fb: FormBuilder, private readonly ms: EsriMapService) {
-    super(fb, ms);
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly ms: EsriMapService,
+    private readonly rt: Router,
+    private readonly ar: ActivatedRoute
+  ) {
+    super(fb, ms, rt, ar);
   }
 
   public buildForm() {
@@ -134,4 +140,3 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
     );
   }
 }
-

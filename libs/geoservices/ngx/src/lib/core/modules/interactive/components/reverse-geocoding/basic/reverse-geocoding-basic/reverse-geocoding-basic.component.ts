@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe } from 'rxjs';
 import { map, switchMap, delay, tap, take } from 'rxjs/operators';
 
@@ -20,8 +20,8 @@ import esri = __esri;
 export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<ReverseGeocodeResult> {
   public states = STATES_TITLECASE;
 
-  constructor(private fb: FormBuilder, private ms: EsriMapService) {
-    super(fb, ms);
+  constructor(private fb: FormBuilder, private ms: EsriMapService, private rt: Router, private readonly ar: ActivatedRoute) {
+    super(fb, ms, rt, ar);
   }
 
   public buildForm(): FormGroup {

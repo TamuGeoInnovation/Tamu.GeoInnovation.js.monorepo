@@ -39,7 +39,7 @@
     <div *ngIf="result | async as res" [@inOutAnimation]>
       <div class="animating-container">
         <tamu-gisc-tabs>
-          <tamu-gisc-tab *ngFor="let cr of (result | async)?.data?.results" [label]="cr.censusYear">
+          <tamu-gisc-tab *ngFor="let cr of (result | async)?.data?.results" label="cr.censusYear">
             <table>
               <thead>
                 <tr>
@@ -114,7 +114,7 @@
         </tamu-gisc-tabs>
 
         <div class="flex flex-row">
-          <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()"></tamu-gisc-interactive-response-metadata>
+          <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToResults()"></tamu-gisc-interactive-response-metadata>
         </div>
       </div>
     </div>

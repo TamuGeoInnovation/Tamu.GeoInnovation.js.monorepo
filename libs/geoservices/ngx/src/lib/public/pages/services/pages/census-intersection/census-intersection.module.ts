@@ -12,6 +12,10 @@ import { GeoservicesCoreInteractiveModule } from '../../../../../core/modules/in
 
 const routes: Routes = [
   {
+    path: 'interactive',
+    loadChildren: () => import('./pages/interactive/interactive.module').then((m) => m.InteractiveModule)
+  },
+  {
     path: '',
     component: CensusIntersectionComponent
   }

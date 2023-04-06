@@ -19,13 +19,13 @@ export class InteractiveResponseMetadataComponent {
   public resetTrigger: EventEmitter<null> = new EventEmitter();
 
   @Output()
-  public fullResponseTrigger: EventEmitter<null> = new EventEmitter();
+  public redirectTrigger: EventEmitter<null> = new EventEmitter();
 
   public reset() {
     this.resetTrigger.emit(null);
   }
 
   public fullResponse() {
-    this.fullResponseTrigger.emit(null);
+    this.redirectTrigger.emit(null);
   }
 }

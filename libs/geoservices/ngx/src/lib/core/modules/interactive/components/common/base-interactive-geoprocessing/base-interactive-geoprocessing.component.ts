@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { style, transition, trigger, animate } from '@angular/animations';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { catchError, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
@@ -34,7 +35,17 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType> implemen
   public reset: Subject<'reset'> = new Subject();
   public mapConfig: Observable<MapConfig>;
 
-  constructor(private readonly formBuilder: FormBuilder, private readonly mapService: EsriMapService) {}
+  /**
+   * The URL to redirect to view the full response/component
+   */
+  public redirectUrl = './interactive/';
+
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly mapService: EsriMapService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {}
 
   public ngOnInit(): void {
     this.form = this.buildForm();
@@ -98,6 +109,10 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType> implemen
 
   public clearResult() {
     this.reset.next('reset');
+  }
+
+  public navigateToResults() {
+    this.router.navigate([this.redirectUrl], { relativeTo: this.route });
   }
 
   public abstract buildForm(): FormGroup;
