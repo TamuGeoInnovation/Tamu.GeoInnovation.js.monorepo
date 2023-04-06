@@ -113,10 +113,8 @@
         </tamu-gisc-tabs>
 
         <div class="flex flex-row">
-          <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken"></tamu-gisc-interactive-response-metadata>
+          <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()"></tamu-gisc-interactive-response-metadata>
         </div>
-
-        <tamu-gisc-button [value]="'Reset'" [type]="'button'" (click)="clearResult()" [look]="'secondary'"></tamu-gisc-button>
       </div>
     </div>
   </ng-template>
