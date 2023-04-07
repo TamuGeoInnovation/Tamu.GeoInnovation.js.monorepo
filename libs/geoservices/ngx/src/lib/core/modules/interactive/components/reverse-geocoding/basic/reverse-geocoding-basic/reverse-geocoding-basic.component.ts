@@ -35,6 +35,8 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
   public getQuery() {
     return pipe(
       switchMap(() => {
+        const form = this.form.getRawValue();
+
         return of({
           statusCode: 200,
           message: 'Success',
@@ -69,13 +71,12 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
           }
         } as ReverseGeocodeResult).pipe(delay(1500));
 
-        // const fv = this.form.getRawValue();
         //
         // return new ReverseGeocode({
         //   apiKey: 'demo',
-        //   latitude: fv.lat,
-        //   longitude: fv.lon,
-        //   state: fv.state || undefined
+        //   latitude: form.lat,
+        //   longitude: form.lon,
+        //   state: form.state || undefined
         // }).asObservable();
       })
     );
