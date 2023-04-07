@@ -69,6 +69,8 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
   public getQuery() {
     return pipe(
       switchMap(() => {
+        const form = this.form.getRawValue();
+
         return of({
           statusCode: 200,
           message: 'Success',
@@ -159,8 +161,6 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
             ]
           }
         } as CensusIntersectionResult).pipe(delay(1000));
-
-        // const form = this.form.getRawValue();
 
         // return new CensusIntersection({
         //   apiKey: 'demo',

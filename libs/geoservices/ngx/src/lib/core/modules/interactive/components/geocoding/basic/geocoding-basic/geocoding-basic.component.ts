@@ -64,6 +64,8 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
   public getQuery() {
     return pipe(
       switchMap(() => {
+        const form = this.form.getRawValue();
+
         return of({
           statusCode: 200,
           message: 'Success',
@@ -309,8 +311,6 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
             ]
           }
         } as GeocodeResult).pipe(delay(1250));
-
-        // const form = this.form.getRawValue();
 
         // return new Geocode({
         //   apiKey: 'demo',

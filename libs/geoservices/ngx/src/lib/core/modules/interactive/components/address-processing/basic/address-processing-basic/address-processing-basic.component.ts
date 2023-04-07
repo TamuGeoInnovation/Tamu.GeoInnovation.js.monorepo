@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, pipe } from 'rxjs';
+import { Observable, of, pipe } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
 
 import { AddressProcessing, AddressProcessingResult } from '@tamu-gisc/geoprocessing-v5';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 
@@ -30,6 +31,10 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
     }
   ];
 
+  public states = STATES_TITLECASE;
+
+  public queryUrl: Observable<string>;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly ms: EsriMapService,
@@ -42,6 +47,9 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
   public buildForm() {
     return this.fb.group({
       address: [null, [Validators.required]],
+      city: [null],
+      state: [null],
+      zip: [null],
       addressFormat: [null, [Validators.required]]
     });
   }
@@ -49,6 +57,8 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
   public getQuery() {
     return pipe(
       switchMap(() => {
+        const form = this.form.getRawValue();
+
         return of({
           statusCode: 200,
           message: 'Success',
@@ -121,12 +131,13 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
           }
         } as AddressProcessingResult).pipe(delay(1000));
 
-        // const form = this.form.getRawValue();
-        //
         // return new AddressProcessing({
         //   nonParsedStreetAddress: form.address,
+        //   nonParsedStreetCity: form.city,
+        //   nonParsedStreetState: form.state,
+        //   nonParsedStreetZIP: form.zip,
         //   apiKey: 'demo',
-        //   addressFormat: [form.outputFormat]
+        //   addressFormat: typeof form.addressFormat === 'string' ? [] : [...form.addressFormat]
         // }).asObservable();
       })
     );

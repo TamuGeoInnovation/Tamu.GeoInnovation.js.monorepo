@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -17,7 +18,7 @@ import { GeocodingAdvancedComponent } from './components/geocoding/advanced/geoc
 import { ReverseGeocodingAdvancedComponent } from './components/reverse-geocoding/advanced/reverse-geocoding-advanced/reverse-geocoding-advanced.component';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, EsriMapModule],
+  imports: [CommonModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, EsriMapModule, RouterModule],
   declarations: [
     ReverseGeocodingBasicComponent,
     CensusIntersectionBasicComponent,
