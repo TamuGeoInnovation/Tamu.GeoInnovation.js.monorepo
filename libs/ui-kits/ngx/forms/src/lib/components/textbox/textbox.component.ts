@@ -23,7 +23,7 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
    * Defaults to `default`
    */
   @Input()
-  public formControlName: 'default';
+  public formControlName = 'default';
 
   /**
    * Responsible for rendering the correct input element (input vs textarea), and setting its associated type attribute.
@@ -57,3 +57,4 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
   @Input()
   public floatLabel = false;
 }
+
