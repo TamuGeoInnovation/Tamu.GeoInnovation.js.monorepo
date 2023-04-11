@@ -158,6 +158,8 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   public writeValue(value) {
+    if (value === null) return;
+
     this.value = [...value];
 
     this.setChildrenValue();
