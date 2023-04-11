@@ -111,7 +111,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType> implemen
     this.reset.next('reset');
   }
 
-  public navigateToResults() {
+  public navigateToAdvanced() {
     this.router.navigate([this.redirectUrl], { relativeTo: this.route });
   }
 

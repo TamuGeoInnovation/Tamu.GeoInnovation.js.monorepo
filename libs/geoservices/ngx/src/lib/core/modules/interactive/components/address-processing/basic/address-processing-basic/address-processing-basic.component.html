@@ -18,8 +18,12 @@
               <tamu-gisc-select [placeholder]="'Address Format'" [data]="formats" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="addressFormat"></tamu-gisc-select>
             </div>
 
-            <div class="form-collection row">
+            <div class="form-collection column">
               <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+
+              <div class="leader-2 flex flex-row justify-center">
+                <a (click)="navigateToAdvanced()" class="material-icons-container flex flex-row align-center"><span class="material-icons-outlined">settings</span> Advanced Options</a>
+              </div>
             </div>
           </div>
         </div>
@@ -115,7 +119,7 @@
       </tamu-gisc-tabs>
 
       <div class="flex flex-row">
-        <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToResults()"></tamu-gisc-interactive-response-metadata>
+        <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced()"></tamu-gisc-interactive-response-metadata>
       </div>
     </div>
   </ng-template>
