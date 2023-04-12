@@ -180,7 +180,9 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
             action: 'submission_fail',
             properties: {
               category: 'error',
-              label: err
+              gstCustom: {
+                message: err.message
+              }
             }
           });
 

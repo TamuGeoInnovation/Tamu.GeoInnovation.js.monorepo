@@ -57,7 +57,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: {
+      gstCustom: {
         points: this.result.stopsToArray(),
         travelMode: this.result.params.travelMode,
         connection: this.result.connection.name,
@@ -68,10 +68,10 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
     };
 
     this.analytics.eventTrack.next({
-      action: 'bad_route',
+      action: 'routing',
       properties: {
-        category: 'routing',
-        label: label
+        category: 'report-bad-route',
+        gstCustom: label
       }
     });
 

@@ -85,8 +85,7 @@ export class MainMobileSidebarComponent {
       action: 'sidebar_select',
       properties: {
         category: 'ui_interaction',
-        label: label,
-        device: 'mobile'
+        gstCustom: label
       }
     });
   }

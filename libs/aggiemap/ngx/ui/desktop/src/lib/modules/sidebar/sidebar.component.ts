@@ -31,8 +31,7 @@ export class AggiemapSidebarComponent implements OnInit {
       action: 'sidebar_select',
       properties: {
         category: 'ui_interaction',
-        label: label,
-        device: 'desktop'
+        gstCustom: label
       }
     });
   }

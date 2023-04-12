@@ -26,10 +26,10 @@ export class CopyComponent {
     };
 
     this.analytics.eventTrack.next({
-      action: 'copy_coordinate',
+      action: 'copy_clipboard',
       properties: {
         category: 'ui_interaction',
-        label: label
+        gstCustom: label
       }
     });
   }

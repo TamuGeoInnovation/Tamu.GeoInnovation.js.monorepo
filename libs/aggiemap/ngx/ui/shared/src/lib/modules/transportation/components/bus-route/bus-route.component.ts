@@ -161,7 +161,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
       action: 'bus_route_load',
       properties: {
         category: 'ui_interaction',
-        label: label
+        gstCustom: label
       }
     });
   }

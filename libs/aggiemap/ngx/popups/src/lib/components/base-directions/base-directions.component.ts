@@ -92,17 +92,17 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
       })
     ]);
 
+    // Report to Google Analytics
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: analyticsLabel,
-      event_type: 'directions-to-here'
+      name: analyticsLabel
     };
 
     this.analytics.eventTrack.next({
-      action: 'ui_interaction',
+      action: 'routing',
       properties: {
-        category: 'routing',
+        category: 'directions-to-here',
         gstCustom: label
       }
     });

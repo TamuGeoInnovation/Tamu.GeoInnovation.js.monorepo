@@ -903,14 +903,14 @@ export class BusService {
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: `${type}|${route}`
+      route: `${type}|${route}`
     };
 
     this.analytics.eventTrack.next({
       action: 'bus_fail',
       properties: {
         category: 'network_request',
-        label: label
+        gstCustom: label
       }
     });
   }

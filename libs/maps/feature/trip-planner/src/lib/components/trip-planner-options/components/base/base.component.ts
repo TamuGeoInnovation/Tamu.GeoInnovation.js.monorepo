@@ -70,8 +70,8 @@ export class TripPlannerOptionsBaseComponent implements OnInit {
       action: 'persistent_travel_setting',
       properties: {
         category: 'ui_interaction',
-        type: 'set',
-        label: {
+        gstCustom: {
+          type: 'set',
           date: Date.now(),
           guid: guid(),
           ...opts

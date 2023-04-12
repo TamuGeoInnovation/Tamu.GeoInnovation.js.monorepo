@@ -268,8 +268,8 @@ export class SearchComponent implements OnInit, OnDestroy {
           const label = {
             guid: guid(),
             date: Date.now(),
-            value: value,
-            size: value.length
+            term: value,
+            termSize: value.length
           };
 
           // Send analytics search input
@@ -422,10 +422,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         // Track analytics geolocation success
         this.analytics.eventTrack.next({
-          action: 'success',
+          action: 'geolocation',
           properties: {
-            category: 'geolocation',
-            label: label
+            category: 'success',
+            gstCustom: label
           }
         });
       })
@@ -469,10 +469,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         // Track analytics geolocation failure
         this.analytics.eventTrack.next({
-          action: 'failed',
+          action: 'geolocation',
           properties: {
-            category: 'geolocation',
-            label: label
+            category: 'failed',
+            gstCustom: label
           }
         });
       });
