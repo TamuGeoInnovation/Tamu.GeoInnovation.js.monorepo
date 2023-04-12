@@ -95,14 +95,15 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: analyticsLabel
+      value: analyticsLabel,
+      event_type: 'directions-to-here'
     };
 
     this.analytics.eventTrack.next({
-      action: '',
+      action: 'ui_interaction',
       properties: {
-        category: 'ui_interaction',
-        label: label
+        category: 'routing',
+        gstCustom: label
       }
     });
 

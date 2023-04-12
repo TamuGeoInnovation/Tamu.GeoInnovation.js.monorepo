@@ -268,7 +268,8 @@ export class SearchComponent implements OnInit, OnDestroy {
           const label = {
             guid: guid(),
             date: Date.now(),
-            value: value
+            value: value,
+            size: value.length
           };
 
           // Send analytics search input
@@ -276,8 +277,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             action: 'search',
             properties: {
               category: 'searched_term',
-              gstCustom: label,
-              value: value.length
+              gstCustom: label
             }
           });
         }
