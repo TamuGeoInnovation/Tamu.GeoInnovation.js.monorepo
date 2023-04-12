@@ -99,10 +99,10 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
     };
 
     this.analytics.eventTrack.next({
-      action: 'Directions To Here',
+      action: '',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        label: label
       }
     });
 

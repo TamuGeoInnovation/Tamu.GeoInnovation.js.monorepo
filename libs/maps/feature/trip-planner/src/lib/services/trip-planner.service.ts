@@ -1507,10 +1507,10 @@ export class TripPlannerService implements OnDestroy {
     };
 
     this.analytics.eventTrack.next({
-      action: 'Create',
+      action: 'route_create',
       properties: {
-        category: 'Routing',
-        label: JSON.stringify(label)
+        category: 'routing',
+        label: label
       }
     });
   }
@@ -1551,10 +1551,10 @@ export class TripPlannerService implements OnDestroy {
           stops: tripResult.stopsSource
         };
         this.analytics.eventTrack.next({
-          action: 'Fail',
+          action: 'route_fail',
           properties: {
-            category: 'Routing',
-            label: JSON.stringify(label)
+            category: 'routing',
+            label: label
           }
         });
       } else {
@@ -1573,10 +1573,10 @@ export class TripPlannerService implements OnDestroy {
         };
 
         this.analytics.eventTrack.next({
-          action: 'Out Of Bounds',
+          action: 'route_out_of_bounds',
           properties: {
-            category: 'Routing',
-            label: JSON.stringify(label)
+            category: 'routing',
+            label: label
           }
         });
       }
@@ -1595,10 +1595,10 @@ export class TripPlannerService implements OnDestroy {
       };
 
       this.analytics.eventTrack.next({
-        action: 'Boundary Query Fail',
+        action: 'boundary_query_fail',
         properties: {
-          category: 'Routing',
-          label: JSON.stringify(label)
+          category: 'routing',
+          label: label
         }
       });
     }

@@ -158,10 +158,10 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     this.analytics.eventTrack.next({
-      action: 'Bus Route Load',
+      action: 'bus_route_load',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        label: label
       }
     });
   }

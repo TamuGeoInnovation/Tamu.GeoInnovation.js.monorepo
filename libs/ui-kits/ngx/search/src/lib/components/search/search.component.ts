@@ -273,10 +273,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
           // Send analytics search input
           this.analytics.eventTrack.next({
-            action: 'Search',
+            action: 'search',
             properties: {
-              category: 'Searched Term',
-              label: JSON.stringify(label),
+              category: 'searched_term',
+              label: label,
               value: value.length
             }
           });
@@ -422,10 +422,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         // Track analytics geolocation success
         this.analytics.eventTrack.next({
-          action: 'Success',
+          action: 'success',
           properties: {
-            category: 'Geolocation',
-            label: JSON.stringify(label)
+            category: 'geolocation',
+            label: label
           }
         });
       })
@@ -469,10 +469,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         // Track analytics geolocation failure
         this.analytics.eventTrack.next({
-          action: 'Failed',
+          action: 'failed',
           properties: {
-            category: 'Geolocation',
-            label: JSON.stringify(label)
+            category: 'geolocation',
+            label: label
           }
         });
       });

@@ -41,10 +41,10 @@ export class NotificationContainerComponent implements OnInit {
       };
 
       this.analytics.eventTrack.next({
-        action: 'Notification Action',
+        action: 'notification_action',
         properties: {
-          category: 'UI Interaction',
-          label: JSON.stringify(label)
+          category: 'ui_interaction',
+          label: label
         }
       });
     }

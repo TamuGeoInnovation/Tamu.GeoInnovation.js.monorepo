@@ -116,10 +116,11 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
     };
 
     this.analytics.eventTrack.next({
-      action: 'Trip Planner Action - Reset',
+      action: 'trip_planner_action',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        type: 'reset',
+        label: label
       }
     });
   }
@@ -133,10 +134,11 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
     };
 
     this.analytics.eventTrack.next({
-      action: 'Trip Planner Action - Share',
+      action: 'trip_planner_action',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        type: 'share',
+        label: label
       }
     });
   }

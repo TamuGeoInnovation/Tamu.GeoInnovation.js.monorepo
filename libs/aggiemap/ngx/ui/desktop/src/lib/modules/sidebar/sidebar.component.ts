@@ -28,10 +28,11 @@ export class AggiemapSidebarComponent implements OnInit {
     };
 
     this.analytics.eventTrack.next({
-      action: 'Desktop Sidebar Tab Select',
+      action: 'sidebar_select',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        label: label,
+        device: 'desktop'
       }
     });
   }

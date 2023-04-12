@@ -26,10 +26,10 @@ export class CopyComponent {
     };
 
     this.analytics.eventTrack.next({
-      action: 'Copy Coordinates',
+      action: 'copy_coordinate',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        label: label
       }
     });
   }

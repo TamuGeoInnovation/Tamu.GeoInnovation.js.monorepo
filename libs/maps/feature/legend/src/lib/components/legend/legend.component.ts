@@ -56,10 +56,10 @@ export class LegendComponent implements OnInit, OnDestroy {
     };
 
     this.analytics.eventTrack.next({
-      action: 'Legend Click',
+      action: 'legend_click',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        label: label
       }
     });
   }

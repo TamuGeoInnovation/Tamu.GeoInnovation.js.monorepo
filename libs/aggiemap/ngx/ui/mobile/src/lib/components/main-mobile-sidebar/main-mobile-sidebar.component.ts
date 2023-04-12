@@ -82,10 +82,11 @@ export class MainMobileSidebarComponent {
     };
 
     this.analytics.eventTrack.next({
-      action: 'Mobile Sidebar Selection',
+      action: 'sidebar_select',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        label: label,
+        device: 'mobile'
       }
     });
   }

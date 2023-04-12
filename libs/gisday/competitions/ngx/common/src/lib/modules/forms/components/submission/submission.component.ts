@@ -177,10 +177,10 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           this.submissionStatus.next(-1);
 
           this.analytics.eventTrack.next({
-            action: 'Submission Fail',
+            action: 'submission_fail',
             properties: {
-              category: 'Error',
-              label: JSON.stringify(err)
+              category: 'error',
+              label: err
             }
           });
 

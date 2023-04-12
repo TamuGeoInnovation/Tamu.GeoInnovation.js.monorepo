@@ -68,10 +68,10 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
     };
 
     this.analytics.eventTrack.next({
-      action: 'Bad Route',
+      action: 'bad_route',
       properties: {
-        category: 'Routing',
-        label: JSON.stringify(label)
+        category: 'routing',
+        label: label
       }
     });
 
