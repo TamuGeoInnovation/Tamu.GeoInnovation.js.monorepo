@@ -276,7 +276,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             action: 'search',
             properties: {
               category: 'searched_term',
-              label: label,
+              gstCustom: label,
               value: value.length
             }
           });
