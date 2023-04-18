@@ -269,7 +269,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             guid: guid(),
             date: Date.now(),
             term: value,
-            termSize: value.length
+            term_size: value.length
           };
 
           // Send analytics search input
@@ -417,7 +417,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         const label = {
           guid: guid(),
           date: Date.now(),
-          value: `${res.latitude}, ${res.longitude}`
+          name: `${res.latitude}, ${res.longitude}`
         };
 
         // Track analytics geolocation success
@@ -464,7 +464,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         const label = {
           guid: guid(),
           date: Date.now(),
-          value: err.message
+          name: err.message
         };
 
         // Track analytics geolocation failure

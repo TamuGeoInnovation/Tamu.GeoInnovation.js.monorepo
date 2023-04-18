@@ -78,7 +78,7 @@ export class MainMobileSidebarComponent {
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: name
+      name: name
     };
 
     this.analytics.eventTrack.next({

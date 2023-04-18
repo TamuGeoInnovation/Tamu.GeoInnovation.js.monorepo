@@ -22,11 +22,11 @@ export class CopyComponent {
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: this.text
+      content: this.text
     };
 
     this.analytics.eventTrack.next({
-      action: 'copy_clipboard',
+      action: 'clipboard_copy',
       properties: {
         category: 'ui_interaction',
         gstCustom: label

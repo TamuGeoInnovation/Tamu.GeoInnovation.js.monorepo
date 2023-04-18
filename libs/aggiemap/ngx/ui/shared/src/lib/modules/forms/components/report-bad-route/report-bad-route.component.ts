@@ -57,20 +57,23 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
     const label = {
       guid: guid(),
       date: Date.now(),
-      gstCustom: {
-        points: this.result.stopsToArray(),
-        travelMode: this.result.params.travelMode,
-        connection: this.result.connection.name,
-        description: this.description ? this.description : 'No Description',
-        email: this.email ? this.email : 'No email',
-        stops: this.result.stopsSource
-      }
+      travel_mode: this.result.params.travelMode.id,
+      connection: this.result.connection.name,
+      description: this.description ? this.description : 'No Description',
+      email: this.email ? this.email : 'No email'
+      // Might implement this in a custom reporting tool
+      // stops: this.result.stopsSource
     };
+
+    // Iterate through each sto in this.result.stopsToArray() and add a property for each stop prefixed with stop_ to label.gstCustom
+    this.result.stopsToArray().forEach((stop, index) => {
+      label[`stop_${index}`] = stop.toString();
+    });
 
     this.analytics.eventTrack.next({
       action: 'routing',
       properties: {
-        category: 'report-bad-route',
+        category: 'feedback',
         gstCustom: label
       }
     });

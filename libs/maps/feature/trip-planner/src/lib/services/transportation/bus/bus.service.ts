@@ -903,7 +903,7 @@ export class BusService {
     const label = {
       guid: guid(),
       date: Date.now(),
-      route: `${type}|${route}`
+      name: `${type}|${route}`
     };
 
     this.analytics.eventTrack.next({

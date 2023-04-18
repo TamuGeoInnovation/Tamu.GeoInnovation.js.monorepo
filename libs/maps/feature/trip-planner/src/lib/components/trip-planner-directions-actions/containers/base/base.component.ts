@@ -130,7 +130,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: this.shareUrl,
+      name: this.shareUrl,
       type: 'share'
     };
 

@@ -154,7 +154,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: shortName
+      name: shortName
     };
 
     this.analytics.eventTrack.next({

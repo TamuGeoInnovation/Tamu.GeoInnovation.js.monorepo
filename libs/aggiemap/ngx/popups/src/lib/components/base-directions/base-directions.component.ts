@@ -102,7 +102,7 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
     this.analytics.eventTrack.next({
       action: 'routing',
       properties: {
-        category: 'directions-to-here',
+        category: 'directions_to_here',
         gstCustom: label
       }
     });

@@ -24,7 +24,7 @@ export class AggiemapSidebarComponent implements OnInit {
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: tabTitle
+      name: tabTitle
     };
 
     this.analytics.eventTrack.next({

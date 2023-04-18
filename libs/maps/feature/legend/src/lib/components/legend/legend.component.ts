@@ -45,25 +45,6 @@ export class LegendComponent implements OnInit, OnDestroy {
     this._destroy$.complete();
   }
 
-  /**
-   * Reports any legend clicks to Google Analytics
-   */
-  public analyticsReport(title: string): void {
-    const label = {
-      guid: guid(),
-      date: Date.now(),
-      value: title
-    };
-
-    this.analytics.eventTrack.next({
-      action: 'legend_click',
-      properties: {
-        category: 'ui-interaction',
-        gstCustom: label
-      }
-    });
-  }
-
   public backAction(): void {
     this.router.navigate(['../'], { relativeTo: this.route });
   }
