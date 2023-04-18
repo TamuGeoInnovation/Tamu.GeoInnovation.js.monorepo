@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
-import { readdir, stat, rm } from 'node:fs/promises';
-import { join } from 'node:path';
+import { readdir, stat, rm } from 'fs/promises';
+import { join } from 'path';
 
 import { Trip, StatusChange, DataTask, Log } from '@tamu-gisc/veoride/common/entities';
 import { VeorideDataCompilerManager } from '@tamu-gisc/veoride/data-compiler';
