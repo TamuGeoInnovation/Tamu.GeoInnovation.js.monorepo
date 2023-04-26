@@ -24,7 +24,7 @@ import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
     ])
   ]
 })
-export abstract class BaseInteractiveGeoprocessingComponent<ResultType> implements OnInit {
+export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamType> implements OnInit {
   public form: FormGroup;
   public result: Observable<ResultType>;
 
@@ -120,4 +120,6 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType> implemen
   public abstract getQuery(): (source: unknown) => Observable<ResultType>;
 
   public abstract getBaseMapConfig(): (source: unknown) => Observable<MapConfig>;
+
+  public abstract getQueryParameters(): ParamType;
 }

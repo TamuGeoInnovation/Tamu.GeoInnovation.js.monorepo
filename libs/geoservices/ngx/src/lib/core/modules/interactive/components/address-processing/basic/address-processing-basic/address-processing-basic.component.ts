@@ -4,33 +4,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, pipe } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
 
-import { AddressProcessing, AddressProcessingResult } from '@tamu-gisc/geoprocessing-v5';
+import { AddressProcessing, AddressProcessingResult, IAddressProcessingOptions } from '@tamu-gisc/geoprocessing-v5';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
+import { ADDRESS_FORMAT_TYPES } from '../../../../../../util/dictionaries';
 
 @Component({
   selector: 'tamu-gisc-address-processing-basic',
   templateUrl: './address-processing-basic.component.html',
   styleUrls: ['./address-processing-basic.component.scss']
 })
-export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessingComponent<AddressProcessingResult> {
-  public formats = [
-    {
-      name: 'USPS Publication 28',
-      value: 'USPSPublication28'
-    },
-    {
-      name: 'US Census Tiger',
-      value: 'USCensusTiger'
-    },
-    {
-      name: 'LA County',
-      value: 'LACounty'
-    }
-  ];
-
+export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessingComponent<
+  AddressProcessingResult,
+  IAddressProcessingOptions
+> {
+  public formats = ADDRESS_FORMAT_TYPES;
   public states = STATES_TITLECASE;
 
   public queryUrl: Observable<string>;
@@ -57,7 +47,7 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
   public getQuery() {
     return pipe(
       switchMap(() => {
-        const form = this.form.getRawValue();
+        const params = this.getQueryParameters();
 
         return of({
           statusCode: 200,
@@ -129,18 +119,24 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
               }
             ]
           }
-        } as AddressProcessingResult).pipe(delay(1000));
+        } as AddressProcessingResult).pipe(delay(1250));
 
-        // return new AddressProcessing({
-        //   nonParsedStreetAddress: form.address,
-        //   nonParsedStreetCity: form.city,
-        //   nonParsedStreetState: form.state,
-        //   nonParsedStreetZIP: form.zip,
-        //   apiKey: 'demo',
-        //   addressFormat: typeof form.addressFormat === 'string' ? [] : [...form.addressFormat]
-        // }).asObservable();
+        return new AddressProcessing(params).asObservable().pipe(delay(1250));
       })
     );
+  }
+
+  public override getQueryParameters(): IAddressProcessingOptions {
+    const form = this.form.getRawValue();
+
+    return {
+      nonParsedStreetAddress: form.address,
+      nonParsedStreetCity: form.city,
+      nonParsedStreetState: form.state,
+      nonParsedStreetZIP: form.zip,
+      apiKey: 'demo',
+      addressFormat: typeof form.addressFormat === 'string' ? [] : [...form.addressFormat]
+    };
   }
 
   public getBaseMapConfig() {
