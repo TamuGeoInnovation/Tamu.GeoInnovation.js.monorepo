@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
 
@@ -7,12 +7,8 @@ import { ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
   templateUrl: './census-intersection-result-tabs.component.html',
   styleUrls: ['./census-intersection-result-tabs.component.scss']
 })
-export class CensusIntersectionResultTabsComponent implements OnInit {
+export class CensusIntersectionResultTabsComponent {
   @Input()
   public censusRecords: Array<ICensusIntersectionRecord>;
-
-  public ngOnInit(): void {
-    console.log(this.censusRecords);
-  }
 }
 

@@ -157,29 +157,32 @@
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
 
-    <ng-container *ngIf="res?.data?.results[0] as best">
+    <ng-container *ngFor="let result of res?.data?.results; let last = last; let i = index;">
       <tamu-gisc-accordion [expanded]="true">
-        <tamu-gisc-accordion-header>Best Match Result</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-header>
+          <ng-container *ngIf="i === 0; else notFirst"> Best Match Result</ng-container>
+          <ng-template #notFirst>Possible Geocode #{{i}}</ng-template>
+        </tamu-gisc-accordion-header>
         <tamu-gisc-accordion-content>
           <h4>Geocode Result</h4>
 
           <p>The following represents the geocoded output for the best match from the input parameters.</p>
 
-          <tamu-gisc-geocode-result-table [geocode]="best"></tamu-gisc-geocode-result-table>
+          <tamu-gisc-geocode-result-table [geocode]="result"></tamu-gisc-geocode-result-table>
 
           <h4 class="leader-2">Census Values</h4>
 
           <p>The following represents the census records for the best match geocode.</p>
 
-          <tamu-gisc-census-intersection-result-tabs [censusRecords]="best.censusRecords"></tamu-gisc-census-intersection-result-tabs>
+          <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
 
           <h4 class="leader-2">Parsed Address</h4>
 
-          <tamu-gisc-parsed-address-result-table [address]="best?.matchedAddress" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
+          <tamu-gisc-parsed-address-result-table [address]="result?.matchedAddress" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
 
           <h4 class="leader-2">Reference Feature</h4>
 
-          <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="best?.referenceFeature"></tamu-gisc-geocode-matched-reference-feature-table>
+          <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="result?.referenceFeature"></tamu-gisc-geocode-matched-reference-feature-table>
         </tamu-gisc-accordion-content>
       </tamu-gisc-accordion>
     </ng-container>
