@@ -141,111 +141,40 @@
   <div [@inOutAnimation] class="leader-3">
     <h2 class="section-header">Results</h2>
 
-    <!-- <tamu-gisc-accordion [expanded]="true">
+    <tamu-gisc-accordion [expanded]="true">
       <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Time Taken</td>
-              <td>{{res?.data?.timeTaken | number}}ms</td>
-            </tr>
-
-            <tr>
-              <td>Transaction Guid</td>
-              <td>{{res?.data?.transactionGuid}}</td>
-            </tr>
-
-            <tr>
-              <td>Transaction Result</td>
-              <td>{{res?.data?.queryStatusCode}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
 
-    <tamu-gisc-accordion *ngFor="let cr of (result | async)?.data?.results" [expanded]="true">
-      <tamu-gisc-accordion-header>Census Year {{cr?.censusYear}}</tamu-gisc-accordion-header>
+    <tamu-gisc-accordion [expanded]="false">
+      <tamu-gisc-accordion-header>Input Parameters</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Value</th>
-            </tr>
-          </thead>
+        <p>The following table displays the input parameters (including defaults) that were used to process the query. These are helpful to know when debugging a response.</p>
 
-          <tbody>
-            <tr>
-              <td>GeoLocation ID</td>
-              <td>{{cr.geoLocationId}}</td>
-            </tr>
-
-            <tr>
-              <td>Census Block</td>
-              <td>{{cr.censusBlock}}</td>
-            </tr>
-
-            <tr>
-              <td>Census Block Group</td>
-              <td>{{cr.censusBlockGroup}}</td>
-            </tr>
-
-            <tr>
-              <td>Census Tract</td>
-              <td>{{cr.censusTract}}</td>
-            </tr>
-
-            <tr>
-              <td>Census County FIPS</td>
-              <td>{{cr.censusCountyFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census Place FIPS</td>
-              <td>{{cr.censusPlaceFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census MSA FIPS</td>
-              <td>{{cr.censusMsaFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census MCD FIPS</td>
-              <td>{{cr.censusMcdFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census CBSA FIPS</td>
-              <td>{{cr.censusCbsaFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census CBSA Micropolitan</td>
-              <td>{{cr.censusCbsaMicro}}</td>
-            </tr>
-
-            <tr>
-              <td>Census MetDiv</td>
-              <td>{{cr.censusMetDivFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census State FIPS</td>
-              <td>{{cr.censusStateFips}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <tamu-gisc-geocode-input-parameters [parameters]="res?.data?.inputParameterSet"></tamu-gisc-geocode-input-parameters>
       </tamu-gisc-accordion-content>
-    </tamu-gisc-accordion> -->
+    </tamu-gisc-accordion>
+
+    <ng-container *ngIf="res?.data?.results[0] as best">
+      <tamu-gisc-accordion [expanded]="true">
+        <tamu-gisc-accordion-header>Best Geocode Output</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <p>The following represents the geocoded output for the best match from the input parameters.</p>
+
+          <tamu-gisc-geocode-result-table [geocode]="best"></tamu-gisc-geocode-result-table>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion>
+
+      <tamu-gisc-accordion [expanded]="true">
+        <tamu-gisc-accordion-header>Best Geocode Output Census Values</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <p>The following represents the census records for the best match geocode.</p>
+
+          <tamu-gisc-census-intersection-result-tabs [censusRecords]="best.censusRecords"></tamu-gisc-census-intersection-result-tabs>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion>
+    </ng-container>
   </div>
 </ng-container>

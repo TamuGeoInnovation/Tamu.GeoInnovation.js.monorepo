@@ -7,6 +7,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 
+import { ResultTablesModule } from '../result-tables/result-tables.module';
 import { ReverseGeocodingBasicComponent } from './components/reverse-geocoding/basic/reverse-geocoding-basic/reverse-geocoding-basic.component';
 import { CensusIntersectionBasicComponent } from './components/census-intersection/basic/census-intersection-basic/census-intersection-basic.component';
 import { AddressProcessingBasicComponent } from './components/address-processing/basic/address-processing-basic/address-processing-basic.component';
@@ -18,7 +19,15 @@ import { GeocodingAdvancedComponent } from './components/geocoding/advanced/geoc
 import { ReverseGeocodingAdvancedComponent } from './components/reverse-geocoding/advanced/reverse-geocoding-advanced/reverse-geocoding-advanced.component';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, EsriMapModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    UIFormsModule,
+    UILayoutModule,
+    EsriMapModule,
+    RouterModule,
+    ResultTablesModule
+  ],
   declarations: [
     ReverseGeocodingBasicComponent,
     CensusIntersectionBasicComponent,
