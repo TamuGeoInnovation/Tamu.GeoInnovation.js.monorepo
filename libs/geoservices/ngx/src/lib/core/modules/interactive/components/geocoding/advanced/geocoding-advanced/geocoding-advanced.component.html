@@ -1,2 +1,251 @@
-<p>geocoding-advanced works!</p>
+<div [@inOutAnimation]>
+  <form [formGroup]="form" (submit)="processInteractiveQuery()">
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Input Address (Required)</p>
+        </div>
+      </div>
 
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Street Address'" formControlName="streetAddress"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'City'" formControlName="city"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-select [placeholder]="'State'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state"></tamu-gisc-select>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Zip'" formControlName="zip"></tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Geocoding Options</p>
+        </div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <tamu-gisc-checkbox label="Use attribute relaxation" formControlName="attributeRelaxation"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use substring matching" formControlName="substringMatching"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use soundex matching" formControlName="soundexMatching"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use uncertainty hierarchy" formControlName="uncertaintyHierarchy"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Allow ties" formControlName="allowTies"></tamu-gisc-checkbox>
+
+          <ng-container *ngIf="form.controls.allowTies.value === false">
+            <p>If <strong>no</strong> ties are allowed, use the following tie breaking strategy:</p>
+
+            <tamu-gisc-select [data]="tieBreakingStrategies" valueTemplate="value" displayTemplate="name" formControlName="tieBreakingStrategy"></tamu-gisc-select>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Census Years (Required)</p>
+        </div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p>Select all applicable return census years to intersect latitude and longitude with.</p>
+
+          <tamu-gisc-checkbox-group formControlName="censusYears" [referenceId]="'value'">
+            <tamu-gisc-checkbox *ngFor="let year of censusYears" [label]="year.name" [data]="year"></tamu-gisc-checkbox>
+          </tamu-gisc-checkbox-group>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Reference Sources</p>
+        </div>
+      </div>
+
+      <div class="form-section-body" formGroupName="refs">
+        <div class="form-collection column">
+          <p><strong>Address Points</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.addressPoints" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+
+          <div>
+            <p>Minimum confidence level:</p>
+            <tamu-gisc-select [data]="cls" valueTemplate="value" displayTemplate="name" formControlName="openAddressesMinimumConfLevel"></tamu-gisc-select>
+          </div>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Building Footprints</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.buildingFootprints" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Parcels</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.parcels" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Streets</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.streets" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Census 2020</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.census2020" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Census 2010</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.census2010" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Census 2008</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.census2000" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Zip</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.zip" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<ng-container *ngIf="result | async as res">
+  <div [@inOutAnimation] class="leader-3">
+    <h2 class="section-header">Results</h2>
+
+    <!-- <tamu-gisc-accordion [expanded]="true">
+      <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
+      <tamu-gisc-accordion-content>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Time Taken</td>
+              <td>{{res?.data?.timeTaken | number}}ms</td>
+            </tr>
+
+            <tr>
+              <td>Transaction Guid</td>
+              <td>{{res?.data?.transactionGuid}}</td>
+            </tr>
+
+            <tr>
+              <td>Transaction Result</td>
+              <td>{{res?.data?.queryStatusCode}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </tamu-gisc-accordion-content>
+    </tamu-gisc-accordion>
+
+    <tamu-gisc-accordion *ngFor="let cr of (result | async)?.data?.results" [expanded]="true">
+      <tamu-gisc-accordion-header>Census Year {{cr?.censusYear}}</tamu-gisc-accordion-header>
+      <tamu-gisc-accordion-content>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>GeoLocation ID</td>
+              <td>{{cr.geoLocationId}}</td>
+            </tr>
+
+            <tr>
+              <td>Census Block</td>
+              <td>{{cr.censusBlock}}</td>
+            </tr>
+
+            <tr>
+              <td>Census Block Group</td>
+              <td>{{cr.censusBlockGroup}}</td>
+            </tr>
+
+            <tr>
+              <td>Census Tract</td>
+              <td>{{cr.censusTract}}</td>
+            </tr>
+
+            <tr>
+              <td>Census County FIPS</td>
+              <td>{{cr.censusCountyFips}}</td>
+            </tr>
+
+            <tr>
+              <td>Census Place FIPS</td>
+              <td>{{cr.censusPlaceFips}}</td>
+            </tr>
+
+            <tr>
+              <td>Census MSA FIPS</td>
+              <td>{{cr.censusMsaFips}}</td>
+            </tr>
+
+            <tr>
+              <td>Census MCD FIPS</td>
+              <td>{{cr.censusMcdFips}}</td>
+            </tr>
+
+            <tr>
+              <td>Census CBSA FIPS</td>
+              <td>{{cr.censusCbsaFips}}</td>
+            </tr>
+
+            <tr>
+              <td>Census CBSA Micropolitan</td>
+              <td>{{cr.censusCbsaMicro}}</td>
+            </tr>
+
+            <tr>
+              <td>Census MetDiv</td>
+              <td>{{cr.censusMetDivFips}}</td>
+            </tr>
+
+            <tr>
+              <td>Census State FIPS</td>
+              <td>{{cr.censusStateFips}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </tamu-gisc-accordion-content>
+    </tamu-gisc-accordion> -->
+  </div>
+</ng-container>

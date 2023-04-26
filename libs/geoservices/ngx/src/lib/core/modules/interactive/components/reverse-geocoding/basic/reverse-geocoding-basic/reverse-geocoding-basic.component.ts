@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe } from 'rxjs';
 import { map, switchMap, delay, tap, take } from 'rxjs/operators';
 
-import { ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
+import { IReverseGeocoderOptions, ReverseGeocode, ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 
@@ -17,7 +17,10 @@ import esri = __esri;
   templateUrl: './reverse-geocoding-basic.component.html',
   styleUrls: ['./reverse-geocoding-basic.component.scss']
 })
-export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<ReverseGeocodeResult> {
+export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<
+  ReverseGeocodeResult,
+  IReverseGeocoderOptions
+> {
   public states = STATES_TITLECASE;
 
   constructor(private fb: FormBuilder, private ms: EsriMapService, private rt: Router, private readonly ar: ActivatedRoute) {
@@ -35,7 +38,7 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
   public getQuery() {
     return pipe(
       switchMap(() => {
-        const form = this.form.getRawValue();
+        const params = this.getQueryParameters();
 
         return of({
           statusCode: 200,
@@ -71,13 +74,7 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
           }
         } as ReverseGeocodeResult).pipe(delay(1500));
 
-        //
-        // return new ReverseGeocode({
-        //   apiKey: 'demo',
-        //   latitude: form.lat,
-        //   longitude: form.lon,
-        //   state: form.state || undefined
-        // }).asObservable();
+        return new ReverseGeocode(params).asObservable().pipe(delay(1500));
       })
     );
   }
@@ -141,5 +138,16 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
         });
       })
     );
+  }
+
+  public override getQueryParameters(): IReverseGeocoderOptions {
+    const form = this.form.getRawValue();
+
+    return {
+      apiKey: 'demo',
+      latitude: form.lat,
+      longitude: form.lon,
+      state: form.state || undefined
+    };
   }
 }

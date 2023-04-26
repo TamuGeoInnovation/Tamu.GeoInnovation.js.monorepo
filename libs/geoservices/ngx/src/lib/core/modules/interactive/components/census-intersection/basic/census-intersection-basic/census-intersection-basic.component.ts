@@ -4,41 +4,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
 
-import { CensusIntersection, CensusIntersectionResult } from '@tamu-gisc/geoprocessing-v5';
+import { CensusIntersection, CensusIntersectionResult, ICensusIntersectionOptions } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
+import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
 
 @Component({
   selector: 'tamu-gisc-census-intersection-basic',
   templateUrl: './census-intersection-basic.component.html',
   styleUrls: ['./census-intersection-basic.component.scss']
 })
-export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessingComponent<CensusIntersectionResult> {
+export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessingComponent<
+  CensusIntersectionResult,
+  ICensusIntersectionOptions
+> {
   public states = STATES_TITLECASE;
-  public censusIntersectionYears = [
-    {
-      name: '1990',
-      value: 1990
-    },
-    {
-      name: '2000',
-      value: 2000
-    },
-    {
-      name: '2010',
-      value: 2010
-    },
-    {
-      name: '2020',
-      value: 2020
-    },
-    {
-      name: 'All Available',
-      value: 'allAvailable'
-    }
-  ];
+  public censusYears = CENSUS_YEARS;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -69,7 +52,7 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
   public getQuery() {
     return pipe(
       switchMap(() => {
-        const form = this.form.getRawValue();
+        const params = this.getQueryParameters();
 
         return of({
           statusCode: 200,
@@ -160,15 +143,21 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
               }
             ]
           }
-        } as CensusIntersectionResult).pipe(delay(1000));
+        } as CensusIntersectionResult).pipe(delay(1250));
 
-        // return new CensusIntersection({
-        //   apiKey: 'demo',
-        //   lat: form.lat,
-        //   lon: form.lon,
-        //   censusYears: form.censusYear === 'allAvailable' ? 'allAvailable' : [form.censusYear]
-        // }).asObservable();
+        return new CensusIntersection(params).asObservable().pipe(delay(1250));
       })
     );
+  }
+
+  public override getQueryParameters(): ICensusIntersectionOptions {
+    const form = this.form.getRawValue();
+
+    return {
+      apiKey: 'demo',
+      lat: form.lat,
+      lon: form.lon,
+      censusYears: form.censusYear === 'allAvailable' ? 'allAvailable' : [form.censusYear]
+    };
   }
 }

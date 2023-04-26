@@ -34,7 +34,7 @@
           <p>Select all applicable return census years to intersect latitude and longitude with.</p>
 
           <tamu-gisc-checkbox-group formControlName="censusYear" [referenceId]="'value'">
-            <tamu-gisc-checkbox *ngFor="let year of censusIntersectionYears" [label]="year.name" [data]="year"></tamu-gisc-checkbox>
+            <tamu-gisc-checkbox *ngFor="let year of censusYears" [label]="year.name" [data]="year"></tamu-gisc-checkbox>
           </tamu-gisc-checkbox-group>
         </div>
 

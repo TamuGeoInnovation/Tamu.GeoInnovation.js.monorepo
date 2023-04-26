@@ -5,10 +5,11 @@ import { of, pipe } from 'rxjs';
 import { delay, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
-import { Geocode, GeocodeResult } from '@tamu-gisc/geoprocessing-v5';
+import { Geocode, GeocodeResult, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
+import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
 
 import esri = __esri;
 
@@ -17,30 +18,9 @@ import esri = __esri;
   templateUrl: './geocoding-basic.component.html',
   styleUrls: ['./geocoding-basic.component.scss']
 })
-export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<GeocodeResult> {
+export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<GeocodeResult, IGeocodeOptions> {
   public states = STATES_TITLECASE;
-  public censusIntersectionYears = [
-    {
-      name: '1990',
-      value: 1990
-    },
-    {
-      name: '2000',
-      value: 2000
-    },
-    {
-      name: '2010',
-      value: 2010
-    },
-    {
-      name: '2020',
-      value: 2020
-    },
-    {
-      name: 'All Available',
-      value: 'allAvailable'
-    }
-  ];
+  public censusYears = CENSUS_YEARS;
 
   constructor(
     private fb: FormBuilder,
@@ -64,7 +44,7 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
   public getQuery() {
     return pipe(
       switchMap(() => {
-        const form = this.form.getRawValue();
+        const params = this.getQueryParameters();
 
         return of({
           statusCode: 200,
@@ -312,18 +292,22 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
           }
         } as GeocodeResult).pipe(delay(1250));
 
-        // return new Geocode({
-        //   apiKey: 'demo',
-        //   streetAddress: form.address,
-        //   city: form.city,
-        //   state: form.state,
-        //   zip: form.zip,
-        //   censusYears: form.censusYears === 'allAvailable' ? 'allAvailable' : [form.censusYears]
-        // })
-        //   .asObservable()
-        //   .pipe(delay(1250));
+        return new Geocode(params).asObservable().pipe(delay(1250));
       })
     );
+  }
+
+  public override getQueryParameters(): IGeocodeOptions {
+    const form = this.form.getRawValue();
+
+    return {
+      apiKey: 'demo',
+      streetAddress: form.address,
+      city: form.city,
+      state: form.state,
+      zip: form.zip,
+      censusYears: form.censusYears === 'allAvailable' ? 'allAvailable' : [form.censusYears]
+    };
   }
 
   public getBaseMapConfig() {
