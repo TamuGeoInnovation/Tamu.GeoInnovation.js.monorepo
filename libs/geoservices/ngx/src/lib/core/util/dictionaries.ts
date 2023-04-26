@@ -291,3 +291,17 @@ export const ADDRESS_PROCESSING_PARSED_ADDRESS = {
   zipPlus5: 'Zip+5',
   country: 'Country'
 };
+
+export const GEOCODE_REFERENCE_FEATURE = {
+  area: 'Area',
+  areaType: 'Area type',
+  geometrySRID: 'Geometry SRID',
+  source: 'Source',
+  vintage: 'Vintage',
+  primaryIdField: 'Primary ID field',
+  primaryIdValue: 'Primary ID value',
+  secondaryIdField: 'Secondary ID field',
+  secondaryIdValue: 'Secondary ID value',
+  interpolationType: 'Interpolation type',
+  interpolationSubType: 'Interpolation sub-type'
+};
