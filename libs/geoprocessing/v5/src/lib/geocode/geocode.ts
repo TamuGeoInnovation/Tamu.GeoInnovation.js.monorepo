@@ -20,6 +20,13 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
           this.value = this.value instanceof Array ? this.value.join(',') : this.value;
         }
       },
+      census: {
+        value: false,
+        target: ['censusYears'],
+        fn: function (years) {
+          this.value = (years !== undefined && years.length > 0) || false;
+        }
+      },
       serviceUrl: {
         value: 'https://prod.geoservices.tamu.edu/Api/Geocode/V5/?',
         excludeParams: true
