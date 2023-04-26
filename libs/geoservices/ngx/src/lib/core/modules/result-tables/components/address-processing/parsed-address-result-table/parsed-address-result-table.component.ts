@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable, from, reduce } from 'rxjs';
+import { Observable, filter, from, reduce } from 'rxjs';
 
 import { IParsedAddress } from '@tamu-gisc/geoprocessing-v5';
 
@@ -41,10 +41,29 @@ export class ParsedAddressResultTableComponent implements OnInit {
     'suiteNumber'
   ];
 
+  /**
+   * Matrix of address formats and properties that are not supported by each.
+   *
+   * These are filtered depending on the input address `addressFormatType` property.
+   */
+  private _unsupportedProps = {
+    USPSPublication28: ['preQualifier', 'preType', 'preArticle', 'postArticle', 'postQualifier'],
+    USCensusTiger: ['preArticle', 'postArticle'],
+    LACounty: []
+  };
+
   public filteredProps: Observable<{ [key: string]: unknown }>;
 
   public ngOnInit(): void {
     this.filteredProps = from(Object.entries(this.address)).pipe(
+      // Filter out unsupported properties based on address format type.
+      filter(([key, value]) => {
+        if (this._unsupportedProps[this.address.addressFormatType].includes(key) === false) {
+          return true;
+        } else {
+          return false;
+        }
+      }),
       reduce((acc, curr) => {
         const [propName, value] = curr;
 
