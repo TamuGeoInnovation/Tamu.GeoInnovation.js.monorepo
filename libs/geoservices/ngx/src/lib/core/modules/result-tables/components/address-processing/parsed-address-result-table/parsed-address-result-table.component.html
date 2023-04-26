@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let item of (filteredProps | async | keyvalue)">
+      <td>{{parsedAddressDict[item.key]}}</td>
+      <td>{{item.value}}</td>
+    </tr>
+  </tbody>
+</table>
+
