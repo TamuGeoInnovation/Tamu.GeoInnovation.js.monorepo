@@ -46,8 +46,10 @@
   <ng-template #resultContainer>
     <div *ngIf="result | async as res" [@inOutAnimation]>
       <tamu-gisc-tabs>
-        <tamu-gisc-tab *ngFor="let gr of (result | async)?.data?.results" [label]="'Geocode'">
-          <tamu-gisc-geocode-result-table [geocode]="gr"></tamu-gisc-geocode-result-table>
+        <tamu-gisc-tab [label]="'Geocode'">
+          <tamu-gisc-geocode-result-table [geocode]="res.data?.results[0]"></tamu-gisc-geocode-result-table>
+
+          <p class="text-content text-content--center" *ngIf="res?.data?.results?.length > 1"><i>{{res.data.results.length - 1}} additional result not shown. See full response for details.</i></p>
         </tamu-gisc-tab>
 
         <tamu-gisc-tab label="Map">
