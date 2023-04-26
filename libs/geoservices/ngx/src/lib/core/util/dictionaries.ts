@@ -260,3 +260,34 @@ export const GEOCODE_INPUT_PARAMS = {
   censusYears: 'Census years',
   referenceSources: 'Reference sources'
 };
+
+export const ADDRESS_PROCESSING_PARSED_ADDRESS = {
+  addressLocationType: 'Address location type',
+  addressFormatType: 'Address format type',
+  number: 'Number',
+  numberFractional: 'Number fractional',
+  preDirectional: 'Pre-directional',
+  preQualifier: 'Pre-qualifier',
+  preType: 'Pre-type',
+  preArticle: 'Pre-article',
+  name: 'Name',
+  postArticle: 'Post-article',
+  postQualifier: 'Post-qualifier',
+  postDirectional: 'Post-directional',
+  suffix: 'Suffix',
+  suiteType: 'Suite type',
+  suiteNumber: 'Suite number',
+  city: 'City',
+  minorCivilDivision: 'Minor civil division',
+  consolidatedCity: 'Consolidated city',
+  countySubRegion: 'County sub-region',
+  county: 'County',
+  state: 'State',
+  zip: 'Zip',
+  zipPlus1: 'Zip+1',
+  zipPlus2: 'Zip+2',
+  zipPlus3: 'Zip+3',
+  zipPlus4: 'Zip+4',
+  zipPlus5: 'Zip+5',
+  country: 'Country'
+};

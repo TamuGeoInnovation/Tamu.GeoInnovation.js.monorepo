@@ -7,6 +7,7 @@ import { StatusResultTableComponent } from './components/common/status-result-ta
 import { CensusIntersectionResultTabsComponent } from './components/census-intersection/census-intersection-result-tabs/census-intersection-result-tabs.component';
 import { GeocodeResultTableComponent } from './components/geocoding/geocode-result-table/geocode-result-table.component';
 import { GeocodeInputParametersComponent } from './components/geocoding/geocode-input-parameters/geocode-input-parameters.component';
+import { ParsedAddressResultTableComponent } from './components/address-processing/parsed-address-result-table/parsed-address-result-table.component';
 
 @NgModule({
   imports: [CommonModule, UILayoutModule],
@@ -14,13 +15,15 @@ import { GeocodeInputParametersComponent } from './components/geocoding/geocode-
     StatusResultTableComponent,
     CensusIntersectionResultTabsComponent,
     GeocodeResultTableComponent,
-    GeocodeInputParametersComponent
+    GeocodeInputParametersComponent,
+    ParsedAddressResultTableComponent
   ],
   exports: [
     StatusResultTableComponent,
     CensusIntersectionResultTabsComponent,
     GeocodeResultTableComponent,
-    GeocodeInputParametersComponent
+    GeocodeInputParametersComponent,
+    ParsedAddressResultTableComponent
   ]
 })
 export class ResultTablesModule {}
