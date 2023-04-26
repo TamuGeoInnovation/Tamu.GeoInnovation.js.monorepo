@@ -1,0 +1,7 @@
+<tamu-gisc-parsed-address-result-table [address]="matchedFeature.address" type="expanded">
+  <tr *ngFor="let item of (filteredProps | async | keyvalue)">
+    <td>{{referenceFeatureDict[item.key]}}</td>
+    <td>{{item.value}}</td>
+  </tr>
+</tamu-gisc-parsed-address-result-table>
+

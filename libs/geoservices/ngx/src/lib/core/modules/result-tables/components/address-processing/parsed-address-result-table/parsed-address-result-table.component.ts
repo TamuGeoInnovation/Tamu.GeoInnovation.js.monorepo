@@ -57,7 +57,7 @@ export class ParsedAddressResultTableComponent implements OnInit {
   public ngOnInit(): void {
     this.filteredProps = from(Object.entries(this.address)).pipe(
       // Filter out unsupported properties based on address format type.
-      filter(([key, value]) => {
+      filter(([key]) => {
         if (this._unsupportedProps[this.address.addressFormatType].includes(key) === false) {
           return true;
         } else {
