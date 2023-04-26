@@ -231,3 +231,32 @@ export const OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS = [
     value: 8
   }
 ];
+
+export const GEOCODE_INPUT_PARAMS = {
+  streetAddress: 'Street address',
+  city: 'City',
+  state: 'State',
+  zip: 'Zip',
+  apiKey: 'API Key',
+  dontStoreTransactionDetails: 'Store transaction details',
+  allowTies: 'Allow ties',
+  tieHandlingStrategyType: 'Tie handling strategy type',
+  relaxation: 'Use attribute relaxation',
+  relaxableAttributes: 'Relaxable attributes',
+  substring: 'Use substring matching',
+  soundex: 'Use soundex matching',
+  soundexAttributes: 'Soundex attributes',
+  featureMatchingSelectionMethod: 'Feature matching selection method',
+  minimumMatchScore: 'Minimum match score',
+  confidenceLevels: 'Confidence levels',
+  exhaustiveSearch: 'Exhaustive search',
+  aliasTables: 'Alias tables',
+  multiThreading: 'Multi-threading',
+  includeHeader: 'Include header',
+  verbose: 'Verbose',
+  outputCensusVariables: 'Output census variables',
+  outputReferenceFeatureGeometry: 'Output reference feature geometry',
+  outputFormat: 'Output format',
+  censusYears: 'Census years',
+  referenceSources: 'Reference sources'
+};

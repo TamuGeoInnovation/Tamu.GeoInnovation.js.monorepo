@@ -1,0 +1,86 @@
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>Latitude</td>
+      <td>{{geocode.latitude}}</td>
+    </tr>
+
+    <tr>
+      <td>Longitude</td>
+      <td>{{geocode.longitude}}</td>
+    </tr>
+
+    <tr>
+      <td>Quality</td>
+      <td>{{geocode.matchType}} {{geocode.geocodeQualityType}}</td>
+    </tr>
+
+    <tr>
+      <td>Geocode Quality Type</td>
+      <td>{{geocode.geocodeQualityType}}</td>
+    </tr>
+
+    <tr>
+      <td>NAACCR Census Tract Certainty Code</td>
+      <td>{{geocode?.naaccr?.censusTractCertaintyCode}}</td>
+    </tr>
+
+    <tr>
+      <td>NAACCR Census Tract Certainty Name</td>
+      <td>{{geocode?.naaccr?.censusTractCertaintyType}}</td>
+    </tr>
+
+    <tr>
+      <td>NAACCR GIS Coordinate Quality Code</td>
+      <td>{{geocode?.naaccr?.gisCoordinateQualityCode}}</td>
+    </tr>
+
+    <tr>
+      <td>NAACCR GIS Coordinate Quality Name</td>
+      <td>{{geocode?.naaccr?.gisCoordinateQualityType}}</td>
+    </tr>
+
+    <tr>
+      <td>Match Score</td>
+      <td>{{geocode.matchScore}}</td>
+    </tr>
+
+    <tr>
+      <td>Micro Match Status</td>
+      <td>{{geocode?.naaccr?.microMatchStatus}}</td>
+    </tr>
+
+    <tr>
+      <td>Penalty Code</td>
+      <td>{{geocode?.naaccr?.penaltyCode}}</td>
+    </tr>
+
+    <tr>
+      <td>Penalty Code Summary</td>
+      <td>{{geocode?.naaccr?.penaltyCodeSummary}}</td>
+    </tr>
+
+    <tr>
+      <td>Feature Matching Result Type</td>
+      <td>{{geocode.featureMatchingResultType}}</td>
+    </tr>
+
+    <tr>
+      <td>Feature Matching Geography Type</td>
+      <td>{{geocode.featureMatchingGeographyType}}</td>
+    </tr>
+
+    <tr>
+      <td>Matched Location Type</td>
+      <td>{{geocode.matchedLocationType}}</td>
+    </tr>
+  </tbody>
+</table>
+
