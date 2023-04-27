@@ -28,7 +28,7 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
         }
       },
       serviceUrl: {
-        value: 'https://prod.geoservices.tamu.edu/Api/Geocode/V5/?',
+        value: 'https://geoservices.tamu.edu/Api/Geocode/V5/?',
         excludeParams: true
       },
       relaxableAttributes: {
