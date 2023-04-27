@@ -14,7 +14,7 @@ export class AddressProcessor extends ApiBase<
 
     this.settings = {
       serviceUrl: {
-        value: 'https://prod.geoservices.tamu.edu/Api/AddressNormalization/V5/?',
+        value: 'https://geoservices.tamu.edu/Api/AddressNormalization/V5/?',
         excludeParams: true
       },
       format: {

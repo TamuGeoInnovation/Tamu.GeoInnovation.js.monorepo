@@ -14,7 +14,7 @@ export class CensusIntersection extends ApiBase<
 
     this.settings = {
       serviceUrl: {
-        value: 'https://prod.geoservices.tamu.edu/Api/CensusIntersection/V5/?',
+        value: 'https://geoservices.tamu.edu/Api/CensusIntersection/V5/?',
         excludeParams: true
       },
       format: {
