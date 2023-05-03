@@ -6,11 +6,8 @@ import { map, switchMap, delay } from 'rxjs/operators';
 
 import { IReverseGeocoderOptions, ReverseGeocode, ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
-
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding-basic',
@@ -23,8 +20,8 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
 > {
   public states = STATES_TITLECASE;
 
-  constructor(private fb: FormBuilder, private ms: EsriMapService, private rt: Router, private readonly ar: ActivatedRoute) {
-    super(fb, ms, rt, ar);
+  constructor(private fb: FormBuilder, private rt: Router, private readonly ar: ActivatedRoute) {
+    super(fb, rt, ar);
   }
 
   public buildForm(): FormGroup {

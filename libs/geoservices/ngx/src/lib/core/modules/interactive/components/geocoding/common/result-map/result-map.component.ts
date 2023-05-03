@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { take } from 'rxjs';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
@@ -15,7 +15,15 @@ export class ResultMapComponent implements OnInit {
   @Input()
   public points: Array<{ latitude: number; longitude: number }>;
 
+  @Input()
+  public size: 'sm' | 'lg' = 'sm';
+
   public baseConfig: MapConfig;
+
+  @HostBinding('class')
+  public get styleClasses() {
+    return [this.size];
+  }
 
   constructor(private readonly ms: EsriMapService) {}
 

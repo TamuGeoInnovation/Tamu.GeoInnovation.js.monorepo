@@ -5,7 +5,6 @@ import { of, pipe, delay, map, switchMap } from 'rxjs';
 
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { Geocode, GeocodeResult, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
@@ -19,13 +18,8 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
   public states = STATES_TITLECASE;
   public censusYears = CENSUS_YEARS;
 
-  constructor(
-    private fb: FormBuilder,
-    private readonly ms: EsriMapService,
-    private readonly rt: Router,
-    private readonly ar: ActivatedRoute
-  ) {
-    super(fb, ms, rt, ar);
+  constructor(private fb: FormBuilder, private readonly rt: Router, private readonly ar: ActivatedRoute) {
+    super(fb, rt, ar);
   }
 
   public buildForm() {
