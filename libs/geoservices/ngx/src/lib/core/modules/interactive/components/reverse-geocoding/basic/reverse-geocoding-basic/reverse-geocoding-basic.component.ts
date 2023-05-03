@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe } from 'rxjs';
-import { map, switchMap, delay, tap, take } from 'rxjs/operators';
+import { map, switchMap, delay } from 'rxjs/operators';
 
 import { IReverseGeocoderOptions, ReverseGeocode, ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
-import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 
@@ -79,63 +79,19 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
     );
   }
 
-  public getBaseMapConfig() {
+  public getMapPoints() {
     return pipe(
       map(() => {
         const form = this.form.getRawValue();
-        const center = [form.lon, form.lat];
 
-        return {
-          basemap: {
-            basemap: 'streets-navigation-vector'
-          },
-          view: {
-            mode: '2d',
-            properties: {
-              center,
-              zoom: 12
-            }
+        const points = [
+          {
+            latitude: form.lat,
+            longitude: form.lon
           }
-        } as MapConfig;
-      }),
-      tap((r) => {
-        this.ms.store.pipe(take(1)).subscribe(() => {
-          const form = this.form.getRawValue();
+        ];
 
-          this.ms.loadLayers([
-            {
-              type: 'graphics',
-              id: 'geoprocess-result',
-              title: 'Geoprocessing Result',
-              native: {
-                graphics: [
-                  {
-                    attributes: { lat: form.lat, lon: form.lon },
-                    geometry: {
-                      type: 'point',
-                      latitude: form.lat,
-                      longitude: form.lon
-                    } as esri.PointProperties,
-                    symbol: {
-                      type: 'simple-marker',
-                      color: [255, 0, 0],
-                      size: '12px',
-                      outline: {
-                        color: [255, 255, 255],
-                        width: 2
-                      }
-                    } as esri.SimpleMarkerSymbolProperties
-                  }
-                ]
-              },
-              visible: true,
-              popupTemplate: {
-                title: 'Geoprocessing Result',
-                content: 'Lat: {lat}, Lon: {lon}'
-              }
-            }
-          ]);
-        });
+        return points;
       })
     );
   }

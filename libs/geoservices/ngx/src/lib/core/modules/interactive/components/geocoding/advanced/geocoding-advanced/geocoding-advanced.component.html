@@ -163,7 +163,10 @@
           <ng-container *ngIf="i === 0; else notFirst"> Best Match Result</ng-container>
           <ng-template #notFirst>Possible Geocode #{{i}}</ng-template>
         </tamu-gisc-accordion-header>
+
         <tamu-gisc-accordion-content>
+          <tamu-gisc-result-map [points]="mapPoints | async" class="trailer-2"></tamu-gisc-result-map>
+
           <h4>Geocode Result</h4>
 
           <p>The following represents the geocoded output for the best match from the input parameters.</p>

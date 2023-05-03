@@ -41,7 +41,7 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
     });
   }
 
-  public getBaseMapConfig() {
+  public getMapPoints() {
     return pipe(
       map(() => {
         return null;

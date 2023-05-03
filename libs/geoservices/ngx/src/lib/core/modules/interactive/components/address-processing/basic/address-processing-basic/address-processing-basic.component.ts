@@ -139,7 +139,7 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
     };
   }
 
-  public getBaseMapConfig() {
+  public getMapPoints() {
     return pipe(
       map(() => {
         return null;
