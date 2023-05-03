@@ -254,6 +254,10 @@ table {
   .material-icons,
   .material-icons-outlined {
     margin: 0 0.3rem;
+
+    &.centered {
+      vertical-align: middle;
+    }
   }
 }
 
@@ -1035,3 +1039,4 @@ tamu-gisc-tooltip {
     padding: 0.5rem;
   }
 }
+
