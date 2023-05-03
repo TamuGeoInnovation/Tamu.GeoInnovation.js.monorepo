@@ -1,17 +1,14 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, pipe } from 'rxjs';
-import { delay, map, switchMap, take, tap } from 'rxjs/operators';
+import { of, pipe, delay, map, switchMap } from 'rxjs';
 
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { Geocode, GeocodeResult, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
-import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
-
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-geocoding-basic',
@@ -310,62 +307,15 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
     };
   }
 
-  public getBaseMapConfig() {
+  public getMapPoints() {
     return pipe(
       map((res: GeocodeResult) => {
-        const center = [res.data.results[0].longitude, res.data.results[0].latitude];
-
-        return {
-          basemap: {
-            basemap: 'streets-navigation-vector'
-          },
-          view: {
-            mode: '2d',
-            properties: {
-              center,
-              zoom: 12
-            }
-          }
-        } as MapConfig;
-      }),
-      tap((r) => {
-        const [lat, lon] = [r.view.properties.center[1], r.view.properties.center[0]];
-
-        this.ms.store.pipe(take(1)).subscribe(() => {
-          this.ms.loadLayers([
-            {
-              type: 'graphics',
-              id: 'geoprocess-result',
-              title: 'Geoprocessing Result',
-              native: {
-                graphics: [
-                  {
-                    attributes: { lat, lon },
-                    geometry: {
-                      type: 'point',
-                      latitude: lat,
-                      longitude: lon
-                    } as esri.PointProperties,
-                    symbol: {
-                      type: 'simple-marker',
-                      color: [255, 0, 0],
-                      size: '12px',
-                      outline: {
-                        color: [255, 255, 255],
-                        width: 2
-                      }
-                    } as esri.SimpleMarkerSymbolProperties
-                  }
-                ]
-              },
-              visible: true,
-              popupTemplate: {
-                title: 'Geocoding Result',
-                content: 'Lat: {lat}, Lon: {lon}'
-              }
-            }
-          ]);
+        // points should be an array of objects with latitude and longitude properties based on res.data.results
+        const points = res.data.results.map((result) => {
+          return { latitude: result.latitude, longitude: result.longitude };
         });
+
+        return points;
       })
     );
   }

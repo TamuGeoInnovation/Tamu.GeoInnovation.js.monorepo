@@ -1,5 +1,8 @@
-tamu-gisc-esri-map {
-  height: 20rem;
+::ng-deep {
+  tamu-gisc-esri-map {
+    display: block;
+    height: 20rem;
+  }
 }
 
 tamu-gisc-tabs {

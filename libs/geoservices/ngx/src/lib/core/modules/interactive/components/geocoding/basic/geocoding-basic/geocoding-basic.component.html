@@ -53,8 +53,8 @@
         </tamu-gisc-tab>
 
         <tamu-gisc-tab label="Map">
-          <ng-container *ngIf="mapConfig | async as cnf">
-            <tamu-gisc-esri-map [config]="cnf"></tamu-gisc-esri-map>
+          <ng-container *ngIf="mapPoints | async as cnf">
+            <tamu-gisc-result-map [points]="cnf"></tamu-gisc-result-map>
           </ng-container>
         </tamu-gisc-tab>
       </tamu-gisc-tabs>

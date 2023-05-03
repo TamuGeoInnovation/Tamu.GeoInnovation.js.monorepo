@@ -33,7 +33,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
   public buttonLanguage: Observable<string>;
 
   public reset: Subject<'reset'> = new Subject();
-  public mapConfig: Observable<MapConfig>;
+  public mapPoints: Observable<Array<ILatLonPair>>;
 
   /**
    * The URL to redirect to view the full response/component
@@ -96,9 +96,9 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
       })
     );
 
-    this.mapConfig = this.result.pipe(
+    this.mapPoints = this.result.pipe(
       filter((res) => res !== null),
-      this.getBaseMapConfig(),
+      this.getMapPoints(),
       shareReplay()
     );
   }
@@ -119,7 +119,12 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
 
   public abstract getQuery(): (source: unknown) => Observable<ResultType>;
 
-  public abstract getBaseMapConfig(): (source: unknown) => Observable<MapConfig>;
+  public abstract getMapPoints(): (source: unknown) => Observable<Array<ILatLonPair>>;
 
   public abstract getQueryParameters(): ParamType;
+}
+
+export interface ILatLonPair {
+  latitude: number;
+  longitude: number;
 }
