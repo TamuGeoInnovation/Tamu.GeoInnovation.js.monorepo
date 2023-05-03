@@ -23,13 +23,8 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
   public states = STATES_TITLECASE;
   public censusYears = CENSUS_YEARS;
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly ms: EsriMapService,
-    private readonly rt: Router,
-    private readonly ar: ActivatedRoute
-  ) {
-    super(fb, ms, rt, ar);
+  constructor(private readonly fb: FormBuilder, private readonly rt: Router, private readonly ar: ActivatedRoute) {
+    super(fb, rt, ar);
   }
 
   public buildForm() {

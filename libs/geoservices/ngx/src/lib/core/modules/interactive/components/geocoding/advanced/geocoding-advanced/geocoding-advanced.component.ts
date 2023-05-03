@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
 
 import { GeocodingBasicComponent } from '../../basic/geocoding-basic/geocoding-basic.component';
@@ -22,13 +21,8 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
   public refs = GEOCODING_REFS;
   public cls = OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS;
 
-  constructor(
-    private fbb: FormBuilder,
-    private readonly mss: EsriMapService,
-    private readonly rtt: Router,
-    private readonly arr: ActivatedRoute
-  ) {
-    super(fbb, mss, rtt, arr);
+  constructor(private fbb: FormBuilder, private readonly rtt: Router, private readonly arr: ActivatedRoute) {
+    super(fbb, rtt, arr);
   }
 
   public override buildForm() {

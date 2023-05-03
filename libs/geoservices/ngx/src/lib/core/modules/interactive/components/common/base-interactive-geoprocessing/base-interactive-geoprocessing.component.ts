@@ -5,8 +5,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { catchError, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
-import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
-
 @Component({
   selector: 'tamu-gisc-base-interactive-geoprocessing',
   template: '',
@@ -42,7 +40,6 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly mapService: EsriMapService,
     private readonly router: Router,
     private readonly route: ActivatedRoute
   ) {}
