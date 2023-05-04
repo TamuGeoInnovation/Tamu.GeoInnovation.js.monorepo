@@ -1,18 +1,55 @@
 /**
- * @param {string} to - The recipient of the email
- * @param {string} from - Who is sending the email to the recipient
- * @param {string} subject - The subject of the email
- * @param {string} text - The body of the email. Produces a plain email with only text.
- * @param {string=} html - The html to use for the email. If you use html it will ignore the text param.
- * @param {string=} attachments - Attachments to include in the email.
+ * Interface that describes the outbound email object.
  */
 export interface IMailroomEmailOutbound {
+  /**
+   * Recipient of the email
+   */
   to: string;
+
+  /**
+   * Sender of the email
+   */
   from: string;
+
+  /**
+   * CC recipient of the email. Commas separate multiple recipients.
+   */
+  cc?: string;
+
+  /**
+   * BCC recipient of the email. Commas separate multiple recipients.
+   */
+  bcc?: string;
+
+  /**
+   * Subject of the email
+   */
   subject: string;
+
+  /**
+   * Body of the email. Produces a plain email with only text. Can be used alone or with the html param.
+   *
+   * For clients that don't support HTML, this is the fallback.
+   */
   text: string;
+
+  /**
+   * HTML to use for the email. Overrides the text param, if used.
+   *
+   * For clients that support HTML.
+   */
   html?: string;
+
+  /**
+   * Attachments to include in the email.
+   */
   attachments?: Express.Multer.File[];
+
+  /**
+   * Reply to address for the email.
+   */
+  replyTo?: string;
 }
 
 /**
