@@ -39,6 +39,8 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
 
   public set value(value: T) {
     this._value = value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value;
+    this._onChange(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
+    this._onTouched();
     this.cd.markForCheck();
   }
 
@@ -82,12 +84,11 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  private _onChange = (value: T) => {
-    return value;
-  };
-  private _onTouched = () => {
-    return;
-  };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private _onChange = (value: T) => {};
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private _onTouched = () => {};
 
   /**
    * Responsible for emitting the model changed event to the parent component.
