@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, pipe } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
 
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { AddressProcessing, AddressProcessingResult, IAddressProcessingOptions } from '@tamu-gisc/geoprocessing-v5';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
@@ -25,8 +25,13 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
 
   public queryUrl: Observable<string>;
 
-  constructor(private readonly fb: FormBuilder, private readonly rt: Router, private readonly ar: ActivatedRoute) {
-    super(fb, rt, ar);
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly rt: Router,
+    private readonly ar: ActivatedRoute,
+    private readonly ls: LocalStoreService
+  ) {
+    super(fb, rt, ar, ls);
   }
 
   public buildForm() {
@@ -142,3 +147,4 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
     );
   }
 }
+
