@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
 
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { CensusIntersection, CensusIntersectionResult, ICensusIntersectionOptions } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
@@ -23,8 +23,13 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
   public states = STATES_TITLECASE;
   public censusYears = CENSUS_YEARS;
 
-  constructor(private readonly fb: FormBuilder, private readonly rt: Router, private readonly ar: ActivatedRoute) {
-    super(fb, rt, ar);
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly rt: Router,
+    private readonly ar: ActivatedRoute,
+    private readonly ls: LocalStoreService
+  ) {
+    super(fb, rt, ar, ls);
   }
 
   public buildForm() {
@@ -156,3 +161,4 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
     };
   }
 }
+

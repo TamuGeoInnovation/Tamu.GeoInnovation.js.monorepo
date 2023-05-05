@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
 
 import { GeocodingBasicComponent } from '../../basic/geocoding-basic/geocoding-basic.component';
@@ -21,8 +22,13 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
   public refs = GEOCODING_REFS;
   public cls = OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS;
 
-  constructor(private fbb: FormBuilder, private readonly rtt: Router, private readonly arr: ActivatedRoute) {
-    super(fbb, rtt, arr);
+  constructor(
+    private fbb: FormBuilder,
+    private readonly rtt: Router,
+    private readonly arr: ActivatedRoute,
+    private readonly lss: LocalStoreService
+  ) {
+    super(fbb, rtt, arr, lss);
   }
 
   public override buildForm() {
@@ -80,3 +86,4 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
     };
   }
 }
+

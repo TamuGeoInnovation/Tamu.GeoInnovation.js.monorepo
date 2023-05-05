@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe } from 'rxjs';
 import { map, switchMap, delay } from 'rxjs/operators';
 
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { IReverseGeocoderOptions, ReverseGeocode, ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 
@@ -20,8 +21,13 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
 > {
   public states = STATES_TITLECASE;
 
-  constructor(private fb: FormBuilder, private rt: Router, private readonly ar: ActivatedRoute) {
-    super(fb, rt, ar);
+  constructor(
+    private fb: FormBuilder,
+    private rt: Router,
+    private readonly ar: ActivatedRoute,
+    private readonly ls: LocalStoreService
+  ) {
+    super(fb, rt, ar, ls);
   }
 
   public buildForm(): FormGroup {
@@ -104,3 +110,4 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
     };
   }
 }
+

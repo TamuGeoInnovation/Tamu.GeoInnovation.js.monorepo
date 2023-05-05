@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, pipe, delay, map, switchMap } from 'rxjs';
 
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { Geocode, GeocodeResult, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
 
@@ -18,8 +19,13 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
   public states = STATES_TITLECASE;
   public censusYears = CENSUS_YEARS;
 
-  constructor(private fb: FormBuilder, private readonly rt: Router, private readonly ar: ActivatedRoute) {
-    super(fb, rt, ar);
+  constructor(
+    private fb: FormBuilder,
+    private readonly rt: Router,
+    private readonly ar: ActivatedRoute,
+    private readonly ls: LocalStoreService
+  ) {
+    super(fb, rt, ar, ls);
   }
 
   public buildForm() {
@@ -314,3 +320,4 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
     );
   }
 }
+

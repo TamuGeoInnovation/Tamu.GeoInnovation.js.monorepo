@@ -40,9 +40,8 @@
       </tamu-gisc-tabs>
 
       <div class="flex flex-row">
-        <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced()"></tamu-gisc-interactive-response-metadata>
+        <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
       </div>
     </div>
   </ng-template>
 </div>
-

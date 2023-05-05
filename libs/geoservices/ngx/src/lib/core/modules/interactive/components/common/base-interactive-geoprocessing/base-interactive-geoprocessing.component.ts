@@ -2,8 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { style, transition, trigger, animate } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { merge, Observable, of, Subject } from 'rxjs';
-import { catchError, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import {
+  merge,
+  Observable,
+  of,
+  Subject,
+  catchError,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  ReplaySubject
+} from 'rxjs';
+
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 @Component({
   selector: 'tamu-gisc-base-interactive-geoprocessing',
@@ -38,22 +51,32 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
    */
   public redirectUrl = './interactive/';
 
+  private _localStorePrimaryKey = 'geoservices';
+  private _localStoreSubKey = 'interactive-cache';
+  private _cacheResult: ReplaySubject<ResultType> = new ReplaySubject(1);
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly localStore: LocalStoreService
   ) {}
 
   public ngOnInit(): void {
     this.form = this.buildForm();
 
-    this.result = merge(this.querySubmit, this.reset).pipe(
+    this.result = merge(this.querySubmit, this.reset, this._cacheResult).pipe(
       switchMap((action) => {
         if (action === 'reset') {
           return of(null);
         } else {
-          // Reset any outstanding result with null.
-          return of(true).pipe(this.getQuery(), startWith(null));
+          // If action is an object, it's a cached value
+          if (typeof action === 'object') {
+            return of(action) as Observable<ResultType>;
+          } else {
+            // Reset any outstanding result with null.
+            return of(true).pipe(this.getQuery(), startWith(null));
+          }
         }
       }),
       shareReplay()
@@ -98,6 +121,8 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
       this.getMapPoints(),
       shareReplay()
     );
+
+    this._applyLocalStoreCache();
   }
 
   public processInteractiveQuery() {
@@ -108,8 +133,71 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     this.reset.next('reset');
   }
 
-  public navigateToAdvanced() {
+  /**
+   * Navigates to the advanced view of the interactive component, caching
+   * the result and form values in local storage if provided.
+   *
+   * This is used when transitioning from basic to advanced mode when a result has already been generated.
+   */
+  public navigateToAdvanced(cache?: ResultType) {
+    if (cache) {
+      this._cache = {
+        form: this.form.getRawValue(),
+        result: cache
+      };
+    }
+
     this.router.navigate([this.redirectUrl], { relativeTo: this.route });
+  }
+
+  /**
+   * Applies the cached form and result from local storage.
+   *
+   * This is used when transitioning from basic to advanced mode when a result has already been generated.
+   */
+  private _applyLocalStoreCache() {
+    const store = this._cache;
+
+    if (store !== null) {
+      this.form.patchValue(store.form);
+      this._cacheResult.next(store.result);
+
+      // Immediately after clear the local cache to prevent the form from being populated on subsequent visits
+      // or other interactive components that don't share the same model.
+      this._clearLocalStoreCache();
+    }
+  }
+
+  /**
+   * Wipe the local interactive cache.
+   */
+  private _clearLocalStoreCache() {
+    const store = this._cache;
+
+    if (store !== null) {
+      this._cache = null;
+    }
+  }
+
+  /**
+   * Returns the cached form and result from local storage.
+   */
+  private get _cache(): { form; result } {
+    return this.localStore.getStorageObjectKeyValue({
+      primaryKey: this._localStorePrimaryKey,
+      subKey: this._localStoreSubKey
+    });
+  }
+
+  /**
+   * Returns the cached form and result from local storage.
+   */
+  private set _cache(c: { form; result } | null) {
+    this.localStore.setStorageObjectKeyValue({
+      primaryKey: this._localStorePrimaryKey,
+      subKey: this._localStoreSubKey,
+      value: c
+    });
   }
 
   public abstract buildForm(): FormGroup;
