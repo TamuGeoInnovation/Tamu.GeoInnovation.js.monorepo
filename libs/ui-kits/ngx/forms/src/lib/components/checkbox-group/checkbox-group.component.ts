@@ -89,6 +89,8 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   public ngAfterContentInit() {
+    this.setChildrenValue();
+
     this.checkboxes.changes.subscribe(() => {
       this.setChildrenValue();
     });
@@ -145,7 +147,13 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   private setChildrenValue() {
     if (this.checkboxes && this.checkboxes.length > 0) {
       this.checkboxes.forEach((checkbox) => {
-        if (this.value.includes(getPropertyValue<string>(checkbox.data, this.referenceId))) {
+        const propValue = getPropertyValue<string>(checkbox.data, this.referenceId);
+
+        // Use == to handle cases where the value is a coerced string or number
+        // 3 == '3' -> true
+        const isIncluded = this.value.some((v) => v == propValue);
+
+        if (isIncluded) {
           setTimeout(() => {
             // Update child checked status, bypassing forms api and self event emission because
             // to prevent a subsequent self-value change which would loop back to the checkbox
@@ -157,10 +165,29 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
     }
   }
 
+  /**
+   * Values will always be a singular string or number or an array of strings or numbers.
+   *
+   * When a singular value is provided, it will be converted to an array of one.
+   *
+   * When a string is provided, it will be split by comma and converted to an array.
+   *
+   * Number inputs as strings will be problematic because the value will be coerced to a string and
+   * equality checks will fail.
+   */
   public writeValue(value) {
     if (value === null) return;
 
-    this.value = [...value];
+    // Handle string inputs
+    if (typeof value === 'string') {
+      const split = value.split(',');
+
+      this.value = split;
+    } else if (typeof value === 'number') {
+      this.value = [value];
+    } else {
+      this.value = [...value];
+    }
 
     this.setChildrenValue();
   }
