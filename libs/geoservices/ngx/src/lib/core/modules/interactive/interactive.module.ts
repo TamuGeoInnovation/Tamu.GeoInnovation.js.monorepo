@@ -17,7 +17,7 @@ import { AddressProcessingAdvancedComponent } from './components/address-process
 import { CensusIntersectionAdvancedComponent } from './components/census-intersection/advanced/census-intersection-advanced/census-intersection-advanced.component';
 import { GeocodingAdvancedComponent } from './components/geocoding/advanced/geocoding-advanced/geocoding-advanced.component';
 import { ReverseGeocodingAdvancedComponent } from './components/reverse-geocoding/advanced/reverse-geocoding-advanced/reverse-geocoding-advanced.component';
-import { ResultMapComponent } from './components/geocoding/common/result-map/result-map.component';
+import { ResultMapComponent } from './components/common/result-map/result-map.component';
 
 @NgModule({
   imports: [
@@ -53,3 +53,4 @@ import { ResultMapComponent } from './components/geocoding/common/result-map/res
   ]
 })
 export class GeoservicesCoreInteractiveModule {}
+
