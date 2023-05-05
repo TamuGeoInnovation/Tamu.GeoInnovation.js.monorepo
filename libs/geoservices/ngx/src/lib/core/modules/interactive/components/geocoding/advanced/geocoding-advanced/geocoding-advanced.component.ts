@@ -53,7 +53,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
       city: [null, [Validators.required]],
       state: [null, [Validators.required]],
       zip: [null, [Validators.required]],
-      censusYears: [null, [Validators.required]],
+      censusYears: [[2020], [Validators.required]],
       attributeRelaxation: [true],
       substringMatching: [true],
       soundexMatching: [true],
@@ -86,4 +86,3 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
     };
   }
 }
-
