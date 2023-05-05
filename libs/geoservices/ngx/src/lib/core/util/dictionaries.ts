@@ -39,18 +39,24 @@ export const CENSUS_YEARS = [
   }
 ];
 
+export enum ADDRESS_FORMAT_TYPE {
+  USPS_PUBLICATION_28 = 'USPSPublication28',
+  US_CENSUS_TIGER = 'USCensusTiger',
+  LA_COUNTY = 'LACounty'
+}
+
 export const ADDRESS_FORMAT_TYPES = [
   {
     name: 'USPS Publication 28',
-    value: 'USPSPublication28'
+    value: ADDRESS_FORMAT_TYPE.USPS_PUBLICATION_28
   },
   {
     name: 'US Census Tiger',
-    value: 'USCensusTiger'
+    value: ADDRESS_FORMAT_TYPE.US_CENSUS_TIGER
   },
   {
     name: 'LA County',
-    value: 'LACounty'
+    value: ADDRESS_FORMAT_TYPE.LA_COUNTY
   }
 ];
 
