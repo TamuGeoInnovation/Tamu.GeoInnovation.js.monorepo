@@ -48,7 +48,7 @@ export class ContactFormComponent implements OnInit {
       .postFormMessage({
         from: value.email,
         subject: `Contact - ${value.subject} ${value.fullName !== '' ? '- from ' + value.fullName : ''}`,
-        body: `${value.body}`
+        text: `${value.body}`
       })
       .subscribe({
         next: (res) => {

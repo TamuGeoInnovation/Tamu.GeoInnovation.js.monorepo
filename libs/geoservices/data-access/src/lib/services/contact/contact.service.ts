@@ -11,10 +11,16 @@ export class ContactService {
   private resource: string;
 
   constructor(private readonly http: HttpClient, private readonly env: EnvironmentService) {
-    this.resource = `${this.env.value('api_url')}/contact`;
+    this.resource = `${this.env.value('api_url')}/mail`;
   }
 
   public postFormMessage(message: ContactMessageDto) {
-    return this.http.post(this.resource, message);
+    const formData = new FormData();
+
+    Object.keys(message).forEach((key) => {
+      formData.append(key, message[key]);
+    });
+
+    return this.http.post(this.resource, formData);
   }
 }

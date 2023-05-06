@@ -42,7 +42,7 @@ export class SubmitBugFormComponent implements OnInit {
       .postFormMessage({
         from: value.email,
         subject: `${value.subject} ${value.fullName !== '' ? '- from ' + value.fullName : ''}`,
-        body: value.body
+        text: value.body
       })
       .subscribe({
         next: (res) => {
