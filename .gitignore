@@ -59,7 +59,8 @@ idp_keystore.json
 #Angular private configs
 secrets.ts
 
-#Environment files
-.env*
+#All .env.* files exeept .env.sample
+.env.*
+!.env.sample
 
 .angular
