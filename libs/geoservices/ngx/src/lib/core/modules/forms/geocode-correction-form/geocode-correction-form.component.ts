@@ -49,7 +49,7 @@ export class GeocodeCorrectionFormComponent implements OnInit {
       .postFormMessage({
         from: value.email,
         subject: value.subject,
-        body: `
+        text: `
           From: ${value.email},
           Address: ${value.address}
           City: ${value.city}

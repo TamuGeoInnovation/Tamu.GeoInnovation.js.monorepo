@@ -106,7 +106,7 @@ export class PartnerProgramFormComponent implements OnInit {
       .postFormMessage({
         from: value.email,
         subject: 'Partner Application',
-        body: message
+        text: message
       })
       .subscribe({
         next: (res) => {

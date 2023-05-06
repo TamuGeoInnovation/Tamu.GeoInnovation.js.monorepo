@@ -12,7 +12,7 @@ export class ContactService {
       from: undefined,
       to: body.from,
       subject: body.subject,
-      text: body.body
+      text: body.text
     });
   }
 }
@@ -25,5 +25,5 @@ export class ContactMessageDto {
   public subject: string;
 
   @IsNotEmpty()
-  public body: string;
+  public text: string;
 }
