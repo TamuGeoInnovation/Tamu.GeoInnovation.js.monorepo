@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 import * as FormData from 'form-data';
@@ -10,24 +10,48 @@ export class HelperController {
   @UseInterceptors(AnyFilesInterceptor())
   public async forwardMail(
     @Body() body: { [key: string]: string | Blob },
-    @UploadedFiles() files: Array<Express.Multer.File>
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Res() res
   ) {
     const form = new FormData();
 
+    res;
+
+    const ignoreKeys = ['replyTo', 'to', 'from'];
+
     // Repackage body as form data
-    Object.keys(body).forEach((key) => {
-      form.append(key, body[key]);
-    });
+    Object.keys(body)
+      .filter((key) => {
+        return !ignoreKeys.includes(key);
+      })
+      .forEach((key) => {
+        form.append(key, body[key]);
+      });
+
+    // Since this module is used either as a standalone microservice or imported into another,
+    // some variables are fixed and known.
+    form.append('replyTo', body['from']);
+    form.append('to', process.env.MAILROOM_TO);
+    form.append('from', process.env.MAILROOM_FROM);
 
     // Repackage files as form data
     files.forEach((file) => {
       form.append('attachments', file.buffer, file.originalname);
     });
 
-    return got(`${process.env.MAILROOM_API_URL}`, {
+    const status = await got(`${process.env.MAILROOM_URL}`, {
       method: 'POST',
       body: form,
       headers: form.getHeaders()
-    }).json();
+    });
+
+    if (status.statusCode.toString().startsWith('2') || status.statusCode.toString().startsWith('3')) {
+      return res.status(200).json({
+        statusCode: HttpStatus.OK,
+        message: 'Successfully forwarded email.'
+      });
+    } else {
+      throw new HttpException('Error forwarding', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
