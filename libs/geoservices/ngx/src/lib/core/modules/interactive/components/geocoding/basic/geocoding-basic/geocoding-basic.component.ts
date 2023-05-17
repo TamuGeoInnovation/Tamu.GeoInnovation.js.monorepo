@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { pipe, delay, map, switchMap, withLatestFrom } from 'rxjs';
+import { pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
@@ -46,7 +46,7 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
       switchMap(([, apiKey]) => {
         const params = { ...this.getQueryParameters(), apiKey };
 
-        return new Geocode(params).asObservable().pipe(delay(1250));
+        return new Geocode(params).asObservable();
       })
     );
   }

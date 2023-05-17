@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { pipe, withLatestFrom, delay, map, switchMap } from 'rxjs';
+import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { CensusIntersection, CensusIntersectionResult, ICensusIntersectionOptions } from '@tamu-gisc/geoprocessing-v5';
@@ -56,7 +56,7 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
       switchMap(([, apiKey]) => {
         const params = { ...this.getQueryParameters(), apiKey };
 
-        return new CensusIntersection(params).asObservable().pipe(delay(1250));
+        return new CensusIntersection(params).asObservable();
       })
     );
   }
