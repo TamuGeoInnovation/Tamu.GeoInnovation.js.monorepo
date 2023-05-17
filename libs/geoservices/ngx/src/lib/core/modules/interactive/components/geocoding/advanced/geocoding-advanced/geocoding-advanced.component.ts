@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
+import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { GeocodingBasicComponent } from '../../basic/geocoding-basic/geocoding-basic.component';
 import {
@@ -26,9 +27,10 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
     private fbb: FormBuilder,
     private readonly rtt: Router,
     private readonly arr: ActivatedRoute,
-    private readonly lss: LocalStoreService
+    private readonly lss: LocalStoreService,
+    private readonly ass: AuthService
   ) {
-    super(fbb, rtt, arr, lss);
+    super(fbb, rtt, arr, lss, ass);
   }
 
   public override buildForm() {
@@ -68,7 +70,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
     const form = this.form.getRawValue();
 
     return {
-      apiKey: 'demo',
+      apiKey: '',
       streetAddress: form.streetAddress,
       city: form.city,
       state: form.state,

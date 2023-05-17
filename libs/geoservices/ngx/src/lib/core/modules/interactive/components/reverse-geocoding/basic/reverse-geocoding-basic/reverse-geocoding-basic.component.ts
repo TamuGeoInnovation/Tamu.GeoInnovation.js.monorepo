@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, pipe } from 'rxjs';
-import { map, switchMap, delay } from 'rxjs/operators';
+import { pipe, withLatestFrom, map, switchMap, delay } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { IReverseGeocoderOptions, ReverseGeocode, ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
+import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 
@@ -25,9 +25,10 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
     private fb: FormBuilder,
     private rt: Router,
     private readonly ar: ActivatedRoute,
-    private readonly ls: LocalStoreService
+    private readonly ls: LocalStoreService,
+    private readonly as: AuthService
   ) {
-    super(fb, rt, ar, ls);
+    super(fb, rt, ar, ls, as);
   }
 
   public buildForm(): FormGroup {
@@ -40,42 +41,9 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
 
   public getQuery() {
     return pipe(
-      switchMap(() => {
-        const params = this.getQueryParameters();
-
-        return of({
-          statusCode: 200,
-          message: 'Success',
-          error: '',
-          data: {
-            version: {
-              major: 5,
-              minor: 0,
-              build: 0,
-              revision: -1,
-              majorRevision: -1,
-              minorRevision: -1
-            },
-            timeTaken: 171.88160000000002,
-            transactionGuid: '31405f77-a6c9-444a-82dc-22ef1eee86d7',
-            apiHost: 'geoservices.tamu.edu',
-            clientHost: 'geoservices.tamu.edu',
-            queryStatusCode: 'Success',
-            results: [
-              {
-                timeTaken: 0,
-                exceptionOccurred: false,
-                errorMessage: '',
-                apn: '4342011022',
-                streetAddress: '9309 Burton Way',
-                city: 'Los Angeles',
-                state: 'CA',
-                zip: '90209',
-                zipPlus4: '3605'
-              }
-            ]
-          }
-        } as ReverseGeocodeResult).pipe(delay(1500));
+      withLatestFrom(this.as.apiKey),
+      switchMap(([, apiKey]) => {
+        const params = { ...this.getQueryParameters(), apiKey };
 
         return new ReverseGeocode(params).asObservable().pipe(delay(1500));
       })
@@ -103,11 +71,10 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
     const form = this.form.getRawValue();
 
     return {
-      apiKey: 'demo',
+      apiKey: '',
       latitude: form.lat,
       longitude: form.lon,
       state: form.state || undefined
     };
   }
 }
-

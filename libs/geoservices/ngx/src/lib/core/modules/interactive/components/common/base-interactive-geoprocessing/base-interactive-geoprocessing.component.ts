@@ -17,6 +17,7 @@ import {
 } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
   selector: 'tamu-gisc-base-interactive-geoprocessing',
@@ -59,7 +60,8 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly localStore: LocalStoreService
+    private readonly localStore: LocalStoreService,
+    private readonly AuthService: AuthService
   ) {}
 
   public ngOnInit(): void {

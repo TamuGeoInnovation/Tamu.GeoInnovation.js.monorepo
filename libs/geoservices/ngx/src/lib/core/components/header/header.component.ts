@@ -16,7 +16,7 @@ export class HeaderComponent implements OnInit {
   constructor(private readonly as: AuthService, private readonly env: EnvironmentService) {}
 
   public ngOnInit() {
-    this.loggedIn = this.as.state();
+    this.loggedIn = this.as.state;
     this.url = this.env.value('accounts_url');
   }
 }
