@@ -1,5 +1,4 @@
-import { Observable, of, from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, of, from, map, switchMap } from 'rxjs';
 
 import axios, { AxiosError, AxiosPromise, ResponseType } from 'axios';
 
@@ -21,12 +20,14 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     }
   }
   private get _request() {
+    const params = this.getUrlOptions();
+
     return (
       axios({
         method: 'GET',
         url: this.settings.serviceUrl.value,
         responseType: this.xhrResponseType,
-        params: this.getUrlOptions()
+        params: params
       }) as AxiosPromise<Res>
     ).catch(this.handleResponse);
   }
