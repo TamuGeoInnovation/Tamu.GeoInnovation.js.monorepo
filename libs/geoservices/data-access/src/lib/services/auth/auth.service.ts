@@ -20,7 +20,7 @@ export class AuthService {
     this.resource = this.env.value('legacy_api_url') + 'login';
 
     this.state = this.http
-      .get<INotLoggedInResponse | ILoggedInResponse>(this.env.value('legacy_api_url') + 'userServices/getDetails', {
+      .get<INotLoggedInResponse | ILoggedInResponse>(this.env.value('legacy_api_url') + 'userServices/getDetails/', {
         withCredentials: true
       })
       .pipe(
