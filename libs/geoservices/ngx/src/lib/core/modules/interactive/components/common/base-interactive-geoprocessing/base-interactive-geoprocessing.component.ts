@@ -55,6 +55,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
   private _localStorePrimaryKey = 'geoservices';
   private _localStoreSubKey = 'interactive-cache';
   private _cacheResult: ReplaySubject<ResultType> = new ReplaySubject(1);
+  private _query: Observable<ResultType>;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -77,7 +78,11 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
             return of(action) as Observable<ResultType>;
           } else {
             // Reset any outstanding result with null.
-            return of(true).pipe(this.getQuery(), startWith(null));
+            return of(true).pipe(
+              this.getQuery(),
+              startWith(null),
+              catchError(() => of(undefined))
+            );
           }
         }
       }),
@@ -86,23 +91,17 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
 
     this.processing = this.querySubmit.pipe(
       switchMap(() => {
-        return of(true).pipe(
-          this.getQuery(),
+        return this.result.pipe(
           // Once the query has resolved, set processing state to false.
-          map(() => {
-            return false;
+          map((v) => {
+            return v === null ? true : false;
           }),
           // If the query errors, set processing state to false.
-          catchError(() => of(false)),
-          // Set initial processing state to true while waiting for resolution of the query.
-          startWith(true)
+          catchError(() => of(false))
         );
       }),
       // Set initial processing state to false. This is the value used before any queries are submitted.
-      startWith(false),
-      // This stream is used by the template and other subscribers in the component. We want to ensure that the stream
-      // is shared and replayed so that the value is not re-emitted on each subscription.
-      shareReplay()
+      startWith(false)
     );
 
     this.buttonLanguage = merge(this.processing, this.result).pipe(

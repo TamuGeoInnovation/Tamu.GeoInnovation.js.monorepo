@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { pipe, withLatestFrom, map, switchMap, delay } from 'rxjs';
+import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { IReverseGeocoderOptions, ReverseGeocode, ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
@@ -45,7 +45,7 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
       switchMap(([, apiKey]) => {
         const params = { ...this.getQueryParameters(), apiKey };
 
-        return new ReverseGeocode(params).asObservable().pipe(delay(1500));
+        return new ReverseGeocode(params).asObservable();
       })
     );
   }

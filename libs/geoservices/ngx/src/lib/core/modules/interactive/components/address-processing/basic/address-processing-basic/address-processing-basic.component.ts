@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, pipe, delay, map, switchMap, withLatestFrom } from 'rxjs';
+import { Observable, pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { AddressProcessing, AddressProcessingResult, IAddressProcessingOptions } from '@tamu-gisc/geoprocessing-v5';
@@ -51,7 +51,7 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
       switchMap(([, apiKey]) => {
         const params = { ...this.getQueryParameters(), apiKey };
 
-        return new AddressProcessing(params).asObservable().pipe(delay(1250));
+        return new AddressProcessing(params).asObservable();
       })
     );
   }
