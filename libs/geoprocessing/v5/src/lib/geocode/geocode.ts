@@ -1,4 +1,5 @@
 import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing-core';
+
 import { GeocodeResult, IGeocodeOptions } from '../interfaces/v5.interfaces';
 
 export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeOptions, GeocodeResult> {
@@ -34,15 +35,15 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
       relaxableAttributes: {
         value: undefined,
         target: ['relaxableAttributes'],
-        fn: (attrs) => {
-          return attrs ? attrs.join(',') : attrs;
+        fn: function (attrs) {
+          this.value = attrs ? attrs.join(',') : attrs;
         }
       },
       soundexableAttributes: {
         value: undefined,
         target: ['soundexableAttributes'],
-        fn: (attrs) => {
-          return attrs ? attrs.join(',') : attrs;
+        fn: function (attrs) {
+          this.value = attrs ? attrs.join(',') : attrs;
         }
       },
       refs: {

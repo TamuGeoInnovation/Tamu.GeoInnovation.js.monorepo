@@ -26,8 +26,8 @@ export class CensusIntersection extends ApiBase<
       censusYears: {
         target: 'censusYears',
         value: undefined,
-        fn: (years) => {
-          return years instanceof Array ? years.join(',') : years;
+        fn: function (years) {
+          this.value = years instanceof Array ? years.join(',') : years;
         }
       }
     };
