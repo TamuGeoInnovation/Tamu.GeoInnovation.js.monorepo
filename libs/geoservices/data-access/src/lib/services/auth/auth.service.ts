@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, of, catchError, map, shareReplay } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -11,40 +10,55 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class AuthService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = this.env.value('legacy_api_url') + 'login';
-  }
-
   /**
    * Returns logged in state
    */
-  public state(): Observable<LoggedInState> {
-    return this.http
-      .get<ILoggedInResponse>(this.env.value('legacy_api_url') + 'userServices/getDetails', {
+  public state: Observable<LoggedInState>;
+  public apiKey: Observable<string>;
+
+  constructor(private env: EnvironmentService, private http: HttpClient) {
+    this.resource = this.env.value('legacy_api_url') + 'login';
+
+    this.state = this.http
+      .get<INotLoggedInResponse | ILoggedInResponse>(this.env.value('legacy_api_url') + 'userServices/getDetails', {
         withCredentials: true
       })
       .pipe(
         map((res) => {
           let loggedIn = true;
 
-          if (res.Status) {
+          // The logged in object is not standard and will only return `Status` or `result` if the user is not logged in.
+          if ((res as INotLoggedInResponse)?.Status) {
             loggedIn = false;
           }
 
-          if (res.result) {
+          if ((res as INotLoggedInResponse)?.result) {
             loggedIn = false;
           }
 
           return {
-            loggedIn
+            loggedIn,
+            data: res
           };
         }),
         catchError(() => {
           return of({
-            loggedIn: false
+            loggedIn: false,
+            data: null
           });
-        })
+        }),
+        shareReplay()
       );
+
+    this.apiKey = this.state.pipe(
+      map((state) => {
+        if (state.loggedIn) {
+          return (state.data as ILoggedInResponse).APIKey;
+        } else {
+          return 'demo';
+        }
+      })
+    );
   }
 
   /**
@@ -61,12 +75,17 @@ export class AuthService {
   }
 }
 
-interface ILoggedInResponse {
+interface INotLoggedInResponse {
   Status?: string;
   result?: string;
 }
 
-export interface LoggedInState {
-  loggedIn: boolean;
+interface ILoggedInResponse {
+  APIKey: string;
+  Guid: string;
 }
 
+export interface LoggedInState {
+  loggedIn: boolean;
+  data: null | ILoggedInResponse;
+}
