@@ -159,7 +159,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
   private _applyLocalStoreCache() {
     const store = this._cache;
 
-    if (store !== null) {
+    if (store && store !== null) {
       this.form.patchValue(store.form);
       this._cacheResult.next(store.result);
 
