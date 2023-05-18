@@ -19,9 +19,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  # - stage: Nx Deltas
-  #     jobs:
-  #       - template: templates/jobs/deltaConfigure.yml
+  - stage: Compute_Deltas
+    jobs:
+      - template: templates/jobs/deltaConfigure.yml
 
   - stage: Dependencies
     jobs:
