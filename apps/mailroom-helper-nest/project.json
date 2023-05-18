@@ -10,7 +10,14 @@
         "outputPath": "dist/apps/mailroom-helper-nest",
         "main": "apps/mailroom-helper-nest/src/main.ts",
         "tsConfig": "apps/mailroom-helper-nest/tsconfig.app.json",
-        "assets": ["apps/mailroom-helper-nest/src/assets"]
+        "assets": [
+          "apps/mailroom-helper-nest/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ]
       },
       "configurations": {
         "production": {
