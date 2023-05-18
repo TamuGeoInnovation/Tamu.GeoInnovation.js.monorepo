@@ -11,7 +11,7 @@ jobs:
 
       # Get last successful commit from Azure Devops CLI
       - bash: |
-          LAST_SHA=$(az pipelines build list --branch $(Build.SourceBranchName) --definition-ids $(System.DefinitionId) --result succeeded --top 1 --query "[0].triggerInfo.\"ci.sourceSha\"")
+          LAST_SHA=$(az pipelines build list --branch $(Build.SourceBranchName) --definition-ids $(System.DefinitionId) --result succeeded --top 1 --query "[0].sourceVersion")
           if [ -z "$LAST_SHA" ]
           then
             LAST_SHA=$DEFAULT_BASE_SHA
@@ -21,3 +21,4 @@ jobs:
         displayName: 'Get last successful commit SHA'
         env:
           AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+
