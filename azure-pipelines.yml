@@ -19,7 +19,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: Compute_Deltas
+  - stage: Setup
+    displayName: 'Setup'
     jobs:
       - template: templates/jobs/deltaConfigure.yml
 
@@ -28,9 +29,13 @@ stages:
       - template: templates/jobs/cacheOrRestoreDependencies.yml
 
   - stage: Lint
-    dependsOn: Dependencies
+    dependsOn:
+      - Dependencies
+      - Setup
     jobs:
       - template: templates/jobs/lintProjects.yml
+    variables:
+      baseSha: $[stageDependencies.Setup.Last_SHA.outputs['last_successful_sha.BASE_SHA']]
 
   # - stage: Build
   #   dependsOn: Dependencies

@@ -1,11 +1,13 @@
 parameters:
   excludedProjects: ''
-
 jobs:
   - job:
     displayName: Lint Affected
     steps:
+      - checkout: self
+        fetchDepth: 99
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |
-          npm run nx affected:lint -- --base=$(BASE_SHA) --head=$(HEAD_SHA)
+          git fetch --all
+          npm run nx affected:lint -- --base=$(baseSha) --head=$(HEAD_SHA)
         displayName: 'Lint '
