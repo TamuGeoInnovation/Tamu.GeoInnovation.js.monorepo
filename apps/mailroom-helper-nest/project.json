@@ -17,6 +17,7 @@
           "optimization": true,
           "extractLicenses": true,
           "inspect": false,
+          "generatePackageJson": true,
           "fileReplacements": [
             {
               "replace": "apps/mailroom-helper-nest/src/environments/environment.ts",
