@@ -7,5 +7,5 @@ jobs:
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |
-          npm run nx affected:apps -- --base=$(affectedBase) --head=HEAD --exclude=${{ parameters.excludedProjects }} | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
+          npm run nx affected:apps -- --base=$(AFFECTED_BASE) --head=HEAD --exclude=${{ parameters.excludedProjects }} | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
         displayName: 'Add Build Tags for Affected Projects'

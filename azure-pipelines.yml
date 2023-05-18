@@ -1,17 +1,19 @@
 variables:
-  - name: excludedProjects
-    value: 'signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest'
-  - name: isDevelopment
-    value: $[eq(variables['Build.SourceBranchName'], 'development')]
-  - name: isMaster
-    value: $[eq(variables['Build.SourceBranchName'], 'master')]
-  - name: affectedBase
-    ${{ if and(ne(variables['Build.SourceBranchName'], 'master'), ne(variables['Build.SourceBranchName'], 'development')) }}:
-      value: origin/development # Default affected base base
-    ${{ if eq(variables['Build.SourceBranchName'], 'development') }}:
-      value: origin/development~ # Affected base if build branch name is development
-    ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-      value: origin/master~ # Affected base if build branch name is master
+  EXCLUDED_PROJECTS: 'signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,covid-data-api-nest,two-valup-nest,two-directory-nest'
+  IS_DEVELOPMENT: $[eq(variables['Build.SourceBranchName'], 'development')]
+  IS_MASTER: $[eq(variables['Build.SourceBranchName'], 'master')]
+  ${{ if and(ne(variables['Build.SourceBranchName'], 'master'), ne(variables['Build.SourceBranchName'], 'development')) }}:
+    AFFECTED_BASE: origin/development # Default affected base base
+  ${{ if eq(variables['Build.SourceBranchName'], 'development') }}:
+    AFFECTED_BASE: origin/development~ # Affected base if build branch name is development
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+    AFFECTED_BASE: origin/master~ # Affected base if build branch name is master
+  ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
+    NX_BRANCH: $(System.PullRequest.PullRequestId) # You can use $(System.PullRequest.PullRequestNumber if your pipeline is triggered by a PR from GitHub ONLY)
+    TARGET_BRANCH: $[replace(variables['System.PullRequest.TargetBranch'],'refs/heads/','origin/')]
+  ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
+    NX_BRANCH: $(Build.SourceBranchName)
+  HEAD_SHA: $(git rev-parse HEAD)
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -32,19 +34,19 @@ stages:
       - template: templates/jobs/build.yml
         parameters:
           buildType: development
-          excludedProjects: $(excludedProjects)
+          excludedProjects: $(EXCLUDED_PROJECTS)
       - template: templates/jobs/build.yml
         parameters:
           buildType: staging
-          excludedProjects: $(excludedProjects)
+          excludedProjects: $(EXCLUDED_PROJECTS)
       - template: templates/jobs/build.yml
         parameters:
           buildType: production
-          excludedProjects: $(excludedProjects)
+          excludedProjects: $(EXCLUDED_PROJECTS)
 
   - stage: Tag
     dependsOn: Build
     jobs:
       - template: templates/jobs/buildTags.yml
         parameters:
-          excludedProjects: $(excludedProjects)
+          excludedProjects: $(EXCLUDED_PROJECTS)

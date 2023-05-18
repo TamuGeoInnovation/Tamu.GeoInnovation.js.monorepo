@@ -7,5 +7,5 @@ jobs:
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |
-          npm run nx affected:lint -- --base=$(affectedBase) --head=HEAD
+          npm run nx affected:lint -- --base=$(AFFECTED_BASE) --head=HEAD
         displayName: 'Lint '
