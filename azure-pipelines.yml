@@ -19,6 +19,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
+  # - stage: Nx Deltas
+  #     jobs:
+  #       - template: templates/jobs/deltaConfigure.yml
+
   - stage: Dependencies
     jobs:
       - template: templates/jobs/cacheOrRestoreDependencies.yml
@@ -28,25 +32,25 @@ stages:
     jobs:
       - template: templates/jobs/lintProjects.yml
 
-  - stage: Build
-    dependsOn: Dependencies
-    jobs:
-      - template: templates/jobs/build.yml
-        parameters:
-          buildType: development
-          excludedProjects: $(EXCLUDED_PROJECTS)
-      - template: templates/jobs/build.yml
-        parameters:
-          buildType: staging
-          excludedProjects: $(EXCLUDED_PROJECTS)
-      - template: templates/jobs/build.yml
-        parameters:
-          buildType: production
-          excludedProjects: $(EXCLUDED_PROJECTS)
+  # - stage: Build
+  #   dependsOn: Dependencies
+  #   jobs:
+  #     - template: templates/jobs/build.yml
+  #       parameters:
+  #         buildType: development
+  #         excludedProjects: $(EXCLUDED_PROJECTS)
+  #     - template: templates/jobs/build.yml
+  #       parameters:
+  #         buildType: staging
+  #         excludedProjects: $(EXCLUDED_PROJECTS)
+  #     - template: templates/jobs/build.yml
+  #       parameters:
+  #         buildType: production
+  #         excludedProjects: $(EXCLUDED_PROJECTS)
 
-  - stage: Tag
-    dependsOn: Build
-    jobs:
-      - template: templates/jobs/buildTags.yml
-        parameters:
-          excludedProjects: $(EXCLUDED_PROJECTS)
+  # - stage: Tag
+  #   dependsOn: Build
+  #   jobs:
+  #     - template: templates/jobs/buildTags.yml
+  #       parameters:
+  #         excludedProjects: $(EXCLUDED_PROJECTS)
