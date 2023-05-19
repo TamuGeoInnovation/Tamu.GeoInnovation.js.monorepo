@@ -1,11 +1,10 @@
 parameters:
   excludedProjects: ''
+
 jobs:
   - job:
     displayName: Lint Affected
     steps:
-      - checkout: self
-        fetchDepth: 99
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |
           git fetch --all
