@@ -1,11 +1,8 @@
 parameters:
   buildType: ''
-  dependsOn: []
-  excludedProjects: ''
 
 jobs:
-  - job: ${{ parameters.buildType }}
-    dependsOn: ${{ parameters.dependsOn }}
+  - job: ${{ parameters.buildType}}
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
 
@@ -29,7 +26,7 @@ jobs:
         displayName: 'Copy secrets'
 
       - bash: |
-          npm run nx affected:build -- --base=$(AFFECTED_BASE) --head=HEAD --configuration=${{ parameters.buildType }} --exclude=${{ parameters.excludedProjects }}
+          npx nx affected:build --base=$(baseSha) --head=$(HEAD_SHA) --configuration=${{ parameters.buildType }} --exclude=$(EXCLUDED_PROJECTS)
         displayName: 'Running build'
 
       - task: CopyFiles@2
@@ -41,5 +38,5 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           pathToPublish: $(Build.ArtifactStagingDirectory) # dist or build files
-          artifactName: 'js-monorepo-${{ parameters.buildType }}'
+          artifactName: 'js-monorepo-${{parameters.buildType}}'
         displayName: 'Publish Artifacts'
