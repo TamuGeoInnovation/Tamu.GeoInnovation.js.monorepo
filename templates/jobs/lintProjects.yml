@@ -7,6 +7,5 @@ jobs:
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |
-          git fetch --all
-          npm run nx affected:lint -- --base=$(baseSha) --head=$(HEAD_SHA)
+          npx nx affected:lint --base=$(baseSha) --head=$(HEAD_SHA) --exclude=$(excludedProjects)
         displayName: 'Lint '
