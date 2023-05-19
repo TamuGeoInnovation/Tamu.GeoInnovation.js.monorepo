@@ -1,6 +1,3 @@
-parameters:
-  excludedProjects: ''
-
 jobs:
   - job: Last_SHA
     displayName: 'Last SHA'
