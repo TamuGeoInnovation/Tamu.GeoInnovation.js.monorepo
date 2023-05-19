@@ -8,13 +8,19 @@ jobs:
 
       # Get last successful commit from Azure Devops CLI
       - bash: |
-          LAST_SHA=$(az pipelines build list --branch $(Build.SourceBranchName) --definition-ids $(System.DefinitionId) --result succeeded --top 1 --query "[0].sourceVersion")
+          LAST_SHA=$(az pipelines build list --branch $(Build.SourceBranchName) --definition-ids $(System.DefinitionId) --result succeeded --top 1 --query "[0].sourceVersion" | xargs)
+
+          echo ""
+          echo "==========="
+          echo "$LAST_SHA"
+          echo "==========="
+          echo ""
 
           # Check if the last sha is not empty OR if the last sha is not a commit in the repo (as would be the case in the event of a rebase)
           if [ -z "$LAST_SHA" ]; then
             echo "Last successful commit SHA is empty. Using fallback affected base."
             LAST_SHA=$(AFFECTED_BASE)
-          elif [ "$(git cat-file -t $LAST_SHA)" != "commit" ]; then
+          elif [ "$(git cat-file -t "$LAST_SHA")" != "commit" ]; then
             echo "Last successful commit SHA ($LAST_SHA) is not a commit in the repo. Using fallback affected base."
             LAST_SHA=$(AFFECTED_BASE)
           fi
@@ -25,3 +31,4 @@ jobs:
         name: 'last_successful_sha'
         env:
           AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+
