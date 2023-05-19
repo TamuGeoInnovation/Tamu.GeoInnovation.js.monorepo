@@ -1,11 +1,8 @@
-parameters:
-  excludedProjects: ''
-
 jobs:
   - job:
     displayName: Lint Affected
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |
-          npm run nx affected:lint -- --base=$(affectedBase) --head=HEAD
+          npx nx affected:lint --base=$(baseSha) --head=$(HEAD_SHA) --exclude=$(EXCLUDED_PROJECTS)
         displayName: 'Lint '
