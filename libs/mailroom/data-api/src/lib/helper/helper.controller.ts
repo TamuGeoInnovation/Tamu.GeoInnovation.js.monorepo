@@ -39,8 +39,13 @@ export class HelperController {
       form.append('attachments', file.buffer, file.originalname);
     });
 
+    const reject = process.env.REJECT_UNAUTHORIZED === undefined ? true : process.env.REJECT_UNAUTHORIZED == '1';
+
     const status = await got(`${process.env.MAILROOM_URL}`, {
       method: 'POST',
+      https: {
+        rejectUnauthorized: reject
+      },
       body: form,
       headers: form.getHeaders()
     });

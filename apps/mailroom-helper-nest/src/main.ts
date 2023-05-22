@@ -16,6 +16,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3333;
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+  Logger.log(`Using mailroom endpoint: ${process.env.MAILROOM_URL}`);
 }
 
 bootstrap();
