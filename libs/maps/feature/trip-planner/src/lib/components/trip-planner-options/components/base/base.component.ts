@@ -67,14 +67,15 @@ export class TripPlannerOptionsBaseComponent implements OnInit {
 
     // Report as interaction to Google Analytics
     this.anl.eventTrack.next({
-      action: 'Set Persistent Travel Setting',
+      action: 'persistent_travel_setting',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify({
+        category: 'ui_interaction',
+        gstCustom: {
+          type: 'set',
           date: Date.now(),
           guid: guid(),
           ...opts
-        })
+        }
       }
     });
   }

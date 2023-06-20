@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { Angulartics2GoogleAnalytics } from 'angulartics2';
+import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
@@ -10,7 +10,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 })
 export class AppComponent implements OnInit {
   constructor(
-    public analytics: Angulartics2GoogleAnalytics,
+    public analytics: Angulartics2GoogleGlobalSiteTag,
     private readonly vcr: ViewContainerRef,
     private readonly ms: ModalService
   ) {

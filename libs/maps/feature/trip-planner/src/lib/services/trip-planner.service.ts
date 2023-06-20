@@ -1495,22 +1495,28 @@ export class TripPlannerService implements OnDestroy {
   private reportTaskSuccessType(result: TripResult) {
     // Do not assign new this.result value here as it will be done further down the chain.
 
+    const stops = result.stopsToArray();
+
     // Route creation analytics tracking
     const label = {
       guid: guid(),
       date: Date.now(),
-      points: result.stopsToArray(),
-      travelMode: result.params.travelMode,
+      travel_mode: result.params.travelMode.id,
       connection: result.connection.name,
-      tryCount: result.tryCount,
-      stops: result.stopsSource
+      try_count: result.tryCount,
+      stop_count: stops.length
+      // stops: result.stopsSource
     };
 
+    stops.forEach((stop, index) => {
+      label[`stop_${index}`] = stop.toString();
+    });
+
     this.analytics.eventTrack.next({
-      action: 'Create',
+      action: 'routing',
       properties: {
-        category: 'Routing',
-        label: JSON.stringify(label)
+        category: 'route_create',
+        gstCustom: label
       }
     });
   }
@@ -1537,68 +1543,87 @@ export class TripPlannerService implements OnDestroy {
         .every((r) => r === true);
 
       if (intersectionsWithinBrazos) {
+        const stops = tripResult.stopsToArray();
+
         // Both points are within the county
         // Route failure analytics tracking
         const label = {
           guid: guid(),
           date: Date.now(),
-          httpStatus: tripResult.error.details.httpStatus,
+          http_status: tripResult.error.details.httpStatus,
           message: tripResult.error.message,
-          points: tripResult.stopsToArray(),
-          travelMode: tripResult.params.travelMode,
+          travel_mode: tripResult.params.travelMode.id,
           connection: tripResult.connection.name,
-          tryCount: tripResult.tryCount,
-          stops: tripResult.stopsSource
+          try_count: tripResult.tryCount,
+          stop_count: stops.length
+          // stops: tripResult.stopsSource
         };
+
+        stops.forEach((stop, index) => {
+          label[`stop_${index}`] = stop.toString();
+        });
+
         this.analytics.eventTrack.next({
-          action: 'Fail',
+          action: 'routing',
           properties: {
-            category: 'Routing',
-            label: JSON.stringify(label)
+            category: 'route_fail',
+            gstCustom: label
           }
         });
       } else {
+        const stops = tripResult.stopsToArray();
+
         // At least one point is outside the county
         // Route failure analytics tracking
         const label = {
           guid: guid(),
           date: Date.now(),
-          httpStatus: tripResult.error.details.httpStatus,
+          http_status: tripResult.error.details.httpStatus,
           message: tripResult.error.message,
-          points: tripResult.stopsToArray(),
-          travelMode: tripResult.params.travelMode,
+          travel_mode: tripResult.params.travelMode.id,
           connection: tripResult.connection.name,
-          tryCount: tripResult.tryCount,
-          stops: tripResult.stopsSource
+          try_count: tripResult.tryCount,
+          stop_count: stops.length
+          // stops: tripResult.stopsSource
         };
 
+        stops.forEach((stop, index) => {
+          label[`stop_${index}`] = stop.toString();
+        });
+
         this.analytics.eventTrack.next({
-          action: 'Out Of Bounds',
+          action: 'routing',
           properties: {
-            category: 'Routing',
-            label: JSON.stringify(label)
+            category: 'out_of_bounds',
+            gstCustom: label
           }
         });
       }
     } catch (err) {
       // If the requests fail for whatever reason, still report it as a regular fail
       // Route failure analytics tracking
+      const stops = tripResult.stopsToArray();
+
       const label = {
         guid: guid(),
         date: Date.now(),
-        httpStatus: tripResult.error.details.httpStatus,
-        points: tripResult.stopsToArray(),
-        travelMode: tripResult.params.travelMode,
+        http_status: tripResult.error.details.httpStatus,
+        travel_mode: tripResult.params.travelMode.id,
         connection: tripResult.connection.name,
-        tryCount: tripResult.tryCount,
-        stops: tripResult.stopsSource
+        try_count: tripResult.tryCount,
+        stop_count: stops.length
+        // stops: tripResult.stopsSource
       };
 
+      stops.forEach((stop, index) => {
+        label[`stop_${index}`] = stop.toString();
+      });
+
       this.analytics.eventTrack.next({
-        action: 'Boundary Query Fail',
+        action: 'routing',
         properties: {
-          category: 'Routing',
-          label: JSON.stringify(label)
+          category: 'boundary_query_fail',
+          gstCustom: label
         }
       });
     }

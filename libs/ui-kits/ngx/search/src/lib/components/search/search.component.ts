@@ -268,16 +268,16 @@ export class SearchComponent implements OnInit, OnDestroy {
           const label = {
             guid: guid(),
             date: Date.now(),
-            value: value
+            term: value,
+            term_size: value.length
           };
 
           // Send analytics search input
           this.analytics.eventTrack.next({
-            action: 'Search',
+            action: 'search',
             properties: {
-              category: 'Searched Term',
-              label: JSON.stringify(label),
-              value: value.length
+              category: 'searched_term',
+              gstCustom: label
             }
           });
         }
@@ -417,15 +417,15 @@ export class SearchComponent implements OnInit, OnDestroy {
         const label = {
           guid: guid(),
           date: Date.now(),
-          value: `${res.latitude}, ${res.longitude}`
+          name: `${res.latitude}, ${res.longitude}`
         };
 
         // Track analytics geolocation success
         this.analytics.eventTrack.next({
-          action: 'Success',
+          action: 'geolocation',
           properties: {
-            category: 'Geolocation',
-            label: JSON.stringify(label)
+            category: 'success',
+            gstCustom: label
           }
         });
       })
@@ -464,15 +464,15 @@ export class SearchComponent implements OnInit, OnDestroy {
         const label = {
           guid: guid(),
           date: Date.now(),
-          value: err.message
+          name: err.message
         };
 
         // Track analytics geolocation failure
         this.analytics.eventTrack.next({
-          action: 'Failed',
+          action: 'geolocation',
           properties: {
-            category: 'Geolocation',
-            label: JSON.stringify(label)
+            category: 'failed',
+            gstCustom: label
           }
         });
       });

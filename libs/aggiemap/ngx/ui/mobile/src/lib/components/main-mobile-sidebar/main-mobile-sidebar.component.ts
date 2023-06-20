@@ -78,14 +78,14 @@ export class MainMobileSidebarComponent {
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: name
+      name: name
     };
 
     this.analytics.eventTrack.next({
-      action: 'Mobile Sidebar Selection',
+      action: 'sidebar_select',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        gstCustom: label
       }
     });
   }

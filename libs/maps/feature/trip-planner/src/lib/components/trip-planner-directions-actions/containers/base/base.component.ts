@@ -112,14 +112,15 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
 
     const label = {
       guid: guid(),
-      date: Date.now()
+      date: Date.now(),
+      type: 'reset'
     };
 
     this.analytics.eventTrack.next({
-      action: 'Trip Planner Action - Reset',
+      action: 'trip_planner_action',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        gstCustom: label
       }
     });
   }
@@ -129,14 +130,15 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: this.shareUrl
+      name: this.shareUrl,
+      type: 'share'
     };
 
     this.analytics.eventTrack.next({
-      action: 'Trip Planner Action - Share',
+      action: 'trip_planner_action',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        gstCustom: label
       }
     });
   }

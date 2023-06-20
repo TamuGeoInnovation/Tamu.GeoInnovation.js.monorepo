@@ -37,14 +37,14 @@ export class NotificationContainerComponent implements OnInit {
       const label = {
         guid: guid(),
         date: Date.now(),
-        value: event.id
+        name: event.id
       };
 
       this.analytics.eventTrack.next({
-        action: 'Notification Action',
+        action: 'notification_action',
         properties: {
-          category: 'UI Interaction',
-          label: JSON.stringify(label)
+          category: 'ui_interaction',
+          gstCustom: label
         }
       });
     }

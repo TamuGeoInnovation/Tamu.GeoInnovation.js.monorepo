@@ -22,14 +22,14 @@ export class CopyComponent {
     const label = {
       guid: guid(),
       date: Date.now(),
-      value: this.text
+      content: this.text
     };
 
     this.analytics.eventTrack.next({
-      action: 'Copy Coordinates',
+      action: 'clipboard_copy',
       properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
+        category: 'ui_interaction',
+        gstCustom: label
       }
     });
   }
