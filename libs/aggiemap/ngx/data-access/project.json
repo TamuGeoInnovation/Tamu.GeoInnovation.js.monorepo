@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/aggiemap/ngx/data-access",
+  "sourceRoot": "libs/aggiemap/ngx/data-access/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/aggiemap/ngx/data-access"],
+      "options": {
+        "jestConfig": "libs/aggiemap/ngx/data-access/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/aggiemap/ngx/data-access/src/**/*.ts", "libs/aggiemap/ngx/data-access/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

@@ -4,6 +4,7 @@
     "aggiemap-angular": "apps/aggiemap-angular",
     "aggiemap-angular-e2e": "apps/aggiemap-angular-e2e",
     "aggiemap-ngx-core": "libs/aggiemap/ngx/core",
+    "aggiemap-ngx-data-access": "libs/aggiemap/ngx/data-access",
     "aggiemap-ngx-popups": "libs/aggiemap/ngx/popups",
     "aggiemap-ngx-ui-desktop": "libs/aggiemap/ngx/ui/desktop",
     "aggiemap-ngx-ui-mobile": "libs/aggiemap/ngx/ui/mobile",
