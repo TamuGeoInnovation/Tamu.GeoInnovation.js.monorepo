@@ -4,7 +4,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 import { LayerSource } from '@tamu-gisc/common/types';
-import { LayerSources as LS, Definitions, commonLayerProps } from './definitions';
+import { LayerSources as LS, Definitions, commonLayerProps, Connections as Cns } from './definitions';
 
 export const environment = {
   production: true
@@ -14,9 +14,14 @@ export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
 
-export { SearchSources, Connections, Definitions, LegendSources, SelectionSymbols } from './definitions';
+export { SearchSources, Definitions, LegendSources, SelectionSymbols } from './definitions';
 export * from './notification-events';
 export * from './polygons';
+
+export const Connections = {
+  ...Cns,
+  cms_url: 'http://localhost:1337/api'
+};
 
 export const LayerSources = [
   ...LS,
@@ -55,3 +60,4 @@ export const ThreeDLayers: Array<LayerSource> = [
     }
   }
 ];
+
