@@ -11,6 +11,8 @@ We are injecting application-specific sidebar tabs and content -->
     <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>
 
     <tamu-gisc-sidebar-tab *ngIf="(isDev | async) === true" [title]="'Experiments'" [description]="'Aggiemap Experiments'" [material_icon]="'science'" [route]="'experiments'" (click)="reportSidebarContent('Experiments')"></tamu-gisc-sidebar-tab>
+
+    <tamu-gisc-sidebar-tab *ngIf="(isDev | async) === true" [title]="'Features (Beta)'" [description]="'Features (Beta)'" [material_icon]="'celebration'" [route]="'features-beta'" (click)="reportSidebarContent('Features (Beta)')"></tamu-gisc-sidebar-tab>
   </div>
 
   <div class="content">
@@ -19,3 +21,4 @@ We are injecting application-specific sidebar tabs and content -->
     <tamu-gisc-feature-popup></tamu-gisc-feature-popup>
   </div>
 </tamu-gisc-sidebar>
+
