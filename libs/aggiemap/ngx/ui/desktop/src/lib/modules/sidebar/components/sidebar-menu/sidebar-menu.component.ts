@@ -92,7 +92,12 @@ export class SidebarMenuComponent implements OnInit {
     );
   }
 
-  public setParent(parent: CategoryEntry) {
+  public setParent(event: MouseEvent, parent: CategoryEntry) {
+    // Ignore clicks on input elements (checkboxes)
+    if (event.target['tagName'] === 'INPUT') {
+      return;
+    }
+
     // Toggles do not have render-able children, so we don't want to drill down to the next level
     if (parent.attributes.type !== 'toggle') {
       this._navigateToLocation(parent.attributes.catId);
