@@ -40,6 +40,19 @@ export class CategoryService {
 
     return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);
   }
+
+  public getCategory(id: number) {
+    const query = qs.stringify({
+      filters: {
+        catId: {
+          $eq: id
+        }
+      },
+      populate: ['list_icon']
+    });
+
+    return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);
+  }
 }
 
 export interface CategoryEntry extends CmsDataEntity<CategoryEntry> {
