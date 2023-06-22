@@ -1,4 +1,5 @@
 <div class="sidebar-component-name">
+  <i class="material-icons" id="return" [class]="{available: (parentId | async) !== 0, disabled: (parentId | async) === 0}" [title]="(parentId | async) === 0 ? 'Not available' : 'Go to previous level'" (click)="setParentId()">arrow_back</i>
   <p>{{levelText | async}}</p>
 </div>
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject, map, of, shareReplay, switchMap } from 'rxjs';
+import { Observable, Subject, map, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
 
 import {
   CategoryEntry,
@@ -38,8 +38,8 @@ export class SidebarMenuComponent implements OnInit {
 
     this.parentId = this.route.queryParams.pipe(
       map((params) => {
-        if (params.parent) {
-          return params.parent;
+        if (params.id) {
+          return parseInt(params.id);
         } else {
           return 0;
         }
@@ -52,7 +52,10 @@ export class SidebarMenuComponent implements OnInit {
         if (id === 0) {
           return of(null);
         } else {
-          return this.cs.getCategory(id).pipe(map((res) => res.data[0]));
+          return this.cs.getCategory(id).pipe(
+            map((res) => res.data[0]),
+            shareReplay()
+          );
         }
       }),
       shareReplay()
@@ -92,11 +95,25 @@ export class SidebarMenuComponent implements OnInit {
   public setParent(parent: CategoryEntry) {
     // Toggles do not have render-able children, so we don't want to drill down to the next level
     if (parent.attributes.type !== 'toggle') {
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { parent: parent.attributes.catId },
-        queryParamsHandling: 'merge'
-      });
+      this._navigateToLocation(parent.attributes.catId);
     }
+  }
+
+  public setParentId() {
+    of(true)
+      .pipe(withLatestFrom(this.parent)) // I don't understand why I need to get latest from and not just use the parent observable since it's already multicast
+      .subscribe(([, parent]) => {
+        if (parent) {
+          this._navigateToLocation(parent.attributes.parent);
+        }
+      });
+  }
+
+  private _navigateToLocation(id: number) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { id },
+      queryParamsHandling: 'merge'
+    });
   }
 }
