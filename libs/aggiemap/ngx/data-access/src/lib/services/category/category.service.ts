@@ -17,14 +17,14 @@ export class CategoryService {
     this._resource = connections.cms_url + 'categories';
   }
 
-  public getCategories() {
+  public getCategories(parent?: number) {
     const query = qs.stringify({
       filters: {
         visible: {
           $eq: true
         },
         parent: {
-          $eq: 0
+          $eq: parent || 0
         },
         private: {
           $eq: false
@@ -127,4 +127,3 @@ export interface CmsFile {
   createdAt: Date;
   updatedAt: Date;
 }
-

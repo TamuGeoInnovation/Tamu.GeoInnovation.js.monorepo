@@ -1,10 +1,15 @@
-<div class="category-location-container">
-  <div class="category" *ngFor="let category of (categories | async)?.data">
-    <div class="category--icon" *ngIf="category.attributes.list_icon">
-      <img [src]="'http://localhost:1337/' +category.attributes.list_icon.data.attributes.url" alt="" />
-    </div>
-    <div class="category--name">{{category.attributes.name}}</div>
-    <div class="category--controls"></div>
-  </div>
+<div class="sidebar-component-name">
+  <p>{{levelText | async}}</p>
 </div>
 
+<div class="sidebar-component-content-container">
+  <div class="category-location-container">
+    <div class="category" *ngFor="let category of (categories | async)?.data" (click)="setParent(category)">
+      <div class="category--icon">
+        <img *ngIf="category.attributes.list_icon as li" [src]="'http://localhost:1337' + li.data?.attributes.url" alt="" />
+      </div>
+      <div class="category--name">{{category.attributes.name}}</div>
+      <div class="category--controls"></div>
+    </div>
+  </div>
+</div>
