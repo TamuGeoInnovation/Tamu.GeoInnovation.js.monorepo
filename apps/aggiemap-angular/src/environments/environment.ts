@@ -16,7 +16,7 @@ export * from './polygons';
 
 export const Connections = {
   ...Cns,
-  cms_url: 'http://localhost:1337/api'
+  cms_url: 'http://localhost:1337/api/'
 };
 
 export const LayerSources = [

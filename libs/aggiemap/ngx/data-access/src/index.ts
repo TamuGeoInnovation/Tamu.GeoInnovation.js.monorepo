@@ -1,1 +1,1 @@
-export * from './lib/aggiemap-ngx-data-access.module';
+export * from './lib/services/category/category.service';

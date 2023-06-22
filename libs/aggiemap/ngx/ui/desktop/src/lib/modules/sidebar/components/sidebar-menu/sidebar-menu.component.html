@@ -1,1 +1,10 @@
-<p>sidebar-menu works!</p>
+<div class="category-location-container">
+  <div class="category" *ngFor="let category of (categories | async)?.data">
+    <div class="category--icon" *ngIf="category.attributes.list_icon">
+      <img [src]="'http://localhost:1337/' +category.attributes.list_icon.data.attributes.url" alt="" />
+    </div>
+    <div class="category--name">{{category.attributes.name}}</div>
+    <div class="category--controls"></div>
+  </div>
+</div>
+
