@@ -104,6 +104,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.0",
     "qrcode": "^1.4.4",
+    "qs": "^6.11.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "snarkdown": "^1.2.2",
