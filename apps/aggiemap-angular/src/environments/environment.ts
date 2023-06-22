@@ -16,7 +16,8 @@ export * from './polygons';
 
 export const Connections = {
   ...Cns,
-  cms_url: 'http://localhost:1337/api/'
+  cms_api: 'http://localhost:1337/api/',
+  cms_base: 'http://localhost:1337'
 };
 
 export const LayerSources = [
@@ -56,4 +57,3 @@ export const ThreeDLayers: Array<LayerSource> = [
     }
   }
 ];
-
