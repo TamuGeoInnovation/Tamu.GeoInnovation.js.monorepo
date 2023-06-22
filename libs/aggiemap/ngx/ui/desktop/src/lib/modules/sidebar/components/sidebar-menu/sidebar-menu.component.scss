@@ -1,6 +1,24 @@
 @import 'libs/sass/mixins';
 @import 'libs/sass/components/sidebar';
 
+.sidebar-component-name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  #return {
+    &.disabled {
+      color: #bdbdbd;
+      cursor: not-allowed;
+    }
+
+    &.available {
+      color: #0079c1;
+      cursor: pointer;
+    }
+  }
+}
+
 .category-location-container {
   display: flex;
   flex-direction: column;
