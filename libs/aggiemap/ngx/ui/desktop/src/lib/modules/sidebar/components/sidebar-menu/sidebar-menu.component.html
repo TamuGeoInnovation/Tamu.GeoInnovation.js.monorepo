@@ -5,16 +5,23 @@
 
 <div class="sidebar-component-content-container">
   <div class="category-location-container">
-    <div class="category" *ngFor="let category of (categories | async)?.data" (click)="setParent(category)" [class]="{toggle: category.attributes.type === 'toggle'}">
+    <div class="category" *ngFor="let category of (categories | async)?.data" (click)="setParent($event, category)" [class]="{toggle: category.attributes.type === 'toggle'}">
       <div class="category__identity">
         <div class="category__icon">
           <img *ngIf="category.attributes.list_icon as li" [src]="assetsUrl + li.data?.attributes.url" alt="" />
         </div>
         <div class="category__name">{{category.attributes.name}}</div>
       </div>
+
       <div class="category__controls">
         <div class="category__controls__drilldown" *ngIf="category.attributes.type !== 'toggle'">
           <i class="material-icons">chevron_right</i>
+        </div>
+
+        <div class="category__controls__toggle">
+          <!-- To avoid the checkbox from being clickable, we use a label and hide the checkbox instead of using a placeholder element of the exact size
+          or using grid -->
+          <tamu-gisc-checkbox [label]="s" [class]="{placeholder: !category.attributes.checkbox}"></tamu-gisc-checkbox>
         </div>
       </div>
     </div>
