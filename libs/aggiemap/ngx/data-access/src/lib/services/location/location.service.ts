@@ -72,15 +72,13 @@ interface ILocationEntry {
   publishedAt: Date;
 }
 
-export interface LocationShape {
-  type: 'polygon' | 'polyline';
-
+interface LocationShape {
+  type: string;
   color: string;
   /**
    *Value from 0 to 1
    */
   opacity: number;
-
   weight: number;
   colorNormal: string;
   opacityNormal: number;
@@ -88,10 +86,6 @@ export interface LocationShape {
   colorHover: string;
   opacityHover: number;
   weightHover: number;
-  /**
-   * Array of lat/lng pairs
-   */
-  path: Array<Array<[number, number]>>;
   fillColor: string;
   fillOpacity: number;
   fillColorNormal: string;
@@ -100,6 +94,19 @@ export interface LocationShape {
   fillOpacityHover: number;
   icon: boolean;
   position: Array<[number, number]>;
+}
+
+export interface LocationPolyline extends LocationShape {
+  type: 'polyline';
+  path: Array<Array<[number, number]>>;
+}
+
+export interface LocationPolygon extends LocationShape {
+  type: 'polygon';
+  /**
+   * Array of lat/lng pairs
+   */
+  paths: Array<Array<[number, number]>>;
 }
 
 export type LocationEntry = CmsDataEntity<ILocationEntry>;

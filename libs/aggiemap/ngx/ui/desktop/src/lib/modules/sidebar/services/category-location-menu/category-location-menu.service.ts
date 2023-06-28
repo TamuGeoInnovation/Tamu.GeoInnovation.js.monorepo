@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, debounceTime, forkJoin, from, map, mergeMap, scan, take } from 'rxjs';
+import { Observable, debounceTime, filter, forkJoin, from, map, mergeMap, of, scan, shareReplay, take, toArray } from 'rxjs';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { CategoryEntry, LocationEntry, LocationShape } from '@tamu-gisc/aggiemap/ngx/data-access';
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { CategoryEntry, LocationEntry, LocationPolygon, LocationPolyline } from '@tamu-gisc/aggiemap/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
@@ -14,8 +14,10 @@ import esri = __esri;
 export class CategoryLocationMenuService {
   private _resource: string;
   private _layers: Observable<Array<string>>;
+  private _color: Observable<esri.ColorConstructor>;
 
   constructor(
+    private readonly mp: EsriModuleProviderService,
     private readonly ms: EsriMapService,
     private readonly env: EnvironmentService,
     private readonly ll: LayerListService
@@ -29,9 +31,10 @@ export class CategoryLocationMenuService {
       debounceTime(100)
     );
 
-    this._layers.subscribe((res) => {
-      console.log(res);
-    });
+    this._color = from(this.mp.require(['Color'])).pipe(
+      map(([Color]) => Color),
+      shareReplay()
+    );
   }
 
   /**
@@ -46,35 +49,40 @@ export class CategoryLocationMenuService {
       title: category.attributes.name
     }) as Promise<esri.GraphicsLayer>;
 
-    const graphics = this.generateGraphics(location, category);
+    const graphics = this._generateGraphics(location, category);
 
     forkJoin([
       this.ms.store.pipe(
         take(1),
         map((store) => store.map)
       ),
-      from(layer)
-    ]).subscribe(([map, newOrExistingLayer]) => {
+      from(layer),
+      graphics
+    ]).subscribe(([map, newOrExistingLayer, generatedGraphics]) => {
       // New layer, add to map
       if (newOrExistingLayer.loaded) {
-        // Check if location graphics are already on the map. If they are, they should be removed.
+        // Check if location graphics are already on the map.
+        // This will determine whether to add or remove the graphics.
         const existingGraphics = newOrExistingLayer.graphics
           .filter((g) => {
             return (
-              graphics.findIndex((graphic) => {
-                return g.attributes.id === graphic.attributes.id;
+              generatedGraphics.findIndex((genGraphic) => {
+                return g.attributes.id === genGraphic.attributes.id;
               }) > -1
             );
           })
           .toArray();
 
+        // If there are existing graphics, remove them.
         if (existingGraphics.length > 0) {
           newOrExistingLayer.removeMany(existingGraphics);
         } else {
-          newOrExistingLayer.addMany(graphics);
+          //
+          newOrExistingLayer.addMany(generatedGraphics);
         }
       } else {
-        newOrExistingLayer.addMany(graphics);
+        // If no layer exists on the map yet, add graphics to the layer and then add layer to map.
+        newOrExistingLayer.addMany(generatedGraphics);
 
         map.add(layer);
       }
@@ -90,27 +98,42 @@ export class CategoryLocationMenuService {
    *
    * Some have a combination.
    */
-  private generateGraphics(location: LocationEntry, category: CategoryEntry) {
-    const marker = this.generateLocationMarker(location, category);
-    const additionalGraphics = [];
+  private _generateGraphics(location: LocationEntry, category: CategoryEntry) {
+    const marker = this._generateLocationMarker(location, category);
+    const additionalGraphics: Array<Observable<esri.Graphic>> = [];
 
     if (location.attributes.shape) {
       if (location.attributes.shape.type === 'polyline') {
-        additionalGraphics.push(this.generatePolylineGeometry(location.attributes.shape, location.attributes.mrkId));
+        additionalGraphics.push(
+          this._generatePolylineGeometry(location.attributes.shape as LocationPolyline, location.attributes.mrkId)
+        );
+      } else if (location.attributes.shape.type === 'polygon') {
+        additionalGraphics.push(
+          this._generatePolygonGeometry(location.attributes.shape as LocationPolygon, location.attributes.mrkId)
+        );
       }
     }
 
-    // Marker can be undefined if location has shape data but the icon prop is set to false.
-    return [marker, ...additionalGraphics].filter((g) => g !== undefined);
+    return forkJoin([...additionalGraphics, marker]).pipe(
+      mergeMap((layers) => layers),
+      // Marker can be undefined if location has shape data but the icon prop is set to false.
+      filter((graphic) => graphic !== undefined),
+      toArray()
+    ) as Observable<Array<esri.Graphic>>;
   }
 
-  private generateLocationMarker(location: LocationEntry, category: CategoryEntry) {
+  /**
+   * Generates location marker (picture marker graphic).
+   *
+   * Can optionally return undefined if the location has shape data but the icon prop is set to false.
+   */
+  private _generateLocationMarker(location: LocationEntry, category: CategoryEntry) {
     const graphicId = `loc-marker-${location.attributes.mrkId}`;
     let latitude, longitude;
 
     // If the icon prop is set to false, the marker should not be added to the map
     if (location.attributes.shape.icon === false) {
-      return;
+      return of(undefined);
     }
 
     // If there is a shape, the marker position should be inherited form the position property
@@ -138,29 +161,72 @@ export class CategoryLocationMenuService {
       }
     } as unknown as esri.Graphic;
 
-    return graphic;
+    return of(graphic);
   }
 
-  private generatePolylineGeometry(shape: LocationShape, locationId: number) {
-    // Reverse the order of the paths because the API returns them in the wrong order.
-    const flippedPaths = shape.path.map((path) => {
+  private _generatePolylineGeometry(shape: LocationPolyline, locationId: number) {
+    return this._color.pipe(
+      map((Color) => {
+        const c = Color.fromHex(shape.color);
+        c.a = shape.opacity;
+
+        return {
+          geometry: {
+            type: 'polyline',
+            paths: this._invertCoordinates(shape.path)
+          },
+          symbol: {
+            type: 'simple-line',
+            color: c,
+            width: shape.weight
+          },
+          attributes: {
+            id: `loc-shape-${locationId}`
+          }
+        } as unknown as esri.Graphic;
+      })
+    );
+  }
+
+  private _generatePolygonGeometry(shape: LocationPolygon, locationId: number) {
+    return this._color.pipe(
+      map((Color) => {
+        const fillColor = Color.fromHex(shape.color);
+        const outlineColor = fillColor.clone();
+        fillColor.a = shape.fillOpacity;
+        outlineColor.a = shape.opacity;
+
+        return {
+          geometry: {
+            type: 'polygon',
+            rings: this._invertCoordinates(shape.paths)
+          },
+          symbol: {
+            type: 'simple-fill',
+            color: fillColor,
+            width: shape.weight,
+            outline: {
+              color: outlineColor,
+              width: shape.weight
+            }
+          },
+          attributes: {
+            id: `loc-shape-${locationId}`
+          }
+        } as unknown as esri.Graphic;
+      })
+    );
+  }
+
+  /**
+   * Inverts the coordinate order of a path.
+   *
+   * This is necessary because the CMS stores coordinates in [lat, lon] order, but the ESRI API expects [lon, lat].
+   */
+  private _invertCoordinates(paths: Array<Array<[number, number]>>) {
+    return paths.map((path) => {
       return [path[1], path[0]];
     });
-
-    return {
-      geometry: {
-        type: 'polyline',
-        paths: flippedPaths
-      },
-      symbol: {
-        type: 'simple-line',
-        color: shape.color,
-        width: shape.weight
-      },
-      attributes: {
-        id: `loc-shape-${locationId}`
-      }
-    } as unknown as esri.Graphic;
   }
 }
 
