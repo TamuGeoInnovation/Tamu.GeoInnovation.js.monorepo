@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, map, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
 
 import {
@@ -9,7 +10,8 @@ import {
   LocationService
 } from '@tamu-gisc/aggiemap/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { ActivatedRoute, Router } from '@angular/router';
+
+import { CategoryLocationMenuService } from '../../services/category-location-menu/category-location-menu.service';
 
 @Component({
   selector: 'tamu-gisc-sidebar-menu',
@@ -30,7 +32,8 @@ export class SidebarMenuComponent implements OnInit {
     private readonly ls: LocationService,
     private env: EnvironmentService,
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly ss: CategoryLocationMenuService
   ) {}
 
   public ngOnInit(): void {
@@ -120,5 +123,24 @@ export class SidebarMenuComponent implements OnInit {
       queryParams: { id },
       queryParamsHandling: 'merge'
     });
+  }
+
+  public toggleLocation(location: LocationEntry) {
+    of(true)
+      .pipe(
+        // this.parent SHOULD be the correct category when the toggle is clicked.
+        // this.parent will not be correct when we do entire category toggles with sub-categories
+        withLatestFrom(this.parent),
+        switchMap(([, parent]) => {
+          if (parent.attributes.catId === location.attributes.catId) {
+            return of(parent);
+          } else {
+            this.cs.getCategory(location.attributes.catId).pipe((res) => res);
+          }
+        })
+      )
+      .subscribe((res) => {
+        this.ss.mapLocation(location, res);
+      });
   }
 }
