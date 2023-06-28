@@ -92,26 +92,40 @@ export class CategoryLocationMenuService {
    */
   private generateGraphics(location: LocationEntry, category: CategoryEntry) {
     const marker = this.generateLocationMarker(location, category);
+    const additionalGraphics = [];
 
     if (location.attributes.shape) {
       if (location.attributes.shape.type === 'polyline') {
-        const polyline = this.generatePolylineGeometry(location.attributes.shape, location.attributes.mrkId);
-
-        return [marker, polyline];
+        additionalGraphics.push(this.generatePolylineGeometry(location.attributes.shape, location.attributes.mrkId));
       }
-    } else {
-      return [marker];
     }
+
+    // Marker can be undefined if location has shape data but the icon prop is set to false.
+    return [marker, ...additionalGraphics].filter((g) => g !== undefined);
   }
 
   private generateLocationMarker(location: LocationEntry, category: CategoryEntry) {
     const graphicId = `loc-marker-${location.attributes.mrkId}`;
+    let latitude, longitude;
+
+    // If the icon prop is set to false, the marker should not be added to the map
+    if (location.attributes.shape.icon === false) {
+      return;
+    }
+
+    // If there is a shape, the marker position should be inherited form the position property
+    if (location.attributes.shape) {
+      [latitude, longitude] = location.attributes.shape.position;
+    } else {
+      longitude = location.attributes.lng;
+      latitude = location.attributes.lat;
+    }
 
     const graphic = {
       geometry: {
         type: 'point',
-        longitude: location.attributes.lng,
-        latitude: location.attributes.lat
+        longitude,
+        latitude
       },
       symbol: {
         type: 'picture-marker',
