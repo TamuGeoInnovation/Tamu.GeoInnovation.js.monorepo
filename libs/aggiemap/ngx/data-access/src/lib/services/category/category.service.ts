@@ -5,7 +5,7 @@ import qs from 'qs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { CmsDataEntity, CmsFile, CmsResponse } from '../../types/types';
+import { CmsDataEntity, CmsFile, CmsResponse, CmsResponseSingle } from '../../types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,7 @@ export class CategoryService {
           $eq: false
         }
       },
-      populate: ['list_icon']
+      populate: ['list_icon', 'icon']
     });
 
     return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);
@@ -48,14 +48,14 @@ export class CategoryService {
           $eq: id
         }
       },
-      populate: ['list_icon']
+      populate: ['list_icon', 'icon']
     });
 
     return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);
   }
 }
 
-export interface CategoryEntry extends CmsDataEntity<CategoryEntry> {
+interface ICategoryEntry {
   author: string;
   catId: number;
   catIid: number;
@@ -75,7 +75,8 @@ export interface CategoryEntry extends CmsDataEntity<CategoryEntry> {
   labels: string;
   lat: number;
   level: number;
-  list_icon?: CategoryListIcon;
+  list_icon?: CategoryIcon;
+  icon?: CategoryIcon;
   lng: number;
   location_display: string;
   locked: boolean;
@@ -103,4 +104,5 @@ export interface CategoryEntry extends CmsDataEntity<CategoryEntry> {
   zoom: boolean;
 }
 
-export type CategoryListIcon = CmsResponse<CmsFile>;
+export type CategoryEntry = CmsDataEntity<ICategoryEntry>;
+export type CategoryIcon = CmsFile;

@@ -3,6 +3,11 @@ export interface CmsResponse<E> {
   meta: CmsResponseMetadata;
 }
 
+export interface CmsResponseSingle<E> {
+  data: E;
+  meta: CmsResponseMetadata;
+}
+
 export interface CmsResponseMetadata {
   pagination: {
     page: number;
@@ -17,7 +22,7 @@ export interface CmsDataEntity<E> {
   attributes: E;
 }
 
-export interface CmsFile {
+interface ICmsFile {
   name: string;
   alternativeText: string;
   caption: string;
@@ -35,3 +40,5 @@ export interface CmsFile {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type CmsFile = CmsResponseSingle<CmsDataEntity<ICmsFile>>;

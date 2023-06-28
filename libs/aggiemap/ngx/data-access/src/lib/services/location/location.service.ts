@@ -5,7 +5,7 @@ import qs from 'qs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { CmsResponse } from '../../types/types';
+import { CmsDataEntity, CmsResponse } from '../../types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class LocationService {
   }
 }
 
-export interface LocationEntry {
+interface ILocationEntry {
   mrkId: number;
   author: string;
   weight: number;
@@ -101,4 +101,6 @@ export interface LocationShape {
   icon: boolean;
   position: Array<[number, number]>;
 }
+
+export type LocationEntry = CmsDataEntity<ILocationEntry>;
 
