@@ -73,7 +73,7 @@ interface ILocationEntry {
 }
 
 export interface LocationShape {
-  type: 'polygon';
+  type: 'polygon' | 'polyline';
 
   color: string;
   /**
@@ -91,7 +91,7 @@ export interface LocationShape {
   /**
    * Array of lat/lng pairs
    */
-  paths: Array<Array<[number, number]>>;
+  path: Array<Array<[number, number]>>;
   fillColor: string;
   fillOpacity: number;
   fillColorNormal: string;

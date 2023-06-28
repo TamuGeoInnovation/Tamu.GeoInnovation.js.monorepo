@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, debounceTime, forkJoin, from, map, mergeMap, scan, take } from 'rxjs';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { CategoryEntry, LocationEntry } from '@tamu-gisc/aggiemap/ngx/data-access';
+import { CategoryEntry, LocationEntry, LocationShape } from '@tamu-gisc/aggiemap/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
@@ -46,7 +46,66 @@ export class CategoryLocationMenuService {
       title: category.attributes.name
     }) as Promise<esri.GraphicsLayer>;
 
-    const graphicId = `loc-${location.attributes.mrkId}`;
+    const graphics = this.generateGraphics(location, category);
+
+    forkJoin([
+      this.ms.store.pipe(
+        take(1),
+        map((store) => store.map)
+      ),
+      from(layer)
+    ]).subscribe(([map, newOrExistingLayer]) => {
+      // New layer, add to map
+      if (newOrExistingLayer.loaded) {
+        // Check if location graphics are already on the map. If they are, they should be removed.
+        const existingGraphics = newOrExistingLayer.graphics
+          .filter((g) => {
+            return (
+              graphics.findIndex((graphic) => {
+                return g.attributes.id === graphic.attributes.id;
+              }) > -1
+            );
+          })
+          .toArray();
+
+        if (existingGraphics.length > 0) {
+          newOrExistingLayer.removeMany(existingGraphics);
+        } else {
+          newOrExistingLayer.addMany(graphics);
+        }
+      } else {
+        newOrExistingLayer.addMany(graphics);
+
+        map.add(layer);
+      }
+    });
+  }
+
+  /**
+   * Generates a graphic based on the location.
+   *
+   * Some locations only have lat and lon point data.
+   *
+   * Others have polygon data.
+   *
+   * Some have a combination.
+   */
+  private generateGraphics(location: LocationEntry, category: CategoryEntry) {
+    const marker = this.generateLocationMarker(location, category);
+
+    if (location.attributes.shape) {
+      if (location.attributes.shape.type === 'polyline') {
+        const polyline = this.generatePolylineGeometry(location.attributes.shape, location.attributes.mrkId);
+
+        return [marker, polyline];
+      }
+    } else {
+      return [marker];
+    }
+  }
+
+  private generateLocationMarker(location: LocationEntry, category: CategoryEntry) {
+    const graphicId = `loc-marker-${location.attributes.mrkId}`;
 
     const graphic = {
       geometry: {
@@ -65,29 +124,29 @@ export class CategoryLocationMenuService {
       }
     } as unknown as esri.Graphic;
 
-    forkJoin([
-      this.ms.store.pipe(
-        take(1),
-        map((store) => store.map)
-      ),
-      from(layer)
-    ]).subscribe(([map, newOrExistingLayer]) => {
-      // New layer, add to map
-      if (newOrExistingLayer.loaded) {
-        // Check if location is already on the map. If it is, remove it.
-        const existingGraphic = newOrExistingLayer.graphics.find((g) => g.attributes.id === graphicId);
+    return graphic;
+  }
 
-        if (existingGraphic) {
-          newOrExistingLayer.remove(existingGraphic);
-        } else {
-          newOrExistingLayer.add(graphic);
-        }
-      } else {
-        newOrExistingLayer.add(graphic);
-
-        map.add(layer);
-      }
+  private generatePolylineGeometry(shape: LocationShape, locationId: number) {
+    // Reverse the order of the paths because the API returns them in the wrong order.
+    const flippedPaths = shape.path.map((path) => {
+      return [path[1], path[0]];
     });
+
+    return {
+      geometry: {
+        type: 'polyline',
+        paths: flippedPaths
+      },
+      symbol: {
+        type: 'simple-line',
+        color: shape.color,
+        width: shape.weight
+      },
+      attributes: {
+        id: `loc-shape-${locationId}`
+      }
+    } as unknown as esri.Graphic;
   }
 }
 
