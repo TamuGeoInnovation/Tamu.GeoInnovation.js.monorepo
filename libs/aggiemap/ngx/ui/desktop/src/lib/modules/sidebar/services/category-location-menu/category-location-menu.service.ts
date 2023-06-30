@@ -1,8 +1,30 @@
 import { Injectable } from '@angular/core';
-import { Observable, debounceTime, filter, forkJoin, from, map, mergeMap, of, scan, shareReplay, take, toArray } from 'rxjs';
+import {
+  Observable,
+  debounceTime,
+  filter,
+  forkJoin,
+  from,
+  map,
+  mergeMap,
+  of,
+  reduce,
+  scan,
+  shareReplay,
+  switchMap,
+  take,
+  toArray
+} from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { CategoryEntry, LocationEntry, LocationPolygon, LocationPolyline } from '@tamu-gisc/aggiemap/ngx/data-access';
+import {
+  CategoryEntry,
+  CategoryService,
+  LocationEntry,
+  LocationPolygon,
+  LocationPolyline,
+  LocationService
+} from '@tamu-gisc/aggiemap/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
@@ -20,10 +42,14 @@ export class CategoryLocationMenuService {
     private readonly mp: EsriModuleProviderService,
     private readonly ms: EsriMapService,
     private readonly env: EnvironmentService,
-    private readonly ll: LayerListService
+    private readonly ll: LayerListService,
+    private readonly cs: CategoryService,
+    private readonly ls: LocationService
   ) {
     this._resource = this.env.value('Connections').cms_base;
 
+    // Leverage layer list service to rely on the map instance to determine if a layer is already on the map.
+    // This will save us from having to keep track of the layers ourselves.
     this._layers = this.ll.layers().pipe(
       mergeMap((items) => items),
       map((layerItem) => layerItem.layer.id),
@@ -37,56 +63,79 @@ export class CategoryLocationMenuService {
     );
   }
 
-  /**
-   * Accepts a location entry and adds it to the map.
-   *
-   * Relies on location parent category because it contains the symbology for the location.
-   */
-  public mapLocation(location: LocationEntry, category: CategoryEntry) {
-    const layer = this.ms.findLayerOrCreateFromSource({
-      type: 'graphics',
-      id: `cat-${category.attributes.catId}`,
-      title: category.attributes.name
-    }) as Promise<esri.GraphicsLayer>;
+  public toggleCategory(category: CategoryEntry) {
+    const layer = this._getCategoryLayer(category);
 
-    const graphics = this._generateGraphics(location, category);
+    // Get all immediate location children of the category and generate graphics for them.
+    const graphics = this.ls.getLocations(category.attributes.catId).pipe(
+      mergeMap((locations) => locations.data),
+      switchMap((location) => this._generateGraphics(location, category)),
+      reduce((acc, curr) => [...acc, ...curr], [])
+    );
 
     forkJoin([
       this.ms.store.pipe(
         take(1),
         map((store) => store.map)
       ),
-      from(layer),
+      layer,
       graphics
-    ]).subscribe(([map, newOrExistingLayer, generatedGraphics]) => {
-      // New layer, add to map
-      if (newOrExistingLayer.loaded) {
-        // Check if location graphics are already on the map.
-        // This will determine whether to add or remove the graphics.
-        const existingGraphics = newOrExistingLayer.graphics
-          .filter((g) => {
-            return (
-              generatedGraphics.findIndex((genGraphic) => {
-                return g.attributes.id === genGraphic.attributes.id;
-              }) > -1
-            );
-          })
-          .toArray();
-
-        // If there are existing graphics, remove them.
-        if (existingGraphics.length > 0) {
-          newOrExistingLayer.removeMany(existingGraphics);
-        } else {
-          //
-          newOrExistingLayer.addMany(generatedGraphics);
-        }
-      } else {
-        // If no layer exists on the map yet, add graphics to the layer and then add layer to map.
-        newOrExistingLayer.addMany(generatedGraphics);
-
-        map.add(layer);
-      }
+    ]).subscribe(([map, newOrExistingLayer, catLocationGraphics]) => {
+      this._mapLocation(map, newOrExistingLayer, catLocationGraphics);
     });
+  }
+
+  /**
+   * Accepts a location entry and adds it to the map.
+   *
+   * Relies on location parent category because it contains the symbology for the location.
+   */
+  public toggleLocation(location: LocationEntry, category: CategoryEntry) {
+    const layer = this._getCategoryLayer(category);
+    const locationGraphics = this._generateGraphics(location, category);
+
+    forkJoin([
+      this.ms.store.pipe(
+        take(1),
+        map((store) => store.map)
+      ),
+      layer,
+      locationGraphics
+    ]).subscribe(([map, newOrExistingLayer, locGraphics]) => {
+      this._mapLocation(map, newOrExistingLayer, locGraphics);
+    });
+  }
+
+  private _mapLocation(map: esri.Map, layer: esri.GraphicsLayer, graphics: Array<esri.Graphic>) {
+    // Check if location graphics are already on the map.
+    // This will determine whether to add or remove the graphics.
+    const existingGraphics = layer.graphics
+      .filter((g) => {
+        return (
+          graphics.findIndex((genGraphic) => {
+            return g.attributes.id === genGraphic.attributes.id;
+          }) > -1
+        );
+      })
+      .toArray();
+
+    // If there are existing graphics, remove them.
+    if (existingGraphics.length > 0) {
+      layer.removeMany(existingGraphics);
+    } else {
+      //
+      layer.addMany(graphics);
+    }
+  }
+
+  private _getCategoryLayer(category: CategoryEntry) {
+    return from(
+      this.ms.findLayerOrCreateFromSource({
+        type: 'graphics',
+        id: `cat-${category.attributes.catId}`,
+        title: category.attributes.name
+      }) as Promise<esri.GraphicsLayer>
+    );
   }
 
   /**
@@ -153,8 +202,8 @@ export class CategoryLocationMenuService {
       symbol: {
         type: 'picture-marker',
         url: `${this._resource}/${category.attributes.icon.data.attributes.url}`,
-        height: category.attributes.icon.data.attributes.height / 2,
-        width: category.attributes.icon.data.attributes.width / 2
+        height: category.attributes.icon.data.attributes.height / 2.75,
+        width: category.attributes.icon.data.attributes.width / 2.75
       },
       attributes: {
         id: graphicId
