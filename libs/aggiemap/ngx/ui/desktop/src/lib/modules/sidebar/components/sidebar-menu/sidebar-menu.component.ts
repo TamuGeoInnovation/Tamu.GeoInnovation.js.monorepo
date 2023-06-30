@@ -134,13 +134,15 @@ export class SidebarMenuComponent implements OnInit {
         switchMap(([, parent]) => {
           if (parent.attributes.catId === location.attributes.catId) {
             return of(parent);
-          } else {
-            this.cs.getCategory(location.attributes.catId).pipe((res) => res);
           }
         })
       )
       .subscribe((res) => {
-        this.ss.mapLocation(location, res);
+        this.ss.toggleLocation(location, res);
       });
+  }
+
+  public toggleCategory(category: CategoryEntry) {
+    this.ss.toggleCategory(category);
   }
 }

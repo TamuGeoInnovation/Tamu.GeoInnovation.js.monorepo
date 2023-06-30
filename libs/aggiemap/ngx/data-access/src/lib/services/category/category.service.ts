@@ -5,7 +5,7 @@ import qs from 'qs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { CmsDataEntity, CmsFile, CmsResponse, CmsResponseSingle } from '../../types/types';
+import { CmsDataEntity, CmsFile, CmsResponse } from '../../types/types';
 
 @Injectable({
   providedIn: 'root'
