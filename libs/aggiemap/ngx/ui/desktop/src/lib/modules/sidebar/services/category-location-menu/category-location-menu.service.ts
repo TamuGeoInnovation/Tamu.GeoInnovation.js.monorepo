@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
   Observable,
+  catchError,
   debounceTime,
   filter,
   forkJoin,
   from,
   map,
+  merge,
   mergeMap,
   of,
   reduce,
@@ -64,24 +66,23 @@ export class CategoryLocationMenuService {
   }
 
   public toggleCategory(category: CategoryEntry) {
-    const layer = this._getCategoryLayer(category);
+    // const layer = this._getCategoryLayer(category);
 
-    // Get all immediate location children of the category and generate graphics for them.
-    const graphics = this.ls.getLocations(category.attributes.catId).pipe(
-      mergeMap((locations) => locations.data),
-      switchMap((location) => this._generateGraphics(location, category)),
-      reduce((acc, curr) => [...acc, ...curr], [])
-    );
+    // // Get all immediate location children of the category and generate graphics for them.
+    // const graphics = this._getCategoryChildLocationGraphics(category);
+
+    const resCat = this._resolveCategoryLayer(category);
 
     forkJoin([
       this.ms.store.pipe(
         take(1),
         map((store) => store.map)
       ),
-      layer,
-      graphics
-    ]).subscribe(([map, newOrExistingLayer, catLocationGraphics]) => {
-      this._mapLocation(map, newOrExistingLayer, catLocationGraphics);
+      resCat
+    ]).subscribe(([map, categories]) => {
+      categories.forEach(({ graphics, layer }) => {
+        this._mapLocation(map, layer, graphics);
+      });
     });
   }
 
@@ -104,6 +105,48 @@ export class CategoryLocationMenuService {
     ]).subscribe(([map, newOrExistingLayer, locGraphics]) => {
       this._mapLocation(map, newOrExistingLayer, locGraphics);
     });
+  }
+
+  /**
+   * Accepts a category entry and returns an array of observables that resolve to the layers and graphics.
+   *
+   * Each array item is a category layer and its associated graphics.
+   *
+   * If the input category has any immediate children, the first array will be the category layer and its location graphics.
+   */
+  private _resolveCategoryLayer(
+    category: CategoryEntry
+  ): Observable<Array<{ layer: esri.GraphicsLayer; graphics: Array<esri.Graphic> }>> {
+    const subCategories = this.cs.getCategories(category.attributes.catId).pipe(mergeMap((c) => c.data));
+
+    return merge(of(category), subCategories).pipe(
+      mergeMap((cat) => {
+        // If the category is the input category, return location graphics, no need to process subcategories since we are already doing that
+        if (cat.id === category.id) {
+          return forkJoin([this._getCategoryChildLocationGraphics(category), this._getCategoryLayer(category)]).pipe(
+            map(([graphics, layer]) => ({ graphics, layer }))
+          );
+        } else {
+          return this._resolveCategoryLayer(cat).pipe(mergeMap((subCat) => subCat));
+        }
+      }),
+      // If anything fails in generating category graphics, layers, or subcategories, filter it out.
+      // This will allow the rest of the categories to be processed.
+      catchError((err) => {
+        console.error(`Error resolving category layer: ${category.attributes.name}`, err);
+        return of(undefined);
+      }),
+      filter((cat) => cat !== undefined),
+      toArray()
+    );
+  }
+
+  private _getCategoryChildLocationGraphics(category: CategoryEntry): Observable<Array<esri.Graphic>> {
+    return this.ls.getLocations(category.attributes.catId).pipe(
+      mergeMap((locations) => locations.data),
+      switchMap((location) => this._generateGraphics(location, category)),
+      reduce((acc, curr) => [...acc, ...curr], [])
+    );
   }
 
   private _mapLocation(map: esri.Map, layer: esri.GraphicsLayer, graphics: Array<esri.Graphic>) {
