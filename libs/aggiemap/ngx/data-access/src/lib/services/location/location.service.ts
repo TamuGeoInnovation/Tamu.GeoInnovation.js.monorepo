@@ -72,8 +72,7 @@ interface ILocationEntry {
   publishedAt: Date;
 }
 
-interface LocationShape {
-  type: string;
+interface LocationShape extends LocationShapeBase {
   color: string;
   /**
    *Value from 0 to 1
@@ -96,13 +95,25 @@ interface LocationShape {
   position: Array<[number, number]>;
 }
 
+interface LocationShapeBase {
+  type: LocationGeometryType;
+}
+
+// This is just an alias to keep consistent with the different types of shapes
+export type LocationPoint = LocationShape;
+
+export interface LocationMultiPoint extends LocationShapeBase {
+  type: LocationGeometryType.MULTI_POINT;
+  latlngs: Array<Array<[number, number]>>;
+}
+
 export interface LocationPolyline extends LocationShape {
-  type: 'polyline';
+  type: LocationGeometryType.POLY_LINE;
   path: Array<Array<[number, number]>>;
 }
 
 export interface LocationPolygon extends LocationShape {
-  type: 'polygon';
+  type: LocationGeometryType.POLYGON;
   /**
    * Array of lat/lng pairs
    */
@@ -111,3 +122,8 @@ export interface LocationPolygon extends LocationShape {
 
 export type LocationEntry = CmsDataEntity<ILocationEntry>;
 
+export enum LocationGeometryType {
+  MULTI_POINT = 'polymarker',
+  POLY_LINE = 'polyline',
+  POLYGON = 'polygon'
+}

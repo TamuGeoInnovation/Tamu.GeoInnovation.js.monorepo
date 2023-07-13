@@ -23,9 +23,11 @@ import {
   CategoryEntry,
   CategoryService,
   LocationEntry,
+  LocationMultiPoint,
   LocationPolygon,
   LocationPolyline,
-  LocationService
+  LocationService,
+  LocationGeometryType
 } from '@tamu-gisc/aggiemap/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
@@ -197,7 +199,7 @@ export class CategoryLocationMenuService {
     if (location.attributes.shape) {
       if (location.attributes.shape.type === 'polyline') {
         additionalGraphics.push(
-          this._generatePolylineGeometry(location.attributes.shape as LocationPolyline, location.attributes.mrkId)
+          this._generatePolylineGraphic(location.attributes.shape as LocationPolyline, location.attributes.mrkId)
         );
       } else if (location.attributes.shape.type === 'polygon') {
         additionalGraphics.push(
@@ -221,42 +223,70 @@ export class CategoryLocationMenuService {
    */
   private _generateLocationMarker(location: LocationEntry, category: CategoryEntry) {
     const graphicId = `loc-marker-${location.attributes.mrkId}`;
-    let latitude, longitude;
 
     // If the icon prop is set to false, the marker should not be added to the map
     if (location.attributes.shape.icon === false) {
       return of(undefined);
     }
 
+    const marker = {
+      type: 'picture-marker',
+      url: `${this._resource}/${category.attributes.icon.data.attributes.url}`,
+      height: category.attributes.icon.data.attributes.height / 2.75,
+      width: category.attributes.icon.data.attributes.width / 2.75
+    } as esri.PictureMarkerSymbolProperties;
+
     // If there is a shape, the marker position should be inherited form the position property
-    if (location.attributes.shape) {
+    if (location.attributes.shape && location.attributes.shape.type === LocationGeometryType.MULTI_POINT) {
+      return of(
+        this._generateMultiPointGraphic(location.attributes.shape as unknown as LocationMultiPoint, graphicId, marker)
+      );
+    } else {
+      return of(this._generatePointGraphic(location, graphicId, marker));
+    }
+  }
+
+  /**
+   * Generates a point graphic from a location. The input is a location and differs from a location shape that all the other
+   * geometry factories use because singular point markers can use the location marker position from the location attributes or the location shape position.
+   */
+  private _generatePointGraphic(location: LocationEntry, id: string, symbol: esri.SymbolProperties) {
+    let latitude, longitude;
+
+    if (location.attributes.shape.position) {
       [latitude, longitude] = location.attributes.shape.position;
     } else {
       longitude = location.attributes.lng;
       latitude = location.attributes.lat;
     }
 
-    const graphic = {
+    return {
       geometry: {
         type: 'point',
         longitude,
         latitude
       },
-      symbol: {
-        type: 'picture-marker',
-        url: `${this._resource}/${category.attributes.icon.data.attributes.url}`,
-        height: category.attributes.icon.data.attributes.height / 2.75,
-        width: category.attributes.icon.data.attributes.width / 2.75
-      },
+      symbol,
       attributes: {
-        id: graphicId
+        id
       }
     } as unknown as esri.Graphic;
-
-    return of(graphic);
   }
 
-  private _generatePolylineGeometry(shape: LocationPolyline, locationId: number) {
+  private _generateMultiPointGraphic(shape: LocationMultiPoint, id: string, symbol: esri.SymbolProperties) {
+    return {
+      geometry: {
+        type: 'multipoint',
+        points: this._invertCoordinates(shape.latlngs)
+      },
+      symbol,
+      attributes: {
+        id
+      }
+    } as unknown as esri.Graphic;
+  }
+
+  private _generatePolylineGraphic(shape: LocationPolyline, id: number) {
     return this._color.pipe(
       map((Color) => {
         const c = Color.fromHex(shape.color);
@@ -273,14 +303,14 @@ export class CategoryLocationMenuService {
             width: shape.weight
           },
           attributes: {
-            id: `loc-shape-${locationId}`
+            id: `loc-shape-${id}`
           }
         } as unknown as esri.Graphic;
       })
     );
   }
 
-  private _generatePolygonGeometry(shape: LocationPolygon, locationId: number) {
+  private _generatePolygonGeometry(shape: LocationPolygon, id: number) {
     return this._color.pipe(
       map((Color) => {
         const fillColor = Color.fromHex(shape.color);
@@ -303,7 +333,7 @@ export class CategoryLocationMenuService {
             }
           },
           attributes: {
-            id: `loc-shape-${locationId}`
+            id: `loc-shape-${id}`
           }
         } as unknown as esri.Graphic;
       })
@@ -321,4 +351,3 @@ export class CategoryLocationMenuService {
     });
   }
 }
-
