@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, map, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
+import { Observable, Subject, map, of, shareReplay, switchMap, withLatestFrom, BehaviorSubject, tap, skip } from 'rxjs';
 
 import {
   CategoryEntry,
   CategoryService,
+  CmsDataEntity,
   CmsResponse,
   LocationEntry,
   LocationService
@@ -26,6 +27,9 @@ export class SidebarMenuComponent implements OnInit {
   public categories: Observable<CmsResponse<CategoryEntry>>;
   public locations: Observable<CmsResponse<LocationEntry>>;
   public assetsUrl: string;
+
+  private _categoriesDictionary: BehaviorSubject<Dictionary> = new BehaviorSubject({});
+  private _locationsDictionary: BehaviorSubject<Dictionary> = new BehaviorSubject({});
 
   constructor(
     private readonly cs: CategoryService,
@@ -71,6 +75,9 @@ export class SidebarMenuComponent implements OnInit {
         } else {
           return this.cs.getCategories(id);
         }
+      }),
+      tap((cats) => {
+        this._updateDictionary(this._categoriesDictionary, cats, 'parent', 'catId');
       })
     );
 
@@ -81,6 +88,9 @@ export class SidebarMenuComponent implements OnInit {
         } else {
           return this.ls.getLocations(id);
         }
+      }),
+      tap((locs) => {
+        this._updateDictionary(this._locationsDictionary, locs, 'catId', 'mrkId');
       })
     );
 
@@ -93,6 +103,14 @@ export class SidebarMenuComponent implements OnInit {
         }
       })
     );
+
+    this._categoriesDictionary.pipe(skip(1)).subscribe((dict) => {
+      console.log('Categories', dict);
+    });
+
+    this._locationsDictionary.pipe(skip(1)).subscribe((dict) => {
+      console.log(`Locations`, dict);
+    });
   }
 
   public setParent(event: MouseEvent, parent: CategoryEntry) {
@@ -145,4 +163,44 @@ export class SidebarMenuComponent implements OnInit {
   public toggleCategory(category: CategoryEntry) {
     this.ss.toggleCategory(category);
   }
+
+  private _updateDictionary(
+    dictionary: BehaviorSubject<Dictionary>,
+    entries: CmsResponse<any>,
+    parentIdentifier: string,
+    childIdentifier: string
+  ) {
+    of(true)
+      .pipe(
+        withLatestFrom(dictionary),
+        map(([, dict]: [boolean, Dictionary]) => {
+          if (entries.data.length === 0) {
+            return dict;
+          }
+
+          // All categories should belong to the same parent
+          const parentId = entries.data[0].attributes[parentIdentifier];
+          const children = entries.data.map((cat) => cat.attributes[childIdentifier]);
+
+          if (!dict[parentId]) {
+            dict[parentId] = children;
+          } else {
+            // Concat and dedupe
+            dict[parentId] = dict[parentId].concat(children).filter((item, pos, self) => {
+              return self.indexOf(item) === pos;
+            });
+          }
+
+          return dict;
+        })
+      )
+      .subscribe((res) => {
+        dictionary.next(res);
+      });
+  }
 }
+
+interface Dictionary {
+  [key: number]: Array<number>;
+}
+
