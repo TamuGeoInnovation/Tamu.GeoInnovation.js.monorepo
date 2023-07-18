@@ -39,8 +39,9 @@ import esri = __esri;
 })
 export class CategoryLocationMenuService {
   private _resource: string;
-  private _layers: Observable<Array<string>>;
   private _color: Observable<esri.ColorConstructor>;
+
+  public layers: Observable<Array<string>>;
 
   constructor(
     private readonly mp: EsriModuleProviderService,
@@ -54,7 +55,7 @@ export class CategoryLocationMenuService {
 
     // Leverage layer list service to rely on the map instance to determine if a layer is already on the map.
     // This will save us from having to keep track of the layers ourselves.
-    this._layers = this.ll.layers().pipe(
+    this.layers = this.ll.layers().pipe(
       mergeMap((items) => items),
       map((layerItem) => layerItem.layer.id),
       scan((acc, curr) => [...acc, curr], []),
@@ -68,11 +69,6 @@ export class CategoryLocationMenuService {
   }
 
   public toggleCategory(category: CategoryEntry) {
-    // const layer = this._getCategoryLayer(category);
-
-    // // Get all immediate location children of the category and generate graphics for them.
-    // const graphics = this._getCategoryChildLocationGraphics(category);
-
     const resCat = this._resolveCategoryLayer(category);
 
     forkJoin([
@@ -351,3 +347,4 @@ export class CategoryLocationMenuService {
     });
   }
 }
+
