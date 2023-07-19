@@ -15,7 +15,11 @@ import {
   shareReplay,
   switchMap,
   take,
-  toArray
+  toArray,
+  BehaviorSubject,
+  withLatestFrom,
+  pipe,
+  tap
 } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
@@ -27,7 +31,8 @@ import {
   LocationPolygon,
   LocationPolyline,
   LocationService,
-  LocationGeometryType
+  LocationGeometryType,
+  CmsResponse
 } from '@tamu-gisc/aggiemap/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
@@ -42,6 +47,11 @@ export class CategoryLocationMenuService {
   private _color: Observable<esri.ColorConstructor>;
 
   public layers: Observable<Array<string>>;
+
+  private _categoriesDictionary: BehaviorSubject<Dictionary> = new BehaviorSubject({});
+  private _locationsDictionary: BehaviorSubject<Dictionary> = new BehaviorSubject({});
+  public categoriesDictionary: Observable<Dictionary> = this._categoriesDictionary.asObservable();
+  public locationsDictionary: Observable<Dictionary> = this._locationsDictionary.asObservable();
 
   constructor(
     private readonly mp: EsriModuleProviderService,
@@ -65,6 +75,36 @@ export class CategoryLocationMenuService {
     this._color = from(this.mp.require(['Color'])).pipe(
       map(([Color]) => Color),
       shareReplay()
+    );
+  }
+
+  public getCategories() {
+    return pipe(
+      switchMap((parentId?: number) => {
+        if (parentId === 0) {
+          return this.cs.getCategories();
+        } else {
+          return this.cs.getCategories(parentId);
+        }
+      }),
+      tap((cats) => {
+        this._updateDictionary(this._categoriesDictionary, cats, 'parent', 'catId');
+      })
+    );
+  }
+
+  public getLocations() {
+    return pipe(
+      switchMap((parentId?: number) => {
+        if (parentId === 0) {
+          return this.ls.getLocations();
+        } else {
+          return this.ls.getLocations(parentId);
+        }
+      }),
+      tap((locs) => {
+        this._updateDictionary(this._locationsDictionary, locs, 'catId', 'mrkId');
+      })
     );
   }
 
@@ -346,5 +386,44 @@ export class CategoryLocationMenuService {
       return [path[1], path[0]];
     });
   }
+
+  private _updateDictionary(
+    dictionary: BehaviorSubject<Dictionary>,
+    entries: CmsResponse<any>,
+    parentIdentifier: string,
+    childIdentifier: string
+  ) {
+    of(true)
+      .pipe(
+        withLatestFrom(dictionary),
+        map(([, dict]: [boolean, Dictionary]) => {
+          if (entries.data.length === 0) {
+            return dict;
+          }
+
+          // All categories should belong to the same parent
+          const parentId = entries.data[0].attributes[parentIdentifier];
+          const children = entries.data.map((cat) => cat.attributes[childIdentifier]);
+
+          if (!dict[parentId]) {
+            dict[parentId] = children;
+          } else {
+            // Concat and dedupe
+            dict[parentId] = dict[parentId].concat(children).filter((item, pos, self) => {
+              return self.indexOf(item) === pos;
+            });
+          }
+
+          return dict;
+        })
+      )
+      .subscribe((res) => {
+        dictionary.next(res);
+      });
+  }
+}
+
+interface Dictionary {
+  [key: number]: Array<number>;
 }
 
