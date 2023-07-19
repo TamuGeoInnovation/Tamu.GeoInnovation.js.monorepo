@@ -21,7 +21,7 @@
         <div class="category__controls__toggle">
           <!-- To avoid the checkbox from being clickable, we use a label and hide the checkbox instead of using a placeholder element of the exact size
           or using grid -->
-          <tamu-gisc-checkbox [label]="''" [class]="{placeholder: !category.attributes.checkbox}" (change)="toggleCategory(category)"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox [label]="''" [checked]="category | categoryStatus | async" [class]="{placeholder: !category.attributes.checkbox}" (change)="toggleCategory(category)"></tamu-gisc-checkbox>
         </div>
       </div>
     </div>
@@ -34,3 +34,4 @@
     </div>
   </div>
 </div>
+

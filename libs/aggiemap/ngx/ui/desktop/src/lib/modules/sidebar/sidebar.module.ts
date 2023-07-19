@@ -17,6 +17,7 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
 import { SidebarTripPlannerComponent } from './components/sidebar-trip-planner/sidebar-trip-planner.component';
 import { SidebarBusListComponent } from './components/sidebar-bus-list/sidebar-bus-list.component';
 import { SidebarMenuComponent } from './components/sidebar-menu/sidebar-menu.component';
+import { CategoryStatusPipe } from './pipes/category-status/category-status.pipe';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { SidebarMenuComponent } from './components/sidebar-menu/sidebar-menu.com
     SidebarReferenceComponent,
     SidebarTripPlannerComponent,
     SidebarBusListComponent,
-    SidebarMenuComponent
+    SidebarMenuComponent,
+    CategoryStatusPipe
   ],
   exports: [
     AggiemapSidebarComponent,
