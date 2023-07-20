@@ -20,7 +20,8 @@ import {
   pipe,
   tap,
   fromEventPattern,
-  startWith
+  startWith,
+  concatMap
 } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
@@ -97,31 +98,39 @@ export class CategoryLocationMenuService {
     // To solve this, we need to look at each individual category layer and track the graphic length of each category layer. On each change, self emit the layer. In this way,
     // we get an accurate list of category layers that have active locations.
     this.layers = this._onlyCatLayers.pipe(
-      mergeMap((layers) => layers),
-      mergeMap((layer) => {
-        let handle: esri.Handle;
+      switchMap((layers) => {
+        return from(layers).pipe(
+          mergeMap((layer) => {
+            let handle: esri.Handle;
 
-        const add = (cb) => layer.watch('graphics.length', cb);
+            const add = (cb) => {
+              handle = layer.watch('graphics.length', cb);
+            };
 
-        const remove = () => handle.remove();
+            const remove = () => {
+              handle.remove();
+            };
 
-        return fromEventPattern(add, remove).pipe(map(() => layer));
+            return fromEventPattern(add, remove).pipe(map(() => layer));
+          }),
+          scan((acc, curr) => {
+            const index = acc.findIndex((layer) => layer.id === curr.id);
+
+            if (index > -1) {
+              if (curr.graphics.length === 0) {
+                acc.splice(index, 1);
+              } else {
+                acc[index] = curr;
+              }
+            } else {
+              acc.push(curr);
+            }
+
+            return acc;
+          }, [])
+        );
       }),
-      scan((acc, curr) => {
-        const index = acc.findIndex((layer) => layer.id === curr.id);
 
-        if (index > -1) {
-          if (curr.graphics.length === 0) {
-            acc.splice(index, 1);
-          } else {
-            acc[index] = curr;
-          }
-        } else {
-          acc.push(curr);
-        }
-
-        return acc;
-      }, []),
       shareReplay()
     );
 
@@ -221,7 +230,7 @@ export class CategoryLocationMenuService {
     return merge(of(category), subCategories).pipe(
       mergeMap((cat) => {
         // If the category is the input category, return location graphics, no need to process subcategories since we are already doing that
-        if (cat.id === category.id) {
+        if (cat.attributes.catId === category.attributes.catId) {
           return forkJoin([this._getCategoryChildLocationGraphics(category), this._getCategoryLayer(category)]).pipe(
             map(([graphics, layer]) => ({ graphics, layer }))
           );
@@ -243,7 +252,7 @@ export class CategoryLocationMenuService {
   private _getCategoryChildLocationGraphics(category: CategoryEntry): Observable<Array<esri.Graphic>> {
     return this.ls.getLocations(category.attributes.catId).pipe(
       mergeMap((locations) => locations.data),
-      switchMap((location) => this._generateGraphics(location, category)),
+      concatMap((location) => this._generateGraphics(location, category)),
       reduce((acc, curr) => [...acc, ...curr], [])
     );
   }
