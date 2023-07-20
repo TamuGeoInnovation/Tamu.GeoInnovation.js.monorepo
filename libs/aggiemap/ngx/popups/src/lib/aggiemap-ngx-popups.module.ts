@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { ReferenceModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 import { BasePopupComponent } from './components/base/base.popup.component';
 import { BaseDirectionsComponent } from './components/base-directions/base-directions.component';
+import { BaseMarkdownComponent } from './components/base-markdown/base-markdown.component';
 import { AccessiblePopupComponent } from './components/accessible/accessible.component';
 import { BuildingPopupComponent } from './components/building/building-popup.component';
 import { ConstructionPopupComponent } from './components/construction/construction.component';
@@ -25,7 +27,8 @@ const PopsArr = [
   ParkingKioskPopupComponent,
   ParkingLotPopupComponent,
   RestroomPopupComponent,
-  PoiPopupComponent
+  PoiPopupComponent,
+  BaseMarkdownComponent
 ];
 
 const PopsObj = {
@@ -38,11 +41,12 @@ const PopsObj = {
   ParkingKioskPopupComponent,
   ParkingLotPopupComponent,
   RestroomPopupComponent,
-  PoiPopupComponent
+  PoiPopupComponent,
+  BaseMarkdownComponent
 };
 
 @NgModule({
-  imports: [CommonModule, UIClipboardModule, ReferenceModule],
+  imports: [CommonModule, UIClipboardModule, ReferenceModule, PipesModule],
   declarations: PopsArr
 })
 export class AggiemapNgxPopupsModule {}

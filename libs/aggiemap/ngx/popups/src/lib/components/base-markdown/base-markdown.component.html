@@ -1,0 +1,18 @@
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0" [title]="data?.attributes?.location?.mrkId">{{ data?.attributes?.location?.name }}</div>
+</div>
+
+<div class="popup-section">
+  <ng-container *ngIf="data?.attributes?.location?.description !== ''; else categoryDescription">
+    <div [innerHTML]="data?.attributes?.location?.description | markdownParse"></div>
+  </ng-container>
+
+  <ng-template #categoryDescription>
+    <div [innerHTML]="data?.attributes?.category?.description | markdownParse"></div>
+  </ng-template>
+</div>
+
+<div class="popup-section">
+  <div class="button" tabindex="0" role="button" [attr.building-number]="data?.attributes?.Number" (click)="startDirections(data?.attributes?.Number)">Directions To Here</div>
+</div>
+
