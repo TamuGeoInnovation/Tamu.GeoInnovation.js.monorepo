@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, map, of, shareReplay, switchMap, withLatestFrom, skip } from 'rxjs';
+import { Observable, Subject, map, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
 
 import { CategoryEntry, CategoryService, CmsResponse, LocationEntry } from '@tamu-gisc/aggiemap/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -70,14 +70,6 @@ export class SidebarMenuComponent implements OnInit {
         }
       })
     );
-
-    this.ss.categoriesDictionary.pipe(skip(1)).subscribe((dict) => {
-      console.log('Categories', dict);
-    });
-
-    this.ss.locationsDictionary.pipe(skip(1)).subscribe((dict) => {
-      console.log(`Locations`, dict);
-    });
   }
 
   public setParent(event: MouseEvent, parent: CategoryEntry) {
@@ -131,4 +123,3 @@ export class SidebarMenuComponent implements OnInit {
     this.ss.toggleCategory(category);
   }
 }
-
