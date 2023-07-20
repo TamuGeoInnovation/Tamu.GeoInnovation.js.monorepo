@@ -19,7 +19,8 @@ import {
   withLatestFrom,
   pipe,
   tap,
-  fromEventPattern
+  fromEventPattern,
+  startWith
 } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
@@ -128,6 +129,7 @@ export class CategoryLocationMenuService {
       map((layers) => {
         return layers.map((layer) => layer.id);
       }),
+      startWith([]),
       shareReplay()
     );
 
