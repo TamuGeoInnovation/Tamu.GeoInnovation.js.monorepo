@@ -24,7 +24,11 @@ export class LocationStatusPipe implements PipeTransform {
 
         return (
           activeLayer.graphics.findIndex((g) => {
-            return g.attributes.id === `loc-marker-${location.attributes.mrkId}`;
+            // Graphics can be markers or shapes and differ by id prefix (loc-marker or loc-shape). We don't care about the prefix.
+            // We only care about the id suffix, which is the location id.
+            //
+            // Question: Why not just use the location id as the graphic id without the prefix? This might come back to bite us.
+            return parseInt(g.attributes.id.split('-').pop(), 10) === location.attributes.mrkId;
           }) > -1
         );
       })
