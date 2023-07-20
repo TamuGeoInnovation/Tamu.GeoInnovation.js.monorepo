@@ -104,4 +104,10 @@
   &:hover {
     color: initial;
   }
+
+  &.active {
+    .location__name {
+      font-weight: bold;
+    }
+  }
 }

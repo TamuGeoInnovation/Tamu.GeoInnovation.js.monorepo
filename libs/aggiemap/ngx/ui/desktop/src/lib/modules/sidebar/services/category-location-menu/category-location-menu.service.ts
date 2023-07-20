@@ -67,21 +67,28 @@ export class CategoryLocationMenuService {
     // Leverage layer list service to rely on the map instance to determine if a layer is already on the map.
     // This will save us from having to keep track of the layers ourselves.
     this.layers = this.ll.layers().pipe(
+      // TODO: Debounce is a band-aid to give the api some time to load graphics into a layer.
       debounceTime(100),
       switchMap((items) => {
         return from(items).pipe(
-          //       // Only filter out category layers
-          filter((item) => item.layer.id.startsWith('cat-')),
+          // Only filter out category layers
+          filter((item) => {
+            return item.layer.id.startsWith('cat-');
+          }),
 
           // Filter out layers with no graphics. This is to reflect a layer that has been turned off.
-          filter((item) => (item.layer as esri.GraphicsLayer).graphics.length > 0),
+          filter((item) => {
+            return (item.layer as esri.GraphicsLayer).graphics.length > 0;
+          }),
 
-          // Map to layer id
-          map((layer) => layer.layer as esri.GraphicsLayer),
-          toArray(),
-          shareReplay()
+          // Map to layer
+          map((layer) => {
+            return layer.layer as esri.GraphicsLayer;
+          }),
+          toArray()
         );
-      })
+      }),
+      shareReplay()
     );
 
     this.layerIds = this.layers.pipe(

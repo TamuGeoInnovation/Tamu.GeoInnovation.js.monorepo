@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="location" *ngFor="let location of (locations | async)?.data" (click)="toggleLocation(location)">
+    <div class="location" *ngFor="let location of (locations | async)?.data" [ngClass]="{active: location | locationStatus | async}" (click)="toggleLocation(location)">
       <div class="location__identity">
         <div class="location__name">{{location.attributes.name}}</div>
       </div>
@@ -34,4 +34,3 @@
     </div>
   </div>
 </div>
-
