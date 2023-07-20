@@ -46,7 +46,8 @@ export class CategoryLocationMenuService {
   private _resource: string;
   private _color: Observable<esri.ColorConstructor>;
 
-  public layers: Observable<Array<string>>;
+  public layers: Observable<Array<esri.GraphicsLayer>>;
+  public layerIds: Observable<Array<string>>;
 
   private _categoriesDictionary: BehaviorSubject<Dictionary> = new BehaviorSubject({});
   private _locationsDictionary: BehaviorSubject<Dictionary> = new BehaviorSubject({});
@@ -66,10 +67,28 @@ export class CategoryLocationMenuService {
     // Leverage layer list service to rely on the map instance to determine if a layer is already on the map.
     // This will save us from having to keep track of the layers ourselves.
     this.layers = this.ll.layers().pipe(
-      mergeMap((items) => items),
-      map((layerItem) => layerItem.layer.id),
-      scan((acc, curr) => [...acc, curr], []),
-      debounceTime(100)
+      debounceTime(100),
+      switchMap((items) => {
+        return from(items).pipe(
+          //       // Only filter out category layers
+          filter((item) => item.layer.id.startsWith('cat-')),
+
+          // Filter out layers with no graphics. This is to reflect a layer that has been turned off.
+          filter((item) => (item.layer as esri.GraphicsLayer).graphics.length > 0),
+
+          // Map to layer id
+          map((layer) => layer.layer as esri.GraphicsLayer),
+          toArray(),
+          shareReplay()
+        );
+      })
+    );
+
+    this.layerIds = this.layers.pipe(
+      map((layers) => {
+        return layers.map((layer) => layer.id);
+      }),
+      shareReplay()
     );
 
     this._color = from(this.mp.require(['Color'])).pipe(
@@ -274,7 +293,7 @@ export class CategoryLocationMenuService {
 
     // If there is a shape, the marker position should be inherited form the position property
     if (location.attributes.shape && location.attributes.shape.type === LocationGeometryType.MULTI_POINT) {
-      return   of(
+      return of(
         this._generateMultiPointGraphic(location.attributes.shape as unknown as LocationMultiPoint, graphicId, marker)
       );
     } else {
@@ -426,4 +445,3 @@ export class CategoryLocationMenuService {
 interface Dictionary {
   [key: number]: Array<number>;
 }
-
