@@ -274,7 +274,7 @@ export class CategoryLocationMenuService {
 
     // If there is a shape, the marker position should be inherited form the position property
     if (location.attributes.shape && location.attributes.shape.type === LocationGeometryType.MULTI_POINT) {
-      return of(
+      return   of(
         this._generateMultiPointGraphic(location.attributes.shape as unknown as LocationMultiPoint, graphicId, marker)
       );
     } else {

@@ -30,15 +30,15 @@ export class CategoryStatusPipe implements PipeTransform {
 
   constructor(private readonly ms: CategoryLocationMenuService, private readonly ls: LayerListService) {}
 
-  public transform(category: CategoryEntry, ...args: unknown[]): Observable<boolean> {
+  public transform(category: CategoryEntry): Observable<boolean> {
     return this._activeLayerIds.pipe(
       withLatestFrom(this.ms.categoriesDictionary),
       map(([layerIds, catDict]) => {
-        const layer = this._isCategoryActive(category, layerIds);
+        const isCategoryActive = this._isCategoryActive(category, layerIds);
 
         // If layer is found, the category has actively mapped locations.
         // This will not reflect against child categories.
-        if (layer !== undefined) {
+        if (isCategoryActive) {
           return true;
         }
 
@@ -61,20 +61,28 @@ export class CategoryStatusPipe implements PipeTransform {
     return layerIds.includes(`cat-${category.attributes.catId}`);
   }
   /**
-   * Determines if the category has any active children by checking if their category id's are in the list of active layer ids.
+   * Determines if the category has any active children by checking the following conditions
+   *
+   * 1) The category has children categories
+   * 2) If 1. is true, check if any of the children categories are active
+   * 3) Perform a recursive check against the children categories to see if any of them have active children
+   * 4) The return value is the result of 2. or 3.
    */
   private _hasActiveChildren(category: CategoryEntry, layerIds: string[], catDict: Record<number, number[]>): boolean {
     const children = catDict[category.attributes.catId];
 
-    if (children !== undefined) {
-      const childLayers = layerIds.filter((activeId) => {
+    if (children !== undefined && children.length > 0) {
+      const immediateChildLayers = layerIds.some((activeId) => {
         return children.includes(parseInt(activeId.split('-')[1], 10));
       });
 
-      return childLayers.length > 0;
+      const childAncestorLayers = children.some((child) => {
+        return this._hasActiveChildren({ attributes: { catId: child } } as CategoryEntry, layerIds, catDict);
+      });
+
+      return immediateChildLayers || childAncestorLayers;
     }
 
     return false;
   }
 }
-
