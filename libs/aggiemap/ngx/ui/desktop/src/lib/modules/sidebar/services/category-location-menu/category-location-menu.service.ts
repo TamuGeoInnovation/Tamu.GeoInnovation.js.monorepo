@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {
   Observable,
   catchError,
-  debounceTime,
   filter,
   forkJoin,
   from,
@@ -19,7 +18,8 @@ import {
   BehaviorSubject,
   withLatestFrom,
   pipe,
-  tap
+  tap,
+  fromEventPattern
 } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
@@ -46,6 +46,10 @@ export class CategoryLocationMenuService {
   private _resource: string;
   private _color: Observable<esri.ColorConstructor>;
 
+  /**
+   * Represents a collection of mapped category layers, with and without location graphics.
+   */
+  private _onlyCatLayers: Observable<Array<esri.GraphicsLayer>>;
   public layers: Observable<Array<esri.GraphicsLayer>>;
   public layerIds: Observable<Array<string>>;
 
@@ -64,30 +68,59 @@ export class CategoryLocationMenuService {
   ) {
     this._resource = this.env.value('Connections').cms_base;
 
-    // Leverage layer list service to rely on the map instance to determine if a layer is already on the map.
-    // This will save us from having to keep track of the layers ourselves.
-    this.layers = this.ll.layers().pipe(
-      // TODO: Debounce is a band-aid to give the api some time to load graphics into a layer.
-      debounceTime(100),
+    this._onlyCatLayers = this.ll.layers().pipe(
       switchMap((items) => {
         return from(items).pipe(
           // Only filter out category layers
           filter((item) => {
             return item.layer.id.startsWith('cat-');
           }),
-
-          // Filter out layers with no graphics. This is to reflect a layer that has been turned off.
-          filter((item) => {
-            return (item.layer as esri.GraphicsLayer).graphics.length > 0;
-          }),
-
           // Map to layer
           map((layer) => {
             return layer.layer as esri.GraphicsLayer;
           }),
           toArray()
         );
+      })
+    );
+
+    // We need to reflect active categories and locations on the map.
+    //
+    // If we only look at layers on the map, we cannot determine if a category has active locations, since an active category qualifies as:
+    //
+    // 1) The category layer is on the map
+    // 2) The category has active locations
+    //
+    // Because of condition 2, if the user toggles locations individually, layers will not emit because it is not a layer add/remove operation, but a graphics addition/removal (edit).
+    //
+    // To solve this, we need to look at each individual category layer and track the graphic length of each category layer. On each change, self emit the layer. In this way,
+    // we get an accurate list of category layers that have active locations.
+    this.layers = this._onlyCatLayers.pipe(
+      mergeMap((layers) => layers),
+      mergeMap((layer) => {
+        let handle: esri.Handle;
+
+        const add = (cb) => layer.watch('graphics.length', cb);
+
+        const remove = () => handle.remove();
+
+        return fromEventPattern(add, remove).pipe(map(() => layer));
       }),
+      scan((acc, curr) => {
+        const index = acc.findIndex((layer) => layer.id === curr.id);
+
+        if (index > -1) {
+          if (curr.graphics.length === 0) {
+            acc.splice(index, 1);
+          } else {
+            acc[index] = curr;
+          }
+        } else {
+          acc.push(curr);
+        }
+
+        return acc;
+      }, []),
       shareReplay()
     );
 
