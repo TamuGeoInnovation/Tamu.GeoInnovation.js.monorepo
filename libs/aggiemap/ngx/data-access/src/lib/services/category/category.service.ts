@@ -67,8 +67,7 @@ interface ICategoryEntry {
   dynamic_label: boolean;
   edited: string;
   feed: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  feed_data: any;
+  feed_data: unknown;
   hidden: boolean;
   icon_size: number;
   keywords: string;
@@ -89,8 +88,7 @@ interface ICategoryEntry {
   popup_url: string;
   private: boolean;
   publishedAt: Date;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  schedule: any;
+  schedule: unknown;
   searchable: boolean;
   shared: boolean;
   single_select: boolean;
