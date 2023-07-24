@@ -35,7 +35,9 @@ export class CategoryService {
           $eq: false
         }
       },
-      populate: ['list_icon', 'icon']
+      populate: ['list_icon', 'icon'],
+      // TODO: Fix
+      publicationState: 'preview'
     });
 
     return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);
@@ -48,7 +50,9 @@ export class CategoryService {
           $eq: id
         }
       },
-      populate: ['list_icon', 'icon']
+      populate: ['list_icon', 'icon'],
+      // TODO: Fix
+      publicationState: 'preview'
     });
 
     return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);
@@ -67,8 +71,7 @@ interface ICategoryEntry {
   dynamic_label: boolean;
   edited: string;
   feed: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  feed_data: any;
+  feed_data: unknown;
   hidden: boolean;
   icon_size: number;
   keywords: string;
@@ -89,8 +92,7 @@ interface ICategoryEntry {
   popup_url: string;
   private: boolean;
   publishedAt: Date;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  schedule: any;
+  schedule: unknown;
   searchable: boolean;
   shared: boolean;
   single_select: boolean;

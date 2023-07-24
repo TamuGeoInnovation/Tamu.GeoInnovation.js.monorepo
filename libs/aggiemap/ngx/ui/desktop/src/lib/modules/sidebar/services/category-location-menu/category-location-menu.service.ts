@@ -339,7 +339,7 @@ export class CategoryLocationMenuService {
     const graphicId = `loc-marker-${location.attributes.mrkId}`;
 
     // If the icon prop is set to false, the marker should not be added to the map
-    if (location.attributes.shape.icon === false) {
+    if (location.attributes.shape && location.attributes.shape.icon === false) {
       return of(undefined);
     }
 
@@ -375,7 +375,7 @@ export class CategoryLocationMenuService {
   private _generatePointGraphic(location: LocationEntry, id: string, symbol: esri.SymbolProperties, attributes: any) {
     let latitude, longitude;
 
-    if (location.attributes.shape.position) {
+    if (location.attributes.shape && location.attributes.shape.position) {
       [latitude, longitude] = location.attributes.shape.position;
     } else {
       longitude = location.attributes.lng;

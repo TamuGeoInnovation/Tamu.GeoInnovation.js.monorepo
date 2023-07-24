@@ -48,9 +48,14 @@ const PopsObj = {
 };
 
 @NgModule({
+<<<<<<< HEAD
   imports: [CommonModule, UIClipboardModule, PipesModule, ReferenceModule, LightgalleryModule],
   declarations: PopsArr,
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
+=======
+  imports: [CommonModule, UIClipboardModule, ReferenceModule, PipesModule, LightgalleryModule],
+  declarations: PopsArr
+>>>>>>> 63d727b2d (Display images from CMS)
 })
 export class AggiemapNgxPopupsModule {}
 
