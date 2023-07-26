@@ -35,7 +35,9 @@ export class CategoryService {
           $eq: false
         }
       },
-      populate: ['list_icon', 'icon']
+      populate: ['list_icon', 'icon'],
+      // TODO: Fix
+      publicationState: 'preview'
     });
 
     return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);
@@ -48,7 +50,9 @@ export class CategoryService {
           $eq: id
         }
       },
-      populate: ['list_icon', 'icon']
+      populate: ['list_icon', 'icon'],
+      // TODO: Fix
+      publicationState: 'preview'
     });
 
     return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);

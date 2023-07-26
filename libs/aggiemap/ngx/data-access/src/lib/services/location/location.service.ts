@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, filter, map, mergeMap, toArray } from 'rxjs';
 
 import qs from 'qs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { CmsDataEntity, CmsResponse } from '../../types/types';
+import { CmsDataEntity, CmsResponse, CmsResponseSingle } from '../../types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,9 @@ export class LocationService {
         private: {
           $eq: false
         }
-      }
+      },
+      // TODO: Fix
+      publicationState: 'preview'
     });
 
     return this.http.get<CmsResponse<LocationEntry>>(`${this._resource}?${query}`);
@@ -36,19 +38,40 @@ export class LocationService {
   /**
    * Fetches an individual location by its ID and plucks the location_medias sub-resource.
    */
-  public getMediasForLocation(locationId: number): Observable<Array<LocationMedia>> {
+  public getMediasForLocation(locationId: number, catId: number): Observable<Array<LocationMediaImage>> {
     const query = qs.stringify({
       filters: {
-        mrkId: locationId
+        mrkId: locationId,
+        catId: catId
       },
       fields: ['mrkId'],
-      populate: ['location_medias']
+      populate: {
+        location_medias: {
+          populate: ['image']
+        }
+      },
+      // TODO: Fix
+      publicationState: 'preview'
     });
 
     return this.http.get<CmsResponse<LocationEntry>>(`${this._resource}?${query}`).pipe(
       map((res) => {
         return res.data[0].attributes.location_medias.data;
-      })
+      }),
+      mergeMap((medias) => medias),
+      // Return only media with an image prop
+      filter((media) => media.attributes.image !== undefined && media.attributes.image.data !== null),
+      map((media) => (media.attributes.image as CmsResponseSingle<LocationMediaImage>).data), // as unknown first because we are filtering and guaranteeing that this will be a valid image prop.
+      map((image) => {
+        return {
+          ...image,
+          attributes: {
+            ...image.attributes,
+            url: this.env.value('Connections')['cms_base'] + image.attributes.url
+          }
+        };
+      }),
+      toArray()
     );
   }
 }
@@ -122,6 +145,26 @@ interface ILocationMedia {
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date;
+  image?: CmsResponseSingle<LocationMediaImage>;
+}
+
+interface ILocationMediaImage {
+  alternativeText: string;
+  caption: string;
+  createdAt: Date;
+  ext: string;
+  formats: unknown;
+  hash: string;
+  height: number;
+  mime: string;
+  name: string;
+  previewUrl: string;
+  provider: 'local';
+  provider_metadata: unknown;
+  size: number;
+  updatedAt: Date;
+  url: string;
+  width: number;
 }
 
 interface LocationShapeBase {
@@ -151,6 +194,7 @@ export interface LocationPolygon extends ILocationShape {
 
 export type LocationEntry = CmsDataEntity<ILocationEntry>;
 export type LocationMedia = CmsDataEntity<ILocationMedia>;
+export type LocationMediaImage = CmsDataEntity<ILocationMediaImage>;
 
 export enum LocationGeometryType {
   MULTI_POINT = 'polymarker',
