@@ -109,6 +109,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "snarkdown": "^1.2.2",
+    "swiper": "^10.0.4",
     "tslib": "^2.0.3",
     "typeorm": "^0.2.38",
     "uuid": "^8.1.0",
