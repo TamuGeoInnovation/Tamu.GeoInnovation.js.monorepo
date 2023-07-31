@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LightgalleryModule } from 'lightgallery/angular/13';
@@ -49,7 +49,8 @@ const PopsObj = {
 
 @NgModule({
   imports: [CommonModule, UIClipboardModule, ReferenceModule, PipesModule, LightgalleryModule],
-  declarations: PopsArr
+  declarations: PopsArr,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AggiemapNgxPopupsModule {}
 
