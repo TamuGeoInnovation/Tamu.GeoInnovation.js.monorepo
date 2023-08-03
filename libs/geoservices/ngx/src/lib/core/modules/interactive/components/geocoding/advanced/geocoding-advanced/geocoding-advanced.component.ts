@@ -62,7 +62,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
       uncertaintyHierarchy: [false],
       allowTies: [false],
       tieBreakingStrategy: ['ChooseFirstOne'],
-      refs: this.fbb.group({ ...rfs_controls, openAddressesMinimumConfLevel: [5] })
+      refs: this.fbb.group({ ...rfs_controls, openAddressesMinimumConfLevel: [7] })
     });
   }
 
@@ -88,3 +88,4 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
     };
   }
 }
+
