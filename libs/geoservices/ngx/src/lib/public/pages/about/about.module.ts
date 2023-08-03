@@ -12,6 +12,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/privacy-policy/privacy-policy.module').then((m) => m.PrivacyPolicyModule)
   },
   {
+    path: 'recurring-billing-policy',
+    loadChildren: () =>
+      import('./pages/recurring-billing-policy/recurring-billing-policy.module').then((m) => m.RecurringBillingPolicyModule)
+  },
+  {
     path: 'data-security',
     loadChildren: () =>
       import('./pages/data-security-policy/data-security-policy.module').then((m) => m.DataSecurityPolicyModule)
