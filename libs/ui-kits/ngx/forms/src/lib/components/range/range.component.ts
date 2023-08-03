@@ -32,7 +32,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * Defaults to `default`
    */
   @Input()
-  public formControlName: 'default';
+  public formControlName = 'default';
 
   @Input()
   public label: string;
