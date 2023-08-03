@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
@@ -32,11 +32,11 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
 
   public buildForm() {
     return this.fb.group({
-      streetAddress: [null, [Validators.required]],
-      city: [null, [Validators.required]],
-      state: [null, [Validators.required]],
-      zip: [null, [Validators.required]],
-      censusYears: [null, [Validators.required]]
+      streetAddress: [null, []],
+      city: [null, []],
+      state: [null, []],
+      zip: [null, []],
+      censusYears: [null, []]
     });
   }
 
