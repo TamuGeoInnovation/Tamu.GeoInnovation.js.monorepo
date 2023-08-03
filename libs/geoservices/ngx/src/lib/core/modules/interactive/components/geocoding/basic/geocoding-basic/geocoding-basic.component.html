@@ -31,7 +31,7 @@
             </div>
 
             <div class="form-collection column">
-              <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+              <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true || form.pristine" [type]="'submit'"></tamu-gisc-button>
 
               <div class="leader-2 flex flex-row justify-center">
                 <a (click)="navigateToAdvanced()" class="material-icons-container"><span class="material-icons-outlined centered">settings</span> Advanced Options</a>
