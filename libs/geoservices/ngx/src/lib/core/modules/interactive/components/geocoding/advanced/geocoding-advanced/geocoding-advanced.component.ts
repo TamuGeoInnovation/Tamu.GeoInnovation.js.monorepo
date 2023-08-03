@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
@@ -51,11 +51,11 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
     }, {});
 
     return this.fbb.group({
-      streetAddress: [null, [Validators.required]],
-      city: [null, [Validators.required]],
-      state: [null, [Validators.required]],
-      zip: [null, [Validators.required]],
-      censusYears: [[2020], [Validators.required]],
+      streetAddress: [null, []],
+      city: [null, []],
+      state: [null, []],
+      zip: [null, []],
+      censusYears: [[2020], []],
       attributeRelaxation: [true],
       substringMatching: [true],
       soundexMatching: [true],

@@ -130,7 +130,7 @@
         </div>
 
         <div class="form-collection column">
-          <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+          <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true || form.pristine" [type]="'submit'"></tamu-gisc-button>
         </div>
       </div>
     </div>
@@ -173,11 +173,13 @@
 
           <tamu-gisc-geocode-result-table [geocode]="result"></tamu-gisc-geocode-result-table>
 
-          <h4 class="leader-2">Census Values</h4>
+          <ng-container *ngIf="result.censusRecords">
+            <h4 class="leader-2">Census Values</h4>
 
-          <p>The following represents the census records for the best match geocode.</p>
+            <p>The following represents the census records for the best match geocode.</p>
 
-          <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
+            <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
+          </ng-container>
 
           <h4 class="leader-2">Parsed Address</h4>
 
@@ -191,4 +193,3 @@
     </ng-container>
   </div>
 </ng-container>
-
