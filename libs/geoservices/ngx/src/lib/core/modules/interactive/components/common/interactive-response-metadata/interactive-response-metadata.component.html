@@ -1,7 +1,7 @@
 <div class="flex flex-row justify-between" *ngIf="status !== undefined || guid !== undefined || timeTaken !== undefined">
   <div class="material-icons-container">
     <tamu-gisc-tooltip positioningStrategy="fixed" [position]="'top'" *ngIf="status !== undefined">
-      <tamu-gisc-tooltip-trigger>
+      <tamu-gisc-tooltip-trigger triggerType="hover">
         <ng-container [ngSwitch]="status">
           <div class="material-icons-outlined action" *ngSwitchCase="'Success'">check_circle</div>
           <div class="material-icons action error" *ngSwitchDefault>cancel</div>
@@ -12,7 +12,7 @@
     </tamu-gisc-tooltip>
 
     <tamu-gisc-tooltip positioningStrategy="fixed" [position]="'top'" *ngIf="timeTaken !== undefined">
-      <tamu-gisc-tooltip-trigger>
+      <tamu-gisc-tooltip-trigger triggerType="hover">
         <div class="material-icons action">schedule</div>
       </tamu-gisc-tooltip-trigger>
 
@@ -20,7 +20,7 @@
     </tamu-gisc-tooltip>
 
     <tamu-gisc-tooltip positioningStrategy="fixed" [position]="'top'" *ngIf="guid !== undefined">
-      <tamu-gisc-tooltip-trigger>
+      <tamu-gisc-tooltip-trigger triggerType="hover">
         <div class="material-icons action">fingerprint</div>
       </tamu-gisc-tooltip-trigger>
 
@@ -33,3 +33,4 @@
     <a class="action-link" (click)="fullResponse()"><span class="material-icons-outlined action centered">receipt_long</span>Full Response</a>
   </div>
 </div>
+
