@@ -1,15 +1,2 @@
 @import 'libs/sass/components/sidebar';
 
-.bus-routes-notice {
-  @include flexbox();
-  @include align-items(center);
-  @include flex-direction(column);
-
-  text-align: center;
-
-  span {
-    font-size: 2rem;
-    color: #ef5350;
-  }
-}
-
