@@ -81,36 +81,71 @@ export interface IAddressProcessingDeserializedInputParametersMap {
   verbose: boolean | null;
   outputFormat: string | null;
 }
+/**
+ * The fields that are returned in a parsed address result object.
+ *
+ * This is a cleaner version of using string values to access object properties.
+ */
+export enum ParsedAddressField {
+  AddressLocationType = 'addressLocationType',
+  AddressFormatType = 'addressFormatType',
+  Number = 'number',
+  NumberFractional = 'numberFractional',
+  PreDirectional = 'preDirectional',
+  PreQualifier = 'preQualifier',
+  PreType = 'preType',
+  PreArticle = 'preArticle',
+  Name = 'name',
+  PostArticle = 'postArticle',
+  PostQualifier = 'postQualifier',
+  PostDirectional = 'postDirectional',
+  Suffix = 'suffix',
+  SuiteType = 'suiteType',
+  SuiteNumber = 'suiteNumber',
+  City = 'city',
+  MinorCivilDivision = 'minorCivilDivision',
+  ConsolidatedCity = 'consolidatedCity',
+  CountySubRegion = 'countySubRegion',
+  County = 'county',
+  State = 'state',
+  Zip = 'zip',
+  ZipPlus1 = 'zipPlus1',
+  ZipPlus2 = 'zipPlus2',
+  ZipPlus3 = 'zipPlus3',
+  ZipPlus4 = 'zipPlus4',
+  ZipPlus5 = 'zipPlus5',
+  Country = 'country'
+}
 
 export interface IParsedAddress {
-  addressLocationType: string;
-  addressFormatType: AddressProcessingAddressFormat;
-  number: string;
-  numberFractional: string | null;
-  preDirectional: string | null;
-  preQualifier: string | null;
-  preType: string | null;
-  preArticle: string;
-  name: string;
-  postArticle: string;
-  postQualifier: string;
-  postDirectional: string;
-  suffix: string;
-  suiteType: string;
-  suiteNumber: string;
-  city: string;
-  minorCivilDivision: string | null;
-  consolidatedCity: string | null;
-  countySubRegion: string | null;
-  county: string | null;
-  state: string;
-  zip: string;
-  zipPlus1: string;
-  zipPlus2: string;
-  zipPlus3: string;
-  zipPlus4: string;
-  zipPlus5: string;
-  country: string | null;
+  [ParsedAddressField.AddressLocationType]: string;
+  [ParsedAddressField.AddressFormatType]: AddressProcessingAddressFormat;
+  [ParsedAddressField.Number]: string;
+  [ParsedAddressField.NumberFractional]: string | null;
+  [ParsedAddressField.PreDirectional]: string | null;
+  [ParsedAddressField.PreQualifier]: string | null;
+  [ParsedAddressField.PreType]: string | null;
+  [ParsedAddressField.PreArticle]: string;
+  [ParsedAddressField.Name]: string;
+  [ParsedAddressField.PostArticle]: string;
+  [ParsedAddressField.PostQualifier]: string;
+  [ParsedAddressField.PostDirectional]: string;
+  [ParsedAddressField.Suffix]: string;
+  [ParsedAddressField.SuiteType]: string;
+  [ParsedAddressField.SuiteNumber]: string;
+  [ParsedAddressField.City]: string;
+  [ParsedAddressField.MinorCivilDivision]: string | null;
+  [ParsedAddressField.ConsolidatedCity]: string | null;
+  [ParsedAddressField.CountySubRegion]: string | null;
+  [ParsedAddressField.County]: string | null;
+  [ParsedAddressField.State]: string;
+  [ParsedAddressField.Zip]: string;
+  [ParsedAddressField.ZipPlus1]: string;
+  [ParsedAddressField.ZipPlus2]: string;
+  [ParsedAddressField.ZipPlus3]: string;
+  [ParsedAddressField.ZipPlus4]: string;
+  [ParsedAddressField.ZipPlus5]: string;
+  [ParsedAddressField.Country]: string | null;
 }
 
 export interface IAddressProcessingStreetAddressRecord {
@@ -370,3 +405,4 @@ export interface IGeocodeRecord {
 }
 
 export type GeocodeResult = ITransactionResult<IGeocodeDeserializedInputParametersMap, IGeocodeRecord>;
+

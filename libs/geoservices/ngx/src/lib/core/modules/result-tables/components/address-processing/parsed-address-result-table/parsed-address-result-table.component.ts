@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, filter, from, reduce } from 'rxjs';
 
-import { IParsedAddress } from '@tamu-gisc/geoprocessing-v5';
+import { IParsedAddress, ParsedAddressField } from '@tamu-gisc/geoprocessing-v5';
 
-import { ADDRESS_PROCESSING_PARSED_ADDRESS } from '../../../../../util/dictionaries';
+import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
 
 @Component({
   selector: 'tamu-gisc-parsed-address-result-table',
@@ -22,23 +22,24 @@ export class ParsedAddressResultTableComponent implements OnInit {
   @Input()
   public address: IParsedAddress;
 
-  public parsedAddressDict = ADDRESS_PROCESSING_PARSED_ADDRESS;
+  public parsedAddressDict = ParsedAddressFieldLabel;
 
   private _simpleProps = [
-    'addressFormatType',
-    'number',
-    'numberFractional',
-    'preDirectional',
-    'preQualifier',
-    'preType',
-    'preArticle',
-    'name',
-    'postArticle',
-    'suffix',
-    'postQualifier',
-    'postDirectional',
-    'suiteType',
-    'suiteNumber'
+    ParsedAddressField.AddressFormatType,
+    ParsedAddressField.AddressFormatType,
+    ParsedAddressField.Number,
+    ParsedAddressField.NumberFractional,
+    ParsedAddressField.PreDirectional,
+    ParsedAddressField.PreQualifier,
+    ParsedAddressField.PreType,
+    ParsedAddressField.PreArticle,
+    ParsedAddressField.Name,
+    ParsedAddressField.PostArticle,
+    ParsedAddressField.Suffix,
+    ParsedAddressField.PostQualifier,
+    ParsedAddressField.PostDirectional,
+    ParsedAddressField.SuiteType,
+    ParsedAddressField.SuiteNumber
   ];
 
   /**
@@ -47,8 +48,14 @@ export class ParsedAddressResultTableComponent implements OnInit {
    * These are filtered depending on the input address `addressFormatType` property.
    */
   private _unsupportedProps = {
-    USPSPublication28: ['preQualifier', 'preType', 'preArticle', 'postArticle', 'postQualifier'],
-    USCensusTiger: ['preArticle', 'postArticle'],
+    USPSPublication28: [
+      ParsedAddressField.PreQualifier,
+      ParsedAddressField.PreType,
+      ParsedAddressField.PreArticle,
+      ParsedAddressField.PostArticle,
+      ParsedAddressField.PostQualifier
+    ],
+    USCensusTiger: [ParsedAddressField.PreArticle, ParsedAddressField.PostArticle],
     LACounty: []
   };
 
@@ -57,7 +64,7 @@ export class ParsedAddressResultTableComponent implements OnInit {
   public ngOnInit(): void {
     this.filteredProps = from(Object.entries(this.address)).pipe(
       // Filter out unsupported properties based on address format type.
-      filter(([key]) => {
+      filter(([key]: [ParsedAddressField, unknown]) => {
         if (this._unsupportedProps[this.address.addressFormatType].includes(key) === false) {
           return true;
         } else {
