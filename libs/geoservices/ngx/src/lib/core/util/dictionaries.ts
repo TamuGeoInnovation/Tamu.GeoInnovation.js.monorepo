@@ -1,6 +1,8 @@
 // This is a series of objects in key-pair values that are used in the application
 // to populate dropdowns and other UI elements.
 
+import { ParsedAddressField } from '@tamu-gisc/geoprocessing-v5';
+
 export const TIE_BREAKING_STRATEGIES = [
   {
     name: 'Choose first one',
@@ -296,38 +298,7 @@ export const GEOCODE_INPUT_PARAMS: { [key in GeocodeInputParamsField]: string } 
   [GeocodeInputParamsField.ReferenceSources]: 'Reference sources'
 };
 
-export enum ParsedAddressField {
-  AddressLocationType = 'addressLocationType',
-  AddressFormatType = 'addressFormatType',
-  Number = 'number',
-  NumberFractional = 'numberFractional',
-  PreDirectional = 'preDirectional',
-  PreQualifier = 'preQualifier',
-  PreType = 'preType',
-  PreArticle = 'preArticle',
-  Name = 'name',
-  PostArticle = 'postArticle',
-  PostQualifier = 'postQualifier',
-  PostDirectional = 'postDirectional',
-  Suffix = 'suffix',
-  SuiteType = 'suiteType',
-  SuiteNumber = 'suiteNumber',
-  City = 'city',
-  MinorCivilDivision = 'minorCivilDivision',
-  ConsolidatedCity = 'consolidatedCity',
-  CountySubRegion = 'countySubRegion',
-  County = 'county',
-  State = 'state',
-  Zip = 'zip',
-  ZipPlus1 = 'zipPlus1',
-  ZipPlus2 = 'zipPlus2',
-  ZipPlus3 = 'zipPlus3',
-  ZipPlus4 = 'zipPlus4',
-  ZipPlus5 = 'zipPlus5',
-  Country = 'country'
-}
-
-export const ADDRESS_PROCESSING_PARSED_ADDRESS: { [key in ParsedAddressField]: string } = {
+export const ParsedAddressFieldLabel: { [key in ParsedAddressField]: string } = {
   [ParsedAddressField.AddressLocationType]: 'Address location type',
   [ParsedAddressField.AddressFormatType]: 'Address format type',
   [ParsedAddressField.Number]: 'Number',
