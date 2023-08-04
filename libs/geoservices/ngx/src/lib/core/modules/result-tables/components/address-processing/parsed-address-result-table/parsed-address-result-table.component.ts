@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable, filter, from, reduce } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 
 import { IParsedAddress, ParsedAddressField } from '@tamu-gisc/geoprocessing-v5';
 
 import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
+import { FieldEnumerator } from '@tamu-gisc/common/utils/object';
 
 @Component({
   selector: 'tamu-gisc-parsed-address-result-table',
@@ -59,31 +60,37 @@ export class ParsedAddressResultTableComponent implements OnInit {
     LACounty: []
   };
 
-  public filteredProps: Observable<{ [key: string]: unknown }>;
+  private _defaultOrder = [
+    ParsedAddressField.Number,
+    ParsedAddressField.NumberFractional,
+    ParsedAddressField.PreDirectional,
+    ParsedAddressField.PreQualifier,
+    ParsedAddressField.PreType,
+    ParsedAddressField.PreArticle,
+    ParsedAddressField.Name,
+    ParsedAddressField.PostArticle,
+    ParsedAddressField.Suffix,
+    ParsedAddressField.PostQualifier,
+    ParsedAddressField.PostDirectional,
+    ParsedAddressField.SuiteType,
+    ParsedAddressField.SuiteNumber
+  ] as string[];
+
+  public filteredProps: Observable<Array<{ key: string; value: unknown }>>;
 
   public ngOnInit(): void {
-    this.filteredProps = from(Object.entries(this.address)).pipe(
-      // Filter out unsupported properties based on address format type.
-      filter(([key]: [ParsedAddressField, unknown]) => {
-        if (this._unsupportedProps[this.address.addressFormatType].includes(key) === false) {
-          return true;
-        } else {
-          return false;
-        }
+    this.filteredProps = of(this.address).pipe(
+      map((address) => {
+        return new FieldEnumerator(address).filter('exclude', this._unsupportedProps[address.addressFormatType]) as any;
       }),
-      reduce((acc, curr) => {
-        const [propName, value] = curr;
-
+      map((address) => {
         if (this.type === 'simple') {
-          if (this._simpleProps.includes(propName) === true) {
-            acc[propName] = value;
-          }
+          return new FieldEnumerator(address).filter('include', this._simpleProps) as any;
         } else {
-          acc[propName] = value;
+          console.log('Advanced, order');
+          return new FieldEnumerator(address).order(this._defaultOrder) as any;
         }
-
-        return acc;
-      }, {})
+      })
     );
   }
 }

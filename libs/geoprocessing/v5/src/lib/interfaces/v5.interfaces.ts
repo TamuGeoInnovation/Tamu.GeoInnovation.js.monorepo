@@ -117,7 +117,7 @@ export enum ParsedAddressField {
   Country = 'country'
 }
 
-export interface IParsedAddress {
+export interface IParsedAddress extends Record<string, string | null> {
   [ParsedAddressField.AddressLocationType]: string;
   [ParsedAddressField.AddressFormatType]: AddressProcessingAddressFormat;
   [ParsedAddressField.Number]: string;
