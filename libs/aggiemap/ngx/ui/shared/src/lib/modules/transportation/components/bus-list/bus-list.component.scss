@@ -15,3 +15,16 @@
   @include flex-wrap(wrap);
   @include justify-content(space-around);
 }
+
+.bus-routes-notice {
+  @include flexbox();
+  @include align-items(center);
+  @include flex-direction(column);
+
+  text-align: center;
+
+  span {
+    font-size: 2rem;
+    color: #ef5350;
+  }
+}

@@ -1,4 +1,4 @@
-<div *ngIf="(routes | async) === null" class="flex flex-column justify-center align-center leader-2 trailer-2">
+<!-- <div *ngIf="(routes | async) === null" class="flex flex-column justify-center align-center leader-2 trailer-2">
   <div class="spinning-loader"></div>
 </div>
 
@@ -8,4 +8,11 @@
   <div class="routes">
     <tamu-gisc-bus-route *ngFor="let route of group?.items" [route]="route" [selection]="selectionAction"></tamu-gisc-bus-route>
   </div>
+</div> -->
+
+<div class="bus-routes-notice leader-1 trailer-2">
+  <span class="material-icons-outlined trailer-1">info</span>
+  <p>Bus routes are currently unavailable on Aggiemap. We apologize for the inconvenience.</p>
+  <p>Visit <a href="https://transport.tamu.edu/busroutes/?utm_source=aggiemap" target="_blank">Transportation Services</a> for bus routes.</p>
 </div>
+
