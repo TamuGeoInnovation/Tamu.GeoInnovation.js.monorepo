@@ -16,7 +16,7 @@ import * as WebFont from 'webfontloader';
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Material Icons', 'Open Sans:300,400,600', 'Oswald:200,300,400,500']
+    families: ['Material Icons', 'Material Icons Outlined', 'Open Sans:300,400,600', 'Oswald:200,300,400,500']
   }
 });
 
@@ -38,3 +38,4 @@ WebFont.load({
   ]
 })
 export class AppModule {}
+
