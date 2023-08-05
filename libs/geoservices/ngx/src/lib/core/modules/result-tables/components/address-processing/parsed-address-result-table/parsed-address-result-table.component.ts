@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
+import { Observable, map, of, tap } from 'rxjs';
 
 import { IParsedAddress, ParsedAddressField } from '@tamu-gisc/geoprocessing-v5';
+import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
 
 import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
-import { FieldEnumerator } from '@tamu-gisc/common/utils/object';
 
 @Component({
   selector: 'tamu-gisc-parsed-address-result-table',
@@ -26,7 +26,6 @@ export class ParsedAddressResultTableComponent implements OnInit {
   public parsedAddressDict = ParsedAddressFieldLabel;
 
   private _simpleProps = [
-    ParsedAddressField.AddressFormatType,
     ParsedAddressField.AddressFormatType,
     ParsedAddressField.Number,
     ParsedAddressField.NumberFractional,
@@ -74,24 +73,22 @@ export class ParsedAddressResultTableComponent implements OnInit {
     ParsedAddressField.PostDirectional,
     ParsedAddressField.SuiteType,
     ParsedAddressField.SuiteNumber
-  ] as string[];
+  ];
 
-  public filteredProps: Observable<Array<{ key: string; value: unknown }>>;
+  public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
   public ngOnInit(): void {
     this.filteredProps = of(this.address).pipe(
       map((address) => {
-        return new FieldEnumerator(address).filter('exclude', this._unsupportedProps[address.addressFormatType]) as any;
+        return new FieldEnumerator(address).filter('exclude', this._unsupportedProps[address.addressFormatType]);
       }),
       map((address) => {
         if (this.type === 'simple') {
-          return new FieldEnumerator(address).filter('include', this._simpleProps) as any;
+          return new FieldEnumerator(address).filter('include', this._simpleProps).order(this._defaultOrder);
         } else {
-          console.log('Advanced, order');
-          return new FieldEnumerator(address).order(this._defaultOrder) as any;
+          return new FieldEnumerator(address).order(this._defaultOrder);
         }
       })
     );
   }
 }
-
