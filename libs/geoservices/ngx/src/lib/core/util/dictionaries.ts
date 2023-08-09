@@ -6,9 +6,10 @@ import {
   GeocodeReferenceFeatureField,
   ParsedAddressField,
   GeocodeTieHandlingStrategyType,
-  GeocodeCensusYear,
+  CensusYear,
   GeocodeReferenceFeature,
-  GeocodeConfidenceLevel
+  GeocodeConfidenceLevel,
+  AddressProcessingAddressFormat
 } from '@tamu-gisc/geoprocessing-v5';
 
 export const TIE_BREAKING_STRATEGIES = [
@@ -28,31 +29,31 @@ export const TIE_BREAKING_STRATEGIES = [
 
 export const CENSUS_YEARS = [
   {
-    name: GeocodeCensusYear.Year1990,
-    value: GeocodeCensusYear.Year1990
+    name: CensusYear.Census1990,
+    value: CensusYear.Census1990
   },
   {
-    name: GeocodeCensusYear.Year2000,
-    value: GeocodeCensusYear.Year2000
+    name: CensusYear.Census2000,
+    value: CensusYear.Census2000
   },
   {
-    name: GeocodeCensusYear.Year2010,
-    value: GeocodeCensusYear.Year2010
+    name: CensusYear.Census2010,
+    value: CensusYear.Census2010
   },
   {
-    name: GeocodeCensusYear.Year2020,
-    value: GeocodeCensusYear.Year2020
+    name: CensusYear.Census2020,
+    value: CensusYear.Census2020
   },
   {
     name: 'All Available',
-    value: GeocodeCensusYear.AllAvailable
+    value: CensusYear.AllAvailable
   }
 ];
 
 export enum ADDRESS_FORMAT_TYPE {
-  USPS_PUBLICATION_28 = 'USPSPublication28',
-  US_CENSUS_TIGER = 'USCensusTiger',
-  LA_COUNTY = 'LACounty'
+  USPS_PUBLICATION_28 = AddressProcessingAddressFormat.USPSPublication28,
+  US_CENSUS_TIGER = AddressProcessingAddressFormat.USCensusTiger,
+  LA_COUNTY = AddressProcessingAddressFormat.LACounty
 }
 
 export const ADDRESS_FORMAT_TYPES = [

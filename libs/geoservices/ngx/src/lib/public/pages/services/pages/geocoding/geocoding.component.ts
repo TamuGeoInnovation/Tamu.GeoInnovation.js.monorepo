@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
-import { Geocode, GeocodeCensusYear, GeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
+import { Geocode, CensusYear, GeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
@@ -26,7 +26,7 @@ export class GeocodingComponent implements OnInit {
       state: 'TX',
       zip: 77840,
       census: true,
-      censusYears: GeocodeCensusYear.AllAvailable,
+      censusYears: CensusYear.AllAvailable,
       refs: [GeocodeReferenceFeature.MicrosoftFootprints]
     });
 

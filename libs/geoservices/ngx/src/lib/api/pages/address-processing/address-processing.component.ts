@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AddressProcessing } from '@tamu-gisc/geoprocessing-v5';
+import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
   selector: 'tamu-gisc-address-processing',
@@ -19,6 +19,6 @@ export class AddressProcessingComponent {
     nonParsedStreetCity: 'Los Angeles',
     nonParsedStreetState: 'California',
     nonParsedStreetZIP: '900890255',
-    addressFormat: ['USPSPublication28']
+    addressFormat: [AddressProcessingAddressFormat.USPSPublication28]
   });
 }

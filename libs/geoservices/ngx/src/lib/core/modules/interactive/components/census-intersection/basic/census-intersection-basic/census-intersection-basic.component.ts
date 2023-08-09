@@ -4,7 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { CensusIntersection, CensusIntersectionResult, ICensusIntersectionOptions } from '@tamu-gisc/geoprocessing-v5';
+import {
+  CensusIntersection,
+  CensusIntersectionResult,
+  CensusYear,
+  ICensusIntersectionOptions
+} from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
@@ -68,7 +73,7 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
       apiKey: '',
       lat: form.lat,
       lon: form.lon,
-      censusYears: form.censusYear === 'allAvailable' ? 'allAvailable' : [form.censusYear]
+      censusYears: form.censusYear === CensusYear.AllAvailable ? CensusYear.AllAvailable : [form.censusYear]
     };
   }
 }

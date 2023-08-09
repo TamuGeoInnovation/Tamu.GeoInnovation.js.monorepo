@@ -56,7 +56,11 @@ export interface ITransactionData<InputParametersType, ResultType> {
 //
 /////////////////////////////////////////////
 
-export type AddressProcessingAddressFormat = 'USPSPublication28' | 'USCensusTiger' | 'LACounty';
+export enum AddressProcessingAddressFormat {
+  USPSPublication28 = 'USPSPublication28',
+  USCensusTiger = 'USCensusTiger',
+  LACounty = 'LACounty'
+}
 
 export interface IAddressProcessingOptions extends ICommonServiceOptions {
   nonParsedStreetAddress?: string;
@@ -119,7 +123,7 @@ export enum ParsedAddressField {
   Country = 'country'
 }
 
-export interface IParsedAddress extends Record<string, string | null> {
+export interface IParsedAddress {
   [ParsedAddressField.AddressLocationType]: string;
   [ParsedAddressField.AddressFormatType]: AddressProcessingAddressFormat;
   [ParsedAddressField.Number]: string;
@@ -168,31 +172,57 @@ export type AddressProcessingResult = ITransactionResult<
 //
 /////////////////////////////////////////////
 
+export enum CensusYear {
+  AllAvailable = 'allAvailable',
+  Census1990 = '1990',
+  Census2000 = '2000',
+  Census2010 = '2010',
+  Census2020 = '2020'
+}
+
 export interface ICensusIntersectionOptions extends ICommonServiceOptions {
   lat: number;
   lon: number;
-  censusYears: 'allAvailable' | Array<'1990' | '2000' | '2010' | '2020'>;
+  censusYears: CensusYear.AllAvailable | Array<Exclude<CensusYear, CensusYear.AllAvailable>>;
   s?: string;
   format?: ResponseFormat;
   notStore?: boolean;
 }
 
+export enum CensusIntersectionField {
+  CensusYear = 'censusYear',
+  GeoLocationId = 'geoLocationId',
+  CensusBlock = 'censusBlock',
+  CensusBlockGroup = 'censusBlockGroup',
+  CensusTract = 'censusTract',
+  CensusPlaceFips = 'censusPlaceFips',
+  CensusMcdFips = 'censusMcdFips',
+  CensusMsaFips = 'censusMsaFips',
+  CensusMetDivFips = 'censusMetDivFips',
+  CensusCbsaFips = 'censusCbsaFips',
+  CensusCbsaMicro = 'censusCbsaMicro',
+  CensusCountyFips = 'censusCountyFips',
+  CensusStateFips = 'censusStateFips',
+  ExceptionOccurred = 'exceptionOccurred',
+  ExceptionMessage = 'exceptionMessage'
+}
+
 export interface ICensusIntersectionRecord {
-  censusYear: number;
-  geoLocationId: string;
-  censusBlock: string;
-  censusBlockGroup: string;
-  censusTract: string;
-  censusPlaceFips: string;
-  censusMcdFips: string;
-  censusMsaFips: string;
-  censusMetDivFips: string;
-  censusCbsaFips: string;
-  censusCbsaMicro: string;
-  censusCountyFips: string;
-  censusStateFips: string;
-  exceptionOccurred: boolean;
-  exceptionMessage: string;
+  [CensusIntersectionField.CensusYear]: number;
+  [CensusIntersectionField.GeoLocationId]: string;
+  [CensusIntersectionField.CensusBlock]: string;
+  [CensusIntersectionField.CensusBlockGroup]: string;
+  [CensusIntersectionField.CensusTract]: string;
+  [CensusIntersectionField.CensusPlaceFips]: string;
+  [CensusIntersectionField.CensusMcdFips]: string;
+  [CensusIntersectionField.CensusMsaFips]: string;
+  [CensusIntersectionField.CensusMetDivFips]: string;
+  [CensusIntersectionField.CensusCbsaFips]: string;
+  [CensusIntersectionField.CensusCbsaMicro]: string;
+  [CensusIntersectionField.CensusCountyFips]: string;
+  [CensusIntersectionField.CensusStateFips]: string;
+  [CensusIntersectionField.ExceptionOccurred]: boolean;
+  [CensusIntersectionField.ExceptionMessage]: string;
 }
 
 export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersectionRecord>;
@@ -211,16 +241,28 @@ export interface IReverseGeocoderOptions extends ICommonServiceOptions {
   format?: ResponseFormat;
 }
 
+export enum ReverseGeocodeField {
+  TimeTaken = 'timeTaken',
+  ExceptionOccurred = 'exceptionOccurred',
+  ErrorMessage = 'errorMessage',
+  Apn = 'apn',
+  StreetAddress = 'streetAddress',
+  City = 'city',
+  State = 'state',
+  Zip = 'zip',
+  ZipPlus4 = 'zipPlus4'
+}
+
 interface IReverseGeocodeRecord {
-  timeTaken: number;
-  exceptionOccurred: boolean;
-  errorMessage: string;
-  apn: string;
-  streetAddress: string;
-  city: string;
-  state: string;
-  zip: string;
-  zipPlus4: string;
+  [ReverseGeocodeField.TimeTaken]: number;
+  [ReverseGeocodeField.ExceptionOccurred]: boolean;
+  [ReverseGeocodeField.ErrorMessage]: string;
+  [ReverseGeocodeField.Apn]: string;
+  [ReverseGeocodeField.StreetAddress]: string;
+  [ReverseGeocodeField.City]: string;
+  [ReverseGeocodeField.State]: string;
+  [ReverseGeocodeField.Zip]: string;
+  [ReverseGeocodeField.ZipPlus4]: string;
 }
 
 export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocodeRecord>;
@@ -230,14 +272,6 @@ export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocode
 // Geocoding
 //
 /////////////////////////////////////////////
-
-export enum GeocodeCensusYear {
-  AllAvailable = 'allAvailable',
-  Year1990 = '1990',
-  Year2000 = '2000',
-  Year2010 = '2010',
-  Year2020 = '2020'
-}
 
 export enum GeocodeTieHandlingStrategyType {
   ChooseFirstOne = 'chooseFirstOne',
@@ -259,13 +293,44 @@ export enum GeocodeSoundexAttribute {
 }
 
 export enum GeocodeConfidenceLevel {
+  /**
+   * .gov sites
+   */
   DotGovernmentSites = 1,
+
+  /**
+   * Gov sites
+   */
   GovernmentSites = 2,
+
+  /**
+   * .us sites
+   */
   DotUSSites = 3,
+
+  /**
+   * City sites
+   */
   CitySites = 4,
+
+  /**
+   * County sites
+   */
   CountySites = 5,
+
+  /**
+   * .edu sites
+   */
   DotEduSites = 6,
+
+  /**
+   * Public sites
+   */
   PublicSites = 7,
+
+  /**
+   * Source not listed
+   */
   SourceNotLIsted = 8
 }
 
@@ -316,7 +381,7 @@ export interface IGeocodeOptions extends ICommonServiceOptions {
   state?: string;
   zip?: number;
   census?: boolean;
-  censusYears?: GeocodeCensusYear.AllAvailable | Array<Exclude<GeocodeCensusYear, GeocodeCensusYear.AllAvailable>>;
+  censusYears?: CensusYear.AllAvailable | Array<Exclude<CensusYear, CensusYear.AllAvailable>>;
   format?: ResponseFormat;
   includeHeader?: boolean;
   notStore?: boolean;

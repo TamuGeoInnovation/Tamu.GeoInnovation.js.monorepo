@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { GeocodeCensusYear, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
+import { CensusYear, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { GeocodingBasicComponent } from '../../basic/geocoding-basic/geocoding-basic.component';
@@ -75,7 +75,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
       city: form.city,
       state: form.state,
       zip: form.zip,
-      censusYears: form.censusYears === GeocodeCensusYear.AllAvailable ? GeocodeCensusYear.AllAvailable : [form.censusYears],
+      censusYears: form.censusYears === CensusYear.AllAvailable ? CensusYear.AllAvailable : [form.censusYears],
       attributeRelaxation: form.attributeRelaxation,
       substringMAtching: form.substringMatching,
       soundex: form.soundexMatching,
