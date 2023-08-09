@@ -11,7 +11,9 @@ import {
   GeocodeConfidenceLevel,
   AddressProcessingAddressFormat,
   CensusIntersectionRecordField,
-  ReverseGeocodeRecordField
+  ReverseGeocodeRecordField,
+  GeocodeRecordField,
+  GeocodeNAACCRField
 } from '@tamu-gisc/geoprocessing-v5';
 
 export const TIE_BREAKING_STRATEGIES = [
@@ -356,4 +358,33 @@ export const ReverseGeocodeFieldLabel: { [key in ReverseGeocodeRecordField]: str
   [ReverseGeocodeRecordField.State]: 'State',
   [ReverseGeocodeRecordField.Zip]: 'Zip',
   [ReverseGeocodeRecordField.ZipPlus4]: 'Zip+4'
+};
+
+export const GeocodeFieldLabel: { [key in GeocodeRecordField]: string } = {
+  [GeocodeRecordField.Latitude]: 'Latitude',
+  [GeocodeRecordField.Longitude]: 'Longitude',
+  [GeocodeRecordField.MatchType]: 'Match type',
+  [GeocodeRecordField.MatchScore]: 'Match score',
+  [GeocodeRecordField.GeocodeQualityType]: 'Quality type',
+  [GeocodeRecordField.FeatureMatchingGeographyType]: 'Feature matching geography type',
+  [GeocodeRecordField.MatchedLocationType]: 'Matched location type',
+  [GeocodeRecordField.FeatureMatchingResultType]: 'Feature matching result type',
+  [GeocodeRecordField.Naaccr]: 'NAACCR',
+  [GeocodeRecordField.QueryStatusCodes]: 'Query status codes',
+  [GeocodeRecordField.TieHandlingStrategyType]: 'Tie handling strategy type',
+  [GeocodeRecordField.FeatureMatchingSelectionMethod]: 'Feature matching selection method',
+  [GeocodeRecordField.CensusRecords]: 'Census records',
+  [GeocodeRecordField.MatchedAddress]: 'Matched address',
+  [GeocodeRecordField.ReferenceFeature]: 'Reference feature'
+};
+
+export const GeocodeNaaccrFieldLabel: { [key in GeocodeNAACCRField]: string } = {
+  [GeocodeNAACCRField.GisCoordinateQualityCode]: 'NAACCR GIS Coordinate Quality Code',
+  [GeocodeNAACCRField.GisCoordinateQualityType]: 'NAACCR GIS Coordinate Quality Name',
+  [GeocodeNAACCRField.CensusTractCertaintyCode]: 'NAACCR Census Tract Certainty Code',
+  [GeocodeNAACCRField.CensusTractCertaintyType]: 'NAACCR Census Tract Certainty Name',
+  [GeocodeNAACCRField.MicroMatchStatus]: 'Micro Match Status',
+  [GeocodeNAACCRField.PenaltyCode]: 'Penalty Code',
+  [GeocodeNAACCRField.PenaltyCodeSummary]: 'Penalty Code Summary',
+  [GeocodeNAACCRField.PenaltyCodeDetails]: 'Penalty Code Details'
 };

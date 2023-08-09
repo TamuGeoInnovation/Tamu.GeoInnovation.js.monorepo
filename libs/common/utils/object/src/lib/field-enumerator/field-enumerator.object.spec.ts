@@ -125,6 +125,20 @@ describe('FieldEnumerator', () => {
         { key: 'h', value: 456 }
       ]);
     });
+
+    it('should return the original object if the input is empty', () => {
+      const result = enumerator.order([]);
+      expect(result).toEqual([
+        { key: 'a', value: 'hello' },
+        { key: 'b', value: 42 },
+        { key: 'c', value: true },
+        { key: 'd', value: 'world' },
+        { key: 'e', value: 123 },
+        { key: 'f', value: false },
+        { key: 'g', value: 'foo' },
+        { key: 'h', value: 456 }
+      ]);
+    });
   });
 
   describe('toArray', () => {
