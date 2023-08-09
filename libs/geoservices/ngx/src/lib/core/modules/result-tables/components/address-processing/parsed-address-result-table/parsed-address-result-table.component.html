@@ -12,8 +12,7 @@
       <td>{{item.value}}</td>
     </tr>
 
-    <!-- Certain responses like reference features inherit from the same base class as parsed addresses
-      This ng-content is to allow those components to project the differing fields. -->
+    <!-- Allow responses type that inherit from the parsed address response type to add additional rows. -->
     <ng-content select="tr"></ng-content>
   </tbody>
 </table>
