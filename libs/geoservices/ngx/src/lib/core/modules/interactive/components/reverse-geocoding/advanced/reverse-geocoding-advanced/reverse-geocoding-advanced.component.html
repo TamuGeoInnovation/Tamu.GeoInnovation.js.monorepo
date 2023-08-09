@@ -42,72 +42,7 @@
     <tamu-gisc-accordion [expanded]="true">
       <tamu-gisc-accordion-header>Result</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <strong>Status</strong>
-              </td>
-              <td>{{res?.message}}</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Time Taken</strong>
-              </td>
-              <td>{{res?.data?.timeTaken | number}} ms</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Transaction Guid</strong>
-              </td>
-              <td>{{res?.data?.transactionGuid}}</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>APN</strong>
-              </td>
-              <td>{{res?.data?.results?.[0].apn}}</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Address</strong>
-              </td>
-              <td>{{res?.data?.results?.[0].streetAddress}}</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>City</strong>
-              </td>
-              <td>{{res?.data?.results?.[0].city}}</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>State</strong>
-              </td>
-              <td>{{res?.data?.results?.[0].state}}</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Zip</strong>
-              </td>
-              <td>{{res?.data?.results?.[0].zip}}</td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Zip+4</strong>
-              </td>
-              <td>{{res?.data?.results?.[0].zipPlus4}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <tamu-gisc-reverse-geocoding-result-table *ngFor="let reverseGeocode of res.data?.results" [result]="reverseGeocode"></tamu-gisc-reverse-geocoding-result-table>
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
   </div>

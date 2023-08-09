@@ -25,6 +25,8 @@ export class ParsedAddressResultTableComponent implements OnInit {
 
   public parsedAddressDict = ParsedAddressFieldLabel;
 
+  public filteredProps: Observable<EnumeratorKeyValuePairs>;
+
   private _simpleProps = [
     ParsedAddressField.AddressFormatType,
     ParsedAddressField.Number,
@@ -74,8 +76,6 @@ export class ParsedAddressResultTableComponent implements OnInit {
     ParsedAddressField.SuiteType,
     ParsedAddressField.SuiteNumber
   ];
-
-  public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
   public ngOnInit(): void {
     this.filteredProps = of(this.address).pipe(

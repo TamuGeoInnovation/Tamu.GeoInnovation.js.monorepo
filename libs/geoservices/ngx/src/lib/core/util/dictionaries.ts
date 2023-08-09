@@ -10,7 +10,8 @@ import {
   GeocodeReferenceFeature,
   GeocodeConfidenceLevel,
   AddressProcessingAddressFormat,
-  CensusIntersectionField
+  CensusIntersectionField,
+  ReverseGeocodeField
 } from '@tamu-gisc/geoprocessing-v5';
 
 export const TIE_BREAKING_STRATEGIES = [
@@ -343,4 +344,16 @@ export const CensusIntersectionFeatureLabel: { [key in CensusIntersectionField]:
   [CensusIntersectionField.CensusStateFips]: 'Census State FIPS',
   [CensusIntersectionField.ExceptionOccurred]: 'Exception occurred',
   [CensusIntersectionField.ExceptionMessage]: 'Exception message'
+};
+
+export const ReverseGeocodeFieldLabel: { [key in ReverseGeocodeField]: string } = {
+  [ReverseGeocodeField.TimeTaken]: 'Time taken',
+  [ReverseGeocodeField.ExceptionOccurred]: 'Exception occurred',
+  [ReverseGeocodeField.ErrorMessage]: 'Error message',
+  [ReverseGeocodeField.Apn]: 'APN',
+  [ReverseGeocodeField.StreetAddress]: 'Street address',
+  [ReverseGeocodeField.City]: 'City',
+  [ReverseGeocodeField.State]: 'State',
+  [ReverseGeocodeField.Zip]: 'Zip',
+  [ReverseGeocodeField.ZipPlus4]: 'Zip+4'
 };
