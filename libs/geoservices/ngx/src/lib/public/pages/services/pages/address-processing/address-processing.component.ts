@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
-import { AddressProcessing } from '@tamu-gisc/geoprocessing-v5';
+import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/geoprocessing-v5';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
@@ -24,7 +24,7 @@ export class AddressProcessingComponent implements OnInit {
       nonParsedStreetCity: 'Los Angeles',
       nonParsedStreetState: 'California',
       nonParsedStreetZIP: '900890255',
-      addressFormat: ['USPSPublication28']
+      addressFormat: [AddressProcessingAddressFormat.USPSPublication28]
     });
 
     this.result = this.address.asObservable().pipe(
