@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { FieldEnumerator, EnumeratorKeyValuePairs } from '@tamu-gisc/common/utils/object';
-import { IReverseGeocode, ReverseGeocodeField } from '@tamu-gisc/geoprocessing-v5';
+import { IReverseGeocodeRecord, ReverseGeocodeField } from '@tamu-gisc/geoprocessing-v5';
 
 import { ReverseGeocodeFieldLabel } from '../../../../../util/dictionaries';
 
@@ -13,7 +13,7 @@ import { ReverseGeocodeFieldLabel } from '../../../../../util/dictionaries';
 })
 export class ReverseGeocodingResultTableComponent implements OnInit {
   @Input()
-  public result: IReverseGeocode;
+  public result: IReverseGeocodeRecord;
 
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 

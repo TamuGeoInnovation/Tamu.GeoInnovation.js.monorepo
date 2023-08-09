@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { ICensusIntersection } from '@tamu-gisc/geoprocessing-v5';
+import { ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
   selector: 'tamu-gisc-census-intersection-result-tabs',
@@ -9,5 +9,5 @@ import { ICensusIntersection } from '@tamu-gisc/geoprocessing-v5';
 })
 export class CensusIntersectionResultTabsComponent {
   @Input()
-  public censusRecords: Array<ICensusIntersection>;
+  public censusRecords: Array<ICensusIntersectionRecord>;
 }
