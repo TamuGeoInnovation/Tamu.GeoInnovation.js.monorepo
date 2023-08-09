@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Geocode } from '@tamu-gisc/geoprocessing-v5';
+import { Geocode, GeocodeCensusYear, GeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
   selector: 'tamu-gisc-geocoding',
@@ -19,7 +19,7 @@ export class GeocodingComponent {
     state: 'tx',
     zip: 77840,
     census: true,
-    censusYears: 'allAvailable',
-    refs: ['MicrosoftFootprints']
+    censusYears: GeocodeCensusYear.AllAvailable,
+    refs: [GeocodeReferenceFeature.MicrosoftFootprints]
   });
 }

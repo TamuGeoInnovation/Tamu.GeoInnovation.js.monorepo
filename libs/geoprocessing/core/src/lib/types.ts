@@ -54,7 +54,7 @@ export interface Transformer<U, O> {
   fn?: (...args) => void;
 }
 
-export enum ApiResponseFormat {
+export enum ApiResponseType {
   /**
    * Responses where the response contains a text status code **name**
    */
@@ -63,4 +63,11 @@ export enum ApiResponseFormat {
    * Responses where the response contains a numeric status code
    */
   Code = 2
+}
+
+export enum ResponseFormat {
+  CSV = 'csv',
+  TSV = 'tsv',
+  XML = 'xml',
+  JSON = 'json'
 }

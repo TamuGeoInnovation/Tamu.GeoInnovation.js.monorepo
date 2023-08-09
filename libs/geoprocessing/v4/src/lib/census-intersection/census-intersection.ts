@@ -1,4 +1,4 @@
-import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing-core';
+import { TransformersMap, ApiResponseType, ApiBase, ResponseFormat } from '@tamu-gisc/geoprocessing-core';
 
 import { ICensusIntersectionOptions, ICensusIntersectionResult } from '../interfaces/v4.interfaces';
 
@@ -7,7 +7,7 @@ export class CensusIntersection extends ApiBase<
   ICensusIntersectionOptions,
   ICensusIntersectionResult
 > {
-  public responseType = ApiResponseFormat.Text;
+  public responseType = ApiResponseType.Text;
 
   constructor(options: ICensusIntersectionOptions) {
     super(options);
@@ -18,7 +18,7 @@ export class CensusIntersection extends ApiBase<
         excludeParams: true
       },
       format: {
-        value: 'json'
+        value: ResponseFormat.JSON
       },
       version: {
         value: '4.10'

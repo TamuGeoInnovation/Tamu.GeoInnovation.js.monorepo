@@ -5,7 +5,7 @@ import { pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
-import { Geocode, GeocodeResult, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
+import { Geocode, GeocodeCensusYear, GeocodeResult, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
@@ -60,7 +60,7 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
       city: form.city,
       state: form.state,
       zip: form.zip,
-      censusYears: form.censusYears === 'allAvailable' ? 'allAvailable' : [form.censusYears]
+      censusYears: form.censusYears === GeocodeCensusYear.AllAvailable ? GeocodeCensusYear.AllAvailable : [form.censusYears]
     };
   }
 

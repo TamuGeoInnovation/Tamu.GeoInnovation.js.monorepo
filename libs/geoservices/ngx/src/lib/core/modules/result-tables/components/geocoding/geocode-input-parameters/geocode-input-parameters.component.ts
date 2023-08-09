@@ -3,7 +3,7 @@ import { Observable, filter, from, reduce } from 'rxjs';
 
 import { IGeocodeDeserializedInputParametersMap } from '@tamu-gisc/geoprocessing-v5';
 
-import { GEOCODE_INPUT_PARAMS } from '../../../../../util/dictionaries';
+import { GeocodeInputParameterLabel } from '../../../../../util/dictionaries';
 
 @Component({
   selector: 'tamu-gisc-geocode-input-parameters',
@@ -15,7 +15,7 @@ export class GeocodeInputParametersComponent implements OnInit {
   public parameters: IGeocodeDeserializedInputParametersMap;
 
   public filteredProps: Observable<{ [key: string]: unknown }>;
-  public propsDict = GEOCODE_INPUT_PARAMS;
+  public propsDict = GeocodeInputParameterLabel;
 
   public ngOnInit(): void {
     this.filteredProps = from(Object.entries(this.parameters)).pipe(
@@ -38,4 +38,3 @@ export class GeocodeInputParametersComponent implements OnInit {
     );
   }
 }
-
