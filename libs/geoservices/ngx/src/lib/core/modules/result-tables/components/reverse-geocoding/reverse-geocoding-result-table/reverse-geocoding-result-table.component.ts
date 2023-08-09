@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { FieldEnumerator, EnumeratorKeyValuePairs } from '@tamu-gisc/common/utils/object';
-import { IReverseGeocodeRecord, ReverseGeocodeField } from '@tamu-gisc/geoprocessing-v5';
+import { IReverseGeocodeRecord, ReverseGeocodeRecordField } from '@tamu-gisc/geoprocessing-v5';
 
 import { ReverseGeocodeFieldLabel } from '../../../../../util/dictionaries';
 
@@ -20,18 +20,18 @@ export class ReverseGeocodingResultTableComponent implements OnInit {
   public parsedAddressDict = ReverseGeocodeFieldLabel;
 
   private _excludedProps = [
-    ReverseGeocodeField.TimeTaken,
-    ReverseGeocodeField.ExceptionOccurred,
-    ReverseGeocodeField.ErrorMessage
+    ReverseGeocodeRecordField.TimeTaken,
+    ReverseGeocodeRecordField.ExceptionOccurred,
+    ReverseGeocodeRecordField.ErrorMessage
   ];
 
   private _defaultOrder = [
-    ReverseGeocodeField.Apn,
-    ReverseGeocodeField.StreetAddress,
-    ReverseGeocodeField.City,
-    ReverseGeocodeField.State,
-    ReverseGeocodeField.Zip,
-    ReverseGeocodeField.ZipPlus4
+    ReverseGeocodeRecordField.Apn,
+    ReverseGeocodeRecordField.StreetAddress,
+    ReverseGeocodeRecordField.City,
+    ReverseGeocodeRecordField.State,
+    ReverseGeocodeRecordField.Zip,
+    ReverseGeocodeRecordField.ZipPlus4
   ];
 
   public ngOnInit(): void {

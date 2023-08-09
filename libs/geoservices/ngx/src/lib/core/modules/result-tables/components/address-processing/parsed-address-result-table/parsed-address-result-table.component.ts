@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
-import { IParsedAddressRecord, ParsedAddressField } from '@tamu-gisc/geoprocessing-v5';
+import { IParsedAddressRecord, ParsedAddressRecordField } from '@tamu-gisc/geoprocessing-v5';
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
 
 import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
@@ -28,20 +28,20 @@ export class ParsedAddressResultTableComponent implements OnInit {
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 
   private _simpleProps = [
-    ParsedAddressField.AddressFormatType,
-    ParsedAddressField.Number,
-    ParsedAddressField.NumberFractional,
-    ParsedAddressField.PreDirectional,
-    ParsedAddressField.PreQualifier,
-    ParsedAddressField.PreType,
-    ParsedAddressField.PreArticle,
-    ParsedAddressField.Name,
-    ParsedAddressField.PostArticle,
-    ParsedAddressField.Suffix,
-    ParsedAddressField.PostQualifier,
-    ParsedAddressField.PostDirectional,
-    ParsedAddressField.SuiteType,
-    ParsedAddressField.SuiteNumber
+    ParsedAddressRecordField.AddressFormatType,
+    ParsedAddressRecordField.Number,
+    ParsedAddressRecordField.NumberFractional,
+    ParsedAddressRecordField.PreDirectional,
+    ParsedAddressRecordField.PreQualifier,
+    ParsedAddressRecordField.PreType,
+    ParsedAddressRecordField.PreArticle,
+    ParsedAddressRecordField.Name,
+    ParsedAddressRecordField.PostArticle,
+    ParsedAddressRecordField.Suffix,
+    ParsedAddressRecordField.PostQualifier,
+    ParsedAddressRecordField.PostDirectional,
+    ParsedAddressRecordField.SuiteType,
+    ParsedAddressRecordField.SuiteNumber
   ];
 
   /**
@@ -51,30 +51,30 @@ export class ParsedAddressResultTableComponent implements OnInit {
    */
   private _unsupportedProps = {
     USPSPublication28: [
-      ParsedAddressField.PreQualifier,
-      ParsedAddressField.PreType,
-      ParsedAddressField.PreArticle,
-      ParsedAddressField.PostArticle,
-      ParsedAddressField.PostQualifier
+      ParsedAddressRecordField.PreQualifier,
+      ParsedAddressRecordField.PreType,
+      ParsedAddressRecordField.PreArticle,
+      ParsedAddressRecordField.PostArticle,
+      ParsedAddressRecordField.PostQualifier
     ],
-    USCensusTiger: [ParsedAddressField.PreArticle, ParsedAddressField.PostArticle],
+    USCensusTiger: [ParsedAddressRecordField.PreArticle, ParsedAddressRecordField.PostArticle],
     LACounty: []
   };
 
   private _defaultOrder = [
-    ParsedAddressField.Number,
-    ParsedAddressField.NumberFractional,
-    ParsedAddressField.PreDirectional,
-    ParsedAddressField.PreQualifier,
-    ParsedAddressField.PreType,
-    ParsedAddressField.PreArticle,
-    ParsedAddressField.Name,
-    ParsedAddressField.PostArticle,
-    ParsedAddressField.Suffix,
-    ParsedAddressField.PostQualifier,
-    ParsedAddressField.PostDirectional,
-    ParsedAddressField.SuiteType,
-    ParsedAddressField.SuiteNumber
+    ParsedAddressRecordField.Number,
+    ParsedAddressRecordField.NumberFractional,
+    ParsedAddressRecordField.PreDirectional,
+    ParsedAddressRecordField.PreQualifier,
+    ParsedAddressRecordField.PreType,
+    ParsedAddressRecordField.PreArticle,
+    ParsedAddressRecordField.Name,
+    ParsedAddressRecordField.PostArticle,
+    ParsedAddressRecordField.Suffix,
+    ParsedAddressRecordField.PostQualifier,
+    ParsedAddressRecordField.PostDirectional,
+    ParsedAddressRecordField.SuiteType,
+    ParsedAddressRecordField.SuiteNumber
   ];
 
   public ngOnInit(): void {
