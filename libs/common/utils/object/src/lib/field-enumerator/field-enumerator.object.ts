@@ -37,6 +37,10 @@ export class FieldEnumerator<T> {
   public order(fields: string[]): Array<EnumeratorKeyValuePair> {
     const asArray = this.toArray();
 
+    if (fields.length === 0) {
+      return asArray;
+    }
+
     return asArray.sort((a, b) => {
       const aIndex = fields.indexOf(a.key);
       const bIndex = fields.indexOf(b.key);
