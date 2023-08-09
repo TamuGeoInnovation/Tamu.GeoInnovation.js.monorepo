@@ -567,6 +567,17 @@ export interface IGeocodeReferenceFeature {
   [GeocodeReferenceFeatureField.InterpolationSubType]: string;
 }
 
+export enum GeocodeNAACCRField {
+  GisCoordinateQualityCode = 'gisCoordinateQualityCode',
+  GisCoordinateQualityType = 'gisCoordinateQualityType',
+  CensusTractCertaintyCode = 'censusTractCertaintyCode',
+  CensusTractCertaintyType = 'censusTractCertaintyType',
+  MicroMatchStatus = 'microMatchStatus',
+  PenaltyCode = 'penaltyCode',
+  PenaltyCodeSummary = 'penaltyCodeSummary',
+  PenaltyCodeDetails = 'penaltyCodeDetails'
+}
+
 export interface IGeocodeNAACCR {
   gisCoordinateQualityCode: string;
   gisCoordinateQualityType: string;
@@ -576,6 +587,24 @@ export interface IGeocodeNAACCR {
   penaltyCode: string;
   penaltyCodeSummary: string;
   penaltyCodeDetails: string;
+}
+
+export enum GeocodeRecordField {
+  Latitude = 'latitude',
+  Longitude = 'longitude',
+  MatchScore = 'matchScore',
+  GeocodeQualityType = 'geocodeQualityType',
+  FeatureMatchingGeographyType = 'featureMatchingGeographyType',
+  MatchType = 'matchType',
+  MatchedLocationType = 'matchedLocationType',
+  FeatureMatchingResultType = 'featureMatchingResultType',
+  Naaccr = 'naaccr',
+  QueryStatusCodes = 'queryStatusCodes',
+  TieHandlingStrategyType = 'tieHandlingStrategyType',
+  FeatureMatchingSelectionMethod = 'featureMatchingSelectionMethod',
+  CensusRecords = 'censusRecords',
+  MatchedAddress = 'matchedAddress',
+  ReferenceFeature = 'referenceFeature'
 }
 
 export interface IGeocodeRecord {
