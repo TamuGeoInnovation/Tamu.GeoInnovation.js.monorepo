@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { Observable } from 'rxjs';
 
+import { EnumeratorKeyValuePairs } from '@tamu-gisc/common/utils/object';
 import { IGeocodeRecord } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
@@ -10,5 +12,8 @@ import { IGeocodeRecord } from '@tamu-gisc/geoprocessing-v5';
 export class GeocodeResultTableComponent {
   @Input()
   public geocode: IGeocodeRecord;
-}
 
+  public filteredProps: Observable<EnumeratorKeyValuePairs>;
+
+  private _defaultOrder = [];
+}

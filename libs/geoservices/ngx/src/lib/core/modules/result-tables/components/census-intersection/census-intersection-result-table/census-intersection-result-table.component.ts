@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
-import { CensusIntersectionField, ICensusIntersection } from '@tamu-gisc/geoprocessing-v5';
+import { CensusIntersectionField, ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
 
 import { CensusIntersectionFeatureLabel } from '../../../../../util/dictionaries';
 
@@ -13,7 +13,7 @@ import { CensusIntersectionFeatureLabel } from '../../../../../util/dictionaries
 })
 export class CensusIntersectionResultTableComponent implements OnInit {
   @Input()
-  public address: ICensusIntersection;
+  public address: ICensusIntersectionRecord;
 
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
 

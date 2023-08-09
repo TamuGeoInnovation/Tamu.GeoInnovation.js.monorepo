@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
-import { IParsedAddress, ParsedAddressField } from '@tamu-gisc/geoprocessing-v5';
+import { IParsedAddressRecord, ParsedAddressField } from '@tamu-gisc/geoprocessing-v5';
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
 
 import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
@@ -21,7 +21,7 @@ export class ParsedAddressResultTableComponent implements OnInit {
   public type: 'simple' | 'expanded' = 'simple';
 
   @Input()
-  public address: IParsedAddress;
+  public address: IParsedAddressRecord;
 
   public parsedAddressDict = ParsedAddressFieldLabel;
 

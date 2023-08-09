@@ -123,7 +123,7 @@ export enum ParsedAddressField {
   Country = 'country'
 }
 
-export interface IParsedAddress {
+export interface IParsedAddressRecord {
   [ParsedAddressField.AddressLocationType]: string;
   [ParsedAddressField.AddressFormatType]: AddressProcessingAddressFormat;
   [ParsedAddressField.Number]: string;
@@ -158,7 +158,7 @@ export interface IAddressProcessingStreetAddressRecord {
   timeTaken: number;
   exceptionOccurred: boolean;
   errorMessage: string | null;
-  parsedAddress: IParsedAddress;
+  parsedAddress: IParsedAddressRecord;
 }
 
 export type AddressProcessingResult = ITransactionResult<
@@ -207,8 +207,7 @@ export enum CensusIntersectionField {
   ExceptionMessage = 'exceptionMessage'
 }
 
-// Not a ICensusIntersectionRecord because this response type does not inherit from ITransactionResult
-export interface ICensusIntersection {
+export interface ICensusIntersectionRecord {
   [CensusIntersectionField.CensusYear]: number;
   [CensusIntersectionField.GeoLocationId]: string;
   [CensusIntersectionField.CensusBlock]: string;
@@ -226,7 +225,7 @@ export interface ICensusIntersection {
   [CensusIntersectionField.ExceptionMessage]: string;
 }
 
-export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersection>;
+export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersectionRecord>;
 
 /////////////////////////////////////////////
 //
@@ -254,8 +253,7 @@ export enum ReverseGeocodeField {
   ZipPlus4 = 'zipPlus4'
 }
 
-// Not a IReverseGeocodeRecord because this response type does not inherit from ITransactionResult
-export interface IReverseGeocode {
+export interface IReverseGeocodeRecord {
   [ReverseGeocodeField.TimeTaken]: number;
   [ReverseGeocodeField.ExceptionOccurred]: boolean;
   [ReverseGeocodeField.ErrorMessage]: string;
@@ -267,7 +265,7 @@ export interface IReverseGeocode {
   [ReverseGeocodeField.ZipPlus4]: string;
 }
 
-export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocode>;
+export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocodeRecord>;
 
 /////////////////////////////////////////////
 //
@@ -553,7 +551,7 @@ export enum GeocodeReferenceFeatureField {
 }
 
 export interface IGeocodeReferenceFeature {
-  [GeocodeReferenceFeatureField.Address]: IParsedAddress;
+  [GeocodeReferenceFeatureField.Address]: IParsedAddressRecord;
   [GeocodeReferenceFeatureField.Area]: number;
   [GeocodeReferenceFeatureField.AreaType]: string;
   [GeocodeReferenceFeatureField.GeometrySRID]: string;
@@ -593,8 +591,8 @@ export interface IGeocodeRecord {
   queryStatusCodes: string;
   tieHandlingStrategyType: string;
   featureMatchingSelectionMethod: string;
-  censusRecords: Array<ICensusIntersection>;
-  matchedAddress: IParsedAddress;
+  censusRecords: Array<ICensusIntersectionRecord>;
+  matchedAddress: IParsedAddressRecord;
   referenceFeature: IGeocodeReferenceFeature;
 }
 
