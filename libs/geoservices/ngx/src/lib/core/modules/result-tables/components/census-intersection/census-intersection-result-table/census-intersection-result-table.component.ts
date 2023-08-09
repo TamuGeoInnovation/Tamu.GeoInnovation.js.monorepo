@@ -15,9 +15,9 @@ export class CensusIntersectionResultTableComponent implements OnInit {
   @Input()
   public address: ICensusIntersection;
 
-  public censusIntersectionDict = CensusIntersectionFeatureLabel;
-
   public filteredProps: Observable<EnumeratorKeyValuePairs>;
+
+  public censusIntersectionDict = CensusIntersectionFeatureLabel;
 
   private _excludedProps = [
     CensusIntersectionField.ExceptionMessage,

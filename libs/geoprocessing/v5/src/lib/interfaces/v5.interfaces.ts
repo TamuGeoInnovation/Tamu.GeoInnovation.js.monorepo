@@ -254,7 +254,8 @@ export enum ReverseGeocodeField {
   ZipPlus4 = 'zipPlus4'
 }
 
-interface IReverseGeocodeRecord {
+// Not a IReverseGeocodeRecord because this response type does not inherit from ITransactionResult
+export interface IReverseGeocode {
   [ReverseGeocodeField.TimeTaken]: number;
   [ReverseGeocodeField.ExceptionOccurred]: boolean;
   [ReverseGeocodeField.ErrorMessage]: string;
@@ -266,7 +267,7 @@ interface IReverseGeocodeRecord {
   [ReverseGeocodeField.ZipPlus4]: string;
 }
 
-export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocodeRecord>;
+export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocode>;
 
 /////////////////////////////////////////////
 //
