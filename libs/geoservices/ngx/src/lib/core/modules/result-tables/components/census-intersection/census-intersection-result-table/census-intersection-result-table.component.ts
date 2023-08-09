@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
-import { CensusIntersectionField, ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
+import { CensusIntersectionRecordField, ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
 
 import { CensusIntersectionFeatureLabel } from '../../../../../util/dictionaries';
 
@@ -20,24 +20,24 @@ export class CensusIntersectionResultTableComponent implements OnInit {
   public censusIntersectionDict = CensusIntersectionFeatureLabel;
 
   private _excludedProps = [
-    CensusIntersectionField.ExceptionMessage,
-    CensusIntersectionField.ExceptionOccurred,
-    CensusIntersectionField.CensusYear
+    CensusIntersectionRecordField.ExceptionMessage,
+    CensusIntersectionRecordField.ExceptionOccurred,
+    CensusIntersectionRecordField.CensusYear
   ];
 
   private _defaultOrder = [
-    CensusIntersectionField.GeoLocationId,
-    CensusIntersectionField.CensusBlock,
-    CensusIntersectionField.CensusBlockGroup,
-    CensusIntersectionField.CensusTract,
-    CensusIntersectionField.CensusCountyFips,
-    CensusIntersectionField.CensusPlaceFips,
-    CensusIntersectionField.CensusMsaFips,
-    CensusIntersectionField.CensusMcdFips,
-    CensusIntersectionField.CensusCbsaFips,
-    CensusIntersectionField.CensusCbsaMicro,
-    CensusIntersectionField.CensusMetDivFips,
-    CensusIntersectionField.CensusStateFips
+    CensusIntersectionRecordField.GeoLocationId,
+    CensusIntersectionRecordField.CensusBlock,
+    CensusIntersectionRecordField.CensusBlockGroup,
+    CensusIntersectionRecordField.CensusTract,
+    CensusIntersectionRecordField.CensusCountyFips,
+    CensusIntersectionRecordField.CensusPlaceFips,
+    CensusIntersectionRecordField.CensusMsaFips,
+    CensusIntersectionRecordField.CensusMcdFips,
+    CensusIntersectionRecordField.CensusCbsaFips,
+    CensusIntersectionRecordField.CensusCbsaMicro,
+    CensusIntersectionRecordField.CensusMetDivFips,
+    CensusIntersectionRecordField.CensusStateFips
   ];
 
   public ngOnInit(): void {

@@ -92,7 +92,7 @@ export interface IAddressProcessingDeserializedInputParametersMap {
  *
  * This is a cleaner version of using string values to access object properties.
  */
-export enum ParsedAddressField {
+export enum ParsedAddressRecordField {
   AddressLocationType = 'addressLocationType',
   AddressFormatType = 'addressFormatType',
   Number = 'number',
@@ -124,34 +124,34 @@ export enum ParsedAddressField {
 }
 
 export interface IParsedAddressRecord {
-  [ParsedAddressField.AddressLocationType]: string;
-  [ParsedAddressField.AddressFormatType]: AddressProcessingAddressFormat;
-  [ParsedAddressField.Number]: string;
-  [ParsedAddressField.NumberFractional]: string | null;
-  [ParsedAddressField.PreDirectional]: string | null;
-  [ParsedAddressField.PreQualifier]: string | null;
-  [ParsedAddressField.PreType]: string | null;
-  [ParsedAddressField.PreArticle]: string;
-  [ParsedAddressField.Name]: string;
-  [ParsedAddressField.PostArticle]: string;
-  [ParsedAddressField.PostQualifier]: string;
-  [ParsedAddressField.PostDirectional]: string;
-  [ParsedAddressField.Suffix]: string;
-  [ParsedAddressField.SuiteType]: string;
-  [ParsedAddressField.SuiteNumber]: string;
-  [ParsedAddressField.City]: string;
-  [ParsedAddressField.MinorCivilDivision]: string | null;
-  [ParsedAddressField.ConsolidatedCity]: string | null;
-  [ParsedAddressField.CountySubRegion]: string | null;
-  [ParsedAddressField.County]: string | null;
-  [ParsedAddressField.State]: string;
-  [ParsedAddressField.Zip]: string;
-  [ParsedAddressField.ZipPlus1]: string;
-  [ParsedAddressField.ZipPlus2]: string;
-  [ParsedAddressField.ZipPlus3]: string;
-  [ParsedAddressField.ZipPlus4]: string;
-  [ParsedAddressField.ZipPlus5]: string;
-  [ParsedAddressField.Country]: string | null;
+  [ParsedAddressRecordField.AddressLocationType]: string;
+  [ParsedAddressRecordField.AddressFormatType]: AddressProcessingAddressFormat;
+  [ParsedAddressRecordField.Number]: string;
+  [ParsedAddressRecordField.NumberFractional]: string | null;
+  [ParsedAddressRecordField.PreDirectional]: string | null;
+  [ParsedAddressRecordField.PreQualifier]: string | null;
+  [ParsedAddressRecordField.PreType]: string | null;
+  [ParsedAddressRecordField.PreArticle]: string;
+  [ParsedAddressRecordField.Name]: string;
+  [ParsedAddressRecordField.PostArticle]: string;
+  [ParsedAddressRecordField.PostQualifier]: string;
+  [ParsedAddressRecordField.PostDirectional]: string;
+  [ParsedAddressRecordField.Suffix]: string;
+  [ParsedAddressRecordField.SuiteType]: string;
+  [ParsedAddressRecordField.SuiteNumber]: string;
+  [ParsedAddressRecordField.City]: string;
+  [ParsedAddressRecordField.MinorCivilDivision]: string | null;
+  [ParsedAddressRecordField.ConsolidatedCity]: string | null;
+  [ParsedAddressRecordField.CountySubRegion]: string | null;
+  [ParsedAddressRecordField.County]: string | null;
+  [ParsedAddressRecordField.State]: string;
+  [ParsedAddressRecordField.Zip]: string;
+  [ParsedAddressRecordField.ZipPlus1]: string;
+  [ParsedAddressRecordField.ZipPlus2]: string;
+  [ParsedAddressRecordField.ZipPlus3]: string;
+  [ParsedAddressRecordField.ZipPlus4]: string;
+  [ParsedAddressRecordField.ZipPlus5]: string;
+  [ParsedAddressRecordField.Country]: string | null;
 }
 
 export interface IAddressProcessingStreetAddressRecord {
@@ -189,7 +189,7 @@ export interface ICensusIntersectionOptions extends ICommonServiceOptions {
   notStore?: boolean;
 }
 
-export enum CensusIntersectionField {
+export enum CensusIntersectionRecordField {
   CensusYear = 'censusYear',
   GeoLocationId = 'geoLocationId',
   CensusBlock = 'censusBlock',
@@ -208,21 +208,21 @@ export enum CensusIntersectionField {
 }
 
 export interface ICensusIntersectionRecord {
-  [CensusIntersectionField.CensusYear]: number;
-  [CensusIntersectionField.GeoLocationId]: string;
-  [CensusIntersectionField.CensusBlock]: string;
-  [CensusIntersectionField.CensusBlockGroup]: string;
-  [CensusIntersectionField.CensusTract]: string;
-  [CensusIntersectionField.CensusPlaceFips]: string;
-  [CensusIntersectionField.CensusMcdFips]: string;
-  [CensusIntersectionField.CensusMsaFips]: string;
-  [CensusIntersectionField.CensusMetDivFips]: string;
-  [CensusIntersectionField.CensusCbsaFips]: string;
-  [CensusIntersectionField.CensusCbsaMicro]: string;
-  [CensusIntersectionField.CensusCountyFips]: string;
-  [CensusIntersectionField.CensusStateFips]: string;
-  [CensusIntersectionField.ExceptionOccurred]: boolean;
-  [CensusIntersectionField.ExceptionMessage]: string;
+  [CensusIntersectionRecordField.CensusYear]: number;
+  [CensusIntersectionRecordField.GeoLocationId]: string;
+  [CensusIntersectionRecordField.CensusBlock]: string;
+  [CensusIntersectionRecordField.CensusBlockGroup]: string;
+  [CensusIntersectionRecordField.CensusTract]: string;
+  [CensusIntersectionRecordField.CensusPlaceFips]: string;
+  [CensusIntersectionRecordField.CensusMcdFips]: string;
+  [CensusIntersectionRecordField.CensusMsaFips]: string;
+  [CensusIntersectionRecordField.CensusMetDivFips]: string;
+  [CensusIntersectionRecordField.CensusCbsaFips]: string;
+  [CensusIntersectionRecordField.CensusCbsaMicro]: string;
+  [CensusIntersectionRecordField.CensusCountyFips]: string;
+  [CensusIntersectionRecordField.CensusStateFips]: string;
+  [CensusIntersectionRecordField.ExceptionOccurred]: boolean;
+  [CensusIntersectionRecordField.ExceptionMessage]: string;
 }
 
 export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersectionRecord>;
@@ -241,7 +241,7 @@ export interface IReverseGeocoderOptions extends ICommonServiceOptions {
   format?: ResponseFormat;
 }
 
-export enum ReverseGeocodeField {
+export enum ReverseGeocodeRecordField {
   TimeTaken = 'timeTaken',
   ExceptionOccurred = 'exceptionOccurred',
   ErrorMessage = 'errorMessage',
@@ -254,15 +254,15 @@ export enum ReverseGeocodeField {
 }
 
 export interface IReverseGeocodeRecord {
-  [ReverseGeocodeField.TimeTaken]: number;
-  [ReverseGeocodeField.ExceptionOccurred]: boolean;
-  [ReverseGeocodeField.ErrorMessage]: string;
-  [ReverseGeocodeField.Apn]: string;
-  [ReverseGeocodeField.StreetAddress]: string;
-  [ReverseGeocodeField.City]: string;
-  [ReverseGeocodeField.State]: string;
-  [ReverseGeocodeField.Zip]: string;
-  [ReverseGeocodeField.ZipPlus4]: string;
+  [ReverseGeocodeRecordField.TimeTaken]: number;
+  [ReverseGeocodeRecordField.ExceptionOccurred]: boolean;
+  [ReverseGeocodeRecordField.ErrorMessage]: string;
+  [ReverseGeocodeRecordField.Apn]: string;
+  [ReverseGeocodeRecordField.StreetAddress]: string;
+  [ReverseGeocodeRecordField.City]: string;
+  [ReverseGeocodeRecordField.State]: string;
+  [ReverseGeocodeRecordField.Zip]: string;
+  [ReverseGeocodeRecordField.ZipPlus4]: string;
 }
 
 export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocodeRecord>;

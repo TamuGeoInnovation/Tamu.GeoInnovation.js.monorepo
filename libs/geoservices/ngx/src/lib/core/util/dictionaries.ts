@@ -4,14 +4,14 @@
 import {
   GeocodeInputParamsField,
   GeocodeReferenceFeatureField,
-  ParsedAddressField,
+  ParsedAddressRecordField,
   GeocodeTieHandlingStrategyType,
   CensusYear,
   GeocodeReferenceFeature,
   GeocodeConfidenceLevel,
   AddressProcessingAddressFormat,
-  CensusIntersectionField,
-  ReverseGeocodeField
+  CensusIntersectionRecordField,
+  ReverseGeocodeRecordField
 } from '@tamu-gisc/geoprocessing-v5';
 
 export const TIE_BREAKING_STRATEGIES = [
@@ -280,35 +280,35 @@ export const GeocodeInputParameterLabel: { [key in GeocodeInputParamsField]: str
   [GeocodeInputParamsField.ReferenceSources]: 'Reference sources'
 };
 
-export const ParsedAddressFieldLabel: { [key in ParsedAddressField]: string } = {
-  [ParsedAddressField.AddressLocationType]: 'Address location type',
-  [ParsedAddressField.AddressFormatType]: 'Address format type',
-  [ParsedAddressField.Number]: 'Number',
-  [ParsedAddressField.NumberFractional]: 'Number fractional',
-  [ParsedAddressField.PreDirectional]: 'Pre-directional',
-  [ParsedAddressField.PreQualifier]: 'Pre-qualifier',
-  [ParsedAddressField.PreType]: 'Pre-type',
-  [ParsedAddressField.PreArticle]: 'Pre-article',
-  [ParsedAddressField.Name]: 'Name',
-  [ParsedAddressField.PostArticle]: 'Post-article',
-  [ParsedAddressField.PostQualifier]: 'Post-qualifier',
-  [ParsedAddressField.PostDirectional]: 'Post-directional',
-  [ParsedAddressField.Suffix]: 'Suffix',
-  [ParsedAddressField.SuiteType]: 'Suite type',
-  [ParsedAddressField.SuiteNumber]: 'Suite number',
-  [ParsedAddressField.City]: 'City',
-  [ParsedAddressField.MinorCivilDivision]: 'Minor civil division',
-  [ParsedAddressField.ConsolidatedCity]: 'Consolidated city',
-  [ParsedAddressField.CountySubRegion]: 'County sub-region',
-  [ParsedAddressField.County]: 'County',
-  [ParsedAddressField.State]: 'State',
-  [ParsedAddressField.Zip]: 'Zip',
-  [ParsedAddressField.ZipPlus1]: 'Zip+1',
-  [ParsedAddressField.ZipPlus2]: 'Zip+2',
-  [ParsedAddressField.ZipPlus3]: 'Zip+3',
-  [ParsedAddressField.ZipPlus4]: 'Zip+4',
-  [ParsedAddressField.ZipPlus5]: 'Zip+5',
-  [ParsedAddressField.Country]: 'Country'
+export const ParsedAddressFieldLabel: { [key in ParsedAddressRecordField]: string } = {
+  [ParsedAddressRecordField.AddressLocationType]: 'Address location type',
+  [ParsedAddressRecordField.AddressFormatType]: 'Address format type',
+  [ParsedAddressRecordField.Number]: 'Number',
+  [ParsedAddressRecordField.NumberFractional]: 'Number fractional',
+  [ParsedAddressRecordField.PreDirectional]: 'Pre-directional',
+  [ParsedAddressRecordField.PreQualifier]: 'Pre-qualifier',
+  [ParsedAddressRecordField.PreType]: 'Pre-type',
+  [ParsedAddressRecordField.PreArticle]: 'Pre-article',
+  [ParsedAddressRecordField.Name]: 'Name',
+  [ParsedAddressRecordField.PostArticle]: 'Post-article',
+  [ParsedAddressRecordField.PostQualifier]: 'Post-qualifier',
+  [ParsedAddressRecordField.PostDirectional]: 'Post-directional',
+  [ParsedAddressRecordField.Suffix]: 'Suffix',
+  [ParsedAddressRecordField.SuiteType]: 'Suite type',
+  [ParsedAddressRecordField.SuiteNumber]: 'Suite number',
+  [ParsedAddressRecordField.City]: 'City',
+  [ParsedAddressRecordField.MinorCivilDivision]: 'Minor civil division',
+  [ParsedAddressRecordField.ConsolidatedCity]: 'Consolidated city',
+  [ParsedAddressRecordField.CountySubRegion]: 'County sub-region',
+  [ParsedAddressRecordField.County]: 'County',
+  [ParsedAddressRecordField.State]: 'State',
+  [ParsedAddressRecordField.Zip]: 'Zip',
+  [ParsedAddressRecordField.ZipPlus1]: 'Zip+1',
+  [ParsedAddressRecordField.ZipPlus2]: 'Zip+2',
+  [ParsedAddressRecordField.ZipPlus3]: 'Zip+3',
+  [ParsedAddressRecordField.ZipPlus4]: 'Zip+4',
+  [ParsedAddressRecordField.ZipPlus5]: 'Zip+5',
+  [ParsedAddressRecordField.Country]: 'Country'
 };
 
 export const GeocodeReferenceFeatureLabel: { [key in GeocodeReferenceFeatureField]: string } = {
@@ -328,32 +328,32 @@ export const GeocodeReferenceFeatureLabel: { [key in GeocodeReferenceFeatureFiel
   [GeocodeReferenceFeatureField.InterpolationSubType]: 'Interpolation sub-type'
 };
 
-export const CensusIntersectionFeatureLabel: { [key in CensusIntersectionField]: string } = {
-  [CensusIntersectionField.CensusYear]: 'Census year',
-  [CensusIntersectionField.GeoLocationId]: 'Geolocation ID',
-  [CensusIntersectionField.CensusBlock]: 'Census block',
-  [CensusIntersectionField.CensusBlockGroup]: 'Census block group',
-  [CensusIntersectionField.CensusTract]: 'Census tract',
-  [CensusIntersectionField.CensusPlaceFips]: 'Census place FIPS',
-  [CensusIntersectionField.CensusMcdFips]: 'Census MCD FIPS',
-  [CensusIntersectionField.CensusMsaFips]: 'Census MSA FIPS',
-  [CensusIntersectionField.CensusMetDivFips]: 'Census metropolitan division FIPS',
-  [CensusIntersectionField.CensusCbsaFips]: 'Census CBSA FIPS',
-  [CensusIntersectionField.CensusCbsaMicro]: 'Census CBSA Micropolitan',
-  [CensusIntersectionField.CensusCountyFips]: 'Census County FIPS',
-  [CensusIntersectionField.CensusStateFips]: 'Census State FIPS',
-  [CensusIntersectionField.ExceptionOccurred]: 'Exception occurred',
-  [CensusIntersectionField.ExceptionMessage]: 'Exception message'
+export const CensusIntersectionFeatureLabel: { [key in CensusIntersectionRecordField]: string } = {
+  [CensusIntersectionRecordField.CensusYear]: 'Census year',
+  [CensusIntersectionRecordField.GeoLocationId]: 'Geolocation ID',
+  [CensusIntersectionRecordField.CensusBlock]: 'Census block',
+  [CensusIntersectionRecordField.CensusBlockGroup]: 'Census block group',
+  [CensusIntersectionRecordField.CensusTract]: 'Census tract',
+  [CensusIntersectionRecordField.CensusPlaceFips]: 'Census place FIPS',
+  [CensusIntersectionRecordField.CensusMcdFips]: 'Census MCD FIPS',
+  [CensusIntersectionRecordField.CensusMsaFips]: 'Census MSA FIPS',
+  [CensusIntersectionRecordField.CensusMetDivFips]: 'Census metropolitan division FIPS',
+  [CensusIntersectionRecordField.CensusCbsaFips]: 'Census CBSA FIPS',
+  [CensusIntersectionRecordField.CensusCbsaMicro]: 'Census CBSA Micropolitan',
+  [CensusIntersectionRecordField.CensusCountyFips]: 'Census County FIPS',
+  [CensusIntersectionRecordField.CensusStateFips]: 'Census State FIPS',
+  [CensusIntersectionRecordField.ExceptionOccurred]: 'Exception occurred',
+  [CensusIntersectionRecordField.ExceptionMessage]: 'Exception message'
 };
 
-export const ReverseGeocodeFieldLabel: { [key in ReverseGeocodeField]: string } = {
-  [ReverseGeocodeField.TimeTaken]: 'Time taken',
-  [ReverseGeocodeField.ExceptionOccurred]: 'Exception occurred',
-  [ReverseGeocodeField.ErrorMessage]: 'Error message',
-  [ReverseGeocodeField.Apn]: 'APN',
-  [ReverseGeocodeField.StreetAddress]: 'Street address',
-  [ReverseGeocodeField.City]: 'City',
-  [ReverseGeocodeField.State]: 'State',
-  [ReverseGeocodeField.Zip]: 'Zip',
-  [ReverseGeocodeField.ZipPlus4]: 'Zip+4'
+export const ReverseGeocodeFieldLabel: { [key in ReverseGeocodeRecordField]: string } = {
+  [ReverseGeocodeRecordField.TimeTaken]: 'Time taken',
+  [ReverseGeocodeRecordField.ExceptionOccurred]: 'Exception occurred',
+  [ReverseGeocodeRecordField.ErrorMessage]: 'Error message',
+  [ReverseGeocodeRecordField.Apn]: 'APN',
+  [ReverseGeocodeRecordField.StreetAddress]: 'Street address',
+  [ReverseGeocodeRecordField.City]: 'City',
+  [ReverseGeocodeRecordField.State]: 'State',
+  [ReverseGeocodeRecordField.Zip]: 'Zip',
+  [ReverseGeocodeRecordField.ZipPlus4]: 'Zip+4'
 };
