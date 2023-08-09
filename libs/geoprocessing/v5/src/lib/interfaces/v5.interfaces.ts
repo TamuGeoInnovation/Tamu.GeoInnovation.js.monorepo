@@ -207,7 +207,8 @@ export enum CensusIntersectionField {
   ExceptionMessage = 'exceptionMessage'
 }
 
-export interface ICensusIntersectionRecord {
+// Not a ICensusIntersectionRecord because this response type does not inherit from ITransactionResult
+export interface ICensusIntersection {
   [CensusIntersectionField.CensusYear]: number;
   [CensusIntersectionField.GeoLocationId]: string;
   [CensusIntersectionField.CensusBlock]: string;
@@ -225,7 +226,7 @@ export interface ICensusIntersectionRecord {
   [CensusIntersectionField.ExceptionMessage]: string;
 }
 
-export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersectionRecord>;
+export type CensusIntersectionResult = ITransactionResult<undefined, ICensusIntersection>;
 
 /////////////////////////////////////////////
 //
@@ -591,7 +592,7 @@ export interface IGeocodeRecord {
   queryStatusCodes: string;
   tieHandlingStrategyType: string;
   featureMatchingSelectionMethod: string;
-  censusRecords: Array<ICensusIntersectionRecord>;
+  censusRecords: Array<ICensusIntersection>;
   matchedAddress: IParsedAddress;
   referenceFeature: IGeocodeReferenceFeature;
 }

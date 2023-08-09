@@ -9,6 +9,7 @@ import { GeocodeResultTableComponent } from './components/geocoding/geocode-resu
 import { GeocodeInputParametersComponent } from './components/geocoding/geocode-input-parameters/geocode-input-parameters.component';
 import { ParsedAddressResultTableComponent } from './components/address-processing/parsed-address-result-table/parsed-address-result-table.component';
 import { GeocodeMatchedReferenceFeatureTableComponent } from './components/geocoding/geocode-matched-reference-feature-table/geocode-matched-reference-feature-table.component';
+import { CensusIntersectionResultTableComponent } from './components/census-intersection/census-intersection-result-table/census-intersection-result-table.component';
 
 @NgModule({
   imports: [CommonModule, UILayoutModule],
@@ -18,7 +19,8 @@ import { GeocodeMatchedReferenceFeatureTableComponent } from './components/geoco
     GeocodeResultTableComponent,
     GeocodeInputParametersComponent,
     ParsedAddressResultTableComponent,
-    GeocodeMatchedReferenceFeatureTableComponent
+    GeocodeMatchedReferenceFeatureTableComponent,
+    CensusIntersectionResultTableComponent
   ],
   exports: [
     StatusResultTableComponent,
@@ -26,8 +28,8 @@ import { GeocodeMatchedReferenceFeatureTableComponent } from './components/geoco
     GeocodeResultTableComponent,
     GeocodeInputParametersComponent,
     ParsedAddressResultTableComponent,
-    GeocodeMatchedReferenceFeatureTableComponent
+    GeocodeMatchedReferenceFeatureTableComponent,
+    CensusIntersectionResultTableComponent
   ]
 })
 export class ResultTablesModule {}
-
