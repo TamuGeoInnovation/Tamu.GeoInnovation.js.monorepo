@@ -9,7 +9,8 @@ import {
   CensusYear,
   GeocodeReferenceFeature,
   GeocodeConfidenceLevel,
-  AddressProcessingAddressFormat
+  AddressProcessingAddressFormat,
+  CensusIntersectionField
 } from '@tamu-gisc/geoprocessing-v5';
 
 export const TIE_BREAKING_STRATEGIES = [
@@ -324,4 +325,22 @@ export const GeocodeReferenceFeatureLabel: { [key in GeocodeReferenceFeatureFiel
   [GeocodeReferenceFeatureField.SecondaryIdValue]: 'Secondary ID value',
   [GeocodeReferenceFeatureField.InterpolationType]: 'Interpolation type',
   [GeocodeReferenceFeatureField.InterpolationSubType]: 'Interpolation sub-type'
+};
+
+export const CensusIntersectionFeatureLabel: { [key in CensusIntersectionField]: string } = {
+  [CensusIntersectionField.CensusYear]: 'Census year',
+  [CensusIntersectionField.GeoLocationId]: 'Geolocation ID',
+  [CensusIntersectionField.CensusBlock]: 'Census block',
+  [CensusIntersectionField.CensusBlockGroup]: 'Census block group',
+  [CensusIntersectionField.CensusTract]: 'Census tract',
+  [CensusIntersectionField.CensusPlaceFips]: 'Census place FIPS',
+  [CensusIntersectionField.CensusMcdFips]: 'Census MCD FIPS',
+  [CensusIntersectionField.CensusMsaFips]: 'Census MSA FIPS',
+  [CensusIntersectionField.CensusMetDivFips]: 'Census metropolitan division FIPS',
+  [CensusIntersectionField.CensusCbsaFips]: 'Census CBSA FIPS',
+  [CensusIntersectionField.CensusCbsaMicro]: 'Census CBSA Micropolitan',
+  [CensusIntersectionField.CensusCountyFips]: 'Census County FIPS',
+  [CensusIntersectionField.CensusStateFips]: 'Census State FIPS',
+  [CensusIntersectionField.ExceptionOccurred]: 'Exception occurred',
+  [CensusIntersectionField.ExceptionMessage]: 'Exception message'
 };

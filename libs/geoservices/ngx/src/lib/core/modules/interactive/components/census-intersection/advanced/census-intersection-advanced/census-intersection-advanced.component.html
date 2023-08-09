@@ -53,107 +53,14 @@
     <tamu-gisc-accordion [expanded]="true">
       <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Time Taken</td>
-              <td>{{res?.data?.timeTaken | number}}ms</td>
-            </tr>
-
-            <tr>
-              <td>Transaction Guid</td>
-              <td>{{res?.data?.transactionGuid}}</td>
-            </tr>
-
-            <tr>
-              <td>Transaction Result</td>
-              <td>{{res?.data?.queryStatusCode}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
 
     <tamu-gisc-accordion *ngFor="let cr of (result | async)?.data?.results" [expanded]="true">
       <tamu-gisc-accordion-header>Census Year {{cr?.censusYear}}</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>GeoLocation ID</td>
-              <td>{{cr.geoLocationId}}</td>
-            </tr>
-
-            <tr>
-              <td>Census Block</td>
-              <td>{{cr.censusBlock}}</td>
-            </tr>
-
-            <tr>
-              <td>Census Block Group</td>
-              <td>{{cr.censusBlockGroup}}</td>
-            </tr>
-
-            <tr>
-              <td>Census Tract</td>
-              <td>{{cr.censusTract}}</td>
-            </tr>
-
-            <tr>
-              <td>Census County FIPS</td>
-              <td>{{cr.censusCountyFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census Place FIPS</td>
-              <td>{{cr.censusPlaceFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census MSA FIPS</td>
-              <td>{{cr.censusMsaFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census MCD FIPS</td>
-              <td>{{cr.censusMcdFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census CBSA FIPS</td>
-              <td>{{cr.censusCbsaFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census CBSA Micropolitan</td>
-              <td>{{cr.censusCbsaMicro}}</td>
-            </tr>
-
-            <tr>
-              <td>Census MetDiv</td>
-              <td>{{cr.censusMetDivFips}}</td>
-            </tr>
-
-            <tr>
-              <td>Census State FIPS</td>
-              <td>{{cr.censusStateFips}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <tamu-gisc-census-intersection-result-table [address]="cr"></tamu-gisc-census-intersection-result-table>
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
   </div>

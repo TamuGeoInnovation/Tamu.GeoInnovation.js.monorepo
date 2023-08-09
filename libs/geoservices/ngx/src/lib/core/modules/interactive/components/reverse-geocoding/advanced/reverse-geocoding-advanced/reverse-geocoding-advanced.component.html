@@ -35,31 +35,7 @@
     <tamu-gisc-accordion [expanded]="true">
       <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>Time Taken</td>
-              <td>{{res?.data?.timeTaken | number}}ms</td>
-            </tr>
-
-            <tr>
-              <td>Transaction Guid</td>
-              <td>{{res?.data?.transactionGuid}}</td>
-            </tr>
-
-            <tr>
-              <td>Transaction Result</td>
-              <td>{{res?.data?.queryStatusCode}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
 
