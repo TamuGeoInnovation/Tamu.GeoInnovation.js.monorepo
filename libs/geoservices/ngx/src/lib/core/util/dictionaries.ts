@@ -1,43 +1,51 @@
 // This is a series of objects in key-pair values that are used in the application
 // to populate dropdowns and other UI elements.
 
-import { ParsedAddressField } from '@tamu-gisc/geoprocessing-v5';
+import {
+  GeocodeInputParamsField,
+  GeocodeReferenceFeatureField,
+  ParsedAddressField,
+  GeocodeTieHandlingStrategyType,
+  GeocodeCensusYear,
+  GeocodeReferenceFeature,
+  GeocodeConfidenceLevel
+} from '@tamu-gisc/geoprocessing-v5';
 
 export const TIE_BREAKING_STRATEGIES = [
   {
     name: 'Choose first one',
-    value: 'ChooseFirstOne'
+    value: GeocodeTieHandlingStrategyType.ChooseFirstOne
   },
   {
     name: 'Flip a coin',
-    value: 'FlipACoin'
+    value: GeocodeTieHandlingStrategyType.FlipACoin
   },
   {
     name: 'Revert to hierarchy',
-    value: 'RevertToHierarchy'
+    value: GeocodeTieHandlingStrategyType.RevertToHierarchy
   }
 ];
 
 export const CENSUS_YEARS = [
   {
-    name: '1990',
-    value: 1990
+    name: GeocodeCensusYear.Year1990,
+    value: GeocodeCensusYear.Year1990
   },
   {
-    name: '2000',
-    value: 2000
+    name: GeocodeCensusYear.Year2000,
+    value: GeocodeCensusYear.Year2000
   },
   {
-    name: '2010',
-    value: 2010
+    name: GeocodeCensusYear.Year2010,
+    value: GeocodeCensusYear.Year2010
   },
   {
-    name: '2020',
-    value: 2020
+    name: GeocodeCensusYear.Year2020,
+    value: GeocodeCensusYear.Year2020
   },
   {
     name: 'All Available',
-    value: 'allAvailable'
+    value: GeocodeCensusYear.AllAvailable
   }
 ];
 
@@ -65,132 +73,132 @@ export const ADDRESS_FORMAT_TYPES = [
 export const ADDRESS_POINTS_REF = [
   {
     name: 'Open Addresses',
-    value: 'OpenAddresses'
+    value: GeocodeReferenceFeature.OpenAddresses
   }
 ];
 
 export const BUILDING_FOOTPRINTS_REF = [
   {
     name: 'Microsoft Footprints',
-    value: 'MicrosoftFootprints'
+    value: GeocodeReferenceFeature.MicrosoftFootprints
   }
 ];
 
 export const PARCELS_REF = [
   {
     name: 'National Parcel Geometries (US-Wide)',
-    value: 'BoundarySolutionsParcelCentroids'
+    value: GeocodeReferenceFeature.BoundarySolutionsParcelCentroids
   },
   {
     name: 'Local Parcel Centroids',
-    value: 'CountyParcelData'
+    value: GeocodeReferenceFeature.CountyParcelData
   }
 ];
 
 export const STREETS_REF = [
   {
     name: 'Census 2010 Tiger Lines',
-    value: 'Census2010TigerLines'
+    value: GeocodeReferenceFeature.Census2010TigerLines
   },
   {
     name: 'Census 2015 Tiger Lines',
-    value: 'Census2015TigerLines'
+    value: GeocodeReferenceFeature.Census2015TigerLines
   },
   {
     name: 'Census 2016 Tiger Lines',
-    value: 'Census2016TigerLines'
+    value: GeocodeReferenceFeature.Census2016TigerLines
   }
 ];
 
 export const CENSUS_2020_REF = [
   {
     name: 'Census 2020 Places',
-    value: 'Census2020Places'
+    value: GeocodeReferenceFeature.Census2020Places
   },
   {
     name: 'Census 2020 Consolidated Cities',
-    value: 'Census2020ConsolidatedCities'
+    value: GeocodeReferenceFeature.Census2020ConsolidatedCities
   },
   {
     name: 'Census 2020 ZCTAs',
-    value: 'Census2020ZCTAs'
+    value: GeocodeReferenceFeature.Census2020ZCTAs
   },
   {
     name: 'Census 2020 County Sub Regions',
-    value: 'Census2020CountySubRegions'
+    value: GeocodeReferenceFeature.Census2020CountySubRegions
   },
   {
     name: 'Census 2020 Counties',
-    value: 'Census2020Counties'
+    value: GeocodeReferenceFeature.Census2020Counties
   },
   {
     name: 'Census 2020 States',
-    value: 'Census2020States'
+    value: GeocodeReferenceFeature.Census2020States
   }
 ];
 
 export const CENSUS_2010_REF = [
   {
     name: 'Census 2010 Places',
-    value: 'Census2010Places'
+    value: GeocodeReferenceFeature.Census2010Places
   },
   {
     name: 'Census 2010 Consolidated Cities',
-    value: 'Census2010ConsolidatedCities'
+    value: GeocodeReferenceFeature.Census2010ConsolidatedCities
   },
   {
     name: 'Census 2010 ZCTAs',
-    value: 'Census2010ZCTAs'
+    value: GeocodeReferenceFeature.Census2010ZCTAs
   },
   {
     name: 'Census 2010 County Sub Regions',
-    value: 'Census2010CountySubRegions'
+    value: GeocodeReferenceFeature.Census2010CountySubRegions
   },
   {
     name: 'Census 2010 Counties',
-    value: 'Census2010Counties'
+    value: GeocodeReferenceFeature.Census2010Counties
   },
   {
     name: 'Census 2010 States',
-    value: 'Census2010States'
+    value: GeocodeReferenceFeature.Census2010States
   }
 ];
 
 export const CENSUS_2000_REF = [
   {
     name: 'Census 2000 Places',
-    value: 'Census2000Places'
+    value: GeocodeReferenceFeature.Census2000Places
   },
   {
     name: 'Census 2000 Consolidated Cities',
-    value: 'Census2000ConsolidatedCities'
+    value: GeocodeReferenceFeature.Census2000ConsolidatedCities
   },
   {
     name: 'Census 2000 ZCTAs',
-    value: 'Census2000ZCTAs'
+    value: GeocodeReferenceFeature.Census2000ZCTAs
   },
   {
     name: 'Census 2000 County Sub Regions',
-    value: 'Census2000CountySubRegions'
+    value: GeocodeReferenceFeature.Census2000CountySubRegions
   },
   {
     name: 'Census 2000 Counties',
-    value: 'Census2000Counties'
+    value: GeocodeReferenceFeature.Census2000Counties
   },
   {
     name: 'Census 2000 States',
-    value: 'Census2000States'
+    value: GeocodeReferenceFeature.Census2000States
   }
 ];
 
 export const ZIP_REF = [
   {
     name: 'USPS Zip Codes',
-    value: 'ZipCodeDownloadZips2013'
+    value: GeocodeReferenceFeature.ZipCodeDownloadZips2013
   },
   {
     name: 'USPS Zip+4',
-    value: 'USPSTigerZipPlus4'
+    value: GeocodeReferenceFeature.USPSTigerZipPlus4
   }
 ];
 
@@ -208,68 +216,39 @@ export const GEOCODING_REFS = {
 export const OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS = [
   {
     name: '1 - .gov sites',
-    value: 1
+    value: GeocodeConfidenceLevel.DotGovernmentSites
   },
   {
     name: '2 - Gov sites',
-    value: 2
+    value: GeocodeConfidenceLevel.GovernmentSites
   },
   {
     name: '3 - .us sites',
-    value: 3
+    value: GeocodeConfidenceLevel.DotEduSites
   },
   {
     name: '4 - City sites',
-    value: 4
+    value: GeocodeConfidenceLevel.CitySites
   },
   {
     name: '5 - County sites',
-    value: 5
+    value: GeocodeConfidenceLevel.CountySites
   },
   {
     name: '6 - .edu sites',
-    value: 6
+    value: GeocodeConfidenceLevel.DotEduSites
   },
   {
     name: '7 - Public sites',
-    value: 7
+    value: GeocodeConfidenceLevel.PublicSites
   },
   {
     name: '8 - Source not listed',
-    value: 8
+    value: GeocodeConfidenceLevel.SourceNotLIsted
   }
 ];
 
-export enum GeocodeInputParamsField {
-  StreetAddress = 'streetAddress',
-  City = 'city',
-  State = 'state',
-  Zip = 'zip',
-  ApiKey = 'apiKey',
-  DontStoreTransactionDetails = 'dontStoreTransactionDetails',
-  AllowTies = 'allowTies',
-  TieHandlingStrategyType = 'tieHandlingStrategyType',
-  Relaxation = 'relaxation',
-  RelaxableAttributes = 'relaxableAttributes',
-  Substring = 'substring',
-  Soundex = 'soundex',
-  SoundexAttributes = 'soundexAttributes',
-  FeatureMatchingSelectionMethod = 'featureMatchingSelectionMethod',
-  MinimumMatchScore = 'minimumMatchScore',
-  ConfidenceLevels = 'confidenceLevels',
-  ExhaustiveSearch = 'exhaustiveSearch',
-  AliasTables = 'aliasTables',
-  MultiThreading = 'multiThreading',
-  IncludeHeader = 'includeHeader',
-  Verbose = 'verbose',
-  OutputCensusVariables = 'outputCensusVariables',
-  OutputReferenceFeatureGeometry = 'outputReferenceFeatureGeometry',
-  OutputFormat = 'outputFormat',
-  CensusYears = 'censusYears',
-  ReferenceSources = 'referenceSources'
-}
-
-export const GEOCODE_INPUT_PARAMS: { [key in GeocodeInputParamsField]: string } = {
+export const GeocodeInputParameterLabel: { [key in GeocodeInputParamsField]: string } = {
   [GeocodeInputParamsField.StreetAddress]: 'Street address',
   [GeocodeInputParamsField.City]: 'City',
   [GeocodeInputParamsField.State]: 'State',
@@ -329,26 +308,15 @@ export const ParsedAddressFieldLabel: { [key in ParsedAddressField]: string } = 
   [ParsedAddressField.Country]: 'Country'
 };
 
-export enum GeocodeReferenceFeatureField {
-  Area = 'area',
-  AreaType = 'areaType',
-  GeometrySRID = 'geometrySRID',
-  Source = 'source',
-  Vintage = 'vintage',
-  PrimaryIdField = 'primaryIdField',
-  PrimaryIdValue = 'primaryIdValue',
-  SecondaryIdField = 'secondaryIdField',
-  SecondaryIdValue = 'secondaryIdValue',
-  InterpolationType = 'interpolationType',
-  InterpolationSubType = 'interpolationSubType'
-}
-
-export const GEOCODE_REFERENCE_FEATURE: { [key in GeocodeReferenceFeatureField]: string } = {
+export const GeocodeReferenceFeatureLabel: { [key in GeocodeReferenceFeatureField]: string } = {
+  [GeocodeReferenceFeatureField.Address]: 'Address',
   [GeocodeReferenceFeatureField.Area]: 'Area',
   [GeocodeReferenceFeatureField.AreaType]: 'Area type',
+  [GeocodeReferenceFeatureField.Geometry]: 'Geometry',
   [GeocodeReferenceFeatureField.GeometrySRID]: 'Geometry SRID',
   [GeocodeReferenceFeatureField.Source]: 'Source',
   [GeocodeReferenceFeatureField.Vintage]: 'Vintage',
+  [GeocodeReferenceFeatureField.ServerName]: 'Server name',
   [GeocodeReferenceFeatureField.PrimaryIdField]: 'Primary ID field',
   [GeocodeReferenceFeatureField.PrimaryIdValue]: 'Primary ID value',
   [GeocodeReferenceFeatureField.SecondaryIdField]: 'Secondary ID field',
@@ -356,4 +324,3 @@ export const GEOCODE_REFERENCE_FEATURE: { [key in GeocodeReferenceFeatureField]:
   [GeocodeReferenceFeatureField.InterpolationType]: 'Interpolation type',
   [GeocodeReferenceFeatureField.InterpolationSubType]: 'Interpolation sub-type'
 };
-

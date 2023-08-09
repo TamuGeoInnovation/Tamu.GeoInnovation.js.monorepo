@@ -4,6 +4,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+import { ResponseFormat } from '@tamu-gisc/geoprocessing-core';
+
 export interface ICommonServiceOptions {
   /**
    * Retrieve your API key @ https://geoservices.tamu.edu/UserServices/Profile/
@@ -62,7 +64,7 @@ export interface IAddressProcessingOptions extends ICommonServiceOptions {
   nonParsedStreetState?: string;
   nonParsedStreetZIP?: string;
   addressFormat?: Array<AddressProcessingAddressFormat>;
-  responseFormat?: 'csv' | 'tsv' | 'xml' | 'json';
+  responseFormat?: ResponseFormat;
   includeHeader?: boolean;
   notStore?: boolean;
 }
@@ -171,7 +173,7 @@ export interface ICensusIntersectionOptions extends ICommonServiceOptions {
   lon: number;
   censusYears: 'allAvailable' | Array<'1990' | '2000' | '2010' | '2020'>;
   s?: string;
-  format?: 'csv' | 'tsv' | 'xml' | 'json';
+  format?: ResponseFormat;
   notStore?: boolean;
 }
 
@@ -206,7 +208,7 @@ export interface IReverseGeocoderOptions extends ICommonServiceOptions {
   longitude: number;
   state?: string;
   notStore?: boolean;
-  format?: 'csv' | 'tsv' | 'xml' | 'json';
+  format?: ResponseFormat;
 }
 
 interface IReverseGeocodeRecord {
@@ -229,14 +231,93 @@ export type ReverseGeocodeResult = ITransactionResult<undefined, IReverseGeocode
 //
 /////////////////////////////////////////////
 
+export enum GeocodeCensusYear {
+  AllAvailable = 'allAvailable',
+  Year1990 = '1990',
+  Year2000 = '2000',
+  Year2010 = '2010',
+  Year2020 = '2020'
+}
+
+export enum GeocodeTieHandlingStrategyType {
+  ChooseFirstOne = 'chooseFirstOne',
+  FlipACoin = 'flipACoin',
+  RevertToHierarchy = 'revertToHierarchy'
+}
+
+export enum GeocodeRelaxableAttribute {
+  Pre = 'pre',
+  Suffix = 'suffix',
+  Post = 'post',
+  City = 'city',
+  Zip = 'zip'
+}
+
+export enum GeocodeSoundexAttribute {
+  Name = 'name',
+  City = 'city'
+}
+
+export enum GeocodeConfidenceLevel {
+  DotGovernmentSites = 1,
+  GovernmentSites = 2,
+  DotUSSites = 3,
+  CitySites = 4,
+  CountySites = 5,
+  DotEduSites = 6,
+  PublicSites = 7,
+  SourceNotLIsted = 8
+}
+
+export enum GeocodeReferenceFeature {
+  All = 'all',
+  MicrosoftFootprints = 'MicrosoftFootprints',
+  CountyParcelData = 'CountyParcelData',
+  NavteqAddressPoints2022 = 'NavteqAddressPoints2022',
+  NavteqAddressPoints2021 = 'NavteqAddressPoints2021',
+  NavteqAddressPoints2017 = 'NavteqAddressPoints2017',
+  OpenAddresses = 'OpenAddresses',
+  NavteqAddressPoints2016 = 'NavteqAddressPoints2016',
+  NavteqAddressPoints2014 = 'NavteqAddressPoints2014',
+  NavteqAddressPoints2013 = 'NavteqAddressPoints2013',
+  NavteqAddressPoints2012 = 'NavteqAddressPoints2012',
+  BoundarySolutionsParcelCentroids = 'BoundarySolutionsParcelCentroids',
+  NavteqStreets2008 = 'NavteqStreets2008',
+  NavteqStreets2012 = 'NavteqStreets2012',
+  NavteqStreets2021 = 'NavteqStreets2021',
+  Census2016TigerLines = 'Census2016TigerLines',
+  Census2015TigerLines = 'Census2015TigerLines',
+  Census2010TigerLines = 'Census2010TigerLines',
+  USPSTigerZipPlus4 = 'USPSTigerZipPlus4',
+  ZipCodeDownloadZips2013 = 'ZipCodeDownloadZips2013',
+  Census2000ZCTAs = 'Census2000ZCTAs',
+  Census2000Places = 'Census2000Places',
+  Census2000ConsolidatedCities = 'Census2000ConsolidatedCities',
+  Census2000CountySubRegions = 'Census2000CountySubRegions',
+  Census2000Counties = 'Census2000Counties',
+  Census2000States = 'Census2000States',
+  Census2010ZCTAs = 'Census2010ZCTAs',
+  Census2010Places = 'Census2010Places',
+  Census2010ConsolidatedCities = 'Census2010ConsolidatedCities',
+  Census2010CountySubRegions = 'Census2010CountySubRegions',
+  Census2010Counties = 'Census2010Counties',
+  Census2010States = 'Census2010States',
+  Census2020ZCTAs = 'Census2020ZCTAs',
+  Census2020Places = 'Census2020Places',
+  Census2020ConsolidatedCities = 'Census2020ConsolidatedCities',
+  Census2020CountySubRegions = 'Census2020CountySubRegions',
+  Census2020Counties = 'Census2020Counties',
+  Census2020States = 'Census2020States'
+}
+
 export interface IGeocodeOptions extends ICommonServiceOptions {
   streetAddress?: string;
   city?: string;
   state?: string;
   zip?: number;
   census?: boolean;
-  censusYears?: 'allAvailable' | Array<'1990' | '2000' | '2010' | '2020'>;
-  format?: 'csv' | 'tsv' | 'xml' | 'json';
+  censusYears?: GeocodeCensusYear.AllAvailable | Array<Exclude<GeocodeCensusYear, GeocodeCensusYear.AllAvailable>>;
+  format?: ResponseFormat;
   includeHeader?: boolean;
   notStore?: boolean;
   verbose?: boolean;
@@ -253,12 +334,12 @@ export interface IGeocodeOptions extends ICommonServiceOptions {
   /**
    * Defaults to `chooseFirstOne`
    */
-  tieBreakingStrategy?: 'chooseFirstOne' | 'flipACoin' | 'revertToHierarchy';
+  tieBreakingStrategy?: GeocodeTieHandlingStrategyType;
 
   /**
-   * Defaults to `5`
+   * Defaults to `5 - County Sites`
    */
-  confidenceLevels?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  confidenceLevels?: GeocodeConfidenceLevel;
 
   /**
    * Defaults to `95`;
@@ -268,111 +349,157 @@ export interface IGeocodeOptions extends ICommonServiceOptions {
   exhaustiveSearch?: boolean;
   aliasTables?: boolean;
   attributeRelaxation?: boolean;
-  relaxableAttributes?: Array<'pre' | 'suffix' | 'post' | 'city' | 'zip'>;
+  relaxableAttributes?: Array<GeocodeRelaxableAttribute>;
   substringMAtching?: boolean;
   soundex?: boolean;
-  soundexableAttributes?: Array<'name' | 'city'>;
+  soundexableAttributes?: Array<GeocodeSoundexAttribute>;
   hierarchy?: boolean;
   /**
    * Reference data sources
    */
   refs?:
-    | 'all'
-    | Array<
-        | 'MicrosoftFootprints'
-        | 'CountyParcelData'
-        | 'NavteqAddressPoints2022'
-        | 'NavteqAddressPoints2021'
-        | 'NavteqAddressPoints2017'
-        | 'OpenAddresses'
-        | 'NavteqAddressPoints2016'
-        | 'NavteqAddressPoints2014'
-        | 'NavteqAddressPoints2013'
-        | 'NavteqAddressPoints2012'
-        | 'BoundarySolutionsParcelCentroids'
-        | 'NavteqStreets2008'
-        | 'NavteqStreets2012'
-        | 'NavteqStreets2021'
-        | 'Census2016TigerLines'
-        | 'Census2015TigerLines'
-        | 'Census2010TigerLines'
-        | 'USPSTigerZipPlus4'
-        | 'ZipCodeDownloadZips2013'
-        | 'Census2010ZCTAs'
-        | 'Census2010Places'
-        | 'Census2010ConsolidatedCities'
-        | 'Census2010CountySubRegions'
-        | 'Census2010Counties'
-        | 'Census2010States'
-      >;
+    | GeocodeReferenceFeature.All
+    | Array<GeocodeReferenceFeature | Exclude<GeocodeReferenceFeature, GeocodeReferenceFeature.All>>;
   geometry?: boolean;
   multithreadedGeocoder?: boolean;
   outputStatistics?: boolean;
 }
 
+export enum GeocodeInputAttributeWeightingSchemeField {
+  Number = 'number',
+  NumberParity = 'numberParity',
+  PreDirectional = 'preDirectional',
+  PreType = 'preType',
+  PreQualifier = 'preQualifier',
+  PreArticle = 'preArticle',
+  Name = 'name',
+  PostArticle = 'postArticle',
+  Suffix = 'suffix',
+  PostDirectional = 'postDirectional',
+  PostQualifier = 'postQualifier',
+  City = 'city',
+  Zip = 'zip',
+  ZipPlus4 = 'zipPlus4',
+  State = 'state',
+  TotalWeight = 'totalWeight'
+}
+
+export interface IGeocodeAttributeWeightingScheme {
+  [GeocodeInputAttributeWeightingSchemeField.Number]: number;
+  [GeocodeInputAttributeWeightingSchemeField.NumberParity]: number;
+  [GeocodeInputAttributeWeightingSchemeField.PreDirectional]: number;
+  [GeocodeInputAttributeWeightingSchemeField.PreType]: number;
+  [GeocodeInputAttributeWeightingSchemeField.PreQualifier]: number;
+  [GeocodeInputAttributeWeightingSchemeField.PreArticle]: number;
+  [GeocodeInputAttributeWeightingSchemeField.Name]: number;
+  [GeocodeInputAttributeWeightingSchemeField.PostArticle]: number;
+  [GeocodeInputAttributeWeightingSchemeField.Suffix]: number;
+  [GeocodeInputAttributeWeightingSchemeField.PostDirectional]: number;
+  [GeocodeInputAttributeWeightingSchemeField.PostQualifier]: number;
+  [GeocodeInputAttributeWeightingSchemeField.City]: number;
+  [GeocodeInputAttributeWeightingSchemeField.Zip]: number;
+  [GeocodeInputAttributeWeightingSchemeField.ZipPlus4]: number;
+  [GeocodeInputAttributeWeightingSchemeField.State]: number;
+  [GeocodeInputAttributeWeightingSchemeField.TotalWeight]: number;
+}
+
+export enum GeocodeInputParamsField {
+  StreetAddress = 'streetAddress',
+  City = 'city',
+  State = 'state',
+  Zip = 'zip',
+  ApiKey = 'apiKey',
+  DontStoreTransactionDetails = 'dontStoreTransactionDetails',
+  AllowTies = 'allowTies',
+  TieHandlingStrategyType = 'tieHandlingStrategyType',
+  Relaxation = 'relaxation',
+  RelaxableAttributes = 'relaxableAttributes',
+  Substring = 'substring',
+  Soundex = 'soundex',
+  SoundexAttributes = 'soundexAttributes',
+  FeatureMatchingSelectionMethod = 'featureMatchingSelectionMethod',
+  MinimumMatchScore = 'minimumMatchScore',
+  ConfidenceLevels = 'confidenceLevels',
+  ExhaustiveSearch = 'exhaustiveSearch',
+  AliasTables = 'aliasTables',
+  MultiThreading = 'multiThreading',
+  IncludeHeader = 'includeHeader',
+  Verbose = 'verbose',
+  OutputCensusVariables = 'outputCensusVariables',
+  OutputReferenceFeatureGeometry = 'outputReferenceFeatureGeometry',
+  OutputFormat = 'outputFormat',
+  CensusYears = 'censusYears',
+  ReferenceSources = 'referenceSources'
+}
+
 export interface IGeocodeDeserializedInputParametersMap {
-  streetAddress: string;
-  city: string;
-  state: string;
-  zip: string;
+  [GeocodeInputParamsField.StreetAddress]: string;
+  [GeocodeInputParamsField.City]: string;
+  [GeocodeInputParamsField.State]: string;
+  [GeocodeInputParamsField.Zip]: string;
   version: IPlatformVersion;
-  apiKey: string;
-  dontStoreTransactionDetails: boolean;
-  allowTies: boolean;
-  tieHandlingStrategyType: string;
-  relaxableAttributes: Array<string>;
-  relaxation: boolean;
-  substring: boolean;
-  soundex: boolean;
-  soundexAttributes: string;
-  referenceSources: Array<string>;
-  featureMatchingSelectionMethod: string;
-  attributeWeightingScheme: {
-    number: number;
-    numberParity: number;
-    preDirectional: number;
-    preType: number;
-    preQualifier: number;
-    preArticle: number;
-    name: number;
-    postArticle: number;
-    suffix: number;
-    postDirectional: number;
-    postQualifier: number;
-    city: number;
-    zip: number;
-    zipPlus4: number;
-    state: number;
-    totalWeight: number;
-  };
-  minimumMatchScore: number;
-  confidenceLevels: number;
-  exhaustiveSearch: boolean;
-  aliasTables: boolean;
-  multiThreading: boolean;
-  censusYears: Array<number>;
-  includeHeader: boolean;
-  verbose: boolean;
-  outputCensusVariables: boolean;
-  outputReferenceFeatureGeometry: boolean;
-  outputFormat: string;
+  [GeocodeInputParamsField.ApiKey]: string;
+  [GeocodeInputParamsField.DontStoreTransactionDetails]: boolean;
+  [GeocodeInputParamsField.AllowTies]: boolean;
+  [GeocodeInputParamsField.TieHandlingStrategyType]: string;
+  [GeocodeInputParamsField.RelaxableAttributes]: Array<string>;
+  [GeocodeInputParamsField.Relaxation]: boolean;
+  [GeocodeInputParamsField.Substring]: boolean;
+  [GeocodeInputParamsField.Soundex]: boolean;
+  [GeocodeInputParamsField.SoundexAttributes]: string;
+  [GeocodeInputParamsField.ReferenceSources]: Array<string>;
+  [GeocodeInputParamsField.FeatureMatchingSelectionMethod]: string;
+  attributeWeightingScheme: IGeocodeAttributeWeightingScheme;
+  [GeocodeInputParamsField.MinimumMatchScore]: number;
+  [GeocodeInputParamsField.ConfidenceLevels]: number;
+  [GeocodeInputParamsField.ExhaustiveSearch]: boolean;
+  [GeocodeInputParamsField.AliasTables]: boolean;
+  [GeocodeInputParamsField.MultiThreading]: boolean;
+  [GeocodeInputParamsField.CensusYears]: Array<number>;
+  [GeocodeInputParamsField.IncludeHeader]: boolean;
+  [GeocodeInputParamsField.Verbose]: boolean;
+  [GeocodeInputParamsField.OutputCensusVariables]: boolean;
+  [GeocodeInputParamsField.OutputReferenceFeatureGeometry]: boolean;
+  [GeocodeInputParamsField.OutputFormat]: string;
+}
+
+/**
+ * The fields that are returned in a geocode reference feature result object.
+ *
+ * This is a cleaner version of using string values to access object properties.
+ */
+export enum GeocodeReferenceFeatureField {
+  Address = 'address',
+  Area = 'area',
+  AreaType = 'areaType',
+  Geometry = 'geometry',
+  GeometrySRID = 'geometrySRID',
+  Source = 'source',
+  Vintage = 'vintage',
+  ServerName = 'serverName',
+  PrimaryIdField = 'primaryIdField',
+  PrimaryIdValue = 'primaryIdValue',
+  SecondaryIdField = 'secondaryIdField',
+  SecondaryIdValue = 'secondaryIdValue',
+  InterpolationType = 'interpolationType',
+  InterpolationSubType = 'interpolationSubType'
 }
 
 export interface IGeocodeReferenceFeature {
-  address: IParsedAddress;
-  area: number;
-  areaType: string;
-  geometrySRID: string;
-  geometry: string;
-  source: string;
-  vintage: number;
-  serverName: string;
-  primaryIdField: string;
-  primaryIdValue: string;
-  secondaryIdField: string;
-  secondaryIdValue: string;
-  interpolationType: string;
-  interpolationSubType: string;
+  [GeocodeReferenceFeatureField.Address]: IParsedAddress;
+  [GeocodeReferenceFeatureField.Area]: number;
+  [GeocodeReferenceFeatureField.AreaType]: string;
+  [GeocodeReferenceFeatureField.GeometrySRID]: string;
+  [GeocodeReferenceFeatureField.Geometry]: string;
+  [GeocodeReferenceFeatureField.Source]: string;
+  [GeocodeReferenceFeatureField.Vintage]: number;
+  [GeocodeReferenceFeatureField.ServerName]: string;
+  [GeocodeReferenceFeatureField.PrimaryIdField]: string;
+  [GeocodeReferenceFeatureField.PrimaryIdValue]: string;
+  [GeocodeReferenceFeatureField.SecondaryIdField]: string;
+  [GeocodeReferenceFeatureField.SecondaryIdValue]: string;
+  [GeocodeReferenceFeatureField.InterpolationType]: string;
+  [GeocodeReferenceFeatureField.InterpolationSubType]: string;
 }
 
 export interface IGeocodeNAACCR {
@@ -405,4 +532,3 @@ export interface IGeocodeRecord {
 }
 
 export type GeocodeResult = ITransactionResult<IGeocodeDeserializedInputParametersMap, IGeocodeRecord>;
-

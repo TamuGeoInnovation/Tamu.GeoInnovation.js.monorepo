@@ -3,7 +3,7 @@ import { Observable, filter, from, reduce } from 'rxjs';
 
 import { IGeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
 
-import { GEOCODE_REFERENCE_FEATURE } from '../../../../../util/dictionaries';
+import { GeocodeReferenceFeatureLabel } from '../../../../../util/dictionaries';
 
 @Component({
   selector: 'tamu-gisc-geocode-matched-reference-feature-table',
@@ -16,7 +16,7 @@ export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
 
   public filteredProps: Observable<{ [key: string]: unknown }>;
 
-  public referenceFeatureDict = GEOCODE_REFERENCE_FEATURE;
+  public referenceFeatureDict = GeocodeReferenceFeatureLabel;
 
   public ngOnInit(): void {
     // Set filteredProps to be an object of key-value pairs of the matched feature, but only for properties found
@@ -32,4 +32,3 @@ export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
     );
   }
 }
-

@@ -1,8 +1,9 @@
-import { TransformersMap, ApiResponseFormat, ApiBase } from '@tamu-gisc/geoprocessing-core';
+import { TransformersMap, ApiResponseType, ApiBase, ResponseFormat } from '@tamu-gisc/geoprocessing-core';
+
 import { IAdvancedGeocoderFourZeroOneOptions, IGeocodeResult, IGeocoderOptions } from '../interfaces/v4.interfaces';
 
 export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, IGeocodeResult> {
-  public responseType = ApiResponseFormat.Code;
+  public responseType = ApiResponseType.Code;
 
   constructor(options: IGeocoderOptions) {
     super(options);
@@ -12,7 +13,7 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
         value: '4.01'
       },
       format: {
-        value: 'json'
+        value: ResponseFormat.JSON
       },
       censusYear: {
         value: undefined,
@@ -69,7 +70,7 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
       },
 
       responseFormat: {
-        value: 'json',
+        value: ResponseFormat.JSON,
         excludeParams: true,
         target: 'format',
         fn: function (f) {

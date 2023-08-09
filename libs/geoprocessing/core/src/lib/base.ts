@@ -2,7 +2,7 @@ import { Observable, of, from, map, switchMap } from 'rxjs';
 
 import axios, { AxiosError, AxiosPromise, ResponseType } from 'axios';
 
-import { Transformer, TransformersMap, CallBack, ApiResponseFormat } from './types';
+import { Transformer, TransformersMap, CallBack, ApiResponseType } from './types';
 import { GeoservicesError } from './errors';
 import { getXmlStatusCode } from './utils';
 
@@ -10,7 +10,7 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
   private _options: object;
   public settings: T & { serviceUrl: Transformer<string, T>; format: Transformer<string, T> };
 
-  public abstract responseType: ApiResponseFormat;
+  public abstract responseType: ApiResponseType;
 
   constructor(options: U) {
     if (options === undefined) {
