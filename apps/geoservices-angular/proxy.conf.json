@@ -1,0 +1,10 @@
+{
+  "/legacy": {
+    "target": "http://localhost/wap.accounts.geoservices.tamu.edu/rest/",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/legacy": ""
+    }
+  }
+}

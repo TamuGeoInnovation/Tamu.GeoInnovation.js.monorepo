@@ -95,7 +95,8 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "geoservices-angular:build"
+        "browserTarget": "geoservices-angular:build",
+        "proxyConfig": "apps/geoservices-angular/proxy.conf.json"
       },
       "configurations": {
         "production": {
@@ -130,4 +131,3 @@
   "tags": [],
   "implicitDependencies": ["assets", "sass"]
 }
-
