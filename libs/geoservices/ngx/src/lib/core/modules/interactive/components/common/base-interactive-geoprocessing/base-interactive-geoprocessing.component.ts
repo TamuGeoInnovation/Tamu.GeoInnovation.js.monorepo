@@ -62,7 +62,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly localStore: LocalStoreService,
-    private readonly AuthService: AuthService
+    private readonly authService: AuthService
   ) {}
 
   public ngOnInit(): void {
