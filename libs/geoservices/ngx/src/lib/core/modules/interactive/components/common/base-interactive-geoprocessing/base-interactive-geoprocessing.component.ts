@@ -13,11 +13,13 @@ import {
   shareReplay,
   startWith,
   switchMap,
-  ReplaySubject
+  ReplaySubject,
+  combineLatest
 } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
+import { GeoservicesError } from '@tamu-gisc/geoprocessing-core';
 
 @Component({
   selector: 'tamu-gisc-base-interactive-geoprocessing',
@@ -38,7 +40,14 @@ import { AuthService } from '@tamu-gisc/geoservices/data-access';
 })
 export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamType> implements OnInit {
   public form: FormGroup;
+
   public result: Observable<ResultType>;
+
+  /**
+   * Checks if the emitted result value is an error object.
+   * This will reduce the required template logic for handling errors.
+   */
+  public resultError: Observable<boolean>;
 
   public querySubmit: Subject<'query'> = new Subject();
   public processing: Observable<boolean>;
@@ -55,7 +64,6 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
   private _localStorePrimaryKey = 'geoservices';
   private _localStoreSubKey = 'interactive-cache';
   private _cacheResult: ReplaySubject<ResultType> = new ReplaySubject(1);
-  private _query: Observable<ResultType>;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -81,10 +89,23 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
             return of(true).pipe(
               this.getQuery(),
               startWith(null),
-              catchError(() => of(undefined))
+              catchError((err) => {
+                return of(err);
+              })
             );
           }
         }
+      }),
+      shareReplay()
+    );
+
+    this.resultError = this.result.pipe(
+      map((res) => {
+        if (res instanceof GeoservicesError) {
+          return true;
+        }
+
+        return false;
       }),
       shareReplay()
     );
@@ -94,23 +115,50 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
         return this.result.pipe(
           // Once the query has resolved, set processing state to false.
           map((v) => {
+            // If the result is a rate limit error, prevent the user from submitting another query.
+            if (v instanceof Error) {
+              return true;
+            }
+
+            // If the result is null, it's the startWith value from result. That signifies that the query is processing.
+            // If the result is not null, the query has resolved and the processing state should be false.
             return v === null ? true : false;
           }),
-          // If the query errors, set processing state to false.
-          catchError(() => of(false))
+          // If the query errors, set processing state to false. Allow the user to submit another query.
+          catchError(() => {
+            return of(false);
+          })
         );
       }),
       // Set initial processing state to false. This is the value used before any queries are submitted.
       startWith(false)
     );
 
-    this.buttonLanguage = merge(this.processing, this.result).pipe(
-      map((processing) => {
-        if (typeof processing === 'boolean') {
+    // Set the button language based on the processing state and result.
+    // Initialize both processing and result as null to prevent the button from displaying a value before
+    // the user has submitted a query.
+    //
+    // If the result is an error, display the error message.
+    this.buttonLanguage = combineLatest([this.processing.pipe(startWith(null)), this.result.pipe(startWith(null))]).pipe(
+      map(([processing, res]) => {
+        const resIsError = res instanceof GeoservicesError;
+
+        // Even if processing is true, if the result is an error, we want to display an error message.
+        if (typeof processing === 'boolean' && resIsError === false) {
           return processing ? 'Processing...' : 'Solve';
-        } else {
-          return 'Solve';
         }
+
+        // This block will be reached when the result is an error, regardless of the processing state.
+        if (res instanceof GeoservicesError) {
+          if (res.statusCode === 402) {
+            return 'Rate limit exceeded. Please try again later or log in.';
+          }
+
+          return `Error. Please try again later.`;
+        }
+
+        // Default button language
+        return 'Solve';
       }),
       catchError(() => {
         return of('Error. Please try again.');

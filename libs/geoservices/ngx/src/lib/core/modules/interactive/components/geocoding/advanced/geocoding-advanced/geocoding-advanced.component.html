@@ -137,59 +137,61 @@
   </form>
 </div>
 
-<ng-container *ngIf="result | async as res">
-  <div [@inOutAnimation] class="leader-3">
-    <h2 class="section-header">Results</h2>
+<ng-container *ngIf="(result | async) !== null && (resultError | async) === false;">
+  <ng-container *ngIf="result | async as res">
+    <div [@inOutAnimation] class="leader-3">
+      <h2 class="section-header">Results</h2>
 
-    <tamu-gisc-accordion [expanded]="true">
-      <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
-      <tamu-gisc-accordion-content>
-        <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
-      </tamu-gisc-accordion-content>
-    </tamu-gisc-accordion>
-
-    <tamu-gisc-accordion [expanded]="false">
-      <tamu-gisc-accordion-header>Input Parameters</tamu-gisc-accordion-header>
-      <tamu-gisc-accordion-content>
-        <p>The following table displays the input parameters (including defaults) that were used to process the query. These are helpful to know when debugging a response.</p>
-
-        <tamu-gisc-geocode-input-parameters [parameters]="res?.data?.inputParameterSet"></tamu-gisc-geocode-input-parameters>
-      </tamu-gisc-accordion-content>
-    </tamu-gisc-accordion>
-
-    <ng-container *ngFor="let result of res?.data?.results; let last = last; let i = index;">
       <tamu-gisc-accordion [expanded]="true">
-        <tamu-gisc-accordion-header>
-          <ng-container *ngIf="i === 0; else notFirst"> Best Match Result</ng-container>
-          <ng-template #notFirst>Possible Geocode #{{i}}</ng-template>
-        </tamu-gisc-accordion-header>
-
+        <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
         <tamu-gisc-accordion-content>
-          <tamu-gisc-result-map [points]="mapPoints | async" [size]="'lg'" class="trailer-2"></tamu-gisc-result-map>
-
-          <h4>Geocode Result</h4>
-
-          <p>The following represents the geocoded output for the best match from the input parameters.</p>
-
-          <tamu-gisc-geocode-result-table [geocode]="result"></tamu-gisc-geocode-result-table>
-
-          <ng-container *ngIf="result.censusRecords">
-            <h4 class="leader-2">Census Values</h4>
-
-            <p>The following represents the census records for the best match geocode.</p>
-
-            <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
-          </ng-container>
-
-          <h4 class="leader-2">Parsed Address</h4>
-
-          <tamu-gisc-parsed-address-result-table [address]="result?.matchedAddress" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
-
-          <h4 class="leader-2">Reference Feature</h4>
-
-          <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="result?.referenceFeature"></tamu-gisc-geocode-matched-reference-feature-table>
+          <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
         </tamu-gisc-accordion-content>
       </tamu-gisc-accordion>
-    </ng-container>
-  </div>
+
+      <tamu-gisc-accordion [expanded]="false">
+        <tamu-gisc-accordion-header>Input Parameters</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <p>The following table displays the input parameters (including defaults) that were used to process the query. These are helpful to know when debugging a response.</p>
+
+          <tamu-gisc-geocode-input-parameters [parameters]="res?.data?.inputParameterSet"></tamu-gisc-geocode-input-parameters>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion>
+
+      <ng-container *ngFor="let result of res?.data?.results; let last = last; let i = index;">
+        <tamu-gisc-accordion [expanded]="true">
+          <tamu-gisc-accordion-header>
+            <ng-container *ngIf="i === 0; else notFirst"> Best Match Result</ng-container>
+            <ng-template #notFirst>Possible Geocode #{{i}}</ng-template>
+          </tamu-gisc-accordion-header>
+
+          <tamu-gisc-accordion-content>
+            <tamu-gisc-result-map [points]="mapPoints | async" [size]="'lg'" class="trailer-2"></tamu-gisc-result-map>
+
+            <h4>Geocode Result</h4>
+
+            <p>The following represents the geocoded output for the best match from the input parameters.</p>
+
+            <tamu-gisc-geocode-result-table [geocode]="result"></tamu-gisc-geocode-result-table>
+
+            <ng-container *ngIf="result.censusRecords">
+              <h4 class="leader-2">Census Values</h4>
+
+              <p>The following represents the census records for the best match geocode.</p>
+
+              <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
+            </ng-container>
+
+            <h4 class="leader-2">Parsed Address</h4>
+
+            <tamu-gisc-parsed-address-result-table [address]="result?.matchedAddress" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
+
+            <h4 class="leader-2">Reference Feature</h4>
+
+            <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="result?.referenceFeature"></tamu-gisc-geocode-matched-reference-feature-table>
+          </tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+      </ng-container>
+    </div>
+  </ng-container>
 </ng-container>
