@@ -38,13 +38,15 @@ export class AuthService {
 
           return {
             loggedIn,
-            data: res
+            data: res,
+            isManager: res?.isManager === 'true'
           };
         }),
         catchError(() => {
           return of({
             loggedIn: false,
-            data: null
+            data: null,
+            isManager: false
           });
         }),
         shareReplay()
@@ -78,14 +80,17 @@ export class AuthService {
 interface INotLoggedInResponse {
   Status?: string;
   result?: string;
+  isManager?: string;
 }
 
 interface ILoggedInResponse {
   APIKey: string;
   Guid: string;
+  isManager: string;
 }
 
 export interface LoggedInState {
   loggedIn: boolean;
+  isManager: boolean;
   data: null | ILoggedInResponse;
 }

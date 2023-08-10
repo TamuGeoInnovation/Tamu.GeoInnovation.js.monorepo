@@ -84,6 +84,11 @@
                 <p class="dropdown__menu__descriptor">See where all of your service credits have been used.</p>
               </li>
 
+              <li *ngIf="(loggedIn | async)?.isManager">
+                <a [href]="url + '/Management/'">Admin</a>
+                <p class="dropdown__menu__descriptor">Administrator tools for administrators only.</p>
+              </li>
+
               <li>
                 <a [href]="url + '/Logout'">Logout</a>
                 <p class="dropdown__menu__descriptor">Securely end your session.</p>
