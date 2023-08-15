@@ -14,7 +14,8 @@ import {
   startWith,
   switchMap,
   ReplaySubject,
-  combineLatest
+  combineLatest,
+  BehaviorSubject
 } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
@@ -40,7 +41,6 @@ import { GeoservicesError } from '@tamu-gisc/geoprocessing-core';
 })
 export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamType> implements OnInit {
   public form: FormGroup;
-
   public result: Observable<ResultType>;
 
   /**
@@ -56,6 +56,8 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
   public reset: Subject<'reset'> = new Subject();
   public mapPoints: Observable<Array<ILatLonPair>>;
 
+  public modeToggle: ReplaySubject<ComponentMode> = new ReplaySubject();
+
   /**
    * The URL to redirect to view the full response/component
    */
@@ -63,6 +65,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
 
   private _localStorePrimaryKey = 'geoservices';
   private _localStoreSubKey = 'interactive-cache';
+  private _localModeSubKey = 'mode';
   private _cacheResult: ReplaySubject<ResultType> = new ReplaySubject(1);
 
   constructor(
@@ -172,6 +175,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     );
 
     this._applyLocalStoreCache();
+    this._applyLocalStoreComponentMode();
   }
 
   public processInteractiveQuery() {
@@ -199,6 +203,29 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     this.router.navigate([this.redirectUrl], { relativeTo: this.route });
   }
 
+  public toggleMode() {
+    // Get mode from local storage
+    const localMode = this._getLocalToggleMode();
+
+    const opposite = localMode === ComponentMode.Basic ? ComponentMode.Advanced : ComponentMode.Basic;
+
+    this.modeToggle.next(opposite);
+
+    // Set mode in local storage
+    this.localStore.setStorageObjectKeyValue({
+      primaryKey: this._localStorePrimaryKey,
+      subKey: this._localModeSubKey,
+      value: opposite
+    });
+  }
+
+  private _getLocalToggleMode(): ComponentMode {
+    return this.localStore.getStorageObjectKeyValue({
+      primaryKey: this._localStorePrimaryKey,
+      subKey: this._localModeSubKey
+    });
+  }
+
   /**
    * Applies the cached form and result from local storage.
    *
@@ -214,6 +241,19 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
       // Immediately after clear the local cache to prevent the form from being populated on subsequent visits
       // or other interactive components that don't share the same model.
       this._clearLocalStoreCache();
+    }
+  }
+
+  /**
+   * If the user has toggled the component mode toggle, restore it. Otherwise, set default to basic.
+   */
+  private _applyLocalStoreComponentMode() {
+    const mode = this._getLocalToggleMode();
+
+    if (mode) {
+      this.modeToggle.next(mode);
+    } else {
+      this.modeToggle.next(ComponentMode.Basic);
     }
   }
 
@@ -261,4 +301,9 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
 export interface ILatLonPair {
   latitude: number;
   longitude: number;
+}
+
+export enum ComponentMode {
+  Basic = 'simple',
+  Advanced = 'advanced'
 }

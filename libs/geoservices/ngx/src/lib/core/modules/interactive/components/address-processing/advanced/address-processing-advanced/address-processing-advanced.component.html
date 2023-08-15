@@ -5,6 +5,13 @@
         <div class="form-section-name">
           <p>Input Address</p>
         </div>
+
+        <div class="form-section-actions">
+          <div class="mode-toggle" [class.advanced]="(modeToggle | async) === 'advanced'" (click)="toggleMode()" [ngSwitch]="modeToggle | async">
+            <div *ngSwitchCase="'advanced'">Advanced</div>
+            <div *ngSwitchDefault>Basic</div>
+          </div>
+        </div>
       </div>
 
       <div class="form-section-body">
@@ -12,15 +19,15 @@
           <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Non-parsed Street Address (e.g 123 main street)'" formControlName="address"></tamu-gisc-textbox>
         </div>
 
-        <div class="form-collection row">
+        <div class="form-collection row" *ngIf="(modeToggle | async) === 'advanced'">
           <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Non-parsed City (Optional)'" formControlName="city"></tamu-gisc-textbox>
         </div>
 
-        <div class="form-collection row">
+        <div class="form-collection row" *ngIf="(modeToggle | async) === 'advanced'">
           <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state"></tamu-gisc-select>
         </div>
 
-        <div class="form-collection row">
+        <div class="form-collection row" *ngIf="(modeToggle | async) === 'advanced'">
           <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Non-parsed Zip (Optional)'" formControlName="zip"></tamu-gisc-textbox>
         </div>
       </div>
