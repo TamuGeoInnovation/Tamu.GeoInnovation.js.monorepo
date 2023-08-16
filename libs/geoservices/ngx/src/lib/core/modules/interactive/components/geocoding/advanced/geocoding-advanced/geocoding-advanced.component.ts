@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -88,7 +88,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
       ...this.refs.census2000,
       ...this.refs.zip
     ].reduce((acc, ref) => {
-      acc[ref.value] = [false];
+      acc[ref.value] = [true];
 
       return acc;
     }, {});
@@ -129,5 +129,24 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
       // for form refs, return an array for keys for which the value is true
       refs: Object.keys(form.refs).filter((key) => form.refs[key] === true) as unknown as IGeocodeOptions['refs']
     };
+  }
+
+  public deselectAllRefs() {
+    this._setRefsValue(false);
+  }
+
+  private _setRefsValue(value: boolean) {
+    const form = this.form.get('refs') as FormGroup;
+    const booleanControls = Object.entries(form.controls).filter(([, control]) => {
+      return typeof control.value === 'boolean';
+    });
+
+    const patchObject = booleanControls.reduce((acc, [key]) => {
+      acc[key] = value;
+
+      return acc;
+    }, {});
+
+    form.patchValue(patchObject);
   }
 }
