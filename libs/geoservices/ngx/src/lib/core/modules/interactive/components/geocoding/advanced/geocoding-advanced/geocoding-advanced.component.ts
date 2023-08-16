@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { CensusYear, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
@@ -18,10 +19,12 @@ import {
   templateUrl: './geocoding-advanced.component.html',
   styleUrls: ['./geocoding-advanced.component.scss']
 })
-export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
+export class GeocodingAdvancedComponent extends GeocodingBasicComponent implements OnInit, OnDestroy {
   public tieBreakingStrategies = TIE_BREAKING_STRATEGIES;
   public refs = GEOCODING_REFS;
   public cls = OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS;
+
+  private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
     private fbb: FormBuilder,
@@ -31,6 +34,41 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent {
     private readonly ass: AuthService
   ) {
     super(fbb, rtt, arr, lss, ass);
+  }
+
+  public ngOnInit(): void {
+    super.ngOnInit();
+
+    this.isAdvanced.pipe(takeUntil(this._$destroy)).subscribe((b) => {
+      // If form is toggled to basic, handle incompatible data models
+      const currentYears = this.form.get('censusYears').value;
+
+      if (b === false) {
+        // Will be a number if size is greater than zero.
+        // Will be undefined if the size is zero.
+        const singleYear = currentYears[currentYears.length - 1];
+
+        // If singleYear is undefined, return null,
+        // Otherwise, convert the string to a number, or return the number.
+        const asString =
+          singleYear === undefined ? null : typeof singleYear === 'number' ? singleYear.toString() : singleYear;
+
+        setTimeout(() => {
+          this.form.patchValue({
+            censusYears: asString
+          });
+        }, 0);
+      } else {
+        this.form.patchValue({
+          censusYears: currentYears instanceof Array ? currentYears : [currentYears]
+        });
+      }
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this._$destroy.next(null);
+    this._$destroy.complete();
   }
 
   public override buildForm() {
