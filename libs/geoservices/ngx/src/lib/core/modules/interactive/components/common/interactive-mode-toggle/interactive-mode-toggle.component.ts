@@ -15,7 +15,6 @@ export class InteractiveModeToggleComponent {
   public modeChange: EventEmitter<null> = new EventEmitter();
 
   public toggleMode() {
-    this.modeChange.next(null);
+    this.modeChange.emit(null);
   }
 }
-
