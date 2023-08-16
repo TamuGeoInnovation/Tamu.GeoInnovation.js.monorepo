@@ -55,7 +55,13 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
   public reset: Subject<'reset'> = new Subject();
   public mapPoints: Observable<Array<ILatLonPair>>;
 
-  public modeToggle: ReplaySubject<ComponentMode> = new ReplaySubject();
+  public componentMode: ReplaySubject<ComponentMode> = new ReplaySubject();
+  public isAdvanced: Observable<boolean> = this.componentMode.pipe(
+    map((mode) => {
+      return mode === ComponentMode.Advanced;
+    }),
+    shareReplay()
+  );
 
   /**
    * The URL to redirect to view the full response/component
@@ -208,7 +214,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
 
     const opposite = localMode === ComponentMode.Basic ? ComponentMode.Advanced : ComponentMode.Basic;
 
-    this.modeToggle.next(opposite);
+    this.componentMode.next(opposite);
 
     // Set mode in local storage
     this.localStore.setStorageObjectKeyValue({
@@ -250,9 +256,9 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     const mode = this._getLocalToggleMode();
 
     if (mode) {
-      this.modeToggle.next(mode);
+      this.componentMode.next(mode);
     } else {
-      this.modeToggle.next(ComponentMode.Basic);
+      this.componentMode.next(ComponentMode.Basic);
     }
   }
 
@@ -306,4 +312,3 @@ export enum ComponentMode {
   Basic = 'simple',
   Advanced = 'advanced'
 }
-

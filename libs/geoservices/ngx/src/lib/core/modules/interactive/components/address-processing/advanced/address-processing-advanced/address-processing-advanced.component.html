@@ -7,7 +7,7 @@
         </div>
 
         <div class="form-section-actions">
-          <tamu-gisc-interactive-mode-toggle [mode]="modeToggle | async" (modeChange)="toggleMode()"></tamu-gisc-interactive-mode-toggle>
+          <tamu-gisc-interactive-mode-toggle [mode]="componentMode | async" (modeChange)="toggleMode()"></tamu-gisc-interactive-mode-toggle>
         </div>
       </div>
 
@@ -16,21 +16,26 @@
           <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Non-parsed Street Address (e.g 123 main street)'" formControlName="address"></tamu-gisc-textbox>
         </div>
 
-        <div class="form-collection row" *ngIf="(modeToggle | async) === 'advanced'">
+        <div class="form-collection row" *ngIf="isAdvanced | async">
           <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Non-parsed City (Optional)'" formControlName="city"></tamu-gisc-textbox>
         </div>
 
-        <div class="form-collection row" *ngIf="(modeToggle | async) === 'advanced'">
+        <div class="form-collection row" *ngIf="isAdvanced | async">
           <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state"></tamu-gisc-select>
         </div>
 
-        <div class="form-collection row" *ngIf="(modeToggle | async) === 'advanced'">
+        <div class="form-collection row" *ngIf="isAdvanced | async">
           <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Non-parsed Zip (Optional)'" formControlName="zip"></tamu-gisc-textbox>
+        </div>
+
+        <!-- Display a simple select input when the component is in simple mode -->
+        <div class="form-collection row" *ngIf="(isAdvanced | async) === false">
+          <tamu-gisc-select [placeholder]="'Address Format'" [data]="formats" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="addressFormat"></tamu-gisc-select>
         </div>
       </div>
     </div>
 
-    <div class="form-section">
+    <div class="form-section" *ngIf="isAdvanced | async">
       <div class="form-section-toolbar">
         <div class="form-section-name">
           <p>Address Formats</p>
@@ -75,4 +80,3 @@
     </div>
   </ng-container>
 </ng-container>
-
