@@ -18,6 +18,7 @@ import { CensusIntersectionAdvancedComponent } from './components/census-interse
 import { GeocodingAdvancedComponent } from './components/geocoding/advanced/geocoding-advanced/geocoding-advanced.component';
 import { ReverseGeocodingAdvancedComponent } from './components/reverse-geocoding/advanced/reverse-geocoding-advanced/reverse-geocoding-advanced.component';
 import { ResultMapComponent } from './components/common/result-map/result-map.component';
+import { InteractiveModeToggleComponent } from './components/common/interactive-mode-toggle/interactive-mode-toggle.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { ResultMapComponent } from './components/common/result-map/result-map.co
     CensusIntersectionAdvancedComponent,
     GeocodingAdvancedComponent,
     ReverseGeocodingAdvancedComponent,
-    ResultMapComponent
+    ResultMapComponent,
+    InteractiveModeToggleComponent
   ],
   exports: [
     ReverseGeocodingBasicComponent,

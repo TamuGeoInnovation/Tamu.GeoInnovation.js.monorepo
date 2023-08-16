@@ -7,10 +7,7 @@
         </div>
 
         <div class="form-section-actions">
-          <div class="mode-toggle" [class.advanced]="(modeToggle | async) === 'advanced'" (click)="toggleMode()" [ngSwitch]="modeToggle | async">
-            <div *ngSwitchCase="'advanced'">Advanced</div>
-            <div *ngSwitchDefault>Basic</div>
-          </div>
+          <tamu-gisc-interactive-mode-toggle [mode]="modeToggle | async" (modeChange)="toggleMode()"></tamu-gisc-interactive-mode-toggle>
         </div>
       </div>
 
@@ -78,3 +75,4 @@
     </div>
   </ng-container>
 </ng-container>
+

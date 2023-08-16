@@ -14,8 +14,7 @@ import {
   startWith,
   switchMap,
   ReplaySubject,
-  combineLatest,
-  BehaviorSubject
+  combineLatest
 } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
@@ -307,3 +306,4 @@ export enum ComponentMode {
   Basic = 'simple',
   Advanced = 'advanced'
 }
+

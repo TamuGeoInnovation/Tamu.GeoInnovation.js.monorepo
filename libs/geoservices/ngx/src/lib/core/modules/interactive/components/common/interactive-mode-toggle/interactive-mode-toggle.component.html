@@ -1,0 +1,5 @@
+<div class="mode-toggle" [class.advanced]="(mode) === 'advanced'" (click)="toggleMode()" [ngSwitch]="mode">
+  <div *ngSwitchCase="'advanced'">Advanced</div>
+  <div *ngSwitchDefault>Basic</div>
+</div>
+
