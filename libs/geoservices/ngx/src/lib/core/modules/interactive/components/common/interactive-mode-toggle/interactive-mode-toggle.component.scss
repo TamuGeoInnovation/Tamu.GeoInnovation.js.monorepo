@@ -1,10 +1,3 @@
-$active-color: hsl(223, 75%, 67%);
-$state-transition-color: #536dfe;
-$inactive-color: hsl(223, 15%, 60%);
-$lightened-inactive-color: lighten($inactive-color, 25%);
-
-$lightened-active-color: lighten($active-color, 5%);
-
 .mode-toggle {
   cursor: pointer;
   border: 1.5pt solid #424242;
@@ -21,12 +14,12 @@ $lightened-active-color: lighten($active-color, 5%);
   }
 
   &.advanced {
-    border-color: $state-transition-color;
-    color: $state-transition-color;
+    border-color: #536dfe;
+    color: #536dfe;
 
     &:hover {
       color: #fafafa;
-      background-color: $state-transition-color;
+      background-color: #536dfe;
     }
   }
 }
@@ -34,4 +27,3 @@ $lightened-active-color: lighten($active-color, 5%);
 .tooltip-text {
   font-size: 0.8rem;
 }
-

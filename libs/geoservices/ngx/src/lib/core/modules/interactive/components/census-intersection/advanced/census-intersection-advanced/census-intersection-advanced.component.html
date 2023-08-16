@@ -5,6 +5,10 @@
         <div class="form-section-name">
           <p>Geographic Location</p>
         </div>
+
+        <div class="form-section-actions">
+          <tamu-gisc-interactive-mode-toggle [mode]="componentMode | async" (modeChange)="toggleMode()"></tamu-gisc-interactive-mode-toggle>
+        </div>
       </div>
 
       <div class="form-section-body">
@@ -16,13 +20,17 @@
           <tamu-gisc-textbox type="number" [floatLabel]="true" placeholder="Latitude (e.g. 34.0726207994348)" formControlName="lat"></tamu-gisc-textbox>
         </div>
 
+        <div class="form-collection row" *ngIf="(isAdvanced | async) === false">
+          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYear"></tamu-gisc-select>
+        </div>
+
         <div class="form-collection row">
           <tamu-gisc-select placeholder="State (Optional)" [data]="states" displayTemplate="name" valueTemplate="abbreviation" formControlName="state"></tamu-gisc-select>
         </div>
       </div>
     </div>
 
-    <div class="form-section">
+    <div class="form-section" *ngIf="(isAdvanced | async)">
       <div class="form-section-toolbar">
         <div class="form-section-name">
           <p>Census Years</p>
