@@ -5,6 +5,10 @@
         <div class="form-section-name">
           <p>Input Address (Required)</p>
         </div>
+
+        <div class="form-section-actions">
+          <tamu-gisc-interactive-mode-toggle [mode]="componentMode | async" (modeChange)="toggleMode()"></tamu-gisc-interactive-mode-toggle>
+        </div>
       </div>
 
       <div class="form-section-body">
@@ -23,10 +27,14 @@
         <div class="form-collection row">
           <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Zip'" formControlName="zip"></tamu-gisc-textbox>
         </div>
+
+        <div class="form-collection row" *ngIf="(isAdvanced | async) === false">
+          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYears"></tamu-gisc-select>
+        </div>
       </div>
     </div>
 
-    <div class="form-section">
+    <div class="form-section" *ngIf="isAdvanced | async">
       <div class="form-section-toolbar">
         <div class="form-section-name">
           <p>Geocoding Options</p>
@@ -50,7 +58,7 @@
       </div>
     </div>
 
-    <div class="form-section">
+    <div class="form-section" *ngIf="isAdvanced | async">
       <div class="form-section-toolbar">
         <div class="form-section-name">
           <p>Census Years (Required)</p>
@@ -68,7 +76,7 @@
       </div>
     </div>
 
-    <div class="form-section">
+    <div class="form-section" *ngIf="isAdvanced | async">
       <div class="form-section-toolbar">
         <div class="form-section-name">
           <p>Reference Sources</p>
