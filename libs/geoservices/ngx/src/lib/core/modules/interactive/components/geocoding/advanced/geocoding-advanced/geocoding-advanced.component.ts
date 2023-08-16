@@ -4,7 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { CensusYear, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
+import {
+  CensusYear,
+  GeocodeTieHandlingStrategyType,
+  IGeocodeOptions,
+  GeocodeConfidenceLevel
+} from '@tamu-gisc/geoprocessing-v5';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { GeocodingBasicComponent } from '../../basic/geocoding-basic/geocoding-basic.component';
@@ -93,14 +98,14 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
       city: [null, []],
       state: [null, []],
       zip: [null, []],
-      censusYears: [[2020], []],
+      censusYears: [[CensusYear.Census2020], []],
       attributeRelaxation: [true],
       substringMatching: [true],
       soundexMatching: [true],
       uncertaintyHierarchy: [false],
       allowTies: [false],
-      tieBreakingStrategy: ['ChooseFirstOne'],
-      refs: this.fbb.group({ ...rfs_controls, openAddressesMinimumConfLevel: [7] })
+      tieBreakingStrategy: [GeocodeTieHandlingStrategyType.ChooseFirstOne],
+      refs: this.fbb.group({ ...rfs_controls, openAddressesMinimumConfLevel: [GeocodeConfidenceLevel.PublicSites] })
     });
   }
 
