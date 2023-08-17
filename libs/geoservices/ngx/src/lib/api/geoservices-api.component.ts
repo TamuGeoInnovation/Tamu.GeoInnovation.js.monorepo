@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
@@ -25,7 +25,7 @@ export class GeoservicesApiComponent implements OnInit, OnDestroy {
     // Because we are using an abnormal layout, we need to manually scroll to the top of the page on navigation.
     this.rt.events
       .pipe(
-        filter((event) => event.constructor.name === 'NavigationEnd'),
+        filter((event) => event instanceof NavigationEnd),
         takeUntil(this._$destroy)
       )
       .subscribe(() => {
