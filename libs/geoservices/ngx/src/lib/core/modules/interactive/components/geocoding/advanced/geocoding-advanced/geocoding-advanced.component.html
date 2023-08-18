@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-collection row">
-          <tamu-gisc-select [placeholder]="'State'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state"></tamu-gisc-select>
+          <tamu-gisc-select [placeholder]="'State'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state" [floatLabel]="true"></tamu-gisc-select>
         </div>
 
         <div class="form-collection row">
@@ -29,7 +29,7 @@
         </div>
 
         <div class="form-collection row" *ngIf="(isAdvanced | async) === false">
-          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYears"></tamu-gisc-select>
+          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYears" [floatLabel]="true"></tamu-gisc-select>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
           <ng-container *ngIf="form.controls.allowTies.value === false">
             <p>If <strong>no</strong> ties are allowed, use the following tie breaking strategy:</p>
 
-            <tamu-gisc-select [data]="tieBreakingStrategies" valueTemplate="value" displayTemplate="name" formControlName="tieBreakingStrategy"></tamu-gisc-select>
+            <tamu-gisc-select class="leader-1" [data]="tieBreakingStrategies" valueTemplate="value" displayTemplate="name" formControlName="tieBreakingStrategy" [floatLabel]="true" placeholder="Tie-breaking strategy"></tamu-gisc-select>
           </ng-container>
         </div>
       </div>
@@ -93,10 +93,7 @@
 
           <tamu-gisc-checkbox *ngFor="let r of refs.addressPoints" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
 
-          <div>
-            <p>Minimum confidence level:</p>
-            <tamu-gisc-select [data]="cls" valueTemplate="value" displayTemplate="name" formControlName="openAddressesMinimumConfLevel"></tamu-gisc-select>
-          </div>
+          <tamu-gisc-select class="leader-1" [data]="cls" valueTemplate="value" displayTemplate="name" formControlName="openAddressesMinimumConfLevel" [floatLabel]="true" placeholder="Minimum confidence level"></tamu-gisc-select>
         </div>
 
         <div class="form-collection column">

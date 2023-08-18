@@ -21,11 +21,11 @@
         </div>
 
         <div class="form-collection row" *ngIf="(isAdvanced | async) === false">
-          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYear"></tamu-gisc-select>
+          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYear" [floatLabel]="true"></tamu-gisc-select>
         </div>
 
         <div class="form-collection row">
-          <tamu-gisc-select placeholder="State (Optional)" [data]="states" displayTemplate="name" valueTemplate="abbreviation" formControlName="state"></tamu-gisc-select>
+          <tamu-gisc-select placeholder="State (Optional)" [data]="states" displayTemplate="name" valueTemplate="abbreviation" formControlName="state" [floatLabel]="true"></tamu-gisc-select>
         </div>
       </div>
     </div>
