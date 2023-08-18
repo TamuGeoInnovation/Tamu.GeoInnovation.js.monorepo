@@ -41,6 +41,8 @@
 
   <ng-template #resultContainer>
     <div *ngIf="result | async as res" [@inOutAnimation]>
+      <tamu-gisc-basic-summary-blurb [keyFragment]="'census_intersect'" (navigateFull)="navigateToAdvanced(res)"></tamu-gisc-basic-summary-blurb>
+
       <tamu-gisc-census-intersection-result-tabs [censusRecords]="(result | async)?.data?.results"></tamu-gisc-census-intersection-result-tabs>
 
       <div class="flex flex-row">
