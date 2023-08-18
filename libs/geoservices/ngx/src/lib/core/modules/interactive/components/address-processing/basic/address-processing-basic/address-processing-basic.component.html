@@ -33,6 +33,8 @@
 
   <ng-template #resultContainer>
     <div *ngIf="result | async as res" [@inOutAnimation]>
+      <tamu-gisc-basic-summary-blurb [keyFragment]="'address_process'" (navigateFull)="navigateToAdvanced(res)"></tamu-gisc-basic-summary-blurb>
+
       <tamu-gisc-tabs>
         <tamu-gisc-tab *ngFor="let cr of (result | async)?.data?.results" [label]="'Result'">
           <tamu-gisc-parsed-address-result-table [address]="cr?.parsedAddress"></tamu-gisc-parsed-address-result-table>

@@ -45,6 +45,8 @@
 
   <ng-template #resultContainer>
     <div *ngIf="result | async as res" [@inOutAnimation]>
+      <tamu-gisc-basic-summary-blurb [keyFragment]="'geocode'" (navigateFull)="navigateToAdvanced(res)"></tamu-gisc-basic-summary-blurb>
+
       <tamu-gisc-tabs>
         <tamu-gisc-tab [label]="'Geocode'">
           <tamu-gisc-geocode-result-table [geocode]="res.data?.results[0]"></tamu-gisc-geocode-result-table>

@@ -19,6 +19,7 @@ import { GeocodingAdvancedComponent } from './components/geocoding/advanced/geoc
 import { ReverseGeocodingAdvancedComponent } from './components/reverse-geocoding/advanced/reverse-geocoding-advanced/reverse-geocoding-advanced.component';
 import { ResultMapComponent } from './components/common/result-map/result-map.component';
 import { InteractiveModeToggleComponent } from './components/common/interactive-mode-toggle/interactive-mode-toggle.component';
+import { BasicSummaryBlurbComponent } from './components/common/basic-summary-blurb/basic-summary-blurb.component';
 
 @NgModule({
   imports: [
@@ -41,7 +42,8 @@ import { InteractiveModeToggleComponent } from './components/common/interactive-
     GeocodingAdvancedComponent,
     ReverseGeocodingAdvancedComponent,
     ResultMapComponent,
-    InteractiveModeToggleComponent
+    InteractiveModeToggleComponent,
+    BasicSummaryBlurbComponent
   ],
   exports: [
     ReverseGeocodingBasicComponent,
