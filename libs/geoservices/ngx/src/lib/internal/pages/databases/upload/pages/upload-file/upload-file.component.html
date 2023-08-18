@@ -14,8 +14,8 @@
     <div class="form-section-body">
       <div class="form-collection column">
         <div class="form-collection row">
-          <tamu-gisc-select [data]="delimiters | async" displayTemplate="name" valueTemplate="character" placeholder="Text delimiter" formControlName="txtDelimiter"></tamu-gisc-select>
-          <tamu-gisc-select [data]="qualifiers | async" displayTemplate="name" valueTemplate="character" placeholder="Text qualifier" formControlName="txtQualifier"></tamu-gisc-select>
+          <tamu-gisc-select [data]="delimiters | async" displayTemplate="name" valueTemplate="character" placeholder="Text delimiter" formControlName="txtDelimiter" [floatLabel]="true"></tamu-gisc-select>
+          <tamu-gisc-select [data]="qualifiers | async" displayTemplate="name" valueTemplate="character" placeholder="Text qualifier" formControlName="txtQualifier" [floatLabel]="true"></tamu-gisc-select>
         </div>
       </div>
 

@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-collection row" *ngIf="isAdvanced | async">
-          <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state"></tamu-gisc-select>
+          <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state" [floatLabel]="true"></tamu-gisc-select>
         </div>
 
         <div class="form-collection row" *ngIf="isAdvanced | async">
@@ -30,7 +30,7 @@
 
         <!-- Display a simple select input when the component is in simple mode -->
         <div class="form-collection row" *ngIf="(isAdvanced | async) === false">
-          <tamu-gisc-select [placeholder]="'Address Format'" [data]="formats" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="addressFormat"></tamu-gisc-select>
+          <tamu-gisc-select [placeholder]="'Address Format'" [data]="formats" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="addressFormat" [floatLabel]="true"></tamu-gisc-select>
         </div>
       </div>
     </div>
