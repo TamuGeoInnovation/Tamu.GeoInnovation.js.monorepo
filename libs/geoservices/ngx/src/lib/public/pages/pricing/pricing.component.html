@@ -25,34 +25,21 @@
 
       <div class="qa-block" id="free-tier">
         <h3>Do you offer a free tier?</h3>
-        <p>It depends on how much processing you need to do. Most users will never have to pay to use our services as they are provided <strong>free of charge</strong> in allotments of 2,500 transactions. To take advantage of this, users must enroll in our <a [routerLink]="['.']" fragment="partner-program">Partner Program</a>.</p>
+        <p>Yes. All registered users get 2,500 free credits per month.</p>
       </div>
 
       <div class="qa-block" id="more-credit-options">
         <h3>What if I need more credits?</h3>
-        <p>If you need more than the the initial 2,500, you have two options:</p>
-
-        <ul>
-          <li>Pay for one-time or monthly recurring credit packs</li>
-          <li>Enroll in the <a [routerLink]="['.']" fragment="partner-program">Partner Program</a></li>
-        </ul>
+        <p>If you need more than the the initial 2,500, you can pay for one-time or monthly recurring credit packages.</p>
       </div>
 
-      <div class="qa-block" id="partner-program">
+      <!-- <div class="qa-block" id="partner-program">
         <h3>What is the Partner Program?</h3>
 
         <p>The partner program grants participants an unlimited number of credits in batches of 2,500. Once you run out of credits, simply log into your account and <a [href]="url + '/UserServices/Payments/Partners/'">click one button</a> to top off your balance as frequently as you need. In return all we ask is that you link to our site from yours, or cite us in your work if a link is not possible. To meet the objective of the program, all links and citations must be publicly accessible.</p>
 
-        <!-- TODO: This has an angular form that can be used in the future. For now, redirect to legacy accounts -->
-        <!-- <a routerLink="/contact/partnership">Join the Partner Program</a> -->
         <a [href]="url + '/UserServices/Profile/RequestPartnerStatus.aspx'">Join the Partner Program</a>
-      </div>
-
-      <div class="qa-block" id="more-credits-actions">
-        <h3>How do I get more credits?</h3>
-
-        <p>If you are a partner who would rather not have to manually add more credits by continually requesting them through the site, or you need to process more records than are allocated in batches under the partner program, or you are a user who would just like to donate some money to help improve our services, you can purchase credits online using your credit or PayPal account according to our service rates.</p>
-      </div>
+      </div> -->
 
       <div class="qa-block" id="service-throttle">
         <h3>Do you throttle your services?</h3>
@@ -63,7 +50,7 @@
       <div class="qa-block" id="sla-info">
         <h3>Do you offer Service Level Agreements?</h3>
 
-        <p>Yes we do. If you anticipate needing to process a large amo t of records for a long period of time for which manually adding credits via the partner forms on the website would not be an acceptable option such as in a scheduled, automated, or web-service type process, we offer service level agreements whereby a user can pay one set price per month and process up to a certain amount of records (including unlimited). For information about this option or for a pricing quote, please <a routerLink="/contact" [queryParams]="{subject: 'SLA Inquiry'}">contact us</a>.</p>
+        <p>Yes. If you anticipate needing to process a large number of records for long periods of time such as in a scheduled, automated, or web-service type process, we offer service level agreements whereby a user can pay one set price per month and process up to a certain amount of records (including unlimited). For information about this option or for a pricing quote, please <a routerLink="/contact" [queryParams]="{subject: 'SLA Inquiry'}">contact us</a>.</p>
       </div>
 
       <div class="qa-block" id="refund-policy">
