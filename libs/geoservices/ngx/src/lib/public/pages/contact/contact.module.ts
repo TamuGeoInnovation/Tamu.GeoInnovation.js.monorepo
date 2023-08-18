@@ -11,10 +11,10 @@ const routes: Routes = [
     path: 'bug-report',
     loadChildren: () => import('./pages/bug-report/bug-report.module').then((m) => m.BugReportModule)
   },
-  {
-    path: 'partnership',
-    loadChildren: () => import('./pages/partner/partner.module').then((m) => m.PartnerModule)
-  },
+  // {
+  //   path: 'partnership',
+  //   loadChildren: () => import('./pages/partner/partner.module').then((m) => m.PartnerModule)
+  // },
   {
     path: '',
     pathMatch: 'full',
