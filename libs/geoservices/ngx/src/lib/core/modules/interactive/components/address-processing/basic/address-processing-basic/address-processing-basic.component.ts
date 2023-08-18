@@ -4,7 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { AddressProcessing, AddressProcessingResult, IAddressProcessingOptions } from '@tamu-gisc/geoprocessing-v5';
+import {
+  AddressProcessing,
+  AddressProcessingAddressFormat,
+  AddressProcessingResult,
+  IAddressProcessingOptions
+} from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
@@ -41,7 +46,7 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
       city: [null],
       state: [null],
       zip: [null],
-      addressFormat: [null, [Validators.required]]
+      addressFormat: [AddressProcessingAddressFormat.USPSPublication28, [Validators.required]]
     });
   }
 
