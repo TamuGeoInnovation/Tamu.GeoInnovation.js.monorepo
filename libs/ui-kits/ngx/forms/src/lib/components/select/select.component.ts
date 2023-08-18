@@ -33,6 +33,12 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   @Input('value')
   private _value: T = undefined;
 
+  @Input()
+  public formControlName = 'default';
+
+  @Input()
+  public floatLabel = false;
+
   public get value() {
     return this._value;
   }
