@@ -112,7 +112,7 @@ nav {
         &:hover {
           .dropdown__menu__submenu {
             opacity: 1;
-            pointer-events: auto;
+            pointer-events: inherit;
             @include transform(translateX(0));
           }
         }
@@ -159,5 +159,9 @@ nav {
         }
       }
     }
+  }
+
+  .no-pointer {
+    pointer-events: none !important;
   }
 }

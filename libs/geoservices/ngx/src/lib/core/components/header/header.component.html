@@ -6,7 +6,7 @@
       <ul>
         <li class="dropdown">
           <a [routerLink]="['services']" routerLinkActive="router-link-active" class="dropdown__link">Services <span class="material-icons">keyboard_arrow_down</span></a>
-          <ul class="dropdown__menu">
+          <ul class="dropdown__menu" [ngClass]="{'no-pointer': ignorePointerEvents | async}">
             <li>
               <a [routerLink]="['services/address-processing']" routerLinkActive="router-link-active">Address Processing</a>
               <p class="dropdown__menu__descriptor">Turn unstructured data into neat columns of address fields.</p>
@@ -103,7 +103,7 @@
 
         <li class="dropdown">
           <a href="">Support <span class="material-icons">keyboard_arrow_down</span></a>
-          <ul class="dropdown__menu">
+          <ul class="dropdown__menu" [ngClass]="{'no-pointer': ignorePointerEvents | async}">
             <li>
               <a [routerLink]="['./contact/bug-report']">Bug Reporting</a>
               <p class="dropdown__menu__descriptor">Found a pesky bug? Report it to us and we'll squash it.</p>
