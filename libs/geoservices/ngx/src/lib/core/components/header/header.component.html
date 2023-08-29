@@ -10,21 +10,89 @@
             <li>
               <a [routerLink]="['services/address-processing']" routerLinkActive="router-link-active">Address Processing</a>
               <p class="dropdown__menu__descriptor">Turn unstructured data into neat columns of address fields.</p>
+
+              <div class="dropdown__menu__submenu">
+                <li>
+                  <a [routerLink]="['services/address-processing']" routerLinkActive="router-link-active">Demo</a>
+                  <p class="dropdown__menu__descriptor">Take address processing for a test drive and see if its right for you.</p>
+                </li>
+
+                <li>
+                  <a [routerLink]="['services/address-processing/interactive']" routerLinkActive="router-link-active">Interactive</a>
+                  <p class="dropdown__menu__descriptor">Stand-alone interactive address processing with all knobs and dials.</p>
+                </li>
+
+                <li>
+                  <a [routerLink]="['services/address-processing']" routerLinkActive="router-link-active">Batch processing</a>
+                  <p class="dropdown__menu__descriptor">Upload or select from your databases to process addresses in batch.</p>
+                </li>
+              </div>
             </li>
 
             <li>
               <a [routerLink]="['services/geocoding']" routerLinkActive="router-link-active">Geocoding</a>
               <p class="dropdown__menu__descriptor">Turn address data into latitude and longitude values.</p>
+
+              <div class="dropdown__menu__submenu">
+                <li>
+                  <a [routerLink]="['services/geocoding']" routerLinkActive="router-link-active">Demo</a>
+                  <p class="dropdown__menu__descriptor">Take geocoding for a test drive and see if its right for you.</p>
+                </li>
+
+                <li>
+                  <a [routerLink]="['services/geocoding/interactive']" routerLinkActive="router-link-active">Interactive</a>
+                  <p class="dropdown__menu__descriptor">Stand-alone interactive geocoding with all knobs and dials.</p>
+                </li>
+
+                <li>
+                  <a [routerLink]="['services/geocoding']" routerLinkActive="router-link-active">Batch processing</a>
+                  <p class="dropdown__menu__descriptor">Upload or select from your databases to geocode in batch.</p>
+                </li>
+              </div>
             </li>
 
             <li>
               <a [routerLink]="['services/reverse-geocoding']" routerLinkActive="router-link-active">Reverse Geocoding</a>
               <p class="dropdown__menu__descriptor">Convert latitude and longitude data into postal address values.</p>
+
+              <div class="dropdown__menu__submenu">
+                <li>
+                  <a [routerLink]="['services/reverse-geocoding']" routerLinkActive="router-link-active">Demo</a>
+                  <p class="dropdown__menu__descriptor">Take reverse geocoding for a test drive and see if its right for you.</p>
+                </li>
+
+                <li>
+                  <a [routerLink]="['services/reverse-geocoding/interactive']" routerLinkActive="router-link-active">Interactive</a>
+                  <p class="dropdown__menu__descriptor">Stand-alone interactive reverse geocoding with all knobs and dials.</p>
+                </li>
+
+                <li>
+                  <a [routerLink]="['services/reverse-geocoding']" routerLinkActive="router-link-active">Batch processing</a>
+                  <p class="dropdown__menu__descriptor">Upload or select from your databases to reverse geocode in batch.</p>
+                </li>
+              </div>
             </li>
 
             <li>
               <a [routerLink]="['services/census-intersection']" routerLinkActive="router-link-active">Census Intersection</a>
               <p class="dropdown__menu__descriptor">Associate census variables with latitude and longitude data.</p>
+
+              <div class="dropdown__menu__submenu">
+                <li>
+                  <a [routerLink]="['services/census-intersection']" routerLinkActive="router-link-active">Demo</a>
+                  <p class="dropdown__menu__descriptor">Take census intersection for a test drive and see if its right for you.</p>
+                </li>
+
+                <li>
+                  <a [routerLink]="['services/census-intersection/interactive']" routerLinkActive="router-link-active">Interactive</a>
+                  <p class="dropdown__menu__descriptor">Stand-alone interactive census intersection with all knobs and dials.</p>
+                </li>
+
+                <li>
+                  <a [routerLink]="['services/census-intersection']" routerLinkActive="router-link-active">Batch processing</a>
+                  <p class="dropdown__menu__descriptor">Upload or select from your databases to process census intersections in batch.</p>
+                </li>
+              </div>
             </li>
           </ul>
         </li>
