@@ -27,6 +27,8 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   @Input()
   public set value(v) {
     this._value = v;
+
+    this.onInitialValue(v);
   }
 
   public get value() {
@@ -41,6 +43,14 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
 
   @Input()
   public valuePath: string;
+
+  /**
+   * Hook that can be used to execute an operation after the first value has been set.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onInitialValue(v: Value) {
+    return;
+  }
 
   public onChange = (v) => {
     return v;
@@ -75,13 +85,17 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   }
 
   public evaluateSetValue(option: Option) {
+    let value;
+
     if (this.disabled === false) {
-      const value = this.renderTemplate(option, this.valuePath);
+      value = this.renderTemplate(option, this.valuePath);
 
       this.value = value;
 
       this.onTouch();
       this.onChange(value);
     }
+
+    return value;
   }
 }
