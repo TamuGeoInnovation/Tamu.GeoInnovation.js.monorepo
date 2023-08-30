@@ -33,13 +33,14 @@
   z-index: 1;
   pointer-events: none;
   background: #536dfe;
+  box-shadow: inset 0 0 5px 1px #4154be;
   @include mixins.transform-origin(center center);
   @include mixins.transform(translateX(0));
   @include mixins.transition(transform 0.2s, min-width 0.1s);
 }
 
 .toggle-option {
-  padding: 0.5rem 0.75rem;
+  padding: 0.35rem 0.9rem;
   position: relative;
   z-index: 2;
   cursor: pointer;
@@ -52,7 +53,6 @@
 
     &.active {
       color: #fafafa;
-      font-weight: 500;
       opacity: 1;
     }
   }
