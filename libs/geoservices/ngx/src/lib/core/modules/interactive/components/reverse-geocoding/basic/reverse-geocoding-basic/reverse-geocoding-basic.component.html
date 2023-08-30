@@ -5,7 +5,7 @@
         <div class="form-section">
           <div class="form-section-toolbar">
             <div class="form-section-name">
-              <p>Interactive Reverse Geocode</p>
+              <p>Reverse Geocoding Demo</p>
             </div>
           </div>
 
@@ -25,9 +25,9 @@
             <div class="form-collection column">
               <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
 
-              <div class="leader-2 flex flex-row justify-center">
+              <!-- <div class="leader-2 flex flex-row justify-center">
                 <a (click)="navigateToAdvanced()" class="material-icons-container"><span class="material-icons-outlined centered">settings</span> Advanced Options</a>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
