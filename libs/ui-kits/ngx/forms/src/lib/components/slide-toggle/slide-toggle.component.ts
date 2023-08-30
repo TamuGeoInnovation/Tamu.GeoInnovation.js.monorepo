@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren, forwardRef } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, Subject, map, shareReplay } from 'rxjs';
 
@@ -20,16 +20,6 @@ export class SlideToggleComponent<Option extends object, Value>
   extends RadioGroupComponent<Option, Value>
   implements OnInit
 {
-  @Input()
-  public override set value(v) {
-    this._value = v;
-    this._findActiveElement(v);
-  }
-
-  public override get value() {
-    return this._value;
-  }
-
   @ViewChildren('toggleOption')
   public toggleOptions: QueryList<ElementRef>;
 
@@ -48,13 +38,15 @@ export class SlideToggleComponent<Option extends object, Value>
     );
   }
 
-  public override writeValue = (v) => {
-    if (this.toggleOptions !== undefined) {
-      this._findActiveElement(v);
-    }
+  public override onInitialValue(v: Value): void {
+    this._findActiveElement(v);
+  }
 
-    this.value = v;
-  };
+  public override evaluateSetValue(option: Option): void {
+    const t = super.evaluateSetValue(option);
+
+    this._findActiveElement(t);
+  }
 
   private _findActiveElement(plainValue: Value) {
     if (plainValue !== null) {
