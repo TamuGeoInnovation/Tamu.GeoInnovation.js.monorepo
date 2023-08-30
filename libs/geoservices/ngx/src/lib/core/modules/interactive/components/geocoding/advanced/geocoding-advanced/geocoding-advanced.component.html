@@ -7,7 +7,7 @@
         </div>
 
         <div class="form-section-actions">
-          <tamu-gisc-interactive-mode-toggle [mode]="componentMode | async" (modeChange)="toggleMode()"></tamu-gisc-interactive-mode-toggle>
+          <tamu-gisc-interactive-mode-toggle [mode]="componentMode | async" (modeChange)="toggleMode($event)"></tamu-gisc-interactive-mode-toggle>
         </div>
       </div>
 

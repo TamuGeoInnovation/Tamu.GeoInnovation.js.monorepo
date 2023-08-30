@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -25,6 +25,7 @@ import { BasicSummaryBlurbComponent } from './components/common/basic-summary-bl
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     UIFormsModule,
     UILayoutModule,
     EsriMapModule,
@@ -57,4 +58,3 @@ import { BasicSummaryBlurbComponent } from './components/common/basic-summary-bl
   ]
 })
 export class GeoservicesCoreInteractiveModule {}
-
