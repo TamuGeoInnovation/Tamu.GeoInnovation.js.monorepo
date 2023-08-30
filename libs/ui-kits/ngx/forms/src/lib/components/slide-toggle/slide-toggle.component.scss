@@ -1,0 +1,59 @@
+@use 'libs/sass/mixins';
+
+:host {
+  @include mixins.flexbox();
+  @include mixins.flex-direction(row);
+}
+
+.toggle-track,
+.toggle-highlighter {
+  border-radius: 99rem;
+}
+
+.toggle-track {
+  background-color: #f1f3f4;
+  border: 1.5pt solid;
+  border-color: #eeeeee;
+  z-index: 0;
+  position: relative;
+  @include mixins.flexbox();
+  @include mixins.flex-direction(row);
+  @include mixins.transition(border-color 0.2s);
+
+  &:hover {
+    border-color: #e0e0e0;
+  }
+}
+
+.toggle-highlighter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background: #536dfe;
+  @include mixins.transform-origin(center center);
+  @include mixins.transform(translateX(0));
+  @include mixins.transition(transform 0.2s, min-width 0.1s);
+}
+
+.toggle-option {
+  padding: 0.5rem 0.75rem;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+
+  .toggle-label {
+    color: #424242;
+    opacity: 0.7;
+    margin-bottom: 0;
+    @include mixins.transition(opacity 0.2s, color 0.2s);
+
+    &.active {
+      color: #fafafa;
+      font-weight: 500;
+      opacity: 1;
+    }
+  }
+}

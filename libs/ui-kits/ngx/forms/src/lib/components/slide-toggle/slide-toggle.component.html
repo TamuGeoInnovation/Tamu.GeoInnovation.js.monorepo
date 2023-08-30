@@ -1,0 +1,8 @@
+<div class="toggle-track">
+  <div class="toggle-highlighter" [style.minWidth.px]="(activeDimensions$ | async)?.width" [style.transform]="'translateX('+ (activeDimensions$ | async)?.translate + 'px)'"></div>
+
+  <div class="toggle-option" #toggleOption *ngFor="let option of options" (click)="evaluateSetValue(option)" [ngClass]="{disabled: disabled}" [attr.attr-value]="renderTemplate(option, valuePath)">
+    <p class="toggle-label" [ngClass]="{active: (renderTemplate(option, valuePath) === value)}">{{renderTemplate(option, displayPath)}}</p>
+  </div>
+</div>
+

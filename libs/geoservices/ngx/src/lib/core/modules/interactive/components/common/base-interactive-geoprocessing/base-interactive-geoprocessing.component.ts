@@ -208,20 +208,20 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     this.router.navigate([this.redirectUrl], { relativeTo: this.route });
   }
 
-  public toggleMode() {
+  public toggleMode(mode: ComponentMode) {
     // Get mode from local storage
     const localMode = this._getLocalToggleMode();
 
-    const opposite = localMode === ComponentMode.Basic ? ComponentMode.Advanced : ComponentMode.Basic;
+    if (localMode !== mode) {
+      this.componentMode.next(mode);
 
-    this.componentMode.next(opposite);
-
-    // Set mode in local storage
-    this.localStore.setStorageObjectKeyValue({
-      primaryKey: this._localStorePrimaryKey,
-      subKey: this._localModeSubKey,
-      value: opposite
-    });
+      // Set mode in local storage
+      this.localStore.setStorageObjectKeyValue({
+        primaryKey: this._localStorePrimaryKey,
+        subKey: this._localModeSubKey,
+        value: mode
+      });
+    }
   }
 
   private _getLocalToggleMode(): ComponentMode {
@@ -311,4 +311,9 @@ export interface ILatLonPair {
 export enum ComponentMode {
   Basic = 'simple',
   Advanced = 'advanced'
+}
+
+export enum ComponentModeLabel {
+  Basic = 'Basic',
+  Advanced = 'Advanced'
 }

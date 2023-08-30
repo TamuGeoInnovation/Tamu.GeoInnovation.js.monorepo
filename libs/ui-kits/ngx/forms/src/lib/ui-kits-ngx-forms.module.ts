@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 
 import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+
 import { AbstractValueAccessorFormComponent } from './models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 
 import { SelectComponent } from './components/select/select.component';
@@ -13,10 +15,9 @@ import { DateTimePickerComponent } from './components/date-time-picker/date-time
 import { TextboxComponent } from './components/textbox/textbox.component';
 import { ButtonComponent } from './components/button/button.component';
 import { RangeComponent } from './components/range/range.component';
-
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { FileComponent } from './components/file/file.component';
 import { RadioGroupComponent } from './components/radio-group/radio-group.component';
+import { SlideToggleComponent } from './components/slide-toggle/slide-toggle.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, UILayoutModule, DlDateTimePickerDateModule, DlDateTimePickerModule],
@@ -30,7 +31,8 @@ import { RadioGroupComponent } from './components/radio-group/radio-group.compon
     ButtonComponent,
     FileComponent,
     RadioGroupComponent,
-    RangeComponent
+    RangeComponent,
+    SlideToggleComponent
   ],
   exports: [
     SelectComponent,
@@ -41,7 +43,8 @@ import { RadioGroupComponent } from './components/radio-group/radio-group.compon
     ButtonComponent,
     FileComponent,
     RadioGroupComponent,
-    RangeComponent
+    RangeComponent,
+    SlideToggleComponent
   ]
 })
 export class UIFormsModule {}

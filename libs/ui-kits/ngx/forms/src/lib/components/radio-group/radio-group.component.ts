@@ -19,14 +19,14 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   @Input()
   public options: Array<Option>;
 
-  // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('value')
-  private _value = undefined;
+  /**
+   * INTERNAL USE ONLY. Use `value` getter/setter instead.
+   */
+  public _value = undefined;
 
+  @Input()
   public set value(v) {
     this._value = v;
-    this._onChange(v);
-    this._onTouch();
   }
 
   public get value() {
@@ -42,20 +42,20 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   @Input()
   public valuePath: string;
 
-  private _onChange = (v) => {
+  public onChange = (v) => {
     return v;
   };
 
-  private _onTouch = () => {
+  public onTouch = () => {
     return;
   };
 
   public registerOnChange(fn) {
-    this._onChange = fn;
+    this.onChange = fn;
   }
 
   public registerOnTouched(fn) {
-    this._onTouch = fn;
+    this.onTouch = fn;
   }
 
   public setDisabledState(disabled: boolean) {
@@ -79,6 +79,9 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
       const value = this.renderTemplate(option, this.valuePath);
 
       this.value = value;
+
+      this.onTouch();
+      this.onChange(value);
     }
   }
 }

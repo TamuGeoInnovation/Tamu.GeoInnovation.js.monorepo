@@ -1,5 +1,1 @@
-<div class="mode-toggle" [class.advanced]="(mode) === 'advanced'" (click)="toggleMode()" [ngSwitch]="mode">
-  <div *ngSwitchCase="'advanced'">Advanced</div>
-  <div *ngSwitchDefault>Basic</div>
-</div>
-
+<tamu-gisc-slide-toggle [options]="options" [displayPath]="'label'" [valuePath]="'value'" [ngModel]="mode" (ngModelChange)="toggleMode($event)"></tamu-gisc-slide-toggle>
