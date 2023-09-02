@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { GeoservicesCoreNgxModule } from '../core/geoservices-core-ngx.module';
 import { GeoservicesPublicComponent } from './geoservices-public.component';
@@ -44,7 +45,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     GeoservicesCoreNgxModule,
     UITileNavigationModule,
-    UINavigationTriggersModule
+    UINavigationTriggersModule,
+    UILayoutModule
   ],
   declarations: [GeoservicesPublicComponent]
 })

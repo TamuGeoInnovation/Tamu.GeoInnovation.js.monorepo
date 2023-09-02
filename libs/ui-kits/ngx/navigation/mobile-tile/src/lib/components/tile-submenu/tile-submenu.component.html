@@ -1,8 +1,8 @@
-<div class="header">
+<div class="submenu__header">
   <div class="material-icons" (click)="close()">arrow_back</div>
   <div class="header__name">{{title | async}}</div>
 </div>
 
-<div #body class="body">
+<div #body class="submenu__body">
   <ng-content></ng-content>
 </div>

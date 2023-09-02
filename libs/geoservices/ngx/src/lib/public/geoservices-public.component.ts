@@ -3,11 +3,13 @@ import { Subject } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { growAnimationBuilder } from '@tamu-gisc/ui-kits/ngx/animations';
 
 @Component({
   selector: 'tamu-gisc-geoservices-public',
   templateUrl: './geoservices-public.component.html',
-  styleUrls: ['./geoservices-public.component.scss']
+  styleUrls: ['./geoservices-public.component.scss'],
+  animations: [growAnimationBuilder(250)]
 })
 export class GeoservicesPublicComponent implements OnInit {
   public mobileNavToggle: Subject<boolean> = new Subject();
