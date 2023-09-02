@@ -165,6 +165,7 @@
     "ues-valves-angular": "apps/ues-valves-angular",
     "ues-valves-angular-e2e": "apps/ues-valves-angular-e2e",
     "ues-valves-nest": "apps/ues-valves-nest",
+    "ui-kits-ngx-animations": "libs/ui-kits/ngx/animations",
     "ui-kits-ngx-branding": "libs/ui-kits/ngx/branding",
     "ui-kits-ngx-charts": "libs/ui-kits/ngx/charts",
     "ui-kits-ngx-forms": "libs/ui-kits/ngx/forms",

@@ -124,6 +124,7 @@
       "@tamu-gisc/ues/recycling/common/entities": ["libs/ues/recycling/common/entities/src/index.ts"],
       "@tamu-gisc/ues/recycling/data-api": ["libs/ues/recycling/data-api/src/index.ts"],
       "@tamu-gisc/ues/recycling/ngx": ["libs/ues/recycling/ngx/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/animations": ["libs/ui-kits/ngx/animations/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/charts": ["libs/ui-kits/ngx/charts/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/forms": ["libs/ui-kits/ngx/forms/src/index.ts"],
