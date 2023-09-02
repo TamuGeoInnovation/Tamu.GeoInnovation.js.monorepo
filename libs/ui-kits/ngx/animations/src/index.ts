@@ -1,1 +1,1 @@
-export * from './lib/ui-kits-ngx-animations.module';
+export * from './lib/size/size.animations';
