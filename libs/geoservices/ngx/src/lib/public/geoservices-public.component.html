@@ -17,9 +17,9 @@
           <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded}">Address Processing <span class="material-icons">expand_more</span></div>
           <div class="row__content" *giscAccordionContent="parent.expanded" [@growAnimation]>
             <ul>
-              <li>Demo</li>
+              <li tamuGiscTileLink location="services/address-processing">Demo</li>
               <li tamuGiscTileLink location="services/address-processing/interactive">Interactive</li>
-              <li>Batch Processing</li>
+              <li tamuGiscTileLink location="services/address-processing/batch">Batch Processing</li>
             </ul>
           </div>
         </div>
@@ -28,9 +28,9 @@
           <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded}">Geocoding <span class="material-icons">expand_more</span></div>
           <div class="row__content" *giscAccordionContent="parent.expanded" [@growAnimation]>
             <ul>
-              <li>Demo</li>
-              <li>Interactive</li>
-              <li>Batch Processing</li>
+              <li tamuGiscTileLink location="services/geocoding">Demo</li>
+              <li tamuGiscTileLink location="services/geocoding/interactive">Interactive</li>
+              <li tamuGiscTileLink location="services/geocoding/batch">Batch Processing</li>
             </ul>
           </div>
         </div>
@@ -39,9 +39,9 @@
           <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded}">Reverse Geocoding <span class="material-icons">expand_more</span></div>
           <div class="row__content" *giscAccordionContent="parent.expanded" [@growAnimation]>
             <ul>
-              <li>Demo</li>
-              <li>Interactive</li>
-              <li>Batch Processing</li>
+              <li tamuGiscTileLink location="services/reverse-geocoding">Demo</li>
+              <li tamuGiscTileLink location="services/reverse-geocoding/interactive">Interactive</li>
+              <li tamuGiscTileLink location="services/reverse-geocoding">Batch Processing</li>
             </ul>
           </div>
         </div>
@@ -50,9 +50,9 @@
           <div class="row__title" [giscAccordionHeader]="parent" [ngClass]="{active: parent.expanded}">Census Intersection <span class="material-icons">expand_more</span></div>
           <div class="row__content" *giscAccordionContent="parent.expanded" [@growAnimation]>
             <ul>
-              <li>Demo</li>
-              <li>Interactive</li>
-              <li>Batch Processing</li>
+              <li tamuGiscTileLink location="services/census-intersection">Demo</li>
+              <li tamuGiscTileLink location="services/census-intersection/interactive">Interactive</li>
+              <li tamuGiscTileLink location="services/census-intersection">Batch Processing</li>
             </ul>
           </div>
         </div>
@@ -96,3 +96,4 @@
 
 <!-- Persistent footer -->
 <tamu-gisc-footer></tamu-gisc-footer>
+

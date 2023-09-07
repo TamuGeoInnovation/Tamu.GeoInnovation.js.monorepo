@@ -1,6 +1,6 @@
 import { AfterContentInit, Component, ContentChildren, Input, OnDestroy, QueryList } from '@angular/core';
-import { from, Subject } from 'rxjs';
-import { mergeMap, pluck, takeUntil } from 'rxjs/operators';
+import { from, merge, Subject } from 'rxjs';
+import { mergeMap, pluck, switchMap, takeUntil } from 'rxjs/operators';
 
 import { TileLinkDirective } from '../../directives/tile-link/tile-link.directive';
 import { TileService } from '../../services/tile.service';
@@ -14,7 +14,7 @@ export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
   @Input()
   public title = this.service.activeSubMenu.pipe(pluck('title'));
 
-  @ContentChildren(TileLinkDirective)
+  @ContentChildren(TileLinkDirective, { descendants: true })
   public links: QueryList<TileLinkDirective>;
 
   private _destroy$: Subject<null> = new Subject();
@@ -22,14 +22,21 @@ export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
   constructor(private service: TileService) {}
 
   public ngAfterContentInit(): void {
-    from(this.links.toArray())
+    merge(
+      from(this.links.toArray()),
+      this.links.changes.pipe(
+        switchMap((links) => {
+          return from(links.toArray());
+        })
+      )
+    )
       .pipe(
         mergeMap((link: TileLinkDirective) => {
           return link.clicked;
         }),
         takeUntil(this._destroy$)
       )
-      .subscribe((linkClicked) => {
+      .subscribe(() => {
         this.service.toggleMenu();
       });
   }
@@ -43,3 +50,4 @@ export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
     this.service.toggleSubmenu();
   }
 }
+
