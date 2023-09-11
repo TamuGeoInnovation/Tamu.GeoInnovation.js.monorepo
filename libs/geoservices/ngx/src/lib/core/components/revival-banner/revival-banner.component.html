@@ -1,0 +1,10 @@
+<ng-container *ngIf="(acknowledged$ | async) === false">
+  <div class="container12" id="banner-container">
+    <div class="column12">
+      <p>Texas A&amp;M University Geoservices has received a new look! Looking for the old version? You can find a link to it in the footer or visit @ <a href="https://legacy.geoservices.tamu.edu">legacy.geoservices.tamu.edu</a>.</p>
+
+      <span id="banner-dismiss" (click)="dismiss()"> [ Hide this message and don't show again ] </span>
+    </div>
+  </div>
+</ng-container>
+

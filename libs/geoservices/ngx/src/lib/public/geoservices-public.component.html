@@ -1,6 +1,8 @@
 <!-- Persistent desktop header -->
 <tamu-gisc-header *ngIf="(rp.isMobile | async) === false"></tamu-gisc-header>
 
+<tamu-gisc-revival-banner></tamu-gisc-revival-banner>
+
 <!-- Persistent mobile header -->
 <tamu-gisc-header-mobile *ngIf="(rp.isMobile | async)"></tamu-gisc-header-mobile>
 
@@ -56,11 +58,6 @@
             </ul>
           </div>
         </div>
-
-        <!-- <div class="submenu__row" tamuGiscTileLink location="services/address-processing">Address Processing <span class="material-icons">expand_more</span></div>
-        <div class="submenu__row" tamuGiscTileLink location="services/geocoding">Geocoding <span class="material-icons">expand_more</span></div>
-        <div class="submenu__row" tamuGiscTileLink location="services/reverse-geocoding">Reverse Geocoding <span class="material-icons">expand_more</span></div>
-        <div class="submenu__row" tamuGiscTileLink location="services/census-intersection">Census Intersection <span class="material-icons">expand_more</span></div> -->
       </tamu-gisc-tile-submenu>
     </tamu-gisc-tile>
 
