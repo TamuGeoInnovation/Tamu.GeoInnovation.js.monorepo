@@ -11,10 +11,20 @@ import { HeaderMobileComponent } from './components/header-mobile/header-mobile.
 import { FooterLegalComponent } from './components/footer/legal/legal.component';
 import { FooterShortcutsComponent } from './components/footer/shortcuts/shortcuts.component';
 import { ReleaseInfoComponent } from './components/footer/release-info/release-info.component';
+import { RevivalModalComponent } from './components/modals/revival-modal/revival-modal.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, PipesModule],
-  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent, FooterLegalComponent, FooterShortcutsComponent, ReleaseInfoComponent],
+  declarations: [
+    HeaderComponent,
+    FooterComponent,
+    HeaderMobileComponent,
+    FooterLegalComponent,
+    FooterShortcutsComponent,
+    ReleaseInfoComponent,
+    RevivalModalComponent
+  ],
   exports: [HeaderComponent, FooterComponent, FooterLegalComponent, FooterShortcutsComponent, HeaderMobileComponent]
 })
 export class GeoservicesCoreNgxModule {}
+
