@@ -1,12 +1,12 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Observable, Subject, delay, filter, merge, of, startWith, switchMap } from 'rxjs';
+import { Observable, Subject, delay, filter, map, merge, of, startWith, switchMap } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { growAnimationBuilder } from '@tamu-gisc/ui-kits/ngx/animations';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { AuthService, LoggedInState } from '@tamu-gisc/geoservices/data-access';
+import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { RevivalModalComponent } from '../modals/revival-modal/revival-modal.component';
 
@@ -18,7 +18,8 @@ import { RevivalModalComponent } from '../modals/revival-modal/revival-modal.com
 })
 export class HeaderComponent implements OnInit {
   public mobileNavToggle: Subject<boolean> = new Subject();
-  public loggedIn: Observable<LoggedInState>;
+  public loggedIn: Observable<boolean>;
+  public isManager: Observable<boolean>;
   public url: string;
 
   // Because the routing is virtual, the header component is not destroyed when navigating between routes.
@@ -43,7 +44,20 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.loggedIn = this.as.state;
+    this.loggedIn = this.as.state.pipe(
+      map((state) => {
+        return state.loggedIn;
+      }),
+      startWith(false)
+    );
+
+    this.isManager = this.as.state.pipe(
+      map((state) => {
+        return state.isManager;
+      }),
+      startWith(false)
+    );
+
     this.url = this.env.value('accounts_url');
 
     // Only set ignore pointer events for a brief period of time so that users
