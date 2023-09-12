@@ -125,7 +125,7 @@
           </li>
         </ul>
 
-        <a [href]="url + '/Login/'" *ngIf="(loggedIn | async)?.loggedIn === false; else loggedInMenuOptions">Login</a>
+        <a [href]="url + '/Login/'" *ngIf="(loggedIn | async) === false; else loggedInMenuOptions">Login</a>
 
         <ng-template #loggedInMenuOptions>
           <ul>
@@ -153,7 +153,7 @@
                   <p class="dropdown__menu__descriptor">See where all of your service credits have been used.</p>
                 </li>
 
-                <li *ngIf="(loggedIn | async)?.isManager">
+                <li *ngIf="(isManager | async)">
                   <a [href]="url + '/Management/'">Admin</a>
                   <p class="dropdown__menu__descriptor">Administrator tools for administrators only.</p>
                 </li>
