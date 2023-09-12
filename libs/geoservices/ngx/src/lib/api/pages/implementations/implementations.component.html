@@ -4,11 +4,11 @@
   <p>The Geoservices Geocoding API is available to developers in several ways:</p>
 
   <ul>
-    <li>Raw HTTP, REST, or SOAP requests</li>
+    <li>REST API</li>
     <li>
       Client JavaScript Libraries
       <ul>
-        <li>CDN</li>
+        <!-- <li>CDN</li> -->
         <li>NPM</li>
       </ul>
     </li>
@@ -16,15 +16,15 @@
 
   <p>Raw requests offer the greatest flexibility for developers allowing custom implementations based on their programming language of choice and consuming application formats (json, xml, csv, tsv, etc.)</p>
 
-  <p>Using the hosted version, through a CDN (Content Delivery Network), is best for applications that do not utilize a package manager like NPM. Simply add the script requirement to the head of your webpage and you're off to the races!</p>
+  <!-- <p>Using the hosted version, through a CDN (Content Delivery Network), is best for applications that do not utilize a package manager like NPM. Simply add the script requirement to the head of your webpage and you're off to the races!</p> -->
 
-  <p>For projects utilizing the NPM package manager, module installation is done through its CLI and imported into your project. This has the benefit of including the API client library into your project and releasing network external dependencies (CDN) that could impact your application load times and performance. Furthermore, the client API libraries are written with TypeScript so developers get the added benefit of JSDoc or native TypeScript typings in supported IDE's or Code Editors.</p>
+  <p>For projects utilizing the NPM/Yarn package managers, module installation is done through its CLI and imported into your project. This has the benefit of including the API client library into your project and releasing your project of external dependency requests that could impact your application load times and performance. Furthermore, the client API libraries are written with TypeScript so developers get the added benefit of JSDoc or native TypeScript typings in supported IDE's or Code Editors.</p>
 
   <p>The base API for all Geoservices API's is:</p>
 
   <div class="service-endpoint">
     <div class="service-verb get">GET</div>
-    <div class="service-address">https://geoservices.tamu.edu/Services/</div>
+    <div class="service-address">https://geoservices.tamu.edu/api/</div>
   </div>
 </section>
 
@@ -39,41 +39,41 @@
 <section id="quota-rate-limits">
   <h2>Quota and Rate Limits</h2>
 
-  <p>All registered users receive a daily quota of free credits that can be used for development and testing purposes. In order to ensure a consistent level of service quality for all of our users, all requests are rate-limited based on their subscription level.</p>
+  <p>All registered users receive a monthly quota of free credits that can be used for development and testing purposes.</p>
 </section>
 
 <section id="raw-requests">
-  <h2>Raw Queries</h2>
+  <h2>REST API</h2>
 
-  <p>Our services can be called using any implementation that allows querying HTTP, REST, or SOAP resource endpoints. One of the simplest ways to make use of the API's through a front-end application is by building the request URL and making a call with the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank" rel="noopener noreferrer">Fetch API</a>:</p>
+  <p>Our services can be called using any language or implementation that can make REST calls. One of the simplest ways to make use of the API's through a front-end application is by building the request URL and making a call with the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank" rel="noopener noreferrer">Fetch API</a>:</p>
 
   <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/quick-start/raw-fetch.js' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
 
-  <p>Browser support for the Fetch API is "good enough" for most applications, however if even broader support is required then querying the API with more lower-level XMLHttpRequests API is in order. Furthermore, both the Fetch API and the XMLHttpRequest API's are only available in browser environments and so they are not available to NodeJS developers working on non-browser projects. Node developers will have to use a third-party library for XHR requests.</p>
+  <p>Browser support for the Fetch API is "good enough" for most applications, however if even broader support is required then querying the API with more lower-level XMLHttpRequests API is in order. Furthermore, both the Fetch API and the XMLHttpRequest API's are only available in browser environments limiting their use in NodeJS projects. NodeJS projects will have to use a third-party library for XHR requests.</p>
 </section>
 
 <section id="library-sdks">
   <h2>Libraries &amp; SDK's</h2>
 
-  <p>Alternatively, we provide a small first-party, open-source, JavaScript client library (with support for for other languages in the future) for use in browser and Node applications to reduce the boilerplate required to create API requests and handle errors, facilitating service consumption. It provides XHR wrappers for the following services:</p>
+  <p>Alternatively, we provide a small, first-party, open-source, JavaScript client library (with support for for other languages in the future) for use in browser and Node applications to reduce the boilerplate required to create API requests and handle errors, facilitating service consumption. It provides XHR wrappers for the following services:</p>
 
   <ul>
     <li>Geocoding</li>
     <li>Reverse Geocoding</li>
     <li>Address Parsing/Processing</li>
     <li>Census Intersection</li>
-    <li>K-Nearest</li>
+    <!-- <li>K-Nearest</li> -->
   </ul>
 
-  <p>To use in browser applications without a package manager:</p>
+  <!-- <p>To use in browser applications without a package manager:</p>
 
-  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/quick-start/script-import.html' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
+  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/quick-start/script-import.html' | codeFromUrl | async" [lineNumbers]="true"></code></pre> -->
 
-  <p>For browser applications using package managers using ES6 import statements:</p>
+  <p>For browser and NodeJS applications using package managers and ES module import statements:</p>
 
   <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/quick-start/es6-import.js' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
 
-  <p>Finally, using CommonJS's <code>require</code>:</p>
+  <p>For NodeJS applications using CommonJS <code>require</code> statements:</p>
 
   <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/quick-start/node-import.js' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
 
@@ -81,3 +81,4 @@
 
   <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/v5/quick-start/class-consumption.js' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
 </section>
+

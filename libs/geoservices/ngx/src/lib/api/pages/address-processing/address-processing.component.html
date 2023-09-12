@@ -7,7 +7,7 @@
       <div class="service-address">{{ url }}</div>
     </div>
 
-    <p><a href="http://" target="_blank" rel="noopener noreferrer">Looking for an older version?</a></p>
+    <!-- <p><a href="http://" target="_blank" rel="noopener noreferrer">Looking for an older version?</a></p> -->
 
     <p>Address processing is a combination of two processes bundled into one: address parsing and address normalization.</p>
 
@@ -480,7 +480,7 @@
           <div class="attribute-description">
             <p>The processed address result for an input address for a single <code>addressFormat</code>.</p>
 
-            <div *giscAccordion="let parent;" expanded="true">
+            <div *giscAccordion="let parent;">
               <div class="pill" [giscAccordionHeader]="parent">
                 <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
                 <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
@@ -510,3 +510,4 @@
     </tamu-gisc-tab>
   </tamu-gisc-tabs> -->
 </section>
+
