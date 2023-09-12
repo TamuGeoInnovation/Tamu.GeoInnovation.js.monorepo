@@ -9,7 +9,7 @@ import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/ge
 })
 export class AddressProcessingComponent {
   public apiVersion = '5.0';
-  public url = 'https://geoservices.tamu.edu/api/addressnormalization/v5/?';
+  public url = 'https://geoservices.tamu.edu/api/addressnormalization/v5';
 
   public apiKey = 'demo';
 
@@ -22,3 +22,4 @@ export class AddressProcessingComponent {
     addressFormat: [AddressProcessingAddressFormat.USPSPublication28]
   });
 }
+
