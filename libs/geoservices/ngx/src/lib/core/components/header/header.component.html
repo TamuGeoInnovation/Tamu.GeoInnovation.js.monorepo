@@ -24,7 +24,7 @@
                   </li>
 
                   <li>
-                    <a [routerLink]="['services/address-processing']" routerLinkActive="router-link-active">Batch processing</a>
+                    <a [href]="url + '/Services/AddressNormalization/BatchProcess/Step1.aspx'" routerLinkActive="router-link-active">Batch processing</a>
                     <p class="dropdown__menu__descriptor">Upload or select from your databases to process addresses in batch.</p>
                   </li>
                 </div>
@@ -46,7 +46,7 @@
                   </li>
 
                   <li>
-                    <a [routerLink]="['services/geocoding']" routerLinkActive="router-link-active">Batch processing</a>
+                    <a [href]="url + '/Services/Geocode/BatchProcess/Step1.aspx'" routerLinkActive="router-link-active">Batch processing</a>
                     <p class="dropdown__menu__descriptor">Upload or select from your databases to geocode in batch.</p>
                   </li>
                 </div>
@@ -68,7 +68,7 @@
                   </li>
 
                   <li>
-                    <a [routerLink]="['services/reverse-geocoding']" routerLinkActive="router-link-active">Batch processing</a>
+                    <a [href]="url + '/Services/ReverseGeocoding/BatchProcess/Step1.aspx'" routerLinkActive="router-link-active">Batch processing</a>
                     <p class="dropdown__menu__descriptor">Upload or select from your databases to reverse geocode in batch.</p>
                   </li>
                 </div>
@@ -90,7 +90,7 @@
                   </li>
 
                   <li>
-                    <a [routerLink]="['services/census-intersection']" routerLinkActive="router-link-active">Batch processing</a>
+                    <a [href]="url + '/Services/CensusIntersection/BatchProcess/Step1.aspx'" routerLinkActive="router-link-active">Batch processing</a>
                     <p class="dropdown__menu__descriptor">Upload or select from your databases to process census intersections in batch.</p>
                   </li>
                 </div>
@@ -191,7 +191,7 @@
             <ul>
               <li tamuGiscTileLink location="services/address-processing">Demo</li>
               <li tamuGiscTileLink location="services/address-processing/interactive">Interactive</li>
-              <li tamuGiscTileLink location="services/address-processing/batch">Batch Processing</li>
+              <li tamuGiscTileLink [location]="url + '/Services/AddressNormalization/BatchProcess/Step1.aspx'">Batch Processing</li>
               <li tamuGiscTileLink location="docs/address-processing">API Documentation</li>
             </ul>
           </div>
@@ -203,7 +203,7 @@
             <ul>
               <li tamuGiscTileLink location="services/geocoding">Demo</li>
               <li tamuGiscTileLink location="services/geocoding/interactive">Interactive</li>
-              <li tamuGiscTileLink location="services/geocoding/batch">Batch Processing</li>
+              <li tamuGiscTileLink [location]="url + '/Services/Geocode/BatchProcess/Step1.aspx'">Batch Processing</li>
               <li tamuGiscTileLink location="docs/geocoding">API Documentation</li>
             </ul>
           </div>
@@ -215,7 +215,7 @@
             <ul>
               <li tamuGiscTileLink location="services/reverse-geocoding">Demo</li>
               <li tamuGiscTileLink location="services/reverse-geocoding/interactive">Interactive</li>
-              <li tamuGiscTileLink location="services/reverse-geocoding/batch">Batch Processing</li>
+              <li tamuGiscTileLink [location]="url + '/Services/ReverseGeocoding/BatchProcess/Step1.aspx'">Batch Processing</li>
               <li tamuGiscTileLink location="docs/reverse-geocoding">API Documentation</li>
             </ul>
           </div>
@@ -227,7 +227,7 @@
             <ul>
               <li tamuGiscTileLink location="services/census-intersection">Demo</li>
               <li tamuGiscTileLink location="services/census-intersection/interactive">Interactive</li>
-              <li tamuGiscTileLink location="services/census-intersection">Batch Processing</li>
+              <li tamuGiscTileLink [location]="url + '/Services/CensusIntersection/BatchProcess/Step1.aspx'">Batch Processing</li>
               <li tamuGiscTileLink location="docs/census-intersection">API Documentation</li>
             </ul>
           </div>
