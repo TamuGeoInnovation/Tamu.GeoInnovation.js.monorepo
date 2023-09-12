@@ -2,10 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
-import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-
 import { GeoservicesCoreNgxModule } from '../core/geoservices-core-ngx.module';
 import { GeoservicesPublicComponent } from './geoservices-public.component';
 
@@ -40,14 +36,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    GeoservicesCoreNgxModule,
-    UITileNavigationModule,
-    UINavigationTriggersModule,
-    UILayoutModule
-  ],
+  imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreNgxModule],
   declarations: [GeoservicesPublicComponent]
 })
 export class GeoservicesPublicModule {}
