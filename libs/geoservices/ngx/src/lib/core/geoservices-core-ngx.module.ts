@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
 
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -15,7 +18,7 @@ import { RevivalModalComponent } from './components/modals/revival-modal/revival
 import { RevivalBannerComponent } from './components/revival-banner/revival-banner.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, PipesModule],
+  imports: [CommonModule, RouterModule, PipesModule, UILayoutModule, UITileNavigationModule, UINavigationTriggersModule],
   declarations: [
     HeaderComponent,
     FooterComponent,
@@ -36,4 +39,3 @@ import { RevivalBannerComponent } from './components/revival-banner/revival-bann
   ]
 })
 export class GeoservicesCoreNgxModule {}
-

@@ -1,15 +1,23 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Observable, Subject, delay, merge, of, startWith, switchMap } from 'rxjs';
+import { Observable, Subject, delay, filter, merge, of, startWith, switchMap } from 'rxjs';
 
-import { AuthService, LoggedInState } from '@tamu-gisc/geoservices/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { growAnimationBuilder } from '@tamu-gisc/ui-kits/ngx/animations';
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { AuthService, LoggedInState } from '@tamu-gisc/geoservices/data-access';
+
+import { RevivalModalComponent } from '../modals/revival-modal/revival-modal.component';
 
 @Component({
   selector: 'tamu-gisc-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  animations: [growAnimationBuilder(250)]
 })
 export class HeaderComponent implements OnInit {
+  public mobileNavToggle: Subject<boolean> = new Subject();
   public loggedIn: Observable<LoggedInState>;
   public url: string;
 
@@ -26,7 +34,13 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  constructor(private readonly as: AuthService, private readonly env: EnvironmentService) {}
+  constructor(
+    private readonly as: AuthService,
+    private readonly env: EnvironmentService,
+    private readonly ms: ModalService,
+    private readonly ss: SettingsService,
+    public readonly rs: ResponsiveService
+  ) {}
 
   public ngOnInit() {
     this.loggedIn = this.as.state;
@@ -41,5 +55,45 @@ export class HeaderComponent implements OnInit {
       }),
       startWith(false)
     );
+
+    this.ss
+      .init({
+        storage: {
+          subKey: 'modals'
+        },
+        settings: {
+          reskin_acknowledge: {
+            value: false,
+            persistent: true
+          }
+        }
+      })
+      .pipe(
+        filter((settings) => {
+          return settings['reskin_acknowledge'] === false;
+        })
+      )
+      .subscribe(() => {
+        this.openModal();
+      });
+  }
+
+  public openModal() {
+    this.ms
+      .open<boolean>(RevivalModalComponent)
+      .pipe(
+        filter((acknowledged) => {
+          return acknowledged;
+        })
+      )
+      .subscribe(() => {
+        this.updateModalSettings();
+      });
+  }
+
+  private updateModalSettings() {
+    this.ss.updateSettings({
+      reskin_acknowledge: true
+    });
   }
 }
