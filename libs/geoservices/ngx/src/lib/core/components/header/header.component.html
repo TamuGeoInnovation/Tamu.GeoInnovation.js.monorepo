@@ -255,9 +255,24 @@
       </tamu-gisc-tile-submenu>
     </tamu-gisc-tile>
 
-    <tamu-gisc-tile>
+    <tamu-gisc-tile *ngIf="(loggedIn | async) === false; else mobileLoggedInTile">
       <tamu-gisc-tile-icon><div class="material-icons">person_outline</div></tamu-gisc-tile-icon>
       <tamu-gisc-tile-title tamuGiscTileLink [location]="url + '/Login/'">Login</tamu-gisc-tile-title>
     </tamu-gisc-tile>
+
+    <ng-template #mobileLoggedInTile>
+      <tamu-gisc-tile>
+        <tamu-gisc-tile-icon><div class="material-icons">person_outline</div></tamu-gisc-tile-icon>
+        <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
+        <tamu-gisc-tile-submenu *giscTileSubmenu>
+          <div class="submenu__row" tamuGiscTileLink [location]="url + '/UserServices/Profile'">Settings</div>
+          <div class="submenu__row" tamuGiscTileLink [location]="url + '/UserServices/Databases/Current/'">Databases</div>
+          <div class="submenu__row" tamuGiscTileLink [location]="url + '/UserServices/Processes/'">Processes</div>
+          <div class="submenu__row" tamuGiscTileLink [location]="url + '/UserServices/UsageHistory/Transactions/'">Transactions</div>
+          <div class="submenu__row" tamuGiscTileLink [location]="url + '/Management/'" *ngIf="isManager | async">Admin</div>
+          <div class="submenu__row" tamuGiscTileLink [location]="url + '/Logout'">Logout</div>
+        </tamu-gisc-tile-submenu>
+      </tamu-gisc-tile>
+    </ng-template>
   </tamu-gisc-tile-navigation>
 </ng-container>
