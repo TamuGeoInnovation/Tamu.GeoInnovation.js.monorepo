@@ -56,9 +56,11 @@ idp_keystore.json
 # All SQLite databases
 *.db
 
-
-
 #Angular private configs
 secrets.ts
+
+#All .env.* files exeept .env.sample
+.env.*
+!.env.sample
 
 .angular
