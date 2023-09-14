@@ -15,8 +15,6 @@ export class HelperController {
   ) {
     const form = new FormData();
 
-    res;
-
     const ignoreKeys = ['replyTo', 'to', 'from'];
 
     // Repackage body as form data
@@ -50,13 +48,18 @@ export class HelperController {
       headers: form.getHeaders()
     });
 
-    if (status.statusCode.toString().startsWith('2') || status.statusCode.toString().startsWith('3')) {
+    const parsed = JSON.parse(status.body);
+
+    if (
+      (!parsed.exception && status.statusCode.toString().startsWith('2')) ||
+      status.statusCode.toString().startsWith('3')
+    ) {
       return res.status(200).json({
         statusCode: HttpStatus.OK,
         message: 'Successfully forwarded email.'
       });
     } else {
-      throw new HttpException('Error forwarding', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(parsed.exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
