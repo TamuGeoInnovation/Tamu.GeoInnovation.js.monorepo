@@ -1,11 +1,11 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
-import { AuthModule, AuthGuard } from '@auth0/auth0-angular';
+import { AuthModule, AuthGuard, AuthHttpInterceptor } from '@auth0/auth0-angular';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -104,6 +104,9 @@ const routeOptions: ExtraOptions = {
       authorizationParams: {
         audience: 'AUDIENCE',
         redirect_uri: window.location.origin + '/callback'
+      },
+      httpInterceptor: {
+        allowedList: []
       }
     }),
     BrowserModule,
@@ -119,6 +122,11 @@ const routeOptions: ExtraOptions = {
     {
       provide: env,
       useValue: environment
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthHttpInterceptor,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]

@@ -1,27 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 export abstract class BaseService<T> {
   public resource: string;
-  public accessToken;
   public headers: HttpHeaders;
 
-  constructor(
-    private env: EnvironmentService,
-    private http: HttpClient,
-    public oidcSecurityService: OidcSecurityService,
-    private route: string
-  ) {
+  constructor(private env: EnvironmentService, private http: HttpClient, private route: string) {
     this.resource = this.env.value('api_url') + `/${route}`;
-
-    this.accessToken = this.oidcSecurityService.getAccessToken();
-    this.headers = new HttpHeaders({
-      Authorization: 'Bearer ' + this.accessToken
-    });
   }
 
   public getEntity(guid: string, headers?: HttpHeaders) {
