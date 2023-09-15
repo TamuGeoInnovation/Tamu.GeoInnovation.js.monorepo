@@ -14,7 +14,7 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  public $loggedIn: Observable<AuthenticatedResult>;
+  // public $loggedIn: Observable<AuthenticatedResult>;
   public isActive = new Subject();
   public logoVisible = 'hidden';
   public isMobile = this.rp.isMobile.pipe(shareReplay(1));
@@ -22,12 +22,11 @@ export class HeaderComponent implements OnInit {
   constructor(
     private location: Location,
     private routerHistory: RouterHistoryService,
-    private rp: ResponsiveService,
-    private oidcSecurityService: OidcSecurityService
+    private rp: ResponsiveService // private oidcSecurityService: OidcSecurityService
   ) {}
 
   public ngOnInit() {
-    this.$loggedIn = this.oidcSecurityService.isAuthenticated$;
+    // this.$loggedIn = this.oidcSecurityService.isAuthenticated$;
 
     this.routerHistory.history
       .pipe(
@@ -42,3 +41,4 @@ export class HeaderComponent implements OnInit {
       .subscribe();
   }
 }
+

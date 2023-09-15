@@ -94,20 +94,20 @@ const routeOptions: ExtraOptions = {
 
 @NgModule({
   imports: [
-    AuthModule.forRoot({
-      config: {
-        authority: environment.idp_dev_url,
-        redirectUrl: window.location.origin,
-        postLogoutRedirectUri: window.location.origin,
-        clientId: environment.client_id,
-        scope: 'openid offline_access profile email',
-        responseType: 'code',
-        silentRenew: true,
-        useRefreshToken: true,
-        logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
-        autoUserInfo: false
-      }
-    }),
+    // AuthModule.forRoot({
+    //   config: {
+    //     authority: environment.idp_dev_url,
+    //     redirectUrl: window.location.origin,
+    //     postLogoutRedirectUri: window.location.origin,
+    //     clientId: environment.client_id,
+    //     scope: 'openid offline_access profile email',
+    //     responseType: 'code',
+    //     silentRenew: true,
+    //     useRefreshToken: true,
+    //     logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
+    //     autoUserInfo: false
+    //   }
+    // }),
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
@@ -126,3 +126,4 @@ const routeOptions: ExtraOptions = {
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+

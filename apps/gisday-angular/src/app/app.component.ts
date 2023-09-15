@@ -11,15 +11,18 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit {
   public title = 'gisday-angular';
 
-  constructor(public oidcSecurityService: OidcSecurityService) {}
+  // constructor(public oidcSecurityService: OidcSecurityService) {}
 
   public ngOnInit() {
-    this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken }) => {
-      if (environment.production !== true) {
-        console.log('app authenticated', isAuthenticated);
-        console.log('User data', userData);
-        console.log(`Current access token is ${accessToken}`);
-      }
-    });
+    console.log('app component init');
+
+    // this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken }) => {
+    //   if (environment.production !== true) {
+    //     console.log('app authenticated', isAuthenticated);
+    //     console.log('User data', userData);
+    //     console.log(`Current access token is ${accessToken}`);
+    //   }
+    // });
   }
 }
+

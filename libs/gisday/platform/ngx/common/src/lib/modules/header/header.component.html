@@ -70,7 +70,7 @@
           </ul>
         </ul>
 
-        <ul class="dropdown" *ngIf="($loggedIn | async).isAuthenticated; else logInPrompt">
+        <!-- <ul class="dropdown" *ngIf="($loggedIn | async).isAuthenticated; else logInPrompt">
           <a [routerLink]="['/account/my-details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
           <ul>
             <li><a [routerLink]="['/account/my-details']">My Details</a></li>
@@ -80,13 +80,13 @@
             <li><a [routerLink]="['/account/my-submissions']">My Submissions</a></li>
             <li><a [routerLink]="['/logout']">Logout</a></li>
           </ul>
-        </ul>
+        </ul> -->
 
-        <ng-template #logInPrompt>
-          <ul id="liLogin">
-            <a [routerLink]="['/login']" id="linkLogin">Login/Signup</a>
-          </ul>
-        </ng-template>
+        <!-- <ng-template #logInPrompt> -->
+        <ul id="liLogin">
+          <a [routerLink]="['/login']" id="linkLogin">Login/Signup</a>
+        </ul>
+        <!-- </ng-template> -->
       </div>
 
       <div class="primary">
@@ -126,3 +126,4 @@
     </div>
   </nav>
 </header>
+
