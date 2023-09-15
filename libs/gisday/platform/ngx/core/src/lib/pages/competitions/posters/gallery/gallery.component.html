@@ -1,0 +1,24 @@
+<section>
+  <div class="small-partition">
+    <div class="container12">
+      <h1 class="trailer-1">Poster Gallery</h1>
+      <p class="sub-section-heading">Submitted posters for this years poster competition.</p>
+
+      <div id="ctl00_ContentPlaceHolderBody_btnVoteNotLoggedIn" class="flex flex-row justify-center align-center">
+        <a class="button secondary leader-1">Login to Submit Your Vote for 1st, 2nd, and 3rd place!</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container12 flex flex-column" *ngFor="let poster of ($posters | async); index as i">
+    <div class="large-partition bg-md-grey-50 flex justify-center align-center trailer-1 poster-submission" [ngClass]="(i + 1) % 2 === 0 ? 'flex-row-reverse': 'flex-row'">
+      <div class="column6 clr-md-grey-900">
+        <h2 class="trailer-1">{{ poster.title }}</h2>
+        <p>{{ poster.abstract }}</p>
+        <div class="flex flex-row justify-center align-center">
+          <a class="button secondary leader-1" [href]="getSanitizedLink(poster.link)" target="_blank">View Full Poster</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

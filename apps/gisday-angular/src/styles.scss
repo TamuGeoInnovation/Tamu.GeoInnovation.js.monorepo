@@ -54,6 +54,8 @@ html {
   -webkit-font-smoothing: antialiased;
   font-family: $body-font;
   color: $gisday-font-primary;
+
+  scroll-behavior: smooth;
 }
 
 body {
@@ -1288,6 +1290,10 @@ div#links-container {
       font-family: $title-font;
       color: #ffffff;
       margin-top: -5%;
+    }
+
+    &.default {
+      background: $gisday-gray-primary;
     }
   }
 

@@ -9,6 +9,7 @@ export * from './lib/modules/interceptors/auth.interceptor';
 export * from './lib/modules/services/_base/base.service';
 export * from './lib/modules/services/checkin/checkin.service';
 export * from './lib/modules/services/class/class.service';
+export * from './lib/modules/services/contact/contact.service';
 export * from './lib/modules/services/event/event.service';
 export * from './lib/modules/services/initial-survey/initial-survey.service';
 export * from './lib/modules/services/rsvp-type/rsvp-type.service';

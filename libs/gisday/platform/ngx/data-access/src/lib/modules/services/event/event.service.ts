@@ -24,6 +24,18 @@ export class EventService extends BaseService<Event> {
     });
   }
 
+  public getEvents() {
+    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/all`, {
+      headers: this.headers
+    });
+  }
+
+  public getEvent(guid: string) {
+    return this.http1.get<Partial<Event>>(`${this.resource}/${guid}`, {
+      headers: this.headers
+    });
+  }
+
   public getEventsByDay() {
     return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`, {
       headers: this.headers

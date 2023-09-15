@@ -2,28 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
-  CheckIn,
-  Class,
-  CourseCredit,
-  Event,
-  EventBroadcast,
-  EventLocation,
-  RsvpType,
-  Speaker,
-  SpeakerInfo,
-  Sponsor,
-  Tag,
-  UserClass,
-  UserInfo,
-  UserRsvp,
-  UserSubmission,
-  SubmissionType,
-  University,
+  GISDAY_ENTITIES,
   CheckInModule,
   ClassModule,
   EventModule,
   InitialSurveyModule,
-  QuestionType,
   RsvpTypeModule,
   SpeakerModule,
   SponsorModule,
@@ -33,11 +16,8 @@ import {
   UserInfoModule,
   UserRsvpModule,
   UserSubmissionModule,
-  InitialSurveyQuestion,
-  InitialSurveyResponse,
   QuestionTypeModule,
   UniversityModule,
-  SpeakerRole,
   SpeakerRoleModule
 } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -48,29 +28,7 @@ import { dbConfig } from '../environments/environment';
   imports: [
     TypeOrmModule.forRoot({
       ...dbConfig,
-      entities: [
-        CheckIn,
-        Class,
-        CourseCredit,
-        Event,
-        EventBroadcast,
-        EventLocation,
-        InitialSurveyQuestion,
-        InitialSurveyResponse,
-        QuestionType,
-        RsvpType,
-        Speaker,
-        SpeakerInfo,
-        SpeakerRole,
-        SubmissionType,
-        Sponsor,
-        Tag,
-        UserClass,
-        UserInfo,
-        UserRsvp,
-        UserSubmission,
-        University
-      ]
+      entities: GISDAY_ENTITIES
     }),
     CheckInModule,
     ClassModule,

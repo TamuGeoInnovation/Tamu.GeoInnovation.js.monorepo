@@ -8,6 +8,7 @@ import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/tr
 import { FooterComponent } from './modules/footer/footer.component';
 import { HeaderComponent } from './modules/header/header.component';
 import { DetailViewComponent } from './modules/detail-view/detail-view.component';
+import { OrderByPipe } from './utils/order-by-pipe';
 
 @NgModule({
   imports: [CommonModule, RouterModule, UITileNavigationModule, UINavigationTriggersModule],
@@ -16,3 +17,9 @@ import { DetailViewComponent } from './modules/detail-view/detail-view.component
   exports: [FooterComponent, HeaderComponent, DetailViewComponent]
 })
 export class GisdayPlatformNgxCommonModule {}
+
+@NgModule({
+  declarations: [OrderByPipe],
+  exports: [OrderByPipe]
+})
+export class GisdayPlatformNgxPipesModule {}

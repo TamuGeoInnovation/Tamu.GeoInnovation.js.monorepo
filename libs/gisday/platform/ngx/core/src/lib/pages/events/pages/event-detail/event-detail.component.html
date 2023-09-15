@@ -1,4 +1,4 @@
-<section *ngIf="(event | async) as event">
+<section *ngIf="($event | async) as event">
   <div>
     <div class="container12 leader-3 flex flex-row">
       <h1 class="session-title">{{event.name}}</h1>
@@ -12,13 +12,21 @@
         <div id="timeAndPlace" class="trailer-1">
           <p>{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
           <p>
-            <a href="{{event.locationLink}}" target="_blank">{{event.locationBuilding}} {{event.locationRoom}}</a>
+            <a href="{{event.location?.link}}" target="_blank">{{event.location?.building}} {{event.location?.room}}</a>
           </p>
         </div>
         <div class="trailer-2">
-          <div class="trailer-1" *ngIf="event.abstract !== ''"><p>{{event.abstract}}</p></div>
           <tamu-gisc-accordion>
-            <tamu-gisc-accordion-header>Learning Resources (None)</tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-header><b>Online Zoom Meeting Info</b></tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-content>
+              <p>Some resources will only be available at the start of the session.</p>
+              <ul>
+                <li>The online Zoom broadcast for this session has not been setup yet.</li>
+              </ul>
+            </tamu-gisc-accordion-content>
+          </tamu-gisc-accordion>
+          <tamu-gisc-accordion>
+            <tamu-gisc-accordion-header><b>Learning Resources</b></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
               <p>Some resources will only be available at the start of the session</p>
               <ul>
@@ -28,9 +36,13 @@
             </tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
           <tamu-gisc-accordion>
-            <tamu-gisc-accordion-header>Session Requirements (None)</tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-header><b>Session Requirements</b></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content><p>This session has no special requirements.</p></tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
+        </div>
+        <div class="trailer-1 felx flex-row">
+          <h3>Session Description</h3>
+          <div class="trailer-1" *ngIf="event.abstract !== ''"><p>{{event.abstract}}</p></div>
         </div>
         <div class="trailer-1 flex flex-row half-children">
           <div>
@@ -55,6 +67,29 @@
                 <tamu-gisc-button fit="snug" value="CheckIn" (click)="checkin()"></tamu-gisc-button>
               </div>
             </ng-template>
+          </div>
+        </div>
+        <div class="trailer-2 ng-scope" *ngIf="event.speakers.length > 0">
+          <div class="border-divider leader-2 trailer-2"></div>
+          <h3>Presenters</h3>
+          <div class="flex flex-row leader-1 justify-between">
+            <div class="presenter-item" *ngFor="let presenter of (event.speakers)">
+              <div class="image" *ngIf="presenter.speakerInfo; else default" presenter="presenter" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(presenter.speakerInfo?.blob?.data)+')'  } "></div>
+              <ng-template #default>
+                <div class="image default">
+                  <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                  </svg>
+                </div>
+              </ng-template>
+              <div class="details">
+                <div class="name">
+                  <a *ngIf="presenter" href="/presenters/details/{{presenter.guid}}"> {{presenter.firstName}} {{presenter.lastName}} </a>
+                </div>
+                <div class="organization">{{presenter.organization}}</div>
+                <div class="role">{{presenter.role}}</div>
+              </div>
+            </div>
           </div>
         </div>
         <div>

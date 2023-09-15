@@ -14,7 +14,8 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
-  Repository
+  Repository,
+  AfterLoad
 } from 'typeorm';
 import { v4 as guid } from 'uuid';
 
@@ -233,25 +234,27 @@ export class OldEvent extends GISDayEntity {
     super();
   }
 }
-
 @Entity({
   name: 'event_broadcast'
 })
 export class EventBroadcast extends GuidIdentity {
-  @Column({ nullable: false })
-  public presenterUrl: string;
+  @Column({ nullable: true })
+  public presenterUrl?: string;
 
-  @Column({ nullable: false })
-  public password: string;
+  @Column({ nullable: true })
+  public password?: string;
 
-  @Column({ nullable: false })
-  public phoneNumber: string;
+  @Column({ nullable: true })
+  public phoneNumber?: string;
 
-  @Column({ nullable: false })
-  public meetingId: string;
+  @Column({ nullable: true })
+  public meetingId?: string;
 
-  @Column({ nullable: false })
-  public publicUrl: string;
+  @Column({ nullable: true })
+  public publicUrl?: string;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public details?: string;
 }
 
 @Entity({
@@ -259,32 +262,62 @@ export class EventBroadcast extends GuidIdentity {
 })
 export class EventLocation extends GuidIdentity {
   @Column({ nullable: true })
-  public room: string;
+  public room?: string;
 
   @Column({ nullable: true })
-  public building: string;
+  public building?: string;
 
   @Column({ nullable: true })
-  public capacity: number;
+  public capacity?: number;
 
   @Column({ nullable: true })
-  public link: string;
+  public link?: string;
 }
 
 @Entity({
   name: 'events'
 })
 export class Event extends GISDayEntity {
-  @ManyToMany(() => Speaker, { cascade: true })
-  @JoinTable({ name: 'event_speakers' })
+  @ManyToMany(() => Speaker, { cascade: true, nullable: true })
+  @JoinTable({
+    name: 'event_speakers'
+    // joinColumn: {
+    //   name: 'eventGuid',
+    //   referencedColumnName: 'guid'
+    // },
+    // inverseJoinColumn: {
+    //   name: 'speakerGuid',
+    //   referencedColumnName: 'guid'
+    // }
+  })
   public speakers?: Speaker[];
 
   @ManyToMany(() => Sponsor, { cascade: true })
-  @JoinTable({ name: 'event_sponsors' })
+  @JoinTable({
+    name: 'event_sponsors'
+    // joinColumn: {
+    //   name: 'eventGuid',
+    //   referencedColumnName: 'guid'
+    // },
+    // inverseJoinColumn: {
+    //   name: 'sponsorGuid',
+    //   referencedColumnName: 'guid'
+    // }
+  })
   public sponsors?: Sponsor[];
 
-  @ManyToMany(() => Tag, { cascade: true })
-  @JoinTable({ name: 'event_tags' })
+  @ManyToMany(() => Tag, { cascade: true, nullable: true })
+  @JoinTable({
+    name: 'event_tags'
+    // joinColumn: {
+    //   name: 'eventGuid',
+    //   referencedColumnName: 'guid'
+    // },
+    // inverseJoinColumn: {
+    //   name: 'tagGuid',
+    //   referencedColumnName: 'guid'
+    // }
+  })
   public tags?: Tag[];
 
   @ManyToMany(() => CourseCredit, { cascade: true })
@@ -302,7 +335,7 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true })
   public name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
 
   @Column({ nullable: true })
@@ -311,11 +344,15 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true })
   public endTime: string;
 
-  @Column({ nullable: true })
-  public observedAttendeeStart: number;
+  // TODO: Should we remove these? They don't seem to be used often
+  // @Column({ nullable: true })
+  // public observedAttendeeStart: number;
+
+  // @Column({ nullable: true })
+  // public observedAttendeeEnd: number;
 
   @Column({ nullable: true })
-  public observedAttendeeEnd: number;
+  public capacity: number;
 
   @Column({ nullable: true })
   public googleDriveUrl: string;
@@ -332,20 +369,28 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true })
   public presentationType: string;
 
-  @Column({ nullable: false, default: true })
+  @Column({ nullable: true, default: true })
   public isAcceptingRsvps: boolean;
 
-  @Column({ nullable: false, default: false })
+  @Column({ nullable: true, default: false })
   public isBringYourOwnDevice: boolean;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'MAX' })
   public requirements: string;
 
-  public hasRsvp = false;
+  /**
+   * Returns the day of week using Date.getDay() given the event's startTime
+   * Remember, Date.getDay() returns the DAY OF THE WEEK (1-7), not the DAY in the MONTH
+   */
+  public day: number;
 
-  constructor() {
-    super();
+  @AfterLoad()
+  public setDay() {
+    const date = new Date(this.startTime);
+    this.day = date.getDay();
   }
+
+  public hasRsvp = false;
 }
 
 @Entity({
@@ -400,17 +445,52 @@ export class InitialSurveyResponse extends GISDayEntity {
 }
 
 @Entity({
+  name: 'event_rating_questions'
+})
+export class EventRatingQuestion extends GISDayEntity {
+  @Column({ nullable: true })
+  public userEditable: boolean;
+
+  @Column({ nullable: true })
+  public type: 'scale-normal' | 'boolean' | 'text' | 'multiple-option' | string;
+
+  @Column({ nullable: true })
+  public text: string;
+
+  @Column({ nullable: true })
+  public options: string; // Should be | (pipe) delimited
+}
+
+@Entity({
+  name: 'event_rating_responses'
+})
+export class EventRatingResponse extends GISDayEntity {
+  @ManyToOne(() => Event, { cascade: false, nullable: true })
+  @JoinColumn()
+  public event: Event;
+
+  @ManyToOne(() => EventRatingQuestion, { cascade: false, nullable: true }) // Maybe many-to-many?
+  @JoinColumn()
+  public question: EventRatingQuestion;
+
+  //TODO: Add the user / account guid
+
+  @Column({ nullable: true, length: 'max' })
+  public response: string;
+}
+
+@Entity({
   name: 'universities'
 })
 export class University extends GuidIdentity {
-  @Column()
+  @Column({ nullable: true })
   public name: string;
 
-  @Column()
+  @Column({ nullable: true })
   public acronym?: string;
 
-  @Column()
-  public hexTriplet: string;
+  @Column({ nullable: true })
+  public hexTriplet?: string;
 }
 
 @Entity({
@@ -460,10 +540,6 @@ export class SpeakerInfo extends GuidIdentity {
   public blob: MSSQLImage;
 
   public base64representation: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -485,15 +561,40 @@ export class Speaker extends GISDayEntity {
   @Column({ nullable: true })
   public organization: string;
 
+  @Column({ nullable: true })
+  public isActive: boolean;
+
   @OneToOne(() => SpeakerInfo, { cascade: true, nullable: true })
   @JoinColumn()
-  public speakerInfo: SpeakerInfo;
+  public speakerInfo?: SpeakerInfo;
 
   public inEvent?: boolean;
+}
 
-  constructor() {
-    super();
-  }
+@Entity({
+  name: 'organizations'
+})
+export class Organization extends GISDayEntity {
+  @Column({ nullable: true })
+  public name: string;
+
+  @Column({ nullable: true })
+  public website: string;
+
+  @Column({ nullable: true })
+  public logoUrl: string;
+
+  @Column({ nullable: true, length: 'max' })
+  public text: string;
+
+  @Column({ nullable: true })
+  public contactFirstName: string;
+
+  @Column({ nullable: true })
+  public contactLastName: string;
+
+  @Column({ nullable: true })
+  public contactEmail: string;
 }
 
 @Entity({
@@ -504,10 +605,6 @@ export class Tag extends GuidIdentity {
   public name: string;
 
   public inEvent?: boolean;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -527,30 +624,28 @@ export class Sponsor extends GISDayEntity {
   public contactEmail: string;
 
   @Column({ nullable: true })
+  public contactName: string;
+
+  @Column({ nullable: true, length: 'max' })
   public description: string;
 
   @Column({ nullable: true })
-  public sponsorshipLevel: 'point' | 'line' | 'polygon' | 'raster';
+  public sponsorshipLevel: 'point' | 'line' | 'polygon' | 'raster' | string;
 
-  constructor() {
-    super();
-  }
+  @Column({ nullable: true })
+  public sponsorshipAmount: string;
 }
 
 @Entity({
   name: 'checkins'
 })
 export class CheckIn extends GISDayEntity {
-  @OneToOne(() => Event, { cascade: true, eager: true })
+  @ManyToOne(() => Event, { cascade: false })
   @JoinColumn()
   public event: Event;
 
   @Column({ nullable: false })
   public accountGuid: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -570,23 +665,19 @@ export class Class extends GISDayEntity {
   public code: string;
 
   public userInClass = false;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
   name: 'course_credits'
 })
 export class CourseCredit extends GISDayEntity {
-  @ManyToOne(() => Class, { cascade: true })
+  @ManyToOne(() => Event, { cascade: false, nullable: true })
   @JoinColumn()
-  public class: Class;
+  public event?: Event;
 
-  constructor() {
-    super();
-  }
+  @ManyToOne(() => Class, { cascade: false, nullable: true })
+  @JoinColumn()
+  public class?: Class;
 }
 
 @Entity({
@@ -676,32 +767,60 @@ export class UserRsvp extends GISDayEntity {
   }
 }
 
+// @Entity({
+//   name: 'submissions'
+// })
+// export class UserSubmission extends GISDayEntity {
+//   @Column({ nullable: false })
+//   public accountGuid: string; // User
+
+//   @Column({ nullable: false })
+//   public title: string;
+
+//   @Column({ nullable: false })
+//   public author: string;
+
+//   @Column({ nullable: false })
+//   public abstract: string;
+
+//   @Column({ nullable: false })
+//   public link: string;
+
+//   // @OneToOne(() => SubmissionType, { cascade: true })
+//   // @JoinColumn()
+//   // public submissionType: SubmissionType; // Submission Type?
+//   @Column({ name: 'submissionType', nullable: true })
+//   public type: string;
+
+//   constructor() {
+//     super();
+//   }
+// }
+
 @Entity({
   name: 'submissions'
 })
-export class UserSubmission extends GISDayEntity {
-  @Column({ nullable: false })
+export class Submission extends GISDayEntity {
+  @Column({ nullable: true })
   public accountGuid: string; // User
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public title: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true, length: 'max' })
   public author: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true, length: 'max' })
   public abstract: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public link: string;
 
-  @OneToOne(() => SubmissionType, { cascade: true, eager: true })
-  @JoinColumn()
-  public submissionType: SubmissionType; // Submission Type?
+  @Column({ nullable: true })
+  public submissionType: 'Poster' | 'Presentation' | string;
 
-  constructor() {
-    super();
-  }
+  @Column({ nullable: true })
+  public studentType: 'Undergraduate' | 'Graduate' | string;
 }
 
 @Entity({
@@ -879,7 +998,7 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['broadcast', 'location', 'tags', 'speakers'],
+  event: ['speakers', 'tags', 'sponsors', 'location', 'broadcast'],
   speaker: ['speakerInfo', 'speakerInfo.university'],
   getRelation: (entity?: string) => {
     if (!entity) {
@@ -892,144 +1011,168 @@ export const EntityRelationsLUT = {
 
 export type EntityName = 'event' | 'speaker';
 
-export class CommonRepo<T> extends Repository<T> {}
+export const GISDAY_ENTITIES = [
+  CheckIn,
+  Class,
+  CourseCredit,
+  Event,
+  EventBroadcast,
+  EventLocation,
+  InitialSurveyQuestion,
+  InitialSurveyResponse,
+  QuestionType,
+  RsvpType,
+  Speaker,
+  SpeakerInfo,
+  SpeakerRole,
+  SubmissionType,
+  Sponsor,
+  Tag,
+  UserClass,
+  UserInfo,
+  UserRsvp,
+  Submission,
+  University
+];
 
-@EntityRepository(CheckIn)
-export class CheckInRepo extends CommonRepo<CheckIn> {}
+// export class CommonRepo<T> extends Repository<T> {}
 
-@EntityRepository(Class)
-export class ClassRepo extends CommonRepo<Class> {}
+// @EntityRepository(CheckIn)
+// export class CheckInRepo extends CommonRepo<CheckIn> {}
 
-@EntityRepository(CourseCredit)
-export class CourseCreditRepo extends CommonRepo<CourseCredit> {}
+// @EntityRepository(Class)
+// export class ClassRepo extends CommonRepo<Class> {}
 
-@EntityRepository(Event)
-export class EventRepo extends CommonRepo<Event> {
-  public async getAllCurrentSeasonByStartTime() {
-    return getConnection()
-      .getRepository(Event)
-      .createQueryBuilder('events')
-      .leftJoinAndSelect('events.tags', 'tags')
-      .leftJoinAndSelect('events.speakers', 'speakers')
-      .orderBy('startTime', 'ASC')
-      .where(`events.season = :season`, {
-        season: '2022'
-      })
-      .getMany();
-  }
-}
+// @EntityRepository(CourseCredit)
+// export class CourseCreditRepo extends CommonRepo<CourseCredit> {}
 
-@EntityRepository(EventLocation)
-export class EventLocationRepo extends CommonRepo<EventLocation> {}
+// @EntityRepository(Event)
+// export class EventRepo extends CommonRepo<Event> {
+//   public async getAllCurrentSeasonByStartTime() {
+//     return getConnection()
+//       .getRepository(Event)
+//       .createQueryBuilder('events')
+//       .leftJoinAndSelect('events.tags', 'tags')
+//       .leftJoinAndSelect('events.speakers', 'speakers')
+//       .orderBy('startTime', 'ASC')
+//       .where(`events.season = :season`, {
+//         season: '2022'
+//       })
+//       .getMany();
+//   }
+// }
 
-@EntityRepository(EventBroadcast)
-export class EventBroadcastRepo extends CommonRepo<EventBroadcast> {}
+// @EntityRepository(EventLocation)
+// export class EventLocationRepo extends CommonRepo<EventLocation> {}
 
-@EntityRepository(InitialSurveyQuestion)
-export class InitialSurveyQuestionRepo extends CommonRepo<InitialSurveyQuestion> {}
+// @EntityRepository(EventBroadcast)
+// export class EventBroadcastRepo extends CommonRepo<EventBroadcast> {}
 
-@EntityRepository(InitialSurveyResponse)
-export class InitialSurveyRepo extends CommonRepo<InitialSurveyResponse> {}
+// @EntityRepository(InitialSurveyQuestion)
+// export class InitialSurveyQuestionRepo extends CommonRepo<InitialSurveyQuestion> {}
 
-@EntityRepository(QuestionType)
-export class QuestionTypeRepo extends CommonRepo<QuestionType> {}
+// @EntityRepository(InitialSurveyResponse)
+// export class InitialSurveyRepo extends CommonRepo<InitialSurveyResponse> {}
 
-@EntityRepository(Speaker)
-export class SpeakerRepo extends CommonRepo<Speaker> {
-  public async getPresenter(speakerGuid: string) {
-    return getConnection()
-      .getRepository(Speaker)
-      .createQueryBuilder('speaker')
-      .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
-      .leftJoinAndSelect('speakerInfo.university', 'university')
-      .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
-      .where(`speaker.guid = :guid`, {
-        guid: speakerGuid
-      })
-      .getOne();
-  }
+// @EntityRepository(QuestionType)
+// export class QuestionTypeRepo extends CommonRepo<QuestionType> {}
 
-  public async getPresenters() {
-    return getConnection()
-      .getRepository(Speaker)
-      .createQueryBuilder('speaker')
-      .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
-      .leftJoinAndSelect('speakerInfo.university', 'university')
-      .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
-      .where('speaker.season = :season', {
-        season: '2020'
-      })
-      .getMany();
-  }
-}
+// @EntityRepository(Speaker)
+// export class SpeakerRepo extends CommonRepo<Speaker> {
+//   public async getPresenter(speakerGuid: string) {
+//     return getConnection()
+//       .getRepository(Speaker)
+//       .createQueryBuilder('speaker')
+//       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+//       .leftJoinAndSelect('speakerInfo.university', 'university')
+//       .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
+//       .where(`speaker.guid = :guid`, {
+//         guid: speakerGuid
+//       })
+//       .getOne();
+//   }
 
-@EntityRepository(SpeakerRole)
-export class SpeakerRoleRepo extends CommonRepo<SpeakerRole> {}
+//   public async getPresenters() {
+//     return getConnection()
+//       .getRepository(Speaker)
+//       .createQueryBuilder('speaker')
+//       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+//       .leftJoinAndSelect('speakerInfo.university', 'university')
+//       .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
+//       .where('speaker.season = :season', {
+//         season: '2020'
+//       })
+//       .getMany();
+//   }
+// }
 
-@EntityRepository(SpeakerInfo)
-export class SpeakerInfoRepo extends CommonRepo<SpeakerInfo> {}
+// @EntityRepository(SpeakerRole)
+// export class SpeakerRoleRepo extends CommonRepo<SpeakerRole> {}
 
-@EntityRepository(Sponsor)
-export class SponsorRepo extends CommonRepo<Sponsor> {}
+// @EntityRepository(SpeakerInfo)
+// export class SpeakerInfoRepo extends CommonRepo<SpeakerInfo> {}
 
-@EntityRepository(SubmissionType)
-export class SubmissionTypeRepo extends CommonRepo<SubmissionType> {}
+// @EntityRepository(Sponsor)
+// export class SponsorRepo extends CommonRepo<Sponsor> {}
 
-@EntityRepository(RsvpType)
-export class RsvpTypeRepo extends CommonRepo<RsvpType> {}
+// @EntityRepository(SubmissionType)
+// export class SubmissionTypeRepo extends CommonRepo<SubmissionType> {}
 
-@EntityRepository(Tag)
-export class TagRepo extends CommonRepo<Tag> {}
+// @EntityRepository(RsvpType)
+// export class RsvpTypeRepo extends CommonRepo<RsvpType> {}
 
-@EntityRepository(University)
-export class UniversityRepo extends CommonRepo<University> {}
+// @EntityRepository(Tag)
+// export class TagRepo extends CommonRepo<Tag> {}
 
-@EntityRepository(UserClass)
-export class UserClassRepo extends CommonRepo<UserClass> {
-  public async getUsersClasses(accountGuid: string) {
-    return getConnection()
-      .getRepository(UserClass)
-      .createQueryBuilder('userClass')
-      .leftJoinAndSelect('userClass.class', 'class')
-      .where(`userClass.accountGuid = :guid`, {
-        guid: accountGuid
-      })
-      .getMany();
-  }
-}
+// @EntityRepository(University)
+// export class UniversityRepo extends CommonRepo<University> {}
 
-@EntityRepository(UserInfo)
-export class UserInfoRepo extends CommonRepo<UserInfo> {}
+// @EntityRepository(UserClass)
+// export class UserClassRepo extends CommonRepo<UserClass> {
+//   public async getUsersClasses(accountGuid: string) {
+//     return getConnection()
+//       .getRepository(UserClass)
+//       .createQueryBuilder('userClass')
+//       .leftJoinAndSelect('userClass.class', 'class')
+//       .where(`userClass.accountGuid = :guid`, {
+//         guid: accountGuid
+//       })
+//       .getMany();
+//   }
+// }
 
-@EntityRepository(UserRsvp)
-export class UserRsvpRepo extends CommonRepo<UserRsvp> {
-  public async getUserRsvps(accountGuid: string) {
-    return getConnection()
-      .getRepository(UserRsvp)
-      .createQueryBuilder('userRsvp')
-      .leftJoinAndSelect('userRsvp.event', 'event')
-      .leftJoinAndSelect('userRsvp.rsvpType', 'rsvpType')
-      .where(`userRsvp.accountGuid = :guid`, {
-        guid: accountGuid
-      })
-      .getMany();
-  }
-}
+// @EntityRepository(UserInfo)
+// export class UserInfoRepo extends CommonRepo<UserInfo> {}
 
-@EntityRepository(UserSubmission)
-export class UserSubmissionRepo extends CommonRepo<UserSubmission> {}
+// @EntityRepository(UserRsvp)
+// export class UserRsvpRepo extends CommonRepo<UserRsvp> {
+//   public async getUserRsvps(accountGuid: string) {
+//     return getConnection()
+//       .getRepository(UserRsvp)
+//       .createQueryBuilder('userRsvp')
+//       .leftJoinAndSelect('userRsvp.event', 'event')
+//       .leftJoinAndSelect('userRsvp.rsvpType', 'rsvpType')
+//       .where(`userRsvp.accountGuid = :guid`, {
+//         guid: accountGuid
+//       })
+//       .getMany();
+//   }
+// }
 
-@EntityRepository(SignageSubmission)
-export class SignageSubmissionRepo extends CommonRepo<SignageSubmission> {}
+// @EntityRepository(Submission)
+// export class UserSubmissionRepo extends CommonRepo<Submission> {}
 
-@EntityRepository(StormwaterSubmission)
-export class StormwaterSubmissionRepo extends CommonRepo<StormwaterSubmission> {}
+// @EntityRepository(SignageSubmission)
+// export class SignageSubmissionRepo extends CommonRepo<SignageSubmission> {}
 
-@EntityRepository(SidewalkSubmission)
-export class SidewalkSubmissionRepo extends CommonRepo<SidewalkSubmission> {}
+// @EntityRepository(StormwaterSubmission)
+// export class StormwaterSubmissionRepo extends CommonRepo<StormwaterSubmission> {}
 
-@EntityRepository(ManholeSubmission)
-export class ManholeSubmissionRepo extends CommonRepo<ManholeSubmission> {}
+// @EntityRepository(SidewalkSubmission)
+// export class SidewalkSubmissionRepo extends CommonRepo<SidewalkSubmission> {}
+
+// @EntityRepository(ManholeSubmission)
+// export class ManholeSubmissionRepo extends CommonRepo<ManholeSubmission> {}
 
 export interface IGeoJsonFeature {
   type: string;

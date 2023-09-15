@@ -1,10 +1,13 @@
+import { Buffer } from 'buffer';
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 
 import { Event } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckinService, EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { DeepPartial } from 'typeorm';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -12,7 +15,6 @@ import { CheckinService, EventService } from '@tamu-gisc/gisday/platform/ngx/dat
   styleUrls: ['./event-detail.component.scss']
 })
 export class EventDetailComponent implements OnInit {
-  public eventGuid: string;
   public numOfRsvps: Observable<number>;
   public userHasCheckedInAlready: Observable<boolean>;
   public isCheckinOpen = false;
@@ -20,24 +22,28 @@ export class EventDetailComponent implements OnInit {
     abstract:
       'Another great TxGIS Day session will be announced soon. Check back to learn about the wonderful events the TxGIS Day team is bringing for this year.'
   };
-  public event: Observable<Partial<Event>>;
+  public $event: Observable<DeepPartial<Event>>;
   public now: Date = new Date();
+
   constructor(private route: ActivatedRoute, private eventService: EventService, private checkinService: CheckinService) {}
 
   public ngOnInit(): void {
-    const guid = this.route.snapshot.params.guid;
-    if (guid) {
-      this.eventGuid = guid;
-      this.event = this.eventService.getEntity(guid);
-      this.numOfRsvps = this.eventService.getNumberOfRsvps(guid);
-    }
+    this.$event = this.route.params.pipe(
+      map((params) => params['guid']),
+      switchMap((eventGuid) => this.eventService.getEvent(eventGuid))
+    );
   }
 
   public getNumberOfRsvps() {
-    this.numOfRsvps = this.eventService.getNumberOfRsvps(this.eventGuid);
+    // this.numOfRsvps = this.eventService.getNumberOfRsvps(this.eventGuid);
   }
 
   public checkin() {
-    this.checkinService.insertUserCheckin(this.eventGuid);
+    // this.checkinService.insertUserCheckin(this.eventGuid);
+  }
+
+  public unwrapPhoto(byteArray) {
+    const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
+    return `data:image/png;base64,${buffer}`;
   }
 }

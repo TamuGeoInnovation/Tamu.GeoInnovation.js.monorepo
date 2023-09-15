@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
+import { ContactService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+
 @Component({
   selector: 'tamu-gisc-contact',
   templateUrl: './contact.component.html',
@@ -10,7 +13,7 @@ import { Title } from '@angular/platform-browser';
 export class ContactComponent implements OnInit {
   public form: FormGroup;
 
-  constructor(private titleService: Title, private fb: FormBuilder) {
+  constructor(private titleService: Title, private fb: FormBuilder, private contactService: ContactService) {
     this.titleService.setTitle('Contact | TxGIS Day 2022');
   }
 
@@ -25,7 +28,15 @@ export class ContactComponent implements OnInit {
   }
 
   public sendEmail() {
-    // TODO: Link with Mailroom - Aaron H (4/26/22)
-    console.log(this.form.getRawValue());
+    const outbound: IMailroomEmailOutbound = {
+      from: this.form.controls.email.value,
+      subject: `GIS Day Contact: ${this.form.controls.contactType.value}`,
+      text: this.form.controls.contactMessage.value,
+      to: 'aplecore@gmail.com'
+    };
+
+    this.contactService.sendEmail(outbound).subscribe((result) => {
+      console.log(result);
+    });
   }
 }

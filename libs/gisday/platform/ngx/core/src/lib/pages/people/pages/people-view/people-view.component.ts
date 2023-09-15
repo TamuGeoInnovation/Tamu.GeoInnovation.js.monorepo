@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Buffer } from 'buffer';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -11,24 +12,19 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
   templateUrl: './people-view.component.html',
   styleUrls: ['./people-view.component.scss']
 })
-export class PeopleViewComponent {
+export class PeopleViewComponent implements OnInit {
   public $people: Observable<Array<Partial<Speaker>>>;
   public $photo: Observable<IPhotoReponse>;
   public photo: string;
-  constructor(private router: Router, private speakerService: SpeakerService) {
-    this.fetchPresenters();
-  }
 
-  public fetchPresenters() {
+  constructor(private router: Router, private speakerService: SpeakerService) {}
+
+  public ngOnInit() {
     this.$people = this.speakerService.getPresenters();
   }
 
-  public onPresenterClicked(person: Speaker) {
-    this.router.navigate(['presenters/', person.guid]);
-  }
-
-  public unwrapPhoto(base64: string) {
-    const ret = `"data:image/jpg;base64,${base64}"`;
-    return ret;
+  public unwrapPhoto(byteArray) {
+    const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
+    return `data:image/png;base64,${buffer}`;
   }
 }
