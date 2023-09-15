@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
 
-import { environment } from '../environments/environment';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'tamu-gisc-root',
@@ -11,11 +10,10 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit {
   public title = 'gisday-angular';
 
-  // constructor(public oidcSecurityService: OidcSecurityService) {}
+  constructor(private readonly as: AuthService) {}
 
   public ngOnInit() {
-    console.log('app component init');
-
+    console.log('gisday app init');
     // this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken }) => {
     //   if (environment.production !== true) {
     //     console.log('app authenticated', isAuthenticated);

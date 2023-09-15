@@ -4,8 +4,8 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
-import { AuthModule, LogLevel, AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 import * as WebFont from 'webfontloader';
+import { AuthModule, AuthGuard } from '@auth0/auth0-angular';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -68,12 +68,12 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    canActivate: [AutoLoginPartialRoutesGuard],
+    canActivate: [AuthGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
   },
   {
     path: 'login',
-    canActivate: [AutoLoginPartialRoutesGuard],
+    canActivate: [AuthGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule)
   },
   {
@@ -84,6 +84,10 @@ const routes: Routes = [
   {
     path: 'forbidden',
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.NotAuthedModule)
+  },
+  {
+    path: 'callback',
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.CallbackModule)
   }
 ];
 
@@ -94,20 +98,14 @@ const routeOptions: ExtraOptions = {
 
 @NgModule({
   imports: [
-    // AuthModule.forRoot({
-    //   config: {
-    //     authority: environment.idp_dev_url,
-    //     redirectUrl: window.location.origin,
-    //     postLogoutRedirectUri: window.location.origin,
-    //     clientId: environment.client_id,
-    //     scope: 'openid offline_access profile email',
-    //     responseType: 'code',
-    //     silentRenew: true,
-    //     useRefreshToken: true,
-    //     logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
-    //     autoUserInfo: false
-    //   }
-    // }),
+    AuthModule.forRoot({
+      domain: 'DOMAIN',
+      clientId: 'CLIENT_ID',
+      authorizationParams: {
+        audience: 'AUDIENCE',
+        redirect_uri: window.location.origin + '/callback'
+      }
+    }),
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
@@ -126,4 +124,3 @@ const routeOptions: ExtraOptions = {
   bootstrap: [AppComponent]
 })
 export class AppModule {}
-

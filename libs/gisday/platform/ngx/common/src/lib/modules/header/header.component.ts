@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, tap } from 'rxjs/operators';
-import { AuthenticatedResult, OidcSecurityService } from 'angular-auth-oidc-client';
+
+import { AuthService } from '@auth0/auth0-angular';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
@@ -14,7 +14,7 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  // public $loggedIn: Observable<AuthenticatedResult>;
+  public $loggedIn: Observable<boolean>;
   public isActive = new Subject();
   public logoVisible = 'hidden';
   public isMobile = this.rp.isMobile.pipe(shareReplay(1));
@@ -22,11 +22,12 @@ export class HeaderComponent implements OnInit {
   constructor(
     private location: Location,
     private routerHistory: RouterHistoryService,
-    private rp: ResponsiveService // private oidcSecurityService: OidcSecurityService
+    private rp: ResponsiveService,
+    private readonly as: AuthService
   ) {}
 
   public ngOnInit() {
-    // this.$loggedIn = this.oidcSecurityService.isAuthenticated$;
+    this.$loggedIn = this.as.isAuthenticated$;
 
     this.routerHistory.history
       .pipe(
@@ -39,6 +40,18 @@ export class HeaderComponent implements OnInit {
         shareReplay(1)
       )
       .subscribe();
+  }
+
+  public login() {
+    this.as.loginWithRedirect({
+      appState: {
+        target: '/'
+      }
+    });
+  }
+
+  public logout() {
+    this.as.logout();
   }
 }
 

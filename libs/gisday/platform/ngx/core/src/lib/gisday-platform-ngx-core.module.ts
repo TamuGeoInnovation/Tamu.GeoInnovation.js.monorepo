@@ -11,3 +11,4 @@ import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/co
   exports: []
 })
 export class GisdayPlatformNgxCoreModule {}
+
