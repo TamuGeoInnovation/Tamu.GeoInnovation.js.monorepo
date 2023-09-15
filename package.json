@@ -43,6 +43,7 @@
     "@angular/pwa": "^0.803.18",
     "@angular/router": "13.2.0",
     "@angular/service-worker": "13.2.0",
+    "@auth0/auth0-angular": "^2.2.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/passport": "^8.0.0",
