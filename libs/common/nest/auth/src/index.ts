@@ -1,1 +1,1 @@
-export * from './lib/common-nest-auth.module';
+export * from './lib/authorization/authorization.module';
