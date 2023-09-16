@@ -30,7 +30,7 @@
     </div>
     <div class="container12 trailer-3" id="sessions-container">
       <div>
-        <div id="default-content" class="column8" *ngIf="$events">
+        <div id="default-content" class="column8" *ngIf="$events | async as events">
           <div id="day1" class="card">
             <h2>November 14</h2>
             <div *ngFor="let event of (getDay(1) | async)" [routerLink]="['/sessions/details', event.guid]">

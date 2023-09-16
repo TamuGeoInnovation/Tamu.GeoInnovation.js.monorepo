@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
-import { filter, shareReplay, switchMap, takeUntil, toArray } from 'rxjs/operators';
+import { filter, shareReplay, switchMap, toArray } from 'rxjs/operators';
 
 import { Event, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { EventService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -20,8 +20,8 @@ export class EventViewComponent implements OnInit, OnDestroy {
   constructor(private readonly eventService: EventService, private readonly tagService: TagService) {}
 
   public ngOnInit() {
-    this.fetchEvents();
-    this.fetchTags();
+    this.$events = this.eventService.getEvents().pipe(shareReplay(1));
+    this.$tags = this.tagService.getEntities().pipe(shareReplay(1));
   }
 
   public ngOnDestroy() {
@@ -29,15 +29,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
     this._$destroy.complete();
   }
 
-  public fetchEvents() {
-    this.$events = this.eventService.getEvents().pipe(takeUntil(this._$destroy), shareReplay(1));
-  }
-
-  public fetchTags() {
-    this.$tags = this.tagService.getEntities().pipe(takeUntil(this._$destroy), shareReplay(1));
-  }
-
-  public applyOrRemoveTag(tag: Tag, checked: boolean) {
+  public applyOrRemoveTag(tag: Partial<Tag>, checked: boolean) {
     if (checked) {
       // add to filterTags
       this.filterTags.push(tag.name);
@@ -51,7 +43,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  public filterEventsByFilterTags(event: Event) {
+  public filterEventsByFilterTags(event: Partial<Event>) {
     // if no filter tags are applied, show all events
     if (this.filterTags.length === 0) {
       return true;

@@ -23,31 +23,21 @@ export class EventService extends BaseService<Event> {
   }
 
   public getEvents() {
-    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/all`, {
-      headers: this.headers
-    });
+    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/all`);
   }
 
   public getEvent(guid: string) {
-    return this.http1.get<Partial<Event>>(`${this.resource}/${guid}`, {
-      headers: this.headers
-    });
+    return this.http1.get<Partial<Event>>(`${this.resource}/${guid}`);
   }
 
   public getEventsByDay() {
-    return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`, {
-      headers: this.headers
-    });
+    return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`);
   }
 
   public createEventFromFormData(data: FormData) {
-    return this.http1
-      .post(`${this.resource}`, data, {
-        headers: this.headers
-      })
-      .subscribe((result) => {
-        console.log(result);
-      });
+    return this.http1.post(`${this.resource}`, data).subscribe((result) => {
+      console.log(result);
+    });
   }
 }
 
