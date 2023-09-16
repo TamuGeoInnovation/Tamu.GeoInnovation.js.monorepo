@@ -3,11 +3,7 @@ import { PassportModule } from '@nestjs/passport';
 
 import { JWT_CONFIG, JwtConfig, JwtStrategy } from './strategies/jwt.strategy';
 
-@Module({
-  imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
-  providers: [JwtStrategy],
-  exports: [PassportModule]
-})
+@Module({})
 export class AuthorizationModule {
   public static forRoot(env: JwtConfig): DynamicModule {
     return {
@@ -20,6 +16,7 @@ export class AuthorizationModule {
           useValue: env
         }
       ],
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       exports: [PassportModule]
     };
   }
