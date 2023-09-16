@@ -99,14 +99,14 @@ const routeOptions: ExtraOptions = {
 @NgModule({
   imports: [
     AuthModule.forRoot({
-      domain: 'DOMAIN',
-      clientId: 'CLIENT_ID',
+      domain: environment.auth0.domain,
+      clientId: environment.auth0.client_id,
       authorizationParams: {
-        audience: 'AUDIENCE',
-        redirect_uri: window.location.origin + '/callback'
+        audience: environment.auth0.audience,
+        redirect_uri: environment.auth0.redirect_uri
       },
       httpInterceptor: {
-        allowedList: []
+        allowedList: [`http://localhost:3333/api/*`]
       }
     }),
     BrowserModule,

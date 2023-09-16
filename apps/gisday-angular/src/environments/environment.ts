@@ -19,3 +19,10 @@ export const client_id = 'gisday';
 export const api_url = 'http://localhost:3333/api'; // This is just some bs URL for now
 export const local_idp_url = 'http://localhost:4001/oidc';
 export const idp_dev_url = 'https://idp-dev.geoservices.tamu.edu/oidc';
+
+export const auth0 = {
+  domain: 'DOMAIN',
+  client_id: 'CLIENT_ID',
+  redirect_uri: window.location.origin + '/callback',
+  audience: 'AUDIENCE'
+};

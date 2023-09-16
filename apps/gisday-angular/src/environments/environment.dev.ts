@@ -18,3 +18,10 @@ export const environment = {
 export const client_id = 'gisday';
 export const api_url = 'https://gisday-dev.geoservices.tamu.edu/api';
 export const idp_dev_url = 'https://idp-dev.geoservices.tamu.edu/oidc';
+
+export const auth0 = {
+  domain: 'DOMAIN',
+  client_id: 'CLIENT_ID',
+  redirect_uri: window.location.origin + '/callback',
+  audience: 'AUDIENCE'
+};
