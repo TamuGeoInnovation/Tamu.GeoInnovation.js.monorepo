@@ -8,7 +8,7 @@ import * as WebFont from 'webfontloader';
 import { AuthModule, AuthGuard, AuthHttpInterceptor } from '@auth0/auth0-angular';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
@@ -78,7 +78,6 @@ const routes: Routes = [
   },
   {
     path: 'logout',
-    canActivate: [LogoutGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule)
   },
   {
@@ -106,7 +105,12 @@ const routeOptions: ExtraOptions = {
         redirect_uri: environment.auth0.redirect_uri
       },
       httpInterceptor: {
-        allowedList: [`http://localhost:3333/api/*`]
+        allowedList: [
+          {
+            allowAnonymous: true,
+            uri: `http://localhost:3333/api/*`
+          }
+        ]
       }
     }),
     BrowserModule,
