@@ -23,7 +23,7 @@ export class UserClassController extends BaseController<UserClass> {
     }
   }
 
-  @Post('/')
+  @Post()
   public async insertUserClass(@Request() req) {
     if (req.user) {
       const chosenClass: DeepPartial<Class> = req.body.class;

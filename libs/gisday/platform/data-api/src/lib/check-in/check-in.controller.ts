@@ -12,7 +12,7 @@ export class CheckInController extends BaseController<CheckIn> {
     super(checkinProvider);
   }
 
-  @Get('all')
+  @Get()
   public async getUsersCheckins(@Request() req) {
     // TODO: May need some angular-auth-oidc-client magic here
     if (req.user) {

@@ -30,7 +30,7 @@ export class UserSubmissionController extends BaseController<Submission> {
     });
   }
 
-  @Get('all')
+  @Get()
   public async getUserSubmissions(@Request() req) {
     if (req.user) {
       return this.userSubmissionProvider.find({

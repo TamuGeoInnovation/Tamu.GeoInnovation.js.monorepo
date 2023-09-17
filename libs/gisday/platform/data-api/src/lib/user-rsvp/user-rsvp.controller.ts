@@ -15,7 +15,7 @@ export class UserRsvpController extends BaseController<UserRsvp> {
     return this.userRsvpProvider.getUserRsvps(params.guid);
   }
 
-  @Post('/')
+  @Post()
   public async insertUserRsvp(@Body() body) {
     const { eventGuid, rsvpTypeGuid, userGuid } = body;
 

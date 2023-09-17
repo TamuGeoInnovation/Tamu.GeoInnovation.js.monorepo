@@ -9,7 +9,7 @@ import { BaseProvider } from './base-provider';
 export abstract class BaseController<T> {
   constructor(private readonly provider: BaseProvider<T>) {}
 
-  @Get('/all')
+  @Get()
   public async getEntities() {
     return this.provider.find();
   }
@@ -49,4 +49,3 @@ export abstract class BaseController<T> {
     return this.provider.deleteEntity(params.guid);
   }
 }
-

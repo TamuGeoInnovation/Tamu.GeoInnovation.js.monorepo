@@ -10,12 +10,12 @@ export class TagController extends BaseController<Tag> {
     super(tagProvider);
   }
 
-  @Get('/all')
+  @Get()
   public async getTags() {
     return this.tagProvider.getTags();
   }
 
-  @Post('/all')
+  @Post('/bulk')
   public async insertTags(@Body() body) {
     const _tags: Partial<Tag>[] = body.tags.map((value: Tag) => {
       const tag: Partial<Tag> = {

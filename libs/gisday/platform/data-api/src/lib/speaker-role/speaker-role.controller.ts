@@ -10,7 +10,7 @@ export class SpeakerRoleController extends BaseController<SpeakerRole> {
     super(speakerRoleProvider);
   }
 
-  @Post('/all')
+  @Post('/bulk')
   public async insertSpeakerRoles(@Body() body) {
     const _roles: Partial<SpeakerRole>[] = body.roles.map((value: SpeakerRole) => {
       const tag: Partial<SpeakerRole> = {

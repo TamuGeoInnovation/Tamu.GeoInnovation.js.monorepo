@@ -12,7 +12,7 @@ export class EventController extends BaseController<Event> {
     super(eventProvider);
   }
 
-  @Get('/all')
+  @Get()
   public async getEvents() {
     return this.eventProvider.eventRepo.find({
       where: {
