@@ -1,3 +1,6 @@
+// Modules
+export * from './lib/common-ngx-auth.module';
+
 // Guards
 export * from './lib/guards/role/role.guard';
 
@@ -7,6 +10,9 @@ export * from './lib/services/auth/auth.service';
 
 // Injection Tokens
 export * from './lib/tokens/claims.token';
+
+// Pipes
+export * from './lib/pipes/has-roles/has-roles.pipe';
 
 // ==== LEGACY (DEPRECATED) =====
 export * from './lib/legacy/legacy-common-ngx-auth.module';

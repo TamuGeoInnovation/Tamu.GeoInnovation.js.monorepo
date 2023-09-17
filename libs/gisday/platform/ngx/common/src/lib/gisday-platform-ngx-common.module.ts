@@ -9,9 +9,10 @@ import { FooterComponent } from './modules/footer/footer.component';
 import { HeaderComponent } from './modules/header/header.component';
 import { DetailViewComponent } from './modules/detail-view/detail-view.component';
 import { OrderByPipe } from './utils/order-by-pipe';
+import { CommonNgxAuthModule } from '@tamu-gisc/common/ngx/auth';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, UITileNavigationModule, UINavigationTriggersModule],
+  imports: [CommonModule, RouterModule, UITileNavigationModule, UINavigationTriggersModule, CommonNgxAuthModule],
   declarations: [FooterComponent, HeaderComponent, DetailViewComponent],
   providers: [],
   exports: [FooterComponent, HeaderComponent, DetailViewComponent]

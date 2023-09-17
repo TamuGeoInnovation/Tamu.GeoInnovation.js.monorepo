@@ -7,26 +7,32 @@ import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 
+import { GISDayRoles } from '../../roles/gisday.roles';
+
 @Component({
   selector: 'tamu-gisc-app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  public $loggedIn: Observable<boolean>;
-  public isActive = new Subject();
+  public loggedIn$: Observable<boolean>;
+  public userRoles$: Observable<Array<string>>;
+  public appRoles = GISDayRoles;
+
+  public isActive$ = new Subject();
   public logoVisible = 'hidden';
-  public isMobile = this.rp.isMobile.pipe(shareReplay(1));
+  public isMobile$ = this.rp.isMobile.pipe(shareReplay(1));
 
   constructor(
-    private location: Location,
-    private routerHistory: RouterHistoryService,
-    private rp: ResponsiveService,
+    private readonly location: Location,
+    private readonly routerHistory: RouterHistoryService,
+    private readonly rp: ResponsiveService,
     private readonly as: AuthService
   ) {}
 
   public ngOnInit() {
-    this.$loggedIn = this.as.isAuthenticated$;
+    this.loggedIn$ = this.as.isAuthenticated$;
+    this.userRoles$ = this.as.userRoles$;
 
     this.routerHistory.history
       .pipe(
