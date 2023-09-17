@@ -8,8 +8,8 @@ import * as WebFont from 'webfontloader';
 import { AuthModule, AuthGuard, AuthHttpInterceptor } from '@auth0/auth0-angular';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
+import { ROLES_CLAIM, RoleGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -63,7 +63,11 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate: [AdminGuard],
+    canActivate: [AuthGuard, RoleGuard],
+    data: {
+      requiredRoles: ['GIS Day Manager'],
+      redirectTo: '/forbidden'
+    },
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AdminModule)
   },
   {
@@ -73,7 +77,6 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    canActivate: [AuthGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule)
   },
   {
@@ -131,6 +134,10 @@ const routeOptions: ExtraOptions = {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthHttpInterceptor,
       multi: true
+    },
+    {
+      provide: ROLES_CLAIM,
+      useValue: environment.auth0.roles_claim
     }
   ],
   bootstrap: [AppComponent]

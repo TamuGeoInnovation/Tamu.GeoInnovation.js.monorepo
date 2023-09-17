@@ -10,5 +10,6 @@ export const auth0 = {
   domain: 'DOMAIN',
   client_id: 'CLIENT_ID',
   redirect_uri: window.location.origin + '/callback',
-  audience: 'AUDIENCE'
+  audience: 'AUDIENCE',
+  roles_claim: 'CLAIM_NAME'
 };

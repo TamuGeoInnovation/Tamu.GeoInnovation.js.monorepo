@@ -1,4 +1,5 @@
 // Guards
+export * from './lib/modules/guards/role/role.guard';
 
 // Services
 export * from './lib/modules/services/_base/base.service';
