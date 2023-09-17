@@ -12,13 +12,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { AuthService } from '../../services/auth/auth.service';
+import { LegacyAuthService } from '../../services/auth/auth.service';
 
+/**
+ * DEPRECATED
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private auth: AuthService) {}
+export class LegacyAuthInterceptor implements HttpInterceptor {
+  constructor(private auth: LegacyAuthService) {}
 
   public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(
@@ -40,8 +43,8 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 }
 
-export const AuthInterceptorProvider: Provider = {
+export const LegacyAuthInterceptorProvider: Provider = {
   provide: HTTP_INTERCEPTORS,
-  useClass: AuthInterceptor,
+  useClass: LegacyAuthInterceptor,
   multi: true
 };

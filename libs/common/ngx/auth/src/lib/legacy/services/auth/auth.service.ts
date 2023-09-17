@@ -7,10 +7,13 @@ import { catchError, map } from 'rxjs/operators';
 import { AuthOptions } from '@tamu-gisc/oidc/client';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+/**
+ * DEPRECATED
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class LegacyAuthService {
   // Default auth options so they can be overwritten.
   public authOptions: AuthOptions = {
     url: undefined,

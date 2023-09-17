@@ -3,13 +3,16 @@ import { CanActivate, ActivatedRouteSnapshot, UrlTree, Router } from '@angular/r
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { AuthService } from '../services/auth/auth.service';
+import { LegacyAuthService } from '../services/auth/auth.service';
 
+/**
+ * DEPRECATED
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
-  constructor(private auth: AuthService, private router: Router) {}
+export class LegacyAuthGuard implements CanActivate {
+  constructor(private auth: LegacyAuthService, private router: Router) {}
 
   public canActivate(
     route: ActivatedRouteSnapshot

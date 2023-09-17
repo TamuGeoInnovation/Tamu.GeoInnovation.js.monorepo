@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AuthInterceptor } from './auth-interceptor.service';
+import { LegacyAuthService } from './auth.service';
 
-describe('AuthInterceptor', () => {
-  let service: AuthInterceptor;
+describe('LegacyAuthService', () => {
+  let service: LegacyAuthService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthInterceptor);
+    service = TestBed.inject(LegacyAuthService);
   });
 
   it('should be created', () => {

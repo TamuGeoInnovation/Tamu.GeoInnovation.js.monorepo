@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
+import { LegacyAuthGuard, LegacyAuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -26,7 +26,7 @@ WebFont.load({
         {
           path: 'data',
           loadChildren: () => import('@tamu-gisc/ues/recycling/ngx').then((m) => m.DataModule),
-          canActivate: [AuthGuard]
+          canActivate: [LegacyAuthGuard]
         },
         {
           path: '',
@@ -42,7 +42,7 @@ WebFont.load({
       provide: env,
       useValue: environment
     },
-    AuthInterceptorProvider
+    LegacyAuthInterceptorProvider
   ],
   bootstrap: [AppComponent]
 })
