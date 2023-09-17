@@ -3,10 +3,9 @@ import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, tap } from 'rxjs/operators';
 
-import { AuthService } from '@auth0/auth0-angular';
-
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { AuthService } from '@tamu-gisc/common/ngx/auth';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -43,7 +42,7 @@ export class HeaderComponent implements OnInit {
   }
 
   public login() {
-    this.as.loginWithRedirect({
+    this.as.login({
       appState: {
         target: '/'
       }
@@ -54,4 +53,3 @@ export class HeaderComponent implements OnInit {
     this.as.logout();
   }
 }
-

@@ -1,27 +1,20 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router';
 import { Observable, catchError, map, of, pipe } from 'rxjs';
 
 import { AuthService } from '@auth0/auth0-angular';
-
-/**
- * Name of the claim/property in the users ID token (JWT) that contains the user's roles.
- *
- * Used by the `RoleGuard` to check if a user has any of the required roles.
- *
- **/
-export const ROLES_CLAIM = new InjectionToken<string>('ROLES_CLAIM');
+import { ROLES_CLAIM } from '../../tokens/claims.token';
 
 /**
  * Role guard that checks if a user has any of the required roles.
  *
  * IMPORTANT: Configure the `ROLES_CLAIM` injection token with the name of the claim that contains the user's roles.
  *
+ * `ROLES_CLAIM` is exported from `@tamu-gisc/common/ngx/auth`
+ *
  * Optional: Pass in a `redirectTo` property in the route data to redirect to a specific route if the user is not authenticated or does not have the required roles.
  * If this property is provided, the guard will return a `UrlTree` instead of a `boolean`.
  *
- * @export
- * @class RoleGuard
  * @implements {CanActivate}
  */
 @Injectable({
@@ -85,4 +78,3 @@ export class RoleGuard implements CanActivate {
     );
   }
 }
-

@@ -9,7 +9,7 @@ import { AuthModule, AuthGuard, AuthHttpInterceptor } from '@auth0/auth0-angular
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
-import { ROLES_CLAIM, RoleGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ROLES_CLAIM, RoleGuard } from '@tamu-gisc/common/ngx/auth';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
