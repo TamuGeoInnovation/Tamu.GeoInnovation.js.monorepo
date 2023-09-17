@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Request, Body, UseGuards, ForbiddenException } from '@nestjs/common';
 
+import { JwtGuard } from '@tamu-gisc/common/nest/auth';
+
 import { CheckIn } from '../entities/all.entity';
 import { BaseController } from '../_base/base.controller';
 import { CheckInProvider } from './check-in.provider';
-import { NestAuthGuard } from '../guards/auth.guard';
 
 @Controller('check-in')
 export class CheckInController extends BaseController<CheckIn> {
@@ -27,7 +28,7 @@ export class CheckInController extends BaseController<CheckIn> {
   }
 
   @Post('user')
-  @UseGuards(NestAuthGuard)
+  @UseGuards(JwtGuard)
   public async insertUserCheckin(@Body() body) {
     // TODO: Use HttpInterceptor to bind accountGuid to body since NestAuthGuard only allows request to progress here
     const { eventGuid, accountGuid } = body;
