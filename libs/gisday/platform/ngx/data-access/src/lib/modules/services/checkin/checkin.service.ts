@@ -18,15 +18,9 @@ export class CheckinService extends BaseService<CheckIn> {
 
   public insertUserCheckin(eventGuid: string) {
     return this.http1
-      .post(
-        `${this.resource}/user`,
-        {
-          eventGuid: eventGuid
-        },
-        {
-          headers: this.headers
-        }
-      )
+      .post(`${this.resource}/user`, {
+        eventGuid: eventGuid
+      })
       .subscribe((result) => {
         console.log(result);
       });

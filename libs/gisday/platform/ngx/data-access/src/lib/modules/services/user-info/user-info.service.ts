@@ -17,8 +17,6 @@ export class UserInfoService extends BaseService<UserInfo> {
   }
 
   public getEntityWithUserGuid() {
-    return this.http1.get<Partial<UserInfo>>(`${this.resource}`, {
-      headers: this.headers
-    });
+    return this.http1.get<Partial<UserInfo>>(`${this.resource}`);
   }
 }

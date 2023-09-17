@@ -1,12 +1,10 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignageService {
-  private headers: HttpHeaders;
-
   constructor(private http: HttpClient) {}
 
   public getUrl(competition: string) {
@@ -16,8 +14,6 @@ export class SignageService {
 
   public getSignage() {
     // TODO: Need to configure this resource endpoint with the correct audience (not the same as the master api)
-    return this.http.get(this.getUrl('Signage'), {
-      headers: this.headers
-    });
+    return this.http.get(this.getUrl('Signage'));
   }
 }

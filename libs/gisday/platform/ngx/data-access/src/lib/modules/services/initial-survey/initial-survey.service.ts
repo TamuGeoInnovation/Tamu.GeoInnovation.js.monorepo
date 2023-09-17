@@ -17,14 +17,10 @@ export class InitialSurveyService extends BaseService<InitialSurveyResponse> {
   }
 
   public seeIfUserTookSurvey() {
-    return this.http1.get<boolean>(`${this.resource}`, {
-      headers: this.headers
-    });
+    return this.http1.get<boolean>(`${this.resource}`);
   }
 
   public getInitialSurveyQuestions() {
-    return this.http1.get<Array<Partial<InitialSurveyQuestion>>>(`${this.resource}/questions/all`, {
-      headers: this.headers
-    });
+    return this.http1.get<Array<Partial<InitialSurveyQuestion>>>(`${this.resource}/questions/all`);
   }
 }

@@ -17,13 +17,11 @@ export class EventService extends BaseService<Event> {
   }
 
   public getNumberOfRsvps(eventGuid: string) {
-    return this.http1.get<number>(`${this.resource}/${eventGuid}/rsvps`, {
-      headers: this.headers
-    });
+    return this.http1.get<number>(`${this.resource}/${eventGuid}/rsvps`);
   }
 
   public getEvents() {
-    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/all`);
+    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/`);
   }
 
   public getEvent(guid: string) {

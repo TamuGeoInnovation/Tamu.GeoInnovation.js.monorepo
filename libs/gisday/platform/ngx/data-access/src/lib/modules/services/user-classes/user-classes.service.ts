@@ -21,8 +21,7 @@ export class UserClassesService extends BaseService<UserClass> {
       .request('DELETE', `${this.resource}`, {
         body: {
           classGuid: classGuid
-        },
-        headers: this.headers
+        }
       })
       .subscribe((result) => {
         console.log(result);
@@ -30,8 +29,6 @@ export class UserClassesService extends BaseService<UserClass> {
   }
 
   public getClassesAndUserClasses() {
-    return this.http1.get<Array<Partial<Class>>>(`${this.resource}`, {
-      headers: this.headers
-    });
+    return this.http1.get<Array<Partial<Class>>>(`${this.resource}`);
   }
 }

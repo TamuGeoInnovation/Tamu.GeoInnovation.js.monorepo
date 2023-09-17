@@ -17,37 +17,25 @@ export class SpeakerService extends BaseService<Speaker> {
   }
 
   public getPresenter(guid: string) {
-    return this.http1.get<Partial<Speaker>>(`${this.resource}/presenter/${guid}`, {
-      headers: this.headers
-    });
+    return this.http1.get<Partial<Speaker>>(`${this.resource}/presenter/${guid}`);
   }
 
   public getPresenters() {
-    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/presenters`, {
-      headers: this.headers
-    });
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/presenters`);
   }
 
   public getPhoto(guid: string) {
-    return this.http1.get<string>(`${this.resource}/photo/${guid}`, {
-      headers: this.headers
-    });
+    return this.http1.get<string>(`${this.resource}/photo/${guid}`);
   }
 
   public updateSpeakerInfo(data: FormData) {
-    return this.http1.patch(`${this.resource}`, data, {
-      headers: this.headers
-    });
+    return this.http1.patch(`${this.resource}`, data);
   }
 
   public insertSpeakerInfo(data: FormData) {
-    return this.http1
-      .post(`${this.resource}`, data, {
-        headers: this.headers
-      })
-      .subscribe((result) => {
-        console.log(result);
-      });
+    return this.http1.post(`${this.resource}`, data).subscribe((result) => {
+      console.log(result);
+    });
   }
 }
 
