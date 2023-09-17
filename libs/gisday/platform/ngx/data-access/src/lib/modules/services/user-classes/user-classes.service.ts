@@ -13,7 +13,7 @@ export class UserClassesService extends BaseService<UserClass> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'user-class');
+    super(env1, http1, 'user-classes');
   }
 
   public deleteEntityWithClassGuid(classGuid: string) {

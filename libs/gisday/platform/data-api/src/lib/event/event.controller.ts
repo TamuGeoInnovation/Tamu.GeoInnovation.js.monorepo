@@ -6,7 +6,7 @@ import { EntityRelationsLUT, Event } from '../entities/all.entity';
 import { EventProvider } from './event.provider';
 import { BaseController } from '../_base/base.controller';
 
-@Controller('event')
+@Controller('events')
 export class EventController extends BaseController<Event> {
   constructor(private readonly eventProvider: EventProvider) {
     super(eventProvider);

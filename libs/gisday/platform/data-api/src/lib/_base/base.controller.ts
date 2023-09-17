@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
 
 import { DeepPartial, FindConditions } from 'typeorm';
 
@@ -35,20 +35,18 @@ export abstract class BaseController<T> {
 
   @Post()
   public async insertEntity(@Body() body: DeepPartial<T>) {
-    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
     return this.provider.save(body);
   }
 
   @Patch()
   public async updateEntity(@Body() body) {
-    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
     const conditions: FindConditions<T> = {};
-    return;
+    throw new NotImplementedException();
   }
 
   @Delete(':guid')
   public async deleteEntity(@Param() params) {
-    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
     return this.provider.deleteEntity(params.guid);
   }
 }
+

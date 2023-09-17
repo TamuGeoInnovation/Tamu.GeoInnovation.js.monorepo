@@ -4,7 +4,7 @@ import { Submission } from '../entities/all.entity';
 import { UserSubmissionProvider } from './user-submission.provider';
 import { BaseController } from '../_base/base.controller';
 
-@Controller('user-submission')
+@Controller('user-submissions')
 export class UserSubmissionController extends BaseController<Submission> {
   constructor(private readonly userSubmissionProvider: UserSubmissionProvider) {
     super(userSubmissionProvider);

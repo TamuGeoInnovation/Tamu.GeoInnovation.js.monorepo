@@ -13,7 +13,7 @@ export class CheckinService extends BaseService<CheckIn> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'check-in');
+    super(env1, http1, 'check-ins');
   }
 
   public insertUserCheckin(eventGuid: string) {

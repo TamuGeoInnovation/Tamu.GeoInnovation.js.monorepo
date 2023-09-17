@@ -14,7 +14,7 @@ export class UserSubmissionsService extends BaseService<Submission> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'user-submission');
+    super(env1, http1, 'user-submissions');
   }
 
   public getPresentations() {

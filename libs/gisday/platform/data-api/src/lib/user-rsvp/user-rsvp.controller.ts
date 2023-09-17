@@ -4,7 +4,7 @@ import { UserRsvp } from '../entities/all.entity';
 import { UserRsvpProvider } from './user-rsvp.provider';
 import { BaseController } from '../_base/base.controller';
 
-@Controller('user-rsvp')
+@Controller('user-rsvps')
 export class UserRsvpController extends BaseController<UserRsvp> {
   constructor(private readonly userRsvpProvider: UserRsvpProvider) {
     super(userRsvpProvider);

@@ -4,7 +4,7 @@ import { InitialSurveyQuestion, InitialSurveyResponse } from '../entities/all.en
 import { BaseController } from '../_base/base.controller';
 import { InitialSurveyProvider } from './initial-survey.provider';
 
-@Controller('initial-survey')
+@Controller('initial-surveys')
 export class InitialSurveyController extends BaseController<InitialSurveyResponse> {
   constructor(private readonly initialSurveyProvider: InitialSurveyProvider) {
     super(initialSurveyProvider);

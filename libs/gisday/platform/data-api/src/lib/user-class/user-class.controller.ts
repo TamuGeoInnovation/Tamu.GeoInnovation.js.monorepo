@@ -6,7 +6,7 @@ import { Class, UserClass } from '../entities/all.entity';
 import { UserClassProvider } from './user-class.provider';
 import { BaseController } from '../_base/base.controller';
 
-@Controller('user-class')
+@Controller('user-classes')
 export class UserClassController extends BaseController<UserClass> {
   constructor(private readonly userClassProvider: UserClassProvider) {
     super(userClassProvider);

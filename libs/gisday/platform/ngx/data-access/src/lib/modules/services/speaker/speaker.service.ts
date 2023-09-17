@@ -13,7 +13,7 @@ export class SpeakerService extends BaseService<Speaker> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'speaker');
+    super(env1, http1, 'speakers');
   }
 
   public getPresenter(guid: string) {

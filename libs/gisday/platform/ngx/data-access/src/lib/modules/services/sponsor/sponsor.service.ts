@@ -13,6 +13,6 @@ export class SponsorService extends BaseService<Sponsor> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'sponsor');
+    super(env1, http1, 'sponsors');
   }
 }

@@ -6,7 +6,7 @@ import { CheckIn } from '../entities/all.entity';
 import { BaseController } from '../_base/base.controller';
 import { CheckInProvider } from './check-in.provider';
 
-@Controller('check-in')
+@Controller('check-ins')
 export class CheckInController extends BaseController<CheckIn> {
   constructor(private readonly checkinProvider: CheckInProvider) {
     super(checkinProvider);

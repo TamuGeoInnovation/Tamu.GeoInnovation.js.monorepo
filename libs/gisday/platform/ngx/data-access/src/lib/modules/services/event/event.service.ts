@@ -13,7 +13,7 @@ export class EventService extends BaseService<Event> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'event');
+    super(env1, http1, 'events');
   }
 
   public getNumberOfRsvps(eventGuid: string) {

@@ -13,6 +13,6 @@ export class ClassService extends BaseService<Class> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'class');
+    super(env1, http1, 'classes');
   }
 }

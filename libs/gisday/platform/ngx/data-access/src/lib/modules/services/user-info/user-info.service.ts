@@ -13,7 +13,7 @@ export class UserInfoService extends BaseService<UserInfo> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'user-info');
+    super(env1, http1, 'user-infos');
   }
 
   public getEntityWithUserGuid() {

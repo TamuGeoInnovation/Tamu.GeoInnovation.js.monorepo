@@ -13,6 +13,6 @@ export class RsvpTypeService extends BaseService<RsvpType> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'rsvp-type');
+    super(env1, http1, 'rsvp-types');
   }
 }

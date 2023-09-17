@@ -4,7 +4,7 @@ import { UserInfo } from '../entities/all.entity';
 import { UserInfoProvider } from './user-info.provider';
 import { BaseController } from '../_base/base.controller';
 
-@Controller('user-info')
+@Controller('user-infos')
 export class UserInfoController extends BaseController<UserInfo> {
   constructor(private readonly userInfoProvider: UserInfoProvider) {
     super(userInfoProvider);

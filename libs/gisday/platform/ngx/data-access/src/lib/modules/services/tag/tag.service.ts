@@ -13,6 +13,6 @@ export class TagService extends BaseService<Tag> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'tag');
+    super(env1, http1, 'tags');
   }
 }

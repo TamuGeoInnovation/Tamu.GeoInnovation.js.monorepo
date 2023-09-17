@@ -4,7 +4,7 @@ import { SpeakerRole } from '../entities/all.entity';
 import { BaseController } from '../_base/base.controller';
 import { SpeakerRoleProvider } from './speaker-role.provider';
 
-@Controller('speaker-role')
+@Controller('speaker-roles')
 export class SpeakerRoleController extends BaseController<SpeakerRole> {
   constructor(private readonly speakerRoleProvider: SpeakerRoleProvider) {
     super(speakerRoleProvider);

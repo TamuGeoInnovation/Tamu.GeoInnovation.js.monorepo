@@ -4,7 +4,7 @@ import { Tag } from '../entities/all.entity';
 import { TagProvider } from './tag.provider';
 import { BaseController } from '../_base/base.controller';
 
-@Controller('tag')
+@Controller('tags')
 export class TagController extends BaseController<Tag> {
   constructor(private readonly tagProvider: TagProvider) {
     super(tagProvider);
