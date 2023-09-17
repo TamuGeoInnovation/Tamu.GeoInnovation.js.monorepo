@@ -9,7 +9,7 @@ export * from './lib/services/auth/auth.service';
 export * from './lib/tokens/claims.token';
 
 // ==== LEGACY (DEPRECATED) =====
-export * from './lib/legacy/common-ngx-auth.module';
+export * from './lib/legacy/legacy-common-ngx-auth.module';
 export * from './lib/legacy/guards/auth.guard';
 export * from './lib/legacy/services/auth/auth.service';
 export * from './lib/legacy/interceptors/auth-interceptor/auth-interceptor.service';

@@ -11,4 +11,4 @@ import { LegacyAuthService } from './services/auth/auth.service';
   imports: [CommonModule],
   providers: [LegacyAuthService, LegacyAuthInterceptorProvider]
 })
-export class CommonNgxAuthModule {}
+export class LegacyCommonNgxAuthModule {}
