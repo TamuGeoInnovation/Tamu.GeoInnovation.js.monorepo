@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 
-import { JWT_CONFIG, JwtConfig, JwtStrategy } from './strategies/jwt.strategy';
+import { JWT_CONFIG, JwtConfig, JwtStrategy } from '../authentication/strategies/jwt.strategy';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 
 @Module({})

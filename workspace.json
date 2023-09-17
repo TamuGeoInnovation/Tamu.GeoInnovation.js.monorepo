@@ -11,7 +11,6 @@
     "assets": "libs/assets",
     "common-nest-auth": "libs/common/nest/auth",
     "common-nest-environment": "libs/common/nest/environment",
-    "common-nest-guards": "libs/common/nest/guards",
     "common-nest-services": "libs/common/nest/services",
     "common-ngx-auth": "libs/common/ngx/auth",
     "common-ngx-environment": "libs/common/ngx/environment",

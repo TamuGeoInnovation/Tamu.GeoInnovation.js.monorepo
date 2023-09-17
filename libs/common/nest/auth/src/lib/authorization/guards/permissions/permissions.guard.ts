@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { PermissionsMatchType } from './required-permissions.decorator';
+import { PermissionsMatchType } from './permissions.decorator';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

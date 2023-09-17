@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Get, NotFoundException, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 
-import { QueryParamGuard, RequiredQueryParams } from '@tamu-gisc/common/nest/guards';
+import { QueryParamGuard, RequiredQueryParams } from '@tamu-gisc/common/nest/auth';
 
 import { BearerGuard } from '../auth/guards/bearer-guard/bearer-guard.guard';
 import { TripsService } from './trips.service';
