@@ -1,9 +1,4 @@
 // Guards
-export * from './lib/modules/guards/logout-guard/logout-guard.guard';
-export * from './lib/modules/guards/admin-guard/admin.guard';
-
-// Interceptors
-export * from './lib/modules/interceptors/auth.interceptor';
 
 // Services
 export * from './lib/modules/services/_base/base.service';
