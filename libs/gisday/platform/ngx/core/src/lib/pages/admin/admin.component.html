@@ -1,20 +1,19 @@
 <section class="internal">
-  <div class="section-content">
-    <div class="tab-container row">
-      <div class="tabs">
-        <div class="tab" [routerLink]="['./classes']" routerLinkActive="active">Classes</div>
-        <div class="tab" [routerLink]="['./events']" routerLinkActive="active">Events</div>
-        <div class="tab" [routerLink]="['./rsvp-types']" routerLinkActive="active">RSVP Types</div>
-        <div class="tab" [routerLink]="['./speakers']" routerLinkActive="active">Speakers</div>
-        <div class="tab" [routerLink]="['./sponsors']" routerLinkActive="active">Sponsors</div>
-        <div class="tab" [routerLink]="['./submission-types']" routerLinkActive="active">Submission Types</div>
-        <div class="tab" [routerLink]="['./tags']" routerLinkActive="active">Tags</div>
-        <div class="tab" [routerLink]="['./university']" routerLinkActive="active">University</div>
-      </div>
+  <div class="container12">
+    <div class="column2 sidebar">
+      <a [routerLink]="['./classes']" routerLinkActive="active">Classes</a>
+      <a [routerLink]="['./events']" routerLinkActive="active">Events</a>
+      <a [routerLink]="['./rsvp-types']" routerLinkActive="active">RSVP Types</a>
+      <a [routerLink]="['./seasons']" routerLinkActive="active">Seasons</a>
+      <a [routerLink]="['./speakers']" routerLinkActive="active">Speakers</a>
+      <a [routerLink]="['./sponsors']" routerLinkActive="active">Sponsors</a>
+      <a [routerLink]="['./submission-types']" routerLinkActive="active">Submission Types</a>
+      <a [routerLink]="['./tags']" routerLinkActive="active">Tags</a>
+      <a [routerLink]="['./university']" routerLinkActive="active">Universities</a>
+    </div>
 
-      <div class="tab-content">
-        <router-outlet></router-outlet>
-      </div>
+    <div class="column10 content">
+      <router-outlet></router-outlet>
     </div>
   </div>
 </section>
