@@ -1,18 +1,26 @@
-import { Controller, Get, Post, Request, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotImplementedException,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UnauthorizedException
+} from '@nestjs/common';
 
 import { Submission } from '../entities/all.entity';
 import { UserSubmissionProvider } from './user-submission.provider';
-import { BaseController } from '../_base/base.controller';
 
 @Controller('user-submissions')
-export class UserSubmissionController extends BaseController<Submission> {
-  constructor(private readonly userSubmissionProvider: UserSubmissionProvider) {
-    super(userSubmissionProvider);
-  }
+export class UserSubmissionController {
+  constructor(private readonly provider: UserSubmissionProvider) {}
 
   @Get('presentations')
   public async getPresentations() {
-    return this.userSubmissionProvider.userSubmissionRepo.find({
+    return this.provider.userSubmissionRepo.find({
       where: {
         type: 'Presentation',
         season: '2020'
@@ -22,7 +30,7 @@ export class UserSubmissionController extends BaseController<Submission> {
 
   @Get('posters')
   public async getPosters() {
-    return this.userSubmissionProvider.userSubmissionRepo.find({
+    return this.provider.userSubmissionRepo.find({
       where: {
         type: 'Poster',
         season: '2020'
@@ -30,10 +38,19 @@ export class UserSubmissionController extends BaseController<Submission> {
     });
   }
 
+  @Get(':guid')
+  public async getEntity(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
+
   @Get()
   public async getUserSubmissions(@Request() req) {
     if (req.user) {
-      return this.userSubmissionProvider.find({
+      return this.provider.find({
         where: {
           accountGuid: req.user.sub
         }
@@ -47,9 +64,19 @@ export class UserSubmissionController extends BaseController<Submission> {
   public async insertUserSubmission(@Request() req) {
     if (req.user) {
       const _userSubmission: Partial<Submission> = req.body;
-      return this.userSubmissionProvider.insertUserSubmission(req.user.sub, _userSubmission);
+      return this.provider.insertUserSubmission(req.user.sub, _userSubmission);
     } else {
       throw new UnauthorizedException();
     }
+  }
+
+  @Patch()
+  public async updateEntity(@Body() body) {
+    throw new NotImplementedException();
+  }
+
+  @Delete(':guid')
+  public async deleteEntity(@Param() params) {
+    throw new NotImplementedException();
   }
 }
