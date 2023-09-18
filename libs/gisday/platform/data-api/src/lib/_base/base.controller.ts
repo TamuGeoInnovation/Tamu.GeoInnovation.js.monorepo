@@ -23,6 +23,7 @@ export abstract class BaseController<T> {
     });
   }
 
+  // ONLY FOR SPEAKERS AND EVENTS
   @Get(':guid/:entity')
   public async getEntityWithRelations(@Param('guid') guid, @Param('entity') entity) {
     return this.provider.findOne({
