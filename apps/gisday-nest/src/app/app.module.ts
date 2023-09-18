@@ -18,7 +18,11 @@ import {
   UserSubmissionModule,
   QuestionTypeModule,
   UniversityModule,
-  SpeakerRoleModule
+  SpeakerRoleModule,
+  SeasonDay,
+  Season,
+  SeasonDayModule,
+  SeasonModule
 } from '@tamu-gisc/gisday/platform/data-api';
 import { AuthorizationModule } from '@tamu-gisc/common/nest/auth';
 
@@ -29,7 +33,7 @@ import { dbConfig } from '../environments/environment';
   imports: [
     TypeOrmModule.forRoot({
       ...dbConfig,
-      entities: GISDAY_ENTITIES
+      entities: [...GISDAY_ENTITIES, SeasonDay, Season]
     }),
     AuthorizationModule.forRoot({
       audience: process.env.AUTH0_AUDIENCE,
@@ -50,7 +54,9 @@ import { dbConfig } from '../environments/environment';
     UserClassModule,
     UserInfoModule,
     UserRsvpModule,
-    UserSubmissionModule
+    UserSubmissionModule,
+    SeasonDayModule,
+    SeasonModule
   ],
   controllers: [],
   providers: [AppService]

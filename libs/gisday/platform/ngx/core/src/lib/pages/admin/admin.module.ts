@@ -30,6 +30,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/sponsor/admin-sponsor.module').then((m) => m.AdminSponsorModule)
       },
       {
+        path: 'seasons',
+        loadChildren: () => import('./pages/seasons/seasons.module').then((m) => m.SeasonsModule)
+      },
+      {
         path: 'submission-types',
         loadChildren: () =>
           import('./pages/submission-type/admin-submission-type.module').then((m) => m.AdminSubmissionTypeModule)
