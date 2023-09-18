@@ -36,8 +36,23 @@ export abstract class BaseProvider<T> {
     return;
   }
 
-  public async deleteEntity(options?: FindOneOptions<T>) {
-    const entity = await this.repo.findOne(options);
+  /**
+   * Deletes an entity based on the default `guid` property.
+   *
+   * Optionally, you can pass a `FindOneOptions` object to specify lookup condition.
+   */
+  public async deleteEntity(guidOrOptions?: FindOneOptions<T> | string) {
+    let lookupOpts: FindOneOptions<T>;
+
+    if (typeof guidOrOptions === 'string') {
+      lookupOpts = {
+        where: {
+          guid: guidOrOptions
+        }
+      } as FindOneOptions<T>;
+    }
+
+    const entity = await this.repo.findOne(lookupOpts);
 
     if (entity) {
       return this.repo.remove(entity);
