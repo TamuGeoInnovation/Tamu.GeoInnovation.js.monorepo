@@ -1,24 +1,44 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
 
-import { UserRsvp } from '../entities/all.entity';
 import { UserRsvpProvider } from './user-rsvp.provider';
-import { BaseController } from '../_base/base.controller';
 
 @Controller('user-rsvps')
-export class UserRsvpController extends BaseController<UserRsvp> {
-  constructor(private readonly userRsvpProvider: UserRsvpProvider) {
-    super(userRsvpProvider);
-  }
+export class UserRsvpController {
+  constructor(private readonly provider: UserRsvpProvider) {}
 
   @Get('/user/:guid')
   public async getUserRsvps(@Param() params) {
-    return this.userRsvpProvider.getUserRsvps(params.guid);
+    return this.provider.getUserRsvps(params.guid);
+  }
+
+  @Get(':guid')
+  public async getEntity(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
   }
 
   @Post()
   public async insertUserRsvp(@Body() body) {
     const { eventGuid, rsvpTypeGuid, userGuid } = body;
 
-    return this.userRsvpProvider.insertUserRsvp(eventGuid, rsvpTypeGuid, userGuid);
+    return this.provider.insertUserRsvp(eventGuid, rsvpTypeGuid, userGuid);
+  }
+
+  @Patch()
+  public async updateEntity(@Body() body) {
+    throw new NotImplementedException();
+  }
+
+  @Delete(':guid')
+  public async deleteEntity(@Param() params) {
+    throw new NotImplementedException();
   }
 }
