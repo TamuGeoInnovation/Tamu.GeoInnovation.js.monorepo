@@ -1,15 +1,33 @@
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Updated</th>
-    <th class="action-row">Actions</th>
-  </tr>
-  <tr *ngFor="let entity of ($entities | async)">
-    <td>{{entity.name}}</td>
-    <td>{{entity.updated | date:'short'}}</td>
-    <td>
-      <span [routerLink]="[entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>
-      <span (click)="deleteEntity(entity)" class="material-icons action alt" title="Delete entity">delete</span>
-    </td>
-  </tr>
-</table>
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Tags</div>
+      <div class="form-section-actions">
+        <a routerLink="add">Add tag <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <table class="floating-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Updated</th>
+            <th class="action-row">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let entity of ($entities | async)">
+            <td>{{entity.name}}</td>
+            <td>{{entity.updated | date:'short'}}</td>
+            <td class="actions">
+              <span [routerLink]="[entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>
+              <span (click)="deleteEntity(entity)" class="material-icons action alt" title="Delete entity">delete</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

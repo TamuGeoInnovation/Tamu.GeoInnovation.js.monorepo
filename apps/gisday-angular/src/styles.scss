@@ -1,31 +1,9 @@
+@import 'libs/gisday/sass/variables';
 @import 'libs/sass/mixins';
 @import 'libs/sass/1140';
 @import 'libs/sass/colors'; // Imports complete material design colors for use as classes in markup
-
+@import 'libs/sass/modules/forms';
 @import 'libs/gisday/sass/mobile';
-
-//  ==========================================================================
-//   Application colors
-//  ==========================================================================
-$accent-grey: #e0e0e0;
-$light-grey: #332c2c;
-$dark-grey: #616161;
-$background: #ffffff;
-$aggie-maroon: #500000;
-$aggie-support-black: #332c2c;
-$aggie-support-grey: #707373;
-$aggie-accent-red: #e4002b;
-$aggie-accent-yellow: #fce300;
-$link-blue: #1e88e5;
-
-$gisday-black: #333333;
-$gisday-font-primary: #424242;
-// @gisday-blue: #0526f3;
-$gisday-blue: #003366;
-$gisday-blue-secondary: lighten($gisday-blue, 15%);
-$gisday-blue-support: #333640;
-$gisday-blue-support-lightened: lighten($gisday-blue-support, 40%);
-$gisday-gray-primary: #fafafa;
 
 .success {
   color: #4caf50;
@@ -38,12 +16,6 @@ $gisday-gray-primary: #fafafa;
 .error {
   color: #f44336;
 }
-
-//  ==========================================================================
-//   Typography
-//  ==========================================================================
-$title-font: 'Source Sans Pro', sans-serif;
-$body-font: 'Open Sans', sans-serif;
 
 html {
   font-size: 15px;
@@ -2258,7 +2230,11 @@ img.jumbo {
 table {
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 1em !important;
+  margin-bottom: 1rem;
+}
+
+thead {
+  color: $gisday-font-primary;
 }
 
 .pseudo-table {
@@ -2271,25 +2247,24 @@ table.css-count {
 
 th {
   text-align: left;
-  color: #9e9e9e;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 td,
 th {
-  padding: 0.75em 0.325em !important;
+  padding: 0.75rem 0.325rem;
 }
 
 .clickableRow:hover {
   cursor: pointer;
 }
 
-tbody > tr:nth-child(2n) {
+tbody > tr:nth-child(2n + 1) {
   background: #f5f5f5;
 }
 
 tbody > tr:hover {
-  background: #e0e0e0;
+  background: #f5f5f5;
 }
 
 table.css-count tbody tr {
@@ -2298,6 +2273,19 @@ table.css-count tbody tr {
 
 table.css-count tbody tr > td:first-child::before {
   content: counter(submission-counter);
+}
+
+td.actions {
+  .material-icons {
+    font-size: 1.25rem;
+    color: #9e9e9e;
+    padding: 0 0.25rem;
+    cursor: pointer;
+
+    &:hover {
+      color: $gisday-blue-support;
+    }
+  }
 }
 
 td > span.delete {
@@ -2864,10 +2852,6 @@ nav#section-nav a:hover {
   h2 {
     font-weight: 100;
   }
-}
-
-.form-section-body {
-  margin-top: 2rem;
 }
 
 //  ==========================================================================

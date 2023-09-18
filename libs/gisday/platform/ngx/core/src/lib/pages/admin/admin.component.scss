@@ -49,7 +49,7 @@ a {
 
   &.active {
     color: initial;
-    background: lighten(variables.$gisday-blue-support-lightened, 30%);
+    background: variables.$gisday-lightened-support-blue;
     color: initial;
     border-radius: 0.25rem;
   }
