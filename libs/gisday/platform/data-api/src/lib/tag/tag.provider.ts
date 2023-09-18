@@ -20,10 +20,10 @@ export class TagProvider extends BaseProvider<Tag> {
     });
   }
 
-  public async insertTags(_tags: Array<Partial<Tag>>) {
-    const tags = this.tagRepo.create(_tags);
+  public async insertTags(tags: Array<Partial<Tag>>) {
+    const created = this.tagRepo.create(tags);
 
-    return this.tagRepo.insert(tags);
+    return this.tagRepo.insert(created);
   }
 
   public async createTag(tag: Partial<Tag>) {

@@ -105,21 +105,21 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     existing.save();
   }
 
-  public async insertWithInfo(_speaker: DeepPartial<Speaker>, file?) {
-    const speakerInfoEnt = this.speakerInfoRepo.create(_speaker);
+  public async insertWithInfo(speaker: DeepPartial<Speaker>, file?) {
+    const speakerInfoEnt = this.speakerInfoRepo.create(speaker);
 
     if (file != null || file != undefined) {
       speakerInfoEnt.blob = file.buffer;
     }
 
-    _speaker.speakerInfo = speakerInfoEnt;
+    speaker.speakerInfo = speakerInfoEnt;
 
-    const speakerEnt = this.speakerRepo.create(_speaker);
+    const speakerEnt = this.speakerRepo.create(speaker);
 
     if (speakerEnt) {
       const university = await this.uniRepo.findOne({
         where: {
-          guid: _speaker.speakerInfo.university ? _speaker.speakerInfo.university : ''
+          guid: speaker.speakerInfo.university ? speaker.speakerInfo.university : ''
         }
       });
 

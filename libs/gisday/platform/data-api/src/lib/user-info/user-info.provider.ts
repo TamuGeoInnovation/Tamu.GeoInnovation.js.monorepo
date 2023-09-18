@@ -23,7 +23,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     return userInfo;
   }
 
-  public async updateUserInfo(accountGuid: string, _updatedUserInfo: Partial<UserInfo>) {
+  public async updateUserInfo(accountGuid: string, updatedUserInfo: Partial<UserInfo>) {
     const entity = await this.userInfoRepo.findOne({
       where: {
         accountGuid: accountGuid
@@ -31,13 +31,13 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     });
 
     if (entity) {
-      const merged = deepmerge(entity as Partial<UserInfo>, _updatedUserInfo);
+      const merged = deepmerge(entity as Partial<UserInfo>, updatedUserInfo);
 
       return this.userInfoRepo.save(merged);
     } else {
       // throw new Error('Could not find entity to update');
-      _updatedUserInfo.accountGuid = accountGuid;
-      this.save(_updatedUserInfo);
+      updatedUserInfo.accountGuid = accountGuid;
+      this.save(updatedUserInfo);
     }
   }
 }

@@ -16,7 +16,7 @@ export class InitialSurveyProvider extends BaseProvider<InitialSurveyResponse> {
     super(initialSurveyRepo);
   }
 
-  public async insertQuestion(questionTypeGuid: string, _question: Partial<InitialSurveyQuestion>) {
+  public async insertQuestion(questionTypeGuid: string, questionParams: Partial<InitialSurveyQuestion>) {
     const questionType = await this.questionTypeRepo.findOne({
       where: {
         guid: questionTypeGuid
@@ -24,8 +24,8 @@ export class InitialSurveyProvider extends BaseProvider<InitialSurveyResponse> {
     });
 
     if (questionType) {
-      _question.questionType = questionType;
-      const question = this.initialSurveyQuestionRepo.create(_question);
+      questionParams.questionType = questionType;
+      const question = this.initialSurveyQuestionRepo.create(questionParams);
 
       return this.initialSurveyQuestionRepo.save(question);
     }

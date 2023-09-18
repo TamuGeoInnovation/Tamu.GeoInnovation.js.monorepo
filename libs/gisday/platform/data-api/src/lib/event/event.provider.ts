@@ -36,24 +36,24 @@ export class EventProvider extends BaseProvider<Event> {
     });
   }
 
-  public async insertEvent(_newEvent: DeepPartial<Event>) {
+  public async insertEvent(event: DeepPartial<Event>) {
     try {
       const newEvent: DeepPartial<Event> = {
-        ..._newEvent
+        ...event
       };
 
-      const broadcastEnt = this.eventBroadcastRepo.create(_newEvent.broadcast);
-      const locationEnt = this.eventLocationRepo.create(_newEvent.location);
+      const broadcastEnt = this.eventBroadcastRepo.create(event.broadcast);
+      const locationEnt = this.eventLocationRepo.create(event.location);
 
       const existingSpeakers = await this.speakerRepo.find({
         where: {
-          guid: In(_newEvent.speakers)
+          guid: In(event.speakers)
         }
       });
 
       const existingTags = await this.tagRepo.find({
         where: {
-          guid: In(_newEvent.tags)
+          guid: In(event.tags)
         }
       });
 
@@ -72,24 +72,24 @@ export class EventProvider extends BaseProvider<Event> {
     }
   }
 
-  public async updateEvent(_newEvent: DeepPartial<Event>) {
+  public async updateEvent(event: DeepPartial<Event>) {
     try {
       const newEvent: DeepPartial<Event> = {
-        ..._newEvent
+        ...event
       };
 
-      const broadcastEnt = this.eventBroadcastRepo.create(_newEvent.broadcast);
-      const locationEnt = this.eventLocationRepo.create(_newEvent.location);
+      const broadcastEnt = this.eventBroadcastRepo.create(event.broadcast);
+      const locationEnt = this.eventLocationRepo.create(event.location);
 
       const existingSpeakers = await this.speakerRepo.find({
         where: {
-          guid: In(_newEvent.speakers)
+          guid: In(event.speakers)
         }
       });
 
       const existingTags = await this.tagRepo.find({
         where: {
-          guid: In(_newEvent.tags)
+          guid: In(event.tags)
         }
       });
 
@@ -108,15 +108,15 @@ export class EventProvider extends BaseProvider<Event> {
     }
   }
 
-  private async getTags(_tagGuids: string[]): Promise<Tag[]> {
+  private async getTags(guids: string[]): Promise<Tag[]> {
     return this.tagRepo.find({
-      guid: In(_tagGuids)
+      guid: In(guids)
     });
   }
 
-  private async getSponsors(_sponsorsGuids: string[]): Promise<Sponsor[]> {
+  private async getSponsors(guids: string[]): Promise<Sponsor[]> {
     return this.sponsorRepo.find({
-      guid: In(_sponsorsGuids)
+      guid: In(guids)
     });
   }
 

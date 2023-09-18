@@ -17,25 +17,23 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
   }
 
   public async insertUserRsvp(eventGuid: string, rsvpTypeGuid: string, accountGuid: string) {
-    const _rsvpType = await this.rsvpTypeRepo.findOne({
+    const rsvpType = await this.rsvpTypeRepo.findOne({
       where: {
         guid: rsvpTypeGuid
       }
     });
 
-    const _event = await this.eventRepo.findOne({
+    const event = await this.eventRepo.findOne({
       where: {
         guid: eventGuid
       }
     });
 
-    const _newUserRsvp: Partial<UserRsvp> = {
-      event: _event,
-      rsvpType: _rsvpType,
+    const newUserRsvp = this.userRsvpRepo.create({
+      event: event,
+      rsvpType: rsvpType,
       accountGuid: accountGuid
-    };
-
-    const newUserRsvp = this.userRsvpRepo.create(_newUserRsvp);
+    });
 
     return this.userRsvpRepo.save(newUserRsvp);
   }

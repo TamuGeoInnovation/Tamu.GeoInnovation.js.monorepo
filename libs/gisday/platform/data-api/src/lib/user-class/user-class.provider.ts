@@ -16,20 +16,18 @@ export class UserClassProvider extends BaseProvider<UserClass> {
   }
 
   public async insertUserClass(chosenClass: DeepPartial<Class>, accountGuid: string) {
-    const _class = await this.classRepo.findOne({
+    const existing = await this.classRepo.findOne({
       where: {
         guid: chosenClass.guid
       }
     });
 
-    const _newUserClass: Partial<UserClass> = {
-      class: _class,
+    const created = await this.userClassRepo.create({
+      class: existing,
       accountGuid: accountGuid
-    };
+    });
 
-    const newUserClass = await this.userClassRepo.create(_newUserClass);
-
-    return this.userClassRepo.save(newUserClass);
+    return this.userClassRepo.save(created);
   }
 
   public async getClassesAndUserClasses(accountGuid: string) {
