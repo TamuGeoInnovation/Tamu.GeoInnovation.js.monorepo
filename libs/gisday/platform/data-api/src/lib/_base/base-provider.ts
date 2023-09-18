@@ -1,7 +1,6 @@
 import { InternalServerErrorException } from '@nestjs/common';
 
-import { Repository, DeepPartial, FindOneOptions, FindManyOptions, FindConditions, SaveOptions } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
 
 export abstract class BaseProvider<T> {
   constructor(private readonly repo: Repository<T>) {}
