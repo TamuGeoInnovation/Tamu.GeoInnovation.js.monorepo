@@ -8,11 +8,6 @@ import { TagProvider } from './tag.provider';
 export class TagController {
   constructor(private readonly provider: TagProvider) {}
 
-  @Get()
-  public async getTags() {
-    return this.provider.getTags();
-  }
-
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -20,6 +15,11 @@ export class TagController {
         guid: guid
       }
     });
+  }
+
+  @Get()
+  public async getTags() {
+    return this.provider.getTags();
   }
 
   @Post('/bulk')

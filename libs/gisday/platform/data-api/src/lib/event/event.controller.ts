@@ -9,17 +9,24 @@ import { EventProvider } from './event.provider';
 export class EventController {
   constructor(private readonly provider: EventProvider) {}
 
-  @Get()
-  public async getEvents() {
-    return this.provider.eventRepo.find({
+  @Get(':guid/event')
+  public async getEntityWithRelations(@Param('guid') guid) {
+    return this.provider.findOne({
       where: {
-        season: '2022'
+        guid: guid
       },
-      relations: EntityRelationsLUT.getRelation('event'),
-      order: {
-        startTime: 'ASC'
-      }
+      relations: EntityRelationsLUT.getRelation('event')
     });
+  }
+
+  @Get(':guid/rsvps')
+  public async getNumberOfRsvps(@Param() params) {
+    return this.provider.getNumberOfRsvps(params.guid);
+  }
+
+  @Get('by-day')
+  public async getEntitiesByDay() {
+    return this.provider.getEntitiesByDay();
   }
 
   @Get(':guid')
@@ -32,24 +39,17 @@ export class EventController {
     });
   }
 
-  @Get(':guid/rsvps')
-  public async getNumberOfRsvps(@Param() params) {
-    return this.provider.getNumberOfRsvps(params.guid);
-  }
-
-  @Get(':guid/event')
-  public async getEntityWithRelations(@Param('guid') guid) {
-    return this.provider.findOne({
+  @Get()
+  public async getEvents() {
+    return this.provider.eventRepo.find({
       where: {
-        guid: guid
+        season: '2022'
       },
-      relations: EntityRelationsLUT.getRelation('event')
+      relations: EntityRelationsLUT.getRelation('event'),
+      order: {
+        startTime: 'ASC'
+      }
     });
-  }
-
-  @Get('by-day')
-  public async getEntitiesByDay() {
-    return this.provider.getEntitiesByDay();
   }
 
   @Post()

@@ -13,20 +13,6 @@ export class SpeakerRoleController {
     return this.provider.find();
   }
 
-  @Get(':guid')
-  public async getEntity(@Param('guid') guid) {
-    return this.provider.findOne({
-      where: {
-        guid: guid
-      }
-    });
-  }
-
-  @Post()
-  public async insertEntity(@Body() body: DeepPartial<SpeakerRole>) {
-    throw new NotImplementedException();
-  }
-
   @Post('/bulk')
   public async insertSpeakerRoles(@Body() body) {
     const _roles: Partial<SpeakerRole>[] = body.roles.map((value: SpeakerRole) => {
@@ -37,6 +23,11 @@ export class SpeakerRoleController {
     });
 
     return this.provider.insertRoles(_roles);
+  }
+
+  @Post()
+  public async insertEntity(@Body() body: DeepPartial<SpeakerRole>) {
+    throw new NotImplementedException();
   }
 
   @Patch()

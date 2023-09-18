@@ -8,11 +8,6 @@ import { SubmissionTypeProvider } from './submission-type.provider';
 export class SubmissionTypeController {
   constructor(private readonly provider: SubmissionTypeProvider) {}
 
-  @Get()
-  public async getEntities() {
-    return this.provider.find();
-  }
-
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -20,6 +15,11 @@ export class SubmissionTypeController {
         guid: guid
       }
     });
+  }
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
   }
 
   @Post()

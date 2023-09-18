@@ -8,11 +8,6 @@ import { RsvpType } from '../entities/all.entity';
 export class RsvpTypeController {
   constructor(private readonly provider: RsvpTypeProvider) {}
 
-  @Get()
-  public async getEntities() {
-    return this.provider.find();
-  }
-
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -20,6 +15,11 @@ export class RsvpTypeController {
         guid: guid
       }
     });
+  }
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
   }
 
   @Post()

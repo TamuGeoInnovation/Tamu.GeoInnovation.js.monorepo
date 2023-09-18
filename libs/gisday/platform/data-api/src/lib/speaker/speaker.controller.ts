@@ -21,18 +21,14 @@ import { SpeakerProvider } from './speaker.provider';
 export class SpeakerController {
   constructor(private readonly provider: SpeakerProvider) {}
 
-  @Get()
-  public async getEntities() {
-    return this.provider.find();
+  @Get('/presenter/:guid')
+  public async presenter(@Param() params) {
+    return this.provider.getPresenter(params.guid);
   }
 
-  @Get(':guid')
-  public async getEntity(@Param('guid') guid) {
-    return this.provider.findOne({
-      where: {
-        guid: guid
-      }
-    });
+  @Get('/photo/:guid')
+  public async getSpeakerPhoto(@Param() params) {
+    return this.provider.getSpeakerPhoto(params.guid);
   }
 
   @Get(':guid/speaker')
@@ -45,19 +41,23 @@ export class SpeakerController {
     });
   }
 
-  @Get('/presenter/:guid')
-  public async presenter(@Param() params) {
-    return this.provider.getPresenter(params.guid);
-  }
-
   @Get('/presenters')
   public async presenters() {
     return this.provider.getPresenters();
   }
 
-  @Get('/photo/:guid')
-  public async getSpeakerPhoto(@Param() params) {
-    return this.provider.getSpeakerPhoto(params.guid);
+  @Get(':guid')
+  public async getEntity(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
   }
 
   @Post('')

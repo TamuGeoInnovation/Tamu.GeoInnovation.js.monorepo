@@ -8,11 +8,6 @@ import { QuestionType } from '../entities/all.entity';
 export class QuestionTypeController {
   constructor(private readonly provider: QuestionTypeProvider) {}
 
-  @Get()
-  public async getEntities() {
-    return this.provider.find();
-  }
-
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -20,6 +15,11 @@ export class QuestionTypeController {
         guid: guid
       }
     });
+  }
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
   }
 
   @Post()

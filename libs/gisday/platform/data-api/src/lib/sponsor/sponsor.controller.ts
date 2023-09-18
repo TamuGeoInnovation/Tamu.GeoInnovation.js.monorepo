@@ -7,10 +7,6 @@ import { SponsorProvider } from './sponsor.provider';
 @Controller('sponsors')
 export class SponsorController {
   constructor(private readonly provider: SponsorProvider) {}
-  @Get()
-  public async getEntities() {
-    return this.provider.find();
-  }
 
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
@@ -19,6 +15,11 @@ export class SponsorController {
         guid: guid
       }
     });
+  }
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
   }
 
   @Post()

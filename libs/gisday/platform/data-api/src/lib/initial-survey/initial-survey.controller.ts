@@ -7,6 +7,19 @@ import { InitialSurveyProvider } from './initial-survey.provider';
 export class InitialSurveyController {
   constructor(private readonly provider: InitialSurveyProvider) {}
 
+  @Get('/questions/all')
+  public async getQuestionsAll() {
+    return this.provider.initialSurveyQuestionRepo.find();
+  }
+  @Get(':guid')
+  public async getSurvey(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
+
   @Get()
   public async userTookSurvey(@Request() req) {
     // TODO: Add middleware for appending userGuid to request
@@ -24,20 +37,6 @@ export class InitialSurveyController {
     } else {
       return true;
     }
-  }
-
-  @Get(':guid')
-  public async getSurvey(@Param('guid') guid) {
-    return this.provider.findOne({
-      where: {
-        guid: guid
-      }
-    });
-  }
-
-  @Get('/questions/all')
-  public async getQuestionsAll() {
-    return this.provider.initialSurveyQuestionRepo.find();
   }
 
   @Post('/questions')

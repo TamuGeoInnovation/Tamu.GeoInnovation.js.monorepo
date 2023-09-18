@@ -8,11 +8,6 @@ import { Class } from '../entities/all.entity';
 export class ClassController {
   constructor(private readonly provider: ClassProvider) {}
 
-  @Get()
-  public async getClasses() {
-    return this.provider.find();
-  }
-
   @Get(':guid')
   public async getClass(@Param('guid') guid) {
     return this.provider.findOne({
@@ -20,6 +15,11 @@ export class ClassController {
         guid: guid
       }
     });
+  }
+
+  @Get()
+  public async getClasses() {
+    return this.provider.find();
   }
 
   @Post()

@@ -20,6 +20,15 @@ import { CheckInProvider } from './check-in.provider';
 export class CheckInController {
   constructor(private readonly provider: CheckInProvider) {}
 
+  @Get(':guid')
+  public async getUserCheckins(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
+
   @Get()
   @UseGuards(JwtGuard)
   public async getUsersCheckins(@Request() req) {
@@ -32,15 +41,6 @@ export class CheckInController {
     } else {
       return new ForbiddenException();
     }
-  }
-
-  @Get(':guid')
-  public async getUserCheckins(@Param('guid') guid) {
-    return this.provider.findOne({
-      where: {
-        guid: guid
-      }
-    });
   }
 
   @Post()

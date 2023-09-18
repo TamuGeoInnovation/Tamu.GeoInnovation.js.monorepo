@@ -8,11 +8,6 @@ import { UniversityProvider } from './university.provider';
 export class UniversityController {
   constructor(private readonly provider: UniversityProvider) {}
 
-  @Get()
-  public async getEntities() {
-    return this.provider.find();
-  }
-
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -20,6 +15,11 @@ export class UniversityController {
         guid: guid
       }
     });
+  }
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
   }
 
   @Post()
