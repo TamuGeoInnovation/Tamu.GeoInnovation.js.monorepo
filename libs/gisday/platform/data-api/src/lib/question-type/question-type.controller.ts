@@ -1,12 +1,39 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
-import { QuestionType } from '../entities/all.entity';
-import { BaseController } from '../_base/base.controller';
 import { QuestionTypeProvider } from './question-type.provider';
+import { QuestionType } from '../entities/all.entity';
 
 @Controller('question-types')
-export class QuestionTypeController extends BaseController<QuestionType> {
-  constructor(private readonly questionTypeProvider: QuestionTypeProvider) {
-    super(questionTypeProvider);
+export class QuestionTypeController {
+  constructor(private readonly provider: QuestionTypeProvider) {}
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
+  }
+
+  @Get(':guid')
+  public async getEntity(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
+
+  @Post()
+  public async insertEntity(@Body() body: DeepPartial<QuestionType>) {
+    throw new NotImplementedException();
+  }
+
+  @Patch()
+  public async updateEntity(@Body() body) {
+    throw new NotImplementedException();
+  }
+
+  @Delete(':guid')
+  public async deleteEntity(@Param() params) {
+    throw new NotImplementedException();
   }
 }
