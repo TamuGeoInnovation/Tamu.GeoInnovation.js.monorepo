@@ -37,7 +37,7 @@ export class TagController {
 
   @Post()
   public async insertEntity(@Body() body: DeepPartial<Tag>) {
-    throw new NotImplementedException();
+    return this.provider.save(body);
   }
 
   @Patch()
@@ -45,8 +45,12 @@ export class TagController {
     throw new NotImplementedException();
   }
 
-  @Delete(':guid')
-  public async deleteEntity(@Param() params) {
-    throw new NotImplementedException();
+  @Delete()
+  public async deleteEntity(@Body('guid') guid: string) {
+    this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

@@ -32,8 +32,12 @@ export class ClassController {
     throw new NotImplementedException();
   }
 
-  @Delete(':guid')
-  public async deleteClass(@Param() params) {
-    return this.provider.deleteEntity(params.guid);
+  @Delete()
+  public async deleteEntity(@Body('guid') guid: string) {
+    this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

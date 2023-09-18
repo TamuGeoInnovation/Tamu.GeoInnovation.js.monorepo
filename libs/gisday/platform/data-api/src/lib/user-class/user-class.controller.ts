@@ -58,7 +58,11 @@ export class UserClassController {
   }
 
   @Delete()
-  public async deleteUserClassWithClassGuid(@Body() body) {
-    return this.provider.deleteUserClassWithClassGuid(body.classGuid);
+  public async deleteEntity(@Body('guid') guid: string) {
+    this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

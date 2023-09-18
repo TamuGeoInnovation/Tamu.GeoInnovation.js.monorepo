@@ -25,4 +25,8 @@ export class TagProvider extends BaseProvider<Tag> {
 
     return this.tagRepo.insert(tags);
   }
+
+  public async createTag(tag: Partial<Tag>) {
+    return this.tagRepo.save(tag);
+  }
 }

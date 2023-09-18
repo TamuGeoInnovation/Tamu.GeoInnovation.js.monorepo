@@ -57,8 +57,12 @@ export class InitialSurveyController {
     throw new NotImplementedException();
   }
 
-  @Delete(':guid')
-  public async deleteSurvey(@Param() params) {
-    throw new NotImplementedException();
+  @Delete()
+  public async deleteEntity(@Body('guid') guid: string) {
+    this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

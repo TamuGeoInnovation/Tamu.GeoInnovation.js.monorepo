@@ -62,8 +62,12 @@ export class EventController {
     return this.provider.updateEvent(body);
   }
 
-  @Delete(':guid')
-  public async deleteEvent(@Param() params) {
-    return this.provider.deleteEntity(params.guid);
+  @Delete()
+  public async deleteEntity(@Body('guid') guid: string) {
+    this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }
