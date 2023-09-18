@@ -27,6 +27,14 @@ export class TagProvider extends BaseProvider<Tag> {
   }
 
   public async createTag(tag: Partial<Tag>) {
-    return this.tagRepo.save(tag);
+    const existing = await this.tagRepo.findOne({ where: { ...tag } });
+
+    if (existing === undefined) {
+      const newTag = this.tagRepo.create(tag);
+
+      return this.tagRepo.save(newTag);
+    } else {
+      return existing;
+    }
   }
 }

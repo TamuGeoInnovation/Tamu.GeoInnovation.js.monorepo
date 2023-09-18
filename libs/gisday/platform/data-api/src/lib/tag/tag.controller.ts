@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
 
 import { Tag } from '../entities/all.entity';
 import { TagProvider } from './tag.provider';
@@ -36,8 +35,10 @@ export class TagController {
   }
 
   @Post()
-  public async insertEntity(@Body() body: DeepPartial<Tag>) {
-    return this.provider.save(body);
+  public async insertEntity(@Body('name') name: string) {
+    return this.provider.createTag({
+      name: name
+    });
   }
 
   @Patch()
