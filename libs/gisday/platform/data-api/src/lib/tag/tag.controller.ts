@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 import { Tag } from '../entities/all.entity';
 import { TagProvider } from './tag.provider';
@@ -43,12 +43,12 @@ export class TagController {
 
   @Patch()
   public async updateEntity(@Body() body) {
-    throw new NotImplementedException();
+    return this.provider.update(body);
   }
 
   @Delete()
   public async deleteEntity(@Body('guid') guid: string) {
-    this.provider.deleteEntity({
+    return this.provider.deleteEntity({
       where: {
         guid: guid
       }

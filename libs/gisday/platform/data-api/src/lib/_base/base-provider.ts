@@ -13,27 +13,12 @@ export abstract class BaseProvider<T> {
     return this.repo.find(options);
   }
 
-  public async save(_entity: DeepPartial<T>) {
-    return this.repo.save(_entity);
+  public async save(entity: DeepPartial<T>) {
+    return this.repo.save(entity);
   }
 
-  // public async update(_entity: DeepPartial<T>, entityName: string) {
-  //   const entity = await this.repo.findOne({
-  //     where: {
-  //       guid: _entity['guid']
-  //     },
-  //     relations: EntityRelationsLUT.getRelation(entityName)
-  //   });
-  //   if (entity) {
-  //     const merged = deepmerge<DeepPartial<T>>(entity, _entity);
-  //     return this.repo.save(merged);
-  //   } else {
-  //     this.save(_entity);
-  //   }
-  // }
-
-  public async update(_entity: DeepPartial<T>, options: FindOneOptions<T>) {
-    return;
+  public async update(entity: DeepPartial<T>, options?: FindOneOptions<T>) {
+    return this.repo.save(entity);
   }
 
   /**
@@ -50,6 +35,8 @@ export abstract class BaseProvider<T> {
           guid: guidOrOptions
         }
       } as FindOneOptions<T>;
+    } else {
+      lookupOpts = guidOrOptions;
     }
 
     const entity = await this.repo.findOne(lookupOpts);

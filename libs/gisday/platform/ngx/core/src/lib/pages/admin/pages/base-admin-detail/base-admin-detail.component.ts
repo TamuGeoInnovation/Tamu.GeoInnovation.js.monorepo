@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { DeepPartial } from 'typeorm';
 
 import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
@@ -13,7 +12,7 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   template: ''
 })
 export abstract class BaseAdminDetailComponent<T> implements OnInit, OnDestroy {
-  public entity: Observable<DeepPartial<T>>;
+  public entity: Observable<Partial<T>>;
   public $formChange: Observable<Partial<T>>;
 
   public form: FormGroup;
@@ -26,7 +25,7 @@ export abstract class BaseAdminDetailComponent<T> implements OnInit, OnDestroy {
     this.entity = this.route.params.pipe(
       map((params) => params.guid),
       filter((guid) => guid !== undefined),
-      switchMap((guid) => this.entityService.getEntityWithRelations(guid))
+      switchMap((guid) => this.entityService.getEntity(guid))
     );
 
     this.entity

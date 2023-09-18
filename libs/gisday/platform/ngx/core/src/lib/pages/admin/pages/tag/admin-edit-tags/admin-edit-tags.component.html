@@ -7,6 +7,9 @@
   <tr *ngFor="let entity of ($entities | async)">
     <td>{{entity.name}}</td>
     <td>{{entity.updated | date:'short'}}</td>
-    <td><span [routerLink]="[entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span><span (click)="deleteEntity(entity)" class="material-icons action alt" title="Delete entity">delete</span></td>
+    <td>
+      <span [routerLink]="[entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>
+      <span (click)="deleteEntity(entity)" class="material-icons action alt" title="Delete entity">delete</span>
+    </td>
   </tr>
 </table>

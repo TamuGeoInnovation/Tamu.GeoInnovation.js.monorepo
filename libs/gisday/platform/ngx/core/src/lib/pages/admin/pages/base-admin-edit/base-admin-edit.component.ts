@@ -29,7 +29,7 @@ export abstract class BaseAdminEditComponent<T extends GuidIdentity> implements 
     this.$entities = this.entityService.getEntities().pipe(shareReplay(1));
   }
 
-  public deleteEntity(entity: T) {
+  public deleteEntity(entity: Partial<T>) {
     console.log('deleteEntity', entity);
     this.entityService.deleteEntity(entity.guid).subscribe(() => {
       console.log('Deleted ', entity.guid);
