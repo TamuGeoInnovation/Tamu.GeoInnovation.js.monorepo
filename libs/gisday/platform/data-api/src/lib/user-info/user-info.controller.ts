@@ -1,22 +1,45 @@
-import { Controller, Get, Patch, Request, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotImplementedException,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UnauthorizedException
+} from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { UserInfo } from '../entities/all.entity';
 import { UserInfoProvider } from './user-info.provider';
-import { BaseController } from '../_base/base.controller';
 
 @Controller('user-infos')
-export class UserInfoController extends BaseController<UserInfo> {
-  constructor(private readonly userInfoProvider: UserInfoProvider) {
-    super(userInfoProvider);
+export class UserInfoController {
+  constructor(private readonly provider: UserInfoProvider) {}
+
+  @Get(':guid')
+  public async getEntity(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
   }
 
   @Get()
   public async getUsersInfo(@Request() req) {
     if (req.user) {
-      return this.userInfoProvider.getUsersInfo(req.user.sub);
+      return this.provider.getUsersInfo(req.user.sub);
     } else {
       throw new UnauthorizedException();
     }
+  }
+
+  @Post()
+  public async insertEntity(@Body() body: DeepPartial<UserInfo>) {
+    throw new NotImplementedException();
   }
 
   @Patch()
@@ -25,9 +48,14 @@ export class UserInfoController extends BaseController<UserInfo> {
       const _updatedUserInfo: Partial<UserInfo> = {
         ...req.body
       };
-      return this.userInfoProvider.updateUserInfo(req.user.sub, _updatedUserInfo);
+      return this.provider.updateUserInfo(req.user.sub, _updatedUserInfo);
     } else {
       throw new UnauthorizedException();
     }
+  }
+
+  @Delete(':guid')
+  public async deleteEntity(@Param() params) {
+    throw new NotImplementedException();
   }
 }
