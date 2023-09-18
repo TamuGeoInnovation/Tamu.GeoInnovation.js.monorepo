@@ -1,13 +1,30 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { SpeakerRole } from '../entities/all.entity';
-import { BaseController } from '../_base/base.controller';
 import { SpeakerRoleProvider } from './speaker-role.provider';
 
 @Controller('speaker-roles')
-export class SpeakerRoleController extends BaseController<SpeakerRole> {
-  constructor(private readonly speakerRoleProvider: SpeakerRoleProvider) {
-    super(speakerRoleProvider);
+export class SpeakerRoleController {
+  constructor(private readonly provider: SpeakerRoleProvider) {}
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
+  }
+
+  @Get(':guid')
+  public async getEntity(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
+
+  @Post()
+  public async insertEntity(@Body() body: DeepPartial<SpeakerRole>) {
+    throw new NotImplementedException();
   }
 
   @Post('/bulk')
@@ -19,6 +36,16 @@ export class SpeakerRoleController extends BaseController<SpeakerRole> {
       return tag;
     });
 
-    return this.speakerRoleProvider.insertRoles(_roles);
+    return this.provider.insertRoles(_roles);
+  }
+
+  @Patch()
+  public async updateEntity(@Body() body) {
+    throw new NotImplementedException();
+  }
+
+  @Delete(':guid')
+  public async deleteEntity(@Param() params) {
+    throw new NotImplementedException();
   }
 }
