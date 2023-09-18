@@ -1,5 +1,7 @@
 // Entities
 export * from './lib/entities/all.entity';
+export * from './lib/season-day/entities/season-day.entity';
+export * from './lib/season/entities/season.entity';
 
 // Modules
 export * from './lib/check-in/check-in.module';
@@ -18,6 +20,8 @@ export * from './lib/user-class/user-class.module';
 export * from './lib/user-rsvp/user-rsvp.module';
 export * from './lib/user-submission/user-submission.module';
 export * from './lib/user-info/user-info.module';
+export * from './lib/season-day/season-day.module';
+export * from './lib/season/season.module';
 
 // Providers
 export * from './lib/_base/base-provider';
