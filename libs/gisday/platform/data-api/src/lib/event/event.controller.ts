@@ -1,20 +1,17 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 import { DeepPartial } from 'typeorm';
 
 import { EntityRelationsLUT, Event } from '../entities/all.entity';
 import { EventProvider } from './event.provider';
-import { BaseController } from '../_base/base.controller';
 
 @Controller('events')
-export class EventController extends BaseController<Event> {
-  constructor(private readonly eventProvider: EventProvider) {
-    super(eventProvider);
-  }
+export class EventController {
+  constructor(private readonly provider: EventProvider) {}
 
   @Get()
   public async getEvents() {
-    return this.eventProvider.eventRepo.find({
+    return this.provider.eventRepo.find({
       where: {
         season: '2022'
       },
@@ -25,9 +22,9 @@ export class EventController extends BaseController<Event> {
     });
   }
 
-  @Get('/:guid')
+  @Get(':guid')
   public async getDetails(@Param('guid') guid) {
-    return this.eventProvider.eventRepo.findOne({
+    return this.provider.eventRepo.findOne({
       where: {
         guid
       },
@@ -35,23 +32,38 @@ export class EventController extends BaseController<Event> {
     });
   }
 
-  @Get('/:guid/rsvps')
+  @Get(':guid/rsvps')
   public async getNumberOfRsvps(@Param() params) {
-    return this.eventProvider.getNumberOfRsvps(params.guid);
+    return this.provider.getNumberOfRsvps(params.guid);
+  }
+
+  @Get(':guid/event')
+  public async getEntityWithRelations(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      },
+      relations: EntityRelationsLUT.getRelation('event')
+    });
   }
 
   @Get('by-day')
   public async getEntitiesByDay() {
-    return this.eventProvider.getEntitiesByDay();
+    return this.provider.getEntitiesByDay();
   }
 
   @Post()
   public async insertEvent(@Body() body: DeepPartial<Event>) {
-    return this.eventProvider.insertEvent(body);
+    return this.provider.insertEvent(body);
   }
 
   @Patch()
   public async updateEvent(@Body() body: DeepPartial<Event>) {
-    return this.eventProvider.updateEvent(body);
+    return this.provider.updateEvent(body);
+  }
+
+  @Delete(':guid')
+  public async deleteEvent(@Param() params) {
+    return this.provider.deleteEntity(params.guid);
   }
 }
