@@ -57,8 +57,8 @@ export class EventController {
     return this.provider.insertEvent(body);
   }
 
-  @Patch()
-  public async updateEvent(@Body() body: DeepPartial<Event>) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid, @Body() body: DeepPartial<Event>) {
     return this.provider.updateEvent(body);
   }
 

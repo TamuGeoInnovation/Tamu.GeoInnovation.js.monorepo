@@ -109,8 +109,10 @@ export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> i
       (this.form.controls.speakers as FormArray).push(new FormControl(speaker));
     });
 
+    const formValue = this.form.getRawValue();
+
     // Update entity
-    this.eventService.updateEntity(this.form.getRawValue()).subscribe((result) => {
+    this.eventService.updateEntity(formValue.guid, formValue).subscribe((result) => {
       console.log('Update entity', result);
     });
   }

@@ -30,8 +30,8 @@ export class SpeakerRoleController {
     throw new NotImplementedException();
   }
 
-  @Patch()
-  public async updateEntity(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<SpeakerRole>) {
     throw new NotImplementedException();
   }
 

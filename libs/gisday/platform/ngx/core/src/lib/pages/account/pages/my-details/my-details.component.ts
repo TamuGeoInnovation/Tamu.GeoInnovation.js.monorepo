@@ -40,7 +40,9 @@ export class MyDetailsComponent implements OnDestroy, OnInit {
         this.form.patchValue(result);
       }
       this.form.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
-        this.userInfoService.updateEntity(this.form.getRawValue()).subscribe((results) => {
+        const formValue = this.form.getRawValue();
+
+        this.userInfoService.updateEntity(formValue.uin, formValue).subscribe((results) => {
           console.log('Updated entity', results);
         });
       });

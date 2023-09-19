@@ -27,8 +27,8 @@ export class RsvpTypeController {
     throw new NotImplementedException();
   }
 
-  @Patch()
-  public async updateEntity(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<RsvpType>) {
     throw new NotImplementedException();
   }
 

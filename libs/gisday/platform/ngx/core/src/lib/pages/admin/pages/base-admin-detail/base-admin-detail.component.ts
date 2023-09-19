@@ -19,10 +19,14 @@ export abstract class BaseAdminDetailComponent<T> implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private entityService: BaseService<T>) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute,
+    private entityService: BaseService<T>
+  ) {}
 
   public ngOnInit() {
-    this.entity = this.route.params.pipe(
+    this.entity = this.activatedRoute.params.pipe(
       map((params) => params.guid),
       filter((guid) => guid !== undefined),
       switchMap((guid) => this.entityService.getEntity(guid))
@@ -56,7 +60,8 @@ export abstract class BaseAdminDetailComponent<T> implements OnInit, OnDestroy {
 
   public updateEntity() {
     const rawValue = this.form.getRawValue();
-    this.entityService.updateEntity(rawValue).subscribe((result) => {
+
+    this.entityService.updateEntity(rawValue.guid, rawValue).subscribe((result) => {
       console.log('Updated', result);
     });
   }

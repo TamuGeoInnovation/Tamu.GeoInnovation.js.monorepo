@@ -1,17 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotImplementedException,
-  Param,
-  Patch,
-  Post,
-  UploadedFile,
-  UseInterceptors
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-
 import { DeepPartial } from 'typeorm';
 
 import { EntityRelationsLUT, Speaker } from '../entities/all.entity';
@@ -67,9 +55,9 @@ export class SpeakerController {
     return this.provider.insertWithInfo(_speaker, file);
   }
 
-  @Patch()
+  @Patch(':guid')
   @UseInterceptors(FileInterceptor('file'))
-  public async updateSpeakerInfo(@Body() body: DeepPartial<Speaker>, @UploadedFile() file) {
+  public async updateSpeakerInfo(@Param('guid') guid: string, @Body() body: DeepPartial<Speaker>, @UploadedFile() file) {
     return this.provider.updateWithInfo(body, file);
   }
 

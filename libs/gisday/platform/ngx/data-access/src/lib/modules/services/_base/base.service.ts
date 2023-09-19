@@ -23,8 +23,8 @@ export abstract class BaseService<T> {
     return this.httpClient.get<DeepPartial<T>>(`${this.resource}/${guid}/deep`);
   }
 
-  public updateEntity(updatedEntity: Partial<T>) {
-    return this.httpClient.patch<Partial<T>>(`${this.resource}`, updatedEntity);
+  public updateEntity(guid: string, updatedEntity: Partial<T>) {
+    return this.httpClient.patch<Partial<T>>(`${this.resource}/${guid}`, updatedEntity);
   }
 
   public createEntity(newEntity?: Partial<T>) {

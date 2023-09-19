@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, Request } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { InitialSurveyQuestion, InitialSurveyResponse } from '../entities/all.entity';
 import { InitialSurveyProvider } from './initial-survey.provider';
@@ -52,8 +53,8 @@ export class InitialSurveyController {
     return new NotImplementedException();
   }
 
-  @Patch()
-  public async updateSurvey(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<InitialSurveyQuestion>) {
     throw new NotImplementedException();
   }
 

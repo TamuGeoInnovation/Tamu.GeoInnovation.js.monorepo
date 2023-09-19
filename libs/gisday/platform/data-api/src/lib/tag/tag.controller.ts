@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 
 import { Tag } from '../entities/all.entity';
 import { TagProvider } from './tag.provider';
+import { DeepPartial } from 'typeorm';
 
 @Controller('tags')
 export class TagController {
@@ -41,8 +42,8 @@ export class TagController {
     });
   }
 
-  @Patch()
-  public async updateEntity(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<Tag>) {
     return this.provider.update(body);
   }
 

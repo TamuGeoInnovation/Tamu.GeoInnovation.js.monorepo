@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { UserRsvpProvider } from './user-rsvp.provider';
+import { UserRsvp } from '../entities/all.entity';
 
 @Controller('user-rsvps')
 export class UserRsvpController {
@@ -32,8 +34,8 @@ export class UserRsvpController {
     return this.provider.insertUserRsvp(eventGuid, rsvpTypeGuid, userGuid);
   }
 
-  @Patch()
-  public async updateEntity(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<UserRsvp>) {
     throw new NotImplementedException();
   }
 

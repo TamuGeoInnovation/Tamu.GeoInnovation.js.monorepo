@@ -27,8 +27,8 @@ export class ClassController {
     return this.provider.save(body);
   }
 
-  @Patch()
-  public async updateClass(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid, @Body() body: DeepPartial<Class>) {
     throw new NotImplementedException();
   }
 

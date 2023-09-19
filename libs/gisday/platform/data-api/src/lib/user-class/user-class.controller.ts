@@ -10,7 +10,6 @@ import {
   Request,
   UnauthorizedException
 } from '@nestjs/common';
-
 import { DeepPartial } from 'typeorm';
 
 import { Class } from '../entities/all.entity';
@@ -52,8 +51,8 @@ export class UserClassController {
     }
   }
 
-  @Patch()
-  public async updateEntity(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<Class>) {
     throw new NotImplementedException();
   }
 

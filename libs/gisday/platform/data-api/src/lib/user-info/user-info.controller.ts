@@ -42,8 +42,8 @@ export class UserInfoController {
     throw new NotImplementedException();
   }
 
-  @Patch()
-  public async updateUserInfo(@Request() req) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<UserInfo>, @Request() req) {
     if (req.user) {
       const _updatedUserInfo: Partial<UserInfo> = {
         ...req.body

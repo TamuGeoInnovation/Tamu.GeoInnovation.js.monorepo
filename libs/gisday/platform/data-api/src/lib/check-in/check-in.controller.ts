@@ -11,10 +11,12 @@ import {
   Patch,
   NotImplementedException
 } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 import { CheckInProvider } from './check-in.provider';
+import { CheckIn } from '../entities/all.entity';
 
 @Controller('check-ins')
 export class CheckInController {
@@ -52,9 +54,8 @@ export class CheckInController {
     return this.provider.insertUserCheckin(eventGuid, accountGuid);
   }
 
-  @Patch()
-  @UseGuards(JwtGuard)
-  public async updateEntity(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<CheckIn>) {
     throw new NotImplementedException();
   }
 

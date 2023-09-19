@@ -27,8 +27,8 @@ export class SponsorController {
     throw new NotImplementedException();
   }
 
-  @Patch()
-  public async updateEntity(@Body() body) {
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<Sponsor>) {
     throw new NotImplementedException();
   }
 
