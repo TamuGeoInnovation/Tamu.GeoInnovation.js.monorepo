@@ -58,9 +58,9 @@ export class CheckInController {
     throw new NotImplementedException();
   }
 
-  @Delete()
-  public async deleteEntity(@Body('guid') guid: string) {
-    this.provider.deleteEntity({
+  @Delete(':guid')
+  public deleteEntity(@Param('guid') guid: string) {
+    return this.provider.deleteEntity({
       where: {
         guid: guid
       }

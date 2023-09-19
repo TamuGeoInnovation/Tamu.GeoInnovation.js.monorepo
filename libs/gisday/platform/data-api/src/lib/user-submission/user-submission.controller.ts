@@ -75,8 +75,8 @@ export class UserSubmissionController {
     throw new NotImplementedException();
   }
 
-  @Delete()
-  public async deleteEntity(@Body('guid') guid: string) {
+  @Delete(':guid')
+  public deleteEntity(@Param('guid') guid: string) {
     this.provider.deleteEntity({
       where: {
         guid: guid

@@ -46,8 +46,8 @@ export class TagController {
     return this.provider.update(body);
   }
 
-  @Delete()
-  public async deleteEntity(@Body('guid') guid: string) {
+  @Delete(':guid')
+  public deleteEntity(@Param('guid') guid: string) {
     return this.provider.deleteEntity({
       where: {
         guid: guid
