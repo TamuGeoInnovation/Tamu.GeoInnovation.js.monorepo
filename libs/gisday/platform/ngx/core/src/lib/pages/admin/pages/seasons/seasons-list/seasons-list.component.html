@@ -1,0 +1,45 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Seasons</div>
+
+      <div class="form-section-actions">
+        <a (click)="createSeason()">Add season <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body" id="season-list">
+      <ng-container *ngIf="($entities | async) as seasons">
+        <div *ngFor="let season of seasons" class="season-row flex flex-row justify-around align-center" [routerLink]="['edit', season.guid]">
+          <div class="season-year">
+            <p class="value">{{season?.year}}</p>
+            <p class="description">Year</p>
+          </div>
+          <div class="season-date-range">
+            <ng-container *ngIf="season?.days && season?.days.length > 0; else noDays">
+              <p class="value">
+                <span *ngFor="let day of season?.days; let last = last">{{day.date | date : 'MMM. d'}}{{last === false ? ', ': ''}}</span>
+              </p>
+            </ng-container>
+
+            <ng-template #noDays>
+              <div class="value">No date range set for this season</div>
+            </ng-template>
+            <p class="description">Days</p>
+          </div>
+          <div class="season-status">
+            <div class="value" [ngSwitch]="season?.active">
+              <p class="active" *ngSwitchCase="true">Active</p>
+              <p class="disabled" *ngSwitchDefault>Disabled</p>
+            </div>
+
+            <p class="description">Status</p>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #noSeasons> There are no seasons yet. Add one to get started. </ng-template>
+    </div>
+  </div>
+</div>
+

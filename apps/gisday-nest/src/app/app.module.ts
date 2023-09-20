@@ -33,7 +33,7 @@ import { dbConfig } from '../environments/environment';
   imports: [
     TypeOrmModule.forRoot({
       ...dbConfig,
-      entities: [...GISDAY_ENTITIES, SeasonDay, Season]
+      entities: [...GISDAY_ENTITIES, Season, SeasonDay]
     }),
     AuthorizationModule.forRoot({
       audience: process.env.AUTH0_AUDIENCE,

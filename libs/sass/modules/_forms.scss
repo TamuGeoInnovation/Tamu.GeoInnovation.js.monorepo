@@ -95,6 +95,10 @@ form,
           padding: 0;
           margin: 0;
 
+          // Some buttons don't have link so we need to make sure the cursor
+          // is a pointer on all toolbar action links
+          cursor: pointer;
+
           @include mixins.flexbox();
           @include mixins.flex-direction(row);
           @include mixins.align-items(center);

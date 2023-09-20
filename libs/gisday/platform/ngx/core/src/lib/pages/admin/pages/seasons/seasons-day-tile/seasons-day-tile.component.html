@@ -1,0 +1,18 @@
+<ng-container *ngIf="day !== null; else addDateAction">
+  <div class="date-tile">
+    <div class="edit-bubble" (click)="delete()">
+      <span class="material-icons">close</span>
+    </div>
+
+    <div class="date">
+      <tamu-gisc-date-time-picker [value]="day.value.date" [maxView]="'month'" minView="day" [formatString]="'mediumDate'" (changed)="update($event)"></tamu-gisc-date-time-picker>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #addDateAction>
+  <div class="date-tile" title="Add event day" (click)="add()">
+    <span class="material-icons">add</span>
+  </div>
+</ng-template>
+

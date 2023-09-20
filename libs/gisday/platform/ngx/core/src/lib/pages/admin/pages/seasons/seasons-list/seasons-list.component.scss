@@ -1,0 +1,66 @@
+@use 'libs/gisday/sass/variables';
+@use 'libs/sass/mixins';
+
+.season-row {
+  border: 1pt solid #e0e0e0;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  cursor: pointer;
+  @include mixins.transition(border-color 0.25s);
+
+  &:not(:first-child) {
+    margin-top: 0.75rem;
+  }
+
+  &:hover {
+    border-color: #757575;
+  }
+
+  p {
+    padding-bottom: 0;
+  }
+
+  .description {
+    font-size: 0.85rem;
+    color: #9e9e9e;
+  }
+
+  .season-year,
+  .season-status,
+  .season-date-range {
+    text-align: center;
+  }
+
+  .season-year {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .season-date-range {
+    .value {
+      font-weight: 600;
+    }
+  }
+
+  .season-status {
+    .value {
+      letter-spacing: 1px;
+      font-weight: 600;
+      text-transform: uppercase;
+
+      p {
+        padding: 0.15rem 0.5rem;
+        border-radius: 0.5rem;
+      }
+    }
+
+    .disabled {
+      color: #bdbdbd;
+    }
+
+    .active {
+      background-color: variables.$success-color;
+      color: #f5f5f5;
+    }
+  }
+}

@@ -1,8 +1,9 @@
-import { Column, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 import { GuidIdentity } from '../../entities/all.entity';
 import { SeasonDay } from '../../season-day/entities/season-day.entity';
 
+@Entity({ name: 'seasons' })
 export class Season extends GuidIdentity {
   @Column({ nullable: false })
   year: number;
@@ -11,6 +12,6 @@ export class Season extends GuidIdentity {
   active: boolean;
 
   // Season has multiple days
-  @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season)
+  @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true })
   days: SeasonDay[];
 }

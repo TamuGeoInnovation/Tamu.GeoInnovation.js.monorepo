@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { shareReplay, startWith, switchMap } from 'rxjs/operators';
 
 import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GuidIdentity } from '@tamu-gisc/gisday/platform/data-api';
@@ -12,12 +12,18 @@ import { GuidIdentity } from '@tamu-gisc/gisday/platform/data-api';
 })
 export abstract class BaseAdminEditComponent<T extends GuidIdentity> implements IBaseAdminEditComponent, OnInit, OnDestroy {
   public $entities: Observable<Array<Partial<T>>>;
+  public $signal: Subject<boolean> = new Subject();
+
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(private readonly entityService: BaseService<T>) {}
 
   public ngOnInit(): void {
-    this.fetchEntities();
+    this.$entities = this.$signal.pipe(
+      startWith(true),
+      switchMap(() => this.entityService.getEntities()),
+      shareReplay()
+    );
   }
 
   public ngOnDestroy() {
@@ -25,20 +31,13 @@ export abstract class BaseAdminEditComponent<T extends GuidIdentity> implements 
     this._$destroy.complete();
   }
 
-  public fetchEntities() {
-    this.$entities = this.entityService.getEntities().pipe(shareReplay(1));
-  }
-
   public deleteEntity(entity: Partial<T>) {
-    console.log('deleteEntity', entity);
     this.entityService.deleteEntity(entity.guid).subscribe(() => {
-      console.log('Deleted ', entity.guid);
-      this.fetchEntities();
+      this.$signal.next(true);
     });
   }
 }
 
 export interface IBaseAdminEditComponent {
-  fetchEntities(): void;
   deleteEntity(entity): void;
 }

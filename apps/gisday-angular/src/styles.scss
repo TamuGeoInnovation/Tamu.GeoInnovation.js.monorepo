@@ -4,17 +4,18 @@
 @import 'libs/sass/colors'; // Imports complete material design colors for use as classes in markup
 @import 'libs/sass/modules/forms';
 @import 'libs/gisday/sass/mobile';
+@import 'libs/sass/components/datetime-picker';
 
 .success {
-  color: #4caf50;
+  color: $success-color;
 }
 
 .warning {
-  color: #ff9800;
+  color: $warning-color;
 }
 
 .error {
-  color: #f44336;
+  color: $error-color;
 }
 
 html {
@@ -2857,199 +2858,199 @@ nav#section-nav a:hover {
 //  ==========================================================================
 //   Default Input, Button, and Form Styles
 //  ==========================================================================
-input[type='submit'],
-.button {
-  background: none;
-  display: inline-block;
-  position: relative;
-  z-index: 20;
-  padding: 0.75rem 2.5rem;
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
-  border: 2px solid;
-  border-color: $gisday-blue-secondary;
-  border-radius: 2.5rem;
-  color: $gisday-blue-secondary;
-  font-family: $title-font;
-  letter-spacing: 1.25px;
-  font-size: 1.1rem;
-  box-sizing: border-box;
-  overflow: hidden;
-  text-transform: uppercase;
-  @include transition($background 0.25s, color 0.25s, border-color 0.25s);
+// input[type='submit'],
+// .button {
+//   background: none;
+//   display: inline-block;
+//   position: relative;
+//   z-index: 20;
+//   padding: 0.75rem 2.5rem;
+//   margin-left: 0.75rem;
+//   margin-right: 0.75rem;
+//   border: 2px solid;
+//   border-color: $gisday-blue-secondary;
+//   border-radius: 2.5rem;
+//   color: $gisday-blue-secondary;
+//   font-family: $title-font;
+//   letter-spacing: 1.25px;
+//   font-size: 1.1rem;
+//   box-sizing: border-box;
+//   overflow: hidden;
+//   text-transform: uppercase;
+//   @include transition($background 0.25s, color 0.25s, border-color 0.25s);
 
-  &.secondary {
-    background: $gisday-blue-secondary;
-    color: $gisday-gray-primary;
-  }
-}
+//   &.secondary {
+//     background: $gisday-blue-secondary;
+//     color: $gisday-gray-primary;
+//   }
+// }
 
-input[type='submit']:focus,
-input[type='submit']:hover,
-input[type='button']:focus,
-input[type='button']:hover,
-.button:focus,
-.button:hover,
-.fab:focus,
-.fab:hover {
-  cursor: pointer;
-}
+// input[type='submit']:focus,
+// input[type='submit']:hover,
+// input[type='button']:focus,
+// input[type='button']:hover,
+// .button:focus,
+// .button:hover,
+// .fab:focus,
+// .fab:hover {
+//   cursor: pointer;
+// }
 
-input[type='submit']:active,
-input[type='button']:active,
-.button:active,
-.fab:active {
-  outline: 0;
-}
+// input[type='submit']:active,
+// input[type='button']:active,
+// .button:active,
+// .fab:active {
+//   outline: 0;
+// }
 
-input[type='submit']:focus {
-  outline: -webkit-focus-ring-color auto 5px;
-}
+// input[type='submit']:focus {
+//   outline: -webkit-focus-ring-color auto 5px;
+// }
 
-input[type='text'],
-input[type='password'],
-input[type='email'],
-input[type='number'],
-input[type='date'],
-select,
-textarea {
-  font-family: $body-font;
-  box-sizing: border-box;
-  border-bottom: 1px solid $gisday-blue-support-lightened;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-radius: 0;
-  padding: 0.2em 0.75em;
-  width: 100%;
-  background: none;
-  z-index: 0;
-  position: relative;
-  -webkit-appearance: none;
+// input[type='text'],
+// input[type='password'],
+// input[type='email'],
+// input[type='number'],
+// input[type='date'],
+// select,
+// textarea {
+//   font-family: $body-font;
+//   box-sizing: border-box;
+//   border-bottom: 1px solid $gisday-blue-support-lightened;
+//   border-top: none;
+//   border-left: none;
+//   border-right: none;
+//   border-radius: 0;
+//   padding: 0.2em 0.75em;
+//   width: 100%;
+//   background: none;
+//   z-index: 0;
+//   position: relative;
+//   -webkit-appearance: none;
 
-  &:focus {
-    border-bottom: 2px solid; //LESS var change
-    border-color: $gisday-blue-support-lightened;
-  }
-}
+//   &:focus {
+//     border-bottom: 2px solid; //LESS var change
+//     border-color: $gisday-blue-support-lightened;
+//   }
+// }
 
-textarea {
-  background: #f5f5f5;
-  border-radius: 3px;
-  border: 1px solid #cccccc;
-  resize: none;
-  padding: 0.5rem;
+// textarea {
+//   background: #f5f5f5;
+//   border-radius: 3px;
+//   border: 1px solid #cccccc;
+//   resize: none;
+//   padding: 0.5rem;
 
-  &:focus {
-    border-bottom: none;
-    outline-color: $gisday-blue-support-lightened;
-  }
+//   &:focus {
+//     border-bottom: none;
+//     outline-color: $gisday-blue-support-lightened;
+//   }
 
-  &.sm-height {
-    height: 5rem;
-  }
+//   &.sm-height {
+//     height: 5rem;
+//   }
 
-  &.med-height {
-    height: 10rem;
-  }
+//   &.med-height {
+//     height: 10rem;
+//   }
 
-  &.lg-height {
-    height: 15rem;
-  }
-}
+//   &.lg-height {
+//     height: 15rem;
+//   }
+// }
 
-input[type='radio'] {
-  opacity: 0;
-  z-index: 100;
-  position: relative;
-  height: 20px;
-  width: 15px;
-}
+// input[type='radio'] {
+//   opacity: 0;
+//   z-index: 100;
+//   position: relative;
+//   height: 20px;
+//   width: 15px;
+// }
 
-input[type='radio'] + i {
-  position: absolute;
-  height: 1rem;
-  width: 1rem;
-  display: inline-block;
-  opacity: 1;
-  border-radius: 100%;
-  border: 2px solid #5a5a5a;
-  left: -0.1rem;
-  top: 0;
+// input[type='radio'] + i {
+//   position: absolute;
+//   height: 1rem;
+//   width: 1rem;
+//   display: inline-block;
+//   opacity: 1;
+//   border-radius: 100%;
+//   border: 2px solid #5a5a5a;
+//   left: -0.1rem;
+//   top: 0;
 
-  &::after {
-    content: '';
-    display: block;
-    position: relative;
-    background-image: url(./assets/images/icons/ic_lens_48px.svg);
-    background-repeat: no-repeat;
-    background-size: 110%;
-    @include transform-origin(center);
-    opacity: 1;
-    opacity: 1;
-    top: 1px;
-    left: 1px;
-    z-index: 90;
-    @include transform(scale3d(0, 0, 0));
-    transition: 0.3s all;
-  }
-}
+//   &::after {
+//     content: '';
+//     display: block;
+//     position: relative;
+//     background-image: url(./assets/images/icons/ic_lens_48px.svg);
+//     background-repeat: no-repeat;
+//     background-size: 110%;
+//     @include transform-origin(center);
+//     opacity: 1;
+//     opacity: 1;
+//     top: 1px;
+//     left: 1px;
+//     z-index: 90;
+//     @include transform(scale3d(0, 0, 0));
+//     transition: 0.3s all;
+//   }
+// }
 
-input[type='radio'] ~ label {
-  margin-left: 1.5rem;
-}
+// input[type='radio'] ~ label {
+//   margin-left: 1.5rem;
+// }
 
-input[type='radio']:checked + i {
-  border: 2px solid $gisday-blue;
+// input[type='radio']:checked + i {
+//   border: 2px solid $gisday-blue;
 
-  &::after {
-    @include animation(bloom 0.3s);
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-  }
-}
+//   &::after {
+//     @include animation(bloom 0.3s);
+//     -webkit-animation-fill-mode: forwards;
+//     animation-fill-mode: forwards;
+//   }
+// }
 
 //  ==========================================================================
 //   Button Styles
 //  ==========================================================================
-.button,
-input[type='submit'] {
-  &.primary {
-    &:hover {
-      background: $gisday-blue-secondary;
-      color: $gisday-gray-primary;
-      text-decoration: none;
-    }
-  }
+// .button,
+// input[type='submit'] {
+//   &.primary {
+//     &:hover {
+//       background: $gisday-blue-secondary;
+//       color: $gisday-gray-primary;
+//       text-decoration: none;
+//     }
+//   }
 
-  &.secondary {
-    &:hover {
-      background: darken($gisday-blue-secondary, 5%);
-      border-color: darken($gisday-blue-secondary, 5%);
-    }
-  }
+//   &.secondary {
+//     &:hover {
+//       background: darken($gisday-blue-secondary, 5%);
+//       border-color: darken($gisday-blue-secondary, 5%);
+//     }
+//   }
 
-  &.terciary {
-    &:hover {
-      background: $gisday-blue;
-      color: white;
-      text-decoration: none;
-    }
-  }
+//   &.terciary {
+//     &:hover {
+//       background: $gisday-blue;
+//       color: white;
+//       text-decoration: none;
+//     }
+//   }
 
-  &.disabled,
-  &[disabled='disabled'] {
-    background: #eeeeee;
-    border-color: #eeeeee;
-    color: #212121;
-    cursor: not-allowed;
+//   &.disabled,
+//   &[disabled='disabled'] {
+//     background: #eeeeee;
+//     border-color: #eeeeee;
+//     color: #212121;
+//     cursor: not-allowed;
 
-    &:hover {
-      background: #eeeeee;
-      color: #212121;
-    }
-  }
-}
+//     &:hover {
+//       background: #eeeeee;
+//       color: #212121;
+//     }
+//   }
+// }
 
 .checkbox-custom-input {
   position: relative;
@@ -3066,61 +3067,61 @@ input[type='submit'] {
   display: block;
 }
 
-input[type='checkbox'] {
-  opacity: 0;
-  z-index: 100;
-  position: absolute;
-  display: inline-block;
-  height: 1.25em;
-  width: 1.25em;
-  bottom: 0;
-  @include transform(translateY(25%));
-}
+// input[type='checkbox'] {
+//   opacity: 0;
+//   z-index: 100;
+//   position: absolute;
+//   display: inline-block;
+//   height: 1.25em;
+//   width: 1.25em;
+//   bottom: 0;
+//   @include transform(translateY(25%));
+// }
 
-input[type='checkbox'] + i {
-  position: absolute;
-  height: 1em;
-  width: 1em;
-  opacity: 1;
-  border-radius: 10%;
-  border: 2px solid #5a5a5a;
-  transition: 0.3s all;
-  bottom: 0;
-  @include transform(translateY(25%));
+// input[type='checkbox'] + i {
+//   position: absolute;
+//   height: 1em;
+//   width: 1em;
+//   opacity: 1;
+//   border-radius: 10%;
+//   border: 2px solid #5a5a5a;
+//   transition: 0.3s all;
+//   bottom: 0;
+//   @include transform(translateY(25%));
 
-  &::after {
-    content: '';
-    display: block;
-    position: relative;
-    background-image: url(./assets/images/icons/ic_check_48px.svg);
-    background-size: 110%;
-    background-repeat: no-repeat;
-    -webkit-transform-origin: center;
-    -ms-transform-origin: center;
-    transform-origin: center;
-    opacity: 1;
-    height: 0.8em;
-    width: 0.8em;
-    opacity: 1;
-    top: 0.12em;
-    left: 0.1em;
-    z-index: 90;
-    @include transform(scale3d(0, 0, 0));
-    transition: 0.3s all;
-  }
-}
+//   &::after {
+//     content: '';
+//     display: block;
+//     position: relative;
+//     background-image: url(./assets/images/icons/ic_check_48px.svg);
+//     background-size: 110%;
+//     background-repeat: no-repeat;
+//     -webkit-transform-origin: center;
+//     -ms-transform-origin: center;
+//     transform-origin: center;
+//     opacity: 1;
+//     height: 0.8em;
+//     width: 0.8em;
+//     opacity: 1;
+//     top: 0.12em;
+//     left: 0.1em;
+//     z-index: 90;
+//     @include transform(scale3d(0, 0, 0));
+//     transition: 0.3s all;
+//   }
+// }
 
-input[type='checkbox']:checked + i {
-  border: 2px solid;
-  border-color: $gisday-blue-secondary;
-  background: $gisday-blue-secondary;
+// input[type='checkbox']:checked + i {
+//   border: 2px solid;
+//   border-color: $gisday-blue-secondary;
+//   background: $gisday-blue-secondary;
 
-  &::after {
-    @include animation(bloom 0.3s);
-    -webkit-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-  }
-}
+//   &::after {
+//     @include animation(bloom 0.3s);
+//     -webkit-animation-fill-mode: forwards;
+//     animation-fill-mode: forwards;
+//   }
+// }
 
 @keyframes bloom {
   0% {

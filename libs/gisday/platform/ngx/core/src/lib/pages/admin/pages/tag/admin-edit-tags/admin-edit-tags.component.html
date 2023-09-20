@@ -8,7 +8,7 @@
     </div>
 
     <div class="form-section-body">
-      <table class="floating-table">
+      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noTags">
         <thead>
           <tr>
             <th>Name</th>
@@ -28,6 +28,10 @@
           </tr>
         </tbody>
       </table>
+
+      <ng-template #noTags>
+        <p>There are no tags yet.</p>
+      </ng-template>
     </div>
   </div>
 </div>

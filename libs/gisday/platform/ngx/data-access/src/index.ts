@@ -15,3 +15,4 @@ export * from './lib/modules/services/user-classes/user-classes.service';
 export * from './lib/modules/services/user-info/user-info.service';
 export * from './lib/modules/services/user-submissions/user-submissions.service';
 export * from './lib/modules/services/signage/signage.service';
+export * from './lib/modules/services/season/season.service';
