@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
+import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { AdminEventComponent } from './admin-event.component';
+import { EventAddComponent } from './pages/event-add/event-add.component';
+import { EventEditComponent } from './pages/event-edit/event-edit.component';
+import { EventListComponent } from './pages/event-list/event-list.component';
 
 const routes: Routes = [
   {
@@ -10,29 +15,25 @@ const routes: Routes = [
     component: AdminEventComponent,
     children: [
       {
-        path: '',
-        loadChildren: () => import('./view-events/admin-view-events.module').then((m) => m.AdminViewEventsModule)
-      },
-      {
-        path: 'edit',
-        loadChildren: () => import('./edit-events/admin-edit-events.module').then((m) => m.AdminEditEventsModule)
-      },
-      {
         path: 'edit/:guid',
         loadChildren: () =>
           import('./edit-events/admin-detail-event/admin-detail-event.module').then((m) => m.AdminDetailEventModule)
       },
       {
         path: 'add',
-        loadChildren: () => import('./add-events/admin-add-events.module').then((m) => m.AdminAddEventsModule)
+        component: EventAddComponent
+      },
+      {
+        path: '',
+        component: EventListComponent
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [AdminEventComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule],
+  declarations: [AdminEventComponent, EventAddComponent, EventEditComponent, EventListComponent],
   exports: [RouterModule]
 })
 export class AdminEventModule {}

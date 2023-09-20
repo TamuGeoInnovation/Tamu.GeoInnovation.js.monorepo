@@ -8,7 +8,7 @@ import { EventService, SpeakerService, TagService } from '@tamu-gisc/gisday/plat
 import { Event, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
-import { formExporter } from '../../add-events/admin-add-events.component';
+// import { formExporter } from '../../add-events/admin-add-events.component';
 
 @Component({
   selector: 'tamu-gisc-admin-detail-event',
@@ -32,7 +32,7 @@ export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> i
   public ngOnInit() {
     super.ngOnInit();
 
-    this.form = formExporter();
+    // this.form = formExporter();
 
     this.$tags = zip([this.entity, this.tagService.getEntities()]).pipe(
       map(([event, tags]) => {
