@@ -1,0 +1,22 @@
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Tag</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Tag</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Tag name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+</form>
+
+<tamu-gisc-button (click)="updateEntity()" type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+

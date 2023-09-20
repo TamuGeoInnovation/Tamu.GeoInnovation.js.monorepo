@@ -10,7 +10,7 @@ import { GuidIdentity } from '@tamu-gisc/gisday/platform/data-api';
   selector: 'tamu-gisc-base-admin-edit',
   template: ''
 })
-export abstract class BaseAdminEditComponent<T extends GuidIdentity> implements IBaseAdminEditComponent, OnInit, OnDestroy {
+export abstract class BaseAdminListComponent<T extends GuidIdentity> implements IBaseAdminEditComponent, OnInit, OnDestroy {
   public $entities: Observable<Array<Partial<T>>>;
   public $signal: Subject<boolean> = new Subject();
 

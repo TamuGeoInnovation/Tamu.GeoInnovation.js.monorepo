@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 
 import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -11,13 +11,10 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   selector: 'tamu-gisc-base-admin-detail',
   template: ''
 })
-export abstract class BaseAdminDetailComponent<T> implements OnInit, OnDestroy {
+export abstract class BaseAdminDetailComponent<T> implements OnInit {
   public entity: Observable<Partial<T>>;
-  public $formChange: Observable<Partial<T>>;
 
   public form: FormGroup;
-
-  private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -49,13 +46,7 @@ export abstract class BaseAdminDetailComponent<T> implements OnInit, OnDestroy {
       )
       .subscribe((result) => {
         console.log('Patched form', result);
-      })
-      .add(this._$destroy);
-  }
-
-  public ngOnDestroy(): void {
-    this._$destroy.next(undefined);
-    this._$destroy.complete();
+      });
   }
 
   public updateEntity() {
