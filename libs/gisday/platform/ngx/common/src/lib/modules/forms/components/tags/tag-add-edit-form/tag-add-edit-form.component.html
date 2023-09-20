@@ -1,4 +1,4 @@
-<form [formGroup]="form">
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
   <div class="form-section">
     <div class="form-section-toolbar">
       <ng-container *ngIf="type === 'create'; else editTitle">
@@ -16,7 +16,7 @@
       </div>
     </div>
   </div>
-</form>
 
-<tamu-gisc-button (click)="updateEntity()" type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+  <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+</form>
 

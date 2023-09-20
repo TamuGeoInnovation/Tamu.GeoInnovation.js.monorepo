@@ -39,11 +39,27 @@ export class TagAddEditFormComponent implements OnInit {
     }
   }
 
-  public updateEntity() {
+  public handleSubmission() {
+    if (this.type === 'create') {
+      this._createEntity();
+    } else {
+      this._updateEntity();
+    }
+  }
+
+  private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
     this.ts.updateEntity(rawValue.guid, rawValue).subscribe((result) => {
       console.log('Updated', result);
+    });
+  }
+
+  private _createEntity() {
+    const rawValue = this.form.getRawValue();
+
+    this.ts.createEntity(rawValue).subscribe((result) => {
+      console.log('Created', result);
     });
   }
 }
