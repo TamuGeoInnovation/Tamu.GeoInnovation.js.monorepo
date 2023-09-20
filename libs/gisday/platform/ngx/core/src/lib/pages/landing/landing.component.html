@@ -6,7 +6,7 @@
     <div class="x-large-partition">
       <div class="flex flex-column align-center">
         <div class="logo-container">
-          <h1 class="site-logo">TxGIS Day <span>2022</span></h1>
+          <h1 class="site-logo">TxGIS Day <span *ngIf="(activeSeason$ | async)?.year as year">{{year}}</span></h1>
           <img src="assets/images/TXGISDaySolo.svg" />
         </div>
 

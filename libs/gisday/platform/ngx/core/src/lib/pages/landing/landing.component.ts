@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
+import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+
 import { interval, Subscription } from 'rxjs';
 
 @Component({
@@ -15,10 +17,11 @@ export class LandingComponent implements OnInit {
   public timeTill: Date = new Date();
   public daysTill: string;
   public subscription: Subscription;
+  public activeSeason$ = this.ss.getActiveSeason();
 
   private source = interval(1000);
 
-  constructor(private titleService: Title) {}
+  constructor(private titleService: Title, private readonly ss: SeasonService) {}
 
   public ngOnInit() {
     this.titleService.setTitle(this.title);

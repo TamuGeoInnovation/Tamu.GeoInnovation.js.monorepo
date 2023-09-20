@@ -3,7 +3,7 @@
     <div class="flex flex-row justify-center">
       <div class="column4">
         <a class="logo-container" [routerLink]="['/']">
-          <div class="site-logo greyscale">TxGIS Day <span>2022</span></div>
+          <div class="site-logo greyscale">TxGIS Day <span *ngIf="(activeSeason$ | async)?.year as year">{{year}}</span></div>
         </a>
         <p>Three days of workshops and programs celebrating geospatial technology.</p>
       </div>

@@ -49,6 +49,21 @@ export class SeasonService extends BaseProvider<Season> {
     }
   }
 
+  public async findOneActive() {
+    const season = await this.seasonRepo.findOne({
+      where: {
+        active: true
+      },
+      relations: ['days']
+    });
+
+    if (season) {
+      return { ...season, days: this._orderDays(season.days) };
+    }
+
+    throw new NotFoundException();
+  }
+
   public async create(createSeasonDto?: CreateSeasonDto) {
     // If a season is provided, create using params
     if (createSeasonDto && createSeasonDto.year) {

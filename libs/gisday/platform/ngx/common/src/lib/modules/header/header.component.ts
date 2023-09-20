@@ -6,6 +6,8 @@ import { map, shareReplay, tap } from 'rxjs/operators';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
+import { Season } from '@tamu-gisc/gisday/platform/data-api';
+import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { GISDayRoles } from '../../roles/gisday.roles';
 
@@ -18,6 +20,7 @@ export class HeaderComponent implements OnInit {
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
   public appRoles = GISDayRoles;
+  public activeSeason$: Observable<Season>;
 
   public isActive$ = new Subject();
   public logoVisible = 'hidden';
@@ -27,12 +30,14 @@ export class HeaderComponent implements OnInit {
     private readonly location: Location,
     private readonly routerHistory: RouterHistoryService,
     private readonly rp: ResponsiveService,
-    private readonly as: AuthService
+    private readonly as: AuthService,
+    private readonly ss: SeasonService
   ) {}
 
   public ngOnInit() {
     this.loggedIn$ = this.as.isAuthenticated$;
     this.userRoles$ = this.as.userRoles$;
+    this.activeSeason$ = this.ss.activeSeason$;
 
     this.routerHistory.history
       .pipe(

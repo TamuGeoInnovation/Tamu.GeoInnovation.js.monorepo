@@ -8,14 +8,19 @@ import { UpdateSeasonDto } from './dto/update-season.dto';
 export class SeasonController {
   constructor(private readonly seasonService: SeasonService) {}
 
-  @Get()
-  public findAll() {
-    return this.seasonService.findAllOrdered();
+  @Get('active')
+  public findActiveSeason() {
+    return this.seasonService.findOneActive();
   }
 
   @Get(':guid')
   public findOne(@Param('guid') guid: string) {
     return this.seasonService.findOneWithOrderedDays(guid);
+  }
+
+  @Get()
+  public findAll() {
+    return this.seasonService.findAllOrdered();
   }
 
   @Post()
