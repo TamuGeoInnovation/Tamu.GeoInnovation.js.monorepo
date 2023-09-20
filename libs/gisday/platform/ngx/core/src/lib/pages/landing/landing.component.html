@@ -32,7 +32,7 @@
 
           <h2 class="trailer-1 column9 slogan">Three days of interactive workshops, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
 
-          <h3 class="column9 trailer-3">November 14-16, 2022 | Virtual</h3>
+          <h3 class="column9 trailer-3" *ngIf="dateRange$ | async as dates">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}} | Virtual</h3>
 
           <a class="button primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdqnC_rYGEd2PG3VYCzXmn6F3zRS-7Lsy9jhB7IR3FiXd9s4g/viewform">Submit a presentation</a>
           <br />
@@ -109,7 +109,7 @@
     <h1>Participating Organizations</h1>
     <div class="container12 flex flex-column align-center">
       <div class="column9">
-        <p>TxGIS Day 2022 would not be possible without the expertise, support, and personnel from the following participating organizations.</p>
+        <p>TxGIS Day {{(activeSeason$ | async)?.year}} would not be possible without the expertise, support, and personnel from the following participating organizations.</p>
       </div>
 
       <div class="icon-grid column12">
