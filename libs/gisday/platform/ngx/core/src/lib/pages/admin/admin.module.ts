@@ -45,6 +45,10 @@ const routes: Routes = [
       {
         path: 'university',
         loadChildren: () => import('./pages/university/admin-university.module').then((m) => m.AdminUniversityModule)
+      },
+      {
+        path: '',
+        redirectTo: 'seasons'
       }
     ]
   }
