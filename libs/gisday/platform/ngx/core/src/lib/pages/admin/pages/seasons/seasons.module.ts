@@ -3,17 +3,17 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
+import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-import { SeasonsListComponent } from './seasons-list/seasons-list.component';
-import { SeasonsEditComponent } from './seasons-edit/seasons-edit.component';
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+import { SeasonsListComponent } from './pages/seasons-list/seasons-list.component';
+import { SeasonEditComponent } from './pages/season-edit/season-edit.component';
 
 const routes: Routes = [
   {
     path: 'edit/:guid',
-    component: SeasonsEditComponent
+    component: SeasonEditComponent
   },
   {
     path: '',
@@ -23,7 +23,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, UIFormsModule, PipesModule, GisdayFormsModule],
-  declarations: [SeasonsListComponent, SeasonsEditComponent],
+  declarations: [SeasonsListComponent, SeasonEditComponent],
   exports: [RouterModule]
 })
 export class SeasonsModule {}

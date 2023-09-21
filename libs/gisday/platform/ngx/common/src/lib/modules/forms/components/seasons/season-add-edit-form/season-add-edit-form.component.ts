@@ -1,22 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, map, shareReplay, switchMap, take } from 'rxjs';
+import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
-import { BaseAdminDetailComponent } from '../../base-admin-detail/base-admin-detail.component';
-
 @Component({
-  selector: 'tamu-gisc-seasons-edit',
-  templateUrl: './seasons-edit.component.html',
-  styleUrls: ['./seasons-edit.component.scss']
+  selector: 'tamu-gisc-season-add-edit-form',
+  templateUrl: './season-add-edit-form.component.html',
+  styleUrls: ['./season-add-edit-form.component.scss']
 })
-export class SeasonsEditComponent extends BaseAdminDetailComponent<Season> implements OnInit {
-  constructor(private fb: FormBuilder, private at: ActivatedRoute, private ss: SeasonService, private rt: Router) {
-    super(fb, at, ss);
-  }
+export class SeasonAddEditFormComponent implements OnInit {
+  @Input()
+  public type: 'create' | 'edit';
+
+  public entity$: Observable<Partial<Season>>;
+  public form: FormGroup;
+
+  constructor(private fb: FormBuilder, private at: ActivatedRoute, private ss: SeasonService, private rt: Router) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -26,14 +28,14 @@ export class SeasonsEditComponent extends BaseAdminDetailComponent<Season> imple
       days: this.fb.array([])
     });
 
-    this.entity = this.at.params.pipe(
+    this.entity$ = this.at.params.pipe(
       map((params) => params.guid),
       filter((guid) => guid !== undefined),
       switchMap((guid) => this.ss.getEntity(guid)),
       shareReplay()
     );
 
-    this.entity.pipe(take(1)).subscribe((res) => {
+    this.entity$.pipe(take(1)).subscribe((res) => {
       this.form.patchValue({
         guid: res.guid,
         year: res.year,
@@ -47,27 +49,6 @@ export class SeasonsEditComponent extends BaseAdminDetailComponent<Season> imple
       this.form.markAsPristine();
       this.form.markAsUntouched();
     });
-  }
-
-  public override updateEntity() {
-    const formValue = this.form.getRawValue();
-
-    this.ss.updateEntity(formValue.guid, formValue).subscribe(() => {
-      this.rt.navigate(['admin', 'seasons']);
-    });
-  }
-
-  /**
-   * Calls to delete the season
-   */
-  public deleteEntity() {
-    const formValue = this.form.getRawValue();
-
-    this.ss.deleteEntity(formValue.guid).subscribe(() => {
-      this.rt.navigate(['admin', 'seasons']);
-    });
-
-    this.form.markAllAsTouched();
   }
 
   /**
@@ -88,6 +69,17 @@ export class SeasonsEditComponent extends BaseAdminDetailComponent<Season> imple
   }
 
   /**
+   * Remove a day, by index, from the days form array.
+   */
+  public deleteDay(index: number) {
+    const arrayGroup = this.form.get('days') as FormArray;
+
+    arrayGroup.removeAt(index);
+
+    this.form.markAllAsTouched();
+  }
+
+  /**
    * Update the value of an existing day, by index, in the days form array.
    */
   public patchModifiedDay(index: number, day: Partial<SeasonDay>) {
@@ -98,15 +90,29 @@ export class SeasonsEditComponent extends BaseAdminDetailComponent<Season> imple
     this.form.markAllAsTouched();
   }
 
-  /**
-   * Remove a day, by index, from the days form array.
-   */
-  public deleteDay(index: number) {
-    const arrayGroup = this.form.get('days') as FormArray;
+  public updateEntity() {
+    const formValue = this.form.getRawValue();
 
-    arrayGroup.removeAt(index);
+    this.ss.updateEntity(formValue.guid, formValue).subscribe(() => {
+      this._navigateBack();
+    });
+  }
+
+  /**
+   * Calls to delete the season
+   */
+  public deleteEntity() {
+    const formValue = this.form.getRawValue();
+
+    this.ss.deleteEntity(formValue.guid).subscribe(() => {
+      this._navigateBack();
+    });
 
     this.form.markAllAsTouched();
+  }
+
+  private _navigateBack() {
+    this.rt.navigate(['/admin/seasons']);
   }
 }
 

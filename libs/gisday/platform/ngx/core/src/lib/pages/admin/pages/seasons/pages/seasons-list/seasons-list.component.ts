@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
-import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
+import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
 @Component({
   selector: 'tamu-gisc-seasons-list',
