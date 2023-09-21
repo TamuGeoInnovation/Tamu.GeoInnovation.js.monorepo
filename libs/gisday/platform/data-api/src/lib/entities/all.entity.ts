@@ -438,38 +438,6 @@ export class SpeakerInfo extends GuidIdentity {
 }
 
 @Entity({
-  name: 'speakers'
-})
-export class Speaker extends GuidIdentity {
-  @ManyToOne(() => Season, (season) => season.speakers, { cascade: false, nullable: true })
-  public season: Season;
-
-  @Column({ nullable: true })
-  public accountGuid: string;
-
-  @Column({ nullable: true })
-  public firstName: string;
-
-  @Column({ nullable: true })
-  public lastName: string;
-
-  @Column({ nullable: true })
-  public email: string;
-
-  @Column({ nullable: true })
-  public organization: string;
-
-  @Column({ nullable: true })
-  public isActive: boolean;
-
-  @OneToOne(() => SpeakerInfo, { cascade: true, nullable: true })
-  @JoinColumn()
-  public speakerInfo?: SpeakerInfo;
-
-  public inEvent?: boolean;
-}
-
-@Entity({
   name: 'organizations'
 })
 export class Organization extends GuidIdentity {
@@ -496,6 +464,39 @@ export class Organization extends GuidIdentity {
 
   @Column({ nullable: true })
   public contactEmail: string;
+
+  @OneToMany(() => Speaker, (speaker) => speaker.organization, { cascade: false, nullable: true })
+  public speakers: Speaker[];
+}
+
+@Entity({
+  name: 'speakers'
+})
+export class Speaker extends GuidIdentity {
+  @ManyToOne(() => Season, (season) => season.speakers, { cascade: false, nullable: true })
+  public season: Season;
+
+  @Column({ nullable: true })
+  public accountGuid: string;
+
+  @Column({ nullable: true })
+  public firstName: string;
+
+  @Column({ nullable: true })
+  public lastName: string;
+
+  @Column({ nullable: true })
+  public email: string;
+
+  @Column({ nullable: true })
+  public isActive: boolean;
+
+  @ManyToOne(() => Organization, (o) => o.speakers, { cascade: false, nullable: true })
+  public organization: Organization;
+
+  @OneToOne(() => SpeakerInfo, { cascade: true, nullable: true })
+  @JoinColumn()
+  public speakerInfo?: SpeakerInfo;
 }
 
 @Entity({
@@ -504,8 +505,6 @@ export class Organization extends GuidIdentity {
 export class Tag extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
-
-  public inEvent?: boolean;
 }
 
 @Entity({

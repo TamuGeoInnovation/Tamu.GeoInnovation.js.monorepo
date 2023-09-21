@@ -1,0 +1,39 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Speaker</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Speaker</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="firstName" placeholder="First Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="lastName" placeholder="Last Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="organization" placeholder="Organization" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+
+        <div formGroupName="speakerInfo">
+          <tamu-gisc-textbox formControlName="graduationYear" placeholder="Graduation Year" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="degree" placeholder="Degree" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="program" placeholder="Program" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="affiliation" placeholder="Affiliation" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="description" placeholder="Description" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="socialMedia" placeholder="Social Media Link" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+          <tamu-gisc-select formControlName="university" [data]="universities$ | async" [displayTemplate]="'name'" [valueTemplate]="'guid'"></tamu-gisc-select>
+          <img [src]="speakerPhoto$ | async" />
+          <tamu-gisc-file formControlName="file">
+            <p class="placeholder">Select File</p>
+          </tamu-gisc-file>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <tamu-gisc-button type="submit" value="Update entity"></tamu-gisc-button>
+</form>
+

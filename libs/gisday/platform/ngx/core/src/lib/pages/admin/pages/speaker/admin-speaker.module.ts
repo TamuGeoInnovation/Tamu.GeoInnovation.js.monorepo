@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
+import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { AdminSpeakerComponent } from './admin-speaker.component';
+import { SpeakerListComponent } from './pages/speaker-list/speaker-list.component';
+import { SpeakerAddComponent } from './pages/speaker-add/speaker-add.component';
+import { SpeakerEditComponent } from './pages/speaker-edit/speaker-edit.component';
 
 const routes: Routes = [
   {
@@ -10,31 +15,24 @@ const routes: Routes = [
     component: AdminSpeakerComponent,
     children: [
       {
-        path: '',
-        loadChildren: () => import('./admin-view-speakers/admin-view-speakers.module').then((m) => m.AdminViewSpeakersModule)
-      },
-      {
-        path: 'edit',
-        loadChildren: () => import('./admin-edit-speakers/admin-edit-speakers.module').then((m) => m.AdminEditSpeakersModule)
-      },
-      {
         path: 'edit/:guid',
-        loadChildren: () =>
-          import('./admin-edit-speakers/admin-detail-speaker/admin-detail-speaker.module').then(
-            (m) => m.AdminDetailSpeakerModule
-          )
+        component: SpeakerEditComponent
       },
       {
         path: 'add',
-        loadChildren: () => import('./admin-add-speakers/admin-add-speakers.module').then((m) => m.AdminAddSpeakersModule)
+        component: SpeakerAddComponent
+      },
+      {
+        path: '',
+        component: SpeakerListComponent
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [AdminSpeakerComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule],
+  declarations: [AdminSpeakerComponent, SpeakerListComponent, SpeakerAddComponent, SpeakerEditComponent],
   exports: [RouterModule]
 })
 export class AdminSpeakerModule {}
