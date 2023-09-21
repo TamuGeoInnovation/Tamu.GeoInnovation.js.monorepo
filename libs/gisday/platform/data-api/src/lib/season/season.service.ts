@@ -2,11 +2,10 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Season } from './entities/season.entity';
-import { SeasonDay } from '../season-day/entities/season-day.entity';
 import { CreateSeasonDto } from './dto/create-season.dto';
 import { UpdateSeasonDto } from './dto/update-season.dto';
 import { BaseProvider } from '../_base/base-provider';
+import { Season, SeasonDay } from '../entities/all.entity';
 
 @Injectable()
 export class SeasonService extends BaseProvider<Season> {

@@ -1,7 +1,5 @@
 // Entities
 export * from './lib/entities/all.entity';
-export * from './lib/season-day/entities/season-day.entity';
-export * from './lib/season/entities/season.entity';
 
 // Modules
 export * from './lib/check-in/check-in.module';

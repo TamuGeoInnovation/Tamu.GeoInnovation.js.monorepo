@@ -70,7 +70,9 @@ export class EventViewComponent implements OnInit, OnDestroy {
   public getDay(dayNum: number) {
     return this.$events.pipe(
       switchMap((events) => events),
-      filter((event) => event.day == dayNum),
+      // TODO: fix this type casting
+      // Will probably remove this altogether but untested as of this comment
+      filter((event) => (event.day as any) == dayNum),
       toArray()
     );
   }

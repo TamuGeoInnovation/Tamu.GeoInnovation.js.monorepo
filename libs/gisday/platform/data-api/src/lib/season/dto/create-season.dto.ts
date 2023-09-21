@@ -1,4 +1,4 @@
-import { SeasonDay } from '../../season-day/entities/season-day.entity';
+import { SeasonDay } from '../../entities/all.entity';
 
 export class CreateSeasonDto {
   year: number;

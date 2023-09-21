@@ -19,8 +19,6 @@ import {
   QuestionTypeModule,
   UniversityModule,
   SpeakerRoleModule,
-  SeasonDay,
-  Season,
   SeasonDayModule,
   SeasonModule
 } from '@tamu-gisc/gisday/platform/data-api';
@@ -33,7 +31,7 @@ import { dbConfig } from '../environments/environment';
   imports: [
     TypeOrmModule.forRoot({
       ...dbConfig,
-      entities: [...GISDAY_ENTITIES, Season, SeasonDay]
+      entities: [...GISDAY_ENTITIES]
     }),
     AuthorizationModule.forRoot({
       audience: process.env.AUTH0_AUDIENCE,
