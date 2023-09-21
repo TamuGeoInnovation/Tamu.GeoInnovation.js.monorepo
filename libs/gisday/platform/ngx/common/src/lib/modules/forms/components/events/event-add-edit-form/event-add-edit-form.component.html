@@ -12,18 +12,18 @@
       <div class="form-collection row" *ngIf="(selectedEventDateStart$ | async)">
         <div>
           <p><strong>Event start time</strong></p>
-          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'start')"></tamu-gisc-date-time-picker>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'start')" iconName="schedule"></tamu-gisc-date-time-picker>
         </div>
 
         <div>
           <p><strong>Event end time</strong></p>
-          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'end')"></tamu-gisc-date-time-picker>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'end')" iconName="schedule"></tamu-gisc-date-time-picker>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="form-section">
+  <div class="form-section leader-1">
     <div class="form-section-toolbar">
       <div class="form-section-title">Basic</div>
     </div>
@@ -46,7 +46,7 @@
     </div>
   </div>
 
-  <div formGroupName="location" class="form-section">
+  <div formGroupName="location" class="form-section leader-1">
     <div class="form-section-toolbar">
       <div class="form-section-title">Location</div>
     </div>
