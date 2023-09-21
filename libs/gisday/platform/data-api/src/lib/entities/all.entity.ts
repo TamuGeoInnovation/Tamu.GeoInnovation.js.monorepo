@@ -121,7 +121,7 @@ export class GuidIdentity extends TimeStampEntity {
   @BeforeUpdate()
   @BeforeInsert()
   private generateGuid(): void {
-    if (this.guid === undefined || this.guid === '') {
+    if (this.guid === undefined || this.guid === '' || this.guid === null) {
       this.guid = guid();
     }
   }
@@ -855,7 +855,7 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['speakers', 'tags', 'sponsors', 'location', 'broadcast'],
+  event: ['speakers', 'tags', 'sponsors', 'location', 'broadcast', 'day'],
   speaker: ['speakerInfo', 'speakerInfo.university'],
   getRelation: (entity?: string) => {
     if (!entity) {

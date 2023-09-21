@@ -42,9 +42,6 @@ export class EventController {
   @Get()
   public async getEvents() {
     return this.provider.eventRepo.find({
-      where: {
-        season: '2022'
-      },
       relations: EntityRelationsLUT.getRelation('event'),
       order: {
         startTime: 'ASC'

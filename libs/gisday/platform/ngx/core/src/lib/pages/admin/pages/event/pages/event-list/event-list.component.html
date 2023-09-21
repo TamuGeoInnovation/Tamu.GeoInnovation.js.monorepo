@@ -23,12 +23,12 @@
 
         <tbody>
           <tr *ngFor="let entity of ($entities | async)">
-            <td>{{entity.name}}</td>
-            <td>{{entity.location.building}} {{entity.location.room}}</td>
-            <td>{{entity.startTime | date:'shortDate'}}</td>
-            <td>{{entity.startTime | date:'shortTime'}}</td>
-            <td>{{entity.endTime | date:'shortTime'}}</td>
-            <td>{{entity.updated | date:'short'}}</td>
+            <td>{{entity?.name}}</td>
+            <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
+            <td>{{entity?.day?.date | date:'shortDate'}}</td>
+            <td>{{entity?.startTime}}</td>
+            <td>{{entity?.endTime}}</td>
+            <td>{{entity?.updated | date:'short'}}</td>
             <td class="actions">
               <span [routerLink]="['edit', entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>
               <span (click)="deleteEntity(entity)" class="material-icons action alt" title="Delete entity">delete</span>

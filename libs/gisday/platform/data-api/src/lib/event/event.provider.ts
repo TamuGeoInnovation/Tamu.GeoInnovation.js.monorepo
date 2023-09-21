@@ -42,8 +42,9 @@ export class EventProvider extends BaseProvider<Event> {
         ...event
       };
 
-      const broadcastEnt = this.eventBroadcastRepo.create(event.broadcast);
-      const locationEnt = this.eventLocationRepo.create(event.location);
+      // TODO: fix this
+      // const broadcastEnt = this.eventBroadcastRepo.create(event.broadcast);
+      // const locationEnt = this.eventLocationRepo.create(event.location);
 
       const existingSpeakers = await this.speakerRepo.find({
         where: {
@@ -57,8 +58,9 @@ export class EventProvider extends BaseProvider<Event> {
         }
       });
 
-      newEvent.broadcast = broadcastEnt;
-      newEvent.location = locationEnt;
+      // TODO: fix this
+      // newEvent.broadcast = broadcastEnt;
+      // newEvent.location = locationEnt;
       newEvent.speakers = existingSpeakers;
       newEvent.tags = existingTags;
 

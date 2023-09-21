@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, map, mergeMap, shareReplay, toArray, withLatestFrom } from 'rxjs';
+import { Observable, filter, map, mergeMap, shareReplay, toArray, withLatestFrom } from 'rxjs';
+
+import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 
 import { Event, SeasonDay, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { EventService, SeasonService, SpeakerService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
@@ -50,35 +51,35 @@ export class EventAddEditFormComponent implements OnInit {
 
   public ngOnInit() {
     this.form = this.fb.group({
-      guid: [''],
-      name: [''],
-      abstract: [''],
-      eventDate: [''],
-      startTime: [''],
-      endTime: [''],
-      observedAttendeeStart: [0],
-      observedAttendeeEnd: [0],
-      googleDriveUrl: [''],
+      guid: [null],
+      name: [null],
+      abstract: [null],
+      day: [null],
+      startTime: [null],
+      endTime: [null],
+      observedAttendeeStart: [null],
+      observedAttendeeEnd: [null],
+      googleDriveUrl: [null],
       requiresRsvp: [false],
-      qrCode: [''],
-      type: [''],
-      presentationType: [''],
+      qrCode: [null],
+      type: [null],
+      presentationType: [null],
       isAcceptingRsvps: [false],
       isBringYourOwnDevice: [false],
-      requirements: [''],
-      broadcast: this.fb.group({
-        presenterUrl: [''],
-        password: [''],
-        phoneNumber: [''],
-        meetingId: [''],
-        publicUrl: ['']
-      }),
-      location: this.fb.group({
-        room: [''],
-        building: [''],
-        capacity: [''],
-        link: ['']
-      }),
+      requirements: [null],
+      // broadcast: this.fb.group({
+      //   presenterUrl: [null],
+      //   password: [null],
+      //   phoneNumber: [null],
+      //   meetingId: [null],
+      //   publicUrl: [null]
+      // }),
+      // location: this.fb.group({
+      //   room: [null],
+      //   building: [null],
+      //   capacity: [null],
+      //   link: [null]
+      // }),
       tags: [[]],
       speakers: [[]]
     });
@@ -101,18 +102,24 @@ export class EventAddEditFormComponent implements OnInit {
 
     this.selectedEventDate$ = this.form.valueChanges.pipe(
       map((form) => {
-        return form.eventDate;
+        return form.day;
+      }),
+      filter((dayGuid) => {
+        return dayGuid !== null && dayGuid !== undefined;
       }),
       shareReplay()
     );
 
     this.selectedEventDateStart$ = this.form.valueChanges.pipe(
       map((form) => {
-        return form.eventDate;
+        return form.day;
+      }),
+      filter((dayGuid) => {
+        return dayGuid !== null && dayGuid !== undefined;
       }),
       withLatestFrom(this.activeSeasonDays$),
-      map(([eventDateGuid, days]) => {
-        return days.find((day) => day.guid === eventDateGuid).date;
+      map(([dayGuid, days]) => {
+        return days.find((day) => day.guid === dayGuid).date;
       }),
       shareReplay()
     );
@@ -128,7 +135,7 @@ export class EventAddEditFormComponent implements OnInit {
 
   public setEventDate(day: Partial<SeasonDay>) {
     this.form.patchValue({
-      eventDate: day.guid
+      day: day.guid
     });
   }
 
