@@ -5,7 +5,8 @@ import { Observable, filter, map, switchMap } from 'rxjs';
 
 import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import { SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { formToFormData } from '@tamu-gisc/gisday/platform/ngx/common';
+
+import { formToFormData } from '../../../../../utils/form-to-form-data';
 
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
@@ -87,7 +88,9 @@ export class SpeakerAddEditFormComponent implements OnInit {
   private _createEntity() {
     const formData = formToFormData(this.form);
 
-    this.ss.insertSpeakerInfo(formData);
+    this.ss.insertSpeakerInfo(formData).subscribe((result) => {
+      console.log(result);
+    });
   }
 }
 

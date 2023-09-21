@@ -8,11 +8,24 @@ import { TagAddEditFormComponent } from './components/tags/tag-add-edit-form/tag
 import { EventAddEditFormComponent } from './components/events/event-add-edit-form/event-add-edit-form.component';
 import { SeasonsDayTileComponent } from './components/seasons/seasons-day-tile/seasons-day-tile.component';
 import { SpeakerAddEditFormComponent } from './components/speakers/speaker-add-edit-form/speaker-add-edit-form.component';
+import { OrganizationAddEditFormComponent } from './components/organizations/organization-add-edit-form/organization-add-edit-form.component';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, UIFormsModule],
-  declarations: [TagAddEditFormComponent, EventAddEditFormComponent, SeasonsDayTileComponent, SpeakerAddEditFormComponent],
-  exports: [TagAddEditFormComponent, EventAddEditFormComponent, SeasonsDayTileComponent, SpeakerAddEditFormComponent]
+  declarations: [
+    TagAddEditFormComponent,
+    EventAddEditFormComponent,
+    SeasonsDayTileComponent,
+    SpeakerAddEditFormComponent,
+    OrganizationAddEditFormComponent
+  ],
+  exports: [
+    TagAddEditFormComponent,
+    EventAddEditFormComponent,
+    SeasonsDayTileComponent,
+    SpeakerAddEditFormComponent,
+    OrganizationAddEditFormComponent
+  ]
 })
 export class GisdayFormsModule {}
 

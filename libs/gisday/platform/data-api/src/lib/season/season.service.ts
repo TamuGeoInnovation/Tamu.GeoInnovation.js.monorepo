@@ -2,8 +2,6 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CreateSeasonDto } from './dto/create-season.dto';
-import { UpdateSeasonDto } from './dto/update-season.dto';
 import { BaseProvider } from '../_base/base-provider';
 import { Season, SeasonDay } from '../entities/all.entity';
 
@@ -63,7 +61,7 @@ export class SeasonService extends BaseProvider<Season> {
     throw new NotFoundException();
   }
 
-  public async create(createSeasonDto?: CreateSeasonDto) {
+  public async create(createSeasonDto?: Partial<Season>) {
     // If a season is provided, create using params
     if (createSeasonDto && createSeasonDto.year) {
       // If years param is not a number, this will throw a database error
@@ -106,7 +104,7 @@ export class SeasonService extends BaseProvider<Season> {
     }
   }
 
-  public async updateSeason(guid: string, updateSeasonDto: UpdateSeasonDto) {
+  public async updateSeason(guid: string, updateSeasonDto: Partial<Season>) {
     const existingActive = await this.seasonRepo.findOne({ where: { active: true } });
 
     // If the incoming has active set to true, and there is an existing active season,

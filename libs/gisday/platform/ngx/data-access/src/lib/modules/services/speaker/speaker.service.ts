@@ -33,9 +33,7 @@ export class SpeakerService extends BaseService<Speaker> {
   }
 
   public insertSpeakerInfo(data: FormData) {
-    return this.http1.post(`${this.resource}`, data).subscribe((result) => {
-      console.log(result);
-    });
+    return this.http1.post(`${this.resource}`, data);
   }
 }
 

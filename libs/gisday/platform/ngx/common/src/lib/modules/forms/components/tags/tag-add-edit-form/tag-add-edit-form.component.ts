@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { Tag } from '@tamu-gisc/gisday/platform/data-api';
@@ -18,7 +18,12 @@ export class TagAddEditFormComponent implements OnInit {
   public entity$: Observable<Partial<Tag>>;
   public form: FormGroup;
 
-  constructor(private fb: FormBuilder, private at: ActivatedRoute, private ts: TagService) {}
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly rt: Router,
+    private readonly at: ActivatedRoute,
+    private readonly ts: TagService
+  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -47,20 +52,30 @@ export class TagAddEditFormComponent implements OnInit {
     }
   }
 
+  public deleteEntity() {
+    this.ts.deleteEntity(this.form.getRawValue().guid).subscribe(() => {
+      this._navigateBack();
+    });
+  }
+
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.ts.updateEntity(rawValue.guid, rawValue).subscribe((result) => {
-      console.log('Updated', result);
+    this.ts.updateEntity(rawValue.guid, rawValue).subscribe(() => {
+      this._navigateBack();
     });
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.ts.createEntity(rawValue).subscribe((result) => {
-      console.log('Created', result);
+    this.ts.createEntity(rawValue).subscribe(() => {
+      this._navigateBack();
     });
+  }
+
+  private _navigateBack() {
+    this.rt.navigate(['/admin/tags']);
   }
 }
 

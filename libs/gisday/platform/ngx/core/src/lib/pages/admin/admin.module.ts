@@ -18,6 +18,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/event/admin-event.module').then((m) => m.AdminEventModule)
       },
       {
+        path: 'organizations',
+        loadChildren: () => import('./pages/organizations/organizations.module').then((m) => m.OrganizationsModule)
+      },
+      {
         path: 'rsvp-types',
         loadChildren: () => import('./pages/rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
       },

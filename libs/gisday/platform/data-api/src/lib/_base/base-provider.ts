@@ -17,6 +17,12 @@ export abstract class BaseProvider<T> {
     return this.repo.find(lookupOpts);
   }
 
+  public async create(entity: DeepPartial<T>) {
+    const e = this.repo.create(entity) as DeepPartial<T>;
+
+    return this.repo.save(e);
+  }
+
   public async save(entity: DeepPartial<T>) {
     return this.repo.save(entity);
   }

@@ -11,12 +11,19 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection row pad-top">
+      <div class="form-collection column pad-top">
         <tamu-gisc-textbox formControlName="name" placeholder="Tag name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
     </div>
   </div>
 
-  <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+  <div class="form-section leader-2">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Tag" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
 </form>
 

@@ -148,7 +148,7 @@ export class Season extends GuidIdentity {
   @OneToMany(() => Speaker, (speaker) => speaker.season, { cascade: true })
   public speakers: Speaker[];
 
-  @OneToMany(() => Organization, (organization) => organization.season, { cascade: true })
+  @OneToMany(() => Organization, (organization) => organization.season)
   public organizations: Organization[];
 
   @OneToMany(() => Sponsor, (sponsor) => sponsor.season, { cascade: true })
@@ -441,9 +441,6 @@ export class SpeakerInfo extends GuidIdentity {
   name: 'organizations'
 })
 export class Organization extends GuidIdentity {
-  @ManyToOne(() => Season, (season) => season.organizations, { cascade: false, nullable: true })
-  public season: Season;
-
   @Column({ nullable: true })
   public name: string;
 
@@ -465,6 +462,9 @@ export class Organization extends GuidIdentity {
   @Column({ nullable: true })
   public contactEmail: string;
 
+  @ManyToOne(() => Season, (season) => season.organizations, { cascade: true, orphanedRowAction: 'nullify' })
+  public season: Season;
+
   @OneToMany(() => Speaker, (speaker) => speaker.organization, { cascade: false, nullable: true })
   public speakers: Speaker[];
 }
@@ -473,9 +473,6 @@ export class Organization extends GuidIdentity {
   name: 'speakers'
 })
 export class Speaker extends GuidIdentity {
-  @ManyToOne(() => Season, (season) => season.speakers, { cascade: false, nullable: true })
-  public season: Season;
-
   @Column({ nullable: true })
   public accountGuid: string;
 
@@ -490,6 +487,9 @@ export class Speaker extends GuidIdentity {
 
   @Column({ nullable: true })
   public isActive: boolean;
+
+  @ManyToOne(() => Season, (season) => season.speakers, { cascade: false, nullable: true })
+  public season: Season;
 
   @ManyToOne(() => Organization, (o) => o.speakers, { cascade: false, nullable: true })
   public organization: Organization;
