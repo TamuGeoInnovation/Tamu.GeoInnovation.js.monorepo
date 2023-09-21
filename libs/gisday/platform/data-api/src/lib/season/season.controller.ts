@@ -1,8 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 
 import { SeasonService } from './season.service';
-import { CreateSeasonDto } from './dto/create-season.dto';
-import { UpdateSeasonDto } from './dto/update-season.dto';
+import { Season } from '../entities/all.entity';
 
 @Controller('seasons')
 export class SeasonController {
@@ -24,12 +23,12 @@ export class SeasonController {
   }
 
   @Post()
-  public create(@Body() createSeasonDto?: CreateSeasonDto) {
+  public create(@Body() createSeasonDto?: Partial<Season>) {
     return this.seasonService.create(createSeasonDto);
   }
 
   @Patch(':guid')
-  public update(@Param('guid') guid: string, @Body() updateSeasonDto: UpdateSeasonDto) {
+  public update(@Param('guid') guid: string, @Body() updateSeasonDto: Partial<Season>) {
     return this.seasonService.updateSeason(guid, updateSeasonDto);
   }
 

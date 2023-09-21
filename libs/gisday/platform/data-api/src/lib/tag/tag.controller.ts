@@ -44,7 +44,7 @@ export class TagController {
 
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<Tag>) {
-    return this.provider.update(body);
+    return this.provider.update(guid, body);
   }
 
   @Delete(':guid')
