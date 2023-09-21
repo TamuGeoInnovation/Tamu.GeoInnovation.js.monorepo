@@ -1,6 +1,6 @@
 <tamu-gisc-tooltip [width]="'20rem'" [positioningStrategy]="'fixed'">
   <tamu-gisc-tooltip-trigger>
-    <p><span class="material-icons">calendar_today</span> {{value | date : formatString}}</p>
+    <p><span class="material-icons" *ngIf="showIcon">{{iconName}}</span> {{value | date : formatString}}</p>
   </tamu-gisc-tooltip-trigger>
 
   <dl-date-time-picker [startDate]="value.getTime()" [maxView]="maxView" [minView]="minView" [startView]="startView" [minuteStep]="minuteStep" (change)="handleDlTimePickerChange($event);"> </dl-date-time-picker>

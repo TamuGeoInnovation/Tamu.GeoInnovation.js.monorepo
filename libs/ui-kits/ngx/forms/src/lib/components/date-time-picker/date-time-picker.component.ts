@@ -51,6 +51,18 @@ export class DateTimePickerComponent<D> implements ControlValueAccessor {
   @Input()
   public formatString = 'medium';
 
+  /**
+   * Whether to show the icon in the date time picker input.
+   */
+  @Input()
+  public showIcon = true;
+
+  /**
+   * Material icon name to display in the date time picker input.
+   */
+  @Input()
+  public iconName = 'calendar_today';
+
   @Output()
   public changed: EventEmitter<DlDateTimePickerChange<Date>> = new EventEmitter();
 
