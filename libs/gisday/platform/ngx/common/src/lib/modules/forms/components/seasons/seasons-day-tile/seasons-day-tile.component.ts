@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
 
 import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 
@@ -12,7 +11,17 @@ import { SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 })
 export class SeasonsDayTileComponent {
   @Input()
-  public day: FormControl = null;
+  public day: Partial<SeasonDay> = null;
+
+  /**
+   * Determines whether the tile is interactive or not. Interactivity defines its
+   * ability to update the date value.
+   *
+   * When `false`, the component will simply display the date value and will not
+   * emit any added, delete, or updated events.
+   */
+  @Input()
+  public interactive = true;
 
   @Output()
   public added: EventEmitter<boolean> = new EventEmitter();
@@ -35,7 +44,7 @@ export class SeasonsDayTileComponent {
    */
   public update(event: DlDateTimePickerChange<Date>) {
     this.updated.emit({
-      guid: this.day.value.guid,
+      guid: this.day.guid,
       date: event.value
     });
   }
@@ -45,8 +54,8 @@ export class SeasonsDayTileComponent {
    */
   public delete() {
     this.deleted.emit({
-      guid: this.day.value.guid,
-      date: this.day.value.date
+      guid: this.day.guid,
+      date: this.day.date
     });
   }
 }

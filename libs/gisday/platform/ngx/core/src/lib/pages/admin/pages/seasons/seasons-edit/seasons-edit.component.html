@@ -22,7 +22,7 @@
         <tamu-gisc-seasons-day-tile (added)="addDay()"></tamu-gisc-seasons-day-tile>
 
         <ng-container *ngIf="form?.get('days')?.['controls'] as controls" formArrayName="days">
-          <tamu-gisc-seasons-day-tile *ngFor="let day of controls; let i = index;" [day]="day" title="Edit" (updated)="patchModifiedDay(i, $event)" (deleted)="deleteDay(i)"></tamu-gisc-seasons-day-tile>
+          <tamu-gisc-seasons-day-tile *ngFor="let day of controls; let i = index;" [day]="day.value" title="Edit" (updated)="patchModifiedDay(i, $event)" (deleted)="deleteDay(i)"></tamu-gisc-seasons-day-tile>
         </ng-container>
       </div>
     </div>
