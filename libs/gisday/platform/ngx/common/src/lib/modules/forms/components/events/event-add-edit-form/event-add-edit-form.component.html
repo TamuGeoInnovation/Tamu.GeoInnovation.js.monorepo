@@ -1,6 +1,30 @@
 <form [formGroup]="form">
   <div class="form-section">
     <div class="form-section-toolbar">
+      <div class="form-section-title">Date and Time</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-seasons-day-tile *ngFor="let day of activeSeasonDays$ | async; let last = last;" [interactive]="false" [day]="day" (click)="setEventDate(day)" [ngClass]="{selected: (selectedEventDate$ | async) === day.guid}"></tamu-gisc-seasons-day-tile>
+      </div>
+
+      <div class="form-collection row" *ngIf="(selectedEventDateStart$ | async)">
+        <div>
+          <p><strong>Event start time</strong></p>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'start')"></tamu-gisc-date-time-picker>
+        </div>
+
+        <div>
+          <p><strong>Event end time</strong></p>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'end')"></tamu-gisc-date-time-picker>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
       <div class="form-section-title">Basic</div>
     </div>
 
@@ -9,18 +33,6 @@
         <tamu-gisc-textbox formControlName="name" placeholder="Event name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="abstract" placeholder="Abstract" type="textarea" [rows]="10" [floatLabel]="true"> </tamu-gisc-textbox>
 
-        <div class="form-collection row">
-          <p>Start time</p>
-          <input type="datetime-local" formControlName="startTime" step="300" min="2022-11-14T07:00" max="2022-11-16T20:00" />
-        </div>
-
-        <div class="form-collection column">
-          <p>End time</p>
-          <input type="datetime-local" formControlName="endTime" step="300" min="2022-11-14T07:00" max="2022-11-16T20:00" />
-        </div>
-
-        <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Observed attendee start" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="Observed attendee end" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="googleDriveUrl" placeholder="Google Drive URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="qrCode" placeholder="QR code" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="type" placeholder="Event type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
@@ -61,6 +73,19 @@
         <tamu-gisc-textbox formControlName="phoneNumber" placeholder="Dial-in phone number" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="meetingId" placeholder="Meeting ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="publicUrl" placeholder="Public URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Attendance</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Observed attendee start" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="Observed attendee end" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
     </div>
   </div>

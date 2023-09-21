@@ -1,6 +1,36 @@
 @use 'libs/sass/mixins';
 @use 'libs/gisday/sass/variables';
 
+:host {
+  position: relative;
+
+  &.non-interactive {
+    .date-tile {
+      &:hover {
+        .edit-bubble {
+          display: none;
+        }
+
+        tamu-gisc-date-time-picker {
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+  &.selected {
+    .date-tile {
+      background: variables.$gisday-black;
+      color: #fafafa;
+
+      :hover {
+        background: inherit;
+        color: inherit;
+      }
+    }
+  }
+}
+
 .date-tile {
   padding: 2.25rem 1rem;
   background: variables.$gisday-lightened-support-blue;
@@ -24,7 +54,7 @@
     top: 0;
     right: 0;
     background: variables.$gisday-black;
-    color: white;
+    color: #fafafa;
     font-size: 0.9rem;
     border-radius: 1rem;
     height: 1.75rem;

@@ -48,9 +48,8 @@ a {
   }
 
   &.active {
-    color: initial;
+    color: variables.$gisday-black;
     background: variables.$gisday-lightened-support-blue;
-    color: initial;
     border-radius: 0.25rem;
   }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 
 import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 
@@ -32,6 +32,11 @@ export class SeasonsDayTileComponent {
   @Output()
   public updated: EventEmitter<Partial<SeasonDay>> = new EventEmitter();
 
+  @HostBinding('class')
+  public get cssClasses() {
+    return this.interactive ? 'interactive' : 'non-interactive';
+  }
+
   /**
    * Emit event to notify parent to handle adding another day.
    */
@@ -43,20 +48,24 @@ export class SeasonsDayTileComponent {
    * Emit event to notify parent to handle updating the emitted day
    */
   public update(event: DlDateTimePickerChange<Date>) {
-    this.updated.emit({
-      guid: this.day.guid,
-      date: event.value
-    });
+    if (this.interactive !== false) {
+      this.updated.emit({
+        guid: this.day.guid,
+        date: event.value
+      });
+    }
   }
 
   /**
    * Emit event to notify parent to handle deleting the emitted day
    */
   public delete() {
-    this.deleted.emit({
-      guid: this.day.guid,
-      date: this.day.date
-    });
+    if (this.interactive !== false) {
+      this.deleted.emit({
+        guid: this.day.guid,
+        date: this.day.date
+      });
+    }
   }
 }
 
