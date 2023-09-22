@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { University } from '../entities/all.entity';
@@ -24,12 +24,12 @@ export class UniversityController {
 
   @Post()
   public async insertEntity(@Body() body: DeepPartial<University>) {
-    throw new NotImplementedException();
+    return this.provider.create(body);
   }
 
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<University>) {
-    throw new NotImplementedException();
+    return this.provider.update(guid, body);
   }
 
   @Delete(':guid')

@@ -47,7 +47,7 @@ const routes: Routes = [
         loadChildren: () => import('./pages/tag/admin-tag.module').then((m) => m.AdminTagModule)
       },
       {
-        path: 'university',
+        path: 'universities',
         loadChildren: () => import('./pages/university/admin-university.module').then((m) => m.AdminUniversityModule)
       },
       {

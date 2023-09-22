@@ -1,0 +1,39 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Universities</div>
+      <div class="form-section-actions">
+        <a routerLink="add">Add university <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noEntities">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Acronym</th>
+            <th>Hex Triplet</th>
+            <th class="action-row">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let entity of ($entities | async)">
+            <td>{{entity.name}}</td>
+            <td>{{entity.acronym}}</td>
+            <td>{{entity.hexTriplet}}</td>
+            <td class="actions">
+              <span [routerLink]="['edit', entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #noEntities>
+        <p>There are no universities yet.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
