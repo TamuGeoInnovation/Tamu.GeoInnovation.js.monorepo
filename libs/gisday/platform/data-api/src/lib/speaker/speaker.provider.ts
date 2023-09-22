@@ -184,9 +184,14 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     try {
       await this.ensureDirectoryExists(process.env.SPEAKER_IMAGE_PATH);
 
-      await writeFile(`${process.env.SPEAKER_IMAGE_PATH}/${prefix}-${file.originalname}`, file.buffer);
+      // Truncate the original file name to 50 characters, preserving the file extension
+      const fileName = file.originalname.substring(0, 50).concat('.', file.originalname.split('.').pop());
 
-      return `${prefix}-${file.originalname}`;
+      const prefixedFileName = `${prefix}-${fileName}`;
+
+      await writeFile(`${process.env.SPEAKER_IMAGE_PATH}/${prefixedFileName}`, file.buffer);
+
+      return `${prefixedFileName}`;
     } catch (error) {
       throw new InternalServerErrorException();
     }
