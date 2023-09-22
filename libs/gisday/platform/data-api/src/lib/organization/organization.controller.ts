@@ -10,6 +10,9 @@ export class OrganizationController {
   @Get(':guid')
   public findOne(@Param('guid') guid: string) {
     return this.orgService.findOne({
+      where: {
+        guid
+      },
       relations: ['season']
     });
   }
