@@ -16,8 +16,9 @@ export const formToFormData = (form: FormGroup) => {
   const appendValuesToFormData = (keys, childProp?: string) => {
     keys.forEach((key: string) => {
       if (key.lastIndexOf('_') === 0) return; // Eliminates any "omitted" form controls (if a form control has _ as the beginning character)
+
       if (formValue[key]) {
-        if (typeof formValue[key] == 'object') {
+        if (typeof formValue[key] == 'object' && formValue[key] instanceof File === false) {
           appendValuesToFormData(Object.keys(formValue[key]), key);
         } else {
           data.append(key, formValue[key]);

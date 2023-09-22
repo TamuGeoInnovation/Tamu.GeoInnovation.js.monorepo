@@ -39,13 +39,16 @@ export class SpeakerController {
     return this.provider.findOne({
       where: {
         guid: guid
-      }
+      },
+      relations: ['organization', 'university']
     });
   }
 
   @Get()
   public async getEntities() {
-    return this.provider.find();
+    return this.provider.find({
+      relations: ['organization']
+    });
   }
 
   @Post('')
@@ -58,7 +61,7 @@ export class SpeakerController {
   @Patch(':guid')
   @UseInterceptors(FileInterceptor('file'))
   public async updateSpeakerInfo(@Param('guid') guid: string, @Body() body: DeepPartial<Speaker>, @UploadedFile() file) {
-    return this.provider.updateWithInfo(body, file);
+    return this.provider.updateWithInfo(guid, body, file);
   }
 
   @Delete(':guid')

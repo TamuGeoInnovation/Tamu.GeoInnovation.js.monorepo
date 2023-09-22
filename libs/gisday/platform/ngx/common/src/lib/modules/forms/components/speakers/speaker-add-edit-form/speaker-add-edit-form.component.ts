@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, filter, map, switchMap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EMPTY, Observable, filter, map, of, shareReplay, switchMap } from 'rxjs';
 
-import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
-import { SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
+import { OrganizationService, SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 
@@ -19,55 +20,76 @@ export class SpeakerAddEditFormComponent implements OnInit {
 
   public entity$: Observable<Partial<Speaker>>;
   public universities$: Observable<Array<Partial<University>>>;
-  public speakerPhoto$: Observable<string>;
+  public organizations$: Observable<Array<Partial<Organization>>>;
+  public speakerPhoto$: Observable<SafeUrl>;
 
   public form: FormGroup;
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly rt: ActivatedRoute,
+    private readonly rt: Router,
+    private readonly at: ActivatedRoute,
     private readonly ss: SpeakerService,
-    private readonly us: UniversityService
+    private readonly us: UniversityService,
+    private readonly os: OrganizationService,
+    private readonly sn: DomSanitizer
   ) {}
 
   public ngOnInit() {
-    this.universities$ = this.us.getEntities();
     this.form = this.fb.group({
       guid: [''],
       firstName: [''],
       lastName: [''],
       email: [''],
-      organization: [''],
-      speakerInfo: this.fb.group({
-        graduationYear: [''],
-        degree: [''],
-        program: [''],
-        affiliation: [''],
-        description: [''],
-        socialMedia: [''],
-        file: [''],
-        university: ['']
-      })
+      organization: [null],
+      university: [null],
+      graduationYear: [''],
+      degree: [''],
+      program: [''],
+      affiliation: [''],
+      description: [''],
+      socialMedia: [''],
+      file: ['']
     });
 
-    if (this.type === 'create') {
-      this.entity$ = this.rt.params.pipe(
-        map((params) => params.guid),
-        filter((guid) => guid !== undefined),
-        switchMap((guid) => this.ss.getEntity(guid))
-      );
-    }
+    this.universities$ = this.us.getEntities();
+    this.organizations$ = this.os.getEntities();
+
+    this.entity$ = this.at.params.pipe(
+      map((params) => params.guid),
+      filter((guid) => guid !== undefined),
+      switchMap((guid) => this.ss.getEntity(guid)),
+      shareReplay()
+    );
 
     this.speakerPhoto$ = this.entity$.pipe(
-      map((entity) => {
-        if (!entity.speakerInfo.blob) {
-          throw new Error('Entity does not contain blob data');
+      switchMap((entity) => {
+        if (entity?.image?.blob) {
+          const byteArray = entity?.image.blob.data;
+
+          const blob = new Blob([byteArray.buffer]);
+
+          //createObjectURL && asign it to ur image src
+          const url = URL.createObjectURL(blob);
+          return of(this.sn.bypassSecurityTrustUrl(url));
+
+          // const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
+          // return of(`data:image/png;base64,${buffer}`);
+        } else {
+          return EMPTY;
         }
-        const byteArray = entity.speakerInfo.blob.data;
-        const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
-        return `data:image/png;base64,${buffer}`;
       })
     );
+
+    if (this.type === 'edit') {
+      this.entity$.subscribe((entity) => {
+        this.form.patchValue({
+          ...entity,
+          organization: entity?.organization?.guid,
+          university: entity?.university?.guid
+        });
+      });
+    }
   }
 
   public handleSubmission() {
@@ -78,19 +100,31 @@ export class SpeakerAddEditFormComponent implements OnInit {
     }
   }
 
-  private _updateEntity() {
-    const data = formToFormData(this.form);
-    this.ss.updateSpeakerInfo(data).subscribe((result) => {
-      console.log(result);
-    });
-  }
-
   private _createEntity() {
     const formData = formToFormData(this.form);
 
-    this.ss.insertSpeakerInfo(formData).subscribe((result) => {
-      console.log(result);
+    this.ss.insertSpeakerInfo(formData).subscribe(() => {
+      this._navigateBack();
     });
+  }
+
+  private _updateEntity() {
+    const formValue = this.form.getRawValue();
+    const data = formToFormData(this.form);
+
+    this.ss.updateSpeakerInfo(formValue.guid, data).subscribe(() => {
+      this._navigateBack();
+    });
+  }
+
+  public deleteEntity() {
+    this.ss.deleteEntity(this.form.getRawValue().guid).subscribe(() => {
+      this._navigateBack();
+    });
+  }
+
+  private _navigateBack() {
+    this.rt.navigate(['/admin/speakers']);
   }
 }
 

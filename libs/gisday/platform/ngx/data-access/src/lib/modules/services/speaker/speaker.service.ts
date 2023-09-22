@@ -28,8 +28,8 @@ export class SpeakerService extends BaseService<Speaker> {
     return this.http1.get<string>(`${this.resource}/photo/${guid}`);
   }
 
-  public updateSpeakerInfo(data: FormData) {
-    return this.http1.patch(`${this.resource}`, data);
+  public updateSpeakerInfo(guid: string, data: FormData) {
+    return this.http1.patch(`${this.resource}/${guid}`, data);
   }
 
   public insertSpeakerInfo(data: FormData) {

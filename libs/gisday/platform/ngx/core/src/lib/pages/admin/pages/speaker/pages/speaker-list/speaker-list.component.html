@@ -25,7 +25,7 @@
             <td>{{entity.firstName}}</td>
             <td>{{entity.lastName}}</td>
             <td>{{entity.email}}</td>
-            <td>{{entity.organization}}</td>
+            <td>{{entity?.organization?.name}}</td>
             <td>{{entity.updated | date:'short'}}</td>
             <td class="actions">
               <span [routerLink]="['edit', entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>

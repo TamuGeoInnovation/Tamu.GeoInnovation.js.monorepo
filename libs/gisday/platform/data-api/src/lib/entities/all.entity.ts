@@ -407,30 +407,9 @@ export class MSSQLImage {
 }
 
 @Entity({
-  name: 'speaker_info'
+  name: 'speaker_images'
 })
-export class SpeakerInfo extends GuidIdentity {
-  @Column({ nullable: true })
-  public graduationYear: string;
-
-  @ManyToOne(() => University, { cascade: true, nullable: true })
-  public university?: University;
-
-  @Column({ nullable: true })
-  public degree: string;
-
-  @Column({ nullable: true })
-  public program: string;
-
-  @Column({ nullable: true })
-  public affiliation: string;
-
-  @Column({ nullable: true, length: 'max' })
-  public description: string;
-
-  @Column({ nullable: true })
-  public socialMedia: string;
-
+export class SpeakerImage extends GuidIdentity {
   @Column({ nullable: true, type: 'image' })
   public blob: MSSQLImage;
 
@@ -474,9 +453,6 @@ export class Organization extends GuidIdentity {
 })
 export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
-  public accountGuid: string;
-
-  @Column({ nullable: true })
   public firstName: string;
 
   @Column({ nullable: true })
@@ -488,15 +464,39 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
   public isActive: boolean;
 
+  @Column({ nullable: true })
+  public graduationYear: string;
+
+  @Column({ nullable: true })
+  public degree: string;
+
+  @Column({ nullable: true })
+  public program: string;
+
+  @Column({ nullable: true })
+  public affiliation: string;
+
+  @Column({ nullable: true, length: 'max' })
+  public description: string;
+
+  @Column({ nullable: true })
+  public socialMedia: string;
+
+  @Column({ nullable: true })
+  public accountGuid: string;
+
   @ManyToOne(() => Season, (season) => season.speakers, { cascade: false, nullable: true })
   public season: Season;
 
   @ManyToOne(() => Organization, (o) => o.speakers, { cascade: false, nullable: true })
   public organization: Organization;
 
-  @OneToOne(() => SpeakerInfo, { cascade: true, nullable: true })
+  @ManyToOne(() => University, { cascade: true, nullable: true })
+  public university?: University;
+
+  @OneToOne(() => SpeakerImage, { cascade: true, nullable: true })
   @JoinColumn()
-  public speakerInfo?: SpeakerInfo;
+  public image?: SpeakerImage;
 }
 
 @Entity({
@@ -855,7 +855,7 @@ export class ManholeSubmission {
 
 export const EntityRelationsLUT = {
   event: ['speakers', 'tags', 'sponsors', 'location', 'broadcast', 'day'],
-  speaker: ['speakerInfo', 'speakerInfo.university'],
+  speaker: ['image', 'university'],
   getRelation: (entity?: string) => {
     if (!entity) {
       return undefined;
@@ -884,7 +884,7 @@ export const GISDAY_ENTITIES = [
   Organization,
   RsvpType,
   Speaker,
-  SpeakerInfo,
+  SpeakerImage,
   SpeakerRole,
   SubmissionType,
   Sponsor,
