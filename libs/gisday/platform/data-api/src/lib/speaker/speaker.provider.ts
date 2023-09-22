@@ -1,9 +1,18 @@
-import { Injectable, UnprocessableEntityException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  UnprocessableEntityException,
+  NotFoundException,
+  InternalServerErrorException,
+  StreamableFile
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
-import { DeepPartial, Repository } from 'typeorm';
-import { Request } from 'express';
+import { writeFile, readdir, mkdir, stat } from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
 import { distinct, filter, from, mergeMap, toArray } from 'rxjs';
+import { DeepPartial, Repository } from 'typeorm';
+
+import { Request } from 'express';
+import * as mime from 'mime-types';
 
 import { Speaker, SpeakerImage, University, EntityRelationsLUT, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -33,9 +42,6 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   public async getPresenters() {
     const speakers = from(
       this.eventRepo.find({
-        where: {
-          season: '2022'
-        },
         relations: ['speakers', 'speakers.university']
       })
     ).pipe(
@@ -50,17 +56,33 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     return speakers;
   }
 
-  public async getSpeakerPhoto(guid: string) {
-    const speakerInfo = await this.speakerImageRepo.findOne({
+  /**
+   * Returns a streamable file photo for the provided speaker guid.
+   */
+  public async getSpeakerPhoto(speakerGuid: string) {
+    const speakerInfo = await this.speakerRepo.findOne({
       where: {
-        guid: guid
-      }
+        guid: speakerGuid
+      },
+      relations: ['image']
     });
 
-    if (speakerInfo) {
-      return speakerInfo.blob.data.toString();
+    if (speakerInfo.image && speakerInfo.image.path) {
+      await this.ensureDirectoryExists(process.env.SPEAKER_IMAGE_PATH);
+      const filePath = `${process.env.SPEAKER_IMAGE_PATH}/${speakerInfo.image.path}`;
+
+      const exists = await this._fileExists(filePath);
+
+      if (!exists) {
+        throw new NotFoundException();
+      }
+
+      const file = createReadStream(filePath);
+      return new StreamableFile(file, {
+        type: mime.lookup(filePath)
+      });
     } else {
-      throw new UnprocessableEntityException(null, 'Could not find speakerInfo with provided guid');
+      throw new NotFoundException();
     }
   }
 
@@ -75,17 +97,19 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
 
     if (existing) {
-      if (file !== null && file !== undefined) {
-        const img = this.speakerImageRepo.create({
-          blob: file.buffer
-        });
+      let speakerImage;
 
-        existing.image = img;
+      if (file != null || file != undefined) {
+        const savedFileName = await this._writeImageToDisk(file);
+        speakerImage = this.speakerImageRepo.create({
+          path: savedFileName
+        });
       }
 
       return this.speakerRepo.save({
         ...existing,
-        ...incoming
+        ...incoming,
+        image: speakerImage
       });
     } else {
       throw new NotFoundException();
@@ -93,27 +117,22 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async insertWithInfo(speaker: DeepPartial<Speaker>, file?) {
-    const speakerInfoEnt = this.speakerImageRepo.create(speaker);
+    let speakerImage: Partial<SpeakerImage>;
 
     if (file != null || file != undefined) {
-      speakerInfoEnt.blob = file.buffer;
+      const savedFileName = await this._writeImageToDisk(file);
+
+      speakerImage = this.speakerImageRepo.create({
+        path: savedFileName
+      });
     }
 
-    speaker.image = speakerInfoEnt;
-
-    const speakerEnt = this.speakerRepo.create(speaker);
+    const speakerEnt = this.speakerRepo.create({
+      ...speaker,
+      image: speakerImage
+    });
 
     if (speakerEnt) {
-      const university = await this.uniRepo.findOne({
-        where: {
-          guid: speaker.university ? speaker.university : ''
-        }
-      });
-
-      if (university) {
-        speaker.university = university;
-      }
-
       return speakerEnt.save();
     } else {
       throw new UnprocessableEntityException(null, 'Could not create speaker');
@@ -141,6 +160,42 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       return speaker.save();
     } else {
       throw new UnprocessableEntityException(null, `Speaker could not be found`);
+    }
+  }
+
+  /**
+   * Checks if a file exists at the provided path.
+   *
+   * `stat` will throw an error if the file does not exist, so we catch it and return false.
+   */
+  private async _fileExists(fileName: string) {
+    try {
+      await stat(fileName);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  private async _writeImageToDisk(file: { buffer: Buffer; originalname: string }) {
+    try {
+      await this.ensureDirectoryExists(process.env.SPEAKER_IMAGE_PATH);
+
+      await writeFile(`${process.env.SPEAKER_IMAGE_PATH}/${file.originalname}`, file.buffer);
+
+      return file.originalname;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  private async ensureDirectoryExists(path: string) {
+    // With fs promises, check if the directory exists, if not, create it
+    try {
+      return await readdir(path);
+    } catch (error) {
+      // Directory doesn't exist, create it
+      return await mkdir(path, { recursive: true });
     }
   }
 }

@@ -410,10 +410,8 @@ export class MSSQLImage {
   name: 'speaker_images'
 })
 export class SpeakerImage extends GuidIdentity {
-  @Column({ nullable: true, type: 'image' })
-  public blob: MSSQLImage;
-
-  public base64representation: string;
+  @Column({ nullable: true })
+  public path: string;
 }
 
 @Entity({

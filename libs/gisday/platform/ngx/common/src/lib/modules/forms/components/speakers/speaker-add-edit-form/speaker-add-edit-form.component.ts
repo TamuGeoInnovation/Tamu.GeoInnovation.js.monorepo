@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, Observable, filter, map, of, shareReplay, switchMap } from 'rxjs';
+import { Observable, filter, map, shareReplay, switchMap } from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import { OrganizationService, SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -21,7 +21,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public entity$: Observable<Partial<Speaker>>;
   public universities$: Observable<Array<Partial<University>>>;
   public organizations$: Observable<Array<Partial<Organization>>>;
-  public speakerPhoto$: Observable<SafeUrl>;
+  public speakerPhotoUrl$: Observable<SafeUrl>;
 
   public form: FormGroup;
 
@@ -62,22 +62,9 @@ export class SpeakerAddEditFormComponent implements OnInit {
       shareReplay()
     );
 
-    this.speakerPhoto$ = this.entity$.pipe(
+    this.speakerPhotoUrl$ = this.entity$.pipe(
       switchMap((entity) => {
-        if (entity?.image?.blob) {
-          const byteArray = entity?.image.blob.data;
-
-          const blob = new Blob([byteArray.buffer]);
-
-          //createObjectURL && asign it to ur image src
-          const url = URL.createObjectURL(blob);
-          return of(this.sn.bypassSecurityTrustUrl(url));
-
-          // const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
-          // return of(`data:image/png;base64,${buffer}`);
-        } else {
-          return EMPTY;
-        }
+        return this.ss.getPhotoUrl(entity.guid);
       })
     );
 
