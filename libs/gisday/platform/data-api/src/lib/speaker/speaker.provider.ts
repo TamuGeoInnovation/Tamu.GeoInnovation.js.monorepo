@@ -100,7 +100,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       let speakerImage;
 
       if (file != null || file != undefined) {
-        const savedFileName = await this._writeImageToDisk(file);
+        const savedFileName = await this._writeImageToDisk(file, guid);
         speakerImage = this.speakerImageRepo.create({
           path: savedFileName
         });
@@ -117,23 +117,26 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async insertWithInfo(speaker: DeepPartial<Speaker>, file?) {
-    let speakerImage: Partial<SpeakerImage>;
-
-    if (file != null || file != undefined) {
-      const savedFileName = await this._writeImageToDisk(file);
-
-      speakerImage = this.speakerImageRepo.create({
-        path: savedFileName
-      });
-    }
-
     const speakerEnt = this.speakerRepo.create({
-      ...speaker,
-      image: speakerImage
+      ...speaker
     });
 
     if (speakerEnt) {
-      return speakerEnt.save();
+      const savedEntity = await speakerEnt.save();
+
+      if (file != null || file != undefined) {
+        const savedFileName = await this._writeImageToDisk(file, savedEntity.guid);
+
+        const speakerImage = this.speakerImageRepo.create({
+          path: savedFileName
+        });
+
+        savedEntity.image = speakerImage;
+
+        return savedEntity.save();
+      } else {
+        return savedEntity;
+      }
     } else {
       throw new UnprocessableEntityException(null, 'Could not create speaker');
     }
@@ -177,13 +180,13 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     }
   }
 
-  private async _writeImageToDisk(file: { buffer: Buffer; originalname: string }) {
+  private async _writeImageToDisk(file: { buffer: Buffer; originalname: string }, prefix: string) {
     try {
       await this.ensureDirectoryExists(process.env.SPEAKER_IMAGE_PATH);
 
-      await writeFile(`${process.env.SPEAKER_IMAGE_PATH}/${file.originalname}`, file.buffer);
+      await writeFile(`${process.env.SPEAKER_IMAGE_PATH}/${prefix}-${file.originalname}`, file.buffer);
 
-      return file.originalname;
+      return `${prefix}-${file.originalname}`;
     } catch (error) {
       throw new InternalServerErrorException();
     }

@@ -66,7 +66,7 @@ export class SpeakerController {
 
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    this.provider.deleteEntity({
+    return this.provider.deleteEntity({
       where: {
         guid: guid
       }
