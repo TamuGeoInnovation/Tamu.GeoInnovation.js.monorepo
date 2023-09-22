@@ -47,10 +47,12 @@ export abstract class BaseProvider<T> {
     const existing = await this.repo.findOne(lookupOpts);
 
     if (existing) {
-      return this.repo.save({
+      const newVal = {
         ...existing,
         ...entity
-      });
+      };
+
+      return this.repo.save(newVal);
     } else if (createIfNotFound) {
       const newEntity = this.repo.create(entity) as DeepPartial<T>;
 

@@ -218,6 +218,54 @@ export class EventLocation extends GuidIdentity {
   name: 'events'
 })
 export class Event extends GuidIdentity {
+  @Column({ nullable: true })
+  public name: string;
+
+  @Column({ nullable: false, default: true })
+  public active: boolean;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public abstract: string;
+
+  @Column({ nullable: true })
+  public startTime: string;
+
+  @Column({ nullable: true })
+  public endTime: string;
+
+  @Column({ nullable: true, default: 0 })
+  public observedAttendeeStart: number;
+
+  @Column({ nullable: true, default: 0 })
+  public observedAttendeeEnd: number;
+
+  @Column({ nullable: true })
+  public capacity: number;
+
+  @Column({ nullable: true })
+  public googleDriveUrl: string;
+
+  @Column({ nullable: true })
+  public requiresRsvp: boolean;
+
+  @Column({ nullable: true })
+  public qrCode: string;
+
+  @Column({ nullable: true })
+  public type: string;
+
+  @Column({ nullable: true })
+  public presentationType: string;
+
+  @Column({ nullable: true, default: true })
+  public isAcceptingRsvps: boolean;
+
+  @Column({ nullable: true, default: false })
+  public isBringYourOwnDevice: boolean;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public requirements: string;
+
   @ManyToOne(() => SeasonDay, (day) => day.events)
   public day: SeasonDay;
 
@@ -250,53 +298,6 @@ export class Event extends GuidIdentity {
   @OneToOne(() => EventLocation, { cascade: true, nullable: true })
   @JoinColumn()
   public location?: EventLocation;
-
-  @Column({ nullable: true })
-  public name: string;
-
-  @Column({ nullable: true, length: 'MAX' })
-  public abstract: string;
-
-  @Column({ nullable: true })
-  public startTime: string;
-
-  @Column({ nullable: true })
-  public endTime: string;
-
-  @Column({ nullable: false, default: 0 })
-  public observedAttendeeStart: number;
-
-  @Column({ nullable: false, default: 0 })
-  public observedAttendeeEnd: number;
-
-  @Column({ nullable: true })
-  public capacity: number;
-
-  @Column({ nullable: true })
-  public googleDriveUrl: string;
-
-  @Column({ nullable: true })
-  public requiresRsvp: boolean;
-
-  @Column({ nullable: true })
-  public qrCode: string;
-
-  @Column({ nullable: true })
-  public type: string;
-
-  @Column({ nullable: true })
-  public presentationType: string;
-
-  @Column({ nullable: true, default: true })
-  public isAcceptingRsvps: boolean;
-
-  @Column({ nullable: true, default: false })
-  public isBringYourOwnDevice: boolean;
-
-  @Column({ nullable: true, length: 'MAX' })
-  public requirements: string;
-
-  public hasRsvp = false;
 }
 
 @Entity({

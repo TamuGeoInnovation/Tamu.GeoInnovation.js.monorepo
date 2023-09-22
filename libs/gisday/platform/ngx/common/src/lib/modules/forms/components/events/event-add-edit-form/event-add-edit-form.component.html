@@ -1,7 +1,13 @@
-<form [formGroup]="form">
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-title">Date and Time</div>
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Event</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Event</div>
+      </ng-template>
     </div>
 
     <div class="form-section-body">
@@ -9,7 +15,7 @@
         <tamu-gisc-seasons-day-tile *ngFor="let day of activeSeasonDays$ | async; let last = last;" [interactive]="false" [day]="day" (click)="setEventDate(day)" [ngClass]="{selected: (selectedEventDate$ | async) === day.guid}"></tamu-gisc-seasons-day-tile>
       </div>
 
-      <div class="form-collection row" *ngIf="(selectedEventDateStart$ | async)">
+      <div class="form-collection row" *ngIf="(selectedEventDateStart$ | async) !== null && (selectedEventDateEnd$ | async) !== null">
         <div>
           <p><strong>Event start time</strong></p>
           <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'start')" iconName="schedule"></tamu-gisc-date-time-picker>
@@ -17,7 +23,7 @@
 
         <div>
           <p><strong>Event end time</strong></p>
-          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'end')" iconName="schedule"></tamu-gisc-date-time-picker>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateEnd$ | async" (changed)="setEventTime($event, 'end')" iconName="schedule"></tamu-gisc-date-time-picker>
         </div>
       </div>
     </div>
@@ -37,8 +43,9 @@
         <tamu-gisc-textbox formControlName="qrCode" placeholder="QR code" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="type" placeholder="Event type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="presentationType" placeholder="Presentation type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="requirements" placeholder="Requirements" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="requirements" placeholder="Requirements" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
 
+        <tamu-gisc-checkbox formControlName="active" type="text" label="Event active?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="requiresRsvp" type="text" label="Requires RSVP?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="isAcceptingRsvps" label="Is accepting RSVPs?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="isBringYourOwnDevice" label="Is bring your own device?" [data]=""> </tamu-gisc-checkbox>
@@ -119,7 +126,7 @@
       <ng-container *ngIf="(speakers$ | async)?.length > 0 else noSpeakers">
         <ng-container *ngIf="speakers$ | async as speakers">
           <tamu-gisc-checkbox-group referenceId="guid" formControlName="speakers">
-            <tamu-gisc-checkbox *ngFor="let speaker of speakers" [data]="speakers" [label]="speaker.lastName + ',' + speaker.firstName"></tamu-gisc-checkbox>
+            <tamu-gisc-checkbox *ngFor="let speaker of speakers" [data]="speaker" [label]="speaker.lastName + ', ' + speaker.firstName"></tamu-gisc-checkbox>
           </tamu-gisc-checkbox-group>
         </ng-container>
       </ng-container>
@@ -133,7 +140,8 @@
   <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
+        <tamu-gisc-button type="button" look="danger" value="Delete Event" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
       </div>
     </div>
   </div>

@@ -55,16 +55,21 @@ export class EventController {
   }
 
   @Patch(':guid')
-  public async updateEntity(@Param('guid') guid, @Body() body: DeepPartial<Event>) {
-    return this.provider.updateEvent(body);
+  public async updateEntity(@Param('guid') guid, @Body() body: UpdateEventDto) {
+    return this.provider.updateEvent(guid, body);
   }
 
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    this.provider.deleteEntity({
+    return this.provider.deleteEntity({
       where: {
         guid: guid
       }
     });
   }
+}
+
+export interface UpdateEventDto extends Omit<DeepPartial<Event>, 'tags' | 'speakers'> {
+  tags: Array<string>;
+  speakers: Array<string>;
 }

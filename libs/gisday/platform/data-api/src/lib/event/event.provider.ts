@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
@@ -15,6 +15,7 @@ import {
   UserRsvp
 } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { UpdateEventDto } from './event.controller';
 
 @Injectable()
 export class EventProvider extends BaseProvider<Event> {
@@ -74,37 +75,31 @@ export class EventProvider extends BaseProvider<Event> {
     }
   }
 
-  public async updateEvent(event: DeepPartial<Event>) {
+  public async updateEvent(guid: string, event: UpdateEventDto) {
     try {
-      const newEvent: DeepPartial<Event> = {
-        ...event
-      };
-
-      const broadcastEnt = this.eventBroadcastRepo.create(event.broadcast);
-      const locationEnt = this.eventLocationRepo.create(event.location);
-
-      const existingSpeakers = await this.speakerRepo.find({
+      const existingEvent = await this.eventRepo.findOne({
         where: {
-          guid: In(event.speakers)
+          guid
         }
       });
 
-      const existingTags = await this.tagRepo.find({
-        where: {
-          guid: In(event.tags)
-        }
-      });
-
-      newEvent.broadcast = broadcastEnt;
-      newEvent.location = locationEnt;
-      newEvent.speakers = existingSpeakers;
-      newEvent.tags = existingTags;
-
-      const eventEnt = this.eventRepo.create(newEvent);
-
-      if (eventEnt) {
-        return eventEnt.save();
+      if (!existingEvent) {
+        throw new NotFoundException();
       }
+
+      const tags = event.tags.map((t) => {
+        return this.tagRepo.create({ guid: t });
+      });
+      const speakers = event.speakers.map((t) => this.speakerRepo.create({ guid: t }));
+
+      const newEnt = this.eventRepo.create({
+        ...existingEvent,
+        ...event,
+        tags,
+        speakers
+      });
+
+      return newEnt.save();
     } catch (error) {
       throw new UnprocessableEntityException(null, 'Could not insert new Event');
     }

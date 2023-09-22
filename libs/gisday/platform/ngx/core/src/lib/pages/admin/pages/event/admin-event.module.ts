@@ -14,12 +14,10 @@ const routes: Routes = [
     path: '',
     component: AdminEventComponent,
     children: [
-      // TODO: Re-enable edit route and fix the template errors due to removing the `inEvent` property from entities.
-      // {
-      //   path: 'edit/:guid',
-      //   loadChildren: () =>
-      //     import('./edit-events/admin-detail-event/admin-detail-event.module').then((m) => m.AdminDetailEventModule)
-      // },
+      {
+        path: 'edit/:guid',
+        component: EventEditComponent
+      },
       {
         path: 'add',
         component: EventAddComponent
