@@ -23,7 +23,6 @@
             <td>{{entity.updated | date:'short'}}</td>
             <td class="actions">
               <span [routerLink]="['edit', entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>
-              <span (click)="deleteEntity(entity)" class="material-icons action alt" title="Delete entity">delete</span>
             </td>
           </tr>
         </tbody>
