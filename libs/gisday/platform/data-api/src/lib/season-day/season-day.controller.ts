@@ -1,34 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotImplementedException } from '@nestjs/common';
 import { SeasonDayService } from './season-day.service';
-import { CreateSeasonDayDto } from './dto/create-season-day.dto';
-import { UpdateSeasonDayDto } from './dto/update-season-day.dto';
 
-@Controller('season-day')
+import { SeasonDay } from '../entities/all.entity';
+
+@Controller('season-days')
 export class SeasonDayController {
-  constructor(private readonly seasonDayService: SeasonDayService) {}
+  constructor(private readonly sd: SeasonDayService) {}
 
-  @Post()
-  create(@Body() createSeasonDayDto: CreateSeasonDayDto) {
-    return this.seasonDayService.create(createSeasonDayDto);
+  @Get(':guid/events')
+  public getDayEvents(@Param('guid') guid: string) {
+    return this.sd.getDayEvents(guid);
+  }
+
+  @Get(':guid')
+  public findOne(@Param('guid') guid: string) {
+    return this.sd.findOne(guid);
   }
 
   @Get()
-  findAll() {
-    return this.seasonDayService.findAll();
+  public findAll() {
+    return this.sd.find();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.seasonDayService.findOne(+id);
+  @Post()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public create(@Body() createSeasonDayDto: Partial<SeasonDay>) {
+    throw new NotImplementedException();
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSeasonDayDto: UpdateSeasonDayDto) {
-    return this.seasonDayService.update(+id, updateSeasonDayDto);
+  @Patch(':guid')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public update(@Param('guid') guid: string, @Body() updateSeasonDayDto: Partial<SeasonDay>) {
+    throw new NotImplementedException();
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.seasonDayService.remove(+id);
+  @Delete(':guid')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public remove(@Param('guid') guid: string) {
+    throw new NotImplementedException();
   }
 }

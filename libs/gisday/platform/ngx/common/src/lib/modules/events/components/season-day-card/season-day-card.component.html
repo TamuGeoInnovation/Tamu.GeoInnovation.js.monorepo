@@ -1,0 +1,32 @@
+<div [id]="'day' + (this.index + 1)" class="card">
+  <h2>{{seasonDay.date | date : 'MMMM dd'}}</h2>
+
+  <ng-container *ngIf="(events$ | async)?.length > 0; else noEvents">
+    <div *ngFor="let event of events$ | async" [routerLink]="['/sessions/details', event.guid]">
+      <div class="row">
+        <tamu-gisc-checkbox [label]="''"></tamu-gisc-checkbox>
+
+        <div class="event-time">
+          <!-- <span>{{event.startTime | date: 'h:mm a'}}</span>
+          <span id="detail-time"> - {{event.endTime | date: 'h:mm a'}}</span> -->
+          <span>{{event.startTime}}</span>
+          <span id="detail-time"> - {{event.endTime}}</span>
+        </div>
+
+        <div class="event-name">
+          <p>{{event.name}}</p>
+          <p>{{event.location?.building}}</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #noEvents>
+    <div class="row">
+      <div class="event-name">
+        <p>No events scheduled for this day.</p>
+      </div>
+    </div>
+  </ng-template>
+</div>
+

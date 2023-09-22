@@ -1,32 +1,33 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { filter, shareReplay, switchMap, toArray } from 'rxjs/operators';
 
-import { Event, Tag } from '@tamu-gisc/gisday/platform/data-api';
-import { EventService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { Event, Season, Tag } from '@tamu-gisc/gisday/platform/data-api';
+import { EventService, SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-event-view',
   templateUrl: './event-view.component.html',
   styleUrls: ['./event-view.component.scss']
 })
-export class EventViewComponent implements OnInit, OnDestroy {
-  public $events: Observable<Array<Partial<Event>>>;
-  public $tags: Observable<Array<Partial<Tag>>>;
-  private _$destroy: Subject<boolean> = new Subject();
+export class EventViewComponent implements OnInit {
+  public activeSeason$: Observable<Season>;
+  public events$: Observable<Array<Partial<Event>>>;
+  public tags$: Observable<Array<Partial<Tag>>>;
+
   public filterTags: string[] = [];
 
-  constructor(private readonly eventService: EventService, private readonly tagService: TagService) {}
+  constructor(
+    private readonly eventService: EventService,
+    private readonly tagService: TagService,
+    private readonly ss: SeasonService
+  ) {}
 
   public ngOnInit() {
-    this.$events = this.eventService.getEvents().pipe(shareReplay(1));
-    this.$tags = this.tagService.getEntities().pipe(shareReplay(1));
-  }
-
-  public ngOnDestroy() {
-    this._$destroy.next(undefined);
-    this._$destroy.complete();
+    this.activeSeason$ = this.ss.getActiveSeason().pipe(shareReplay());
+    this.events$ = this.eventService.getEvents().pipe(shareReplay());
+    this.tags$ = this.tagService.getEntities().pipe(shareReplay());
   }
 
   public applyOrRemoveTag(tag: Partial<Tag>, checked: boolean) {
@@ -68,7 +69,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
    * @returns
    */
   public getDay(dayNum: number) {
-    return this.$events.pipe(
+    return this.events$.pipe(
       switchMap((events) => events),
       // TODO: fix this type casting
       // Will probably remove this altogether but untested as of this comment

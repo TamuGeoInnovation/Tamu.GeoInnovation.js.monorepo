@@ -1,26 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSeasonDayDto } from './dto/create-season-day.dto';
-import { UpdateSeasonDayDto } from './dto/update-season-day.dto';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { BaseProvider } from '../_base/base-provider';
+import { SeasonDay } from '../entities/all.entity';
 
 @Injectable()
-export class SeasonDayService {
-  create(createSeasonDayDto: CreateSeasonDayDto) {
-    return 'This action adds a new seasonDay';
+export class SeasonDayService extends BaseProvider<SeasonDay> {
+  constructor(@InjectRepository(SeasonDay) private seasonDayRepo: Repository<SeasonDay>) {
+    super(seasonDayRepo);
   }
 
-  findAll() {
-    return `This action returns all seasonDay`;
-  }
+  public async getDayEvents(guid: string) {
+    try {
+      const day = await this.seasonDayRepo.findOne({
+        where: { guid },
+        relations: ['events']
+      });
 
-  findOne(id: number) {
-    return `This action returns a #${id} seasonDay`;
-  }
-
-  update(id: number, updateSeasonDayDto: UpdateSeasonDayDto) {
-    return `This action updates a #${id} seasonDay`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} seasonDay`;
+      if (day) {
+        return day.events;
+      } else {
+        throw new NotFoundException();
+      }
+    } catch (err) {
+      throw new InternalServerErrorException();
+    }
   }
 }
