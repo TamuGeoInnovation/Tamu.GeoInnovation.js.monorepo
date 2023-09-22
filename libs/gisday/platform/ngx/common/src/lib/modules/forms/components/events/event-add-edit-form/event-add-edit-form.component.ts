@@ -1,6 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, filter, map, mergeMap, shareReplay, switchMap, take, tap, toArray, withLatestFrom } from 'rxjs';
+import {
+  Observable,
+  filter,
+  map,
+  mergeMap,
+  of,
+  pipe,
+  shareReplay,
+  switchMap,
+  take,
+  tap,
+  toArray,
+  withLatestFrom
+} from 'rxjs';
 
 import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 
@@ -138,53 +151,17 @@ export class EventAddEditFormComponent implements OnInit {
         });
       });
 
-      this.selectedEventDateStart$ = this.entity$.pipe(
-        take(1),
-        map((event) => {
-          const dateStringFromEvent = new Date(event?.day?.date).toDateString();
-          const timeStringFromEvent = event?.startTime;
+      this.selectedEventDateStart$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('startTime'), shareReplay());
 
-          return new Date(`${dateStringFromEvent} ${timeStringFromEvent}`);
-        }),
-        shareReplay()
-      );
-
-      this.selectedEventDateEnd$ = this.entity$.pipe(
-        take(1),
-        map((event) => {
-          const dateStringFromEvent = new Date(event?.day?.date).toDateString();
-          const timeStringFromEvent = event?.endTime;
-
-          return new Date(`${dateStringFromEvent} ${timeStringFromEvent}`);
-        }),
-        shareReplay()
-      );
+      this.selectedEventDateEnd$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('endTime'), shareReplay());
     } else {
-      this.selectedEventDateStart$ = this.selectedEventDate$.pipe(
-        take(1),
-        withLatestFrom(this.activeSeasonDays$),
-        map(([dayGuid, days]) => {
-          return days.find((day) => day.guid === dayGuid).date;
-        }),
-        tap((date) => {
-          this.form.patchValue({
-            startTime: date.toTimeString()
-          });
-        }),
+      this.selectedEventDateStart$ = this._defaultTimeFromSelectedEvent$().pipe(
+        this._applyTimeToForm('startTime'),
         shareReplay()
       );
 
-      this.selectedEventDateEnd$ = this.selectedEventDate$.pipe(
-        take(1),
-        withLatestFrom(this.activeSeasonDays$),
-        map(([dayGuid, days]) => {
-          return days.find((day) => day.guid === dayGuid).date;
-        }),
-        tap((date) => {
-          this.form.patchValue({
-            endTime: date.toTimeString()
-          });
-        }),
+      this.selectedEventDateEnd$ = this._defaultTimeFromSelectedEvent$().pipe(
+        this._applyTimeToForm('endTime'),
         shareReplay()
       );
     }
@@ -246,5 +223,39 @@ export class EventAddEditFormComponent implements OnInit {
   private _navigateBack() {
     this.rt.navigate(['/admin/events']);
   }
-}
 
+  private _defaultTimeFromSelectedEvent$() {
+    return this.selectedEventDate$.pipe(
+      take(1),
+      withLatestFrom(this.activeSeasonDays$),
+      map(([dayGuid, days]) => {
+        return days.find((day) => day.guid === dayGuid).date;
+      })
+    );
+  }
+
+  private _applyTimeToForm(formProp: 'startTime' | 'endTime') {
+    return pipe(
+      tap((date: Date) => {
+        this.form.patchValue({
+          [formProp]: date.toTimeString()
+        });
+      })
+    );
+  }
+
+  private _timeStringFromEvent$(timeProp: 'startTime' | 'endTime') {
+    return pipe(
+      switchMap((event: Event) => {
+        const dateStringFromEvent = new Date(event?.day?.date).toDateString();
+        const timeStringFromEvent = event?.[timeProp];
+
+        if (timeStringFromEvent === null || timeStringFromEvent === undefined) {
+          return this._defaultTimeFromSelectedEvent$();
+        } else {
+          return of(new Date(`${dateStringFromEvent} ${timeStringFromEvent}`));
+        }
+      })
+    );
+  }
+}
