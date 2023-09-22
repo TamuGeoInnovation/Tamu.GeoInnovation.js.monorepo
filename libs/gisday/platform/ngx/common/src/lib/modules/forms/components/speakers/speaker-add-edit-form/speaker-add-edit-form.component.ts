@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, map, shareReplay, switchMap } from 'rxjs';
+import { Observable, filter, map, merge, shareReplay, switchMap } from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import { OrganizationService, SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -49,7 +49,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
       affiliation: [''],
       description: [''],
       socialMedia: [''],
-      file: ['']
+      file: [null]
     });
 
     this.universities$ = this.us.getEntities();
@@ -62,10 +62,20 @@ export class SpeakerAddEditFormComponent implements OnInit {
       shareReplay()
     );
 
-    this.speakerPhotoUrl$ = this.entity$.pipe(
-      switchMap((entity) => {
-        return this.ss.getPhotoUrl(entity.guid);
-      })
+    // Image preview can come from two sources:
+    // 1. The entity itself, if it has a photoUrl property
+    // 2. The form, if the user has selected a file
+    this.speakerPhotoUrl$ = merge(
+      this.entity$.pipe(
+        switchMap((entity) => {
+          return this.ss.getPhotoUrl(entity.guid);
+        })
+      ),
+      this.form.valueChanges.pipe(
+        map((value) => value.file),
+        filter((file) => file !== null),
+        map((file) => this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)))
+      )
     );
 
     if (this.type === 'edit') {
