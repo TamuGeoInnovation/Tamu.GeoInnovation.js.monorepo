@@ -1,0 +1,19 @@
+:host {
+  display: grid;
+  grid-template-columns: 3rem 3fr 10fr;
+  padding: 0.5rem 1rem;
+  column-gap: 0.5rem;
+}
+
+.event-rsvp-control {
+  justify-self: center;
+}
+
+.event-name {
+  p:not(:first-child) {
+    padding-top: 0;
+    padding-bottom: 0.25rem;
+    color: #616161;
+    font-size: 0.75rem;
+  }
+}

@@ -22,14 +22,12 @@
         </div>
       </div>
     </div>
-    <div class="container12 trailer-3" id="sessions-container">
-      <div>
-        <div id="default-content" class="column8" *ngIf="activeSeason$ | async as season;">
-          <tamu-gisc-season-day-card *ngFor="let day of season?.days; let i = index;" [seasonDay]="day" [index]="i"></tamu-gisc-season-day-card>
-        </div>
+    <div class="trailer-3" id="sessions-container">
+      <div id="default-content" *ngIf="activeSeason$ | async as season;">
+        <tamu-gisc-season-day-card *ngFor="let day of season?.days; let i = index;" [seasonDay]="day" [index]="i"></tamu-gisc-season-day-card>
       </div>
 
-      <div id="filter-container" class="column4" *ngIf="events$">
+      <div id="filter-container" *ngIf="events$">
         <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
         <div id="filters" class="card">
           <h2 class="trailer-1">Filters</h2>

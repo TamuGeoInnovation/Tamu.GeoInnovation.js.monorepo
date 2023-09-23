@@ -1,0 +1,31 @@
+#links-container {
+  width: 100%;
+  font-weight: 400;
+
+  a {
+    color: inherit;
+  }
+
+  p {
+    display: inline-block;
+    padding: 0 0.5rem;
+
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+}
+
+#sessions-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 1.5rem;
+
+  #default-content {
+    grid-column: 1 / 9;
+  }
+
+  #filter-container {
+    grid-column: 9 / 13;
+  }
+}
