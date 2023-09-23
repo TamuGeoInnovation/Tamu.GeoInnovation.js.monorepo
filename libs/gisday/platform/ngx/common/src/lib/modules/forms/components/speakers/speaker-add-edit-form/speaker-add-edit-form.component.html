@@ -11,13 +11,27 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection column pad-top">
+      <div class="form-collection row pad-top">
         <tamu-gisc-textbox formControlName="firstName" placeholder="First Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="lastName" placeholder="Last Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="socialMedia" placeholder="Social Media Link" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
 
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="lastName" placeholder="Last Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="socialMedia" placeholder="Social Media Link" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
         <div>
           <img [src]="speakerPhotoUrl$ | async" />
           <tamu-gisc-file formControlName="file">
@@ -34,10 +48,18 @@
     </div>
 
     <div class="form-section-body">
-      <tamu-gisc-textbox formControlName="graduationYear" placeholder="Graduation Year" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      <tamu-gisc-textbox formControlName="degree" placeholder="Degree" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      <tamu-gisc-textbox formControlName="program" placeholder="Program" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      <tamu-gisc-select formControlName="university" [data]="universities$ | async" [displayTemplate]="'name'" [valueTemplate]="'guid'" placeholder="Select University"></tamu-gisc-select>
+      <div class="fom-collection row pad-top">
+        <tamu-gisc-textbox formControlName="graduationYear" placeholder="Graduation Year" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+      <div class="fom-collection row">
+        <tamu-gisc-textbox formControlName="degree" placeholder="Degree" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+      <div class="fom-collection row">
+        <tamu-gisc-textbox formControlName="program" placeholder="Program" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+      <div class="fom-collection row">
+        <tamu-gisc-select formControlName="university" [data]="universities$ | async" [displayTemplate]="'name'" [valueTemplate]="'guid'" placeholder="Select University"></tamu-gisc-select>
+      </div>
     </div>
   </div>
 
@@ -47,9 +69,13 @@
     </div>
 
     <div class="form-section-body">
-      <tamu-gisc-select class="trailer-2" formControlName="organization" [data]="organizations$ | async" placeholder="Organization" [displayTemplate]="'name'" [valueTemplate]="'guid'"></tamu-gisc-select>
+      <div class="form-collection row pad-top">
+        <tamu-gisc-select formControlName="organization" [data]="organizations$ | async" placeholder="Organization" [displayTemplate]="'name'" [valueTemplate]="'guid'"></tamu-gisc-select>
+      </div>
 
-      <tamu-gisc-textbox formControlName="affiliation" placeholder="Affiliation" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="affiliation" placeholder="Affiliation" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
     </div>
   </div>
 

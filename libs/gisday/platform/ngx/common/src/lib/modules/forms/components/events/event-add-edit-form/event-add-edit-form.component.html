@@ -35,16 +35,35 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection column pad-top">
+      <div class="form-collection row pad-top">
         <tamu-gisc-textbox formControlName="name" placeholder="Event name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="abstract" placeholder="Abstract" type="textarea" [rows]="10" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
 
+      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="googleDriveUrl" placeholder="Google Drive URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="qrCode" placeholder="QR code" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="type" placeholder="Event type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="presentationType" placeholder="Presentation type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="requirements" placeholder="Requirements" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
 
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="qrCode" placeholder="QR code" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="type" placeholder="Event type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="presentationType" placeholder="Presentation type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="requirements" placeholder="Requirements" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
         <tamu-gisc-checkbox formControlName="active" type="text" label="Event active?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="requiresRsvp" type="text" label="Requires RSVP?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-checkbox formControlName="isAcceptingRsvps" label="Is accepting RSVPs?" [data]=""> </tamu-gisc-checkbox>
@@ -90,8 +109,11 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection column">
+      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Observed attendee start" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="Observed attendee end" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
     </div>
@@ -103,17 +125,19 @@
     </div>
 
     <div class="form-section-body">
-      <ng-container *ngIf="(tags$ | async)?.length > 0; else noTags">
-        <ng-container *ngIf="tags$ | async as tags">
-          <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
-            <tamu-gisc-checkbox *ngFor="let tag of tags" [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
-          </tamu-gisc-checkbox-group>
+      <div class="form-collection row">
+        <ng-container *ngIf="(tags$ | async)?.length > 0; else noTags">
+          <ng-container *ngIf="tags$ | async as tags">
+            <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
+              <tamu-gisc-checkbox *ngFor="let tag of tags" [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
+            </tamu-gisc-checkbox-group>
+          </ng-container>
         </ng-container>
-      </ng-container>
 
-      <ng-template #noTags>
-        <p>No tags registered yet.</p>
-      </ng-template>
+        <ng-template #noTags>
+          <p>No tags registered yet.</p>
+        </ng-template>
+      </div>
     </div>
   </div>
 
@@ -123,17 +147,19 @@
     </div>
 
     <div class="form-section-body">
-      <ng-container *ngIf="(speakers$ | async)?.length > 0 else noSpeakers">
-        <ng-container *ngIf="speakers$ | async as speakers">
-          <tamu-gisc-checkbox-group referenceId="guid" formControlName="speakers">
-            <tamu-gisc-checkbox *ngFor="let speaker of speakers" [data]="speaker" [label]="speaker.lastName + ', ' + speaker.firstName"></tamu-gisc-checkbox>
-          </tamu-gisc-checkbox-group>
+      <div class="form-collection row">
+        <ng-container *ngIf="(speakers$ | async)?.length > 0 else noSpeakers">
+          <ng-container *ngIf="speakers$ | async as speakers">
+            <tamu-gisc-checkbox-group referenceId="guid" formControlName="speakers">
+              <tamu-gisc-checkbox *ngFor="let speaker of speakers" [data]="speaker" [label]="speaker.lastName + ', ' + speaker.firstName"></tamu-gisc-checkbox>
+            </tamu-gisc-checkbox-group>
+          </ng-container>
         </ng-container>
-      </ng-container>
 
-      <ng-template #noSpeakers>
-        <p>No speakers registered yet.</p>
-      </ng-template>
+        <ng-template #noSpeakers>
+          <p>No speakers registered yet.</p>
+        </ng-template>
+      </div>
     </div>
   </div>
 
@@ -146,4 +172,3 @@
     </div>
   </div>
 </form>
-
