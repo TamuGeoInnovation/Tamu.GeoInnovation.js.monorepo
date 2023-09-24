@@ -25,8 +25,9 @@
     grid-column: 1 / 9;
   }
 
-  #filter-container {
+  #filters-container {
     grid-column: 9 / 13;
+    grid-template-rows: repeat(2, 1fr);
   }
 }
 

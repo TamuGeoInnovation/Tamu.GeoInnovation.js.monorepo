@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { filter, shareReplay, switchMap, toArray } from 'rxjs/operators';
 
-import { Event, Season, Tag } from '@tamu-gisc/gisday/platform/data-api';
-import { EventService, SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { Event, Organization, Season, Tag } from '@tamu-gisc/gisday/platform/data-api';
+import { EventService, OrganizationService, SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-event-view',
@@ -15,19 +15,22 @@ export class EventViewComponent implements OnInit {
   public activeSeason$: Observable<Season>;
   public events$: Observable<Array<Partial<Event>>>;
   public tags$: Observable<Array<Partial<Tag>>>;
+  public organizations$: Observable<Array<Partial<Organization>>>;
 
   public filterTags: string[] = [];
 
   constructor(
     private readonly eventService: EventService,
     private readonly tagService: TagService,
-    private readonly ss: SeasonService
+    private readonly ss: SeasonService,
+    private readonly os: OrganizationService
   ) {}
 
   public ngOnInit() {
     this.activeSeason$ = this.ss.getActiveSeason().pipe(shareReplay());
     this.events$ = this.eventService.getEvents().pipe(shareReplay());
     this.tags$ = this.tagService.getEntities().pipe(shareReplay());
+    this.organizations$ = this.os.getEntities().pipe(shareReplay());
   }
 
   public applyOrRemoveTag(tag: Partial<Tag>, checked: boolean) {

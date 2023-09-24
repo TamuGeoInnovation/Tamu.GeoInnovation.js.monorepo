@@ -22,18 +22,44 @@
         </div>
       </div>
     </div>
+
     <div class="trailer-3" id="sessions-container">
       <div id="default-content" *ngIf="activeSeason$ | async as season;">
         <tamu-gisc-season-day-card *ngFor="let day of season?.days; let i = index;" [seasonDay]="day" [index]="i"></tamu-gisc-season-day-card>
       </div>
 
-      <div id="filter-container" *ngIf="events$">
-        <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
-        <div id="filters" class="card">
-          <h2 class="trailer-1">Filters</h2>
+      <div id="filters-container">
+        <div id="tag-filters-container">
+          <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
+          <div id="filters" class="card">
+            <h2 class="trailer-1">Filters</h2>
 
-          <div class="row" *ngFor="let tag of (tags$ | async)">
-            <tamu-gisc-checkbox (changed)="applyOrRemoveTag(tag, $event)" [label]="tag.name"></tamu-gisc-checkbox>
+            <ng-container *ngIf="(tags$ | async) as tags; else noTags">
+              <div class="row" *ngFor="let tag of tags">
+                <tamu-gisc-checkbox (changed)="applyOrRemoveTag(tag, $event)" [label]="tag.name"></tamu-gisc-checkbox>
+              </div>
+            </ng-container>
+
+            <ng-template #noTags>
+              <p class="row">There are no tags.</p>
+            </ng-template>
+          </div>
+        </div>
+
+        <div id="organization-filters-container">
+          <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
+          <div id="filters" class="card">
+            <h2 class="trailer-1">Organizations</h2>
+
+            <ng-container *ngIf="(organizations$ | async) as orgs; else noOrgs">
+              <div class="row" *ngFor="let org of orgs">
+                <tamu-gisc-checkbox (changed)="applyOrRemoveTag(org, $event)" [label]="org.name"></tamu-gisc-checkbox>
+              </div>
+            </ng-container>
+
+            <ng-template #noOrgs>
+              <p class="row">There are no tags.</p>
+            </ng-template>
           </div>
         </div>
       </div>
