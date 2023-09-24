@@ -52,7 +52,7 @@
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-textbox formControlName="type" placeholder="Event type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-select formControlName="type" [data]="publicEventFormatDict" placeholder="Event Type" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
       </div>
 
       <div class="form-collection row">

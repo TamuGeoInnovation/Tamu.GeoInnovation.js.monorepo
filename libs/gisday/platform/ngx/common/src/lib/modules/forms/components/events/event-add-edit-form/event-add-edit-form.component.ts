@@ -56,6 +56,21 @@ export class EventAddEditFormComponent implements OnInit {
   public selectedEventDateStart$: Observable<Date>;
   public selectedEventDateEnd$: Observable<Date>;
 
+  public publicEventFormatDict = [
+    {
+      name: 'In-Person',
+      value: 'in-person'
+    },
+    {
+      name: 'Virtual',
+      value: 'virtual'
+    },
+    {
+      name: 'Hybrid',
+      value: 'hybrid'
+    }
+  ];
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly at: ActivatedRoute,
