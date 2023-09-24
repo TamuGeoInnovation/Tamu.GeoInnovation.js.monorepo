@@ -101,25 +101,7 @@
           <div class="border-divider leader-2 trailer-2"></div>
           <h3>Presenters</h3>
           <div class="flex flex-row leader-1 justify-between">
-            <div class="presenter-item" *ngFor="let presenter of (event.speakers)">
-              <div class="image" *ngIf="presenter.speakerInfo; else default" presenter="presenter" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(presenter.speakerInfo?.blob?.data)+')'  } "></div>
-
-              <ng-template #default>
-                <div class="image default">
-                  <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                  </svg>
-                </div>
-              </ng-template>
-
-              <div class="details">
-                <div class="name">
-                  <a *ngIf="presenter" href="/presenters/details/{{presenter.guid}}"> {{presenter.firstName}} {{presenter.lastName}} </a>
-                </div>
-                <div class="organization">{{presenter.organization}}</div>
-                <div class="role">{{presenter?.role}}</div>
-              </div>
-            </div>
+            <tamu-gisc-presenter-card *ngFor="let presenter of (event.speakers)" [speaker]="presenter"></tamu-gisc-presenter-card>
           </div>
         </div>
 

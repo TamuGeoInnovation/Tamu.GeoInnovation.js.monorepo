@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Buffer } from 'buffer';
 import { map, Observable, switchMap } from 'rxjs';
-import { DeepPartial } from 'typeorm';
 
 import { Event } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckinService, EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -35,10 +33,5 @@ export class EventDetailComponent implements OnInit {
 
   public checkin() {
     // this.checkinService.insertUserCheckin(this.eventGuid);
-  }
-
-  public unwrapPhoto(byteArray) {
-    const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
-    return `data:image/png;base64,${buffer}`;
   }
 }

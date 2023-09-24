@@ -512,59 +512,6 @@ footer .logo-container {
   }
 }
 
-.presenter-item,
-.session-item {
-  @include flexbox();
-  @include flex-direction(row);
-  @include align-items(center);
-  padding: 0.5rem;
-  width: 25rem;
-
-  .image {
-    width: 3.75rem;
-    height: 3.75rem;
-    position: relative;
-    border-radius: 50%;
-    overflow: hidden;
-    background-size: cover !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background: $gisday-blue-support-lightened;
-    @include flexbox();
-    @include justify-content(center);
-    @include align-items(center);
-    @include flex-shrink(0);
-
-    span {
-      font-size: 2rem;
-      font-family: $title-font;
-      color: #ffffff;
-      margin-top: -5%;
-    }
-
-    &.default {
-      background: $gisday-gray-primary;
-    }
-  }
-
-  .details {
-    margin-left: 1rem;
-
-    .name {
-      font-weight: 500;
-    }
-
-    .organization,
-    .role {
-      font-size: 0.75rem;
-    }
-
-    .abstract {
-      font-size: 0.8rem;
-    }
-  }
-}
-
 .session-item .details {
   margin-left: 0;
 }
@@ -887,9 +834,17 @@ footer .logo-container {
 .half-children {
   & > div {
     width: 50%;
-    padding: 0 0.5rem;
+    padding: 0 0.75rem;
     box-sizing: border-box;
     margin-bottom: 1rem;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
   }
 }
 
