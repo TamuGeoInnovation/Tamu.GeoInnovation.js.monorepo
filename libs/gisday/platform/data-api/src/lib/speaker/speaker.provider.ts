@@ -19,6 +19,8 @@ import { BaseProvider } from '../_base/base-provider';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
+  public presenterImageDir = `${process.env.APP_DATA}/images/presenters`;
+
   constructor(
     @InjectRepository(Event) private eventRepo: Repository<Event>,
     @InjectRepository(Speaker) private speakerRepo: Repository<Speaker>,
@@ -68,8 +70,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
 
     if (speakerInfo.image && speakerInfo.image.path) {
-      await this.ensureDirectoryExists(process.env.SPEAKER_IMAGE_PATH);
-      const filePath = `${process.env.SPEAKER_IMAGE_PATH}/${speakerInfo.image.path}`;
+      await this.ensureDirectoryExists(this.presenterImageDir);
+      const filePath = `${this.presenterImageDir}/${speakerInfo.image.path}`;
 
       const exists = await this._fileExists(filePath);
 
@@ -182,14 +184,14 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
   private async _writeImageToDisk(file: { buffer: Buffer; originalname: string }, prefix: string) {
     try {
-      await this.ensureDirectoryExists(process.env.SPEAKER_IMAGE_PATH);
+      await this.ensureDirectoryExists(this.presenterImageDir);
 
       // Truncate the original file name to 50 characters, preserving the file extension
       const fileName = file.originalname.substring(0, 50).concat('.', file.originalname.split('.').pop());
 
       const prefixedFileName = `${prefix}-${fileName}`;
 
-      await writeFile(`${process.env.SPEAKER_IMAGE_PATH}/${prefixedFileName}`, file.buffer);
+      await writeFile(`${this.presenterImageDir}/${prefixedFileName}`, file.buffer);
 
       return `${prefixedFileName}`;
     } catch (error) {
