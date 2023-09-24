@@ -44,23 +44,27 @@
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-textbox formControlName="googleDriveUrl" placeholder="Google Drive URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      </div>
-
-      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="qrCode" placeholder="QR code" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-select formControlName="type" [data]="publicEventFormatDict" placeholder="Event Type" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
+        <tamu-gisc-select formControlName="mode" [data]="eventModeDict" placeholder="Mode" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-textbox formControlName="presentationType" placeholder="Presentation type" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        <tamu-gisc-select formControlName="eventType" [data]="eventTypeDict" placeholder="Event Type" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-select formControlName="presentationType" [data]="presentationTypeDict" placeholder="Presentation Type" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
       </div>
 
       <div class="form-collection row">
         <tamu-gisc-textbox formControlName="requirements" placeholder="Requirements" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="resources" placeholder="Learning Resources" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
       <div class="form-collection column">

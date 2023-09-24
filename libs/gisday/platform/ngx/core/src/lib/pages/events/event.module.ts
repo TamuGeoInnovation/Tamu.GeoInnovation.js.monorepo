@@ -22,8 +22,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [EventComponent],
   imports: [CommonModule, RouterModule.forChild(routes)],
+  declarations: [EventComponent],
   exports: [RouterModule]
 })
 export class EventModule {}

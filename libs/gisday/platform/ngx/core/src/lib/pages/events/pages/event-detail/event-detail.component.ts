@@ -1,13 +1,11 @@
-import { Buffer } from 'buffer';
-
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
+import { Buffer } from 'buffer';
 import { map, Observable, switchMap } from 'rxjs';
+import { DeepPartial } from 'typeorm';
 
 import { Event } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckinService, EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { DeepPartial } from 'typeorm';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -15,14 +13,11 @@ import { DeepPartial } from 'typeorm';
   styleUrls: ['./event-detail.component.scss']
 })
 export class EventDetailComponent implements OnInit {
+  public $event: Observable<Partial<Event>>;
+
   public numOfRsvps: Observable<number>;
   public userHasCheckedInAlready: Observable<boolean>;
   public isCheckinOpen = false;
-  public selectedEvent: Partial<Event> = {
-    abstract:
-      'Another great TxGIS Day session will be announced soon. Check back to learn about the wonderful events the TxGIS Day team is bringing for this year.'
-  };
-  public $event: Observable<DeepPartial<Event>>;
   public now: Date = new Date();
 
   constructor(private route: ActivatedRoute, private eventService: EventService, private checkinService: CheckinService) {}

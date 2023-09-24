@@ -242,8 +242,8 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true })
   public capacity: number;
 
-  @Column({ nullable: true })
-  public googleDriveUrl: string;
+  @Column({ nullable: true, length: 'MAX' })
+  public resources: string;
 
   @Column({ nullable: true })
   public requiresRsvp: boolean;
@@ -252,7 +252,10 @@ export class Event extends GuidIdentity {
   public qrCode: string;
 
   @Column({ nullable: true })
-  public type: string;
+  public mode: string;
+
+  @Column({ nullable: true })
+  public eventType: string;
 
   @Column({ nullable: true })
   public presentationType: string;

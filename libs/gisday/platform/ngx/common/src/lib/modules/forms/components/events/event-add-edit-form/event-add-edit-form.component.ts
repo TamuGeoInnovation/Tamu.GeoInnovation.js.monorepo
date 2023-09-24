@@ -56,7 +56,30 @@ export class EventAddEditFormComponent implements OnInit {
   public selectedEventDateStart$: Observable<Date>;
   public selectedEventDateEnd$: Observable<Date>;
 
-  public publicEventFormatDict = [
+  public eventTypeDict = [
+    {
+      name: 'Open',
+      value: 'open'
+    },
+    {
+      name: 'University',
+      value: 'university'
+    },
+    {
+      name: 'Faculty',
+      value: 'faculty'
+    },
+    {
+      name: 'Student',
+      value: 'student'
+    },
+    {
+      name: 'High School',
+      value: 'high-school'
+    }
+  ];
+
+  public eventModeDict = [
     {
       name: 'In-Person',
       value: 'in-person'
@@ -68,6 +91,17 @@ export class EventAddEditFormComponent implements OnInit {
     {
       name: 'Hybrid',
       value: 'hybrid'
+    }
+  ];
+
+  public presentationTypeDict = [
+    {
+      name: 'Individual',
+      value: 'individual'
+    },
+    {
+      name: 'Group',
+      value: 'group'
     }
   ];
 
@@ -92,10 +126,11 @@ export class EventAddEditFormComponent implements OnInit {
       endTime: [null],
       observedAttendeeStart: [null],
       observedAttendeeEnd: [null],
-      googleDriveUrl: [null],
+      resources: [null],
       requiresRsvp: [false],
       qrCode: [null],
-      type: [null],
+      mode: [null],
+      eventType: [null],
       presentationType: [null],
       isAcceptingRsvps: [false],
       isBringYourOwnDevice: [false],

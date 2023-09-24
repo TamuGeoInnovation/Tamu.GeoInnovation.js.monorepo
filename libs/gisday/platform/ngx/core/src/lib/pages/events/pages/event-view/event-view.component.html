@@ -32,7 +32,7 @@
         <div id="tag-filters-container">
           <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
           <div id="filters" class="card">
-            <h2 class="trailer-1">Filters</h2>
+            <h2 class="trailer-1">Tags</h2>
 
             <ng-container *ngIf="(tags$ | async) as tags; else loading">
               <ng-container *ngIf="tags?.length > 0; else noTags">
