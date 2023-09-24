@@ -443,7 +443,7 @@ export class Organization extends GuidIdentity {
   @ManyToOne(() => Season, (season) => season.organizations, { cascade: true, orphanedRowAction: 'nullify' })
   public season: Season;
 
-  @OneToMany(() => Speaker, (speaker) => speaker.organization, { cascade: false, nullable: true })
+  @OneToMany(() => Speaker, (speaker) => speaker.organization, { orphanedRowAction: 'nullify' })
   public speakers: Speaker[];
 }
 
@@ -487,7 +487,11 @@ export class Speaker extends GuidIdentity {
   @ManyToOne(() => Season, (season) => season.speakers, { cascade: false, nullable: true })
   public season: Season;
 
-  @ManyToOne(() => Organization, (o) => o.speakers, { cascade: false, nullable: true })
+  @ManyToOne(() => Organization, (o) => o.speakers, {
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
   public organization: Organization;
 
   @ManyToOne(() => University, { cascade: true, nullable: true })

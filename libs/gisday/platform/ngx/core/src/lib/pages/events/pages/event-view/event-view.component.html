@@ -34,15 +34,17 @@
           <div id="filters" class="card">
             <h2 class="trailer-1">Filters</h2>
 
-            <ng-container *ngIf="(tags$ | async) as tags; else noTags">
-              <div class="row" *ngFor="let tag of tags">
-                <tamu-gisc-checkbox (changed)="applyOrRemoveTag(tag, $event)" [label]="tag.name"></tamu-gisc-checkbox>
-              </div>
-            </ng-container>
+            <ng-container *ngIf="(tags$ | async) as tags; else loading">
+              <ng-container *ngIf="tags?.length > 0; else noTags">
+                <div class="row" *ngFor="let tag of tags">
+                  <tamu-gisc-checkbox (changed)="applyOrRemoveTag(tag, $event)" [label]="tag.name"></tamu-gisc-checkbox>
+                </div>
+              </ng-container>
 
-            <ng-template #noTags>
-              <p class="row">There are no tags.</p>
-            </ng-template>
+              <ng-template #noTags>
+                <p class="row">There are no tags.</p>
+              </ng-template>
+            </ng-container>
           </div>
         </div>
 
@@ -51,18 +53,24 @@
           <div id="filters" class="card">
             <h2 class="trailer-1">Organizations</h2>
 
-            <ng-container *ngIf="(organizations$ | async) as orgs; else noOrgs">
-              <div class="row" *ngFor="let org of orgs">
-                <tamu-gisc-checkbox (changed)="applyOrRemoveTag(org, $event)" [label]="org.name"></tamu-gisc-checkbox>
-              </div>
-            </ng-container>
+            <ng-container *ngIf="(organizations$ | async) as orgs; else loading">
+              <ng-container *ngIf="orgs?.length > 0; else noOrgs">
+                <div class="row" *ngFor="let org of orgs">
+                  <tamu-gisc-checkbox (changed)="applyOrRemoveTag(org, $event)" [label]="org.name"></tamu-gisc-checkbox>
+                </div>
+              </ng-container>
 
-            <ng-template #noOrgs>
-              <p class="row">There are no tags.</p>
-            </ng-template>
+              <ng-template #noOrgs>
+                <p class="row">There are no organizations.</p>
+              </ng-template>
+            </ng-container>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<ng-template #loading>
+  <div class="loader small"></div>
+</ng-template>

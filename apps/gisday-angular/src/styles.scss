@@ -2131,6 +2131,12 @@ nav#section-nav a:hover {
   transform: translateZ(0);
   -webkit-animation: load8 0.75s infinite linear;
   animation: load8 0.75s infinite linear;
+
+  &.small {
+    margin: 25px auto;
+    height: 1.5rem;
+    width: 1.5rem;
+  }
 }
 
 .loader,
