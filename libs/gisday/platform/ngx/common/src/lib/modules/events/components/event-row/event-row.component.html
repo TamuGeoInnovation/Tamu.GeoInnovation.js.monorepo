@@ -2,32 +2,34 @@
   <tamu-gisc-checkbox [label]="''"></tamu-gisc-checkbox>
 </div>
 
-<div class="event-time">
-  <ng-container *ngIf="day?.date && event?.startTime && event?.endTime; else noTime">
-    <span>{{day.date | parseDateTimeStrings : event.startTime | date: 'h:mm a'}}</span>
-    <span id="detail-time"> - {{day.date | parseDateTimeStrings : event.endTime | date: 'h:mm a'}}</span>
-  </ng-container>
+<div class="event-meta">
+  <div class="event-time">
+    <ng-container *ngIf="day?.date && event?.startTime && event?.endTime; else noTime">
+      <span>{{day.date | parseDateTimeStrings : event.startTime | date: 'h:mm a'}}</span>
+      <span id="detail-time"> - {{day.date | parseDateTimeStrings : event.endTime | date: 'h:mm a'}}</span>
+    </ng-container>
 
-  <ng-template #noTime>
-    <span>Time TBD</span>
-  </ng-template>
-</div>
+    <ng-template #noTime>
+      <span>Time TBD</span>
+    </ng-template>
+  </div>
 
-<div class="event-name">
-  <ng-container *ngIf="event?.name; else noName">
-    <p>{{event.name}}</p>
-  </ng-container>
+  <div class="event-name">
+    <ng-container *ngIf="event?.name; else noName">
+      <p>{{event.name}}</p>
+    </ng-container>
 
-  <ng-template #noName>
-    <p>Event Name TBD</p>
-  </ng-template>
+    <ng-template #noName>
+      <p>Event Name TBD</p>
+    </ng-template>
 
-  <ng-container *ngIf="event?.location?.building; else noLocation">
-    <p>{{event.location?.building}}</p>
-  </ng-container>
+    <ng-container *ngIf="event?.location?.building; else noLocation">
+      <p>{{event.location?.building}}</p>
+    </ng-container>
 
-  <ng-template #noLocation>
-    <p>Location TBD</p>
-  </ng-template>
+    <ng-template #noLocation>
+      <p>Location TBD</p>
+    </ng-template>
+  </div>
 </div>
 

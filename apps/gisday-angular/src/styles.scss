@@ -1446,60 +1446,12 @@ img.jumbo {
     margin-bottom: 0;
     box-sizing: border-box;
 
-    &:hover {
-      cursor: pointer;
-      background: #eeeeee;
-    }
-
-    & > div,
-    & > event-item > div,
-    & > class-item > div {
-      display: table-cell;
-      position: inherit;
-    }
-
     p {
       font-size: inherit;
       padding-top: 0;
       padding-bottom: 0;
       padding-top: 0.8rem;
       padding-bottom: 0.8rem;
-    }
-
-    .event-rsvp-control,
-    .event-time,
-    .event-name {
-      padding: 0 0.5rem;
-      padding-top: 0.5rem;
-    }
-
-    .event-rsvp-control {
-      padding-top: 0.75rem;
-    }
-
-    .event-time {
-      color: $light-grey;
-      font-weight: 300;
-      white-space: nowrap;
-      min-width: 10rem;
-    }
-
-    .event-name {
-      font-weight: 400;
-      padding: 0 0.5rem 0 1rem;
-      width: 100%;
-
-      p:first-child {
-        padding-top: 0.25rem;
-        padding-bottom: 0;
-      }
-
-      p:nth-child(2) {
-        padding-top: 0;
-        padding-bottom: 0.25rem;
-        color: #616161;
-        font-size: 0.75rem;
-      }
     }
   }
 }

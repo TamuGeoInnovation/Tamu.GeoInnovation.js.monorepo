@@ -2,7 +2,7 @@
   <h2>{{seasonDay.date | date : 'MMMM dd'}}</h2>
 
   <ng-container *ngIf="(events$ | async)?.length > 0; else noEvents">
-    <div *ngFor="let event of events$ | async" [routerLink]="['/sessions/details', event.guid]">
+    <div *ngFor="let event of events$ | async">
       <tamu-gisc-event-row [event]="event" [day]="seasonDay"></tamu-gisc-event-row>
     </div>
   </ng-container>

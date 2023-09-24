@@ -1,15 +1,31 @@
 :host {
   display: grid;
-  grid-template-columns: 3rem 3fr 10fr;
+  grid-template-columns: 3rem 1fr;
   padding: 0.5rem 1rem;
   column-gap: 0.5rem;
+}
+
+.event-meta {
+  display: inherit;
+  grid-template-columns: 3fr 10fr;
+  grid-column: 2/3;
+  column-gap: inherit;
 }
 
 .event-rsvp-control {
   justify-self: center;
 }
 
+.event-time,
 .event-name {
+  cursor: pointer;
+}
+
+.event-name {
+  p:first-child {
+    padding-bottom: 0;
+  }
+
   p:not(:first-child) {
     padding-top: 0;
     padding-bottom: 0.25rem;
