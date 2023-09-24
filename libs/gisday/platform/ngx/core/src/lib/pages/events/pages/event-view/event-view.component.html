@@ -33,15 +33,7 @@
           <h2 class="trailer-1">Filters</h2>
 
           <div class="row" *ngFor="let tag of (tags$ | async)">
-            <div class="input-control">
-              <div class="checkbox-custom-input">
-                <input #checkbox type="checkbox" (click)="applyOrRemoveTag(tag, checkbox.checked)" />
-                <i></i>
-              </div>
-            </div>
-            <div class="filter-name">
-              <p>{{tag.name}}</p>
-            </div>
+            <tamu-gisc-checkbox (changed)="applyOrRemoveTag(tag, $event)" [label]="tag.name"></tamu-gisc-checkbox>
           </div>
         </div>
       </div>
