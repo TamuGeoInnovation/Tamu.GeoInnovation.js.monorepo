@@ -20,7 +20,7 @@ export class AuthService {
 
     this.userRoles$ = this.as.idTokenClaims$.pipe(
       map((user) => {
-        return user[claim];
+        return user?.[claim] || [];
       })
     );
   }
