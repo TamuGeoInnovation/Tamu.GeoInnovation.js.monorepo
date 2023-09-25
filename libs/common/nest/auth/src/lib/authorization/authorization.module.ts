@@ -7,6 +7,10 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
 @Module({})
 export class AuthorizationModule {
   public static forRoot(env: JwtConfig): DynamicModule {
+    if (process.env.LOGGING) {
+      console.log('Auth', env);
+    }
+
     return {
       global: true,
       module: AuthorizationModule,

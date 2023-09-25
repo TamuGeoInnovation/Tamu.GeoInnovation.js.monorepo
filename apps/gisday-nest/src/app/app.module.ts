@@ -27,24 +27,26 @@ import { AuthorizationModule } from '@tamu-gisc/common/nest/auth';
 
 import { AppService } from './app.service';
 
+import { environment, ormConfig } from '../environments/environment';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: process.env.TYPEORM_CONNECTION as any,
-      host: process.env.TYPEORM_HOST,
-      username: process.env.TYPEORM_USERNAME,
-      password: process.env.TYPEORM_PASSWORD,
-      database: process.env.TYPEORM_DATABASE,
-      synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true' ? true : false,
-      dropSchema: process.env.TYPEORM_DROP_SCHEMA === 'true' ? true : false,
-      logging: process.env.TYPEORM_LOGGING === 'true' ? true : false,
-      extra: process.env.TYPEORM_EXTRA,
+      type: ormConfig.type as any,
+      host: ormConfig.host,
+      username: ormConfig.username,
+      password: ormConfig.password,
+      database: ormConfig.database,
+      synchronize: ormConfig.synchronize,
+      dropSchema: ormConfig.dropSchema,
+      logging: ormConfig.logging,
+      extra: ormConfig.extra,
       entities: [...GISDAY_ENTITIES]
     }),
     AuthorizationModule.forRoot({
-      audience: process.env.AUTH0_AUDIENCE,
-      issuerUrl: process.env.AUTH0_ISSUER_URL
+      audience: environment.auth0_audience,
+      issuerUrl: environment.auth0_issuerUrl
     }),
     CheckInModule,
     ClassModule,

@@ -1,14 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 
 import * as dotenv from 'dotenv';
+dotenv.config();
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
-dotenv.config();
-
 async function bootstrap() {
   // Simple check for required environment variables
+  if (process.env.LOGGING) {
+    console.log('Logging is enabled');
+    console.log('Environment variables: ', process.env);
+  }
+
   if (
     process.env.AUTH0_AUDIENCE === undefined ||
     process.env.AUTH0_AUDIENCE === '' ||
