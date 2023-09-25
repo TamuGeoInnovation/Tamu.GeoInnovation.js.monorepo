@@ -25,6 +25,7 @@ export class HeaderComponent implements OnInit {
   public isActive$ = new Subject();
   public logoVisible = 'hidden';
   public isMobile$ = this.rp.isMobile.pipe(shareReplay(1));
+  public isAbsolute$: Observable<boolean>;
 
   constructor(
     private readonly location: Location,

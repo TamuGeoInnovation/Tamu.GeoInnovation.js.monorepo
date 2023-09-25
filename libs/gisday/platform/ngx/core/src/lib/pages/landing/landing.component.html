@@ -7,11 +7,11 @@
       <div class="flex flex-column align-center">
         <div class="logo-container">
           <h1 class="site-logo">TxGIS Day <span *ngIf="(activeSeason$ | async)?.year as year">{{year}}</span></h1>
-          <img src="assets/images/TXGISDaySolo.svg" />
+          <img src="assets/images/2022-TIN-sq-1080px.png" />
         </div>
 
         <div class="landing-container">
-          <div class="countdown">
+          <!-- <div class="countdown">
             <div class="days">
               <div class="value">{{daysTill}}</div>
               <div class="label">Days</div>
@@ -28,11 +28,22 @@
               <div class="value">{{timeTill.getSeconds()}}</div>
               <div class="label">Seconds</div>
             </div>
+          </div> -->
+
+          <h2 class="trailer-1 column9 slogan">{{dayCountText$ | async}}, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
+
+          <h3 class="column9 trailer-1" *ngIf="dateRange$ | async as dates">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</h3>
+
+          <h3 class="column9 trailer-1">In-Person and Streaming from across the State of Texas:</h3>
+
+          <div class="trailer-2">
+            <p>Austin, Texas</p>
+            <p>College Station, Texas</p>
+            <p>Houston, Texas</p>
+            <p>Lubbock, Texas</p>
+            <p>Nacogdoches, Texas</p>
+            <p>San Antonio, Texas</p>
           </div>
-
-          <h2 class="trailer-1 column9 slogan">Three days of interactive workshops, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
-
-          <h3 class="column9 trailer-3" *ngIf="dateRange$ | async as dates">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}} | Virtual</h3>
 
           <a class="button primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdqnC_rYGEd2PG3VYCzXmn6F3zRS-7Lsy9jhB7IR3FiXd9s4g/viewform">Submit a presentation</a>
           <br />
