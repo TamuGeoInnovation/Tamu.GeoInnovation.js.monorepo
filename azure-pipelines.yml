@@ -55,7 +55,9 @@ stages:
           buildType: production
 
   - stage: Tag
-    dependsOn: Build
+    dependsOn:
+      - Setup
+      - Build
     variables:
       baseSha: $[stageDependencies.Setup.Last_SHA.outputs['last_successful_sha.BASE_SHA']]
     jobs:
