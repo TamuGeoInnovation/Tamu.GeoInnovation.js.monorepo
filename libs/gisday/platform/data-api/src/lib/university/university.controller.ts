@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
+
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { University } from '../entities/all.entity';
 import { UniversityProvider } from './university.provider';
@@ -22,16 +24,22 @@ export class UniversityController {
     return this.provider.find();
   }
 
+  @Permissions(['create:universities'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEntity(@Body() body: DeepPartial<University>) {
     return this.provider.create(body);
   }
 
+  @Permissions(['update:universities'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<University>) {
     return this.provider.update(guid, body);
   }
 
+  @Permissions(['delete:universities'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
     this.provider.deleteEntity({

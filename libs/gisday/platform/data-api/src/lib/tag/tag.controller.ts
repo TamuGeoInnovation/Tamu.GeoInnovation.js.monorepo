@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { Tag } from '../entities/all.entity';
 import { TagProvider } from './tag.provider';
@@ -22,6 +24,8 @@ export class TagController {
     return this.provider.getTags();
   }
 
+  @Permissions(['create:tags'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post('/bulk')
   public async insertTags(@Body() body) {
     const _tags: Partial<Tag>[] = body.tags.map((value: Tag) => {
@@ -35,6 +39,8 @@ export class TagController {
     return this.provider.insertTags(_tags);
   }
 
+  @Permissions(['create:tags'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEntity(@Body('name') name: string) {
     return this.provider.createTag({
@@ -42,11 +48,15 @@ export class TagController {
     });
   }
 
+  @Permissions(['update:tags'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<Tag>) {
     return this.provider.update(guid, body);
   }
 
+  @Permissions(['delete:tags'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
     return this.provider.deleteEntity({

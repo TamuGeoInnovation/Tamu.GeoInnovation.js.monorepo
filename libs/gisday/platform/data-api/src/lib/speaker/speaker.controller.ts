@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
+
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { EntityRelationsLUT, Speaker } from '../entities/all.entity';
 import { SpeakerProvider } from './speaker.provider';
@@ -51,6 +53,8 @@ export class SpeakerController {
     });
   }
 
+  @Permissions(['create:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
   public async speakerAndInfo(@Body() body, @UploadedFile() file) {
@@ -58,12 +62,16 @@ export class SpeakerController {
     return this.provider.insertWithInfo(_speaker, file);
   }
 
+  @Permissions(['update:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
   @UseInterceptors(FileInterceptor('file'))
   public async updateSpeakerInfo(@Param('guid') guid: string, @Body() body: DeepPartial<Speaker>, @UploadedFile() file) {
     return this.provider.updateWithInfo(guid, body, file);
   }
 
+  @Permissions(['delete:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
     return this.provider.deleteEntity({

@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotImplementedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotImplementedException, UseGuards } from '@nestjs/common';
 import { SeasonDayService } from './season-day.service';
+
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { SeasonDay } from '../entities/all.entity';
 
@@ -22,18 +24,24 @@ export class SeasonDayController {
     return this.sd.find();
   }
 
+  @Permissions(['create:season-days'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public create(@Body() createSeasonDayDto: Partial<SeasonDay>) {
     throw new NotImplementedException();
   }
 
+  @Permissions(['update:season-days'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public update(@Param('guid') guid: string, @Body() updateSeasonDayDto: Partial<SeasonDay>) {
     throw new NotImplementedException();
   }
 
+  @Permissions(['delete:season-days'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public remove(@Param('guid') guid: string) {

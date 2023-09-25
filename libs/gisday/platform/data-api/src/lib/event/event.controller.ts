@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
+
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { EntityRelationsLUT, Event } from '../entities/all.entity';
 import { EventProvider } from './event.provider';
@@ -49,16 +50,22 @@ export class EventController {
     });
   }
 
+  @Permissions(['create:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEvent(@Body() body: DeepPartial<Event>) {
     return this.provider.insertEvent(body);
   }
 
+  @Permissions(['update:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid, @Body() body: UpdateEventDto) {
     return this.provider.updateEvent(guid, body);
   }
 
+  @Permissions(['delete:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
     return this.provider.deleteEntity({
