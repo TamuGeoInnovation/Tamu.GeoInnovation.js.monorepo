@@ -115,7 +115,8 @@
     "uuid": "^8.1.0",
     "webfontloader": "^1.6.28",
     "yargs": "^16.2.0",
-    "zone.js": "0.11.4"
+    "zone.js": "0.11.4",
+    "dotenv": "10.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "13.2.1",
@@ -155,7 +156,6 @@
     "caniuse-lite": "^1.0.30001154",
     "coveralls": "^3.0.6",
     "cypress": "^6.2.0",
-    "dotenv": "10.0.0",
     "eslint": "8.7.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",

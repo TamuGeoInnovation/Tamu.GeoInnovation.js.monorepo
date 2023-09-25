@@ -13,6 +13,7 @@
         "tsConfig": "apps/gisday-nest/tsconfig.app.json",
         "assets": [
           "apps/gisday-nest/src/assets",
+          "apps/gisday-nest/src/Dockerfile",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -45,6 +46,17 @@
           ],
           "generatePackageJson": true
         }
+      }
+    },
+    "image-build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "docker build -t gisday-nest ."
+          }
+        ],
+        "cwd": "dist/apps/gisday-nest"
       }
     },
     "serve": {
