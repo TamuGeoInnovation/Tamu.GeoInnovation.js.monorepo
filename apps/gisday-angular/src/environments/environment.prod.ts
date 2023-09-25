@@ -2,7 +2,7 @@ export const environment = {
   production: true
 };
 
-export const api_url = `${window.location.origin}/gisday/api`;
+export const api_url = `${window.location.origin}/api/gisday`;
 
 export const auth0 = {
   domain: '#{ANGULAR_AUTH0_DOMAIN}#',
