@@ -1,10 +1,6 @@
 export const environment = {
   production: false,
-  port: 27000,
-  globalPrefix: '',
-  origins: ['http://localhost', 'http://localhost:4200']
+  port: process.env.PORT || 3333,
+  globalPrefix: process.env.GLOBAL_PREFIX || '',
+  origins: process.env.ORIGINS.split(',') || []
 };
-
-export * from './secrets';
-
-export { devDbConfig as dbConfig } from './ormconfig';

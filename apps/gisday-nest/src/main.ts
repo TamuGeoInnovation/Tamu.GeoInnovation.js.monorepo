@@ -13,7 +13,23 @@ async function bootstrap() {
     process.env.APP_DATA === undefined ||
     process.env.APP_DATA === ''
   ) {
-    console.error('Missing environment variables. Please check your .env file.');
+    console.error('Missing environment variables. Check .env config file.');
+    process.exit(1);
+  }
+
+  if (
+    process.env.TYPEORM_CONNECTION === undefined ||
+    process.env.TYPEORM_CONNECTION === '' ||
+    process.env.TYPEORM_HOST === undefined ||
+    process.env.TYPEORM_HOST === '' ||
+    process.env.TYPEORM_USERNAME === undefined ||
+    process.env.TYPEORM_USERNAME === '' ||
+    process.env.TYPEORM_PASSWORD === undefined ||
+    process.env.TYPEORM_PASSWORD === '' ||
+    process.env.TYPEORM_DATABASE === undefined ||
+    process.env.TYPEORM_DATABASE === ''
+  ) {
+    console.error('Missing db environment variables. Check .env config file.');
     process.exit(1);
   }
 
@@ -28,7 +44,7 @@ async function bootstrap() {
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
 
-  const port = process.env.port || environment.port;
+  const port = environment.port;
   await app.listen(port, () => {
     console.log('Listening at http://localhost:' + port + '/' + globalPrefix);
   });
