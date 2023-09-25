@@ -31,7 +31,10 @@ jobs:
 
       - task: CopyFiles@2
         inputs:
-          Contents: 'dist/**'
+          Contents: |
+            dist/**
+            package.json
+            package-lock.json
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Copy Distribution Files'
 
