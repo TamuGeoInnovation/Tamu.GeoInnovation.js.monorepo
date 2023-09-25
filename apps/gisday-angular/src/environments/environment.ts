@@ -18,9 +18,9 @@ export const environment = {
 export const api_url = 'http://localhost:3333/api'; // This is just some bs URL for now
 
 export const auth0 = {
-  domain: 'AUTH0_DOMAIN',
-  client_id: 'AUTH0_CLIENT_ID',
+  domain: '#{ANGULAR_AUTH0_DOMAIN}#',
+  client_id: '#{ANGULAR_AUTH0_CLIENT_ID}#',
   redirect_uri: window.location.origin + '/callback',
-  audience: 'AUTH0_AUDIENCE',
-  roles_claim: 'AUTH0_ROLES_CLAIM'
+  audience: '#{ANGULAR_AUTH0_AUDIENCE}#',
+  roles_claim: '#{ANGULAR_AUTH0_ROLES_CLAIM}#'
 };
