@@ -1,6 +1,15 @@
 @import 'libs/sass/mixins';
 @import 'libs/gisday/sass/variables';
 
+:host {
+  &.seamless {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
+}
+
 .logo-container {
   font-size: 3.5rem;
 

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 
 import {} from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
@@ -26,6 +26,17 @@ export class HeaderComponent implements OnInit {
   public isMobile$ = this.rp.isMobile.pipe(shareReplay(1));
   public isAbsolute$: Observable<boolean>;
   public logoVisible$: Observable<boolean>;
+
+  // This is used strictly for the seamless header on the landing page.
+  // Ideally we'd use the same logoVisible$ observable, but
+  // cannot return an observable from a getter HostBinding and have it
+  // evaluated correctly.
+  public isHeaderSeamless = false;
+
+  @HostBinding('class.seamless')
+  public get headerSeamless() {
+    return this.isHeaderSeamless;
+  }
 
   constructor(
     private readonly rp: ResponsiveService,
@@ -52,7 +63,10 @@ export class HeaderComponent implements OnInit {
       map((url) => {
         return url !== '/';
       }),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      tap((visible) => {
+        this.isHeaderSeamless = !visible;
+      })
     );
   }
 

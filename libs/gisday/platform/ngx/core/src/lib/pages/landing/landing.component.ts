@@ -32,7 +32,7 @@ export class LandingComponent implements OnInit {
   public daysTill: string;
   public subscription: Subscription;
 
-  public activeSeason$ = this.ss.getActiveSeason();
+  public activeSeason$ = this.ss.activeSeason$;
   public activeSeasonDays$: Observable<Array<SeasonDay>>;
   public activeSeasonDayCount$: Observable<number>;
   public dateRange$: Observable<Array<Date>>;
@@ -50,7 +50,7 @@ export class LandingComponent implements OnInit {
 
     this.loadCountdown();
 
-    this.activeSeasonDays$ = this.ss.getActiveSeason().pipe(
+    this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),
       filter((days) => {
         return days !== undefined;
