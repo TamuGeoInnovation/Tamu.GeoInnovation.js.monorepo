@@ -1,42 +1,50 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, debounceTime, filter, fromEvent, map, startWith } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ResponsiveService {
-  private _isMobile: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public screenWidth: number;
+  public _state: BehaviorSubject<ResponsiveSnapshot> = new BehaviorSubject<ResponsiveSnapshot>(
+    this._checkWidth({ currentTarget: window })
+  );
+  public isMobile = this._state.asObservable().pipe(
+    filter((mobile) => {
+      return mobile !== null;
+    }),
+    map((state) => state.isMobile)
+  );
 
   constructor() {
-    this.checkWidth();
+    this._init();
   }
 
-  private onStatusChange(status: boolean) {
-    this._isMobile.next(status);
+  private _init() {
+    // Subscribe to window resize events and update the state
+    fromEvent(window, 'resize')
+      .pipe(
+        startWith({ currentTarget: window }),
+        debounceTime(100),
+        map((event) => this._checkWidth(event))
+      )
+      .subscribe(this._state);
   }
 
-  private checkWidth() {
-    const width = window.innerWidth;
-    if (width <= 768) {
-      this.screenWidth = width;
-      this.onStatusChange(true);
-    } else if (width > 768 && width <= 992) {
-      this.screenWidth = width;
-      this.onStatusChange(false);
+  private _checkWidth(event: Event | { currentTarget: Window }) {
+    const ret = {
+      screenWidth: (event.currentTarget as Window).innerWidth,
+      isMobile: undefined
+    };
+
+    if (ret.screenWidth <= 768) {
+      ret.isMobile = true;
     } else {
-      this.screenWidth = width;
-      this.onStatusChange(false);
+      ret.isMobile = false;
     }
-  }
 
-  public get isMobile(): Observable<boolean> {
-    return this._isMobile.asObservable();
+    return ret;
   }
 
   public get snapshot(): ResponsiveSnapshot {
-    return {
-      isMobile: this._isMobile.value,
-      screenWidth: this.screenWidth
-    };
+    return this._state.getValue();
   }
 }
 
