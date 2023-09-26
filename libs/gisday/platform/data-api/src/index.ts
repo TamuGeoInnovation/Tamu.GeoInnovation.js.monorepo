@@ -25,3 +25,6 @@ export * from './lib/organization/organization.module';
 // Providers
 export * from './lib/_base/base-provider';
 export * from './lib/class/class.provider';
+
+// DTOs
+export * from './lib/season/dto/active-season.dto';

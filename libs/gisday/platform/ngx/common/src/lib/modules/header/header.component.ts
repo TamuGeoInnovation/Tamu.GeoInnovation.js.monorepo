@@ -3,10 +3,9 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 
-import {} from '@tamu-gisc/common/ngx/router';
+import { ActiveSeasonDto } from '@tamu-gisc/gisday/platform/data-api';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
-import { Season } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { GISDayRoles } from '../../roles/gisday.roles';
@@ -20,7 +19,7 @@ export class HeaderComponent implements OnInit {
   public loggedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
   public appRoles = GISDayRoles;
-  public activeSeason$: Observable<Season>;
+  public activeSeason$: Observable<ActiveSeasonDto>;
 
   public isActive$ = new Subject();
   public isMobile$ = this.rp.isMobile.pipe(shareReplay(1));

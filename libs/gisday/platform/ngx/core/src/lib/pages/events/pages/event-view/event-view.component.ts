@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { filter, shareReplay, switchMap, toArray } from 'rxjs/operators';
 
-import { Event, Organization, Season, Tag } from '@tamu-gisc/gisday/platform/data-api';
+import { ActiveSeasonDto, Event, Organization, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { EventService, OrganizationService, SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
@@ -12,7 +12,7 @@ import { EventService, OrganizationService, SeasonService, TagService } from '@t
   styleUrls: ['./event-view.component.scss']
 })
 export class EventViewComponent implements OnInit {
-  public activeSeason$: Observable<Season>;
+  public activeSeason$: Observable<ActiveSeasonDto>;
   public events$: Observable<Array<Partial<Event>>>;
   public tags$: Observable<Array<Partial<Tag>>>;
   public organizations$: Observable<Array<Partial<Organization>>>;
@@ -27,7 +27,7 @@ export class EventViewComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.activeSeason$ = this.ss.getActiveSeason().pipe(shareReplay());
+    this.activeSeason$ = this.ss.activeSeason$.pipe(shareReplay());
     this.events$ = this.eventService.getEvents().pipe(shareReplay());
     this.tags$ = this.tagService.getEntities().pipe(shareReplay());
     this.organizations$ = this.os.getEntities().pipe(shareReplay());

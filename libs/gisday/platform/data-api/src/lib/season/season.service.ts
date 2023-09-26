@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { BaseProvider } from '../_base/base-provider';
 import { Season, SeasonDay } from '../entities/all.entity';
+import { ActiveSeasonDto } from './dto/active-season.dto';
 
 @Injectable()
 export class SeasonService extends BaseProvider<Season> {
@@ -51,11 +52,31 @@ export class SeasonService extends BaseProvider<Season> {
       where: {
         active: true
       },
-      relations: ['days']
+      relations: ['days', 'days.events']
     });
 
     if (season) {
-      return { ...season, days: this._orderDays(season.days) };
+      const ordered = { ...season, days: this._orderDays(season.days), firstEventTime: null } as ActiveSeasonDto;
+
+      if (ordered.days.length > 0) {
+        const firstDay = ordered.days[0];
+        const extendedDay = await this.seasonDayRepo.findOne({
+          where: {
+            guid: firstDay.guid
+          },
+          relations: ['events']
+        });
+
+        if (extendedDay && extendedDay.events.length > 0) {
+          const orderedEvents = extendedDay.events.sort((a, b) => {
+            return a.startTime < b.startTime ? -1 : 1;
+          });
+
+          ordered.firstEventTime = orderedEvents[0].startTime;
+        }
+      }
+
+      return ordered;
     }
 
     throw new NotFoundException();
