@@ -21,7 +21,11 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
       });
 
       if (day) {
-        return day.events.filter((e) => e.active);
+        return day.events
+          .filter((e) => e.active)
+          .sort((a, b) => {
+            return a.startTime > b.startTime ? 1 : -1;
+          });
       } else {
         throw new NotFoundException();
       }
