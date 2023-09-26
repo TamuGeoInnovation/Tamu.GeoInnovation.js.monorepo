@@ -67,12 +67,16 @@ export class SeasonService extends BaseProvider<Season> {
           relations: ['events']
         });
 
-        if (extendedDay && extendedDay.events.length > 0) {
-          const orderedEvents = extendedDay.events.sort((a, b) => {
+        const activeEventsForDay = extendedDay.events.filter((event) => {
+          return event.active;
+        });
+
+        if (activeEventsForDay && activeEventsForDay.length > 0) {
+          const orderedActiveEvents = activeEventsForDay.sort((a, b) => {
             return a.startTime < b.startTime ? -1 : 1;
           });
 
-          ordered.firstEventTime = orderedEvents[0].startTime;
+          ordered.firstEventTime = orderedActiveEvents[0].startTime;
         }
       }
 

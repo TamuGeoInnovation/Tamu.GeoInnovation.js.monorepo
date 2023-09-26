@@ -11,24 +11,24 @@
         </div>
 
         <div class="landing-container">
-          <!-- <div class="countdown">
+          <div class="countdown" *ngIf="(seasonStarted$ | async) === false">
             <div class="days">
-              <div class="value">{{daysTill}}</div>
+              <div class="value">{{daysUntil$ | async}}</div>
               <div class="label">Days</div>
             </div>
             <div class="hours">
-              <div class="value">{{timeTill.getHours() < 10 ? '0' + timeTill.getHours() : timeTill.getHours()}}</div>
+              <div class="value">{{hoursUntil$ | async}}</div>
               <div class="label">Hours</div>
             </div>
             <div class="minutes">
-              <div class="value">{{timeTill.getMinutes() < 10 ? '0' + timeTill.getMinutes() : timeTill.getMinutes()}}</div>
+              <div class="value">{{minutesUntil$ | async}}</div>
               <div class="label">Minutes</div>
             </div>
             <div class="seconds">
-              <div class="value">{{timeTill.getSeconds()}}</div>
+              <div class="value">{{secondsUntil$ | async}}</div>
               <div class="label">Seconds</div>
             </div>
-          </div> -->
+          </div>
 
           <h2 class="trailer-1 column9 slogan">{{dayCountText$ | async}}, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
 

@@ -861,8 +861,8 @@ footer .logo-container {
     font-size: 7rem;
 
     img {
-      margin-top: 3rem;
-      max-width: 60%;
+      margin-top: 2rem;
+      max-width: 35%;
     }
   }
 
@@ -2385,7 +2385,7 @@ nav#section-nav a:hover {
   @include flex(auto);
   @include flex-direction(row);
   @include align-items(center);
-  margin: 2rem 0;
+  margin: 0rem 0 2rem 0;
 
   .days,
   .hours,

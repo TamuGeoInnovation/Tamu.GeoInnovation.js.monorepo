@@ -1,6 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { filter, interval, map, Observable, Subscription } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  interval,
+  map,
+  NEVER,
+  Observable,
+  pipe,
+  shareReplay,
+  startWith,
+  Subscription,
+  switchMap
+} from 'rxjs';
 
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
@@ -26,8 +38,6 @@ const numberDictionary = {
 })
 export class LandingComponent implements OnInit {
   private title = 'TxGIS Day 2022';
-  private rightNow: Date;
-  private firstDay: Date;
   public timeTill: Date = new Date();
   public daysTill: string;
   public subscription: Subscription;
@@ -38,23 +48,24 @@ export class LandingComponent implements OnInit {
   public dateRange$: Observable<Array<Date>>;
   public dayCountText$: Observable<string>;
 
-  private source = interval(1000);
+  public totalSecondsRemaining$: Observable<number>;
+  public minutesUntil$: Observable<string>;
+  public hoursUntil$: Observable<string>;
+  public daysUntil$: Observable<string>;
+  public secondsUntil$: Observable<string>;
+  public seasonStarted$: Observable<boolean>;
 
   constructor(private titleService: Title, private readonly ss: SeasonService) {}
 
   public ngOnInit() {
     this.titleService.setTitle(this.title);
 
-    this.rightNow = new Date(Date.now());
-    this.firstDay = new Date(2022, 10, 13, 14, 30, 0, 0); // Idk why but we have to take a month and a day off for the numbers to add up - Aaron H (3/26/22)
-
-    this.loadCountdown();
-
-    this.activeSeasonDays$ = this.activeSeason$.pipe(
+    this.activeSeasonDays$ = this.ss.getActiveSeason().pipe(
       map((season) => season?.days),
       filter((days) => {
         return days !== undefined;
-      })
+      }),
+      shareReplay()
     );
 
     this.activeSeasonDayCount$ = this.activeSeasonDays$.pipe(map((days) => days.length));
@@ -73,6 +84,7 @@ export class LandingComponent implements OnInit {
     );
 
     this.dayCountText$ = this.activeSeasonDayCount$.pipe(
+      startWith(0),
       map((count) => {
         if (count === 0) {
           return 'Workshops';
@@ -83,14 +95,63 @@ export class LandingComponent implements OnInit {
         }
       })
     );
+
+    this.totalSecondsRemaining$ = this.activeSeason$.pipe(
+      switchMap((season) => {
+        if (season.firstEventTime === null) {
+          return NEVER;
+        }
+
+        return interval(1000).pipe(
+          startWith(0),
+          map(() => {
+            const firstEventDate = new Date(new Date(season?.days[0].date).toDateString() + ' ' + season.firstEventTime);
+
+            return (firstEventDate.getTime() - Date.now()) / 1000;
+          }),
+          shareReplay()
+        );
+      })
+    );
+
+    this.seasonStarted$ = this.totalSecondsRemaining$.pipe(
+      map((seconds) => seconds <= 0),
+      distinctUntilChanged()
+    );
+
+    this.daysUntil$ = this.totalSecondsRemaining$.pipe(
+      map((seconds) => Math.floor(seconds % 86400).toFixed(0)),
+      this._pad(),
+      distinctUntilChanged(),
+      shareReplay()
+    );
+
+    this.hoursUntil$ = this.totalSecondsRemaining$.pipe(
+      map((seconds) => Math.floor((seconds / 3600) % 24).toFixed(0)),
+      this._pad(),
+      distinctUntilChanged(),
+      shareReplay()
+    );
+
+    this.minutesUntil$ = this.totalSecondsRemaining$.pipe(
+      map((seconds) => Math.floor((seconds / 60) % 60).toFixed(0)),
+      this._pad(),
+      distinctUntilChanged(),
+      shareReplay()
+    );
+
+    this.secondsUntil$ = this.totalSecondsRemaining$.pipe(
+      map((seconds) => Math.floor(seconds % 60).toFixed(0)),
+      this._pad(),
+      shareReplay()
+    );
   }
 
-  public loadCountdown() {
-    this.subscription = this.source.subscribe(() => {
-      this.rightNow = new Date(Date.now());
-      this.timeTill = new Date(this.firstDay.getTime() - this.rightNow.getTime());
-      const milliseconds = this.firstDay.getTime() - this.rightNow.getTime();
-      this.daysTill = (milliseconds / 1000 / 86400).toFixed(0); // Converts from milliseconds to seconds to days (86400 seconds in a day)
-    });
+  private _pad() {
+    return pipe(
+      map((val: string) => {
+        return val.padStart(2, '0');
+      })
+    );
   }
 }
