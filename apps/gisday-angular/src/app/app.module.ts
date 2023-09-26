@@ -111,7 +111,9 @@ const routeOptions: ExtraOptions = {
         allowedList: [
           {
             allowAnonymous: true,
-            uri: `http://localhost:3333/api/*`
+            uriMatcher: (url) => {
+              return environment.auth0.urls.some((u) => url.startsWith(u));
+            }
           }
         ]
       }

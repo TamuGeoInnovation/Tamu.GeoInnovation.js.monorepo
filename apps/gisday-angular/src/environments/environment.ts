@@ -22,5 +22,6 @@ export const auth0 = {
   client_id: '#{ANGULAR_AUTH0_CLIENT_ID}#',
   redirect_uri: window.location.origin + '/callback',
   audience: '#{ANGULAR_AUTH0_AUDIENCE}#',
-  roles_claim: '#{ANGULAR_AUTH0_ROLES_CLAIM}#'
+  roles_claim: '#{ANGULAR_AUTH0_ROLES_CLAIM}#',
+  urls: ['http://localhost:3333/api/']
 };
