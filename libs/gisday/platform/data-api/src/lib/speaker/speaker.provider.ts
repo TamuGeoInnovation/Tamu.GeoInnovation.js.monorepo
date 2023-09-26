@@ -41,23 +41,6 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     );
   }
 
-  public async getPresenters() {
-    const speakers = from(
-      this.eventRepo.find({
-        relations: ['speakers', 'speakers.university']
-      })
-    ).pipe(
-      mergeMap((events) => events),
-      filter((event) => event.speakers != null),
-      mergeMap((event) => event.speakers),
-      distinct(({ guid }) => guid),
-      filter((speaker) => speaker.isActive),
-      toArray()
-    );
-
-    return speakers;
-  }
-
   /**
    * Returns a streamable file photo for the provided speaker guid.
    */

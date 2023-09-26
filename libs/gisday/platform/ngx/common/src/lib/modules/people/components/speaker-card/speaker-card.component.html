@@ -1,0 +1,13 @@
+<div class="profile" [routerLink]="['/presenters/details', speaker.guid]">
+  <div class="class-banner" *ngIf="speaker?.university" [ngStyle]=" { 'background': '#'+ speaker.university?.hexTriplet+'' }">{{speaker.university.acronym}} {{ speaker.graduationYear }}</div>
+
+  <div class="avatar-container">
+    <tamu-gisc-speaker-avatar [avatarGuid]="speaker.guid"></tamu-gisc-speaker-avatar>
+  </div>
+
+  <div class="image-description">
+    <div class="name">{{speaker.firstName}} {{speaker.lastName}}</div>
+    <div class="title">{{speaker?.organization?.name}}</div>
+  </div>
+</div>
+

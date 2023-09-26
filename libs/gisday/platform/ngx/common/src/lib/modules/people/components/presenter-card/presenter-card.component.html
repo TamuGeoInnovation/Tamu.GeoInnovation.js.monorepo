@@ -1,16 +1,11 @@
 <div class="presenter-item">
-  <img class="image" *ngIf="imageExists$ | async; else default" presenter="presenter" [src]="speakerImageUrl$ | async" />
-
-  <ng-template #default>
-    <div class="image default">
-      <div class="initials">{{speakerInitials}}</div>
-    </div>
-  </ng-template>
+  <tamu-gisc-speaker-avatar [avatarGuid]="speaker.guid" [fallbackStyle]="'initials'" [avatarInitials]="speakerInitials"></tamu-gisc-speaker-avatar>
 
   <div class="details">
     <div class="name">
       <a href="/presenters/details/{{speaker.guid}}"> {{speaker.firstName}} {{speaker.lastName}} </a>
     </div>
+
     <div class="organization">{{speaker?.organization?.name}}</div>
     <!-- <div class="role">{{presenter?.affiliation}}</div> -->
   </div>

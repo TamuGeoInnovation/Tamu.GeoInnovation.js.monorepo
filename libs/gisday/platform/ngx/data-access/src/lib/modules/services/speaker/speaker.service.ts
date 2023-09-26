@@ -22,7 +22,7 @@ export class SpeakerService extends BaseService<Speaker> {
   }
 
   public getPresenters() {
-    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/presenters`);
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}`);
   }
 
   public getPhoto(guid: string) {

@@ -31,11 +31,6 @@ export class SpeakerController {
     });
   }
 
-  @Get('/presenters')
-  public async presenters() {
-    return this.provider.getPresenters();
-  }
-
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -49,7 +44,10 @@ export class SpeakerController {
   @Get()
   public async getEntities() {
     return this.provider.find({
-      relations: ['organization']
+      relations: ['organization', 'university'],
+      order: {
+        lastName: 'ASC'
+      }
     });
   }
 

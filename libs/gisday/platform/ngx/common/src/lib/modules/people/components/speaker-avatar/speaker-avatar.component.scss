@@ -1,0 +1,34 @@
+@use 'libs/sass/mixins';
+@use 'libs/gisday/sass/variables';
+
+:host {
+  position: relative;
+}
+
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.default {
+  height: 100%;
+  width: 100%;
+  color: #ffffff;
+  background: variables.$gisday-blue-support-lightened;
+  @include mixins.flexbox();
+  @include mixins.flex-direction(row);
+  @include mixins.justify-content(center);
+  @include mixins.align-items(center);
+
+  &.initials,
+  &.image {
+    font-size: 1em;
+    font-family: variables.$title-font;
+    text-align: center;
+
+    .material-icons {
+      font-size: inherit;
+    }
+  }
+}

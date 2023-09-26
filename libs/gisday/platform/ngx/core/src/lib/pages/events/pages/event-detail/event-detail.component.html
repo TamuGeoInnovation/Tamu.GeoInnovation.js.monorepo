@@ -100,7 +100,7 @@
         <div class="trailer-2 ng-scope" *ngIf="event.speakers.length > 0">
           <div class="border-divider leader-2 trailer-2"></div>
           <h3>Presenters</h3>
-          <div class="flex flex-row leader-1 justify-between">
+          <div class="flex flex-row leader-1 wrap justify-between">
             <tamu-gisc-presenter-card *ngFor="let presenter of (event.speakers)" [speaker]="presenter"></tamu-gisc-presenter-card>
           </div>
         </div>

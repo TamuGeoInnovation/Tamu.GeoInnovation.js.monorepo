@@ -1268,8 +1268,8 @@ img.jumbo {
 
 .profile {
   padding: 0;
-  margin: 0.75rem;
-  width: 22rem;
+  margin: 1rem;
+  width: 17rem;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
@@ -1277,31 +1277,14 @@ img.jumbo {
   border-color: $gisday-blue-support-lightened;
   border-radius: 3px;
 
-  .image {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: top center;
-    height: 22rem;
+  .avatar-container {
+    height: 17rem;
     width: 100%;
     position: relative;
     border-radius: 3px;
 
-    & > div {
-      width: 100%;
-      border: 10px;
-      border-bottom: 1rem;
-      border-left: 0.75rem;
-      border-right: 0.75rem;
-      border-color: transparent;
-      border-style: solid;
-      box-sizing: border-box;
-      position: absolute;
-      bottom: 0;
-
-      & > div {
-        background: #ffffff;
-        padding: 1rem 0;
-      }
+    tamu-gisc-speaker-avatar {
+      font-size: 12.5rem;
     }
   }
 

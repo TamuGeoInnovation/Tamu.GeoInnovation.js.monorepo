@@ -1,10 +1,8 @@
-import { Buffer } from 'buffer';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 
-import { SpeakerService, IPhotoReponse } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
@@ -13,18 +11,11 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
   styleUrls: ['./people-view.component.scss']
 })
 export class PeopleViewComponent implements OnInit {
-  public $people: Observable<Array<Partial<Speaker>>>;
-  public $photo: Observable<IPhotoReponse>;
-  public photo: string;
+  public people$: Observable<Array<Partial<Speaker>>>;
 
-  constructor(private router: Router, private speakerService: SpeakerService) {}
+  constructor(private speakerService: SpeakerService) {}
 
   public ngOnInit() {
-    this.$people = this.speakerService.getPresenters();
-  }
-
-  public unwrapPhoto(byteArray) {
-    const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
-    return `data:image/png;base64,${buffer}`;
+    this.people$ = this.speakerService.getPresenters().pipe(shareReplay());
   }
 }

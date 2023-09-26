@@ -14,12 +14,14 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
   public async getDayEvents(guid: string) {
     try {
       const day = await this.seasonDayRepo.findOne({
-        where: { guid },
+        where: {
+          guid
+        },
         relations: ['events']
       });
 
       if (day) {
-        return day.events;
+        return day.events.filter((e) => e.active);
       } else {
         throw new NotFoundException();
       }
