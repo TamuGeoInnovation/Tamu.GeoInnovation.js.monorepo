@@ -41,7 +41,7 @@
 
 <header class="seamless">
   <nav id="main-menu">
-    <div [style.visibility]="logoVisible" id="site-logo">
+    <div [ngStyle]="{visibility: (logoVisible$ | async) === false ? 'hidden' : 'visible'}" id="site-logo">
       <a class="logo-container" [routerLink]="['/']">
         <h1 class="site-logo">
           <span class="site-logo-image-container">

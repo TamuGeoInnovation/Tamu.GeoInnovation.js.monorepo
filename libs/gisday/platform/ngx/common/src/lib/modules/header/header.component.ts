@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
 
-import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
+import {} from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -23,16 +23,16 @@ export class HeaderComponent implements OnInit {
   public activeSeason$: Observable<Season>;
 
   public isActive$ = new Subject();
-  public logoVisible = 'hidden';
   public isMobile$ = this.rp.isMobile.pipe(shareReplay(1));
   public isAbsolute$: Observable<boolean>;
+  public logoVisible$: Observable<boolean>;
 
   constructor(
-    private readonly location: Location,
-    private readonly routerHistory: RouterHistoryService,
     private readonly rp: ResponsiveService,
     private readonly as: AuthService,
-    private readonly ss: SeasonService
+    private readonly ss: SeasonService,
+    private readonly rt: Router,
+    private readonly at: ActivatedRoute
   ) {}
 
   public ngOnInit() {
@@ -40,17 +40,20 @@ export class HeaderComponent implements OnInit {
     this.userRoles$ = this.as.userRoles$;
     this.activeSeason$ = this.ss.activeSeason$;
 
-    this.routerHistory.history
-      .pipe(
-        map(() => {
-          return this.location.path() !== '' ? 'visible' : 'hidden';
-        }),
-        tap((visibility) => {
-          this.logoVisible = visibility;
-        }),
-        shareReplay(1)
-      )
-      .subscribe();
+    const currUrl = this.rt.events.pipe(
+      map((e) => e instanceof NavigationEnd),
+      map(() => {
+        return this.rt.url;
+      }),
+      distinctUntilChanged()
+    );
+    // Header should not be visible when the activated route is the base route.
+    this.logoVisible$ = currUrl.pipe(
+      map((url) => {
+        return url !== '/';
+      }),
+      distinctUntilChanged()
+    );
   }
 
   public login() {
