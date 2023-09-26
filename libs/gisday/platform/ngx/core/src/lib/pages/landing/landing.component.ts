@@ -15,7 +15,7 @@ import {
 } from 'rxjs';
 
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
+import { ActiveSeasonDto, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 
 const numberDictionary = {
   0: 'Zero',
@@ -42,7 +42,7 @@ export class LandingComponent implements OnInit {
   public daysTill: string;
   public subscription: Subscription;
 
-  public activeSeason$ = this.ss.activeSeason$;
+  public activeSeason$: Observable<ActiveSeasonDto>;
   public activeSeasonDays$: Observable<Array<SeasonDay>>;
   public activeSeasonDayCount$: Observable<number>;
   public dateRange$: Observable<Array<Date>>;
@@ -60,7 +60,9 @@ export class LandingComponent implements OnInit {
   public ngOnInit() {
     this.titleService.setTitle(this.title);
 
-    this.activeSeasonDays$ = this.ss.getActiveSeason().pipe(
+    this.activeSeason$ = this.ss.getActiveSeason().pipe(shareReplay());
+
+    this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),
       filter((days) => {
         return days !== undefined;
@@ -120,7 +122,7 @@ export class LandingComponent implements OnInit {
     );
 
     this.daysUntil$ = this.totalSecondsRemaining$.pipe(
-      map((seconds) => Math.floor(seconds % 86400).toFixed(0)),
+      map((seconds) => Math.floor(seconds / 86400).toFixed(0)),
       this._pad(),
       distinctUntilChanged(),
       shareReplay()
