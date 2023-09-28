@@ -2,10 +2,6 @@ name: Build Affected
 
 on:
   workflow_call:
-    inputs:
-    excluded_projects:
-      required: true
-      type: string
 
 jobs:
   build:
@@ -33,7 +29,7 @@ jobs:
         run: npm ci
 
       - name: Build Affected
-        run: npx nx affected:build --configuration=production --exclude=${{ inputs.excluded_projects }}  --base=origin/development --parallel=2
+        run: npx nx affected:build --configuration=production --exclude=${{ vars.EXCLUDED_PROJECTS }}  --base=origin/development --parallel=2
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
