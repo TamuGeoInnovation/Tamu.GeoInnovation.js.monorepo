@@ -29,7 +29,7 @@ jobs:
         run: npm ci
 
       - name: Build Affected
-        run: npx nx affected:build --configuration=production --exclude=${{ vars.EXCLUDED_PROJECTS }}  --base=origin/development --parallel=2
+        run: npx nx affected:build --configuration=production --exclude=${{ vars.EXCLUDED_PROJECTS }}  --base=origin/development --parallel=4
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
