@@ -1,8 +1,5 @@
 name: Quabity Assuance
 
-env:
-  EXCLUDED_PROJECTS: aggiemap-angular,aggiemap-angular-e2e,covid-data-api-nest,cpa-angular,cpa-angular-e2e,cpa-nest,geoservices-angular,geoservices-angular-e2e,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-angular-e2e,gisday-competitions-nest,kissingbug-angular,kissingbug-angular-e2e,mailroom-angular,mailroom-angular-e2e,mailroom-helper-nest,mailroom-nest,oidc-admin-angular,oidc-admin-angular-e2e,oidc-admin-nest,oidc-provider-nest,signage-angular,signage-angular-e2e,trees-angular,trees-angular-e2e,two-angular,two-angular-e2e,two-dashboard-angular,two-dashboard-angular-e2e,two-data-api-nest,two-directory-nest,two-valup-nest,ues-effluent-angular,ues-effluent-angular-e2e,ues-effluent-data-api-nest,ues-operations-angular,ues-operations-angular-e2e,ues-operations-nest,ues-recycling-angular,ues-recycling-angular-e2e,ues-recycling-data-api-nest,ues-valves-angular,ues-valves-angular-e2e,ues-valves-nest,veoride-data-api-nest,veoride-data-compiler-node,veoride-scraper-node
-
 on:
   push:
 
@@ -10,11 +7,7 @@ jobs:
   lint:
     name: Lint
     uses: ./.github/workflows/lint.yml
-    with:
-      - excluded_projects: ${{ env.EXCLUDED_PROJECTS }}
   build:
     name: Build
     needs: lint
     uses: ./.github/workflows/build.yml
-    with:
-      - excluded_projects: ${{ env.EXCLUDED_PROJECTS }}
