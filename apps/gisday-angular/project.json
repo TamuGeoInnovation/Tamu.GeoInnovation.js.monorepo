@@ -16,6 +16,9 @@
         "assets": [
           "apps/gisday-angular/src/favicon.ico",
           "apps/gisday-angular/src/assets",
+          "apps/gisday-angular/src/Dockerfile",
+          "apps/gisday-angular/src/.dockerignore",
+          "apps/gisday-angular/src/.nginx",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -88,6 +91,17 @@
         }
       },
       "defaultConfiguration": ""
+    },
+    "image-build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "docker build -t gisday-angular ."
+          }
+        ],
+        "cwd": "dist/apps/gisday-angular"
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
