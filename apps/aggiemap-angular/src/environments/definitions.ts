@@ -242,6 +242,95 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
+    type: 'feature',
+    id: 'oals',
+    title: 'Open Access Labs',
+    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/oals/FeatureServer/0',
+    listMode: 'show',
+    visible: false,
+
+    native: {
+      ...commonLayerProps,
+      customParameters: {
+        where: '"Type" <> \'RESEARCH\' AND sum_Workstations > 0'
+      },
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'cim',
+          data: {
+            type: 'CIMSymbolReference',
+            primitiveOverrides: [
+              {
+                type: 'CIMPrimitiveOverride',
+                primitiveName: 'textGraphic',
+                propertyName: 'TextString',
+                valueExpressionInfo: {
+                  type: 'CIMExpressionInfo',
+                  title: 'Custom',
+                  expression: '$feature.sum_Workstations',
+                  returnType: 'Default'
+                }
+              }
+            ],
+            symbol: {
+              type: 'CIMPointSymbol',
+              symbolLayers: [
+                {
+                  type: 'CIMVectorMarker',
+                  enable: true,
+                  size: 22,
+                  colorLocked: true,
+                  anchorPointUnits: 'Relative',
+                  frame: { xmin: -5, ymin: -5, xmax: 5, ymax: 5 },
+                  markerGraphics: [
+                    {
+                      type: 'CIMMarkerGraphic',
+                      primitiveName: 'textGraphic',
+                      geometry: { x: 0, y: 0 },
+                      symbol: {
+                        type: 'CIMTextSymbol',
+                        fontFamilyName: 'Arial',
+                        fontStyleName: 'Bold',
+                        height: 4.5,
+                        horizontalAlignment: 'Center',
+                        offsetX: 0,
+                        offsetY: 1.5,
+                        symbol: {
+                          type: 'CIMPolygonSymbol',
+                          symbolLayers: [
+                            {
+                              type: 'CIMSolidFill',
+                              enable: true,
+                              color: [255, 255, 255, 255]
+                            }
+                          ]
+                        },
+                        verticalAlignment: 'Center'
+                      },
+                      textString: ''
+                    }
+                  ],
+                  scaleSymbolsProportionally: true,
+                  respectFrame: true
+                },
+                {
+                  type: 'CIMPictureMarker',
+                  enable: true,
+                  anchorPoint: { x: 0, y: 0 },
+                  anchorPointUnits: 'Relative',
+                  size: 22,
+                  scaleX: 1,
+                  url: '/assets/images/markers/computer-screen.png'
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  {
     type: 'graphics',
     id: 'selection-layer',
     title: 'Selected Buildings',

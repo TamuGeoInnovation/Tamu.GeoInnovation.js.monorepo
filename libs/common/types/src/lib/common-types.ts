@@ -13,9 +13,7 @@ export interface Point {
 //
 // Base Symbol Typings
 //
-interface CIMSymbol {
-  type: 'cim' & esri.CIMSymbolProperties;
-}
+type CIMSymbol = { type: 'cim' } & esri.CIMSymbolProperties;
 
 type SimpleFillSymbol = { type: 'simple-fill' } & esri.SimpleFillSymbolProperties;
 
@@ -43,6 +41,10 @@ type WebStyleSymbol = { type: 'web-style' } & esri.WebStyleSymbolProperties;
 
 //
 // Autocasting Symbol Typings
+
+interface CIMSymbolAutoCastOptions {
+  symbol: CIMSymbol & esri.CIMSymbolProperties;
+}
 //
 interface FillSymbolAutoCastOptions {
   symbol: (SimpleFillSymbol & esri.SimpleFillSymbolProperties) | (PictureFillSymbol & esri.PictureFillSymbolProperties);
@@ -76,7 +78,7 @@ interface WebStyleSymbolAutoCastOptions {
 }
 
 type AutoCastSymbols =
-  | CIMSymbol
+  | CIMSymbolAutoCastOptions
   | FillSymbolAutoCastOptions
   | LineSymbolAutoCastOptions
   | MarkerSymbolAutoCastOptions
@@ -132,7 +134,8 @@ type RendererAutoCastNativeOptions =
   | DotDensityRendererNativeOptions
   | SimpleRendererNativeOptions
   | HeatmapRendererNativeOptions
-  | UniqueValueRendererNativeOptions;
+  | UniqueValueRendererNativeOptions
+  | any; // TODO: Fix this
 
 export interface IRemoteLayerService {
   /**
