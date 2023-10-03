@@ -19,27 +19,27 @@ export * from './notification-events';
 export * from './polygons';
 
 export const LayerSources = [
-  ...LS,
-  {
-    type: 'geojson',
-    id: Definitions.BIKE_LOCATIONS.layerId,
-    title: Definitions.BIKE_LOCATIONS.name,
-    url: Definitions.BIKE_LOCATIONS.url,
-    listMode: 'show',
-    visible: false,
-    native: {
-      ...commonLayerProps,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-marker',
-          style: 'circle',
-          size: 8,
-          color: '#03C4A6'
-        }
-      }
-    }
-  }
+  ...LS
+  // {
+  //   type: 'geojson',
+  //   id: Definitions.BIKE_LOCATIONS.layerId,
+  //   title: Definitions.BIKE_LOCATIONS.name,
+  //   url: Definitions.BIKE_LOCATIONS.url,
+  //   listMode: 'show',
+  //   visible: false,
+  //   native: {
+  //     ...commonLayerProps,
+  //     renderer: {
+  //       type: 'simple',
+  //       symbol: {
+  //         type: 'simple-marker',
+  //         style: 'circle',
+  //         size: 8,
+  //         color: '#03C4A6'
+  //       }
+  //     }
+  //   }
+  // }
 ];
 
 export const ThreeDLayers: Array<LayerSource> = [

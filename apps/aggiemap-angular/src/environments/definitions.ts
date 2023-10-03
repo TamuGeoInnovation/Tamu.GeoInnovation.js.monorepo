@@ -245,7 +245,7 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: 'oals',
     title: 'Open Access Labs',
-    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/oals/FeatureServer/0',
+    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/oals_3/FeatureServer/0',
     listMode: 'show',
     visible: false,
 
