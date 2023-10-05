@@ -18,6 +18,9 @@
 
 ::ng-deep {
   .body {
+    @include flexbox();
+    @include flex-direction(column);
+
     text-align: center;
 
     p {

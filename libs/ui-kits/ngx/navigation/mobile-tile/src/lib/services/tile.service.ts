@@ -25,6 +25,8 @@ export class TileService {
   /**
    * Toggle the tile navigation state. If a state value is provided, it will
    * be used instead of flipping the current state value.
+   *
+   * `true` will open the tile navigation, `false` will close it.
    */
   public toggleMenu(state?: boolean) {
     this.menuActive.next(state !== undefined ? state : !this.menuActive.getValue());
@@ -33,6 +35,8 @@ export class TileService {
   /**
    * Toggle the sub-menu state. If a state value is provided, it will
    * be used instead of flipping the current state value.
+   *
+   * `true` will open the sub-menu, `false` will close it.
    */
   public toggleSubmenu(state?: boolean) {
     this.submenuActive.next(state !== undefined ? state : !this.submenuActive.getValue());
