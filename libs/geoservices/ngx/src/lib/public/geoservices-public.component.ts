@@ -9,7 +9,7 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
   styleUrls: ['./geoservices-public.component.scss']
 })
 export class GeoservicesPublicComponent {
-  public mobileNavToggle = new Subject();
+  public mobileNavToggle: Subject<boolean> = new Subject();
 
   constructor(public rp: ResponsiveService) {}
 }
