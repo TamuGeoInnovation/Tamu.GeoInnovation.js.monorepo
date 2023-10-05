@@ -1,7 +1,7 @@
 import { Component, ContentChild, HostListener } from '@angular/core';
 
 import { TileTitleComponent } from '../tile-title/tile-title.component';
-import { TileSubmenuDirective } from '../../directives/tile-submenu.directive';
+import { TileSubmenuDirective } from '../../directives/tile-submenu/tile-submenu.directive';
 import { TileService } from '../../services/tile.service';
 
 @Component({
