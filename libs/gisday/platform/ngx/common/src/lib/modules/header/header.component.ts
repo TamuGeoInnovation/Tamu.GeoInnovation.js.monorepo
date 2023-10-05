@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit {
   public appRoles = GISDayRoles;
   public activeSeason$: Observable<ActiveSeasonDto>;
 
-  public isActive$ = new Subject();
+  public mobileNavToggle: Subject<boolean> = new Subject();
   public isMobile$ = this.rp.isMobile.pipe(shareReplay(1));
   public isAbsolute$: Observable<boolean>;
   public logoVisible$: Observable<boolean>;

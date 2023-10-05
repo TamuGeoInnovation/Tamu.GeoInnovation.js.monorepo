@@ -1,42 +1,55 @@
-<tamu-gisc-hamburger-trigger *ngIf="isMobile$ | async" (poked)="isActive$.next($event)"></tamu-gisc-hamburger-trigger>
+<tamu-gisc-hamburger-trigger *ngIf="isMobile$ | async" [active]="mobileNavToggle | async" (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
 
-<tamu-gisc-tile-navigation [toggle]="isActive$" [defaultToggle]="false">
+<tamu-gisc-tile-navigation [toggle]="mobileNavToggle" (closed)="mobileNavToggle.next(false)">
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">widgets</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>Sessions</tamu-gisc-tile-title>
+    <tamu-gisc-tile-title tamuGiscTileLink location="sessions">Sessions</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
-    <tamu-gisc-tile-icon><div class="material-icons">attach_money</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>People</tamu-gisc-tile-title>
+    <tamu-gisc-tile-icon><div class="material-icons">people</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title tamuGiscTileLink location="presenters">Presenters</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
-    <tamu-gisc-tile-icon><div class="material-icons">help_outline</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>Competitions</tamu-gisc-tile-title>
-    <tamu-gisc-tile-submenu *giscTileSubmenu>
-      <p>High School Essay Contest</p>
-      <p>Feedback Lottery</p>
-      <p>Presentation Competition</p>
-      <p>Poster Competition</p>
-      <p>VGI Competition</p>
-    </tamu-gisc-tile-submenu>
+    <tamu-gisc-tile-icon><div class="material-icons">workspace_premium</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title tamuGiscTileLink location="competitions">Competitions</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
-    <tamu-gisc-tile-icon><div class="material-icons">menu_book</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>FAQ</tamu-gisc-tile-title>
+    <tamu-gisc-tile-icon><div class="material-icons">question_answer</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title tamuGiscTileLink location="faq">FAQs</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
-    <tamu-gisc-tile-icon><div class="material-icons">person_outline</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-icon><div class="material-icons">info</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title>About</tamu-gisc-tile-title>
     <tamu-gisc-tile-submenu *giscTileSubmenu>
-      <p>Organizing Committee</p>
-      <p>Volunteer Opportunities</p>
-      <p>Resume Bank</p>
+      <p tamuGiscTileLink location="/about">About TxGIS Day</p>
+      <p tamuGiscTileLink location="/sponsors">Sponsors</p>
+      <p tamuGiscTileLink location="https://docs.google.com/forms/d/e/1FAIpQLSd4fo6hIB-HVPbYJ4xO-ncZ3yMOEA_yDkBGhUr8jqShFAsOHg/viewform">Volunteer</p>
+      <p tamuGiscTileLink location="/highschool">High School Portal</p>
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
+
+  <tamu-gisc-tile *ngIf="(loggedIn$ | async) === false; else loggedInMobile">
+    <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title (click)="login()">Login</tamu-gisc-tile-title>
+  </tamu-gisc-tile>
+
+  <ng-template #loggedInMobile>
+    <tamu-gisc-tile>
+      <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
+      <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
+      <tamu-gisc-tile-submenu *giscTileSubmenu>
+        <p tamuGiscTileLink location="/account/my-details">My Details</p>
+        <p tamuGiscTileLink location="/account/my-classes">My Classes</p>
+        <p tamuGiscTileLink location="/account/my-checkins">My Checkins</p>
+        <p tamuGiscTileLink location="/account/my-submissions">My Submissions</p>
+        <p (click)="logout()">Logout</p>
+      </tamu-gisc-tile-submenu>
+    </tamu-gisc-tile>
+  </ng-template>
 </tamu-gisc-tile-navigation>
 
 <header>
