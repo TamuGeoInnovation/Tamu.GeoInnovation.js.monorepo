@@ -364,7 +364,8 @@ footer .logo-container {
   margin-bottom: 0.5rem;
 }
 
-.session-description {
+.session-description,
+.markdown-content {
   h1,
   h2,
   h3,
@@ -469,6 +470,7 @@ footer .logo-container {
     overflow: hidden;
     display: block;
     position: relative;
+    font-size: 17rem;
 
     .image {
       width: 100%;

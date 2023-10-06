@@ -1,8 +1,7 @@
-import { Buffer } from 'buffer';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 
 import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
@@ -21,13 +20,7 @@ export class PeopleDetailsComponent implements OnInit {
   public ngOnInit(): void {
     this.$speaker = this.route.params.pipe(
       map((params) => params['guid']),
-      switchMap((speakerGuid) => this.speakerService.getPresenter(speakerGuid)),
-      tap((speaker) => console.log(speaker))
+      switchMap((speakerGuid) => this.speakerService.getPresenter(speakerGuid))
     );
-  }
-
-  public unwrapPhoto(byteArray) {
-    const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
-    return `data:image/png;base64,${buffer}`;
   }
 }
