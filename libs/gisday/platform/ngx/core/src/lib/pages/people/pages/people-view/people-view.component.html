@@ -1,5 +1,5 @@
 <div class="container12 flex flex-row justify-center wrap" *ngIf="(people$ | async) as people; else noSpeakers">
-  <ng-container *ngIf="people?.length > 0">
+  <ng-container *ngIf="people?.length > 0; else noSpeakers">
     <tamu-gisc-speaker-card *ngFor="let person of people" [speaker]="person"></tamu-gisc-speaker-card>
   </ng-container>
 
