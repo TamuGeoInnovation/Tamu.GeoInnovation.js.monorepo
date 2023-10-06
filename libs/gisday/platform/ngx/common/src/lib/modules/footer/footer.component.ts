@@ -11,10 +11,12 @@ import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 })
 export class FooterComponent implements OnInit {
   public activeSeason$: Observable<Partial<Season>>;
+  public currentYear: number;
 
   constructor(private readonly ss: SeasonService) {}
 
   public ngOnInit(): void {
     this.activeSeason$ = this.ss.activeSeason$;
+    this.currentYear = new Date().getFullYear();
   }
 }
