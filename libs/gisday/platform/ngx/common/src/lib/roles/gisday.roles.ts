@@ -7,8 +7,9 @@
 export enum GISDayRoles {
   ADMIN = 'GIS Day Admin',
   MANAGER = 'GIS Day Manager',
+  ORGANIZER = 'GIS Day Organizer',
   PROFESSOR = 'GIS Day Professor',
-  PRESENTER = 'GIS Day PRESENTER',
+  PRESENTER = 'GIS Day Presenter',
   STUDENT = 'GIS Day Student',
   USER = 'GIS Day User'
 }
