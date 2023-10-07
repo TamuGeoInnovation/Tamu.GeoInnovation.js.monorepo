@@ -1,7 +1,7 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Event, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
+import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
   selector: 'tamu-gisc-event-row',
@@ -10,7 +10,7 @@ import { Event, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 })
 export class EventRowComponent {
   @Input()
-  public event: Partial<Event>;
+  public event: Partial<SimplifiedEvent>;
 
   @Input()
   public day: Partial<SeasonDay>;
@@ -25,4 +25,3 @@ export class EventRowComponent {
 
   constructor(private readonly rt: Router) {}
 }
-

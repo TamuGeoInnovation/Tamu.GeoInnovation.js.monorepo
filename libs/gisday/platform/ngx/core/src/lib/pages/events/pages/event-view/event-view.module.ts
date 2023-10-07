@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -16,7 +17,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule, GisDayEventsModule],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    UIFormsModule,
+    UILayoutModule,
+    GisDayEventsModule
+  ],
   declarations: [EventViewComponent],
   exports: [RouterModule]
 })

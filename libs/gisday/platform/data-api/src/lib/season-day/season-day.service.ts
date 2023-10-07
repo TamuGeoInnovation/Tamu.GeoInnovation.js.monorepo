@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonDay } from '../entities/all.entity';
+import { SimplifiedEvent } from '../event/dto/simplified-event.dto';
 
 @Injectable()
 export class SeasonDayService extends BaseProvider<SeasonDay> {
@@ -11,17 +12,32 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
     super(seasonDayRepo);
   }
 
-  public async getDayEvents(guid: string) {
+  public async getDayEvents(guid: string): Promise<Array<SimplifiedEvent>> {
     try {
       const day = await this.seasonDayRepo.findOne({
         where: {
           guid
         },
-        relations: ['events']
+        relations: ['events', 'events.tags', 'events.speakers', 'events.speakers.organization']
       });
 
       if (day) {
-        return day.events
+        const simplified = day.events.map((e) => {
+          const eventTagGuids = e.tags.map((t) => t.guid);
+          const eventOrgGuids = e.speakers.map((s) => s.organization.guid);
+
+          // Don't send the speakers, they're not needed. They're only needed to
+          // get the participating organizations for an event.
+          delete e.speakers;
+
+          return {
+            ...e,
+            tags: eventTagGuids,
+            organizations: eventOrgGuids
+          };
+        });
+
+        return simplified
           .filter((e) => e.active)
           .sort((a, b) => {
             return a.startTime > b.startTime ? 1 : -1;

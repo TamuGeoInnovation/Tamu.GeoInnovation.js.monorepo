@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { SeasonDay, Event } from '@tamu-gisc/gisday/platform/data-api';
+import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 
@@ -15,7 +15,6 @@ export class SeasonDayService extends BaseService<SeasonDay> {
   }
 
   public getDayEvents(guid: string) {
-    return this.http1.get<Array<Event>>(`${this.resource}/${guid}/events`);
+    return this.http1.get<Array<SimplifiedEvent>>(`${this.resource}/${guid}/events`);
   }
 }
-
