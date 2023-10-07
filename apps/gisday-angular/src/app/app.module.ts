@@ -65,7 +65,7 @@ const routes: Routes = [
     path: 'admin',
     canActivate: [AuthGuard, RoleGuard],
     data: {
-      requiredRoles: [GISDayRoles.MANAGER, GISDayRoles.ADMIN],
+      requiredRoles: [GISDayRoles.ADMIN, GISDayRoles.MANAGER, GISDayRoles.ORGANIZER],
       redirectTo: '/forbidden'
     },
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AdminModule)

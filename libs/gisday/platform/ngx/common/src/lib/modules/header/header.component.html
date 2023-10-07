@@ -88,7 +88,7 @@
           <ul>
             <li><a [routerLink]="['/account/my-details']">My Details</a></li>
             <li><a [routerLink]="['/account/my-classes']">My Classes</a></li>
-            <li *ngIf="(userRoles$ | async) | hasRoles :  [appRoles.MANAGER, appRoles.ADMIN]"><a [routerLink]="['/admin']">Admin</a></li>
+            <li *ngIf="(userRoles$ | async) | hasRoles :  [appRoles.ADMIN, appRoles.MANAGER, appRoles.ORGANIZER]"><a [routerLink]="['/admin']">Admin</a></li>
             <li><a [routerLink]="['/account/my-checkins']">My Checkins</a></li>
             <li><a [routerLink]="['/account/my-submissions']">My Submissions</a></li>
             <li><a (click)="logout()">Logout</a></li>
