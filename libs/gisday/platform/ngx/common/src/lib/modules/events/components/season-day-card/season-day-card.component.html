@@ -2,9 +2,17 @@
   <h2>{{seasonDay.date | date : 'MMMM dd'}}</h2>
 
   <ng-container *ngIf="(events$ | async)?.length > 0; else noEvents">
-    <div *ngFor="let event of filteredEvents$ | async">
-      <tamu-gisc-event-row [event]="event" [day]="seasonDay"></tamu-gisc-event-row>
-    </div>
+    <ng-container *ngIf="(filteredEvents$ | async)?.length > 0; else zeroFilteredResult">
+      <div *ngFor="let event of filteredEvents$ | async">
+        <tamu-gisc-event-row [event]="event" [day]="seasonDay"></tamu-gisc-event-row>
+      </div>
+    </ng-container>
+
+    <ng-template #zeroFilteredResult>
+      <div class="row">
+        <p>No matching events for filter criteria.</p>
+      </div>
+    </ng-template>
   </ng-container>
 
   <ng-template #noEvents>

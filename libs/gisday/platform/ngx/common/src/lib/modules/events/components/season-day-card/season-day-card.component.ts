@@ -62,7 +62,8 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
           }
           return hasOrgs;
         });
-      })
+      }),
+      shareReplay()
     );
   }
 
