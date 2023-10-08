@@ -11,6 +11,7 @@ import { SpeakerAddEditFormComponent } from './components/speakers/speaker-add-e
 import { OrganizationAddEditFormComponent } from './components/organizations/organization-add-edit-form/organization-add-edit-form.component';
 import { SeasonAddEditFormComponent } from './components/seasons/season-add-edit-form/season-add-edit-form.component';
 import { UniversityAddEditFormComponent } from './components/universities/university-add-edit-form/university-add-edit-form.component';
+import { BroadcastAddEditFormComponent } from './components/broadcasts/broadcast-add-edit-form/broadcast-add-edit-form.component';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, UIFormsModule],
@@ -21,7 +22,8 @@ import { UniversityAddEditFormComponent } from './components/universities/univer
     SpeakerAddEditFormComponent,
     OrganizationAddEditFormComponent,
     SeasonAddEditFormComponent,
-    UniversityAddEditFormComponent
+    UniversityAddEditFormComponent,
+    BroadcastAddEditFormComponent
   ],
   exports: [
     TagAddEditFormComponent,
@@ -30,7 +32,8 @@ import { UniversityAddEditFormComponent } from './components/universities/univer
     SpeakerAddEditFormComponent,
     OrganizationAddEditFormComponent,
     SeasonAddEditFormComponent,
-    UniversityAddEditFormComponent
+    UniversityAddEditFormComponent,
+    BroadcastAddEditFormComponent
   ]
 })
 export class GisdayFormsModule {}

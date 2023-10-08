@@ -10,6 +10,10 @@ const routes: Routes = [
     component: AdminComponent,
     children: [
       {
+        path: 'broadcasts',
+        loadChildren: () => import('./pages/broadcasts/broadcasts.module').then((m) => m.BroadcastsModule)
+      },
+      {
         path: 'classes',
         loadChildren: () => import('./pages/class/admin-class.module').then((m) => m.AdminClassModule)
       },

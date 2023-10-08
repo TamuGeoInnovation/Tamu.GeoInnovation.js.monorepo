@@ -5,7 +5,7 @@ import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/
 import { EventLocation } from '../entities/all.entity';
 import { EventLocationService } from './event-location.service';
 
-@Controller('event-location')
+@Controller('event-locations')
 export class EventLocationController {
   constructor(private readonly ebs: EventLocationService) {}
 

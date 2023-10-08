@@ -179,6 +179,9 @@ export class SeasonDay extends GuidIdentity {
 })
 export class EventBroadcast extends GuidIdentity {
   @Column({ nullable: true })
+  public name?: string;
+
+  @Column({ nullable: true })
   public presenterUrl?: string;
 
   @Column({ nullable: true })

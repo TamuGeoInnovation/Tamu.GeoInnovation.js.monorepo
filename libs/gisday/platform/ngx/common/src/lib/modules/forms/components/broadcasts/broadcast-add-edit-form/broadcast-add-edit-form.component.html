@@ -1,0 +1,67 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Broadcast</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Broadcast</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column pad-top">
+        <p>A human-readable display name that can be used to quickly reference a broadcast when binding to an event from a dropdown list.</p>
+
+        <tamu-gisc-textbox formControlName="name" placeholder="Display Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>URL that a presenter uses to start the broadcast. Only required if this URL is different than the public URL.</p>
+
+        <tamu-gisc-textbox formControlName="presenterUrl" placeholder="Presenter URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>If a broadcast requires a password to join. This is typically included in the link but can be provided additionally for users that receive the password prompt.</p>
+
+        <tamu-gisc-textbox formControlName="password" placeholder="Broadcast Join Password (If required)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>For attendees that prefer to join via phone.</p>
+
+        <tamu-gisc-textbox formControlName="phoneNumber" placeholder="Broadcast Dial-In Phone Number" type="tel" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>For attendees that join through the application and enter a meeting ID manually.</p>
+
+        <tamu-gisc-textbox formControlName="meetingId" placeholder="Meeting ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>Public broadcast join URL.</p>
+
+        <tamu-gisc-textbox formControlName="publicUrl" placeholder="Public URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>Any additional details or instruction for attendees such as additional procedures to join (waiting area) or participation etiquette (e.g. raising hand).</p>
+
+        <tamu-gisc-textbox formControlName="details" placeholder="Additional Broadcast Details" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Broadcast" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>
+
