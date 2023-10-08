@@ -2,12 +2,12 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
-import { EventBroadcast } from '../entities/all.entity';
-import { EventBroadcastService } from './event-broadcast.service';
+import { EventLocation } from '../entities/all.entity';
+import { EventLocationService } from './event-location.service';
 
-@Controller('event-broadcast')
-export class EventBroadcastController {
-  constructor(private readonly ebs: EventBroadcastService) {}
+@Controller('event-location')
+export class EventLocationController {
+  constructor(private readonly ebs: EventLocationService) {}
 
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
@@ -23,21 +23,21 @@ export class EventBroadcastController {
     return this.ebs.getEntities();
   }
 
-  @Permissions(['create:broadcasts'])
+  @Permissions(['create:event-locations'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
-  public async insertEntity(@Body() body: Partial<EventBroadcast>) {
+  public async insertEntity(@Body() body: Partial<EventLocation>) {
     return this.ebs.create(body);
   }
 
-  @Permissions(['update:broadcasts'])
+  @Permissions(['update:event-locations'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string, @Body() body: Partial<EventBroadcast>) {
+  public async updateEntity(@Param('guid') guid: string, @Body() body: Partial<EventLocation>) {
     return this.ebs.update(guid, body);
   }
 
-  @Permissions(['delete:broadcasts'])
+  @Permissions(['delete:event-locations'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
