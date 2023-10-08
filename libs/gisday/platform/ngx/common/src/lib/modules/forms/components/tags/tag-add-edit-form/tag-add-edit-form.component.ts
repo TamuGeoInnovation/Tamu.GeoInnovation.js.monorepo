@@ -5,6 +5,7 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-tag-add-edit-form',
@@ -22,7 +23,8 @@ export class TagAddEditFormComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
-    private readonly ts: TagService
+    private readonly ts: TagService,
+    private readonly ns: NotificationService
   ) {}
 
   public ngOnInit(): void {
@@ -53,29 +55,73 @@ export class TagAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.ts.deleteEntity(this.form.getRawValue().guid).subscribe(() => {
-      this._navigateBack();
-    });
+    this.ts.deleteEntity(this.form.getRawValue().guid).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'delete-tag-success',
+          title: 'Delete tag',
+          message: 'Tag deleted successfully.'
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'delete-tag-error',
+          title: 'Delete tag',
+          message: `Error deleting tag: ${err.status}`
+        });
+      }
+    );
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.ts.updateEntity(rawValue.guid, rawValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.ts.updateEntity(rawValue.guid, rawValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'update-tag-success',
+          title: 'Update tag',
+          message: 'Tag updated successfully.'
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'update-tag-error',
+          title: 'Update tag',
+          message: `Error updating tag: ${err.status}`
+        });
+      }
+    );
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.ts.createEntity(rawValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.ts.createEntity(rawValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'create-tag-success',
+          title: 'Create tag',
+          message: 'Tag created successfully.'
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'create-tag-error',
+          title: 'Create tag',
+          message: `Error creating tag: ${err.status}`
+        });
+      }
+    );
   }
 
   private _navigateBack() {
     this.rt.navigate(['/admin/tags']);
   }
 }
-
