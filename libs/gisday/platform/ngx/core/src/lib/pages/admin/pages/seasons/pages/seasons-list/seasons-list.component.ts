@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
@@ -14,7 +15,7 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 export class SeasonsListComponent extends BaseAdminListComponent<Season> implements OnInit {
   public dateRange$: Observable<Array<SeasonDay>>;
 
-  constructor(private readonly ss: SeasonService) {
+  constructor(private readonly ss: SeasonService, private readonly ns: NotificationService) {
     super(ss);
   }
 
@@ -23,9 +24,23 @@ export class SeasonsListComponent extends BaseAdminListComponent<Season> impleme
   }
 
   public createSeason() {
-    this.ss.createEntity().subscribe(() => {
-      this.$signal.next(true);
-    });
+    this.ss.createEntity().subscribe(
+      () => {
+        this.ns.toast({
+          id: 'create-season-success',
+          title: 'Create season',
+          message: 'Season created successfully.'
+        });
+
+        this.$signal.next(true);
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'create-season-error',
+          title: 'Create season',
+          message: `Season creation failed: ${err.status}`
+        });
+      }
+    );
   }
 }
-

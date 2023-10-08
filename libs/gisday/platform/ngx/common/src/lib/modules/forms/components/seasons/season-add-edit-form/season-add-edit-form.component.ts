@@ -5,6 +5,7 @@ import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
 import { Season, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-season-add-edit-form',
@@ -18,7 +19,13 @@ export class SeasonAddEditFormComponent implements OnInit {
   public entity$: Observable<Partial<Season>>;
   public form: FormGroup;
 
-  constructor(private fb: FormBuilder, private at: ActivatedRoute, private ss: SeasonService, private rt: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private at: ActivatedRoute,
+    private ss: SeasonService,
+    private rt: Router,
+    private readonly ns: NotificationService
+  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -93,9 +100,24 @@ export class SeasonAddEditFormComponent implements OnInit {
   public updateEntity() {
     const formValue = this.form.getRawValue();
 
-    this.ss.updateEntity(formValue.guid, formValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.ss.updateEntity(formValue.guid, formValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'season-update-success',
+          title: 'Update season',
+          message: `Season was successfully updated.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'season-update-failed',
+          title: 'Update season',
+          message: `Error updating season: ${err.status}`
+        });
+      }
+    );
   }
 
   /**
@@ -104,9 +126,24 @@ export class SeasonAddEditFormComponent implements OnInit {
   public deleteEntity() {
     const formValue = this.form.getRawValue();
 
-    this.ss.deleteEntity(formValue.guid).subscribe(() => {
-      this._navigateBack();
-    });
+    this.ss.deleteEntity(formValue.guid).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'season-delete-success',
+          title: 'Delete season',
+          message: `Season was successfully deleted.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'season-delete-failed',
+          title: 'Delete season',
+          message: `Error deleting season: ${err.status}`
+        });
+      }
+    );
 
     this.form.markAllAsTouched();
   }
@@ -115,4 +152,3 @@ export class SeasonAddEditFormComponent implements OnInit {
     this.rt.navigate(['/admin/seasons']);
   }
 }
-
