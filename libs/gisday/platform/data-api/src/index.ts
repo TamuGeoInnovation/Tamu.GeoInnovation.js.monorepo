@@ -21,6 +21,7 @@ export * from './lib/user-info/user-info.module';
 export * from './lib/season-day/season-day.module';
 export * from './lib/season/season.module';
 export * from './lib/organization/organization.module';
+export * from './lib/event-broadcast/event-broadcast.module';
 
 // Providers
 export * from './lib/_base/base-provider';

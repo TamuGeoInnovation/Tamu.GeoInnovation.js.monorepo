@@ -21,7 +21,8 @@ import {
   SpeakerRoleModule,
   SeasonDayModule,
   SeasonModule,
-  OrganizationModule
+  OrganizationModule,
+  EventBroadcastModule
 } from '@tamu-gisc/gisday/platform/data-api';
 import { AuthorizationModule } from '@tamu-gisc/common/nest/auth';
 
@@ -66,7 +67,8 @@ import { environment, ormConfig } from '../environments/environment';
     UserSubmissionModule,
     SeasonDayModule,
     SeasonModule,
-    OrganizationModule
+    OrganizationModule,
+    EventBroadcastModule
   ],
   controllers: [],
   providers: [AppService]
