@@ -24,8 +24,8 @@ export class SeasonsListComponent extends BaseAdminListComponent<Season> impleme
   }
 
   public createSeason() {
-    this.ss.createEntity().subscribe(
-      () => {
+    this.ss.createEntity().subscribe({
+      next: () => {
         this.ns.toast({
           id: 'create-season-success',
           title: 'Create season',
@@ -34,13 +34,13 @@ export class SeasonsListComponent extends BaseAdminListComponent<Season> impleme
 
         this.$signal.next(true);
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'create-season-error',
           title: 'Create season',
-          message: `Season creation failed: ${err.status}`
+          message: `Error creating event: ${err.status}`
         });
       }
-    );
+    });
   }
 }

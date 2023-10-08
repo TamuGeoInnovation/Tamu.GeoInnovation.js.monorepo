@@ -100,8 +100,8 @@ export class SeasonAddEditFormComponent implements OnInit {
   public updateEntity() {
     const formValue = this.form.getRawValue();
 
-    this.ss.updateEntity(formValue.guid, formValue).subscribe(
-      () => {
+    this.ss.updateEntity(formValue.guid, formValue).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'season-update-success',
           title: 'Update season',
@@ -110,14 +110,14 @@ export class SeasonAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'season-update-failed',
           title: 'Update season',
           message: `Error updating season: ${err.status}`
         });
       }
-    );
+    });
   }
 
   /**
@@ -126,8 +126,8 @@ export class SeasonAddEditFormComponent implements OnInit {
   public deleteEntity() {
     const formValue = this.form.getRawValue();
 
-    this.ss.deleteEntity(formValue.guid).subscribe(
-      () => {
+    this.ss.deleteEntity(formValue.guid).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'season-delete-success',
           title: 'Delete season',
@@ -136,14 +136,14 @@ export class SeasonAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'season-delete-failed',
           title: 'Delete season',
           message: `Error deleting season: ${err.status}`
         });
       }
-    );
+    });
 
     this.form.markAllAsTouched();
   }

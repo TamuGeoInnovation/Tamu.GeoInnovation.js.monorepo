@@ -102,69 +102,69 @@ export class SpeakerAddEditFormComponent implements OnInit {
   private _createEntity() {
     const formData = formToFormData(this.form);
 
-    this.ss.insertSpeakerInfo(formData).subscribe(
-      () => {
+    this.ss.insertSpeakerInfo(formData).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'speaker-create-success',
-          title: 'Create speaker',
+          title: 'Create Speaker',
           message: `Speaker was successfully created.`
         });
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'speaker-create-failed',
-          title: 'Create speaker',
+          title: 'Create Speaker',
           message: `Error creating speaker: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _updateEntity() {
     const formValue = this.form.getRawValue();
     const data = formToFormData(this.form);
 
-    this.ss.updateSpeakerInfo(formValue.guid, data).subscribe(
-      () => {
+    this.ss.updateSpeakerInfo(formValue.guid, data).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'speaker-update-success',
-          title: 'Update speaker',
+          title: 'Update Speaker',
           message: `Speaker was successfully updated.`
         });
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'speaker-update-failed',
-          title: 'Update speaker',
+          title: 'Update Speaker',
           message: `Error updating speaker: ${err.status}`
         });
       }
-    );
+    });
   }
 
   public deleteEntity() {
-    this.ss.deleteEntity(this.form.getRawValue().guid).subscribe(
-      () => {
+    this.ss.deleteEntity(this.form.getRawValue().guid).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'speaker-delete-success',
-          title: 'Delete speaker',
+          title: 'Delete Speaker',
           message: `Speaker was successfully deleted.`
         });
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'speaker-delete-failed',
-          title: 'Delete speaker',
+          title: 'Delete Speaker',
           message: `Error deleting speaker: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _navigateBack() {

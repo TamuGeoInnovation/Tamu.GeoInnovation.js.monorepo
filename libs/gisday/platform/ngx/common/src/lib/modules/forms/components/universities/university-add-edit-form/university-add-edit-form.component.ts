@@ -61,8 +61,8 @@ export class UniversityAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.us.deleteEntity(this.form.getRawValue().guid).subscribe(
-      () => {
+    this.us.deleteEntity(this.form.getRawValue().guid).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'university-delete',
           title: 'Delete University',
@@ -71,21 +71,21 @@ export class UniversityAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'university-delete-error',
           title: 'Delete University',
           message: `Error deleting university: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.us.updateEntity(rawValue.guid, rawValue).subscribe(
-      () => {
+    this.us.updateEntity(rawValue.guid, rawValue).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'university-update',
           title: 'Update University',
@@ -94,21 +94,21 @@ export class UniversityAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'university-update-error',
           title: 'Update University',
           message: `Error updating university: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.us.createEntity(rawValue).subscribe(
-      () => {
+    this.us.createEntity(rawValue).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'university-create',
           title: 'Create University',
@@ -117,14 +117,14 @@ export class UniversityAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'university-create-error',
           title: 'Create University',
           message: `Error creating university: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _navigateBack() {

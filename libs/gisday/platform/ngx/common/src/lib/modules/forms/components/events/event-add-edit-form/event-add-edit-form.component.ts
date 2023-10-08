@@ -251,8 +251,8 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.eventService.deleteEntity(this.form.getRawValue().guid).subscribe(
-      () => {
+    this.eventService.deleteEntity(this.form.getRawValue().guid).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'event-delete-success',
           title: 'Delete event',
@@ -261,21 +261,21 @@ export class EventAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'event-delete-failed',
           title: 'Delete event',
           message: `Error deleting event: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.eventService.updateEntity(rawValue.guid, rawValue).subscribe(
-      () => {
+    this.eventService.updateEntity(rawValue.guid, rawValue).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'event-update-success',
           title: 'Update Event',
@@ -284,21 +284,21 @@ export class EventAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'event-update-failed',
           title: 'Update Event',
           message: `Error updating event: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.eventService.createEntity(rawValue).subscribe(
-      () => {
+    this.eventService.createEntity(rawValue).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'event-create-success',
           title: 'Create event',
@@ -307,14 +307,14 @@ export class EventAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (error) => {
+      error: (err) => {
         this.ns.toast({
           id: 'event-create-failed',
           title: 'Create event',
-          message: `Error creating event: ${error.status}`
+          message: `Error creating event: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _navigateBack() {

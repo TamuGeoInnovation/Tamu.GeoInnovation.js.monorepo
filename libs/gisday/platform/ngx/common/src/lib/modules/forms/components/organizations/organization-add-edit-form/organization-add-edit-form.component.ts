@@ -74,8 +74,8 @@ export class OrganizationAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.os.deleteEntity(this.form.getRawValue().guid).subscribe(
-      () => {
+    this.os.deleteEntity(this.form.getRawValue().guid).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'org-delete-success',
           title: 'Delete organization',
@@ -84,44 +84,44 @@ export class OrganizationAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'org-delete-failed',
           title: 'Delete organization',
           message: `Error deleting organization: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.os.updateEntity(rawValue.guid, rawValue).subscribe(
-      () => {
+    this.os.updateEntity(rawValue.guid, rawValue).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'org-update-success',
           title: 'Update organization',
-          message: `Organization was successfully deleted.`
+          message: `Organization was successfully updated.`
         });
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
-          id: 'org-delete-failed',
+          id: 'org-update-failed',
           title: 'Update organization',
-          message: `Error deleting organization: ${err.status}`
+          message: `Error updating organization: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.os.createEntity(rawValue).subscribe(
-      () => {
+    this.os.createEntity(rawValue).subscribe({
+      next: () => {
         this.ns.toast({
           id: 'org-create-success',
           title: 'Create organization',
@@ -130,14 +130,14 @@ export class OrganizationAddEditFormComponent implements OnInit {
 
         this._navigateBack();
       },
-      (err) => {
+      error: (err) => {
         this.ns.toast({
           id: 'org-create-failed',
           title: 'Create organization',
           message: `Error creating organization: ${err.status}`
         });
       }
-    );
+    });
   }
 
   private _navigateBack() {
