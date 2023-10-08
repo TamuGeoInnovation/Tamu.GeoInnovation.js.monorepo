@@ -5,6 +5,7 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { Organization, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { OrganizationService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-organization-add-edit-form',
@@ -24,7 +25,8 @@ export class OrganizationAddEditFormComponent implements OnInit {
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
     private readonly os: OrganizationService,
-    private readonly ss: SeasonService
+    private readonly ss: SeasonService,
+    private readonly ns: NotificationService
   ) {}
 
   public ngOnInit(): void {
@@ -72,29 +74,73 @@ export class OrganizationAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.os.deleteEntity(this.form.getRawValue().guid).subscribe(() => {
-      this._navigateBack();
-    });
+    this.os.deleteEntity(this.form.getRawValue().guid).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'org-delete-success',
+          title: 'Delete organization',
+          message: `Organization was successfully deleted.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'org-delete-failed',
+          title: 'Delete organization',
+          message: `Error deleting organization: ${err.status}`
+        });
+      }
+    );
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.os.updateEntity(rawValue.guid, rawValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.os.updateEntity(rawValue.guid, rawValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'org-update-success',
+          title: 'Update organization',
+          message: `Organization was successfully deleted.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'org-delete-failed',
+          title: 'Update organization',
+          message: `Error deleting organization: ${err.status}`
+        });
+      }
+    );
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.os.createEntity(rawValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.os.createEntity(rawValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'org-create-success',
+          title: 'Create organization',
+          message: `Organization was successfully created.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'org-create-failed',
+          title: 'Create organization',
+          message: `Error creating organization: ${err.status}`
+        });
+      }
+    );
   }
 
   private _navigateBack() {
     this.rt.navigate(['/admin/organizations']);
   }
 }
-
