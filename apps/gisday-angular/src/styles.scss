@@ -1434,7 +1434,7 @@ tbody > tr:nth-child(2n + 1) {
 }
 
 tbody > tr:hover {
-  background: #f5f5f5;
+  background: #eeeeee;
 }
 
 table.css-count tbody tr {
@@ -1466,6 +1466,10 @@ td > span.delete {
   width: 1em;
   display: block;
   opacity: 0;
+}
+
+tr[ng-reflect-router-link] {
+  cursor: pointer;
 }
 
 tr:hover td > span.delete {

@@ -17,21 +17,17 @@
             <th>Start Time</th>
             <th>End Time</th>
             <th>Updated</th>
-            <th class="action-row">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr *ngFor="let entity of ($entities | async)">
+          <tr *ngFor="let entity of ($entities | async)" [routerLink]="['edit', entity.guid]">
             <td>{{entity?.name}}</td>
             <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
             <td>{{entity?.day?.date | date:'shortDate'}}</td>
             <td>{{entity?.startTime}}</td>
             <td>{{entity?.endTime}}</td>
             <td>{{entity?.updated | date:'short'}}</td>
-            <td class="actions">
-              <span [routerLink]="['edit', entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -42,4 +38,3 @@
     </div>
   </div>
 </div>
-

@@ -14,18 +14,14 @@
             <th>Name</th>
             <th>Season</th>
             <th>Updated</th>
-            <th class="action-row">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr *ngFor="let entity of ($entities | async)">
+          <tr [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
             <td>{{entity?.name}}</td>
             <td>{{entity?.season?.year}}</td>
             <td>{{entity?.updated | date:'short'}}</td>
-            <td class="actions">
-              <span [routerLink]="['edit', entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -36,4 +32,3 @@
     </div>
   </div>
 </div>
-
