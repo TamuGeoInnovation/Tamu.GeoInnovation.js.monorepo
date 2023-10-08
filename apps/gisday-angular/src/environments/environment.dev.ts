@@ -17,6 +17,8 @@ export const environment = {
 
 export const api_url = `${window.location.origin}/api`;
 
+export const NotificationEvents = [];
+
 export const auth0 = {
   domain: '#{ANGULAR_AUTH0_DOMAIN}#',
   client_id: '#{ANGULAR_AUTH0_CLIENT_ID}#',

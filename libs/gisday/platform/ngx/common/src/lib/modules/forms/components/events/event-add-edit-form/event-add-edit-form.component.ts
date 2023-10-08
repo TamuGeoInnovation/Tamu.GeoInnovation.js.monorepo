@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
   filter,
@@ -19,7 +20,7 @@ import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 
 import { Event, SeasonDay, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { EventService, SeasonService, SpeakerService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
@@ -112,7 +113,8 @@ export class EventAddEditFormComponent implements OnInit {
     private readonly eventService: EventService,
     private readonly speakerService: SpeakerService,
     private readonly tagService: TagService,
-    private readonly seasonService: SeasonService
+    private readonly seasonService: SeasonService,
+    private readonly ns: NotificationService
   ) {}
 
   public ngOnInit() {
@@ -249,25 +251,70 @@ export class EventAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.eventService.deleteEntity(this.form.getRawValue().guid).subscribe(() => {
-      this._navigateBack();
-    });
+    this.eventService.deleteEntity(this.form.getRawValue().guid).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'event-delete-success',
+          title: 'Delete event',
+          message: `Event was successfully deleted.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'event-delete-failed',
+          title: 'Delete event',
+          message: `Error deleting event: ${err.status}`
+        });
+      }
+    );
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.eventService.updateEntity(rawValue.guid, rawValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.eventService.updateEntity(rawValue.guid, rawValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'event-update-success',
+          title: 'Update Event',
+          message: `Event was successfully updated.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'event-update-failed',
+          title: 'Update Event',
+          message: `Error updating event: ${err.status}`
+        });
+      }
+    );
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.eventService.createEntity(rawValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.eventService.createEntity(rawValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'event-create-success',
+          title: 'Create event',
+          message: `Event was successfully created.`
+        });
+
+        this._navigateBack();
+      },
+      (error) => {
+        this.ns.toast({
+          id: 'event-create-failed',
+          title: 'Create event',
+          message: `Error creating event: ${error.status}`
+        });
+      }
+    );
   }
 
   private _navigateBack() {
