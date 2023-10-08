@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -23,8 +23,8 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
 
       if (day) {
         const simplified = day.events.map((e) => {
-          const eventTagGuids = e.tags.map((t) => t.guid);
-          const eventOrgGuids = e.speakers.map((s) => s.organization.guid);
+          const eventTagGuids = e.tags?.map((t) => t.guid) || [];
+          const eventOrgGuids = e.speakers.filter((s) => s.organization !== null).map((s) => s.organization.guid) || [];
 
           // Don't send the speakers, they're not needed. They're only needed to
           // get the participating organizations for an event.
@@ -46,6 +46,7 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
         throw new NotFoundException();
       }
     } catch (err) {
+      Logger.error(err.message, 'SeasonDayService');
       throw new InternalServerErrorException();
     }
   }
