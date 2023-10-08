@@ -8,7 +8,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class AboutComponent {
   constructor(private titleService: Title) {
-    this.titleService.setTitle('About | TxGIS Day 2022');
+    this.titleService.setTitle('About | TxGIS Day');
   }
 
   public makeActive(rank: string) {

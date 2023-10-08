@@ -8,7 +8,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class FaqComponent {
   constructor(private titleService: Title) {
-    this.titleService.setTitle('FAQ | TxGIS Day 2022');
+    this.titleService.setTitle('FAQ | TxGIS Day');
   }
 
   public onFaqItemClick(event) {

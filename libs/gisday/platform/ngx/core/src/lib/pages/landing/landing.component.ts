@@ -37,7 +37,7 @@ const numberDictionary = {
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent implements OnInit {
-  private title = 'TxGIS Day 2022';
+  private title = 'TxGIS Day';
   public timeTill: Date = new Date();
   public daysTill: string;
   public subscription: Subscription;
