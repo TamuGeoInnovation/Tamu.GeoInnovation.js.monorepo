@@ -6,6 +6,7 @@ import { Observable, filter, map, merge, shareReplay, switchMap } from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import { OrganizationService, SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 
@@ -32,7 +33,8 @@ export class SpeakerAddEditFormComponent implements OnInit {
     private readonly ss: SpeakerService,
     private readonly us: UniversityService,
     private readonly os: OrganizationService,
-    private readonly sn: DomSanitizer
+    private readonly sn: DomSanitizer,
+    private readonly ns: NotificationService
   ) {}
 
   public ngOnInit() {
@@ -100,28 +102,72 @@ export class SpeakerAddEditFormComponent implements OnInit {
   private _createEntity() {
     const formData = formToFormData(this.form);
 
-    this.ss.insertSpeakerInfo(formData).subscribe(() => {
-      this._navigateBack();
-    });
+    this.ss.insertSpeakerInfo(formData).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'speaker-create-success',
+          title: 'Create speaker',
+          message: `Speaker was successfully created.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'speaker-create-failed',
+          title: 'Create speaker',
+          message: `Error creating speaker: ${err.status}`
+        });
+      }
+    );
   }
 
   private _updateEntity() {
     const formValue = this.form.getRawValue();
     const data = formToFormData(this.form);
 
-    this.ss.updateSpeakerInfo(formValue.guid, data).subscribe(() => {
-      this._navigateBack();
-    });
+    this.ss.updateSpeakerInfo(formValue.guid, data).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'speaker-update-success',
+          title: 'Update speaker',
+          message: `Speaker was successfully updated.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'speaker-update-failed',
+          title: 'Update speaker',
+          message: `Error updating speaker: ${err.status}`
+        });
+      }
+    );
   }
 
   public deleteEntity() {
-    this.ss.deleteEntity(this.form.getRawValue().guid).subscribe(() => {
-      this._navigateBack();
-    });
+    this.ss.deleteEntity(this.form.getRawValue().guid).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'speaker-delete-success',
+          title: 'Delete speaker',
+          message: `Speaker was successfully deleted.`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'speaker-delete-failed',
+          title: 'Delete speaker',
+          message: `Error deleting speaker: ${err.status}`
+        });
+      }
+    );
   }
 
   private _navigateBack() {
     this.rt.navigate(['/admin/speakers']);
   }
 }
-
