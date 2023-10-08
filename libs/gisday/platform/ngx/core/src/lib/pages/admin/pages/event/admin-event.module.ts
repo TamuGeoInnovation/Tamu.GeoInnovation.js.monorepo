@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GisdayFormsModule, GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AdminEventComponent } from './admin-event.component';
 import { EventAddComponent } from './pages/event-add/event-add.component';
@@ -31,7 +31,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule],
+  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule, GisdayPlatformNgxCommonModule],
   declarations: [AdminEventComponent, EventAddComponent, EventEditComponent, EventListComponent],
   exports: [RouterModule]
 })

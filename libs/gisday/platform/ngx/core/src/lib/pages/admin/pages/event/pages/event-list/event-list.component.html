@@ -25,8 +25,8 @@
             <td>{{entity?.name}}</td>
             <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
             <td>{{entity?.day?.date | date:'shortDate'}}</td>
-            <td>{{entity?.startTime}}</td>
-            <td>{{entity?.endTime}}</td>
+            <td>{{entity?.day.date | parseDateTimeStrings: entity?.startTime | date: 'h:mm a'}}</td>
+            <td>{{entity?.day.date | parseDateTimeStrings: entity?.endTime | date: 'h:mm a'}}</td>
             <td>{{entity?.updated | date:'short'}}</td>
           </tr>
         </tbody>

@@ -34,4 +34,3 @@ import { UniversityAddEditFormComponent } from './components/universities/univer
   ]
 })
 export class GisdayFormsModule {}
-
