@@ -5,6 +5,7 @@ import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { University } from '@tamu-gisc/gisday/platform/data-api';
 import { UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-university-add-edit-form',
@@ -22,7 +23,8 @@ export class UniversityAddEditFormComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
-    private readonly us: UniversityService
+    private readonly us: UniversityService,
+    private readonly ns: NotificationService
   ) {}
 
   public ngOnInit(): void {
@@ -59,29 +61,73 @@ export class UniversityAddEditFormComponent implements OnInit {
   }
 
   public deleteEntity() {
-    this.us.deleteEntity(this.form.getRawValue().guid).subscribe(() => {
-      this._navigateBack();
-    });
+    this.us.deleteEntity(this.form.getRawValue().guid).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'university-delete',
+          title: 'Delete University',
+          message: `University deleted successfully`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'university-delete-error',
+          title: 'Delete University',
+          message: `Error deleting university: ${err.status}`
+        });
+      }
+    );
   }
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.us.updateEntity(rawValue.guid, rawValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.us.updateEntity(rawValue.guid, rawValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'university-update',
+          title: 'Update University',
+          message: `University updated successfully`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'university-update-error',
+          title: 'Update University',
+          message: `Error updating university: ${err.status}`
+        });
+      }
+    );
   }
 
   private _createEntity() {
     const rawValue = this.form.getRawValue();
 
-    this.us.createEntity(rawValue).subscribe(() => {
-      this._navigateBack();
-    });
+    this.us.createEntity(rawValue).subscribe(
+      () => {
+        this.ns.toast({
+          id: 'university-create',
+          title: 'Create University',
+          message: `University created successfully`
+        });
+
+        this._navigateBack();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'university-create-error',
+          title: 'Create University',
+          message: `Error creating university: ${err.status}`
+        });
+      }
+    );
   }
 
   private _navigateBack() {
     this.rt.navigate(['/admin/universities']);
   }
 }
-
