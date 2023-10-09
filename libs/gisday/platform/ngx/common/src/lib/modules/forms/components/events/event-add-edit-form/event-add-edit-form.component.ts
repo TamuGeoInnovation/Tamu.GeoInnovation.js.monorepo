@@ -18,8 +18,15 @@ import {
 
 import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 
-import { Event, SeasonDay, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
-import { EventService, SeasonService, SpeakerService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { Event, EventBroadcast, EventLocation, SeasonDay, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
+import {
+  EventService,
+  LocationService,
+  SeasonService,
+  SpeakerService,
+  TagService,
+  BroadcastService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
@@ -36,6 +43,8 @@ export class EventAddEditFormComponent implements OnInit {
   public entity$: Observable<Partial<Event>>;
   public tags$: Observable<Array<Partial<Tag>>>;
   public speakers$: Observable<Array<Partial<Speaker>>>;
+  public locations$: Observable<Array<Partial<EventLocation>>>;
+  public broadcasts$: Observable<Array<Partial<EventBroadcast>>>;
 
   /**
    * The days that are available for selection in the event date picker.
@@ -110,10 +119,12 @@ export class EventAddEditFormComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
-    private readonly eventService: EventService,
+    private readonly seasonService: SeasonService,
     private readonly speakerService: SpeakerService,
     private readonly tagService: TagService,
-    private readonly seasonService: SeasonService,
+    private readonly eventLocationService: LocationService,
+    private readonly eventBroadcastService: BroadcastService,
+    private readonly eventService: EventService,
     private readonly ns: NotificationService
   ) {}
 
@@ -137,25 +148,26 @@ export class EventAddEditFormComponent implements OnInit {
       isAcceptingRsvps: [false],
       isBringYourOwnDevice: [false],
       requirements: [null],
-      // broadcast: this.fb.group({
-      //   presenterUrl: [null],
-      //   password: [null],
-      //   phoneNumber: [null],
-      //   meetingId: [null],
-      //   publicUrl: [null]
-      // }),
-      // location: this.fb.group({
-      //   room: [null],
-      //   building: [null],
-      //   capacity: [null],
-      //   link: [null]
-      // }),
+      broadcast: [null],
+      location: [null],
       tags: [[]],
       speakers: [[]]
     });
 
     this.tags$ = this.tagService.getEntities().pipe(shareReplay(1));
     this.speakers$ = this.speakerService.getEntities().pipe(shareReplay(1));
+    this.broadcasts$ = this.eventBroadcastService.getEntities().pipe(shareReplay(1));
+    this.locations$ = this.eventLocationService.getEntities().pipe(
+      mergeMap((locations) => locations),
+      map((loc) => {
+        return {
+          guid: loc.guid,
+          building: loc.room ? `${loc.building} - ${loc.room}` : loc.building
+        };
+      }),
+      toArray(),
+      shareReplay(1)
+    );
 
     this.activeSeasonDays$ = this.seasonService.activeSeason$.pipe(
       mergeMap((season) => {

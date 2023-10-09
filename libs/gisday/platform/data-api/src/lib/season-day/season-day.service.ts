@@ -18,7 +18,7 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
         where: {
           guid
         },
-        relations: ['events', 'events.tags', 'events.speakers', 'events.speakers.organization']
+        relations: ['events', 'events.tags', 'events.speakers', 'events.speakers.organization', 'events.location']
       });
 
       if (day) {
