@@ -8,12 +8,16 @@
     </div>
 
     <div class="form-section-body">
+      <div class="trailer-1">
+        <p>Event locations are located within a <a [routerLink]="['/admin/places']" routerLinkActive="router-link-active">place</a> and are the physical units where a session takes place.</p>
+      </div>
+
       <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noEntities">
         <thead>
           <tr>
             <th>Building Name</th>
             <th>Room Number</th>
-            <th>Updated</th>
+            <th>Place</th>
           </tr>
         </thead>
 
@@ -21,7 +25,7 @@
           <tr [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
             <td>{{entity.building}}</td>
             <td>{{entity.room}}</td>
-            <td>{{entity.updated | date:'short'}}</td>
+            <td>{{entity?.place?.name}}</td>
           </tr>
         </tbody>
       </table>

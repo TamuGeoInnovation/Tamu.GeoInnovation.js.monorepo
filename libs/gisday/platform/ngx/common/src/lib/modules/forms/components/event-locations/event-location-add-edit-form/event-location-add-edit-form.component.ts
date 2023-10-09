@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
-import { EventLocation } from '@tamu-gisc/gisday/platform/data-api';
-import { LocationService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
+import { LocationService, PlaceService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
@@ -17,6 +17,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
   public type: 'create' | 'edit';
 
   public entity$: Observable<Partial<EventLocation>>;
+  public places$: Observable<Array<Partial<Place>>>;
   public form: FormGroup;
 
   constructor(
@@ -24,17 +25,21 @@ export class EventLocationAddEditFormComponent implements OnInit {
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
     private readonly els: LocationService,
+    private readonly ps: PlaceService,
     private readonly ns: NotificationService
   ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
-      guid: [''],
-      building: [''],
-      room: [''],
-      capacity: [''],
-      link: ['']
+      guid: [null],
+      building: [null],
+      room: [null],
+      capacity: [null],
+      link: [null],
+      place: [null]
     });
+
+    this.places$ = this.ps.getEntities();
 
     if (this.type === 'edit') {
       this.entity$ = this.at.params.pipe(
@@ -44,7 +49,10 @@ export class EventLocationAddEditFormComponent implements OnInit {
       );
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
-        this.form.patchValue(entity);
+        this.form.patchValue({
+          ...entity,
+          place: entity.place?.guid
+        });
       });
     }
   }
@@ -72,7 +80,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'delete-event-location-error',
           title: 'Delete Event Location',
-          message: `Error deleting broadcast: ${err.status}`
+          message: `Error deleting event location: ${err.status}`
         });
       }
     });
@@ -95,7 +103,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'update-event-location-error',
           title: 'Update Event Location',
-          message: `Error updating broadcast: ${err.status}`
+          message: `Error updating event location: ${err.status}`
         });
       }
     });
@@ -118,7 +126,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.ns.toast({
           id: 'create-event-location-error',
           title: 'Create Event Location',
-          message: `Error creating broadcast: ${err.status}`
+          message: `Error creating event location: ${err.status}`
         });
       }
     });

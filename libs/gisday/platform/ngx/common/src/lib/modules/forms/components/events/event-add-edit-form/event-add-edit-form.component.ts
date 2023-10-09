@@ -206,12 +206,14 @@ export class EventAddEditFormComponent implements OnInit {
         shareReplay()
       );
 
-      this.entity$.pipe(take(1)).subscribe((season) => {
+      this.entity$.pipe(take(1)).subscribe((event) => {
         this.form.patchValue({
-          ...season,
-          day: season?.day?.guid,
-          tags: season?.tags?.map((tag) => tag.guid),
-          speakers: season?.speakers?.map((speaker) => speaker.guid)
+          ...event,
+          day: event?.day?.guid,
+          tags: event?.tags?.map((tag) => tag.guid),
+          speakers: event?.speakers?.map((speaker) => speaker.guid),
+          location: event?.location?.guid,
+          broadcast: event?.broadcast?.guid
         });
       });
 

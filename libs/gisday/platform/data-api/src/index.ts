@@ -23,6 +23,7 @@ export * from './lib/season/season.module';
 export * from './lib/organization/organization.module';
 export * from './lib/event-broadcast/event-broadcast.module';
 export * from './lib/event-location/event-location.module';
+export * from './lib/place/place.module';
 
 // Providers
 export * from './lib/_base/base-provider';

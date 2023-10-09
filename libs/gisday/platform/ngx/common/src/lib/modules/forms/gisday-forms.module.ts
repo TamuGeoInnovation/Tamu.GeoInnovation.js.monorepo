@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -13,9 +14,10 @@ import { SeasonAddEditFormComponent } from './components/seasons/season-add-edit
 import { UniversityAddEditFormComponent } from './components/universities/university-add-edit-form/university-add-edit-form.component';
 import { BroadcastAddEditFormComponent } from './components/broadcasts/broadcast-add-edit-form/broadcast-add-edit-form.component';
 import { EventLocationAddEditFormComponent } from './components/event-locations/event-location-add-edit-form/event-location-add-edit-form.component';
+import { PlaceLocationAddEditFormComponent } from './components/places/place-location-add-edit-form/place-location-add-edit-form.component';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, UIFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, UIFormsModule],
   declarations: [
     TagAddEditFormComponent,
     EventAddEditFormComponent,
@@ -25,7 +27,8 @@ import { EventLocationAddEditFormComponent } from './components/event-locations/
     SeasonAddEditFormComponent,
     UniversityAddEditFormComponent,
     BroadcastAddEditFormComponent,
-    EventLocationAddEditFormComponent
+    EventLocationAddEditFormComponent,
+    PlaceLocationAddEditFormComponent
   ],
   exports: [
     TagAddEditFormComponent,
@@ -36,7 +39,8 @@ import { EventLocationAddEditFormComponent } from './components/event-locations/
     SeasonAddEditFormComponent,
     UniversityAddEditFormComponent,
     BroadcastAddEditFormComponent,
-    EventLocationAddEditFormComponent
+    EventLocationAddEditFormComponent,
+    PlaceLocationAddEditFormComponent
   ]
 })
 export class GisdayFormsModule {}

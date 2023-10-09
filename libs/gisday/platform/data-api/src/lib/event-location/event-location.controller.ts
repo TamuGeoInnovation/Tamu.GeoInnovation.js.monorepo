@@ -14,7 +14,8 @@ export class EventLocationController {
     return this.ebs.findOne({
       where: {
         guid: guid
-      }
+      },
+      relations: ['place']
     });
   }
 

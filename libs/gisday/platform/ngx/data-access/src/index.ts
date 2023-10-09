@@ -20,3 +20,4 @@ export * from './lib/modules/services/organization/organization.service';
 export * from './lib/modules/services/season-day/season-day.service';
 export * from './lib/modules/services/broadcast/broadcast.service';
 export * from './lib/modules/services/location/location.service';
+export * from './lib/modules/services/place/place.service';

@@ -2,22 +2,21 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { EventLocation } from '../entities/all.entity';
+import { Place } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 
 @Injectable()
-export class EventLocationService extends BaseProvider<EventLocation> {
-  constructor(@InjectRepository(EventLocation) private esRepo: Repository<EventLocation>) {
-    super(esRepo);
+export class PlaceService extends BaseProvider<Place> {
+  constructor(@InjectRepository(Place) private pRepo: Repository<Place>) {
+    super(pRepo);
   }
 
   public getEntities() {
     try {
-      return this.esRepo.find({
+      return this.pRepo.find({
         order: {
           guid: 'ASC'
-        },
-        relations: ['place']
+        }
       });
     } catch (err) {
       throw new InternalServerErrorException(err);

@@ -1,0 +1,45 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Place</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Place</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Name (e.g. campus name)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="address" placeholder="Address" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="city" placeholder="City" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="state" placeholder="State Abbreviation" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="zip" placeholder="Zip" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Place" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>
+

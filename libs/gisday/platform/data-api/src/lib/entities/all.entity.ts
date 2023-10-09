@@ -175,6 +175,29 @@ export class SeasonDay extends GuidIdentity {
 }
 
 @Entity({
+  name: 'places'
+})
+export class Place extends GuidIdentity {
+  @Column({ nullable: true })
+  public name?: string;
+
+  @Column({ nullable: true })
+  public address?: string;
+
+  @Column({ nullable: true })
+  public city?: string;
+
+  @Column({ nullable: true })
+  public state?: string;
+
+  @Column({ nullable: true })
+  public zip?: string;
+
+  @OneToMany(() => EventLocation, (location) => location.place)
+  public locations?: EventLocation[];
+}
+
+@Entity({
   name: 'event_broadcast'
 })
 export class EventBroadcast extends GuidIdentity {
@@ -198,6 +221,9 @@ export class EventBroadcast extends GuidIdentity {
 
   @Column({ nullable: true, length: 'MAX' })
   public details?: string;
+
+  @OneToMany(() => Event, (event) => event.broadcast)
+  public events?: Event[];
 }
 
 @Entity({
@@ -215,6 +241,17 @@ export class EventLocation extends GuidIdentity {
 
   @Column({ nullable: true })
   public link?: string;
+
+  @OneToMany(() => Event, (event) => event.location)
+  public events?: Event[];
+
+  @ManyToOne(() => Place, (place) => place.locations, {
+    cascade: true,
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public place: Place;
 }
 
 @Entity({
@@ -281,29 +318,37 @@ export class Event extends GuidIdentity {
   })
   public speakers?: Speaker[];
 
-  @ManyToMany(() => Sponsor, { cascade: true })
-  @JoinTable({
-    name: 'event_sponsors'
-  })
-  public sponsors?: Sponsor[];
-
   @ManyToMany(() => Tag, { cascade: true, nullable: true })
   @JoinTable({
     name: 'event_tags'
   })
   public tags?: Tag[];
 
+  @ManyToOne(() => EventBroadcast, (broadcast) => broadcast.events, {
+    cascade: true,
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public broadcast?: EventBroadcast;
+
+  @ManyToOne(() => EventLocation, (location) => location.events, {
+    cascade: true,
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public location?: EventLocation;
+
   @ManyToMany(() => CourseCredit, { cascade: true })
   @JoinTable({ name: 'event_course_credits' })
   public courseCredit?: CourseCredit[];
 
-  @OneToOne(() => EventBroadcast, { cascade: true, nullable: true })
-  @JoinColumn()
-  public broadcast?: EventBroadcast;
-
-  @OneToOne(() => EventLocation, { cascade: true, nullable: true })
-  @JoinColumn()
-  public location?: EventLocation;
+  @ManyToMany(() => Sponsor, { cascade: true })
+  @JoinTable({
+    name: 'event_sponsors'
+  })
+  public sponsors?: Sponsor[];
 }
 
 @Entity({
@@ -882,6 +927,7 @@ export const GISDAY_ENTITIES = [
   CheckIn,
   Class,
   CourseCredit,
+  Place,
   Event,
   EventBroadcast,
   EventLocation,

@@ -26,6 +26,10 @@
       <div class="form-collection column">
         <tamu-gisc-textbox formControlName="link" placeholder="URL (Aggiemap, Google Maps, etc.)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-select formControlName="place" [data]="places$ | async" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Select place'"> </tamu-gisc-select>
+      </div>
     </div>
   </div>
 
