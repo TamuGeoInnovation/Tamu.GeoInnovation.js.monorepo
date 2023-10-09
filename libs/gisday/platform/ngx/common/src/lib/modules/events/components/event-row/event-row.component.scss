@@ -26,10 +26,19 @@
     padding-bottom: 0;
   }
 
-  p:not(:first-child) {
+  .name {
+    color: #333333;
+  }
+}
+
+.event-location {
+  p {
     padding-top: 0;
     padding-bottom: 0.25rem;
     color: #616161;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+  }
+  .event-mode {
+    text-transform: capitalize;
   }
 }

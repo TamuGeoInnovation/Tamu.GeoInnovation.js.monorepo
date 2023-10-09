@@ -16,7 +16,7 @@
 
   <div class="event-name">
     <ng-container *ngIf="event?.name; else noName">
-      <p>{{event.name}}</p>
+      <p class="name">{{event.name}}</p>
     </ng-container>
 
     <ng-template #noName>
@@ -24,7 +24,19 @@
     </ng-template>
 
     <ng-container *ngIf="event?.location?.building; else noLocation">
-      <p>{{event.location?.building}}</p>
+      <div class="event-location">
+        <p *ngIf="event?.location?.place as place">
+          <span *ngIf="place.name">{{place.name}}</span>
+          <span *ngIf="place.city">: {{place.city}}</span>
+          <span *ngIf="place.state">, {{place.state}}</span>
+        </p>
+
+        <p *ngIf="event?.location as location">
+          <span *ngIf="event.mode" class="event-mode">{{event.mode}}: </span>
+          <span *ngIf="location.building">{{location.building}}</span>
+          <span *ngIf="location.room"> {{location.room}}</span>
+        </p>
+      </div>
     </ng-container>
 
     <ng-template #noLocation>
@@ -32,4 +44,3 @@
     </ng-template>
   </div>
 </div>
-
