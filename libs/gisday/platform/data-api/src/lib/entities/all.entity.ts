@@ -908,7 +908,7 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['speakers', 'tags', 'sponsors', 'location', 'broadcast', 'day'],
+  event: ['speakers', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
   speaker: ['image', 'university'],
   getRelation: (entity?: string) => {
     if (!entity) {

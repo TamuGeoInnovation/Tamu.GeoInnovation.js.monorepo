@@ -11,14 +11,30 @@
       <div class="column10">
         <div id="timeAndPlace" class="trailer-1">
           <ng-container *ngIf="event?.day?.date; else noTime">
-            <p>{{event?.day?.date| parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ event?.day?.date| parseDateTimeStrings : event.endTime | date:'h:mm a'}} <span *ngIf="event?.mode" class="event-type"> - {{event.mode}}</span></p>
+            <p>
+              <span>{{event?.day?.date | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ event?.day?.date| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</span>
+              <span *ngIf="event?.mode" class="event-type"> - {{event.mode}}</span>
+            </p>
           </ng-container>
 
           <ng-template #noTime>Time TBD</ng-template>
 
-          <ng-container *ngIf="event?.location?.link; else noLocation">
+          <ng-container *ngIf="event?.location as location; else noLocation">
+            <p *ngIf="location?.place as place">
+              <span *ngIf="place.name">{{place.name}}</span>
+              <span *ngIf="place.city || place.state"> &mdash; </span>
+              <span *ngIf="place.city">{{place.city}}</span>
+              <span *ngIf="place.state">, {{place.state}}</span>
+            </p>
+
             <p>
-              <a href="{{event.location?.link}}" target="_blank">{{event.location?.building}} {{event.location?.room}}</a>
+              <ng-container *ngIf="location.link; else noLocationLink">
+                <a [href]="location.link" target="_blank">{{location.building}} {{location.room}}</a>
+              </ng-container>
+
+              <ng-template #noLocationLink>
+                <span>{{location.building}} {{location.room}}</span>
+              </ng-template>
             </p>
           </ng-container>
 
@@ -28,8 +44,8 @@
         </div>
 
         <div class="trailer-2">
-          <tamu-gisc-accordion>
-            <tamu-gisc-accordion-header><b>Online Zoom Meeting Info</b></tamu-gisc-accordion-header>
+          <tamu-gisc-accordion *ngIf="event.mode === 'hybrid' || event.mode === 'virtual'">
+            <tamu-gisc-accordion-header><b>Online Broadcast Info</b></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
               <p>Some resources will only be available at the start of the session.</p>
 

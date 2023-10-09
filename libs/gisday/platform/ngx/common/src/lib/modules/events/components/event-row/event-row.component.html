@@ -27,7 +27,8 @@
       <div class="event-location">
         <p *ngIf="event?.location?.place as place">
           <span *ngIf="place.name">{{place.name}}</span>
-          <span *ngIf="place.city">: {{place.city}}</span>
+          <span *ngIf="place.city || place.state">: </span>
+          <span *ngIf="place.city">{{place.city}}</span>
           <span *ngIf="place.state">, {{place.state}}</span>
         </p>
 
