@@ -22,6 +22,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/event/admin-event.module').then((m) => m.AdminEventModule)
       },
       {
+        path: 'event-locations',
+        loadChildren: () => import('./pages/event-locations/event-locations.module').then((m) => m.EventLocationsModule)
+      },
+      {
         path: 'organizations',
         loadChildren: () => import('./pages/organizations/organizations.module').then((m) => m.OrganizationsModule)
       },
