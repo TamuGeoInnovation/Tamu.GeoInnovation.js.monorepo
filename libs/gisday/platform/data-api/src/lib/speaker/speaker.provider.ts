@@ -3,17 +3,17 @@ import {
   UnprocessableEntityException,
   NotFoundException,
   InternalServerErrorException,
-  StreamableFile
+  StreamableFile,
+  Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { writeFile, readdir, mkdir, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { from } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 
-import { Request } from 'express';
 import * as mime from 'mime-types';
 
+import { ensureDirectoryExists, fileExists, writeFileToDisk } from '@tamu-gisc/common/node/fs';
 import { Speaker, SpeakerImage, University, EntityRelationsLUT, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 
@@ -53,10 +53,10 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
 
     if (speakerInfo.image && speakerInfo.image.path) {
-      await this.ensureDirectoryExists(this.presenterImageDir);
+      await ensureDirectoryExists(this.presenterImageDir);
       const filePath = `${this.presenterImageDir}/${speakerInfo.image.path}`;
 
-      const exists = await this._fileExists(filePath);
+      const exists = await fileExists(filePath);
 
       if (!exists) {
         throw new NotFoundException();
@@ -85,10 +85,16 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       let speakerImage;
 
       if (file != null || file != undefined) {
-        const savedFileName = await this._writeImageToDisk(file, guid);
-        speakerImage = this.speakerImageRepo.create({
-          path: savedFileName
-        });
+        try {
+          const savedFileName = await this._saveImage(file, guid);
+
+          speakerImage = this.speakerImageRepo.create({
+            path: savedFileName
+          });
+        } catch (err) {
+          Logger.error(err.message, 'SpeakerProvider');
+          throw new InternalServerErrorException('Could not save speaker image');
+        }
       }
 
       return this.speakerRepo.save({
@@ -110,15 +116,20 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       const savedEntity = await speakerEnt.save();
 
       if (file != null || file != undefined) {
-        const savedFileName = await this._writeImageToDisk(file, savedEntity.guid);
+        try {
+          const savedFileName = await this._saveImage(file, savedEntity.guid);
 
-        const speakerImage = this.speakerImageRepo.create({
-          path: savedFileName
-        });
+          const speakerImage = this.speakerImageRepo.create({
+            path: savedFileName
+          });
 
-        savedEntity.image = speakerImage;
+          savedEntity.image = speakerImage;
 
-        return savedEntity.save();
+          return savedEntity.save();
+        } catch (err) {
+          Logger.error(err.message, 'SpeakerProvider');
+          throw new InternalServerErrorException('Could not save speaker image');
+        }
       } else {
         return savedEntity;
       }
@@ -127,68 +138,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     }
   }
 
-  public async insertPhoto(speakerGuid: string, req: Request, file) {
-    const speaker = await this.speakerRepo.findOne({
-      where: {
-        guid: speakerGuid
-      }
-    });
-
-    if (speaker) {
-      const _photo: Partial<SpeakerImage> = {
-        ...req.body,
-        speaker: speaker,
-        blob: file.buffer
-      };
-
-      const photo = await this.speakerImageRepo.create(_photo);
-      const speakerInfo = await this.speakerImageRepo.save(photo);
-      speaker.image = speakerInfo;
-
-      return speaker.save();
-    } else {
-      throw new UnprocessableEntityException(null, `Speaker could not be found`);
-    }
-  }
-
-  /**
-   * Checks if a file exists at the provided path.
-   *
-   * `stat` will throw an error if the file does not exist, so we catch it and return false.
-   */
-  private async _fileExists(fileName: string) {
-    try {
-      await stat(fileName);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  private async _writeImageToDisk(file: { buffer: Buffer; originalname: string }, prefix: string) {
-    try {
-      await this.ensureDirectoryExists(this.presenterImageDir);
-
-      // Truncate the original file name to 50 characters, preserving the file extension
-      const fileName = file.originalname.substring(0, 50).concat('.', file.originalname.split('.').pop());
-
-      const prefixedFileName = `${prefix}-${fileName}`;
-
-      await writeFile(`${this.presenterImageDir}/${prefixedFileName}`, file.buffer);
-
-      return `${prefixedFileName}`;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
-  private async ensureDirectoryExists(path: string) {
-    // With fs promises, check if the directory exists, if not, create it
-    try {
-      return await readdir(path);
-    } catch (error) {
-      // Directory doesn't exist, create it
-      return await mkdir(path, { recursive: true });
-    }
+  private async _saveImage(file, guid: string) {
+    return await writeFileToDisk(this.presenterImageDir, file, { prefix: `${guid}-`, truncateFileNameLength: 50 });
   }
 }

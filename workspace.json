@@ -20,6 +20,7 @@
     "common-ngx-settings": "libs/common/ngx/settings",
     "common-ngx-ui-notification": "libs/common/ngx/ui/notification",
     "common-ngx-ui-sidebar": "libs/common/ngx/ui/sidebar",
+    "common-node-fs": "libs/common/node/fs",
     "common-types": "libs/common/types",
     "common-utils-collection": "libs/common/utils/collection",
     "common-utils-database": "libs/common/utils/database",
