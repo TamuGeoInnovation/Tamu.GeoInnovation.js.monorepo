@@ -15,4 +15,12 @@ export class SponsorService extends BaseService<Sponsor> {
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
     super(env1, http1, 'sponsors');
   }
+
+  public updateEntityFormData(guid: string, data: FormData) {
+    return this.http1.patch<Partial<Sponsor>>(`${this.resource}/${guid}`, data);
+  }
+
+  public createEntityFormData(data: FormData) {
+    return this.http1.post<Partial<Sponsor>>(this.resource, data);
+  }
 }

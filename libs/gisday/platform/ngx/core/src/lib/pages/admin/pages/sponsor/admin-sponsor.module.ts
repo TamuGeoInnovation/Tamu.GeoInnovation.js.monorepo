@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
+import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { AdminSponsorComponent } from './admin-sponsor.component';
+import { SponsorListComponent } from './pages/sponsor-list/sponsor-list.component';
+import { SponsorEditComponent } from './pages/sponsor-edit/sponsor-edit.component';
+import { SponsorAddComponent } from './pages/sponsor-add/sponsor-add.component';
 
 const routes: Routes = [
   {
@@ -10,31 +15,24 @@ const routes: Routes = [
     component: AdminSponsorComponent,
     children: [
       {
-        path: '',
-        loadChildren: () => import('./admin-view-sponsors/admin-view-sponsors.module').then((m) => m.AdminViewSponsorsModule)
-      },
-      {
-        path: 'edit',
-        loadChildren: () => import('./admin-edit-sponsors/admin-edit-sponsors.module').then((m) => m.AdminEditSponsorsModule)
-      },
-      {
         path: 'edit/:guid',
-        loadChildren: () =>
-          import('./admin-edit-sponsors/admin-detail-sponsor/admin-detail-sponsor.module').then(
-            (m) => m.AdminDetailSponsorModule
-          )
+        component: SponsorEditComponent
       },
       {
         path: 'add',
-        loadChildren: () => import('./admin-add-sponsors/admin-add-sponsors.module').then((m) => m.AdminAddSponsorsModule)
+        component: SponsorAddComponent
+      },
+      {
+        path: '',
+        component: SponsorListComponent
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [AdminSponsorComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule],
+  declarations: [AdminSponsorComponent, SponsorListComponent, SponsorEditComponent, SponsorAddComponent],
   exports: [RouterModule]
 })
 export class AdminSponsorModule {}

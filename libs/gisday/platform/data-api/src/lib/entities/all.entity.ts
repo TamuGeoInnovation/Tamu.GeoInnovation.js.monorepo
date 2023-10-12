@@ -151,7 +151,7 @@ export class Season extends GuidIdentity {
   @OneToMany(() => Organization, (organization) => organization.season)
   public organizations: Organization[];
 
-  @OneToMany(() => Sponsor, (sponsor) => sponsor.season, { cascade: true })
+  @OneToMany(() => Sponsor, (sponsor) => sponsor.season)
   public sponsors: Sponsor[];
 
   @OneToMany(() => Class, (cl) => cl.season, { cascade: true })
@@ -567,9 +567,6 @@ export class Tag extends GuidIdentity {
   name: 'sponsors'
 })
 export class Sponsor extends GuidIdentity {
-  @ManyToOne(() => Season, (season) => season.sponsors, { cascade: false, nullable: true })
-  public season: Season;
-
   @Column({ nullable: true })
   public name: string;
 
@@ -577,13 +574,13 @@ export class Sponsor extends GuidIdentity {
   public website: string;
 
   @Column({ nullable: true })
-  public logoUrl: string;
+  public contactFirstName: string;
+
+  @Column({ nullable: true })
+  public contactLastName: string;
 
   @Column({ nullable: true })
   public contactEmail: string;
-
-  @Column({ nullable: true })
-  public contactName: string;
 
   @Column({ nullable: true, length: 'max' })
   public description: string;
@@ -593,6 +590,13 @@ export class Sponsor extends GuidIdentity {
 
   @Column({ nullable: true })
   public sponsorshipAmount: string;
+
+  @ManyToOne(() => Season, (season) => season.sponsors, { cascade: true, nullable: true })
+  public season: Season;
+
+  @OneToOne(() => Asset, { cascade: true, nullable: true })
+  @JoinColumn()
+  public logo?: Asset;
 }
 
 @Entity({
