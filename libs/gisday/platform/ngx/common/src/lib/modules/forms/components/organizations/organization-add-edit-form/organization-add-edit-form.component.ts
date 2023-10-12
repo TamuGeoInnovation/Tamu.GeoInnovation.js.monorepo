@@ -39,6 +39,7 @@ export class OrganizationAddEditFormComponent implements OnInit {
     this.form = this.fb.group({
       guid: [null],
       name: [null],
+      acronym: [null],
       website: [null],
       text: [null],
       contactFirstName: [null],

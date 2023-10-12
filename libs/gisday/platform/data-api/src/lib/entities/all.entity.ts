@@ -475,6 +475,9 @@ export class Organization extends GuidIdentity {
   public name: string;
 
   @Column({ nullable: true })
+  public acronym: string;
+
+  @Column({ nullable: true })
   public website: string;
 
   @Column({ nullable: true, length: 'max' })
