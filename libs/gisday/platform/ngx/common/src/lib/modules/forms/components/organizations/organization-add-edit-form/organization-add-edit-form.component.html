@@ -20,10 +20,6 @@
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-textbox formControlName="logoUrl" placeholder="Organization Logo URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      </div>
-
-      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="text" placeholder="Description" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
@@ -38,6 +34,15 @@
       <div class="form-collection row">
         <tamu-gisc-textbox formControlName="contactEmail" placeholder="Contact Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
+
+      <div class="form-collection row">
+        <div>
+          <img [src]="logoUrl$ | async" />
+          <tamu-gisc-file formControlName="file">
+            <p class="placeholder">Select Logo Image</p>
+          </tamu-gisc-file>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -50,4 +55,3 @@
     </div>
   </div>
 </form>
-

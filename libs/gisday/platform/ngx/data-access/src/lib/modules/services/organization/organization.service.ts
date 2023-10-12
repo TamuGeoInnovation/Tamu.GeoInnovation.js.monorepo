@@ -13,5 +13,12 @@ export class OrganizationService extends BaseService<Organization> {
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
     super(env1, http1, 'organizations');
   }
-}
 
+  public updateEntityFormData(guid: string, data: FormData) {
+    return this.http1.patch<Partial<Organization>>(`${this.resource}/${guid}`, data);
+  }
+
+  public createEntityFormData(data: FormData) {
+    return this.http1.post<Partial<Organization>>(this.resource, data);
+  }
+}

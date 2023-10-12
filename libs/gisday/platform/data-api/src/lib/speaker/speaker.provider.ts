@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { from } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 
-import { Speaker, University, EntityRelationsLUT } from '../entities/all.entity';
+import { Speaker, EntityRelationsLUT } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 
@@ -19,7 +19,6 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
   constructor(
     @InjectRepository(Speaker) private speakerRepo: Repository<Speaker>,
-    @InjectRepository(University) public uniRepo: Repository<University>,
     private readonly assetService: AssetsService
   ) {
     super(speakerRepo);
@@ -77,9 +76,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
       if (file != null || file != undefined) {
         try {
-          const savedFileName = await this._saveImage(file, savedEntity.guid);
-
-          const speakerImage = await this._saveImage(savedFileName, savedEntity.guid);
+          const speakerImage = await this._saveImage(file, savedEntity.guid);
 
           savedEntity.image = speakerImage;
 
@@ -97,7 +94,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   private async _saveImage(file, guid: string) {
-    return this.assetService.saveAsset(this._resourcePath, file, 'speaker', {
+    return this.assetService.saveAsset(this._resourcePath, file, 'speaker-image', {
       prefix: `${guid}-`
     });
   }

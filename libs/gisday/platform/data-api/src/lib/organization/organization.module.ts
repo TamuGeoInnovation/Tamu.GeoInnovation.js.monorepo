@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Asset, Organization } from '../entities/all.entity';
 import { OrganizationService } from './organization.service';
 import { OrganizationController } from './organization.controller';
-import { Organization } from '../entities/all.entity';
+import { AssetsService } from '../assets/assets.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Organization])],
+  imports: [TypeOrmModule.forFeature([Organization, Asset])],
   controllers: [OrganizationController],
-  providers: [OrganizationService]
+  providers: [OrganizationService, AssetsService]
 })
 export class OrganizationModule {}

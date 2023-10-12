@@ -16,31 +16,35 @@ export class OrganizationController {
       where: {
         guid
       },
-      relations: ['season']
+      relations: ['season', 'logo']
     });
   }
 
   @Get()
   public findAll() {
     return this.orgService.find({
-      relations: ['season']
+      relations: ['season', 'logo']
     });
   }
 
   @Permissions(['create:organizations'])
   @UseGuards(JwtGuard, PermissionsGuard)
-  @UseInterceptors(FileInterceptor('file'))
   @Post()
-  public create(@Body() creteOrgDto?: Partial<Organization>, @UploadedFile() file?) {
-    return this.orgService.create(creteOrgDto);
+  @UseInterceptors(FileInterceptor('file'))
+  public create(@Body() creteOrgDto?: Partial<Organization>, @UploadedFile() file?: Express.Multer.File) {
+    return this.orgService.createOrganization(creteOrgDto, file);
   }
 
   @Permissions(['update:organizations'])
   @UseGuards(JwtGuard, PermissionsGuard)
-  @UseInterceptors(FileInterceptor('file'))
   @Patch(':guid')
-  public update(@Param('guid') guid: string, @Body() updateOrgDto: Partial<Organization>, @UploadedFile() file?) {
-    return this.orgService.update(guid, updateOrgDto);
+  @UseInterceptors(FileInterceptor('file'))
+  public update(
+    @Param('guid') guid: string,
+    @Body() updateOrgDto: Partial<Organization>,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.orgService.updateOrganization(guid, updateOrgDto, file);
   }
 
   @Permissions(['delete:organizations'])

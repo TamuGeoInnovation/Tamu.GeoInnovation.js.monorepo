@@ -1,11 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, map, switchMap, take } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
 
 import { Organization, Season } from '@tamu-gisc/gisday/platform/data-api';
-import { OrganizationService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { AssetsService, OrganizationService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+
+import { formToFormData } from '../../../../../utils/form-to-form-data';
 
 @Component({
   selector: 'tamu-gisc-organization-add-edit-form',
@@ -18,14 +21,17 @@ export class OrganizationAddEditFormComponent implements OnInit {
 
   public entity$: Observable<Partial<Organization>>;
   public activeSeasons$: Observable<Partial<Season>>;
+  public logoUrl$: Observable<SafeUrl>;
   public form: FormGroup;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
+    private readonly as: AssetsService,
     private readonly os: OrganizationService,
     private readonly ss: SeasonService,
+    private readonly sn: DomSanitizer,
     private readonly ns: NotificationService
   ) {}
 
@@ -34,24 +40,42 @@ export class OrganizationAddEditFormComponent implements OnInit {
       guid: [null],
       name: [null],
       website: [null],
-      logoUrl: [null],
       text: [null],
       contactFirstName: [null],
       contactLastName: [null],
       contactEmail: [null],
       season: [null],
-      speakers: [[]]
+      speakers: [[]],
+      file: [null]
     });
 
     this.activeSeasons$ = this.ss.activeSeason$;
 
-    if (this.type === 'edit') {
-      this.entity$ = this.at.params.pipe(
-        map((params) => params.guid),
-        filter((guid) => guid !== undefined),
-        switchMap((guid) => this.os.getEntity(guid))
-      );
+    this.entity$ = this.at.params.pipe(
+      map((params) => params.guid),
+      filter((guid) => guid !== undefined),
+      switchMap((guid) => this.os.getEntity(guid)),
+      shareReplay()
+    );
 
+    // Image preview can come from two sources:
+    // 1. The entity itself, if it has a photoUrl property
+    // 2. The form, if the user has selected a file
+    this.logoUrl$ = merge(
+      this.entity$.pipe(
+        filter((ent) => ent?.logo?.guid !== undefined && ent?.logo?.guid !== null),
+        switchMap((entity) => {
+          return this.as.getAssetUrl(entity?.logo?.guid);
+        })
+      ),
+      this.form.valueChanges.pipe(
+        map((value) => value.file),
+        filter((file) => file !== null),
+        map((file) => this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)))
+      )
+    );
+
+    if (this.type === 'edit') {
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue({
           ...entity,
@@ -96,8 +120,9 @@ export class OrganizationAddEditFormComponent implements OnInit {
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
+    const formData = formToFormData(this.form);
 
-    this.os.updateEntity(rawValue.guid, rawValue).subscribe({
+    this.os.updateEntityFormData(rawValue.guid, formData).subscribe({
       next: () => {
         this.ns.toast({
           id: 'org-update-success',
@@ -118,9 +143,9 @@ export class OrganizationAddEditFormComponent implements OnInit {
   }
 
   private _createEntity() {
-    const rawValue = this.form.getRawValue();
+    const formData = formToFormData(this.form);
 
-    this.os.createEntity(rawValue).subscribe({
+    this.os.createEntityFormData(formData).subscribe({
       next: () => {
         this.ns.toast({
           id: 'org-create-success',
