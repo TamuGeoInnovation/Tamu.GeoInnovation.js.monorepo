@@ -1788,7 +1788,8 @@ article .row {
     width: 14.125rem;
 
     & > div:first-child,
-    a:first-child {
+    a:first-child,
+    img {
       display: block;
       height: 75px;
       width: 175px;
@@ -1803,12 +1804,10 @@ article .row {
       text-align: center;
       font-size: 1rem;
       margin-top: 0.5rem;
-      color: $aggie-support-grey;
-      font-family: $title-font;
     }
 
     & > p:last-child {
-      font-weight: 400;
+      font-weight: 600;
     }
 
     &.large {

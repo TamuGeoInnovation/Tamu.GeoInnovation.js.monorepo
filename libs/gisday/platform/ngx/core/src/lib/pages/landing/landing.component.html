@@ -100,19 +100,19 @@
     <div class="container12 flex flex-column justify-center align-center">
       <p class="column10 trailer-1">GIS Day sponsors are increasingly becoming the backbone of the event and with a growing attendance rate, their contributions help drive the gears that make TxGIS Day possible. As a bonus, their contributions are translated to direct communication and exposure with attendees.</p>
 
-      <div class="icon-grid column12">
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/conoco.png)"></div>
-          <p><a [routerLink]="['/sponsor/details/b5a3f156-1919-41b5-9086-643197073353']" target="_blank">ConocoPhillips</a></p>
+      <ng-container *ngIf="sponsors$ | async as sponsors; else noSponsors">
+        <div class="icon-grid column12">
+          <div class="icon-item" *ngFor="let sponsor of sponsors">
+            <img [src]="sponsor?.logo?.guid | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
+          </div>
         </div>
 
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/TAMU_GeoInnovation_Service_Center_Logo_2018.svg)"></div>
-          <p><a [routerLink]="['/sponsor/details/47a34438-a620-44f5-a828-79b10176f9aa']" target="_blank">Texas A&M GeoInnovation Service Center</a></p>
-        </div>
-      </div>
+        <p class="leader-2"><a [routerLink]="['/sponsors']">Learn more about sponsorship options</a></p>
+      </ng-container>
 
-      <p class="leader-2"><a [routerLink]="['/sponsors']">Learn more about sponsorship options</a></p>
+      <ng-template #noSponsors>
+        <a routerLink="/sponsors" class="button">Learn about sponsorship opportunities</a>
+      </ng-template>
     </div>
   </div>
 

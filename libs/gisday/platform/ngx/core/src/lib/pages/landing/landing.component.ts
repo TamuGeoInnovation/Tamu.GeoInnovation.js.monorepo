@@ -14,8 +14,8 @@ import {
   switchMap
 } from 'rxjs';
 
-import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { ActiveSeasonDto, SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
+import { SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ActiveSeasonDto, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 
 const numberDictionary = {
   0: 'Zero',
@@ -55,12 +55,19 @@ export class LandingComponent implements OnInit {
   public secondsUntil$: Observable<string>;
   public seasonStarted$: Observable<boolean>;
 
-  constructor(private titleService: Title, private readonly ss: SeasonService) {}
+  public sponsors$: Observable<Array<Partial<Sponsor>>>;
+
+  constructor(
+    private titleService: Title,
+    private readonly seasonService: SeasonService,
+    private readonly sponsorService: SponsorService
+  ) {}
 
   public ngOnInit() {
     this.titleService.setTitle(this.title);
 
-    this.activeSeason$ = this.ss.getActiveSeason().pipe(shareReplay());
+    this.activeSeason$ = this.seasonService.getActiveSeason().pipe(shareReplay());
+    this.sponsors$ = this.sponsorService.getEntities().pipe(shareReplay());
 
     this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),

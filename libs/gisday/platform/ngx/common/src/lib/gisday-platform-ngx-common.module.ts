@@ -10,11 +10,12 @@ import { FooterComponent } from './modules/footer/footer.component';
 import { HeaderComponent } from './modules/header/header.component';
 import { OrderByPipe } from './pipes/order-by/order-by-pipe';
 import { ParseDateTimeStringsPipe } from './pipes/parse-date-time-strings/parse-date-time-strings.pipe';
+import { AssetUrlPipe } from './pipes/asset-url/asset-url.pipe';
 
 @NgModule({
   imports: [CommonModule, RouterModule, UITileNavigationModule, UINavigationTriggersModule, CommonNgxAuthModule],
-  declarations: [FooterComponent, HeaderComponent, OrderByPipe, ParseDateTimeStringsPipe],
+  declarations: [FooterComponent, HeaderComponent, OrderByPipe, ParseDateTimeStringsPipe, AssetUrlPipe],
   providers: [],
-  exports: [FooterComponent, HeaderComponent, OrderByPipe, ParseDateTimeStringsPipe]
+  exports: [FooterComponent, HeaderComponent, OrderByPipe, ParseDateTimeStringsPipe, AssetUrlPipe]
 })
 export class GisdayPlatformNgxCommonModule {}
