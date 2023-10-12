@@ -1472,7 +1472,7 @@ td > span.delete {
   opacity: 0;
 }
 
-tr[ng-reflect-router-link] {
+tr.selectable {
   cursor: pointer;
 }
 

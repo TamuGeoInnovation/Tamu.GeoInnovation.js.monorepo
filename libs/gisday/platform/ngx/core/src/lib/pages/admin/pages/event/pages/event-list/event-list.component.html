@@ -21,7 +21,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let entity of ($entities | async)" [routerLink]="['edit', entity.guid]">
+          <tr class="selectable" *ngFor="let entity of ($entities | async)" [routerLink]="['edit', entity.guid]">
             <td>{{entity?.name}}</td>
             <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
             <td>{{entity?.day?.date | date:'shortDate'}}</td>

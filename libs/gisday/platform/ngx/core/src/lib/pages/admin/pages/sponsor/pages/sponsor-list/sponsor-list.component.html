@@ -19,7 +19,7 @@
         </thead>
 
         <tbody>
-          <tr [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
+          <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
             <td>{{entity?.name}}</td>
             <td>{{entity?.season?.year}}</td>
             <td class="capitalize">{{entity?.sponsorshipLevel}}</td>
