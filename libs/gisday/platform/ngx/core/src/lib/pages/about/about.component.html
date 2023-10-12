@@ -4,7 +4,7 @@
       <h1 class="trailer-1">About TxGIS Day</h1>
 
       <div class="container12">
-        <p class="sub-section-heading">GIS Day, the annual worldwide salute to geospatial technology and its power to transform and enhance lives, is going to be extra "spatial" this year in Texas, where the TxGIS Day celebration, one of the world's largest, is expanding to encompass three event-packed days, November 14-16, 2022.</p>
+        <p class="sub-section-heading">GIS Day, the annual worldwide salute to geospatial technology and its power to transform and enhance lives, is going to be extra "spatial" this year in Texas, where the TxGIS Day celebration, one of the world's largest, is expanding to encompass {{dayCountText$ | async}}<span *ngIf="dateRange$ | async as dates">, {{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</span>.</p>
       </div>
     </div>
   </div>
@@ -13,7 +13,7 @@
     <div class="container12 flex flex-column align-center">
       <h2 class="trailer-1">Organizing Committee</h2>
       <div class="column9">
-        <p>TxGIS Day 2022 would not have been possible without the hard work and dedication of a group of individuals sharing a deep passion and love for everything-GIS. We'd like to extend a very special thanks to everyone who has been involved in the planning and the making of TxGIS Day.</p>
+        <p>TxGIS Day {{(activeSeason$ | async)?.year }} would not have been possible without the hard work and dedication of a group of individuals sharing a deep passion and love for everything-GIS. We'd like to extend a very special thanks to everyone who has been involved in the planning and the making of TxGIS Day.</p>
       </div>
 
       <div class="column12" id="bubble-portrait-container">
@@ -87,7 +87,7 @@
       <div class="container12 flex flex-column align-center">
         <h2 class="trailer-1">Participating Organizations</h2>
         <div class="column9">
-          <p>TxGIS Day 2022 would not be possible without the expertise, support, and personnel from the following participating organizations.</p>
+          <p>TxGIS Day {{(activeSeason$ | async)?.year }} would not be possible without the expertise, support, and personnel from the following participating organizations.</p>
         </div>
 
         <div class="icon-grid column12">
@@ -124,38 +124,6 @@
           <div class="icon-item">
             <div style="background-image: url(assets/images/orgs/URISATexas.png)"></div>
             <p><a href="https://urisatexas.org/" target="_blank">URISA Texas</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container12 flex flex-column align-center leader-5" id="tech">
-      <div class="container12 flex flex-column align-center">
-        <h2 class="trailer-1">Technical Team</h2>
-        <div class="column9">
-          <p>TxGIS Day 2022 is made possible through the tireless efforts of our wonderful staff.</p>
-        </div>
-
-        <div class="presenter-list-item">
-          <img src="../assets/images/presenters/CoppingerStephanie.jpg" />
-          <div class="presenter-list-details">
-            <p>Stephanie Coppinger</p>
-            <p>Texas A&amp;M University</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/presenters/HarmonAaron.jpg" />
-          <div class="presenter-list-details">
-            <p>Aaron Harmon</p>
-            <p>Texas A&amp;M University</p>
-          </div>
-        </div>
-
-        <div class="presenter-list-item">
-          <img src="../assets/images/presenters/HernandezEdgar.jpg" />
-          <div class="presenter-list-details">
-            <p>Edgar Hernandez</p>
-            <p>Texas A&amp;M University</p>
           </div>
         </div>
       </div>
