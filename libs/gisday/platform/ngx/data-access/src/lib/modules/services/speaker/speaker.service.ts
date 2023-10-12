@@ -5,7 +5,6 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
-import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +22,6 @@ export class SpeakerService extends BaseService<Speaker> {
 
   public getPresenters() {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}`);
-  }
-
-  public getPhoto(guid: string) {
-    return this.http1.get<string>(`${this.resource}/photo/${guid}`);
-  }
-
-  public getPhotoUrl(guid: string) {
-    return of(`${this.resource}/photo/${guid}`);
   }
 
   public updateSpeakerInfo(guid: string, data: FormData) {

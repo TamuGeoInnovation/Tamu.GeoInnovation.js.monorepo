@@ -16,11 +16,6 @@ export class SpeakerController {
     return this.provider.getPresenter(params.guid);
   }
 
-  @Get('/photo/:guid')
-  public async getSpeakerPhoto(@Param() params) {
-    return this.provider.getSpeakerPhoto(params.guid);
-  }
-
   @Get(':guid/speaker')
   public async getEntityWithRelations(@Param('guid') guid) {
     return this.provider.findOne({
@@ -37,14 +32,14 @@ export class SpeakerController {
       where: {
         guid: guid
       },
-      relations: ['organization', 'university']
+      relations: ['organization', 'university', 'image']
     });
   }
 
   @Get()
   public async getEntities() {
     return this.provider.find({
-      relations: ['organization', 'university'],
+      relations: ['organization', 'university', 'image'],
       order: {
         lastName: 'ASC'
       }

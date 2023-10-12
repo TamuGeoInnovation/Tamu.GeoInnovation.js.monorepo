@@ -5,7 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, merge, shareReplay, switchMap } from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
-import { OrganizationService, SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import {
+  AssetsService,
+  OrganizationService,
+  SpeakerService,
+  UniversityService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
@@ -31,6 +36,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
     private readonly ss: SpeakerService,
+    private readonly as: AssetsService,
     private readonly us: UniversityService,
     private readonly os: OrganizationService,
     private readonly sn: DomSanitizer,
@@ -69,8 +75,9 @@ export class SpeakerAddEditFormComponent implements OnInit {
     // 2. The form, if the user has selected a file
     this.speakerPhotoUrl$ = merge(
       this.entity$.pipe(
+        filter((ent) => ent?.image?.guid !== undefined && ent?.image?.guid !== null),
         switchMap((entity) => {
-          return this.ss.getPhotoUrl(entity.guid);
+          return this.as.getAssetUrl(entity?.image?.guid);
         })
       ),
       this.form.valueChanges.pipe(

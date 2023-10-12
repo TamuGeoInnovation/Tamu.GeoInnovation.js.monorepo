@@ -446,24 +446,25 @@ export class University extends GuidIdentity {
 }
 
 @Entity({
+  name: 'assets'
+})
+export class Asset extends GuidIdentity {
+  @Column({ nullable: true })
+  public name: string;
+
+  @Column({ nullable: true })
+  public path: string;
+
+  @Column({ nullable: true })
+  public type: string;
+}
+
+@Entity({
   name: 'speaker_roles'
 })
 export class SpeakerRole extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
-}
-
-export class MSSQLImage {
-  public type: 'jpg' | 'png';
-  public data: Uint8Array;
-}
-
-@Entity({
-  name: 'speaker_images'
-})
-export class SpeakerImage extends GuidIdentity {
-  @Column({ nullable: true })
-  public path: string;
 }
 
 @Entity({
@@ -476,9 +477,6 @@ export class Organization extends GuidIdentity {
   @Column({ nullable: true })
   public website: string;
 
-  @Column({ nullable: true })
-  public logoUrl: string;
-
   @Column({ nullable: true, length: 'max' })
   public text: string;
 
@@ -490,6 +488,10 @@ export class Organization extends GuidIdentity {
 
   @Column({ nullable: true })
   public contactEmail: string;
+
+  @OneToOne(() => Asset, { cascade: true, nullable: true })
+  @JoinColumn()
+  public logo?: Asset;
 
   @ManyToOne(() => Season, (season) => season.organizations, { cascade: true, orphanedRowAction: 'nullify' })
   public season: Season;
@@ -548,9 +550,9 @@ export class Speaker extends GuidIdentity {
   @ManyToOne(() => University, { cascade: true, nullable: true })
   public university?: University;
 
-  @OneToOne(() => SpeakerImage, { cascade: true, nullable: true })
+  @OneToOne(() => Asset, { cascade: true, nullable: true })
   @JoinColumn()
-  public image?: SpeakerImage;
+  public image?: Asset;
 }
 
 @Entity({
@@ -908,7 +910,7 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['speakers', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
+  event: ['speakers', 'speakers.image', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
   speaker: ['image', 'university'],
   getRelation: (entity?: string) => {
     if (!entity) {
@@ -939,7 +941,6 @@ export const GISDAY_ENTITIES = [
   Organization,
   RsvpType,
   Speaker,
-  SpeakerImage,
   SpeakerRole,
   SubmissionType,
   Sponsor,
@@ -948,7 +949,8 @@ export const GISDAY_ENTITIES = [
   UserInfo,
   UserRsvp,
   Submission,
-  University
+  University,
+  Asset
 ];
 
 export interface IGeoJsonFeature {

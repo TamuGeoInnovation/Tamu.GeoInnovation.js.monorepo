@@ -3,29 +3,24 @@ import {
   UnprocessableEntityException,
   NotFoundException,
   InternalServerErrorException,
-  StreamableFile,
   Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createReadStream } from 'node:fs';
 import { from } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 
-import * as mime from 'mime-types';
-
-import { ensureDirectoryExists, fileExists, writeFileToDisk } from '@tamu-gisc/common/node/fs';
-import { Speaker, SpeakerImage, University, EntityRelationsLUT, Event } from '../entities/all.entity';
+import { Speaker, University, EntityRelationsLUT } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { AssetsService } from '../assets/assets.service';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
-  public presenterImageDir = `${process.env.APP_DATA}/images/presenters`;
+  private _resourcePath = `images/speakers/`;
 
   constructor(
-    @InjectRepository(Event) private eventRepo: Repository<Event>,
     @InjectRepository(Speaker) private speakerRepo: Repository<Speaker>,
-    @InjectRepository(SpeakerImage) public speakerImageRepo: Repository<SpeakerImage>,
-    @InjectRepository(University) public uniRepo: Repository<University>
+    @InjectRepository(University) public uniRepo: Repository<University>,
+    private readonly assetService: AssetsService
   ) {
     super(speakerRepo);
   }
@@ -41,36 +36,6 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     );
   }
 
-  /**
-   * Returns a streamable file photo for the provided speaker guid.
-   */
-  public async getSpeakerPhoto(speakerGuid: string) {
-    const speakerInfo = await this.speakerRepo.findOne({
-      where: {
-        guid: speakerGuid
-      },
-      relations: ['image']
-    });
-
-    if (speakerInfo.image && speakerInfo.image.path) {
-      await ensureDirectoryExists(this.presenterImageDir);
-      const filePath = `${this.presenterImageDir}/${speakerInfo.image.path}`;
-
-      const exists = await fileExists(filePath);
-
-      if (!exists) {
-        throw new NotFoundException();
-      }
-
-      const file = createReadStream(filePath);
-      return new StreamableFile(file, {
-        type: mime.lookup(filePath)
-      });
-    } else {
-      throw new NotFoundException();
-    }
-  }
-
   public async updateWithInfo(guid: string, incoming: DeepPartial<Speaker>, file?) {
     delete incoming.guid;
 
@@ -83,14 +48,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
     if (existing) {
       let speakerImage;
-
       if (file != null || file != undefined) {
         try {
-          const savedFileName = await this._saveImage(file, guid);
-
-          speakerImage = this.speakerImageRepo.create({
-            path: savedFileName
-          });
+          speakerImage = await this._saveImage(file, guid);
         } catch (err) {
           Logger.error(err.message, 'SpeakerProvider');
           throw new InternalServerErrorException('Could not save speaker image');
@@ -119,9 +79,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         try {
           const savedFileName = await this._saveImage(file, savedEntity.guid);
 
-          const speakerImage = this.speakerImageRepo.create({
-            path: savedFileName
-          });
+          const speakerImage = await this._saveImage(savedFileName, savedEntity.guid);
 
           savedEntity.image = speakerImage;
 
@@ -139,6 +97,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   private async _saveImage(file, guid: string) {
-    return await writeFileToDisk(this.presenterImageDir, file, { prefix: `${guid}-`, truncateFileNameLength: 50 });
+    return this.assetService.saveAsset(this._resourcePath, file, 'speaker', {
+      prefix: `${guid}-`
+    });
   }
 }

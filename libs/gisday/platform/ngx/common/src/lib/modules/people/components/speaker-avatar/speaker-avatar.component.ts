@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable, catchError, mapTo, of, shareReplay, switchMap } from 'rxjs';
+import { Observable, catchError, filter, mapTo, of, shareReplay, switchMap } from 'rxjs';
 
-import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-speaker-avatar',
@@ -39,10 +39,17 @@ export class SpeakerAvatarComponent implements OnInit {
    */
   public imageExists$: Observable<boolean>;
 
-  constructor(private readonly http: HttpClient, private readonly sp: SpeakerService) {}
+  constructor(private readonly http: HttpClient, private readonly as: AssetsService) {}
 
   public ngOnInit(): void {
-    this.speakerImageUrl$ = this.sp.getPhotoUrl(this.avatarGuid).pipe(shareReplay());
+    this.speakerImageUrl$ = of(this.avatarGuid).pipe(
+      filter((guid) => {
+        return guid !== undefined && guid !== null;
+      }),
+      switchMap((guid) => {
+        return this.as.getAssetUrl(guid);
+      })
+    );
 
     this.imageExists$ = this.speakerImageUrl$.pipe(
       switchMap((url) => {
@@ -55,4 +62,3 @@ export class SpeakerAvatarComponent implements OnInit {
     );
   }
 }
-
