@@ -124,39 +124,10 @@
       </div>
 
       <div class="icon-grid column12">
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/orgs/ATXGISDay.png)"></div>
-          <p><a href="https://atxgisday.org/" target="_blank">ATX GIS Day</a></p>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/orgs/HoustonAreaGISDay.png)"></div>
-          <p><a href="http://www.houstonareagisday.org/" target="_blank">Houston Area GIS Day</a></p>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/orgs/SWIGGISAustin.png)"></div>
-          <p><a href="https://www.meetup.com/SWIGGISAustin/" target="_blank">Supporting Women in Geography & GIS</a></p>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/orgs/TAMU.png)"></div>
-          <p><a href="https://www.tamu.edu/" target="_blank">Texas A&amp;M University</a></p>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/orgs/UniversityNorthTexas.jpg)"></div>
-          <p><a href="https://www.unt.edu/" target="_blank">University of North Texas</a></p>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/orgs//UT.png)"></div>
-          <p><a href="https://www.utexas.edu/" target="_blank">University of Texas at Austin</a></p>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/orgs/URISATexas.png)"></div>
-          <p><a href="https://urisatexas.org/" target="_blank">URISA Texas</a></p>
+        <div class="icon-item" *ngFor="let org of organizations$ | async">
+          <!-- <div style="background-image: url(assets/images/orgs/ATXGISDay.png)"></div> -->
+          <img [src]="org?.logo?.guid | assetUrl | async" [alt]="org.name + 'logo'" [title]="org.name" />
+          <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
         </div>
       </div>
     </div>

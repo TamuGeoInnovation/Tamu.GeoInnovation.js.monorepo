@@ -1794,6 +1794,8 @@ article .row {
       height: 75px;
       width: 175px;
       margin: 0 auto;
+      object-fit: contain;
+      object-position: center center;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center center;
