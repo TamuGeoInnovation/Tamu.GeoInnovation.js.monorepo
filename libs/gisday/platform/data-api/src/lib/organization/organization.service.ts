@@ -35,7 +35,7 @@ export class OrganizationService extends BaseProvider<Organization> {
         try {
           const savedLogo = await this._saveImage(file);
 
-          savedEntity.logo = savedLogo;
+          savedEntity.logos = [savedLogo];
 
           return savedEntity.save();
         } catch (err) {
@@ -57,7 +57,7 @@ export class OrganizationService extends BaseProvider<Organization> {
       where: {
         guid: guid
       },
-      relations: ['logo']
+      relations: ['logos']
     });
 
     if (existing) {
@@ -75,7 +75,7 @@ export class OrganizationService extends BaseProvider<Organization> {
       return this.orgRepo.save({
         ...existing,
         ...incoming,
-        logo: logoImage
+        logos: [logoImage]
       });
     } else {
       throw new NotFoundException();

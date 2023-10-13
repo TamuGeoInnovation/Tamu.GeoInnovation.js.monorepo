@@ -16,6 +16,7 @@ import { BroadcastAddEditFormComponent } from './components/broadcasts/broadcast
 import { EventLocationAddEditFormComponent } from './components/event-locations/event-location-add-edit-form/event-location-add-edit-form.component';
 import { PlaceLocationAddEditFormComponent } from './components/places/place-location-add-edit-form/place-location-add-edit-form.component';
 import { SponsorAddEditFormComponent } from './components/sponsors/sponsor-add-edit-form/sponsor-add-edit-form.component';
+import { OrganizationLinkFormComponent } from './components/organizations/organization-link-form/organization-link-form.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, ReactiveFormsModule, UIFormsModule],
@@ -30,7 +31,8 @@ import { SponsorAddEditFormComponent } from './components/sponsors/sponsor-add-e
     BroadcastAddEditFormComponent,
     EventLocationAddEditFormComponent,
     PlaceLocationAddEditFormComponent,
-    SponsorAddEditFormComponent
+    SponsorAddEditFormComponent,
+    OrganizationLinkFormComponent
   ],
   exports: [
     TagAddEditFormComponent,

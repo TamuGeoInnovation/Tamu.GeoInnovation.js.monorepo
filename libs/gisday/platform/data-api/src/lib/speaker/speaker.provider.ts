@@ -28,13 +28,13 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: guid
       },
-      relations: ['organization', 'university', 'image']
+      relations: ['organization', 'university', 'images']
     });
   }
 
   public async getPresenters() {
     return this.speakerRepo.find({
-      relations: ['organization', 'university', 'image'],
+      relations: ['organization', 'university', 'images'],
       order: {
         lastName: 'ASC'
       }
@@ -46,7 +46,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         isOrganizer: true
       },
-      relations: ['organization', 'university', 'image'],
+      relations: ['organization', 'university', 'images'],
       order: {
         lastName: 'ASC'
       }
@@ -78,7 +78,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         ...existing,
         ...incoming,
         isOrganizer: (incoming as any).isOrganizer === 'true', // form data coerces boolean to string
-        image: speakerImage
+        images: [speakerImage]
       });
     } else {
       throw new NotFoundException();
@@ -98,7 +98,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         try {
           const speakerImage = await this._saveImage(file, savedEntity.guid);
 
-          savedEntity.image = speakerImage;
+          savedEntity.images = [speakerImage];
 
           return savedEntity.save();
         } catch (err) {

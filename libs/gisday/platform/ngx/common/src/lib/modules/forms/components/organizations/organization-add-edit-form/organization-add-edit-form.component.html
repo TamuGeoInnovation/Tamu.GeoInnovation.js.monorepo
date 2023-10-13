@@ -40,7 +40,32 @@
       <div class="form-collection row">
         <tamu-gisc-textbox formControlName="contactEmail" placeholder="Contact Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
+    </div>
+  </div>
 
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Links</div>
+      <div class="form-section-actions">
+        <a>Add link <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p>Organization links are displayed in the header under the "<strong>Organizations</strong>" item. Please keep the link label short and descriptive to prevent multi-line spanning.</p>
+
+      <ng-container *ngIf="form.get('links')">
+        <p>There are no links yet.</p>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Organization Logo</div>
+    </div>
+
+    <div class="form-section-body">
       <div class="form-collection row">
         <div>
           <img [src]="logoUrl$ | async" />

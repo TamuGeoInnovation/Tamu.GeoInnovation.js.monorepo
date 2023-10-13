@@ -82,9 +82,9 @@ export class SponsorAddEditFormComponent implements OnInit {
     // 2. The form, if the user has selected a file
     this.logoUrl$ = merge(
       this.entity$.pipe(
-        filter((ent) => ent?.logo?.guid !== undefined && ent?.logo?.guid !== null),
+        filter((ent) => ent?.logos?.[0]?.guid !== undefined && ent?.logos?.[0]?.guid !== null),
         switchMap((entity) => {
-          return this.as.getAssetUrl(entity?.logo?.guid);
+          return this.as.getAssetUrl(entity?.logos?.[0]?.guid);
         })
       ),
       this.form.valueChanges.pipe(

@@ -18,7 +18,7 @@
 
       <div class="column12" id="bubble-portrait-container">
         <div class="presenter-list-item" *ngFor="let member of organizingMembers$ | async">
-          <tamu-gisc-speaker-avatar [avatarGuid]="member?.image?.guid" [fallbackStyle]="'initials'" [avatarNames]="member.firstName + ' ' + member.lastName"></tamu-gisc-speaker-avatar>
+          <tamu-gisc-speaker-avatar [avatarGuid]="member?.images?.[0]?.guid" [fallbackStyle]="'initials'" [avatarNames]="member.firstName + ' ' + member.lastName"></tamu-gisc-speaker-avatar>
 
           <div class="presenter-list-details">
             <p><a [routerLink]="['/presenters/details', member.guid]">{{member.firstName}} {{member.lastName}}</a></p>
@@ -37,7 +37,7 @@
 
         <div class="icon-grid column12">
           <div class="icon-item" *ngFor="let org of organizations$ | async">
-            <img [src]="org?.logo?.guid | assetUrl | async" [alt]="org.name + 'logo'" [title]="org.name" />
+            <img [src]="org?.logos?.[0]?.guid | assetUrl | async" [alt]="org.name + 'logo'" [title]="org.name" />
             <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
           </div>
         </div>

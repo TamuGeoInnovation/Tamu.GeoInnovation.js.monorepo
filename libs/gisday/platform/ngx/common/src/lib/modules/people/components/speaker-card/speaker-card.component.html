@@ -2,7 +2,7 @@
   <div class="class-banner" *ngIf="speaker?.university" [ngStyle]=" { 'background': '#'+ speaker.university?.hexTriplet+'' }">{{speaker.university.acronym}} {{ speaker.graduationYear }}</div>
 
   <div class="avatar-container">
-    <tamu-gisc-speaker-avatar [avatarGuid]="speaker?.image?.guid"></tamu-gisc-speaker-avatar>
+    <tamu-gisc-speaker-avatar [avatarGuid]="speaker?.images?.[0]?.guid"></tamu-gisc-speaker-avatar>
   </div>
 
   <div class="image-description">

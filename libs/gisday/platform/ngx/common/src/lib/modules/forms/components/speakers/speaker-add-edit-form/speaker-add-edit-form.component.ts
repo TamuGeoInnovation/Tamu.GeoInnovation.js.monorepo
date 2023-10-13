@@ -76,9 +76,9 @@ export class SpeakerAddEditFormComponent implements OnInit {
     // 2. The form, if the user has selected a file
     this.speakerPhotoUrl$ = merge(
       this.entity$.pipe(
-        filter((ent) => ent?.image?.guid !== undefined && ent?.image?.guid !== null),
+        filter((ent) => ent?.images?.[0]?.guid !== undefined && ent?.images?.[0]?.guid !== null),
         switchMap((entity) => {
-          return this.as.getAssetUrl(entity?.image?.guid);
+          return this.as.getAssetUrl(entity?.images?.[0]?.guid);
         })
       ),
       this.form.valueChanges.pipe(

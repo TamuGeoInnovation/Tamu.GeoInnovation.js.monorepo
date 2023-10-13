@@ -446,20 +446,6 @@ export class University extends GuidIdentity {
 }
 
 @Entity({
-  name: 'assets'
-})
-export class Asset extends GuidIdentity {
-  @Column({ nullable: true })
-  public name: string;
-
-  @Column({ nullable: true })
-  public path: string;
-
-  @Column({ nullable: true })
-  public type: string;
-}
-
-@Entity({
   name: 'speaker_roles'
 })
 export class SpeakerRole extends GuidIdentity {
@@ -492,15 +478,31 @@ export class Organization extends GuidIdentity {
   @Column({ nullable: true })
   public contactEmail: string;
 
-  @OneToOne(() => Asset, { cascade: true, nullable: true })
-  @JoinColumn()
-  public logo?: Asset;
+  @OneToMany(() => Asset, (asset) => asset.organization, { cascade: true, nullable: true })
+  public logos?: Asset[];
 
   @ManyToOne(() => Season, (season) => season.organizations, { cascade: true, orphanedRowAction: 'nullify' })
   public season: Season;
 
   @OneToMany(() => Speaker, (speaker) => speaker.organization, { orphanedRowAction: 'nullify' })
   public speakers: Speaker[];
+
+  @OneToMany(() => OrganizationLink, (link) => link.organization, { cascade: true })
+  public links: OrganizationLink[];
+}
+
+@Entity({
+  name: 'organization_links'
+})
+export class OrganizationLink extends GuidIdentity {
+  @Column({ nullable: false })
+  public label: string;
+
+  @Column({ nullable: false })
+  public url: string;
+
+  @ManyToOne(() => Organization, (o) => o.links, { orphanedRowAction: 'delete' })
+  public organization: Organization;
 }
 
 @Entity({
@@ -556,9 +558,8 @@ export class Speaker extends GuidIdentity {
   @ManyToOne(() => University, { cascade: true, nullable: true })
   public university?: University;
 
-  @OneToOne(() => Asset, { cascade: true, nullable: true })
-  @JoinColumn()
-  public image?: Asset;
+  @OneToMany(() => Asset, (asset) => asset.speaker, { cascade: true, nullable: true })
+  public images?: Asset[];
 }
 
 @Entity({
@@ -600,9 +601,31 @@ export class Sponsor extends GuidIdentity {
   @ManyToOne(() => Season, (season) => season.sponsors, { cascade: true, nullable: true })
   public season: Season;
 
-  @OneToOne(() => Asset, { cascade: true, nullable: true })
-  @JoinColumn()
-  public logo?: Asset;
+  @OneToMany(() => Asset, (asset) => asset.sponsor, { cascade: true, nullable: true })
+  public logos?: Asset[];
+}
+
+@Entity({
+  name: 'assets'
+})
+export class Asset extends GuidIdentity {
+  @Column({ nullable: true })
+  public name: string;
+
+  @Column({ nullable: true })
+  public path: string;
+
+  @Column({ nullable: true })
+  public type: string;
+
+  @ManyToOne(() => Organization, (o) => o.logos, { nullable: true, orphanedRowAction: 'nullify' })
+  public organization?: Organization;
+
+  @ManyToOne(() => Speaker, (s) => s.images, { nullable: true, orphanedRowAction: 'nullify' })
+  public speaker?: Speaker;
+
+  @ManyToOne(() => Sponsor, (s) => s.logos, { nullable: true, orphanedRowAction: 'nullify' })
+  public sponsor?: Sponsor;
 }
 
 @Entity({
@@ -920,8 +943,8 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['speakers', 'speakers.image', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
-  speaker: ['image', 'university'],
+  event: ['speakers', 'speakers.images', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
+  speaker: ['images', 'university'],
   getRelation: (entity?: string) => {
     if (!entity) {
       return undefined;
@@ -960,7 +983,8 @@ export const GISDAY_ENTITIES = [
   UserRsvp,
   Submission,
   University,
-  Asset
+  Asset,
+  OrganizationLink
 ];
 
 export interface IGeoJsonFeature {

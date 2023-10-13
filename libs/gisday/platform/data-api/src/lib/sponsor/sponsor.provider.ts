@@ -34,7 +34,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
         try {
           const savedLogo = await this._saveImage(file);
 
-          savedEntity.logo = savedLogo;
+          savedEntity.logos = [savedLogo];
 
           return savedEntity.save();
         } catch (err) {
@@ -56,7 +56,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
       where: {
         guid: guid
       },
-      relations: ['logo']
+      relations: ['logos']
     });
 
     if (existing) {
@@ -74,7 +74,7 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
       return this.sponsorRepo.save({
         ...existing,
         ...incoming,
-        logo: logoImage
+        logos: [logoImage]
       });
     } else {
       throw new NotFoundException();

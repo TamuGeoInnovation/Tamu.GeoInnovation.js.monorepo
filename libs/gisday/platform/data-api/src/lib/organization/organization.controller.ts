@@ -16,14 +16,14 @@ export class OrganizationController {
       where: {
         guid
       },
-      relations: ['season', 'logo']
+      relations: ['season', 'logos']
     });
   }
 
   @Get()
   public findAll() {
     return this.orgService.find({
-      relations: ['season', 'logo']
+      relations: ['season', 'logos']
     });
   }
 
