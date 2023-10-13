@@ -17,11 +17,18 @@ export class SpeakerService extends BaseService<Speaker> {
   }
 
   public getPresenter(guid: string) {
-    return this.http1.get<Partial<Speaker>>(`${this.resource}/presenter/${guid}`);
+    return this.http1.get<Partial<Speaker>>(`${this.resource}/${guid}`);
   }
 
   public getPresenters() {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}`);
+  }
+
+  /**
+   * Gets a list of speakers that are part of the organizing committee.
+   */
+  public getOrganizingEntities() {
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/organizers`);
   }
 
   public updateSpeakerInfo(guid: string, data: FormData) {

@@ -519,6 +519,9 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
   public isActive: boolean;
 
+  @Column({ nullable: true, default: false })
+  public isOrganizer: boolean;
+
   @Column({ nullable: true })
   public graduationYear: string;
 

@@ -2,8 +2,7 @@
 
 <ng-template #default>
   <div class="image default">
-    <div class="initials" *ngIf="fallbackStyle === 'initials'">{{avatarInitials}}</div>
+    <div class="initials" *ngIf="fallbackStyle === 'initials'">{{initials$ | async}}</div>
     <span class="material-icons" *ngIf="fallbackStyle === 'icon'">person</span>
   </div>
 </ng-template>
-

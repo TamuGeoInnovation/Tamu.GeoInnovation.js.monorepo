@@ -439,13 +439,17 @@ footer .logo-container {
     }
   }
 
-  img {
+  img,
+  .image.default {
     border-radius: 50%;
     margin-right: 0.5rem;
     height: 50px;
     width: 50px;
-    background: $accent-grey;
     object-fit: cover;
+  }
+
+  img {
+    background: $accent-grey;
   }
 
   p {
@@ -1769,7 +1773,12 @@ article .row {
     margin: 1rem;
   }
 
-  img {
+  tamu-gisc-speaker-avatar {
+    font-size: 1.75rem;
+  }
+
+  img,
+  .image.default {
     height: 75px;
     width: 75px;
   }

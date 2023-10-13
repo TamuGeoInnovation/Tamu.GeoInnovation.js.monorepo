@@ -125,7 +125,6 @@
 
       <div class="icon-grid column12">
         <div class="icon-item" *ngFor="let org of organizations$ | async">
-          <!-- <div style="background-image: url(assets/images/orgs/ATXGISDay.png)"></div> -->
           <img [src]="org?.logo?.guid | assetUrl | async" [alt]="org.name + 'logo'" [title]="org.name" />
           <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
         </div>

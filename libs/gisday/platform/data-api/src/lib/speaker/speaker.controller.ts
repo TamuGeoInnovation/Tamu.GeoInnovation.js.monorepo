@@ -4,46 +4,26 @@ import { DeepPartial } from 'typeorm';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
-import { EntityRelationsLUT, Speaker } from '../entities/all.entity';
+import { Speaker } from '../entities/all.entity';
 import { SpeakerProvider } from './speaker.provider';
 
 @Controller('speakers')
 export class SpeakerController {
   constructor(private readonly provider: SpeakerProvider) {}
 
-  @Get('/presenter/:guid')
-  public async presenter(@Param() params) {
-    return this.provider.getPresenter(params.guid);
-  }
-
-  @Get(':guid/speaker')
-  public async getEntityWithRelations(@Param('guid') guid) {
-    return this.provider.findOne({
-      where: {
-        guid: guid
-      },
-      relations: EntityRelationsLUT.getRelation('speaker')
-    });
+  @Get('organizers')
+  public async getOrganizingEntities() {
+    return this.provider.getOrganizationCommittee();
   }
 
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
-    return this.provider.findOne({
-      where: {
-        guid: guid
-      },
-      relations: ['organization', 'university', 'image']
-    });
+    return this.provider.getPresenter(guid);
   }
 
   @Get()
   public async getEntities() {
-    return this.provider.find({
-      relations: ['organization', 'university', 'image'],
-      order: {
-        lastName: 'ASC'
-      }
-    });
+    return this.provider.getPresenters();
   }
 
   @Permissions(['create:speakers'])

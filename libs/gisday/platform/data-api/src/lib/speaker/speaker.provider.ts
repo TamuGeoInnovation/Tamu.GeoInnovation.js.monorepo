@@ -6,7 +6,6 @@ import {
   Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from } from 'rxjs';
 import { DeepPartial, Repository } from 'typeorm';
 
 import { Speaker, EntityRelationsLUT } from '../entities/all.entity';
@@ -25,14 +24,33 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async getPresenter(guid: string) {
-    return from(
-      this.speakerRepo.findOne({
-        where: {
-          guid: guid
-        },
-        relations: ['image']
-      })
-    );
+    return this.speakerRepo.findOne({
+      where: {
+        guid: guid
+      },
+      relations: ['organization', 'university', 'image']
+    });
+  }
+
+  public async getPresenters() {
+    return this.speakerRepo.find({
+      relations: ['organization', 'university', 'image'],
+      order: {
+        lastName: 'ASC'
+      }
+    });
+  }
+
+  public async getOrganizationCommittee() {
+    return this.speakerRepo.find({
+      where: {
+        isOrganizer: true
+      },
+      relations: ['organization', 'university', 'image'],
+      order: {
+        lastName: 'ASC'
+      }
+    });
   }
 
   public async updateWithInfo(guid: string, incoming: DeepPartial<Speaker>, file?) {
@@ -59,6 +77,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       return this.speakerRepo.save({
         ...existing,
         ...incoming,
+        isOrganizer: (incoming as any).isOrganizer === 'true', // form data coerces boolean to string
         image: speakerImage
       });
     } else {
@@ -68,7 +87,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
   public async insertWithInfo(speaker: DeepPartial<Speaker>, file?) {
     const speakerEnt = this.speakerRepo.create({
-      ...speaker
+      ...speaker,
+      isOrganizer: (speaker as any).isOrganizer === 'true' // form data coerces boolean to string
     });
 
     if (speakerEnt) {

@@ -8,7 +8,7 @@
       <div class="column6 pre-2">
         <p class="name">
           {{person.firstName}} {{person.lastName}}
-          <span *ngIf="person.organization" class="class"> | {{person.organization}}</span>
+          <span *ngIf="person.organization && person.organization.name.length > 0" class="class"> | {{person.organization?.name}}</span>
         </p>
 
         <ng-container *ngIf="person.description && person.description.length > 0; else noDescription">

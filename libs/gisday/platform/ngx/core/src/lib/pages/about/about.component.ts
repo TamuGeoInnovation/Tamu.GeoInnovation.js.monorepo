@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, filter, map, shareReplay, startWith } from 'rxjs';
 
-import { ActiveSeasonDto, Organization, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
-import { OrganizationService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { ActiveSeasonDto, Organization, SeasonDay, Speaker, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
+import {
+  OrganizationService,
+  SeasonService,
+  SpeakerService,
+  SponsorService
+} from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 const numberDictionary = {
   0: 'Zero',
@@ -32,12 +37,14 @@ export class AboutComponent implements OnInit {
 
   public organizations$: Observable<Array<Partial<Organization>>>;
   public sponsors$: Observable<Array<Partial<Sponsor>>>;
+  public organizingMembers$: Observable<Array<Partial<Speaker>>>;
 
   constructor(
     private titleService: Title,
     private readonly seasonService: SeasonService,
     private readonly organizationService: OrganizationService,
-    private readonly sponsorService: SponsorService
+    private readonly sponsorService: SponsorService,
+    private readonly speakerService: SpeakerService
   ) {
     this.titleService.setTitle('About | TxGIS Day');
   }
@@ -46,6 +53,7 @@ export class AboutComponent implements OnInit {
     this.activeSeason$ = this.seasonService.getActiveSeason().pipe(shareReplay());
     this.organizations$ = this.organizationService.getEntities().pipe(shareReplay());
     this.sponsors$ = this.sponsorService.getEntities().pipe(shareReplay());
+    this.organizingMembers$ = this.speakerService.getOrganizingEntities().pipe(shareReplay());
 
     this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),

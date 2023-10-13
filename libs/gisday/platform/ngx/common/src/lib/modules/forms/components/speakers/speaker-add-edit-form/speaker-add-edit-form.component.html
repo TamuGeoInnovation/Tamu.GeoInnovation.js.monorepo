@@ -80,6 +80,18 @@
   </div>
 
   <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Administrative</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-checkbox formControlName="isOrganizer" label="Is organizer?"></tamu-gisc-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">
         <tamu-gisc-button type="button" look="danger" value="Delete Speaker" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
@@ -88,4 +100,3 @@
     </div>
   </div>
 </form>
-

@@ -57,6 +57,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
       affiliation: [''],
       description: [''],
       socialMedia: [''],
+      isOrganizer: [false],
       file: [null]
     });
 
@@ -92,7 +93,8 @@ export class SpeakerAddEditFormComponent implements OnInit {
         this.form.patchValue({
           ...entity,
           organization: entity?.organization?.guid,
-          university: entity?.university?.guid
+          university: entity?.university?.guid,
+          isOrganizer: entity?.isOrganizer === true
         });
       });
     }

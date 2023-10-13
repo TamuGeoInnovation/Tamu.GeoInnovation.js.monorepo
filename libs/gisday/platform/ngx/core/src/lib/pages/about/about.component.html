@@ -17,67 +17,12 @@
       </div>
 
       <div class="column12" id="bubble-portrait-container">
-        <div class="presenter-list-item">
-          <img src="../assets/images/organizers/df1d0d20-d996-4d96-a44a-ad90726e9edb.jpg" />
+        <div class="presenter-list-item" *ngFor="let member of organizingMembers$ | async">
+          <tamu-gisc-speaker-avatar [avatarGuid]="member?.image?.guid" [fallbackStyle]="'initials'" [avatarNames]="member.firstName + ' ' + member.lastName"></tamu-gisc-speaker-avatar>
+
           <div class="presenter-list-details">
-            <p><a href="/presenters">Brooks Andrews</a></p>
-            <p>Houston-Galveston Area Council</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/organizers/df2b1c6c-37bb-40c8-b6b0-1643a9a30867.jpg" />
-          <div class="presenter-list-details">
-            <p><a href="/presenters/details/df2b1c6c-37bb-40c8-b6b0-1643a9a30867">Zachary Berry</a></p>
-            <p>University of Texas at Austin</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/organizers/d488a2bf-7cb0-41aa-83fa-6b7beac08eee.jpg" />
-          <div class="presenter-list-details">
-            <p><a href="/presenters/details/d488a2bf-7cb0-41aa-83fa-6b7beac08eee">Nicole Ceranek</a></p>
-            <p>Montgomery County, Texas</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/presenters/GoldbergDaniel.jpg" />
-          <div class="presenter-list-details">
-            <p><a href="/presenters/details/15437a47-1e55-4dfa-9d8e-337dea3e6fee">Daniel Goldberg</a></p>
-            <p>Texas A&M University</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/organizers/df227d03-c990-4934-a250-02f203024115.jpg" />
-          <div class="presenter-list-details">
-            <p><a href="/presenters">Janny Phung</a></p>
-            <p>City of Austin, Texas</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/organizers/c1ab09ae-aa14-444f-acf5-94f09fdbf9c9.jpg" />
-          <div class="presenter-list-details">
-            <p><a href="/presenters">Courtney Roe</a></p>
-            <p>Pape-Dawson Engineers</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/organizers/0e669cd7-8a76-4e2d-9baf-f5343757a050.jpg" />
-          <div class="presenter-list-details">
-            <p><a href="/presenters/details/0e669cd7-8a76-4e2d-9baf-f5343757a050">Michael Shensky</a></p>
-            <p>University of Texas at Austin</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/organizers/338126e9-fe05-4d14-bb9c-93c4879a187a.jpg" />
-          <div class="presenter-list-details">
-            <p><a href="/presenters/details/338126e9-fe05-4d14-bb9c-93c4879a187a">Robbie Sittel</a></p>
-            <p>University of North Texas</p>
-          </div>
-        </div>
-        <div class="presenter-list-item">
-          <img src="../assets/images/organizers/e4d0891d-bca1-40d2-85f1-060fac544d42.jpg" />
-          <div class="presenter-list-details">
-            <p><a href="/presenters/details/e4d0891d-bca1-40d2-85f1-060fac544d42">Katherine Strickland</a></p>
-            <p>University of Texas at Austin</p>
+            <p><a [routerLink]="['/presenters/details', member.guid]">{{member.firstName}} {{member.lastName}}</a></p>
+            <p *ngIf="member?.organization?.name as orgName">{{orgName}}</p>
           </div>
         </div>
       </div>
@@ -91,39 +36,9 @@
         </div>
 
         <div class="icon-grid column12">
-          <div class="icon-item">
-            <div style="background-image: url(assets/images/orgs/ATXGISDay.png)"></div>
-            <p><a href="https://atxgisday.org/" target="_blank">ATX GIS Day</a></p>
-          </div>
-
-          <div class="icon-item">
-            <div style="background-image: url(assets/images/orgs/HoustonAreaGISDay.png)"></div>
-            <p><a href="http://www.houstonareagisday.org/" target="_blank">Houston Area GIS Day</a></p>
-          </div>
-
-          <div class="icon-item">
-            <div style="background-image: url(assets/images/orgs/SWIGGISAustin.png)"></div>
-            <p><a href="https://www.meetup.com/SWIGGISAustin/" target="_blank">Supporting Women in Geography & GIS</a></p>
-          </div>
-
-          <div class="icon-item">
-            <div style="background-image: url(assets/images/orgs/TAMU.png)"></div>
-            <p><a href="https://tamu.edu/" target="_blank">Texas A&amp;M University</a></p>
-          </div>
-
-          <div class="icon-item">
-            <div style="background-image: url(assets/images/orgs/UniversityNorthTexas.jpg)"></div>
-            <p><a href="https://www.unt.edu/" target="_blank">University of North Texas</a></p>
-          </div>
-
-          <div class="icon-item">
-            <div style="background-image: url(assets/images/orgs/UT.png)"></div>
-            <p><a href="https://www.utexas.edu/" target="_blank">University of Texas at Austin</a></p>
-          </div>
-
-          <div class="icon-item">
-            <div style="background-image: url(assets/images/orgs/URISATexas.png)"></div>
-            <p><a href="https://urisatexas.org/" target="_blank">URISA Texas</a></p>
+          <div class="icon-item" *ngFor="let org of organizations$ | async">
+            <img [src]="org?.logo?.guid | assetUrl | async" [alt]="org.name + 'logo'" [title]="org.name" />
+            <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
           </div>
         </div>
       </div>
