@@ -195,6 +195,9 @@ export class Place extends GuidIdentity {
 
   @OneToMany(() => EventLocation, (location) => location.place)
   public locations?: EventLocation[];
+
+  @OneToMany(() => PlaceLink, (link) => link.place, { cascade: true })
+  public links: PlaceLink[];
 }
 
 @Entity({
@@ -486,23 +489,20 @@ export class Organization extends GuidIdentity {
 
   @OneToMany(() => Speaker, (speaker) => speaker.organization, { orphanedRowAction: 'nullify' })
   public speakers: Speaker[];
-
-  @OneToMany(() => OrganizationLink, (link) => link.organization, { cascade: true })
-  public links: OrganizationLink[];
 }
 
 @Entity({
-  name: 'organization_links'
+  name: 'place_links'
 })
-export class OrganizationLink extends GuidIdentity {
+export class PlaceLink extends GuidIdentity {
   @Column({ nullable: false })
   public label: string;
 
   @Column({ nullable: false })
   public url: string;
 
-  @ManyToOne(() => Organization, (o) => o.links, { orphanedRowAction: 'delete' })
-  public organization: Organization;
+  @ManyToOne(() => Place, (place) => place.links, { orphanedRowAction: 'delete' })
+  public place: Place[];
 }
 
 @Entity({
@@ -984,7 +984,7 @@ export const GISDAY_ENTITIES = [
   Submission,
   University,
   Asset,
-  OrganizationLink
+  PlaceLink
 ];
 
 export interface IGeoJsonFeature {

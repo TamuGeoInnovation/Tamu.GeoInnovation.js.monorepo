@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, map, switchMap, take } from 'rxjs';
+import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
-import { Place } from '@tamu-gisc/gisday/platform/data-api';
+import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -16,8 +16,9 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   @Input()
   public type: 'create' | 'edit';
 
-  public entity$: Observable<Partial<Place>>;
   public form: FormGroup;
+  public entity$: Observable<Partial<Place>>;
+  public formLinks$: Observable<Partial<PlaceLink>[]>;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -34,8 +35,11 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       address: [null],
       city: [null],
       state: [null],
-      zip: [null]
+      zip: [null],
+      links: this.fb.array([])
     });
+
+    this.formLinks$ = this.form.get('links').valueChanges.pipe(shareReplay());
 
     if (this.type === 'edit') {
       this.entity$ = this.at.params.pipe(
@@ -45,7 +49,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       );
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
-        this.form.patchValue(entity);
+        this.form.patchValue({ ...entity, links: entity?.links?.map((link) => this._createOrgLink(link)) });
       });
     }
   }
@@ -76,6 +80,26 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
           message: `Error deleting place: ${err.status}`
         });
       }
+    });
+  }
+
+  public addOrgLink() {
+    const control = this._createOrgLink();
+
+    (this.form.get('links') as FormArray).push(control);
+  }
+
+  public patchLink(link: Partial<PlaceLink>, index: number) {
+    const control = (this.form.get('links') as FormArray).get(index.toString());
+
+    control.patchValue(link);
+  }
+
+  private _createOrgLink(values?: Partial<PlaceLink>) {
+    return this.fb.control({
+      guid: values?.guid || null,
+      label: values?.label || null,
+      url: values?.url || null
     });
   }
 

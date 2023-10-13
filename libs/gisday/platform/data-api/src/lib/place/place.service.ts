@@ -16,7 +16,8 @@ export class PlaceService extends BaseProvider<Place> {
       return this.pRepo.find({
         order: {
           guid: 'ASC'
-        }
+        },
+        relations: ['links']
       });
     } catch (err) {
       throw new InternalServerErrorException(err);

@@ -14,7 +14,8 @@ export class PlaceController {
     return this.ps.findOne({
       where: {
         guid: guid
-      }
+      },
+      relations: ['links']
     });
   }
 

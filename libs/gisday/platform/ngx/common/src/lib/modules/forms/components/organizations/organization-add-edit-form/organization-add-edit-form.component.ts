@@ -45,7 +45,6 @@ export class OrganizationAddEditFormComponent implements OnInit {
       contactFirstName: [null],
       contactLastName: [null],
       contactEmail: [null],
-      links: this.fb.array([]),
       season: [null],
       file: [null]
     });

@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { OrganizationService } from './organization.service';
 import { Organization } from '../entities/all.entity';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('organizations')
 export class OrganizationController {

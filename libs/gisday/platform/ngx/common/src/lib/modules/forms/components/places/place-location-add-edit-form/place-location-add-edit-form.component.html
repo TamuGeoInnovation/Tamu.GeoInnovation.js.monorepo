@@ -34,6 +34,28 @@
   </div>
 
   <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Links</div>
+      <div class="form-section-actions">
+        <a (click)="addOrgLink()">Add link <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p>Organization links are displayed in the header under the "<strong>Organizations</strong>" item. Please keep the link label short and descriptive to prevent multi-line spanning.</p>
+
+      <ng-container *ngIf="(formLinks$ | async)?.length > 0; else noOrgLinks">
+        <p>More than one</p>
+        <tamu-gisc-place-link-form *ngFor="let link of formLinks$ | async; let i = index" [link]="link" (updated)="patchLink($event, i)"></tamu-gisc-place-link-form>
+      </ng-container>
+
+      <ng-template #noOrgLinks>
+        <p>There are no links yet.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">
         <tamu-gisc-button type="button" look="danger" value="Delete Place" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
