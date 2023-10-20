@@ -1,51 +1,26 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subject, debounceTime, takeUntil, tap } from 'rxjs';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
+import { AbstractValueAccessorFormComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-place-link-form',
   templateUrl: './place-link-form.component.html',
-  styleUrls: ['./place-link-form.component.scss']
+  styleUrls: ['./place-link-form.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PlaceLinkFormComponent),
+      multi: true
+    }
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaceLinkFormComponent implements OnInit, OnDestroy {
-  @Input()
-  public link: Partial<PlaceLink>;
+export class PlaceLinkFormComponent extends AbstractValueAccessorFormComponent<PlaceLinkControlSchema> {}
 
-  @Input()
-  public index: number;
-
-  @Output()
-  public updated: EventEmitter<Partial<PlaceLink>> = new EventEmitter();
-
-  public form: FormGroup;
-
-  private _destroy$: Subject<boolean> = new Subject();
-
-  constructor(private readonly fb: FormBuilder) {}
-
-  public ngOnInit(): void {
-    this.form = this.fb.group({
-      guid: [this.link?.guid || null],
-      label: [this.link?.label || null],
-      url: [this.link?.url || null]
-    });
-
-    this.form.valueChanges
-      .pipe(
-        debounceTime(100),
-        tap((value) => {
-          console.log('emitting', value);
-        }),
-        takeUntil(this._destroy$)
-      )
-      .subscribe(this.updated);
-  }
-
-  public ngOnDestroy(): void {
-    this._destroy$.next(true);
-    this._destroy$.complete();
-  }
+export interface PlaceLinkControlSchema {
+  guid: string;
+  label: string;
+  url: string;
 }
 

@@ -501,7 +501,7 @@ export class PlaceLink extends GuidIdentity {
   @Column({ nullable: false })
   public url: string;
 
-  @ManyToOne(() => Place, (place) => place.links, { orphanedRowAction: 'delete' })
+  @ManyToOne(() => Place, (place) => place.links, { orphanedRowAction: 'delete', onDelete: 'CASCADE' })
   public place: Place[];
 }
 

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
+import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -18,7 +18,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
   public form: FormGroup;
   public entity$: Observable<Partial<Place>>;
-  public formLinks$: Observable<Partial<PlaceLink>[]>;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -39,8 +38,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       links: this.fb.array([])
     });
 
-    this.formLinks$ = this.form.get('links').valueChanges.pipe(shareReplay());
-
     if (this.type === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
@@ -49,7 +46,11 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       );
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
-        this.form.patchValue({ ...entity, links: entity?.links?.map((link) => this._createOrgLink(link)) });
+        const links = entity?.links?.map((link) => this._createOrgLink(link));
+
+        this.form.patchValue({ ...entity });
+
+        links.forEach((l) => (this.form.get('links') as FormArray).push(l));
       });
     }
   }
@@ -87,12 +88,6 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     const control = this._createOrgLink();
 
     (this.form.get('links') as FormArray).push(control);
-  }
-
-  public patchLink(link: Partial<PlaceLink>, index: number) {
-    const control = (this.form.get('links') as FormArray).get(index.toString());
-
-    control.patchValue(link);
   }
 
   private _createOrgLink(values?: Partial<PlaceLink>) {

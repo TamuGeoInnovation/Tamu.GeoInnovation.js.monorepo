@@ -41,17 +41,12 @@
       </div>
     </div>
 
-    <div class="form-section-body">
-      <p>Organization links are displayed in the header under the "<strong>Organizations</strong>" item. Please keep the link label short and descriptive to prevent multi-line spanning.</p>
+    <div class="form-section-body" formArrayName="links">
+      <p>Place links are displayed in the header under the "<strong>Places</strong>" item. Please keep the link label short and descriptive to prevent multi-line spanning.</p>
 
-      <ng-container *ngIf="(formLinks$ | async)?.length > 0; else noOrgLinks">
-        <p>More than one</p>
-        <tamu-gisc-place-link-form *ngFor="let link of formLinks$ | async; let i = index" [link]="link" (updated)="patchLink($event, i)"></tamu-gisc-place-link-form>
+      <ng-container *ngIf="form.controls['links']['controls']?.length > 0;">
+        <tamu-gisc-place-link-form *ngFor="let control of form.controls['links']['controls']; let i = index" [formControlName]="i"></tamu-gisc-place-link-form>
       </ng-container>
-
-      <ng-template #noOrgLinks>
-        <p>There are no links yet.</p>
-      </ng-template>
     </div>
   </div>
 

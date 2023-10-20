@@ -28,14 +28,14 @@ export class PlaceController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEntity(@Body() body: Partial<Place>) {
-    return this.ps.create(body);
+    return this.ps.createPlace(body);
   }
 
   @Permissions(['update:places'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid: string, @Body() body: Partial<Place>) {
-    return this.ps.update(guid, body);
+    return this.ps.updatePlace(guid, body);
   }
 
   @Permissions(['delete:places'])

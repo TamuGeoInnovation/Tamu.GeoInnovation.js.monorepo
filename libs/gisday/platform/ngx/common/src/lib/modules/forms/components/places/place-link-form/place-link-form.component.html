@@ -1,7 +1,7 @@
-<form [formGroup]="form">
+<div class="form">
   <div class="form-collection row">
-    <tamu-gisc-textbox formControlName="label" placeholder="Label" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-    <tamu-gisc-textbox formControlName="url" placeholder="URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+    <tamu-gisc-textbox [(ngModel)]="value.label" placeholder="Label" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+    <tamu-gisc-textbox [(ngModel)]="value.url" placeholder="URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
   </div>
-</form>
+</div>
 
