@@ -70,7 +70,7 @@ export class LandingComponent implements OnInit {
 
     this.activeSeason$ = this.seasonService.getActiveSeason().pipe(shareReplay());
     this.sponsors$ = this.sponsorService.getEntities().pipe(shareReplay());
-    this.organizations$ = this.organizationService.getEntities().pipe(shareReplay());
+    this.organizations$ = this.organizationService.getOrgsWithEvents().pipe(shareReplay());
 
     this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),

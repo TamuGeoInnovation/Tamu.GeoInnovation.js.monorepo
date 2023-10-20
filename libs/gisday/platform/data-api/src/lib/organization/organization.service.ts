@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Organization } from '../entities/all.entity';
+import { Organization, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 
@@ -18,6 +18,7 @@ export class OrganizationService extends BaseProvider<Organization> {
 
   constructor(
     @InjectRepository(Organization) private orgRepo: Repository<Organization>,
+    @InjectRepository(Event) private readonly es: Repository<Event>,
     private readonly assetService: AssetsService
   ) {
     super(orgRepo);
@@ -80,6 +81,28 @@ export class OrganizationService extends BaseProvider<Organization> {
     } else {
       throw new NotFoundException();
     }
+  }
+
+  public async getOrgsWithEvents() {
+    const events = await this.es.find({
+      relations: ['speakers', 'speakers.organization']
+    });
+
+    // Pluck out all orgs from event speakers
+
+    const orgs = events.reduce((acc, curr) => {
+      const orgs = curr.speakers.map((s) => s.organization);
+
+      return [...acc, ...orgs];
+    }, []);
+
+    // filter out duplicates
+
+    const uniqueOrgs = orgs.filter((org, index, self) => {
+      return self.findIndex((o) => o.guid === org.guid) === index;
+    });
+
+    return uniqueOrgs;
   }
 
   private async _saveImage(file) {

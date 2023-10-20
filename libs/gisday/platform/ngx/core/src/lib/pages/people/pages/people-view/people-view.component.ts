@@ -16,6 +16,6 @@ export class PeopleViewComponent implements OnInit {
   constructor(private speakerService: SpeakerService) {}
 
   public ngOnInit() {
-    this.people$ = this.speakerService.getPresenters().pipe(shareReplay());
+    this.people$ = this.speakerService.getActivePresenters().pipe(shareReplay());
   }
 }

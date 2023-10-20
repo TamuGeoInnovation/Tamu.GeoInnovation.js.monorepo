@@ -16,6 +16,11 @@ export class SpeakerController {
     return this.provider.getOrganizationCommittee();
   }
 
+  @Get('active')
+  public async getActiveEntities() {
+    return this.provider.getActivePresenters();
+  }
+
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.getPresenter(guid);
@@ -24,6 +29,13 @@ export class SpeakerController {
   @Get()
   public async getEntities() {
     return this.provider.getPresenters();
+  }
+
+  @Permissions(['create:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('bulk')
+  public async postBulkSpeakers(@Body() payload) {
+    return this.provider.insertBulk(payload);
   }
 
   @Permissions(['create:speakers'])

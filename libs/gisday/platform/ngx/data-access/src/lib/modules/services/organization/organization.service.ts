@@ -14,6 +14,10 @@ export class OrganizationService extends BaseService<Organization> {
     super(env1, http1, 'organizations');
   }
 
+  public getOrgsWithEvents() {
+    return this.http1.get<Organization[]>(`${this.resource}/active-events`);
+  }
+
   public updateEntityFormData(guid: string, data: FormData) {
     return this.http1.patch<Partial<Organization>>(`${this.resource}/${guid}`, data);
   }

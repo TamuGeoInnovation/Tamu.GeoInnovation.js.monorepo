@@ -43,7 +43,7 @@ export class EventViewComponent implements OnInit {
     this.activeSeason$ = this.ss.activeSeason$.pipe(shareReplay());
     this.events$ = this.eventService.getEvents().pipe(shareReplay());
     this.tags$ = this.tagService.getEntities().pipe(shareReplay());
-    this.organizations$ = this.os.getEntities().pipe(shareReplay());
+    this.organizations$ = this.os.getOrgsWithEvents().pipe(shareReplay());
 
     this.activeTagFilters$ = this.form.get('tags').valueChanges.pipe(shareReplay());
     this.activeOrgFilters$ = this.form.get('organizations').valueChanges.pipe(shareReplay());

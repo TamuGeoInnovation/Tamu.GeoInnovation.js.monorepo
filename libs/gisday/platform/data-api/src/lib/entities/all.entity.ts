@@ -430,7 +430,7 @@ export class EventRatingResponse extends GuidIdentity {
 
   //TODO: Add the user / account guid
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public response: string;
 }
 
@@ -469,7 +469,7 @@ export class Organization extends GuidIdentity {
   @Column({ nullable: true })
   public website: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public text: string;
 
   @Column({ nullable: true })
@@ -536,7 +536,7 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
   public affiliation: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public description: string;
 
   @Column({ nullable: true })
@@ -589,7 +589,7 @@ export class Sponsor extends GuidIdentity {
   @Column({ nullable: true })
   public contactEmail: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public description: string;
 
   @Column({ nullable: true })
@@ -752,10 +752,10 @@ export class Submission extends GuidIdentity {
   @Column({ nullable: true })
   public title: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public author: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
 
   @Column({ nullable: true })

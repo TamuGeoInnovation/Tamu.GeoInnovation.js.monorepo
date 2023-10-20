@@ -51,7 +51,7 @@ export class AboutComponent implements OnInit {
 
   public ngOnInit(): void {
     this.activeSeason$ = this.seasonService.getActiveSeason().pipe(shareReplay());
-    this.organizations$ = this.organizationService.getEntities().pipe(shareReplay());
+    this.organizations$ = this.organizationService.getOrgsWithEvents().pipe(shareReplay());
     this.sponsors$ = this.sponsorService.getEntities().pipe(shareReplay());
     this.organizingMembers$ = this.speakerService.getOrganizingEntities().pipe(shareReplay());
 

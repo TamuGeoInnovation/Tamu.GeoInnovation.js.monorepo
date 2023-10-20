@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { json } from 'express';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -51,6 +52,7 @@ async function bootstrap() {
 
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
+  app.use(json({ limit: '5mb' }));
 
   const port = environment.port;
   await app.listen(port, () => {

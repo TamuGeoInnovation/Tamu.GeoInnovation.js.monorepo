@@ -58,6 +58,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
       description: [''],
       socialMedia: [''],
       isOrganizer: [false],
+      isActive: [false],
       file: [null]
     });
 
@@ -94,7 +95,8 @@ export class SpeakerAddEditFormComponent implements OnInit {
           ...entity,
           organization: entity?.organization?.guid,
           university: entity?.university?.guid,
-          isOrganizer: entity?.isOrganizer === true
+          isOrganizer: entity?.isOrganizer === true,
+          isActive: entity?.isActive === true
         });
       });
     }
