@@ -33,29 +33,6 @@
           <h2 class="trailer-1 column9 slogan">{{dayCountText$ | async}}, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
 
           <h3 class="column9 trailer-1" *ngIf="dateRange$ | async as dates">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</h3>
-
-          <h3 class="column9 trailer-1">In-Person and Streaming from across the State of Texas:</h3>
-
-          <div class="trailer-2">
-            <p>Austin, Texas</p>
-            <p>College Station, Texas</p>
-            <p>Houston, Texas</p>
-            <p>Lubbock, Texas</p>
-            <p>Nacogdoches, Texas</p>
-            <p>San Antonio, Texas</p>
-          </div>
-
-          <a class="button primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdqnC_rYGEd2PG3VYCzXmn6F3zRS-7Lsy9jhB7IR3FiXd9s4g/viewform">Submit a presentation</a>
-          <br />
-          <a class="button primary" [routerLink]="['/sessions']">View Event Schedule</a>
-          <br />
-          <a class="button primary" href="https://docs.google.com/forms/d/e/1FAIpQLSd4fo6hIB-HVPbYJ4xO-ncZ3yMOEA_yDkBGhUr8jqShFAsOHg/viewform">Sign up to volunteer</a>
-          <br />
-          <a class="button primary" href="https://docs.google.com/forms/d/e/1FAIpQLSccFIEVIGU1gxvGpTWtvwL0Qp6JKW_Md528LEJwKue9Kgw8Xw/viewform">Nominate a TX GIS Hero</a>
-          <br />
-          <a class="button primary" href="https://docs.google.com/forms/d/e/1FAIpQLSelRYMiAAtu7RWrPWIqwpoQ0qto6o_TFkOgfAS09AzXN_x5pg/viewform">Sign up for career cupid geomentoring events</a>
-          <br />
-          <a class="button primary" href="https://www.youtube.com/watch?v=eigWXfjN9BU&feature=youtu.be">Watch the how to get started video</a>
         </div>
       </div>
     </div>

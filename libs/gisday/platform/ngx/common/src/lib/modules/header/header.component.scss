@@ -125,6 +125,57 @@ nav#off-canvas-menu .nav-divider:hover {
   color: initial;
 }
 
+#main-menu {
+  position: relative;
+  padding: 0 7.5rem;
+
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-items(center);
+
+  a,
+  p,
+  li {
+    @include flexbox();
+    position: relative;
+    margin: 0;
+
+    span {
+      @include transition(transform 0.3s);
+    }
+  }
+
+  a:not(.logo-container),
+  p,
+  li,
+  .desktop-menu > ul.dropdown > li:first-child {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: left;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .dropdown li:hover > a::before,
+  .dropdown li:hover::before {
+    display: none !important;
+  }
+
+  // Overwrite some group rules for header links
+  li {
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+}
+
 .desktop-menu {
   flex: initial;
   @include flexbox();
@@ -142,6 +193,7 @@ nav#off-canvas-menu .nav-divider:hover {
 
     & > ul {
       @include flexbox();
+      @include align-items(center);
       flex-grow: 0;
       position: relative;
       padding-left: 0;
@@ -202,10 +254,10 @@ nav#off-canvas-menu .nav-divider:hover {
           filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
 
           li {
-            display: block;
-            padding: 0;
+            @include flex-direction(column);
 
-            a {
+            a,
+            .with-description {
               color: inherit;
               display: block !important;
               padding: 0.75rem 1.5rem !important;
@@ -216,6 +268,15 @@ nav#off-canvas-menu .nav-divider:hover {
               &:hover {
                 color: #212121 !important;
               }
+            }
+
+            .with-description {
+              padding-bottom: 0rem !important;
+              color: #212121 !important;
+            }
+
+            p {
+              white-space: nowrap;
             }
           }
 
@@ -230,18 +291,39 @@ nav#off-canvas-menu .nav-divider:hover {
             left: 50%;
             @include transform(translateX(-50%) rotate(45deg));
           }
+
+          .menu-item-description {
+            font-size: 0.85rem;
+            color: #757575;
+            font-weight: 400;
+            padding: 0 1.5rem;
+          }
         }
 
         &:hover {
-          & > a {
+          & > a,
+          p {
             span {
               @include transform(rotateX(180deg));
             }
           }
+
           ul {
             pointer-events: auto;
             opacity: 1;
-            @include transform(translate3d(-50%, -8%, 0));
+            @include transform(translate3d(-50%, -1rem, 0));
+          }
+        }
+
+        .dropdown-sub-menu {
+          transform: none !important;
+
+          li {
+            font-size: 0.85rem;
+
+            a {
+              padding: 0.5rem 1rem !important;
+            }
           }
         }
       }
@@ -256,56 +338,8 @@ nav#off-canvas-menu .nav-divider:hover {
     color: $gisday-blue-secondary;
 
     ul > a {
-      padding-bottom: 0.5rem !important;
+      // padding-bottom: 0.5rem !important;
     }
-  }
-}
-
-#main-menu {
-  position: relative;
-  padding: 0 7.5rem;
-
-  @include flexbox();
-  @include flex-direction(row);
-  @include justify-content(space-between);
-  @include align-items(center);
-
-  a,
-  li {
-    @include flexbox();
-    position: relative;
-    margin: 0;
-
-    span {
-      @include transition(transform 0.3s);
-    }
-  }
-
-  a:not(.logo-container),
-  li,
-  .desktop-menu > ul.dropdown > li:first-child {
-    color: inherit;
-    font-weight: 700;
-    text-decoration: none;
-    text-align: left;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-    position: relative;
-  }
-
-  .dropdown li:hover > a::before,
-  .dropdown li:hover::before {
-    display: none !important;
-  }
-
-  // Overwrite some group rules for header links
-  li {
-    padding-right: 0;
-    padding-left: 0;
-    padding-bottom: 0;
-    padding-top: 0;
   }
 }
 

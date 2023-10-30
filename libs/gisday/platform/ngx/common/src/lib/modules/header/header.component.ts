@@ -3,10 +3,10 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 
-import { ActiveSeasonDto } from '@tamu-gisc/gisday/platform/data-api';
+import { ActiveSeasonDto, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
-import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { GISDayRoles } from '../../roles/gisday.roles';
 
@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit {
   public userRoles$: Observable<Array<string>>;
   public appRoles = GISDayRoles;
   public activeSeason$: Observable<ActiveSeasonDto>;
+  public places$: Observable<Array<Partial<Place>>>;
 
   public mobileNavToggle: Subject<boolean> = new Subject();
   public isMobile$ = this.rp.isMobile.pipe(shareReplay(1));
@@ -41,6 +42,7 @@ export class HeaderComponent implements OnInit {
     private readonly rp: ResponsiveService,
     private readonly as: AuthService,
     private readonly ss: SeasonService,
+    private readonly ps: PlaceService,
     private readonly rt: Router,
     private readonly at: ActivatedRoute
   ) {}
@@ -49,6 +51,7 @@ export class HeaderComponent implements OnInit {
     this.loggedIn$ = this.as.isAuthenticated$;
     this.userRoles$ = this.as.userRoles$;
     this.activeSeason$ = this.ss.activeSeason$;
+    this.places$ = this.ps.getEntities();
 
     const currUrl = this.rt.events.pipe(
       map((e) => e instanceof NavigationEnd),

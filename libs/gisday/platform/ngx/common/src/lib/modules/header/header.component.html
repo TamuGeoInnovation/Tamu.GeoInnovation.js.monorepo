@@ -70,12 +70,27 @@
         <ul>
           <li><a [routerLink]="['/highschool']">High School Portal</a></li>
         </ul>
-        <ul>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4fo6hIB-HVPbYJ4xO-ncZ3yMOEA_yDkBGhUr8jqShFAsOHg/viewform" target="_blank">Volunteer</a>
+
+        <ul class="dropdown" *ngIf="(places$ | async) as places">
+          <p>Locations <span class="material-icons">arrow_drop_down</span></p>
+
+          <ul>
+            <li *ngFor="let place of places">
+              <p class="with-description">{{place.name}}</p>
+              <span class="menu-item-description">{{place.city}}, {{place.state}}</span>
+
+              <ul class="dropdown-sub-menu" *ngIf="place?.links?.length > 0">
+                <li *ngFor="let link of place.links">
+                  <a [href]="link.url" target="_blank">{{link.label}}</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </ul>
 
         <ul class="dropdown">
           <a [routerLink]="['/sponsors']" id="linkSponsors">Sponsor <span class="material-icons">arrow_drop_down</span></a>
+
           <ul>
             <li><a [routerLink]="['/sponsors']" fragment="opportunities">Opportunities</a></li>
             <li><a [routerLink]="['/sponsors']" fragment="current">Current Sponsors</a></li>
@@ -85,6 +100,7 @@
 
         <ul class="dropdown" *ngIf="(loggedIn$ | async); else logInPrompt">
           <a [routerLink]="['/account/my-details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
+
           <ul>
             <li><a [routerLink]="['/account/my-details']">My Details</a></li>
             <li><a [routerLink]="['/account/my-classes']">My Classes</a></li>
