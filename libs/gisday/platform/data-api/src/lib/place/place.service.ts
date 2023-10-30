@@ -14,14 +14,27 @@ export class PlaceService extends BaseProvider<Place> {
     super(pRepo);
   }
 
+  public getEntity(guid: string) {
+    try {
+      return this.pRepo
+        .createQueryBuilder('place')
+        .leftJoinAndSelect('place.links', 'links')
+        .orderBy('links.label', 'ASC')
+        .where('place.guid = :guid', { guid })
+        .getOne();
+    } catch (err) {
+      Logger.error(`Error retrieving place, ${err.message}`, 'PlaceService');
+      throw new InternalServerErrorException(err);
+    }
+  }
+
   public getEntities() {
     try {
-      return this.pRepo.find({
-        order: {
-          guid: 'ASC'
-        },
-        relations: ['links']
-      });
+      return this.pRepo
+        .createQueryBuilder('place')
+        .leftJoinAndSelect('place.links', 'links')
+        .orderBy('links.label', 'ASC')
+        .getMany();
     } catch (err) {
       Logger.error(`Error retrieving places, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);

@@ -11,12 +11,7 @@ export class PlaceController {
 
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
-    return this.ps.findOne({
-      where: {
-        guid: guid
-      },
-      relations: ['links']
-    });
+    return this.ps.getEntity(guid);
   }
 
   @Get()
