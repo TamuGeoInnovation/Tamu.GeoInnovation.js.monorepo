@@ -49,8 +49,18 @@
                     <tamu-gisc-textbox type="textarea" [rows]="15" formControlName="message" placeholder="Message" [floatLabel]="true"></tamu-gisc-textbox>
                   </div>
 
-                  <div class="form-collection row">
-                    <tamu-gisc-button type="submit" [value]="'Send Message'"></tamu-gisc-button>
+                  <div class="form-collection column">
+                    <tamu-gisc-button type="submit" [value]="buttonText | async " [disabled]="(formStatus | async) === 'sending' || form.invalid" *ngIf="(formStatus | async) !== 'sent'"></tamu-gisc-button>
+
+                    <div class="form-status-messages leader-1">
+                      <ng-container *ngIf="(formStatus | async) === 'error'">
+                        <p class="error center">There was an error sending your message. Please try again later.</p>
+                      </ng-container>
+
+                      <ng-container *ngIf="(formStatus | async) === 'sent'">
+                        <p class="success center">Your message has been received!</p>
+                      </ng-container>
+                    </div>
                   </div>
                 </div>
               </div>

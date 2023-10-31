@@ -11,13 +11,12 @@ export class ContactService {
   private resource: string;
 
   constructor(private http: HttpClient, private environment: EnvironmentService) {
-    this.resource = this.environment.value(`api_url`);
-  }
-  public sendEmailAsFormData(body: FormData) {
-    return this.http.post(`${this.environment.value('email_server_url')}/`, body);
+    this.resource = `${this.environment.value(`api_url`)}/contact`;
   }
 
-  public sendEmail(body: IMailroomEmailOutbound) {
-    return this.http.post(`${this.environment.value('email_server_url')}/`, body);
+  public sendEmail(body: Partial<IMailroomEmailOutbound>);
+  public sendEmail(body: FormData);
+  public sendEmail(body: unknown) {
+    return this.http.post(this.resource, body);
   }
 }

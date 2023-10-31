@@ -25,6 +25,7 @@ export * from './lib/event-broadcast/event-broadcast.module';
 export * from './lib/event-location/event-location.module';
 export * from './lib/place/place.module';
 export * from './lib/assets/assets.module';
+export * from './lib/contact/contact.module';
 
 // Providers
 export * from './lib/_base/base-provider';

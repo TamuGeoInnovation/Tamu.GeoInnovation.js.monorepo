@@ -25,12 +25,12 @@ import {
   EventBroadcastModule,
   EventLocationModule,
   PlaceModule,
-  AssetsModule
+  AssetsModule,
+  ContactModule
 } from '@tamu-gisc/gisday/platform/data-api';
 import { AuthorizationModule } from '@tamu-gisc/common/nest/auth';
 
 import { AppService } from './app.service';
-
 import { environment, ormConfig } from '../environments/environment';
 
 @Module({
@@ -74,7 +74,8 @@ import { environment, ormConfig } from '../environments/environment';
     EventBroadcastModule,
     EventLocationModule,
     PlaceModule,
-    AssetsModule
+    AssetsModule,
+    ContactModule
   ],
   controllers: [],
   providers: [AppService]
