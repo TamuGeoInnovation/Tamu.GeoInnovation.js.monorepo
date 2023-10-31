@@ -68,7 +68,7 @@
       <p>Organization links are displayed in the header under the "<strong>Organizations</strong>" item. Examples of links are sponsorship and volunteer opportunities/forms and paper/presentation submission portals. Please keep the link label short and descriptive to prevent multi-line spanning.</p>
 
       <ng-container *ngIf="form.controls['links']['controls']?.length > 0;">
-        <tamu-gisc-place-link-form *ngFor="let control of form.controls['links']['controls']; let i = index" [formControlName]="i"></tamu-gisc-place-link-form>
+        <tamu-gisc-place-link-form *ngFor="let control of form.controls['links']['controls']; let i = index" [formControlName]="i" (remove)="removeOrgLink(i)"></tamu-gisc-place-link-form>
       </ng-container>
     </div>
   </div>

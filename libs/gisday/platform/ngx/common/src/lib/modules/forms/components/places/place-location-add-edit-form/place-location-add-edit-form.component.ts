@@ -115,6 +115,10 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     (this.form.get('links') as FormArray).push(control);
   }
 
+  public removeOrgLink(index: number) {
+    (this.form.get('links') as FormArray).removeAt(index);
+  }
+
   private _createOrgLink(values?: Partial<PlaceLink>) {
     return this.fb.control({
       guid: values?.guid || null,
@@ -125,7 +129,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
-    const formData = formToFormData(this.form);
+    const formData = formToFormData(this.form, true);
 
     this.ps.updateEntityFormData(rawValue.guid, formData).subscribe({
       next: () => {
@@ -148,7 +152,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   }
 
   private _createEntity() {
-    const formData = formToFormData(this.form);
+    const formData = formToFormData(this.form, true);
 
     this.ps.createEntityFormData(formData).subscribe({
       next: () => {

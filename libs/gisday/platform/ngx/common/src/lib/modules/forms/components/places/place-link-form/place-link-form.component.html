@@ -2,6 +2,9 @@
   <div class="form-collection row">
     <tamu-gisc-textbox [(ngModel)]="value.label" placeholder="Label" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
     <tamu-gisc-textbox [(ngModel)]="value.url" placeholder="URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+    <div class="actions flex flex-row align-center">
+      <span class="material-icons" title="Remove link" (click)="emitRemove()">delete</span>
+    </div>
   </div>
 </div>
 

@@ -73,11 +73,17 @@ export class OrganizationService extends BaseProvider<Organization> {
         }
       }
 
-      return this.orgRepo.save({
+      const toSave = {
         ...existing,
         ...incoming,
         logos: [logoImage]
-      });
+      };
+
+      if (logoImage === undefined) {
+        delete toSave.logos;
+      }
+
+      return this.orgRepo.save(toSave);
     } else {
       throw new NotFoundException();
     }

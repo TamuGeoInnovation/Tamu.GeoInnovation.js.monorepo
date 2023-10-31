@@ -52,7 +52,10 @@ export class PlaceService extends BaseProvider<Place> {
       let links: Array<PlaceLink> = [];
 
       if (place.links && place.links.length > 0) {
-        links = place.links.map((link) => {
+        // Because the payload is formData, we need to parse the stringified JSON
+        const parsed: Array<Partial<PlaceLink>> = JSON.parse(place.links as unknown as string);
+
+        links = parsed.map((link) => {
           delete link.guid;
 
           return this.plRepo.create({ ...link });
@@ -90,17 +93,21 @@ export class PlaceService extends BaseProvider<Place> {
       const existing = await this.pRepo.findOne({
         where: {
           guid
-        }
+        },
+        relations: ['logos']
       });
 
       if (!existing) {
         throw new NotFoundException();
       }
 
-      let links: Array<PlaceLink> = [];
+      let links: Array<Partial<PlaceLink>> = [];
 
       if (place.links && place.links.length > 0) {
-        links = place.links.map((newOrOld) => {
+        // Because the payload is formData, we need to parse the stringified JSON
+        const parsed: Array<Partial<PlaceLink>> = JSON.parse(place.links as unknown as string);
+
+        links = parsed.map((newOrOld) => {
           if (newOrOld.guid) {
             return newOrOld;
           } else {
@@ -122,12 +129,18 @@ export class PlaceService extends BaseProvider<Place> {
         }
       }
 
-      const updated = await this.pRepo.save({
+      const toSave = {
         ...existing,
         ...place,
         links: links,
         logos: [logoImage]
-      });
+      };
+
+      if (logoImage === undefined) {
+        delete toSave.logos;
+      }
+
+      const updated = await this.pRepo.save(toSave);
 
       return updated;
     } catch (err) {

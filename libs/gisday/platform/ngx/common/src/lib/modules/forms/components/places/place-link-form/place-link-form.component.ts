@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { AbstractValueAccessorFormComponent } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -16,7 +16,14 @@ import { AbstractValueAccessorFormComponent } from '@tamu-gisc/ui-kits/ngx/forms
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaceLinkFormComponent extends AbstractValueAccessorFormComponent<PlaceLinkControlSchema> {}
+export class PlaceLinkFormComponent extends AbstractValueAccessorFormComponent<PlaceLinkControlSchema> {
+  @Output()
+  public remove: EventEmitter<boolean> = new EventEmitter();
+
+  public emitRemove() {
+    this.remove.emit(true);
+  }
+}
 
 export interface PlaceLinkControlSchema {
   guid: string;

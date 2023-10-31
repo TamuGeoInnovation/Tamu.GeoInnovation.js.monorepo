@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
  * @param form
  * @returns FormData
  */
-export const formToFormData = (form: FormGroup) => {
+export const formToFormData = (form: FormGroup, stringifyObjects?: boolean) => {
   const formValue = form.getRawValue();
   const data: FormData = new FormData();
   const parentFormKeys = Object.keys(formValue);
@@ -19,7 +19,11 @@ export const formToFormData = (form: FormGroup) => {
 
       if (formValue[key]) {
         if (typeof formValue[key] == 'object' && formValue[key] instanceof File === false) {
-          appendValuesToFormData(Object.keys(formValue[key]), key);
+          if (stringifyObjects) {
+            data.append(key, JSON.stringify(formValue[key]));
+          } else {
+            appendValuesToFormData(Object.keys(formValue[key]), key);
+          }
         } else {
           data.append(key, formValue[key]);
         }
