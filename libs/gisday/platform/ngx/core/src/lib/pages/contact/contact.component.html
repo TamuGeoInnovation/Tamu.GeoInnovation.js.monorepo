@@ -11,45 +11,48 @@
 
   <div class="small-partition">
     <div>
-      <h1 class="trailer-1">Talk to a Human</h1>
+      <h2>Talk to a Human</h2>
 
-      <div class="container12">
+      <div class="container12 trailer-4">
         <p class="sub-section-heading">
           The TxGIS Day Support Team is available via phone 9am-5pm Central Time, Monday-Friday:
           <a href="tel:+1-979-862-3551">(979) 862-3551</a>
         </p>
       </div>
 
-      <div class="small-partition container12">
-        <h1 class="trailer-1">Send us an Email</h1>
+      <div class="container12">
+        <h2>Email Us</h2>
       </div>
       <div class="content-margin flex justify-center">
-        <div class="card small-form">
+        <div class="small-form">
           <div class="content-block all">
-            <form [formGroup]="form">
-              <div class="input-item">
-                <input type="text" formControlName="firstName" />
-                <label>First Name</label>
-              </div>
-              <div class="input-item">
-                <input type="text" formControlName="lastName" />
-                <label>Last Name</label>
-              </div>
-              <div class="input-item">
-                <input type="text" formControlName="email" />
-                <label>Email</label>
-              </div>
-              <div class="input-item">
-                <input type="text" formControlName="contactType" />
-                <label>Contact Type</label>
-              </div>
-              <div class="input-item">
-                <textarea id="txtMessage" formControlName="contactMessage" name="message" rows="15"></textarea>
-                <label>Contact Message</label>
-              </div>
-              <div class="flex justify-center leader-2 trailer-2 required" vc-recaptcha key=""></div>
-              <div class="form-item trailer-1">
-                <input class="button primary" (click)="sendEmail()" type="submit" value="Send Message" />
+            <form [formGroup]="form" (ngSubmit)="sendEmail()">
+              <div class="form-section">
+                <div class="form-section-body">
+                  <div class="form-collection row">
+                    <tamu-gisc-textbox formControlName="firstName" placeholder="First Name" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                  </div>
+
+                  <div class="form-collection row">
+                    <tamu-gisc-textbox formControlName="lastName" placeholder="Last Name" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                  </div>
+
+                  <div class="form-collection row">
+                    <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                  </div>
+
+                  <div class="form-collection row">
+                    <tamu-gisc-textbox formControlName="subject" placeholder="Subject" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                  </div>
+
+                  <div class="form-collection row">
+                    <tamu-gisc-textbox type="textarea" [rows]="15" formControlName="message" placeholder="Message" [floatLabel]="true"></tamu-gisc-textbox>
+                  </div>
+
+                  <div class="form-collection row">
+                    <tamu-gisc-button type="submit" [value]="'Send Message'"></tamu-gisc-button>
+                  </div>
+                </div>
               </div>
             </form>
           </div>
