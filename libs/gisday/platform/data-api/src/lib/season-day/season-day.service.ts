@@ -32,6 +32,7 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
         const simplified = day.events.map((e) => {
           const eventTagGuids = e.tags?.map((t) => t.guid) || [];
           const eventOrgGuids = e.speakers.filter((s) => s.organization !== null).map((s) => s.organization.guid) || [];
+          const placeGuids = e.location?.place?.guid ? [e.location.place.guid] : [];
 
           // Don't send the speakers, they're not needed. They're only needed to
           // get the participating organizations for an event.
@@ -40,7 +41,8 @@ export class SeasonDayService extends BaseProvider<SeasonDay> {
           return {
             ...e,
             tags: eventTagGuids,
-            organizations: eventOrgGuids
+            affiliations: eventOrgGuids,
+            organizations: placeGuids
           };
         });
 
