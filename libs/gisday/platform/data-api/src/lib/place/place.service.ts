@@ -4,12 +4,16 @@ import { Repository } from 'typeorm';
 
 import { Place, PlaceLink } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { AssetsService } from '../assets/assets.service';
 
 @Injectable()
 export class PlaceService extends BaseProvider<Place> {
+  private _resourcePath = `images/places`;
+
   constructor(
     @InjectRepository(Place) private pRepo: Repository<Place>,
-    @InjectRepository(PlaceLink) private plRepo: Repository<PlaceLink>
+    @InjectRepository(PlaceLink) private plRepo: Repository<PlaceLink>,
+    private readonly assetService: AssetsService
   ) {
     super(pRepo);
   }
@@ -19,6 +23,7 @@ export class PlaceService extends BaseProvider<Place> {
       return this.pRepo
         .createQueryBuilder('place')
         .leftJoinAndSelect('place.links', 'links')
+        .leftJoinAndSelect('place.logos', 'logos')
         .orderBy('links.label', 'ASC')
         .where('place.guid = :guid', { guid })
         .getOne();
@@ -33,6 +38,7 @@ export class PlaceService extends BaseProvider<Place> {
       return this.pRepo
         .createQueryBuilder('place')
         .leftJoinAndSelect('place.links', 'links')
+        .leftJoinAndSelect('place.logos', 'logos')
         .orderBy('links.label', 'ASC')
         .getMany();
     } catch (err) {
@@ -41,7 +47,7 @@ export class PlaceService extends BaseProvider<Place> {
     }
   }
 
-  public async createPlace(place: Partial<Place>) {
+  public async createPlace(place: Partial<Place>, file?: Express.Multer.File) {
     try {
       let links: Array<PlaceLink> = [];
 
@@ -57,14 +63,29 @@ export class PlaceService extends BaseProvider<Place> {
 
       const saved = await this.pRepo.save(created);
 
-      return saved;
+      if (file != null || file != undefined) {
+        try {
+          const savedLogo = await this._saveImage(file);
+
+          saved.logos = [savedLogo];
+
+          return saved.save();
+        } catch (err) {
+          Logger.error(err.message, 'PlaceService');
+          throw new InternalServerErrorException('Could not save place logo.');
+        }
+      } else {
+        return saved;
+      }
     } catch (err) {
       Logger.error(`Error creating place, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
   }
 
-  public async updatePlace(guid: string, place: Partial<Place>) {
+  public async updatePlace(guid: string, place: Partial<Place>, file?: Express.Multer.File) {
+    delete place.guid;
+
     try {
       const existing = await this.pRepo.findOne({
         where: {
@@ -90,10 +111,22 @@ export class PlaceService extends BaseProvider<Place> {
         });
       }
 
+      let logoImage;
+
+      if (file != null || file != undefined) {
+        try {
+          logoImage = await this._saveImage(file);
+        } catch (err) {
+          Logger.error(err.message, 'PlaceService');
+          throw new InternalServerErrorException('Could not save place logo.');
+        }
+      }
+
       const updated = await this.pRepo.save({
         ...existing,
         ...place,
-        links: links
+        links: links,
+        logos: [logoImage]
       });
 
       return updated;
@@ -101,5 +134,9 @@ export class PlaceService extends BaseProvider<Place> {
       Logger.error(`Error updating place, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
+  }
+
+  private async _saveImage(file) {
+    return this.assetService.saveAsset(this._resourcePath, file, 'place-logo');
   }
 }

@@ -1,13 +1,17 @@
 <div class="form">
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-name">Organizations</div>
+      <div class="form-section-name">Affiliations</div>
       <div class="form-section-actions">
-        <a routerLink="add">Add org <span class="material-icons action">add</span></a>
+        <a routerLink="add">Add affiliation <span class="material-icons action">add</span></a>
       </div>
     </div>
 
     <div class="form-section-body">
+      <div>
+        <p class="trailer-1">Affiliations are institutions which a speaker is a member of and represents during an event (e.g. company, university).</p>
+      </div>
+
       <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noTags">
         <thead>
           <tr>
@@ -27,7 +31,7 @@
       </table>
 
       <ng-template #noTags>
-        <p>There are no organizations yet.</p>
+        <p>There are no affiliations yet.</p>
       </ng-template>
     </div>
   </div>

@@ -1,15 +1,15 @@
 <div class="form">
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-name">Event Locations</div>
+      <div class="form-section-name">Venues</div>
       <div class="form-section-actions">
-        <a routerLink="add">Add location <span class="material-icons action">add</span></a>
+        <a routerLink="add">Add venue <span class="material-icons action">add</span></a>
       </div>
     </div>
 
     <div class="form-section-body">
       <div class="trailer-1">
-        <p>Event locations are located within a <a [routerLink]="['/admin/places']" routerLinkActive="router-link-active">place</a> and are the physical units where a session takes place.</p>
+        <p>Venues are physical areas located within or in the surrounding area of an event hosted by a TxGIS Day <a [routerLink]="['/admin/places']" routerLinkActive="router-link-active">organization</a>. Examples include campus buildings, arenas, auditoriums, restaurants, and bars.</p>
       </div>
 
       <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noEntities">
@@ -17,7 +17,7 @@
           <tr>
             <th>Building Name</th>
             <th>Room Number</th>
-            <th>Place</th>
+            <th>Organization</th>
           </tr>
         </thead>
 
@@ -31,7 +31,7 @@
       </table>
 
       <ng-template #noEntities>
-        <p>There are no event locations yet.</p>
+        <p>There are no venues yet.</p>
       </ng-template>
     </div>
   </div>

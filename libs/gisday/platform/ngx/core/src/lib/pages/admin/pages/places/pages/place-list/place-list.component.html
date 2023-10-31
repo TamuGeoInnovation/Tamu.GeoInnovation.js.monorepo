@@ -1,15 +1,15 @@
 <div class="form">
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-name">Places</div>
+      <div class="form-section-name">Organizations</div>
       <div class="form-section-actions">
-        <a routerLink="add">Add place <span class="material-icons action">add</span></a>
+        <a routerLink="add">Add organization <span class="material-icons action">add</span></a>
       </div>
     </div>
 
     <div class="form-section-body">
       <div>
-        <p class="trailer-1">Places are broad areas where a GIS Day event takes place and are assigned to any number of <a routerLink="/admin/event-locations">event locations</a>. These places are also used to display participating places on the landing page as well as on each event row in the sessions list.</p>
+        <p class="trailer-1">Organizations are geographic areas or groups that host a GIS Day event. An organization has multiple physical <a routerLink="">venues</a> where sessions are hosted.</p>
       </div>
 
       <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noEntities">
@@ -33,7 +33,7 @@
       </table>
 
       <ng-template #noEntities>
-        <p>There are no places yet.</p>
+        <p>There are no organizations yet.</p>
       </ng-template>
     </div>
   </div>

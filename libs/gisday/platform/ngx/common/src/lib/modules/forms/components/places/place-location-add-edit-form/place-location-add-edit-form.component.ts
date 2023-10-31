@@ -1,11 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, map, switchMap, take } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Observable, filter, map, merge, switchMap, take } from 'rxjs';
 
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
-import { PlaceService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { AssetsService, PlaceService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+
+import { formToFormData } from '../../../../../utils/form-to-form-data';
 
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
@@ -18,12 +21,15 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
   public form: FormGroup;
   public entity$: Observable<Partial<Place>>;
+  public logoUrl$: Observable<SafeUrl>;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
+    private readonly as: AssetsService,
     private readonly ps: PlaceService,
+    private readonly sn: DomSanitizer,
     private readonly ns: NotificationService
   ) {}
 
@@ -35,7 +41,9 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       city: [null],
       state: [null],
       zip: [null],
-      links: this.fb.array([])
+      website: [null],
+      links: this.fb.array([]),
+      file: [null]
     });
 
     if (this.type === 'edit') {
@@ -52,6 +60,23 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
         links.forEach((l) => (this.form.get('links') as FormArray).push(l));
       });
+
+      // Image preview can come from two sources:
+      // 1. The entity itself, if it has a photoUrl property
+      // 2. The form, if the user has selected a file
+      this.logoUrl$ = merge(
+        this.entity$.pipe(
+          filter((ent) => ent?.logos?.[0]?.guid !== undefined && ent?.logos?.[0]?.guid !== null),
+          switchMap((entity) => {
+            return this.as.getAssetUrl(entity?.logos?.[0]?.guid);
+          })
+        ),
+        this.form.valueChanges.pipe(
+          map((value) => value.file),
+          filter((file) => file !== null),
+          map((file) => this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)))
+        )
+      );
     }
   }
 
@@ -100,8 +125,9 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
   private _updateEntity() {
     const rawValue = this.form.getRawValue();
+    const formData = formToFormData(this.form);
 
-    this.ps.updateEntity(rawValue.guid, rawValue).subscribe({
+    this.ps.updateEntityFormData(rawValue.guid, formData).subscribe({
       next: () => {
         this.ns.toast({
           id: 'place-update-success',
@@ -122,9 +148,9 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   }
 
   private _createEntity() {
-    const rawValue = this.form.getRawValue();
+    const formData = formToFormData(this.form);
 
-    this.ps.createEntity(rawValue).subscribe({
+    this.ps.createEntityFormData(formData).subscribe({
       next: () => {
         this.ns.toast({
           id: 'place-create-success',

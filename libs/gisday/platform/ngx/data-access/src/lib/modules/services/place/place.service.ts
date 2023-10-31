@@ -13,5 +13,13 @@ export class PlaceService extends BaseService<Place> {
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
     super(env1, http1, 'places');
   }
+
+  public updateEntityFormData(guid: string, data: FormData) {
+    return this.http1.patch<Partial<Place>>(`${this.resource}/${guid}`, data);
+  }
+
+  public createEntityFormData(data: FormData) {
+    return this.http1.post<Partial<Place>>(this.resource, data);
+  }
 }
 

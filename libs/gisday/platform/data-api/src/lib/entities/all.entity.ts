@@ -193,11 +193,17 @@ export class Place extends GuidIdentity {
   @Column({ nullable: true })
   public zip?: string;
 
+  @Column({ nullable: true })
+  public website?: string;
+
   @OneToMany(() => EventLocation, (location) => location.place)
   public locations?: EventLocation[];
 
   @OneToMany(() => PlaceLink, (link) => link.place, { cascade: true })
   public links: PlaceLink[];
+
+  @OneToMany(() => Asset, (asset) => asset.places, { cascade: true, nullable: true })
+  public logos?: Asset[];
 }
 
 @Entity({
@@ -244,6 +250,15 @@ export class EventLocation extends GuidIdentity {
 
   @Column({ nullable: true })
   public link?: string;
+
+  /**
+   * Location is typically inherited from the place, but can be overridden.
+   *
+   * This is useful for when a location is not within a place, but instead in a surrounding
+   * area, such as a restaurant or conference center.
+   */
+  @Column({ nullable: true })
+  public streetAddressOverride?: string;
 
   @OneToMany(() => Event, (event) => event.location)
   public events?: Event[];
@@ -617,6 +632,9 @@ export class Asset extends GuidIdentity {
 
   @Column({ nullable: true })
   public type: string;
+
+  @ManyToOne(() => Place, (o) => o.logos, { nullable: true, orphanedRowAction: 'nullify' })
+  public places?: Place;
 
   @ManyToOne(() => Organization, (o) => o.logos, { nullable: true, orphanedRowAction: 'nullify' })
   public organization?: Organization;

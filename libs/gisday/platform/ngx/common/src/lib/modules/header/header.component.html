@@ -68,11 +68,11 @@
     <div class="desktop-menu">
       <div class="aux">
         <ul>
-          <li><a [routerLink]="['/highschool']">High School Portal</a></li>
+          <li><a href="http://www.houstonareagisday.org/">High School Portal</a></li>
         </ul>
 
         <ul class="dropdown" *ngIf="(places$ | async) as places">
-          <p>Locations <span class="material-icons">arrow_drop_down</span></p>
+          <p>Organizations <span class="material-icons">arrow_drop_down</span></p>
 
           <ul>
             <li *ngFor="let place of places">

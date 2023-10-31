@@ -36,7 +36,8 @@ export class EventLocationAddEditFormComponent implements OnInit {
       room: [null],
       capacity: [null],
       link: [null],
-      place: [null]
+      place: [null],
+      streetAddressOverride: [null]
     });
 
     this.places$ = this.ps.getEntities();

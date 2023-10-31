@@ -37,8 +37,11 @@
 
         <div class="icon-grid column12">
           <div class="icon-item" *ngFor="let org of organizations$ | async">
-            <img [src]="org?.logos?.[0]?.guid | assetUrl | async" [alt]="org.name + 'logo'" [title]="org.name" />
-            <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
+            <img [src]="org?.logos?.[0]?.guid | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
+            <p *ngIf="org.website !== null && org.website !== ''; else noOrgWebsite"><a [href]="org.website" target="_blank">{{org.name}}</a></p>
+            <ng-template #noOrgWebsite>
+              <p>{{org.name}}</p>
+            </ng-template>
           </div>
         </div>
       </div>
