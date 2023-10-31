@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import got from 'got';
 
@@ -19,7 +19,7 @@ export class ContactService {
       })
       .json()
       .catch((e) => {
-        console.warn('ERROR', e.code);
+        throw new InternalServerErrorException(e, 'Error sending email.');
       });
   }
 }
