@@ -49,8 +49,15 @@ import { environment, ormConfig } from '../environments/environment';
       entities: [...GISDAY_ENTITIES]
     }),
     AuthorizationModule.forRoot({
-      audience: environment.auth0_audience,
-      issuerUrl: environment.auth0_issuerUrl
+      jwt: {
+        audience: environment.auth0_audience,
+        issuerUrl: environment.auth0_issuerUrl
+      },
+      management: {
+        domain: environment.auth0_management_domain,
+        clientId: environment.auth0_management_clientId,
+        clientSecret: environment.auth0_management_clientSecret
+      }
     }),
     CheckInModule,
     ClassModule,

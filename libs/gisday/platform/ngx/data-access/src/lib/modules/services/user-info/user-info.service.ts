@@ -16,7 +16,11 @@ export class UserInfoService extends BaseService<UserInfo> {
     super(env1, http1, 'user-infos');
   }
 
-  public getEntityWithUserGuid() {
+  public getSignedOnEntity() {
     return this.http1.get<Partial<UserInfo>>(`${this.resource}`);
+  }
+
+  public updateSignedOnEntity(metadata: Partial<UserInfo>) {
+    return this.http1.patch<Partial<UserInfo>>(`${this.resource}`, metadata);
   }
 }

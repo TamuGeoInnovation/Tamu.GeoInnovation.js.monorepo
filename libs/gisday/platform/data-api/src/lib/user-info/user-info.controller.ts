@@ -8,17 +8,21 @@ import {
   Patch,
   Post,
   Request,
-  UnauthorizedException
+  UnauthorizedException,
+  UseGuards
 } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
+
+import { ManagementService } from '@tamu-gisc/common/nest/auth';
+import { JwtGuard } from '@tamu-gisc/oidc/common';
 
 import { UserInfo } from '../entities/all.entity';
 import { UserInfoProvider } from './user-info.provider';
 
 @Controller('user-infos')
 export class UserInfoController {
-  constructor(private readonly provider: UserInfoProvider) {}
+  constructor(private readonly provider: UserInfoProvider, private readonly managementService: ManagementService) {}
 
+  @UseGuards(JwtGuard)
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -28,38 +32,35 @@ export class UserInfoController {
     });
   }
 
+  @UseGuards(JwtGuard)
   @Get()
   public async getUsersInfo(@Request() req) {
     if (req.user) {
-      return this.provider.getUsersInfo(req.user.sub);
+      return this.managementService.getUserMetadata(req.user.sub);
     } else {
       throw new UnauthorizedException();
     }
   }
 
+  @UseGuards(JwtGuard)
   @Post()
-  public async insertEntity(@Body() body: DeepPartial<UserInfo>) {
+  public async insertEntity(@Body() body: Partial<UserInfo>) {
     throw new NotImplementedException();
   }
 
-  @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<UserInfo>, @Request() req) {
+  @UseGuards(JwtGuard)
+  @Patch()
+  public async updateEntity(@Body() body: Partial<UserInfo>, @Request() req) {
     if (req.user) {
-      const _updatedUserInfo: Partial<UserInfo> = {
-        ...req.body
-      };
-      return this.provider.updateUserInfo(req.user.sub, _updatedUserInfo);
+      return this.managementService.updateUserMetadata(req.user.sub, body);
     } else {
       throw new UnauthorizedException();
     }
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    throw new NotImplementedException();
   }
 }
