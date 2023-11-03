@@ -11,6 +11,7 @@ export class ContactService {
 
     composed.to = process.env.MAILROOM_TO;
     composed.from = process.env.MAILROOM_FROM;
+    composed.bcc = process.env.MAILROOM_BCC;
     composed.replyTo = message.from;
 
     return got
