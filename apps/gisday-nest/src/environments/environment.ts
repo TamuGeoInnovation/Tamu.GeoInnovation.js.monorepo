@@ -22,5 +22,3 @@ export const ormConfig = {
   logging: process.env.TYPEORM_LOGGING === 'true' ? true : false,
   extra: process.env.TYPEORM_EXTRA
 };
-
-//

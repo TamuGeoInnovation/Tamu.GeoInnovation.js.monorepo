@@ -8,7 +8,10 @@ export const environment = {
   origins: process.env?.ORIGINS?.split(',') || [],
   logging: process.env?.LOGGING === 'true' ? true : false,
   auth0_audience: process?.env?.AUTH0_AUDIENCE,
-  auth0_issuerUrl: process?.env?.AUTH0_ISSUER_URL
+  auth0_issuerUrl: process?.env?.AUTH0_ISSUER_URL,
+  auth0_management_domain: process?.env?.AUTH0_MANAGEMENT_DOMAIN,
+  auth0_management_clientId: process?.env?.AUTH0_MANAGEMENT_CLIENT,
+  auth0_management_clientSecret: process?.env?.AUTH0_MANAGEMENT_SECRET
 };
 
 export const ormConfig = {
