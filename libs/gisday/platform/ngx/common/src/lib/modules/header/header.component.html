@@ -32,10 +32,10 @@
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
 
-  <tamu-gisc-tile *ngIf="(loggedIn$ | async) === false; else loggedInMobile">
+  <!-- <tamu-gisc-tile *ngIf="(loggedIn$ | async) === false; else loggedInMobile">
     <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title (click)="login()">Login</tamu-gisc-tile-title>
-  </tamu-gisc-tile>
+  </tamu-gisc-tile> -->
 
   <ng-template #loggedInMobile>
     <tamu-gisc-tile>
@@ -112,9 +112,9 @@
         </ul>
 
         <ng-template #logInPrompt>
-          <ul id="liLogin">
+          <!-- <ul id="liLogin">
             <a (click)="login()" id="linkLogin">Login/Signup</a>
-          </ul>
+          </ul> -->
         </ng-template>
       </div>
 

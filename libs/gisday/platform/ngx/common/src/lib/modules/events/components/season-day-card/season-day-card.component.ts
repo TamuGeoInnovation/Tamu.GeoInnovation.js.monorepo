@@ -3,6 +3,7 @@ import { Observable, Subject, combineLatest, map, shareReplay, startWith, withLa
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-season-day-card',
@@ -41,7 +42,7 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
    */
   private _activeOrgFilters: Subject<Array<string>> = new Subject<Array<string>>();
 
-  constructor(private readonly sd: SeasonDayService) {}
+  constructor(private readonly sd: SeasonDayService, private readonly ns: NotificationService) {}
 
   public ngOnInit(): void {
     this.events$ = this.sd.getDayEvents(this.seasonDay.guid).pipe(shareReplay());
@@ -75,6 +76,14 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
     if (changes.organizations) {
       this._activeOrgFilters.next(changes.organizations.currentValue);
     }
+  }
+
+  public rsvpEvent(eventGuid) {
+    this.ns.toast({
+      message: 'Event registration is not yet available. Please check back in a few days.',
+      title: 'Registrations Not Open',
+      id: 'rsvp-not-implemented'
+    });
   }
 
   private _hasFilterIdentity(identities: Array<string>, tags: Array<string>): boolean {
