@@ -32,7 +32,13 @@
 
           <h2 class="trailer-1 column9 slogan">{{dayCountText$ | async}}, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
 
-          <h3 class="column9 trailer-1" *ngIf="dateRange$ | async as dates">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</h3>
+          <h3 class="column9" *ngIf="dateRange$ | async as dates">{{dates[0] | date : 'MMMM'}} {{dates[0] | date : 'd'}}-{{dates[1] | date : 'd'}}, {{(activeSeason$ | async)?.year}}</h3>
+
+          <a routerLink="/sessions" class="button snug leader-2 trailer-2">Explore Events</a>
+
+          <a href="https://tinyurl.com/GISDay2023SpeedMentoring" class="trailer-1">Sign up for Career Cupid Speed Mentoring Events</a>
+
+          <a href="https://www.youtube.com/watch?v=eigWXfjN9BU&feature=youtu.be">Watch the how to get started video</a>
         </div>
       </div>
     </div>
