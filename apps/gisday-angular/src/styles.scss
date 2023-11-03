@@ -1066,7 +1066,7 @@ img.jumbo {
   @include transform(scale3d(0, 0, 0));
 }
 
-#filters {
+#filters-inner {
   will-change: transition;
 }
 
@@ -1265,7 +1265,7 @@ img.jumbo {
 }
 
 .card[id^='day'],
-.card[id^='filters'] {
+.card.filters {
   h2 {
     padding-bottom: 1rem;
     border-bottom: 1px solid;

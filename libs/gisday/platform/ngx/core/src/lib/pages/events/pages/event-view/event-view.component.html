@@ -1,7 +1,7 @@
 <section>
   <div id="event-content">
     <div id="sub-nav-container">
-      <div class="container12 leader-3 trailer-3">
+      <div class="container12 leader-2 trailer-2">
         <h1 class="trailer-1">Event Sessions</h1>
         <p class="sub-section-heading">Want to see a special session or topic?</p>
         <p>
@@ -28,10 +28,11 @@
       </div>
 
       <div id="filters-container">
-        <form [formGroup]="form">
+        <div id="filter-toggle" class="trailer-1" (click)="toggleFilters()"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
+
+        <form [formGroup]="form" id="filters-inner" [ngClass]="{expanded: filtersVisible$ | async}">
           <div id="tag-filters-container">
-            <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
-            <div id="filters" class="card">
+            <div class="card filters">
               <h2 class="trailer-1">Tags</h2>
 
               <ng-container *ngIf="(tags$ | async) as tags; else loading">
@@ -51,8 +52,7 @@
           </div>
 
           <div id="organization-filters-container">
-            <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
-            <div id="filters" class="card">
+            <div class="card filters">
               <h2 class="trailer-1">Organizations</h2>
 
               <ng-container *ngIf="(organizations$ | async) as orgs; else loading">

@@ -1,3 +1,5 @@
+@use 'libs/sass/mixins';
+
 #links-container {
   width: 100%;
   font-weight: 400;
@@ -37,4 +39,38 @@ tamu-gisc-checkbox {
 
 form {
   margin: 0;
+}
+
+@media only screen and (max-width: 767px) {
+  #sessions-container {
+    #default-content,
+    #filters-container {
+      grid-column: 1 / 13;
+    }
+
+    #filters-container {
+      grid-row-start: 1;
+    }
+
+    #filters-inner {
+      margin-bottom: 0;
+      max-height: 0;
+      overflow: hidden;
+      border: none;
+      @include mixins.transition(max-height 0.3s);
+
+      &.expanded {
+        max-height: 100rem;
+        margin-bottom: 3.5rem;
+      }
+
+      .tile:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+
+  #filter-toggle {
+    display: block;
+  }
 }

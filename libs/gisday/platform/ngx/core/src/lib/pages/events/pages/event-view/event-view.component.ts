@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { ActiveSeasonDto, Event, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
@@ -19,6 +19,9 @@ export class EventViewComponent implements OnInit {
 
   public activeTagFilters$: Observable<Array<string>>;
   public activeOrgFilters$: Observable<Array<string>>;
+
+  private _filtersVisible$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public filtersVisible$: Observable<boolean> = this._filtersVisible$.asObservable();
 
   /**
    * Form group used to delate filter changes as observables that can
@@ -47,5 +50,9 @@ export class EventViewComponent implements OnInit {
 
     this.activeTagFilters$ = this.form.get('tags').valueChanges.pipe(shareReplay());
     this.activeOrgFilters$ = this.form.get('organizations').valueChanges.pipe(shareReplay());
+  }
+
+  public toggleFilters() {
+    this._filtersVisible$.next(!this._filtersVisible$.value);
   }
 }

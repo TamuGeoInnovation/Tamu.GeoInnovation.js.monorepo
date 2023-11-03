@@ -297,35 +297,6 @@ $background: #fafafa;
     }
   }
 
-  //   .flex-gallery {
-  //     @include flex-direction(column) !important;
-  //   }
-
-  //   .flex-gallery-row {
-  //     @include flex-direction(column) !important;
-  //     border-top: none !important;
-  //     border-right: none !important;
-  //     border-bottom: none !important;
-  //     border-left: none !important;
-
-  //     & > div {
-  //       height: 50%;
-  //       width: 100% !important;
-  //       border-top: none !important;
-  //       border-right: none !important;
-  //       border-bottom: none;
-  //       border-left: none !important;
-
-  //       &::after {
-  //         opacity: 1 !important;
-  //       }
-  //     }
-
-  //     & > div {
-  //       border-bottom: 2px solid $background;
-  //     }
-  //   }
-
   .small-form {
     width: 80% !important;
   }
@@ -352,36 +323,6 @@ $background: #fafafa;
 
   .partition-divider {
     display: none;
-  }
-
-  #sessions-container {
-    @include flexbox(flex);
-    @include flex-direction(column-reverse);
-  }
-
-  #filters {
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    max-height: 0;
-    overflow: hidden;
-    border: none;
-    @include transition(max-height 0.3s);
-
-    &.expanded {
-      max-height: 100rem;
-      margin-bottom: 3.5rem;
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-
-    .tile:first-child {
-      margin-top: 0;
-    }
-  }
-
-  #filter-toggle {
-    display: block;
   }
 
   .half-children {
