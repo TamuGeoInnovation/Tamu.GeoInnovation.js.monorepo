@@ -21,7 +21,11 @@ export class UniversityController {
 
   @Get()
   public async getEntities() {
-    return this.provider.find();
+    return this.provider.find({
+      order: {
+        name: 'ASC'
+      }
+    });
   }
 
   @Permissions(['create:universities'])

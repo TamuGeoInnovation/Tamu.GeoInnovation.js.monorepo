@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Observable, map, shareReplay } from 'rxjs';
 
-import { UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { UniversityService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GisDayAppMetadata } from '@tamu-gisc/gisday/platform/data-api';
+import { GisDayAppMetadata, University } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
   selector: 'tamu-gisc-my-details',
@@ -17,8 +17,16 @@ export class MyDetailsComponent implements OnInit {
 
   private _signedOnEntity: Observable<GisDayAppMetadata>;
   public signedOnEntityIsSocial: Observable<boolean>;
+  public universities$: Observable<Array<Partial<University>>>;
 
-  constructor(private fb: FormBuilder, private ns: NotificationService, private readonly us: UserService) {
+  constructor(
+    private fb: FormBuilder,
+    private ns: NotificationService,
+    private readonly us: UserService,
+    private readonly is: UniversityService
+  ) {}
+
+  public ngOnInit(): void {
     this.form = this.fb.group({
       user_info: this.fb.group({
         given_name: [null],
@@ -31,19 +39,37 @@ export class MyDetailsComponent implements OnInit {
         })
       }),
       user_metadata: this.fb.group({
-        uin: [null],
-        fieldOfStudy: [null],
-        classification: [null]
+        education: this.fb.group({
+          id: [null],
+          institution: [null],
+          fieldOfStudy: [null],
+          classification: [null]
+        }),
+        occupation: this.fb.group({
+          employer: [null],
+          department: [null],
+          position: [null]
+        })
       })
     });
-  }
 
-  public ngOnInit(): void {
     this._signedOnEntity = this.us.getSignedOnEntity().pipe(shareReplay());
     this.signedOnEntityIsSocial = this._signedOnEntity.pipe(
       map((user) => {
         return user.user_info.social;
       })
+    );
+
+    this.universities$ = this.is.getEntities().pipe(
+      map((universities) => {
+        universities.push({
+          guid: 'other',
+          name: 'Other'
+        });
+
+        return universities;
+      }),
+      shareReplay()
     );
 
     this._signedOnEntity.subscribe({

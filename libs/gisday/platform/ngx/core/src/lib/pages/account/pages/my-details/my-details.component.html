@@ -19,25 +19,31 @@
     </div>
   </div>
 
-  <div class="form-section leader-1" formGroupName="user_metadata">
-    <div class="form-section-toolbar">
-      <div class="form-section-title">Student Information</div>
+  <ng-container formGroupName="user_metadata">
+    <div class="form-section leader-1" formGroupName="education">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Student Information</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column pad-top">
+          <tamu-gisc-textbox formControlName="id" placeholder="UIN" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-select [data]="universities$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="fieldOfStudy" placeholder="Field of Study" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="classification" placeholder="Classification" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+      </div>
     </div>
-
-    <div class="form-section-body">
-      <div class="form-collection column pad-top">
-        <tamu-gisc-textbox formControlName="uin" placeholder="UIN" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      </div>
-
-      <div class="form-collection column">
-        <tamu-gisc-textbox formControlName="fieldOfStudy" placeholder="Field of Study" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      </div>
-
-      <div class="form-collection column">
-        <tamu-gisc-textbox formControlName="classification" placeholder="Classification" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      </div>
-    </div>
-  </div>
+  </ng-container>
 
   <div class="form-section leader-1">
     <div class="form-section-body">
