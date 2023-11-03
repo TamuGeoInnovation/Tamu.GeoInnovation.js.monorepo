@@ -12,7 +12,7 @@ export * from './lib/modules/services/submission-type/submission-type.service';
 export * from './lib/modules/services/tag/tag.service';
 export * from './lib/modules/services/university/university.service';
 export * from './lib/modules/services/user-classes/user-classes.service';
-export * from './lib/modules/services/user-info/user-info.service';
+export * from './lib/modules/services/user/user.service';
 export * from './lib/modules/services/user-submissions/user-submissions.service';
 export * from './lib/modules/services/signage/signage.service';
 export * from './lib/modules/services/season/season.service';

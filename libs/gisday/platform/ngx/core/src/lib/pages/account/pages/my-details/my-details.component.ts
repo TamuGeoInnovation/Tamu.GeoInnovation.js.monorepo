@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { Subject } from 'rxjs';
+import { Observable, map, shareReplay } from 'rxjs';
 
-import { UserInfoService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { UserInfo } from '@tamu-gisc/gisday/platform/data-api';
+import { GisDayAppMetadata } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
   selector: 'tamu-gisc-my-details',
@@ -15,18 +15,38 @@ import { UserInfo } from '@tamu-gisc/gisday/platform/data-api';
 export class MyDetailsComponent implements OnInit {
   public form: FormGroup;
 
-  private _$destroy: Subject<boolean> = new Subject();
+  private _signedOnEntity: Observable<GisDayAppMetadata>;
+  public signedOnEntityIsSocial: Observable<boolean>;
 
-  constructor(private fb: FormBuilder, private ns: NotificationService, private readonly us: UserInfoService) {
+  constructor(private fb: FormBuilder, private ns: NotificationService, private readonly us: UserService) {
     this.form = this.fb.group({
-      uin: [''],
-      fieldOfStudy: [''],
-      classification: ['']
+      user_info: this.fb.group({
+        given_name: [null],
+        family_name: [null],
+        email: [{ value: null, disabled: true }]
+      }),
+      app_metadata: this.fb.group({
+        gisday: this.fb.group({
+          attendeeType: [null]
+        })
+      }),
+      user_metadata: this.fb.group({
+        uin: [null],
+        fieldOfStudy: [null],
+        classification: [null]
+      })
     });
   }
 
   public ngOnInit(): void {
-    this.us.getSignedOnEntity().subscribe({
+    this._signedOnEntity = this.us.getSignedOnEntity().pipe(shareReplay());
+    this.signedOnEntityIsSocial = this._signedOnEntity.pipe(
+      map((user) => {
+        return user.user_info.social;
+      })
+    );
+
+    this._signedOnEntity.subscribe({
       next: (result) => {
         this.form.patchValue(result);
       },
@@ -43,7 +63,7 @@ export class MyDetailsComponent implements OnInit {
   }
 
   public updateUserInfo() {
-    const form: Partial<UserInfo> = this.form.getRawValue();
+    const form: Partial<GisDayAppMetadata> = this.form.getRawValue();
 
     this.us.updateSignedOnEntity(form).subscribe({
       next: (result) => {

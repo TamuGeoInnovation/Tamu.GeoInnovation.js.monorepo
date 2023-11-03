@@ -8,19 +8,16 @@ import {
   Patch,
   Post,
   Request,
-  UnauthorizedException,
   UseGuards
 } from '@nestjs/common';
 
-import { ManagementService } from '@tamu-gisc/common/nest/auth';
 import { JwtGuard } from '@tamu-gisc/oidc/common';
 
-import { UserInfo } from '../entities/all.entity';
-import { UserInfoProvider } from './user-info.provider';
+import { GisDayAppMetadata, UserInfoProvider } from './user-info.provider';
 
-@Controller('user-infos')
+@Controller('users')
 export class UserInfoController {
-  constructor(private readonly provider: UserInfoProvider, private readonly managementService: ManagementService) {}
+  constructor(private readonly provider: UserInfoProvider) {}
 
   @UseGuards(JwtGuard)
   @Get(':guid')
@@ -35,27 +32,19 @@ export class UserInfoController {
   @UseGuards(JwtGuard)
   @Get()
   public async getUsersInfo(@Request() req) {
-    if (req.user) {
-      return this.managementService.getUserMetadata(req.user.sub);
-    } else {
-      throw new UnauthorizedException();
-    }
+    return this.provider.getUsersInfo(req.user.sub);
   }
 
   @UseGuards(JwtGuard)
   @Post()
-  public async insertEntity(@Body() body: Partial<UserInfo>) {
+  public async insertEntity() {
     throw new NotImplementedException();
   }
 
   @UseGuards(JwtGuard)
   @Patch()
-  public async updateEntity(@Body() body: Partial<UserInfo>, @Request() req) {
-    if (req.user) {
-      return this.managementService.updateUserMetadata(req.user.sub, body);
-    } else {
-      throw new UnauthorizedException();
-    }
+  public async updateEntity(@Request() req, @Body() body: GisDayAppMetadata) {
+    return this.provider.updateUserInfo(req.user.sub, body);
   }
 
   @UseGuards(JwtGuard)

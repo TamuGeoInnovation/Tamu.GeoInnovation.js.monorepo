@@ -30,6 +30,7 @@ export * from './lib/contact/contact.module';
 // Providers
 export * from './lib/_base/base-provider';
 export * from './lib/class/class.provider';
+export * from './lib/user-info/user-info.provider';
 
 // DTOs
 export * from './lib/event/dto/simplified-event.dto';

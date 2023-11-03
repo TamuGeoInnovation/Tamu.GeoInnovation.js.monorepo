@@ -1,24 +1,49 @@
-<div class="card leader-3">
-  <h2>My Details</h2>
-  <form [formGroup]="form" (ngSubmit)="updateUserInfo()">
-    <div class="form-section">
-      <div class="form-section-body">
-        <div class="form-collection row pad-top">
-          <tamu-gisc-textbox formControlName="uin" placeholder="UIN" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        </div>
+<form [formGroup]="form" (ngSubmit)="updateUserInfo()">
+  <div class="form-section" formGroupName="user_info">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Personal Information</div>
+    </div>
 
-        <div class="form-collection row">
-          <tamu-gisc-textbox formControlName="fieldOfStudy" placeholder="Field of Study" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        </div>
+    <div class="form-section-body">
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="given_name" placeholder="First Name" type="text" [floatLabel]="true" [disabled]="signedOnEntityIsSocial | async"> </tamu-gisc-textbox>
+      </div>
 
-        <div class="form-collection row">
-          <tamu-gisc-textbox formControlName="classification" placeholder="Classification" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        </div>
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="family_name" placeholder="Last Name" type="text" [floatLabel]="true" [disabled]="signedOnEntityIsSocial | async"> </tamu-gisc-textbox>
+      </div>
 
-        <div class="form-collection row">
-          <tamu-gisc-button type="submit" value="Update"></tamu-gisc-button>
-        </div>
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
     </div>
-  </form>
-</div>
+  </div>
+
+  <div class="form-section leader-1" formGroupName="user_metadata">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Student Information</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="uin" placeholder="UIN" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="fieldOfStudy" placeholder="Field of Study" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="classification" placeholder="Classification" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section leader-1">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="submit" value="Update"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>
