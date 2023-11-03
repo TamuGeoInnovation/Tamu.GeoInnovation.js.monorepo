@@ -3,7 +3,6 @@
 @import 'libs/sass/1140';
 @import 'libs/sass/colors'; // Imports complete material design colors for use as classes in markup
 @import 'libs/sass/modules/forms';
-@import 'libs/gisday/sass/mobile';
 @import 'libs/sass/components/datetime-picker';
 @import 'libs/sass/spacing';
 @import 'libs/sass/dom_flexbox';
@@ -318,7 +317,6 @@ figure {
 
 header .logo-container {
   font-size: 3.5rem;
-  display: initial !important;
 
   &.opaque {
     display: initial !important;
@@ -1875,37 +1873,6 @@ article .row {
   }
 }
 
-.countdown {
-  @include flexbox();
-  @include flex-direction(row);
-  @include justify-content(center);
-  // background: @gisday-gray-primary;
-  padding: 1rem;
-  border-radius: 10px;
-
-  p {
-    padding-bottom: 0;
-  }
-
-  .component {
-    padding: 1rem 2.5rem;
-  }
-
-  .count {
-    font-family: $title-font;
-    font-size: 4rem;
-    font-weight: 500;
-    line-height: 1;
-    margin-bottom: 0.5rem;
-  }
-
-  .unit {
-    font-weight: 500;
-    color: #616161;
-    font-size: 0.9rem;
-  }
-}
-
 .lookback {
   position: absolute;
   font-family: $title-font;
@@ -2447,52 +2414,6 @@ nav#section-nav a:hover {
   }
 }
 
-//  ==========================================================================
-//   Countdown
-//  ==========================================================================
-
-.countdown {
-  @include flex(auto);
-  @include flex-direction(row);
-  @include align-items(center);
-  margin: 0rem 0 2rem 0;
-
-  .days,
-  .hours,
-  .minutes,
-  .seconds {
-    @include flex(auto);
-    @include flex-direction(column);
-    @include justify-content(center);
-    @include align-items(center);
-
-    margin: 0 2rem;
-
-    .value {
-      font-size: 5rem;
-      font-weight: 900;
-      color: $gisday-blue-support;
-    }
-
-    .label {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: $gisday-blue-support-lightened;
-    }
-  }
-
-  // Generically target the days, hours, minutes, and second containers.
-  & > div {
-    &:not(:last-child) {
-      .value::after {
-        content: ':';
-        position: absolute;
-        margin-left: 1.5rem;
-      }
-    }
-  }
-}
-
 .red-line {
   height: 2px;
   margin: 2rem auto;
@@ -2931,3 +2852,5 @@ session-time-table {
     page-break-after: avoid;
   }
 }
+
+@import 'libs/gisday/sass/mobile';

@@ -1,10 +1,9 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 
 import { ActiveSeasonDto, Place } from '@tamu-gisc/gisday/platform/data-api';
-import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
@@ -23,7 +22,6 @@ export class HeaderComponent implements OnInit {
   public places$: Observable<Array<Partial<Place>>>;
 
   public mobileNavToggle: Subject<boolean> = new Subject();
-  public isMobile$ = this.rp.isMobile.pipe(shareReplay(1));
   public isAbsolute$: Observable<boolean>;
   public logoVisible$: Observable<boolean>;
 
@@ -39,7 +37,6 @@ export class HeaderComponent implements OnInit {
   }
 
   constructor(
-    private readonly rp: ResponsiveService,
     private readonly as: AuthService,
     private readonly ss: SeasonService,
     private readonly ps: PlaceService,

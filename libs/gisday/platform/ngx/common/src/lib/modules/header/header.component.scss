@@ -7,11 +7,17 @@
     top: 0;
     width: 100%;
     z-index: 1;
+
+    .desktop-menu {
+      // In seamless mode, the logo is hidden and so the desktop  menu never
+      // collides with it. Therefore, we can safely maintain the axis alignment
+      @include align-items(flex-end !important);
+    }
   }
 }
 
 .logo-container {
-  font-size: 3.5rem;
+  // font-size: 3.5rem;
 
   &.opaque {
     display: initial !important;
@@ -133,6 +139,7 @@ nav#off-canvas-menu .nav-divider:hover {
   @include flex-direction(row);
   @include justify-content(space-between);
   @include align-items(center);
+  @include flex-wrap(wrap);
 
   a,
   p,
@@ -174,12 +181,19 @@ nav#off-canvas-menu .nav-divider:hover {
     padding-bottom: 0;
     padding-top: 0;
   }
+
+  #site-logo {
+    &.hidden {
+      height: 0;
+      width: 0;
+      visibility: hidden;
+    }
+  }
 }
 
 .desktop-menu {
-  flex: initial;
-  @include flexbox();
   @include flex-direction(column);
+  display: none;
 
   a {
     font-weight: 400;
@@ -349,15 +363,18 @@ nav#off-canvas-menu .nav-divider:hover {
   }
 }
 
-@media only screen and (max-width: 1150px) {
-  nav#main-menu {
-    flex-direction: column;
-    align-items: flex-start;
+@media only screen and (max-width: 1115px) {
+  .desktop-menu {
+    @include align-items(flex-start);
   }
 }
 
-@media only screen and (max-width: 1140px) {
-  nav#main-menu .desktop-menu {
-    align-items: flex-start;
+@media only screen and (min-width: 768px) {
+  tamu-gisc-hamburger-trigger {
+    display: none;
+  }
+
+  .desktop-menu {
+    @include flexbox();
   }
 }

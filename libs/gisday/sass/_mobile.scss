@@ -4,16 +4,7 @@
 
 /* ==================================================*/
 
-$accent-grey: #eeeeee;
-$light-grey: #9e9e9e;
-$medium-grey: #757575;
-$dark-grey: #616161;
-$nightshade: #202020;
 $background: #fafafa;
-$light-maroon: #785555;
-$dark-maroon: #773c3c;
-$link-blue: #03a9f4;
-$accent-yellow: #f6bf33;
 
 //  ==========================================================================
 //   Media Queries
@@ -105,9 +96,9 @@ $accent-yellow: #f6bf33;
 
     &#main-menu a:not(#main-logo-container) {
       padding-top: 0.5rem;
-      padding-bottom: 0;
-      padding-left: 0;
-      padding-right: 0;
+      padding-bottom: 0.5rem;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
     }
 
     #off-canvas-menu .ripple {
@@ -645,7 +636,7 @@ $accent-yellow: #f6bf33;
 
 @media only screen and (max-width: 479px) {
   html {
-    font-size: 13px;
+    // font-size: 13px;
   }
 
   .card .row .event-time {
@@ -675,10 +666,20 @@ $accent-yellow: #f6bf33;
   .column12 {
     width: 100% !important;
   }
+
+  .site-logo-image-container {
+    display: none;
+  }
 }
 
 @media only screen and (max-width: 450px) {
   #detail-time {
     display: none;
+  }
+
+  header {
+    .logo-container {
+      font-size: 3rem;
+    }
   }
 }

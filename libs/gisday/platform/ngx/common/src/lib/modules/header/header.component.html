@@ -1,4 +1,4 @@
-<tamu-gisc-hamburger-trigger *ngIf="isMobile$ | async" [active]="mobileNavToggle | async" (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
+<tamu-gisc-hamburger-trigger [active]="mobileNavToggle | async" (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
 
 <tamu-gisc-tile-navigation [toggle]="mobileNavToggle" (closed)="mobileNavToggle.next(false)">
   <tamu-gisc-tile>
@@ -27,8 +27,8 @@
     <tamu-gisc-tile-submenu *giscTileSubmenu>
       <p tamuGiscTileLink location="/about">About TxGIS Day</p>
       <p tamuGiscTileLink location="/sponsors">Sponsors</p>
-      <p tamuGiscTileLink location="https://docs.google.com/forms/d/e/1FAIpQLSd4fo6hIB-HVPbYJ4xO-ncZ3yMOEA_yDkBGhUr8jqShFAsOHg/viewform">Volunteer</p>
-      <p tamuGiscTileLink location="/highschool">High School Portal</p>
+      <p tamuGiscTileLink location="/about" fragment="student-volunteer">Volunteer</p>
+      <p tamuGiscTileLink location="http://www.houstonareagisday.org/">High School Portal</p>
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
 
@@ -54,7 +54,7 @@
 
 <header>
   <nav id="main-menu">
-    <div [ngStyle]="{visibility: (logoVisible$ | async) === false ? 'hidden' : 'visible'}" id="site-logo">
+    <div [ngClass]="{hidden: (logoVisible$ | async) === false}" id="site-logo">
       <a class="logo-container" [routerLink]="['/']">
         <h1 class="site-logo">
           <span class="site-logo-image-container">

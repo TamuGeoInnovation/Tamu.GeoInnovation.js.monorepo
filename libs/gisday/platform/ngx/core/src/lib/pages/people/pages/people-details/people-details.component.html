@@ -2,7 +2,7 @@
   <div class="container12 presenter-details-item leader-1">
     <div *ngIf="($speaker | async) as person">
       <div class="column4 image-container">
-        <tamu-gisc-speaker-avatar [avatarGuid]="person?.image?.guid"></tamu-gisc-speaker-avatar>
+        <tamu-gisc-speaker-avatar [avatarGuid]="person?.images?.[0]?.guid"></tamu-gisc-speaker-avatar>
       </div>
 
       <div class="column6 pre-2">

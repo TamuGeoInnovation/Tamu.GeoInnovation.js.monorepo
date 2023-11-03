@@ -1,6 +1,6 @@
 <footer>
   <div class="top-section container16">
-    <div class="flex flex-row justify-center">
+    <div class="flex flex-row justify-center wrap">
       <div class="column4">
         <a class="logo-container" [routerLink]="['/']">
           <div class="site-logo greyscale">TxGIS Day <span *ngIf="(activeSeason$ | async)?.year as year">{{year}}</span></div>
@@ -45,7 +45,7 @@
     </div>
   </div>
   <div class="bottom-section">
-    <div class="container12 flex flex-column justify-center align-center">
+    <div class="container12 flex flex-column justify-center align-center wrap">
       <div class="column8 copyright">
         <p>&copy; {{currentYear}} GeoInnovation Service Center -</p>
         <a href="https://www.tamu.edu" target="_blank">Texas A&amp;M University - </a>
