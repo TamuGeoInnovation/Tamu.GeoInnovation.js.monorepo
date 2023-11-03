@@ -78,6 +78,12 @@ export class HeaderComponent implements OnInit {
   }
 
   public logout() {
-    this.as.logout();
+    const url = window.location.origin;
+
+    this.as.logout({
+      logoutParams: {
+        returnTo: url
+      }
+    });
   }
 }

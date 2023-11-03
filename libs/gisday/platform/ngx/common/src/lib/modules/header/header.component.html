@@ -37,19 +37,19 @@
     <tamu-gisc-tile-title (click)="login()">Login</tamu-gisc-tile-title>
   </tamu-gisc-tile> -->
 
-  <ng-template #loggedInMobile>
-    <tamu-gisc-tile>
-      <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
-      <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
-      <tamu-gisc-tile-submenu *giscTileSubmenu>
-        <p tamuGiscTileLink location="/account/my-details">My Details</p>
-        <p tamuGiscTileLink location="/account/my-classes">My Classes</p>
-        <p tamuGiscTileLink location="/account/my-checkins">My Checkins</p>
-        <p tamuGiscTileLink location="/account/my-submissions">My Submissions</p>
-        <p (click)="logout()">Logout</p>
-      </tamu-gisc-tile-submenu>
-    </tamu-gisc-tile>
-  </ng-template>
+  <!-- <ng-template #loggedInMobile> -->
+  <tamu-gisc-tile *ngIf="(loggedIn$ | async) === true">
+    <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
+    <tamu-gisc-tile-submenu *giscTileSubmenu>
+      <p tamuGiscTileLink location="/account/my-details">My Details</p>
+      <p tamuGiscTileLink location="/account/my-classes">My Classes</p>
+      <p tamuGiscTileLink location="/account/my-checkins">My Checkins</p>
+      <p tamuGiscTileLink location="/account/my-submissions">My Submissions</p>
+      <p (click)="logout()">Logout</p>
+    </tamu-gisc-tile-submenu>
+  </tamu-gisc-tile>
+  <!-- </ng-template> -->
 </tamu-gisc-tile-navigation>
 
 <header>
