@@ -110,6 +110,7 @@ const routeOptions: ExtraOptions = {
         audience: environment.auth0.audience,
         redirect_uri: environment.auth0.redirect_uri
       },
+      useRefreshTokens: true,
       httpInterceptor: {
         allowedList: [
           {
