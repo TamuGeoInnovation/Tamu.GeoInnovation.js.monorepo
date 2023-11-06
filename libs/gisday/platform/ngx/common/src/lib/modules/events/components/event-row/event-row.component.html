@@ -1,5 +1,5 @@
 <div class="event-rsvp-control">
-  <tamu-gisc-checkbox [label]="''" (changed)="emitRegisterEvent()"></tamu-gisc-checkbox>
+  <tamu-gisc-checkbox [label]="''" (changed)="emitToggleEvent($event)" [checked]="isRsvp$ | async"></tamu-gisc-checkbox>
 </div>
 
 <div class="event-meta">

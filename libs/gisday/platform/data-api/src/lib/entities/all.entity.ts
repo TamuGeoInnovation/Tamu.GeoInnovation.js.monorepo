@@ -738,7 +738,7 @@ export class UserClass extends GuidIdentity {
   public class: Class;
 
   @Column({ nullable: false })
-  public accountGuid: string; // User
+  public accountGuid: string;
 }
 
 @Entity({
@@ -746,14 +746,12 @@ export class UserClass extends GuidIdentity {
 })
 export class UserRsvp extends GuidIdentity {
   @Column({ nullable: false })
-  public accountGuid: string; // User
+  public accountGuid: string;
 
-  @OneToOne(() => Event, { cascade: true, eager: true })
-  @JoinColumn()
+  @ManyToOne(() => Event, { cascade: true, eager: true })
   public event: Event;
 
-  @OneToOne(() => RsvpType, { cascade: true, eager: true })
-  @JoinColumn()
+  @ManyToOne(() => RsvpType, { cascade: true, eager: true })
   public rsvpType: RsvpType;
 }
 
@@ -765,7 +763,7 @@ export class Submission extends GuidIdentity {
   public season: Season;
 
   @Column({ nullable: true })
-  public accountGuid: string; // User
+  public accountGuid: string;
 
   @Column({ nullable: true })
   public title: string;

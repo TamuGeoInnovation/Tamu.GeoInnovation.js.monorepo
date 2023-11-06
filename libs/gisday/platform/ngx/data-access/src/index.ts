@@ -22,3 +22,4 @@ export * from './lib/modules/services/broadcast/broadcast.service';
 export * from './lib/modules/services/location/location.service';
 export * from './lib/modules/services/place/place.service';
 export * from './lib/modules/services/assets/assets.service';
+export * from './lib/modules/services/rsvp/rsvp.service';

@@ -1,9 +1,8 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Observable, Subject, combineLatest, map, shareReplay, startWith, withLatestFrom } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Observable, ReplaySubject, Subject, combineLatest, map, shareReplay, startWith, withLatestFrom } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-season-day-card',
@@ -29,8 +28,18 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   @Input()
   public organizations: Array<string> = [];
 
+  @Input()
+  public rsvps: Array<string> = [];
+
+  @Output()
+  public register: EventEmitter<string> = new EventEmitter();
+
+  @Output()
+  public unregister: EventEmitter<string> = new EventEmitter();
+
   public events$: Observable<Array<SimplifiedEvent>>;
   public filteredEvents$: Observable<Array<SimplifiedEvent>>;
+  public rsvpsForDay$: Observable<Array<string>>;
 
   /**
    * Observable that gets pushed the input `tags` on changes.
@@ -42,10 +51,13 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
    */
   private _activeOrgFilters: Subject<Array<string>> = new Subject<Array<string>>();
 
-  constructor(private readonly sd: SeasonDayService, private readonly ns: NotificationService) {}
+  private _activeRsvpsForDay: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();
+
+  constructor(private readonly sd: SeasonDayService) {}
 
   public ngOnInit(): void {
     this.events$ = this.sd.getDayEvents(this.seasonDay.guid).pipe(shareReplay());
+
     this.filteredEvents$ = combineLatest([
       this._activeTagFilters.pipe(startWith([])),
       this._activeOrgFilters.pipe(startWith([]))
@@ -66,6 +78,23 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
       }),
       shareReplay()
     );
+
+    this.rsvpsForDay$ = combineLatest([this.events$, this._activeRsvpsForDay]).pipe(
+      map(([events, rsvps]) => {
+        return events.filter((event) => {
+          return rsvps.includes(event.guid);
+        });
+      }),
+      map((events) => {
+        if (events.length === 0) {
+          return [];
+        }
+
+        return events.map((event) => {
+          return event.guid;
+        });
+      })
+    );
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -76,14 +105,18 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
     if (changes.organizations) {
       this._activeOrgFilters.next(changes.organizations.currentValue);
     }
+
+    if (changes.rsvps && changes.rsvps.currentValue !== null) {
+      this._activeRsvpsForDay.next(changes.rsvps.currentValue);
+    }
   }
 
-  public rsvpEvent(eventGuid) {
-    this.ns.toast({
-      message: 'Event registration is not yet available. Please check back in a few days.',
-      title: 'Registrations Not Open',
-      id: 'rsvp-not-implemented'
-    });
+  public handoff(event: SimplifiedEvent, newState: boolean) {
+    if (newState) {
+      this.register.emit(event.guid);
+    } else if (!newState) {
+      this.unregister.emit(event.guid);
+    }
   }
 
   private _hasFilterIdentity(identities: Array<string>, tags: Array<string>): boolean {

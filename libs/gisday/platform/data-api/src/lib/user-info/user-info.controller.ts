@@ -11,7 +11,7 @@ import {
   UseGuards
 } from '@nestjs/common';
 
-import { JwtGuard } from '@tamu-gisc/oidc/common';
+import { PermissionsGuard, Permissions, JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 import { GisDayAppMetadata, UserInfoProvider } from './user-info.provider';
 
@@ -19,7 +19,8 @@ import { GisDayAppMetadata, UserInfoProvider } from './user-info.provider';
 export class UserInfoController {
   constructor(private readonly provider: UserInfoProvider) {}
 
-  @UseGuards(JwtGuard)
+  @Permissions(['read:users'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -35,7 +36,8 @@ export class UserInfoController {
     return this.provider.getUsersInfo(req.user.sub);
   }
 
-  @UseGuards(JwtGuard)
+  @Permissions(['create:users'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEntity() {
     throw new NotImplementedException();
@@ -47,7 +49,8 @@ export class UserInfoController {
     return this.provider.updateUserInfo(req.user.sub, body);
   }
 
-  @UseGuards(JwtGuard)
+  @Permissions(['delete:users'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
     throw new NotImplementedException();

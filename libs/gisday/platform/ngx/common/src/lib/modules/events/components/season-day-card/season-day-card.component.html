@@ -4,7 +4,7 @@
   <ng-container *ngIf="(events$ | async)?.length > 0; else noEvents">
     <ng-container *ngIf="(filteredEvents$ | async)?.length > 0; else zeroFilteredResult">
       <div *ngFor="let event of filteredEvents$ | async">
-        <tamu-gisc-event-row [event]="event" [day]="seasonDay" (eventRegister)="rsvpEvent($event)"></tamu-gisc-event-row>
+        <tamu-gisc-event-row [event]="event" [day]="seasonDay" (rowToggle)="handoff(event, $event)" [rsvps]="rsvpsForDay$ | async"></tamu-gisc-event-row>
       </div>
     </ng-container>
 

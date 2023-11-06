@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -17,25 +17,33 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
   }
 
   public async insertUserRsvp(eventGuid: string, rsvpTypeGuid: string, accountGuid: string) {
-    const rsvpType = await this.rsvpTypeRepo.findOne({
-      where: {
-        guid: rsvpTypeGuid
+    try {
+      const event = await this.eventRepo.findOne({
+        where: {
+          guid: eventGuid
+        }
+      });
+
+      const existingRsvp = await this.userRsvpRepo.findOne({
+        where: {
+          event: event,
+          accountGuid: accountGuid
+        }
+      });
+
+      if (existingRsvp) {
+        throw new Error('RSVP already exists');
       }
-    });
 
-    const event = await this.eventRepo.findOne({
-      where: {
-        guid: eventGuid
-      }
-    });
+      const newUserRsvp = this.userRsvpRepo.create({
+        event: event,
+        accountGuid: accountGuid
+      });
 
-    const newUserRsvp = this.userRsvpRepo.create({
-      event: event,
-      rsvpType: rsvpType,
-      accountGuid: accountGuid
-    });
-
-    return this.userRsvpRepo.save(newUserRsvp);
+      return this.userRsvpRepo.save(newUserRsvp);
+    } catch (err) {
+      throw new InternalServerErrorException(`Error creating RSVP. ${err}`);
+    }
   }
 
   public async getUserRsvps(accountGuid: string) {
@@ -43,7 +51,22 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
       where: {
         accountGuid: accountGuid
       },
-      relations: ['event', 'rsvpType']
+      relations: ['event']
     });
+  }
+
+  public async deleteRsvpForUser(eventGuid: string, accountGuid: string) {
+    const rsvp = await this.userRsvpRepo.findOne({
+      where: {
+        event: eventGuid,
+        accountGuid: accountGuid
+      }
+    });
+
+    if (!rsvp) {
+      throw new NotFoundException();
+    }
+
+    return rsvp.remove();
   }
 }
