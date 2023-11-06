@@ -6,9 +6,9 @@ import {
   Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, In, Repository } from 'typeorm';
 
-import { Speaker, EntityRelationsLUT, University, Organization } from '../entities/all.entity';
+import { Speaker, EntityRelationsLUT, University, Organization, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -21,6 +21,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     @InjectRepository(Speaker) private speakerRepo: Repository<Speaker>,
     @InjectRepository(University) private universityRepo: Repository<University>,
     @InjectRepository(Organization) private orgRepo: Repository<Organization>,
+    @InjectRepository(Event) private eventRepo: Repository<Event>,
     private readonly assetService: AssetsService,
     private readonly seasonService: SeasonService
   ) {
@@ -36,16 +37,41 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
   }
 
-  public async getActivePresenters() {
-    return this.speakerRepo.find({
-      relations: ['organization', 'university', 'images'],
-      order: {
-        lastName: 'ASC'
-      },
+  public async getSpeakersForActiveSeason() {
+    const season = await this.seasonService.findOneActive();
+
+    if (!season) {
+      return [];
+    }
+
+    const eventGuids = season.days
+      .map((day) => day.events.map((event) => event.guid))
+      .reduce((acc, curr) => {
+        return acc.concat(curr);
+      });
+
+    const events = await this.eventRepo.find({
       where: {
-        isActive: true
-      }
+        guid: In(eventGuids)
+      },
+      relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university']
     });
+
+    const speakers = events
+      .map((event) => event.speakers)
+      .reduce((acc, curr) => {
+        return acc.concat(curr);
+      }, []);
+
+    return speakers.reduce((acc, curr) => {
+      const existing = acc.find((speaker) => speaker.guid === curr.guid);
+
+      if (!existing) {
+        return acc.concat(curr);
+      } else {
+        return acc;
+      }
+    }, []);
   }
 
   public async getPresenters() {

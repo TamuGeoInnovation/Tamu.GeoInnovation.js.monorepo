@@ -18,7 +18,7 @@ export class SpeakerController {
 
   @Get('active')
   public async getActiveEntities() {
-    return this.provider.getActivePresenters();
+    return this.provider.getSpeakersForActiveSeason();
   }
 
   @Get(':guid')
