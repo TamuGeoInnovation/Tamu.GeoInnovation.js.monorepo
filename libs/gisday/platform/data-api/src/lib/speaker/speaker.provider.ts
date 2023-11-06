@@ -90,13 +90,19 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         }
       }
 
-      return this.speakerRepo.save({
+      const toSave = {
         ...existing,
         ...incoming,
         isOrganizer: (incoming as any).isOrganizer === 'true', // form data coerces boolean to string
         isActive: (incoming as any).isActive === 'true', // form data coerces boolean to string
         images: [speakerImage]
-      });
+      };
+
+      if (speakerImage === undefined) {
+        delete toSave.images;
+      }
+
+      return this.speakerRepo.save(toSave);
     } else {
       throw new NotFoundException();
     }
