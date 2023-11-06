@@ -1996,6 +1996,7 @@ article .row {
   .sidebar,
   .content {
     padding: 1rem 1rem;
+    box-sizing: border-box;
   }
 
   .sidebar {

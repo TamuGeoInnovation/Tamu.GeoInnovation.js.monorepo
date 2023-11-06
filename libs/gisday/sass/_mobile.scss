@@ -343,6 +343,13 @@ $background: #fafafa;
   .lookback {
     display: none;
   }
+
+  .internal {
+    .container12,
+    .container16 {
+      @include flex-direction(column);
+    }
+  }
 }
 
 @media only screen and (max-width: 719px) {
@@ -602,6 +609,7 @@ $background: #fafafa;
   .column6,
   .column7,
   .column8,
+  .column9,
   .column10,
   .column11,
   .column12 {

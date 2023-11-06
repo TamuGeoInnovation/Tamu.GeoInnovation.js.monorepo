@@ -43,3 +43,21 @@
     }
   }
 }
+
+@media only screen and (max-width: 719px) {
+  .participant-type-buttons {
+    .participant-type {
+      padding: 0.75rem 1.25rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 479px) {
+  .participant-type-buttons {
+    @include m.flex-direction(column);
+
+    .participant-type {
+      margin-bottom: 0.75rem;
+    }
+  }
+}
