@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
-import { filter, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, Subject, of } from 'rxjs';
+import { catchError, filter, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
@@ -13,7 +13,6 @@ import {
   UserService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { AuthService } from '@tamu-gisc/common/ngx/auth';
 
 @Component({
   selector: 'tamu-gisc-event-view',
@@ -26,6 +25,7 @@ export class EventViewComponent implements OnInit {
   public tags$: Observable<Array<Partial<Tag>>>;
   public organizations$: Observable<Array<Partial<Place>>>;
   public userInfo$: Observable<Partial<GisDayAppMetadata>>;
+  public isAuthed$: Observable<boolean>;
   public userProfileComplete$: Observable<boolean>;
 
   public activeTagFilters$: Observable<Array<string>>;
@@ -50,7 +50,6 @@ export class EventViewComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly rs: RsvpService,
     private readonly us: UserService,
-    private readonly as: AuthService,
     private ns: NotificationService
   ) {}
 
@@ -64,14 +63,12 @@ export class EventViewComponent implements OnInit {
     this.events$ = this.eventService.getEvents().pipe(shareReplay());
     this.tags$ = this.tagService.getEntities().pipe(shareReplay());
     this.organizations$ = this.os.getEntities().pipe(shareReplay());
-    this.userInfo$ = this.as.isAuthenticated$.pipe(
-      filter((auth) => {
-        return auth === true;
+    this.userInfo$ = this.us.getSignedOnEntity().pipe(shareReplay());
+    this.isAuthed$ = this.userInfo$.pipe(
+      map((user) => user !== undefined),
+      catchError((err) => {
+        return of(false);
       }),
-      switchMap(() => {
-        return this.us.getSignedOnEntity();
-      }),
-
       shareReplay()
     );
 
@@ -84,7 +81,7 @@ export class EventViewComponent implements OnInit {
 
     this.activeTagFilters$ = this.form.get('tags').valueChanges.pipe(shareReplay());
     this.activeOrgFilters$ = this.form.get('organizations').valueChanges.pipe(shareReplay());
-    this.rsvps$ = this.as.isAuthenticated$.pipe(
+    this.rsvps$ = this.isAuthed$.pipe(
       filter((auth) => {
         return auth === true;
       }),
@@ -106,7 +103,7 @@ export class EventViewComponent implements OnInit {
 
   // this.userProfileComplete$
   public registerEvent(eventGuid: string) {
-    this.as.isAuthenticated$
+    this.isAuthed$
       .pipe(
         tap((auth) => {
           if (auth === false) {
@@ -141,7 +138,7 @@ export class EventViewComponent implements OnInit {
   }
 
   public unregisterEvent(eventGuid: string) {
-    this.as.isAuthenticated$
+    this.isAuthed$
       .pipe(
         tap((auth) => {
           if (auth === false) {
