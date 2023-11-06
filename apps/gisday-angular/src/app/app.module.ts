@@ -111,6 +111,7 @@ const routeOptions: ExtraOptions = {
         redirect_uri: environment.auth0.redirect_uri
       },
       useRefreshTokens: true,
+      cacheLocation: 'localstorage',
       httpInterceptor: {
         allowedList: [
           {
