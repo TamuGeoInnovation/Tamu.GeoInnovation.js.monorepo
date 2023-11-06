@@ -5,7 +5,7 @@ import { Observable, map, shareReplay } from 'rxjs';
 
 import { OrganizationService, UniversityService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GisDayAppMetadata, Organization, University } from '@tamu-gisc/gisday/platform/data-api';
+import { GisDayAppMetadata, Organization, ParticipantType, University } from '@tamu-gisc/gisday/platform/data-api';
 
 const infoCompletionValidator: ValidatorFn = (control: FormGroup): { [key: string]: any } | null => {
   const type = control.get('app_metadata.gisday.attendeeType');
@@ -58,7 +58,6 @@ export class MyDetailsComponent implements OnInit {
   public otherInstitutionSelected$: Observable<boolean>;
   public otherEmployerSelected$: Observable<boolean>;
   public selectedParticipantType$: Observable<ParticipantType>;
-  public PT = ParticipantType;
 
   constructor(
     private fb: FormBuilder,
@@ -200,8 +199,8 @@ export class MyDetailsComponent implements OnInit {
   }
 }
 
-export enum ParticipantType {
-  Student = 'student',
-  Industry = 'industry',
-  Academia = 'academia'
-}
+// export enum ParticipantType {
+//   Student = 'student',
+//   Industry = 'industry',
+//   Academia = 'academia'
+// }

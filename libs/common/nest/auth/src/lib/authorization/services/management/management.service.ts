@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 
 import { AppMetadata, ManagementClient, User, UserMetadata } from 'auth0';
-import { reduce } from 'rxjs';
 
 export const MANAGEMENT_CONFIG = 'MANAGEMENT_CONFIG';
 
@@ -179,7 +178,7 @@ export class ManagementService {
         return acc;
       }, {});
 
-      if (Object.keys(reduce).length > 0) {
+      if (Object.keys(reduced).length > 0) {
         return reduced;
       } else {
         return undefined;

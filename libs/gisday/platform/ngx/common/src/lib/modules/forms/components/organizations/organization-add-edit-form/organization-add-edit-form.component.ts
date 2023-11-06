@@ -79,7 +79,7 @@ export class OrganizationAddEditFormComponent implements OnInit {
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue({
           ...entity,
-          season: entity?.season.guid
+          season: entity?.season?.guid
         });
       });
     } else {
