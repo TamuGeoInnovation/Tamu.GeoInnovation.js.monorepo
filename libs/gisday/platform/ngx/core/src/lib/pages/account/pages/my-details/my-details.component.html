@@ -1,3 +1,11 @@
+<div class="info-block success" *ngIf="signedOnEntityHasCompletedInfo$ | async">
+  <p><strong>Your TxGIS Day profile is complete!</strong> You can now register for <a routerLink="/sessions">sessions</a>.</p>
+</div>
+
+<div class="info-block warning" *ngIf="(signedOnEntityHasCompletedInfo$ | async) === false">
+  <p><strong>Your TxGIS Day profile is incomplete!</strong> You must complete your profile before being able to register for <a routerLink="/sessions">sessions</a>.</p>
+</div>
+
 <form [formGroup]="form" (ngSubmit)="updateUserInfo()">
   <div class="form-section" formGroupName="user_info">
     <div class="form-section-toolbar">
@@ -6,11 +14,11 @@
 
     <div class="form-section-body">
       <div class="form-collection column pad-top">
-        <tamu-gisc-textbox formControlName="given_name" placeholder="First Name" type="text" [floatLabel]="true" [disabled]="signedOnEntityIsSocial | async"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="given_name" placeholder="First Name" type="text" [floatLabel]="true" [disabled]="signedOnEntityIsSocial$ | async"> </tamu-gisc-textbox>
       </div>
 
       <div class="form-collection column">
-        <tamu-gisc-textbox formControlName="family_name" placeholder="Last Name" type="text" [floatLabel]="true" [disabled]="signedOnEntityIsSocial | async"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="family_name" placeholder="Last Name" type="text" [floatLabel]="true" [disabled]="signedOnEntityIsSocial$ | async"> </tamu-gisc-textbox>
       </div>
 
       <div class="form-collection column">

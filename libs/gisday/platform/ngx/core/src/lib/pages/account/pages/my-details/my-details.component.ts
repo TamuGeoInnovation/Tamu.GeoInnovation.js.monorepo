@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, Subject, map, shareReplay, startWith, switchMap } from 'rxjs';
 
 import { OrganizationService, UniversityService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -51,13 +51,15 @@ const infoCompletionValidator: ValidatorFn = (control: FormGroup): { [key: strin
 export class MyDetailsComponent implements OnInit {
   public form: FormGroup;
 
-  private _signedOnEntity: Observable<GisDayAppMetadata>;
-  public signedOnEntityIsSocial: Observable<boolean>;
+  public signedOnEntityIsSocial$: Observable<boolean>;
+  public signedOnEntityHasCompletedInfo$: Observable<boolean>;
   public universities$: Observable<Array<Partial<University>>>;
   public organizations$: Observable<Array<Partial<Organization>>>;
   public otherInstitutionSelected$: Observable<boolean>;
   public otherEmployerSelected$: Observable<boolean>;
   public selectedParticipantType$: Observable<ParticipantType>;
+  private _signedOnEntity: Observable<GisDayAppMetadata>;
+  private _refresh$: Subject<boolean> = new Subject();
 
   constructor(
     private fb: FormBuilder,
@@ -119,10 +121,19 @@ export class MyDetailsComponent implements OnInit {
       })
     );
 
-    this._signedOnEntity = this.us.getSignedOnEntity().pipe(shareReplay());
-    this.signedOnEntityIsSocial = this._signedOnEntity.pipe(
+    this._signedOnEntity = this._refresh$.pipe(
+      startWith(true),
+      switchMap(() => this.us.getSignedOnEntity()),
+      shareReplay()
+    );
+    this.signedOnEntityIsSocial$ = this._signedOnEntity.pipe(
       map((user) => {
         return user.user_info.social;
+      })
+    );
+    this.signedOnEntityHasCompletedInfo$ = this._signedOnEntity.pipe(
+      map((user) => {
+        return user?.app_metadata?.gisday?.completedProfile === true;
       })
     );
 
@@ -180,6 +191,7 @@ export class MyDetailsComponent implements OnInit {
 
     this.us.updateSignedOnEntity(form).subscribe({
       next: (result) => {
+        this._refresh$.next(true);
         this.ns.toast({
           message: 'User information updated.',
           id: 'user-info-update',
@@ -198,9 +210,3 @@ export class MyDetailsComponent implements OnInit {
     });
   }
 }
-
-// export enum ParticipantType {
-//   Student = 'student',
-//   Industry = 'industry',
-//   Academia = 'academia'
-// }

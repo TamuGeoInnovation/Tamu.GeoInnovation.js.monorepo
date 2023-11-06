@@ -2756,6 +2756,29 @@ session-time-table {
   }
 }
 
+.info-block {
+  padding: 1rem 1.5rem;
+  border: 1pt solid;
+  border-radius: 7pt;
+  margin-bottom: 1rem;
+  color: initial;
+
+  p {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  &.warning {
+    background: lighten($color: $error-color, $amount: 37%);
+    border-color: lighten($color: $error-color, $amount: 25%);
+  }
+
+  &.success {
+    background: lighten($color: $success-color, $amount: 45%);
+    border-color: lighten($color: $success-color, $amount: 25%);
+  }
+}
+
 // Certificates
 
 .certificate-container {
