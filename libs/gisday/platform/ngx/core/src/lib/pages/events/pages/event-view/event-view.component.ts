@@ -66,7 +66,7 @@ export class EventViewComponent implements OnInit {
     this.userInfo$ = this.us.getSignedOnEntity().pipe(shareReplay());
     this.isAuthed$ = this.userInfo$.pipe(
       map((user) => user !== undefined),
-      catchError((err) => {
+      catchError(() => {
         return of(false);
       }),
       shareReplay()
@@ -93,7 +93,8 @@ export class EventViewComponent implements OnInit {
             });
           })
         );
-      })
+      }),
+      shareReplay()
     );
   }
 
