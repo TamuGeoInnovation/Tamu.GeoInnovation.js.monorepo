@@ -107,11 +107,7 @@ export class EventViewComponent implements OnInit {
       .pipe(
         tap((auth) => {
           if (auth === false) {
-            this.ns.toast({
-              message: 'You must be signed in to register for events.',
-              id: 'gisday-register-fail',
-              title: 'Not Signed In'
-            });
+            this._toastNotLoggedIn();
           }
         }),
         filter((auth) => {
@@ -122,11 +118,7 @@ export class EventViewComponent implements OnInit {
           if (complete) {
             return this.rs.createRsvp(eventGuid);
           } else {
-            this.ns.toast({
-              message: 'You must complete your profile before registering for events.',
-              id: 'gisday-register-fail',
-              title: 'Profile Incomplete'
-            });
+            this._toastProfileIncomplete();
 
             return EMPTY;
           }
@@ -134,6 +126,7 @@ export class EventViewComponent implements OnInit {
       )
       .subscribe(() => {
         console.log(`Registered for event ${eventGuid}`);
+        this._toastEventRegistrationSuccess();
       });
   }
 
@@ -142,11 +135,7 @@ export class EventViewComponent implements OnInit {
       .pipe(
         tap((auth) => {
           if (auth === false) {
-            this.ns.toast({
-              message: 'You must be signed in to unregister for events.',
-              id: 'gisday-unregister-fail',
-              title: 'Not Signed In'
-            });
+            this._toastNotLoggedIn();
           }
         }),
         filter((auth) => {
@@ -157,11 +146,7 @@ export class EventViewComponent implements OnInit {
           if (complete) {
             return this.rs.deleteEntity(eventGuid);
           } else {
-            this.ns.toast({
-              message: 'You must complete your profile before unregistering for events.',
-              id: 'gisday-unregister-fail',
-              title: 'Profile Incomplete'
-            });
+            this._toastProfileIncomplete();
 
             return EMPTY;
           }
@@ -169,6 +154,39 @@ export class EventViewComponent implements OnInit {
       )
       .subscribe(() => {
         console.log(`Unregistered for event ${eventGuid}`);
+        this._toastEventUnregistrationSuccess();
       });
+  }
+
+  private _toastNotLoggedIn() {
+    this.ns.toast({
+      message: 'You must be signed in to register for events.',
+      id: 'gisday-register-fail',
+      title: 'Not Signed In'
+    });
+  }
+
+  private _toastProfileIncomplete() {
+    this.ns.toast({
+      message: 'You must complete your profile before registering for events.',
+      id: 'gisday-register-fail',
+      title: 'Profile Incomplete'
+    });
+  }
+
+  private _toastEventRegistrationSuccess() {
+    this.ns.toast({
+      message: 'You have successfully registered for this event.',
+      id: 'gisday-register-success',
+      title: 'Event Registration'
+    });
+  }
+
+  private _toastEventUnregistrationSuccess() {
+    this.ns.toast({
+      message: 'You have successfully unregistered for this event.',
+      id: 'gisday-unregister-success',
+      title: 'Event Registration'
+    });
   }
 }

@@ -39,7 +39,8 @@ export class PlaceService extends BaseProvider<Place> {
         .createQueryBuilder('place')
         .leftJoinAndSelect('place.links', 'links')
         .leftJoinAndSelect('place.logos', 'logos')
-        .orderBy('links.label', 'ASC')
+        .orderBy('place.name', 'ASC')
+        .addOrderBy('links.label', 'ASC')
         .getMany();
     } catch (err) {
       Logger.error(`Error retrieving places, ${err.message}`, 'PlaceService');
