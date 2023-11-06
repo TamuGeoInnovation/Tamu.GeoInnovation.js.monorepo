@@ -28,7 +28,10 @@ export class OrganizationController {
   @Get()
   public findAll() {
     return this.orgService.find({
-      relations: ['season', 'logos']
+      relations: ['season', 'logos'],
+      order: {
+        name: 'ASC'
+      }
     });
   }
 

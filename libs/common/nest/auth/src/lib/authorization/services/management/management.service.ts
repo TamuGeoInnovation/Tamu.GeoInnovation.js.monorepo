@@ -201,8 +201,16 @@ export class ManagementService {
         connection: user.user_id.split('|')[0],
         social: this._isSocialUser(user.user_id)
       },
-      user_metadata: filters ? this._filterMetadata(user.user_metadata, filters.user_metadata) : user.user_metadata || {},
-      app_metadata: (filters ? this._filterMetadata(user.app_metadata, filters.app_metadata) : user.app_metadata) || {}
+      user_metadata: user.user_metadata
+        ? filters
+          ? this._filterMetadata(user.user_metadata, filters.user_metadata)
+          : user.user_metadata
+        : {},
+      app_metadata: user.app_metadata
+        ? filters
+          ? this._filterMetadata(user.app_metadata, filters.app_metadata)
+          : user.app_metadata
+        : {}
     };
   }
 }

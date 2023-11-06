@@ -19,19 +19,45 @@
     </div>
   </div>
 
+  <ng-container formGroupName="app_metadata">
+    <div class="form-section leader-1">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Participant Type</div>
+      </div>
+
+      <div class="form-section-body">
+        <p class="trailer-1">Please indicate the type that best describes your participation in TxGIS Day and fill out the resulting form. We rely on the information provided to gain insights on the event's audience and to help us tailor future TxGIS Day events.</p>
+
+        <div class="participant-type-buttons">
+          <div class="participant-type" (click)="setAttendeeType(PT.Student)" [ngClass]="{selected: (selectedParticipantType$ | async) === PT.Student}">Student <span class="material-icons">check_circle</span></div>
+          <div class="participant-type" (click)="setAttendeeType(PT.Industry)" [ngClass]="{selected: (selectedParticipantType$ | async) === PT.Industry}">Industry <span class="material-icons">check_circle</span></div>
+          <div class="participant-type" (click)="setAttendeeType(PT.Academia)" [ngClass]="{selected: (selectedParticipantType$ | async) === PT.Academia}">Staff/Faculty <span class="material-icons">check_circle</span></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
   <ng-container formGroupName="user_metadata">
-    <div class="form-section leader-1" formGroupName="education">
+    <div class="form-section leader-1" formGroupName="education" *ngIf="(selectedParticipantType$ | async) === PT.Student">
       <div class="form-section-toolbar">
         <div class="form-section-title">Student Information</div>
       </div>
 
       <div class="form-section-body">
         <div class="form-collection column pad-top">
-          <tamu-gisc-textbox formControlName="id" placeholder="UIN" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="id" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         </div>
 
         <div class="form-collection column">
-          <tamu-gisc-select [data]="universities$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
+          <p>Select the educational institution which you attend.</p>
+
+          <tamu-gisc-select formControlName="institution" [data]="universities$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
+        </div>
+
+        <div class="form-collection column" *ngIf="otherInstitutionSelected$ | async">
+          <p class="trailer-1">You've indicated <strong>other</strong> as the institution which you attend. Please provide the name.</p>
+
+          <tamu-gisc-textbox formControlName="otherInstitution" placeholder="Institution Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         </div>
 
         <div class="form-collection column">
@@ -43,12 +69,68 @@
         </div>
       </div>
     </div>
+
+    <div class="form-section leader-1" formGroupName="occupation" *ngIf="(selectedParticipantType$ | async) === PT.Industry">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Employment Information</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p>Select your employer from the following list</p>
+
+          <tamu-gisc-select formControlName="employer" [data]="organizations$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Employer"> </tamu-gisc-select>
+        </div>
+
+        <div class="form-collection column" *ngIf="otherEmployerSelected$ | async">
+          <p class="trailer-1">You've indicated <strong>other</strong> as your employer. Please provide the name.</p>
+
+          <tamu-gisc-textbox formControlName="otherEmployer" placeholder="Employer Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="department" placeholder="Department" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="position" placeholder="Position" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section leader-1" formGroupName="occupation" *ngIf="(selectedParticipantType$ | async) === PT.Academia">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Position Information</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p>Select your institution from the following list</p>
+
+          <tamu-gisc-select formControlName="employer" [data]="universities$| async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
+        </div>
+
+        <div class="form-collection column" *ngIf="otherEmployerSelected$ | async">
+          <p class="trailer-1">You've indicated <strong>other</strong> as your institution. Please provide the name.</p>
+
+          <tamu-gisc-textbox formControlName="otherEmployer" placeholder="Institution Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="department" placeholder="College/Department" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="position" placeholder="Position" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
   </ng-container>
 
   <div class="form-section leader-1">
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-button type="submit" value="Update"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" value="Update" [disabled]="form.invalid"></tamu-gisc-button>
       </div>
     </div>
   </div>

@@ -1,0 +1,45 @@
+@use 'libs/sass/mixins' as m;
+@use 'libs/gisday/sass/variables' as v;
+
+.participant-type-buttons {
+  @include m.flexbox();
+  @include m.flex-direction(row);
+  @include m.justify-content(space-around);
+  @include m.flex-wrap(wrap);
+
+  .participant-type {
+    padding: 1rem 1.75rem;
+    cursor: pointer;
+    border: 2pt solid v.$gisday-lightened-support-blue;
+    border-radius: 7pt;
+    font-weight: 400;
+    position: relative;
+    @include m.transition(border-color 0.3s);
+
+    span.material-icons {
+      position: absolute;
+      top: -0.5rem;
+      right: -0.5rem;
+      font-size: 1.4rem;
+      color: v.$success-color;
+      background-color: #fafafa;
+      border-radius: 5pt;
+      display: none;
+    }
+
+    &.selected {
+      color: initial;
+      border-width: 2pt;
+      border-color: v.$gisday-blue-support-lightened;
+      font-weight: 600;
+
+      span.material-icons {
+        display: block;
+      }
+    }
+
+    &:hover {
+      border-color: #bdbdbd;
+    }
+  }
+}
