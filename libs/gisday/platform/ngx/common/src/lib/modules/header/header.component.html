@@ -76,7 +76,11 @@
 
           <ul>
             <li *ngFor="let place of places">
-              <p class="with-description">{{place.name}}</p>
+              <a *ngIf="place.website; else noWebsite" class="with-description" [href]="place.website" target="_blank">{{place.name}}</a>
+
+              <ng-template #noWebsite>
+                <p *ngIf="!place.website" class="with-description">{{place.name}}</p>
+              </ng-template>
               <span class="menu-item-description">{{place.city}}, {{place.state}}</span>
 
               <ul class="dropdown-sub-menu" *ngIf="place?.links?.length > 0">

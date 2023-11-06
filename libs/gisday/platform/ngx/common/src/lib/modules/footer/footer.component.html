@@ -34,12 +34,9 @@
       <div class="column3">
         <p class="footer-column-title">TxGIS Day Partners</p>
         <ul>
-          <li><a href="http://atxgisday.org/">ATX GIS Day</a></li>
-          <li><a href="http://www.houstonareagisday.org/">Houston Area GIS Day</a></li>
-          <li><a href="http://www.swiggis.org/">SWIGGIS</a></li>
-          <li><a href="https://geography.tamu.edu/">Texas A&M University</a></li>
-          <li><a href="http://catalog.unt.edu/preview_entity.php?catoid=19&ent_oid=1600&returnto=2225">University of North Texas</a></li>
-          <li><a href="https://liberalarts.utexas.edu/geography/undergraduate/Study-Tracks/GIScience.php">University of Texas Austin</a></li>
+          <li *ngFor="let org of organizations$ | async">
+            <a [href]="org.website" target="_blank">{{org.name}}</a>
+          </li>
         </ul>
       </div>
     </div>
