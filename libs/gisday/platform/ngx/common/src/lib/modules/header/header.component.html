@@ -32,24 +32,24 @@
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
 
-  <!-- <tamu-gisc-tile *ngIf="(loggedIn$ | async) === false; else loggedInMobile">
+  <tamu-gisc-tile *ngIf="(loggedIn$ | async) === false; else loggedInMobile">
     <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title (click)="login()">Login</tamu-gisc-tile-title>
-  </tamu-gisc-tile> -->
-
-  <!-- <ng-template #loggedInMobile> -->
-  <tamu-gisc-tile *ngIf="(loggedIn$ | async) === true">
-    <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
-    <tamu-gisc-tile-submenu *giscTileSubmenu>
-      <p tamuGiscTileLink location="/account/my-details">My Details</p>
-      <p tamuGiscTileLink location="/account/my-classes">My Classes</p>
-      <p tamuGiscTileLink location="/account/my-checkins">My Checkins</p>
-      <p tamuGiscTileLink location="/account/my-submissions">My Submissions</p>
-      <p (click)="logout()">Logout</p>
-    </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
-  <!-- </ng-template> -->
+
+  <ng-template #loggedInMobile>
+    <tamu-gisc-tile *ngIf="(loggedIn$ | async) === true">
+      <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
+      <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
+      <tamu-gisc-tile-submenu *giscTileSubmenu>
+        <p tamuGiscTileLink location="/account/my-details">My Details</p>
+        <!-- <p tamuGiscTileLink location="/account/my-classes">My Classes</p> -->
+        <!-- <p tamuGiscTileLink location="/account/my-checkins">My Checkins</p> -->
+        <!-- <p tamuGiscTileLink location="/account/my-submissions">My Submissions</p> -->
+        <p (click)="logout()">Logout</p>
+      </tamu-gisc-tile-submenu>
+    </tamu-gisc-tile>
+  </ng-template>
 </tamu-gisc-tile-navigation>
 
 <header>
@@ -102,19 +102,19 @@
           <a [routerLink]="['/account/my-details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
 
           <ul>
-            <li><a [routerLink]="['/account/my-details']">My Details</a></li>
-            <li><a [routerLink]="['/account/my-classes']">My Classes</a></li>
+            <li><a [routerLink]="['/account/my-details']">Profile</a></li>
+            <!-- <li><a [routerLink]="['/account/my-classes']">My Classes</a></li> -->
             <li *ngIf="(userRoles$ | async) | hasRoles :  [appRoles.ADMIN, appRoles.MANAGER, appRoles.ORGANIZER]"><a [routerLink]="['/admin']">Admin</a></li>
-            <li><a [routerLink]="['/account/my-checkins']">My Checkins</a></li>
-            <li><a [routerLink]="['/account/my-submissions']">My Submissions</a></li>
+            <!-- <li><a [routerLink]="['/account/my-checkins']">My Checkins</a></li> -->
+            <!-- <li><a [routerLink]="['/account/my-submissions']">My Submissions</a></li> -->
             <li><a (click)="logout()">Logout</a></li>
           </ul>
         </ul>
 
         <ng-template #logInPrompt>
-          <!-- <ul id="liLogin">
+          <ul id="liLogin">
             <a (click)="login()" id="linkLogin">Login/Signup</a>
-          </ul> -->
+          </ul>
         </ng-template>
       </div>
 
