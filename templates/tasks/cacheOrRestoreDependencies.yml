@@ -1,12 +1,12 @@
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '16.15.0'
+      versionSpec: '16.17.0'
     displayName: 'Install Node.js 16.x'
 
   - task: Cache@2
     inputs:
-      key: 'npm | "$(Agent.OS)" | $(System.DefaultWorkingDirectory)/package-lock.json'
+      key: 'npm | "16.17" | "$(Agent.OS)" | $(System.DefaultWorkingDirectory)/package-lock.json'
       path: '$(System.DefaultWorkingDirectory)/node_modules'
       cacheHitVar: 'CacheHit'
 
