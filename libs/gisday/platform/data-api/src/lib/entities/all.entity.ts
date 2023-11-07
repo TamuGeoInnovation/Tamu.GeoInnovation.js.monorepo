@@ -7,7 +7,6 @@ import {
   BeforeUpdate,
   BeforeInsert,
   Column,
-  OneToOne,
   JoinColumn,
   ManyToOne,
   ManyToMany,
@@ -664,17 +663,20 @@ export class Class extends GuidIdentity {
   @Column({ nullable: true })
   public professorName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public title: string;
 
   @Column({ nullable: true })
-  public dept: string;
-
-  @Column({ nullable: false })
   public code: string;
+
+  @Column({ nullable: true })
+  public number: string;
 
   @ManyToOne(() => Season, (season) => season.classes, { cascade: false, nullable: true })
   public season: Season;
+
+  @OneToMany(() => UserClass, (userClass) => userClass.class, { cascade: false })
+  public students: UserClass[];
 }
 
 @Entity({

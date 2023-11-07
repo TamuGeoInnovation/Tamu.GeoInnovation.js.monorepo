@@ -23,7 +23,7 @@
 
         <tbody>
           <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
-            <td>{{entity?.code}}</td>
+            <td>{{entity?.code}} {{entity?.number}}</td>
             <td>{{entity?.title}}</td>
             <td>{{entity?.professorName}}</td>
           </tr>

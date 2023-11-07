@@ -12,17 +12,20 @@ export class ClassProvider extends BaseProvider<Class> {
     super(classRepo);
   }
 
-  public createClass(dto: Class) {
-    const existing = this.classRepo.findOne({
+  public async createClass(dto: Class) {
+    const existing = await this.classRepo.findOne({
       where: {
         code: dto.code,
+        number: dto.number,
         professorName: dto.professorName
       }
     });
 
     if (!existing) {
       delete dto.guid;
-      return this.classRepo.create(dto);
+      const created = this.classRepo.create(dto);
+
+      return created.save();
     } else {
       return existing;
     }

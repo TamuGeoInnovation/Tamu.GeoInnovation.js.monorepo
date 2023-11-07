@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
-import { Class, Season } from '@tamu-gisc/gisday/platform/data-api';
-import { ClassService, SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { Class, Season, UserClass } from '@tamu-gisc/gisday/platform/data-api';
+import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
@@ -18,7 +18,7 @@ export class ClassAddEditFormComponent implements OnInit {
 
   public entity$: Observable<Partial<Class>>;
   public activeSeasons$: Observable<Partial<Season>>;
-  public speaker;
+  public students$: Observable<Array<Partial<UserClass>>>;
   public form: FormGroup;
 
   constructor(
@@ -27,14 +27,14 @@ export class ClassAddEditFormComponent implements OnInit {
     private readonly rt: Router,
     private readonly cs: ClassService,
     private readonly ss: SeasonService,
-    private readonly ns: NotificationService,
-    private readonly sp: SpeakerService
+    private readonly ns: NotificationService
   ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
       guid: [null],
       title: [null],
+      number: [null],
       code: [null],
       professorName: [null],
       season: [null]
@@ -76,8 +76,8 @@ export class ClassAddEditFormComponent implements OnInit {
       next: () => {
         this.ns.toast({
           id: 'class-delete-success',
-          title: 'Delete organization',
-          message: `Organization was successfully deleted.`
+          title: 'Delete class',
+          message: `Class was successfully deleted.`
         });
 
         this._navigateBack();

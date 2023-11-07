@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
@@ -7,61 +6,50 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   Request,
-  UnauthorizedException
+  UseGuards
 } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
 
-import { Class } from '../entities/all.entity';
 import { UserClassProvider } from './user-class.provider';
+import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 @Controller('user-classes')
 export class UserClassController {
   constructor(private readonly provider: UserClassProvider) {}
 
+  @UseGuards(JwtGuard)
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
-    return this.provider.findOne({
-      where: {
-        guid: guid
-      }
-    });
-  }
-
-  @Get()
-  public async getClassesAndUserClasses(@Request() req) {
-    if (req.user) {
-      const accountGuid = req.user.sub;
-
-      return this.provider.getClassesAndUserClasses(accountGuid);
-    } else {
-      throw new UnauthorizedException();
-    }
-  }
-
-  @Post()
-  public async insertUserClass(@Request() req) {
-    if (req.user) {
-      const chosenClass: DeepPartial<Class> = req.body.class;
-      const accountGuid = req.user.sub;
-
-      return this.provider.insertUserClass(chosenClass, accountGuid);
-    } else {
-      throw new UnauthorizedException();
-    }
-  }
-
-  @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<Class>) {
     throw new NotImplementedException();
   }
 
+  @UseGuards(JwtGuard)
+  @Get()
+  public async getUserClasses(@Request() req) {
+    const accountGuid = req.user.sub;
+
+    return this.provider.getUserClasses(accountGuid);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post()
+  public async insertUserClass(@Request() req) {
+    const chosenClass: string = req.body.guid;
+    const accountGuid = req.user.sub;
+
+    return this.provider.insertUserClass(chosenClass, accountGuid);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string) {
+    throw new NotImplementedException();
+  }
+
+  @UseGuards(JwtGuard)
   @Delete(':guid')
-  public deleteEntity(@Param('guid') guid: string) {
-    this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+  public deleteEntity(@Req() req, @Param('guid') guid: string) {
+    return this.provider.deleteUserClassRegistration(guid, req.user.sub);
   }
 }

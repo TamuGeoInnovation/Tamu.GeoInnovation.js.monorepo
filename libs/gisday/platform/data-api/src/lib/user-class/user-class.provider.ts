@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { DeepPartial, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Class, UserClass } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -15,10 +21,23 @@ export class UserClassProvider extends BaseProvider<UserClass> {
     super(userClassRepo);
   }
 
-  public async insertUserClass(chosenClass: DeepPartial<Class>, accountGuid: string) {
+  public async insertUserClass(classGuid: string, accountGuid: string) {
+    const existingRegistration = await this.userClassRepo.findOne({
+      where: {
+        accountGuid: accountGuid,
+        class: {
+          guid: classGuid
+        }
+      }
+    });
+
+    if (existingRegistration) {
+      throw new BadRequestException('User is already registered for this class');
+    }
+
     const existing = await this.classRepo.findOne({
       where: {
-        guid: chosenClass.guid
+        guid: classGuid
       }
     });
 
@@ -27,29 +46,23 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       accountGuid: accountGuid
     });
 
-    return this.userClassRepo.save(created);
+    try {
+      return this.userClassRepo.save(created);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not save user class registration');
+    }
   }
 
-  public async getClassesAndUserClasses(accountGuid: string) {
-    const classes = await this.classRepo.find();
-    const userClasses = await this.userClassRepo.find({
+  public getUserClasses(guid: string) {
+    return this.userClassRepo.find({
       where: {
-        accountGuid: accountGuid
-      },
-      relations: ['class']
+        accountGuid: guid
+      }
     });
-
-    classes.map((aClass) => {
-      const intersection = userClasses.find((aUserClass) => {
-        return aUserClass.guid === aClass.guid;
-      });
-    });
-
-    return classes;
   }
 
-  public async deleteUserClassWithClassGuid(classGuid: string) {
-    const foundClass = await this.userClassRepo.find({
+  public async deleteUserClassRegistration(classGuid: string, accountGuid: string) {
+    const foundClass = await this.userClassRepo.findOne({
       where: {
         class: {
           guid: classGuid
@@ -57,10 +70,18 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       }
     });
 
-    if (foundClass) {
-      return this.userClassRepo.remove(foundClass);
-    } else {
-      throw new Error('Could not find class with provided guid');
+    if (!foundClass) {
+      throw new NotFoundException('User class not found');
+    }
+
+    if (foundClass && foundClass.accountGuid !== accountGuid) {
+      throw new ForbiddenException();
+    }
+
+    try {
+      return this.userClassRepo.delete(foundClass.guid);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not delete user class registration');
     }
   }
 }
