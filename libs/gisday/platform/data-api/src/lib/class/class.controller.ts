@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
+
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { ClassProvider } from './class.provider';
 import { Class } from '../entities/all.entity';
@@ -22,16 +24,22 @@ export class ClassController {
     return this.provider.find();
   }
 
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['create:classes'])
   @Post()
-  public async insertClass(@Body() body: DeepPartial<Class>) {
-    return this.provider.save(body);
+  public async insertClass(@Body() body: Class) {
+    return this.provider.createClass(body);
   }
 
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['update:classes'])
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid, @Body() body: DeepPartial<Class>) {
-    throw new NotImplementedException();
+    return this.provider.update(guid, body);
   }
 
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['delete:classes'])
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
     this.provider.deleteEntity({

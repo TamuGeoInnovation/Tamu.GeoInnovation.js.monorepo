@@ -43,10 +43,6 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       const intersection = userClasses.find((aUserClass) => {
         return aUserClass.guid === aClass.guid;
       });
-
-      if (intersection) {
-        aClass.userInClass = true;
-      }
     });
 
     return classes;

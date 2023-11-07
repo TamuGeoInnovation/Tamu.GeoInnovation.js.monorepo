@@ -661,11 +661,8 @@ export class CheckIn extends GuidIdentity {
   name: 'classes'
 })
 export class Class extends GuidIdentity {
-  @ManyToOne(() => Season, (season) => season.classes, { cascade: false, nullable: true })
-  public season: Season;
-
   @Column({ nullable: true })
-  public professorAccountGuid: string;
+  public professorName: string;
 
   @Column({ nullable: false })
   public title: string;
@@ -676,7 +673,8 @@ export class Class extends GuidIdentity {
   @Column({ nullable: false })
   public code: string;
 
-  public userInClass = false;
+  @ManyToOne(() => Season, (season) => season.classes, { cascade: false, nullable: true })
+  public season: Season;
 }
 
 @Entity({
@@ -733,12 +731,12 @@ export class UserInfo extends GuidIdentity {
   name: 'user_classes'
 })
 export class UserClass extends GuidIdentity {
-  @OneToOne(() => Class, { cascade: true, eager: true })
-  @JoinColumn()
-  public class: Class;
-
   @Column({ nullable: false })
   public accountGuid: string;
+
+  @ManyToOne(() => Class, { cascade: true, eager: true })
+  @JoinColumn()
+  public class: Class;
 }
 
 @Entity({

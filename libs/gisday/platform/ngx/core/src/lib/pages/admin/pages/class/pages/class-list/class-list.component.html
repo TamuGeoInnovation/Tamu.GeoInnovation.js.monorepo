@@ -1,0 +1,39 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Classes</div>
+      <div class="form-section-actions">
+        <a routerLink="add">Add class <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div>
+        <p class="trailer-1">Participating professors can request their classes added, where students can register and and receive credit for attending events.</p>
+      </div>
+
+      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noTags">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Professor</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
+            <td>{{entity?.code}}</td>
+            <td>{{entity?.title}}</td>
+            <td>{{entity?.professorName}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #noTags>
+        <p>There are no classes yet.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
