@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { EntityRelationsLUT, Event } from '../entities/all.entity';
 import { EventProvider } from './event.provider';
@@ -30,14 +30,11 @@ export class EventController {
     return this.provider.getEntitiesByDay();
   }
 
+  @UseGuards(JwtGuard)
+  @AllowAny()
   @Get(':guid')
-  public async getDetails(@Param('guid') guid) {
-    return this.provider.eventRepo.findOne({
-      where: {
-        guid
-      },
-      relations: EntityRelationsLUT.getRelation('event')
-    });
+  public async getDetails(@Req() req, @Param('guid') guid) {
+    return this.provider.getEventDetails(guid, req.user?.sub !== undefined);
   }
 
   @Get()

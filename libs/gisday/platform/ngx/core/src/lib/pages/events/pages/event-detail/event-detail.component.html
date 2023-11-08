@@ -47,11 +47,24 @@
           <tamu-gisc-accordion *ngIf="event.mode === 'hybrid' || event.mode === 'virtual'">
             <tamu-gisc-accordion-header><b>Online Broadcast Info</b></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
-              <p>Some resources will only be available at the start of the session.</p>
+              <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInBroadcast">
+                <ng-container *ngIf="event.broadcast as br; else noBroadcastAvailable">
+                  <p><strong>Link: </strong> <a [href]="br.publicUrl" target="_blank" rel="noopener noreferrer">{{br.publicUrl}}</a></p>
+                  <p><strong>Password:</strong> {{br.password ? br.password : 'None'}}</p>
+                  <p><strong>Dial-in number:</strong> {{br.phoneNumber ? br.password : 'None'}}</p>
+                  <p *ngIf="br.meetingId"><strong>Meeting ID:</strong> {{br.meetingId}}</p>
 
-              <ul>
-                <li>The online Zoom broadcast for this session has not been setup yet.</li>
-              </ul>
+                  <div *ngIf="br.details" [innerHTML]="br.details | markdownParse"></div>
+                </ng-container>
+
+                <ng-template #noBroadcastAvailable>
+                  <p>There is no online broadcast for this session at this time. Please check back later.</p>
+                </ng-template>
+              </ng-container>
+
+              <ng-template #notLoggedInBroadcast>
+                <p>You must be logged in to see broadcast information.</p>
+              </ng-template>
             </tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
 

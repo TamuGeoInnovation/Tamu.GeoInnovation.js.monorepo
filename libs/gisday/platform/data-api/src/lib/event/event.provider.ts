@@ -149,4 +149,26 @@ export class EventProvider extends BaseProvider<Event> {
       return 0;
     }
   }
+
+  /**
+   * Returns event details, including any sensitive information if the user is logged in.
+   */
+  public async getEventDetails(eventGuid: string, isLoggedIn?: boolean) {
+    const event = await this.eventRepo.findOne({
+      where: {
+        guid: eventGuid
+      },
+      relations: EntityRelationsLUT.getRelation('event')
+    });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    if (!isLoggedIn) {
+      event.broadcast = null;
+    }
+
+    return event;
+  }
 }
