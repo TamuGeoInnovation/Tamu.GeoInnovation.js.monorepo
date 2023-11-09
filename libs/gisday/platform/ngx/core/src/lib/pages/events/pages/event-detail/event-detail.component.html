@@ -117,17 +117,29 @@
           <div class="trailer-2 session-description" *ngIf="event?.abstract && event.abstract.length > 0" [innerHTML]="event.abstract | markdownParse"></div>
         </div>
 
-        <div class="trailer-1 flex flex-row half-children">
+        <div class="trailer-1 flex flex-row half-children wrap">
           <div>
-            <h3>Registration</h3>
-            <p *ngIf="event.requiresRsvp === true || event.requiresRsvp === null">This is a limited-seating event. Register to reserve your seat.</p>
-            <p *ngIf="event.isAcceptingRsvps === undefined || event.isAcceptingRsvps === false">Registration for this event is not open yet.</p>
+            <h3 class="trailer-1">Registration</h3>
 
-            <!-- <tamu-gisc-button *ngIf="event.isAcceptingRsvps === undefined || event.isAcceptingRsvps === false" [look]="'secondary'" [disabled]="true" value="REGISTRATION NOT YET AVAILABLE"></tamu-gisc-button> -->
+            <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInRegistration">
+              <ng-container *ngIf="userRsvp$ | async; else notRsvpd">
+                <p class="trailer-1">You are registered for this event.</p>
+                <tamu-gisc-button [look]="'secondary'" value="WITHDRAW REGISTRATION" fit="snug" (go)="unregister()"></tamu-gisc-button>
+              </ng-container>
+
+              <ng-template #notRsvpd>
+                <p class="trailer-1">This is a limited-seating event. Register to reserve your seat.</p>
+                <tamu-gisc-button [look]="'secondary'" value="REGISTER FOR EVENT" fit="snug" (go)="register()"></tamu-gisc-button>
+              </ng-template>
+            </ng-container>
+
+            <ng-template #notLoggedInRegistration>
+              <p>You must be logged in to register for this event.</p>
+            </ng-template>
           </div>
 
           <div>
-            <h3>Checkin</h3>
+            <h3 class="trailer-1">Checkin</h3>
             <div *ngIf="isCheckinOpen === false; else showCheckinButton">
               <p>Checkin will be available at the start of the session.</p>
             </div>

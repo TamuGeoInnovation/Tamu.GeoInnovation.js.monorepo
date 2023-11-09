@@ -23,5 +23,9 @@ export class RsvpService extends BaseService<UserRsvp> {
   public getRsvpsForSignedInUser() {
     return this.http1.get<Array<UserRsvp>>(`${this.resource}/user/`);
   }
+
+  public getUserRsvpForEvent(eventGuid: string) {
+    return this.http1.get<UserRsvp>(`${this.resource}/user/event/${eventGuid}`);
+  }
 }
 

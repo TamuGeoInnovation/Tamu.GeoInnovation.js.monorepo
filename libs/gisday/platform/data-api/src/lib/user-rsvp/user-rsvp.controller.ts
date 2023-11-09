@@ -11,6 +11,12 @@ export class UserRsvpController {
   constructor(private readonly provider: UserRsvpProvider) {}
 
   @UseGuards(JwtGuard)
+  @Get('/user/event/:guid')
+  public async getUserRsvpForEvent(@Req() req, @Param('guid') guid) {
+    return this.provider.getUserRsvpForEvent(req.user.sub, guid);
+  }
+
+  @UseGuards(JwtGuard)
   @Get('/user/')
   public async getUserRsvps(@Req() req) {
     return this.provider.getUserRsvps(req.user.sub);
