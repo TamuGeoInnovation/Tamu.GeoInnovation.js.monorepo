@@ -167,6 +167,8 @@ export class EventProvider extends BaseProvider<Event> {
 
     if (!isLoggedIn) {
       event.broadcast = null;
+      event.resources = null;
+      event.requirements = null;
     }
 
     return event;

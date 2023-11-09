@@ -45,7 +45,7 @@
 
         <div class="trailer-2">
           <tamu-gisc-accordion *ngIf="event.mode === 'hybrid' || event.mode === 'virtual'">
-            <tamu-gisc-accordion-header><b>Online Broadcast Info</b></tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-header><b>Online Broadcast</b></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
               <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInBroadcast">
                 <ng-container *ngIf="event.broadcast as br; else noBroadcastAvailable">
@@ -70,27 +70,42 @@
 
           <tamu-gisc-accordion>
             <tamu-gisc-accordion-header
-              ><b>Learning Resources <span *ngIf="!event?.resources">(None)</span></b></tamu-gisc-accordion-header
-            >
+              ><b>Learning Resources <span *ngIf="!event?.resources"></span></b
+            ></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
-              <p>Some resources will only be available at the start of the session</p>
+              <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInResources">
+                <ng-container *ngIf="event.resources as rs; else noLearningResourcesAvailable">
+                  <div *ngIf="rs" [innerHTML]="rs | markdownParse"></div>
+                </ng-container>
 
-              <ul>
-                <li>There are no materials for this session.</li>
-                <li>There is no online broadcast for this session.</li>
-              </ul>
+                <ng-template #noLearningResourcesAvailable>
+                  <p>There are no materials for this session.</p>
+                </ng-template>
+              </ng-container>
+
+              <ng-template #notLoggedInResources>
+                <p>You must be logged in to see learning resources.</p>
+              </ng-template>
             </tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
 
           <tamu-gisc-accordion>
             <tamu-gisc-accordion-header
-              ><b>Session Requirements <span *ngIf="!event?.requirements">(None)</span></b></tamu-gisc-accordion-header
-            >
+              ><b>Session Requirements <span *ngIf="!event?.requirements"></span></b
+            ></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
-              <ng-container *ngIf="event?.requirements && event.requirements.length > 0; else noRequirements"> {{event.requirements}} </ng-container>
+              <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInRequirements">
+                <ng-container *ngIf="event.requirements as rq; else noLearningResourcesAvailable">
+                  <div *ngIf="rq" [innerHTML]="rq | markdownParse"></div>
+                </ng-container>
 
-              <ng-template #noRequirements>
-                <p>session has no special requirements.</p>
+                <ng-template #noLearningResourcesAvailable>
+                  <p>There are special requirements for this session.</p>
+                </ng-template>
+              </ng-container>
+
+              <ng-template #notLoggedInRequirements>
+                <p>You must be logged in to see learning resources.</p>
               </ng-template>
             </tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
