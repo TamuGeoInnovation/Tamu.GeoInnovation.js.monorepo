@@ -13,12 +13,12 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
   public getEntities() {
     try {
-      return this.esRepo.find({
-        order: {
-          guid: 'ASC'
-        },
-        relations: ['place']
-      });
+      return this.esRepo
+        .createQueryBuilder('event-location')
+        .leftJoinAndSelect('event-location.place', 'organization')
+        .orderBy('event-location.building', 'ASC')
+        .addOrderBy('organization.name', 'ASC')
+        .getMany();
     } catch (err) {
       throw new InternalServerErrorException(err);
     }
