@@ -51,16 +51,16 @@ export class FormService {
     );
   }
 
-  public saveFormModelForSeason(seasonGuid: string, form: CompetitionForm) {
-    return this.http.post(`${this.resource}/${seasonGuid}`, form).pipe(
+  public updateFormModelForActiveSeason(formGuid: string, form: CompetitionForm) {
+    return this.http.patch(`${this.resource}/${formGuid}`, form).pipe(
       catchError((err) => {
         this.ns.toast({
           id: 'submission-form-save-failure',
-          title: 'Failed to Save Season Form',
-          message: `There was an error saving the competitions submission form for this season.  ${err.error.message}`
+          title: 'Failed to Update Season Form',
+          message: `There was an error updating the competitions submission form for season.  ${err.error.message}`
         });
 
-        throw new Error('Failed saving season form');
+        throw new Error('Failed updating season form');
       })
     );
   }

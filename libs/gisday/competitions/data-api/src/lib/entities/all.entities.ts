@@ -81,9 +81,9 @@ export class CompetitionForm extends GISDayCompetitionBaseEntity implements ICom
 })
 export class CompetitionSeason extends GISDayCompetitionBaseEntity implements ICompetitionSeason {
   @Column({ default: false })
-  public active: boolean;
+  public allowSubmissions: boolean;
 
-  @OneToOne(() => Season, { cascade: true, nullable: true, orphanedRowAction: 'nullify' })
+  @OneToOne(() => Season, { cascade: true, nullable: true, orphanedRowAction: 'nullify', onDelete: 'SET NULL' })
   @JoinColumn()
   public season: Season;
 

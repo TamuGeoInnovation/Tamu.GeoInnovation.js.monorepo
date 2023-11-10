@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
@@ -24,6 +24,16 @@ export class FormController {
     } else {
       throw new NotFoundException();
     }
+  }
+
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Patch(':guid')
+  public async updateSeasonForm(@Body() body, @Param() { guid }: { guid: string }) {
+    return this.service.updateFormForSeason(guid, {
+      source: body.source,
+      model: body.model
+    });
   }
 
   @Permissions(['create:competitions'])

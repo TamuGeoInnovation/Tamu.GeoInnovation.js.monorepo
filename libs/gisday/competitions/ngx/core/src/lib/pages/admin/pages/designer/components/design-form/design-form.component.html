@@ -1,9 +1,9 @@
 <form (submit)="getSchema()" [formGroup]="loadSchemaForm">
   <p class="trailer-1">Enter a URL source that points to a live ESRI REST service layer endpoint to retrieve the configuration and auto-generate a form from its attributes.</p>
   <div class="row">
-    <tamu-gisc-textbox class="fb-2 form-element" type="text" placeholder="Service Layer URL" floatLabel="true" formControlName="source"></tamu-gisc-textbox>
+    <tamu-gisc-textbox class="fb-2 form-element" type="text" placeholder="Service Layer URL" [floatLabel]="true" formControlName="source"></tamu-gisc-textbox>
 
-    <tamu-gisc-button class="fb-1 form-element leader-2" value="Get Schema" type="submit"></tamu-gisc-button>
+    <tamu-gisc-button class="fb-1 form-element leader-2" value="Fetch Schema" type="submit"></tamu-gisc-button>
   </div>
 </form>
 
@@ -11,7 +11,7 @@
   <h2>Questions</h2>
 
   <form [formGroup]="formModel" (submit)="saveForm()">
-    <tamu-gisc-design-question *ngFor="let c of formModel.controls" [control]="c"></tamu-gisc-design-question>
+    <tamu-gisc-design-question *ngFor="let c of formModel.controls['fields']['controls']" [control]="c"></tamu-gisc-design-question>
 
     <tamu-gisc-button type="submit" [value]="'Save'"></tamu-gisc-button>
   </form>

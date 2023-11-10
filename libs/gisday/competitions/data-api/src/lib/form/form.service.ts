@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -71,6 +71,26 @@ export class FormService extends BaseService<CompetitionForm> {
       }
     } else {
       throw new InternalServerErrorException('Competition season already exists.');
+    }
+  }
+
+  public async updateFormForSeason(seasonGuid: string, form: Partial<CompetitionForm>) {
+    const existingForm = await this.formRepo.findOne({
+      where: {
+        guid: seasonGuid
+      }
+    });
+
+    if (!existingForm) {
+      throw new BadRequestException('No form found for provided guid.');
+    }
+
+    try {
+      const updatedForm = this.formRepo.merge(existingForm, form);
+
+      return this.formRepo.save(updatedForm);
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to update competition season form.');
     }
   }
 

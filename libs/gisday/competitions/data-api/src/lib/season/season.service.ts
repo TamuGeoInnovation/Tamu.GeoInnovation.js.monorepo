@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 
@@ -56,70 +56,5 @@ export class SeasonService extends BaseService<CompetitionSeason> {
       total,
       breakdown: dictionary
     };
-  }
-
-  public async setActiveSeason(seasonGuid: string): Promise<CompetitionSeason> {
-    const currentActiveSeason = await this.seasonRepo.findOne({
-      where: {
-        active: true
-      }
-    });
-
-    // If there is a currently active season, disable it first.
-    if (currentActiveSeason) {
-      // If the current active season shares the same input season guid,
-      // skip the update operation and return early.
-      if (currentActiveSeason.guid === seasonGuid) {
-        return currentActiveSeason;
-      }
-
-      try {
-        currentActiveSeason.active = false;
-
-        await currentActiveSeason.save();
-      } catch (e) {
-        throw new InternalServerErrorException('Cannot disable active season.');
-      }
-    }
-
-    const requestedSeasonToActivate = await this.seasonRepo.findOne({
-      where: {
-        guid: seasonGuid
-      }
-    });
-
-    if (requestedSeasonToActivate) {
-      requestedSeasonToActivate.active = true;
-
-      try {
-        return await requestedSeasonToActivate.save();
-      } catch (e) {
-        throw new InternalServerErrorException('Cannot enable requested season.');
-      }
-    } else {
-      throw new UnprocessableEntityException();
-    }
-  }
-
-  public async disableAllSeasons(): Promise<Array<CompetitionSeason>> {
-    const activeSeasons = await this.seasonRepo.find({
-      where: {
-        active: true
-      }
-    });
-
-    if (activeSeasons) {
-      const queries = activeSeasons.map((season) => {
-        season.active = false;
-
-        return season.save();
-      });
-
-      try {
-        return Promise.all(queries);
-      } catch (e) {
-        throw new InternalServerErrorException('Could not deactivate seasons.');
-      }
-    }
   }
 }
