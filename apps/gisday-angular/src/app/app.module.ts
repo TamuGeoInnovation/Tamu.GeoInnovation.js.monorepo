@@ -5,13 +5,12 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
-import { AuthModule, AuthGuard, AuthHttpInterceptor } from '@auth0/auth0-angular';
+import { AuthModule, AuthHttpInterceptor } from '@auth0/auth0-angular';
 import { Angulartics2Module } from 'angulartics2';
 
 import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { GISDayRoles, GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
-import { ROLES_CLAIM, RoleGuard } from '@tamu-gisc/common/ngx/auth';
+import { ROLES_CLAIM } from '@tamu-gisc/common/ngx/auth';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -25,73 +24,7 @@ WebFont.load({
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LandingModule)
-  },
-  {
-    path: 'sessions',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.EventModule)
-  },
-  {
-    path: 'faq',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.FaqModule)
-  },
-  {
-    path: 'sponsors',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.SponsorsModule)
-  },
-  {
-    path: 'presenters',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.PeopleModule)
-  },
-  {
-    path: 'about',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AboutModule)
-  },
-  {
-    path: 'competitions',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.CompetitionsModule)
-  },
-  {
-    path: 'contact',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.ContactModule)
-  },
-  {
-    path: 'highschool',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.HighschoolModule)
-  },
-  {
-    path: 'wayback',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.WaybackModule)
-  },
-  {
-    path: 'admin',
-    canActivate: [AuthGuard, RoleGuard],
-    data: {
-      requiredRoles: [GISDayRoles.ADMIN, GISDayRoles.MANAGER, GISDayRoles.ORGANIZER],
-      redirectTo: '/forbidden'
-    },
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AdminModule)
-  },
-  {
-    path: 'account',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
-  },
-  {
-    path: 'login',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule)
-  },
-  {
-    path: 'logout',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule)
-  },
-  {
-    path: 'forbidden',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.NotAuthedModule)
-  },
-  {
-    path: 'callback',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.CallbackModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.WrapperModule)
   }
 ];
 
@@ -124,7 +57,6 @@ const routeOptions: ExtraOptions = {
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
-    GisdayPlatformNgxCommonModule,
     EnvironmentModule,
     HttpClientModule,
     NotificationModule

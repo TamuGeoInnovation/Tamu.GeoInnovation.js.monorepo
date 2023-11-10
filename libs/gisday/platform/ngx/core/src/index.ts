@@ -16,4 +16,4 @@ export * from './lib/pages/wayback/wayback.module';
 export * from './lib/pages/not-authed/not-authed.module';
 export * from './lib/pages/not-found/not-found.module';
 export * from './lib/pages/callback/callback.module';
-
+export * from './lib/pages/wrapper/wrapper.module';

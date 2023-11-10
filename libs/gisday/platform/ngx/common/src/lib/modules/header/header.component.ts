@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, tap } from 'rxjs/operators';
 
 import { ActiveSeasonDto, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
@@ -51,12 +51,13 @@ export class HeaderComponent implements OnInit {
     this.places$ = this.ps.getEntities();
 
     const currUrl = this.rt.events.pipe(
-      map((e) => e instanceof NavigationEnd),
+      startWith(''),
       map(() => {
-        return this.rt.url;
+        return window.location.pathname;
       }),
       distinctUntilChanged()
     );
+
     // Header should not be visible when the activated route is the base route.
     this.logoVisible$ = currUrl.pipe(
       map((url) => {
@@ -64,7 +65,10 @@ export class HeaderComponent implements OnInit {
       }),
       distinctUntilChanged(),
       tap((visible) => {
-        this.isHeaderSeamless = !visible;
+        // Put on the next tick to avoid ExpressionChangedAfterItHasBeenCheckedError
+        setTimeout(() => {
+          this.isHeaderSeamless = !visible;
+        }, 0);
       })
     );
   }
