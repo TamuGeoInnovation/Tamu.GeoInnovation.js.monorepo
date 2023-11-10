@@ -8,6 +8,7 @@ import { MapService } from './map.service';
 @Module({
   imports: [TypeOrmModule.forFeature([CompetitionSubmission, SubmissionLocation, SubmissionMedia])],
   controllers: [MapController],
-  providers: [MapService]
+  providers: [MapService],
+  exports: [MapService]
 })
 export class MapModule {}

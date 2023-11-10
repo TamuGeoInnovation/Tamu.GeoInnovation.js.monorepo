@@ -6,18 +6,15 @@ import { Duplex } from 'stream';
 import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
 import { FormService } from '../form/form.service';
-import { BaseController } from '../_base/base.controller';
 import { SubmissionService } from './submission.service';
 import { GetSubmissionDto, ValidateSubmissionDto } from '../dtos/dtos';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Multer } from 'multer';
 
-@Controller('submission')
-export class SubmissionController extends BaseController<CompetitionSubmission> {
-  constructor(private service: SubmissionService, private formService: FormService) {
-    super(service);
-  }
+@Controller('competitions/submissions')
+export class SubmissionController {
+  constructor(private service: SubmissionService, private formService: FormService) {}
 
   @Get(':guid/image')
   public async getSubmissionImage(@Param() param, @Res() res) {

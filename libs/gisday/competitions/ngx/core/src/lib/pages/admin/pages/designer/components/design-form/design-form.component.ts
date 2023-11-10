@@ -37,9 +37,7 @@ export class DesignFormComponent implements OnInit {
       source: ''
     });
 
-    const year = new Date().getFullYear().toString();
-
-    this.fs.getFormForSeason(year).subscribe((res) => {
+    this.fs.getFormForActiveSeason().subscribe((res) => {
       if (res && res.source) {
         this.loadSchemaForm.patchValue({ source: res.source });
       }
@@ -105,27 +103,11 @@ export class DesignFormComponent implements OnInit {
     const sourceForm = this.loadSchemaForm.getRawValue();
     const fieldsForm = this.formModel.getRawValue();
 
-    const guid = this.route.snapshot.queryParams.season;
     const payload = { source: sourceForm.source, model: [...fieldsForm] } as CompetitionForm;
 
     console.log(payload);
 
-    this.fs.saveFormModelForSeason(guid, payload).subscribe(
-      () => {
-        this.ns.toast({
-          id: 'designer-form-signed',
-          message: 'Form was saved successfully.',
-          title: 'Form Saved'
-        });
-      },
-      () => {
-        this.ns.toast({
-          id: 'designer-form-signed-failed',
-          message: 'There was an error saving the form.',
-          title: 'Form Save Error'
-        });
-      }
-    );
+    this.fs.createFormModelForActiveSeason(payload).subscribe();
   }
 }
 

@@ -1,14 +1,10 @@
 import { Body, Controller, Get } from '@nestjs/common';
 
-import { BaseController } from '../_base/base.controller';
-import { CompetitionSubmission } from '../entities/all.entities';
 import { MapService } from './map.service';
 
-@Controller('map')
-export class MapController extends BaseController<CompetitionSubmission> {
-  constructor(private service: MapService) {
-    super(service);
-  }
+@Controller('competitions/maps')
+export class MapController {
+  constructor(private service: MapService) {}
 
   @Get()
   public getLocations(@Body() { season }) {

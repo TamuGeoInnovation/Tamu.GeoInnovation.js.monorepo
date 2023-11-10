@@ -1,5 +1,5 @@
-import { Controller, Get, Param, Post, Body, BadRequestException } from '@nestjs/common';
-import { BaseEntity, DeepPartial } from 'typeorm';
+import { Controller, Get, Param } from '@nestjs/common';
+import { BaseEntity } from 'typeorm';
 
 import { BaseService } from './base.service';
 
@@ -19,18 +19,5 @@ export class BaseController<T extends BaseEntity> {
         guid: params.id
       }
     });
-  }
-
-  @Post('')
-  public async insert(@Body() body: DeepPartial<T>) {
-    if (body) {
-      const existing = await this.s.getOne({ where: { ...body } });
-
-      if (existing) {
-        throw new BadRequestException();
-      }
-
-      return this.s.createOne(body);
-    }
   }
 }

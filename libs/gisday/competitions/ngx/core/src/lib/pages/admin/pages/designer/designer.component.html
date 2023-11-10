@@ -1,9 +1,16 @@
-<div class="container12">
-  <h1 class="bordered leader-2">Form Designer</h1>
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Form Designer</div>
+      <!-- <div class="form-section-actions">
+        <a routerLink="add">Preview <span class="material-icons action">visibility</span></a>
+      </div> -->
+    </div>
 
-  <div class="container">
-    <div id="designer">
-      <tamu-gisc-design-form (updated)="formModel = $event"></tamu-gisc-design-form>
+    <div class="form-section-body">
+      <div id="designer">
+        <tamu-gisc-design-form (updated)="formModel = $event"></tamu-gisc-design-form>
+      </div>
     </div>
 
     <div id="preview">

@@ -8,6 +8,7 @@ import { LeaderboardService } from './leaderboard.service';
 @Module({
   imports: [TypeOrmModule.forFeature([CompetitionSubmission, SubmissionLocation, SubmissionMedia])],
   controllers: [LeaderboardController],
-  providers: [LeaderboardService]
+  providers: [LeaderboardService],
+  exports: [LeaderboardService]
 })
 export class LeaderboardModule {}

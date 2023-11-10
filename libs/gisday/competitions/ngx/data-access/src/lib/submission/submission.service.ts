@@ -13,7 +13,7 @@ export class SubmissionService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient, private readonly ns: NotificationService) {
-    this.resource = `${this.env.value('api_url')}/submission`;
+    this.resource = `${this.env.value('api_url')}/competitions/submissions`;
   }
 
   public postSubmission(submission: FormData) {

@@ -32,6 +32,7 @@ import { AuthorizationModule } from '@tamu-gisc/common/nest/auth';
 
 import { AppService } from './app.service';
 import { environment, ormConfig } from '../environments/environment';
+import { GISDAY_COMPETITIONS_ENTITIES, GisdayCompetitionsDataApiModule } from '@tamu-gisc/gisday/competitions/data-api';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { environment, ormConfig } from '../environments/environment';
       dropSchema: ormConfig.dropSchema,
       logging: ormConfig.logging,
       extra: ormConfig.extra,
-      entities: [...GISDAY_ENTITIES]
+      entities: [...GISDAY_ENTITIES, ...GISDAY_COMPETITIONS_ENTITIES]
     }),
     AuthorizationModule.forRoot({
       jwt: {
@@ -82,7 +83,8 @@ import { environment, ormConfig } from '../environments/environment';
     EventLocationModule,
     PlaceModule,
     AssetsModule,
-    ContactModule
+    ContactModule,
+    GisdayCompetitionsDataApiModule
   ],
   controllers: [],
   providers: [AppService]

@@ -18,6 +18,23 @@ const routes: Routes = [
         loadChildren: () => import('./pages/class/admin-class.module').then((m) => m.AdminClassModule)
       },
       {
+        path: 'competitions',
+        children: [
+          {
+            path: 'designer',
+            loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.DesignerModule)
+          },
+          {
+            path: 'viewer',
+            loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.ViewerModule)
+          },
+          {
+            path: '',
+            redirectTo: 'designer'
+          }
+        ]
+      },
+      {
         path: 'events',
         loadChildren: () => import('./pages/event/admin-event.module').then((m) => m.AdminEventModule)
       },

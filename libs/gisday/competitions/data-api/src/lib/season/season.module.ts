@@ -23,6 +23,7 @@ import { SeasonService } from './season.service';
     ])
   ],
   controllers: [SeasonController],
-  providers: [SeasonService]
+  providers: [SeasonService],
+  exports: [SeasonService]
 })
 export class SeasonModule {}

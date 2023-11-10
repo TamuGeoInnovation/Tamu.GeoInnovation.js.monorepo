@@ -1,8 +1,9 @@
 <form (submit)="getSchema()" [formGroup]="loadSchemaForm">
-  <p>Enter a URL source that points to a live ESRI REST service layer endpoint to retrieve the configuration and auto-generate a form from its attributes.</p>
+  <p class="trailer-1">Enter a URL source that points to a live ESRI REST service layer endpoint to retrieve the configuration and auto-generate a form from its attributes.</p>
   <div class="row">
     <tamu-gisc-textbox class="fb-2 form-element" type="text" placeholder="Service Layer URL" floatLabel="true" formControlName="source"></tamu-gisc-textbox>
-    <tamu-gisc-button class="fb-1 form-element" value="Get Schema" type="submit"></tamu-gisc-button>
+
+    <tamu-gisc-button class="fb-1 form-element leader-2" value="Get Schema" type="submit"></tamu-gisc-button>
   </div>
 </form>
 

@@ -1,30 +1,24 @@
-import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+
 import { CompetitionForm } from '../entities/all.entities';
-import { BaseController } from '../_base/base.controller';
 import { FormService } from './form.service';
 
-@Controller('form')
-export class FormController extends BaseController<CompetitionForm> {
-  constructor(private service: FormService) {
-    super(service);
-  }
+@Controller('competitions/forms')
+export class FormController {
+  constructor(private service: FormService) {}
 
   @Get('active')
   public async getFormForActiveSeason() {
-    const season = await this.service.getActiveSeason();
-
-    if (season) {
-      return season;
-    } else {
-      throw new NotFoundException();
-    }
+    return this.service.getActiveSeason();
   }
 
   @Get(':year')
   public async getForm(@Param() params) {
     const season = await this.service.getSeason(params.year);
+
     if (season) {
       return season;
     } else {
@@ -32,6 +26,18 @@ export class FormController extends BaseController<CompetitionForm> {
     }
   }
 
+  @Permissions(['create:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('active')
+  public async insertFormForActiveSeason(@Body() body) {
+    return this.service.createFormForActiveSeason({
+      source: body.source,
+      model: body.model
+    });
+  }
+
+  @Permissions(['create:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post(':year')
   public async insertForm(@Body() body, @Param() params) {
     const _form: DeepPartial<CompetitionForm> = {

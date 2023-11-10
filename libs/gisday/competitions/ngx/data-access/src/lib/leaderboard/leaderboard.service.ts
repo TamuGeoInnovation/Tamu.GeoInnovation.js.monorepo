@@ -13,7 +13,7 @@ export class LeaderboardService {
   public resource: string;
 
   constructor(private http: HttpClient, private environment: EnvironmentService, private readonly ns: NotificationService) {
-    this.resource = `${this.environment.value('api_url')}/leaderboard`;
+    this.resource = `${this.environment.value('api_url')}/competitions/leaderboards`;
   }
 
   public getScores(): Observable<ILeaderboardItem[]> {

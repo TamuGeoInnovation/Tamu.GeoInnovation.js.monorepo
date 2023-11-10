@@ -10,6 +10,10 @@
   }
 }
 
+form {
+  margin-top: 0;
+}
+
 .fb-1 {
   @include flex(1);
 }

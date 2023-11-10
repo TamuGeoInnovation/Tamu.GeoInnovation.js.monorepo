@@ -14,6 +14,9 @@ import {
 } from 'typeorm';
 
 import { v4 as guid } from 'uuid';
+
+import { Season } from '@tamu-gisc/gisday/platform/data-api';
+
 import { VALIDATION_STATUS } from '../enums/competitions.enums';
 
 @Entity()
@@ -37,7 +40,7 @@ export class GISDayCompetitionBaseEntity extends BaseEntity {
 }
 
 @Entity({
-  name: 'submissions_locations'
+  name: 'vgi_submissions_locations'
 })
 export class SubmissionLocation extends GISDayCompetitionBaseEntity implements ICompetitionSubmissionLocation {
   @Column({ type: 'decimal', precision: 7, scale: 5 })
@@ -63,7 +66,7 @@ export class SubmissionLocation extends GISDayCompetitionBaseEntity implements I
 }
 
 @Entity({
-  name: 'forms'
+  name: 'vgi_forms'
 })
 export class CompetitionForm extends GISDayCompetitionBaseEntity implements ICompetitionSeasonForm {
   @Column()
@@ -74,21 +77,24 @@ export class CompetitionForm extends GISDayCompetitionBaseEntity implements ICom
 }
 
 @Entity({
-  name: 'seasons'
+  name: 'vgi_seasons'
 })
 export class CompetitionSeason extends GISDayCompetitionBaseEntity implements ICompetitionSeason {
-  @Column()
-  public year: string;
-
   @Column({ default: false })
   public active: boolean;
+
+  @OneToOne(() => Season, { cascade: true, nullable: true, orphanedRowAction: 'nullify' })
+  @JoinColumn()
+  public season: Season;
 
   @OneToOne(() => CompetitionForm, { cascade: true, nullable: true })
   @JoinColumn()
   public form?: CompetitionForm;
 }
 
-@Entity()
+@Entity({
+  name: 'vgi_submission_validation_status'
+})
 export class CompetitionSubmissionValidationStatus extends GISDayCompetitionBaseEntity {
   @Column({ default: VALIDATION_STATUS.unverified })
   public status: string;
@@ -98,7 +104,7 @@ export class CompetitionSubmissionValidationStatus extends GISDayCompetitionBase
 }
 
 @Entity({
-  name: 'submissions'
+  name: 'vgi_submissions'
 })
 export class CompetitionSubmission extends GISDayCompetitionBaseEntity implements ICompetitionSubmission {
   @Column()
@@ -124,7 +130,7 @@ export class CompetitionSubmission extends GISDayCompetitionBaseEntity implement
 }
 
 @Entity({
-  name: 'submissions_media'
+  name: 'vgi_submissions_media'
 })
 export class SubmissionMedia extends GISDayCompetitionBaseEntity implements ISubmissionMedia {
   @ManyToOne(() => CompetitionSubmission, (s) => s.blobs)
@@ -170,7 +176,7 @@ export interface ICompetitionSubmissionLocation {
 }
 
 export interface ICompetitionSeason {
-  year: string;
+  season: Season;
   form?: CompetitionForm;
 }
 
@@ -190,3 +196,12 @@ export interface ICompetitionSeasonFormQuestion {
   }>;
   type: string;
 }
+
+export const GISDAY_COMPETITIONS_ENTITIES = [
+  SubmissionLocation,
+  CompetitionForm,
+  CompetitionSeason,
+  CompetitionSubmission,
+  CompetitionSubmissionValidationStatus,
+  SubmissionMedia
+];
