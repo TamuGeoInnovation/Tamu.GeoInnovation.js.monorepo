@@ -77,10 +77,6 @@ const routes: Routes = [
         loadChildren: () => import('../not-authed/not-authed.module').then((m) => m.NotAuthedModule)
       },
       {
-        path: 'callback',
-        loadChildren: () => import('../callback/callback.module').then((m) => m.CallbackModule)
-      },
-      {
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('../landing/landing.module').then((m) => m.LandingModule)
