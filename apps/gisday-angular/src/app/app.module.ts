@@ -3,6 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 import * as WebFont from 'webfontloader';
 import { AuthModule, AuthHttpInterceptor } from '@auth0/auth0-angular';
@@ -40,6 +41,7 @@ const routeOptions: ExtraOptions = {
 @NgModule({
   imports: [
     Angulartics2Module.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js'),
     AuthModule.forRoot({
       domain: environment.auth0.domain,
       clientId: environment.auth0.client_id,

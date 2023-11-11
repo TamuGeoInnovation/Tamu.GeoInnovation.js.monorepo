@@ -19,6 +19,7 @@
           "apps/gisday-angular/src/Dockerfile",
           "apps/gisday-angular/src/.dockerignore",
           "apps/gisday-angular/src/.nginx",
+          "apps/gisday-angualr-angular/src/manifest.webmanifest",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -36,6 +37,7 @@
       },
       "configurations": {
         "production": {
+          "ngswConfigPath": "apps/gisday-angular/ngsw-config.json",
           "fileReplacements": [
             {
               "replace": "apps/gisday-angular/src/environments/environment.ts",
@@ -63,6 +65,7 @@
           ]
         },
         "development": {
+          "ngswConfigPath": "apps/gisday-angular/ngsw-config.json",
           "fileReplacements": [
             {
               "replace": "apps/gisday-angular/src/environments/environment.ts",
