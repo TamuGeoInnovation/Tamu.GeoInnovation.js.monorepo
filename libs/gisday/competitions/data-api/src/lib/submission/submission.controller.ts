@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+  UploadedFiles,
+  UseInterceptors
+} from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 import { Duplex } from 'stream';
@@ -53,6 +63,10 @@ export class SubmissionController {
   @UseInterceptors(AnyFilesInterceptor())
   public async insert(@Body() body, @UploadedFiles() files?: Array<Express.Multer.File>) {
     const season = await this.formService.getSeason(body.season);
+
+    if (season.allowSubmissions === false || season.allowSubmissions === null) {
+      throw new BadRequestException('Submissions are disabled for this season.');
+    }
 
     const sub: DeepPartial<CompetitionSubmission> = {
       value: JSON.parse(body.value),

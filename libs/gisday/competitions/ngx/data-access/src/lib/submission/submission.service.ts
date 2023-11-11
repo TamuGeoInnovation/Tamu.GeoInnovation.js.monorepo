@@ -34,7 +34,7 @@ export class SubmissionService {
           this.ns.toast({
             id: 'submission-upload-failure',
             title: 'Server Error Uploading Submission',
-            message: `The server experienced an error processing your submission. Please try again later. (${err.status})`
+            message: `The server experienced an error processing your submission. ${err.error.message} (${err.status})`
           });
 
           throw new Error(`Failed uploading submission.`);

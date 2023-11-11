@@ -130,7 +130,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           // switchMap(([file, user]) => {
           switchMap(([user]) => {
             // if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
-            if (this.form.valid && this.submissionStatus.getValue() !== 1) {
+            if (this.form.valid && this.submissionStatus.getValue() !== 1 && this.formModel?.allowSubmissions === true) {
               // FormData gets sent as multi-part form in request.
               const data: FormData = new FormData();
 
