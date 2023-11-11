@@ -6,6 +6,7 @@
   "display": "standalone",
   "scope": "/app",
   "start_url": "/app",
+  "id": "com.txgisday.competitions",
   "description": "The Official GIS Day VGI Competitions App.",
   "icons": [
     {
@@ -50,3 +51,4 @@
     }
   ]
 }
+
