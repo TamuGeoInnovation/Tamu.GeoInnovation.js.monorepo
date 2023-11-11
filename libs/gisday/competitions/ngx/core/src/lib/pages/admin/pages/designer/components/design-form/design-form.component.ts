@@ -4,7 +4,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
-import { CompetitionForm, CompetitionSeason, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
+import { CompetitionSeason, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 import esri = __esri;
@@ -44,6 +44,7 @@ export class DesignFormComponent implements OnInit {
 
       if (res && res.form.model) {
         this.formModel = this.fb.group({
+          allowSubmissions: [res.allowSubmissions],
           fields: this.fb.array(
             res.form.model.map((q) => {
               return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });
@@ -92,7 +93,8 @@ export class DesignFormComponent implements OnInit {
               return arr;
             },
             this.fb.group({
-              fields: this.fb.array([])
+              fields: this.fb.array([]),
+              allowSubmissions: [false]
             })
           );
         })
@@ -108,15 +110,24 @@ export class DesignFormComponent implements OnInit {
 
   public saveForm(): void {
     const sourceForm = this.loadSchemaForm.getRawValue();
-    const fieldsForm = this.formModel.getRawValue().fields;
+    const modelForm = this.formModel.getRawValue();
+    const fields = modelForm.fields;
 
-    const payload = { source: sourceForm.source, model: [...fieldsForm] } as CompetitionForm;
+    const payload = {
+      form: {
+        source: sourceForm.source,
+        model: [...fields]
+      },
+      season: {
+        allowSubmissions: modelForm.allowSubmissions
+      }
+    };
 
     this.currentSeasonForm$
       .pipe(
-        switchMap((form) => {
-          if (form) {
-            return this.fs.updateFormModelForActiveSeason(form.guid, payload);
+        switchMap((season) => {
+          if (season) {
+            return this.fs.updateForm(season.form.guid, payload);
           } else {
             return this.fs.createFormModelForActiveSeason(payload);
           }

@@ -43,7 +43,7 @@ export class FormService extends BaseService<CompetitionForm> {
     return form;
   }
 
-  public async createFormForActiveSeason(form: Partial<CompetitionForm>) {
+  public async createFormForActiveSeason(form: Partial<CompetitionForm>, season?: Partial<CompetitionSeason>) {
     const activeSeason = await this._getActiveSeason();
     const existingCompSeason = await this.competitionSeasonRepo.findOne({
       where: {
@@ -57,7 +57,8 @@ export class FormService extends BaseService<CompetitionForm> {
 
         const compSeason = this.competitionSeasonRepo.create({
           season: activeSeason,
-          form: _form
+          form: _form,
+          allowSubmissions: season?.allowSubmissions === true
         });
 
         return compSeason.save();
@@ -69,21 +70,24 @@ export class FormService extends BaseService<CompetitionForm> {
     }
   }
 
-  public async updateFormForSeason(seasonGuid: string, form: Partial<CompetitionForm>) {
-    const existingForm = await this.formRepo.findOne({
+  public async updateForm(formGuid: string, form: Partial<CompetitionForm>, season?: Partial<CompetitionSeason>) {
+    const competitionSeason = await this.competitionSeasonRepo.findOne({
       where: {
-        guid: seasonGuid
-      }
+        form: formGuid
+      },
+      relations: ['form']
     });
 
-    if (!existingForm) {
+    if (!competitionSeason) {
       throw new BadRequestException('No form found for provided guid.');
     }
 
     try {
-      const updatedForm = this.formRepo.merge(existingForm, form);
+      competitionSeason.form.model = form.model;
+      competitionSeason.form.source = form.source;
+      competitionSeason.allowSubmissions = season?.allowSubmissions === true;
 
-      return this.formRepo.save(updatedForm);
+      return competitionSeason.save();
     } catch (err) {
       throw new InternalServerErrorException('Failed to update competition season form.');
     }

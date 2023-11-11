@@ -50,8 +50,8 @@ export class FormService {
     );
   }
 
-  public updateFormModelForActiveSeason(formGuid: string, form: CompetitionForm) {
-    return this.http.patch(`${this.resource}/${formGuid}`, form).pipe(
+  public updateForm(formGuid: string, data: { form: Partial<CompetitionForm>; season: Partial<CompetitionSeason> }) {
+    return this.http.patch(`${this.resource}/${formGuid}`, data).pipe(
       tap(() => {
         this.ns.toast({
           id: 'designer-form-update-success',
@@ -71,8 +71,8 @@ export class FormService {
     );
   }
 
-  public createFormModelForActiveSeason(form: CompetitionForm) {
-    return this.http.post(`${this.resource}/active`, form).pipe(
+  public createFormModelForActiveSeason(data: { form: Partial<CompetitionForm>; season: Partial<CompetitionSeason> }) {
+    return this.http.post(`${this.resource}/active`, data).pipe(
       tap(() => {
         this.ns.toast({
           id: 'designer-form-signed-success',

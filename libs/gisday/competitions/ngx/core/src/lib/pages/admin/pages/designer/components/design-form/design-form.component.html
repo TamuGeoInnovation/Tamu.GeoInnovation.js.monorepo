@@ -7,12 +7,32 @@
   </div>
 </form>
 
-<div *ngIf="formModel !== undefined">
-  <h2>Questions</h2>
-
+<ng-container *ngIf="formModel !== undefined">
   <form [formGroup]="formModel" (submit)="saveForm()">
-    <tamu-gisc-design-question *ngFor="let c of formModel.controls['fields']['controls']" [control]="c"></tamu-gisc-design-question>
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Basic</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row pad-top">
+          <tamu-gisc-checkbox formControlName="allowSubmissions" label="Allow Submissions"></tamu-gisc-checkbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section leader-1">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Questions</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row pad-top" *ngFor="let c of formModel.controls['fields']['controls']">
+          <tamu-gisc-design-question [control]="c"></tamu-gisc-design-question>
+        </div>
+      </div>
+    </div>
 
     <tamu-gisc-button type="submit" [value]="'Save'"></tamu-gisc-button>
   </form>
-</div>
+</ng-container>
