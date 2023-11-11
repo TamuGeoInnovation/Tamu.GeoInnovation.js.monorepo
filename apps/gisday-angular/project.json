@@ -19,7 +19,7 @@
           "apps/gisday-angular/src/Dockerfile",
           "apps/gisday-angular/src/.dockerignore",
           "apps/gisday-angular/src/.nginx",
-          "apps/gisday-angualr-angular/src/manifest.webmanifest",
+          "apps/gisday-angular/src/manifest.webmanifest",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -144,3 +144,4 @@
   "tags": [],
   "implicitDependencies": ["assets", "sass", "gisday-sass"]
 }
+
