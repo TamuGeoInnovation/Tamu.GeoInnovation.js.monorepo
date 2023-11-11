@@ -76,7 +76,7 @@ export class HeaderComponent implements OnInit {
   public login() {
     this.as.login({
       appState: {
-        target: '/'
+        target: this.rt.url
       }
     });
   }

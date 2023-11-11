@@ -28,10 +28,6 @@ const routes: Routes = [
     loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.PublicModule)
   },
   {
-    path: 'callback',
-    redirectTo: ''
-  },
-  {
     path: '',
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.WrapperModule)
   }
