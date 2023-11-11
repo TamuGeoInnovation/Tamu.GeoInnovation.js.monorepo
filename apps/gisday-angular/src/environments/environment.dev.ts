@@ -17,7 +17,7 @@ export const environment = {
 
 export const api_url = `${window.location.origin}/api`;
 
-export const NotificationEvents = [];
+export * from './common.config';
 
 export const auth0 = {
   domain: '__{ANGULAR_AUTH0_DOMAIN}__',

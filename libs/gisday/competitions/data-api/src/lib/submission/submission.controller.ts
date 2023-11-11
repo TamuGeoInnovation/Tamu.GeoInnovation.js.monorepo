@@ -49,7 +49,7 @@ export class SubmissionController {
     });
   }
 
-  @Post('upload')
+  @Post('')
   @UseInterceptors(AnyFilesInterceptor())
   public async insert(@Body() body, @UploadedFiles() files?: Array<Express.Multer.File>) {
     const season = await this.formService.getSeason(body.season);

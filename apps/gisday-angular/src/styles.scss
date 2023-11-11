@@ -129,6 +129,21 @@ h6 {
   span.lowercase {
     text-transform: lowercase;
   }
+
+  &.bordered {
+    position: relative;
+    margin-bottom: 1em;
+
+    &:after {
+      content: '';
+      position: absolute;
+      background: #e4002b;
+      height: 1pt;
+      width: 50%;
+      left: 0;
+      bottom: -0.5em;
+    }
+  }
 }
 
 ul {
@@ -203,71 +218,73 @@ a {
     }
   }
 
-  &.button {
-    display: inherit;
-    @include flex(1);
-    @include justify-content(center);
-    color: inherit;
-    border: none;
-    background: none;
-    padding: 0.55rem 1rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    font-weight: 600;
-    cursor: pointer;
-
-    @include transition(color 0.3s, background 0.3s);
-
-    border-radius: 1.5rem;
-    overflow: hidden;
-    color: #fafafa;
-    background: rgba(85, 138, 216, 1);
-
-    &:hover {
-      text-decoration: none;
-      background: darken(rgba(85, 138, 216, 1), 10%);
-    }
-
-    &.relaxed {
-      @include flexbox();
-      @include flex-direction(row);
-      @include justify-content(center);
-      @include align-items(center);
-      @include flex(1);
-    }
-
-    &.snug {
-      // TODO: Deal with snug style
-      display: inline-block;
-      vertical-align: middle;
-      padding-left: 2rem;
-      padding-right: 2rem;
-    }
-
-    &.secondary {
-      border: 1.5pt solid rgba(85, 138, 216, 1);
-      background: none;
-      color: rgba(85, 138, 216, 1);
-
-      &:hover {
-        color: #fafafa;
-        background: darken(rgba(85, 138, 216, 1), 10%);
-        border-color: darken(rgba(85, 138, 216, 1), 10%);
-      }
-    }
-  }
-
-  &.disabled {
-    color: #bdbdbd !important;
-    pointer-events: none;
-  }
-
   &:hover {
     text-decoration: underline;
   }
 
   &.no-decoration {
     text-decoration: none;
+  }
+}
+
+.button {
+  display: inherit;
+  @include flex(1);
+  @include justify-content(center);
+  color: inherit;
+  border: none;
+  background: none;
+  padding: 0.55rem 1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  @include transition(color 0.3s, background 0.3s);
+
+  border-radius: 1.5rem;
+  overflow: hidden;
+  color: #fafafa;
+  background: rgba(85, 138, 216, 1);
+
+  &:hover {
+    text-decoration: none;
+    background: darken(rgba(85, 138, 216, 1), 10%);
+  }
+
+  &.relaxed {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+    @include flex(1);
+  }
+
+  &.snug {
+    // TODO: Deal with snug style
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  &.secondary {
+    border: 1.5pt solid rgba(85, 138, 216, 1);
+    background: none;
+    color: rgba(85, 138, 216, 1);
+
+    &:hover {
+      color: #fafafa;
+      background: darken(rgba(85, 138, 216, 1), 10%);
+      border-color: darken(rgba(85, 138, 216, 1), 10%);
+    }
+  }
+
+  &.disabled {
+    color: #424242;
+    background: #dcdcdc;
+    border-color: #dcdcdc;
+    cursor: not-allowed;
   }
 }
 
@@ -2767,6 +2784,11 @@ session-time-table {
   p {
     margin-bottom: 0;
     padding-bottom: 0;
+  }
+
+  &.notice {
+    background: lighten($color: $gisday-blue, $amount: 76%);
+    border-color: lighten($color: $gisday-blue, $amount: 65%);
   }
 
   &.warning {

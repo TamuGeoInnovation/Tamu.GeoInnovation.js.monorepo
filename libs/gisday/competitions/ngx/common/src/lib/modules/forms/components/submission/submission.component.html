@@ -2,7 +2,7 @@
 
 <ng-container *ngIf="form !== undefined; else loader">
   <form [formGroup]="form" (submit)="submitResponse()">
-    <div class="block-input">
+    <!-- <div class="block-input">
       <div class="block-input-presentation" *ngIf="(file | async) === undefined">
         <div class="material-icons">photo_camera</div>
         <p class="title">Upload Photo</p>
@@ -11,10 +11,11 @@
 
       <input type="file" name="photo" (change)="onPhotoTaken($event)" accept="image/*" capture />
       <div class="image" *ngIf="file | async" [ngStyle]="{'background-image': 'url(' + (fileUrl | async) + ')'}"></div>
-    </div>
+    </div> -->
 
-    <div class="statused-form-input-container" *ngFor="let c of form.controls">
+    <div class="statused-form-input-container" formArrayName="fields" *ngFor="let c of form.controls?.['fields']['controls']; let i = index">
       <p class="label">{{c.get('title').value}}</p>
+      <p class="description" *ngIf="c.get('instructions').value !== ''">{{c.get('instructions').value}}</p>
       <div class="statused-form-input column">
         <div [ngSwitch]="c.get('type').value">
           <tamu-gisc-select [formControl]="c.get('value')" [valueTemplate]="'value'" [displayTemplate]="'name'" [data]="c.get('options').value" *ngSwitchCase="'select'"></tamu-gisc-select>

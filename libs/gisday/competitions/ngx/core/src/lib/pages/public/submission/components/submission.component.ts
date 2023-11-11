@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { pluck } from 'rxjs/operators';
 
-import { CompetitionForm } from '@tamu-gisc/gisday/competitions/data-api';
+import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({
@@ -11,11 +10,11 @@ import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
   styleUrls: ['./submission.component.scss']
 })
 export class SubmissionComponent implements OnInit {
-  public model: Observable<CompetitionForm['model']>;
+  public model: Observable<CompetitionSeason>;
 
   constructor(private readonly fs: FormService) {}
 
   public ngOnInit() {
-    this.model = this.fs.getFormForActiveSeason().pipe(pluck('model'));
+    this.model = this.fs.getFormForActiveSeason();
   }
 }

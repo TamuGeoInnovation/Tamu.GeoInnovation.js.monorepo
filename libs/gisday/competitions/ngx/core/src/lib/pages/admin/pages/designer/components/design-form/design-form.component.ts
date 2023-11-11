@@ -4,7 +4,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
-import { CompetitionForm, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
+import { CompetitionForm, CompetitionSeason, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 import esri = __esri;
@@ -18,7 +18,7 @@ export class DesignFormComponent implements OnInit {
   @Output()
   public updated: EventEmitter<Array<ICompetitionSeasonFormQuestion>> = new EventEmitter();
 
-  public currentSeasonForm$: Observable<CompetitionForm>;
+  public currentSeasonForm$: Observable<CompetitionSeason>;
   public urlFields$: Observable<Array<Field>>;
   public loadSchemaForm: FormGroup;
   public formModel: FormGroup;
@@ -38,20 +38,20 @@ export class DesignFormComponent implements OnInit {
     );
 
     this.currentSeasonForm$.subscribe((res) => {
-      if (res && res.source) {
-        this.loadSchemaForm.patchValue({ source: res.source });
+      if (res && res.form && res.form.source) {
+        this.loadSchemaForm.patchValue({ source: res.form.source });
       }
 
-      if (res && res.model) {
+      if (res && res.form.model) {
         this.formModel = this.fb.group({
           fields: this.fb.array(
-            res.model.map((q) => {
+            res.form.model.map((q) => {
               return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });
             })
           )
         });
 
-        this.updated.next(res.model);
+        this.updated.next(res.form.model);
       }
     });
   }
@@ -65,7 +65,7 @@ export class DesignFormComponent implements OnInit {
       .pipe(
         map((fields) => {
           return fields.reduce(
-            (arr, field, index) => {
+            (arr, field) => {
               // Create an array of controls for the question options from the domain coded values, if any.
               const options =
                 field.domain && field.domain.codedValues !== null
@@ -80,7 +80,7 @@ export class DesignFormComponent implements OnInit {
 
               const groupControl = this.fb.group({
                 attribute: [field.name],
-                title: [`Question ${index + 1}: ${field.alias}`],
+                title: [`${field.alias}`],
                 instructions: [''],
                 enabled: [true],
                 options: options,

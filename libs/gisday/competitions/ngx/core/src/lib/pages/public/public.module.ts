@@ -2,8 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
+import { AuthGuard } from '@auth0/auth0-angular';
+
 import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tab';
-import { DeviceGuard, AuthGuard } from '@tamu-gisc/gisday/competitions/ngx/common';
+import { DeviceGuard } from '@tamu-gisc/gisday/competitions/ngx/common';
 
 import { PublicComponent } from './public.component';
 
@@ -12,14 +14,13 @@ const routes: Routes = [
     path: '',
     component: PublicComponent,
     children: [
-      { path: '', redirectTo: '/submission', pathMatch: 'full' },
       {
         path: 'map',
         loadChildren: () => import('./map/map.module').then((m) => m.MapModule),
         canActivate: [DeviceGuard, AuthGuard],
         data: {
           deviceModes: ['standalone'],
-          deviceFailRedirect: '/install'
+          deviceFailRedirect: 'app/install'
         }
       },
       {
@@ -28,7 +29,7 @@ const routes: Routes = [
         canActivate: [DeviceGuard, AuthGuard],
         data: {
           deviceModes: ['standalone'],
-          deviceFailRedirect: '/install'
+          deviceFailRedirect: 'app/install'
         }
       },
       {
@@ -37,7 +38,7 @@ const routes: Routes = [
         canActivate: [DeviceGuard, AuthGuard],
         data: {
           deviceModes: ['standalone'],
-          deviceFailRedirect: '/install'
+          deviceFailRedirect: 'app/install'
         }
       },
       {
@@ -46,7 +47,7 @@ const routes: Routes = [
         canActivate: [],
         data: {
           deviceModes: ['standalone'],
-          deviceFailRedirect: '/install'
+          deviceFailRedirect: 'app/install'
         }
       },
       {
@@ -59,7 +60,8 @@ const routes: Routes = [
           deviceIgnoreFailRedirect: true
         }
       },
-      { path: '**', redirectTo: '/submission' }
+      { path: '', redirectTo: 'submission', pathMatch: 'full' },
+      { path: '**', redirectTo: 'submission' }
     ]
   }
 ];

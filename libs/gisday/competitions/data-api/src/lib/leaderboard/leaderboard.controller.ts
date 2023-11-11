@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, NotImplementedException, Param } from '@nestjs/common';
 
 import { LeaderboardService } from '../leaderboard/leaderboard.service';
 
@@ -6,18 +6,18 @@ import { LeaderboardService } from '../leaderboard/leaderboard.service';
 export class LeaderboardController {
   constructor(private service: LeaderboardService) {}
 
-  @Get('/season')
-  public getLeaderBoardForSeason(@Body() { season }) {
-    return this.service.getLeaderBoardItemsForSeason(season);
+  @Get('/season/:guid')
+  public getLeaderBoardForSeason(@Param() { guid }) {
+    return this.service.getLeaderBoardItemsForSeason(guid);
   }
 
-  @Get('/all')
-  public get() {
-    return this.service.getAllLeaderboardItems();
+  @Get('active')
+  public getLeaderBoardForActiveSeason() {
+    return this.service.getLeaderBoardItemsForActiveSeason();
   }
 
   @Get()
   public getLeaderboard() {
-    return this.service.getLeaderBoardForActiveSeason();
+    throw new NotImplementedException();
   }
 }

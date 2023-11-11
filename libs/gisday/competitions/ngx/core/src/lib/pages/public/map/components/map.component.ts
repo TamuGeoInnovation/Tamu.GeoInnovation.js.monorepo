@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -45,7 +45,7 @@ export class MapComponent implements OnInit {
         }
       }
     }
-  };
+  } as MapConfig;
 
   public ngOnInit() {
     this.ms.store.subscribe(() => {
@@ -56,7 +56,7 @@ export class MapComponent implements OnInit {
           type: 'geojson',
           id: 'submissions-layer',
           title: 'Submissions',
-          url: `${api_url}/map/geojson`,
+          url: `${api_url}/competitions/maps/seasons/active?format=geojson`,
           listMode: 'show',
           loadOnInit: true,
           visible: true,
@@ -69,50 +69,6 @@ export class MapComponent implements OnInit {
                 size: 10,
                 color: '#ffc5c5'
               }
-            }
-          }
-        },
-        {
-          type: 'feature',
-          id: 'water-meter-layer',
-          title: 'Water Meter Rough Locations',
-          url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/WaterMetersTAMU/FeatureServer/0`,
-          listMode: 'show',
-          loadOnInit: true,
-          visible: true,
-          native: {
-            renderer: {
-              type: 'simple',
-              symbol: {
-                type: 'simple-marker',
-                style: 'circle',
-                size: 10,
-                color: '#42A5F5',
-                outline: {
-                  width: '4',
-                  color: '#90CAF9'
-                }, 
-              },
-            }, 
-            featureReduction: {
-              type: 'cluster', 
-              labelingInfo: [
-                {
-                  deconflictionStrategy: "none",
-                  labelExpressionInfo: {
-                    expression: "Text($feature.cluster_count, '#,###')"
-                  },
-                  symbol: {
-                    type: "text",
-                    color: "#E3F2FD",
-                    font: {
-                      family: "Noto Sans",
-                      size: "14px"
-                    }
-                  },
-                  labelPlacement: "center-center"
-                }
-              ],
             }
           }
         }

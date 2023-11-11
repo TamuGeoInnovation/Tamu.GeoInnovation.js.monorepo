@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ILeaderboardItem, LeaderboardService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'tamu-gisc-leaderboard',
@@ -18,13 +18,19 @@ export class LeaderboardComponent implements OnInit {
   constructor(
     private leaderboardService: LeaderboardService,
     private settings: SettingsService,
-    private environment: EnvironmentService
+    private authService: AuthService
   ) {}
 
   public ngOnInit() {
-    this.leaders$ = this.leaderboardService.getScores();
-    this.me$ = this.settings.getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey).pipe(
-      map((branch) => branch?.guid as string),
+    this.leaders$ = this.leaderboardService.getScoresForActive().pipe(shareReplay());
+    this.me$ = this.authService.user$.pipe(
+      map((u) => {
+        if (u) {
+          return u.sub;
+        } else {
+          return null;
+        }
+      }),
       shareReplay(1)
     );
   }

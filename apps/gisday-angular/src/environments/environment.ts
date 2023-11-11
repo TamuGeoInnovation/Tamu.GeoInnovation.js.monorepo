@@ -17,7 +17,7 @@ export const environment = {
 
 export const api_url = 'http://localhost:3333/api'; // This is just some bs URL for now
 
-export const NotificationEvents = [];
+export * from './common.config';
 
 export const auth0 = {
   domain: '__{ANGULAR_AUTH0_DOMAIN}__',

@@ -24,7 +24,7 @@ export class SubmissionService {
     };
 
     return this.http
-      .post(`${this.resource}/upload`, submission, {
+      .post(`${this.resource}`, submission, {
         reportProgress: true,
         observe: 'events',
         headers: httpOptions.headers

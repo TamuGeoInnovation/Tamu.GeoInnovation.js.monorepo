@@ -23,6 +23,10 @@ WebFont.load({
 
 const routes: Routes = [
   {
+    path: 'app',
+    loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.PublicModule)
+  },
+  {
     path: '',
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.WrapperModule)
   }

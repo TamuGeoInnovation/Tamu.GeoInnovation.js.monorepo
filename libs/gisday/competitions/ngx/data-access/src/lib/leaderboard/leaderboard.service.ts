@@ -16,8 +16,8 @@ export class LeaderboardService {
     this.resource = `${this.environment.value('api_url')}/competitions/leaderboards`;
   }
 
-  public getScores(): Observable<ILeaderboardItem[]> {
-    return this.http.get<Array<ILeaderboardItem>>(this.resource).pipe(
+  public getScoresForActive(): Observable<ILeaderboardItem[]> {
+    return this.http.get<Array<ILeaderboardItem>>(`${this.resource}/active`).pipe(
       catchError((err) => {
         this.ns.toast({
           id: 'leaderboard-load-failure',

@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, NotImplementedException, Param, Query } from '@nestjs/common';
 
 import { MapService } from './map.service';
 
@@ -6,13 +6,18 @@ import { MapService } from './map.service';
 export class MapController {
   constructor(private service: MapService) {}
 
-  @Get()
-  public getLocations(@Body() { season }) {
-    return this.service.getLocations(season);
+  @Get('seasons/active')
+  public getFeatureCollectionForActiveSeason(@Query('format') format) {
+    return this.service.getLocationsForActiveSeason(format);
   }
 
-  @Get('geojson')
-  public getFeatureCollection(@Body() { season }) {
-    return this.service.getLocations(season, true);
+  @Get('seasons/:guid')
+  public getFeatureCollectionForSeason(@Param('guid') guid, @Query('format') format) {
+    return this.service.getLocationsForSeasonId(guid, format);
+  }
+
+  @Get()
+  public getLocations() {
+    throw new NotImplementedException();
   }
 }

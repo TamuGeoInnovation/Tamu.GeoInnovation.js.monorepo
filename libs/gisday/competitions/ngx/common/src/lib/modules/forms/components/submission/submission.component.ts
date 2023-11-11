@@ -1,18 +1,17 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, EMPTY, NEVER, Observable, of, Subject } from 'rxjs';
-import { catchError, filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { catchError, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { HttpEventType } from '@angular/common/http';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
-import { CompetitionForm } from '@tamu-gisc/gisday/competitions/data-api';
+import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'tamu-gisc-submission',
@@ -21,9 +20,9 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
 })
 export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
-  public formModel: CompetitionForm['model'];
+  public formModel: Partial<CompetitionSeason>;
 
-  public form: FormArray;
+  public form: FormGroup;
 
   public file: BehaviorSubject<File> = new BehaviorSubject(undefined);
 
@@ -49,9 +48,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private readonly fb: FormBuilder,
+    private readonly as: AuthService,
     private readonly ns: NotificationService,
-    private readonly env: EnvironmentService,
-    private readonly settings: SettingsService,
     private readonly analytics: Angulartics2,
     private readonly ss: SubmissionService,
     private readonly router: Router,
@@ -76,30 +74,34 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.formModel && changes.formModel.currentValue !== undefined && changes.formModel.currentValue !== null) {
-      this.form = this.fb.array(
-        changes.formModel.currentValue
-          .filter((c) => {
-            return c.enabled === true;
-          })
-          .map((control) => {
-            return this.fb.group({
-              ...control,
-              options: control.options.length > 0 ? this.fb.array(control.options) : [],
-              value: [undefined, Validators.required]
-            });
-          })
-      );
+      this.form = this.fb.group({
+        fields: this.fb.array(
+          changes.formModel.currentValue.form.model
+            .filter((c) => {
+              return c.enabled === true;
+            })
+            .map((control) => {
+              return this.fb.group({
+                ...control,
+                options: control.options.length > 0 ? this.fb.array(control.options) : [],
+                value: [undefined, Validators.required]
+              });
+            })
+        )
+      });
 
       // Some seasons will not request anything more than an image for the survey. In this case, the form control size will be zero and there
       // will be no form controls to ever emit form statusChanges. If that's the case, emit a VALID state for the form statusChanges so the
       // only other thing to check is the image input change.
       this.formValid = combineLatest([
-        this.form.controls.length > 0 ? this.form.statusChanges : of('VALID'),
-        this.file.pipe(filter((e) => e !== undefined))
+        (this.form.get('fields') as FormArray).controls.length > 0 ? this.form.statusChanges : of('VALID')
+        // this.file.pipe(filter((e) => e !== undefined))
       ]).pipe(
-        map(([formValid, fileValid]) => {
-          return formValid === 'VALID' && fileValid !== undefined;
-        })
+        startWith(['INVALID']),
+        map(([formValid]) => {
+          return formValid === 'VALID';
+        }),
+        shareReplay()
       );
     }
   }
@@ -121,74 +123,76 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public submitResponse() {
-    return combineLatest([
-      this.file.pipe(take(1)),
-      this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey).pipe(take(1))
-    ])
-      .pipe(
-        switchMap(([file, settings]) => {
-          if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
-            // FormData gets sent as multi-part form in request.
-            const data: FormData = new FormData();
+    return (
+      combineLatest([this.as.user$])
+        // return combineLatest([this.file.pipe(take(1)), this.as.user$])
+        .pipe(
+          // switchMap(([file, user]) => {
+          switchMap(([user]) => {
+            // if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
+            if (this.form.valid && this.submissionStatus.getValue() !== 1) {
+              // FormData gets sent as multi-part form in request.
+              const data: FormData = new FormData();
 
-            const location = {
-              latitude: this.location.coords.latitude,
-              longitude: this.location.coords.longitude,
-              accuracy: this.location.coords.accuracy,
-              altitude: this.location.coords.altitude,
-              altitudeAccuracy: this.location.coords.altitudeAccuracy,
-              heading: this.location.coords.heading,
-              speed: this.location.coords.speed
-            };
+              const location = {
+                latitude: this.location.coords.latitude,
+                longitude: this.location.coords.longitude,
+                accuracy: this.location.coords.accuracy,
+                altitude: this.location.coords.altitude,
+                altitudeAccuracy: this.location.coords.altitudeAccuracy,
+                heading: this.location.coords.heading,
+                speed: this.location.coords.speed
+              };
 
-            const value = this.form.getRawValue().reduce((acc, curr) => {
-              acc[curr.attribute] = curr.value;
+              const value = this.form.getRawValue().fields.reduce((acc, curr) => {
+                acc[curr.attribute] = curr.value;
 
-              return acc;
-            }, {});
+                return acc;
+              }, {});
 
-            data.append('userGuid', `${settings.guid}`);
-            data.append('location', JSON.stringify(location));
-            data.append('value', JSON.stringify(value));
-            data.append('season', `${new Date().getFullYear()}`);
-            data.append('head1', file);
+              data.append('userGuid', `${user.sub}`);
+              data.append('location', JSON.stringify(location));
+              data.append('value', JSON.stringify(value));
+              data.append('season', this.formModel.season.guid);
+              // data.append('head1', file);
 
-            return this.ss.postSubmission(data).pipe(
-              switchMap((event) => {
-                if (event.type === HttpEventType.UploadProgress) {
-                  if (this.submissionStatus.getValue() !== 1) {
-                    this.submissionStatus.next(1);
+              return this.ss.postSubmission(data).pipe(
+                switchMap((event) => {
+                  if (event.type === HttpEventType.UploadProgress) {
+                    if (this.submissionStatus.getValue() !== 1) {
+                      this.submissionStatus.next(1);
+                    }
+
+                    this.submissionProgress.next(event.loaded / event.total);
+                    return EMPTY;
+                  } else if (event.type === HttpEventType.Response) {
+                    this.router.navigate(['complete'], { relativeTo: this.route });
+                  } else {
+                    return EMPTY;
                   }
-
-                  this.submissionProgress.next(event.loaded / event.total);
-                  return EMPTY;
-                } else if (event.type === HttpEventType.Response) {
-                  this.router.navigate(['complete'], { relativeTo: this.route });
-                } else {
-                  return EMPTY;
-                }
-              })
-            );
-          } else {
-            return NEVER;
-          }
-        }),
-        catchError((err) => {
-          this.submissionStatus.next(-1);
-
-          this.analytics.eventTrack.next({
-            action: 'submission_fail',
-            properties: {
-              category: 'error',
-              gstCustom: {
-                message: err.message
-              }
+                })
+              );
+            } else {
+              return NEVER;
             }
-          });
+          }),
+          catchError((err) => {
+            this.submissionStatus.next(-1);
 
-          return of(err);
-        })
-      )
-      .subscribe();
+            this.analytics.eventTrack.next({
+              action: 'submission_fail',
+              properties: {
+                category: 'error',
+                gstCustom: {
+                  message: err.message
+                }
+              }
+            });
+
+            return of(err);
+          })
+        )
+        .subscribe()
+    );
   }
 }

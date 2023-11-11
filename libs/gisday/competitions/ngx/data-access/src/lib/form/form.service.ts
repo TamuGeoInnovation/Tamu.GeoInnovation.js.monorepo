@@ -21,9 +21,8 @@ export class FormService {
     this.resource = `${this.env.value('api_url')}/competitions/forms`;
   }
 
-  public getFormForActiveSeason(): Observable<CompetitionForm> {
+  public getFormForActiveSeason(): Observable<CompetitionSeason> {
     return this.http.get<CompetitionSeason>(`${this.resource}/active`).pipe(
-      pluck('form'),
       catchError((err) => {
         this.ns.toast({
           id: 'submission-form-load-failure',
@@ -53,6 +52,13 @@ export class FormService {
 
   public updateFormModelForActiveSeason(formGuid: string, form: CompetitionForm) {
     return this.http.patch(`${this.resource}/${formGuid}`, form).pipe(
+      tap(() => {
+        this.ns.toast({
+          id: 'designer-form-update-success',
+          message: 'Competition form was updated successfully.',
+          title: 'Update Form'
+        });
+      }),
       catchError((err) => {
         this.ns.toast({
           id: 'submission-form-save-failure',
@@ -69,9 +75,9 @@ export class FormService {
     return this.http.post(`${this.resource}/active`, form).pipe(
       tap(() => {
         this.ns.toast({
-          id: 'designer-form-signed',
-          message: 'Form was saved successfully.',
-          title: 'Form Saved'
+          id: 'designer-form-signed-success',
+          message: 'Form was created successfully.',
+          title: 'Create form'
         });
       }),
       catchError((err) => {
