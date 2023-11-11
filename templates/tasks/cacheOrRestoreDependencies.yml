@@ -6,7 +6,7 @@ steps:
 
   - task: Cache@2
     inputs:
-      key: 'npm | "16.17" | "$(Agent.OS)" | $(System.DefaultWorkingDirectory)/package-lock.json'
+      key: 'npm | "$(Agent.OS)" | $(System.DefaultWorkingDirectory)/package-lock.json'
       path: '$(System.DefaultWorkingDirectory)/node_modules'
       cacheHitVar: 'CacheHit'
 
