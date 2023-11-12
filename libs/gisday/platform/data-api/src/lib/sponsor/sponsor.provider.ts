@@ -71,11 +71,17 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
         }
       }
 
-      return this.sponsorRepo.save({
+      const toSave = {
         ...existing,
         ...incoming,
         logos: [logoImage]
-      });
+      };
+
+      if (!logoImage) {
+        delete toSave.logos;
+      }
+
+      return this.sponsorRepo.save(toSave);
     } else {
       throw new NotFoundException();
     }

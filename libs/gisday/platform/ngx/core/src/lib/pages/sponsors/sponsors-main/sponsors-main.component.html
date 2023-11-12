@@ -33,8 +33,7 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <div class="icon-item large"><a href="/sponsors/details/b5a3f156-1919-41b5-9086-643197073353" style="background-image: url(../assets/images/sponsors/ConocoPhillips_Logo_2018.svg)" alt="ConocoPhillips Logo" title="ConocoPhillips"></a></div>
-          <div class="icon-item large"><a href="/sponsors/details/47a34438-a620-44f5-a828-79b10176f9aa" style="background-image: url(../assets/images/sponsors/TAMU_GeoInnovation_Service_Center_Logo_2018.svg)" alt="Texas A&amp;M GeoInnovation Service Center Logo" title="Texas A&amp;M GeoInnovation Service Center"></a></div>
+          <div class="icon-item large" *ngFor="let s of rasterSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.guid | assetUrl | async) + ')' " [title]="s.name"></a></div>
         </div>
       </div>
     </div>
@@ -50,17 +49,15 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <!-- <div class="icon-item large">
-            <a href="https://txgisday.org/SponsorDetails/#!/details/1538c8a0-6dae-4673-aceb-cb60f76218d8" style="background-image: url(./assets/images/sponsors/ESRI_Logo_2018.svg)" alt="Esri Logo" title="Esri"></a>
-          </div> -->
+          <div class="icon-item large" *ngFor="let s of polygonSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.guid | assetUrl | async) + ')' " [title]="s.name"></a></div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="container12 flex flex-column trailer-1">
-    <div class="large-partition bg-md-grey-50 flex flex-row justify-center align-center" style="background-image: url(./assets/images/graphics/graphic-line.png); background-repeat: no-repeat; background-size: cover; background-position: bottom right">
-      <div class="column6 clr-md-grey-900 trailer-2">
+    <div class="large-partition bg-md-grey-50 flex flex-column justify-center align-center" style="background-image: url(./assets/images/graphics/graphic-line.png); background-repeat: no-repeat; background-size: cover; background-position: bottom right">
+      <div class="columzn6 clr-md-grey-900 trailer-2">
         <h2 class="trailer-1">LINE</h2>
         <div class="red-line small"></div>
         <p>A 2-dimensional vector feature composed of a at least two connected points.</p>
@@ -68,9 +65,7 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <!-- <div class="icon-item large">
-            <a href="https://txgisday.org/SponsorDetails/#!/details/20c8f896-c498-4465-a64d-e350a0388c6c" style="background-image: url(./assets/images/sponsors/apsg-ed.png)" alt="APSG Education Foundation Logo" title="APSG Education Foundation"></a>
-          </div> -->
+          <div class="icon-item large" *ngFor="let s of lineSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.guid | assetUrl | async) + ')' " [title]="s.name"></a></div>
         </div>
       </div>
     </div>
@@ -86,9 +81,7 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <!-- <div class="icon-item large">
-            <a href="https://txgisday.org/SponsorDetails/#!/details/2e8f0743-070a-4b79-861e-ef5672b4e833" style="background-image: url(./assets/images/sponsors/Blackline.jpg)" alt="Blackline Engineering" title="Blackline Engineering"></a>
-          </div> -->
+          <div class="icon-item large" *ngFor="let s of pointSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.guid | assetUrl | async) + ')' " [title]="s.name"></a></div>
         </div>
       </div>
     </div>
