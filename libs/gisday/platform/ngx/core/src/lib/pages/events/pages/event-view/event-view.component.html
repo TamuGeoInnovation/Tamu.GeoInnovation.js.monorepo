@@ -32,7 +32,7 @@
       </div>
 
       <div id="filters-container">
-        <div id="filter-toggle" class="trailer-1" (click)="toggleFilters()"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
+        <div id="filter-toggle" class="info-block" [ngClass]="{'notice': (activeFilterCount$ | async) > 0}" (click)="toggleFilters()"><span class="material-icons">filter_list</span>Filters <strong *ngIf="(activeFilterCount$ | async) > 0">({{activeFilterCount$ | async}} active)</strong></div>
 
         <form [formGroup]="form" id="filters-inner" [ngClass]="{expanded: filtersVisible$ | async}">
           <div id="tag-filters-container">

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, Subject, merge } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, merge } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
@@ -32,11 +32,11 @@ export class EventViewComponent implements OnInit, OnDestroy {
 
   public activeTagFilters$: Observable<Array<string>>;
   public activeOrgFilters$: Observable<Array<string>>;
+  public activeFilterCount$: Observable<number>;
   public rsvps$: Observable<Array<string>>;
 
   private _filtersVisible$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public filtersVisible$: Observable<boolean> = this._filtersVisible$.asObservable();
-  private _refresh$: Subject<boolean> = new Subject();
   private _destroy$: Subject<boolean> = new Subject();
 
   /**
@@ -156,6 +156,13 @@ export class EventViewComponent implements OnInit, OnDestroy {
       ) // The second observable behaves like startWith, because it only emits once. This is to ensure
       // that the initial filters are set and not rely on the user to change the filters to apply them.
     ).pipe(shareReplay());
+
+    this.activeFilterCount$ = combineLatest([this.activeTagFilters$, this.activeOrgFilters$]).pipe(
+      map(([tags, orgs]) => {
+        return (tags ? tags.length : 0) + (orgs ? orgs.length : 0);
+      }),
+      shareReplay()
+    );
 
     this.rsvps$ = this.isAuthed$.pipe(
       filter((auth) => {
