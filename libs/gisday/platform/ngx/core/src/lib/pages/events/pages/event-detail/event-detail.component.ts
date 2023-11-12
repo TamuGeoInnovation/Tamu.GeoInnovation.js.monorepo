@@ -13,15 +13,14 @@ import {
   startWith,
   Subject,
   switchMap,
-  takeUntil,
-  withLatestFrom
+  takeUntil
 } from 'rxjs';
 
 import { Event, EventAttendanceDto } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckinService, EventService, RsvpService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
+import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -34,6 +33,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   public event$: Observable<Partial<Event>>;
   public isLoggedIn$: Observable<boolean> = this.auth.isAuthenticated$;
   public userRsvp$: Observable<boolean>;
+  public userCheckedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
   public eventAttendance$: Observable<EventAttendanceDto>;
   public isModerator$: Observable<boolean> = this.auth.userRoles$.pipe(
@@ -41,12 +41,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       return [this.appRoles.ADMIN, this.appRoles.MANAGER, this.appRoles.ORGANIZER].some((role) => roles.includes(role));
     })
   );
+  public eventLive$: Observable<boolean>;
+  public eventElapsed$: Observable<boolean>;
 
-  public numOfRsvps: Observable<number>;
-  public userHasCheckedInAlready: Observable<boolean>;
-  public isCheckinOpen = false;
-  public now: Date = new Date();
   public attendanceForm: FormGroup;
+  public isCheckinOpen = false;
 
   private _refresh$: Subject<boolean> = new Subject();
   private _destroy$: Subject<boolean> = new Subject();
@@ -67,6 +66,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       observedAttendeeEnd: [null]
     });
 
+    this.userRoles$ = this.auth.userRoles$;
+
     this.event$ = this.route.params.pipe(
       map((params) => params['guid']),
       switchMap((eventGuid) => this.eventService.getEvent(eventGuid)),
@@ -76,10 +77,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     this.userRsvp$ = this._refresh$.pipe(
       startWith(true),
       switchMap(() => {
-        return this.isLoggedIn$.pipe(
-          filter((loggedIn) => loggedIn),
-          withLatestFrom(this.event$),
-          switchMap(([, event]) => {
+        return this.event$.pipe(
+          switchMap((event) => {
             return this.userRsvpService.getUserRsvpForEvent(event.guid).pipe(mapTo(true));
           }),
           catchError(() => {
@@ -90,7 +89,20 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       shareReplay()
     );
 
-    this.userRoles$ = this.auth.userRoles$;
+    this.userCheckedIn$ = this._refresh$.pipe(
+      startWith(true),
+      switchMap(() => {
+        return this.event$.pipe(
+          switchMap((event) => {
+            return this.checkinService.getUserCheckinForEvent(event.guid).pipe(mapTo(true));
+          }),
+          catchError(() => {
+            return of(false);
+          })
+        );
+      }),
+      shareReplay()
+    );
 
     this.eventAttendance$ = this._refresh$.pipe(
       startWith(true),
@@ -122,6 +134,49 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           observedAttendeeEnd: at.observedAttendeeEnd ? at.observedAttendeeEnd : 0
         });
       });
+
+    // Event live status is determined by taking the event season day `date` and the event start and end times.
+    // Event should be live when now time is between the start and end (+ 15 minutes) times of the event day.
+    // This is to account for the 15 minute buffer period after the event end time that is given to allow for
+    // late checkins.
+    const parsedDates = this.event$.pipe(
+      map((event) => {
+        const start = parseDateStrings(event?.day?.date, event?.startTime);
+        const end = parseDateStrings(event?.day?.date, event?.endTime);
+
+        end.setMinutes(end.getMinutes() + 15);
+
+        return {
+          start,
+          end
+        };
+      }),
+      shareReplay()
+    );
+
+    this.eventElapsed$ = parsedDates.pipe(
+      switchMap((startEndTimes) => {
+        return interval(1000).pipe(
+          startWith(0),
+          map(() => {
+            const now = new Date();
+            return now > startEndTimes.end;
+          })
+        );
+      })
+    );
+
+    this.eventLive$ = parsedDates.pipe(
+      switchMap((startEndTimes) => {
+        return interval(1000).pipe(
+          startWith(0),
+          map(() => {
+            const now = new Date();
+            return now >= startEndTimes.start && now <= startEndTimes.end;
+          })
+        );
+      })
+    );
   }
 
   public ngOnDestroy(): void {
@@ -168,7 +223,20 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   public checkin() {
-    // this.checkinService.insertUserCheckin(this.eventGuid);
+    this.event$
+      .pipe(
+        switchMap((event) => {
+          return this.checkinService.insertUserCheckin(event.guid);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this._refresh$.next(true);
+        },
+        error: (err) => {
+          console.log(`Error registering for event. ${err.status}: ${err.message}`);
+        }
+      });
   }
 
   public updateAttendance() {

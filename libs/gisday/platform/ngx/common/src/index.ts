@@ -6,5 +6,7 @@ export * from './lib/modules/people/people.module';
 export * from './lib/utils/form-to-form-data';
 export * from './lib/pipes/order-by/order-by-pipe';
 
+export * from './lib/utils/parse-date-strings';
+
 // Roles
 export * from './lib/roles/gisday.roles';

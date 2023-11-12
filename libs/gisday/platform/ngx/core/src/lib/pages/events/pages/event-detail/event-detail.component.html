@@ -140,15 +140,34 @@
 
           <div>
             <h3 class="trailer-1">Checkin</h3>
-            <div *ngIf="isCheckinOpen === false; else showCheckinButton">
-              <p>Checkin will be available at the start of the session.</p>
-            </div>
 
-            <ng-template #showCheckinButton>
-              <div>
-                <p>Use the button below to checkin into this event.</p>
-                <!-- <tamu-gisc-button fit="snug" value="CheckIn" (click)="checkin()"></tamu-gisc-button> -->
+            <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInCheckin">
+              <div *ngIf="(eventElapsed$ | async) === true; else eventHasNotElapsed">
+                <p class="error"><strong>Checkin is no longer available for this session.</strong></p>
               </div>
+
+              <ng-template #eventHasNotElapsed>
+                <ng-container *ngIf="userCheckedIn$ | async; else notCheckedIn">
+                  <p class="success">Your attendance has been registered. Thank you!</p>
+                </ng-container>
+
+                <ng-template #notCheckedIn>
+                  <div *ngIf="eventLive$ | async; else eventNotOngoing">
+                    <p class="trailer-1">Check-in to register your attendance for this event.</p>
+                    <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" (click)="checkin()"></tamu-gisc-button>
+                  </div>
+                </ng-template>
+
+                <ng-template #eventNotOngoing>
+                  <div>
+                    <p>Checkin will be available at the start of the session.</p>
+                  </div>
+                </ng-template>
+              </ng-template>
+            </ng-container>
+
+            <ng-template #notLoggedInCheckin>
+              <p>You must be logged in to checkin for this event.</p>
             </ng-template>
           </div>
         </div>
