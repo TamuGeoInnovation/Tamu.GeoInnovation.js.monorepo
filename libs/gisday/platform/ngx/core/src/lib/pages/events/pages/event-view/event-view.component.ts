@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
-import { filter, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, EMPTY, Observable, Subject, merge } from 'rxjs';
+import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
@@ -14,13 +14,14 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
+import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
 @Component({
   selector: 'tamu-gisc-event-view',
   templateUrl: './event-view.component.html',
   styleUrls: ['./event-view.component.scss']
 })
-export class EventViewComponent implements OnInit {
+export class EventViewComponent implements OnInit, OnDestroy {
   public activeSeason$: Observable<ActiveSeasonDto>;
   public events$: Observable<Array<Partial<Event>>>;
   public tags$: Observable<Array<Partial<Tag>>>;
@@ -36,6 +37,7 @@ export class EventViewComponent implements OnInit {
   private _filtersVisible$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public filtersVisible$: Observable<boolean> = this._filtersVisible$.asObservable();
   private _refresh$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<boolean> = new Subject();
 
   /**
    * Form group used to delate filter changes as observables that can
@@ -51,7 +53,8 @@ export class EventViewComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly rs: RsvpService,
     private readonly us: UserService,
-    private ns: NotificationService,
+    private readonly ns: NotificationService,
+    private readonly st: SettingsService,
     private readonly as: AuthService
   ) {}
 
@@ -59,6 +62,45 @@ export class EventViewComponent implements OnInit {
     this.form = this.fb.group({
       tags: [null],
       organizations: [null]
+    });
+
+    const settings = this.st
+      .init({
+        storage: {
+          subKey: 'event-filters'
+        },
+        settings: {
+          tags: {
+            value: '',
+            persistent: true
+          },
+          organizations: {
+            value: '',
+            persistent: true
+          }
+        }
+      })
+      .pipe(shareReplay());
+
+    // Subscription needs to remain active for the lifetime of the component, otherwise
+    // the settings will not be written to localStorage when `updateSettings` is called.
+    //
+    // Great design...
+    //
+    settings.pipe(takeUntil(this._destroy$)).subscribe((settings) => {
+      console.log('Set new filters', settings);
+    });
+
+    // Shorthand for getting the initial settings state value and using as seed value for
+    // form and filters.
+    const singularSettings = settings.pipe(take(1));
+
+    // Initial form patch so that the filters get passed down to the day cards
+    singularSettings.subscribe((settings) => {
+      this.form.patchValue({
+        tags: settings.tags ? (settings.tags as string).split(',') : null,
+        organizations: settings.organizations ? (settings.organizations as string).split(',') : null
+      });
     });
 
     this.isAuthed$ = this.as.isAuthenticated$;
@@ -83,8 +125,38 @@ export class EventViewComponent implements OnInit {
       shareReplay()
     );
 
-    this.activeTagFilters$ = this.form.get('tags').valueChanges.pipe(shareReplay());
-    this.activeOrgFilters$ = this.form.get('organizations').valueChanges.pipe(shareReplay());
+    this.activeTagFilters$ = merge(
+      this.form.get('tags').valueChanges.pipe(
+        tap((tags) => {
+          this.st.updateSettings({
+            tags: tags ? tags.toString() : null
+          });
+        })
+      ),
+      singularSettings.pipe(
+        map((settings) => {
+          return settings.tags ? (settings.tags as string).split(',') : null;
+        })
+      ) // The second observable behaves like startWith, because it only emits once. This is to ensure
+      // that the initial filters are set and not rely on the user to change the filters to apply them.
+    ).pipe(shareReplay());
+
+    this.activeOrgFilters$ = merge(
+      this.form.get('organizations').valueChanges.pipe(
+        tap((orgs) => {
+          this.st.updateSettings({
+            organizations: orgs ? orgs.toString() : null
+          });
+        })
+      ),
+      singularSettings.pipe(
+        map((settings) => {
+          return settings.organizations ? (settings.organizations as string).split(',') : null;
+        })
+      ) // The second observable behaves like startWith, because it only emits once. This is to ensure
+      // that the initial filters are set and not rely on the user to change the filters to apply them.
+    ).pipe(shareReplay());
+
     this.rsvps$ = this.isAuthed$.pipe(
       filter((auth) => {
         return auth === true;
@@ -100,6 +172,11 @@ export class EventViewComponent implements OnInit {
       }),
       shareReplay()
     );
+  }
+
+  public ngOnDestroy(): void {
+    this._destroy$.next(true);
+    this._destroy$.complete();
   }
 
   public toggleFilters() {

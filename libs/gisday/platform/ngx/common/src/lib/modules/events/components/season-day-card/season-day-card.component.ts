@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Observable, ReplaySubject, Subject, combineLatest, map, shareReplay, startWith, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, withLatestFrom } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -44,12 +44,12 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   /**
    * Observable that gets pushed the input `tags` on changes.
    */
-  private _activeTagFilters: Subject<Array<string>> = new Subject<Array<string>>();
+  private _activeTagFilters: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([]);
 
   /**
    * Observable that gets pushed the input `organizations` on changes.
    */
-  private _activeOrgFilters: Subject<Array<string>> = new Subject<Array<string>>();
+  private _activeOrgFilters: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([]);
 
   private _activeRsvpsForDay: ReplaySubject<Array<string>> = new ReplaySubject<Array<string>>();
 
@@ -58,10 +58,7 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
   public ngOnInit(): void {
     this.events$ = this.sd.getDayEvents(this.seasonDay.guid).pipe(shareReplay());
 
-    this.filteredEvents$ = combineLatest([
-      this._activeTagFilters.pipe(startWith([])),
-      this._activeOrgFilters.pipe(startWith([]))
-    ]).pipe(
+    this.filteredEvents$ = combineLatest([this._activeTagFilters, this._activeOrgFilters]).pipe(
       withLatestFrom(this.events$),
       map(([[tags, orgs], events]) => {
         return events.filter((simplifiedEvent) => {
@@ -95,14 +92,16 @@ export class SeasonDayCardComponent implements OnInit, OnChanges {
         });
       })
     );
+
+    // this._activeOrgFilters.next(this.organizations);
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.tags) {
+    if (changes.tags && changes.tags.currentValue !== null) {
       this._activeTagFilters.next(changes.tags.currentValue);
     }
 
-    if (changes.organizations) {
+    if (changes.organizations && changes.organizations.currentValue !== null) {
       this._activeOrgFilters.next(changes.organizations.currentValue);
     }
 
