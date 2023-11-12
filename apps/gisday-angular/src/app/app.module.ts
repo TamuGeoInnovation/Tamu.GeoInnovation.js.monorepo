@@ -45,7 +45,7 @@ const routeOptions: ExtraOptions = {
 @NgModule({
   imports: [
     Angulartics2Module.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js'),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
     AuthModule.forRoot({
       domain: environment.auth0.domain,
       clientId: environment.auth0.client_id,

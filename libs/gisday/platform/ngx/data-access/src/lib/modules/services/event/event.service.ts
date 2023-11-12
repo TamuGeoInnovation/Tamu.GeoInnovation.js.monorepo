@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { Event } from '@tamu-gisc/gisday/platform/data-api';
+import { Event, EventAttendanceDto } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 
@@ -30,6 +30,14 @@ export class EventService extends BaseService<Event> {
 
   public getEventsByDay() {
     return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`);
+  }
+
+  public getEventAttendance(guid: string) {
+    return this.http1.get<EventAttendanceDto>(`${this.resource}/${guid}/attendance`);
+  }
+
+  public updateEventAttendance(guid: string, counts: EventAttendanceDto) {
+    return this.http1.patch<EventAttendanceDto>(`${this.resource}/${guid}/attendance`, counts);
   }
 }
 

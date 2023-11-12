@@ -15,7 +15,8 @@ import {
   UserRsvp
 } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
-import { UpdateEventDto } from './event.controller';
+import { UpdateEventDto } from './dto/update-event.dto';
+import { EventAttendanceDto } from './dto/event-attendance.dto';
 
 @Injectable()
 export class EventProvider extends BaseProvider<Event> {
@@ -105,18 +106,6 @@ export class EventProvider extends BaseProvider<Event> {
     }
   }
 
-  private async getTags(guids: string[]): Promise<Tag[]> {
-    return this.tagRepo.find({
-      guid: In(guids)
-    });
-  }
-
-  private async getSponsors(guids: string[]): Promise<Sponsor[]> {
-    return this.sponsorRepo.find({
-      guid: In(guids)
-    });
-  }
-
   public async getEntitiesByDay() {
     const events = this.eventRepo.find();
     const entities = from(events).pipe(
@@ -172,5 +161,42 @@ export class EventProvider extends BaseProvider<Event> {
     }
 
     return event;
+  }
+
+  public async getEventAttendance(eventGuid: string) {
+    const event = await this.eventRepo.findOne({
+      where: {
+        guid: eventGuid
+      },
+      select: ['observedAttendeeStart', 'observedAttendeeEnd', 'guid']
+    });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    return event;
+  }
+
+  public async updateAttendance(eventGuid: string, counts: EventAttendanceDto) {
+    const event = await this.eventRepo.findOne({
+      where: {
+        guid: eventGuid
+      }
+    });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    if (counts.observedAttendeeStart !== undefined) {
+      event.observedAttendeeStart = counts.observedAttendeeStart;
+    }
+
+    if (counts.observedAttendeeEnd !== undefined) {
+      event.observedAttendeeEnd = counts.observedAttendeeEnd;
+    }
+
+    return event.save();
   }
 }

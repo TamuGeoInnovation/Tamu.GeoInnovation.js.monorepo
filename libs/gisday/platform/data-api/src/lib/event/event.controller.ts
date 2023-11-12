@@ -1,14 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { EntityRelationsLUT, Event } from '../entities/all.entity';
 import { EventProvider } from './event.provider';
+import { EventAttendanceDto } from './dto/event-attendance.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @Controller('events')
 export class EventController {
   constructor(private readonly provider: EventProvider) {}
+
+  @Get(':guid/attendance')
+  public async getAttendance(@Param('guid') guid) {
+    return this.provider.getEventAttendance(guid);
+  }
 
   @Get(':guid/event')
   public async getEntityWithRelations(@Param('guid') guid) {
@@ -56,6 +63,17 @@ export class EventController {
 
   @Permissions(['update:events'])
   @UseGuards(JwtGuard, PermissionsGuard)
+  @Patch(':guid/attendance')
+  public async updateAttendance(@Param('guid') guid, @Body() counts: EventAttendanceDto) {
+    if (!counts || (counts.observedAttendeeStart === undefined && counts.observedAttendeeEnd === undefined)) {
+      throw new BadRequestException('Invalid request body. Missing start and/or end counts.');
+    }
+
+    return this.provider.updateAttendance(guid, counts);
+  }
+
+  @Permissions(['update:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Patch(':guid')
   public async updateEntity(@Param('guid') guid, @Body() body: UpdateEventDto) {
     return this.provider.updateEvent(guid, body);
@@ -71,9 +89,4 @@ export class EventController {
       }
     });
   }
-}
-
-export interface UpdateEventDto extends Omit<DeepPartial<Event>, 'tags' | 'speakers'> {
-  tags: Array<string>;
-  speakers: Array<string>;
 }

@@ -1,4 +1,4 @@
-<section *ngIf="($event | async) as event">
+<section *ngIf="(event$ | async) as event">
   <div>
     <div class="container12 leader-3 flex flex-row">
       <h1 class="session-title">{{event.name}}</h1>
@@ -170,6 +170,34 @@
             </div>
           </div>
         </div> -->
+
+        <ng-container *ngIf="isModerator$ | async">
+          <div>
+            <div class="border-divider leader-2 trailer-2"></div>
+            <div class="trailer-2">
+              <h3 class="trailer-1">Attendance</h3>
+
+              <div class="info-block notice">
+                <p><strong>Only admins, managers, or organizers can see this section.</strong></p>
+              </div>
+
+              <div>
+                <p>Record the number of observed attendees at the beginning and end of the event to track retention.</p>
+
+                <form [formGroup]="attendanceForm" (submit)="updateAttendance()">
+                  <div class="form-collection row wrap">
+                    <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Start Attendance" [floatLabel]="true"></tamu-gisc-textbox>
+                    <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="End Attendance" [floatLabel]="true"></tamu-gisc-textbox>
+                  </div>
+
+                  <div class="form-collection column">
+                    <tamu-gisc-button value="Update Attendance" type="submit"></tamu-gisc-button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

@@ -290,10 +290,10 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true })
   public endTime: string;
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ nullable: true, default: 0, select: false })
   public observedAttendeeStart: number;
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ nullable: true, default: 0, select: false })
   public observedAttendeeEnd: number;
 
   @Column({ nullable: true })
