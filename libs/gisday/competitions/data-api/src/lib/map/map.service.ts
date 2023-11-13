@@ -23,7 +23,7 @@ export class MapService extends BaseService<CompetitionSubmission> {
       .leftJoinAndSelect('submissions.location', 'location')
       .leftJoinAndSelect('submissions.validationStatus', 'validationStatus')
       .leftJoin('submissions.season', 'season')
-      .where('season.season = :seasonId')
+      .where('season.guid = :seasonId')
       .setParameter('seasonId', competitionSeasonGuid)
       .orderBy('submissions.created', 'ASC');
 
