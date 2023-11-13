@@ -24,10 +24,10 @@ export class GISDayCompetitionBaseEntity extends BaseEntity {
   @PrimaryColumn()
   public guid: string;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'datetimeoffset' })
   public updated: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'datetimeoffset' })
   public created: Date;
 
   @BeforeUpdate()

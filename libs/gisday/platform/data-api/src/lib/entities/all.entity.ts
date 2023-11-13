@@ -105,10 +105,10 @@ export class OldCompetitionEntity extends BaseEntity {
 
 @Entity()
 export class TimeStampEntity extends BaseEntity {
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'datetimeoffset' })
   public updated: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'datetimeoffset' })
   public created: Date;
 }
 
