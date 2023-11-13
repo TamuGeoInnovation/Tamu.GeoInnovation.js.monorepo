@@ -16,8 +16,8 @@ import {
   takeUntil
 } from 'rxjs';
 
-import { Event, EventAttendanceDto } from '@tamu-gisc/gisday/platform/data-api';
-import { CheckinService, EventService, RsvpService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { Event, EventAttendanceDto, GisDayAppMetadata } from '@tamu-gisc/gisday/platform/data-api';
+import { CheckinService, EventService, RsvpService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/common';
@@ -32,6 +32,8 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   public event$: Observable<Partial<Event>>;
   public isLoggedIn$: Observable<boolean> = this.auth.isAuthenticated$;
+  public userInfo$: Observable<Partial<GisDayAppMetadata>>;
+  public userProfileComplete$: Observable<boolean>;
   public userRsvp$: Observable<boolean>;
   public userCheckedIn$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
@@ -57,6 +59,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     private readonly checkinService: CheckinService,
     private readonly userRsvpService: RsvpService,
     private readonly ns: NotificationService,
+    private readonly us: UserService,
     private readonly fb: FormBuilder
   ) {}
 
@@ -67,6 +70,22 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     });
 
     this.userRoles$ = this.auth.userRoles$;
+    this.userInfo$ = this.auth.isAuthenticated$.pipe(
+      filter((auth) => {
+        return auth === true;
+      }),
+      switchMap(() => {
+        return this.us.getSignedOnEntity();
+      }),
+      shareReplay()
+    );
+
+    this.userProfileComplete$ = this.userInfo$.pipe(
+      map((user) => {
+        return user?.app_metadata?.gisday?.completedProfile === true;
+      }),
+      shareReplay()
+    );
 
     this.event$ = this.route.params.pipe(
       map((params) => params['guid']),

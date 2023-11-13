@@ -25,7 +25,7 @@
     <div class="trailer-3" id="sessions-container">
       <div id="default-content" *ngIf="activeSeason$ | async as season;">
         <div class="info-block warning" *ngIf="(userInfo$ | async) && (userProfileComplete$ | async) === false">
-          <p>You must complete your TxGIS Day <a routerLink="/account/my-details">profile</a> before registering for events.</p>
+          <p>You must complete your TxGIS Day <a routerLink="/account/details">profile</a> before registering for events.</p>
         </div>
 
         <tamu-gisc-season-day-card *ngFor="let day of season?.days; let i = index;" [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>

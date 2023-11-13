@@ -122,16 +122,22 @@
             <h3 class="trailer-1">Registration</h3>
 
             <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInRegistration">
-              <ng-container *ngIf="userRsvp$ | async; else notRsvpd">
-                <p class="trailer-1">You are registered for this event.</p>
-                <tamu-gisc-button [look]="'secondary'" value="WITHDRAW REGISTRATION" fit="snug" (go)="unregister()"></tamu-gisc-button>
-              </ng-container>
+              <ng-container *ngIf="userProfileComplete$ | async; else registerProfileNotComplete">
+                <ng-container *ngIf="userRsvp$ | async; else notRsvpd">
+                  <p class="trailer-1">You are registered for this event.</p>
+                  <tamu-gisc-button [look]="'secondary'" value="WITHDRAW REGISTRATION" fit="snug" (go)="unregister()"></tamu-gisc-button>
+                </ng-container>
 
-              <ng-template #notRsvpd>
-                <p class="trailer-1">This is a limited-seating event. Register to reserve your seat.</p>
-                <tamu-gisc-button [look]="'secondary'" value="REGISTER FOR EVENT" fit="snug" (go)="register()"></tamu-gisc-button>
-              </ng-template>
+                <ng-template #notRsvpd>
+                  <p class="trailer-1">This is a limited-seating event. Register to reserve your seat.</p>
+                  <tamu-gisc-button [look]="'secondary'" value="REGISTER FOR EVENT" fit="snug" (go)="register()"></tamu-gisc-button>
+                </ng-template>
+              </ng-container>
             </ng-container>
+
+            <ng-template #registerProfileNotComplete>
+              <p>You must complete your <a routerLink="/account/details">profile</a> before being able to register for session.</p>
+            </ng-template>
 
             <ng-template #notLoggedInRegistration>
               <p>You must be logged in to register for this event.</p>
@@ -142,20 +148,22 @@
             <h3 class="trailer-1">Checkin</h3>
 
             <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInCheckin">
-              <div *ngIf="(eventElapsed$ | async) === true; else eventHasNotElapsed">
-                <p class="error"><strong>Checkin is no longer available for this session.</strong></p>
-              </div>
+              <ng-container *ngIf="userProfileComplete$ | async; else profileNotComplete">
+                <div *ngIf="(eventElapsed$ | async) === true; else eventHasNotElapsed">
+                  <p class="error"><strong>Checkin is no longer available for this session.</strong></p>
+                </div>
 
-              <ng-template #eventHasNotElapsed>
-                <ng-container *ngIf="userCheckedIn$ | async; else notCheckedIn">
-                  <p class="success"><strong>Your attendance has been registered. Thank you!</strong></p>
-                </ng-container>
+                <ng-template #eventHasNotElapsed>
+                  <ng-container *ngIf="userCheckedIn$ | async; else notCheckedIn">
+                    <p class="success"><strong>Your attendance has been registered. Thank you!</strong></p>
+                  </ng-container>
 
-                <ng-template #notCheckedIn>
-                  <div *ngIf="eventLive$ | async; else eventNotOngoing">
-                    <p class="trailer-1">Check-in to register your attendance for this event.</p>
-                    <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" (click)="checkin()"></tamu-gisc-button>
-                  </div>
+                  <ng-template #notCheckedIn>
+                    <div *ngIf="eventLive$ | async; else eventNotOngoing">
+                      <p class="trailer-1">Check-in to register your attendance for this event.</p>
+                      <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" (click)="checkin()"></tamu-gisc-button>
+                    </div>
+                  </ng-template>
                 </ng-template>
 
                 <ng-template #eventNotOngoing>
@@ -163,6 +171,10 @@
                     <p>Checkin will be available at the start of the session.</p>
                   </div>
                 </ng-template>
+              </ng-container>
+
+              <ng-template #profileNotComplete>
+                <p>You must complete your <a routerLink="/account/details">profile</a> before being able to check into sessions.</p>
               </ng-template>
             </ng-container>
 
