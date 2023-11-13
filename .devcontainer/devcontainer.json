@@ -3,7 +3,26 @@
 {
 	"name": "Node.js & TypeScript",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/typescript-node:16"
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:16",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"johnpapa.Angular2",
+				"ms-vscode-remote.remote-containers",
+				"mikestead.dotenv",
+				"usernamehw.errorlens",
+				"ms-vscode-remote.vscode-remote-extensionpack",
+				"ms-vscode.remote-explorer",
+				"wayou.vscode-todo-highlight",
+				"ms-vscode-remote.remote-wsl",
+				"Angular.ng-template",
+				"streetsidesoftware.code-spell-checker",
+				"oouo-diogo-perdigao.docthis",
+				"nrwl.angular-console",
+				"esbenp.prettier-vscode"
+			]
+		}
+	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
