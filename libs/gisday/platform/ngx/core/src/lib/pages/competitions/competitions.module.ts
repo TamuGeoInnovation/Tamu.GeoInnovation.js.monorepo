@@ -53,6 +53,10 @@ const routes: Routes = [
         loadChildren: () => import('./sidewalk/sidewalk.module').then((m) => m.SidewalkModule)
       },
       {
+        path: 'lighting',
+        loadChildren: () => import('./lighting/lighting.module').then((m) => m.LightingModule)
+      },
+      {
         path: 'lightpole',
         loadChildren: () => import('./light-pole/light-pole.module').then((m) => m.LightPoleModule)
       },
