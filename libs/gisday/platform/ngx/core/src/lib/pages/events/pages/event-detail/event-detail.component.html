@@ -148,7 +148,7 @@
 
               <ng-template #eventHasNotElapsed>
                 <ng-container *ngIf="userCheckedIn$ | async; else notCheckedIn">
-                  <p class="success">Your attendance has been registered. Thank you!</p>
+                  <p class="success"><strong>Your attendance has been registered. Thank you!</strong></p>
                 </ng-container>
 
                 <ng-template #notCheckedIn>

@@ -42,10 +42,9 @@
       <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
       <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
       <tamu-gisc-tile-submenu *giscTileSubmenu>
-        <p tamuGiscTileLink location="/account/my-details">My Details</p>
-        <!-- <p tamuGiscTileLink location="/account/my-classes">My Classes</p> -->
-        <!-- <p tamuGiscTileLink location="/account/my-checkins">My Checkins</p> -->
-        <!-- <p tamuGiscTileLink location="/account/my-submissions">My Submissions</p> -->
+        <p tamuGiscTileLink location="/account/details">Profile</p>
+        <p tamuGiscTileLink location="/account/classes">Classes</p>
+        <p tamuGiscTileLink location="/account/checkins">Checkins</p>
         <p (click)="logout()">Logout</p>
       </tamu-gisc-tile-submenu>
     </tamu-gisc-tile>
@@ -103,14 +102,14 @@
         </ul>
 
         <ul class="dropdown" *ngIf="(loggedIn$ | async); else logInPrompt">
-          <a [routerLink]="['/account/my-details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
+          <a [routerLink]="['/account/details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
 
           <ul>
-            <li><a [routerLink]="['/account/my-details']">Profile</a></li>
-            <!-- <li><a [routerLink]="['/account/my-classes']">My Classes</a></li> -->
+            <li><a [routerLink]="['/account/details']">Profile</a></li>
+            <!-- <li><a [routerLink]="['/account/classes']">Classes</a></li> -->
             <li *ngIf="(userRoles$ | async) | hasRoles :  [appRoles.ADMIN, appRoles.MANAGER, appRoles.ORGANIZER]"><a [routerLink]="['/admin']">Admin</a></li>
-            <!-- <li><a [routerLink]="['/account/my-checkins']">My Checkins</a></li> -->
-            <!-- <li><a [routerLink]="['/account/my-submissions']">My Submissions</a></li> -->
+            <!-- <li><a [routerLink]="['/account/checkins']">Checkins</a></li> -->
+            <!-- <li><a [routerLink]="['/account/submissions']">My Submissions</a></li> -->
             <li><a (click)="logout()">Logout</a></li>
           </ul>
         </ul>

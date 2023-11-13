@@ -14,19 +14,19 @@ const routes: Routes = [
         loadChildren: () => import('./pages/my-details/my-details.module').then((m) => m.MyDetailsModule)
       },
       {
-        path: 'my-classes',
+        path: 'classes',
         loadChildren: () => import('./pages/my-classes/my-classes.module').then((m) => m.MyClassesModule)
       },
       {
-        path: 'my-checkins',
+        path: 'checkins',
         loadChildren: () => import('./pages/my-checkins/my-checkins.module').then((m) => m.MyCheckinsModule)
       },
       {
-        path: 'my-details',
+        path: 'details',
         loadChildren: () => import('./pages/my-details/my-details.module').then((m) => m.MyDetailsModule)
       },
       {
-        path: 'my-submissions',
+        path: 'submissions',
         loadChildren: () => import('./pages/my-submissions/my-submissions.module').then((m) => m.MySubmissionsModule)
       },
       {

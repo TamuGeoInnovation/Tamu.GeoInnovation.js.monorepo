@@ -18,8 +18,12 @@ export class CheckinService extends BaseService<CheckIn> {
     super(env1, http1, 'check-ins');
   }
 
+  public getUserCheckins() {
+    return this.http1.get<Array<Partial<CheckIn>>>(`${this.resource}/user`);
+  }
+
   public getUserCheckinForEvent(eventGuid: string) {
-    return this.http1.get(`${this.resource}/user/event/${eventGuid}`);
+    return this.http1.get<Partial<CheckIn>>(`${this.resource}/user/event/${eventGuid}`);
   }
 
   public insertUserCheckin(eventGuid: string) {

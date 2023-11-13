@@ -36,22 +36,21 @@ export class CheckInController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions(['read:checkins'])
   @Get('user/:userGuid')
-  public async getUserCheckins(@Param('userGuid') userGuid) {
-    return this.provider.findOne({
-      where: {
-        accountGuid: userGuid
-      }
-    });
+  public async getCheckinsForUser(@Param('userGuid') userGuid) {
+    return this.provider.getCheckinsForUser(userGuid);
   }
 
   @UseGuards(JwtGuard)
-  @Get()
-  public async getUsersCheckins(@Request() req) {
-    return this.provider.find({
-      where: {
-        accountGuid: req.user.sub
-      }
-    });
+  @Get('user')
+  public async getLoggedInUserCheckins(@Request() req) {
+    return this.provider.getCheckinsForUser(req.user.sub);
+  }
+
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['read:checkins'])
+  @Get('')
+  public async getAllCheckins(@Request() req) {
+    return this.provider.find();
   }
 
   @UseGuards(JwtGuard)

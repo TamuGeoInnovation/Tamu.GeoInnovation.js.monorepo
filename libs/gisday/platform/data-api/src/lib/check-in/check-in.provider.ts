@@ -15,6 +15,19 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
     super(checkInRepo);
   }
 
+  public async getCheckinsForUser(userGuid: string) {
+    if (!userGuid) {
+      throw new UnprocessableEntityException(null, 'User guid is missing');
+    }
+
+    return this.checkInRepo.find({
+      where: {
+        accountGuid: userGuid
+      },
+      relations: ['event']
+    });
+  }
+
   public async insertUserCheckin(eventGuid: string, accountGuid: string) {
     const existing = await this.checkInRepo.findOne({
       where: {
