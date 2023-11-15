@@ -4,7 +4,8 @@ import { map, shareReplay } from 'rxjs/operators';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { ILeaderboardItem, LeaderboardService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
-import { AuthService } from '@auth0/auth0-angular';
+import { AuthService } from '@tamu-gisc/common/ngx/auth';
+import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-leaderboard',
@@ -12,18 +13,17 @@ import { AuthService } from '@auth0/auth0-angular';
   styleUrls: ['./leaderboard.component.scss']
 })
 export class LeaderboardComponent implements OnInit {
-  public leaders$: Observable<ILeaderboardItem[]>;
   public me$: Observable<string>;
+  public leaders$: Observable<ILeaderboardItem[]>;
+  public roles$: Observable<Array<string>>;
+  public userIsManager$: Observable<boolean>;
 
-  constructor(
-    private leaderboardService: LeaderboardService,
-    private settings: SettingsService,
-    private authService: AuthService
-  ) {}
+  constructor(private leaderboardService: LeaderboardService, private settings: SettingsService, private as: AuthService) {}
 
   public ngOnInit() {
+    this.roles$ = this.as.userRoles$;
     this.leaders$ = this.leaderboardService.getScoresForActive().pipe(shareReplay());
-    this.me$ = this.authService.user$.pipe(
+    this.me$ = this.as.user$.pipe(
       map((u) => {
         if (u) {
           return u.sub;
@@ -33,5 +33,12 @@ export class LeaderboardComponent implements OnInit {
       }),
       shareReplay(1)
     );
+
+    this.userIsManager$ = this.roles$.pipe(
+      map((rls) => {
+        return rls.some((role) => role === GISDayRoles.ADMIN || role === GISDayRoles.MANAGER);
+      })
+    );
   }
 }
+

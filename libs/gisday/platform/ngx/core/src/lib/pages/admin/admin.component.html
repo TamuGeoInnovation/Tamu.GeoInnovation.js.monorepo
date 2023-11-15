@@ -1,22 +1,71 @@
 <section class="internal">
   <div class="container12">
-    <div class="column3 sidebar">
-      <a [routerLink]="['./broadcasts']" routerLinkActive="active"><span class="material-icons">podcasts</span>Broadcasts</a>
-      <a [routerLink]="['./classes']" routerLinkActive="active"><span class="material-icons">menu_book</span> Classes</a>
-      <a [routerLink]="['./events']" routerLinkActive="active"><span class="material-icons">event</span> Events</a>
-      <a [routerLink]="['./event-locations']" routerLinkActive="active"><span class="material-icons">business</span>Venues</a>
-      <a [routerLink]="['./organizations']" routerLinkActive="active"><span class="material-icons">groups_3</span> Affiliations</a>
-      <a [routerLink]="['./places']" routerLinkActive="active"><span class="material-icons">place</span> Organizations</a>
-      <!-- <a [routerLink]="['./rsvp-types']" routerLinkActive="active"><span class="material-icons">book_online</span> RSVP Types</a> -->
-      <a [routerLink]="['./seasons']" routerLinkActive="active"><span class="material-icons">track_changes</span> Seasons</a>
-      <a [routerLink]="['./speakers']" routerLinkActive="active"><span class="material-icons">campaign</span> Speakers</a>
-      <a [routerLink]="['./sponsors']" routerLinkActive="active"><span class="material-icons">hotel_class</span> Sponsors</a>
-      <!-- <a [routerLink]="['./submission-types']" routerLinkActive="active"><span class="material-icons">interests</span> Submission Types</a> -->
-      <a [routerLink]="['./tags']" routerLinkActive="active"><span class="material-icons">sell</span> Tags</a>
-      <a [routerLink]="['./users']" routerLinkActive="active"><span class="material-icons">person</span> Users</a>
-      <a [routerLink]="['./universities']" routerLinkActive="active"><span class="material-icons">school</span> Universities</a>
-      <a [routerLink]="['./competitions']" routerLinkActive="active"><span class="material-icons">public</span> VGI Competition</a>
-    </div>
+    <ul class="column3 sidebar">
+      <li>
+        <a [routerLink]="['./broadcasts']" routerLinkActive="active"><span class="material-icons">podcasts</span>Broadcasts</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./classes']" routerLinkActive="active"><span class="material-icons">menu_book</span> Classes</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./events']" routerLinkActive="active"><span class="material-icons">event</span> Events</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./event-locations']" routerLinkActive="active"><span class="material-icons">business</span>Venues</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./organizations']" routerLinkActive="active"><span class="material-icons">groups_3</span> Affiliations</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./places']" routerLinkActive="active"><span class="material-icons">place</span> Organizations</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./seasons']" routerLinkActive="active"><span class="material-icons">track_changes</span> Seasons</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./speakers']" routerLinkActive="active"><span class="material-icons">campaign</span> Speakers</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./sponsors']" routerLinkActive="active"><span class="material-icons">hotel_class</span> Sponsors</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./tags']" routerLinkActive="active"><span class="material-icons">sell</span> Tags</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./users']" routerLinkActive="active"><span class="material-icons">person</span> Users</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./universities']" routerLinkActive="active"><span class="material-icons">school</span> Universities</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./competitions']" routerLinkActive="active"><span class="material-icons">public</span> VGI Competition</a>
+        <ul class="sidebar_sublevel">
+          <li>
+            <a [routerLink]="['./competitions']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Form Designer</a>
+          </li>
+
+          <li>
+            <a [routerLink]="['./competitions/leaderboard']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Leaderboard</a>
+          </li>
+
+          <li>
+            <a [routerLink]="['./competitions/map']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Map</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
 
     <div class="column9 content">
       <router-outlet></router-outlet>

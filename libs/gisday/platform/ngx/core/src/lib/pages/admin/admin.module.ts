@@ -21,6 +21,10 @@ const routes: Routes = [
         path: 'competitions',
         children: [
           {
+            path: 'leaderboard',
+            loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.LeaderboardModule)
+          },
+          {
             path: 'designer',
             loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.DesignerModule)
           },

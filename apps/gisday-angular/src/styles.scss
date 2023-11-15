@@ -2029,6 +2029,11 @@ article .row {
     @include flex-direction(column);
     height: 100%;
     border-right: 1pt solid #eeeeee;
+    list-style: none;
+
+    .sidebar_sublevel {
+      display: none;
+    }
 
     a {
       @include flexbox;
@@ -2046,6 +2051,10 @@ article .row {
         color: $gisday-black;
         background: $gisday-lightened-support-blue;
         border-radius: 0.25rem;
+
+        & + .sidebar_sublevel {
+          display: block;
+        }
       }
 
       &:hover {
@@ -2053,6 +2062,21 @@ article .row {
 
         &:not(.active) {
           color: #757575;
+        }
+      }
+    }
+
+    li {
+      padding-bottom: 0;
+      padding-top: 0;
+
+      & {
+        ul.sidebar_sublevel {
+          list-style: inherit;
+
+          a.active {
+            background: none;
+          }
         }
       }
     }
@@ -2962,3 +2986,4 @@ session-time-table {
 }
 
 @import 'libs/gisday/sass/mobile';
+

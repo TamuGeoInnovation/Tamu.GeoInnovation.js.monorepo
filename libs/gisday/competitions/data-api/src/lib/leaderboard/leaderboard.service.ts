@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
+import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { CompetitionSeason, CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
@@ -15,7 +16,8 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     @InjectRepository(SubmissionLocation) private locationRepo: Repository<SubmissionLocation>,
     @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>,
     @InjectRepository(CompetitionSeason) private compSeasonRepo: Repository<CompetitionSeason>,
-    @InjectRepository(Season) private seasonRepo: Repository<Season>
+    @InjectRepository(Season) private seasonRepo: Repository<Season>,
+    private readonly ms: ManagementService
   ) {
     super(submissionRepo);
   }
@@ -26,7 +28,7 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     );
   }
 
-  public async getLeaderBoardItemsForActiveSeason() {
+  public async getLeaderBoardItemsForActiveSeason(resolveIdentities?: boolean) {
     const activeSeason = await this.seasonRepo.findOne({ where: { active: true } });
 
     if (!activeSeason) {
@@ -51,6 +53,10 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       .setParameter('season', competitionSeason.guid)
       .getRawMany();
 
+    if (resolveIdentities) {
+      const ids = subs.map((leaders) => leaders.guid);
+    }
+
     return subs;
   }
 
@@ -70,3 +76,4 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     return subs;
   }
 }
+
