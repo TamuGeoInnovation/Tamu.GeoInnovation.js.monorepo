@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server
+    container_name: database_mssql
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: password1234!
+      MSSQL_PID: Evaluation
+    ports:
+      - '1433:1433'
+    volumes:
+      - /Users/edher/Downloads:/home/downloads
+
