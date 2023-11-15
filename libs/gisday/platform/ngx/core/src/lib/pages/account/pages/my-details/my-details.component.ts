@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Observable, Subject, map, shareReplay, startWith, switchMap, take } from 'rxjs';
 
-import { Observable, Subject, map, shareReplay, startWith, switchMap } from 'rxjs';
+import { AuthService } from '@auth0/auth0-angular';
 
 import { OrganizationService, UniversityService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -64,6 +65,7 @@ export class MyDetailsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private ns: NotificationService,
+    private readonly as: AuthService,
     private readonly us: UserService,
     private readonly is: UniversityService,
     private readonly os: OrganizationService
@@ -123,7 +125,10 @@ export class MyDetailsComponent implements OnInit {
 
     this._signedOnEntity = this._refresh$.pipe(
       startWith(true),
-      switchMap(() => this.us.getSignedOnEntity()),
+      switchMap(() => {
+        return this.as.user$;
+      }),
+      switchMap((user) => this.us.getUserMetadata(user.sub)),
       shareReplay()
     );
     this.signedOnEntityIsSocial$ = this._signedOnEntity.pipe(
@@ -189,24 +194,32 @@ export class MyDetailsComponent implements OnInit {
   public updateUserInfo() {
     const form: Partial<GisDayAppMetadata> = this.form.getRawValue();
 
-    this.us.updateSignedOnEntity(form).subscribe({
-      next: (result) => {
-        this._refresh$.next(true);
-        this.ns.toast({
-          message: 'User information updated.',
-          id: 'user-info-update',
-          title: 'Success'
-        });
-      },
-      error: (e) => {
-        this.ns.toast({
-          message: 'Error updating user information.',
-          id: 'user-info-update-error',
-          title: 'Error'
-        });
+    this.as.user$
+      .pipe(
+        take(1),
+        switchMap((user) => {
+          return this.us.updateUserMetadata(user.sub, form);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this._refresh$.next(true);
+          this.ns.toast({
+            message: 'User information updated.',
+            id: 'user-info-update',
+            title: 'Success'
+          });
+        },
+        error: (e) => {
+          this.ns.toast({
+            message: 'Error updating user information.',
+            id: 'user-info-update-error',
+            title: 'Error'
+          });
 
-        console.error('Error updating user information.', e.message);
-      }
-    });
+          console.error('Error updating user information.', e.message);
+        }
+      });
   }
 }
+

@@ -19,21 +19,24 @@ import { GisDayAppMetadata, UserInfoProvider } from './user-info.provider';
 export class UserInfoController {
   constructor(private readonly provider: UserInfoProvider) {}
 
+  @UseGuards(JwtGuard)
+  @Get(':guid/metadata')
+  public async getUsersInfo(@Request() req) {
+    return this.provider.getUserMetadata(req.user.sub);
+  }
+
   @Permissions(['read:users'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get(':guid')
-  public async getEntity(@Param('guid') guid) {
-    return this.provider.findOne({
-      where: {
-        guid: guid
-      }
-    });
+  public async getUser(@Param('guid') guid) {
+    return this.provider.getUser(guid);
   }
 
-  @UseGuards(JwtGuard)
+  @Permissions(['read:users'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Get()
-  public async getUsersInfo(@Request() req) {
-    return this.provider.getUsersInfo(req.user.sub);
+  public async getAllUsers() {
+    return this.provider.getUsers();
   }
 
   @Permissions(['create:users'])
@@ -44,15 +47,16 @@ export class UserInfoController {
   }
 
   @UseGuards(JwtGuard)
-  @Patch()
-  public async updateEntity(@Request() req, @Body() body: GisDayAppMetadata) {
-    return this.provider.updateUserInfo(req.user.sub, body);
+  @Patch(':guid/metadata')
+  public async updateUserMetadata(@Request() req, @Body() body: GisDayAppMetadata) {
+    return this.provider.updateUserMetadata(req.user.sub, body);
   }
 
   @Permissions(['delete:users'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
-  public deleteEntity(@Param('guid') guid: string) {
+  public deleteUser(@Param('guid') guid: string) {
     throw new NotImplementedException();
   }
 }
+

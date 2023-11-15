@@ -75,7 +75,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         return auth === true;
       }),
       switchMap(() => {
-        return this.us.getSignedOnEntity();
+        return this.auth.user$;
+      }),
+      switchMap((user) => {
+        return this.us.getUserMetadata(user.sub);
       }),
       shareReplay()
     );
@@ -325,3 +328,4 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     });
   }
 }
+

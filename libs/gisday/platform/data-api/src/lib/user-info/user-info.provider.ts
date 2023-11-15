@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotImplementedException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -20,14 +25,25 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     super(userInfoRepo);
   }
 
-  public async getUsersInfo(guid: string) {
+  public async getUsers() {
+    return this.ms.getUsers({
+      app_metadata: 'gisday',
+      user_metadata: ['occupation', 'education']
+    });
+  }
+
+  public async getUser(userGuid: string) {
+    throw new NotImplementedException('service: get user');
+  }
+
+  public async getUserMetadata(guid: string) {
     return this.ms.getUserMetadata(guid, {
       app_metadata: 'gisday',
       user_metadata: ['occupation', 'education']
     });
   }
 
-  public async updateUserInfo(guid: string, updatedUserInfo: GisDayAppMetadata) {
+  public async updateUserMetadata(guid: string, updatedUserInfo: GisDayAppMetadata) {
     // Validate that the user metadata is complete based on the user's participant type.
 
     if (!updatedUserInfo || !updatedUserInfo.app_metadata || !updatedUserInfo.user_metadata) {
@@ -213,3 +229,4 @@ export enum ParticipantType {
   Industry = 'industry',
   Academia = 'academia'
 }
+

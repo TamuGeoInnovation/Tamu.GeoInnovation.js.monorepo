@@ -95,6 +95,14 @@ export class ManagementService {
     }
   }
 
+  public async getUsers(filters?: Auth0UserProfileFilters) {
+    const users = await this._client.getUsers({
+      sort: 'name:1'
+    });
+
+    return users.map((u) => this._composeMetadata(u, filters));
+  }
+
   /**
    * Creates root level user info properties that match those of the Auth0 user object.
    */
@@ -193,6 +201,7 @@ export class ManagementService {
   private _composeMetadata(user: User, filters: Auth0UserProfileFilters): Auth0UserProfile {
     return {
       user_info: {
+        id: user.user_id,
         name: user.name || null,
         given_name: user.given_name || null,
         family_name: user.family_name || null,
@@ -224,6 +233,7 @@ export interface Auth0UserProfile {
   user_metadata: UserMetadata;
   app_metadata: AppMetadata;
   user_info: {
+    id: string;
     name: string;
     given_name: string;
     family_name: string;
@@ -262,3 +272,4 @@ export interface Auth0UserProfileFilters {
 }
 
 type MetadataFilters = '*' | string | Array<string>;
+

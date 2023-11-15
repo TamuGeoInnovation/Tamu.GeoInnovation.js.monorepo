@@ -1,0 +1,44 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Users</div>
+    </div>
+
+    <div class="form-section-body">
+      <ng-container *ngIf="(users$ | async) !== null; else noData">
+        <ng-container *ngIf="(users$ | async)?.length > 0; else noUsers">
+          <div>
+            <p>Displaying <strong>{{(users$ | async).length}}</strong> users.</p>
+          </div>
+
+          <table class="floating-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Connection ID</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let user of (users$ | async)">
+                <td>{{user?.user_info?.name}}</td>
+                <td>{{user?.user_info?.email}}</td>
+                <td>{{user?.user_info?.id}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-container>
+
+        <ng-template #noUsers>
+          <p>There are no users yet.</p>
+        </ng-template>
+      </ng-container>
+
+      <ng-template #noData>
+        <div class="loader"></div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+

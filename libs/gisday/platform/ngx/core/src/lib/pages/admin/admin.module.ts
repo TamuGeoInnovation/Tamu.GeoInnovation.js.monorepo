@@ -80,6 +80,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/university/admin-university.module').then((m) => m.AdminUniversityModule)
       },
       {
+        path: 'users',
+        loadChildren: () => import('./pages/users/users.module').then((u) => u.UsersModule)
+      },
+      {
         path: '',
         redirectTo: 'seasons'
       }
@@ -93,3 +97,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AdminModule {}
+
