@@ -21,16 +21,16 @@ const routes: Routes = [
         path: 'competitions',
         children: [
           {
-            path: 'leaderboard',
-            loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.LeaderboardModule)
-          },
-          {
             path: 'designer',
             loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.DesignerModule)
           },
           {
-            path: 'viewer',
-            loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.ViewerModule)
+            path: 'leaderboard',
+            loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.LeaderboardModule)
+          },
+          {
+            path: 'map',
+            loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.MapModule)
           },
           {
             path: '',
@@ -101,4 +101,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AdminModule {}
-
