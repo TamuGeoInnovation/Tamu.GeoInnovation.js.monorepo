@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Repository } from 'typeorm';
 
@@ -54,7 +55,21 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       .getRawMany();
 
     if (resolveIdentities) {
-      const ids = subs.map((leaders) => leaders.guid);
+      const allResolvedUsers = from(subs).pipe(
+        concatMap((sub) => {
+          return from(this.ms.getUserMetadata(sub.guid, undefined, true)).pipe(
+            map((user) => {
+              return { ...sub, identity: user.user_info.email };
+            }),
+            catchError(() => {
+              return of({ ...sub });
+            })
+          );
+        }),
+        toArray()
+      );
+
+      return allResolvedUsers;
     }
 
     return subs;
@@ -76,4 +91,3 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     return subs;
   }
 }
-

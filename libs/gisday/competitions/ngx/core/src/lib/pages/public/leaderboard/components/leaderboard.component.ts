@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { ILeaderboardItem, LeaderboardService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
@@ -22,7 +22,6 @@ export class LeaderboardComponent implements OnInit {
 
   public ngOnInit() {
     this.roles$ = this.as.userRoles$;
-    this.leaders$ = this.leaderboardService.getScoresForActive().pipe(shareReplay());
     this.me$ = this.as.user$.pipe(
       map((u) => {
         if (u) {
@@ -37,8 +36,20 @@ export class LeaderboardComponent implements OnInit {
     this.userIsManager$ = this.roles$.pipe(
       map((rls) => {
         return rls.some((role) => role === GISDayRoles.ADMIN || role === GISDayRoles.MANAGER);
-      })
+      }),
+      distinctUntilChanged(),
+      shareReplay()
+    );
+
+    this.leaders$ = this.userIsManager$.pipe(
+      switchMap((isManager) => {
+        if (isManager) {
+          return this.leaderboardService.getScoresForActiveAdmin();
+        } else {
+          return this.leaderboardService.getScoresForActive();
+        }
+      }),
+      shareReplay()
     );
   }
 }
-

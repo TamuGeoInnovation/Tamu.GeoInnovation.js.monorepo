@@ -2,6 +2,8 @@ import { Controller, Get, NotImplementedException, Param, Req, UseGuards } from 
 
 import { JwtGuard } from '@tamu-gisc/oidc/common';
 
+import { PermissionsGuard, Permissions } from '@tamu-gisc/common/nest/auth';
+
 import { LeaderboardService } from '../leaderboard/leaderboard.service';
 
 @Controller('competitions/leaderboards')
@@ -20,10 +22,16 @@ export class LeaderboardController {
     return this.service.getLeaderBoardItemsForActiveSeason();
   }
 
+  @Permissions(['read:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('active/admin')
+  public getLeaderBoardForActiveSeasonWithIdentities(@Req() req) {
+    return this.service.getLeaderBoardItemsForActiveSeason(true);
+  }
+
   @UseGuards(JwtGuard)
   @Get()
   public getLeaderboard() {
     throw new NotImplementedException();
   }
 }
-

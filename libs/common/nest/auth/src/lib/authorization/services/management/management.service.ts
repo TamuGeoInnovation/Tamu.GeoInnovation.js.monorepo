@@ -33,7 +33,11 @@ export class ManagementService {
     });
   }
 
-  public async getUserMetadata(userId: string, filters?: Auth0UserProfileFilters): Promise<Auth0UserProfile> {
+  public async getUserMetadata(
+    userId: string,
+    filters?: Auth0UserProfileFilters,
+    suppressError?: boolean
+  ): Promise<Auth0UserProfile> {
     try {
       const user = await this._client.getUser({ id: userId });
 
@@ -43,7 +47,10 @@ export class ManagementService {
 
       return this._composeMetadata(user, filters);
     } catch (err) {
-      Logger.error(err.message, 'ManagementService');
+      if (!suppressError) {
+        Logger.error(err.message, 'ManagementService');
+      }
+
       throw new InternalServerErrorException(err.message);
     }
   }
@@ -272,4 +279,3 @@ export interface Auth0UserProfileFilters {
 }
 
 type MetadataFilters = '*' | string | Array<string>;
-
