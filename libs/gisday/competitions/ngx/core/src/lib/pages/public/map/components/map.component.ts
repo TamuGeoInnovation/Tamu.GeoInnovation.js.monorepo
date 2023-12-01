@@ -31,7 +31,7 @@ export class MapComponent implements OnInit {
         },
         zoom: 15,
         constraints: {
-          maxZoom: 21
+          // maxZoom: 21
         },
         popup: {
           dockOptions: {
@@ -79,8 +79,29 @@ export class MapComponent implements OnInit {
                 type: 'simple-marker',
                 style: 'circle',
                 size: 10,
-                color: '#ffc5c5'
+                color: '#424242'
               }
+            },
+            featureReduction: {
+              type: 'cluster',
+              clusterRadius: 45,
+              labelingInfo: [
+                {
+                  deconflictionStrategy: 'none',
+                  labelExpressionInfo: {
+                    expression: "Text($feature.cluster_count, '#,###')"
+                  },
+                  symbol: {
+                    type: 'text',
+                    color: '#f5f5f5',
+                    font: {
+                      family: 'Noto Sans',
+                      size: '14px'
+                    }
+                  },
+                  labelPlacement: 'center-center'
+                }
+              ]
             }
           }
         }

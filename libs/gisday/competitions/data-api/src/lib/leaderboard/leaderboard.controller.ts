@@ -1,8 +1,6 @@
 import { Controller, Get, NotImplementedException, Param, Req, UseGuards } from '@nestjs/common';
 
-import { JwtGuard } from '@tamu-gisc/oidc/common';
-
-import { PermissionsGuard, Permissions } from '@tamu-gisc/common/nest/auth';
+import { PermissionsGuard, Permissions, JwtGuard } from '@tamu-gisc/common/nest/auth';
 
 import { LeaderboardService } from '../leaderboard/leaderboard.service';
 
