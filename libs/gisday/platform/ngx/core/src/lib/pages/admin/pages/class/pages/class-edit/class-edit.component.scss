@@ -1,0 +1,20 @@
+@use 'libs/sass/mixins';
+
+#export-state {
+  @include mixins.flexbox();
+  @include mixins.flex-direction(row);
+  @include mixins.justify-content(flex-end);
+
+  p {
+    padding-bottom: 0;
+    color: #616161;
+    margin-right: 0.5rem;
+  }
+
+  .loader {
+    margin: auto;
+    font-size: 0.6rem;
+    height: 1rem;
+    width: 1rem;
+  }
+}

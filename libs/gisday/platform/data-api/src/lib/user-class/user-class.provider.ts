@@ -6,7 +6,6 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 
 import { Class, UserClass } from '../entities/all.entity';
@@ -66,7 +65,8 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       where: {
         class: {
           guid: classGuid
-        }
+        },
+        accountGuid: accountGuid
       }
     });
 

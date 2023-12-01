@@ -10,6 +10,20 @@ import { Class } from '../entities/all.entity';
 export class ClassController {
   constructor(private readonly provider: ClassProvider) {}
 
+  @Permissions(['read:classes'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get(':guid/attendance/export')
+  public async exportAttendance(@Param('guid') guid) {
+    return this.provider.getSimplifiedAttendance(guid);
+  }
+
+  @Permissions(['read:classes'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get(':guid/attendance')
+  public async getAttendanceForClass(@Param('guid') guid) {
+    return this.provider.getClassStudents(guid);
+  }
+
   @Get(':guid')
   public async getClass(@Param('guid') guid) {
     return this.provider.findOne({
