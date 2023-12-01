@@ -29,6 +29,54 @@ export class MapService extends BaseService<CompetitionSubmission> {
 
     const submissions = await query.getMany();
 
+    return this._formatSubmissionsCollection(format, submissions);
+  }
+
+  public async getLocationsForUserSeason(competitionSeasonGuid: string, userId: string, format: ResponseFormat = 'json') {
+    const query = await this.submissionRepo
+      .createQueryBuilder('submissions')
+      .leftJoinAndSelect('submissions.location', 'location')
+      .leftJoinAndSelect('submissions.validationStatus', 'validationStatus')
+      .leftJoin('submissions.season', 'season')
+      .where('season.guid = :seasonId')
+      .andWhere('submissions.userGuid = :userId')
+      .setParameters({ seasonId: competitionSeasonGuid, userId })
+      .orderBy('submissions.created', 'ASC');
+
+    const submissions = await query.getMany();
+
+    return this._formatSubmissionsCollection(format, submissions);
+  }
+
+  public async getLocationsForActiveSeason(format: ResponseFormat) {
+    const competitionSeason = await this._getActiveCompetitionSeason();
+
+    return this.getLocationsForSeasonId(competitionSeason.guid, format);
+  }
+
+  public async getUserLocationsForActiveSeason(userGuid: string, format: ResponseFormat) {
+    const competitionSeason = await this._getActiveCompetitionSeason();
+
+    return this.getLocationsForUserSeason(competitionSeason.guid, userGuid, format);
+  }
+
+  private async _getActiveCompetitionSeason() {
+    const activeSeason = await this.seasonRepo.findOne({ where: { active: true } });
+
+    if (!activeSeason) {
+      throw new NotFoundException('No active season found.');
+    }
+
+    const competitionSeason = await this.compSeasonRepo.findOne({ where: { season: activeSeason } });
+
+    if (!competitionSeason) {
+      throw new NotFoundException('No competition season found.');
+    }
+
+    return competitionSeason;
+  }
+
+  private _formatSubmissionsCollection(format: ResponseFormat, submissions: CompetitionSubmission[]) {
     if (format === 'geojson') {
       if (submissions) {
         const geoJsonPoints = submissions.map((submission) => {
@@ -55,22 +103,6 @@ export class MapService extends BaseService<CompetitionSubmission> {
     } else {
       return submissions.map((submission) => submission.location);
     }
-  }
-
-  public async getLocationsForActiveSeason(format: ResponseFormat) {
-    const activeSeason = await this.seasonRepo.findOne({ where: { active: true } });
-
-    if (!activeSeason) {
-      throw new NotFoundException('No active season found.');
-    }
-
-    const competitionSeason = await this.compSeasonRepo.findOne({ where: { season: activeSeason } });
-
-    if (!competitionSeason) {
-      throw new NotFoundException('No competition season found.');
-    }
-
-    return this.getLocationsForSeasonId(competitionSeason.guid, format);
   }
 }
 

@@ -6,6 +6,11 @@ import { MapService } from './map.service';
 export class MapController {
   constructor(private service: MapService) {}
 
+  @Get('seasons/active/user/:guid')
+  public getUserFeatureCollectionForActiveSeason(@Query('format') format, @Param('guid') guid) {
+    return this.service.getUserLocationsForActiveSeason(guid, format);
+  }
+
   @Get('seasons/active')
   public getFeatureCollectionForActiveSeason(@Query('format') format) {
     return this.service.getLocationsForActiveSeason(format);

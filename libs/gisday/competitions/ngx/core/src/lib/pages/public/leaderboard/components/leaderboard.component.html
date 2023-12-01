@@ -11,7 +11,7 @@
         <div class="points">Points</div>
       </div>
 
-      <div class="leader" *ngFor="let leader of leaders; let i = index;" [ngClass]="{me: (me$ | async) === leader.guid}">
+      <div class="leader" *ngFor="let leader of leaders; let i = index;" [ngClass]="{me: (me$ | async) === leader.guid, linkable: userIsManager$ | async}" (click)="navigateToFilteredMap(leader.guid)">
         <div class="rank">{{i+1}}</div>
         <div class="identity">
           <div [ngSwitch]="me$ | async">

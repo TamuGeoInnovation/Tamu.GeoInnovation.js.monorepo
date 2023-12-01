@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, switchMap, take } from 'rxjs/operators';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { ILeaderboardItem, LeaderboardService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
@@ -18,7 +19,13 @@ export class LeaderboardComponent implements OnInit {
   public roles$: Observable<Array<string>>;
   public userIsManager$: Observable<boolean>;
 
-  constructor(private leaderboardService: LeaderboardService, private settings: SettingsService, private as: AuthService) {}
+  constructor(
+    private leaderboardService: LeaderboardService,
+    private settings: SettingsService,
+    private as: AuthService,
+    private router: Router,
+    private at: ActivatedRoute
+  ) {}
 
   public ngOnInit() {
     this.roles$ = this.as.userRoles$;
@@ -51,5 +58,13 @@ export class LeaderboardComponent implements OnInit {
       }),
       shareReplay()
     );
+  }
+
+  public navigateToFilteredMap(userGuid: string) {
+    this.userIsManager$.pipe(take(1)).subscribe((isManager) => {
+      if (isManager) {
+        this.router.navigate(['../map'], { relativeTo: this.at, queryParams: { user: userGuid } });
+      }
+    });
   }
 }

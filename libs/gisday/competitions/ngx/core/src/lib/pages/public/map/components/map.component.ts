@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, Observable, forkJoin, map, take } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
@@ -14,7 +15,7 @@ import esri = __esri;
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
-  constructor(private ms: EsriMapService, private env: EnvironmentService) {}
+  constructor(private ms: EsriMapService, private env: EnvironmentService, private at: ActivatedRoute) {}
 
   public config = {
     basemap: {
@@ -30,7 +31,7 @@ export class MapComponent implements OnInit {
         },
         zoom: 15,
         constraints: {
-          maxZoom: 18
+          maxZoom: 21
         },
         popup: {
           dockOptions: {
@@ -48,15 +49,26 @@ export class MapComponent implements OnInit {
   } as MapConfig;
 
   public ngOnInit() {
-    this.ms.store.subscribe(() => {
-      const api_url = this.env.value('api_url');
+    const url: Observable<string> = this.at.queryParams.pipe(
+      map((params) => params['user']),
+      map((guid): string => {
+        const api_url = this.env.value('api_url');
 
+        if (guid !== undefined) {
+          return `${api_url}/competitions/maps/seasons/active/user/${guid}?format=geojson`;
+        } else {
+          return `${api_url}/competitions/maps/seasons/active?format=geojson`;
+        }
+      })
+    );
+
+    forkJoin([url.pipe(take(1)), this.ms.store.pipe(take(1))]).subscribe(([url]) => {
       this.ms.loadLayers([
         {
           type: 'geojson',
           id: 'submissions-layer',
           title: 'Submissions',
-          url: `${api_url}/competitions/maps/seasons/active?format=geojson`,
+          url: url,
           listMode: 'show',
           loadOnInit: true,
           visible: true,
