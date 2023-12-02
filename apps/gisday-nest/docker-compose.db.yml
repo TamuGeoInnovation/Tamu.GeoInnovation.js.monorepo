@@ -1,3 +1,5 @@
+# Basic compose file for MSSQL Server to run along the application during development
+
 version: '3'
 
 services:
@@ -11,5 +13,4 @@ services:
     ports:
       - '1433:1433'
     volumes:
-      - /Users/edher/Downloads:/home/downloads
-
+      - ~/Downloads:/home/downloads
