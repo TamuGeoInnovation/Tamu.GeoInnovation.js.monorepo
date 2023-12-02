@@ -10,4 +10,4 @@ COPY . ./
 FROM node:16.17.0-alpine
 WORKDIR /app
 COPY --from=builder /app .
-CMD ["node", "main.js"]
+CMD ["node", "main.js"] 

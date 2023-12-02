@@ -20,10 +20,10 @@ export const api_url = 'http://localhost:3333/api'; // This is just some bs URL 
 export * from './common.config';
 
 export const auth0 = {
-  domain: '__{ANGULAR_AUTH0_DOMAIN}__',
-  client_id: '__{ANGULAR_AUTH0_CLIENT_ID}__',
+  domain: '___ANGULAR_AUTH0_DOMAIN___',
+  client_id: '___ANGULAR_AUTH0_CLIENT_ID___',
   redirect_uri: window.location.origin + '/callback',
-  audience: '__{ANGULAR_AUTH0_AUDIENCE}__',
-  roles_claim: '__{ANGULAR_AUTH0_ROLES_CLAIM}__',
+  audience: '___ANGULAR_AUTH0_AUDIENCE___',
+  roles_claim: '___ANGULAR_AUTH0_ROLES_CLAIM___',
   urls: ['http://localhost:3333/api/']
 };
