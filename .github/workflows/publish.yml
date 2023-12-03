@@ -67,6 +67,11 @@ jobs:
             type=ref,event=pr
             type=sha
 
+      # I would like to add a step to copy the package.json, package-lock.json, and tokenSubstitute in the root artifacts directory to the artifacts/apps/${{ matrix.image }} directory
+      - name: Copy files
+        run: |
+          cp artifacts/package.json artifacts/package-lock.json artifacts/tokenSubstitute artifacts/apps/${{ matrix.image }}
+
       - name: Build and push Docker images
         uses: docker/build-push-action@v3
         with:
