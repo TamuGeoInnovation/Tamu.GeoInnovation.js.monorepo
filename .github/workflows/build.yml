@@ -31,6 +31,11 @@ jobs:
       - name: Build Affected
         run: npx nx affected:build --configuration=production --exclude=${{ vars.EXCLUDED_PROJECTS }}  --base=origin/development --parallel=2
 
+      - name: Copy Files Needed For Image Build
+        run: |
+          mkdir -p dist
+          cp -r package.json package-lock.json scripts/ci/tokenSubstitute.sh dist/
+
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:

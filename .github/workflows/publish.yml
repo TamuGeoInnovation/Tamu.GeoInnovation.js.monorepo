@@ -59,7 +59,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/Supreme-Gaming/${{ matrix.image }}
+          images: ${{ env.REGISTRY }}/TamuGeoInnovation/${{ matrix.image }}
           flavor: |
             latest=true
           tags: |

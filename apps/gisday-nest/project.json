@@ -24,7 +24,7 @@
       "configurations": {
         "production": {
           "optimization": true,
-          "extractLicenses": true,
+          "extractLicenses": false,
           "inspect": false,
           "fileReplacements": [
             {
@@ -32,11 +32,11 @@
               "with": "apps/gisday-nest/src/environments/environment.prod.ts"
             }
           ],
-          "generatePackageJson": true
+          "generatePackageJson": false
         },
         "development": {
           "optimization": true,
-          "extractLicenses": true,
+          "extractLicenses": false,
           "inspect": false,
           "fileReplacements": [
             {
@@ -44,7 +44,7 @@
               "with": "apps/gisday-nest/src/environments/environment.dev.ts"
             }
           ],
-          "generatePackageJson": true
+          "generatePackageJson": false
         }
       }
     },
