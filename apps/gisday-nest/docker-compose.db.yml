@@ -1,4 +1,5 @@
 # Basic compose file for MSSQL Server to run along the application during development
+# Example run: docker-compose -f docker-compose.db.yml --env-file .env.local up  
 
 version: '3'
 
@@ -8,9 +9,28 @@ services:
     container_name: database_mssql
     environment:
       ACCEPT_EULA: Y
-      MSSQL_SA_PASSWORD: password1234!
+      MSSQL_SA_PASSWORD: ${TYPEORM_PASSWORD}
       MSSQL_PID: Evaluation
     ports:
       - '1433:1433'
     volumes:
       - ~/Downloads:/home/downloads
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U ${TYPEORM_USERNAME} -P ${TYPEORM_PASSWORD} -Q 'SELECT 1' || exit 1"]
+      interval: 5s
+      retries: 5
+      start_period: 5s
+      timeout: 3s
+    restart: always
+  database.configurator:
+    image: mcr.microsoft.com/mssql/server
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    depends_on:
+      database:
+        condition: service_healthy
+    command: >
+      bash -c '
+      /opt/mssql-tools/bin/sqlcmd -S database -U ${TYPEORM_USERNAME} -P ${TYPEORM_PASSWORD} -d master -i docker-entrypoint-initdb.d/init.sql;
+      echo "Service database initialized complete...";
+      '
