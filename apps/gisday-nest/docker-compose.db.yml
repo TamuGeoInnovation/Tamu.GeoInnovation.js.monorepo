@@ -17,5 +17,8 @@ services:
     ports:
       - '1433:1433'
     volumes:
-      - ~/Downloads:/home/downloads
+      - data:/var/opt/mssql
     restart: always
+
+volumes:
+  data:
