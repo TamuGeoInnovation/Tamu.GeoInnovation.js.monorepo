@@ -14,6 +14,7 @@
         "assets": [
           "apps/gisday-nest/src/assets",
           "apps/gisday-nest/src/Dockerfile",
+          "apps/gisday-nest/src/docker-compose.yml",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -53,7 +54,7 @@
       "options": {
         "commands": [
           {
-            "command": "docker build -t gisday-nest ."
+            "command": "docker compose build"
           }
         ],
         "cwd": "dist/apps/gisday-nest"

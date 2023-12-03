@@ -58,7 +58,8 @@ const routeOptions: ExtraOptions = {
           {
             allowAnonymous: true,
             uriMatcher: (url) => {
-              return environment.auth0.urls.some((u) => url.startsWith(u));
+              // Type assertion because the static value is a token replaced at runtime
+              return (environment.auth0.urls as unknown as Array<string>).some((u) => url.startsWith(u));
             }
           }
         ]

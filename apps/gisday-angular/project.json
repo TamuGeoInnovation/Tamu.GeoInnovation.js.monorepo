@@ -18,6 +18,7 @@
           "apps/gisday-angular/src/assets",
           "apps/gisday-angular/src/Dockerfile",
           "apps/gisday-angular/src/.dockerignore",
+          "apps/gisday-angular/src/docker-compose.yml",
           "apps/gisday-angular/src/.nginx",
           "apps/gisday-angular/src/manifest.webmanifest",
           {
@@ -102,7 +103,7 @@
       "options": {
         "commands": [
           {
-            "command": "docker build -t gisday-angular ."
+            "command": "docker compose build"
           }
         ],
         "cwd": "dist/apps/gisday-angular"
