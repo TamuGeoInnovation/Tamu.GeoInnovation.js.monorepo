@@ -1,0 +1,68 @@
+version: "3.8"
+
+name: gisday
+services:
+  site:
+    image: ghcr.io/tamugeoinnovation/gisday-angular:latest
+    container_name: site
+    ports:
+      - "4200:80"
+    environment:
+      - ANGULAR_API_URL=${ANGULAR_API_URL}
+      - ANGULAR_AUTH0_URLS=${ANGULAR_AUTH0_URLS}
+      - ANGULAR_AUTH0_DOMAIN=${ANGULAR_AUTH0_DOMAIN}
+      - ANGULAR_AUTH0_CLIENT_ID=${ANGULAR_AUTH0_CLIENT_ID}
+      - ANGULAR_AUTH0_AUDIENCE=${ANGULAR_AUTH0_AUDIENCE}
+      - ANGULAR_AUTH0_ROLES_CLAIM=${ANGULAR_AUTH0_ROLES_CLAIM}
+      - G_TAG=${G_TAG}
+    restart: always
+  api:
+    image: ghcr.io/tamugeoinnovation/gisday-nest:latest
+    container_name: api
+    ports:
+      - "3333:3333"
+    environment:
+      - GLOBAL_PREFIX=${GLOBAL_PREFIX}
+      - ORIGINS=${ORIGINS}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
+      - AUTH0_MANAGEMENT_DOMAIN=${AUTH0_MANAGEMENT_DOMAIN}
+      - AUTH0_MANAGEMENT_CLIENT=${AUTH0_MANAGEMENT_CLIENT}
+      - AUTH0_MANAGEMENT_SECRET=${AUTH0_MANAGEMENT_SECRET}
+      - APP_DATA=${APP_DATA}
+      - TYPEORM_CONNECTION=${TYPEORM_CONNECTION}
+      - TYPEORM_HOST=${TYPEORM_HOST}
+      - TYPEORM_DATABASE=${TYPEORM_DATABASE}
+      - TYPEORM_USERNAME=${TYPEORM_USERNAME}
+      - TYPEORM_PASSWORD=${TYPEORM_PASSWORD}
+      - TYPEORM_SYNCHRONIZE=${TYPEORM_SYNCHRONIZE}
+      - TYPEORM_DROP_SCHEMA=${TYPEORM_DROP_SCHEMA}
+      - TYPEORM_LOGGING=${TYPEORM_LOGGING}
+      - 'TYPEORM_DRIVER_EXTRA={"options": {"enableArithAbort": true,"trustedConnection": true}}'
+      - MAILROOM_URL=${MAILROOM_URL}
+      - MAILROOM_FROM=${MAILROOM_FROM}
+      - MAILROOM_TO=${MAILROOM_TO}
+      - MAILROOM_BCC=${MAILROOM_BCC}
+    depends_on:
+      - database
+    volumes:
+      - data:/home/app-data/
+    restart: always
+  database:
+    image: ghcr.io/tamugeoinnovation/mssqldocker:latest
+    container_name: database
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: ${SA_PASSWORD}
+      MSSQL_DB: ${TYPEORM_DATABASE}
+      MSSQL_USER: ${TYPEORM_USERNAME}
+      MSSQL_PASSWORD: ${TYPEORM_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - db:/var/opt/mssql
+    restart: always
+
+volumes:
+  db:
+  data:
