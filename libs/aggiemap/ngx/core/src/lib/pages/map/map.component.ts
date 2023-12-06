@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
@@ -14,6 +14,7 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { BetaPromptComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'tamu-gisc-aggiemap-map',
   templateUrl: './map.component.html',
@@ -38,7 +39,9 @@ export class MapComponent implements OnInit, OnDestroy {
     private env: EnvironmentService,
     private readonly ms: ModalService,
     private readonly ss: SettingsService,
-    private readonly ts: TestingService
+    private readonly ts: TestingService,
+    private readonly http: HttpClient,
+    private readonly mss: EsriMapService
   ) {}
 
   public ngOnInit() {
@@ -148,7 +151,107 @@ export class MapComponent implements OnInit, OnDestroy {
     this._destroy$.complete();
   }
 
-  public continue(instances: MapServiceInstance) {
+  public async continue(instances: MapServiceInstance) {
+    const geojsonUrl =
+      "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/oals_3/FeatureServer/0/query?where=Type <> 'RESEARCH' AND sum_workstations > 0&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&relationParam=&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&defaultSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pgeojson";
+
+    this.http
+      .get(geojsonUrl)
+      .pipe(
+        map((res) => {
+          const blob = new Blob([JSON.stringify(res)]);
+          const localUrl = URL.createObjectURL(blob);
+
+          return localUrl;
+        })
+      )
+      .subscribe((localUrl) => {
+        this.mss.loadLayers([
+          {
+            type: 'geojson',
+            url: localUrl,
+            id: 'oals',
+            title: 'OALS TEST',
+            native: {
+              renderer: {
+                type: 'simple',
+                symbol: {
+                  type: 'cim',
+                  data: {
+                    type: 'CIMSymbolReference',
+                    primitiveOverrides: [
+                      {
+                        type: 'CIMPrimitiveOverride',
+                        primitiveName: 'textGraphic',
+                        propertyName: 'TextString',
+                        valueExpressionInfo: {
+                          type: 'CIMExpressionInfo',
+                          title: 'Custom',
+                          expression: '$feature.sum_Workstations',
+                          returnType: 'Default'
+                        }
+                      }
+                    ],
+                    symbol: {
+                      type: 'CIMPointSymbol',
+                      symbolLayers: [
+                        {
+                          type: 'CIMVectorMarker',
+                          enable: true,
+                          size: 22,
+                          colorLocked: true,
+                          anchorPointUnits: 'Relative',
+                          frame: { xmin: -5, ymin: -5, xmax: 5, ymax: 5 },
+                          markerGraphics: [
+                            {
+                              type: 'CIMMarkerGraphic',
+                              primitiveName: 'textGraphic',
+                              geometry: { x: 0, y: 0 },
+                              symbol: {
+                                type: 'CIMTextSymbol',
+                                fontFamilyName: 'Arial',
+                                fontStyleName: 'Bold',
+                                height: 4.5,
+                                horizontalAlignment: 'Center',
+                                offsetX: 0,
+                                offsetY: 1.5,
+                                symbol: {
+                                  type: 'CIMPolygonSymbol',
+                                  symbolLayers: [
+                                    {
+                                      type: 'CIMSolidFill',
+                                      enable: true,
+                                      color: [255, 255, 255, 255]
+                                    }
+                                  ]
+                                },
+                                verticalAlignment: 'Center'
+                              },
+                              textString: ''
+                            }
+                          ],
+                          scaleSymbolsProportionally: true,
+                          respectFrame: true
+                        },
+                        {
+                          type: 'CIMPictureMarker',
+                          enable: true,
+                          anchorPoint: { x: 0, y: 0 },
+                          anchorPointUnits: 'Relative',
+                          size: 22,
+                          scaleX: 1,
+                          url: '/assets/images/markers/computer-screen.png'
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]);
+      });
+
     loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
       .then(([Track, Compass]) => {
         instances.view.when(() => {
