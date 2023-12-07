@@ -10,6 +10,8 @@ export const environment = {
   production: false
 };
 
+export const oalApiUrl = 'http://localhost:3000';
+
 export { SearchSources, Connections, Definitions, LegendSources, SelectionSymbols } from './definitions';
 export * from './notification-events';
 export * from './polygons';

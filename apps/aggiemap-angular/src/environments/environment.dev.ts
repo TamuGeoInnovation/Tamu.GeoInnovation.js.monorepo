@@ -10,6 +10,8 @@ export const environment = {
   production: true
 };
 
+export const oalApiUrl = 'https://nodes.geoservices.tamu.edu/api/oals';
+
 export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
