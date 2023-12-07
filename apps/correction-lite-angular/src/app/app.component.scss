@@ -1,0 +1,10 @@
+:host {
+  display: grid;
+  height: inherit;
+  grid-template-columns: 1fr 1fr;
+}
+
+#side-container {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
