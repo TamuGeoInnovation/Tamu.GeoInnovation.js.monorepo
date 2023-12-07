@@ -1,0 +1,88 @@
+{
+  "projectType": "application",
+  "root": "apps/correction-lite-angular",
+  "sourceRoot": "apps/correction-lite-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/correction-lite-angular",
+        "index": "apps/correction-lite-angular/src/index.html",
+        "main": "apps/correction-lite-angular/src/main.ts",
+        "polyfills": "apps/correction-lite-angular/src/polyfills.ts",
+        "tsConfig": "apps/correction-lite-angular/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": ["apps/correction-lite-angular/src/favicon.ico", "apps/correction-lite-angular/src/assets"],
+        "styles": ["apps/correction-lite-angular/src/styles.scss"],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/correction-lite-angular/src/environments/environment.ts",
+              "with": "apps/correction-lite-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "correction-lite-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "correction-lite-angular:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "correction-lite-angular:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/correction-lite-angular/src/**/*.ts", "apps/correction-lite-angular/src/**/*.html"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/correction-lite-angular"],
+      "options": {
+        "jestConfig": "apps/correction-lite-angular/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

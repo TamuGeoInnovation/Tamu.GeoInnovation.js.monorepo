@@ -36,6 +36,8 @@
     "common-utils-routing": "libs/common/utils/routing",
     "common-utils-string": "libs/common/utils/string",
     "common-utils-ui": "libs/common/utils/ui",
+    "correction-lite-angular": "apps/correction-lite-angular",
+    "correction-lite-angular-e2e": "apps/correction-lite-angular-e2e",
     "covid-common-entities": "libs/covid/common/entities",
     "covid-common-enums": "libs/covid/common/enums",
     "covid-data-api": "libs/covid/data-api",
@@ -177,3 +179,4 @@
     "veoride-scraper-node": "apps/veoride-scraper-node"
   }
 }
+
