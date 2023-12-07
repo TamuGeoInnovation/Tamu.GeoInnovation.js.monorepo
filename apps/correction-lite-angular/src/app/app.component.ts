@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'correction-lite-angular';
+  title = 'Geocode Correction Lite | Texas A&M Geoservices ';
 }

@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/correction/ngx",
+  "sourceRoot": "libs/correction/ngx/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/correction/ngx"],
+      "options": {
+        "jestConfig": "libs/correction/ngx/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/correction/ngx/src/**/*.ts", "libs/correction/ngx/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

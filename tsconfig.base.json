@@ -51,6 +51,7 @@
       "@tamu-gisc/common/utils/routing": ["libs/common/utils/routing/src/index.ts"],
       "@tamu-gisc/common/utils/string": ["libs/common/utils/string/src/index.ts"],
       "@tamu-gisc/common/utils/ui": ["libs/common/utils/ui/src/index.ts"],
+      "@tamu-gisc/correction/ngx": ["libs/correction/ngx/src/index.ts"],
       "@tamu-gisc/covid/common/entities": ["libs/covid/common/entities/src/index.ts"],
       "@tamu-gisc/covid/common/enums": ["libs/covid/common/enums/src/index.ts"],
       "@tamu-gisc/covid/data-api": ["libs/covid/data-api/src/index.ts"],
@@ -140,3 +141,4 @@
   },
   "exclude": ["node_modules", "tmp"]
 }
+

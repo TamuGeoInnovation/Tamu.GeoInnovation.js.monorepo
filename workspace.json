@@ -38,6 +38,7 @@
     "common-utils-ui": "libs/common/utils/ui",
     "correction-lite-angular": "apps/correction-lite-angular",
     "correction-lite-angular-e2e": "apps/correction-lite-angular-e2e",
+    "correction-ngx": "libs/correction/ngx",
     "covid-common-entities": "libs/covid/common/entities",
     "covid-common-enums": "libs/covid/common/enums",
     "covid-data-api": "libs/covid/data-api",
