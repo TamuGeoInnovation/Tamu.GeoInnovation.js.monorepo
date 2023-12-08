@@ -73,6 +73,7 @@
     "csurf": "^1.11.0",
     "date-and-time": "^0.14.2",
     "deepmerge": "^4.2.2",
+    "dexie": "^3.2.4",
     "document-register-element": "1.13.1",
     "dotenv": "10.0.0",
     "esri-loader": "~3.5.0",

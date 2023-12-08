@@ -3,7 +3,7 @@ import { Observable, race, ReplaySubject, switchMap, tap } from 'rxjs';
 
 import * as papa from 'papaparse';
 
-import { IndexDbService } from '../../services/index-db.service';
+import { DbService } from '../../services/db.service';
 
 @Component({
   selector: 'tamu-gisc-correction-data-table',
@@ -17,7 +17,7 @@ export class CorrectionDataTableComponent implements OnInit {
   public db: Observable<IDBDatabase>;
   public contents: Observable<any>;
 
-  constructor(private readonly ds: IndexDbService) {}
+  constructor(private readonly ds: DbService) {}
 
   public ngOnInit(): void {
     this.db = race(
