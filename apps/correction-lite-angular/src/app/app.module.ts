@@ -9,6 +9,14 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
 
+import * as WebFont from 'webfontloader';
+
+WebFont.load({
+  google: {
+    families: ['Material Icons', 'Material Symbols Outlined', 'Open Sans:300,400,600']
+  }
+});
+
 @NgModule({
   imports: [
     BrowserModule,

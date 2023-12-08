@@ -1,0 +1,46 @@
+@use 'libs/sass/mixins' as m;
+
+:host {
+  @include m.flexbox();
+  height: 100%;
+}
+
+.file-input {
+  @include m.flexbox();
+  @include m.flex-direction(row);
+  @include m.align-items(center);
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  tamu-gisc-file {
+    height: inherit;
+    width: inherit;
+    opacity: 0;
+    z-index: 0;
+    position: relative;
+  }
+
+  .file-input__drop-zone {
+    @include m.flexbox();
+    @include m.justify-content(center);
+    @include m.align-items(center);
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    height: inherit;
+    width: inherit;
+    background: #fafafa;
+
+    .file-input__drop-zone__text {
+      text-align: center;
+      color: #616161;
+
+      .material-symbols-outlined {
+        font-size: 2rem;
+      }
+    }
+  }
+}

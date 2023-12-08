@@ -10,4 +10,4 @@
   <p>{{fileName}}</p>
 </ng-template>
 
-<input type="file" (change)="handleFileChange($event)" />
+<input type="file" [accept]="accept" (change)="handleFileChange($event)" />
