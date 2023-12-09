@@ -128,6 +128,7 @@
       "@tamu-gisc/ui-kits/ngx/layout": ["libs/ui-kits/ngx/layout/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout/code": ["libs/ui-kits/ngx/layout/code/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout/modal": ["libs/ui-kits/ngx/layout/modal/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/layout/tables": ["libs/ui-kits/ngx/layout/tables/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/breadcrumb": ["libs/ui-kits/ngx/navigation/breadcrumb/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tab": ["libs/ui-kits/ngx/navigation/mobile-tab/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tile": ["libs/ui-kits/ngx/navigation/mobile-tile/src/index.ts"],
