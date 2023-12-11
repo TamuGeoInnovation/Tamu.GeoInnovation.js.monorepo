@@ -246,6 +246,7 @@ export class MapComponent implements OnInit, OnDestroy {
         title: 'Live OALs',
         visible: true,
         native: {
+          refreshInterval: 2.5,
           renderer: {
             type: 'simple',
             symbol: {
