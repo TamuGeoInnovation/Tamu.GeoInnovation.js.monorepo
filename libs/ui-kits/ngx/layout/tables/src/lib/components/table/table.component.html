@@ -6,7 +6,7 @@
   </thead>
 
   <tbody>
-    <tr *ngFor="let row of data">
+    <tr *ngFor="let row of data" (click)="emitRowClick(row)" [ngClass]="{selectable: rowActionable}">
       <td *ngFor="let column of config">{{row[column.prop]}}</td>
     </tr>
   </tbody>

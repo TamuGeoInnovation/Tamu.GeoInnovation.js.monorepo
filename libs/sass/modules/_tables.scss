@@ -1,3 +1,5 @@
+@use 'libs/sass/mixins' as m;
+
 table.floating-table {
   margin: 1rem auto;
   border: none;
@@ -29,12 +31,22 @@ table.floating-table {
 
   tbody {
     tr {
+      @include m.transition(background 0.1s);
+
+      td {
+        border-right: 1pt solid lighten($color: $lightened-inactive-color, $amount: 5%);
+      }
+
       &:nth-child(even) {
         background: darken($lightened-inactive-color, 1%);
       }
 
-      td {
-        border-right: 1pt solid lighten($color: $lightened-inactive-color, $amount: 5%);
+      &.selectable {
+        cursor: pointer;
+
+        &:hover {
+          background: darken($lightened-inactive-color, 5%);
+        }
       }
     }
   }

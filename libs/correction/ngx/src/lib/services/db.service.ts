@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, from, NEVER, Observable, of, switchMap } from 'rxjs';
+import { catchError, from, mapTo, NEVER, Observable, of, switchMap } from 'rxjs';
 
 import { Dexie } from 'dexie';
 
@@ -19,7 +19,7 @@ export class DbService {
    * 2. Creates an index for each key in the first item of the data array.
    * 3. Adds each item in the data array to the object store.
    */
-  public initDb({ name, version = 1, createSchemaFromData = true, data }: DBConfig): Observable<any> {
+  public initDb({ name, version = 1, createSchemaFromData = true, data }: DBConfig): Observable<IDBDatabase> {
     this._config = { name, version, createSchemaFromData };
 
     this._db = new Dexie(name);
@@ -39,19 +39,19 @@ export class DbService {
         data: `++id,${indexes}`
       });
 
-      return from(this._db.table('data').bulkAdd(data));
+      return from(this._db.table('data').bulkAdd(data)).pipe(mapTo(this._db));
     } else {
       console.log('No data provided. Empty database created.');
     }
   }
 
-  public openDatabase(name: string): Observable<any> {
+  public openDatabase(name: string): Observable<IDBDatabase> {
     const db = new Dexie(name);
 
     return from(db.open()).pipe(
       switchMap((db) => {
         this._db = db;
-        return of(true);
+        return of(this._db);
       }),
       catchError((err) => {
         console.log('Requested database does not exist. Emitting NEVER.', err.message);
@@ -64,12 +64,12 @@ export class DbService {
     window.indexedDB.deleteDatabase(this._config.name);
   }
 
-  public getAll(): Observable<Array<any>> {
-    return from(this._db.table('data').toArray() as Promise<Array<any>>);
+  public getAll(): Observable<Array<Record<string, unknown>>> {
+    return from(this._db.table('data').toArray() as Promise<Array<Record<string, unknown>>>);
   }
 
-  public getN(count: number): Observable<Array<any>> {
-    return from(this._db.table('data').limit(count).toArray() as Promise<Array<any>>);
+  public getN(count: number): Observable<Array<Record<string, unknown>>> {
+    return from(this._db.table('data').limit(count).toArray() as Promise<Array<Record<string, unknown>>>);
   }
 }
 
@@ -77,5 +77,5 @@ export interface DBConfig {
   name: string;
   version: number;
   createSchemaFromData: boolean;
-  data: Array<any>;
+  data: Array<Record<string, unknown>>;
 }

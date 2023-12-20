@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableComponent } from './table.component';
 
 describe('TableComponent', () => {
-  let component: TableComponent;
-  let fixture: ComponentFixture<TableComponent>;
+  let component: TableComponent<Record<string, unknown>>;
+  let fixture: ComponentFixture<TableComponent<Record<string, unknown>>>; // Replace 'any' with the appropriate type argument.
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -4,8 +4,11 @@ import { Observable, race, ReplaySubject, switchMap } from 'rxjs';
 import * as papa from 'papaparse';
 
 import { TableConfig } from '@tamu-gisc/ui-kits/ngx/layout/tables';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { DbService } from '../../services/db.service';
+
+import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-correction-data-table',
@@ -17,7 +20,7 @@ export class CorrectionDataTableComponent implements OnInit {
 
   public file = this._file.asObservable();
   public db: Observable<IDBDatabase>;
-  public contents: Observable<any>;
+  public contents: Observable<Array<Record<string, unknown>>>;
   public config: TableConfig = [
     {
       name: 'ID',
@@ -57,7 +60,7 @@ export class CorrectionDataTableComponent implements OnInit {
     }
   ];
 
-  constructor(private readonly ds: DbService) {}
+  constructor(private readonly ds: DbService, private es: EsriMapService) {}
 
   public ngOnInit(): void {
     this.db = race(
@@ -78,7 +81,44 @@ export class CorrectionDataTableComponent implements OnInit {
     this._file.next(e);
   }
 
-  private _parseCsv(file: File): Observable<Array<any>> {
+  public async focusRow(row: Record<string, unknown>) {
+    const layerId = 'geocoded-original';
+
+    const layer = (await this.es.findLayerOrCreateFromSource({
+      type: 'graphics',
+      id: layerId,
+      title: 'Geocoded Original'
+    })) as esri.GraphicsLayer;
+
+    if (layer.graphics.length > 0) {
+      layer.removeAll();
+    }
+
+    layer.add({
+      geometry: {
+        type: 'point',
+        x: row['Longitude'],
+        y: row['Latitude']
+      } as esri.geometryPoint,
+      symbol: {
+        type: 'simple-marker',
+        style: 'circle',
+        color: 'red',
+        size: 10,
+        outline: {
+          color: '#fafafa',
+          width: 1
+        }
+      } as esri.SimpleMarkerSymbolProperties
+    } as unknown as esri.Graphic);
+
+    this.es.zoomTo({
+      graphics: [...layer.graphics],
+      zoom: 15
+    });
+  }
+
+  private _parseCsv(file: File): Observable<Array<Record<string, unknown>>> {
     return new Observable((observer) => {
       papa.parse(file, {
         header: true,
