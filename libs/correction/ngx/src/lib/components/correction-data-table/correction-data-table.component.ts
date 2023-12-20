@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, race, ReplaySubject, switchMap, tap } from 'rxjs';
+import { Observable, race, ReplaySubject, switchMap } from 'rxjs';
 
 import * as papa from 'papaparse';
+
+import { TableConfig } from '@tamu-gisc/ui-kits/ngx/layout/tables';
 
 import { DbService } from '../../services/db.service';
 
@@ -16,6 +18,44 @@ export class CorrectionDataTableComponent implements OnInit {
   public file = this._file.asObservable();
   public db: Observable<IDBDatabase>;
   public contents: Observable<any>;
+  public config: TableConfig = [
+    {
+      name: 'ID',
+      prop: 'ID'
+    },
+    {
+      name: 'Address',
+      prop: 'Address'
+    },
+    {
+      name: 'City',
+      prop: 'City'
+    },
+    {
+      name: 'State',
+      prop: 'State'
+    },
+    {
+      name: 'Zip',
+      prop: 'Zip'
+    },
+    {
+      name: 'Latitude',
+      prop: 'Latitude'
+    },
+    {
+      name: 'Longitude',
+      prop: 'Longitude'
+    },
+    {
+      name: 'Penalty Code',
+      prop: 'PenaltyCode'
+    },
+    {
+      name: 'Penalty Summary',
+      prop: 'PenaltyCodeSummary'
+    }
+  ];
 
   constructor(private readonly ds: DbService) {}
 
@@ -31,12 +71,7 @@ export class CorrectionDataTableComponent implements OnInit {
       this.ds.openDatabase('corrections')
     );
 
-    this.contents = this.db.pipe(
-      switchMap(() => this.ds.getAll()),
-      tap((data) => {
-        console.log(data);
-      })
-    );
+    this.contents = this.db.pipe(switchMap(() => this.ds.getN(250)));
   }
 
   public doThing(e: File) {

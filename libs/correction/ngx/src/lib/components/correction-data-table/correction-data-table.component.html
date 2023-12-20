@@ -1,16 +1,18 @@
-<div class="file-input">
-  <tamu-gisc-file (fileSelected)="doThing($event)" accept=".csv"></tamu-gisc-file>
+<ng-container *ngIf="(contents | async) as contents; else noData">
+  <tamu-gisc-table [data]="contents" [config]="config"></tamu-gisc-table>
+</ng-container>
 
-  <div class="file-input__drop-zone">
-    <div class="file-input__drop-zone__text">
-      <ng-container *ngIf="(contents | async) as contents; else noFile">
-        <p>Retrieved {{contents.length}} rows from database</p>
-      </ng-container>
+<ng-template #noData>
+  <div class="file-input">
+    <tamu-gisc-file (fileSelected)="doThing($event)" accept=".csv"></tamu-gisc-file>
 
-      <ng-template #noFile>
-        <span class="material-symbols-outlined">cloud_upload</span>
-        <p>Click to select CSV file or drag and drop here.</p>
-      </ng-template>
+    <div class="file-input__drop-zone">
+      <div class="file-input__drop-zone__text">
+        <ng-template #noFile>
+          <span class="material-symbols-outlined">cloud_upload</span>
+          <p>Click to select CSV file or drag and drop here.</p>
+        </ng-template>
+      </div>
     </div>
   </div>
-</div>
+</ng-template>

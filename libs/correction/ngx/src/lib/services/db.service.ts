@@ -67,6 +67,10 @@ export class DbService {
   public getAll(): Observable<Array<any>> {
     return from(this._db.table('data').toArray() as Promise<Array<any>>);
   }
+
+  public getN(count: number): Observable<Array<any>> {
+    return from(this._db.table('data').limit(count).toArray() as Promise<Array<any>>);
+  }
 }
 
 export interface DBConfig {

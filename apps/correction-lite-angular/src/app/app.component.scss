@@ -4,7 +4,22 @@
   grid-template-columns: 1fr 1fr;
 }
 
+#map-container {
+  grid-column: 1/2;
+}
+
 #side-container {
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-column: 2/3;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+
+  #table-container {
+    grid-row: 1/2;
+    overflow: auto;
+  }
+
+  #misc-container {
+    grid-row: 2/3;
+  }
 }
