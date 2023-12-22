@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, race, ReplaySubject, switchMap } from 'rxjs';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Observable, race, ReplaySubject, switchMap, tap } from 'rxjs';
 
 import * as papa from 'papaparse';
 
@@ -60,6 +60,12 @@ export class CorrectionDataTableComponent implements OnInit {
     }
   ];
 
+  @Output()
+  public dataPopulated: EventEmitter<boolean> = new EventEmitter();
+
+  @Output()
+  public rowSelected: EventEmitter<Record<string, unknown>> = new EventEmitter();
+
   constructor(private readonly ds: DbService, private es: EsriMapService) {}
 
   public ngOnInit(): void {
@@ -74,7 +80,12 @@ export class CorrectionDataTableComponent implements OnInit {
       this.ds.openDatabase('corrections')
     );
 
-    this.contents = this.db.pipe(switchMap(() => this.ds.getN(250)));
+    this.contents = this.db.pipe(
+      switchMap(() => this.ds.getN(250)),
+      tap(() => {
+        this.dataPopulated.emit(true);
+      })
+    );
   }
 
   public doThing(e: File) {
@@ -116,6 +127,8 @@ export class CorrectionDataTableComponent implements OnInit {
       graphics: [...layer.graphics],
       zoom: 15
     });
+
+    this.rowSelected.emit(row);
   }
 
   private _parseCsv(file: File): Observable<Array<Record<string, unknown>>> {

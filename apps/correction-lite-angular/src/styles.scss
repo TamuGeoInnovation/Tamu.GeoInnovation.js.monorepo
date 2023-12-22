@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'libs/sass/1140';
+@import 'libs/sass/mixins';
+@import 'libs/sass/dom_flexbox';
+@import 'libs/sass/spacing';
 
 html {
   height: 100%;

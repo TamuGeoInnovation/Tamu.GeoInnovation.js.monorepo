@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { forkJoin, from, take } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -11,6 +11,9 @@ import esri = __esri;
   styleUrls: ['./correction-lite-map.component.scss']
 })
 export class CorrectionLiteMapComponent implements OnInit {
+  @Output()
+  public featureLessClick: EventEmitter<{ lat: number; lon: number }> = new EventEmitter();
+
   public config: MapConfig;
 
   constructor(private readonly ms: EsriMapService, private readonly mp: EsriModuleProviderService) {}
@@ -42,5 +45,11 @@ export class CorrectionLiteMapComponent implements OnInit {
         instances.view.ui.add(toggle, 'bottom-right');
       }
     );
+
+    this.ms.store.pipe(take(1)).subscribe((instance) => {
+      instance.view.on('click', (e) => {
+        this.featureLessClick.emit({ lat: e.mapPoint.latitude, lon: e.mapPoint.longitude });
+      });
+    });
   }
 }

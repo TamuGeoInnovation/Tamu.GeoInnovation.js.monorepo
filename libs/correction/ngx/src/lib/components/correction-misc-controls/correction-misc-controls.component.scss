@@ -1,0 +1,70 @@
+@use 'libs/sass/mixins' as m;
+
+:host {
+  @include m.flexbox();
+  @include m.flex-direction(column);
+  height: 100%;
+  padding: 2.5rem 1.5rem;
+  box-sizing: border-box;
+  border-top: 1pt solid #e0e0e0;
+}
+
+#instructions-container {
+  @include m.flexbox();
+  @include m.flex-direction(column);
+  @include m.justify-content(center);
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  font-weight: 600;
+}
+
+#correction-container {
+  h3 {
+    border-left: 2.5pt solid #42a5f5;
+    padding: 0.25rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .correction-section {
+    border-bottom: 1pt solid #eeeeee;
+    padding-bottom: 2.5rem;
+    margin-bottom: 2.5rem;
+
+    &:nth-child(n + 1):not(:last-child) {
+      margin-right: 3.5rem;
+    }
+  }
+
+  .geocode-fragments {
+    @include m.flexbox();
+    @include m.flex-wrap(wrap);
+    margin-left: 0.5rem;
+  }
+
+  .geocode-fragment {
+    padding: 0.5rem 1rem;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+
+    .geocode-fragment__name {
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      color: #757575;
+      font-weight: 600;
+    }
+
+    .geocode-fragment__value {
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: #212121;
+      min-width: 10rem;
+    }
+  }
+}

@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Geocode Correction Lite | Texas A&M Geoservices ';
+  public hideInstructions: boolean;
+  public selectedRow: Record<string, unknown>;
+  public coordinateOverride: { lat: number; lon: number };
 }

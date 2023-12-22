@@ -1,0 +1,85 @@
+<div id="instructions-container" *ngIf="selectedRow === undefined; else correctSelected">
+  <ng-container *ngIf="showInitialInstructions; else selectRowInstructions">
+    <p>Get started by uploading your result CSV file</p>
+  </ng-container>
+
+  <ng-template #selectRowInstructions>
+    <p>Select a row from the table to begin correction.</p>
+  </ng-template>
+</div>
+
+<ng-template #correctSelected>
+  <div id="correction-container" *ngIf="selectedRow as row">
+    <div>
+      <div class="correction-section">
+        <h3>Address</h3>
+
+        <div class="geocode-fragments">
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">Street</p>
+            <p class="geocode-fragment__value">{{row.Address}}</p>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">City</p>
+            <p class="geocode-fragment__value">{{row.City}}</p>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">State</p>
+            <p class="geocode-fragment__value">{{row.State}}</p>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">Zip</p>
+            <p class="geocode-fragment__value">{{row.Zip}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-row flex-wrap">
+      <div class="correction-section">
+        <h3>Geocoded Coordinates</h3>
+
+        <p class="trailer-1">The following are the resulting best-match lat/lon pairs for the above address.</p>
+
+        <div class="geocode-fragments">
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">Output Latitude</p>
+            <p class="geocode-fragment__value">{{row.Latitude}}</p>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">Output Longitude</p>
+            <p class="geocode-fragment__value">{{row.Longitude}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="correction-section">
+        <h3>Corrected Coordinates</h3>
+
+        <p class="trailer-1">If geocoded coordinates are incorrect, click on the correct location on the map to record the coordinates.</p>
+
+        <div class="geocode-fragments">
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">New Latitude</p>
+            <div [ngSwitch]="coordinateOverride !== undefined">
+              <p class="geocode-fragment__value" *ngSwitchCase="true">{{coordinateOverride?.lat}}</p>
+              <p class="geocode-fragment__value" *ngSwitchDefault>-</p>
+            </div>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">New Longitude</p>
+            <div [ngSwitch]="coordinateOverride !== undefined">
+              <p class="geocode-fragment__value" *ngSwitchCase="true">{{coordinateOverride?.lon}}</p>
+              <p class="geocode-fragment__value" *ngSwitchDefault>-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
