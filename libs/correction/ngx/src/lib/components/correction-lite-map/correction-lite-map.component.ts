@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { forkJoin, from, take } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -11,6 +11,13 @@ import esri = __esri;
   styleUrls: ['./correction-lite-map.component.scss']
 })
 export class CorrectionLiteMapComponent implements OnInit {
+  /**
+   * This will limit when featureless clicks are emitted. If there is a row selected, then the application should
+   * allow feature editing.
+   */
+  @Input()
+  public focusedFeature: Record<string, unknown>;
+
   @Output()
   public featureLessClick: EventEmitter<{ lat: number; lon: number }> = new EventEmitter();
 
@@ -48,7 +55,9 @@ export class CorrectionLiteMapComponent implements OnInit {
 
     this.ms.store.pipe(take(1)).subscribe((instance) => {
       instance.view.on('click', (e) => {
-        this.featureLessClick.emit({ lat: e.mapPoint.latitude, lon: e.mapPoint.longitude });
+        if (this.focusedFeature) {
+          this.featureLessClick.emit({ lat: e.mapPoint.latitude, lon: e.mapPoint.longitude });
+        }
       });
     });
   }

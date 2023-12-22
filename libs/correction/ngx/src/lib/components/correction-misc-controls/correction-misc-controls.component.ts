@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-correction-misc-controls',
   templateUrl: './correction-misc-controls.component.html',
   styleUrls: ['./correction-misc-controls.component.scss']
 })
-export class CorrectionMiscControlsComponent implements OnInit {
+export class CorrectionMiscControlsComponent implements OnChanges {
   @Input()
   public showInitialInstructions = true;
 
@@ -15,7 +15,9 @@ export class CorrectionMiscControlsComponent implements OnInit {
   @Input()
   public coordinateOverride: { lat: number; lon: number };
 
-  public ngOnInit(): void {
-    console.log('Hello from CorrectionMiscControlsComponent');
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes.selectedRow && changes.selectedRow.currentValue && changes.selectedRow.previousValue !== undefined) {
+      this.coordinateOverride = undefined;
+    }
   }
 }
