@@ -1,5 +1,5 @@
 <ng-container *ngIf="(contents | async) as contents; else noData">
-  <tamu-gisc-table [data]="contents" [config]="config" [rowActionable]="true" (rowClick)="focusRow($event)"></tamu-gisc-table>
+  <tamu-gisc-table [data]="contents" [config]="config" [rowActionable]="true" (rowClick)="emitRowFocused($event)"></tamu-gisc-table>
 </ng-container>
 
 <ng-template #noData>

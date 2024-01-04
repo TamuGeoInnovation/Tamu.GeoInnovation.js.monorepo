@@ -92,43 +92,8 @@ export class CorrectionDataTableComponent implements OnInit {
     this._file.next(e);
   }
 
-  public async focusRow(row: Record<string, unknown>) {
-    const layerId = 'geocoded-original';
-
-    const layer = (await this.es.findLayerOrCreateFromSource({
-      type: 'graphics',
-      id: layerId,
-      title: 'Geocoded Original'
-    })) as esri.GraphicsLayer;
-
-    if (layer.graphics.length > 0) {
-      layer.removeAll();
-    }
-
-    layer.add({
-      geometry: {
-        type: 'point',
-        x: row['Longitude'],
-        y: row['Latitude']
-      } as esri.geometryPoint,
-      symbol: {
-        type: 'simple-marker',
-        style: 'circle',
-        color: 'red',
-        size: 10,
-        outline: {
-          color: '#fafafa',
-          width: 1
-        }
-      } as esri.SimpleMarkerSymbolProperties
-    } as unknown as esri.Graphic);
-
-    this.es.zoomTo({
-      graphics: [...layer.graphics],
-      zoom: 15
-    });
-
-    this.rowSelected.emit(row);
+  public emitRowFocused(e: Record<string, unknown>) {
+    this.rowSelected.emit(e);
   }
 
   private _parseCsv(file: File): Observable<Array<Record<string, unknown>>> {

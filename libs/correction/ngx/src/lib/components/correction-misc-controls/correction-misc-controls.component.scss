@@ -24,6 +24,8 @@
     border-left: 2.5pt solid #42a5f5;
     padding: 0.25rem 1rem;
     margin-bottom: 0.5rem;
+    @include m.flexbox();
+    @include m.align-items(center);
   }
 
   .correction-section {
@@ -66,5 +68,22 @@
       color: #212121;
       min-width: 10rem;
     }
+  }
+}
+
+.symbol-marker {
+  display: block;
+  height: 0.75rem;
+  width: 0.75rem;
+  border-radius: 1rem;
+  margin-left: 0.5rem;
+  border: 1pt solid #212121;
+
+  &.geocoded {
+    background-color: red;
+  }
+
+  &.correction {
+    background-color: #00c853;
   }
 }
