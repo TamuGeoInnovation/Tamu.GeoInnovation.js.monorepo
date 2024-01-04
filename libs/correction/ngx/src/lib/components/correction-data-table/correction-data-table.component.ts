@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable, race, ReplaySubject, switchMap, tap } from 'rxjs';
 
 import * as papa from 'papaparse';
@@ -6,7 +6,8 @@ import * as papa from 'papaparse';
 import { TableConfig } from '@tamu-gisc/ui-kits/ngx/layout/tables';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-import { DbService } from '../../services/db.service';
+import { DbService } from '../../services/db/db.service';
+import { CorrectionService } from '../../services/correction/correction.service';
 
 import esri = __esri;
 
@@ -60,13 +61,7 @@ export class CorrectionDataTableComponent implements OnInit {
     }
   ];
 
-  @Output()
-  public dataPopulated: EventEmitter<boolean> = new EventEmitter();
-
-  @Output()
-  public rowSelected: EventEmitter<Record<string, unknown>> = new EventEmitter();
-
-  constructor(private readonly ds: DbService, private es: EsriMapService) {}
+  constructor(private readonly ds: DbService, private es: EsriMapService, private readonly cs: CorrectionService) {}
 
   public ngOnInit(): void {
     this.db = race(
@@ -83,7 +78,7 @@ export class CorrectionDataTableComponent implements OnInit {
     this.contents = this.db.pipe(
       switchMap(() => this.ds.getN(250)),
       tap(() => {
-        this.dataPopulated.emit(true);
+        this.cs.notifyDataPopulated();
       })
     );
   }
@@ -93,7 +88,7 @@ export class CorrectionDataTableComponent implements OnInit {
   }
 
   public emitRowFocused(e: Record<string, unknown>) {
-    this.rowSelected.emit(e);
+    this.cs.selectRow(e);
   }
 
   private _parseCsv(file: File): Observable<Array<Record<string, unknown>>> {

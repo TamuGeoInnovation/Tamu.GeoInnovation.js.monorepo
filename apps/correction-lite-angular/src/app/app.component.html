@@ -1,13 +1,13 @@
 <div id="map-container">
-  <tamu-gisc-correction-lite-map (featureLessClick)="coordinateOverride = $event" [focusedFeature]="selectedRow"></tamu-gisc-correction-lite-map>
+  <tamu-gisc-correction-lite-map></tamu-gisc-correction-lite-map>
 </div>
 
 <div id="side-container">
   <div id="table-container">
-    <tamu-gisc-correction-data-table (dataPopulated)="hideInstructions = $event" (rowSelected)="selectedRow = $event"></tamu-gisc-correction-data-table>
+    <tamu-gisc-correction-data-table></tamu-gisc-correction-data-table>
   </div>
 
   <div id="misc-container">
-    <tamu-gisc-correction-misc-controls [showInitialInstructions]="!hideInstructions" [selectedRow]="selectedRow" [coordinateOverride]="coordinateOverride"></tamu-gisc-correction-misc-controls>
+    <tamu-gisc-correction-misc-controls></tamu-gisc-correction-misc-controls>
   </div>
 </div>

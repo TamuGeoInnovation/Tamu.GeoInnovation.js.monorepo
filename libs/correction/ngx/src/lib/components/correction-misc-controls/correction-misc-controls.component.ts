@@ -1,23 +1,24 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { shareReplay } from 'rxjs';
+
+import { CorrectionService } from '../../services/correction/correction.service';
 
 @Component({
   selector: 'tamu-gisc-correction-misc-controls',
   templateUrl: './correction-misc-controls.component.html',
   styleUrls: ['./correction-misc-controls.component.scss']
 })
-export class CorrectionMiscControlsComponent implements OnChanges {
-  @Input()
-  public showInitialInstructions = true;
+export class CorrectionMiscControlsComponent {
+  public showInitialInstructions = this.cs.dataPopulated;
+  public selectedRow = this.cs.selectedRow;
+  public coordinateOverride = this.cs.correctionPoint.pipe(shareReplay());
 
-  @Input()
-  public selectedRow: Record<string, unknown>;
+  @Output()
+  public correctionApplied: EventEmitter<boolean> = new EventEmitter();
 
-  @Input()
-  public coordinateOverride: { lat: number; lon: number };
+  constructor(private readonly cs: CorrectionService) {}
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedRow && changes.selectedRow.currentValue && changes.selectedRow.previousValue !== undefined) {
-      this.coordinateOverride = undefined;
-    }
+  public applyCorrection() {
+    this.correctionApplied.emit(true);
   }
 }
