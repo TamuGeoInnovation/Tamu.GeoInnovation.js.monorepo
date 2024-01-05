@@ -1,10 +1,24 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, Observable, race, ReplaySubject, switchMap, take, tap, merge } from 'rxjs';
+import {
+  combineLatest,
+  Observable,
+  race,
+  ReplaySubject,
+  switchMap,
+  take,
+  tap,
+  merge,
+  BehaviorSubject,
+  delay,
+  startWith,
+  of
+} from 'rxjs';
 
 import * as papa from 'papaparse';
 
 import { TableConfig } from '@tamu-gisc/ui-kits/ngx/layout/tables';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { DbService } from '../../services/db/db.service';
 import { CorrectionService } from '../../services/correction/correction.service';
@@ -71,7 +85,24 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     }
   ];
 
-  constructor(private readonly ds: DbService, private es: EsriMapService, private readonly cs: CorrectionService) {}
+  private _exportStatus: BehaviorSubject<'idle' | 'exporting'> = new BehaviorSubject('idle');
+  public exportStatus = this._exportStatus.asObservable();
+  public exportStatusMessage = this.exportStatus.pipe(
+    switchMap((status) => {
+      if (status === 'exporting') {
+        return of('Exporting...');
+      } else {
+        return of('Export').pipe(delay(500), startWith('Export'));
+      }
+    })
+  );
+
+  constructor(
+    private readonly ds: DbService,
+    private es: EsriMapService,
+    private readonly cs: CorrectionService,
+    private readonly ns: NotificationService
+  ) {}
 
   public ngOnInit(): void {
     this.db = race(
@@ -121,6 +152,57 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
 
   public emitRowFocused(e: Record<string, unknown>) {
     this.cs.selectRow(e);
+  }
+
+  public exportToCsv() {
+    this._exportStatus.next('exporting');
+
+    this.ds.getAll().subscribe({
+      next: (data) => {
+        try {
+          const csv = papa.unparse(data);
+          const blob = new Blob([csv], { type: 'text/csv' });
+          const url = window.URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.setAttribute('hidden', '');
+          a.setAttribute('href', url);
+          a.setAttribute('download', 'corrections.csv');
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          this.ns.toast({
+            message: 'DB to CSV export was successful. Check your downloads folder.',
+            id: 'exported-corrections',
+            title: 'Export Download Started'
+          });
+
+          this._exportStatus.next('idle');
+        } catch (err) {
+          this.ns.toast({
+            message: 'Failed to convert data to CSV for export.',
+            id: 'exported-corrections',
+            title: 'Export Failed'
+          });
+
+          console.error(err);
+
+          this._exportStatus.next('idle');
+        }
+      },
+      error: (err) => {
+        this.ns.toast({
+          message: 'Failed to retrieve data from database for export.',
+          id: 'exported-corrections',
+          title: 'Export Failed'
+        });
+
+        console.error(err);
+
+        this._exportStatus.next('idle');
+      }
+    });
   }
 
   private _parseCsv(file: File): Observable<Array<Record<string, unknown>>> {

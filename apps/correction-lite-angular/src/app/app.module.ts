@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
+import { Angulartics2Module } from 'angulartics2';
+
 import { CorrectionNgxModule } from '@tamu-gisc/correction/ngx';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -20,10 +24,13 @@ WebFont.load({
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' }),
+    Angulartics2Module.forRoot(),
     CorrectionNgxModule,
-    EnvironmentModule
+    EnvironmentModule,
+    NotificationModule
   ],
   declarations: [AppComponent],
   providers: [

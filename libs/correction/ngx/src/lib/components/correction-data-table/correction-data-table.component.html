@@ -1,5 +1,18 @@
 <ng-container *ngIf="(contents | async) as contents; else noData">
-  <tamu-gisc-table [data]="contents" [config]="config" [rowActionable]="true" (rowClick)="emitRowFocused($event)"></tamu-gisc-table>
+  <div class="table-overflow-container">
+    <tamu-gisc-table [data]="contents" [config]="config" [rowActionable]="true" (rowClick)="emitRowFocused($event)"></tamu-gisc-table>
+  </div>
+
+  <div class="toolbar">
+    <div class="left-container">
+      <div class="toolbar-item" id="record-count">{{contents?.length}} records being shown</div>
+    </div>
+
+    <div class="right-container">
+      <div class="toolbar-item link" id="clear-button"><span class="material-symbols-outlined">ink_eraser</span> Reset</div>
+      <div class="toolbar-item link" id="export-button" (click)="exportToCsv()"><span class="material-symbols-outlined">csv</span> {{exportStatusMessage | async}}</div>
+    </div>
+  </div>
 </ng-container>
 
 <ng-template #noData>
