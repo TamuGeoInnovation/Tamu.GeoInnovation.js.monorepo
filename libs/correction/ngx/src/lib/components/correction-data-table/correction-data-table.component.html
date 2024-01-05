@@ -9,7 +9,7 @@
     </div>
 
     <div class="right-container">
-      <div class="toolbar-item link" id="clear-button"><span class="material-symbols-outlined">ink_eraser</span> Reset</div>
+      <div class="toolbar-item link" id="clear-button" (click)="openResetPromptModal()"><span class="material-symbols-outlined">ink_eraser</span> Reset</div>
       <div class="toolbar-item link" id="export-button" (click)="exportToCsv()"><span class="material-symbols-outlined">csv</span> {{exportStatusMessage | async}}</div>
     </div>
   </div>
@@ -21,10 +21,10 @@
 
     <div class="file-input__drop-zone">
       <div class="file-input__drop-zone__text">
-        <ng-template #noFile>
-          <span class="material-symbols-outlined">cloud_upload</span>
-          <p>Click to select CSV file or drag and drop here.</p>
-        </ng-template>
+        <!-- <ng-template #noFile> -->
+        <span class="material-symbols-outlined">cloud_upload</span>
+        <p>Click to select CSV file or drag and drop here.</p>
+        <!-- </ng-template> -->
       </div>
     </div>
   </div>

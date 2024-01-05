@@ -11,7 +11,8 @@ import {
   BehaviorSubject,
   delay,
   startWith,
-  of
+  of,
+  mapTo
 } from 'rxjs';
 
 import * as papa from 'papaparse';
@@ -19,10 +20,13 @@ import * as papa from 'papaparse';
 import { TableConfig } from '@tamu-gisc/ui-kits/ngx/layout/tables';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { DbService } from '../../services/db/db.service';
 import { CorrectionService } from '../../services/correction/correction.service';
+import { DbResetModalComponent } from '../modals/db-reset-modal/db-reset-modal.component';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import esri = __esri;
 
 @Component({
@@ -99,9 +103,10 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly ds: DbService,
-    private es: EsriMapService,
+    private readonly es: EsriMapService,
     private readonly cs: CorrectionService,
-    private readonly ns: NotificationService
+    private readonly ns: NotificationService,
+    private readonly modal: ModalService
   ) {}
 
   public ngOnInit(): void {
@@ -203,6 +208,43 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
         this._exportStatus.next('idle');
       }
     });
+  }
+
+  public openResetPromptModal() {
+    this.modal
+      .open(DbResetModalComponent)
+      .pipe(
+        switchMap((shouldReset) => {
+          if (shouldReset) {
+            return this.ds.deleteDatabase('corrections').pipe(
+              tap(() => {
+                console.log('Resetting database...');
+              }),
+              mapTo(true)
+            );
+          } else {
+            return of(false);
+          }
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          if (result === true) {
+            window.location.reload();
+          } else {
+            console.log('Reset cancelled.');
+          }
+        },
+        error: (err) => {
+          console.error(err);
+
+          this.ns.toast({
+            message: 'Failed to reset database.',
+            id: 'reset-corrections',
+            title: 'Reset Failed'
+          });
+        }
+      });
   }
 
   private _parseCsv(file: File): Observable<Array<Record<string, unknown>>> {

@@ -60,8 +60,12 @@ export class DbService {
     );
   }
 
-  public deleteDatabase() {
-    window.indexedDB.deleteDatabase(this._config.name);
+  public deleteDatabase(name: string) {
+    if (!name) {
+      throw new Error('No database name provided.');
+    }
+
+    return from(Dexie.delete(name));
   }
 
   public getAll(): Observable<Array<Record<string, unknown>>> {
