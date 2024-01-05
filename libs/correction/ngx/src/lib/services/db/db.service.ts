@@ -71,6 +71,10 @@ export class DbService {
   public getN(count: number): Observable<Array<Record<string, unknown>>> {
     return from(this._db.table('data').limit(count).toArray() as Promise<Array<Record<string, unknown>>>);
   }
+
+  public updateById(id: number | string, data: Record<string, unknown>): Observable<number> {
+    return from(this._db.table('data').update(id, data) as Promise<number>);
+  }
 }
 
 export interface DBConfig {

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, race, ReplaySubject, switchMap, tap } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, Observable, race, ReplaySubject, switchMap, take, tap, merge } from 'rxjs';
 
 import * as papa from 'papaparse';
 
@@ -16,10 +16,12 @@ import esri = __esri;
   templateUrl: './correction-data-table.component.html',
   styleUrls: ['./correction-data-table.component.scss']
 })
-export class CorrectionDataTableComponent implements OnInit {
-  private _file: ReplaySubject<File> = new ReplaySubject();
+export class CorrectionDataTableComponent implements OnInit, OnDestroy {
+  private _file$: ReplaySubject<File> = new ReplaySubject(1);
+  private _refresh$: ReplaySubject<boolean> = new ReplaySubject(1);
+  private _destroy$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-  public file = this._file.asObservable();
+  public file = this._file$.asObservable();
   public db: Observable<IDBDatabase>;
   public contents: Observable<Array<Record<string, unknown>>>;
   public config: TableConfig = [
@@ -58,6 +60,14 @@ export class CorrectionDataTableComponent implements OnInit {
     {
       name: 'Penalty Summary',
       prop: 'PenaltyCodeSummary'
+    },
+    {
+      name: 'Corrected Latitude',
+      prop: 'NewLatitude'
+    },
+    {
+      name: 'Corrected Longitude',
+      prop: 'NewLongitude'
     }
   ];
 
@@ -75,16 +85,38 @@ export class CorrectionDataTableComponent implements OnInit {
       this.ds.openDatabase('corrections')
     );
 
-    this.contents = this.db.pipe(
+    this.contents = merge(this.db, this._refresh$).pipe(
       switchMap(() => this.ds.getN(250)),
       tap(() => {
         this.cs.notifyDataPopulated();
       })
     );
+
+    this.cs.correctionApplied
+      .pipe(
+        switchMap(() => {
+          return combineLatest([this.cs.selectedRow, this.cs.correctionPoint]).pipe(take(1));
+        }),
+        switchMap(([row, point]) => {
+          return this.ds.updateById(parseInt(row.ID as string), { NewLatitude: point.lat, NewLongitude: point.lon });
+        })
+      )
+      .subscribe((result) => {
+        console.log(`Fields updated: ${result}`);
+
+        if (result === 1) {
+          this._refresh$.next(true);
+        }
+      });
+  }
+
+  public ngOnDestroy(): void {
+    this._destroy$.next(true);
+    this._destroy$.complete();
   }
 
   public doThing(e: File) {
-    this._file.next(e);
+    this._file$.next(e);
   }
 
   public emitRowFocused(e: Record<string, unknown>) {

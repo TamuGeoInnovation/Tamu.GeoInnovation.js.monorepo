@@ -1,32 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-
-import { DbService } from '../db/db.service';
+import { ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CorrectionService {
-  private _selectedRow: Subject<Record<string, unknown>> = new Subject();
-  private _dataPopulated: Subject<boolean> = new Subject();
-  private _recordedMapPoint: Subject<{ lat: number; lon: number }> = new Subject();
-
-  public selectedRow = this._selectedRow.asObservable();
-  public dataPopulated = this._dataPopulated.asObservable();
-  public correctionPoint = this._recordedMapPoint.asObservable();
-
-  constructor(private readonly db: DbService) {}
+  public dataPopulated: ReplaySubject<boolean> = new ReplaySubject(1);
+  public selectedRow: ReplaySubject<Record<string, unknown>> = new ReplaySubject(1);
+  public correctionPoint: ReplaySubject<{ lat: number; lon: number }> = new ReplaySubject(1);
+  public correctionApplied: ReplaySubject<boolean> = new ReplaySubject(1);
 
   public notifyDataPopulated() {
-    this._dataPopulated.next(true);
+    this.dataPopulated.next(true);
   }
 
   public selectRow(row: Record<string, unknown>) {
-    this._selectedRow.next(row);
-    this._recordedMapPoint.next(null);
+    this.selectedRow.next(row);
+    this.correctionPoint.next(null);
   }
 
   public recordMapPoint(point: { lat: number; lon: number }) {
-    this._recordedMapPoint.next(point);
+    this.correctionPoint.next(point);
+  }
+
+  public notifyApplyCorrection() {
+    this.correctionApplied.next(true);
   }
 }

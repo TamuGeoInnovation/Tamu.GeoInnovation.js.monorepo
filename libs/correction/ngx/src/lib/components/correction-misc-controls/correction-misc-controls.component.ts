@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { shareReplay } from 'rxjs';
 
 import { CorrectionService } from '../../services/correction/correction.service';
@@ -13,12 +13,9 @@ export class CorrectionMiscControlsComponent {
   public selectedRow = this.cs.selectedRow;
   public coordinateOverride = this.cs.correctionPoint.pipe(shareReplay());
 
-  @Output()
-  public correctionApplied: EventEmitter<boolean> = new EventEmitter();
-
   constructor(private readonly cs: CorrectionService) {}
 
   public applyCorrection() {
-    this.correctionApplied.emit(true);
+    this.cs.notifyApplyCorrection();
   }
 }

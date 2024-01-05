@@ -1,5 +1,5 @@
-<div id="instructions-container" *ngIf="selectedRow === undefined; else correctSelected">
-  <ng-container *ngIf="showInitialInstructions | async; else selectRowInstructions">
+<div id="instructions-container" *ngIf="(selectedRow | async) === null; else correctSelected">
+  <ng-container *ngIf="(showInitialInstructions | async) === null; else selectRowInstructions">
     <p>Get started by uploading your result CSV file</p>
   </ng-container>
 
