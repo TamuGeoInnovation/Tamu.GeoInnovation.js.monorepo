@@ -4,7 +4,5 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class TableService {
-  private _data: Array<any> = [];
-
-  constructor() {}
+  private _data: Array<Record<string, unknown>> = [];
 }
