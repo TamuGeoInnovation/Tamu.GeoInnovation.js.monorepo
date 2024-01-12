@@ -80,6 +80,14 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       prop: 'PenaltyCodeSummary'
     },
     {
+      name: 'Micro Match Status',
+      prop: 'MicroMatchStatus'
+    },
+    {
+      name: 'Feature Matching Geography Type',
+      prop: 'FeatureMatchingGeographyType'
+    },
+    {
       name: 'Corrected Latitude',
       prop: 'NewLatitude'
     },
