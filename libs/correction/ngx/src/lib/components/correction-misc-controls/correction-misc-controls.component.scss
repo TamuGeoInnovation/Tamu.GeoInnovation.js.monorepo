@@ -7,6 +7,7 @@
   padding: 2.5rem 1.5rem;
   box-sizing: border-box;
   border-top: 1pt solid #e0e0e0;
+  overflow: auto;
 }
 
 #instructions-container {
@@ -32,6 +33,7 @@
     border-bottom: 1pt solid #eeeeee;
     padding-bottom: 2.5rem;
     margin-bottom: 2.5rem;
+    @include m.flex(1);
 
     &:nth-child(n + 1):not(:last-child) {
       margin-right: 3.5rem;
@@ -85,5 +87,28 @@
 
   &.correction {
     background-color: #00c853;
+  }
+}
+
+.alternate-geocode {
+  padding: 0.5rem 0.75rem;
+  margin: 0.75rem;
+  border: 1pt solid #e0e0e0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  .source-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .source-lat,
+  .source-lon {
+    font-size: 0.9rem;
+    color: #757575;
+  }
+
+  &:hover {
+    border-color: #bdbdbd;
   }
 }

@@ -62,34 +62,6 @@ export class CorrectionLiteMapComponent implements OnInit {
       instance.view.on('click', async (e) => {
         if (this.focusedFeature) {
           this.cs.recordMapPoint({ lat: e.mapPoint.latitude, lon: e.mapPoint.longitude });
-
-          const layer = (await this.ms.findLayerOrCreateFromSource({
-            type: 'graphics',
-            id: this._correctionPointLayerId,
-            title: 'Correction Point'
-          })) as esri.GraphicsLayer;
-
-          if (layer.graphics.length > 0) {
-            layer.removeAll();
-          }
-
-          layer.add({
-            geometry: {
-              type: 'point',
-              x: e.mapPoint.longitude,
-              y: e.mapPoint.latitude
-            } as esri.geometryPoint,
-            symbol: {
-              type: 'simple-marker',
-              style: 'circle',
-              color: '#00C853',
-              size: 10,
-              outline: {
-                color: '#000000',
-                width: 1
-              }
-            } as esri.SimpleMarkerSymbolProperties
-          } as unknown as esri.Graphic);
         }
       });
     });
@@ -97,6 +69,36 @@ export class CorrectionLiteMapComponent implements OnInit {
     this.focusedFeature.subscribe((feature) => {
       this.createOrUpdateOriginalFeatureLayer(feature);
       this._clearCorrectionPointLayer();
+    });
+
+    this.cs.correction.subscribe(async (cr) => {
+      const layer = (await this.ms.findLayerOrCreateFromSource({
+        type: 'graphics',
+        id: this._correctionPointLayerId,
+        title: 'Correction Point'
+      })) as esri.GraphicsLayer;
+
+      if (layer.graphics.length > 0) {
+        layer.removeAll();
+      }
+
+      layer.add({
+        geometry: {
+          type: 'point',
+          x: cr.NewLongitude as unknown as number,
+          y: cr.NewLatitude as unknown as number
+        } as esri.geometryPoint,
+        symbol: {
+          type: 'simple-marker',
+          style: 'circle',
+          color: '#00C853',
+          size: 10,
+          outline: {
+            color: '#000000',
+            width: 1
+          }
+        } as esri.SimpleMarkerSymbolProperties
+      } as unknown as esri.Graphic);
     });
   }
 

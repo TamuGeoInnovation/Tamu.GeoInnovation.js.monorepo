@@ -131,10 +131,10 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     this.cs.correctionApplied
       .pipe(
         switchMap(() => {
-          return combineLatest([this.cs.selectedRow, this.cs.correctionPoint]).pipe(take(1));
+          return combineLatest([this.cs.selectedRow, this.cs.correction]).pipe(take(1));
         }),
-        switchMap(([row, point]) => {
-          return this.ds.updateById(parseInt(row.ID as string), { NewLatitude: point.lat, NewLongitude: point.lon });
+        switchMap(([row, correction]) => {
+          return this.ds.updateById(parseInt(row.ID as string), { ...correction });
         })
       )
       .subscribe((result) => {

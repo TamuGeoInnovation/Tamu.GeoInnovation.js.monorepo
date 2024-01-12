@@ -60,7 +60,7 @@
       <div class="correction-section">
         <h3>Corrected Coordinates <span class="symbol-marker correction"></span></h3>
 
-        <p class="trailer-1">If geocoded coordinates are incorrect, click on the correct location on the map to record the coordinates.</p>
+        <p class="trailer-1">If geocoded coordinates are incorrect, click on the correct location on the map to record the coordinates, or select an alternate geocode from the list (if any).</p>
 
         <div class="geocode-fragments">
           <div class="geocode-fragment">
@@ -80,6 +80,22 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div *ngIf="alternateGeocodes | async as ag">
+      <ng-container *ngIf="ag?.length > 0">
+        <div class="correction-section">
+          <p class="trailer-1">The following is a list of alternate output geocodes from different reference sources. You can use one of the following in place of manually selecting a point from the map.</p>
+
+          <div class="flex flex-row">
+            <div *ngFor="let ag of alternateGeocodes | async" class="alternate-geocode" (click)="applyAlternateGeocode(ag)">
+              <p class="source-name">{{ag?.Source}}</p>
+              <p class="source-lat">{{ag?.Latitude}},</p>
+              <p class="source-lon">{{ag?.Longitude}}</p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
     </div>
 
     <div class="flex-row flex-wrap">
