@@ -82,23 +82,25 @@ export class CorrectionLiteMapComponent implements OnInit {
         layer.removeAll();
       }
 
-      layer.add({
-        geometry: {
-          type: 'point',
-          x: cr.NewLongitude as unknown as number,
-          y: cr.NewLatitude as unknown as number
-        } as esri.geometryPoint,
-        symbol: {
-          type: 'simple-marker',
-          style: 'circle',
-          color: '#00C853',
-          size: 10,
-          outline: {
-            color: '#000000',
-            width: 1
-          }
-        } as esri.SimpleMarkerSymbolProperties
-      } as unknown as esri.Graphic);
+      if (cr) {
+        layer.add({
+          geometry: {
+            type: 'point',
+            x: cr.NewLongitude as unknown as number,
+            y: cr.NewLatitude as unknown as number
+          } as esri.geometryPoint,
+          symbol: {
+            type: 'simple-marker',
+            style: 'circle',
+            color: '#00C853',
+            size: 10,
+            outline: {
+              color: '#000000',
+              width: 1
+            }
+          } as esri.SimpleMarkerSymbolProperties
+        } as unknown as esri.Graphic);
+      }
     });
   }
 

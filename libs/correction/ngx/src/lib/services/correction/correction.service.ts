@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, ReplaySubject, merge, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
+import { ReplaySubject, merge, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class CorrectionService {
       withLatestFrom(this.selectedRow),
       switchMap(([point, row]) => {
         if (!point) {
-          return EMPTY;
+          return of(null);
         }
 
         return of({
@@ -30,7 +30,10 @@ export class CorrectionService {
           NewQuality: 'Manual Correction',
           NewState: row.State,
           NewSource: 'TAMUGeocoder',
-          NewZip: row.Zip
+          NewZip: row.Zip,
+          MicroMatchStatus: 'Interactive',
+          PenaltyCode: 'XXXXXXXXXXXXXX',
+          PenaltyCodeSummary: 'XXXXXXXXXXXXXX'
         } as GeocodeCorrection);
       })
     ),
@@ -38,7 +41,7 @@ export class CorrectionService {
       withLatestFrom(this.selectedRow),
       switchMap(([geocode, row]) => {
         if (!geocode) {
-          return EMPTY;
+          return of(null);
         }
 
         return of({
@@ -49,7 +52,10 @@ export class CorrectionService {
           NewQuality: geocode['GeocodeQualityType'],
           NewSource: geocode['Source'],
           NewState: row.State,
-          NewZip: row.Zip
+          NewZip: row.Zip,
+          MicroMatchStatus: 'Interactive',
+          PenaltyCode: 'XXXXXXXXXXXXXX',
+          PenaltyCodeSummary: 'XXXXXXXXXXXXXX'
         } as GeocodeCorrection);
       })
     )
