@@ -98,6 +98,16 @@
       </ng-container>
     </div>
 
+    <div *ngIf="(coordinateOverride | async) !== null">
+      <h3>Notes</h3>
+
+      <p class="trailer-1">Provide a short justification/explanation for the correction. This note will be exported along with the correction latitude and longitude.</p>
+
+      <form [formGroup]="form">
+        <tamu-gisc-textbox type="textarea" class="trailer-2" formControlName="QANotes"></tamu-gisc-textbox>
+      </form>
+    </div>
+
     <div class="flex-row flex-wrap">
       <tamu-gisc-button [value]="'Apply Correction'" [disabled]="(coordinateOverride | async) === null" (click)="applyCorrection()"></tamu-gisc-button>
     </div>

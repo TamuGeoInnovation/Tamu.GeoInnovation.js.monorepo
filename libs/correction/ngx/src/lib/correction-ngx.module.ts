@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -11,7 +12,7 @@ import { CorrectionMiscControlsComponent } from './components/correction-misc-co
 import { DbResetModalComponent } from './components/modals/db-reset-modal/db-reset-modal.component';
 
 @NgModule({
-  imports: [CommonModule, EsriMapModule, UIFormsModule, UiKitsNgxLayoutTablesModule],
+  imports: [CommonModule, EsriMapModule, UIFormsModule, UiKitsNgxLayoutTablesModule, ReactiveFormsModule],
   declarations: [
     CorrectionLiteMapComponent,
     CorrectionDataTableComponent,

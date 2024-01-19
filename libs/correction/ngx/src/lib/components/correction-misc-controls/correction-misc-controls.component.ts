@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
 
-import { AlternateGeocode, CorrectionService, GeocodePoint } from '../../services/correction/correction.service';
+import {
+  AlternateGeocode,
+  CorrectionMiscFields,
+  CorrectionService,
+  GeocodePoint
+} from '../../services/correction/correction.service';
 
 @Component({
   selector: 'tamu-gisc-correction-misc-controls',
@@ -13,10 +19,15 @@ export class CorrectionMiscControlsComponent implements OnInit {
   public selectedRow = this.cs.selectedRow;
   public alternateGeocodes: Observable<Array<AlternateGeocode>>;
   public coordinateOverride: Observable<GeocodePoint>;
+  public form: FormGroup;
 
-  constructor(private readonly cs: CorrectionService) {}
+  constructor(private readonly cs: CorrectionService, private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
+    this.form = this.fb.group({
+      QANotes: ['']
+    });
+
     this.coordinateOverride = this.cs.correction.pipe(
       map((correction) => {
         if (correction) {
@@ -68,11 +79,13 @@ export class CorrectionMiscControlsComponent implements OnInit {
     );
   }
 
-  public applyCorrection() {
-    this.cs.notifyApplyCorrection();
-  }
-
   public applyAlternateGeocode(geocode: AlternateGeocode) {
     this.cs.recordAltGeocode(geocode);
+  }
+
+  public applyCorrection() {
+    const notes: CorrectionMiscFields = this.form.getRawValue();
+
+    this.cs.notifyApplyCorrection(notes);
   }
 }

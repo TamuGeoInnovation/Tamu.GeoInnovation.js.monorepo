@@ -10,6 +10,7 @@ export class CorrectionService {
   public correctionPoint: ReplaySubject<GeocodePoint> = new ReplaySubject(1);
   public correctionAltGeocode: ReplaySubject<AlternateGeocode> = new ReplaySubject(1);
   public correctionApplied: ReplaySubject<boolean> = new ReplaySubject(1);
+  public miscFields: ReplaySubject<CorrectionMiscFields> = new ReplaySubject(1);
 
   /**
    * Resolved correction from either a point or an alternate geocode.
@@ -27,8 +28,7 @@ export class CorrectionService {
           NewLongitude: point.lon.toString(),
           NewQuality: 'Manual Correction',
           NewSource: 'TAMUGeocoder',
-          QANotes: '',
-          Updated: '',
+          Updated: new Date().toUTCString(),
           MicroMatchStatus: 'Interactive',
           PenaltyCode: 'XXXXXXXXXXXXXX',
           PenaltyCodeSummary: 'XXXXXXXXXXXXXX'
@@ -47,8 +47,7 @@ export class CorrectionService {
           NewLongitude: geocode['Longitude'],
           NewQuality: geocode['GeocodeQualityType'],
           NewSource: geocode['Source'],
-          QANotes: '',
-          Updated: '',
+          Updated: new Date().toUTCString(),
           MicroMatchStatus: 'Interactive',
           PenaltyCode: 'XXXXXXXXXXXXXX',
           PenaltyCodeSummary: 'XXXXXXXXXXXXXX'
@@ -75,8 +74,16 @@ export class CorrectionService {
     this.correctionAltGeocode.next(geocode);
   }
 
-  public notifyApplyCorrection() {
+  public notifyApplyCorrection(fields?: CorrectionMiscFields) {
     this.correctionApplied.next(true);
+
+    if (fields) {
+      this.recordMiscFields(fields);
+    }
+  }
+
+  public recordMiscFields(fields: CorrectionMiscFields) {
+    this.miscFields.next(fields);
   }
 }
 
@@ -100,4 +107,8 @@ export interface AlternateGeocode {
   Source: string;
   Latitude: string;
   Longitude: string;
+}
+
+export interface CorrectionMiscFields {
+  QANotes: string;
 }
