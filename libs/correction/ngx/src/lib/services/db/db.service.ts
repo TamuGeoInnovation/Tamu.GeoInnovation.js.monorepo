@@ -8,7 +8,7 @@ import { Dexie } from 'dexie';
 })
 export class DbService {
   private _db;
-  private _config: Omit<DBConfig, 'data'>;
+  private _config: Omit<DBConfig, 'model' | 'data'>;
 
   /**
    * Creates Indexed DB database with the provided configuration.
@@ -19,7 +19,7 @@ export class DbService {
    * 2. Creates an index for each key in the first item of the data array.
    * 3. Adds each item in the data array to the object store.
    */
-  public initDb({ name, version = 1, createSchemaFromData = true, data }: DBConfig): Observable<IDBDatabase> {
+  public initDb({ name, version = 1, createSchemaFromData = true, data, model }: DBConfig): Observable<IDBDatabase> {
     this._config = { name, version, createSchemaFromData };
 
     this._db = new Dexie(name);
@@ -28,8 +28,11 @@ export class DbService {
       throw new Error('Creating database with schema not supported yet, but database has already been created.');
     }
 
-    if (data && data instanceof Array) {
-      const indexes = Object.keys(data[0])
+    if (model || (data && data instanceof Array)) {
+      // Preferentially use the provided model, but if it is not provided, use the first item in the data array.
+      const m = model ? model : data[0];
+
+      const indexes = Object.keys(m)
         .filter((key) => {
           return key.includes('AUTO_') === false;
         })
@@ -82,8 +85,29 @@ export class DbService {
 }
 
 export interface DBConfig {
+  /**
+   * Name of the database.
+   */
   name: string;
+
   version: number;
+
+  /**
+   * Whether to create the database schema from the data provided.
+   */
   createSchemaFromData: boolean;
+
+  /**
+   * Data to populate the database with.
+   */
   data: Array<Record<string, unknown>>;
+
+  /**
+   * Model to use for creating the database schema. Use this if you want to create a schema that is different from the data provided.
+   *
+   * Cases where this is necessary include when the data provided is not representative of the data that will be added to the database.
+   *
+   * For example, if the data provided is a subset of the data that will be added to the database, the model should be the full set of data.
+   */
+  model?: Record<string, unknown>;
 }

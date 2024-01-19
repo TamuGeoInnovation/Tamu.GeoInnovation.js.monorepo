@@ -25,12 +25,10 @@ export class CorrectionService {
         return of({
           NewLatitude: point.lat.toString(),
           NewLongitude: point.lon.toString(),
-          NewAddress: row.Address,
-          NewCity: row.City,
           NewQuality: 'Manual Correction',
-          NewState: row.State,
           NewSource: 'TAMUGeocoder',
-          NewZip: row.Zip,
+          QANotes: '',
+          Updated: '',
           MicroMatchStatus: 'Interactive',
           PenaltyCode: 'XXXXXXXXXXXXXX',
           PenaltyCodeSummary: 'XXXXXXXXXXXXXX'
@@ -47,12 +45,10 @@ export class CorrectionService {
         return of({
           NewLatitude: geocode['Latitude'],
           NewLongitude: geocode['Longitude'],
-          NewAddress: row.Address,
-          NewCity: row.City,
           NewQuality: geocode['GeocodeQualityType'],
           NewSource: geocode['Source'],
-          NewState: row.State,
-          NewZip: row.Zip,
+          QANotes: '',
+          Updated: '',
           MicroMatchStatus: 'Interactive',
           PenaltyCode: 'XXXXXXXXXXXXXX',
           PenaltyCodeSummary: 'XXXXXXXXXXXXXX'
@@ -87,12 +83,12 @@ export class CorrectionService {
 interface GeocodeCorrection {
   NewLatitude: string;
   NewLongitude: string;
-  NewAddress: string;
-  NewCity: string;
+  NewAddress?: string;
+  NewCity?: string;
   NewQuality: string;
-  NewState: string;
+  NewState?: string;
   NewSource: string;
-  NewZip: string;
+  NewZip?: string;
 }
 
 export interface GeocodePoint {

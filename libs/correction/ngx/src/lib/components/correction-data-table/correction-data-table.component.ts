@@ -122,7 +122,19 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       this.file.pipe(
         switchMap((file) =>
           this._parseCsv(file).pipe(
-            switchMap((data) => this.ds.initDb({ name: 'corrections', version: 1, createSchemaFromData: true, data }))
+            switchMap((data) => {
+              const model = {
+                ...data[0],
+                NewLatitude: '',
+                NewLongitude: '',
+                NewQuality: '',
+                NewSource: '',
+                QANotes: '',
+                Updated: ''
+              };
+
+              return this.ds.initDb({ name: 'corrections', version: 1, createSchemaFromData: true, data, model });
+            })
           )
         )
       ),
