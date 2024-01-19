@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
+import { Observable, map, of, shareReplay, switchMap, tap } from 'rxjs';
 
 import {
   AlternateGeocode,
@@ -38,7 +38,12 @@ export class CorrectionMiscControlsComponent implements OnInit {
         } else {
           return null;
         }
-      })
+      }),
+      // When a new correction is received, we want to reset the form.
+      tap(() => {
+        this.form.reset();
+      }),
+      shareReplay(1)
     );
 
     this.alternateGeocodes = this.selectedRow.pipe(

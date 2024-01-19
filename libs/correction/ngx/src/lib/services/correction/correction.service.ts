@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, merge, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
+import { ReplaySubject, distinctUntilChanged, merge, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +54,13 @@ export class CorrectionService {
         } as GeocodeCorrection);
       })
     )
-  ).pipe(shareReplay(1));
+  ).pipe(
+    // Since we are merging two observables, each can emit null when there is no correction and that is effectively noise.
+    // We only want to emit one of the two null values. distinctUntilChanged() will only diff object references, so this
+    // will not affect the correction object values since they are always new objects.
+    distinctUntilChanged(),
+    shareReplay(1)
+  );
 
   public notifyDataPopulated() {
     this.dataPopulated.next(true);
