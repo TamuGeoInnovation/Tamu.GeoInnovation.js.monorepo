@@ -193,7 +193,14 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     this.ds.getAll().subscribe({
       next: (data) => {
         try {
-          const csv = papa.unparse(data);
+          // Remove the ID field from the data array.
+          // This is to prevent a bug where the output is re-sorted if it is used as input.
+          const minusId = data.map((row) => {
+            const { id, ...rest } = row;
+            return rest;
+          });
+
+          const csv = papa.unparse(minusId);
           const blob = new Blob([csv], { type: 'text/csv' });
           const url = window.URL.createObjectURL(blob);
 
