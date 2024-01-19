@@ -1,6 +1,6 @@
 <div class="pagination-links">
-  <span class="material-icons pagination-link" title="First page" (click)="goFirstPage()">first_page</span>
-  <span class="material-icons pagination-link" title="Previous page" (click)="goPreviousPage()">navigate_before</span>
-  <span class="material-icons pagination-link" title="Next page" (click)="goNextPage()">navigate_next</span>
-  <span class="material-icons pagination-link" title="Last page" (click)="goLastPage()">last_page</span>
+  <span class="material-icons pagination-link" title="First page" [ngClass]="{disabled: currentPage | isLimit : pageSize : total : 'start'}" (click)="goFirstPage()">first_page</span>
+  <span class="material-icons pagination-link" title="Previous page" [ngClass]="{disabled: currentPage | isLimit : pageSize : total : 'start'}" (click)="goPreviousPage()">navigate_before</span>
+  <span class="material-icons pagination-link" title="Next page" [ngClass]="{disabled: currentPage | isLimit : pageSize : total : 'end'}" (click)="goNextPage()">navigate_next</span>
+  <span class="material-icons pagination-link" title="Last page" [ngClass]="{disabled: currentPage | isLimit : pageSize : total : 'end'}" (click)="goLastPage()">last_page</span>
 </div>

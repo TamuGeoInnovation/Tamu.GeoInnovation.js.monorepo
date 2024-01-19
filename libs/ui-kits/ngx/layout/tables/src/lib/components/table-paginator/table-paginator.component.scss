@@ -11,13 +11,22 @@
   display: inherit;
   flex-direction: inherit;
   justify-content: inherit;
+  padding: 0 0.25rem;
 }
 
 .pagination-link {
-  color: #9e9e9e;
+  color: #414141;
   cursor: pointer;
+  user-select: none;
+  @include m.transition(color 0.25s);
 
   &:hover {
-    color: #757575;
+    // Change font color to material blue 600
+    color: #1e88e5;
+  }
+
+  &.disabled {
+    color: #bdbdbd;
+    cursor: not-allowed;
   }
 }

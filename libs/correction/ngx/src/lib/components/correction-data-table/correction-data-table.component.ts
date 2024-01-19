@@ -15,7 +15,7 @@ import {
   mapTo,
   withLatestFrom,
   shareReplay,
-  skip
+  debounceTime
 } from 'rxjs';
 
 import * as papa from 'papaparse';
@@ -148,12 +148,14 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
               return this.ds.initDb({ name: 'corrections', version: 1, createSchemaFromData: true, data, model });
             })
           )
-        )
+        ),
+        shareReplay() // Replay the inner observable to prevent multiple DB initializations.
       ),
       this.ds.openDatabase('corrections')
     );
 
-    this.contents = merge(this.db, this._refresh$, this._paginationState$.pipe(skip(1))).pipe(
+    this.contents = merge(this.db, this._refresh$, this._paginationState$).pipe(
+      debounceTime(0), // Some number to ensure we debounce events in the same event loop.
       withLatestFrom(this._paginationState$),
       switchMap(([, pagination]) => {
         return this.ds.getN(pagination.pageSize, pagination.page);
@@ -310,6 +312,7 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
   private _parseCsv(file: File): Observable<Array<Record<string, unknown>>> {
     return new Observable((observer) => {
       papa.parse(file, {
+        skipEmptyLines: true,
         header: true,
         complete: ({ data }) => {
           observer.next(data);

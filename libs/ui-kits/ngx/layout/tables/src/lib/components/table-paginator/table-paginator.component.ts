@@ -20,40 +20,52 @@ export class TablePaginatorComponent implements OnInit {
   public currentPage = 1;
 
   public ngOnInit(): void {
-    this.goFirstPage();
-  }
-
-  public broadcastPage(eventProps: PaginationEvent) {
-    this.pagination.emit(eventProps);
+    this._broadcast();
   }
 
   public goNextPage() {
-    this.currentPage++;
-    this.broadcastPage({
-      page: this.currentPage,
-      pageSize: this.pageSize
-    });
+    if (this.currentPage < Math.ceil(this.total / this.pageSize)) {
+      this.currentPage++;
+
+      this._broadcast();
+    } else {
+      console.log('Cannot go to next page. Already at end of sequence.');
+    }
   }
 
   public goPreviousPage() {
-    this.currentPage--;
-    this.broadcastPage({
-      page: this.currentPage,
-      pageSize: this.pageSize
-    });
+    if (this.currentPage > 1) {
+      this.currentPage--;
+
+      this._broadcast();
+    } else {
+      console.log('Cannot go to previous page. Already at start of sequence.');
+    }
   }
 
   public goFirstPage() {
-    this.currentPage = 1;
-    this.broadcastPage({
-      page: this.currentPage,
-      pageSize: this.pageSize
-    });
+    if (this.currentPage > 1) {
+      this.currentPage = 1;
+
+      this._broadcast();
+    } else {
+      console.log('Cannot go to first page. Already at start of sequence.');
+    }
   }
 
   public goLastPage() {
-    this.currentPage = Math.ceil(this.total / this.pageSize);
-    this.broadcastPage({
+    const limit = Math.ceil(this.total / this.pageSize);
+
+    if (this.currentPage < limit) {
+      this.currentPage = limit;
+      this._broadcast();
+    } else {
+      console.log('Cannot go to last page. Already at end of sequence.');
+    }
+  }
+
+  private _broadcast() {
+    this.pagination.emit({
       page: this.currentPage,
       pageSize: this.pageSize
     });
