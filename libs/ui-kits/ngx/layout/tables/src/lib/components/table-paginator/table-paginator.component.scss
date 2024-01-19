@@ -1,0 +1,23 @@
+@use 'libs/sass/mixins' as m;
+
+:host {
+  @include m.flexbox();
+  @include m.flex-direction(row);
+  @include m.justify-content(center);
+  @include m.align-items(center);
+}
+
+.pagination-links {
+  display: inherit;
+  flex-direction: inherit;
+  justify-content: inherit;
+}
+
+.pagination-link {
+  color: #9e9e9e;
+  cursor: pointer;
+
+  &:hover {
+    color: #757575;
+  }
+}

@@ -75,12 +75,31 @@ export class DbService {
     return from(this._db.table('data').toArray() as Promise<Array<Record<string, unknown>>>);
   }
 
-  public getN(count: number): Observable<Array<Record<string, unknown>>> {
-    return from(this._db.table('data').limit(count).toArray() as Promise<Array<Record<string, unknown>>>);
+  /**
+   * Returns a subset of records from the database.
+   *
+   * @param {number} count The number of records to return
+   * @param {number} [page] Used to calculate the offset, if provided
+   */
+  public getN(count: number, page?: number): Observable<Array<Record<string, unknown>>> {
+    const table = this._db.table('data');
+
+    if (page !== undefined && !Number.isNaN(page) && page > 1) {
+      return table
+        .offset((page - 1) * count)
+        .limit(count)
+        .toArray() as Observable<Array<Record<string, unknown>>>;
+    } else {
+      return table.limit(count).toArray() as Observable<Array<Record<string, unknown>>>;
+    }
   }
 
   public updateById(id: number | string, data: Record<string, unknown>): Observable<number> {
     return from(this._db.table('data').update(id, data) as Promise<number>);
+  }
+
+  public getCount(): Observable<number> {
+    return from(this._db.table('data').count() as Promise<number>);
   }
 }
 

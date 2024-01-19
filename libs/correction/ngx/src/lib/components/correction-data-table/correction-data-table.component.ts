@@ -12,12 +12,15 @@ import {
   delay,
   startWith,
   of,
-  mapTo
+  mapTo,
+  withLatestFrom,
+  shareReplay,
+  skip
 } from 'rxjs';
 
 import * as papa from 'papaparse';
 
-import { TableConfig } from '@tamu-gisc/ui-kits/ngx/layout/tables';
+import { PaginationEvent, TableConfig } from '@tamu-gisc/ui-kits/ngx/layout/tables';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -38,6 +41,11 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
   private _file$: ReplaySubject<File> = new ReplaySubject(1);
   private _refresh$: ReplaySubject<boolean> = new ReplaySubject(1);
   private _destroy$: ReplaySubject<boolean> = new ReplaySubject(1);
+
+  /**
+   * Stores and relays pagination events from the paginator component.
+   */
+  private _paginationState$: ReplaySubject<PaginationEvent> = new ReplaySubject(1);
 
   public file = this._file$.asObservable();
   public db: Observable<IDBDatabase>;
@@ -97,6 +105,8 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     }
   ];
 
+  public columnsCount: Observable<number>;
+
   private _exportStatus: BehaviorSubject<'idle' | 'exporting'> = new BehaviorSubject('idle');
   public exportStatus = this._exportStatus.asObservable();
   public exportStatusMessage = this.exportStatus.pipe(
@@ -143,11 +153,15 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       this.ds.openDatabase('corrections')
     );
 
-    this.contents = merge(this.db, this._refresh$).pipe(
-      switchMap(() => this.ds.getN(250)),
+    this.contents = merge(this.db, this._refresh$, this._paginationState$.pipe(skip(1))).pipe(
+      withLatestFrom(this._paginationState$),
+      switchMap(([, pagination]) => {
+        return this.ds.getN(pagination.pageSize, pagination.page);
+      }),
       tap(() => {
         this.cs.notifyDataPopulated();
-      })
+      }),
+      shareReplay()
     );
 
     this.cs.correctionApplied
@@ -172,6 +186,13 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
           this._refresh$.next(true);
         }
       });
+
+    this.columnsCount = this.db.pipe(
+      take(1),
+      switchMap(() => {
+        return this.ds.getCount();
+      })
+    );
   }
 
   public ngOnDestroy(): void {
@@ -280,6 +301,10 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
           });
         }
       });
+  }
+
+  public recordPaginationEvent(e: PaginationEvent) {
+    this._paginationState$.next(e);
   }
 
   private _parseCsv(file: File): Observable<Array<Record<string, unknown>>> {
