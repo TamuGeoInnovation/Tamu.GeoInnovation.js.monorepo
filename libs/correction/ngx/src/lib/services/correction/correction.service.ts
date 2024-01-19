@@ -17,7 +17,7 @@ export class CorrectionService {
   public correction = merge(
     this.correctionPoint.pipe(
       withLatestFrom(this.selectedRow),
-      switchMap(([point, row]) => {
+      switchMap(([point]) => {
         if (!point) {
           return of(null);
         }
@@ -37,7 +37,7 @@ export class CorrectionService {
     ),
     this.correctionAltGeocode.pipe(
       withLatestFrom(this.selectedRow),
-      switchMap(([geocode, row]) => {
+      switchMap(([geocode]) => {
         if (!geocode) {
           return of(null);
         }

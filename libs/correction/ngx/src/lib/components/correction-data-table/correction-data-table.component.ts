@@ -123,6 +123,8 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
         switchMap((file) =>
           this._parseCsv(file).pipe(
             switchMap((data) => {
+              // DB schema is created from the first item in the data array + additional fields that are used
+              // for storing correction data.
               const model = {
                 ...data[0],
                 NewLatitude: '',

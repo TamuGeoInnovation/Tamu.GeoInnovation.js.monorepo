@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, catchError, map, of, shareReplay, switchMap } from 'rxjs';
+import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
 
 import { AlternateGeocode, CorrectionService, GeocodePoint } from '../../services/correction/correction.service';
 
@@ -61,11 +61,8 @@ export class CorrectionMiscControlsComponent implements OnInit {
         } catch (err) {
           console.log(`Malformed JSON:\n\n ${geocodes}`);
 
-          throw new Error('Unable to parse geocodes. Malformed JSON');
+          return of([]);
         }
-      }),
-      catchError(() => {
-        return of([]);
       }),
       shareReplay()
     );
