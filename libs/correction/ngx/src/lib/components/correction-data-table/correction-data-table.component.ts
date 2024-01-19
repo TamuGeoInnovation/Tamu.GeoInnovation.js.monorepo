@@ -162,6 +162,12 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         console.log(`Fields updated: ${result}`);
 
+        this.ns.toast({
+          id: 'correction-applied',
+          title: 'Correction Saved',
+          message: 'Successfully applied correction to row.'
+        });
+
         if (result === 1) {
           this._refresh$.next(true);
         }
