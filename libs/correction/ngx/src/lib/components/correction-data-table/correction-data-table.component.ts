@@ -15,7 +15,8 @@ import {
   mapTo,
   withLatestFrom,
   shareReplay,
-  debounceTime
+  debounceTime,
+  auditTime
 } from 'rxjs';
 
 import * as papa from 'papaparse';
@@ -118,6 +119,14 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       }
     })
   );
+  private readonly _newFields = {
+    NewLatitude: '',
+    NewLongitude: '',
+    NewQuality: '',
+    NewSource: '',
+    QANotes: '',
+    Updated: ''
+  };
 
   constructor(
     private readonly ds: DbService,
@@ -137,13 +146,11 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
               // for storing correction data.
               const model = {
                 ...data[0],
-                NewLatitude: '',
-                NewLongitude: '',
-                NewQuality: '',
-                NewSource: '',
-                QANotes: '',
-                Updated: ''
+                ...this._newFields
               };
+
+              // Per the Dexie docs, we should not index huge fields
+              delete model['OutputGeocodes'];
 
               return this.ds.initDb({ name: 'corrections', version: 1, createSchemaFromData: true, data, model });
             })
@@ -169,10 +176,16 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     this.cs.correctionApplied
       .pipe(
         switchMap(() => {
-          return combineLatest([this.cs.selectedRow, this.cs.correction, this.cs.miscFields]).pipe(take(1));
+          return combineLatest([this.cs.selectedRow, this.cs.correction, this.cs.miscFields.pipe(auditTime(1))]).pipe(
+            take(1)
+          );
         }),
         switchMap(([row, correction, fields]) => {
-          return this.ds.updateById(parseInt(row.ID as string), { ...correction, ...fields });
+          const obj = { ...correction, ...fields };
+
+          console.log(`Applying correction to row ${row.ID}: ${JSON.stringify(obj)}`);
+
+          return this.ds.updateById(parseInt(row.ID as string), obj);
         })
       )
       .subscribe((result) => {
@@ -223,7 +236,17 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
             return rest;
           });
 
-          const csv = papa.unparse(minusId);
+          // Because corrections can be sporadic throughout a dataset, we are not guaranteed to have
+          // the correction fields applied on the first row which is used to generate the csv columns.
+          // We will manually provide the list of rows to the csv serializer so that we can ensure
+          // that all correction columns through the dataset are correctly exported.
+
+          const columns = Object.keys({ ...minusId[0], ...this._newFields });
+
+          const csv = papa.unparse(minusId, {
+            columns
+          });
+
           const blob = new Blob([csv], { type: 'text/csv' });
           const url = window.URL.createObjectURL(blob);
 
