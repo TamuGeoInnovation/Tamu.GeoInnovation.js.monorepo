@@ -61,7 +61,7 @@ export class CorrectionLiteMapComponent implements OnInit {
     this.ms.store.pipe(take(1)).subscribe((instance) => {
       instance.view.on('click', async (e) => {
         if (this.focusedFeature) {
-          this.cs.recordMapPoint({ lat: e.mapPoint.latitude, lon: e.mapPoint.longitude });
+          this.cs.recordMapPoint({ lat: +e.mapPoint.latitude.toFixed(5), lon: +e.mapPoint.longitude.toFixed(5) });
         }
       });
     });
@@ -86,8 +86,8 @@ export class CorrectionLiteMapComponent implements OnInit {
         layer.add({
           geometry: {
             type: 'point',
-            x: cr.NewLongitude as unknown as number,
-            y: cr.NewLatitude as unknown as number
+            x: parseFloat(cr.NewLongitude),
+            y: parseFloat(cr.NewLatitude)
           } as esri.geometryPoint,
           symbol: {
             type: 'simple-marker',

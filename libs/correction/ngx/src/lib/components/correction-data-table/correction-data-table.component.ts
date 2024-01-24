@@ -103,6 +103,10 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     {
       name: 'Corrected Longitude',
       prop: 'NewLongitude'
+    },
+    {
+      name: 'Correction Notes',
+      prop: 'QANotes'
     }
   ];
 
@@ -182,8 +186,6 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
         }),
         switchMap(([row, correction, fields]) => {
           const obj = { ...correction, ...fields };
-
-          console.log(`Applying correction to row ${row.ID}: ${JSON.stringify(obj)}`);
 
           return this.ds.updateById(parseInt(row.ID as string), obj);
         })
