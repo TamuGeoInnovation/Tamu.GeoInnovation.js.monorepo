@@ -75,7 +75,8 @@ export class CorrectionLiteMapComponent implements OnInit {
       const layer = (await this.ms.findLayerOrCreateFromSource({
         type: 'graphics',
         id: this._correctionPointLayerId,
-        title: 'Correction Point'
+        title: 'Correction Point',
+        listMode: 'hide'
       })) as esri.GraphicsLayer;
 
       if (layer.graphics.length > 0) {
@@ -108,7 +109,8 @@ export class CorrectionLiteMapComponent implements OnInit {
     const layer = (await this.ms.findLayerOrCreateFromSource({
       type: 'graphics',
       id: this._focusedFeatureLayerId,
-      title: 'Geocoded Original'
+      title: 'Geocoded Original',
+      listMode: 'hide'
     })) as esri.GraphicsLayer;
 
     if (layer.graphics.length > 0) {
