@@ -18,6 +18,14 @@ export class TablePaginatorComponent implements OnInit, OnChanges {
   @Input()
   public showLimitArrows = true;
 
+  /**
+   * Shows result counter in the paginator.
+   *
+   * e.g. 1 - 100 of 1000
+   */
+  @Input()
+  public showResultCounter = true;
+
   @Output()
   public pagination: EventEmitter<PaginationEvent> = new EventEmitter();
 
@@ -29,6 +37,7 @@ export class TablePaginatorComponent implements OnInit, OnChanges {
   public previousPages: Observable<Array<number>>;
   public showStartLimit: Observable<boolean>;
   public showEndLimit: Observable<boolean>;
+  public pageBoundaries: Observable<PageBoundaries>;
 
   public ngOnInit(): void {
     this._pageState$ = new BehaviorSubject({
@@ -56,6 +65,15 @@ export class TablePaginatorComponent implements OnInit, OnChanges {
       withLatestFrom(this.pageState),
       map(([nextPages, state]) => {
         return nextPages.length > 1 && nextPages.includes(state.limitPage) === false;
+      })
+    );
+
+    this.pageBoundaries = this.pageState.pipe(
+      map((state) => {
+        return {
+          start: (state.page - 1) * state.pageSize + 1,
+          end: state.page * state.pageSize
+        };
       })
     );
 
@@ -157,4 +175,9 @@ interface PaginationState {
    * The last page number given the current page size and total.
    */
   limitPage: number;
+}
+
+interface PageBoundaries {
+  start: number;
+  end: number;
 }

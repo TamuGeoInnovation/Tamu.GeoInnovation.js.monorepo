@@ -18,4 +18,9 @@
 
   <span class="material-icons pagination-link" title="Next page" [ngClass]="{disabled: (pageState | async)?.page | isLimit : (pageState | async)?.pageSize : total : 'end'}" (click)="goNextPage()">navigate_next</span>
   <span class="material-icons pagination-link" title="Last page" *ngIf="showLimitArrows" [ngClass]="{disabled: (pageState | async)?.page | isLimit : (pageState | async)?.pageSize : total : 'end'}" (click)="goLastPage()">last_page</span>
+
+  <div class="result-counter" *ngIf="showResultCounter">
+    <span class="result-counter-text">Showing </span>
+    <span class="result-counter-number">{{(pageBoundaries | async)?.start}} - {{(pageBoundaries | async)?.end }} of {{total}}</span>
+  </div>
 </div>
