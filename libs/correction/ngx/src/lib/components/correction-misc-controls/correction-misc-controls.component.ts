@@ -31,27 +31,7 @@ export class CorrectionMiscControlsComponent implements OnInit {
     { value: 'Parcel', label: 'Parcel' },
     { value: 'StreetSegment', label: 'Street Segment' },
     { value: 'StreetIntersection', label: 'Street Intersection' },
-    { value: 'StreetCentroid', label: 'Street Centroid' },
-    { value: 'USPSZipPlus5', label: 'USPSZip+5' },
-    { value: 'USPSZipPlus4', label: 'USPSZip+4' },
-    { value: 'USPSZipPlus3', label: 'USPSZip+' },
-    { value: 'USPSZipPlus2', label: 'USPSZip+2' },
-    { value: 'USPSZipPlus1', label: 'USPSZip+1' },
-    { value: 'USPSZip', label: 'USPSZip' },
-    { value: 'ZCTAPlus5', label: 'ZCTA+5' },
-    { value: 'ZCTAPlus4', label: 'ZCTA+4' },
-    { value: 'ZCTAPlus3', label: 'ZCTA+3' },
-    { value: 'ZCTAPlus2', label: 'ZCTA+2' },
-    { value: 'ZCTAPlus1', label: 'ZCTA+1' },
-    { value: 'ZCTA', label: 'ZCTA' },
-    { value: 'City', label: 'City' },
-    { value: 'ConsolidatedCity', label: 'Consolidated City' },
-    { value: 'MinorCivilDivision', label: 'MinorCivil Division' },
-    { value: 'CountySubRegion', label: 'County Sub-region' },
-    { value: 'County', label: 'County' },
-    { value: 'State', label: 'State' },
-    { value: 'Country', label: 'Country' }
-    // { value: 'Unmatchable', label: 'Unmatchable' }
+    { value: 'StreetCentroid', label: 'Street Centroid' }
   ];
 
   constructor(private readonly cs: CorrectionService, private readonly fb: FormBuilder) {}
@@ -71,8 +51,6 @@ export class CorrectionMiscControlsComponent implements OnInit {
         FeatureMatchingGeographyType: row['FeatureMatchingGeographyType'],
         QANotes: row['QANotes']
       });
-
-      // this.form.markAsPristine();
     });
 
     this.coordinateOverride = this.cs.correction.pipe(
