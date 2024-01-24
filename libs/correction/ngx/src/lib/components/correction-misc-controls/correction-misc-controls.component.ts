@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, map, of, shareReplay, switchMap, tap } from 'rxjs';
+import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
 
 import {
   AlternateGeocode,
@@ -21,11 +21,58 @@ export class CorrectionMiscControlsComponent implements OnInit {
   public coordinateOverride: Observable<GeocodePoint>;
   public form: FormGroup;
 
+  // These should come from the geoprocessing lib but those changes have not been merged yet.
+  public readonly matchGeographyTypes = [
+    { value: 'Unknown', label: 'Unknown' },
+    { value: 'GPS', label: 'GPS' },
+    { value: 'BuildingCentroid', label: 'Building Centroid' },
+    { value: 'Building', label: 'Building' },
+    { value: 'BuildingDoor', label: 'Building Door' },
+    { value: 'Parcel', label: 'Parcel' },
+    { value: 'StreetSegment', label: 'Street Segment' },
+    { value: 'StreetIntersection', label: 'Street Intersection' },
+    { value: 'StreetCentroid', label: 'Street Centroid' },
+    { value: 'USPSZipPlus5', label: 'USPSZip+5' },
+    { value: 'USPSZipPlus4', label: 'USPSZip+4' },
+    { value: 'USPSZipPlus3', label: 'USPSZip+' },
+    { value: 'USPSZipPlus2', label: 'USPSZip+2' },
+    { value: 'USPSZipPlus1', label: 'USPSZip+1' },
+    { value: 'USPSZip', label: 'USPSZip' },
+    { value: 'ZCTAPlus5', label: 'ZCTA+5' },
+    { value: 'ZCTAPlus4', label: 'ZCTA+4' },
+    { value: 'ZCTAPlus3', label: 'ZCTA+3' },
+    { value: 'ZCTAPlus2', label: 'ZCTA+2' },
+    { value: 'ZCTAPlus1', label: 'ZCTA+1' },
+    { value: 'ZCTA', label: 'ZCTA' },
+    { value: 'City', label: 'City' },
+    { value: 'ConsolidatedCity', label: 'Consolidated City' },
+    { value: 'MinorCivilDivision', label: 'MinorCivil Division' },
+    { value: 'CountySubRegion', label: 'County Sub-region' },
+    { value: 'County', label: 'County' },
+    { value: 'State', label: 'State' },
+    { value: 'Country', label: 'Country' }
+    // { value: 'Unmatchable', label: 'Unmatchable' }
+  ];
+
   constructor(private readonly cs: CorrectionService, private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
-      QANotes: ['']
+      QANotes: [''],
+      FeatureMatchingGeographyType: ['']
+    });
+
+    // When a new row is selected, reset the form and patch the values from the selected row.
+    // These will be visible once a correction is applied (map click or alternate geocode selection)
+    this.cs.selectedRow.pipe().subscribe((row) => {
+      this.form.reset();
+
+      this.form.patchValue({
+        FeatureMatchingGeographyType: row['FeatureMatchingGeographyType'],
+        QANotes: row['QANotes']
+      });
+
+      // this.form.markAsPristine();
     });
 
     this.coordinateOverride = this.cs.correction.pipe(
@@ -38,10 +85,6 @@ export class CorrectionMiscControlsComponent implements OnInit {
         } else {
           return null;
         }
-      }),
-      // When a new correction is received, we want to reset the form.
-      tap(() => {
-        this.form.reset();
       }),
       shareReplay(1)
     );
