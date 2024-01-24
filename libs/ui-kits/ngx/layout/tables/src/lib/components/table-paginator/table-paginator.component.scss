@@ -15,7 +15,7 @@
 }
 
 .pagination-link {
-  color: #414141;
+  color: #424242;
   cursor: pointer;
   user-select: none;
   @include m.transition(color 0.25s);
@@ -29,4 +29,25 @@
     color: #bdbdbd;
     cursor: not-allowed;
   }
+
+  &.discrete-page {
+    color: #757575;
+    line-height: 24px;
+    padding: 0 0.4rem;
+    margin: 0 0.15rem;
+    font-weight: 600;
+  }
+
+  &.non-interactable {
+    background: #424242;
+    color: #fafafa;
+    border-radius: 3pt;
+    cursor: default;
+  }
+}
+
+.pagination-spacer {
+  line-height: 24px;
+  color: #757575;
+  letter-spacing: 1px;
 }

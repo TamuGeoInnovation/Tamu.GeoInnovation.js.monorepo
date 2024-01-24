@@ -1,6 +1,21 @@
 <div class="pagination-links">
-  <span class="material-icons pagination-link" title="First page" [ngClass]="{disabled: currentPage | isLimit : pageSize : total : 'start'}" (click)="goFirstPage()">first_page</span>
-  <span class="material-icons pagination-link" title="Previous page" [ngClass]="{disabled: currentPage | isLimit : pageSize : total : 'start'}" (click)="goPreviousPage()">navigate_before</span>
-  <span class="material-icons pagination-link" title="Next page" [ngClass]="{disabled: currentPage | isLimit : pageSize : total : 'end'}" (click)="goNextPage()">navigate_next</span>
-  <span class="material-icons pagination-link" title="Last page" [ngClass]="{disabled: currentPage | isLimit : pageSize : total : 'end'}" (click)="goLastPage()">last_page</span>
+  <span class="material-icons pagination-link" title="First page" *ngIf="showLimitArrows" [ngClass]="{disabled: (pageState | async)?.page | isLimit : (pageState | async)?.pageSize : total : 'start'}" (click)="goFirstPage()">first_page</span>
+  <span class="material-icons pagination-link" title="Previous page" [ngClass]="{disabled: (pageState | async)?.page | isLimit : (pageState | async)?.pageSize : total : 'start'}" (click)="goPreviousPage()">navigate_before</span>
+
+  <ng-container *ngIf="showStartLimit | async">
+    <span class="pagination-link discrete-page" (click)="goFirstPage()">1</span>
+    <span class="pagination-spacer">...</span>
+  </ng-container>
+
+  <span class="pagination-link discrete-page" *ngFor="let page of previousPages | async" (click)="goToPage(page)">{{page}}</span>
+  <span class="pagination-link discrete-page non-interactable">{{(pageState | async)?.page}}</span>
+  <span class="pagination-link discrete-page" *ngFor="let page of nextPages | async" (click)="goToPage(page)">{{page}}</span>
+
+  <ng-container *ngIf="showEndLimit | async">
+    <span class="pagination-spacer">...</span>
+    <span class="pagination-link discrete-page" (click)="goLastPage()">{{(pageState | async)?.limitPage}}</span>
+  </ng-container>
+
+  <span class="material-icons pagination-link" title="Next page" [ngClass]="{disabled: (pageState | async)?.page | isLimit : (pageState | async)?.pageSize : total : 'end'}" (click)="goNextPage()">navigate_next</span>
+  <span class="material-icons pagination-link" title="Last page" *ngIf="showLimitArrows" [ngClass]="{disabled: (pageState | async)?.page | isLimit : (pageState | async)?.pageSize : total : 'end'}" (click)="goLastPage()">last_page</span>
 </div>

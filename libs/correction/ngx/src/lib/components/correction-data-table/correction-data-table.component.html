@@ -6,7 +6,7 @@
   <div class="toolbar">
     <div class="left-container">
       <!-- <div class="toolbar-item" id="record-count">{{(contents | async)?.length}} records being shown</div> -->
-      <tamu-gisc-table-paginator [total]="columnsCount | async" [pageSize]="125" (pagination)="recordPaginationEvent($event)"></tamu-gisc-table-paginator>
+      <tamu-gisc-table-paginator [total]="columnsCount | async" [pageSize]="125" [showLimitArrows]="false" (pagination)="recordPaginationEvent($event)"></tamu-gisc-table-paginator>
     </div>
 
     <div class="right-container">

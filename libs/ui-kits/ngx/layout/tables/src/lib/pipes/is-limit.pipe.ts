@@ -7,7 +7,12 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'isLimit'
 })
 export class IsLimitPipe implements PipeTransform {
-  public transform(currentPage: number, pageSize: number, totalItems: number, direction: 'start' | 'end'): boolean | null {
+  public transform(
+    currentPage: number | undefined,
+    pageSize: number | undefined,
+    totalItems: number,
+    direction: 'start' | 'end'
+  ): boolean | null {
     if (!currentPage || !pageSize || !totalItems || !direction) {
       return null;
     }
