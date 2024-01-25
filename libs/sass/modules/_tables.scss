@@ -48,6 +48,12 @@ table.floating-table {
           background: darken($lightened-inactive-color, 5%);
         }
       }
+
+      &.highlight {
+        background: darken($lightened-inactive-color, 12%) !important;
+
+        font-weight: 600;
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from '@angular/core';
 
 import { TableConfig } from '../../types/table.types';
 
@@ -12,9 +12,9 @@ export class TableComponent<T extends Record<string, unknown>> implements OnInit
   public data: Array<T>;
 
   /**
-   * Determines whether or not the table rows are actionable. If true, the row
-   * click event will emit the object that was clicked and the cursor will be
-   * set to a pointer.
+   * Determines whether or not the table rows are actionable. If true, cursor hover
+   * styles will be applied as well as registering a click event on the row that emits
+   * the row clicked.
    */
   @Input()
   public rowActionable = false;
@@ -27,7 +27,20 @@ export class TableComponent<T extends Record<string, unknown>> implements OnInit
   @Output()
   public rowClick: EventEmitter<T> = new EventEmitter();
 
+  /**
+   * Determines if clicked rows should gain and maintain a highlight style.
+   *
+   * Defaults to `true`.
+   */
+  @Input()
+  public highlightClicked = true;
+
+  /**
+   * List of table columns derived from the table configuration.
+   */
   public headers: Array<string>;
+
+  private _focused: HTMLElement;
 
   /**
    * Configuration for the table. This is an array of objects that describe
@@ -39,6 +52,8 @@ export class TableComponent<T extends Record<string, unknown>> implements OnInit
    */
   @Input()
   public config: TableConfig;
+
+  constructor(private readonly renderer: Renderer2) {}
 
   public ngOnInit(): void {
     if (!this.config) {
@@ -74,5 +89,16 @@ export class TableComponent<T extends Record<string, unknown>> implements OnInit
     });
 
     return config;
+  }
+
+  public highlightRow(element: MouseEvent) {
+    if (this._focused) {
+      this.renderer.removeClass(this._focused, 'highlight');
+    }
+
+    if (this.highlightClicked) {
+      this._focused = element.currentTarget as HTMLElement;
+      this.renderer.addClass(this._focused, 'highlight');
+    }
   }
 }
