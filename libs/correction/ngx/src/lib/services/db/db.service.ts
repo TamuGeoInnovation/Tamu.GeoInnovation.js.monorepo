@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { catchError, from, mapTo, NEVER, Observable, of, switchMap } from 'rxjs';
 
-import { Dexie } from 'dexie';
+import { Collection, Dexie } from 'dexie';
 
 @Injectable({
   providedIn: 'root'
@@ -78,20 +78,52 @@ export class DbService {
   /**
    * Returns a subset of records from the database.
    *
+   * This is a wrapper around the collection getN method.
+   *
    * @param {number} count The number of records to return
    * @param {number} [page] Used to calculate the offset, if provided
    */
   public getN(count: number, page?: number): Observable<Array<Record<string, unknown>>> {
-    const table = this._db.table('data');
+    const collection = this._db.table('data').toCollection();
 
+    return this.getNFromCollection(collection, count, page);
+  }
+
+  /**
+   * Returns a subset of records from the database.
+   */
+  public getNFromCollection(
+    collection: Collection,
+    count: number,
+    page?: number
+  ): Observable<Array<Record<string, unknown>>> {
     if (page !== undefined && !Number.isNaN(page) && page > 1) {
-      return table
-        .offset((page - 1) * count)
-        .limit(count)
-        .toArray() as Observable<Array<Record<string, unknown>>>;
-    } else {
-      return table.limit(count).toArray() as Observable<Array<Record<string, unknown>>>;
+      collection = collection.offset((page - 1) * count);
     }
+
+    const ret = collection.limit(count).toArray() as Promise<Array<Record<string, unknown>>>;
+
+    return from(ret);
+  }
+
+  public getWhereWithClause(
+    key: string,
+    operator: 'equals' | 'notEqual',
+    condition: string | boolean | number
+  ): Observable<Collection<Record<string, unknown>>> {
+    let collection = this._db.table('data');
+
+    if (operator === 'equals') {
+      collection = collection.where(key).equals(condition);
+    } else if (operator === 'notEqual') {
+      collection = collection.where(key).notEqual(condition);
+    }
+
+    return of(collection);
+  }
+
+  public filterTable(predicate: (item: Record<string, unknown>) => boolean): Observable<Collection> {
+    return of(this._db.table('data').filter(predicate));
   }
 
   public updateById(id: number | string, data: Record<string, unknown>): Observable<number> {

@@ -72,7 +72,7 @@ export class TablePaginatorComponent implements OnInit, OnChanges {
       map((state) => {
         return {
           start: (state.page - 1) * state.pageSize + 1,
-          end: state.page * state.pageSize
+          end: state.page * state.pageSize <= state.total ? state.page * state.pageSize : state.total
         };
       })
     );

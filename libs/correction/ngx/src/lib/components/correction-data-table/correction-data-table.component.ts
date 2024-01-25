@@ -47,6 +47,8 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
    * Stores and relays pagination events from the paginator component.
    */
   private _paginationState$: ReplaySubject<PaginationEvent> = new ReplaySubject(1);
+  private _filterCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public filterCompleted$ = this._filterCompleted$.asObservable();
 
   public file = this._file$.asObservable();
   public db: Observable<IDBDatabase>;
@@ -165,11 +167,28 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       this.ds.openDatabase('corrections')
     );
 
-    this.contents = merge(this.db, this._refresh$, this._paginationState$).pipe(
-      debounceTime(0), // Some number to ensure we debounce events in the same event loop.
+    this.contents = merge(this.db, this._refresh$, this._paginationState$, this.filterCompleted$).pipe(
+      debounceTime(50), // Some number to ensure we debounce events in the same event loop.
       withLatestFrom(this._paginationState$),
       switchMap(([, pagination]) => {
-        return this.ds.getN(pagination.pageSize, pagination.page);
+        return this._filterCompleted$.pipe(
+          take(1),
+          switchMap((filter) => {
+            if (filter) {
+              return this.ds.getN(pagination.pageSize, pagination.page);
+            } else {
+              return this.ds
+                .filterTable((row) => {
+                  return row.MicroMatchStatus !== 'Interactive';
+                })
+                .pipe(
+                  switchMap((col) => {
+                    return this.ds.getNFromCollection(col, pagination.pageSize, pagination.page);
+                  })
+                );
+            }
+          })
+        );
       }),
       tap(() => {
         this.cs.notifyDataPopulated();
@@ -204,10 +223,23 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.columnsCount = this.db.pipe(
-      take(1),
+    this.columnsCount = merge(this.db, this._refresh$, this.filterCompleted$).pipe(
+      debounceTime(50),
       switchMap(() => {
-        return this.ds.getCount();
+        return this._filterCompleted$.pipe(
+          take(1),
+          switchMap((filter) => {
+            if (filter) {
+              return this.ds.getCount();
+            } else {
+              return this.ds.getWhereWithClause('MicroMatchStatus', 'notEqual', 'Interactive').pipe(
+                switchMap((col) => {
+                  return col.count();
+                })
+              );
+            }
+          })
+        );
       })
     );
   }
@@ -219,6 +251,10 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
 
   public doThing(e: File) {
     this._file$.next(e);
+  }
+
+  public toggleFilterDone(state: boolean) {
+    this._filterCompleted$.next(state);
   }
 
   public emitRowFocused(e: Record<string, unknown>) {

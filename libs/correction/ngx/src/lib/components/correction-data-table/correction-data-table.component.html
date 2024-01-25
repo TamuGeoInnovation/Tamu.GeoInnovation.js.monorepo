@@ -10,6 +10,7 @@
     </div>
 
     <div class="right-container">
+      <tamu-gisc-checkbox [label]="'Show corrected'" [checked]="filterCompleted$ | async" (changed)="toggleFilterDone($event)"></tamu-gisc-checkbox>
       <div class="toolbar-item link" id="clear-button" (click)="openResetPromptModal()"><span class="material-symbols-outlined">ink_eraser</span> Reset</div>
       <div class="toolbar-item link" id="export-button" (click)="exportToCsv()"><span class="material-symbols-outlined">csv</span> {{exportStatusMessage | async}}</div>
     </div>
