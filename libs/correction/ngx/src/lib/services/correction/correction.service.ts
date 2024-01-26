@@ -30,7 +30,6 @@ export class CorrectionService {
           NewSource: 'TAMUGeocoder',
           Updated: new Date().toUTCString(),
           MicroMatchStatus: 'Interactive',
-          FeatureMatchingGeographyType: 'Unknown',
           PenaltyCode: 'XXXXXXXXXXXXXX',
           PenaltyCodeSummary: 'XXXXXXXXXXXXXX'
         } as GeocodeCorrection);
@@ -50,7 +49,6 @@ export class CorrectionService {
           NewSource: geocode['Source'],
           Updated: new Date().toUTCString(),
           MicroMatchStatus: 'Interactive',
-          FeatureMatchingGeographyType: geocode['FeatureMatchingGeographyType'],
           PenaltyCode: 'XXXXXXXXXXXXXX',
           PenaltyCodeSummary: 'XXXXXXXXXXXXXX'
         } as GeocodeCorrection);

@@ -107,6 +107,10 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       prop: 'NewLongitude'
     },
     {
+      name: 'Corrected Quality',
+      prop: 'NewQuality'
+    },
+    {
       name: 'Correction Notes',
       prop: 'QANotes'
     }

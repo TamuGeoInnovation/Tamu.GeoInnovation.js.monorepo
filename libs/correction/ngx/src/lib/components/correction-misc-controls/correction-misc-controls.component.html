@@ -98,13 +98,13 @@
       </ng-container>
     </div>
 
-    <div *ngIf="(coordinateOverride | async) !== null" class="trailer-3">
+    <div *ngIf="(correctionIsPointClick | async)" class="trailer-3">
       <h3>Geography Matching Type</h3>
 
-      <p class="trailer-1">Indicate the best geography match type, if known.</p>
+      <p class="trailer-1">Indicate the best geography match type.</p>
 
       <form [formGroup]="form">
-        <tamu-gisc-select [data]="matchGeographyTypes" displayTemplate="label" valueTemplate="value" formControlName="FeatureMatchingGeographyType"></tamu-gisc-select>
+        <tamu-gisc-select [data]="matchGeographyTypes" displayTemplate="label" valueTemplate="value" formControlName="NewQuality"></tamu-gisc-select>
       </form>
     </div>
 

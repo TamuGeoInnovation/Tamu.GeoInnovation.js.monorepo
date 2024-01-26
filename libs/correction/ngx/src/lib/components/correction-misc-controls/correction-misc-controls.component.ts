@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
+import { Observable, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import {
   AlternateGeocode,
@@ -19,6 +19,8 @@ export class CorrectionMiscControlsComponent implements OnInit {
   public selectedRow = this.cs.selectedRow;
   public alternateGeocodes: Observable<Array<AlternateGeocode>>;
   public coordinateOverride: Observable<GeocodePoint>;
+  public correctionType: Observable<'Manual Correction' | string>;
+  public correctionIsPointClick: Observable<boolean>;
   public form: FormGroup;
 
   // These should come from the geoprocessing lib but those changes have not been merged yet.
@@ -39,7 +41,7 @@ export class CorrectionMiscControlsComponent implements OnInit {
   public ngOnInit(): void {
     this.form = this.fb.group({
       QANotes: [''],
-      FeatureMatchingGeographyType: ['']
+      NewQuality: [null]
     });
 
     // When a new row is selected, reset the form and patch the values from the selected row.
@@ -48,7 +50,9 @@ export class CorrectionMiscControlsComponent implements OnInit {
       this.form.reset();
 
       this.form.patchValue({
-        FeatureMatchingGeographyType: row['FeatureMatchingGeographyType'],
+        // If the NewQuality is Manual Correction, the correction is a map click and the NewQuality should be null.
+        // so the input field shows the default option.
+        NewQuality: row['NewQuality'] === 'Manual Correction' ? null : row['NewQuality'],
         QANotes: row['QANotes']
       });
     });
@@ -62,6 +66,28 @@ export class CorrectionMiscControlsComponent implements OnInit {
           };
         } else {
           return null;
+        }
+      }),
+      shareReplay(1)
+    );
+
+    this.correctionType = this.cs.correction.pipe(
+      map((correction) => {
+        if (correction) {
+          return correction['NewQuality'];
+        } else {
+          return null;
+        }
+      }),
+      shareReplay(1)
+    );
+
+    this.correctionIsPointClick = this.correctionType.pipe(
+      map((type) => {
+        if (type) {
+          return type === 'Manual Correction';
+        } else {
+          return false;
         }
       }),
       shareReplay(1)
@@ -112,6 +138,14 @@ export class CorrectionMiscControlsComponent implements OnInit {
   public applyCorrection() {
     const notes: CorrectionMiscFields = this.form.getRawValue();
 
-    this.cs.notifyApplyCorrection(notes);
+    this.correctionIsPointClick.pipe(take(1)).subscribe((isPointClick) => {
+      // If the correction is an output geocode, remove the NewQuality property from the notes.
+      // The property will be inherited from the output geocode.
+      if (!isPointClick) {
+        delete notes['NewQuality'];
+      }
+
+      this.cs.notifyApplyCorrection(notes);
+    });
   }
 }
