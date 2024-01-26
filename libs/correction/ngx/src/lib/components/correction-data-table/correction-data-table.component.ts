@@ -16,7 +16,8 @@ import {
   withLatestFrom,
   shareReplay,
   debounceTime,
-  auditTime
+  auditTime,
+  from
 } from 'rxjs';
 
 import * as papa from 'papaparse';
@@ -117,6 +118,7 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
   ];
 
   public columnsCount: Observable<number>;
+  public correctedCount: Observable<number>;
 
   private _exportStatus: BehaviorSubject<'idle' | 'exporting'> = new BehaviorSubject('idle');
   public exportStatus = this._exportStatus.asObservable();
@@ -238,10 +240,21 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
             } else {
               return this.ds.getWhereWithClause('MicroMatchStatus', 'notEqual', 'Interactive').pipe(
                 switchMap((col) => {
-                  return col.count();
+                  return from(col.count());
                 })
               );
             }
+          })
+        );
+      })
+    );
+
+    this.correctedCount = merge(this.db, this._refresh$).pipe(
+      debounceTime(50),
+      switchMap(() => {
+        return this.ds.getWhereWithClause('MicroMatchStatus', 'equals', 'Interactive').pipe(
+          switchMap((col) => {
+            return from(col.count());
           })
         );
       })

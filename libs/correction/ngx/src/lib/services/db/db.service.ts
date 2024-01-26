@@ -108,18 +108,20 @@ export class DbService {
 
   public getWhereWithClause(
     key: string,
-    operator: 'equals' | 'notEqual',
+    operator: 'equals' | 'notEqual' | 'startsWith',
     condition: string | boolean | number
   ): Observable<Collection<Record<string, unknown>>> {
-    let collection = this._db.table('data');
+    let table = this._db.table('data');
 
     if (operator === 'equals') {
-      collection = collection.where(key).equals(condition);
+      table = table.where(key).equals(condition);
     } else if (operator === 'notEqual') {
-      collection = collection.where(key).notEqual(condition);
+      table = table.where(key).notEqual(condition);
+    } else if (operator === 'startsWith') {
+      table = table.where(key).startsWith(condition);
     }
 
-    return of(collection);
+    return of(table);
   }
 
   public filterTable(predicate: (item: Record<string, unknown>) => boolean): Observable<Collection> {
