@@ -149,7 +149,7 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: 'fiber-paths-layer',
     title: 'IT Fiber Paths',
-    url: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/rest/services/Hosted/Fiber_Paths_UES/FeatureServer/1',
+    url: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/rest/services/Hosted/Fiber_Infrastructure_UES/FeatureServer/5',
     visible: false,
     popupComponent: Popups.BasePopupComponent,
     auth: OAuthInfos.ues,
