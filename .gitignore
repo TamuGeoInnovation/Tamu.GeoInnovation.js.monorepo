@@ -60,7 +60,7 @@ idp_keystore.json
 secrets.ts
 
 #All .env.* files exeept .env.sample
-.env.*
+.env*
 !.env.sample
 
 .angular

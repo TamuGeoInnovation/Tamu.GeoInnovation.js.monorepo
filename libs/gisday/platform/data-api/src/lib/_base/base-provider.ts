@@ -1,44 +1,76 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
 
-import { Repository, DeepPartial, FindOneOptions, FindManyOptions, FindConditions, SaveOptions } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
 
 export abstract class BaseProvider<T> {
   constructor(private readonly repo: Repository<T>) {}
 
-  public async findOne(options?: FindOneOptions<T>) {
-    return this.repo.findOne(options);
+  public async findOne(guidOrOptions?: LookupOneOptions<T>) {
+    const lookupOpts = this._makeLookupOptions(guidOrOptions);
+
+    return this.repo.findOne(lookupOpts);
   }
 
-  public async find(options?: FindManyOptions<T>) {
-    return this.repo.find(options);
+  public async find(guidOrOptions?: LookupManyOptions<T>) {
+    const lookupOpts = this._makeLookupOptions(guidOrOptions);
+
+    return this.repo.find(lookupOpts);
   }
 
-  public async save(_entity: DeepPartial<T>) {
-    return this.repo.save(_entity);
+  public async create(entity: DeepPartial<T>) {
+    const e = this.repo.create(entity) as DeepPartial<T>;
+
+    return this.repo.save(e);
   }
 
-  // public async update(_entity: DeepPartial<T>, entityName: string) {
-  //   const entity = await this.repo.findOne({
-  //     where: {
-  //       guid: _entity['guid']
-  //     },
-  //     relations: EntityRelationsLUT.getRelation(entityName)
-  //   });
-  //   if (entity) {
-  //     const merged = deepmerge<DeepPartial<T>>(entity, _entity);
-  //     return this.repo.save(merged);
-  //   } else {
-  //     this.save(_entity);
-  //   }
-  // }
-
-  public async update(_entity: DeepPartial<T>, options: FindOneOptions<T>) {
-    return;
+  public async save(entity: DeepPartial<T>) {
+    return this.repo.save(entity);
   }
 
-  public async deleteEntity(options?: FindOneOptions<T>) {
-    const entity = await this.repo.findOne(options);
+  /**
+   * Updates and entity based on the lookup options with the provided entity.
+   *
+   *
+   * @param {(string | FindOneOptions<T>)} guidOrFindOptions The guid string or `FindOneOptions` object to use to lookup the entity.
+   * @param {DeepPartial<T>} entity The entity object values used to update/create an existing entity.
+   * @param {boolean} [createIfNotFound] Defines if the entity should be created if it is not found. Defaults to `false`.
+   * @return {*}
+   * @memberof BaseProvider
+   */
+  public async update(guidOrOptions: LookupOneOptions<T>, entity: DeepPartial<T>, createIfNotFound?: boolean) {
+    // To avoid a coercive update due to a difference in provided guid and entity guid, we remove the guid from the entity.
+    // Guid will be inherited from the existing entity, if any
+    delete entity['guid'];
+
+    const lookupOpts = this._makeLookupOptions(guidOrOptions);
+
+    const existing = await this.repo.findOne(lookupOpts);
+
+    if (existing) {
+      const newVal = {
+        ...existing,
+        ...entity
+      };
+
+      return this.repo.save(newVal);
+    } else if (createIfNotFound) {
+      const newEntity = this.repo.create(entity) as DeepPartial<T>;
+
+      return this.repo.save(newEntity);
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
+  /**
+   * Deletes an entity based on the default `guid` property.
+   *
+   * Optionally, you can pass a `FindOneOptions` object to specify lookup condition.
+   */
+  public async deleteEntity(guidOrOptions?: LookupOneOptions<T> | string) {
+    const lookupOpts = this._makeLookupOptions(guidOrOptions);
+
+    const entity = await this.repo.findOne(lookupOpts);
 
     if (entity) {
       return this.repo.remove(entity);
@@ -46,4 +78,23 @@ export abstract class BaseProvider<T> {
       throw new InternalServerErrorException();
     }
   }
+
+  private _makeLookupOptions(guidOrOptions?: LookupManyOptions<T> | LookupOneOptions<T>) {
+    let lookupOpts: FindOneOptions<T> | FindManyOptions<T>;
+
+    if (typeof guidOrOptions === 'string') {
+      lookupOpts = {
+        where: {
+          guid: guidOrOptions
+        }
+      } as FindOneOptions<T> | FindManyOptions<T>;
+    } else {
+      lookupOpts = guidOrOptions;
+    }
+
+    return lookupOpts;
+  }
 }
+
+export type LookupOneOptions<U> = string | FindOneOptions<U>;
+export type LookupManyOptions<U> = string | FindManyOptions<U>;

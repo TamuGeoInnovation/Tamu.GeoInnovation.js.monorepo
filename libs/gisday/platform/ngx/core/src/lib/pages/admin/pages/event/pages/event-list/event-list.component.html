@@ -1,0 +1,40 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Venues</div>
+      <div class="form-section-actions">
+        <a routerLink="add">Add event <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noTags">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Day</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="selectable" *ngFor="let entity of ($entities | async)" [routerLink]="['edit', entity.guid]">
+            <td>{{entity?.name}}</td>
+            <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
+            <td>{{entity?.day?.date | date:'shortDate'}}</td>
+            <td>{{entity?.day.date | parseDateTimeStrings: entity?.startTime | date: 'h:mm a'}}</td>
+            <td>{{entity?.day.date | parseDateTimeStrings: entity?.endTime | date: 'h:mm a'}}</td>
+            <td>{{entity?.updated | date:'short'}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #noTags>
+        <p>There are no events yet.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

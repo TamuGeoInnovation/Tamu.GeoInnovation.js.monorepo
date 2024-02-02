@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { OidcSecurityService } from 'angular-auth-oidc-client';
-
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -14,7 +12,15 @@ import { BaseService } from '../_base/base.service';
 export class SponsorService extends BaseService<Sponsor> {
   public resource: string;
 
-  constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
-    super(env1, http1, oidcSecurityService, 'sponsor');
+  constructor(private env1: EnvironmentService, private http1: HttpClient) {
+    super(env1, http1, 'sponsors');
+  }
+
+  public updateEntityFormData(guid: string, data: FormData) {
+    return this.http1.patch<Partial<Sponsor>>(`${this.resource}/${guid}`, data);
+  }
+
+  public createEntityFormData(data: FormData) {
+    return this.http1.post<Partial<Sponsor>>(this.resource, data);
   }
 }

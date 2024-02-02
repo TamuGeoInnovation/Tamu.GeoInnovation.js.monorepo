@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
+import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { AdminClassComponent } from './admin-class.component';
+import { ClassListComponent } from './pages/class-list/class-list.component';
+import { ClassEditComponent } from './pages/class-edit/class-edit.component';
+import { ClassAddComponent } from './pages/class-add/class-add.component';
 
 const routes: Routes = [
   {
@@ -10,29 +15,24 @@ const routes: Routes = [
     component: AdminClassComponent,
     children: [
       {
-        path: '',
-        loadChildren: () => import('./view-classes/admin-view-classes.module').then((m) => m.AdminViewClassesModule)
-      },
-      {
-        path: 'edit',
-        loadChildren: () => import('./edit-classes/admin-edit-classes.module').then((m) => m.AdminEditClassesModule)
-      },
-      {
         path: 'edit/:guid',
-        loadChildren: () =>
-          import('./edit-classes/detail-class/admin-detail-class.module').then((m) => m.AdminDetailClassModule)
+        component: ClassEditComponent
       },
       {
         path: 'add',
-        loadChildren: () => import('./add-classes/admin-add-classes.module').then((m) => m.AdminAddClassesModule)
+        component: ClassAddComponent
+      },
+      {
+        path: '',
+        component: ClassListComponent
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [AdminClassComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule],
+  declarations: [AdminClassComponent, ClassListComponent, ClassEditComponent, ClassAddComponent],
   exports: [RouterModule]
 })
 export class AdminClassModule {}

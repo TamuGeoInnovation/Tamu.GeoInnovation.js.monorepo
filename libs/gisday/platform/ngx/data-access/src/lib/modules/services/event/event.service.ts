@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { OidcSecurityService } from 'angular-auth-oidc-client';
-
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { Event } from '@tamu-gisc/gisday/platform/data-api';
+import { Event, EventAttendanceDto } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 
@@ -14,42 +12,32 @@ import { BaseService } from '../_base/base.service';
 export class EventService extends BaseService<Event> {
   public resource: string;
 
-  constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
-    super(env1, http1, oidcSecurityService, 'event');
+  constructor(private env1: EnvironmentService, private http1: HttpClient) {
+    super(env1, http1, 'events');
   }
 
   public getNumberOfRsvps(eventGuid: string) {
-    return this.http1.get<number>(`${this.resource}/${eventGuid}/rsvps`, {
-      headers: this.headers
-    });
+    return this.http1.get<number>(`${this.resource}/${eventGuid}/rsvps`);
   }
 
   public getEvents() {
-    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/all`, {
-      headers: this.headers
-    });
+    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/`);
   }
 
   public getEvent(guid: string) {
-    return this.http1.get<Partial<Event>>(`${this.resource}/${guid}`, {
-      headers: this.headers
-    });
+    return this.http1.get<Partial<Event>>(`${this.resource}/${guid}`);
   }
 
   public getEventsByDay() {
-    return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`, {
-      headers: this.headers
-    });
+    return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`);
   }
 
-  public createEventFromFormData(data: FormData) {
-    return this.http1
-      .post(`${this.resource}`, data, {
-        headers: this.headers
-      })
-      .subscribe((result) => {
-        console.log(result);
-      });
+  public getEventAttendance(guid: string) {
+    return this.http1.get<EventAttendanceDto>(`${this.resource}/${guid}/attendance`);
+  }
+
+  public updateEventAttendance(guid: string, counts: EventAttendanceDto) {
+    return this.http1.patch<EventAttendanceDto>(`${this.resource}/${guid}/attendance`, counts);
   }
 }
 

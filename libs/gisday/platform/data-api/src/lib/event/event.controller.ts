@@ -1,23 +1,52 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
+
+import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { EntityRelationsLUT, Event } from '../entities/all.entity';
 import { EventProvider } from './event.provider';
-import { BaseController } from '../_base/base.controller';
+import { EventAttendanceDto } from './dto/event-attendance.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
-@Controller('event')
-export class EventController extends BaseController<Event> {
-  constructor(private readonly eventProvider: EventProvider) {
-    super(eventProvider);
+@Controller('events')
+export class EventController {
+  constructor(private readonly provider: EventProvider) {}
+
+  @Get(':guid/attendance')
+  public async getAttendance(@Param('guid') guid) {
+    return this.provider.getEventAttendance(guid);
   }
 
-  @Get('/all')
-  public async getEvents() {
-    return this.eventProvider.eventRepo.find({
+  @Get(':guid/event')
+  public async getEntityWithRelations(@Param('guid') guid) {
+    return this.provider.findOne({
       where: {
-        season: '2022'
+        guid: guid
       },
+      relations: EntityRelationsLUT.getRelation('event')
+    });
+  }
+
+  @Get(':guid/rsvps')
+  public async getNumberOfRsvps(@Param() params) {
+    return this.provider.getNumberOfRsvps(params.guid);
+  }
+
+  @Get('by-day')
+  public async getEntitiesByDay() {
+    return this.provider.getEntitiesByDay();
+  }
+
+  @UseGuards(JwtGuard)
+  @AllowAny()
+  @Get(':guid')
+  public async getDetails(@Req() req, @Param('guid') guid) {
+    return this.provider.getEventDetails(guid, req.user?.sub !== undefined);
+  }
+
+  @Get()
+  public async getEvents() {
+    return this.provider.eventRepo.find({
       relations: EntityRelationsLUT.getRelation('event'),
       order: {
         startTime: 'ASC'
@@ -25,33 +54,39 @@ export class EventController extends BaseController<Event> {
     });
   }
 
-  @Get('/:guid')
-  public async getDetails(@Param('guid') guid) {
-    return this.eventProvider.eventRepo.findOne({
-      where: {
-        guid
-      },
-      relations: EntityRelationsLUT.getRelation('event')
-    });
-  }
-
-  @Get('/:guid/rsvps')
-  public async getNumberOfRsvps(@Param() params) {
-    return this.eventProvider.getNumberOfRsvps(params.guid);
-  }
-
-  @Get('by-day')
-  public async getEntitiesByDay() {
-    return this.eventProvider.getEntitiesByDay();
-  }
-
+  @Permissions(['create:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEvent(@Body() body: DeepPartial<Event>) {
-    return this.eventProvider.insertEvent(body);
+    return this.provider.insertEvent(body);
   }
 
-  @Patch()
-  public async updateEvent(@Body() body: DeepPartial<Event>) {
-    return this.eventProvider.updateEvent(body);
+  @Permissions(['update:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Patch(':guid/attendance')
+  public async updateAttendance(@Param('guid') guid, @Body() counts: EventAttendanceDto) {
+    if (!counts || (counts.observedAttendeeStart === undefined && counts.observedAttendeeEnd === undefined)) {
+      throw new BadRequestException('Invalid request body. Missing start and/or end counts.');
+    }
+
+    return this.provider.updateAttendance(guid, counts);
+  }
+
+  @Permissions(['update:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid, @Body() body: UpdateEventDto) {
+    return this.provider.updateEvent(guid, body);
+  }
+
+  @Permissions(['delete:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete(':guid')
+  public deleteEntity(@Param('guid') guid: string) {
+    return this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

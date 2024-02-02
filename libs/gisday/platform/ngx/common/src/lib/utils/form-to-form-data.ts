@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
  * @param form
  * @returns FormData
  */
-export const formToFormData = (form: FormGroup) => {
+export const formToFormData = (form: FormGroup, stringifyObjects?: boolean) => {
   const formValue = form.getRawValue();
   const data: FormData = new FormData();
   const parentFormKeys = Object.keys(formValue);
@@ -16,9 +16,14 @@ export const formToFormData = (form: FormGroup) => {
   const appendValuesToFormData = (keys, childProp?: string) => {
     keys.forEach((key: string) => {
       if (key.lastIndexOf('_') === 0) return; // Eliminates any "omitted" form controls (if a form control has _ as the beginning character)
+
       if (formValue[key]) {
-        if (typeof formValue[key] == 'object') {
-          appendValuesToFormData(Object.keys(formValue[key]), key);
+        if (typeof formValue[key] == 'object' && formValue[key] instanceof File === false) {
+          if (stringifyObjects) {
+            data.append(key, JSON.stringify(formValue[key]));
+          } else {
+            appendValuesToFormData(Object.keys(formValue[key]), key);
+          }
         } else {
           data.append(key, formValue[key]);
         }

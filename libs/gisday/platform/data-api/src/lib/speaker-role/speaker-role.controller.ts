@@ -1,16 +1,18 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
 
 import { SpeakerRole } from '../entities/all.entity';
-import { BaseController } from '../_base/base.controller';
 import { SpeakerRoleProvider } from './speaker-role.provider';
 
-@Controller('speaker-role')
-export class SpeakerRoleController extends BaseController<SpeakerRole> {
-  constructor(private readonly speakerRoleProvider: SpeakerRoleProvider) {
-    super(speakerRoleProvider);
+@Controller('speaker-roles')
+export class SpeakerRoleController {
+  constructor(private readonly provider: SpeakerRoleProvider) {}
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
   }
 
-  @Post('/all')
+  @Post('/bulk')
   public async insertSpeakerRoles(@Body() body) {
     const _roles: Partial<SpeakerRole>[] = body.roles.map((value: SpeakerRole) => {
       const tag: Partial<SpeakerRole> = {
@@ -19,6 +21,25 @@ export class SpeakerRoleController extends BaseController<SpeakerRole> {
       return tag;
     });
 
-    return this.speakerRoleProvider.insertRoles(_roles);
+    return this.provider.insertRoles(_roles);
+  }
+
+  @Post()
+  public async insertEntity() {
+    throw new NotImplementedException();
+  }
+
+  @Patch(':guid')
+  public async updateEntity() {
+    throw new NotImplementedException();
+  }
+
+  @Delete(':guid')
+  public deleteEntity(@Param('guid') guid: string) {
+    this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

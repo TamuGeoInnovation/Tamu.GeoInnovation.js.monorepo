@@ -1,0 +1,71 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Affiliation</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Affiliation</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Affiliation Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column pad-top">
+        <p>For affiliations that have long names, if an acronym exists for it, please include it. It will be used in place of the full name.</p>
+
+        <tamu-gisc-textbox formControlName="acronym" placeholder="Affiliation Name Acronym" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="website" placeholder="Affiliation Website" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="text" placeholder="Description" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="contactFirstName" placeholder="Contact First Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="contactLastName" placeholder="Contact Last Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="contactEmail" placeholder="Contact Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Affiliation Logo</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <div>
+          <img [src]="logoUrl$ | async" />
+          <tamu-gisc-file formControlName="file">
+            <p class="placeholder">Select Logo Image</p>
+          </tamu-gisc-file>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Affiliation" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>

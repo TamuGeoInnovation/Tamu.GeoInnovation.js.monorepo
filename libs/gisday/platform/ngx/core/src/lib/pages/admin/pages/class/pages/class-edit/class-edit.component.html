@@ -1,0 +1,36 @@
+<tamu-gisc-class-add-edit-form type="edit"></tamu-gisc-class-add-edit-form>
+
+<div class="form leader-2">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Attendance</div>
+
+      <div class="form-section-actions">
+        <a (click)="exportCSV()" *ngIf="(isExporting$ | async) === false ; else exporting">Export as CSV <span class="material-icons action">file_download</span></a>
+
+        <ng-template #exporting>
+          <div id="export-state">
+            <p>Exporting...</p>
+            <div class="loader"></div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <table>
+        <thead>
+          <th>Identifier</th>
+          <th>Registered On</th>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let attendee of students$ | async">
+            <td>{{ attendee.accountGuid }}</td>
+            <td>{{ attendee.created | date: 'medium' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

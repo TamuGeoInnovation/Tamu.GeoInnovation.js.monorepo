@@ -1,4 +1,4 @@
-<section *ngIf="($event | async) as event">
+<section *ngIf="(event$ | async) as event">
   <div>
     <div class="container12 leader-3 flex flex-row">
       <h1 class="session-title">{{event.name}}</h1>
@@ -10,89 +10,189 @@
     <div class="container12" *ngIf="event">
       <div class="column10">
         <div id="timeAndPlace" class="trailer-1">
-          <p>{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
-          <p>
-            <a href="{{event.location?.link}}" target="_blank">{{event.location?.building}} {{event.location?.room}}</a>
-          </p>
+          <ng-container *ngIf="event?.day?.date; else noTime">
+            <p>
+              <span>{{event?.day?.date | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ event?.day?.date| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</span>
+              <span *ngIf="event?.mode" class="event-type"> - {{event.mode}}</span>
+            </p>
+          </ng-container>
+
+          <ng-template #noTime>Time TBD</ng-template>
+
+          <ng-container *ngIf="event?.location as location; else noLocation">
+            <p *ngIf="location?.place as place">
+              <span *ngIf="place.name">{{place.name}}</span>
+              <span *ngIf="place.city || place.state"> &mdash; </span>
+              <span *ngIf="place.city">{{place.city}}</span>
+              <span *ngIf="place.state">, {{place.state}}</span>
+            </p>
+
+            <p>
+              <ng-container *ngIf="location.link; else noLocationLink">
+                <a [href]="location.link" target="_blank">{{location.building}} {{location.room}}</a>
+              </ng-container>
+
+              <ng-template #noLocationLink>
+                <span>{{location.building}} {{location.room}}</span>
+              </ng-template>
+            </p>
+          </ng-container>
+
+          <ng-template #noLocation>
+            <p>Location TBD</p>
+          </ng-template>
         </div>
+
         <div class="trailer-2">
-          <tamu-gisc-accordion>
-            <tamu-gisc-accordion-header><b>Online Zoom Meeting Info</b></tamu-gisc-accordion-header>
+          <tamu-gisc-accordion *ngIf="event.mode === 'hybrid' || event.mode === 'virtual'">
+            <tamu-gisc-accordion-header><b>Online Broadcast</b></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
-              <p>Some resources will only be available at the start of the session.</p>
-              <ul>
-                <li>The online Zoom broadcast for this session has not been setup yet.</li>
-              </ul>
+              <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInBroadcast">
+                <ng-container *ngIf="event.broadcast as br; else noBroadcastAvailable">
+                  <p><strong>Link: </strong> <a [href]="br.publicUrl" target="_blank" rel="noopener noreferrer">{{br.publicUrl}}</a></p>
+                  <p><strong>Password:</strong> {{br.password ? br.password : 'None'}}</p>
+                  <p><strong>Dial-in number:</strong> {{br.phoneNumber ? br.password : 'None'}}</p>
+                  <p *ngIf="br.meetingId"><strong>Meeting ID:</strong> {{br.meetingId}}</p>
+
+                  <div *ngIf="br.details" [innerHTML]="br.details | markdownParse"></div>
+                </ng-container>
+
+                <ng-template #noBroadcastAvailable>
+                  <p>There is no online broadcast for this session at this time. Please check back later.</p>
+                </ng-template>
+              </ng-container>
+
+              <ng-template #notLoggedInBroadcast>
+                <p>You must be logged in to see broadcast information.</p>
+              </ng-template>
             </tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
+
           <tamu-gisc-accordion>
-            <tamu-gisc-accordion-header><b>Learning Resources</b></tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-header
+              ><b>Learning Resources <span *ngIf="!event?.resources"></span></b
+            ></tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
-              <p>Some resources will only be available at the start of the session</p>
-              <ul>
-                <li>There are no materials for this session.</li>
-                <li>There is no online broadcast for this session.</li>
-              </ul>
+              <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInResources">
+                <ng-container *ngIf="event.resources as rs; else noLearningResourcesAvailable">
+                  <div *ngIf="rs" [innerHTML]="rs | markdownParse"></div>
+                </ng-container>
+
+                <ng-template #noLearningResourcesAvailable>
+                  <p>There are no materials for this session.</p>
+                </ng-template>
+              </ng-container>
+
+              <ng-template #notLoggedInResources>
+                <p>You must be logged in to see learning resources.</p>
+              </ng-template>
             </tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
+
           <tamu-gisc-accordion>
-            <tamu-gisc-accordion-header><b>Session Requirements</b></tamu-gisc-accordion-header>
-            <tamu-gisc-accordion-content><p>This session has no special requirements.</p></tamu-gisc-accordion-content>
+            <tamu-gisc-accordion-header
+              ><b>Session Requirements <span *ngIf="!event?.requirements"></span></b
+            ></tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-content>
+              <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInRequirements">
+                <ng-container *ngIf="event.requirements as rq; else noLearningResourcesAvailable">
+                  <div *ngIf="rq" [innerHTML]="rq | markdownParse"></div>
+                </ng-container>
+
+                <ng-template #noLearningResourcesAvailable>
+                  <p>There are special requirements for this session.</p>
+                </ng-template>
+              </ng-container>
+
+              <ng-template #notLoggedInRequirements>
+                <p>You must be logged in to see learning resources.</p>
+              </ng-template>
+            </tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
         </div>
+
         <div class="trailer-1 felx flex-row">
-          <h3>Session Description</h3>
-          <div class="trailer-1" *ngIf="event.abstract !== ''"><p>{{event.abstract}}</p></div>
+          <h3 class="trailer-1">Session Description</h3>
+
+          <div class="trailer-2 session-description" *ngIf="event?.abstract && event.abstract.length > 0" [innerHTML]="event.abstract | markdownParse"></div>
         </div>
-        <div class="trailer-1 flex flex-row half-children">
+
+        <div class="trailer-1 flex flex-row half-children wrap">
           <div>
-            <h3>
-              Registration (
-              <span title="Number of registered participants">{{numOfRsvps | async}} /</span>
-              <span title="Total session capacity"> {{event.capacity}}</span>
-              )
-            </h3>
-            <p *ngIf="event.requiresRsvp === true || event.requiresRsvp === null">This is a limited-seating event. Register to reserve your seat.</p>
-            <p *ngIf="event.isAcceptingRsvps === undefined || event.isAcceptingRsvps === false">Registration for this event is not open yet.</p>
-            <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps === undefined || event.isAcceptingRsvps === false">REGISTRATION NOT YET AVAILABLE</div>
+            <h3 class="trailer-1">Registration</h3>
+
+            <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInRegistration">
+              <ng-container *ngIf="userProfileComplete$ | async; else registerProfileNotComplete">
+                <ng-container *ngIf="userRsvp$ | async; else notRsvpd">
+                  <p class="trailer-1">You are registered for this event.</p>
+                  <tamu-gisc-button [look]="'secondary'" value="WITHDRAW REGISTRATION" fit="snug" (go)="unregister()"></tamu-gisc-button>
+                </ng-container>
+
+                <ng-template #notRsvpd>
+                  <p class="trailer-1">This is a limited-seating event. Register to reserve your seat.</p>
+                  <tamu-gisc-button [look]="'secondary'" value="REGISTER FOR EVENT" fit="snug" (go)="register()"></tamu-gisc-button>
+                </ng-template>
+              </ng-container>
+            </ng-container>
+
+            <ng-template #registerProfileNotComplete>
+              <p>You must complete your <a routerLink="/account/details">profile</a> before being able to register for session.</p>
+            </ng-template>
+
+            <ng-template #notLoggedInRegistration>
+              <p>You must be logged in to register for this event.</p>
+            </ng-template>
           </div>
+
           <div>
-            <h3>Checkin</h3>
-            <div *ngIf="isCheckinOpen === true; else showCheckinButton">
-              <p>Checkin will be available at the start of the session.</p>
-            </div>
-            <ng-template #showCheckinButton>
-              <div>
-                <p>Use the button below to checkin into this event.</p>
-                <tamu-gisc-button fit="snug" value="CheckIn" (click)="checkin()"></tamu-gisc-button>
-              </div>
+            <h3 class="trailer-1">Checkin</h3>
+
+            <ng-container *ngIf="isLoggedIn$ | async; else notLoggedInCheckin">
+              <ng-container *ngIf="userProfileComplete$ | async; else profileNotComplete">
+                <div *ngIf="(eventElapsed$ | async) === true; else eventHasNotElapsed">
+                  <p class="error"><strong>Checkin is no longer available for this session.</strong></p>
+                </div>
+
+                <ng-template #eventHasNotElapsed>
+                  <ng-container *ngIf="userCheckedIn$ | async; else notCheckedIn">
+                    <p class="success"><strong>Your attendance has been registered. Thank you!</strong></p>
+                  </ng-container>
+
+                  <ng-template #notCheckedIn>
+                    <div *ngIf="eventLive$ | async; else eventNotOngoing">
+                      <p class="trailer-1">Check-in to register your attendance for this event.</p>
+                      <tamu-gisc-button fit="snug" [look]="'secondary'" value="CHECKIN" (click)="checkin()"></tamu-gisc-button>
+                    </div>
+                  </ng-template>
+                </ng-template>
+
+                <ng-template #eventNotOngoing>
+                  <div>
+                    <p>Checkin will be available at the start of the session.</p>
+                  </div>
+                </ng-template>
+              </ng-container>
+
+              <ng-template #profileNotComplete>
+                <p>You must complete your <a routerLink="/account/details">profile</a> before being able to check into sessions.</p>
+              </ng-template>
+            </ng-container>
+
+            <ng-template #notLoggedInCheckin>
+              <p>You must be logged in to checkin for this event.</p>
             </ng-template>
           </div>
         </div>
+
         <div class="trailer-2 ng-scope" *ngIf="event.speakers.length > 0">
           <div class="border-divider leader-2 trailer-2"></div>
           <h3>Presenters</h3>
-          <div class="flex flex-row leader-1 justify-between">
-            <div class="presenter-item" *ngFor="let presenter of (event.speakers)">
-              <div class="image" *ngIf="presenter.speakerInfo; else default" presenter="presenter" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(presenter.speakerInfo?.blob?.data)+')'  } "></div>
-              <ng-template #default>
-                <div class="image default">
-                  <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                  </svg>
-                </div>
-              </ng-template>
-              <div class="details">
-                <div class="name">
-                  <a *ngIf="presenter" href="/presenters/details/{{presenter.guid}}"> {{presenter.firstName}} {{presenter.lastName}} </a>
-                </div>
-                <div class="organization">{{presenter.organization}}</div>
-                <div class="role">{{presenter.role}}</div>
-              </div>
-            </div>
+          <div class="flex flex-row leader-1 wrap justify-between">
+            <tamu-gisc-presenter-card *ngFor="let presenter of (event.speakers)" [speaker]="presenter"></tamu-gisc-presenter-card>
           </div>
         </div>
-        <div>
+
+        <!-- <div>
           <div class="border-divider leader-2 trailer-2"></div>
           <div class="trailer-2">
             <h3 class="trailer-1">Rate This Session</h3>
@@ -100,7 +200,35 @@
               <p>This event is currently not underway. The session ratings survey will become available when it begins.</p>
             </div>
           </div>
-        </div>
+        </div> -->
+
+        <ng-container *ngIf="isModerator$ | async">
+          <div>
+            <div class="border-divider leader-2 trailer-2"></div>
+            <div class="trailer-2">
+              <h3 class="trailer-1">Attendance</h3>
+
+              <div class="info-block notice">
+                <p><strong>Only admins, managers, or organizers can see this section.</strong></p>
+              </div>
+
+              <div>
+                <p>Record the number of observed attendees at the beginning and end of the event to track retention.</p>
+
+                <form [formGroup]="attendanceForm" (submit)="updateAttendance()">
+                  <div class="form-collection row wrap">
+                    <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Start Attendance" [floatLabel]="true"></tamu-gisc-textbox>
+                    <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="End Attendance" [floatLabel]="true"></tamu-gisc-textbox>
+                  </div>
+
+                  <div class="form-collection column">
+                    <tamu-gisc-button value="Update Attendance" type="submit"></tamu-gisc-button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

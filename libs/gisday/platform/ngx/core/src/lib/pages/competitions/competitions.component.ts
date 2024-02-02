@@ -8,6 +8,6 @@ import { Title } from '@angular/platform-browser';
 })
 export class CompetitionsComponent {
   constructor(private titleService: Title) {
-    this.titleService.setTitle('Competitions | TxGIS Day 2022');
+    this.titleService.setTitle('Competitions | TxGIS Day');
   }
 }

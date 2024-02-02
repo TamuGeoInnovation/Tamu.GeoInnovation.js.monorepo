@@ -1,27 +1,35 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, NotImplementedException, Param, Req, UseGuards } from '@nestjs/common';
 
-import { CompetitionSubmission } from '../entities/all.entities';
-import { BaseController } from '../_base/base.controller';
+import { PermissionsGuard, Permissions, JwtGuard } from '@tamu-gisc/common/nest/auth';
+
 import { LeaderboardService } from '../leaderboard/leaderboard.service';
 
-@Controller('leaderboard')
-export class LeaderboardController extends BaseController<CompetitionSubmission> {
-  constructor(private service: LeaderboardService) {
-    super(service);
+@Controller('competitions/leaderboards')
+export class LeaderboardController {
+  constructor(private service: LeaderboardService) {}
+
+  @UseGuards(JwtGuard)
+  @Get('/season/:guid')
+  public getLeaderBoardForSeason(@Req() req, @Param() { guid }) {
+    return this.service.getLeaderBoardItemsForSeason(guid);
   }
 
-  @Get('/season')
-  public getLeaderBoardForSeason(@Body() { season }) {
-    return this.service.getLeaderBoardItemsForSeason(season);
+  @UseGuards(JwtGuard)
+  @Get('active')
+  public getLeaderBoardForActiveSeason() {
+    return this.service.getLeaderBoardItemsForActiveSeason();
   }
 
-  @Get('/all')
-  public get() {
-    return this.service.getAllLeaderboardItems();
+  @Permissions(['read:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('active/admin')
+  public getLeaderBoardForActiveSeasonWithIdentities() {
+    return this.service.getLeaderBoardItemsForActiveSeason(true);
   }
 
+  @UseGuards(JwtGuard)
   @Get()
   public getLeaderboard() {
-    return this.service.getLeaderBoardForActiveSeason();
+    throw new NotImplementedException();
   }
 }

@@ -1,8 +1,12 @@
 <h1 class="bordered">New Submission</h1>
 
 <ng-container *ngIf="form !== undefined; else loader">
-  <form [formGroup]="form" (submit)="submitResponse()">
-    <div class="block-input">
+  <div class="info-block warning" *ngIf="formModel.allowSubmissions === false">
+    <p><strong>Submissions are disabled at this time. Please check back later.</strong></p>
+  </div>
+
+  <form [formGroup]="form" (submit)="submitResponse()" disabled>
+    <!-- <div class="block-input">
       <div class="block-input-presentation" *ngIf="(file | async) === undefined">
         <div class="material-icons">photo_camera</div>
         <p class="title">Upload Photo</p>
@@ -11,10 +15,11 @@
 
       <input type="file" name="photo" (change)="onPhotoTaken($event)" accept="image/*" capture />
       <div class="image" *ngIf="file | async" [ngStyle]="{'background-image': 'url(' + (fileUrl | async) + ')'}"></div>
-    </div>
+    </div> -->
 
-    <div class="statused-form-input-container" *ngFor="let c of form.controls">
+    <div class="statused-form-input-container" formArrayName="fields" *ngFor="let c of form.controls?.['fields']['controls']; let i = index">
       <p class="label">{{c.get('title').value}}</p>
+      <p class="description" *ngIf="c.get('instructions').value !== ''">{{c.get('instructions').value}}</p>
       <div class="statused-form-input column">
         <div [ngSwitch]="c.get('type').value">
           <tamu-gisc-select [formControl]="c.get('value')" [valueTemplate]="'value'" [displayTemplate]="'name'" [data]="c.get('options').value" *ngSwitchCase="'select'"></tamu-gisc-select>
@@ -26,7 +31,7 @@
 
     <p class="rules-text">By submitting, you agree that you have read and understand the competition <a href="https://txgisday.org/competitions/vgi/" target="_blank" rel="noopener noreferrer">rules and guidelines.</a></p>
 
-    <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1">
+    <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1 || formModel.allowSubmissions === false">
       <div class="progress" *ngIf="(submissionStatus | async) !== -1" [style.width.%]="(submissionProgress | async) * 100"></div>
       <div class="status-text" [ngSwitch]="(submissionStatus | async)">
         <div *ngSwitchCase="1">Submitting...</div>

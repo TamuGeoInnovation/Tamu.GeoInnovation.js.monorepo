@@ -1,0 +1,34 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Broadcasts</div>
+      <div class="form-section-actions">
+        <a routerLink="add">Add broadcast <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noEntities">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Meeting ID</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
+            <td>{{entity.name}}</td>
+            <td>{{entity.meetingId}}</td>
+            <td>{{entity.updated | date:'short'}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #noEntities>
+        <p>There are no broadcasts yet.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

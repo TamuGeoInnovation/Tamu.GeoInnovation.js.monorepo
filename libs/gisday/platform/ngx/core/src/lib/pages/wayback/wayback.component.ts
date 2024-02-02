@@ -8,6 +8,6 @@ import { Title } from '@angular/platform-browser';
 })
 export class WaybackComponent {
   constructor(private titleService: Title) {
-    this.titleService.setTitle('Wayback | TxGIS Day 2022');
+    this.titleService.setTitle('Wayback | TxGIS Day');
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 
 import { SubmissionType, Submission } from '../entities/all.entity';
@@ -15,7 +14,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     super(userSubmissionRepo);
   }
 
-  public async insertUserSubmission(accountGuid: string, _userSubmission: Partial<Submission>) {
+  public async insertUserSubmission(accountGuid: string, submission: Partial<Submission>) {
     // const submissionType = await this.submissionTypeRepo.findOne({
     //   where: {
     //     guid: _userSubmission.submissionType
@@ -23,9 +22,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     // });
 
     // if (submissionType) {
-    _userSubmission.accountGuid = accountGuid;
+    submission.accountGuid = accountGuid;
 
-    const userSubmission = this.userSubmissionRepo.create(_userSubmission);
+    const userSubmission = this.userSubmissionRepo.create(submission);
 
     return this.userSubmissionRepo.save(userSubmission);
     // } else {

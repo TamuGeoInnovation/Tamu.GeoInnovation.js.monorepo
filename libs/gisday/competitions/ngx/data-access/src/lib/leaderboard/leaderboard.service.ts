@@ -13,21 +13,35 @@ export class LeaderboardService {
   public resource: string;
 
   constructor(private http: HttpClient, private environment: EnvironmentService, private readonly ns: NotificationService) {
-    this.resource = `${this.environment.value('api_url')}/leaderboard`;
+    this.resource = `${this.environment.value('api_url')}/competitions/leaderboards`;
   }
 
-  public getScores(): Observable<ILeaderboardItem[]> {
-    return this.http.get<Array<ILeaderboardItem>>(this.resource).pipe(
+  public getScoresForActive(): Observable<ILeaderboardItem[]> {
+    return this.http.get<Array<ILeaderboardItem>>(`${this.resource}/active`).pipe(
       catchError((err) => {
-        this.ns.toast({
-          id: 'leaderboard-load-failure',
-          title: 'Failed to Load Leader Board Totals',
-          message: `The server experienced an error loading the leader board totals. Please try again later. (${err.status})`
-        });
+        this._leaderboardFailure(err);
 
         throw new Error('Failed loading leaderboard');
       })
     );
+  }
+
+  public getScoresForActiveAdmin(): Observable<ILeaderboardItem[]> {
+    return this.http.get<Array<ILeaderboardItem>>(`${this.resource}/active/admin`).pipe(
+      catchError((err) => {
+        this._leaderboardFailure(err);
+
+        throw new Error('Failed loading leaderboard');
+      })
+    );
+  }
+
+  private _leaderboardFailure(err) {
+    this.ns.toast({
+      id: 'leaderboard-load-failure',
+      title: 'Failed to Load Leader Board Totals',
+      message: `The server experienced an error loading the leader board totals. Please try again later. (${err.status})`
+    });
   }
 }
 

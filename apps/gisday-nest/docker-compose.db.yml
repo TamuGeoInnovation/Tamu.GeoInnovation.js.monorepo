@@ -1,0 +1,24 @@
+# Basic compose file for MSSQL Server to run along the application during development
+#
+# Example run: docker-compose -f docker-compose.db.yml --env-file .env.local up -d
+
+version: '3.8'
+
+services:
+  database:
+    image: ghcr.io/tamugeoinnovation/mssqldocker:latest
+    container_name: database
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: ${SA_PASSWORD}
+      MSSQL_DB: ${TYPEORM_DATABASE}
+      MSSQL_USER: ${TYPEORM_USERNAME}
+      MSSQL_PASSWORD: ${TYPEORM_PASSWORD}
+    ports:
+      - '1433:1433'
+    volumes:
+      - db:/var/opt/mssql
+    restart: always
+
+volumes:
+  db:

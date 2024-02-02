@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
+import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
 import { ContactService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
@@ -12,9 +13,11 @@ import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 })
 export class ContactComponent implements OnInit {
   public form: FormGroup;
+  public formStatus: BehaviorSubject<string> = new BehaviorSubject('ready');
+  public buttonText: Observable<string>;
 
   constructor(private titleService: Title, private fb: FormBuilder, private contactService: ContactService) {
-    this.titleService.setTitle('Contact | TxGIS Day 2022');
+    this.titleService.setTitle('Contact | TxGIS Day');
   }
 
   public ngOnInit(): void {
@@ -22,21 +25,52 @@ export class ContactComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', Validators.email],
-      contactType: ['', Validators.required],
-      contactMessage: ['', Validators.required]
+      subject: ['', Validators.required],
+      message: ['', Validators.required]
     });
+
+    this.buttonText = this.formStatus.pipe(
+      map((status) => {
+        switch (status) {
+          case 'sending':
+            return 'Sending...';
+          case 'sent':
+            return 'Sent!';
+          case 'error':
+            return 'Error!';
+          default:
+            return 'Send Message';
+        }
+      })
+    );
   }
 
   public sendEmail() {
-    const outbound: IMailroomEmailOutbound = {
-      from: this.form.controls.email.value,
-      subject: `GIS Day Contact: ${this.form.controls.contactType.value}`,
-      text: this.form.controls.contactMessage.value,
-      to: 'aplecore@gmail.com'
+    const form = this.form.getRawValue();
+
+    const outbound: Partial<IMailroomEmailOutbound> = {
+      from: form.email,
+      subject: `${form.lastName}, ${form.firstName} | ${form.subject}`,
+      text: form.message
     };
 
-    this.contactService.sendEmail(outbound).subscribe((result) => {
-      console.log(result);
-    });
+    of(true)
+      .pipe(
+        tap(() => {
+          this.formStatus.next('sending');
+        }),
+        switchMap(() => {
+          return this.contactService.sendEmail(outbound);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.formStatus.next('sent');
+        },
+        error: (err) => {
+          console.log(err.message);
+          this.formStatus.next('error');
+        }
+      });
   }
 }

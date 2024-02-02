@@ -53,7 +53,7 @@ export class TokensService {
    * Verifies a token signature and returns the payload if the token is valid.
    */
   public async validateToken(token: string) {
-    let verified: JwtDto;
+    let verified;
 
     try {
       verified = verify(token, this.jwtOptions.secret);

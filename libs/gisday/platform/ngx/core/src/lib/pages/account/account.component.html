@@ -1,19 +1,14 @@
-<section>
-  <header id="section-links-container">
-    <div class="container12">
-      <div id="sectionLabel"></div>
-      <div id="ellipsis"></div>
-      <nav id="section-nav" class="clr-md-grey-0">
-        <ul>
-          <li><a [routerLink]="['/account/my-classes']" id="linkClasses">My Classes</a></li>
-          <li><a [routerLink]="['/account/my-checkins']" id="linkCheckIns">My CheckIns</a></li>
-          <li><a [routerLink]="['/account/my-submissions']" id="linkSubmissions">My Submissions</a></li>
-          <li><a [routerLink]="['/account/my-details']" id="linkAccountInformation">My Details</a></li>
-        </ul>
-      </nav>
+<section class="internal">
+  <div class="container12">
+    <div class="column3 sidebar">
+      <a [routerLink]="['/account/details']" routerLinkActive="active"><span class="material-icons">person_outline</span> Profile</a>
+      <a [routerLink]="['/account/classes']" routerLinkActive="active"><span class="material-icons">school</span> Classes</a>
+      <a [routerLink]="['/account/checkins']" routerLinkActive="active"><span class="material-icons">confirmation_number</span> Checkins</a>
+      <!-- <a [routerLink]="['/account/my-submissions']" routerLinkActive="active"><span class="material-icons">cloud_upload</span> Submissions</a> -->
     </div>
-  </header>
-  <div class="container12 flex flex-column">
-    <router-outlet></router-outlet>
+
+    <div class="column9 content">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </section>

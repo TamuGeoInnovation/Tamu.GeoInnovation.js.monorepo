@@ -3,7 +3,7 @@
 
 #landing {
   width: 100%;
-  background: linear-gradient(rgba($gisday-blue-secondary, .08), $gisday-gray-primary);
+  background: linear-gradient(rgba($gisday-blue-secondary, 0.08), $gisday-gray-primary);
 
   .logo-container {
     font-size: 7rem;
@@ -38,5 +38,120 @@
     background-position: center;
     background-size: cover;
     @include flex(1);
+  }
+}
+
+.countdown {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+  margin: 0rem 0 2rem 0;
+  padding: 1rem;
+
+  .days,
+  .hours,
+  .minutes,
+  .seconds {
+    @include flex(auto);
+    @include flex-direction(column);
+    @include justify-content(center);
+    @include align-items(center);
+
+    margin: 0 2rem;
+
+    .value {
+      font-size: 5rem;
+      font-weight: 900;
+      color: $gisday-blue-support;
+    }
+
+    .label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $gisday-blue-support-lightened;
+    }
+  }
+
+  // Generically target the days, hours, minutes, and second containers.
+  & > div {
+    &:not(:last-child) {
+      .value::after {
+        content: ':';
+        position: absolute;
+        margin-left: 1.5rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  #landing {
+    .logo-container {
+      font-size: 5.5rem;
+    }
+
+    .countdown {
+      .value {
+        font-size: 4rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 553px) {
+  #landing {
+    .logo-container {
+      font-size: 4.5rem;
+    }
+
+    .countdown {
+      .value {
+        font-size: 3rem;
+      }
+
+      .days,
+      .hours,
+      .minutes,
+      .seconds {
+        margin: 0 1rem;
+      }
+
+      & > div {
+        &:not(:last-child) {
+          .value::after {
+            margin-left: 0.75rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 470px) {
+  #landing {
+    .logo-container {
+      font-size: 3.5rem;
+    }
+
+    .countdown {
+      .value {
+        font-size: 2rem;
+      }
+
+      .days,
+      .hours,
+      .minutes,
+      .seconds {
+        margin: 0 0.5rem;
+      }
+
+      & > div {
+        &:not(:last-child) {
+          .value::after {
+            margin-left: 0.75rem;
+          }
+        }
+      }
+    }
   }
 }

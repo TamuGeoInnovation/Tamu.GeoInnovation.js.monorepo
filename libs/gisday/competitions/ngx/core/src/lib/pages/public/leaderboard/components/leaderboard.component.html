@@ -3,28 +3,40 @@
 </div>
 
 <ng-container *ngIf="(leaders$ | async) as leaders; else loader">
-  <div class="leaderboard-container">
-    <div class="leader header">
-      <div class="rank">Rank</div>
-      <div class="identity">Participant</div>
-      <div class="points">Points</div>
-    </div>
-
-    <div class="leader" *ngFor="let leader of leaders; let i = index;" [ngClass]="{me: (me$ | async) === leader.guid}">
-      <div class="rank">{{i+1}}</div>
-      <div class="identity">
-        <div [ngSwitch]="me$ | async">
-          <div *ngSwitchCase="leader.guid">You</div>
-          <div *ngSwitchDefault>{{leader.identity}}</div>
-        </div>
+  <ng-container *ngIf="leaders.length > 0; else noLeaders">
+    <div class="leaderboard-container">
+      <div class="leader header">
+        <div class="rank">Rank</div>
+        <div class="identity">Participant</div>
+        <div class="points">Points</div>
       </div>
-      <div class="points">{{leader.points}}</div>
+
+      <div class="leader" *ngFor="let leader of leaders; let i = index;" [ngClass]="{me: (me$ | async) === leader.guid, linkable: userIsManager$ | async}" (click)="navigateToFilteredMap(leader.guid)">
+        <div class="rank">{{i+1}}</div>
+        <div class="identity">
+          <div [ngSwitch]="me$ | async">
+            <div *ngSwitchCase="leader.guid">You</div>
+            <div *ngSwitchDefault>{{leader.identity}}</div>
+          </div>
+        </div>
+        <div class="points">{{leader.points}}</div>
+      </div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-template #noLeaders>
+    <div class="info-block notice leader-2">
+      <div class="no-leaders-message">
+        <p>There are no submissions yet. Be the first to collect points and earn prizes!</p>
+
+        <!-- <p class="leader-1"><strong>Please be aware that points may lag behind submissions as they are verified.</strong></p> -->
+
+        <p class="leader-1"><a [routerLink]="['/competitions/vgi']">See competition details &gt;</a></p>
+      </div>
+    </div>
+  </ng-template>
 </ng-container>
 
 <ng-template #loader>
-  <div class="loader-container">
-    <div class="spinning-loader"></div>
-  </div>
+  <div class="loader"></div>
 </ng-template>

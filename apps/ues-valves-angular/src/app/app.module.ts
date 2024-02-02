@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
+import { LegacyAuthGuard, LegacyAuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 
 import * as environment from '../environments/environment';
@@ -23,7 +23,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('@tamu-gisc/ues/cold-water/ngx').then((m) => m.MapModule),
-    canActivate: [AuthGuard]
+    canActivate: [LegacyAuthGuard]
   }
 ];
 
@@ -43,7 +43,7 @@ const routes: Routes = [
       provide: env,
       useValue: environment
     },
-    AuthInterceptorProvider,
+    LegacyAuthInterceptorProvider,
     {
       provide: notificationStorage,
       useValue: 'aggiemap-notifications'

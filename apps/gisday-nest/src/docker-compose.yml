@@ -1,0 +1,41 @@
+# This is a sample docker-compose.yml file for the gisday-nest API
+# Can be combined with the docker-compose.dev.yml + the docker-compose for the front-end for a full stack in production
+
+version: '3.8'
+
+name: gisday
+services:
+  api:
+    build: . # Path is assumed inside the /dist/apps/<app-name> folder
+    image: ghcr.io/tamugeoinnovation/gisday-nest:latest
+    container_name: api
+    ports:
+      - '3333:3333'
+    environment:
+      - GLOBAL_PREFIX=${GLOBAL_PREFIX}
+      - ORIGINS=${ORIGINS}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
+      - AUTH0_MANAGEMENT_DOMAIN=${AUTH0_MANAGEMENT_DOMAIN}
+      - AUTH0_MANAGEMENT_CLIENT=${AUTH0_MANAGEMENT_CLIENT}
+      - AUTH0_MANAGEMENT_SECRET=${AUTH0_MANAGEMENT_SECRET}
+      - APP_DATA=${APP_DATA}
+      - TYPEORM_CONNECTION=${TYPEORM_CONNECTION}
+      - TYPEORM_HOST=${TYPEORM_HOST}
+      - TYPEORM_DATABASE=${TYPEORM_DATABASE}
+      - TYPEORM_USERNAME=${TYPEORM_USERNAME}
+      - TYPEORM_PASSWORD=${TYPEORM_PASSWORD}
+      - TYPEORM_SYNCHRONIZE=${TYPEORM_SYNCHRONIZE}
+      - TYPEORM_DROP_SCHEMA=${TYPEORM_DROP_SCHEMA}
+      - TYPEORM_LOGGING=${TYPEORM_LOGGING}
+      - 'TYPEORM_DRIVER_EXTRA={"options": {"enableArithAbort": true,"trustedConnection": true}}'
+      - MAILROOM_URL=${MAILROOM_URL}
+      - MAILROOM_FROM=${MAILROOM_FROM}
+      - MAILROOM_TO=${MAILROOM_TO}
+      - MAILROOM_BCC=${MAILROOM_BCC}
+    volumes:
+      - data:/home/app-data/
+    restart: always
+
+volumes:
+  data:

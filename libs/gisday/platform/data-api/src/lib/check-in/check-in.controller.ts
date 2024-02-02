@@ -1,37 +1,80 @@
-import { Controller, Get, Post, Request, Body, UseGuards, ForbiddenException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Request,
+  Body,
+  UseGuards,
+  Param,
+  Delete,
+  Patch,
+  NotImplementedException,
+  Req,
+  BadRequestException
+} from '@nestjs/common';
 
-import { CheckIn } from '../entities/all.entity';
-import { BaseController } from '../_base/base.controller';
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+
 import { CheckInProvider } from './check-in.provider';
-import { NestAuthGuard } from '../guards/auth.guard';
 
-@Controller('check-in')
-export class CheckInController extends BaseController<CheckIn> {
-  constructor(private readonly checkinProvider: CheckInProvider) {
-    super(checkinProvider);
-  }
+@Controller('check-ins')
+export class CheckInController {
+  constructor(private readonly provider: CheckInProvider) {}
 
-  @Get('all')
-  public async getUsersCheckins(@Request() req) {
-    // TODO: May need some angular-auth-oidc-client magic here
-    if (req.user) {
-      // return this.checkinProvider.getEntitiesForUser(req.user.sub);
-      return this.checkinProvider.find({
-        where: {
-          accountGuid: req.user.sub
-        }
-      });
-    } else {
-      return new ForbiddenException();
+  @UseGuards(JwtGuard)
+  @Get('user/event/:eventGuid')
+  public async getUserCheckinForEvent(@Request() req, @Param('eventGuid') eventGuid) {
+    if (!eventGuid) {
+      throw new BadRequestException('Event guid is missing');
     }
+
+    return this.provider.getUserCheckinForEvent(eventGuid, req.user.sub);
   }
 
-  @Post('user')
-  @UseGuards(NestAuthGuard)
-  public async insertUserCheckin(@Body() body) {
-    // TODO: Use HttpInterceptor to bind accountGuid to body since NestAuthGuard only allows request to progress here
-    const { eventGuid, accountGuid } = body;
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['read:checkins'])
+  @Get('user/:userGuid')
+  public async getCheckinsForUser(@Param('userGuid') userGuid) {
+    return this.provider.getCheckinsForUser(userGuid);
+  }
 
-    return this.checkinProvider.insertUserCheckin(eventGuid, accountGuid);
+  @UseGuards(JwtGuard)
+  @Get('user')
+  public async getLoggedInUserCheckins(@Request() req) {
+    return this.provider.getCheckinsForUser(req.user.sub);
+  }
+
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['read:checkins'])
+  @Get('')
+  public async getAllCheckins() {
+    return this.provider.find();
+  }
+
+  @UseGuards(JwtGuard)
+  @Post()
+  public async insertUserCheckin(@Req() req, @Body('eventGuid') eventGuid) {
+    if (!eventGuid) {
+      throw new BadRequestException('Event guid is missing');
+    }
+
+    return this.provider.insertUserCheckin(eventGuid, req.user.sub);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':guid')
+  public async updateEntity() {
+    throw new NotImplementedException();
+  }
+
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['delete:checkins'])
+  @Delete(':guid')
+  public deleteEntity(@Param('guid') guid: string) {
+    return this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

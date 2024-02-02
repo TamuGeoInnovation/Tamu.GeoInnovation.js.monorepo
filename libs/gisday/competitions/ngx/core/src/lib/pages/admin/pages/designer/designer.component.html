@@ -1,13 +1,20 @@
-<div class="container12">
-  <h1 class="bordered leader-2">Form Designer</h1>
-
-  <div class="container">
-    <div id="designer">
-      <tamu-gisc-design-form (updated)="formModel = $event"></tamu-gisc-design-form>
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Form Designer</div>
+      <div class="form-section-actions">
+        <!-- <a *ngIf="formModel">Preview</a> -->
+      </div>
     </div>
 
-    <div id="preview">
+    <div class="form-section-body">
+      <div id="designer">
+        <tamu-gisc-design-form (updated)="formModel = $event"></tamu-gisc-design-form>
+      </div>
+    </div>
+
+    <!-- <div id="preview">
       <tamu-gisc-submission [formModel]="formModel"></tamu-gisc-submission>
-    </div>
+    </div> -->
   </div>
 </div>

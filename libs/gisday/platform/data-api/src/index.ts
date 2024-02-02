@@ -18,7 +18,23 @@ export * from './lib/user-class/user-class.module';
 export * from './lib/user-rsvp/user-rsvp.module';
 export * from './lib/user-submission/user-submission.module';
 export * from './lib/user-info/user-info.module';
+export * from './lib/season-day/season-day.module';
+export * from './lib/season/season.module';
+export * from './lib/organization/organization.module';
+export * from './lib/event-broadcast/event-broadcast.module';
+export * from './lib/event-location/event-location.module';
+export * from './lib/place/place.module';
+export * from './lib/assets/assets.module';
+export * from './lib/contact/contact.module';
 
 // Providers
 export * from './lib/_base/base-provider';
 export * from './lib/class/class.provider';
+export * from './lib/user-info/user-info.provider';
+
+// DTOs
+export * from './lib/event/dto/simplified-event.dto';
+export * from './lib/event/dto/update-event.dto';
+export * from './lib/event/dto/event-attendance.dto';
+export * from './lib/season/dto/active-season.dto';
+export * from './lib/season-day/dto/simplified-season-day.dto';

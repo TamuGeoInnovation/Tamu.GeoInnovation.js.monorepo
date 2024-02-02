@@ -1,0 +1,51 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Venue</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Venue</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="building" placeholder="Venue Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="room" placeholder="Room Number" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="capacity" placeholder="Max Occupancy" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="link" placeholder="URL (Aggiemap, Google Maps, etc.)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>Indicate the hosting organization. Address is inherited from the selected organization.</p>
+
+        <tamu-gisc-select formControlName="place" [data]="places$ | async" [valueTemplate]="'guid'" [displayTemplate]="'name'" [placeholder]="'Select hosting organization'"> </tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
+        <p class="trailer-1">A venue is typically assumed to be within an organization's host campus/building. In some cases, sessions may be hosted in venues in the surrounding area (restaurant, bar, conference center, etc). Use this field to display a different street address than the hosting organization.</p>
+        <tamu-gisc-textbox formControlName="streetAddressOverride" placeholder="Street Address Override (Optional)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Venue" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -27,8 +27,8 @@ export class ViewerService {
     );
 
     this.seasonForm = this.season.pipe(
-      switchMap((season) => {
-        return this.sf.getFormForSeason(season.year);
+      switchMap((s) => {
+        return this.sf.getFormForSeason(s.season.guid);
       })
     );
   }

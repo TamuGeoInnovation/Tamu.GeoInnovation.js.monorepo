@@ -1,9 +1,9 @@
 <footer>
   <div class="top-section container16">
-    <div class="flex flex-row justify-center">
+    <div class="flex flex-row justify-center wrap">
       <div class="column4">
         <a class="logo-container" [routerLink]="['/']">
-          <div class="site-logo greyscale">TxGIS Day <span>2022</span></div>
+          <div class="site-logo greyscale">TxGIS Day <span *ngIf="(activeSeason$ | async)?.year as year">{{year}}</span></div>
         </a>
         <p>Three days of workshops and programs celebrating geospatial technology.</p>
       </div>
@@ -34,20 +34,17 @@
       <div class="column3">
         <p class="footer-column-title">TxGIS Day Partners</p>
         <ul>
-          <li><a href="http://atxgisday.org/">ATX GIS Day</a></li>
-          <li><a href="http://www.houstonareagisday.org/">Houston Area GIS Day</a></li>
-          <li><a href="http://www.swiggis.org/">SWIGGIS</a></li>
-          <li><a href="https://geography.tamu.edu/">Texas A&M University</a></li>
-          <li><a href="http://catalog.unt.edu/preview_entity.php?catoid=19&ent_oid=1600&returnto=2225">University of North Texas</a></li>
-          <li><a href="https://liberalarts.utexas.edu/geography/undergraduate/Study-Tracks/GIScience.php">University of Texas Austin</a></li>
+          <li *ngFor="let org of organizations$ | async">
+            <a [href]="org.website" target="_blank">{{org.name}}</a>
+          </li>
         </ul>
       </div>
     </div>
   </div>
   <div class="bottom-section">
-    <div class="container12 flex flex-column justify-center align-center">
+    <div class="container12 flex flex-column justify-center align-center wrap">
       <div class="column8 copyright">
-        <p>&copy; 2022 GeoInnovation Service Center -</p>
+        <p>&copy; {{currentYear}} GeoInnovation Service Center -</p>
         <a href="https://www.tamu.edu" target="_blank">Texas A&amp;M University - </a>
         <a href="javascript:void(0)" target="_blank">Webmaster - </a>
         <a href="http://www.tamu.edu/emergency/index.html" target="_blank">Emergency Protocol - </a>

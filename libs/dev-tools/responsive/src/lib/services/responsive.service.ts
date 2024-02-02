@@ -4,7 +4,7 @@ import { BehaviorSubject, debounceTime, filter, fromEvent, map, startWith } from
 @Injectable({ providedIn: 'root' })
 export class ResponsiveService {
   public _state: BehaviorSubject<ResponsiveSnapshot> = new BehaviorSubject<ResponsiveSnapshot>(
-    this._checkWidth({ currentTarget: window })
+    this._checkWidth({ target: window })
   );
   public isMobile = this._state.asObservable().pipe(
     filter((mobile) => {
@@ -21,16 +21,17 @@ export class ResponsiveService {
     // Subscribe to window resize events and update the state
     fromEvent(window, 'resize')
       .pipe(
-        startWith({ currentTarget: window }),
+        startWith({ target: window }),
         debounceTime(100),
+        // filter((event) => event.currentTarget !== null),
         map((event) => this._checkWidth(event))
       )
       .subscribe(this._state);
   }
 
-  private _checkWidth(event: Event | { currentTarget: Window }) {
+  private _checkWidth(event: Event | { target: Window }) {
     const ret = {
-      screenWidth: (event.currentTarget as Window).innerWidth,
+      screenWidth: (event.target as Window).innerWidth,
       isMobile: undefined
     };
 

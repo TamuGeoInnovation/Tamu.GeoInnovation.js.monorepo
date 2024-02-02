@@ -12,9 +12,9 @@ export class SpeakerRoleProvider extends BaseProvider<SpeakerRole> {
     super(speakerRoleRepo);
   }
 
-  public async insertRoles(_roles: Array<Partial<SpeakerRole>>) {
-    const roles = this.speakerRoleRepo.create(_roles);
+  public async insertRoles(roles: Array<Partial<SpeakerRole>>) {
+    const created = this.speakerRoleRepo.create(roles);
 
-    return this.speakerRoleRepo.insert(roles);
+    return this.speakerRoleRepo.insert(created);
   }
 }

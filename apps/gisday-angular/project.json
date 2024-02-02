@@ -16,6 +16,11 @@
         "assets": [
           "apps/gisday-angular/src/favicon.ico",
           "apps/gisday-angular/src/assets",
+          "apps/gisday-angular/src/Dockerfile",
+          "apps/gisday-angular/src/.dockerignore",
+          "apps/gisday-angular/src/docker-compose.yml",
+          "apps/gisday-angular/src/.nginx",
+          "apps/gisday-angular/src/manifest.webmanifest",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -33,6 +38,7 @@
       },
       "configurations": {
         "production": {
+          "ngswConfigPath": "apps/gisday-angular/ngsw-config.json",
           "fileReplacements": [
             {
               "replace": "apps/gisday-angular/src/environments/environment.ts",
@@ -43,9 +49,10 @@
           "outputHashing": "all",
           "sourceMap": false,
           "namedChunks": false,
-          "extractLicenses": true,
+          "extractLicenses": false,
           "vendorChunk": false,
           "buildOptimizer": true,
+          "serviceWorker": true,
           "budgets": [
             {
               "type": "initial",
@@ -60,6 +67,7 @@
           ]
         },
         "development": {
+          "ngswConfigPath": "apps/gisday-angular/ngsw-config.json",
           "fileReplacements": [
             {
               "replace": "apps/gisday-angular/src/environments/environment.ts",
@@ -70,9 +78,10 @@
           "outputHashing": "all",
           "sourceMap": false,
           "namedChunks": false,
-          "extractLicenses": true,
+          "extractLicenses": false,
           "vendorChunk": false,
           "buildOptimizer": true,
+          "serviceWorker": true,
           "budgets": [
             {
               "type": "initial",
@@ -88,6 +97,17 @@
         }
       },
       "defaultConfiguration": ""
+    },
+    "image-build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "docker compose build"
+          }
+        ],
+        "cwd": "dist/apps/gisday-angular"
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",

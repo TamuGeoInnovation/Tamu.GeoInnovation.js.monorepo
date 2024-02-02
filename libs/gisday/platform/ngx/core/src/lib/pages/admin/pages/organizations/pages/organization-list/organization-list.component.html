@@ -1,0 +1,38 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Affiliations</div>
+      <div class="form-section-actions">
+        <a routerLink="add">Add affiliation <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div>
+        <p class="trailer-1">Affiliations are institutions which a speaker is a member of and represents during an event (e.g. company, university).</p>
+      </div>
+
+      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noTags">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Season</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
+            <td>{{entity?.name}}</td>
+            <td>{{entity?.season?.year}}</td>
+            <td>{{entity?.updated | date:'short'}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #noTags>
+        <p>There are no affiliations yet.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

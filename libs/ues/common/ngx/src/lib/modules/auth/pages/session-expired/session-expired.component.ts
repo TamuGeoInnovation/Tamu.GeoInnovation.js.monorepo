@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { interval, Observable } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
-import { AuthService } from '@tamu-gisc/common/ngx/auth';
+import { LegacyAuthService } from '@tamu-gisc/common/ngx/auth';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./session-expired.component.scss']
 })
 export class SessionExpiredComponent {
-  constructor(private auth: AuthService, private route: ActivatedRoute) {}
+  constructor(private auth: LegacyAuthService, private route: ActivatedRoute) {}
 
   /**
    * Seconds before redirect

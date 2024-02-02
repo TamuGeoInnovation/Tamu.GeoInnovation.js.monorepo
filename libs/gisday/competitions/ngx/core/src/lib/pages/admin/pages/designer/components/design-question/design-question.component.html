@@ -1,6 +1,6 @@
 <tamu-gisc-accordion>
   <tamu-gisc-accordion-header>
-    <p>{{control.get('title').value}}</p>
+    <p>{{control.get('title').value}} <span *ngIf="control.get('enabled').value === false">(Disabled)</span></p>
   </tamu-gisc-accordion-header>
 
   <tamu-gisc-accordion-content>

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AuthInterceptor } from './services/auth-interceptor.service';
-import { AuthService } from './services/auth.service';
+import { HasRolesPipe } from './pipes/has-roles/has-roles.pipe';
 
 @NgModule({
   imports: [CommonModule],
-  providers: [AuthService, AuthInterceptor]
+  declarations: [HasRolesPipe],
+  exports: [HasRolesPipe]
 })
 export class CommonNgxAuthModule {}

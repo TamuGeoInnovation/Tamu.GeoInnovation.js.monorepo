@@ -1,0 +1,62 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Sponsor</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Sponsor</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Sponsor Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="website" placeholder="Sponsor Website" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="contactFirstName" placeholder="Contact First Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="contactLastName" placeholder="Contact Last Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="contactEmail" placeholder="Contact Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-select formControlName="sponsorshipLevel" [data]="sponsorshipLevelsDict" [valueTemplate]="'value'" [displayTemplate]="'label'" [placeholder]="'Select sponsorship level'"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection row">
+        <div>
+          <img [src]="logoUrl$ | async" />
+
+          <tamu-gisc-file formControlName="file">
+            <p class="placeholder">Select Logo Image</p>
+          </tamu-gisc-file>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Sponsor" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>

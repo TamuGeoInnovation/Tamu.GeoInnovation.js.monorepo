@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: true
 };
 
 /*
@@ -13,8 +13,6 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+// import 'zone.js/plugins/zone-error';  // Included with Angular CL I.
 
-export const client_id = 'gisday';
-export const api_url = 'https://gisday-dev.geoservices.tamu.edu/api';
-export const idp_dev_url = 'https://idp-dev.geoservices.tamu.edu/oidc';
+export * from './common.config';

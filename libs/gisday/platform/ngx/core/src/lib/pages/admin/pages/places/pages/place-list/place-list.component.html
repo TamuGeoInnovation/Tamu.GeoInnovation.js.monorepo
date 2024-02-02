@@ -1,0 +1,40 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Organizations</div>
+      <div class="form-section-actions">
+        <a routerLink="add">Add organization <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div>
+        <p class="trailer-1">Organizations are geographic areas or groups that host a GIS Day event. An organization has multiple physical <a routerLink="">venues</a> where sessions are hosted.</p>
+      </div>
+
+      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noEntities">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
+            <td>{{entity?.name}}</td>
+            <td>{{entity?.city}}</td>
+            <td>{{entity?.state}}</td>
+            <td>{{entity?.zip}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #noEntities>
+        <p>There are no organizations yet.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

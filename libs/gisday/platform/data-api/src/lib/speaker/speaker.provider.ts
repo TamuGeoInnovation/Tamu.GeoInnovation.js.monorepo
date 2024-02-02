@@ -1,159 +1,308 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  UnprocessableEntityException,
+  NotFoundException,
+  InternalServerErrorException,
+  Logger
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial, In, Repository } from 'typeorm';
 
-import { DeepPartial, Repository } from 'typeorm';
-import { Request } from 'express';
-import { distinct, filter, from, switchMap, toArray } from 'rxjs';
-
-import { Speaker, SpeakerInfo, University, EntityRelationsLUT, Event } from '../entities/all.entity';
+import { Speaker, EntityRelationsLUT, University, Organization, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { AssetsService } from '../assets/assets.service';
+import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
+  private _resourcePath = `images/speakers/`;
+
   constructor(
-    @InjectRepository(Event) private eventRepo: Repository<Event>,
     @InjectRepository(Speaker) private speakerRepo: Repository<Speaker>,
-    @InjectRepository(SpeakerInfo) public speakerInfoRepo: Repository<SpeakerInfo>,
-    @InjectRepository(University) public uniRepo: Repository<University>
+    @InjectRepository(University) private universityRepo: Repository<University>,
+    @InjectRepository(Organization) private orgRepo: Repository<Organization>,
+    @InjectRepository(Event) private eventRepo: Repository<Event>,
+    private readonly assetService: AssetsService,
+    private readonly seasonService: SeasonService
   ) {
     super(speakerRepo);
   }
 
   public async getPresenter(guid: string) {
-    return from(
-      this.speakerRepo.findOne({
-        where: {
-          guid: guid
-        },
-        relations: ['speakerInfo']
-      })
-    );
+    return this.speakerRepo.findOne({
+      where: {
+        guid: guid
+      },
+      relations: ['organization', 'university', 'images']
+    });
+  }
+
+  public async getSpeakersForActiveSeason() {
+    const season = await this.seasonService.findOneActive();
+
+    if (!season) {
+      return [];
+    }
+
+    const eventGuids = season.days
+      .map((day) => day.events.map((event) => event.guid))
+      .reduce((acc, curr) => {
+        return acc.concat(curr);
+      });
+
+    const events = await this.eventRepo.find({
+      where: {
+        guid: In(eventGuids)
+      },
+      relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university']
+    });
+
+    const speakers = events
+      .map((event) => event.speakers)
+      .reduce((acc, curr) => {
+        return acc.concat(curr);
+      }, []);
+
+    return speakers.reduce((acc, curr) => {
+      const existing = acc.find((speaker) => speaker.guid === curr.guid);
+
+      if (!existing) {
+        return acc.concat(curr);
+      } else {
+        return acc;
+      }
+    }, []);
   }
 
   public async getPresenters() {
-    const speakers = from(
-      this.eventRepo.find({
-        // select: ['guid', 'speakers'],
-        where: {
-          season: '2022'
-        },
-        relations: ['speakers', 'speakers.speakerInfo', 'speakers.speakerInfo.university']
-      })
-    ).pipe(
-      switchMap((events) => events),
-      filter((event) => event.speakers != null),
-      switchMap((event) => event.speakers),
-      distinct(({ guid }) => guid),
-      filter((speaker) => speaker.isActive),
-      toArray()
-    );
-
-    // const speakers = await this.speakerRepo.find({
-    //   where: {
-    //     isActive: true
-    //   },
-    //   relations: ['speakerInfo']
-    // });
-
-    // speakers.forEach((speaker) => {
-    //   if (speaker.speakerInfo.blob) {
-    //     speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.data.toString();
-    //   }
-    // });
-
-    return speakers;
-  }
-
-  public async getSpeakerPhoto(guid: string) {
-    const speakerInfo = await this.speakerInfoRepo.findOne({
-      where: {
-        guid: guid
+    return this.speakerRepo.find({
+      relations: ['organization', 'university', 'images'],
+      order: {
+        lastName: 'ASC'
       }
     });
-
-    if (speakerInfo) {
-      return speakerInfo.blob.data.toString();
-    } else {
-      throw new UnprocessableEntityException(null, 'Could not find speakerInfo with provided guid');
-    }
   }
 
-  public async updateWithInfo(incoming: DeepPartial<Speaker>, file?) {
+  public async getOrganizationCommittee() {
+    return this.speakerRepo.find({
+      where: {
+        isOrganizer: true
+      },
+      relations: ['organization', 'university', 'images'],
+      order: {
+        lastName: 'ASC'
+      }
+    });
+  }
+
+  public async updateWithInfo(guid: string, incoming: DeepPartial<Speaker>, file?) {
+    delete incoming.guid;
+
     const existing = await this.speakerRepo.findOne({
       where: {
-        guid: incoming.guid
+        guid: guid
       },
       relations: EntityRelationsLUT.getRelation('speaker')
     });
 
-    if (file !== null || file !== undefined) {
-      existing.speakerInfo.blob = file.buffer;
-    }
-
-    const incomingKeys = Object.keys(existing);
-    incomingKeys.forEach((key) => {
-      // if key exists in existing, set existings value to whatever incomings is
-      if (existing[key]) {
-        existing[key] = incoming[key] ? incoming[key] : null;
-      } else if (existing.speakerInfo[key]) {
-        existing.speakerInfo[key] = incoming[key] ? incoming[key] : null;
+    if (existing) {
+      let speakerImage;
+      if (file != null || file != undefined) {
+        try {
+          speakerImage = await this._saveImage(file, guid);
+        } catch (err) {
+          Logger.error(err.message, 'SpeakerProvider');
+          throw new InternalServerErrorException('Could not save speaker image');
+        }
       }
-    });
 
-    existing.updated = new Date(Date.now());
+      const toSave = {
+        ...existing,
+        ...incoming,
+        isOrganizer: (incoming.isOrganizer as unknown as string) === 'true', // form data coerces boolean to string
+        isActive: (incoming.isActive as unknown as string) === 'true', // form data coerces boolean to string
+        images: [speakerImage]
+      };
 
-    existing.save();
+      if (speakerImage === undefined) {
+        delete toSave.images;
+      }
+
+      return this.speakerRepo.save(toSave);
+    } else {
+      throw new NotFoundException();
+    }
   }
 
-  public async insertWithInfo(_speaker: DeepPartial<Speaker>, file?) {
-    const speakerInfoEnt = this.speakerInfoRepo.create(_speaker);
-
-    if (file != null || file != undefined) {
-      speakerInfoEnt.blob = file.buffer;
-    }
-
-    _speaker.speakerInfo = speakerInfoEnt;
-
-    const speakerEnt = this.speakerRepo.create(_speaker);
+  public async insertWithInfo(speaker: DeepPartial<Speaker>, file?) {
+    const speakerEnt = this.speakerRepo.create({
+      ...speaker,
+      isOrganizer: (speaker.isOrganizer as unknown as string) === 'true', // form data coerces boolean to string
+      isActive: (speaker.isActive as unknown as string) === 'true' // form data coerces boolean to string
+    });
 
     if (speakerEnt) {
-      const university = await this.uniRepo.findOne({
-        where: {
-          guid: _speaker.speakerInfo.university ? _speaker.speakerInfo.university : ''
+      const savedEntity = await speakerEnt.save();
+
+      if (file != null || file != undefined) {
+        try {
+          const speakerImage = await this._saveImage(file, savedEntity.guid);
+
+          savedEntity.images = [speakerImage];
+
+          return savedEntity.save();
+        } catch (err) {
+          Logger.error(err.message, 'SpeakerProvider');
+          throw new InternalServerErrorException('Could not save speaker image');
         }
-      });
-
-      if (university) {
-        speakerInfoEnt.university = university;
+      } else {
+        return savedEntity;
       }
-
-      return speakerEnt.save();
     } else {
       throw new UnprocessableEntityException(null, 'Could not create speaker');
     }
   }
 
-  public async insertPhoto(speakerGuid: string, req: Request, file) {
-    const speaker = await this.speakerRepo.findOne({
-      where: {
-        guid: speakerGuid
-      }
-    });
+  public async insertBulk(speakers: OldFormatSpeaker[]) {
+    // Convert old format to new format
+    const activeSeason = await this.seasonService.findOneActive();
 
-    if (speaker) {
-      const _photo: Partial<SpeakerInfo> = {
-        ...req.body,
-        speaker: speaker,
-        blob: file.buffer
+    try {
+      const organizations = speakers
+        .map((s) => s.SpeakerOrganization)
+        .filter((org) => org !== '' && org !== null && org !== undefined);
+      const uniqueOrganizations = [...new Set(organizations)];
+
+      const existingOrganizations = await this.orgRepo.find({
+        where: {
+          name: {
+            $in: uniqueOrganizations
+          }
+        }
+      });
+
+      const newOrganizations = uniqueOrganizations.filter((org) => {
+        return !existingOrganizations.find((existingOrg) => existingOrg.name === org);
+      });
+
+      const newOrgEntities = newOrganizations.map((org) => {
+        return this.orgRepo.create({
+          name: org,
+          season: activeSeason
+        });
+      });
+
+      const savedNewOrgEntities = await this.orgRepo.save(newOrgEntities);
+
+      // Do the same thing with universities
+
+      const universities = speakers
+        .map((s) => {
+          return {
+            name: s.university,
+            hexTriplet: s.hexColor
+          };
+        })
+        .filter((uni) => uni.name !== '' && uni.name !== null && uni.name !== undefined);
+
+      const uniqueUniversities = universities.reduce((acc, current) => {
+        const x = acc.find((item) => item.name === current.name);
+
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+
+      const existingUniversities = await this.universityRepo.find({
+        where: {
+          name: {
+            $in: uniqueUniversities
+          }
+        }
+      });
+
+      const newUniversities = uniqueUniversities.filter((uni) => {
+        return !existingUniversities.find((existingUni) => existingUni.name === uni.name);
+      });
+
+      const newUniEntities = newUniversities.map((uni) => {
+        return this.universityRepo.create({
+          name: uni.name,
+          hexTriplet: uni.hexTriplet
+        });
+      });
+
+      const savedNewUniEntities = await this.universityRepo.save(newUniEntities);
+
+      const allOrgs = await this.orgRepo.find();
+      const allUnis = await this.universityRepo.find();
+
+      const existingSpeakers = await this.speakerRepo.find({
+        where: {
+          email: {
+            $in: speakers.map((s) => s.SpeakerEmail)
+          }
+        }
+      });
+
+      const speakerEntities = speakers.map((s) => {
+        const org = allOrgs.find((org) => org.name === s.SpeakerOrganization);
+        const uni = allUnis.find((uni) => uni.name === s.university);
+
+        return this.speakerRepo.create({
+          firstName: s.SpeakerFirstName,
+          lastName: s.SpeakerLastName,
+          description: s.description,
+          email: s.SpeakerEmail,
+          organization: org,
+          university: uni,
+          isActive: s.isActive === 1,
+          graduationYear: s.tamuYear,
+          degree: s.tamuDegree,
+          program: s.tamuProgram,
+          affiliation: s.affiliation,
+          season: activeSeason
+        });
+      });
+
+      const filteredSpeakerEntities = speakerEntities.filter((speaker) => {
+        return !existingSpeakers.find((existingSpeaker) => existingSpeaker.email === speaker.email);
+      });
+
+      const savedSpeakerEntities = await this.speakerRepo.save(filteredSpeakerEntities, {
+        chunk: 50
+      });
+
+      return {
+        newOrganizations: savedNewOrgEntities,
+        newUniversities: savedNewUniEntities,
+        newSpeakers: savedSpeakerEntities
       };
-
-      const photo = await this.speakerInfoRepo.create(_photo);
-      const speakerInfo = await this.speakerInfoRepo.save(photo);
-      speaker.speakerInfo = speakerInfo;
-
-      return speaker.save();
-    } else {
-      throw new UnprocessableEntityException(null, `Speaker could not be found`);
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
     }
   }
+
+  private async _saveImage(file, guid: string) {
+    return this.assetService.saveAsset(this._resourcePath, file, 'speaker-image', {
+      prefix: `${guid}-`
+    });
+  }
+}
+
+export interface OldFormatSpeaker {
+  SpeakerFirstName: string;
+  SpeakerLastName: string;
+  SpeakerEmail: string;
+  SpeakerOrganization: string;
+  isActive: number;
+  tamuYear: string;
+  tamuDegree: string;
+  tamuProgram: string;
+  affiliation: string;
+  description: string;
+  university: '';
+  hexColor: '';
 }

@@ -1,0 +1,81 @@
+name: Build and Publish Images
+
+on:
+  pull_request:
+    types: [labeled]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  list-publishable:
+    # Only run this job if pull request label is equal to "release"
+    # If this condition fails, build-and-publish will not run
+    if: ${{ github.event.label.name == 'release' }}
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: 'Download artifacts'
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: main.yml
+          name: ${{ github.event.pull_request.head.sha }}
+          path: artifacts
+      - name: 'Set matrix'
+        id: set-matrix
+        # Run script to generate matrix by getting a list of all directories that have a dockerfile as json array in the /artifact directory
+        run: |
+          cd ./artifacts/apps
+          JASON=$(find . -name "Dockerfile" -exec dirname {} \; | sed 's/^\.\///' | jq -R -s -c 'split("\n")[:-1]')
+          echo $JASON
+          echo "matrix=$JASON" >> $GITHUB_OUTPUT
+  build-and-push:
+    needs: list-publishable
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        image: ${{ fromJson(needs.list-publishable.outputs.matrix) }}
+    steps:
+      - name: 'Download artifacts'
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: main.yml
+          name: ${{ github.event.pull_request.head.sha }}
+          path: artifacts
+
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/TamuGeoInnovation/${{ matrix.image }}
+          flavor: |
+            latest=true
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha
+
+      # I would like to add a step to copy the package.json, package-lock.json, and tokenSubstitute in the root artifacts directory to the artifacts/apps/${{ matrix.image }} directory
+      - name: Copy required image build files
+        run: |
+          cp artifacts/package.json artifacts/package-lock.json artifacts/tokenSubstitute.sh artifacts/apps/${{ matrix.image }}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v3
+        with:
+          context: ./artifacts/apps/${{ matrix.image }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}`

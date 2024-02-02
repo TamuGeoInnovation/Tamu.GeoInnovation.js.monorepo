@@ -1,24 +1,60 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
-import { UserRsvp } from '../entities/all.entity';
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+
 import { UserRsvpProvider } from './user-rsvp.provider';
-import { BaseController } from '../_base/base.controller';
+import { UserRsvp } from '../entities/all.entity';
 
-@Controller('user-rsvp')
-export class UserRsvpController extends BaseController<UserRsvp> {
-  constructor(private readonly userRsvpProvider: UserRsvpProvider) {
-    super(userRsvpProvider);
+@Controller('rsvps')
+export class UserRsvpController {
+  constructor(private readonly provider: UserRsvpProvider) {}
+
+  @UseGuards(JwtGuard)
+  @Get('/user/event/:guid')
+  public async getUserRsvpForEvent(@Req() req, @Param('guid') guid) {
+    return this.provider.getUserRsvpForEvent(req.user.sub, guid);
   }
 
-  @Get('/user/:guid')
-  public async getUserRsvps(@Param() params) {
-    return this.userRsvpProvider.getUserRsvps(params.guid);
+  @UseGuards(JwtGuard)
+  @Get('/user/')
+  public async getUserRsvps(@Req() req) {
+    return this.provider.getUserRsvps(req.user.sub);
   }
 
-  @Post('/')
-  public async insertUserRsvp(@Body() body) {
-    const { eventGuid, rsvpTypeGuid, userGuid } = body;
+  @Permissions(['read:rsvps'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get(':guid')
+  public async getEntity(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
 
-    return this.userRsvpProvider.insertUserRsvp(eventGuid, rsvpTypeGuid, userGuid);
+  @Permissions(['read:rsvps'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
+  }
+
+  @UseGuards(JwtGuard)
+  @Post()
+  public async insertUserRsvp(@Req() req, @Body() { eventGuid, rsvpTypeGuid = null }) {
+    return this.provider.insertUserRsvp(eventGuid, rsvpTypeGuid, req.user.sub);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':guid')
+  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<UserRsvp>) {
+    throw new NotImplementedException();
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':guid')
+  public deleteEntity(@Req() req, @Param('guid') guid: string) {
+    return this.provider.deleteRsvpForUser(guid, req.user.sub);
   }
 }

@@ -1,0 +1,45 @@
+<form [formGroup]="form" (ngSubmit)="updateEntity()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Season</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Season</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-textbox type="number" placeholder="Year" [floatLabel]="true" formControlName="year"></tamu-gisc-textbox>
+        <tamu-gisc-checkbox label="Is active?" formControlName="active"></tamu-gisc-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Event Days</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="days-list-container flex flex-row">
+        <tamu-gisc-seasons-day-tile (added)="addDay()"></tamu-gisc-seasons-day-tile>
+
+        <ng-container *ngIf="form?.get('days')?.['controls'] as controls" formArrayName="days">
+          <tamu-gisc-seasons-day-tile *ngFor="let day of controls; let i = index;" [day]="day.value" title="Edit" (updated)="patchModifiedDay(i, $event)" (deleted)="deleteDay(i)"></tamu-gisc-seasons-day-tile>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Season" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>

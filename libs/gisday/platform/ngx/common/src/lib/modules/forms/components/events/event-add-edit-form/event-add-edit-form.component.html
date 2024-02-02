@@ -1,0 +1,155 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Event</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Event</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-seasons-day-tile *ngFor="let day of activeSeasonDays$ | async; let last = last;" [interactive]="false" [day]="day" (click)="setEventDate(day)" [ngClass]="{selected: (selectedEventDate$ | async) === day.guid}"></tamu-gisc-seasons-day-tile>
+      </div>
+
+      <div class="form-collection row" *ngIf="(selectedEventDateStart$ | async) !== null && (selectedEventDateEnd$ | async) !== null">
+        <div>
+          <p><strong>Event start time</strong></p>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateStart$ | async" (changed)="setEventTime($event, 'start')" iconName="schedule"></tamu-gisc-date-time-picker>
+        </div>
+
+        <div>
+          <p><strong>Event end time</strong></p>
+          <tamu-gisc-date-time-picker [formatString]="'mediumTime'" [minView]="'minute'" [maxView]="'hour'" [startView]="'hour'" [value]="selectedEventDateEnd$ | async" (changed)="setEventTime($event, 'end')" iconName="schedule"></tamu-gisc-date-time-picker>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section leader-1">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Basic</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Event name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="abstract" placeholder="Abstract" type="textarea" [rows]="10" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="qrCode" placeholder="QR code" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-select formControlName="mode" [data]="eventModeDict" placeholder="Mode" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-select formControlName="eventType" [data]="eventTypeDict" placeholder="Event Type" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-select formControlName="presentationType" [data]="presentationTypeDict" placeholder="Presentation Type" [displayTemplate]="'name'" [valueTemplate]="'value'"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-select formControlName="location" [data]="locations$ | async" placeholder="Event Location" [displayTemplate]="'building'" [valueTemplate]="'guid'"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-select formControlName="broadcast" [data]="broadcasts$ | async" placeholder="Broadcast" [displayTemplate]="'name'" [valueTemplate]="'guid'"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="requirements" placeholder="Requirements" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="resources" placeholder="Learning Resources" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-checkbox formControlName="active" type="text" label="Event active?" [data]=""> </tamu-gisc-checkbox>
+        <tamu-gisc-checkbox formControlName="requiresRsvp" type="text" label="Requires RSVP?" [data]=""> </tamu-gisc-checkbox>
+        <tamu-gisc-checkbox formControlName="isAcceptingRsvps" label="Is accepting RSVPs?" [data]=""> </tamu-gisc-checkbox>
+        <tamu-gisc-checkbox formControlName="isBringYourOwnDevice" label="Is bring your own device?" [data]=""> </tamu-gisc-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Attendance</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Observed attendee start" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="Observed attendee end" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Tags</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <ng-container *ngIf="(tags$ | async)?.length > 0; else noTags">
+          <ng-container *ngIf="tags$ | async as tags">
+            <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
+              <tamu-gisc-checkbox *ngFor="let tag of tags" [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
+            </tamu-gisc-checkbox-group>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #noTags>
+          <p>No tags registered yet.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Speakers</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <ng-container *ngIf="(speakers$ | async)?.length > 0 else noSpeakers">
+          <ng-container *ngIf="speakers$ | async as speakers">
+            <tamu-gisc-checkbox-group referenceId="guid" formControlName="speakers">
+              <tamu-gisc-checkbox *ngFor="let speaker of speakers" [data]="speaker" [label]="speaker.lastName + ', ' + speaker.firstName"></tamu-gisc-checkbox>
+            </tamu-gisc-checkbox-group>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #noSpeakers>
+          <p>No speakers registered yet.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Event" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>

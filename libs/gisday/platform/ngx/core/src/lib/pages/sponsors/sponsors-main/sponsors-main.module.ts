@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { SponsorsMainComponent } from './sponsors-main.component';
 
@@ -15,8 +16,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule, GisdayPlatformNgxCommonModule],
   declarations: [SponsorsMainComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule],
   exports: [RouterModule]
 })
 export class SponsorsMainModule {}

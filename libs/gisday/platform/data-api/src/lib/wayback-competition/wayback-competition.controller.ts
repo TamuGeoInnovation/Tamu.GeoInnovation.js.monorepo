@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 
 import { WaybackCompetitionProvider } from './wayback-competition.provider';
 
-@Controller('wayback-competition')
+@Controller('wayback-competitions')
 export class WaybackCompetitionController {
   constructor(private readonly waybackProvider: WaybackCompetitionProvider) {}
 

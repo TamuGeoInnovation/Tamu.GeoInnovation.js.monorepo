@@ -13,7 +13,7 @@ export class SubmissionService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient, private readonly ns: NotificationService) {
-    this.resource = `${this.env.value('api_url')}/submission`;
+    this.resource = `${this.env.value('api_url')}/competitions/submissions`;
   }
 
   public postSubmission(submission: FormData) {
@@ -24,7 +24,7 @@ export class SubmissionService {
     };
 
     return this.http
-      .post(`${this.resource}/upload`, submission, {
+      .post(`${this.resource}`, submission, {
         reportProgress: true,
         observe: 'events',
         headers: httpOptions.headers
@@ -34,7 +34,7 @@ export class SubmissionService {
           this.ns.toast({
             id: 'submission-upload-failure',
             title: 'Server Error Uploading Submission',
-            message: `The server experienced an error processing your submission. Please try again later. (${err.status})`
+            message: `The server experienced an error processing your submission. ${err.error.message} (${err.status})`
           });
 
           throw new Error(`Failed uploading submission.`);

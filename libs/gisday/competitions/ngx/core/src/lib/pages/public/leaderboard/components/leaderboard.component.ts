@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, switchMap, take } from 'rxjs/operators';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ILeaderboardItem, LeaderboardService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
+import { AuthService } from '@tamu-gisc/common/ngx/auth';
+import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-leaderboard',
@@ -12,20 +14,57 @@ import { ILeaderboardItem, LeaderboardService } from '@tamu-gisc/gisday/competit
   styleUrls: ['./leaderboard.component.scss']
 })
 export class LeaderboardComponent implements OnInit {
-  public leaders$: Observable<ILeaderboardItem[]>;
   public me$: Observable<string>;
+  public leaders$: Observable<ILeaderboardItem[]>;
+  public roles$: Observable<Array<string>>;
+  public userIsManager$: Observable<boolean>;
 
   constructor(
     private leaderboardService: LeaderboardService,
     private settings: SettingsService,
-    private environment: EnvironmentService
+    private as: AuthService,
+    private router: Router,
+    private at: ActivatedRoute
   ) {}
 
   public ngOnInit() {
-    this.leaders$ = this.leaderboardService.getScores();
-    this.me$ = this.settings.getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey).pipe(
-      map((branch) => branch?.guid as string),
+    this.roles$ = this.as.userRoles$;
+    this.me$ = this.as.user$.pipe(
+      map((u) => {
+        if (u) {
+          return u.sub;
+        } else {
+          return null;
+        }
+      }),
       shareReplay(1)
     );
+
+    this.userIsManager$ = this.roles$.pipe(
+      map((rls) => {
+        return rls.some((role) => role === GISDayRoles.ADMIN || role === GISDayRoles.MANAGER);
+      }),
+      distinctUntilChanged(),
+      shareReplay()
+    );
+
+    this.leaders$ = this.userIsManager$.pipe(
+      switchMap((isManager) => {
+        if (isManager) {
+          return this.leaderboardService.getScoresForActiveAdmin();
+        } else {
+          return this.leaderboardService.getScoresForActive();
+        }
+      }),
+      shareReplay()
+    );
+  }
+
+  public navigateToFilteredMap(userGuid: string) {
+    this.userIsManager$.pipe(take(1)).subscribe((isManager) => {
+      if (isManager) {
+        this.router.navigate(['../map'], { relativeTo: this.at, queryParams: { user: userGuid } });
+      }
+    });
   }
 }

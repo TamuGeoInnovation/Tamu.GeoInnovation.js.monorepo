@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { default as snarkdown } from 'snarkdown';
+import { marked } from 'marked';
 
 @Pipe({
   name: 'markdownParse'
@@ -11,9 +11,9 @@ export class MarkdownParsePipe implements PipeTransform {
 
   public transform(value: string): SafeHtml {
     if (value) {
-      const content = snarkdown(value);
+      const content = marked(value);
 
-      return this.sanitizer.bypassSecurityTrustHtml(snarkdown(content));
+      return this.sanitizer.bypassSecurityTrustHtml(content);
     } else {
       return null;
     }

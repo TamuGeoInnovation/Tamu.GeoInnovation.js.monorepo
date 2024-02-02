@@ -1,0 +1,12 @@
+<div class="presenter-item">
+  <tamu-gisc-speaker-avatar [avatarGuid]="speaker?.images?.[0]?.guid" [fallbackStyle]="'initials'" [avatarInitials]="speakerInitials"></tamu-gisc-speaker-avatar>
+
+  <div class="details">
+    <div class="name">
+      <a href="/presenters/details/{{speaker.guid}}"> {{speaker.firstName}} {{speaker.lastName}} </a>
+    </div>
+
+    <div class="organization">{{speaker?.organization?.name}}</div>
+    <!-- <div class="role">{{presenter?.affiliation}}</div> -->
+  </div>
+</div>

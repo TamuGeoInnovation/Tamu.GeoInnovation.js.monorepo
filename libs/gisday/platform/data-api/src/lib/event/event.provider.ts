@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
@@ -15,6 +15,8 @@ import {
   UserRsvp
 } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { UpdateEventDto } from './dto/update-event.dto';
+import { EventAttendanceDto } from './dto/event-attendance.dto';
 
 @Injectable()
 export class EventProvider extends BaseProvider<Event> {
@@ -36,29 +38,31 @@ export class EventProvider extends BaseProvider<Event> {
     });
   }
 
-  public async insertEvent(_newEvent: DeepPartial<Event>) {
+  public async insertEvent(event: DeepPartial<Event>) {
     try {
       const newEvent: DeepPartial<Event> = {
-        ..._newEvent
+        ...event
       };
 
-      const broadcastEnt = this.eventBroadcastRepo.create(_newEvent.broadcast);
-      const locationEnt = this.eventLocationRepo.create(_newEvent.location);
+      // TODO: fix this
+      // const broadcastEnt = this.eventBroadcastRepo.create(event.broadcast);
+      // const locationEnt = this.eventLocationRepo.create(event.location);
 
       const existingSpeakers = await this.speakerRepo.find({
         where: {
-          guid: In(_newEvent.speakers)
+          guid: In(event.speakers)
         }
       });
 
       const existingTags = await this.tagRepo.find({
         where: {
-          guid: In(_newEvent.tags)
+          guid: In(event.tags)
         }
       });
 
-      newEvent.broadcast = broadcastEnt;
-      newEvent.location = locationEnt;
+      // TODO: fix this
+      // newEvent.broadcast = broadcastEnt;
+      // newEvent.location = locationEnt;
       newEvent.speakers = existingSpeakers;
       newEvent.tags = existingTags;
 
@@ -72,52 +76,34 @@ export class EventProvider extends BaseProvider<Event> {
     }
   }
 
-  public async updateEvent(_newEvent: DeepPartial<Event>) {
+  public async updateEvent(guid: string, event: UpdateEventDto) {
     try {
-      const newEvent: DeepPartial<Event> = {
-        ..._newEvent
-      };
-
-      const broadcastEnt = this.eventBroadcastRepo.create(_newEvent.broadcast);
-      const locationEnt = this.eventLocationRepo.create(_newEvent.location);
-
-      const existingSpeakers = await this.speakerRepo.find({
+      const existingEvent = await this.eventRepo.findOne({
         where: {
-          guid: In(_newEvent.speakers)
+          guid
         }
       });
 
-      const existingTags = await this.tagRepo.find({
-        where: {
-          guid: In(_newEvent.tags)
-        }
-      });
-
-      newEvent.broadcast = broadcastEnt;
-      newEvent.location = locationEnt;
-      newEvent.speakers = existingSpeakers;
-      newEvent.tags = existingTags;
-
-      const eventEnt = this.eventRepo.create(newEvent);
-
-      if (eventEnt) {
-        return eventEnt.save();
+      if (!existingEvent) {
+        throw new NotFoundException();
       }
+
+      const tags = event.tags.map((t) => {
+        return this.tagRepo.create({ guid: t });
+      });
+      const speakers = event.speakers.map((t) => this.speakerRepo.create({ guid: t }));
+
+      const newEnt = this.eventRepo.create({
+        ...existingEvent,
+        ...event,
+        tags,
+        speakers
+      });
+
+      return newEnt.save();
     } catch (error) {
       throw new UnprocessableEntityException(null, 'Could not insert new Event');
     }
-  }
-
-  private async getTags(_tagGuids: string[]): Promise<Tag[]> {
-    return this.tagRepo.find({
-      guid: In(_tagGuids)
-    });
-  }
-
-  private async getSponsors(_sponsorsGuids: string[]): Promise<Sponsor[]> {
-    return this.sponsorRepo.find({
-      guid: In(_sponsorsGuids)
-    });
   }
 
   public async getEntitiesByDay() {
@@ -151,5 +137,66 @@ export class EventProvider extends BaseProvider<Event> {
     } else {
       return 0;
     }
+  }
+
+  /**
+   * Returns event details, including any sensitive information if the user is logged in.
+   */
+  public async getEventDetails(eventGuid: string, isLoggedIn?: boolean) {
+    const event = await this.eventRepo.findOne({
+      where: {
+        guid: eventGuid
+      },
+      relations: EntityRelationsLUT.getRelation('event')
+    });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    if (!isLoggedIn) {
+      event.broadcast = null;
+      event.resources = null;
+      event.requirements = null;
+    }
+
+    return event;
+  }
+
+  public async getEventAttendance(eventGuid: string) {
+    const event = await this.eventRepo.findOne({
+      where: {
+        guid: eventGuid
+      },
+      select: ['observedAttendeeStart', 'observedAttendeeEnd', 'guid']
+    });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    return event;
+  }
+
+  public async updateAttendance(eventGuid: string, counts: EventAttendanceDto) {
+    const event = await this.eventRepo.findOne({
+      where: {
+        guid: eventGuid
+      }
+    });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    if (counts.observedAttendeeStart !== undefined) {
+      event.observedAttendeeStart = counts.observedAttendeeStart;
+    }
+
+    if (counts.observedAttendeeEnd !== undefined) {
+      event.observedAttendeeEnd = counts.observedAttendeeEnd;
+    }
+
+    return event.save();
   }
 }

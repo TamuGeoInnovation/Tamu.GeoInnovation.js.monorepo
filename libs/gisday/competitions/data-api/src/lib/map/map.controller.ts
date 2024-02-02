@@ -1,22 +1,28 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, NotImplementedException, Param, Query } from '@nestjs/common';
 
-import { BaseController } from '../_base/base.controller';
-import { CompetitionSubmission } from '../entities/all.entities';
 import { MapService } from './map.service';
 
-@Controller('map')
-export class MapController extends BaseController<CompetitionSubmission> {
-  constructor(private service: MapService) {
-    super(service);
+@Controller('competitions/maps')
+export class MapController {
+  constructor(private service: MapService) {}
+
+  @Get('seasons/active/user/:guid')
+  public getUserFeatureCollectionForActiveSeason(@Query('format') format, @Param('guid') guid) {
+    return this.service.getUserLocationsForActiveSeason(guid, format);
+  }
+
+  @Get('seasons/active')
+  public getFeatureCollectionForActiveSeason(@Query('format') format) {
+    return this.service.getLocationsForActiveSeason(format);
+  }
+
+  @Get('seasons/:guid')
+  public getFeatureCollectionForSeason(@Param('guid') guid, @Query('format') format) {
+    return this.service.getLocationsForSeasonId(guid, format);
   }
 
   @Get()
-  public getLocations(@Body() { season }) {
-    return this.service.getLocations(season);
-  }
-
-  @Get('geojson')
-  public getFeatureCollection(@Body() { season }) {
-    return this.service.getLocations(season, true);
+  public getLocations() {
+    throw new NotImplementedException();
   }
 }

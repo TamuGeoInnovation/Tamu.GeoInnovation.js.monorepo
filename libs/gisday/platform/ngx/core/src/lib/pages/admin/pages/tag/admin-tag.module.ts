@@ -1,8 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AdminTagComponent } from './admin-tag.component';
+import { TagsListComponent } from './pages/tags-list/tags-list.component';
+import { TagsEditComponent } from './pages/tags-edit/tags-edit.component';
+import { TagsAddComponent } from './pages/tags-add/tags-add.component';
 
 const routes: Routes = [
   {
@@ -10,29 +17,24 @@ const routes: Routes = [
     component: AdminTagComponent,
     children: [
       {
-        path: '',
-        loadChildren: () => import('./admin-view-tags/admin-view-tags.module').then((m) => m.AdminViewTagsModule)
-      },
-      {
-        path: 'edit',
-        loadChildren: () => import('./admin-edit-tags/admin-edit-tags.module').then((m) => m.AdminEditTagsModule)
-      },
-      {
         path: 'edit/:guid',
-        loadChildren: () =>
-          import('./admin-edit-tags/admin-detail-tag/admin-detail-tag.module').then((m) => m.AdminDetailTagModule)
+        component: TagsEditComponent
       },
       {
         path: 'add',
-        loadChildren: () => import('./admin-add-tags/admin-add-tags.module').then((m) => m.AdminAddTagsModule)
+        component: TagsAddComponent
+      },
+      {
+        path: '',
+        component: TagsListComponent
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [AdminTagComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, GisdayFormsModule],
+  declarations: [AdminTagComponent, TagsEditComponent, TagsListComponent, TagsAddComponent],
   exports: [RouterModule]
 })
 export class AdminTagModule {}

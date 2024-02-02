@@ -1,33 +1,61 @@
-import { Controller, Get, Patch, Request, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotImplementedException,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UseGuards
+} from '@nestjs/common';
 
-import { UserInfo } from '../entities/all.entity';
-import { UserInfoProvider } from './user-info.provider';
-import { BaseController } from '../_base/base.controller';
+import { PermissionsGuard, Permissions, JwtGuard } from '@tamu-gisc/common/nest/auth';
 
-@Controller('user-info')
-export class UserInfoController extends BaseController<UserInfo> {
-  constructor(private readonly userInfoProvider: UserInfoProvider) {
-    super(userInfoProvider);
-  }
+import { GisDayAppMetadata, UserInfoProvider } from './user-info.provider';
 
-  @Get()
+@Controller('users')
+export class UserInfoController {
+  constructor(private readonly provider: UserInfoProvider) {}
+
+  @UseGuards(JwtGuard)
+  @Get(':guid/metadata')
   public async getUsersInfo(@Request() req) {
-    if (req.user) {
-      return this.userInfoProvider.getUsersInfo(req.user.sub);
-    } else {
-      throw new UnauthorizedException();
-    }
+    return this.provider.getUserMetadata(req.user.sub);
   }
 
-  @Patch()
-  public async updateUserInfo(@Request() req) {
-    if (req.user) {
-      const _updatedUserInfo: Partial<UserInfo> = {
-        ...req.body
-      };
-      return this.userInfoProvider.updateUserInfo(req.user.sub, _updatedUserInfo);
-    } else {
-      throw new UnauthorizedException();
-    }
+  @Permissions(['read:users'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get(':guid')
+  public async getUser(@Param('guid') guid) {
+    return this.provider.getUser(guid);
+  }
+
+  @Permissions(['read:users'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get()
+  public async getAllUsers() {
+    return this.provider.getUsers();
+  }
+
+  @Permissions(['create:users'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post()
+  public async insertEntity() {
+    throw new NotImplementedException();
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':guid/metadata')
+  public async updateUserMetadata(@Request() req, @Body() body: GisDayAppMetadata) {
+    return this.provider.updateUserMetadata(req.user.sub, body);
+  }
+
+  @Permissions(['delete:users'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete(':guid')
+  public deleteUser() {
+    throw new NotImplementedException();
   }
 }

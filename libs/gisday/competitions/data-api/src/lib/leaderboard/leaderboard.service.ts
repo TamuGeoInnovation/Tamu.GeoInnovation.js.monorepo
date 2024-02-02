@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Repository } from 'typeorm';
 
-import { CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
+import { Season } from '@tamu-gisc/gisday/platform/data-api';
+import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
+import { CompetitionSeason, CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
 
 @Injectable()
@@ -12,7 +15,10 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
   constructor(
     @InjectRepository(CompetitionSubmission) private submissionRepo: Repository<CompetitionSubmission>,
     @InjectRepository(SubmissionLocation) private locationRepo: Repository<SubmissionLocation>,
-    @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>
+    @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>,
+    @InjectRepository(CompetitionSeason) private compSeasonRepo: Repository<CompetitionSeason>,
+    @InjectRepository(Season) private seasonRepo: Repository<Season>,
+    private readonly ms: ManagementService
   ) {
     super(submissionRepo);
   }
@@ -23,7 +29,19 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     );
   }
 
-  public async getLeaderBoardForActiveSeason() {
+  public async getLeaderBoardItemsForActiveSeason(resolveIdentities?: boolean) {
+    const activeSeason = await this.seasonRepo.findOne({ where: { active: true } });
+
+    if (!activeSeason) {
+      throw new NotFoundException('No active season found.');
+    }
+
+    const competitionSeason = await this.compSeasonRepo.findOne({ where: { season: activeSeason } });
+
+    if (!competitionSeason) {
+      throw new NotFoundException('No competition season found.');
+    }
+
     const subs = await this.submissionRepo
       .createQueryBuilder('submissions')
       .leftJoin('submissions.season', 'season')
@@ -32,14 +50,32 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       .addSelect('COUNT(submissions.userGuid)', 'points')
       .groupBy('submissions.userGuid')
       .orderBy('points', 'DESC')
-      .where('season.active = :seasonActivity')
-      .setParameter('seasonActivity', true)
+      .where('season.guid = :season')
+      .setParameter('season', competitionSeason.guid)
       .getRawMany();
+
+    if (resolveIdentities) {
+      const allResolvedUsers = from(subs).pipe(
+        concatMap((sub) => {
+          return from(this.ms.getUserMetadata(sub.guid, undefined, true)).pipe(
+            map((user) => {
+              return { ...sub, identity: user.user_info.email };
+            }),
+            catchError(() => {
+              return of({ ...sub });
+            })
+          );
+        }),
+        toArray()
+      );
+
+      return allResolvedUsers;
+    }
 
     return subs;
   }
 
-  public async getLeaderBoardItemsForSeason(season?: string) {
+  public async getLeaderBoardItemsForSeason(seasonGuid?: string) {
     const subs = await this.submissionRepo
       .createQueryBuilder('submissions')
       .leftJoin('submissions.season', 'season')
@@ -48,8 +84,8 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       .addSelect('COUNT(submissions.userGuid)', 'points')
       .groupBy('submissions.userGuid')
       .orderBy('points', 'DESC')
-      .where('season.year = :season')
-      .setParameter('season', season)
+      .where('season.guid = :season')
+      .setParameter('season', seasonGuid)
       .getRawMany();
 
     return subs;

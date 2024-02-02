@@ -1,6 +1,6 @@
-import { Component, Input, forwardRef, ViewChild } from '@angular/core';
+import { Component, Input, forwardRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
+import { DlDateTimePickerChange, DlDateTimePickerComponent } from 'angular-bootstrap-datetimepicker';
 
 import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
@@ -16,7 +16,7 @@ import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
     }
   ]
 })
-export class DateTimePickerComponent implements ControlValueAccessor {
+export class DateTimePickerComponent<D> implements ControlValueAccessor {
   // Get reference for the tooltip component rendered inside this date time picker component.
   //
   // Used to set the visible state of the tooltip content whenever the date time picker component
@@ -27,6 +27,44 @@ export class DateTimePickerComponent implements ControlValueAccessor {
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
   private _value: Date = new Date();
+
+  @Input()
+  public minView: DlDateTimePickerComponent<D>['minView'] = 'minute';
+
+  @Input()
+  public maxView: DlDateTimePickerComponent<D>['maxView'] = 'month';
+
+  @Input()
+  public startView: DlDateTimePickerComponent<D>['startView'] = 'day';
+
+  /**
+   * Defaults to `5`
+   */
+  @Input()
+  public minuteStep = 5;
+
+  /**
+   * The format string used to display the date time picker value.
+   *
+   * This value will be passed directly to the date pipe.
+   */
+  @Input()
+  public formatString = 'medium';
+
+  /**
+   * Whether to show the icon in the date time picker input.
+   */
+  @Input()
+  public showIcon = true;
+
+  /**
+   * Material icon name to display in the date time picker input.
+   */
+  @Input()
+  public iconName = 'calendar_today';
+
+  @Output()
+  public changed: EventEmitter<DlDateTimePickerChange<Date>> = new EventEmitter();
 
   public get value() {
     return new Date(this._value.getTime());
@@ -50,6 +88,8 @@ export class DateTimePickerComponent implements ControlValueAccessor {
     this.value = event.value;
 
     this.tooltipComponent.isVisible = false;
+
+    this.changed.emit(event);
   }
 
   public writeValue(v) {

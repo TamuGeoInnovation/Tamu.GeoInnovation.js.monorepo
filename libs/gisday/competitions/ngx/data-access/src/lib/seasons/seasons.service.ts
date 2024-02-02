@@ -12,7 +12,7 @@ export class SeasonsService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = `${this.env.value('api_url')}/season`;
+    this.resource = `${this.env.value('api_url')}/competitions/seasons`;
   }
 
   public getSeasons() {

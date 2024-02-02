@@ -2,16 +2,22 @@
   <div class="container12 presenter-details-item leader-1">
     <div *ngIf="($speaker | async) as person">
       <div class="column4 image-container">
-        <div class="image" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(person.speakerInfo?.blob?.data)+')'  } "></div>
+        <tamu-gisc-speaker-avatar [avatarGuid]="person?.images?.[0]?.guid"></tamu-gisc-speaker-avatar>
       </div>
+
       <div class="column6 pre-2">
         <p class="name">
           {{person.firstName}} {{person.lastName}}
-          <span *ngIf="person.organization" class="class"> | {{person.organization}}</span>
+          <span *ngIf="person.organization && person.organization.name.length > 0" class="class"> | {{person.organization?.name}}</span>
         </p>
-        <div class="description">
-          <p>{{person.speakerInfo.description}}</p>
-        </div>
+
+        <ng-container *ngIf="person.description && person.description.length > 0; else noDescription">
+          <div class="markdown-content" [innerHTML]="person.description | markdownParse"></div>
+        </ng-container>
+
+        <ng-template #noDescription>
+          <p>There is no description for this presenter yet. Please check back at a later time.</p>
+        </ng-template>
       </div>
     </div>
   </div>

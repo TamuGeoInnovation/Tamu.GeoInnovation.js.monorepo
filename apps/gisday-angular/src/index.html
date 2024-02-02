@@ -2,19 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>TxGIS Day 2020</title>
-    <meta property="og:site_name" content="TxGIS Day 2020" />
-    <meta property="og:title" content="TxGIS Day 2020" />
+    <title>TxGIS Day 2023</title>
+    <meta property="og:site_name" content="TxGIS Day 2023" />
+    <meta property="og:title" content="TxGIS Day 2023" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="<%=HttpContext.Current.Request.Url.AbsoluteUri %>" />
-    <meta name="description" content="Three days of workshops and programs celebraing geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate." />
+    <meta name="description" content="Three days of workshops and programs celebrating geospatial technology dedicated to students and faculty as they educate, innovate, and collaborate." />
     <meta name="keywords" content="event, details, agenda, schedule" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <base href="/" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="manifest" href="manifest.webmanifest" />
   </head>
   <body>
     <tamu-gisc-root></tamu-gisc-root>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=___G_TAG___"></script>
+
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', '___G_TAG___');
+    </script>
   </body>
 </html>

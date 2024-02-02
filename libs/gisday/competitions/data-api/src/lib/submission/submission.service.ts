@@ -28,7 +28,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     entity: DeepPartial<CompetitionSubmission>,
     blobs: Array<DeepPartial<SubmissionMedia>>
   ) {
-    if (entity.season && entity.location && entity.userGuid && entity.value && blobs && blobs.length > 0) {
+    if (entity.season && entity.location && entity.userGuid && entity.value) {
       const truncated: DeepPartial<CompetitionSubmission['location']> = {
         latitude:
           entity.location.latitude !== undefined && entity.location.latitude !== null
@@ -49,16 +49,16 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
       const sub = await this.submissionRepo.create(withTrunc).save();
 
-      await Promise.all(
-        blobs.map((b) => {
-          b.submission = sub;
-          return this.mediaRepo.create(b).save();
-        })
-      );
+      // await Promise.all(
+      //   blobs.map((b) => {
+      //     b.submission = sub;
+      //     return this.mediaRepo.create(b).save();
+      //   })
+      // );
 
       return sub;
     } else {
-      throw new BadRequestException();
+      throw new BadRequestException('Incomplete submission.');
     }
   }
 

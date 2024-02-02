@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+  UploadedFiles,
+  UseInterceptors
+} from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 import { Duplex } from 'stream';
@@ -6,18 +16,15 @@ import { Duplex } from 'stream';
 import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
 import { FormService } from '../form/form.service';
-import { BaseController } from '../_base/base.controller';
 import { SubmissionService } from './submission.service';
 import { GetSubmissionDto, ValidateSubmissionDto } from '../dtos/dtos';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Multer } from 'multer';
 
-@Controller('submission')
-export class SubmissionController extends BaseController<CompetitionSubmission> {
-  constructor(private service: SubmissionService, private formService: FormService) {
-    super(service);
-  }
+@Controller('competitions/submissions')
+export class SubmissionController {
+  constructor(private service: SubmissionService, private formService: FormService) {}
 
   @Get(':guid/image')
   public async getSubmissionImage(@Param() param, @Res() res) {
@@ -52,10 +59,14 @@ export class SubmissionController extends BaseController<CompetitionSubmission> 
     });
   }
 
-  @Post('upload')
+  @Post('')
   @UseInterceptors(AnyFilesInterceptor())
   public async insert(@Body() body, @UploadedFiles() files?: Array<Express.Multer.File>) {
     const season = await this.formService.getSeason(body.season);
+
+    if (season.allowSubmissions === false || season.allowSubmissions === null) {
+      throw new BadRequestException('Submissions are disabled for this season.');
+    }
 
     const sub: DeepPartial<CompetitionSubmission> = {
       value: JSON.parse(body.value),

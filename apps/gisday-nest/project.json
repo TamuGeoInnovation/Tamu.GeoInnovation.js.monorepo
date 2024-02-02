@@ -13,6 +13,8 @@
         "tsConfig": "apps/gisday-nest/tsconfig.app.json",
         "assets": [
           "apps/gisday-nest/src/assets",
+          "apps/gisday-nest/src/Dockerfile",
+          "apps/gisday-nest/src/docker-compose.yml",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -23,7 +25,7 @@
       "configurations": {
         "production": {
           "optimization": true,
-          "extractLicenses": true,
+          "extractLicenses": false,
           "inspect": false,
           "fileReplacements": [
             {
@@ -31,11 +33,11 @@
               "with": "apps/gisday-nest/src/environments/environment.prod.ts"
             }
           ],
-          "generatePackageJson": true
+          "generatePackageJson": false
         },
         "development": {
           "optimization": true,
-          "extractLicenses": true,
+          "extractLicenses": false,
           "inspect": false,
           "fileReplacements": [
             {
@@ -43,8 +45,19 @@
               "with": "apps/gisday-nest/src/environments/environment.dev.ts"
             }
           ],
-          "generatePackageJson": true
+          "generatePackageJson": false
         }
+      }
+    },
+    "image-build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "docker compose build"
+          }
+        ],
+        "cwd": "dist/apps/gisday-nest"
       }
     },
     "serve": {

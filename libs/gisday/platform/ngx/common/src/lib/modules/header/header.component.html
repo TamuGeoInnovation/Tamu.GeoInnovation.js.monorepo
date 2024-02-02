@@ -1,53 +1,65 @@
-<tamu-gisc-hamburger-trigger *ngIf="isMobile | async" (poked)="isActive.next($event)"></tamu-gisc-hamburger-trigger>
+<tamu-gisc-hamburger-trigger [active]="mobileNavToggle | async" (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
 
-<tamu-gisc-tile-navigation>
+<tamu-gisc-tile-navigation [toggle]="mobileNavToggle" (closed)="mobileNavToggle.next(false)">
   <tamu-gisc-tile>
     <tamu-gisc-tile-icon><div class="material-icons">widgets</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>Sessions</tamu-gisc-tile-title>
+    <tamu-gisc-tile-title tamuGiscTileLink location="sessions">Sessions</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
-    <tamu-gisc-tile-icon><div class="material-icons">attach_money</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>People</tamu-gisc-tile-title>
+    <tamu-gisc-tile-icon><div class="material-icons">people</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title tamuGiscTileLink location="presenters">Presenters</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
-    <tamu-gisc-tile-icon><div class="material-icons">help_outline</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>Competitions</tamu-gisc-tile-title>
-    <tamu-gisc-tile-submenu *giscTileSubmenu>
-      <p>High School Essay Contest</p>
-      <p>Feedback Lottery</p>
-      <p>Presentation Competition</p>
-      <p>Poster Competition</p>
-      <p>VGI Competition</p>
-    </tamu-gisc-tile-submenu>
+    <tamu-gisc-tile-icon><div class="material-icons">workspace_premium</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title tamuGiscTileLink location="competitions">Competitions</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
-    <tamu-gisc-tile-icon><div class="material-icons">menu_book</div></tamu-gisc-tile-icon>
-    <tamu-gisc-tile-title>FAQ</tamu-gisc-tile-title>
+    <tamu-gisc-tile-icon><div class="material-icons">question_answer</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title tamuGiscTileLink location="faq">FAQs</tamu-gisc-tile-title>
   </tamu-gisc-tile>
 
   <tamu-gisc-tile>
-    <tamu-gisc-tile-icon><div class="material-icons">person_outline</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-icon><div class="material-icons">info</div></tamu-gisc-tile-icon>
     <tamu-gisc-tile-title>About</tamu-gisc-tile-title>
     <tamu-gisc-tile-submenu *giscTileSubmenu>
-      <p>Organizing Committee</p>
-      <p>Volunteer Opportunities</p>
-      <p>Resume Bank</p>
+      <p tamuGiscTileLink location="/about">About TxGIS Day</p>
+      <p tamuGiscTileLink location="/sponsors">Sponsors</p>
+      <p tamuGiscTileLink location="/about" fragment="student-volunteer">Volunteer</p>
+      <p tamuGiscTileLink location="http://www.houstonareagisday.org/">High School Portal</p>
     </tamu-gisc-tile-submenu>
   </tamu-gisc-tile>
+
+  <tamu-gisc-tile *ngIf="(loggedIn$ | async) === false; else loggedInMobile">
+    <tamu-gisc-tile-icon><div class="material-icons">login</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title (click)="login()">Login</tamu-gisc-tile-title>
+  </tamu-gisc-tile>
+
+  <ng-template #loggedInMobile>
+    <tamu-gisc-tile *ngIf="(loggedIn$ | async) === true">
+      <tamu-gisc-tile-icon><div class="material-icons">account_circle</div></tamu-gisc-tile-icon>
+      <tamu-gisc-tile-title>Account</tamu-gisc-tile-title>
+      <tamu-gisc-tile-submenu *giscTileSubmenu>
+        <p tamuGiscTileLink location="/account/details">Profile</p>
+        <p tamuGiscTileLink location="/account/classes">Classes</p>
+        <p tamuGiscTileLink location="/account/checkins">Checkins</p>
+        <p (click)="logout()">Logout</p>
+      </tamu-gisc-tile-submenu>
+    </tamu-gisc-tile>
+  </ng-template>
 </tamu-gisc-tile-navigation>
 
-<header class="seamless">
+<header>
   <nav id="main-menu">
-    <div [style.visibility]="logoVisible" id="site-logo">
+    <div [ngClass]="{hidden: (logoVisible$ | async) === false}" id="site-logo">
       <a class="logo-container" [routerLink]="['/']">
         <h1 class="site-logo">
           <span class="site-logo-image-container">
-            <img src="\assets\images\TXGISDaySolo.svg" height="50px" width="50px" />
+            <img src="assets/images/2022-TIN-sq-1080px.png" height="50px" width="50px" />
           </span>
-          TxGIS Day <span>2022</span>
+          TxGIS Day <span *ngIf="(activeSeason$ | async)?.year as year">{{year}}</span>
         </h1>
       </a>
     </div>
@@ -55,14 +67,33 @@
     <div class="desktop-menu">
       <div class="aux">
         <ul>
-          <li><a [routerLink]="['/highschool']">High School Portal</a></li>
+          <li><a href="http://www.houstonareagisday.org/" target="_blank">High School Portal</a></li>
         </ul>
-        <ul>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4fo6hIB-HVPbYJ4xO-ncZ3yMOEA_yDkBGhUr8jqShFAsOHg/viewform" target="_blank">Volunteer</a>
+
+        <ul class="dropdown" *ngIf="(places$ | async) as places">
+          <p>Organizations <span class="material-icons">arrow_drop_down</span></p>
+
+          <ul>
+            <li *ngFor="let place of places">
+              <a *ngIf="place.website; else noWebsite" class="with-description" [href]="place.website" target="_blank">{{place.name}}</a>
+
+              <ng-template #noWebsite>
+                <p *ngIf="!place.website" class="with-description">{{place.name}}</p>
+              </ng-template>
+              <span class="menu-item-description">{{place.city}}, {{place.state}}</span>
+
+              <ul class="dropdown-sub-menu" *ngIf="place?.links?.length > 0">
+                <li *ngFor="let link of place.links">
+                  <a [href]="link.url" target="_blank">{{link.label}}</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </ul>
 
         <ul class="dropdown">
           <a [routerLink]="['/sponsors']" id="linkSponsors">Sponsor <span class="material-icons">arrow_drop_down</span></a>
+
           <ul>
             <li><a [routerLink]="['/sponsors']" fragment="opportunities">Opportunities</a></li>
             <li><a [routerLink]="['/sponsors']" fragment="current">Current Sponsors</a></li>
@@ -70,21 +101,22 @@
           </ul>
         </ul>
 
-        <ul class="dropdown" *ngIf="($loggedIn | async).isAuthenticated; else logInPrompt">
-          <a [routerLink]="['/account/my-details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
+        <ul class="dropdown" *ngIf="(loggedIn$ | async); else logInPrompt">
+          <a [routerLink]="['/account/details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
+
           <ul>
-            <li><a [routerLink]="['/account/my-details']">My Details</a></li>
-            <li><a [routerLink]="['/account/my-classes']">My Classes</a></li>
-            <li><a [routerLink]="['/admin']">Admin</a></li>
-            <li><a [routerLink]="['/account/my-checkins']">My Checkins</a></li>
-            <li><a [routerLink]="['/account/my-submissions']">My Submissions</a></li>
-            <li><a [routerLink]="['/logout']">Logout</a></li>
+            <li><a [routerLink]="['/account/details']">Profile</a></li>
+            <!-- <li><a [routerLink]="['/account/classes']">Classes</a></li> -->
+            <li *ngIf="(userRoles$ | async) | hasRoles :  [appRoles.ADMIN, appRoles.MANAGER, appRoles.ORGANIZER]"><a [routerLink]="['/admin']">Admin</a></li>
+            <!-- <li><a [routerLink]="['/account/checkins']">Checkins</a></li> -->
+            <!-- <li><a [routerLink]="['/account/submissions']">My Submissions</a></li> -->
+            <li><a (click)="logout()">Logout</a></li>
           </ul>
         </ul>
 
         <ng-template #logInPrompt>
           <ul id="liLogin">
-            <a [routerLink]="['/login']" id="linkLogin">Login/Signup</a>
+            <a (click)="login()" id="linkLogin">Login/Signup</a>
           </ul>
         </ng-template>
       </div>
@@ -100,10 +132,10 @@
 
           <ul>
             <li><a [routerLink]="['/competitions/highschool']">High School Essay Contest</a></li>
-            <li><a [routerLink]="['/competitions/feedback']">Feedback Lottery</a></li>
-            <li><a [routerLink]="['/competitions/presentation']">Presentation Competition</a></li>
-            <li><a [routerLink]="['/competitions/posters']">Poster Competition</a></li>
+            <!-- <li><a [routerLink]="['/competitions/feedback']">Feedback Lottery</a></li> -->
             <li><a [routerLink]="['/competitions/vgi']">VGI Competition</a></li>
+            <li><a [routerLink]="['/competitions/presentation']">Presentation Competition</a></li>
+            <!-- <li><a [routerLink]="['/competitions/posters']">Poster Competition</a></li> -->
           </ul>
         </ul>
 

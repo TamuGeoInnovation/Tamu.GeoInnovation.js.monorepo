@@ -1,20 +1,30 @@
-import { Body, Controller, Get, NotImplementedException, Post, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, Request } from '@nestjs/common';
 
-import { InitialSurveyQuestion, InitialSurveyResponse } from '../entities/all.entity';
-import { BaseController } from '../_base/base.controller';
+import { InitialSurveyQuestion } from '../entities/all.entity';
 import { InitialSurveyProvider } from './initial-survey.provider';
 
-@Controller('initial-survey')
-export class InitialSurveyController extends BaseController<InitialSurveyResponse> {
-  constructor(private readonly initialSurveyProvider: InitialSurveyProvider) {
-    super(initialSurveyProvider);
+@Controller('initial-surveys')
+export class InitialSurveyController {
+  constructor(private readonly provider: InitialSurveyProvider) {}
+
+  @Get('/questions/all')
+  public async getQuestionsAll() {
+    return this.provider.initialSurveyQuestionRepo.find();
+  }
+  @Get(':guid')
+  public async getSurvey(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
   }
 
   @Get()
   public async userTookSurvey(@Request() req) {
     // TODO: Add middleware for appending userGuid to request
     if (req.user) {
-      const tookSurvey = await this.initialSurveyProvider.initialSurveyRepo.count({
+      const tookSurvey = await this.provider.initialSurveyRepo.count({
         where: {
           accountGuid: req.user.sub
         }
@@ -29,23 +39,30 @@ export class InitialSurveyController extends BaseController<InitialSurveyRespons
     }
   }
 
-  @Get('/questions/all')
-  public async getQuestionsAll() {
-    return this.initialSurveyProvider.initialSurveyQuestionRepo.find();
-  }
-
   @Post('/questions')
   public async insertQuestion(@Body() body: Partial<InitialSurveyQuestion>) {
     const questionTypeGuid = body.questionType.guid;
 
-    return this.initialSurveyProvider.insertQuestion(questionTypeGuid, body);
+    return this.provider.insertQuestion(questionTypeGuid, body);
   }
 
   @Post()
-  public async insertInitialSurveyResponse() {
-    //  TODO: Add httpintercept to append userGuid to body
-
-    // return this.initialSurveyProvider.insertInitialSurveyResponse(questionGuids, questionGuidsObj, body.sub);
+  public async insertSurveyResponse() {
+    // Should return initial survey response
     return new NotImplementedException();
+  }
+
+  @Patch(':guid')
+  public async updateEntity() {
+    throw new NotImplementedException();
+  }
+
+  @Delete(':guid')
+  public deleteEntity(@Param('guid') guid: string) {
+    this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

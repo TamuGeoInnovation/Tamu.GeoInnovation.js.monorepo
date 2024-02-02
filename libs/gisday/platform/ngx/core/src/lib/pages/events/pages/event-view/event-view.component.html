@@ -1,122 +1,85 @@
 <section>
   <div id="event-content">
     <div id="sub-nav-container">
-      <div class="container12 leader-3 trailer-3">
+      <div class="container12 leader-2 trailer-2">
         <h1 class="trailer-1">Event Sessions</h1>
         <p class="sub-section-heading">Want to see a special session or topic?</p>
         <p>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdqnC_rYGEd2PG3VYCzXmn6F3zRS-7Lsy9jhB7IR3FiXd9s4g/viewform" target="_blank">Submit a presentation</a> or
           <a [routerLink]="['/contact']">Contact us</a>
           to find out how to recommend or request a special session.
         </p>
         <p><strong>Note:</strong> All times are in Central Standard Time (CST).</p>
         <p><br /></p>
         <div id="links-container">
-          <p>
-            <a [routerLink]="['/sessions']" fragment="day1">Day 1</a>
-          </p>
-          <p>
-            <a [routerLink]="['/sessions']" fragment="day2">Day 2</a>
-          </p>
-          <p>
-            <a [routerLink]="['/sessions']" fragment="day3">Day 3</a>
+          <p *ngFor="let day of (activeSeason$ | async)?.days; let i = index">
+            <a [routerLink]="['/sessions']" [fragment]="'day' + (i+1) ">Day {{i + 1}}</a>
           </p>
 
-          <p>
+          <!-- <p>
             <a class="md-link" ui-sref="agenda()" href="#!/agenda">Agenda View</a>
-          </p>
+          </p> -->
         </div>
       </div>
     </div>
-    <div class="container12 trailer-3" id="sessions-container">
-      <div>
-        <div id="default-content" class="column8" *ngIf="$events">
-          <div id="day1" class="card">
-            <h2>November 14</h2>
-            <div *ngFor="let event of (getDay(1) | async)" [routerLink]="['/sessions/details', event.guid]">
-              <div class="row" *ngIf="filterEventsByFilterTags(event)">
-                <div class="input-control">
-                  <div class="checkbox-custom-input">
-                    <input #eventCheck type="checkbox" [checked]="event.hasRsvp" />
-                    <i></i>
-                  </div>
-                </div>
-                <div class="event-time">
-                  <span>{{event.startTime | date: 'h:mm a'}}</span>
-                  <span id="detail-time"> - {{event.endTime | date: 'h:mm a'}}</span>
-                </div>
-                <div class="event-name">
-                  <p>{{event.name}}</p>
-                  <p>{{event.location?.building}}</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div id="day2" class="card">
-            <h2>November 15</h2>
-            <div *ngFor="let event of (getDay(2) | async)" [routerLink]="['/sessions/details', event.guid]">
-              <div class="row" *ngIf="filterEventsByFilterTags(event)">
-                <div class="input-control">
-                  <div class="checkbox-custom-input">
-                    <input #eventCheck type="checkbox" [checked]="event.hasRsvp" />
-                    <i></i>
-                  </div>
-                </div>
-                <div class="event-time">
-                  <span>{{event.startTime | date: 'h:mm a'}}</span>
-                  <span id="detail-time"> - {{event.endTime | date: 'h:mm a'}}</span>
-                </div>
-                <div class="event-name">
-                  <p>{{event.name}}</p>
-                  <p>{{event.location?.building}}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div id="day3" class="card">
-            <h2>November 16</h2>
-            <div *ngFor="let event of (getDay(3) | async)" [routerLink]="['/sessions/details', event.guid]">
-              <div class="row" *ngIf="filterEventsByFilterTags(event)">
-                <div class="input-control">
-                  <div class="checkbox-custom-input">
-                    <input #eventCheck type="checkbox" [checked]="event.hasRsvp" />
-                    <i></i>
-                  </div>
-                </div>
-                <div class="event-time">
-                  <span>{{event.startTime | date: 'h:mm a'}}</span>
-                  <span id="detail-time"> - {{event.endTime | date: 'h:mm a'}}</span>
-                </div>
-                <div class="event-name">
-                  <p>{{event.name}}</p>
-                  <p>{{event.location?.building}}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div class="trailer-3" id="sessions-container">
+      <div id="default-content" *ngIf="activeSeason$ | async as season;">
+        <div class="info-block warning" *ngIf="(userInfo$ | async) && (userProfileComplete$ | async) === false">
+          <p>You must complete your TxGIS Day <a routerLink="/account/details">profile</a> before registering for events.</p>
         </div>
+
+        <tamu-gisc-season-day-card *ngFor="let day of season?.days; let i = index;" [seasonDay]="day" [index]="i" [tags]="activeTagFilters$ | async" [organizations]="activeOrgFilters$ | async" [rsvps]="rsvps$ | async" (register)="registerEvent($event)" (unregister)="unregisterEvent($event)"></tamu-gisc-season-day-card>
       </div>
 
-      <div id="filter-container" class="column4" *ngIf="$events">
-        <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span>Filters - Click to show/hide</div>
-        <div id="filters" class="card">
-          <h2 class="trailer-1">Filters</h2>
+      <div id="filters-container">
+        <div id="filter-toggle" class="info-block" [ngClass]="{'notice': (activeFilterCount$ | async) > 0}" (click)="toggleFilters()"><span class="material-icons">filter_list</span>Filters <strong *ngIf="(activeFilterCount$ | async) > 0">({{activeFilterCount$ | async}} active)</strong></div>
 
-          <div class="row" *ngFor="let tag of ($tags | async)">
-            <div class="input-control">
-              <div class="checkbox-custom-input">
-                <input #checkbox type="checkbox" (click)="applyOrRemoveTag(tag, checkbox.checked)" />
-                <i></i>
-              </div>
-            </div>
-            <div class="filter-name">
-              <p>{{tag.name}}</p>
+        <form [formGroup]="form" id="filters-inner" [ngClass]="{expanded: filtersVisible$ | async}">
+          <div id="tag-filters-container">
+            <div class="card filters">
+              <h2 class="trailer-1">Tags</h2>
+
+              <ng-container *ngIf="(tags$ | async) as tags; else loading">
+                <ng-container *ngIf="tags?.length > 0; else noTags">
+                  <div class="row">
+                    <tamu-gisc-checkbox-group referenceId="guid" formControlName="tags">
+                      <tamu-gisc-checkbox *ngFor="let tag of tags" [data]="tag" [label]="tag.name"></tamu-gisc-checkbox>
+                    </tamu-gisc-checkbox-group>
+                  </div>
+                </ng-container>
+
+                <ng-template #noTags>
+                  <p class="row">There are no tags.</p>
+                </ng-template>
+              </ng-container>
             </div>
           </div>
-        </div>
+
+          <div id="organization-filters-container">
+            <div class="card filters">
+              <h2 class="trailer-1">Organizations</h2>
+
+              <ng-container *ngIf="(organizations$ | async) as orgs; else loading">
+                <ng-container *ngIf="orgs?.length > 0; else noOrgs">
+                  <div class="row">
+                    <tamu-gisc-checkbox-group referenceId="guid" formControlName="organizations">
+                      <tamu-gisc-checkbox *ngFor="let org of orgs" [data]="org" [label]="org.name"></tamu-gisc-checkbox>
+                    </tamu-gisc-checkbox-group>
+                  </div>
+                </ng-container>
+
+                <ng-template #noOrgs>
+                  <p class="row">There are no organizations.</p>
+                </ng-template>
+              </ng-container>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </section>
+
+<ng-template #loading>
+  <div class="loader small"></div>
+</ng-template>

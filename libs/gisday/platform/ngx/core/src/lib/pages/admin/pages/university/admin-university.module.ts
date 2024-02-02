@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
+import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
+
 import { AdminUniversityComponent } from './admin-university.component';
+import { UniversityEditComponent } from './pages/university-edit/university-edit.component';
+import { UniversityAddComponent } from './pages/university-add/university-add.component';
+import { UniversityListComponent } from './pages/university-list/university-list.component';
 
 const routes: Routes = [
   {
@@ -10,34 +15,24 @@ const routes: Routes = [
     component: AdminUniversityComponent,
     children: [
       {
-        path: '',
-        loadChildren: () =>
-          import('./admin-view-university/admin-view-university.module').then((m) => m.AdminViewUniversityModule)
-      },
-      {
-        path: 'edit',
-        loadChildren: () =>
-          import('./admin-edit-university/admin-edit-university.module').then((m) => m.AdminEditUniversityModule)
-      },
-      {
         path: 'edit/:guid',
-        loadChildren: () =>
-          import('./admin-edit-university/admin-detail-university/admin-detail-university.module').then(
-            (m) => m.AdminDetailUniversityModule
-          )
+        component: UniversityEditComponent
       },
       {
         path: 'add',
-        loadChildren: () =>
-          import('./admin-add-university/admin-add-university.module').then((m) => m.AdminAddUniversityModule)
+        component: UniversityAddComponent
+      },
+      {
+        path: '',
+        component: UniversityListComponent
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [AdminUniversityComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule],
+  declarations: [AdminUniversityComponent, UniversityEditComponent, UniversityAddComponent, UniversityListComponent],
   exports: [RouterModule]
 })
 export class AdminUniversityModule {}

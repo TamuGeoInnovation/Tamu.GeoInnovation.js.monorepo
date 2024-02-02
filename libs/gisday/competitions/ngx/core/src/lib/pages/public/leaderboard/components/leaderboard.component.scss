@@ -20,6 +20,10 @@
   position: relative;
   overflow: hidden;
 
+  &.linkable {
+    cursor: pointer;
+  }
+
   &.header {
     font-weight: 600;
   }

@@ -4,7 +4,6 @@
 
 :host {
   display: block;
-  margin: 1rem 0;
 }
 
 ::ng-deep {
@@ -12,6 +11,11 @@
     border: 2pt solid #f5f5f5;
     border-top: none;
   }
+}
+
+tamu-gisc-accordion {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .question-control {

@@ -1,12 +1,41 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
 
-import { SubmissionType } from '../entities/all.entity';
 import { SubmissionTypeProvider } from './submission-type.provider';
-import { BaseController } from '../_base/base.controller';
 
-@Controller('submission-type')
-export class SubmissionTypeController extends BaseController<SubmissionType> {
-  constructor(private readonly submissionTypeProvider: SubmissionTypeProvider) {
-    super(submissionTypeProvider);
+@Controller('submission-types')
+export class SubmissionTypeController {
+  constructor(private readonly provider: SubmissionTypeProvider) {}
+
+  @Get(':guid')
+  public async getEntity(@Param('guid') guid) {
+    return this.provider.findOne({
+      where: {
+        guid: guid
+      }
+    });
+  }
+
+  @Get()
+  public async getEntities() {
+    return this.provider.find();
+  }
+
+  @Post()
+  public async insertEntity() {
+    throw new NotImplementedException();
+  }
+
+  @Patch(':guid')
+  public async updateEntity() {
+    throw new NotImplementedException();
+  }
+
+  @Delete(':guid')
+  public deleteEntity(@Param('guid') guid: string) {
+    this.provider.deleteEntity({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

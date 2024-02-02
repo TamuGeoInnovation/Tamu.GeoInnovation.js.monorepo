@@ -1,42 +1,55 @@
-import { Body, Controller, Delete, Get, Post, Request, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  NotImplementedException,
+  Param,
+  Patch,
+  Post,
+  Req,
+  Request,
+  UseGuards
+} from '@nestjs/common';
 
-import { DeepPartial } from 'typeorm';
-
-import { Class, UserClass } from '../entities/all.entity';
 import { UserClassProvider } from './user-class.provider';
-import { BaseController } from '../_base/base.controller';
+import { JwtGuard } from '@tamu-gisc/common/nest/auth';
 
-@Controller('user-class')
-export class UserClassController extends BaseController<UserClass> {
-  constructor(private readonly userClassProvider: UserClassProvider) {
-    super(userClassProvider);
+@Controller('user-classes')
+export class UserClassController {
+  constructor(private readonly provider: UserClassProvider) {}
+
+  @UseGuards(JwtGuard)
+  @Get(':guid')
+  public async getEntity() {
+    throw new NotImplementedException();
   }
 
+  @UseGuards(JwtGuard)
   @Get()
-  public async getClassesAndUserClasses(@Request() req) {
-    if (req.user) {
-      const accountGuid = req.user.sub;
+  public async getUserClasses(@Request() req) {
+    const accountGuid = req.user.sub;
 
-      return this.userClassProvider.getClassesAndUserClasses(accountGuid);
-    } else {
-      throw new UnauthorizedException();
-    }
+    return this.provider.getUserClasses(accountGuid);
   }
 
-  @Post('/')
+  @UseGuards(JwtGuard)
+  @Post()
   public async insertUserClass(@Request() req) {
-    if (req.user) {
-      const chosenClass: DeepPartial<Class> = req.body.class;
-      const accountGuid = req.user.sub;
+    const chosenClass: string = req.body.guid;
+    const accountGuid = req.user.sub;
 
-      return this.userClassProvider.insertUserClass(chosenClass, accountGuid);
-    } else {
-      throw new UnauthorizedException();
-    }
+    return this.provider.insertUserClass(chosenClass, accountGuid);
   }
 
-  @Delete()
-  public async deleteUserClassWithClassGuid(@Body() body) {
-    return this.userClassProvider.deleteUserClassWithClassGuid(body.classGuid);
+  @UseGuards(JwtGuard)
+  @Patch(':guid')
+  public async updateEntity() {
+    throw new NotImplementedException();
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':guid')
+  public deleteEntity(@Req() req, @Param('guid') guid: string) {
+    return this.provider.deleteUserClassRegistration(guid, req.user.sub);
   }
 }

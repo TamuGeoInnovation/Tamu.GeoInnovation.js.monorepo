@@ -1,17 +1,38 @@
 <form (submit)="getSchema()" [formGroup]="loadSchemaForm">
-  <p>Enter a URL source that points to a live ESRI REST service layer endpoint to retrieve the configuration and auto-generate a form from its attributes.</p>
+  <p class="trailer-1">Enter a URL source that points to a live ESRI REST service layer endpoint to retrieve the configuration and auto-generate a form from its attributes.</p>
   <div class="row">
-    <tamu-gisc-textbox class="fb-2 form-element" type="text" placeholder="Service Layer URL" floatLabel="true" formControlName="source"></tamu-gisc-textbox>
-    <tamu-gisc-button class="fb-1 form-element" value="Get Schema" type="submit"></tamu-gisc-button>
+    <tamu-gisc-textbox class="fb-2 form-element" type="text" placeholder="Service Layer URL" [floatLabel]="true" formControlName="source"></tamu-gisc-textbox>
+
+    <tamu-gisc-button class="fb-1 form-element leader-2" value="Fetch Schema" type="submit"></tamu-gisc-button>
   </div>
 </form>
 
-<div *ngIf="formModel !== undefined">
-  <h2>Questions</h2>
-
+<ng-container *ngIf="formModel !== undefined">
   <form [formGroup]="formModel" (submit)="saveForm()">
-    <tamu-gisc-design-question *ngFor="let c of formModel.controls" [control]="c"></tamu-gisc-design-question>
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Basic</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row pad-top">
+          <tamu-gisc-checkbox formControlName="allowSubmissions" label="Allow Submissions"></tamu-gisc-checkbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section leader-1">
+      <div class="form-section-toolbar">
+        <div class="form-section-title">Questions</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row pad-top" *ngFor="let c of formModel.controls['fields']['controls']">
+          <tamu-gisc-design-question [control]="c"></tamu-gisc-design-question>
+        </div>
+      </div>
+    </div>
 
     <tamu-gisc-button type="submit" [value]="'Save'"></tamu-gisc-button>
   </form>
-</div>
+</ng-container>

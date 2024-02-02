@@ -1,0 +1,13 @@
+name: Quabity Assuance
+
+on:
+  push:
+
+jobs:
+  lint:
+    name: Lint
+    uses: ./.github/workflows/lint.yml
+  build:
+    name: Build
+    needs: lint
+    uses: ./.github/workflows/build.yml

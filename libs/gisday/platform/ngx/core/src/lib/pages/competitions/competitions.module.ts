@@ -13,10 +13,6 @@ const routes: Routes = [
     component: CompetitionsComponent,
     children: [
       {
-        path: '',
-        loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
-      },
-      {
         path: 'highschool',
         loadChildren: () => import('./highschool/highschool.module').then((m) => m.HighschoolModule)
       },
@@ -57,6 +53,10 @@ const routes: Routes = [
         loadChildren: () => import('./sidewalk/sidewalk.module').then((m) => m.SidewalkModule)
       },
       {
+        path: 'lighting',
+        loadChildren: () => import('./lighting/lighting.module').then((m) => m.LightingModule)
+      },
+      {
         path: 'lightpole',
         loadChildren: () => import('./light-pole/light-pole.module').then((m) => m.LightPoleModule)
       },
@@ -72,6 +72,10 @@ const routes: Routes = [
       {
         path: 'manhole',
         loadChildren: () => import('./manhole-mapping/manhole-mapping.module').then((m) => m.ManholeMappingModule)
+      },
+      {
+        path: '',
+        loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
       }
     ]
   }

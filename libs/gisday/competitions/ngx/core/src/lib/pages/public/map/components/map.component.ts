@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, Observable, forkJoin, map, take } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -14,7 +15,7 @@ import esri = __esri;
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
-  constructor(private ms: EsriMapService, private env: EnvironmentService) {}
+  constructor(private ms: EsriMapService, private env: EnvironmentService, private at: ActivatedRoute) {}
 
   public config = {
     basemap: {
@@ -30,7 +31,7 @@ export class MapComponent implements OnInit {
         },
         zoom: 15,
         constraints: {
-          maxZoom: 18
+          // maxZoom: 21
         },
         popup: {
           dockOptions: {
@@ -45,18 +46,29 @@ export class MapComponent implements OnInit {
         }
       }
     }
-  };
+  } as MapConfig;
 
   public ngOnInit() {
-    this.ms.store.subscribe(() => {
-      const api_url = this.env.value('api_url');
+    const url: Observable<string> = this.at.queryParams.pipe(
+      map((params) => params['user']),
+      map((guid): string => {
+        const api_url = this.env.value('api_url');
 
+        if (guid !== undefined) {
+          return `${api_url}/competitions/maps/seasons/active/user/${guid}?format=geojson`;
+        } else {
+          return `${api_url}/competitions/maps/seasons/active?format=geojson`;
+        }
+      })
+    );
+
+    forkJoin([url.pipe(take(1)), this.ms.store.pipe(take(1))]).subscribe(([url]) => {
       this.ms.loadLayers([
         {
           type: 'geojson',
           id: 'submissions-layer',
           title: 'Submissions',
-          url: `${api_url}/map/geojson`,
+          url: url,
           listMode: 'show',
           loadOnInit: true,
           visible: true,
@@ -67,52 +79,29 @@ export class MapComponent implements OnInit {
                 type: 'simple-marker',
                 style: 'circle',
                 size: 10,
-                color: '#ffc5c5'
+                color: '#424242'
               }
-            }
-          }
-        },
-        {
-          type: 'feature',
-          id: 'water-meter-layer',
-          title: 'Water Meter Rough Locations',
-          url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/WaterMetersTAMU/FeatureServer/0`,
-          listMode: 'show',
-          loadOnInit: true,
-          visible: true,
-          native: {
-            renderer: {
-              type: 'simple',
-              symbol: {
-                type: 'simple-marker',
-                style: 'circle',
-                size: 10,
-                color: '#42A5F5',
-                outline: {
-                  width: '4',
-                  color: '#90CAF9'
-                }, 
-              },
-            }, 
+            },
             featureReduction: {
-              type: 'cluster', 
+              type: 'cluster',
+              clusterRadius: 45,
               labelingInfo: [
                 {
-                  deconflictionStrategy: "none",
+                  deconflictionStrategy: 'none',
                   labelExpressionInfo: {
                     expression: "Text($feature.cluster_count, '#,###')"
                   },
                   symbol: {
-                    type: "text",
-                    color: "#E3F2FD",
+                    type: 'text',
+                    color: '#f5f5f5',
                     font: {
-                      family: "Noto Sans",
-                      size: "14px"
+                      family: 'Noto Sans',
+                      size: '14px'
                     }
                   },
-                  labelPlacement: "center-center"
+                  labelPlacement: 'center-center'
                 }
-              ],
+              ]
             }
           }
         }

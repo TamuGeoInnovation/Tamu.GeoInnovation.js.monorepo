@@ -1,25 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { Component } from '@angular/core';
 
-import { environment } from '../environments/environment';
+import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
 @Component({
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  public title = 'gisday-angular';
-
-  constructor(public oidcSecurityService: OidcSecurityService) {}
-
-  public ngOnInit() {
-    this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken }) => {
-      if (environment.production !== true) {
-        console.log('app authenticated', isAuthenticated);
-        console.log('User data', userData);
-        console.log(`Current access token is ${accessToken}`);
-      }
-    });
+export class AppComponent {
+  constructor(private readonly an: Angulartics2GoogleAnalytics) {
+    this.an.startTracking();
   }
 }

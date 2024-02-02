@@ -1,15 +1,17 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
-import { AuthModule, LogLevel, AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 import * as WebFont from 'webfontloader';
+import { AuthModule, AuthHttpInterceptor } from '@auth0/auth0-angular';
+import { Angulartics2Module } from 'angulartics2';
 
+import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
+import { ROLES_CLAIM } from '@tamu-gisc/common/ngx/auth';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -22,68 +24,16 @@ WebFont.load({
 
 const routes: Routes = [
   {
+    path: 'app',
+    loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.PublicModule)
+  },
+  {
+    path: 'callback',
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.CallbackModule)
+  },
+  {
     path: '',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LandingModule)
-  },
-  {
-    path: 'sessions',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.EventModule)
-  },
-  {
-    path: 'faq',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.FaqModule)
-  },
-  {
-    path: 'sponsors',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.SponsorsModule)
-  },
-  {
-    path: 'presenters',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.PeopleModule)
-  },
-  {
-    path: 'about',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AboutModule)
-  },
-  {
-    path: 'competitions',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.CompetitionsModule)
-  },
-  {
-    path: 'contact',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.ContactModule)
-  },
-  {
-    path: 'highschool',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.HighschoolModule)
-  },
-  {
-    path: 'wayback',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.WaybackModule)
-  },
-  {
-    path: 'admin',
-    canActivate: [AdminGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AdminModule)
-  },
-  {
-    path: 'account',
-    canActivate: [AutoLoginPartialRoutesGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
-  },
-  {
-    path: 'login',
-    canActivate: [AutoLoginPartialRoutesGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule)
-  },
-  {
-    path: 'logout',
-    canActivate: [LogoutGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule)
-  },
-  {
-    path: 'forbidden',
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.NotAuthedModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.WrapperModule)
   }
 ];
 
@@ -94,26 +44,33 @@ const routeOptions: ExtraOptions = {
 
 @NgModule({
   imports: [
+    Angulartics2Module.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
     AuthModule.forRoot({
-      config: {
-        authority: environment.idp_dev_url,
-        redirectUrl: window.location.origin,
-        postLogoutRedirectUri: window.location.origin,
-        clientId: environment.client_id,
-        scope: 'openid offline_access profile email',
-        responseType: 'code',
-        silentRenew: true,
-        useRefreshToken: true,
-        logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
-        autoUserInfo: false
+      domain: environment.auth0.domain,
+      clientId: environment.auth0.client_id,
+      authorizationParams: {
+        audience: environment.auth0.audience,
+        redirect_uri: environment.auth0.redirect_uri
+      },
+      httpInterceptor: {
+        allowedList: [
+          {
+            allowAnonymous: true,
+            uriMatcher: (url) => {
+              // Type assertion because the static value is a token replaced at runtime
+              return (environment.auth0.urls as unknown as Array<string>).some((u) => url.startsWith(u));
+            }
+          }
+        ]
       }
     }),
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
-    GisdayPlatformNgxCommonModule,
     EnvironmentModule,
-    HttpClientModule
+    HttpClientModule,
+    NotificationModule
   ],
   declarations: [AppComponent],
   providers: [
@@ -121,6 +78,15 @@ const routeOptions: ExtraOptions = {
     {
       provide: env,
       useValue: environment
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthHttpInterceptor,
+      multi: true
+    },
+    {
+      provide: ROLES_CLAIM,
+      useValue: environment.auth0.roles_claim
     }
   ],
   bootstrap: [AppComponent]

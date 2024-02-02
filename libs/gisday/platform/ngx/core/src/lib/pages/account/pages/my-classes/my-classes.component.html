@@ -1,13 +1,45 @@
-<div>
-  <div class="loader" *ngIf="($userClasses | async) === false || ($userClasses | async) === null || ($userClasses | async) === undefined"></div>
-  <div id="default-content" class="column8" *ngIf="$userClasses">
-    <div class="card leader-3 trailer-2">
-      <h2>My Classes</h2>
-      <div class="row" *ngFor="let class of ($userClasses | async)">
-        <div class="input-control">
-          <tamu-gisc-checkbox [label]="class.dept + ' ' + class.code + ' | ' + class.title" [checked]="class.userInClass" (changed)="setClassValue(class, $event)"> </tamu-gisc-checkbox>
+<ng-container *ngIf="(classes$ | async) !== null || (userClasses$ | async) !== null; else loader">
+  <div class="form">
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Classes</div>
+      </div>
+
+      <div class="form-section-body">
+        <div>
+          <p class="trailer-1">As a student, you may be eligible to receive extra credit for attending and checking into GIS Day events. To be eligible for the credit, you must register to the below classes and follow the check-in instructions during the event. Your professor will then be able to see a roster to confirm attendance.</p>
         </div>
+
+        <table class="floating-table" *ngIf="(classes$ | async)?.length > 0; else noClasses">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Course Code</th>
+              <th>Course Name</th>
+              <th>Professor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let class of (classes$ | async)">
+              <td id="control">
+                <tamu-gisc-checkbox label="" [checked]="isUserClassSelected$(class.guid) | async" (changed)="setClassValue($event, class.guid)"></tamu-gisc-checkbox>
+              </td>
+              <td>{{class?.code}} {{class?.number}}</td>
+              <td>{{class?.title}}</td>
+              <td>{{class?.professorName}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #noClasses>
+          <p>There are no classes yet.</p>
+        </ng-template>
       </div>
     </div>
   </div>
-</div>
+</ng-container>
+
+<ng-template #loader>
+  <div class="loader"></div>
+</ng-template>

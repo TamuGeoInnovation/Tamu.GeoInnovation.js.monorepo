@@ -1,0 +1,103 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Speaker</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Speaker</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="firstName" placeholder="First Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="lastName" placeholder="Last Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="7" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="socialMedia" placeholder="Social Media Link" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <div>
+          <img [src]="speakerPhotoUrl$ | async" />
+          <tamu-gisc-file formControlName="file">
+            <p class="placeholder">Select Profile Picture</p>
+          </tamu-gisc-file>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Education</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="fom-collection row pad-top">
+        <tamu-gisc-textbox formControlName="graduationYear" placeholder="Graduation Year" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+      <div class="fom-collection row">
+        <tamu-gisc-textbox formControlName="degree" placeholder="Degree" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+      <div class="fom-collection row">
+        <tamu-gisc-textbox formControlName="program" placeholder="Program" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+      <div class="fom-collection row">
+        <tamu-gisc-select formControlName="university" [data]="universities$ | async" [displayTemplate]="'name'" [valueTemplate]="'guid'" placeholder="Select University"></tamu-gisc-select>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Organization</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-select formControlName="organization" [data]="organizations$ | async" placeholder="Organization" [displayTemplate]="'name'" [valueTemplate]="'guid'"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="affiliation" placeholder="Affiliation" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Administrative</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-checkbox formControlName="isOrganizer" label="Is organizer"></tamu-gisc-checkbox>
+        <tamu-gisc-checkbox formControlName="isActive" label="Is Active"></tamu-gisc-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Speaker" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>

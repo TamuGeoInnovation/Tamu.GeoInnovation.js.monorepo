@@ -1,0 +1,33 @@
+name: Lint Affected
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    name: Affected
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.17.0'
+
+      - uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Lint Affected
+        run: npx nx affected:lint --configuration=production --exclude=${{ vars.EXCLUDED_PROJECTS }}  --base=origin/development --parallel=2

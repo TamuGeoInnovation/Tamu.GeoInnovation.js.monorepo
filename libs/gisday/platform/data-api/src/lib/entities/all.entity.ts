@@ -1,7 +1,5 @@
 import {
-  getConnection,
   Entity,
-  EntityRepository,
   BaseEntity,
   PrimaryColumn,
   UpdateDateColumn,
@@ -9,13 +7,11 @@ import {
   BeforeUpdate,
   BeforeInsert,
   Column,
-  OneToOne,
   JoinColumn,
   ManyToOne,
   ManyToMany,
   JoinTable,
-  Repository,
-  AfterLoad
+  OneToMany
 } from 'typeorm';
 import { v4 as guid } from 'uuid';
 
@@ -109,10 +105,10 @@ export class OldCompetitionEntity extends BaseEntity {
 
 @Entity()
 export class TimeStampEntity extends BaseEntity {
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'datetimeoffset' })
   public updated: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'datetimeoffset' })
   public created: Date;
 }
 
@@ -124,120 +120,98 @@ export class GuidIdentity extends TimeStampEntity {
   @BeforeUpdate()
   @BeforeInsert()
   private generateGuid(): void {
-    if (this.guid === undefined || this.guid === '') {
+    if (this.guid === undefined || this.guid === '' || this.guid === null) {
       this.guid = guid();
     }
   }
 }
 
-@Entity()
-export class GISDayEntity extends GuidIdentity {
-  @Column()
-  public season: string;
+@Entity({ name: 'seasons' })
+export class Season extends GuidIdentity {
+  @Column({ nullable: false })
+  public year: number;
 
-  @BeforeUpdate()
-  @BeforeInsert()
-  private setSeason() {
-    if (this.season === undefined) {
-      this.season = new Date().getFullYear().toString();
-    }
-  }
+  @Column({ default: false })
+  public active: boolean;
+
+  // Season has multiple days
+  @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true })
+  public days: SeasonDay[];
+
+  @OneToMany(() => InitialSurveyResponse, (response) => response.season, { cascade: true })
+  public initialSurveyResponses: InitialSurveyResponse[];
+
+  @OneToMany(() => EventRatingQuestion, (question) => question.season, { cascade: true })
+  public eventRatingQuestions: EventRatingQuestion[];
+
+  @OneToMany(() => Speaker, (speaker) => speaker.season, { cascade: true })
+  public speakers: Speaker[];
+
+  @OneToMany(() => Organization, (organization) => organization.season)
+  public organizations: Organization[];
+
+  @OneToMany(() => Sponsor, (sponsor) => sponsor.season)
+  public sponsors: Sponsor[];
+
+  @OneToMany(() => Class, (cl) => cl.season, { cascade: true })
+  public classes: Class[];
+
+  @OneToMany(() => Submission, (submission) => submission.season, { cascade: true })
+  public submissions: Submission[];
+}
+
+@Entity({ name: 'seasons_days' })
+export class SeasonDay extends GuidIdentity {
+  @Column({ nullable: false })
+  date: Date;
+
+  // Season day belongs to a season
+  @ManyToOne(() => Season, (season) => season.days, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  season: Season;
+
+  @OneToMany(() => Event, (event) => event.day)
+  events: Event[];
 }
 
 @Entity({
-  name: 'events_old'
+  name: 'places'
 })
-// Keeping OldEvent for if we need to use the old format due new site not working with new format
-export class OldEvent extends GISDayEntity {
-  @ManyToMany(() => Speaker, { cascade: true })
-  @JoinTable({ name: 'event_speakers' })
-  public speakers?: Speaker[];
-
-  @ManyToMany(() => Sponsor, { cascade: true })
-  @JoinTable({ name: 'event_sponsors' })
-  public sponsors?: Sponsor[];
-
-  @ManyToMany(() => Tag, { cascade: true })
-  @JoinTable({ name: 'event_tags' })
-  public tags?: Tag[];
-
-  @ManyToMany(() => CourseCredit, { cascade: true })
-  @JoinTable({ name: 'event_course_credits' })
-  public courseCredit?: CourseCredit[];
+export class Place extends GuidIdentity {
+  @Column({ nullable: true })
+  public name?: string;
 
   @Column({ nullable: true })
-  public observedAttendeeStart: number;
+  public address?: string;
 
   @Column({ nullable: true })
-  public observedAttendeeEnd: number;
+  public city?: string;
 
   @Column({ nullable: true })
-  public onlineBroadcastUrl: string;
+  public state?: string;
 
   @Column({ nullable: true })
-  public onlinePresenterUrl: string;
+  public zip?: string;
 
   @Column({ nullable: true })
-  public googleDriveUrl: string;
+  public website?: string;
 
-  @Column({ nullable: true })
-  public presentationUrl: string;
+  @OneToMany(() => EventLocation, (location) => location.place)
+  public locations?: EventLocation[];
 
-  @Column({ nullable: true })
-  public name: string;
+  @OneToMany(() => PlaceLink, (link) => link.place, { cascade: true })
+  public links: PlaceLink[];
 
-  @Column({ nullable: true })
-  public startTime: Date;
-
-  @Column({ nullable: true })
-  public endTime: Date;
-
-  @Column({ nullable: true })
-  public abstract: string;
-
-  @Column({ nullable: true })
-  public locationRoom: string;
-
-  @Column({ nullable: true })
-  public locationBuilding: string;
-
-  @Column({ nullable: true })
-  public capacity: number;
-
-  @Column({ nullable: true })
-  public requiresRsvp: boolean;
-
-  @Column({ nullable: true })
-  public qrCode: string;
-
-  @Column({ nullable: true })
-  public locationLink: string;
-
-  @Column({ nullable: true })
-  public date: Date;
-
-  @Column({ nullable: true })
-  public type: string;
-
-  @Column({ nullable: true })
-  public presentationType: string;
-
-  @Column({ nullable: true })
-  public isAcceptingRsvps: boolean;
-
-  @Column({ nullable: true })
-  public duration: number;
-
-  public hasRsvp = false;
-
-  constructor() {
-    super();
-  }
+  @OneToMany(() => Asset, (asset) => asset.places, { cascade: true, nullable: true })
+  public logos?: Asset[];
 }
+
 @Entity({
   name: 'event_broadcast'
 })
 export class EventBroadcast extends GuidIdentity {
+  @Column({ nullable: true })
+  public name?: string;
+
   @Column({ nullable: true })
   public presenterUrl?: string;
 
@@ -255,6 +229,9 @@ export class EventBroadcast extends GuidIdentity {
 
   @Column({ nullable: true, length: 'MAX' })
   public details?: string;
+
+  @OneToMany(() => Event, (event) => event.broadcast)
+  public events?: Event[];
 }
 
 @Entity({
@@ -272,90 +249,58 @@ export class EventLocation extends GuidIdentity {
 
   @Column({ nullable: true })
   public link?: string;
+
+  /**
+   * Location is typically inherited from the place, but can be overridden.
+   *
+   * This is useful for when a location is not within a place, but instead in a surrounding
+   * area, such as a restaurant or conference center.
+   */
+  @Column({ nullable: true })
+  public streetAddressOverride?: string;
+
+  @OneToMany(() => Event, (event) => event.location)
+  public events?: Event[];
+
+  @ManyToOne(() => Place, (place) => place.locations, {
+    cascade: true,
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public place: Place;
 }
 
 @Entity({
   name: 'events'
 })
-export class Event extends GISDayEntity {
-  @ManyToMany(() => Speaker, { cascade: true, nullable: true })
-  @JoinTable({
-    name: 'event_speakers'
-    // joinColumn: {
-    //   name: 'eventGuid',
-    //   referencedColumnName: 'guid'
-    // },
-    // inverseJoinColumn: {
-    //   name: 'speakerGuid',
-    //   referencedColumnName: 'guid'
-    // }
-  })
-  public speakers?: Speaker[];
-
-  @ManyToMany(() => Sponsor, { cascade: true })
-  @JoinTable({
-    name: 'event_sponsors'
-    // joinColumn: {
-    //   name: 'eventGuid',
-    //   referencedColumnName: 'guid'
-    // },
-    // inverseJoinColumn: {
-    //   name: 'sponsorGuid',
-    //   referencedColumnName: 'guid'
-    // }
-  })
-  public sponsors?: Sponsor[];
-
-  @ManyToMany(() => Tag, { cascade: true, nullable: true })
-  @JoinTable({
-    name: 'event_tags'
-    // joinColumn: {
-    //   name: 'eventGuid',
-    //   referencedColumnName: 'guid'
-    // },
-    // inverseJoinColumn: {
-    //   name: 'tagGuid',
-    //   referencedColumnName: 'guid'
-    // }
-  })
-  public tags?: Tag[];
-
-  @ManyToMany(() => CourseCredit, { cascade: true })
-  @JoinTable({ name: 'event_course_credits' })
-  public courseCredit?: CourseCredit[];
-
-  @OneToOne(() => EventBroadcast, { cascade: true, nullable: true })
-  @JoinColumn()
-  public broadcast?: EventBroadcast;
-
-  @OneToOne(() => EventLocation, { cascade: true, nullable: true })
-  @JoinColumn()
-  public location?: EventLocation;
-
+export class Event extends GuidIdentity {
   @Column({ nullable: true })
   public name: string;
+
+  @Column({ nullable: false, default: true })
+  public active: boolean;
 
   @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
 
   @Column({ nullable: true })
-  public startTime: string; // Use Angular pipes to format on frontend
+  public startTime: string;
 
   @Column({ nullable: true })
   public endTime: string;
 
-  // TODO: Should we remove these? They don't seem to be used often
-  // @Column({ nullable: true })
-  // public observedAttendeeStart: number;
+  @Column({ nullable: true, default: 0, select: false })
+  public observedAttendeeStart: number;
 
-  // @Column({ nullable: true })
-  // public observedAttendeeEnd: number;
+  @Column({ nullable: true, default: 0, select: false })
+  public observedAttendeeEnd: number;
 
   @Column({ nullable: true })
   public capacity: number;
 
-  @Column({ nullable: true })
-  public googleDriveUrl: string;
+  @Column({ nullable: true, length: 'MAX' })
+  public resources: string;
 
   @Column({ nullable: true })
   public requiresRsvp: boolean;
@@ -364,7 +309,10 @@ export class Event extends GISDayEntity {
   public qrCode: string;
 
   @Column({ nullable: true })
-  public type: string;
+  public mode: string;
+
+  @Column({ nullable: true })
+  public eventType: string;
 
   @Column({ nullable: true })
   public presentationType: string;
@@ -378,19 +326,46 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true, length: 'MAX' })
   public requirements: string;
 
-  /**
-   * Returns the day of week using Date.getDay() given the event's startTime
-   * Remember, Date.getDay() returns the DAY OF THE WEEK (1-7), not the DAY in the MONTH
-   */
-  public day: number;
+  @ManyToOne(() => SeasonDay, (day) => day.events)
+  public day: SeasonDay;
 
-  @AfterLoad()
-  public setDay() {
-    const date = new Date(this.startTime);
-    this.day = date.getDay();
-  }
+  @ManyToMany(() => Speaker, { cascade: true, nullable: true })
+  @JoinTable({
+    name: 'event_speakers'
+  })
+  public speakers?: Speaker[];
 
-  public hasRsvp = false;
+  @ManyToMany(() => Tag, { cascade: true, nullable: true })
+  @JoinTable({
+    name: 'event_tags'
+  })
+  public tags?: Tag[];
+
+  @ManyToOne(() => EventBroadcast, (broadcast) => broadcast.events, {
+    cascade: true,
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public broadcast?: EventBroadcast;
+
+  @ManyToOne(() => EventLocation, (location) => location.events, {
+    cascade: true,
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public location?: EventLocation;
+
+  @ManyToMany(() => CourseCredit, { cascade: true })
+  @JoinTable({ name: 'event_course_credits' })
+  public courseCredit?: CourseCredit[];
+
+  @ManyToMany(() => Sponsor, { cascade: true })
+  @JoinTable({
+    name: 'event_sponsors'
+  })
+  public sponsors?: Sponsor[];
 }
 
 @Entity({
@@ -401,10 +376,6 @@ export class QuestionType extends GuidIdentity {
   public type: string;
 
   public question: InitialSurveyQuestion;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -419,35 +390,32 @@ export class InitialSurveyQuestion extends GuidIdentity {
 
   @Column({ nullable: true })
   public questionOptions: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
   name: 'initial_survey_responses'
 })
-export class InitialSurveyResponse extends GISDayEntity {
+export class InitialSurveyResponse extends GuidIdentity {
+  @ManyToOne(() => Season, (season) => season.initialSurveyResponses, { cascade: false, nullable: true })
+  public season: Season;
+
   @Column({ nullable: false })
   public accountGuid: string; // User
 
   @ManyToOne(() => InitialSurveyQuestion, { cascade: true, eager: true })
-  @JoinColumn()
   public question: InitialSurveyQuestion;
 
   @Column({ nullable: false })
   public responseValue: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
   name: 'event_rating_questions'
 })
-export class EventRatingQuestion extends GISDayEntity {
+export class EventRatingQuestion extends GuidIdentity {
+  @ManyToOne(() => Season, (season) => season.eventRatingQuestions, { cascade: false, nullable: true })
+  public season: Season;
+
   @Column({ nullable: true })
   public userEditable: boolean;
 
@@ -459,23 +427,24 @@ export class EventRatingQuestion extends GISDayEntity {
 
   @Column({ nullable: true })
   public options: string; // Should be | (pipe) delimited
+
+  @OneToMany(() => EventRatingResponse, (response) => response.question, { cascade: true })
+  public responses: EventRatingResponse[];
 }
 
 @Entity({
   name: 'event_rating_responses'
 })
-export class EventRatingResponse extends GISDayEntity {
+export class EventRatingResponse extends GuidIdentity {
   @ManyToOne(() => Event, { cascade: false, nullable: true })
-  @JoinColumn()
   public event: Event;
 
   @ManyToOne(() => EventRatingQuestion, { cascade: false, nullable: true }) // Maybe many-to-many?
-  @JoinColumn()
   public question: EventRatingQuestion;
 
   //TODO: Add the user / account guid
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public response: string;
 }
 
@@ -499,92 +468,22 @@ export class University extends GuidIdentity {
 export class SpeakerRole extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
-
-  constructor() {
-    super();
-  }
-}
-
-export class MSSQLImage {
-  public type: 'jpg' | 'png';
-  public data: Uint8Array;
-}
-
-@Entity({
-  name: 'speaker_info'
-})
-export class SpeakerInfo extends GuidIdentity {
-  @Column({ nullable: true })
-  public graduationYear: string;
-
-  @ManyToOne(() => University, { cascade: true, nullable: true })
-  @JoinColumn()
-  public university?: University;
-
-  @Column({ nullable: true })
-  public degree: string;
-
-  @Column({ nullable: true })
-  public program: string;
-
-  @Column({ nullable: true })
-  public affiliation: string;
-
-  @Column({ nullable: true, length: 'max' })
-  public description: string;
-
-  @Column({ nullable: true })
-  public socialMedia: string;
-
-  @Column({ nullable: true, type: 'image' })
-  public blob: MSSQLImage;
-
-  public base64representation: string;
-}
-
-@Entity({
-  name: 'speakers'
-})
-export class Speaker extends GISDayEntity {
-  @Column({ nullable: true })
-  public accountGuid: string; // User
-
-  @Column({ nullable: true })
-  public firstName: string;
-
-  @Column({ nullable: true })
-  public lastName: string;
-
-  @Column({ nullable: true })
-  public email: string;
-
-  @Column({ nullable: true })
-  public organization: string;
-
-  @Column({ nullable: true })
-  public isActive: boolean;
-
-  @OneToOne(() => SpeakerInfo, { cascade: true, nullable: true })
-  @JoinColumn()
-  public speakerInfo?: SpeakerInfo;
-
-  public inEvent?: boolean;
 }
 
 @Entity({
   name: 'organizations'
 })
-export class Organization extends GISDayEntity {
+export class Organization extends GuidIdentity {
   @Column({ nullable: true })
   public name: string;
 
   @Column({ nullable: true })
-  public website: string;
+  public acronym: string;
 
   @Column({ nullable: true })
-  public logoUrl: string;
+  public website: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public text: string;
 
   @Column({ nullable: true })
@@ -595,6 +494,86 @@ export class Organization extends GISDayEntity {
 
   @Column({ nullable: true })
   public contactEmail: string;
+
+  @OneToMany(() => Asset, (asset) => asset.organization, { cascade: true, nullable: true })
+  public logos?: Asset[];
+
+  @ManyToOne(() => Season, (season) => season.organizations, { cascade: true, orphanedRowAction: 'nullify' })
+  public season: Season;
+
+  @OneToMany(() => Speaker, (speaker) => speaker.organization, { orphanedRowAction: 'nullify' })
+  public speakers: Speaker[];
+}
+
+@Entity({
+  name: 'place_links'
+})
+export class PlaceLink extends GuidIdentity {
+  @Column({ nullable: false })
+  public label: string;
+
+  @Column({ nullable: false })
+  public url: string;
+
+  @ManyToOne(() => Place, (place) => place.links, { orphanedRowAction: 'delete', onDelete: 'CASCADE' })
+  public place: Place[];
+}
+
+@Entity({
+  name: 'speakers'
+})
+export class Speaker extends GuidIdentity {
+  @Column({ nullable: true })
+  public firstName: string;
+
+  @Column({ nullable: true })
+  public lastName: string;
+
+  @Column({ nullable: true })
+  public email: string;
+
+  @Column({ nullable: true })
+  public isActive: boolean;
+
+  @Column({ nullable: true, default: false })
+  public isOrganizer: boolean;
+
+  @Column({ nullable: true })
+  public graduationYear: string;
+
+  @Column({ nullable: true })
+  public degree: string;
+
+  @Column({ nullable: true })
+  public program: string;
+
+  @Column({ nullable: true })
+  public affiliation: string;
+
+  @Column({ nullable: true, length: 'MAX' })
+  public description: string;
+
+  @Column({ nullable: true })
+  public socialMedia: string;
+
+  @Column({ nullable: true })
+  public accountGuid: string;
+
+  @ManyToOne(() => Season, (season) => season.speakers, { cascade: false, nullable: true })
+  public season: Season;
+
+  @ManyToOne(() => Organization, (o) => o.speakers, {
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public organization: Organization;
+
+  @ManyToOne(() => University, { cascade: true, nullable: true })
+  public university?: University;
+
+  @OneToMany(() => Asset, (asset) => asset.speaker, { cascade: true, nullable: true })
+  public images?: Asset[];
 }
 
 @Entity({
@@ -603,14 +582,12 @@ export class Organization extends GISDayEntity {
 export class Tag extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
-
-  public inEvent?: boolean;
 }
 
 @Entity({
   name: 'sponsors'
 })
-export class Sponsor extends GISDayEntity {
+export class Sponsor extends GuidIdentity {
   @Column({ nullable: true })
   public name: string;
 
@@ -618,15 +595,15 @@ export class Sponsor extends GISDayEntity {
   public website: string;
 
   @Column({ nullable: true })
-  public logoUrl: string;
+  public contactFirstName: string;
+
+  @Column({ nullable: true })
+  public contactLastName: string;
 
   @Column({ nullable: true })
   public contactEmail: string;
 
-  @Column({ nullable: true })
-  public contactName: string;
-
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public description: string;
 
   @Column({ nullable: true })
@@ -634,14 +611,45 @@ export class Sponsor extends GISDayEntity {
 
   @Column({ nullable: true })
   public sponsorshipAmount: string;
+
+  @ManyToOne(() => Season, (season) => season.sponsors, { cascade: true, nullable: true })
+  public season: Season;
+
+  @OneToMany(() => Asset, (asset) => asset.sponsor, { cascade: true, nullable: true })
+  public logos?: Asset[];
+}
+
+@Entity({
+  name: 'assets'
+})
+export class Asset extends GuidIdentity {
+  @Column({ nullable: true })
+  public name: string;
+
+  @Column({ nullable: true })
+  public path: string;
+
+  @Column({ nullable: true })
+  public type: string;
+
+  @ManyToOne(() => Place, (o) => o.logos, { nullable: true, orphanedRowAction: 'nullify' })
+  public places?: Place;
+
+  @ManyToOne(() => Organization, (o) => o.logos, { nullable: true, orphanedRowAction: 'nullify' })
+  public organization?: Organization;
+
+  @ManyToOne(() => Speaker, (s) => s.images, { nullable: true, orphanedRowAction: 'nullify' })
+  public speaker?: Speaker;
+
+  @ManyToOne(() => Sponsor, (s) => s.logos, { nullable: true, orphanedRowAction: 'nullify' })
+  public sponsor?: Sponsor;
 }
 
 @Entity({
   name: 'checkins'
 })
-export class CheckIn extends GISDayEntity {
+export class CheckIn extends GuidIdentity {
   @ManyToOne(() => Event, { cascade: false })
-  @JoinColumn()
   public event: Event;
 
   @Column({ nullable: false })
@@ -651,32 +659,34 @@ export class CheckIn extends GISDayEntity {
 @Entity({
   name: 'classes'
 })
-export class Class extends GISDayEntity {
+export class Class extends GuidIdentity {
   @Column({ nullable: true })
-  public professorAccountGuid: string;
+  public professorName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public title: string;
 
   @Column({ nullable: true })
-  public dept: string;
-
-  @Column({ nullable: false })
   public code: string;
 
-  public userInClass = false;
+  @Column({ nullable: true })
+  public number: string;
+
+  @ManyToOne(() => Season, (season) => season.classes, { cascade: false, nullable: true })
+  public season: Season;
+
+  @OneToMany(() => UserClass, (userClass) => userClass.class, { cascade: false })
+  public students: UserClass[];
 }
 
 @Entity({
   name: 'course_credits'
 })
-export class CourseCredit extends GISDayEntity {
+export class CourseCredit extends GuidIdentity {
   @ManyToOne(() => Event, { cascade: false, nullable: true })
-  @JoinColumn()
   public event?: Event;
 
   @ManyToOne(() => Class, { cascade: false, nullable: true })
-  @JoinColumn()
   public class?: Class;
 }
 
@@ -686,10 +696,6 @@ export class CourseCredit extends GISDayEntity {
 export class SubmissionType extends GuidIdentity {
   @Column({ nullable: false })
   public type: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -698,10 +704,6 @@ export class SubmissionType extends GuidIdentity {
 export class RsvpType extends GuidIdentity {
   @Column({ nullable: false })
   public type: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
@@ -725,92 +727,51 @@ export class UserInfo extends GuidIdentity {
 
   @Column({ nullable: true })
   public hasCompletedInitialSurvey: string;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
   name: 'user_classes'
 })
-export class UserClass extends GISDayEntity {
-  @OneToOne(() => Class, { cascade: true, eager: true })
+export class UserClass extends GuidIdentity {
+  @Column({ nullable: false })
+  public accountGuid: string;
+
+  @ManyToOne(() => Class, { cascade: true, eager: true })
   @JoinColumn()
   public class: Class;
-
-  @Column({ nullable: false })
-  public accountGuid: string; // User
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({
   name: 'user_rsvps'
 })
-export class UserRsvp extends GISDayEntity {
+export class UserRsvp extends GuidIdentity {
   @Column({ nullable: false })
-  public accountGuid: string; // User
+  public accountGuid: string;
 
-  @OneToOne(() => Event, { cascade: true, eager: true })
-  @JoinColumn()
+  @ManyToOne(() => Event, { cascade: true, eager: true })
   public event: Event;
 
-  @OneToOne(() => RsvpType, { cascade: true, eager: true })
-  @JoinColumn()
+  @ManyToOne(() => RsvpType, { cascade: true, eager: true })
   public rsvpType: RsvpType;
-
-  constructor() {
-    super();
-  }
 }
-
-// @Entity({
-//   name: 'submissions'
-// })
-// export class UserSubmission extends GISDayEntity {
-//   @Column({ nullable: false })
-//   public accountGuid: string; // User
-
-//   @Column({ nullable: false })
-//   public title: string;
-
-//   @Column({ nullable: false })
-//   public author: string;
-
-//   @Column({ nullable: false })
-//   public abstract: string;
-
-//   @Column({ nullable: false })
-//   public link: string;
-
-//   // @OneToOne(() => SubmissionType, { cascade: true })
-//   // @JoinColumn()
-//   // public submissionType: SubmissionType; // Submission Type?
-//   @Column({ name: 'submissionType', nullable: true })
-//   public type: string;
-
-//   constructor() {
-//     super();
-//   }
-// }
 
 @Entity({
   name: 'submissions'
 })
-export class Submission extends GISDayEntity {
+export class Submission extends GuidIdentity {
+  @ManyToOne(() => Season, (season) => season.submissions, { cascade: false, nullable: true })
+  public season: Season;
+
   @Column({ nullable: true })
-  public accountGuid: string; // User
+  public accountGuid: string;
 
   @Column({ nullable: true })
   public title: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public author: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
 
   @Column({ nullable: true })
@@ -998,8 +959,8 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['speakers', 'tags', 'sponsors', 'location', 'broadcast'],
-  speaker: ['speakerInfo', 'speakerInfo.university'],
+  event: ['speakers', 'speakers.images', 'tags', 'sponsors', 'location', 'location.place', 'broadcast', 'day'],
+  speaker: ['images', 'university'],
   getRelation: (entity?: string) => {
     if (!entity) {
       return undefined;
@@ -1012,18 +973,23 @@ export const EntityRelationsLUT = {
 export type EntityName = 'event' | 'speaker';
 
 export const GISDAY_ENTITIES = [
+  Season,
+  SeasonDay,
   CheckIn,
   Class,
   CourseCredit,
+  Place,
   Event,
   EventBroadcast,
   EventLocation,
   InitialSurveyQuestion,
   InitialSurveyResponse,
   QuestionType,
+  EventRatingQuestion,
+  EventRatingResponse,
+  Organization,
   RsvpType,
   Speaker,
-  SpeakerInfo,
   SpeakerRole,
   SubmissionType,
   Sponsor,
@@ -1032,147 +998,10 @@ export const GISDAY_ENTITIES = [
   UserInfo,
   UserRsvp,
   Submission,
-  University
+  University,
+  Asset,
+  PlaceLink
 ];
-
-// export class CommonRepo<T> extends Repository<T> {}
-
-// @EntityRepository(CheckIn)
-// export class CheckInRepo extends CommonRepo<CheckIn> {}
-
-// @EntityRepository(Class)
-// export class ClassRepo extends CommonRepo<Class> {}
-
-// @EntityRepository(CourseCredit)
-// export class CourseCreditRepo extends CommonRepo<CourseCredit> {}
-
-// @EntityRepository(Event)
-// export class EventRepo extends CommonRepo<Event> {
-//   public async getAllCurrentSeasonByStartTime() {
-//     return getConnection()
-//       .getRepository(Event)
-//       .createQueryBuilder('events')
-//       .leftJoinAndSelect('events.tags', 'tags')
-//       .leftJoinAndSelect('events.speakers', 'speakers')
-//       .orderBy('startTime', 'ASC')
-//       .where(`events.season = :season`, {
-//         season: '2022'
-//       })
-//       .getMany();
-//   }
-// }
-
-// @EntityRepository(EventLocation)
-// export class EventLocationRepo extends CommonRepo<EventLocation> {}
-
-// @EntityRepository(EventBroadcast)
-// export class EventBroadcastRepo extends CommonRepo<EventBroadcast> {}
-
-// @EntityRepository(InitialSurveyQuestion)
-// export class InitialSurveyQuestionRepo extends CommonRepo<InitialSurveyQuestion> {}
-
-// @EntityRepository(InitialSurveyResponse)
-// export class InitialSurveyRepo extends CommonRepo<InitialSurveyResponse> {}
-
-// @EntityRepository(QuestionType)
-// export class QuestionTypeRepo extends CommonRepo<QuestionType> {}
-
-// @EntityRepository(Speaker)
-// export class SpeakerRepo extends CommonRepo<Speaker> {
-//   public async getPresenter(speakerGuid: string) {
-//     return getConnection()
-//       .getRepository(Speaker)
-//       .createQueryBuilder('speaker')
-//       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
-//       .leftJoinAndSelect('speakerInfo.university', 'university')
-//       .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
-//       .where(`speaker.guid = :guid`, {
-//         guid: speakerGuid
-//       })
-//       .getOne();
-//   }
-
-//   public async getPresenters() {
-//     return getConnection()
-//       .getRepository(Speaker)
-//       .createQueryBuilder('speaker')
-//       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
-//       .leftJoinAndSelect('speakerInfo.university', 'university')
-//       .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
-//       .where('speaker.season = :season', {
-//         season: '2020'
-//       })
-//       .getMany();
-//   }
-// }
-
-// @EntityRepository(SpeakerRole)
-// export class SpeakerRoleRepo extends CommonRepo<SpeakerRole> {}
-
-// @EntityRepository(SpeakerInfo)
-// export class SpeakerInfoRepo extends CommonRepo<SpeakerInfo> {}
-
-// @EntityRepository(Sponsor)
-// export class SponsorRepo extends CommonRepo<Sponsor> {}
-
-// @EntityRepository(SubmissionType)
-// export class SubmissionTypeRepo extends CommonRepo<SubmissionType> {}
-
-// @EntityRepository(RsvpType)
-// export class RsvpTypeRepo extends CommonRepo<RsvpType> {}
-
-// @EntityRepository(Tag)
-// export class TagRepo extends CommonRepo<Tag> {}
-
-// @EntityRepository(University)
-// export class UniversityRepo extends CommonRepo<University> {}
-
-// @EntityRepository(UserClass)
-// export class UserClassRepo extends CommonRepo<UserClass> {
-//   public async getUsersClasses(accountGuid: string) {
-//     return getConnection()
-//       .getRepository(UserClass)
-//       .createQueryBuilder('userClass')
-//       .leftJoinAndSelect('userClass.class', 'class')
-//       .where(`userClass.accountGuid = :guid`, {
-//         guid: accountGuid
-//       })
-//       .getMany();
-//   }
-// }
-
-// @EntityRepository(UserInfo)
-// export class UserInfoRepo extends CommonRepo<UserInfo> {}
-
-// @EntityRepository(UserRsvp)
-// export class UserRsvpRepo extends CommonRepo<UserRsvp> {
-//   public async getUserRsvps(accountGuid: string) {
-//     return getConnection()
-//       .getRepository(UserRsvp)
-//       .createQueryBuilder('userRsvp')
-//       .leftJoinAndSelect('userRsvp.event', 'event')
-//       .leftJoinAndSelect('userRsvp.rsvpType', 'rsvpType')
-//       .where(`userRsvp.accountGuid = :guid`, {
-//         guid: accountGuid
-//       })
-//       .getMany();
-//   }
-// }
-
-// @EntityRepository(Submission)
-// export class UserSubmissionRepo extends CommonRepo<Submission> {}
-
-// @EntityRepository(SignageSubmission)
-// export class SignageSubmissionRepo extends CommonRepo<SignageSubmission> {}
-
-// @EntityRepository(StormwaterSubmission)
-// export class StormwaterSubmissionRepo extends CommonRepo<StormwaterSubmission> {}
-
-// @EntityRepository(SidewalkSubmission)
-// export class SidewalkSubmissionRepo extends CommonRepo<SidewalkSubmission> {}
-
-// @EntityRepository(ManholeSubmission)
-// export class ManholeSubmissionRepo extends CommonRepo<ManholeSubmission> {}
 
 export interface IGeoJsonFeature {
   type: string;

@@ -1,10 +1,3 @@
-// Guards
-export * from './lib/modules/guards/logout-guard/logout-guard.guard';
-export * from './lib/modules/guards/admin-guard/admin.guard';
-
-// Interceptors
-export * from './lib/modules/interceptors/auth.interceptor';
-
 // Services
 export * from './lib/modules/services/_base/base.service';
 export * from './lib/modules/services/checkin/checkin.service';
@@ -19,6 +12,14 @@ export * from './lib/modules/services/submission-type/submission-type.service';
 export * from './lib/modules/services/tag/tag.service';
 export * from './lib/modules/services/university/university.service';
 export * from './lib/modules/services/user-classes/user-classes.service';
-export * from './lib/modules/services/user-info/user-info.service';
+export * from './lib/modules/services/user/user.service';
 export * from './lib/modules/services/user-submissions/user-submissions.service';
 export * from './lib/modules/services/signage/signage.service';
+export * from './lib/modules/services/season/season.service';
+export * from './lib/modules/services/organization/organization.service';
+export * from './lib/modules/services/season-day/season-day.service';
+export * from './lib/modules/services/broadcast/broadcast.service';
+export * from './lib/modules/services/location/location.service';
+export * from './lib/modules/services/place/place.service';
+export * from './lib/modules/services/assets/assets.service';
+export * from './lib/modules/services/rsvp/rsvp.service';

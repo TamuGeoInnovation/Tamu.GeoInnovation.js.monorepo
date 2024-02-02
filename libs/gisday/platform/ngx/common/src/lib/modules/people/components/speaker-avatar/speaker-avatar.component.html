@@ -1,0 +1,8 @@
+<img class="image" *ngIf="imageExists$ | async; else default" presenter="presenter" [src]="speakerImageUrl$ | async" />
+
+<ng-template #default>
+  <div class="image default">
+    <div class="initials" *ngIf="fallbackStyle === 'initials'">{{initials$ | async}}</div>
+    <span class="material-icons" *ngIf="fallbackStyle === 'icon'">person</span>
+  </div>
+</ng-template>

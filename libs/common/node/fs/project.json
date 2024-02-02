@@ -1,0 +1,23 @@
+{
+  "root": "libs/common/node/fs",
+  "sourceRoot": "libs/common/node/fs/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/common/node/fs/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common/node/fs"],
+      "options": {
+        "jestConfig": "libs/common/node/fs/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
