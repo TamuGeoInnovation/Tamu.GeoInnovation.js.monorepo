@@ -20,7 +20,7 @@ export class UserClassController {
 
   @UseGuards(JwtGuard)
   @Get(':guid')
-  public async getEntity(@Param('guid') guid) {
+  public async getEntity() {
     throw new NotImplementedException();
   }
 
@@ -43,7 +43,7 @@ export class UserClassController {
 
   @UseGuards(JwtGuard)
   @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string) {
+  public async updateEntity() {
     throw new NotImplementedException();
   }
 

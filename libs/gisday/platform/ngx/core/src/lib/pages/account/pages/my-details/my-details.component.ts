@@ -8,7 +8,7 @@ import { OrganizationService, UniversityService, UserService } from '@tamu-gisc/
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GisDayAppMetadata, Organization, ParticipantType, University } from '@tamu-gisc/gisday/platform/data-api';
 
-const infoCompletionValidator: ValidatorFn = (control: FormGroup): { [key: string]: any } | null => {
+const infoCompletionValidator: ValidatorFn = (control: FormGroup): { [key: string]: boolean } | null => {
   const type = control.get('app_metadata.gisday.attendeeType');
   const education = control.get('user_metadata.education');
   const occupation = control.get('user_metadata.occupation');
@@ -222,4 +222,3 @@ export class MyDetailsComponent implements OnInit {
       });
   }
 }
-

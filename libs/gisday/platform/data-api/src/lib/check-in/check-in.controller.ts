@@ -12,12 +12,10 @@ import {
   Req,
   BadRequestException
 } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { CheckInProvider } from './check-in.provider';
-import { CheckIn } from '../entities/all.entity';
 
 @Controller('check-ins')
 export class CheckInController {
@@ -49,7 +47,7 @@ export class CheckInController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions(['read:checkins'])
   @Get('')
-  public async getAllCheckins(@Request() req) {
+  public async getAllCheckins() {
     return this.provider.find();
   }
 
@@ -65,7 +63,7 @@ export class CheckInController {
 
   @UseGuards(JwtGuard)
   @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<CheckIn>) {
+  public async updateEntity() {
     throw new NotImplementedException();
   }
 

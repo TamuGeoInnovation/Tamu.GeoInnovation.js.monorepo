@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
 
 import { UsersComponent } from './users.component';
-import { RouterModule, Routes } from '@angular/router';
 import { UserListComponent } from './pages/user-list/user-list.component';
 
 const routes: Routes = [
@@ -23,4 +23,3 @@ const routes: Routes = [
   declarations: [UsersComponent, UserListComponent]
 })
 export class UsersModule {}
-

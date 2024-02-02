@@ -55,8 +55,7 @@ export class UserInfoController {
   @Permissions(['delete:users'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
-  public deleteUser(@Param('guid') guid: string) {
+  public deleteUser() {
     throw new NotImplementedException();
   }
 }
-

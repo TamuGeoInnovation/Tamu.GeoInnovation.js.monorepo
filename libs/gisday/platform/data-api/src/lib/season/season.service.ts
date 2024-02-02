@@ -190,7 +190,7 @@ export class SeasonService extends BaseProvider<Season> {
 
   private _orderDays(days: SeasonDay[]) {
     return days.sort((a, b) => {
-      return (a.date as any) - (b.date as any);
+      return (a.date as unknown as number) - (b.date as unknown as number);
     });
   }
 }

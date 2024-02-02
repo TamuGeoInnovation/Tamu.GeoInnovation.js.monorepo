@@ -1,8 +1,6 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
+import { Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
 
 import { QuestionTypeProvider } from './question-type.provider';
-import { QuestionType } from '../entities/all.entity';
 
 @Controller('question-types')
 export class QuestionTypeController {
@@ -23,12 +21,12 @@ export class QuestionTypeController {
   }
 
   @Post()
-  public async insertEntity(@Body() body: DeepPartial<QuestionType>) {
+  public async insertEntity() {
     throw new NotImplementedException();
   }
 
   @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<QuestionType>) {
+  public async updateEntity() {
     throw new NotImplementedException();
   }
 

@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
 
 import { SpeakerRole } from '../entities/all.entity';
 import { SpeakerRoleProvider } from './speaker-role.provider';
@@ -26,12 +25,12 @@ export class SpeakerRoleController {
   }
 
   @Post()
-  public async insertEntity(@Body() body: DeepPartial<SpeakerRole>) {
+  public async insertEntity() {
     throw new NotImplementedException();
   }
 
   @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<SpeakerRole>) {
+  public async updateEntity() {
     throw new NotImplementedException();
   }
 

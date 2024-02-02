@@ -1,7 +1,5 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
+import { Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
 
-import { SubmissionType } from '../entities/all.entity';
 import { SubmissionTypeProvider } from './submission-type.provider';
 
 @Controller('submission-types')
@@ -23,12 +21,12 @@ export class SubmissionTypeController {
   }
 
   @Post()
-  public async insertEntity(@Body() body: DeepPartial<SubmissionType>) {
+  public async insertEntity() {
     throw new NotImplementedException();
   }
 
   @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<SubmissionType>) {
+  public async updateEntity() {
     throw new NotImplementedException();
   }
 

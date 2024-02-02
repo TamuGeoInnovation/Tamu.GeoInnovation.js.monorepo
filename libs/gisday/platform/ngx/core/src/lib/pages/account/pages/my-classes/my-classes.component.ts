@@ -41,7 +41,7 @@ export class MyClassesComponent implements OnInit {
               id: 'class-registration-success'
             });
           },
-          error: (err) => {
+          error: () => {
             this.ns.toast({
               title: 'Class registration',
               message: 'There was an error registering you for this class.',
@@ -58,7 +58,7 @@ export class MyClassesComponent implements OnInit {
             id: 'class-unregistration-success'
           });
         },
-        error: (err) => {
+        error: () => {
           this.ns.toast({
             title: 'Class registration',
             message: 'There was an error unregistering you from this class.',

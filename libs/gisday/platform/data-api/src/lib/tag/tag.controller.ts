@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { Tag } from '../entities/all.entity';
 import { TagProvider } from './tag.provider';
-import { DeepPartial } from 'typeorm';
 
 @Controller('tags')
 export class TagController {

@@ -119,8 +119,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       const toSave = {
         ...existing,
         ...incoming,
-        isOrganizer: (incoming as any).isOrganizer === 'true', // form data coerces boolean to string
-        isActive: (incoming as any).isActive === 'true', // form data coerces boolean to string
+        isOrganizer: (incoming.isOrganizer as unknown as string) === 'true', // form data coerces boolean to string
+        isActive: (incoming.isActive as unknown as string) === 'true', // form data coerces boolean to string
         images: [speakerImage]
       };
 
@@ -137,8 +137,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   public async insertWithInfo(speaker: DeepPartial<Speaker>, file?) {
     const speakerEnt = this.speakerRepo.create({
       ...speaker,
-      isOrganizer: (speaker as any).isOrganizer === 'true', // form data coerces boolean to string
-      isActive: (speaker as any).isActive === 'true' // form data coerces boolean to string
+      isOrganizer: (speaker.isOrganizer as unknown as string) === 'true', // form data coerces boolean to string
+      isActive: (speaker.isActive as unknown as string) === 'true' // form data coerces boolean to string
     });
 
     if (speakerEnt) {
