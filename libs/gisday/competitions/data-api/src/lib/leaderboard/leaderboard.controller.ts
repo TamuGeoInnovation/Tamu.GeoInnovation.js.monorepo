@@ -16,14 +16,14 @@ export class LeaderboardController {
 
   @UseGuards(JwtGuard)
   @Get('active')
-  public getLeaderBoardForActiveSeason(@Req() req) {
+  public getLeaderBoardForActiveSeason() {
     return this.service.getLeaderBoardItemsForActiveSeason();
   }
 
   @Permissions(['read:competitions'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get('active/admin')
-  public getLeaderBoardForActiveSeasonWithIdentities(@Req() req) {
+  public getLeaderBoardForActiveSeasonWithIdentities() {
     return this.service.getLeaderBoardItemsForActiveSeason(true);
   }
 

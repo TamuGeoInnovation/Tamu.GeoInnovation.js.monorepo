@@ -5,7 +5,7 @@ import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({
-  selector: 'tamu-gisc-submission-copmon',
+  selector: 'tamu-gisc-submission-complete',
   templateUrl: './submission.component.html',
   styleUrls: ['./submission.component.scss']
 })
