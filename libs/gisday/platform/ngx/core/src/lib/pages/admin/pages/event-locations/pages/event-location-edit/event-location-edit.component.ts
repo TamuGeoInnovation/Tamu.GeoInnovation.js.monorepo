@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./event-location-edit.component.scss']
 })
 export class EventLocationEditComponent {}
-

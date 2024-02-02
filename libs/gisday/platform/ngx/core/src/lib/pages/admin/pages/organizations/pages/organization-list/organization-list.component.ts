@@ -15,4 +15,3 @@ export class OrganizationListComponent extends BaseAdminListComponent<Organizati
     super(orgService);
   }
 }
-

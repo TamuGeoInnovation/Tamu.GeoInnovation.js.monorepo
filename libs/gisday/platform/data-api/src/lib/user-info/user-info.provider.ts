@@ -229,4 +229,3 @@ export enum ParticipantType {
   Industry = 'industry',
   Academia = 'academia'
 }
-

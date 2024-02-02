@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./places.component.scss']
 })
 export class PlacesComponent {}
-

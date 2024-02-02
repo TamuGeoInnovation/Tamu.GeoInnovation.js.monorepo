@@ -15,4 +15,3 @@ export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
     super(speakerService);
   }
 }
-

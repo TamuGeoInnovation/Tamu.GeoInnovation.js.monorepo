@@ -9,4 +9,3 @@ import { HasRolesPipe } from './pipes/has-roles/has-roles.pipe';
   exports: [HasRolesPipe]
 })
 export class CommonNgxAuthModule {}
-

@@ -8,9 +8,8 @@ describe('SeasonsDayTileComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeasonsDayTileComponent ]
-    })
-    .compileComponents();
+      declarations: [SeasonsDayTileComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

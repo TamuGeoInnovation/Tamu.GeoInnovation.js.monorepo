@@ -22,4 +22,3 @@ describe('UniversityAddEditFormComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

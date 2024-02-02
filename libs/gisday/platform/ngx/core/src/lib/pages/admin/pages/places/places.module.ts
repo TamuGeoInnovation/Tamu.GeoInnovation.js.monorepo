@@ -35,4 +35,3 @@ const routes: Routes = [
   declarations: [PlacesComponent, PlaceAddComponent, PlaceEditComponent, PlaceListComponent]
 })
 export class PlacesModule {}
-

@@ -35,4 +35,3 @@ const routes: Routes = [
   declarations: [BroadcastsComponent, BroadcastListComponent, BroadcastAddComponent, BroadcastEditComponent]
 })
 export class BroadcastsModule {}
-

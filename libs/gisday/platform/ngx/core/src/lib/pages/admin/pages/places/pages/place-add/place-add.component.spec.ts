@@ -22,4 +22,3 @@ describe('PlaceAddComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

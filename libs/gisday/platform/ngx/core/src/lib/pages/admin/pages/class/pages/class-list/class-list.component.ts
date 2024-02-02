@@ -15,4 +15,3 @@ export class ClassListComponent extends BaseAdminListComponent<Class> {
     super(classService);
   }
 }
-

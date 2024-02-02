@@ -131,4 +131,3 @@ export class BroadcastAddEditFormComponent implements OnInit {
     this.rt.navigate(['/admin/broadcasts']);
   }
 }
-

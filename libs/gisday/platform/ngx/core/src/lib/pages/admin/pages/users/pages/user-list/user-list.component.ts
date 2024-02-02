@@ -18,4 +18,3 @@ export class UserListComponent implements OnInit {
     this.users$ = this.us.getUsers().pipe(shareReplay());
   }
 }
-

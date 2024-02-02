@@ -8,9 +8,8 @@ describe('SeasonAddEditFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeasonAddEditFormComponent ]
-    })
-    .compileComponents();
+      declarations: [SeasonAddEditFormComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -142,4 +142,3 @@ export class ClassAddEditFormComponent implements OnInit {
     this.rt.navigate(['/admin/classes']);
   }
 }
-

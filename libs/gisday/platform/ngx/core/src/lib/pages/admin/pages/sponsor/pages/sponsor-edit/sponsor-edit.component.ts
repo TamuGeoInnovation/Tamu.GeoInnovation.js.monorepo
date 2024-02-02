@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./sponsor-edit.component.scss']
 })
 export class SponsorEditComponent {}
-

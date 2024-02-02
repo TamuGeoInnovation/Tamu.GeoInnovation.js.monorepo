@@ -21,4 +21,3 @@ export class SeasonService extends BaseService<Season> {
     return this.http1.get<ActiveSeasonDto>(this.resource + '/active');
   }
 }
-

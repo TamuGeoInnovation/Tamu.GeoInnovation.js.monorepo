@@ -8,9 +8,8 @@ describe('SpeakerCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpeakerCardComponent ]
-    })
-    .compileComponents();
+      declarations: [SpeakerCardComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

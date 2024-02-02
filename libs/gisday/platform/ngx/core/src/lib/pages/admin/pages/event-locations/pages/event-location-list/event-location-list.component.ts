@@ -15,4 +15,3 @@ export class EventLocationListComponent extends BaseAdminListComponent<EventLoca
     super(eventLocationService);
   }
 }
-

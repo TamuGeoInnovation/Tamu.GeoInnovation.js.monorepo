@@ -22,4 +22,3 @@ describe('PlaceLocationAddEditFormComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

@@ -15,4 +15,3 @@ export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
     super(sponsorService);
   }
 }
-

@@ -14,4 +14,3 @@ describe('AssetsService', () => {
     expect(service).toBeTruthy();
   });
 });
-

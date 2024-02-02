@@ -17,4 +17,3 @@ export class PresenterCardComponent implements OnInit {
     this.speakerInitials = this.speaker?.firstName[0] + this.speaker?.lastName[0];
   }
 }
-

@@ -8,9 +8,8 @@ describe('SponsorAddEditFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SponsorAddEditFormComponent ]
-    })
-    .compileComponents();
+      declarations: [SponsorAddEditFormComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

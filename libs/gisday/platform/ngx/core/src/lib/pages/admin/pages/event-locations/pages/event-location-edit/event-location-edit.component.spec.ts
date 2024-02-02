@@ -22,4 +22,3 @@ describe('EventLocationEditComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

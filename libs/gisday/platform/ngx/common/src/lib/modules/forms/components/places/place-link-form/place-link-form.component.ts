@@ -30,4 +30,3 @@ export interface PlaceLinkControlSchema {
   label: string;
   url: string;
 }
-

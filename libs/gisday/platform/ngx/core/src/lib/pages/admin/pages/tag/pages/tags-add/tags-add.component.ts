@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./tags-add.component.scss']
 })
 export class TagsAddComponent {}
-

@@ -22,4 +22,3 @@ describe('SponsorListComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

@@ -22,4 +22,3 @@ describe('UserListComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

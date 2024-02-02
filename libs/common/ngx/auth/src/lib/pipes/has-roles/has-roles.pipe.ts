@@ -12,4 +12,3 @@ export class HasRolesPipe implements PipeTransform {
     return requiredRoles.some((role) => roles.includes(role));
   }
 }
-

@@ -22,4 +22,3 @@ describe('SpeakerAddEditFormComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

@@ -22,4 +22,3 @@ describe('PlaceEditComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

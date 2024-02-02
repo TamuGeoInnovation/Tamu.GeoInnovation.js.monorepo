@@ -78,4 +78,3 @@ export class ClassEditComponent implements OnInit {
       });
   }
 }
-

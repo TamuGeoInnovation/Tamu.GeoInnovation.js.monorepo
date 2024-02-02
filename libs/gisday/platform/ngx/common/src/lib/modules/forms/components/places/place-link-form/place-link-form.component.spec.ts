@@ -8,9 +8,8 @@ describe('PlaceLinkFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlaceLinkFormComponent ]
-    })
-    .compileComponents();
+      declarations: [PlaceLinkFormComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

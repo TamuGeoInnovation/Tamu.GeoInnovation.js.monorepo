@@ -16,4 +16,3 @@ export class BroadcastService extends BaseService<EventBroadcast> {
     super(env1, http1, 'event-broadcasts');
   }
 }
-

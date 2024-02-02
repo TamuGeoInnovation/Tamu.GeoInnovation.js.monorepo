@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./speaker-add.component.scss']
 })
 export class SpeakerAddComponent {}
-

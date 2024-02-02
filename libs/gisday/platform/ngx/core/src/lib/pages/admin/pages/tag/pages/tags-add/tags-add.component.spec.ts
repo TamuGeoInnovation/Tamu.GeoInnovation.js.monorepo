@@ -8,9 +8,8 @@ describe('TagsAddComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TagsAddComponent ]
-    })
-    .compileComponents();
+      declarations: [TagsAddComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

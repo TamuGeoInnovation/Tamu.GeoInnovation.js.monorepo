@@ -22,4 +22,3 @@ describe('BroadcastListComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

@@ -16,4 +16,3 @@ export class LocationService extends BaseService<EventLocation> {
     super(env1, http1, 'event-locations');
   }
 }
-

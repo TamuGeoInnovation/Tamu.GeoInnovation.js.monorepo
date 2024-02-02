@@ -15,4 +15,3 @@ export class EventListComponent extends BaseAdminListComponent<Event> {
     super(eventService);
   }
 }
-

@@ -8,9 +8,8 @@ describe('SpeakerAvatarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpeakerAvatarComponent ]
-    })
-    .compileComponents();
+      declarations: [SpeakerAvatarComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

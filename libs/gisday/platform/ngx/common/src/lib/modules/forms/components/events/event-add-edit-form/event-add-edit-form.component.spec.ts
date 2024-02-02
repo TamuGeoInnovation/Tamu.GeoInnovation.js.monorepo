@@ -22,4 +22,3 @@ describe('EventAddEditFormComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

@@ -35,4 +35,3 @@ const routes: Routes = [
   declarations: [EventLocationsComponent, EventLocationAddComponent, EventLocationEditComponent, EventLocationListComponent]
 })
 export class EventLocationsModule {}
-

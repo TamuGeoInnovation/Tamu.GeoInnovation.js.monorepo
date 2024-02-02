@@ -22,4 +22,3 @@ describe('ClassEditComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

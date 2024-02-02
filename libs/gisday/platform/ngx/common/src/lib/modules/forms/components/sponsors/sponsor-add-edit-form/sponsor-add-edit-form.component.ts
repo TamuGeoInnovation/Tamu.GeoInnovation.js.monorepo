@@ -188,4 +188,3 @@ export class SponsorAddEditFormComponent implements OnInit {
     this.rt.navigate(['/admin/sponsors']);
   }
 }
-

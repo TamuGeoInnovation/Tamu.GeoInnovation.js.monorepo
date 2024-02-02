@@ -22,4 +22,3 @@ describe('ClassAddEditFormComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

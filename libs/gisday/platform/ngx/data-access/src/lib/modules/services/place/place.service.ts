@@ -22,4 +22,3 @@ export class PlaceService extends BaseService<Place> {
     return this.http1.post<Partial<Place>>(this.resource, data);
   }
 }
-

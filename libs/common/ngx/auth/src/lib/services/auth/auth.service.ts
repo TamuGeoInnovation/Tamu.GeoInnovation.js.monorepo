@@ -33,4 +33,3 @@ export class AuthService {
     this.as.logout(options);
   }
 }
-

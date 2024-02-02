@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./place-add.component.scss']
 })
 export class PlaceAddComponent {}
-

@@ -8,9 +8,8 @@ describe('SeasonDayCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeasonDayCardComponent ]
-    })
-    .compileComponents();
+      declarations: [SeasonDayCardComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

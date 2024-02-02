@@ -25,4 +25,3 @@ export class AssetsService extends BaseService<Asset> {
     return of(`${this.resource}/${guid}`);
   }
 }
-

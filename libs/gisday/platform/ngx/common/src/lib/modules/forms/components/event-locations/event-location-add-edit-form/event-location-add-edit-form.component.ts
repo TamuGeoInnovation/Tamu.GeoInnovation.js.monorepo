@@ -137,4 +137,3 @@ export class EventLocationAddEditFormComponent implements OnInit {
     this.rt.navigate(['/admin/event-locations']);
   }
 }
-

@@ -328,4 +328,3 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     });
   }
 }
-

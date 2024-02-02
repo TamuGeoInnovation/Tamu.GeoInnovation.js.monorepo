@@ -22,4 +22,3 @@ describe('PlacesComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

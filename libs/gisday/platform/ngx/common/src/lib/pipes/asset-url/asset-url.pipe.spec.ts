@@ -6,4 +6,3 @@ describe('AssetUrlPipe', () => {
     expect(pipe).toBeTruthy();
   });
 });
-

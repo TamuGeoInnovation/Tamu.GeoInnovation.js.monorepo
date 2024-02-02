@@ -16,4 +16,3 @@ const routes: Routes = [
   declarations: [CallbackComponent]
 })
 export class CallbackModule {}
-

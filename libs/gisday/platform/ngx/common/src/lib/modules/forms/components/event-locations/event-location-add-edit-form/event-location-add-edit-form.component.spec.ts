@@ -8,9 +8,8 @@ describe('EventLocationAddEditFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EventLocationAddEditFormComponent ]
-    })
-    .compileComponents();
+      declarations: [EventLocationAddEditFormComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

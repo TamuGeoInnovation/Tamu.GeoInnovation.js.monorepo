@@ -12,4 +12,3 @@ import { SpeakerAvatarComponent } from './components/speaker-avatar/speaker-avat
   exports: [PresenterCardComponent, SpeakerCardComponent, SpeakerAvatarComponent]
 })
 export class GisDayPeopleModule {}
-

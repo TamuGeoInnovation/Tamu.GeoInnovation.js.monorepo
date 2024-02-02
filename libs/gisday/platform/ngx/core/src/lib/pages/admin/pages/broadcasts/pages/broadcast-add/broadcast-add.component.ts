@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./broadcast-add.component.scss']
 })
 export class BroadcastAddComponent {}
-

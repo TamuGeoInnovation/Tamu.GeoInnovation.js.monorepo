@@ -8,9 +8,8 @@ describe('CallbackComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CallbackComponent ]
-    })
-    .compileComponents();
+      declarations: [CallbackComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

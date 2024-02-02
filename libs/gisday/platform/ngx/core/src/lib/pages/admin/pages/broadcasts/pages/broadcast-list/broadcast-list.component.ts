@@ -15,4 +15,3 @@ export class BroadcastListComponent extends BaseAdminListComponent<EventBroadcas
     super(broadcastService);
   }
 }
-

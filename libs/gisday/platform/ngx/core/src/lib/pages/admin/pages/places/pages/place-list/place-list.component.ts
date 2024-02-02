@@ -15,4 +15,3 @@ export class PlaceListComponent extends BaseAdminListComponent<Place> {
     super(orgService);
   }
 }
-

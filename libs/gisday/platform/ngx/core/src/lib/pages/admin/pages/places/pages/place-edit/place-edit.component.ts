@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./place-edit.component.scss']
 })
 export class PlaceEditComponent {}
-

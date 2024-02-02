@@ -282,4 +282,3 @@ export class EventViewComponent implements OnInit, OnDestroy {
     });
   }
 }
-

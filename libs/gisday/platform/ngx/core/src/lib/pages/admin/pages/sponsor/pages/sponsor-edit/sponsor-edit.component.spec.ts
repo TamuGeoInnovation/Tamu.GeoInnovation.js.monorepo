@@ -22,4 +22,3 @@ describe('SponsorEditComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

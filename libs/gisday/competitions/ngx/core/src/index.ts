@@ -7,4 +7,3 @@ export * from './lib/pages/admin/pages/viewer/viewer.module';
 export * from './lib/pages/public/public.module';
 export * from './lib/pages/public/leaderboard/leaderboard.module';
 export * from './lib/pages/public/map/map.module';
-

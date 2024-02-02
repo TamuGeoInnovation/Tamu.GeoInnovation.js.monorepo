@@ -15,4 +15,3 @@ export class UniversityListComponent extends BaseAdminViewComponent<University> 
     super(universityService);
   }
 }
-

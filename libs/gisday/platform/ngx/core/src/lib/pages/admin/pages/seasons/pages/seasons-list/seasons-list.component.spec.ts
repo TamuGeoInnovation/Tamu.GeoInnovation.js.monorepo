@@ -8,9 +8,8 @@ describe('SeasonsListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeasonsListComponent ]
-    })
-    .compileComponents();
+      declarations: [SeasonsListComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

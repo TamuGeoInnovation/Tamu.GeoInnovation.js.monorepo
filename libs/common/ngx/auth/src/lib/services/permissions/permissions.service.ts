@@ -17,4 +17,3 @@ export class PermissionsService {
     return this.http.get<Array<string>>(this._resource);
   }
 }
-

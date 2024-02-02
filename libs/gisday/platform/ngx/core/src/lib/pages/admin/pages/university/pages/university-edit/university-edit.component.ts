@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./university-edit.component.scss']
 })
 export class UniversityEditComponent {}
-

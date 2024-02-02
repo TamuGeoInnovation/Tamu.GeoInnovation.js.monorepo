@@ -22,4 +22,3 @@ describe('ClassAddComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

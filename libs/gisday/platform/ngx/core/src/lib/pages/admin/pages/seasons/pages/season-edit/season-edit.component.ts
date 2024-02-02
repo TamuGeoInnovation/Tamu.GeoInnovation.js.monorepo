@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./season-edit.component.scss']
 })
 export class SeasonEditComponent {}
-

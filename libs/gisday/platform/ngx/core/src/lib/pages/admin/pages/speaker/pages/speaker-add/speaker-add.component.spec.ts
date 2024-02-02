@@ -8,9 +8,8 @@ describe('SpeakerAddComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpeakerAddComponent ]
-    })
-    .compileComponents();
+      declarations: [SpeakerAddComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

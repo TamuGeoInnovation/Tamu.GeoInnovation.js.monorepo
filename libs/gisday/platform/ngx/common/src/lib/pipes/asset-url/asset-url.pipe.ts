@@ -17,4 +17,3 @@ export class AssetUrlPipe implements PipeTransform {
     return this.assetService.getAssetUrl(guid);
   }
 }
-

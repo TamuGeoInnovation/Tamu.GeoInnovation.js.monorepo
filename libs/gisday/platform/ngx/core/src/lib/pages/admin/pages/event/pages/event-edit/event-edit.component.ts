@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./event-edit.component.scss']
 })
 export class EventEditComponent {}
-

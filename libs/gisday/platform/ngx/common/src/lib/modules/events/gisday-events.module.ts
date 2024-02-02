@@ -14,4 +14,3 @@ import { GisdayPlatformNgxCommonModule } from '../../gisday-platform-ngx-common.
   exports: [SeasonDayCardComponent, EventRowComponent]
 })
 export class GisDayEventsModule {}
-

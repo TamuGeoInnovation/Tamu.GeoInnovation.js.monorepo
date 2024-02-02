@@ -178,4 +178,3 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     this.rt.navigate(['/admin/places']);
   }
 }
-

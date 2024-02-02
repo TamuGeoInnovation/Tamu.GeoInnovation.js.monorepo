@@ -35,4 +35,3 @@ export class UserService extends BaseService<User> {
     return this.http1.patch<Partial<GisDayAppMetadata>>(`${this.resource}/${userId}/metadata`, metadata);
   }
 }
-

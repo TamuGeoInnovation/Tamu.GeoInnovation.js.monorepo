@@ -14,4 +14,3 @@ describe('PlaceService', () => {
     expect(service).toBeTruthy();
   });
 });
-

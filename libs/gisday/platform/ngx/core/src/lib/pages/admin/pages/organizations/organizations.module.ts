@@ -35,4 +35,3 @@ const routes: Routes = [
   declarations: [OrganizationsComponent, OrganizationListComponent, OrganizationAddComponent, OrganizationEditComponent]
 })
 export class OrganizationsModule {}
-

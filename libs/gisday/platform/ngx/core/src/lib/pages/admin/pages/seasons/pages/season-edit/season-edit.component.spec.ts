@@ -8,9 +8,8 @@ describe('SeasonEditComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeasonEditComponent ]
-    })
-    .compileComponents();
+      declarations: [SeasonEditComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
