@@ -14,7 +14,15 @@
         "polyfills": "apps/correction-lite-angular/src/polyfills.ts",
         "tsConfig": "apps/correction-lite-angular/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/correction-lite-angular/src/favicon.ico", "apps/correction-lite-angular/src/assets"],
+        "assets": [
+          "apps/correction-lite-angular/src/favicon.ico",
+          "apps/correction-lite-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
         "styles": ["apps/correction-lite-angular/src/styles.scss"],
         "scripts": []
       },
