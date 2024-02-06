@@ -95,3 +95,16 @@
 tamu-gisc-checkbox {
   margin-bottom: 0;
 }
+
+.tooltip-body {
+  padding: 1rem;
+
+  .tooltip-setting-section {
+    margin-bottom: 1rem;
+
+    p {
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import {
   combineLatest,
   Observable,
@@ -43,13 +44,13 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
   private _file$: ReplaySubject<File> = new ReplaySubject(1);
   private _refresh$: ReplaySubject<boolean> = new ReplaySubject(1);
   private _destroy$: ReplaySubject<boolean> = new ReplaySubject(1);
+  public form: FormGroup;
 
   /**
    * Stores and relays pagination events from the paginator component.
    */
   private _paginationState$: ReplaySubject<PaginationEvent> = new ReplaySubject(1);
-  private _filterCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  public filterCompleted$ = this._filterCompleted$.asObservable();
+  public filterCompleted$: Observable<boolean>;
 
   public file = this._file$.asObservable();
   public db: Observable<IDBDatabase>;
@@ -117,6 +118,25 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     }
   ];
 
+  public mms_types = [
+    {
+      name: 'All',
+      value: 'All'
+    },
+    {
+      name: 'Match',
+      value: 'Match'
+    },
+    {
+      name: 'Interactive',
+      value: 'Interactive'
+    },
+    {
+      name: 'Review',
+      value: 'Review'
+    }
+  ];
+
   public columnsCount: Observable<number>;
   public correctedCount: Observable<number>;
 
@@ -145,10 +165,18 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     private readonly es: EsriMapService,
     private readonly cs: CorrectionService,
     private readonly ns: NotificationService,
-    private readonly modal: ModalService
+    private readonly modal: ModalService,
+    private readonly fb: FormBuilder
   ) {}
 
   public ngOnInit(): void {
+    this.form = this.fb.group({
+      showCorrected: [true],
+      mms: ['All']
+    });
+
+    this.filterCompleted$ = this.form.get('showCorrected').valueChanges.pipe(shareReplay());
+
     this.db = race(
       this.file.pipe(
         switchMap((file) =>
@@ -177,24 +205,19 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       debounceTime(50), // Some number to ensure we debounce events in the same event loop.
       withLatestFrom(this._paginationState$),
       switchMap(([, pagination]) => {
-        return this._filterCompleted$.pipe(
-          take(1),
-          switchMap((filter) => {
-            if (filter) {
-              return this.ds.getN(pagination.pageSize, pagination.page);
-            } else {
-              return this.ds
-                .filterTable((row) => {
-                  return row.MicroMatchStatus !== 'Interactive';
-                })
-                .pipe(
-                  switchMap((col) => {
-                    return this.ds.getNFromCollection(col, pagination.pageSize, pagination.page);
-                  })
-                );
-            }
-          })
-        );
+        if (this.form.get('showCorrected').value === true) {
+          return this.ds.getN(pagination.pageSize, pagination.page);
+        } else {
+          return this.ds
+            .filterTable((row) => {
+              return row.MicroMatchStatus !== 'Interactive';
+            })
+            .pipe(
+              switchMap((col) => {
+                return this.ds.getNFromCollection(col, pagination.pageSize, pagination.page);
+              })
+            );
+        }
       }),
       tap(() => {
         this.cs.notifyDataPopulated();
@@ -232,20 +255,15 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     this.columnsCount = merge(this.db, this._refresh$, this.filterCompleted$).pipe(
       debounceTime(50),
       switchMap(() => {
-        return this._filterCompleted$.pipe(
-          take(1),
-          switchMap((filter) => {
-            if (filter) {
-              return this.ds.getCount();
-            } else {
-              return this.ds.getWhereWithClause('MicroMatchStatus', 'notEqual', 'Interactive').pipe(
-                switchMap((col) => {
-                  return from(col.count());
-                })
-              );
-            }
-          })
-        );
+        if (this.form.get('showCorrected').value === true) {
+          return this.ds.getCount();
+        } else {
+          return this.ds.getWhereWithClause('MicroMatchStatus', 'notEqual', 'Interactive').pipe(
+            switchMap((col) => {
+              return from(col.count());
+            })
+          );
+        }
       })
     );
 
@@ -268,10 +286,6 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
 
   public doThing(e: File) {
     this._file$.next(e);
-  }
-
-  public toggleFilterDone(state: boolean) {
-    this._filterCompleted$.next(state);
   }
 
   public emitRowFocused(e: Record<string, unknown>) {

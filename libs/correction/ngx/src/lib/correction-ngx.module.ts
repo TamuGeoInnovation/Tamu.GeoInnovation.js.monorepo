@@ -11,9 +11,18 @@ import { CorrectionLiteMapComponent } from './components/correction-lite-map/cor
 import { CorrectionDataTableComponent } from './components/correction-data-table/correction-data-table.component';
 import { CorrectionMiscControlsComponent } from './components/correction-misc-controls/correction-misc-controls.component';
 import { DbResetModalComponent } from './components/modals/db-reset-modal/db-reset-modal.component';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @NgModule({
-  imports: [CommonModule, EsriMapModule, UIFormsModule, UiKitsNgxLayoutTablesModule, ReactiveFormsModule, LayerListModule],
+  imports: [
+    CommonModule,
+    EsriMapModule,
+    UIFormsModule,
+    UiKitsNgxLayoutTablesModule,
+    ReactiveFormsModule,
+    LayerListModule,
+    UILayoutModule
+  ],
   declarations: [
     CorrectionLiteMapComponent,
     CorrectionDataTableComponent,
