@@ -32,9 +32,6 @@ import { DbService } from '../../services/db/db.service';
 import { CorrectionService } from '../../services/correction/correction.service';
 import { DbResetModalComponent } from '../modals/db-reset-modal/db-reset-modal.component';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import esri = __esri;
-
 @Component({
   selector: 'tamu-gisc-correction-data-table',
   templateUrl: './correction-data-table.component.html',
@@ -44,13 +41,14 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
   private _file$: ReplaySubject<File> = new ReplaySubject(1);
   private _refresh$: ReplaySubject<boolean> = new ReplaySubject(1);
   private _destroy$: ReplaySubject<boolean> = new ReplaySubject(1);
-  public form: FormGroup;
 
   /**
    * Stores and relays pagination events from the paginator component.
    */
   private _paginationState$: ReplaySubject<PaginationEvent> = new ReplaySubject(1);
-  public filterCompleted$: Observable<boolean>;
+  public filtersForm: FormGroup;
+  private _loadingData$: ReplaySubject<boolean> = new ReplaySubject(1);
+  public loadingData = this._loadingData$.asObservable().pipe(debounceTime(500));
 
   public file = this._file$.asObservable();
   public db: Observable<IDBDatabase>;
@@ -151,6 +149,7 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       }
     })
   );
+
   private readonly _newFields = {
     NewLatitude: '',
     NewLongitude: '',
@@ -170,12 +169,10 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    this.form = this.fb.group({
+    this.filtersForm = this.fb.group({
       showCorrected: [true],
       mms: ['All']
     });
-
-    this.filterCompleted$ = this.form.get('showCorrected').valueChanges.pipe(shareReplay());
 
     this.db = race(
       this.file.pipe(
@@ -201,20 +198,50 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
       this.ds.openDatabase('corrections')
     );
 
-    this.contents = merge(this.db, this._refresh$, this._paginationState$, this.filterCompleted$).pipe(
+    this.contents = merge(this.db, this._refresh$, this._paginationState$, this.filtersForm.valueChanges).pipe(
       debounceTime(50), // Some number to ensure we debounce events in the same event loop.
       withLatestFrom(this._paginationState$),
+      tap(() => {
+        this._loadingData$.next(true);
+      }),
       switchMap(([, pagination]) => {
-        if (this.form.get('showCorrected').value === true) {
-          return this.ds.getN(pagination.pageSize, pagination.page);
+        const form_state = this._calculateFilters(this.filtersForm.getRawValue());
+
+        if (form_state.showCorrected && form_state.allMMSTypes) {
+          // This operation is fast, so if the filters are in their default state, we want to avoid doing extra work.
+          return this.ds.getN(pagination.pageSize, pagination.page).pipe(
+            tap(() => {
+              this._loadingData$.next(false);
+            })
+          );
         } else {
           return this.ds
             .filterTable((row) => {
-              return row.MicroMatchStatus !== 'Interactive';
+              let ret = false;
+
+              if (form_state.allMMSTypes) {
+                return true;
+              } else {
+                if (row.MicroMatchStatus === form_state.mmsType) {
+                  ret = true;
+                }
+              }
+
+              if (form_state.showCorrected) {
+                if (row.MicroMatchStatus === 'Interactive') {
+                  ret = true;
+                }
+              }
+
+              return ret;
             })
             .pipe(
               switchMap((col) => {
-                return this.ds.getNFromCollection(col, pagination.pageSize, pagination.page);
+                return this.ds.getNFromCollection(col, pagination.pageSize, pagination.page).pipe(
+                  tap(() => {
+                    this._loadingData$.next(false);
+                  })
+                );
               })
             );
         }
@@ -223,6 +250,54 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
         this.cs.notifyDataPopulated();
       }),
       shareReplay()
+    );
+
+    this.columnsCount = merge(this.db, this._refresh$, this.filtersForm.valueChanges).pipe(
+      debounceTime(50),
+      switchMap(() => {
+        const form_state = this._calculateFilters(this.filtersForm.getRawValue());
+
+        if (form_state.showCorrected && form_state.allMMSTypes) {
+          return this.ds.getCount();
+        } else {
+          return this.ds
+            .filterTable((row) => {
+              let ret = false;
+
+              if (form_state.allMMSTypes) {
+                return true;
+              } else {
+                if (row.MicroMatchStatus === form_state.mmsType) {
+                  ret = true;
+                }
+              }
+
+              if (form_state.showCorrected) {
+                if (row.MicroMatchStatus === 'Interactive') {
+                  ret = true;
+                }
+              }
+
+              return ret;
+            })
+            .pipe(
+              switchMap((col) => {
+                return from(col.count());
+              })
+            );
+        }
+      })
+    );
+
+    this.correctedCount = merge(this.db, this._refresh$).pipe(
+      debounceTime(50),
+      switchMap(() => {
+        return this.ds.getWhereWithClause('MicroMatchStatus', 'equals', 'Interactive').pipe(
+          switchMap((col) => {
+            return from(col.count());
+          })
+        );
+      })
     );
 
     this.cs.correctionApplied
@@ -251,32 +326,6 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
           this._refresh$.next(true);
         }
       });
-
-    this.columnsCount = merge(this.db, this._refresh$, this.filterCompleted$).pipe(
-      debounceTime(50),
-      switchMap(() => {
-        if (this.form.get('showCorrected').value === true) {
-          return this.ds.getCount();
-        } else {
-          return this.ds.getWhereWithClause('MicroMatchStatus', 'notEqual', 'Interactive').pipe(
-            switchMap((col) => {
-              return from(col.count());
-            })
-          );
-        }
-      })
-    );
-
-    this.correctedCount = merge(this.db, this._refresh$).pipe(
-      debounceTime(50),
-      switchMap(() => {
-        return this.ds.getWhereWithClause('MicroMatchStatus', 'equals', 'Interactive').pipe(
-          switchMap((col) => {
-            return from(col.count());
-          })
-        );
-      })
-    );
   }
 
   public ngOnDestroy(): void {
@@ -412,5 +461,24 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
         }
       });
     });
+  }
+
+  /**
+   * Simple function to calculate state of filters based on the input form.
+   */
+  private _calculateFilters(form: Record<string, unknown>): {
+    showCorrected: boolean;
+    allMMSTypes: boolean;
+    mmsType: string;
+  } {
+    const showCorrected = form.showCorrected === true;
+    const allMMSTypes = form.mms === 'All' || form.mms === undefined;
+    const mmsType = form.mms as string;
+
+    return {
+      showCorrected,
+      allMMSTypes,
+      mmsType
+    };
   }
 }

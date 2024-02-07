@@ -1,9 +1,14 @@
 <ng-container *ngIf="(db | async) as db; else noData">
   <div class="table-overflow-container">
     <tamu-gisc-table [data]="contents | async" [config]="config" [rowActionable]="true" (rowClick)="emitRowFocused($event)"></tamu-gisc-table>
+
+    <div class="loader-overlay" *ngIf="loadingData | async">
+      <p>Loading data...</p>
+      <div class="spinning-loader"></div>
+    </div>
   </div>
 
-  <div class="toolbar" [formGroup]="form">
+  <div class="toolbar" [formGroup]="filtersForm">
     <div class="left-container">
       <!-- <div class="toolbar-item" id="record-count">{{(contents | async)?.length}} records being shown</div> -->
       <tamu-gisc-table-paginator [total]="columnsCount | async" [pageSize]="125" [showLimitArrows]="false" (pagination)="recordPaginationEvent($event)"></tamu-gisc-table-paginator>
@@ -12,7 +17,7 @@
     <div class="right-container">
       <tamu-gisc-tooltip positioningStrategy="fixed" width="30rem">
         <tamu-gisc-tooltip-trigger>
-          <div class="toolbar-item link" id="download-button"><span class="material-symbols-outlined">filter_list</span> Filters</div>
+          <div class="toolbar-item link" id="download-button"><span class="material-symbols-outlined">tune</span> Controls</div>
         </tamu-gisc-tooltip-trigger>
 
         <div class="tooltip-body">
