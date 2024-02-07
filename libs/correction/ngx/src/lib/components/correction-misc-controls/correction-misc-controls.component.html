@@ -87,7 +87,7 @@
         <div class="correction-section">
           <p class="trailer-1">The following is a list of alternate output geocodes from different reference sources. You can use one of the following in place of manually selecting a point from the map.</p>
 
-          <div class="flex flex-row">
+          <div class="flex flex-row wrap">
             <div *ngFor="let ag of alternateGeocodes | async" class="alternate-geocode" (click)="applyAlternateGeocode(ag)">
               <p class="source-name">{{ag?.Source}}</p>
               <p class="source-lat">{{ag?.Latitude}},</p>
@@ -123,3 +123,4 @@
     </div>
   </div>
 </ng-template>
+
