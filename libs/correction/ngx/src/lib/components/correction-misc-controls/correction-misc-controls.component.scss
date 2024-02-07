@@ -47,15 +47,7 @@
   }
 
   .geocode-fragment {
-    padding: 0.5rem 1rem;
-
-    &:first-child {
-      padding-left: 0;
-    }
-
-    &:last-child {
-      padding-right: 0;
-    }
+    padding: 0.5rem 1.5rem 0.5rem 0;
 
     .geocode-fragment__name {
       text-transform: uppercase;
