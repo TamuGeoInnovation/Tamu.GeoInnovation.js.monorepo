@@ -57,6 +57,7 @@ export const LayerSources: LayerSource[] = [
               { size: 0, value: 2981714 }
             ]
           }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ] as any,
         type: 'simple',
         symbol: {

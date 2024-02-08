@@ -350,6 +350,7 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
           // Remove the ID field from the data array.
           // This is to prevent a bug where the output is re-sorted if it is used as input.
           const minusId = data.map((row) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { id, ...rest } = row;
             return rest;
           });
