@@ -10,7 +10,6 @@
 
   <div class="toolbar" [formGroup]="filtersForm">
     <div class="left-container">
-      <!-- <div class="toolbar-item" id="record-count">{{(contents | async)?.length}} records being shown</div> -->
       <tamu-gisc-table-paginator [total]="columnsCount | async" [pageSize]="125" [showLimitArrows]="false" (pagination)="recordPaginationEvent($event)"></tamu-gisc-table-paginator>
     </div>
 
@@ -44,10 +43,8 @@
 
     <div class="file-input__drop-zone">
       <div class="file-input__drop-zone__text">
-        <!-- <ng-template #noFile> -->
         <span class="material-symbols-outlined">cloud_upload</span>
         <p>Click to select CSV file or drag and drop here.</p>
-        <!-- </ng-template> -->
       </div>
     </div>
   </div>
