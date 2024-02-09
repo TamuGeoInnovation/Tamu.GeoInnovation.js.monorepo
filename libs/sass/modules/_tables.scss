@@ -1,11 +1,9 @@
+@use 'libs/sass/mixins' as m;
+
 table.floating-table {
   margin: 1rem auto;
   border: none;
-
-  tr {
-    border-radius: 5pt;
-    background: none !important;
-  }
+  border-collapse: collapse;
 
   td,
   th {
@@ -14,23 +12,48 @@ table.floating-table {
     overflow: hidden;
     border: none;
     background: none;
+    white-space: nowrap;
   }
 
   thead {
     tr {
-      border: none;
-      font-weight: 500;
+      font-weight: 600;
 
       th {
         font-weight: inherit;
+        position: sticky;
+        top: 0;
+        background: #fafafa;
+        border-bottom: 2pt solid darken($color: $lightened-inactive-color, $amount: 10%);
       }
     }
   }
 
   tbody {
     tr {
-      border-bottom: 1pt solid lighten($lightened-inactive-color, 5%);
-      border-top: 1pt solid lighten($lightened-inactive-color, 5%);
+      @include m.transition(background 0.1s);
+
+      td {
+        border-right: 1pt solid lighten($color: $lightened-inactive-color, $amount: 5%);
+      }
+
+      &:nth-child(even) {
+        background: darken($lightened-inactive-color, 1%);
+      }
+
+      &.selectable {
+        cursor: pointer;
+
+        &:hover {
+          background: darken($lightened-inactive-color, 5%);
+        }
+      }
+
+      &.highlight {
+        background: darken($lightened-inactive-color, 12%) !important;
+
+        font-weight: 600;
+      }
     }
   }
 }

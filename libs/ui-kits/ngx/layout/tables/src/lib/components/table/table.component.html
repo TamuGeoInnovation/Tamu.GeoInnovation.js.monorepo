@@ -1,0 +1,13 @@
+<table class="floating-table">
+  <thead>
+    <tr>
+      <th *ngFor="let header of headers">{{header}}</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let row of data" (click)="emitRowClick(row); highlightRow($event)" [ngClass]="{selectable: rowActionable}">
+      <td *ngFor="let column of config">{{row[column.prop]}}</td>
+    </tr>
+  </tbody>
+</table>

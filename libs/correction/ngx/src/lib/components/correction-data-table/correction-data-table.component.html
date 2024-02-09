@@ -1,0 +1,51 @@
+<ng-container *ngIf="(db | async) as db; else noData">
+  <div class="table-overflow-container">
+    <tamu-gisc-table [data]="contents | async" [config]="config" [rowActionable]="true" (rowClick)="emitRowFocused($event)"></tamu-gisc-table>
+
+    <div class="loader-overlay" *ngIf="loadingData | async">
+      <p>Loading data...</p>
+      <div class="spinning-loader"></div>
+    </div>
+  </div>
+
+  <div class="toolbar" [formGroup]="filtersForm">
+    <div class="left-container">
+      <tamu-gisc-table-paginator [total]="columnsCount | async" [pageSize]="125" [showLimitArrows]="false" (pagination)="recordPaginationEvent($event)"></tamu-gisc-table-paginator>
+    </div>
+
+    <div class="right-container">
+      <tamu-gisc-tooltip positioningStrategy="fixed" width="30rem">
+        <tamu-gisc-tooltip-trigger>
+          <div class="toolbar-item link" id="download-button"><span class="material-symbols-outlined">tune</span> Controls</div>
+        </tamu-gisc-tooltip-trigger>
+
+        <div class="tooltip-body">
+          <div class="tooltip-setting-section">
+            <p>Include/exclude records that have already been corrected.</p>
+            <tamu-gisc-checkbox [label]="'Show corrected' + ' (' + (correctedCount | async) + ')'" formControlName="showCorrected"></tamu-gisc-checkbox>
+          </div>
+
+          <div class="tooltip-setting-section">
+            <p>Filter based on micro-match status (MMS).</p>
+            <tamu-gisc-select [data]="mms_types" valueTemplate="value" displayTemplate="name" formControlName="mms"></tamu-gisc-select>
+          </div>
+        </div>
+      </tamu-gisc-tooltip>
+      <div class="toolbar-item link" id="clear-button" (click)="openResetPromptModal()"><span class="material-symbols-outlined">ink_eraser</span> Reset</div>
+      <div class="toolbar-item link" id="export-button" (click)="exportToCsv()"><span class="material-symbols-outlined">csv</span> {{exportStatusMessage | async}}</div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noData>
+  <div class="file-input">
+    <tamu-gisc-file (fileSelected)="doThing($event)" accept=".csv"></tamu-gisc-file>
+
+    <div class="file-input__drop-zone">
+      <div class="file-input__drop-zone__text">
+        <span class="material-symbols-outlined">cloud_upload</span>
+        <p>Click to select CSV file or drag and drop here.</p>
+      </div>
+    </div>
+  </div>
+</ng-template>

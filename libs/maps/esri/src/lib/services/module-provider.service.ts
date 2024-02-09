@@ -229,6 +229,10 @@ export class EsriModuleProviderService {
       name: 'Expand'
     },
     {
+      class: 'esri/widgets/BasemapToggle',
+      name: 'BasemapToggle'
+    },
+    {
       class: 'esri/layers/support/Field',
       name: 'Field'
     },

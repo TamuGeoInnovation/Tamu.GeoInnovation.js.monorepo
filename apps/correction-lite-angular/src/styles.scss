@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'libs/sass/1140';
+@import 'libs/sass/mixins';
+@import 'libs/sass/dom_flexbox';
+@import 'libs/sass/spacing';
+@import 'libs/sass/modules/loaders';
+
+html {
+  height: 100%;
+  width: 100%;
+  font-family: 'Open Sans', sans-serif !important;
+  color: #424242;
+  font-size: 14px;
+}
+
+body {
+  height: inherit;
+  width: inherit;
+}

@@ -23,6 +23,9 @@ export class FileComponent implements ControlValueAccessor {
   @Input('value')
   private _value = false;
 
+  @Input()
+  public accept = '*';
+
   @Output()
   public fileSelected: EventEmitter<File> = new EventEmitter();
 

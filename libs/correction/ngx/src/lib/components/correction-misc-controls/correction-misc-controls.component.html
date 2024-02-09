@@ -1,0 +1,125 @@
+<div id="instructions-container" *ngIf="(selectedRow | async) === null; else correctSelected">
+  <ng-container *ngIf="(showInitialInstructions | async) === null; else selectRowInstructions">
+    <p>Get started by uploading your result CSV file</p>
+  </ng-container>
+
+  <ng-template #selectRowInstructions>
+    <p>Select a row from the table to begin correction.</p>
+  </ng-template>
+</div>
+
+<ng-template #correctSelected>
+  <div id="correction-container" *ngIf="(selectedRow | async) as row">
+    <div>
+      <div class="correction-section">
+        <h3>Address</h3>
+
+        <div class="geocode-fragments">
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">Street</p>
+            <p class="geocode-fragment__value">{{row.Address}}</p>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">City</p>
+            <p class="geocode-fragment__value">{{row.City}}</p>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">State</p>
+            <p class="geocode-fragment__value">{{row.State}}</p>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">Zip</p>
+            <p class="geocode-fragment__value">{{row.Zip}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-row flex-wrap">
+      <div class="correction-section">
+        <h3>Geocoded Coordinates <span class="symbol-marker geocoded"></span></h3>
+
+        <p class="trailer-1">The following are the resulting best-match lat/lon pairs for the above address.</p>
+
+        <div class="geocode-fragments">
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">Output Latitude</p>
+            <p class="geocode-fragment__value">{{row.Latitude}}</p>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">Output Longitude</p>
+            <p class="geocode-fragment__value">{{row.Longitude}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="correction-section">
+        <h3>Corrected Coordinates <span class="symbol-marker correction"></span></h3>
+
+        <p class="trailer-1">If geocoded coordinates are incorrect, click on the correct location on the map to record the coordinates, or select an alternate geocode from the list (if any).</p>
+
+        <div class="geocode-fragments">
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">New Latitude</p>
+            <div [ngSwitch]="(coordinateOverride | async) !== null">
+              <p class="geocode-fragment__value" *ngSwitchCase="true">{{(coordinateOverride | async)?.lat}}</p>
+              <p class="geocode-fragment__value" *ngSwitchDefault>-</p>
+            </div>
+          </div>
+
+          <div class="geocode-fragment">
+            <p class="geocode-fragment__name">New Longitude</p>
+            <div [ngSwitch]="(coordinateOverride | async) !== null">
+              <p class="geocode-fragment__value" *ngSwitchCase="true">{{(coordinateOverride | async)?.lon}}</p>
+              <p class="geocode-fragment__value" *ngSwitchDefault>-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="alternateGeocodes | async as ag">
+      <ng-container *ngIf="ag?.length > 0">
+        <div class="correction-section">
+          <p class="trailer-1">The following is a list of alternate output geocodes from different reference sources. You can use one of the following in place of manually selecting a point from the map.</p>
+
+          <div class="flex flex-row wrap">
+            <div *ngFor="let ag of alternateGeocodes | async" class="alternate-geocode" (click)="applyAlternateGeocode(ag)">
+              <p class="source-name">{{ag?.Source}}</p>
+              <p class="source-lat">{{ag?.Latitude}},</p>
+              <p class="source-lon">{{ag?.Longitude}}</p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div *ngIf="(correctionIsPointClick | async)" class="trailer-3">
+      <h3>Geography Matching Type</h3>
+
+      <p class="trailer-1">Indicate the best geography match type.</p>
+
+      <form [formGroup]="form">
+        <tamu-gisc-select [data]="matchGeographyTypes" displayTemplate="label" valueTemplate="value" formControlName="NewQuality"></tamu-gisc-select>
+      </form>
+    </div>
+
+    <div *ngIf="(coordinateOverride | async) !== null">
+      <h3>Notes</h3>
+
+      <p class="trailer-1">Provide a short justification/explanation for the correction. This note will be exported along with the correction latitude and longitude.</p>
+
+      <form [formGroup]="form">
+        <tamu-gisc-textbox type="textarea" class="trailer-2" formControlName="QANotes"></tamu-gisc-textbox>
+      </form>
+    </div>
+
+    <div class="flex-row flex-wrap">
+      <tamu-gisc-button [value]="'Apply Correction'" [disabled]="(coordinateOverride | async) === null" (click)="applyCorrection()"></tamu-gisc-button>
+    </div>
+  </div>
+</ng-template>

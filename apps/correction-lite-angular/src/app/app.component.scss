@@ -1,0 +1,29 @@
+:host {
+  display: grid;
+  height: inherit;
+  grid-template-columns: 1fr 1fr;
+}
+
+#map-container {
+  grid-column: 1/2;
+}
+
+#side-container {
+  display: grid;
+  grid-column: 2/3;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+
+  #table-container {
+    grid-row: 1/2;
+    overflow: hidden;
+  }
+
+  #misc-container {
+    grid-row: 2/3;
+  }
+}
+
+tamu-gisc-notification-container {
+  position: fixed;
+}

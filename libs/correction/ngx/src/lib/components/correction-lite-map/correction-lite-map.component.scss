@@ -1,0 +1,9 @@
+.overlay-zone {
+  background: #fff;
+  padding: 0.5rem;
+  border-radius: 3pt;
+
+  &.bottom.left {
+    margin-left: -2.5rem;
+  }
+}

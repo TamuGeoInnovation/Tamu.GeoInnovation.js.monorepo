@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/ui-kits/ngx/layout/tables",
+  "sourceRoot": "libs/ui-kits/ngx/layout/tables/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ui-kits/ngx/layout/tables"],
+      "options": {
+        "jestConfig": "libs/ui-kits/ngx/layout/tables/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ui-kits/ngx/layout/tables/src/**/*.ts", "libs/ui-kits/ngx/layout/tables/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

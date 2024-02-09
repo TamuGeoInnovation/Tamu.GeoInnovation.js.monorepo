@@ -1,0 +1,10 @@
+<h2 class="trailer-1">Reset Database</h2>
+
+<p class="trailer-1"><strong>You are about to reset the internal database. Any geocode corrections that you may have applied will be lost forever!</strong> To preserve your changes, close this modal and export the internal database before resetting.</p>
+
+<p class="trailer-1">A database reset is necessary to clear the application to be able to process an entirely new database and/or start over fresh.</p>
+
+<div class="button-row flex flex-row justify-between leader-2">
+  <tamu-gisc-button class="pre-1 post-1" [value]="'Reset database'" look="danger" (click)="proceed()"></tamu-gisc-button>
+  <tamu-gisc-button class="pre-1 post-1" [value]="'Never mind, do not reset database'" (click)="cancel()"></tamu-gisc-button>
+</div>

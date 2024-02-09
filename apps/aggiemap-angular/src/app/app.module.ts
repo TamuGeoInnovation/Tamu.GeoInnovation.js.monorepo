@@ -38,4 +38,3 @@ WebFont.load({
   ]
 })
 export class AppModule {}
-
