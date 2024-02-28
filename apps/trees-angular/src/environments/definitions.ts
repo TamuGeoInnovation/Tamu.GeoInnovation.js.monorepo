@@ -26,7 +26,8 @@ export const Definitions = {
     id: 'trees',
     layerId: 'trees_layer',
     name: 'Trees',
-    url: `${Connections.basemapUrl}/8`,
+    url: `${Connections.basemapUrl}/4`,
     popupComponent: 'BasePopupComponent'
   }
 };
+
