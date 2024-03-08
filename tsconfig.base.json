@@ -102,6 +102,7 @@
       "@tamu-gisc/oidc/ngx": ["libs/oidc/ngx/src/index.ts"],
       "@tamu-gisc/oidc/provider": ["libs/oidc/provider/src/index.ts"],
       "@tamu-gisc/signage": ["libs/signage/src/index.ts"],
+      "@tamu-gisc/ts/movein/ngx": ["libs/ts/movein/ngx/src/index.ts"],
       "@tamu-gisc/two/common": ["libs/two/common/src/index.ts"],
       "@tamu-gisc/two/dashboard": ["libs/two/dashboard/src/index.ts"],
       "@tamu-gisc/two/data-access": ["libs/two/data-access/src/index.ts"],

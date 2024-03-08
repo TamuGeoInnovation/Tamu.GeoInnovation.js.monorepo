@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/ts/movein/ngx",
+  "sourceRoot": "libs/ts/movein/ngx/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ts/movein/ngx"],
+      "options": {
+        "jestConfig": "libs/ts/movein/ngx/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ts/movein/ngx/src/**/*.ts", "libs/ts/movein/ngx/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}
