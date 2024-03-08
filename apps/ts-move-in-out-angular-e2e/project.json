@@ -1,0 +1,29 @@
+{
+  "root": "apps/ts-move-in-out-angular-e2e",
+  "sourceRoot": "apps/ts-move-in-out-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/ts-move-in-out-angular-e2e/cypress.json",
+        "devServerTarget": "ts-move-in-out-angular:serve:development",
+        "tsConfig": "apps/ts-move-in-out-angular-e2e/tsconfig.json"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "ts-move-in-out-angular:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ts-move-in-out-angular-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ts-move-in-out-angular"]
+}
