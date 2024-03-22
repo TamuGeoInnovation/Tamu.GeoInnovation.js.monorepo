@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { TsMoveinNgxModule } from '@tamu-gisc/ts/movein/ngx';
+
 import { AppComponent } from './app.component';
-import { NxWelcomeComponent } from './nx-welcome.component';
-import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [AppComponent, NxWelcomeComponent],
-  imports: [BrowserModule, RouterModule.forRoot([], { initialNavigation: 'enabledBlocking' })],
+  imports: [BrowserModule, TsMoveinNgxModule],
+  declarations: [AppComponent],
   providers: [],
   bootstrap: [AppComponent]
 })
