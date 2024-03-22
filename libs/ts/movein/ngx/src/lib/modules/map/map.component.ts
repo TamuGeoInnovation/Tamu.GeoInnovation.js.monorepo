@@ -8,10 +8,8 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
-import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-import { BetaPromptComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
@@ -37,7 +35,6 @@ export class MapComponent implements OnInit {
   constructor(
     private responsiveService: ResponsiveService,
     private env: EnvironmentService,
-    private readonly ms: ModalService,
     private readonly ss: SettingsService,
     private readonly ts: TestingService
   ) {}
@@ -120,28 +117,6 @@ export class MapComponent implements OnInit {
       'Howdy Ags!'
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
-
-    this.ss
-      .init({
-        storage: {
-          subKey: 'modals'
-        },
-        settings: {
-          beta_acknowledge: {
-            value: false,
-            persistent: true
-          }
-        }
-      })
-      .pipe(
-        filter((settings) => {
-          return settings['beta_acknowledge'] === false;
-        }),
-        withLatestFrom(this.isDev)
-      )
-      .subscribe(([settingValue, isDev]) => {
-        this.openBetaModal(isDev);
-      });
   }
 
   public ngOnDestroy() {
@@ -204,25 +179,4 @@ export class MapComponent implements OnInit {
       throw new Error('No event provided.');
     }
   };
-
-  public openBetaModal(shouldOpen: boolean) {
-    if (shouldOpen) {
-      this.ms
-        .open<boolean>(BetaPromptComponent)
-        .pipe(
-          filter((acknowledged) => {
-            return acknowledged;
-          })
-        )
-        .subscribe(() => {
-          this.updateModalSettings();
-        });
-    }
-  }
-
-  private updateModalSettings() {
-    this.ss.updateSettings({
-      beta_acknowledge: true
-    });
-  }
 }
