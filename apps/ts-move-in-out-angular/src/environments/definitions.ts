@@ -4,6 +4,8 @@ import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import esri = __esri;
 
+export const NotificationEvents = [];
+
 export const Connections = {
   basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
@@ -260,7 +262,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BuildingPopupComponent'
+    popupComponent: Definitions.BUILDINGS.popupComponent
   },
   {
     type: 'feature',
@@ -290,7 +292,7 @@ export const LayerSources: LayerSource[] = [
     loadOnInit: false,
     visible: true,
     url: `${Connections.basemapUrl}/2`,
-    popupComponent: 'BuildingPopupComponent',
+    popupComponent: Definitions.BUILDINGS.popupComponent,
     native: {
       renderer: {
         type: 'simple',
@@ -653,7 +655,7 @@ export const SearchSources: SearchSource[] = [
     scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
     featuresLocation: 'features',
     displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
-    popupComponent: 'BuildingPopupComponent',
+    popupComponent: Definitions.BUILDINGS.popupComponent,
     searchActive: true
   },
   {
@@ -669,7 +671,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
-    popupComponent: 'BuildingPopupComponent',
+    popupComponent: Definitions.BUILDINGS.popupComponent,
     searchActive: false
   },
   {
@@ -785,7 +787,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{{attributes.LotName}}',
-    popupComponent: 'BuildingPopupComponent',
+    popupComponent: Definitions.BUILDINGS.popupComponent,
     searchActive: true
   },
   {

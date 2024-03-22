@@ -14,7 +14,15 @@
         "polyfills": "apps/ts-move-in-out-angular/src/polyfills.ts",
         "tsConfig": "apps/ts-move-in-out-angular/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/ts-move-in-out-angular/src/favicon.ico", "apps/ts-move-in-out-angular/src/assets"],
+        "assets": [
+          "apps/ts-move-in-out-angular/src/favicon.ico",
+          "apps/ts-move-in-out-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
         "styles": ["apps/ts-move-in-out-angular/src/styles.scss"],
         "scripts": []
       },
