@@ -215,7 +215,7 @@ h6 {
   }
 }
 
-app-root {
+tamu-gisc-root {
   @include flexbox();
   @include flex-direction(column);
   height: inherit;
@@ -625,7 +625,7 @@ body.mapping {
   @include flexbox();
   @include flex-direction(column);
 
-  app-root {
+  tamu-gisc-root {
     @include flex(1);
   }
 }
