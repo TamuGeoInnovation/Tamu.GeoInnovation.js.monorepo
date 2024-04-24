@@ -16,6 +16,10 @@
         "assets": [
           "apps/geoservices-angular/src/favicon.ico",
           "apps/geoservices-angular/src/assets",
+          "apps/geoservices-angular/src/Dockerfile",
+          "apps/geoservices-angular/src/.dockerignore",
+          "apps/geoservices-angular/src/docker-compose.yml",
+          "apps/geoservices-angular/src/.nginx",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
