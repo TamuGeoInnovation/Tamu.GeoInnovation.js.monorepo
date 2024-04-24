@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { ReverseGeocode } from '@tamu-gisc/geoprocessing/v5';
+import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding',
