@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
-import { map, shareReplay, startWith, tap } from 'rxjs/operators';
+import { debounceTime, map, shareReplay, startWith, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-interactive-pricing',
@@ -40,62 +41,56 @@ export class InteractivePricingComponent implements OnInit {
   private _pricingMatrix: PricingTiers = [
     {
       points: 500,
-      oneTimeCost: 10,
-      recurringCost: 10
+      frequency: this._getFrequencyCosts(10)
     },
     {
       points: 1000,
-      oneTimeCost: 15,
-      recurringCost: 15
-    },
-    {
-      points: 2500,
-      oneTimeCost: null,
-      recurringCost: null,
-      visible: false
+      frequency: this._getFrequencyCosts(15)
     },
     {
       points: 5000,
-      oneTimeCost: 25,
-      recurringCost: 25
+      frequency: this._getFrequencyCosts(25)
     },
     {
       points: 10000,
-      oneTimeCost: 35,
-      recurringCost: 35
+      frequency: this._getFrequencyCosts(35)
     },
     {
       points: 25000,
-      oneTimeCost: 60,
-      recurringCost: null
+      frequency: this._getFrequencyCosts(60)
     },
     {
       points: 50000,
-      oneTimeCost: 100,
-      recurringCost: null
+      frequency: this._getFrequencyCosts(100)
     },
     {
       points: 100000,
-      oneTimeCost: 175,
-      recurringCost: 175
+      frequency: this._getFrequencyCosts(175)
     },
     {
       points: 250000,
-      oneTimeCost: 375,
-      recurringCost: 375
+      frequency: this._getFrequencyCosts(375)
     },
     {
       points: 500000,
-      oneTimeCost: 700,
-      recurringCost: 700
+      frequency: this._getFrequencyCosts(700)
     },
     {
       points: 1000000,
-      oneTimeCost: 1200,
-      recurringCost: 10000,
-      recurringUnlimited: true
+      frequency: this._getFrequencyCosts(1200)
+    },
+    {
+      points: 'Unlimited',
+      frequency: {
+        oneTime: null,
+        monthly: null,
+        yearly: 15000
+      }
     }
   ];
+
+  public eligiblePricingTiers: Observable<Array<PricingTier>>;
+  public pricingSliderDataMap: Observable<RangeInputDataMap>;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -105,7 +100,7 @@ export class InteractivePricingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.form = this.fb.group({
-      creditCount: [500],
+      creditCount: [0],
       frequency: [FREQUENCY.ONE_TIME],
       partnerProgram: [false],
       sla: [false]
@@ -132,24 +127,17 @@ export class InteractivePricingComponent implements OnInit {
       this.form.patchValue(toPatch);
     }
 
-    this.selectedCreditTier = this.form.get('creditCount').valueChanges.pipe(
-      startWith(this.form.get('creditCount').value),
-
-      map((count) => {
-        return this._pricingMatrix.reduce((lastTier, pricingTier) => {
-          if (count >= pricingTier.points && pricingTier.visible !== false) {
-            return pricingTier;
-          } else {
-            return lastTier;
-          }
-        });
+    this.frequencyType = this.form.get('frequency').valueChanges.pipe(
+      startWith(this.form.get('frequency').value),
+      tap((freq) => {
+        if (freq !== FREQUENCY.RECURRING_YEARLY) {
+          this.form.patchValue({
+            sla: false
+          });
+        }
       }),
       shareReplay()
     );
-
-    this.frequencyType = this.form
-      .get('frequency')
-      .valueChanges.pipe(startWith(this.form.get('frequency').value), shareReplay());
 
     this.isRecurring = this.frequencyType.pipe(
       map((frequency) => {
@@ -159,10 +147,6 @@ export class InteractivePricingComponent implements OnInit {
         if (recurring) {
           this.form.patchValue({
             partnerProgram: false
-          });
-        } else {
-          this.form.patchValue({
-            sla: false
           });
         }
       }),
@@ -180,14 +164,38 @@ export class InteractivePricingComponent implements OnInit {
       .get('partnerProgram')
       .valueChanges.pipe(startWith(this.form.get('partnerProgram').value), shareReplay());
 
-    this.selectedCreditTierPoints = combineLatest([this.selectedCreditTier, this.isRecurring]).pipe(
-      map(([tier, recurring]) => {
-        if (recurring) {
-          if (tier.recurringUnlimited) {
-            return 'Unlimited';
-          } else {
-            return tier.points.toLocaleString();
-          }
+    this.eligiblePricingTiers = this.frequencyType.pipe(
+      map((type) => {
+        if (type === FREQUENCY.ONE_TIME) {
+          return this._pricingMatrix.filter((tier) => tier.visible !== false && tier.frequency.oneTime !== null);
+        } else if (type === FREQUENCY.RECURRING_MONTHLY) {
+          return this._pricingMatrix.filter((tier) => tier.visible !== false && tier.frequency.monthly !== null);
+        } else if (type === FREQUENCY.RECURRING_YEARLY) {
+          return this._pricingMatrix.filter((tier) => tier.visible !== false && tier.frequency.yearly !== null);
+        } else {
+          return [];
+        }
+      }),
+      shareReplay()
+    );
+
+    this.selectedCreditTier = combineLatest([
+      this.form.get('creditCount').valueChanges.pipe(startWith(this.form.get('creditCount').value)),
+      this.eligiblePricingTiers
+    ]).pipe(
+      // Put the effects to update the selected credit tier on the next event loop to give the slider
+      // time to update the index value, else a reference error will occur.
+      debounceTime(0),
+      map(([index, tiers]) => {
+        return tiers[index];
+      }),
+      shareReplay()
+    );
+
+    this.selectedCreditTierPoints = this.selectedCreditTier.pipe(
+      map((tier) => {
+        if (typeof tier.points === 'string') {
+          return tier.points;
         } else {
           return tier.points.toLocaleString();
         }
@@ -195,15 +203,20 @@ export class InteractivePricingComponent implements OnInit {
     );
 
     this.selectedTierCost = combineLatest([this.selectedCreditTier, this.isRecurring, this.partnerPricing]).pipe(
-      map(([tier, recurring, partnerPricing]) => {
+      withLatestFrom(this.frequencyType),
+      map(([[tier, recurring, partnerPricing], frequency]) => {
         if (partnerPricing) {
           return 0;
         }
 
         if (recurring) {
-          return tier.recurringCost;
+          if (frequency === FREQUENCY.RECURRING_MONTHLY) {
+            return tier.frequency.monthly;
+          } else if (frequency === FREQUENCY.RECURRING_YEARLY) {
+            return tier.frequency.yearly;
+          }
         } else {
-          return tier.oneTimeCost;
+          return tier.frequency.oneTime;
         }
       })
     );
@@ -237,29 +250,56 @@ export class InteractivePricingComponent implements OnInit {
     );
 
     this.ctaLink = combineLatest([this.selectedCreditTier, this.frequencyType]).pipe(
+      // Throw away any events that occur within 100ms of each other because we only care about the last event in quick succession
+      // due to the fact that selected tier can change before the frequency type has been updated which will cause errors
+      // resolving the cta link.
+      debounceTime(0),
       map(([tier, frequency]) => {
         const baseUrl = `${this.env.value('accounts_url', false)}/UserServices/Payments/Make`;
 
         // return link for each frequency type
+
         switch (frequency) {
           case FREQUENCY.ONE_TIME:
-            return `${baseUrl}/SinglePayment.aspx?plan=${tier.points}&cost=${tier.oneTimeCost}&paymentType=OneTime&billingPeriod=ONETIME`;
+            return `${baseUrl}/SinglePayment.aspx?plan=${tier.points}&cost=${tier.frequency.oneTime}&paymentType=OneTime&billingPeriod=ONETIME`;
           case FREQUENCY.RECURRING_MONTHLY:
-            return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.recurringCost}&paymentType=Recurring&billingPeriod=MONT`;
+            return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.frequency.monthly}&paymentType=Recurring&billingPeriod=MONT`;
           case FREQUENCY.RECURRING_YEARLY:
-            return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.recurringCost}&paymentType=Recurring&billingPeriod=YEAR`;
+            return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.frequency.yearly}&paymentType=Recurring&billingPeriod=YEAR`;
         }
       })
     );
+
+    this.pricingSliderDataMap = this.eligiblePricingTiers.pipe(
+      map((activeTiers) => {
+        return activeTiers.map((tier, index) => {
+          return {
+            value: index,
+            display: tier.points.toLocaleString()
+          };
+        });
+      }),
+      shareReplay()
+    );
+  }
+
+  private _getFrequencyCosts(base: number): PricingTier['frequency'] {
+    return {
+      oneTime: base,
+      monthly: base - base * DISCOUNT_FACTOR.RECURRING_MONTHLY,
+      yearly: base * 12 - base * 12 * DISCOUNT_FACTOR.RECURRING_YEARLY
+    };
   }
 }
 
 interface PricingTier {
-  points: number;
-  oneTimeCost: number;
+  points: number | string;
   visible?: boolean;
-  recurringCost: number | null;
-  recurringUnlimited?: boolean;
+  frequency: {
+    oneTime: number | null;
+    monthly: number | null;
+    yearly: number | null;
+  };
 }
 
 type PricingTiers = Array<PricingTier>;
@@ -274,4 +314,10 @@ enum FREQUENCY {
   ONE_TIME = 'ONE_TIME',
   RECURRING_MONTHLY = 'RECURRING_MONTHLY',
   RECURRING_YEARLY = 'RECURRING_YEARLY'
+}
+
+enum DISCOUNT_FACTOR {
+  ONE_TIME = 0,
+  RECURRING_MONTHLY = 0.05,
+  RECURRING_YEARLY = 0.1
 }

@@ -3,7 +3,7 @@
     <form [formGroup]="form">
       <div class="form-collection column">
         <p class="byop-question">How many credits do you need?</p>
-        <tamu-gisc-range [min]="500" [max]="5000000" step="1000" formControlName="creditCount"></tamu-gisc-range>
+        <tamu-gisc-range formControlName="creditCount" [customDataMap]="pricingSliderDataMap | async" [limitFormat]="'none'"></tamu-gisc-range>
       </div>
 
       <div class="form-collection column">
@@ -117,7 +117,7 @@
       </table>
 
       <div class="flex flex-row justify-between align-end" id="total_cost">
-        <h3>
+        <h3 *ngIf="(isSLA | async) === false">
           <strong>Total cost: ${{(selectedTierCost | async) | number }}<ng-container *ngIf="isRecurring | async"> /{{(recurringInterval | async)?.unit}}</ng-container></strong>
         </h3>
 
