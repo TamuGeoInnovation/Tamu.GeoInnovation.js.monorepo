@@ -28,8 +28,12 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
           this.value = (years !== undefined && years.length > 0) || false;
         }
       },
-      serviceUrl: {
-        value: 'https://geoservices.tamu.edu/Api/Geocode/V5/?',
+      serviceHost: {
+        value: 'https://geoservices.tamu.edu',
+        excludeParams: true
+      },
+      servicePath: {
+        value: '/Api/Geocode/V5/',
         excludeParams: true
       },
       relaxableAttributes: {

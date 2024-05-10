@@ -9,6 +9,7 @@ import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding-basic',
@@ -26,9 +27,10 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
     private rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly ls: LocalStoreService,
-    private readonly as: AuthService
+    private readonly as: AuthService,
+    private readonly en: EnvironmentService
   ) {
-    super(fb, rt, ar, ls, as);
+    super(fb, rt, ar, ls, as, en);
   }
 
   public buildForm(): FormGroup {
@@ -70,11 +72,13 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
   public override getQueryParameters(): IReverseGeocoderOptions {
     const form = this.form.getRawValue();
 
-    return {
+    const opts = {
       apiKey: '',
       latitude: form.lat,
       longitude: form.lon,
       state: form.state || undefined
-    };
+    } as IReverseGeocoderOptions;
+
+    return this.patchHostOverride(opts);
   }
 }

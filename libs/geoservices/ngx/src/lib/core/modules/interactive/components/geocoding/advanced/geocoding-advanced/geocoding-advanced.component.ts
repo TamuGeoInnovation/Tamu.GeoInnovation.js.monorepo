@@ -11,6 +11,7 @@ import {
   GeocodeConfidenceLevel
 } from '@tamu-gisc/geoprocessing-v5';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { GeocodingBasicComponent } from '../../basic/geocoding-basic/geocoding-basic.component';
 import {
@@ -36,9 +37,10 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
     private readonly rtt: Router,
     private readonly arr: ActivatedRoute,
     private readonly lss: LocalStoreService,
-    private readonly ass: AuthService
+    private readonly ass: AuthService,
+    private readonly enn: EnvironmentService
   ) {
-    super(fbb, rtt, arr, lss, ass);
+    super(fbb, rtt, arr, lss, ass, enn);
   }
 
   public ngOnInit(): void {
@@ -112,7 +114,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
   public override getQueryParameters(): IGeocodeOptions {
     const form = this.form.getRawValue();
 
-    return {
+    const opts = {
       apiKey: '',
       streetAddress: form.streetAddress,
       city: form.city,
@@ -128,7 +130,9 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
       confidenceLevels: form.refs.openAddressesMinimumConfLevel,
       // for form refs, return an array for keys for which the value is true
       refs: Object.keys(form.refs).filter((key) => form.refs[key] === true) as unknown as IGeocodeOptions['refs']
-    };
+    } as IGeocodeOptions;
+
+    return this.patchHostOverride(opts);
   }
 
   public deselectAllRefs() {

@@ -20,6 +20,7 @@ import {
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
 import { GeoservicesError } from '@tamu-gisc/geoprocessing-core';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-base-interactive-geoprocessing',
@@ -63,6 +64,8 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     shareReplay()
   );
 
+  public serviceHostOverride: string | null = null;
+
   /**
    * The URL to redirect to view the full response/component
    */
@@ -78,7 +81,8 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly localStore: LocalStoreService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly envService: EnvironmentService
   ) {}
 
   public ngOnInit(): void {
@@ -179,6 +183,15 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
       shareReplay()
     );
 
+    // The hostname can change based on the environment, and by default it's a placeholder token.
+    // In localhost the token is set to null and will use the default hostname as configured in the geoprocessing lib.
+    // In production, the token will not be changed and thus should fallback to the default hostname as configured in the geoprocessing lib.
+    // In various development deployments, the token will be set to a different hostname and that's when we want to override the default hostname provided by the geoprocessing lib.
+    const override: string | null = this.envService.value('geoprocessing_api_host_override');
+    if (override !== null && override.startsWith('http')) {
+      this.serviceHostOverride = this.envService.value('geoprocessing_api_host_override');
+    }
+
     this._applyLocalStoreCache();
     this._applyLocalStoreComponentMode();
   }
@@ -222,6 +235,20 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
         value: mode
       });
     }
+  }
+
+  /**
+   * Patches in `hostOverride` if explicitly set in application environment.
+   */
+  public patchHostOverride(options: ParamType) {
+    if (this.serviceHostOverride) {
+      return {
+        ...options,
+        serviceHost: this.serviceHostOverride
+      };
+    }
+
+    return options;
   }
 
   private _getLocalToggleMode(): ComponentMode {

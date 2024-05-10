@@ -7,6 +7,7 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { Geocode, CensusYear, GeocodeResult, IGeocodeOptions } from '@tamu-gisc/geoprocessing-v5';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
@@ -25,9 +26,10 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly ls: LocalStoreService,
-    private readonly as: AuthService
+    private readonly as: AuthService,
+    private readonly en: EnvironmentService
   ) {
-    super(fb, rt, ar, ls, as);
+    super(fb, rt, ar, ls, as, en);
   }
 
   public buildForm() {
@@ -54,14 +56,16 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
   public override getQueryParameters(): IGeocodeOptions {
     const form = this.form.getRawValue();
 
-    return {
+    const opts = {
       apiKey: '',
       streetAddress: form.streetAddress,
       city: form.city,
       state: form.state,
       zip: form.zip,
       censusYears: form.censusYears === CensusYear.AllAvailable ? CensusYear.AllAvailable : [form.censusYears]
-    };
+    } as IGeocodeOptions;
+
+    return this.patchHostOverride(opts);
   }
 
   public getMapPoints() {

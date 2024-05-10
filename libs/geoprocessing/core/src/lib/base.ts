@@ -8,7 +8,11 @@ import { getXmlStatusCode } from './utils';
 
 export abstract class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
   private _options: object;
-  public settings: T & { serviceUrl: Transformer<string, T>; format: Transformer<string, T> };
+  public settings: T & {
+    serviceHost: Transformer<string, T>;
+    servicePath: Transformer<string, T>;
+    format: Transformer<string, T>;
+  };
 
   public abstract responseType: ApiResponseType;
 
@@ -25,7 +29,7 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     return (
       axios({
         method: 'GET',
-        url: this.settings.serviceUrl.value,
+        url: this.getServiceUrl(),
         responseType: this.xhrResponseType,
         params: params
       }) as AxiosPromise<Res>
@@ -87,7 +91,7 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
    * Returns the service endpoint
    */
   public getServiceUrl() {
-    return this.settings.serviceUrl.value;
+    return `${this.settings.serviceHost.value}${this.settings.servicePath.value}`;
   }
 
   /**

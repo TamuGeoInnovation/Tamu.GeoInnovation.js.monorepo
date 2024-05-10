@@ -12,6 +12,7 @@ import {
 } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
@@ -33,9 +34,10 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly ls: LocalStoreService,
-    private readonly as: AuthService
+    private readonly as: AuthService,
+    private readonly en: EnvironmentService
   ) {
-    super(fb, rt, ar, ls, as);
+    super(fb, rt, ar, ls, as, en);
   }
 
   public buildForm() {
@@ -69,11 +71,13 @@ export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessi
   public override getQueryParameters(): ICensusIntersectionOptions {
     const form = this.form.getRawValue();
 
-    return {
+    const opts = {
       apiKey: '',
       lat: form.lat,
       lon: form.lon,
       censusYears: form.censusYear === CensusYear.AllAvailable ? CensusYear.AllAvailable : [form.censusYear]
-    };
+    } as ICensusIntersectionOptions;
+
+    return this.patchHostOverride(opts);
   }
 }

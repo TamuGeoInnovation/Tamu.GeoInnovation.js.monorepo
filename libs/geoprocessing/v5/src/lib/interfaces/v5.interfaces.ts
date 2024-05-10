@@ -12,6 +12,16 @@ export interface ICommonServiceOptions {
    */
   apiKey: string;
   version?: '5.0';
+
+  /**
+   * **FOR INTERNAL/TESTING USE ONLY**
+   */
+  serviceHost?: string;
+
+  /**
+   * **FOR INTERNAL/TESTING USE ONLY**
+   */
+  servicePath?: string;
 }
 
 //////////////////////////////////////////////////////////////////////

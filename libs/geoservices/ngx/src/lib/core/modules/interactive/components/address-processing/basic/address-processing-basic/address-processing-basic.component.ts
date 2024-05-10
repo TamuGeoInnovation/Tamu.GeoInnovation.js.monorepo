@@ -15,6 +15,7 @@ import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 import { ADDRESS_FORMAT_TYPES } from '../../../../../../util/dictionaries';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-address-processing-basic',
@@ -35,9 +36,10 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly ls: LocalStoreService,
-    private readonly as: AuthService
+    private readonly as: AuthService,
+    private readonly en: EnvironmentService
   ) {
-    super(fb, rt, ar, ls, as);
+    super(fb, rt, ar, ls, as, en);
   }
 
   public buildForm() {
@@ -64,14 +66,16 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
   public override getQueryParameters(): IAddressProcessingOptions {
     const form = this.form.getRawValue();
 
-    return {
+    const opts = {
       nonParsedStreetAddress: form.address,
       nonParsedStreetCity: form.city,
       nonParsedStreetState: form.state,
       nonParsedStreetZIP: form.zip,
       apiKey: '',
       addressFormat: typeof form.addressFormat === 'string' ? [form.addressFormat] : [...form.addressFormat]
-    };
+    } as IAddressProcessingOptions;
+
+    return this.patchHostOverride(opts);
   }
 
   public getMapPoints() {
