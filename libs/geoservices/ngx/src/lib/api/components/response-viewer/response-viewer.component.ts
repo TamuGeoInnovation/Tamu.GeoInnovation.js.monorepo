@@ -17,8 +17,6 @@ export class ResponseViewerComponent<Type extends object, Res extends object> im
   public result;
 
   public ngOnInit() {
-    this.runner.patchOptions({ format: this.format });
-
     this.runner.asObservable().subscribe((res) => {
       if (res instanceof XMLDocument) {
         const serialized = new XMLSerializer().serializeToString(res);

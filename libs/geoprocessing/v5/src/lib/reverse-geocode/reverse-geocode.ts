@@ -11,11 +11,23 @@ export class ReverseGeocode extends ApiBase<IReverseGeocoderTransformers, IRever
     this.settings = {
       serviceHost: {
         value: 'https://geoservices.tamu.edu',
-        excludeParams: true
+        excludeParams: true,
+        target: ['serviceHost'],
+        fn: function (host) {
+          if (host !== undefined && host !== null && typeof host === 'string' && host.startsWith('http')) {
+            this.value = host;
+          }
+        }
       },
       servicePath: {
         value: '/Api/ReverseGeocoding/V5/',
-        excludeParams: true
+        excludeParams: true,
+        target: ['servicePath'],
+        fn: function (path) {
+          if (path !== undefined && path !== null && typeof path === 'string') {
+            this.value = path;
+          }
+        }
       },
       format: {
         value: ResponseFormat.JSON

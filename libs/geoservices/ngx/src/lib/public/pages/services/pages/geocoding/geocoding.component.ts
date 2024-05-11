@@ -27,7 +27,8 @@ export class GeocodingComponent implements OnInit {
       zip: 77840,
       census: true,
       censusYears: CensusYear.AllAvailable,
-      refs: [GeocodeReferenceFeature.MicrosoftFootprints]
+      refs: [GeocodeReferenceFeature.MicrosoftFootprints],
+      serviceHost: this.env.value('geoprocessing_api_host_override')
     });
 
     this.result = this.geocode.asObservable().pipe(

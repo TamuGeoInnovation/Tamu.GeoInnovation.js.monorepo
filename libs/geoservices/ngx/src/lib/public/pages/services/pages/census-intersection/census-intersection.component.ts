@@ -23,7 +23,8 @@ export class CensusIntersectionComponent implements OnInit {
       lat: 34.0726207996348,
       lon: -118.397965182076,
       s: 'CA',
-      censusYears: CensusYear.AllAvailable
+      censusYears: CensusYear.AllAvailable,
+      serviceHost: this.env.value('geoprocessing_api_host_override')
     });
 
     this.result = this.intersection.asObservable().pipe(

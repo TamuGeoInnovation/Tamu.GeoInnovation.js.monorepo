@@ -24,7 +24,8 @@ export class AddressProcessingComponent implements OnInit {
       nonParsedStreetCity: 'Los Angeles',
       nonParsedStreetState: 'California',
       nonParsedStreetZIP: '900890255',
-      addressFormat: [AddressProcessingAddressFormat.USPSPublication28]
+      addressFormat: [AddressProcessingAddressFormat.USPSPublication28],
+      serviceHost: this.env.value('geoprocessing_api_host_override')
     });
 
     this.result = this.address.asObservable().pipe(

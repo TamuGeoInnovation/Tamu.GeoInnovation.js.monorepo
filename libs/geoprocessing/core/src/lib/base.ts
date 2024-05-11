@@ -7,7 +7,7 @@ import { GeoservicesError } from './errors';
 import { getXmlStatusCode } from './utils';
 
 export abstract class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
-  private _options: object;
+  private _options: U;
   public settings: T & {
     serviceHost: Transformer<string, T>;
     servicePath: Transformer<string, T>;
@@ -58,11 +58,11 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
    * If executed before default settings are set, settings will be overwritten by defaults.
    */
   public setup() {
-    // Merge the provided options into the settings model.
-    this.patchOptions(this._options);
+    // Merge default and incoming values for settings. These will be target args for transformers.
+    const options = this.patchOptions(this._options);
 
-    // Determine default values based on inputs
-    this.calculateDefaults();
+    // Perform any necessary calculations on the settings model.
+    this.calculateValues(options);
   }
 
   public asPromise(): Promise<Res> {
@@ -120,48 +120,49 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
   }
 
   /**
+   * Calculate values for settings that require transformation.
    *
+   * Each setting with a `fn` function will be executed with the target values as arguments. It is up to
+   * the function to determine how to handle the setting value.
    */
-  private calculateDefaults() {
-    // `key` is unused but is a necessary assignment because of the returned value from `Object.entires`
-    //
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private calculateValues(options: U) {
     Object.entries(this.settings).forEach(([key, entry]: [string, Transformer<unknown, never>]) => {
       if (entry.fn) {
-        // Get target values
+        // Get target values. These are values that refer to another setting used in the setting's decision making logic.
         if (entry.target !== undefined) {
           // Generate a list of params from target(s)
           const params =
             entry.target instanceof Array
-              ? entry.target.map((k) => (this.settings[k] ? this.settings[k].value : undefined))
-              : [this.settings[entry.target].value];
+              ? // Send all values including nulls. `undefined` is the only value that signifies whether a setting
+                // is applied to the url parameters
+                entry.target.map((k) => (options[k] !== undefined ? options[k] : undefined))
+              : [options[entry.target]];
 
-          entry.fn(...params);
+          entry.fn(options[key], ...params);
         } else {
-          // No target values to get
-          entry.fn();
+          // No target values to get, execute the function with the incoming option value.
+          entry.fn(options[key]);
         }
       }
     });
   }
 
   /**
-   * Updates the default settings value with the provided value if it exists,
-   * else it creates an entry in the settings model.
+   * For parameters that are not defined in the default settings, patch them in.
+   *
+   * This is necessary because URL parameters are inferred from the settings model.
    */
-  public patchOptions(options?: object) {
-    Object.entries(options).forEach(([key, value]) => {
-      // If the default value transformer exists, patch its value with that of the
-      // entry key.
-      if (this.settings[key]) {
-        this.settings[key].value = value;
-      } else {
-        // If the default value transformer does not exist, make a new entry
-        this.settings[key] = {
-          value: value
-        };
-      }
-    });
+  public patchOptions(options: U) {
+    // Simple key-value object of settings. Settings not defined in the default will
+    // be added to this object. Settings that are defined in the default will be updated
+    // with the value of the incoming options.
+    const simpleSettings = Object.keys(this.settings).reduce((acc, key) => {
+      acc[key] = this.settings[key].value;
+
+      return acc;
+    }, {} as U);
+
+    return { ...simpleSettings, ...options };
   }
 
   private handleResponse(response): Res {

@@ -21,7 +21,8 @@ export class ReverseGeocodingComponent implements OnInit {
     this.geocoder = new ReverseGeocode({
       apiKey: 'demo',
       latitude: 30.610487,
-      longitude: -96.327766
+      longitude: -96.327766,
+      serviceHost: this.env.value('geoprocessing_api_host_override')
     });
 
     this.result = this.geocoder.asObservable().pipe(

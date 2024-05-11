@@ -50,8 +50,11 @@ export interface Transformer<U, O> {
   /**
    * Transformation function. If defined, on default value calculation the `target values
    * will be provided as function arguments.
+   *
+   * @param currentValue Incoming value for the setting (i.e. the value provided in the constructor)
+   * @param args Target values (if any)
    */
-  fn?: (...args) => void;
+  fn?: (currentValue, ...args) => void;
 }
 
 export enum ApiResponseType {
