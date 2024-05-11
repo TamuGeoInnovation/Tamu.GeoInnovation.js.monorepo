@@ -9,8 +9,12 @@ export class ReverseGeocoder extends ApiBase<IReverseGeocoderTransformers, IReve
     super(options);
 
     this.settings = {
-      serviceUrl: {
-        value: 'https://geoservices.tamu.edu/Services/ReverseGeocoding/WebService/v04_01/HTTP/default.aspx?',
+      serviceHost: {
+        value: 'https://geoservices.tamu.edu',
+        excludeParams: true
+      },
+      servicePath: {
+        value: '/Services/ReverseGeocoding/WebService/v04_01/HTTP/default.aspx',
         excludeParams: true
       },
       format: {

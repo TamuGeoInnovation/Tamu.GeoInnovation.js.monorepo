@@ -9,8 +9,12 @@ export class KNearest extends ApiBase<TransformersMap<IKNearestOptions>, IKNeare
     super(options);
 
     this.settings = {
-      serviceUrl: {
-        value: 'http://geoservices.tamu.edu/Services/KNearest/WebService/v04_01/HTTP/?',
+      serviceHost: {
+        value: 'http://geoservices.tamu.edu',
+        excludeParams: true
+      },
+      servicePath: {
+        value: '/Services/KNearest/WebService/v04_01/HTTP/',
         excludeParams: true
       },
       format: {

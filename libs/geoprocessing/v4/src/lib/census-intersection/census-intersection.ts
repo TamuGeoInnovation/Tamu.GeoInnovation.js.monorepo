@@ -13,8 +13,12 @@ export class CensusIntersection extends ApiBase<
     super(options);
 
     this.settings = {
-      serviceUrl: {
-        value: 'https://geoservices.tamu.edu/Services/CensusIntersection/WebService/v04_01/HTTP/?',
+      serviceHost: {
+        value: 'https://geoservices.tamu.edu',
+        excludeParams: true
+      },
+      servicePath: {
+        value: '/Services/CensusIntersection/WebService/v04_01/HTTP/',
         excludeParams: true
       },
       format: {

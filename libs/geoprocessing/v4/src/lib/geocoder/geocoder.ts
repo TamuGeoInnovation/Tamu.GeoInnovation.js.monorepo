@@ -79,8 +79,12 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
           }
         }
       },
-      serviceUrl: {
-        value: 'https://geoservices.tamu.edu/Services/Geocode/WebService/',
+      serviceHost: {
+        value: 'https://geoservices.tamu.edu',
+        excludeParams: true
+      },
+      servicePath: {
+        value: '/Services/Geocode/WebService/',
         excludeParams: true,
         target: ['urlVersion', 'serviceType', 'parsed', 'advancedQuery'],
         fn: function (version, type, parsed, advanced) {
