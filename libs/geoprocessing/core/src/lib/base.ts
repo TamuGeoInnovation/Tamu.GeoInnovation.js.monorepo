@@ -162,6 +162,15 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       return acc;
     }, {} as U);
 
+    // Side-effect: For any option that does not have an setting entry, add it to the settings model.
+    Object.keys(options).forEach((key) => {
+      if (this.settings[key] === undefined) {
+        this.settings[key] = {
+          value: options[key]
+        };
+      }
+    });
+
     return { ...simpleSettings, ...options };
   }
 

@@ -28,6 +28,24 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
           this.value = (years !== undefined && years.length > 0) || false;
         }
       },
+      relaxableAttributes: {
+        value: undefined,
+        fn: function (currentValue) {
+          this.value = currentValue ? currentValue.join(',') : currentValue;
+        }
+      },
+      soundexableAttributes: {
+        value: undefined,
+        fn: function (currentValue) {
+          this.value = currentValue ? currentValue.join(',') : currentValue;
+        }
+      },
+      refs: {
+        value: undefined,
+        fn: function (currentValue) {
+          this.value = currentValue instanceof Array ? currentValue.join(',') : this.value;
+        }
+      },
       serviceHost: {
         value: 'https://geoservices.tamu.edu',
         excludeParams: true,
@@ -49,25 +67,6 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
           if (currentValue !== undefined && currentValue !== null && typeof currentValue === 'string') {
             this.value = currentValue;
           }
-        }
-      },
-      relaxableAttributes: {
-        value: undefined,
-        fn: function (currentValue) {
-          this.value = currentValue ? currentValue.join(',') : currentValue;
-        }
-      },
-      soundexableAttributes: {
-        value: undefined,
-        target: ['soundexableAttributes'],
-        fn: function (currentValue) {
-          this.value = currentValue ? currentValue.join(',') : currentValue;
-        }
-      },
-      refs: {
-        value: undefined,
-        fn: function (currentValue) {
-          this.value = currentValue instanceof Array ? currentValue.join(',') : this.value;
         }
       }
     };

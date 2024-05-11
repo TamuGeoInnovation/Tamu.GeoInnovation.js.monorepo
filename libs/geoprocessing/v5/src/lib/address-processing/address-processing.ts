@@ -13,26 +13,6 @@ export class AddressProcessing extends ApiBase<
     super(options);
 
     this.settings = {
-      serviceHost: {
-        value: 'https://geoservices.tamu.edu',
-        excludeParams: true,
-        target: ['serviceHost'],
-        fn: function (host) {
-          if (host !== undefined && host !== null && typeof host === 'string' && host.startsWith('http')) {
-            this.value = host;
-          }
-        }
-      },
-      servicePath: {
-        value: '/Api/AddressNormalization/V5/',
-        excludeParams: true,
-        target: ['servicePath'],
-        fn: function (path) {
-          if (path !== undefined && path !== null && typeof path === 'string') {
-            this.value = path;
-          }
-        }
-      },
       format: {
         value: ResponseFormat.JSON,
         excludeParams: true
@@ -45,8 +25,31 @@ export class AddressProcessing extends ApiBase<
       },
       addressFormat: {
         value: undefined,
-        fn: function () {
-          this.value = this.value instanceof Array ? this.value.join(',') : this.value;
+        fn: function (currentValue) {
+          this.value = currentValue instanceof Array ? currentValue.join(',') : this.value;
+        }
+      },
+      serviceHost: {
+        value: 'https://geoservices.tamu.edu',
+        excludeParams: true,
+        fn: function (currentValue) {
+          if (
+            currentValue !== undefined &&
+            currentValue !== null &&
+            typeof currentValue === 'string' &&
+            currentValue.startsWith('http')
+          ) {
+            this.value = currentValue;
+          }
+        }
+      },
+      servicePath: {
+        value: '/Api/AddressNormalization/V5/',
+        excludeParams: true,
+        fn: function (currentValue) {
+          if (currentValue !== undefined && currentValue !== null && typeof currentValue === 'string') {
+            this.value = currentValue;
+          }
         }
       }
     };
