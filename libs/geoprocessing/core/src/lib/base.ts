@@ -138,10 +138,10 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
                 entry.target.map((k) => (options[k] !== undefined ? options[k] : undefined))
               : [options[entry.target]];
 
-          entry.fn(options[key], ...params);
+          entry.value = entry.fn(options[key], ...params);
         } else {
           // No target values to get, execute the function with the incoming option value.
-          entry.fn(options[key]);
+          entry.value = entry.fn(options[key]);
         }
       }
     });

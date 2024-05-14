@@ -137,6 +137,12 @@
 
           <tamu-gisc-checkbox *ngFor="let r of refs.zip" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
         </div>
+
+        <div class="form-collection column">
+          <p><strong>Pre-Computed Points</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.preComputedPoints" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
       </div>
     </div>
 

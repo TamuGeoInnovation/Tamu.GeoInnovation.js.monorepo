@@ -382,7 +382,8 @@ export enum GeocodeReferenceFeature {
   Census2020ConsolidatedCities = 'Census2020ConsolidatedCities',
   Census2020CountySubRegions = 'Census2020CountySubRegions',
   Census2020Counties = 'Census2020Counties',
-  Census2020States = 'Census2020States'
+  Census2020States = 'Census2020States',
+  PreComputedPoints = 'PreComputedPoints'
 }
 
 export interface IGeocodeOptions extends ICommonServiceOptions {

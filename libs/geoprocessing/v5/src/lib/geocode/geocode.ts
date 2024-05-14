@@ -1,6 +1,6 @@
 import { TransformersMap, ApiResponseType, ApiBase, ResponseFormat } from '@tamu-gisc/geoprocessing-core';
 
-import { GeocodeResult, IGeocodeOptions } from '../interfaces/v5.interfaces';
+import { CensusYear, GeocodeReferenceFeature, GeocodeResult, IGeocodeOptions } from '../interfaces/v5.interfaces';
 
 export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeOptions, GeocodeResult> {
   public responseType = ApiResponseType.Code;
@@ -18,32 +18,60 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
       censusYears: {
         value: undefined,
         fn: function (currentValue) {
-          this.value = currentValue instanceof Array ? currentValue.join(',') : currentValue;
+          if (!currentValue) {
+            return;
+          }
+
+          if (currentValue === CensusYear.AllAvailable) {
+            return CensusYear.AllAvailable;
+          }
+
+          const validYears: Array<string> = currentValue.filter((y) => y !== undefined && y !== null && y !== '');
+
+          if (validYears.length === 0) {
+            return undefined;
+          }
+
+          return validYears instanceof Array ? validYears.join(',') : currentValue;
         }
       },
       census: {
         value: false,
         target: ['censusYears'],
         fn: function (currentValue, years) {
-          this.value = (years !== undefined && years.length > 0) || false;
+          if (!years) {
+            return false;
+          }
+
+          if (years === CensusYear.AllAvailable) {
+            return true;
+          }
+
+          return years.length > 0;
         }
       },
       relaxableAttributes: {
         value: undefined,
         fn: function (currentValue) {
-          this.value = currentValue ? currentValue.join(',') : currentValue;
+          return currentValue ? currentValue.join(',') : currentValue;
         }
       },
       soundexableAttributes: {
         value: undefined,
         fn: function (currentValue) {
-          this.value = currentValue ? currentValue.join(',') : currentValue;
+          return currentValue ? currentValue.join(',') : currentValue;
         }
       },
       refs: {
-        value: undefined,
-        fn: function (currentValue) {
-          this.value = currentValue instanceof Array ? currentValue.join(',') : this.value;
+        value: [GeocodeReferenceFeature.PreComputedPoints],
+        fn: function (currentValue, years) {
+          let y = currentValue;
+
+          if (years !== undefined && years !== null && years instanceof Array) {
+            y = years;
+          }
+
+          return y.join(',');
         }
       },
       serviceHost: {
@@ -56,7 +84,7 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
             typeof currentValue === 'string' &&
             currentValue.startsWith('http')
           ) {
-            this.value = currentValue;
+            return currentValue;
           }
         }
       },
@@ -65,7 +93,7 @@ export class Geocode extends ApiBase<TransformersMap<IGeocodeOptions>, IGeocodeO
         excludeParams: true,
         fn: function (currentValue) {
           if (currentValue !== undefined && currentValue !== null && typeof currentValue === 'string') {
-            this.value = currentValue;
+            return currentValue;
           }
         }
       }

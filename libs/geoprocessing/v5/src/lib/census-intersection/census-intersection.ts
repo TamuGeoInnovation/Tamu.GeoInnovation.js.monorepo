@@ -22,7 +22,7 @@ export class CensusIntersection extends ApiBase<
       censusYears: {
         value: undefined,
         fn: function (currentValue) {
-          this.value = currentValue instanceof Array ? currentValue.join(',') : currentValue;
+          return currentValue instanceof Array ? currentValue.join(',') : currentValue;
         }
       },
       serviceHost: {
@@ -35,7 +35,7 @@ export class CensusIntersection extends ApiBase<
             typeof currentValue === 'string' &&
             currentValue.startsWith('http')
           ) {
-            this.value = currentValue;
+            return currentValue;
           }
         }
       },
@@ -44,7 +44,7 @@ export class CensusIntersection extends ApiBase<
         excludeParams: true,
         fn: function (currentValue) {
           if (currentValue !== undefined && currentValue !== null && typeof currentValue === 'string') {
-            this.value = currentValue;
+            return currentValue;
           }
         }
       }

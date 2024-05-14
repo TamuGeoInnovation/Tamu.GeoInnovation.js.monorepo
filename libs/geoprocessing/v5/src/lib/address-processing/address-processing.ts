@@ -26,7 +26,7 @@ export class AddressProcessing extends ApiBase<
       addressFormat: {
         value: undefined,
         fn: function (currentValue) {
-          this.value = currentValue instanceof Array ? currentValue.join(',') : this.value;
+          return currentValue instanceof Array ? currentValue.join(',') : this.value;
         }
       },
       serviceHost: {
@@ -39,7 +39,7 @@ export class AddressProcessing extends ApiBase<
             typeof currentValue === 'string' &&
             currentValue.startsWith('http')
           ) {
-            this.value = currentValue;
+            return currentValue;
           }
         }
       },
@@ -48,7 +48,7 @@ export class AddressProcessing extends ApiBase<
         excludeParams: true,
         fn: function (currentValue) {
           if (currentValue !== undefined && currentValue !== null && typeof currentValue === 'string') {
-            this.value = currentValue;
+            return currentValue;
           }
         }
       }

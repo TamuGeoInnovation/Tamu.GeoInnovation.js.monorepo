@@ -88,7 +88,8 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
       ...this.refs.census2020,
       ...this.refs.census2010,
       ...this.refs.census2000,
-      ...this.refs.zip
+      ...this.refs.zip,
+      ...this.refs.preComputedPoints
     ].reduce((acc, ref) => {
       acc[ref.value] = [true];
 

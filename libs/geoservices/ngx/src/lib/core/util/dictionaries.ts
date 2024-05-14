@@ -207,6 +207,13 @@ export const ZIP_REF = [
   }
 ];
 
+export const PRE_COMPUTED_POINTS_REF = [
+  {
+    name: 'Pre-Computed Points',
+    value: GeocodeReferenceFeature.PreComputedPoints
+  }
+];
+
 export const GEOCODING_REFS = {
   addressPoints: ADDRESS_POINTS_REF,
   buildingFootprints: BUILDING_FOOTPRINTS_REF,
@@ -215,7 +222,8 @@ export const GEOCODING_REFS = {
   census2020: CENSUS_2020_REF,
   census2010: CENSUS_2010_REF,
   census2000: CENSUS_2000_REF,
-  zip: ZIP_REF
+  zip: ZIP_REF,
+  preComputedPoints: PRE_COMPUTED_POINTS_REF
 };
 
 export const OPEN_ADDRESSES_MINIMUM_CONFIDENCE_LEVELS = [

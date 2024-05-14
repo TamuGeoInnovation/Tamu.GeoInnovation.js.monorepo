@@ -25,7 +25,7 @@ export class ReverseGeocode extends ApiBase<IReverseGeocoderTransformers, IRever
             typeof currentValue === 'string' &&
             currentValue.startsWith('http')
           ) {
-            this.value = currentValue;
+            return currentValue;
           }
         }
       },
@@ -34,7 +34,7 @@ export class ReverseGeocode extends ApiBase<IReverseGeocoderTransformers, IRever
         excludeParams: true,
         fn: function (currentValue) {
           if (currentValue !== undefined && currentValue !== null && typeof currentValue === 'string') {
-            this.value = currentValue;
+            return currentValue;
           }
         }
       }
