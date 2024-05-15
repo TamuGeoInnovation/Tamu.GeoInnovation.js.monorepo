@@ -18,6 +18,10 @@ export const environment = {
 export const api_url = `http://localhost:3334`;
 export const legacy_api_url = `/legacy/`;
 export const accounts_url = `${window.location.protocol}//${window.location.hostname}/wap.accounts.geoservices.tamu.edu`;
-export const geoprocessing_api_host_override = null;
+export const geoprocessing_api_host_override = 'http://localhost/wap.api.geoservices.tamu.edu.5.0.0/';
+
+export const release_id = 'v0.0.0';
+export const machine_name = 'localhost';
+export const environment_mode = 'Local';
 
 export * from './definitions';

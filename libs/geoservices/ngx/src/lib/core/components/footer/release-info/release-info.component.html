@@ -1,12 +1,5 @@
 <div class="container12">
   <div class="column12">
-    <ng-container *ngIf="(release_meta.isRelease |async ); else noRelease">
-      <p>{{ (release_meta.args | async).machine_name }} | Release | {{ (release_meta.args | async).release }}</p>
-    </ng-container>
-
-    <ng-template #noRelease>
-      <p>LOCAL | Release | development</p>
-    </ng-template>
+    <p><span>{{ (release_meta.args | async)?.machine_name }}</span> | <span *ngIf="release_meta.isRelease | async">{{(release_meta.args | async)?.release}} |</span> {{ (release_meta.args | async)?.environment }}</p>
   </div>
 </div>
-

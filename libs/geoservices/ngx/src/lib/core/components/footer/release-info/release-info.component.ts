@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { map, ReplaySubject } from 'rxjs';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
 @Component({
   selector: 'tamu-gisc-release-info',
   templateUrl: './release-info.component.html',
@@ -9,10 +11,13 @@ import { map, ReplaySubject } from 'rxjs';
 export class ReleaseInfoComponent implements OnInit {
   public release_meta: ReleaseInfo;
 
+  constructor(private readonly env: EnvironmentService) {}
+
   public ngOnInit(): void {
     this.release_meta = new ReleaseInfo({
-      release: 'DEFAULT',
-      machine_name: 'DEFAULT'
+      release: this.env.value('release_id', true) || null,
+      machine_name: this.env.value('machine_name', true) || 'localhost',
+      environment: this.env.value('environment_mode', true) || 'local'
     });
   }
 }
@@ -23,7 +28,7 @@ export class ReleaseInfo {
 
   public isRelease = this.args.pipe(
     map((a: ReleaseMetaData) => {
-      return a.release !== 'DEFAULT';
+      return a.release !== null;
     })
   );
 
@@ -35,4 +40,5 @@ export class ReleaseInfo {
 export interface ReleaseMetaData {
   release: string;
   machine_name: string;
+  environment: string;
 }
