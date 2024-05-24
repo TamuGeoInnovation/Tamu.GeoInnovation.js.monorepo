@@ -17,18 +17,17 @@
         "assets": [
           "apps/mailroom-angular/src/favicon.ico",
           "apps/mailroom-angular/src/assets",
-          {
-            "glob": "**/*",
-            "input": "./libs/assets/powershell",
-            "output": "./assets/powershell"
-          }
+          "apps/mailroom-angular/src/Dockerfile",
+          "apps/mailroom-angular/src/.dockerignore",
+          "apps/mailroom-angular/src/docker-compose.yml",
+          "apps/mailroom-angular/src/.nginx"
         ],
         "styles": ["apps/mailroom-angular/src/styles.scss"],
         "scripts": [],
         "vendorChunk": true,
         "extractLicenses": false,
         "buildOptimizer": false,
-        "sourceMap": true,
+        "sourceMap": false,
         "optimization": false,
         "namedChunks": true
       },
