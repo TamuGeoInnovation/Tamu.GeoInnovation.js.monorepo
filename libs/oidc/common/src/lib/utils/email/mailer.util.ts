@@ -24,8 +24,8 @@ export class Mailer {
           port: 587,
           secure: false,
           auth: {
-            user: 'kaitlyn.schimmel@ethereal.email',
-            pass: 'Pe6D9DhkgUDyqyBMeg'
+            user: '',
+            pass: ''
           }
         });
         break;
@@ -56,6 +56,8 @@ export class Mailer {
         });
         break;
     }
+
+    console.log('Mailer service initialized. Using host', Mailer.transporter.options.host);
   }
 
   public static sendEmail(email: IMailroomEmailOutbound, toConsole?: boolean) {
