@@ -16,7 +16,7 @@ import { AppComponent } from './app.component';
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Material Icons Outlined', 'Open Sans:300,400,600']
+    families: ['Material Icons', 'Material Icons Outlined', 'Open Sans:300,400,600', 'Oswald']
   }
 });
 

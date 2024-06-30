@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-intro',
   templateUrl: './intro.component.html',
   styleUrls: ['./intro.component.scss']
 })
-export class IntroComponent implements OnInit {
-  constructor() {}
+export class IntroComponent {
+  constructor(private readonly router: Router) {}
 
-  ngOnInit(): void {}
+  public next() {
+    this.router.navigate(['builder/date']);
+  }
 }
