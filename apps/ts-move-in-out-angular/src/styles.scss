@@ -794,6 +794,8 @@ button[type='submit'] {
   background: #0079c1;
   color: #ffffff;
 
+  @include transition(background-color 0.3s, color 0.3s);
+
   &:hover {
     background: #005e95;
   }
@@ -817,9 +819,13 @@ button[type='submit'] {
     color: #fafafa;
     background: none;
 
-    &:hover {
+    &.active {
       background: #eeeeee;
       color: #500000;
+    }
+
+    &:hover {
+      @extend .active;
     }
   }
 
