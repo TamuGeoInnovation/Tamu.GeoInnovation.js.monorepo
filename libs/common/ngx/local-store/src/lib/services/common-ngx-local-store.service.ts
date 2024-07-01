@@ -64,7 +64,7 @@ export class LocalStoreService {
    * @param config Object
    * @returns Undefined if key does not exist, else key value
    */
-  public getStorageObjectKeyValue<T>(config: ValueConfig<T>): T | undefined {
+  public getStorageObjectKeyValue<T>(config: ValueConfig<T>): T {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
     const content = this.store.get(storeKey);
@@ -113,3 +113,4 @@ export interface StorageConfig {
 export interface ValueConfig<T> extends StorageConfig {
   value?: T;
 }
+
