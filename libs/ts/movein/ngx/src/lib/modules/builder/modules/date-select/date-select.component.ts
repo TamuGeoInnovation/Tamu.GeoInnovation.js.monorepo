@@ -5,13 +5,14 @@ import { Angulartics2 } from 'angulartics2';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
+import { MoveDate } from '../../../../interfaces/move-in-out.interface';
+
 @Component({
   selector: 'tamu-gisc-date-select',
   templateUrl: './date-select.component.html',
   styleUrls: ['./date-select.component.scss']
 })
 export class DateSelectComponent implements OnInit {
-  private returnState: string;
   public savedDate: number;
 
   public dates: Array<MoveDate> = [
@@ -43,12 +44,6 @@ export class DateSelectComponent implements OnInit {
   public ngOnInit() {
     // Load saved value from local storage
     this.savedDate = this.store.getStorageObjectKeyValue<number>({ subKey: 'date', primaryKey: 'aggiemap-movein' });
-
-    this.route.params.subscribe((params) => {
-      if (params['returnState']) {
-        this.returnState = params['returnState'];
-      }
-    });
   }
 
   /**
@@ -80,16 +75,13 @@ export class DateSelectComponent implements OnInit {
 
       this.savedDate = confirm;
 
-      if (this.returnState !== undefined) {
-        this.router.navigate([`builder/${this.returnState}`]);
+      const hasRet = this.route.snapshot.queryParams['ret'];
+
+      if (hasRet !== undefined) {
+        this.router.navigate([`builder/${hasRet}`]);
       } else {
         this.router.navigate(['builder/zone']);
       }
     }
   };
-}
-
-export interface MoveDate {
-  day: number;
-  name: string;
 }

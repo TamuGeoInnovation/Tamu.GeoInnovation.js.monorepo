@@ -815,8 +815,8 @@ button[type='submit'] {
   // Hover should colorize the background to the same color as the border
   // and change the text color to #500000
   &.terciary {
-    border-color: #fafafa;
-    color: #fafafa;
+    border-color: #eeeeee;
+    color: #eeeeee;
     background: none;
 
     &.active {
@@ -826,6 +826,18 @@ button[type='submit'] {
 
     &:hover {
       @extend .active;
+    }
+
+    &.disabled {
+      opacity: 0.75 !important;
+      border-color: #eeeeee;
+      color: #eeeeee;
+
+      &:hover {
+        cursor: not-allowed;
+        background: none;
+        border-color: #eeeeee;
+      }
     }
   }
 

@@ -5,13 +5,14 @@ import { Angulartics2 } from 'angulartics2';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
+import { ResidenceHall, ResidenceZones } from '../../../../interfaces/move-in-out.interface';
+
 @Component({
   selector: 'tamu-gisc-zone-select',
   templateUrl: './zone-select.component.html',
   styleUrls: ['./zone-select.component.scss']
 })
 export class ZoneSelectComponent implements OnInit {
-  private returnState: string;
   public savedResidence: ResidenceHall;
   private halls = [];
 
@@ -154,12 +155,6 @@ export class ZoneSelectComponent implements OnInit {
       primaryKey: 'aggiemap-movein',
       subKey: 'residence'
     });
-
-    this.route.params.subscribe((params) => {
-      if (params['returnState']) {
-        this.returnState = params['returnState'];
-      }
-    });
   }
 
   /**
@@ -203,8 +198,10 @@ export class ZoneSelectComponent implements OnInit {
 
         this.savedResidence = confirm;
 
-        if (this.returnState !== undefined) {
-          this.router.navigate([`builder/${this.returnState}`]);
+        const hasRet = this.route.snapshot.queryParams['ret'];
+
+        if (hasRet !== undefined) {
+          this.router.navigate([`builder/${hasRet}`]);
         } else {
           this.router.navigate(['builder/accommodations']);
         }
@@ -213,22 +210,4 @@ export class ZoneSelectComponent implements OnInit {
       console.error('Zone not found for hall ', item.name);
     }
   };
-}
-
-export interface ResidenceHall {
-  name: string;
-  Bldg_Number: string[];
-  zone?: string;
-}
-
-export interface ResidenceZone {
-  name: string;
-  halls: ResidenceHall[];
-}
-
-export interface ResidenceZones {
-  [key: string]: ResidenceZone;
-  southSide: ResidenceZone;
-  northSide: ResidenceZone;
-  whiteCreek: ResidenceZone;
 }

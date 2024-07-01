@@ -11,7 +11,6 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
   styleUrls: ['./accommodations.component.scss']
 })
 export class AccommodationsComponent implements OnInit {
-  private returnState: string;
   public savedAccessible: boolean;
 
   constructor(
@@ -23,12 +22,6 @@ export class AccommodationsComponent implements OnInit {
 
   public ngOnInit() {
     this.savedAccessible = this.store.getStorageObjectKeyValue({ primaryKey: 'aggiemap-movein', subKey: 'accessible' });
-
-    this.route.params.subscribe((params) => {
-      if (params['returnState']) {
-        this.returnState = params['returnState'];
-      }
-    });
   }
 
   /**
@@ -56,8 +49,10 @@ export class AccommodationsComponent implements OnInit {
       }
     });
 
-    if (this.returnState !== undefined) {
-      this.router.navigate([`builder/${this.returnState}`]);
+    const hasRet = this.route.snapshot.queryParams['ret'];
+
+    if (hasRet !== undefined) {
+      this.router.navigate([`builder/${hasRet}`]);
     } else {
       this.router.navigate(['builder/review']);
     }

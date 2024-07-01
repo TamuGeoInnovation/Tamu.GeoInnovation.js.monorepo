@@ -1,1 +1,37 @@
-<p>review works!</p>
+<div class="container12">
+  <p class="trailer-2 center component-instructions">Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations on your move-in day.</p>
+
+  <div class="flex flex-row justify-center">
+    <div class="column6 flex flex-column" id="settings-table">
+      <div class="setting-item">
+        <div>Move-in date:</div>
+        <div>
+          <p *ngIf="!settings || settings.date === undefined">Not Set</p>
+          <p *ngIf="settings && settings.date !== undefined">August {{ settings.date }}, 2024</p>
+          <p [routerLink]="['../date']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/date', {ret: 'review'})" (keyup.enter)="next('builder/date', {ret: 'review'})" tabindex="0">Change</p>
+        </div>
+      </div>
+
+      <div class="setting-item">
+        <div>Residence Hall</div>
+        <div>
+          <p *ngIf="!settings || settings.residence === undefined">Not Set</p>
+          <p *ngIf="settings && settings.residence !== undefined">{{ settings.residence.name }}</p>
+          <p [routerLink]="['../zone']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/zone', {ret: 'review'})" (keyup.enter)="next('builder/zone', {ret: 'review'})" tabindex="0">Change</p>
+        </div>
+      </div>
+
+      <div class="setting-item">
+        <div>Require Accessible Parking</div>
+        <div>
+          <p *ngIf="!settings || settings.accessible === undefined">Not Set</p>
+          <p *ngIf="settings && settings.accessible !== undefined">{{ settings.accessible ? 'Yes' : 'No' }}</p>
+          <p [routerLink]="['../accommodations']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/accommodations', {ret: 'review'})" (keyup.enter)="next('builder/accommodations', {ret: 'review'})" tabindex="0">Change</p>
+        </div>
+      </div>
+
+      <div class="button terciary" *ngIf="settingsValid" [routerLink]="'../../map'" (keyup.space)="next('map')" (keyup.enter)="next('map')" tabindex="0">Take Me To My Map</div>
+      <div class="button disabled" *ngIf="!settingsValid">Please ensure all selections are valid</div>
+    </div>
+  </div>
+</div>
