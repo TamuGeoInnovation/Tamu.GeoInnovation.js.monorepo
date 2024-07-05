@@ -200,10 +200,12 @@ export class MoveinOutServiceService {
       // will be used to get their geometries.
 
       const query = {
-        where: makeWhere(Array(parkingCategories.length).fill(`Day_${dateSuffix}`), parkingCategories, {
-          comparison: Array(parkingCategories.length).fill('='),
-          logial: Array(parkingCategories.length).fill('OR')
-        })
+        where: makeWhere(Array(parkingCategories.length).fill(`Day_${dateSuffix}`), parkingCategories, [
+          {
+            comparison: Array(parkingCategories.length).fill('='),
+            logical: Array(parkingCategories.length).fill('OR')
+          }
+        ])
       };
 
       const connections = this.env.value('Connections', false)?.['moveInOutUrl'];
@@ -225,7 +227,7 @@ export class MoveinOutServiceService {
 
         // Get a copy of the parking lot source defined in environments
         // Used to pluck values for feature layer instantiation.
-        const source = this.getLayerSourceCopy(LayerReferences.parkingLots);
+        const source = this.getLayerSourceCopy(LayerReferences.parkingLots) as FeatureLayerSourceProperties;
 
         const parkingLotsIntersected = await this.runTask(
           source.url,
@@ -260,24 +262,26 @@ export class MoveinOutServiceService {
           } else {
             return acc;
           }
-        }, []);
+        }, [] as esri.CollectionProperties<esri.GraphicProperties>);
 
         // TODO: Use this if adding layer from layer source.
         // const citCodeStringFromIntersected = this.makeSQLInStringList(citCodeListFromIntersected);
         // const definitionExpression = `GIS.TS.ParkingLots.CIT_CODE IN (${citCodeStringFromIntersected})`;
 
-        // // Apply the layer definition expresion.
+        // // Apply the layer definition expression.
         // Object.assign(source, { native: { definitionExpression }, layerIndex: 2 });
 
         // this.mapService.loadLayers([source]);
 
         // We are adding the parking lots layer from client-side graphics.
-        const typeField = { name: 'type', type: 'string' };
+        const typeField = { name: 'type', type: 'string' } as esri.FieldProperties;
 
-        source.native.fields = [...parkingForDay.fields, typeField];
-        source.native.source = featureLayerSource;
+        if (source.native) {
+          source.native.fields = [...parkingForDay.fields, typeField];
+          source.native.source = featureLayerSource;
 
-        this.mapService.loadLayers([source]);
+          this.mapService.loadLayers([source as LayerSource]);
+        }
 
         // ==================================================
         // ==================================================
@@ -303,13 +307,13 @@ export class MoveinOutServiceService {
         // // Get a simple list of street names
         // const allStreetParkingNames = streetParkingFeatures.map((feature) => feature.attributes.Lot_Name);
 
-        // const streeParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets);
+        // const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets);
 
         // // Example definition expression
         // //
         // // Filters out by street parking name and event where is movein, moveout, or movein AND out:
         // //
-        // // (A_Name like '%Bizzell St%' OR A_Name like '%Asbury St%') AND Event in ('mio', 'mi', 'mo')
+        // // (A_Name like '%Bizzel St%' OR A_Name like '%Asbury St%') AND Event in ('mio', 'mi', 'mo')
 
         // const getExpression = (names: string[]) =>
         //   names.reduce((acc, curr, index, arr) => {
@@ -322,7 +326,7 @@ export class MoveinOutServiceService {
         //   }, '');
 
         // const intersectedStreetParking = await this.runTask(
-        //   streeParkingSource.url,
+        //   streetParkingSource.url,
         //   { where: `(${getExpression(allStreetParkingNames)}) AND Event IN ('mio', 'mi', 'mo')` },
         //   true
         // );
@@ -335,18 +339,18 @@ export class MoveinOutServiceService {
         //   return;
         // }
 
-        // // Asign layer definition expression.
-        // Object.assign(streeParkingSource, {
+        // // Assign layer definition expression.
+        // Object.assign(streetParkingSource, {
         //   native: { definitionExpression: `(${getExpression(intersectedStreetParkingNames)})`, layerIndex: 2 }
         // });
-        // this.mapService.loadLayers([streeParkingSource]);
+        // this.mapService.loadLayers([streetParkingSource]);
         //
         // =======================================================
         // =======================================================
 
         // TODO: Not using MoveInDays table because it's missing some street definitions. Cheesing my way through this one
         // by simply display lzallweek, lzsundayonly (meaning full weekend, oddly enough), or both.
-        const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets);
+        const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets) as FeatureLayerSourceProperties;
 
         const dateFilter =
           this.settings.date >= 17 && this.settings.date <= 18 ? `'LZAllWeek', 'LZSundayOnly'` : `'LZAllWeek'`;
@@ -360,15 +364,17 @@ export class MoveinOutServiceService {
         if (intersectingStreets.features.length > 0) {
           const objectIDList = this.getAttributeList(intersectingStreets.features, 'OBJECTID');
 
-          streetParkingSource.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
+          if (streetParkingSource.native !== undefined) {
+            streetParkingSource.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
 
-          this.mapService.loadLayers([streetParkingSource]);
+            this.mapService.loadLayers([streetParkingSource as LayerSource]);
+          }
         }
       } else {
         console.warn(`No parking lots for event day ${dateSuffix}.`);
       }
     } catch (err) {
-      throw new Error(err);
+      console.error(`Failed to draw parking`, err);
     }
   }
 
@@ -388,7 +394,7 @@ export class MoveinOutServiceService {
     }
   }
 
-  private makeSQLInStringList(list: Array<any>): string {
+  private makeSQLInStringList(list: Array<string>): string {
     return list.reduce((acc, curr, index, arr) => {
       acc += `'${curr}'`;
 
@@ -418,36 +424,35 @@ export class MoveinOutServiceService {
    * This will return only features within the provided polygon paths.
    * @param {boolean} [returnFeatureLayer] If provided and `true`, will return a FeatureLayer from the result of the task
    * @returns Task result or feature layer
-   * @memberof MoveinoutService
    */
   private async runTask(
     url: string,
     query: esri.QueryProperties,
-    intersect?: any,
+    intersect?: boolean,
     returnFeatureLayer?: false,
     featureLayerProperties?: esri.FeatureLayerProperties
   ): Promise<esri.FeatureSet>;
   private async runTask(
     url: string,
     query: esri.QueryProperties,
-    intersect?: any,
+    intersect?: boolean,
     returnFeatureLayer?: true,
     featureLayerProperties?: esri.FeatureLayerProperties
   ): Promise<esri.FeatureLayer>;
   private async runTask(
     url: string,
     query: esri.QueryProperties,
-    intersect?: any,
-    returnFeatureLayer?: any,
+    intersect?: boolean,
+    returnFeatureLayer?: boolean,
     featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<any> {
+  ): Promise<unknown> {
     const [QueryTask, Query, FeatureLayer, SpatialReference, Polygon]: [
       esri.QueryTaskConstructor,
       esri.QueryConstructor,
       esri.FeatureLayerConstructor,
       esri.SpatialReferenceConstructor,
       esri.PolygonConstructor
-    ] = await (<any>this.moduleProvider.require(['QueryTask', 'Query', 'FeatureLayer', 'SpatialReference', 'Polygon']));
+    ] = await this.moduleProvider.require(['QueryTask', 'Query', 'FeatureLayer', 'SpatialReference', 'Polygon']);
 
     const task = new QueryTask({
       url: url
@@ -465,7 +470,7 @@ export class MoveinOutServiceService {
       const boundary = BOUNDARIES.find((b) => b.name == this.settings.residence.zone);
 
       if (boundary) {
-        q.geometry = new Polygon({ rings: boundary.paths });
+        q.geometry = new Polygon({ rings: [boundary.paths] });
         q.spatialRelationship = 'intersects';
       }
     }
@@ -483,3 +488,4 @@ export class MoveinOutServiceService {
     }
   }
 }
+

@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
@@ -13,10 +13,13 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import esri = __esri;
 
+import { MoveinOutServiceService } from './services/move-in-out-service.service';
+
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  providers: [MoveinOutServiceService]
 })
 export class MapComponent implements OnInit {
   public map: esri.Map;
