@@ -55,24 +55,9 @@ export class MoveinOutServiceService {
 
   public async drawResidence() {
     try {
-      // const featureCount = this.settings.residence.Bldg_Number.length;
-
       const source = this.getLayerSourceCopy(LayerReferences.residence) as FeatureLayerSourceProperties;
 
-      // const where = makeWhere(
-      //   Array(featureCount).fill('Bldg_Number'),
-      //   this.settings.residence.Bldg_Number,
-      //   Array(featureCount).fill('=')
-      // );
-
       const buildingListString = this.makeSQLInStringList(this.settings.residence.Bldg_Number);
-
-      // const features = await this.runTask(source.url, { where: `Bldg_Number IN (${buildingListString})` });
-
-      // if (source.native) {
-      //   source.native.source = features.features;
-      //   source.native.fields = features.fields;
-      // }
 
       if (source.native) {
         source.native.definitionExpression = `Bldg_Number IN (${buildingListString})`;
@@ -240,24 +225,11 @@ export class MoveinOutServiceService {
         // Get a copy of the parking lot source defined in environments
         // Used to pluck values for feature layer instantiation.
         const source = this.getLayerSourceCopy(LayerReferences.parkingLots) as FeatureLayerSourceProperties;
-        const popup = this.getLayerSourcePopupReference(LayerReferences.parkingLots);
-
-        if (popup) {
-          (source as LayerSource).popupComponent = popup;
-        }
 
         const parkingLotsIntersected = await this.runTask(
           source.url,
           { where: `GIS.TS.ParkingLots.CIT_CODE IN (${citCodesString})` },
           true
-        );
-
-        //
-        // Make new CIT_CODE list from intersected features done by the QueryTask
-        //
-        const citCodeListFromIntersected = this.getAttributeList(
-          parkingLotsIntersected.features,
-          'GIS.TS.ParkingLots.CIT_CODE'
         );
 
         const featureLayerSource = parkingLotsIntersected.features.reduce((acc, curr) => {
@@ -281,15 +253,6 @@ export class MoveinOutServiceService {
           }
         }, [] as esri.CollectionProperties<esri.GraphicProperties>);
 
-        // TODO: Use this if adding layer from layer source.
-        // const citCodeStringFromIntersected = this.makeSQLInStringList(citCodeListFromIntersected);
-        // const definitionExpression = `GIS.TS.ParkingLots.CIT_CODE IN (${citCodeStringFromIntersected})`;
-
-        // // Apply the layer definition expression.
-        // Object.assign(source, { native: { definitionExpression }, layerIndex: 2 });
-
-        // this.mapService.loadLayers([source]);
-
         // We are adding the parking lots layer from client-side graphics.
         const typeField = { name: 'type', type: 'string' } as esri.FieldProperties;
 
@@ -304,73 +267,10 @@ export class MoveinOutServiceService {
           this.mapService.loadLayers([source as LayerSource]);
         }
 
-        // ==================================================
-        // ==================================================
         //
-        // // TODO: DANGEROUS assumption being made: street parking and only street parking exists beginning at OBJECTID 380 in MoveInDays table
-        // //
-        // // In this moveindays dataset, I have found that parking lots and decks end and parking streets begin at OBJECTID 380.
-        // // The following logic will break or draw duplicate polygons for existing features if the OBJECTID's change in such a way
-        // // that there are lots and decks with OBJECTID >= 380, or if street parking definitions occur with OBJECTID's < 380
-        // //
-        // //
-        // // A better DB schema will be required to make this not such a fragile feature.
-
-        // // The following is a list of hopefully only street parking with short street names (e.g. Bizzel St) that can be used
-        // // to filter out features from MoveInStreets table.
-
-        // const streetParkingFeatures = parkingForDay.features.filter((feature) => feature.attributes.OBJECTID >= 380);
-
-        // if (streetParkingFeatures.length <= 0) {
-        //   console.log(`No street parking for day event day ${this.settings.date}`);
-        //   return;
-        // }
-        // // Get a simple list of street names
-        // const allStreetParkingNames = streetParkingFeatures.map((feature) => feature.attributes.Lot_Name);
-
-        // const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets);
-
-        // // Example definition expression
-        // //
-        // // Filters out by street parking name and event where is movein, moveout, or movein AND out:
-        // //
-        // // (A_Name like '%Bizzel St%' OR A_Name like '%Asbury St%') AND Event in ('mio', 'mi', 'mo')
-
-        // const getExpression = (names: string[]) =>
-        //   names.reduce((acc, curr, index, arr) => {
-        //     if (index > 0 && index < arr.length) {
-        //       acc += ` OR `;
-        //     }
-        //     acc += `A_Name LIKE '%${curr}%'`;
-
-        //     return acc;
-        //   }, '');
-
-        // const intersectedStreetParking = await this.runTask(
-        //   streetParkingSource.url,
-        //   { where: `(${getExpression(allStreetParkingNames)}) AND Event IN ('mio', 'mi', 'mo')` },
-        //   true
-        // );
-
-        // // Pull the names of streets within the target boundary.
-        // const intersectedStreetParkingNames = intersectedStreetParking.features.map((s) => s.attributes.A_Name);
-
-        // if (intersectedStreetParkingNames.length <= 0) {
-        //   console.log(`No street parking for day event day ${this.settings.date}`);
-        //   return;
-        // }
-
-        // // Assign layer definition expression.
-        // Object.assign(streetParkingSource, {
-        //   native: { definitionExpression: `(${getExpression(intersectedStreetParkingNames)})`, layerIndex: 2 }
-        // });
-        // this.mapService.loadLayers([streetParkingSource]);
+        // Add street parking by simply display lzallweek, lzsundayonly (meaning full weekend, oddly enough), or both.
         //
-        // =======================================================
-        // =======================================================
 
-        // TODO: Not using MoveInDays table because it's missing some street definitions. Cheesing my way through this one
-        // by simply display lzallweek, lzsundayonly (meaning full weekend, oddly enough), or both.
         const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets) as FeatureLayerSourceProperties;
 
         const dateFilter =
@@ -408,8 +308,14 @@ export class MoveinOutServiceService {
     const sources: Array<LayerSource> = this.env.value('ColdLayerSources', false);
     const root = sources.find((s) => s.id == reference);
 
+    const popupComponent = root?.popupComponent;
+
     if (root) {
-      return JSON.parse(JSON.stringify(root));
+      const copied = JSON.parse(JSON.stringify(root));
+
+      copied.popupComponent = popupComponent;
+
+      return copied;
     } else {
       throw new Error(`Layer source reference '${reference}' not found.`);
     }
