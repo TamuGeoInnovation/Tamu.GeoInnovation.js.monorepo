@@ -43,4 +43,18 @@ describe('makeWhere', () => {
   it('should handle transformations', function () {
     expect(makeWhere(['key1'], ['value1'], ['='], null, ['test'])).toEqual(`TEST(key1) = 'VALUE1'`);
   });
+
+  it('should handle compound operators', function () {
+    expect(
+      makeWhere(
+        ['key1', 'key2', 'key3'],
+        ['value1', 'value2', 'value3'],
+        [
+          { logical: 'OR', comparison: '=' },
+          { logical: 'OR', comparison: '=' },
+          { logical: 'OR', comparison: '=' }
+        ]
+      )
+    ).toEqual(`key1 = 'VALUE1' OR key2 = 'VALUE2' OR key3 = 'VALUE3'`);
+  });
 });
