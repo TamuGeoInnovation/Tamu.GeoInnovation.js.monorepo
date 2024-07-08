@@ -148,7 +148,8 @@ export const ColdLayerSources: LayerSource[] = [
         }
       }
     },
-    popupComponent: 'MoveInStreetPopupComponent',
+    // popupComponent: 'MoveInStreetPopupComponent',
+    popupComponent: Popups.BasePopupComponent,
     layerIndex: 4
   },
   {
@@ -156,7 +157,7 @@ export const ColdLayerSources: LayerSource[] = [
     id: 'move-in-parking-lots-layer',
     title: 'Movein Parking Lots',
     url: `${Definitions.MOVE_IN_OUT.url}/6`,
-    listMode: 'hide',
+    listMode: 'show',
     visible: true,
     native: {
       renderer: {
@@ -247,7 +248,8 @@ export const ColdLayerSources: LayerSource[] = [
         ]
       }
     },
-    popupComponent: Popups.ParkingLotPopupComponent,
+    // popupComponent: Popups.ParkingLotPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     layerIndex: 3
   }
 ];
@@ -321,13 +323,9 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    legendItems: [
-      {
-        id: 'unisex-restroom-legend',
-        title: 'Unisex Restrooms',
-        src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAkRJREFUOI29lF1IU2EYx3/bjhOn23T4gTPPURD8yJH2BWV4IYoURgTpReFFXVggdNVF5FUQZBFBRQlhtxZBCKGRQYFEF0p4YUZapqlhbalznp25ze2cbmS2dipx0v/qeZ/n//54ngfeVwB4MzT+2OtVGtAwsFUZDGputrVHAJj/5jvRfHV467B1Pb9S2yoAaMl09os0VJOgV+hud3G43sW1Oy+5/coNwNuuI4yMztLWNQZA3+UaKssLaL/0jP5Jf+yuLtBV7sSZ76CyNAfWgY6sdKwZqTFPRakTScylosT2d2CdmIbnh8y79zOkmgVSTQZCUS3Oc+t0GTNzi/jkVWr2iYxOLDMwHdAH3uioo3pXMQCVFSKCycipmyOxesfRQs6frY+dq1xFSIXZDLT1JQKldBOSmM2SV8aRZWXu6yJ7q4uADeCOfCtu9zJ5eZkAuN3L2G1p+iOfa5Lw+4OIhTkA2O0WLBYzOx0pcVMEQ2HdOAG4f7eIpm3sy26zMDProbVR+n0zf1QcsPPeEPevN8UZPn/x0N0/TcuxagDGJhYoFueRxFyUQJAVf5Dxj9/1gdPeMGZzCuG1CABr4Qi2jDQmV6Ixz91BD5GISmN9FR6PD0UJ0dI5rA+cXIlScLyHqUfNGI0GPk25abg4uOlxE4Dbof8DVAIholEVRQnFcqqqoq6/GM9SCFleZWFRxucL/BvoOvM0IVdy8kks7v0g09vwYPMdJiFVAHDm2V8/vLDnQDL/osGIlmm3vBAADh0sq92uFn8CQJrKeuGe9RUAAAAASUVORK5CYII='
-      }
-    ]
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
@@ -357,6 +355,7 @@ export const LayerSources: LayerSource[] = [
     visible: true,
     layerIndex: 1,
     native: {
+      outFields: ['*'],
       opacity: 0.001,
       labelingInfo: [
         {
@@ -377,6 +376,9 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
+    native: {
+      outFields: ['*']
+    },
     legendItems: [
       {
         id: 'visitor-parking-legend',
@@ -448,7 +450,8 @@ export const LayerSources: LayerSource[] = [
     native: {
       definitionExpression: `Type = 'Bike'`
     },
-    popupComponent: 'MoveInEngravingPopupComponent',
+    // popupComponent: 'MoveInEngravingPopupComponent',
+    popupComponent: Popups.BasePopupComponent,
     legendItems: [
       {
         id: 'Free Personal Possessions Engraving',
@@ -506,7 +509,8 @@ export const LayerSources: LayerSource[] = [
     native: {
       definitionExpression: `Type = 'Info'`
     },
-    popupComponent: 'MoveInInfoPopupComponent',
+    // popupComponent: 'MoveInInfoPopupComponent',
+    popupComponent: Popups.BasePopupComponent,
     legendItems: [
       {
         id: 'Info, Refreshments, Volunteers',
@@ -526,7 +530,8 @@ export const LayerSources: LayerSource[] = [
     native: {
       definitionExpression: `Type = 'Recycle'`
     },
-    popupComponent: 'MoveInRecyclePopupComponent'
+    // popupComponent: 'MoveInRecyclePopupComponent'
+    popupComponent: Popups.BasePopupComponent
     // legendItems: [
     //   {
     //     id: 'Cardboard Recycling Locations',
@@ -558,7 +563,8 @@ export const LayerSources: LayerSource[] = [
         }
       }
     },
-    popupComponent: 'MoveInAccessiblePopupComponent'
+    // popupComponent: 'MoveInAccessiblePopupComponent'
+    popupComponent: Popups.BasePopupComponent
   }
 ];
 
@@ -673,7 +679,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.DeptName}',
-    popupComponent: 'BasePopupComponent',
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     altLookup: {
       source: 'building-exact',
@@ -789,7 +795,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.LotName}',
-    popupComponent: 'ParkingLotPopupComponent',
+    popupComponent: Popups.ParkingLotPopupComponent,
     searchActive: true
   },
   {
@@ -807,7 +813,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.Name}',
-    popupComponent: 'PoiPopupComponent',
+    popupComponent: Popups.PoiPopupComponent,
     searchActive: true
   },
   {

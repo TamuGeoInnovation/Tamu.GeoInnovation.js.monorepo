@@ -240,6 +240,11 @@ export class MoveinOutServiceService {
         // Get a copy of the parking lot source defined in environments
         // Used to pluck values for feature layer instantiation.
         const source = this.getLayerSourceCopy(LayerReferences.parkingLots) as FeatureLayerSourceProperties;
+        const popup = this.getLayerSourcePopupReference(LayerReferences.parkingLots);
+
+        if (popup) {
+          (source as LayerSource).popupComponent = popup;
+        }
 
         const parkingLotsIntersected = await this.runTask(
           source.url,
@@ -289,6 +294,10 @@ export class MoveinOutServiceService {
         const typeField = { name: 'type', type: 'string' } as esri.FieldProperties;
 
         if (source.native) {
+          if (source.url) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            delete (source as any).url;
+          }
           source.native.fields = [...parkingForDay.fields, typeField];
           source.native.source = featureLayerSource;
 
@@ -406,6 +415,19 @@ export class MoveinOutServiceService {
     }
   }
 
+  private getLayerSourcePopupReference(reference: string) {
+    const sources: Array<LayerSource> = this.env.value('ColdLayerSources', false);
+    const root = sources.find((s) => s.id == reference);
+
+    if (root && root.popupComponent) {
+      return root.popupComponent;
+    } else {
+      console.error(`Popup component reference '${reference}' not found.`);
+
+      return undefined;
+    }
+  }
+
   private makeSQLInStringList(list: Array<string>): string {
     return list.reduce((acc, curr, index, arr) => {
       acc += `'${curr}'`;
@@ -500,4 +522,3 @@ export class MoveinOutServiceService {
     }
   }
 }
-
