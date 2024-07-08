@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { makeWhere } from '@tamu-gisc/common/utils/database';
+import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
@@ -49,8 +49,8 @@ export class MoveinOutServiceService {
   public init() {
     this.drawResidence();
     this.drawParking();
-    this.drawAccessibleParkingSpaces();
-    this.drawPOIs();
+    // this.drawAccessibleParkingSpaces();
+    // this.drawPOIs();
   }
 
   public async drawResidence() {
@@ -67,11 +67,15 @@ export class MoveinOutServiceService {
 
       const buildingListString = this.makeSQLInStringList(this.settings.residence.Bldg_Number);
 
-      const features = await this.runTask(source.url, { where: `Bldg_Number IN (${buildingListString})` });
+      // const features = await this.runTask(source.url, { where: `Bldg_Number IN (${buildingListString})` });
+
+      // if (source.native) {
+      //   source.native.source = features.features;
+      //   source.native.fields = features.fields;
+      // }
 
       if (source.native) {
-        source.native.source = features.features;
-        source.native.fields = features.fields;
+        source.native.definitionExpression = `Bldg_Number IN (${buildingListString})`;
       }
 
       // Add the residence layer
@@ -87,13 +91,13 @@ export class MoveinOutServiceService {
             'Graphic'
           ]);
 
-          const graphic = new Graphic({
+          const boundaryGraphic = new Graphic({
             geometry: new Polygon({
               rings: [boundary.paths]
             })
           });
 
-          this.mapService.zoomTo({ graphics: [graphic], zoom: 17 });
+          this.mapService.zoomTo({ graphics: [boundaryGraphic], zoom: 17 });
         }
       });
     } catch (err) {
@@ -136,31 +140,35 @@ export class MoveinOutServiceService {
    *  - Recycling stations
    */
   public async drawPOIs() {
-    const references = [
-      LayerReferences.noParking,
-      LayerReferences.personalEngraving,
-      LayerReferences.busStops,
-      LayerReferences.refreshments,
-      LayerReferences.recycle
-    ];
+    try {
+      const references = [
+        LayerReferences.noParking,
+        LayerReferences.personalEngraving,
+        LayerReferences.busStops,
+        LayerReferences.refreshments,
+        LayerReferences.recycle
+      ];
 
-    const processes = references.map(async (reference) => {
-      const source = this.getLayerSourceCopy(reference) as FeatureLayerSourceProperties;
+      const processes = references.map(async (reference) => {
+        const source = this.getLayerSourceCopy(reference) as FeatureLayerSourceProperties;
 
-      if (source.native) {
-        const intersectingFeatures = await this.runTask(source.url, { where: source.native.definitionExpression }, true);
+        if (source.native) {
+          const intersectingFeatures = await this.runTask(source.url, { where: source.native.definitionExpression }, true);
 
-        if (intersectingFeatures.features.length > 0) {
-          const objectIDList = this.getAttributeList(intersectingFeatures.features, 'OBJECTID');
+          if (intersectingFeatures.features.length > 0) {
+            const objectIDList = this.getAttributeList(intersectingFeatures.features, 'OBJECTID');
 
-          source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
+            source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
 
-          this.mapService.loadLayers([source as LayerSource]);
+            this.mapService.loadLayers([source as LayerSource]);
+          }
         }
-      }
-    });
+      });
 
-    Promise.allSettled(processes);
+      Promise.allSettled(processes);
+    } catch (err) {
+      console.error(`Failed to draw POIs`, err);
+    }
   }
 
   /**
@@ -170,7 +178,7 @@ export class MoveinOutServiceService {
   public async drawParking() {
     try {
       // Calendar day of event start
-      const eventDayStart = 14;
+      const eventDayStart = 15;
 
       // User selected event attendance day
       const day = this.settings.date;
@@ -199,19 +207,23 @@ export class MoveinOutServiceService {
       // to get geometries for street parking. Move-in streets only has street names, so a lookup using a wildcard expression
       // will be used to get their geometries.
 
-      const query = {
-        where: makeWhere(Array(parkingCategories.length).fill(`Day_${dateSuffix}`), parkingCategories, [
-          {
-            comparison: Array(parkingCategories.length).fill('='),
-            logical: Array(parkingCategories.length).fill('OR')
-          }
-        ])
+      const operator: CompoundOperator = {
+        comparison: '=',
+        logical: 'OR'
       };
 
-      const connections = this.env.value('Connections', false)?.['moveInOutUrl'];
+      const query = {
+        where: makeWhere(
+          Array(parkingCategories.length).fill(`Day_${dateSuffix}`),
+          parkingCategories,
+          Array(parkingCategories.length).fill(operator)
+        )
+      };
+
+      const connections = this.env.value('Connections', false)?.['moveInOutDaysTable'];
 
       // Execute query task
-      const parkingForDay = await this.runTask(`${connections}/6`, query);
+      const parkingForDay = await this.runTask(`${connections}`, query);
 
       if (parkingForDay.features.length > 0) {
         // Pull the CIT_CODE for every feature in the result. This list will include features that are not decks or lots
@@ -384,7 +396,7 @@ export class MoveinOutServiceService {
    * Throws error if no referenced source found (invalid or non-existing).
    */
   private getLayerSourceCopy(reference: string): LayerSource {
-    const sources: Array<LayerSource> = this.env.value('LayerSources', false);
+    const sources: Array<LayerSource> = this.env.value('ColdLayerSources', false);
     const root = sources.find((s) => s.id == reference);
 
     if (root) {
@@ -410,7 +422,7 @@ export class MoveinOutServiceService {
    *
    * @returns Attribute value list
    */
-  private getAttributeList(features: esri.Graphic[], attribute: string): any[] {
+  private getAttributeList(features: esri.Graphic[], attribute: string): string[] {
     return features.map((f) => f.attributes[attribute]);
   }
 

@@ -15,7 +15,8 @@ export const Connections = {
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
-  moveInOutUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer'
+  moveInOutUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer',
+  moveInOutDaysTable: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MoveInDays/FeatureServer/0'
 };
 
 export const Definitions = {
@@ -58,7 +59,7 @@ export const Definitions = {
     id: 'surface-lots',
     layerId: 'surface-lots-layer',
     name: 'Surface Lots',
-    url: `${Connections.basemapUrl}/12`,
+    url: `${Connections.basemapUrl}/9`,
     popupComponent: Popups.ParkingLotPopupComponent
   },
   VISITOR_PARKING: {
@@ -101,6 +102,156 @@ export const Definitions = {
   }
 };
 
+export const ColdLayerSources: LayerSource[] = [
+  {
+    type: 'feature',
+    id: 'residence-layer',
+    title: 'Residence Hall',
+    listMode: 'show',
+    visible: true,
+    url: `${Connections.basemapUrl}/1`,
+    popupComponent: Definitions.BUILDINGS.popupComponent,
+    native: {
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [24, 255, 255, 0.75],
+          outline: {
+            color: [24, 255, 255, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'move-in-parking-streets-layer',
+    title: 'Movein Street Parking',
+    url: `${Definitions.MOVE_IN_OUT.url}/5`,
+    listMode: 'show',
+    visible: true,
+    native: {
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [76, 0, 115, 0.5],
+          outline: {
+            color: [76, 0, 115, 0.75],
+            width: '1'
+          }
+        }
+      }
+    },
+    popupComponent: 'MoveInStreetPopupComponent',
+    layerIndex: 4
+  },
+  {
+    type: 'feature',
+    id: 'move-in-parking-lots-layer',
+    title: 'Movein Parking Lots',
+    url: `${Definitions.MOVE_IN_OUT.url}/6`,
+    listMode: 'hide',
+    visible: true,
+    native: {
+      renderer: {
+        type: 'unique-value',
+        field: 'type',
+        defaultSymbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [255, 0, 0, 0.5],
+          outline: {
+            color: [80, 0, 0, 0.5],
+            width: '1'
+          }
+        } as unknown,
+        uniqueValueInfos: [
+          {
+            value: 'Free',
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [0, 204, 0, 0.5],
+              outline: {
+                color: [0, 150, 0, 0.75],
+                width: '1'
+              }
+            } as unknown
+          },
+          {
+            value: 'Disabled',
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [0, 105, 230, 0.5],
+              outline: {
+                color: [0, 105, 200, 0.75],
+                width: '1'
+              }
+            } as unknown
+          },
+          {
+            value: '1HR DZ w P',
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [245, 81, 166, 0.5],
+              outline: {
+                color: [236, 14, 129, 0.75],
+                width: '1'
+              }
+            } as unknown
+          },
+          {
+            value: '1HR Drop',
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [168, 168, 255, 0.75],
+              outline: {
+                color: [117, 117, 255, 0.75],
+                width: '1'
+              }
+            } as unknown
+          },
+          {
+            value: 'Paid',
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [153, 230, 0, 0.5],
+              outline: {
+                color: [104, 159, 56],
+                width: '1'
+              }
+            } as unknown
+          },
+          {
+            value: 'Free 6-9',
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [255, 165, 0, 0.5],
+              outline: {
+                color: [255, 165, 0],
+                width: '1'
+              }
+            } as unknown
+          }
+        ]
+      }
+    },
+    popupComponent: Popups.ParkingLotPopupComponent,
+    layerIndex: 3
+  }
+];
+
 // Persistent layer definitions that will be processed by a factory and added to the map.
 export const LayerSources: LayerSource[] = [
   {
@@ -113,6 +264,7 @@ export const LayerSources: LayerSource[] = [
     loadOnInit: true,
     visible: true,
     native: {
+      outFields: ['*'],
       renderer: {
         type: 'simple',
         symbol: {
@@ -273,60 +425,17 @@ export const LayerSources: LayerSource[] = [
     loadOnInit: false,
     visible: true,
     native: {
+      outFields: ['*'],
       definitionExpression: `Type = 'NoParking'`
     },
-    popupComponent: 'MoveInNoParkingPopupComponent',
-    legendItems: [
-      {
-        id: 'No Parking',
-        title: 'No Parking',
-        src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA9lJREFUSInNl1FIU3scxz/bzKktw2txy3nrGhaxKMQHxUIfbDF2kXpIHRVC5ZCwaJOwBYIQdGGVsa1ovpSeMQhkhTTy+mQFkV17iaAeiggtqFdlunVknfXwtznzzC25o/t7OYf/+f1+n///nN/v+/+fPH6R5f0fwAVAI5CfC5Ber4/IsvwIUH4EtwKBXEABZFlGr9fvk2V5/EdwkcPhwGazodVq/zOgoiiEw2HcbjdA0ffxJd/YYrFQV1eXKRPMzkIsBoWFsHYt6HQrhsiy/B2ctCVgjUaTPvrtW3j8GAYGYGJicXzXLujogMZGca+SQy1v5qqemYGbN6GnB86ehYsXYcsWsdpoFD59grEx2L0bLlyAc+dgw4aMaVcGf/4Mp0+L+1evwGRaviKTCcxmOHkS+vqgpUW8lYqKVYIjEXA6YXgYzp+HbdtUX2PStm8HrxeuXgW7HYaGVlx5erAkiQLy+6GzE7Raot3dDN2/v8zVYDBQXl5OdXU1+u5umJwEjwcuXUo7WXXwhw/ie754AXv2QH4+2O3oYzHu+XyMpJmr1WrF7/fzp8sFO3fC0aOi4LIGP30Kx48LqFYLJ04AoLPbuQ20A039/ZSWlgIwPT2Nz+djdHSU3t5eAoEAmq4uePjwJ8HDw2CzCSgk4fOzs/zudHIbiJvNGCsrkyFVVVXU1NQQDAbxer38ZrGICu/szBIcj0MoBF1dS8e1WqJtbbxzOjEB8x4PXLsGBQUAFBcXJ10VRYHNm+H1a5ibyxL85Yu4LiRMtYRGw1/AP4DJ7ycWjfLu1CkiX78SCAiZr6+vp6SkRPQ/iALNClxYKK6RiGrAFCzCJYmNkoQLGF147na70el0QlxS82UE63TQ1gbv30NDQ1q4u7WV3qkpKicmCNbWMtbRwT6LBaPRKJw+foTaWjAYsgQDHDwI/f1w7BisWaPq8ndfH38YjTA4SKndTqvZDAtVTiIBIyNCzdLsdOrgvXuF9D15IsQ/naW0Gna7EIueHrGh+P3w5k3aUHVwWRncuiWk8sED2LQpe7iiwMuXQrV27PhJMMCRI/DsmWgrjyc7+NwcOBxw6BCcOZPef0VwURFcvgwuFzQ1wZUrlDQ0kEgklvvG4/D8udgYDh+G69dh/fpVgkEUy40bcOcO7N8PBw6IgquogHXrRI9OTsLdu0LtPB5RUClisjowiD5sbwerFcbHIRyGYHDxeUsLNDcL6NatGdOpghVFSe9ZViYAzc0wOChWW1AAeZnnrpY3NWo+FAoB5OSUuWCyGvieJElIkpSTAz0QkWX5XzXwDDCQI+gy+2X/Tt8A+qw6Z3UcdzYAAAAASUVORK5CYII='
-      }
-    ]
-  },
-  {
-    type: 'feature',
-    id: 'residence-layer',
-    title: 'Residence Hall',
-    listMode: 'show',
-    loadOnInit: false,
-    visible: true,
-    url: `${Connections.basemapUrl}/2`,
-    popupComponent: Definitions.BUILDINGS.popupComponent,
-    native: {
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [24, 255, 255, 0.75],
-          outline: {
-            color: [24, 255, 255, 1],
-            width: '3px'
-          }
-        }
-      }
-    }
-  },
-  {
-    type: 'feature',
-    id: 'no-parking-layer',
-    title: 'No Parking Locations',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
-    listMode: 'show',
-    loadOnInit: false,
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'NoParking'`
-    },
-    popupComponent: 'MoveInNoParkingPopupComponent',
-    legendItems: [
-      {
-        id: 'No Parking',
-        title: 'No Parking',
-        src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA9lJREFUSInNl1FIU3scxz/bzKktw2txy3nrGhaxKMQHxUIfbDF2kXpIHRVC5ZCwaJOwBYIQdGGVsa1ovpSeMQhkhTTy+mQFkV17iaAeiggtqFdlunVknfXwtznzzC25o/t7OYf/+f1+n///nN/v+/+fPH6R5f0fwAVAI5CfC5Ber4/IsvwIUH4EtwKBXEABZFlGr9fvk2V5/EdwkcPhwGazodVq/zOgoiiEw2HcbjdA0ffxJd/YYrFQV1eXKRPMzkIsBoWFsHYt6HQrhsiy/B2ctCVgjUaTPvrtW3j8GAYGYGJicXzXLujogMZGca+SQy1v5qqemYGbN6GnB86ehYsXYcsWsdpoFD59grEx2L0bLlyAc+dgw4aMaVcGf/4Mp0+L+1evwGRaviKTCcxmOHkS+vqgpUW8lYqKVYIjEXA6YXgYzp+HbdtUX2PStm8HrxeuXgW7HYaGVlx5erAkiQLy+6GzE7Raot3dDN2/v8zVYDBQXl5OdXU1+u5umJwEjwcuXUo7WXXwhw/ie754AXv2QH4+2O3oYzHu+XyMpJmr1WrF7/fzp8sFO3fC0aOi4LIGP30Kx48LqFYLJ04AoLPbuQ20A039/ZSWlgIwPT2Nz+djdHSU3t5eAoEAmq4uePjwJ8HDw2CzCSgk4fOzs/zudHIbiJvNGCsrkyFVVVXU1NQQDAbxer38ZrGICu/szBIcj0MoBF1dS8e1WqJtbbxzOjEB8x4PXLsGBQUAFBcXJ10VRYHNm+H1a5ibyxL85Yu4LiRMtYRGw1/AP4DJ7ycWjfLu1CkiX78SCAiZr6+vp6SkRPQ/iALNClxYKK6RiGrAFCzCJYmNkoQLGF147na70el0QlxS82UE63TQ1gbv30NDQ1q4u7WV3qkpKicmCNbWMtbRwT6LBaPRKJw+foTaWjAYsgQDHDwI/f1w7BisWaPq8ndfH38YjTA4SKndTqvZDAtVTiIBIyNCzdLsdOrgvXuF9D15IsQ/naW0Gna7EIueHrGh+P3w5k3aUHVwWRncuiWk8sED2LQpe7iiwMuXQrV27PhJMMCRI/DsmWgrjyc7+NwcOBxw6BCcOZPef0VwURFcvgwuFzQ1wZUrlDQ0kEgklvvG4/D8udgYDh+G69dh/fpVgkEUy40bcOcO7N8PBw6IgquogHXrRI9OTsLdu0LtPB5RUClisjowiD5sbwerFcbHIRyGYHDxeUsLNDcL6NatGdOpghVFSe9ZViYAzc0wOChWW1AAeZnnrpY3NWo+FAoB5OSUuWCyGvieJElIkpSTAz0QkWX5XzXwDDCQI+gy+2X/Tt8A+qw6Z3UcdzYAAAAASUVORK5CYII='
-      }
-    ]
+    popupComponent: Popups.BasePopupComponent
+    // legendItems: [
+    //   {
+    //     id: 'No Parking',
+    //     title: 'No Parking',
+    //     src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA9lJREFUSInNl1FIU3scxz/bzKktw2txy3nrGhaxKMQHxUIfbDF2kXpIHRVC5ZCwaJOwBYIQdGGVsa1ovpSeMQhkhTTy+mQFkV17iaAeiggtqFdlunVknfXwtznzzC25o/t7OYf/+f1+n///nN/v+/+fPH6R5f0fwAVAI5CfC5Ber4/IsvwIUH4EtwKBXEABZFlGr9fvk2V5/EdwkcPhwGazodVq/zOgoiiEw2HcbjdA0ffxJd/YYrFQV1eXKRPMzkIsBoWFsHYt6HQrhsiy/B2ctCVgjUaTPvrtW3j8GAYGYGJicXzXLujogMZGca+SQy1v5qqemYGbN6GnB86ehYsXYcsWsdpoFD59grEx2L0bLlyAc+dgw4aMaVcGf/4Mp0+L+1evwGRaviKTCcxmOHkS+vqgpUW8lYqKVYIjEXA6YXgYzp+HbdtUX2PStm8HrxeuXgW7HYaGVlx5erAkiQLy+6GzE7Raot3dDN2/v8zVYDBQXl5OdXU1+u5umJwEjwcuXUo7WXXwhw/ie754AXv2QH4+2O3oYzHu+XyMpJmr1WrF7/fzp8sFO3fC0aOi4LIGP30Kx48LqFYLJ04AoLPbuQ20A039/ZSWlgIwPT2Nz+djdHSU3t5eAoEAmq4uePjwJ8HDw2CzCSgk4fOzs/zudHIbiJvNGCsrkyFVVVXU1NQQDAbxer38ZrGICu/szBIcj0MoBF1dS8e1WqJtbbxzOjEB8x4PXLsGBQUAFBcXJ10VRYHNm+H1a5ibyxL85Yu4LiRMtYRGw1/AP4DJ7ycWjfLu1CkiX78SCAiZr6+vp6SkRPQ/iALNClxYKK6RiGrAFCzCJYmNkoQLGF147na70el0QlxS82UE63TQ1gbv30NDQ1q4u7WV3qkpKicmCNbWMtbRwT6LBaPRKJw+foTaWjAYsgQDHDwI/f1w7BisWaPq8ndfH38YjTA4SKndTqvZDAtVTiIBIyNCzdLsdOrgvXuF9D15IsQ/naW0Gna7EIueHrGh+P3w5k3aUHVwWRncuiWk8sED2LQpe7iiwMuXQrV27PhJMMCRI/DsmWgrjyc7+NwcOBxw6BCcOZPef0VwURFcvgwuFzQ1wZUrlDQ0kEgklvvG4/D8udgYDh+G69dh/fpVgkEUy40bcOcO7N8PBw6IgquogHXrRI9OTsLdu0LtPB5RUClisjowiD5sbwerFcbHIRyGYHDxeUsLNDcL6NatGdOpghVFSe9ZViYAzc0wOChWW1AAeZnnrpY3NWo+FAoB5OSUuWCyGvieJElIkpSTAz0QkWX5XzXwDDCQI+gy+2X/Tt8A+qw6Z3UcdzYAAAAASUVORK5CYII='
+    //   }
+    // ]
   },
   {
     type: 'feature',
@@ -417,14 +526,14 @@ export const LayerSources: LayerSource[] = [
     native: {
       definitionExpression: `Type = 'Recycle'`
     },
-    popupComponent: 'MoveInRecyclePopupComponent',
-    legendItems: [
-      {
-        id: 'Cardboard Recycling Locations',
-        title: 'Cardboard Recycling Locations',
-        src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAABKxJREFUWIXVmF1IFGsYx3+zri221ZpZWBDbsTDUJYKivCljTcFqKynJIKyojOoiiIrYsqyotOjDPqgkCy8Kj1LEUSjoIg9Z0EXaTZDVTXWOGsSSouWa7ZyLh2Hd3dlPce38YWDmfead97fzPu//fXaM/OYyjjVAOOkCqmpKDriygcQ4cajAP0CrotAzPOADqKokAw3gyo8TmL+6VdVUoijuv7UGf8BqRWGs4ADSwP1AVflDUegFP0BFYe3YcPkoBcgFmiAwBydF8ySPB9raoLUV3r2Dnz/BbIa0NJg5E7KywGaDxOgz2aKdxLyKVRWeP4cXL6C+Hl6/1r9v1y6orIRJUf10r2IC/PULnjyBzk6YNw9KS6GpCXbuDLz3+nWYMAHOnIGEhDgBPn0KhYXe62XLoK4OTpyAo0cD7z93DpYuhVWr4gDY2wuHDvm2tbQI2OnTUFsLHz8G9isrk3ydOBH6+2HatFECbGyEV68C2+vqYOtWqK6GtTpe0NUF5eXQ1we3b0c+XlSAnz7B9u36sTlzZMWazeBwSE7669YtaG6GpKRRAqypCR67cAGmTJHz8nJ9wOxsyM2NZsQoAffuheRkOHDAt72oCAoKvNc2G+Tny0ofrooKWdGjBjh1KuzfD6tXw6VLYiEATieYTHLe0wMNDZCRIdcapNUq0ACDg+ByiaGPCFBVYWAAvn+Xo79fkjwjA65cgY0bxawXLPD2sVhgxw7v9dCQ9B0cFLNuaxPjHj9ectIY5hUFDXs84neHD8PLl76x+nrYsAGWLJEj5ABGAfv8GY4cESvSVFoKdnuMgAYD5OXJbuEPeOwYrFghnhZOQ0Nw9y5s2RIYq6iARYtC52XIF9zd7Ttdmjo6xJwdjvCARiN8/aofe/ZMbKekJEbA2lpwu/VjlZWwfHlknrZ5M5w/L2btrz175DmpqVECfvkiOaOnoiLYtk0qmby88ICpqXD1KqxbFxhzuUBRgvcNCvj+ffBOTicsXCirOpw8HsnnwkI5Hj3yjd+8KQtIM/mIAfv69NsPHvTaitkcGq69HWbPllWclCQ7jAZoMsGdO5CTA1VVcONGlIDJyfrtu3eLP6pqYMxg8J5/+wb79sG9e9460GaTmVEUAXz7FjZtkhwMpqCAmZmQkiI5oqmmRqZj1iz9PgMDMrDHI0be0gIzZgQfXNPJkzEAWixw9qy3erFaYc0afT/zl1YfRqL8fFi8OAZAgPXr4eJFePNGpqKzMzDJ/dXVpV/6B9OpU6FzOSSgxSKABQUwebLvdAfTjx/w4UNkcFVV4gahFLaasdvh8mXxvJUrww+ang737+t73nCVlcmCC+WBEQEmJIjbz50rye90+m74enI4pM+1a4ExqxWOH4fiYqlowimietBgkGnWAIuLfeOqKjGtdEpMlCqouRkePvT+Jx43TmpKrXaMRFEVrAaDJPT8+eHvnT5d6r309Nj/tEMgoAcw6N0Yi+x2ebMxaEg78QM0dYA7c0RUw2Qw+O4ukSulA8Qy/ADdFcCfI+Qaqf5SFFe7duH/+a1BVU294C4HsojrF1bTv6pKo6K4fTa+gEWiKO7HwOM4gQ2TfmX8//yI/jvpP9YOXIOgox6EAAAAAElFTkSuQmCC'
-      }
-    ]
+    popupComponent: 'MoveInRecyclePopupComponent'
+    // legendItems: [
+    //   {
+    //     id: 'Cardboard Recycling Locations',
+    //     title: 'Cardboard Recycling Locations',
+    //     src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAABKxJREFUWIXVmF1IFGsYx3+zri221ZpZWBDbsTDUJYKivCljTcFqKynJIKyojOoiiIrYsqyotOjDPqgkCy8Kj1LEUSjoIg9Z0EXaTZDVTXWOGsSSouWa7ZyLh2Hd3dlPce38YWDmfead97fzPu//fXaM/OYyjjVAOOkCqmpKDriygcQ4cajAP0CrotAzPOADqKokAw3gyo8TmL+6VdVUoijuv7UGf8BqRWGs4ADSwP1AVflDUegFP0BFYe3YcPkoBcgFmiAwBydF8ySPB9raoLUV3r2Dnz/BbIa0NJg5E7KywGaDxOgz2aKdxLyKVRWeP4cXL6C+Hl6/1r9v1y6orIRJUf10r2IC/PULnjyBzk6YNw9KS6GpCXbuDLz3+nWYMAHOnIGEhDgBPn0KhYXe62XLoK4OTpyAo0cD7z93DpYuhVWr4gDY2wuHDvm2tbQI2OnTUFsLHz8G9isrk3ydOBH6+2HatFECbGyEV68C2+vqYOtWqK6GtTpe0NUF5eXQ1we3b0c+XlSAnz7B9u36sTlzZMWazeBwSE7669YtaG6GpKRRAqypCR67cAGmTJHz8nJ9wOxsyM2NZsQoAffuheRkOHDAt72oCAoKvNc2G+Tny0ofrooKWdGjBjh1KuzfD6tXw6VLYiEATieYTHLe0wMNDZCRIdcapNUq0ACDg+ByiaGPCFBVYWAAvn+Xo79fkjwjA65cgY0bxawXLPD2sVhgxw7v9dCQ9B0cFLNuaxPjHj9ectIY5hUFDXs84neHD8PLl76x+nrYsAGWLJEj5ABGAfv8GY4cESvSVFoKdnuMgAYD5OXJbuEPeOwYrFghnhZOQ0Nw9y5s2RIYq6iARYtC52XIF9zd7Ttdmjo6xJwdjvCARiN8/aofe/ZMbKekJEbA2lpwu/VjlZWwfHlknrZ5M5w/L2btrz175DmpqVECfvkiOaOnoiLYtk0qmby88ICpqXD1KqxbFxhzuUBRgvcNCvj+ffBOTicsXCirOpw8HsnnwkI5Hj3yjd+8KQtIM/mIAfv69NsPHvTaitkcGq69HWbPllWclCQ7jAZoMsGdO5CTA1VVcONGlIDJyfrtu3eLP6pqYMxg8J5/+wb79sG9e9460GaTmVEUAXz7FjZtkhwMpqCAmZmQkiI5oqmmRqZj1iz9PgMDMrDHI0be0gIzZgQfXNPJkzEAWixw9qy3erFaYc0afT/zl1YfRqL8fFi8OAZAgPXr4eJFePNGpqKzMzDJ/dXVpV/6B9OpU6FzOSSgxSKABQUwebLvdAfTjx/w4UNkcFVV4gahFLaasdvh8mXxvJUrww+ang737+t73nCVlcmCC+WBEQEmJIjbz50rye90+m74enI4pM+1a4ExqxWOH4fiYqlowimietBgkGnWAIuLfeOqKjGtdEpMlCqouRkePvT+Jx43TmpKrXaMRFEVrAaDJPT8+eHvnT5d6r309Nj/tEMgoAcw6N0Yi+x2ebMxaEg78QM0dYA7c0RUw2Qw+O4ukSulA8Qy/ADdFcCfI+Qaqf5SFFe7duH/+a1BVU294C4HsojrF1bTv6pKo6K4fTa+gEWiKO7HwOM4gQ2TfmX8//yI/jvpP9YOXIOgox6EAAAAAElFTkSuQmCC'
+    //   }
+    // ]
   },
   {
     type: 'feature',
@@ -450,131 +559,6 @@ export const LayerSources: LayerSource[] = [
       }
     },
     popupComponent: 'MoveInAccessiblePopupComponent'
-  },
-  {
-    type: 'feature',
-    id: 'move-in-parking-lots-layer',
-    title: 'Movein Parking Lots',
-    url: `${Definitions.MOVE_IN_OUT.url}/6`,
-    listMode: 'hide',
-    loadOnInit: false,
-    visible: true,
-    native: {
-      renderer: {
-        type: 'unique-value',
-        field: 'type',
-        defaultSymbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [255, 0, 0, 0.5],
-          outline: {
-            color: [80, 0, 0, 0.5],
-            width: '1'
-          }
-        } as unknown,
-        uniqueValueInfos: [
-          {
-            value: 'Free',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [0, 204, 0, 0.5],
-              outline: {
-                color: [0, 150, 0, 0.75],
-                width: '1'
-              }
-            } as unknown
-          },
-          {
-            value: 'Disabled',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [0, 105, 230, 0.5],
-              outline: {
-                color: [0, 105, 200, 0.75],
-                width: '1'
-              }
-            } as unknown
-          },
-          {
-            value: '1HR DZ w P',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [245, 81, 166, 0.5],
-              outline: {
-                color: [236, 14, 129, 0.75],
-                width: '1'
-              }
-            } as unknown
-          },
-          {
-            value: '1HR Drop',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [168, 168, 255, 0.75],
-              outline: {
-                color: [117, 117, 255, 0.75],
-                width: '1'
-              }
-            } as unknown
-          },
-          {
-            value: 'Paid',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [153, 230, 0, 0.5],
-              outline: {
-                color: [104, 159, 56],
-                width: '1'
-              }
-            } as unknown
-          },
-          {
-            value: 'Free 6-9',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [255, 165, 0, 0.5],
-              outline: {
-                color: [255, 165, 0],
-                width: '1'
-              }
-            } as unknown
-          }
-        ]
-      }
-    },
-    popupComponent: 'MoveInParkingLotPopupComponent',
-    layerIndex: 3
-  },
-  {
-    type: 'feature',
-    id: 'move-in-parking-streets-layer',
-    title: 'Movein Street Parking',
-    url: `${Definitions.MOVE_IN_OUT.url}/5`,
-    listMode: 'hide',
-    loadOnInit: false,
-    visible: true,
-    native: {
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [76, 0, 115, 0.5],
-          outline: {
-            color: [76, 0, 115, 0.75],
-            width: '1'
-          }
-        }
-      }
-    },
-    popupComponent: 'MoveInStreetPopupComponent',
-    layerIndex: 4
   }
 ];
 
@@ -636,7 +620,7 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'building',
     name: 'Building',
-    url: `${Connections.basemapUrl}/1`,
+    url: `${Connections.basemapUrl}/2`,
     queryParams: {
       ...commonQueryParams,
       where: {
@@ -654,7 +638,7 @@ export const SearchSources: SearchSource[] = [
     },
     scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
+    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: Definitions.BUILDINGS.popupComponent,
     searchActive: true
   },
@@ -670,7 +654,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
+    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: Definitions.BUILDINGS.popupComponent,
     searchActive: false
   },
@@ -688,7 +672,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.DeptName}}',
+    displayTemplate: '{attributes.DeptName}',
     popupComponent: 'BasePopupComponent',
     searchActive: true,
     altLookup: {
@@ -711,7 +695,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.DeptName}}',
+    displayTemplate: '{attributes.DeptName}',
     searchActive: false
   },
   {
@@ -742,7 +726,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.LotName}}',
+    displayTemplate: '{attributes.LotName}',
     searchActive: false
   },
   {
@@ -769,7 +753,7 @@ export const SearchSources: SearchSource[] = [
       `
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.LotName}}',
+    displayTemplate: '{attributes.LotName}',
     searchActive: false
   },
   {
@@ -786,7 +770,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.LotName}}',
+    displayTemplate: '{attributes.LotName}',
     popupComponent: Definitions.BUILDINGS.popupComponent,
     searchActive: true
   },
@@ -804,7 +788,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.LotName}}',
+    displayTemplate: '{attributes.LotName}',
     popupComponent: 'ParkingLotPopupComponent',
     searchActive: true
   },
@@ -822,7 +806,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.Name}}',
+    displayTemplate: '{attributes.Name}',
     popupComponent: 'PoiPopupComponent',
     searchActive: true
   },
@@ -839,7 +823,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.Type}}',
+    displayTemplate: '{attributes.Type}',
     searchActive: false
   }
 ];

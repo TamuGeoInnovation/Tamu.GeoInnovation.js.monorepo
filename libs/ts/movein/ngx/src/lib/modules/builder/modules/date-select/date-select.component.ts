@@ -17,20 +17,20 @@ export class DateSelectComponent implements OnInit {
 
   public dates: Array<MoveDate> = [
     {
+      day: 15,
+      name: 'Thursday'
+    },
+    {
+      day: 16,
+      name: 'Friday'
+    },
+    {
       day: 17,
       name: 'Saturday'
     },
     {
       day: 18,
       name: 'Sunday'
-    },
-    {
-      day: 19,
-      name: 'Monday'
-    },
-    {
-      day: 20,
-      name: 'Tuesday'
     }
   ];
 

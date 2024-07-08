@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -21,7 +21,7 @@ import { MoveinOutServiceService } from './services/move-in-out-service.service'
   styleUrls: ['./map.component.scss'],
   providers: [MoveinOutServiceService]
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
@@ -39,7 +39,8 @@ export class MapComponent implements OnInit {
     private responsiveService: ResponsiveService,
     private env: EnvironmentService,
     private readonly ss: SettingsService,
-    private readonly ts: TestingService
+    private readonly ts: TestingService,
+    private readonly mio: MoveinOutServiceService
   ) {}
 
   public ngOnInit() {
