@@ -10,16 +10,14 @@ import {
 } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import {
   AggiemapSidebarModule,
-  AggiemapSidebarComponent,
-  SidebarReferenceComponent
-  // SidebarTripPlannerComponent,
-  // SidebarBusListComponent
+  SidebarReferenceComponent,
+  SidebarTripPlannerComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   AggiemapNgxUiMobileModule,
   OmnisearchComponent,
-  // TripPlannerBottomComponent,
-  // TripPlannerTopComponent,
+  TripPlannerBottomComponent,
+  TripPlannerTopComponent,
   MobileSidebarComponent,
   MainMobileSidebarComponent,
   AggiemapNgxUiMobileComponent
@@ -64,7 +62,11 @@ const routes: Routes = [
         path: 'd',
         component: MoveInOutSidebarComponent,
         canActivateChild: [DesktopGuard],
-        children: [{ path: '', component: SidebarReferenceComponent }]
+        children: [
+          { path: '', component: SidebarReferenceComponent },
+          { path: 'trip', component: SidebarTripPlannerComponent },
+          { path: 'trip/options', component: TripPlannerOptionsComponent }
+        ]
       },
       {
         path: 'm',
@@ -78,7 +80,13 @@ const routes: Routes = [
               { path: '', component: PopupMobileComponent, outlet: 'outlet-2' }
             ]
           },
-
+          {
+            path: 'trip',
+            children: [
+              { path: '', component: TripPlannerTopComponent },
+              { path: '', component: TripPlannerBottomComponent, outlet: 'outlet-2' }
+            ]
+          },
           {
             path: 'search/:id',
             children: [{ path: '', component: OmnisearchComponent }]
@@ -108,6 +116,8 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     UITamuBrandingModule,
+    AggiemapNgxUiMobileModule,
+    MapsFeatureTripPlannerModule,
     EsriMapModule,
     MapsFeatureCoordinatesModule,
     MapsFeatureAccessibilityModule,
