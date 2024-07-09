@@ -49,8 +49,8 @@ export class MoveinOutServiceService {
   public init() {
     this.drawResidence();
     this.drawParking();
-    // this.drawAccessibleParkingSpaces();
-    // this.drawPOIs();
+    this.drawAccessibleParkingSpaces();
+    this.drawPOIs();
   }
 
   public async drawResidence() {

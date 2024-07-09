@@ -253,6 +253,104 @@ export const ColdLayerSources: LayerSource[] = [
     // popupComponent: Popups.ParkingLotPopupComponent,
     popupComponent: Popups.BasePopupComponent,
     layerIndex: 3
+  },
+  {
+    type: 'feature',
+    id: 'accessible-parking-spaces-layer',
+    title: 'Wheelchair Accessible Parking',
+    url: `${Definitions.MOVE_IN_OUT.url}/2`,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    native: {
+      definitionExpression: `Type = 'Disabled'`,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-marker',
+          style: 'circle',
+          color: [0, 105, 230],
+          size: '12px',
+          outline: {
+            width: 0
+          }
+        }
+      },
+      outFields: ['*']
+    },
+    // popupComponent: 'MoveInAccessiblePopupComponent'
+    popupComponent: Popups.BasePopupComponent
+  },
+  {
+    type: 'feature',
+    id: 'personal-engraving-layer',
+    title: 'Free Personal Possessions Engraving',
+    url: `${Definitions.MOVE_IN_OUT.url}/2`,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    native: {
+      definitionExpression: `Type = 'Bike'`,
+      outFields: ['*']
+    },
+    // popupComponent: 'MoveInEngravingPopupComponent',
+    popupComponent: Popups.BasePopupComponent
+  },
+  {
+    type: 'feature',
+    id: 'move-in-bus-stops-layer',
+    title: 'Move-In Shuttle Bus Stops',
+    url: `${Definitions.MOVE_IN_OUT.url}/2`,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    native: {
+      definitionExpression: `Type = 'BusStop'`,
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: 'dining-areas-layer',
+    title: 'Dining Areas',
+    url: `${Definitions.MOVE_IN_OUT.url}/2`,
+    listMode: 'show',
+    loadOnInit: true,
+    visible: true,
+    native: {
+      definitionExpression: `Type = 'Dining'`,
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: 'move-in-info-layer',
+    title: 'Info, Refreshments, Volunteers',
+    url: `${Definitions.MOVE_IN_OUT.url}/2`,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    native: {
+      definitionExpression: `Type = 'Info'`,
+      outFields: ['*']
+    },
+    // popupComponent: 'MoveInInfoPopupComponent',
+    popupComponent: Popups.BasePopupComponent
+  },
+  {
+    type: 'feature',
+    id: 'recycle-layer',
+    title: 'Cardboard Recycling Locations',
+    url: `${Definitions.MOVE_IN_OUT.url}/2`,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    native: {
+      definitionExpression: `Type = 'Recycle'`,
+      outFields: ['*']
+    },
+    // popupComponent: 'MoveInRecyclePopupComponent'
+    popupComponent: Popups.BasePopupComponent
   }
 ];
 
@@ -301,7 +399,10 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.POINTS_OF_INTEREST.popupComponent,
     listMode: 'show',
     loadOnInit: false,
-    visible: true
+    visible: true,
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
@@ -324,7 +425,10 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.LACTATION_ROOMS.popupComponent,
     listMode: 'show',
     loadOnInit: false,
-    visible: true
+    visible: true,
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
@@ -395,106 +499,6 @@ export const LayerSources: LayerSource[] = [
       definitionExpression: `Type = 'NoParking'`,
       legendEnabled: false
     },
-    popupComponent: Popups.BasePopupComponent
-  },
-  {
-    type: 'group',
-    id: 'move-in-services-group',
-    title: 'Move-in Services',
-    listMode: 'show',
-    sources: [
-      {
-        type: 'feature',
-        id: 'personal-engraving-layer',
-        title: 'Free Personal Possessions Engraving',
-        url: `${Definitions.MOVE_IN_OUT.url}/2`,
-        listMode: 'show',
-        loadOnInit: false,
-        visible: true,
-        native: {
-          definitionExpression: `Type = 'Bike'`
-        },
-        // popupComponent: 'MoveInEngravingPopupComponent',
-        popupComponent: Popups.BasePopupComponent
-      },
-      {
-        type: 'feature',
-        id: 'move-in-bus-stops-layer',
-        title: 'Move-In Shuttle Bus Stops',
-        url: `${Definitions.MOVE_IN_OUT.url}/2`,
-        listMode: 'show',
-        loadOnInit: false,
-        visible: true,
-        native: {
-          definitionExpression: `Type = 'BusStop'`
-        }
-      },
-      {
-        type: 'feature',
-        id: 'dining-areas-layer',
-        title: 'Dining Areas',
-        url: `${Definitions.MOVE_IN_OUT.url}/2`,
-        listMode: 'show',
-        loadOnInit: true,
-        visible: true,
-        native: {
-          definitionExpression: `Type = 'Dining'`
-        }
-      },
-      {
-        type: 'feature',
-        id: 'move-in-info-layer',
-        title: 'Info, Refreshments, Volunteers',
-        url: `${Definitions.MOVE_IN_OUT.url}/2`,
-        listMode: 'show',
-        loadOnInit: false,
-        visible: true,
-        native: {
-          definitionExpression: `Type = 'Info'`
-        },
-        // popupComponent: 'MoveInInfoPopupComponent',
-        popupComponent: Popups.BasePopupComponent
-      },
-      {
-        type: 'feature',
-        id: 'recycle-layer',
-        title: 'Cardboard Recycling Locations',
-        url: `${Definitions.MOVE_IN_OUT.url}/2`,
-        listMode: 'show',
-        loadOnInit: false,
-        visible: true,
-        native: {
-          definitionExpression: `Type = 'Recycle'`
-        },
-        // popupComponent: 'MoveInRecyclePopupComponent'
-        popupComponent: Popups.BasePopupComponent
-      }
-    ]
-  },
-  {
-    type: 'feature',
-    id: 'accessible-parking-spaces-layer',
-    title: 'Wheelchair Accessible Parking',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
-    listMode: 'show',
-    loadOnInit: false,
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'Disabled'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-marker',
-          style: 'circle',
-          color: [0, 105, 230],
-          size: '10px',
-          outline: {
-            width: 0
-          }
-        }
-      }
-    },
-    // popupComponent: 'MoveInAccessiblePopupComponent'
     popupComponent: Popups.BasePopupComponent
   }
 ];
