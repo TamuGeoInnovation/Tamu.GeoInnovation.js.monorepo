@@ -2,8 +2,6 @@ import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
-import esri = __esri;
-
 export const NotificationEvents = [];
 
 export const Connections = {
@@ -267,13 +265,10 @@ export const ColdLayerSources: LayerSource[] = [
       renderer: {
         type: 'simple',
         symbol: {
-          type: 'simple-marker',
-          style: 'circle',
-          color: [0, 105, 230],
-          size: '12px',
-          outline: {
-            width: 0
-          }
+          type: 'picture-marker',
+          url: '/assets/icons/wheelchair.svg',
+          width: '20px',
+          height: '20px'
         }
       },
       outFields: ['*']
@@ -306,6 +301,15 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       definitionExpression: `Type = 'BusStop'`,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/bus-stop.png',
+          width: '22.5px',
+          height: '22.5px'
+        }
+      },
       outFields: ['*']
     }
   },
@@ -319,6 +323,15 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       definitionExpression: `Type = 'Dining'`,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/dining.png',
+          width: '22.5px',
+          height: '22.5px'
+        }
+      },
       outFields: ['*']
     }
   },
@@ -332,6 +345,15 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       definitionExpression: `Type = 'Info'`,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/information.png',
+          width: '22.5px',
+          height: '22.5px'
+        }
+      },
       outFields: ['*']
     },
     // popupComponent: 'MoveInInfoPopupComponent',
@@ -347,10 +369,19 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       definitionExpression: `Type = 'Recycle'`,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/recycle.png',
+          width: '22.5px',
+          height: '22.5px'
+        }
+      },
       outFields: ['*']
     },
-    // popupComponent: 'MoveInRecyclePopupComponent'
     popupComponent: Popups.BasePopupComponent
+    // popupComponent: 'MoveInRecyclePopupComponent'
   }
 ];
 
@@ -497,7 +528,15 @@ export const LayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `Type = 'NoParking'`,
-      legendEnabled: false
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          width: '22.5px',
+          height: '22.5px',
+          url: '/assets/icons/no-parking.png'
+        }
+      }
     },
     popupComponent: Popups.BasePopupComponent
   }
