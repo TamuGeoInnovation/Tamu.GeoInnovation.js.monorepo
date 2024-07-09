@@ -4,12 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 import {
   AggiemapNgxSharedUiStructuralModule,
-  // TransportationModule,
   ModalComponent,
   ReportBadRouteComponent,
-  AggiemapFormsModule,
-  // ExperimentsModule,
-  ExperimentsListComponent
+  AggiemapFormsModule
 } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import {
   AggiemapSidebarModule,
@@ -26,15 +23,12 @@ import {
   MobileSidebarComponent,
   MainMobileSidebarComponent,
   AggiemapNgxUiMobileComponent
-  // BusListBottomComponent,
-  // BusTimetableBottomComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/mobile';
 
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
-import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -52,7 +46,9 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
 
+import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
 import { MapComponent } from './map.component';
+import { MoveInOutSidebarComponent } from '../sidebar/sidebar.component';
 
 const routes: Routes = [
   {
@@ -66,7 +62,7 @@ const routes: Routes = [
       },
       {
         path: 'd',
-        component: AggiemapSidebarComponent,
+        component: MoveInOutSidebarComponent,
         canActivateChild: [DesktopGuard],
         children: [{ path: '', component: SidebarReferenceComponent }]
       },
@@ -130,7 +126,8 @@ const routes: Routes = [
     PipesModule,
     LegendModule,
     MapPopupModule,
-    UIClipboardModule
+    UIClipboardModule,
+    MoveInOutSidebarModule
   ],
   declarations: [MapComponent]
 })
