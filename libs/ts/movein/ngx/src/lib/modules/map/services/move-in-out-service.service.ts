@@ -21,7 +21,8 @@ const LayerReferences = {
   recycle: 'recycle-layer',
   parkingLots: 'move-in-parking-lots-layer',
   parkingStreets: 'move-in-parking-streets-layer',
-  accessible: 'accessible-parking-spaces-layer'
+  accessible: 'accessible-parking-spaces-layer',
+  checkin: 'checkin-locations-layer'
 };
 
 @Injectable({
@@ -131,7 +132,8 @@ export class MoveinOutServiceService {
         LayerReferences.personalEngraving,
         LayerReferences.busStops,
         LayerReferences.refreshments,
-        LayerReferences.recycle
+        LayerReferences.recycle,
+        LayerReferences.checkin
       ];
 
       const processes = references.map(async (reference) => {

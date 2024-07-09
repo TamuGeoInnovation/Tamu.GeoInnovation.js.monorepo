@@ -286,10 +286,43 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       definitionExpression: `Type = 'Bike'`,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/engraving.png',
+          width: '22.5px',
+          height: '22.5px'
+        }
+      },
       outFields: ['*']
     },
-    // popupComponent: 'MoveInEngravingPopupComponent',
     popupComponent: Popups.BasePopupComponent
+    // popupComponent: 'MoveInRecyclePopupComponent'
+  },
+  {
+    type: 'feature',
+    id: 'checkin-locations-layer',
+    title: 'Check-In Locations',
+    url: `${Definitions.MOVE_IN_OUT.url}/2`,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    native: {
+      definitionExpression: `Type = 'Keys'`,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/checkin.png',
+          width: '22.5px',
+          height: '22.5px'
+        }
+      },
+      outFields: ['*']
+    },
+    popupComponent: Popups.BasePopupComponent
+    // popupComponent: 'MoveInRecyclePopupComponent'
   },
   {
     type: 'feature',
