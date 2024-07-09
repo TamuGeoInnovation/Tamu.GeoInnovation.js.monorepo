@@ -255,7 +255,7 @@ export const ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: 'accessible-parking-spaces-layer',
-    title: 'Wheelchair Accessible Parking',
+    title: 'Accessible Parking',
     url: `${Definitions.MOVE_IN_OUT.url}/2`,
     listMode: 'show',
     loadOnInit: false,
@@ -311,7 +311,8 @@ export const ColdLayerSources: LayerSource[] = [
         }
       },
       outFields: ['*']
-    }
+    },
+    popupComponent: Popups.BasePopupComponent
   },
   {
     type: 'feature',
@@ -333,7 +334,8 @@ export const ColdLayerSources: LayerSource[] = [
         }
       },
       outFields: ['*']
-    }
+    },
+    popupComponent: Popups.BasePopupComponent
   },
   {
     type: 'feature',
