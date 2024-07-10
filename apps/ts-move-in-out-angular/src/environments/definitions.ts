@@ -1,6 +1,7 @@
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
+import { Popups as MoveInOutPopups } from '@tamu-gisc/ts/movein/ngx';
 
 export const NotificationEvents = [];
 
@@ -248,8 +249,8 @@ export const ColdLayerSources: LayerSource[] = [
         ]
       }
     },
-    // popupComponent: Popups.ParkingLotPopupComponent,
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: MoveInOutPopups.MoveInOutParkingSpaceComponent,
+    // popupComponent: Popups.BasePopupComponent,
     layerIndex: 3
   },
   {
