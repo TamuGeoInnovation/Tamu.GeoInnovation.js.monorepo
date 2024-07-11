@@ -8,7 +8,7 @@
         <div>
           <p *ngIf="!settings || settings.date === undefined">Not Set</p>
           <p *ngIf="settings && settings.date !== undefined">August {{ settings.date }}, 2024</p>
-          <p [routerLink]="['../date']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/date', {ret: 'review'})" (keyup.enter)="next('builder/date', {ret: 'review'})" tabindex="0">Change</p>
+          <p [routerLink]="['/builder/date']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/date', {ret: 'review'})" (keyup.enter)="next('builder/date', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
 
@@ -17,7 +17,7 @@
         <div>
           <p *ngIf="!settings || settings.residence === undefined">Not Set</p>
           <p *ngIf="settings && settings.residence !== undefined">{{ settings.residence.name }}</p>
-          <p [routerLink]="['../zone']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/zone', {ret: 'review'})" (keyup.enter)="next('builder/zone', {ret: 'review'})" tabindex="0">Change</p>
+          <p [routerLink]="['/builder/zone']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/zone', {ret: 'review'})" (keyup.enter)="next('builder/zone', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
 
@@ -26,7 +26,7 @@
         <div>
           <p *ngIf="!settings || settings.accessible === undefined">Not Set</p>
           <p *ngIf="settings && settings.accessible !== undefined">{{ settings.accessible ? 'Yes' : 'No' }}</p>
-          <p [routerLink]="['../accommodations']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/accommodations', {ret: 'review'})" (keyup.enter)="next('builder/accommodations', {ret: 'review'})" tabindex="0">Change</p>
+          <p [routerLink]="['/builder/accommodations']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/accommodations', {ret: 'review'})" (keyup.enter)="next('builder/accommodations', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
 
