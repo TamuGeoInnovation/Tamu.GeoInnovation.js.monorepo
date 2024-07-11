@@ -554,27 +554,61 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.BUILDINGS.popupComponent
   },
   {
-    type: 'feature',
-    id: 'no-parking-layer',
+    type: 'group',
+    id: 'no-parking-areas-group-layer',
     title: 'No Parking Locations',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
     listMode: 'show',
-    loadOnInit: false,
-    visible: true,
-    native: {
-      outFields: ['*'],
-      definitionExpression: `Type = 'NoParking'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          width: '22.5px',
-          height: '22.5px',
-          url: '/assets/icons/no-parking.png'
-        }
+    sources: [
+      {
+        type: 'feature',
+        id: 'no-parking-from-pos-layer',
+        title: 'No Parking Locations',
+        url: `${Definitions.MOVE_IN_OUT.url}/2`,
+        listMode: 'show',
+        loadOnInit: false,
+        visible: true,
+        native: {
+          outFields: ['*'],
+          definitionExpression: `Type = 'NoParking'`,
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'picture-marker',
+              width: '22.5px',
+              height: '22.5px',
+              url: '/assets/icons/no-parking.png'
+            }
+          }
+        },
+        popupComponent: Popups.BasePopupComponent
+      },
+      {
+        type: 'feature',
+        id: 'no-parking-from-pos-layer',
+        title: 'No Parking Locations',
+        url: `${Definitions.MOVE_IN_OUT.url}/1`,
+        listMode: 'hide',
+        loadOnInit: false,
+        visible: true,
+        native: {
+          outFields: ['*'],
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'picture-marker',
+              width: '22.5px',
+              height: '22.5px',
+              url: '/assets/icons/no-parking.png'
+            }
+          },
+          legendEnabled: false
+        },
+        popupComponent: Popups.BasePopupComponent
       }
-    },
-    popupComponent: Popups.BasePopupComponent
+    ],
+    native: {
+      listMode: 'hide-children'
+    }
   }
 ];
 
