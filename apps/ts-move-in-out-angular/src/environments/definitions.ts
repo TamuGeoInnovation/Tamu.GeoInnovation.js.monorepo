@@ -24,7 +24,7 @@ export const Definitions = {
     layerId: 'buildings-layer',
     name: 'Buildings',
     url: `${Connections.basemapUrl}/1`,
-    popupComponent: Popups.BuildingPopupComponent
+    popupComponent: MoveInOutPopups.MoveInOutBuildingPopupComponent
   },
   CONSTRUCTION: {
     id: 'construction_zone',
@@ -98,6 +98,11 @@ export const Definitions = {
     id: 'move-in-out',
     layerId: 'move-in-out-layer',
     url: `${Connections.moveInOutUrl}`
+  },
+  MOVE_IN_OUT_CHECKIN: {
+    id: 'move-in-out-checkin',
+    layerId: 'move-in-out-checkin-layer',
+    url: `${Connections.moveInOutUrl}/2`
   }
 };
 
@@ -249,8 +254,7 @@ export const ColdLayerSources: LayerSource[] = [
         ]
       }
     },
-    popupComponent: MoveInOutPopups.MoveInOutParkingSpaceComponent,
-    // popupComponent: Popups.BasePopupComponent,
+    popupComponent: MoveInOutPopups.MoveInOutParkingSpacePopupComponent,
     layerIndex: 3
   },
   {
@@ -303,9 +307,9 @@ export const ColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: 'checkin-locations-layer',
+    id: `${Definitions.MOVE_IN_OUT_CHECKIN.layerId}`,
     title: 'Check-In Locations',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
+    url: `${Definitions.MOVE_IN_OUT_CHECKIN.url}`,
     listMode: 'show',
     loadOnInit: false,
     visible: true,
@@ -321,9 +325,7 @@ export const ColdLayerSources: LayerSource[] = [
         }
       },
       outFields: ['*']
-    },
-    popupComponent: Popups.BasePopupComponent
-    // popupComponent: 'MoveInRecyclePopupComponent'
+    }
   },
   {
     type: 'feature',
@@ -670,7 +672,7 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'building',
     name: 'Building',
-    url: `${Connections.basemapUrl}/2`,
+    url: `${Definitions.BUILDINGS.url}`,
     queryParams: {
       ...commonQueryParams,
       where: {
@@ -680,10 +682,10 @@ export const SearchSources: SearchSource[] = [
         transformations: ['UPPER', 'UPPER', 'UPPER']
       },
       scoringWhere: {
-        keys: ['BldgName'],
-        operators: ['LIKE'],
-        wildcards: ['startsWith'],
-        transformations: ['UPPER']
+        keys: ['BldgName', 'BldgAbbr'],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['startsWith', 'startsWith'],
+        transformations: ['UPPER', 'UPPER']
       }
     },
     scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
@@ -695,7 +697,7 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'building-exact',
     name: 'Building',
-    url: `${Connections.basemapUrl}/1`,
+    url: `${Definitions.BUILDINGS.url}`,
     queryParams: {
       ...commonQueryParams,
       where: {
@@ -705,7 +707,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.BldgName} ({attributes.Number})',
-    popupComponent: Definitions.BUILDINGS.popupComponent,
+    popupComponent: Popups.BuildingPopupComponent,
     searchActive: false
   },
   {
@@ -724,11 +726,11 @@ export const SearchSources: SearchSource[] = [
     featuresLocation: 'features',
     displayTemplate: '{attributes.DeptName}',
     popupComponent: Popups.BasePopupComponent,
-    searchActive: true,
+    searchActive: false,
     altLookup: {
       source: 'building-exact',
       reference: {
-        keys: ['HOME1']
+        keys: ['attributes.HOME1']
       }
     }
   },

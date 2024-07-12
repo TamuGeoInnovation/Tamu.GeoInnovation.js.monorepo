@@ -2,18 +2,21 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
+import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
-import { MoveInOutParkingSpaceComponent } from './move-in-out-parking-space/move-in-out-parking-space.component';
+import { MoveInOutParkingSpacePopupComponent } from './move-in-out-parking-space-popup/move-in-out-parking-space-popup.component';
+import { MoveInOutBuildingPopupComponent } from './move-in-out-building-popup/move-in-out-building-popup.component';
 
-const popups = [MoveInOutParkingSpaceComponent];
+const popups = [MoveInOutParkingSpacePopupComponent, MoveInOutBuildingPopupComponent];
 
 @NgModule({
-  imports: [CommonModule, AggiemapNgxPopupsModule],
+  imports: [CommonModule, AggiemapNgxPopupsModule, UIClipboardModule],
   declarations: popups,
   exports: popups
 })
 export class PopupsModule {}
 
 export const Popups = {
-  MoveInOutParkingSpaceComponent
+  MoveInOutParkingSpacePopupComponent,
+  MoveInOutBuildingPopupComponent
 };

@@ -1,25 +1,29 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
 import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-
-import esri = __esri;
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
+import { LegendService } from '@tamu-gisc/maps/feature/legend';
+import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { MoveinOutServiceService } from './services/move-in-out-service.service';
+
+import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [MoveinOutServiceService]
+  providers: [MoveinOutServiceService, EsriMapService, LayerListService, LegendService, TripPlannerService]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
@@ -40,10 +44,18 @@ export class MapComponent implements OnInit, OnDestroy {
     private env: EnvironmentService,
     private readonly ss: SettingsService,
     private readonly ts: TestingService,
-    private readonly mio: MoveinOutServiceService
+    private readonly mio: MoveinOutServiceService,
+    private readonly store: LocalStoreService,
+    private readonly rt: Router
   ) {}
 
   public ngOnInit() {
+    const moveinSettings = this.store.getStorage({ primaryKey: 'aggiemap-movein' });
+
+    if (!moveinSettings) {
+      this.rt.navigate(['/builder']);
+    }
+
     this._connections = this.env.value('Connections');
     this.isDev = this.ts.get('isTesting');
 

@@ -25,7 +25,7 @@ import {
 
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { EsriMapModule, EsriMapService } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';

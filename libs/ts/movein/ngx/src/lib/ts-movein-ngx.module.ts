@@ -6,11 +6,6 @@ import { BuilderComponent } from './modules/builder/builder.component';
 const routes: Routes = [
   { path: 'map', loadChildren: () => import('./modules/map/map.module').then((m) => m.MapModule) },
   {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: 'builder'
-  },
-  {
     path: 'builder',
     component: BuilderComponent,
     children: [
@@ -40,6 +35,11 @@ const routes: Routes = [
       },
       { path: '', redirectTo: 'intro', pathMatch: 'full' }
     ]
+  },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'builder'
   },
   {
     path: '**',

@@ -22,7 +22,7 @@ const LayerReferences = {
   parkingLots: 'move-in-parking-lots-layer',
   parkingStreets: 'move-in-parking-streets-layer',
   accessible: 'accessible-parking-spaces-layer',
-  checkin: 'checkin-locations-layer'
+  checkin: 'move-in-out-checkin-layer'
 };
 
 @Injectable({
@@ -306,7 +306,7 @@ export class MoveinOutServiceService {
    *
    * Throws error if no referenced source found (invalid or non-existing).
    */
-  private getLayerSourceCopy(reference: string): LayerSource {
+  public getLayerSourceCopy(reference: string): LayerSource {
     const sources: Array<LayerSource> = this.env.value('ColdLayerSources', false);
     const root = sources.find((s) => s.id == reference);
 
@@ -359,7 +359,6 @@ export class MoveinOutServiceService {
   /**
    * Executes task with provided options.
    *
-   * @private
    * @param {string} url URL used to instantiate the Esri QueryTask class
    * @param {esri.QueryProperties} query At minimum, requires `where` property
    * @param {*} [intersect] If true, the query will run with a `intersects` geometry context utilizing boundaries based on builder settings
@@ -367,24 +366,24 @@ export class MoveinOutServiceService {
    * @param {boolean} [returnFeatureLayer] If provided and `true`, will return a FeatureLayer from the result of the task
    * @returns Task result or feature layer
    */
-  private async runTask(
+  public async runTask(
     url: string,
     query: esri.QueryProperties,
-    intersect?: boolean,
+    intersect?: boolean | number[][] | esri.Geometry,
     returnFeatureLayer?: false,
     featureLayerProperties?: esri.FeatureLayerProperties
   ): Promise<esri.FeatureSet>;
-  private async runTask(
+  public async runTask(
     url: string,
     query: esri.QueryProperties,
-    intersect?: boolean,
+    intersect?: boolean | number[][] | esri.Geometry,
     returnFeatureLayer?: true,
     featureLayerProperties?: esri.FeatureLayerProperties
   ): Promise<esri.FeatureLayer>;
-  private async runTask(
+  public async runTask(
     url: string,
     query: esri.QueryProperties,
-    intersect?: boolean,
+    intersect?: boolean | number[][] | esri.Geometry,
     returnFeatureLayer?: boolean,
     featureLayerProperties?: esri.FeatureLayerProperties
   ): Promise<unknown> {
@@ -409,12 +408,26 @@ export class MoveinOutServiceService {
     Object.assign(q, query);
 
     if (intersect) {
-      const boundary = BOUNDARIES.find((b) => b.name == this.settings.residence.zone);
+      let polygon: esri.PolygonProperties;
 
-      if (boundary) {
-        q.geometry = new Polygon({ rings: [boundary.paths] });
-        q.spatialRelationship = 'intersects';
+      if (typeof intersect === 'boolean') {
+        const existingBoundary = BOUNDARIES.find((b) => b.name == this.settings.residence.zone);
+
+        if (existingBoundary && existingBoundary.paths) {
+          polygon = { rings: [existingBoundary.paths] };
+        } else {
+          throw new Error('No existing boundary for provided residence zone.');
+        }
+      } else if (Array.isArray(intersect)) {
+        polygon = { rings: [intersect] };
+      } else if (typeof intersect === 'object' && intersect.toJSON) {
+        polygon = intersect.toJSON();
+      } else {
+        throw new Error('Invalid intersect value. Must be boolean or number[][]');
       }
+
+      q.geometry = new Polygon(polygon);
+      q.spatialRelationship = 'intersects';
     }
 
     const result = await task.execute(q);
