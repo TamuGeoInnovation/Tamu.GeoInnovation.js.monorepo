@@ -4,6 +4,16 @@
   <div class="feature-style-2" tabindex="0"><span *ngIf="data.attributes.Address">{{data.attributes.Address}}, </span><span>{{data.attributes.City}}</span>, TX <span>{{data.attributes.Zip}}</span></div>
 </div>
 
+<div class="popup-section" *ngIf="hasCheckinLocation | async">
+  <div class="feature-style-1" tabindex="0">Check-In</div>
+
+  <!-- <div class="feature-style-2" >{{room}}</div> -->
+
+  <ul>
+    <li *ngFor="let room of checkinRooms | async">Room {{room}}</li>
+  </ul>
+</div>
+
 <div class="popup-section">
   <!-- Copy URL component -->
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
@@ -13,7 +23,6 @@
 </div>
 
 <div class="popup-section">
-  <p *ngIf="hasCheckinLocation | async" class="trailer-2">Has checkin location!</p>
   <div class="image" tabindex="0" aria-label="Image of feature">
     <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.Number }}.jpg" />
   </div>

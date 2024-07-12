@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { from, map, Observable, shareReplay, tap } from 'rxjs';
+import { from, map, filter, Observable, shareReplay, mergeMap, switchMap, toArray } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -22,6 +22,7 @@ import { FeatureLayerSourceProperties } from '@tamu-gisc/common/types';
 export class MoveInOutBuildingPopupComponent extends BuildingPopupComponent implements OnInit {
   public checkInLocation: Observable<esri.FeatureSet>;
   public hasCheckinLocation: Observable<boolean>;
+  public checkinRooms: Observable<Array<string>>;
 
   constructor(
     private readonly rrt: Router,
@@ -53,16 +54,25 @@ export class MoveInOutBuildingPopupComponent extends BuildingPopupComponent impl
     if (layerSource) {
       this.checkInLocation = from(
         this.mss.runTask(layerSource.url, { where: "Type = 'Keys'" }, buildingFootprint, false)
-      ).pipe(
-        tap((fs) => {
-          console.log(`Returned features: ${fs.features.length}`, fs);
-        }),
-        shareReplay()
-      );
+      ).pipe(shareReplay());
 
       this.hasCheckinLocation = this.checkInLocation.pipe(
         map((featureSet) => featureSet.features.length > 0),
         shareReplay()
+      );
+
+      this.checkinRooms = this.hasCheckinLocation.pipe(
+        filter((hasLocation) => hasLocation),
+        switchMap(() =>
+          this.checkInLocation.pipe(
+            mergeMap((featureSet) => from(featureSet.features)),
+            map((feature) => feature.attributes.Note as string),
+            mergeMap((note) => note.split('/')),
+            // Room will be preceded with "Room" only if the note does not have a delimiter. When it does, we want to trim out the "Room " prefix.
+            map((room) => (room.startsWith('Room') ? (room.split('Room ').pop() as string) : room.trim())),
+            toArray()
+          )
+        )
       );
     }
   }
