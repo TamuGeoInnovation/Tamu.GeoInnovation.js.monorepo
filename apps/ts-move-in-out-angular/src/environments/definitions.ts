@@ -250,6 +250,18 @@ export const ColdLayerSources: LayerSource[] = [
                 width: '1'
               }
             } as unknown
+          },
+          {
+            value: 'SSG',
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [255, 165, 0, 0.5],
+              outline: {
+                color: [255, 165, 0],
+                width: '1'
+              }
+            } as unknown
           }
         ]
       }

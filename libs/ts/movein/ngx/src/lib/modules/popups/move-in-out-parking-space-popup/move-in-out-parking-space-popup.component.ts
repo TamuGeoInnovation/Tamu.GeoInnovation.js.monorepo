@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -20,7 +20,7 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
    */
   public lotName: string;
 
-  public lotParkingType: string | undefined;
+  public lotParkingType: keyof ParkingLotTypes;
 
   constructor(
     private readonly rrt: Router,
@@ -42,4 +42,45 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
       this.lotParkingType = this.data.attributes[`Day_${daySuffix}`];
     }
   }
+}
+
+// Pipe to convert parking lot type to user-friendly label
+@Pipe({
+  name: 'parkingLotLabel'
+})
+export class ParkingLotLabelPipe implements PipeTransform {
+  // User-friendly labels for the following parking lot types:
+  // 'Free', 'Paid', '1HR DZ w P', '1HR Drop', 'SSG', 'Free 6-9', 'NoParking', 'LSP Req'
+  public displayDictionary: ParkingLotTypes = {
+    Free: 'Free parking',
+    Paid: 'Paid parking',
+    '1HR DZ w P': '1HR DZ w P',
+    '1HR Drop': '1 hour drop zone',
+    SSG: 'Free parking',
+    'Free 6-9': 'Free from 6-9PM',
+    NoParking: 'No parking at all times',
+    'LSP Req': 'Lot-specific permit required'
+  };
+
+  public transform(parkingLotType: keyof ParkingLotTypes): string | undefined {
+    // Resulting type can have leading/trailing whitespace
+    const trimmed = parkingLotType.trim() as keyof ParkingLotTypes;
+
+    if (parkingLotType !== undefined && this.displayDictionary[trimmed] !== undefined) {
+      return this.displayDictionary[trimmed];
+    }
+
+    return;
+  }
+}
+
+export interface ParkingLotTypes {
+  Free: string;
+  Paid: string;
+  '1HR DZ w P': string;
+  '1HR Drop': string;
+  SSG: string;
+  'Free 6-9': string;
+  NoParking: string;
+  'LSP Req': string;
 }
