@@ -57,7 +57,7 @@ export class ParkingLotLabelPipe implements PipeTransform {
     '1HR DZ w P': '1HR DZ w P',
     '1HR Drop': '1 hour drop zone',
     SSG: 'Free parking',
-    'Free 6-9': 'Free from 6-9PM',
+    'Free 6-9': 'Free visitor parking from 6-9PM',
     NoParking: 'No parking at all times',
     'LSP Req': 'Lot-specific permit required'
   };

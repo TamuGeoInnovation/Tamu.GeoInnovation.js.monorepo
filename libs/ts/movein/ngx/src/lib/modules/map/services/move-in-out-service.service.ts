@@ -341,7 +341,7 @@ export class MoveinOutServiceService {
 
         const intersectingStreets = await this.runTask(
           streetParkingSource.url,
-          { where: `Event IN ('mi', 'mo', 'mio') AND Type IN (${dateFilter})` },
+          { where: `Event IN ('mi', 'mio') AND Type IN (${dateFilter})` },
           true
         );
 
