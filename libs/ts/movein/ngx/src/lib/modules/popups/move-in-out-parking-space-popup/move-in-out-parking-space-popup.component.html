@@ -1,6 +1,11 @@
 <div class="popup-section">
-  <div class="feature-style-1" tabindex="0">Lot {{ data.attributes?.Lot_Name }}</div>
+  <div class="feature-style-1" tabindex="0">{{ data.attributes?.Lot_Name }}</div>
   <div class="feature-style-2" tabindex="0">College Station, TX 77843</div>
+</div>
+
+<div class="popup-section">
+  <p>Type: <strong>{{lotParkingType}}</strong></p>
+  <pre>{{data.attributes | json}}</pre>
 </div>
 
 <div class="popup-section">

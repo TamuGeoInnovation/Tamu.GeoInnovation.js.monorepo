@@ -7,7 +7,7 @@
         <div>Move-in date:</div>
         <div>
           <p *ngIf="!settings || settings.date === undefined">Not Set</p>
-          <p *ngIf="settings && settings.date !== undefined">August {{ settings.date }}, 2024</p>
+          <p *ngIf="settings && settings.date !== undefined">{{moveDate | date : 'MMMM'}} {{ moveDate | date : 'd' }}, {{moveDate | date : 'YYYY'}}</p>
           <p [routerLink]="['/builder/date']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/date', {ret: 'review'})" (keyup.enter)="next('builder/date', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>

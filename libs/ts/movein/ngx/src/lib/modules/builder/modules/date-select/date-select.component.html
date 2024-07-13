@@ -2,15 +2,15 @@
   <p class="center component-instructions">Select your move-in day.</p>
 
   <div class="date-card-container">
-    <div *ngFor="let item of dates; let i = index;" class="date-card" (click)="saveDate(item)" (keyup.space)="saveDate(item)" (keyup.enter)="saveDate(item)" tabindex="0">
+    <div *ngFor="let item of timestampedDates; let i = index;" class="date-card" (click)="saveDate(item)" (keyup.space)="saveDate(item)" (keyup.enter)="saveDate(item)" tabindex="0">
       <div class="date">
-        <p class="name">{{item.name}}</p>
-        <p class="month">August {{item.day}}</p>
+        <p class="name">{{item | date : 'EEEE'}}</p>
+        <p class="month">{{item | date : 'MMMM'}} {{item | date : 'd'}}, {{item | date : 'YYYY'}}</p>
       </div>
 
-      <div class="action" [ngClass]="{'active': item.day === savedDate}">
-        <p class="material-icons" *ngIf="item.day !== savedDate">arrow_forward</p>
-        <p class="material-icons active" *ngIf="item.day === savedDate">check</p>
+      <div class="action" [ngClass]="{'active': (item | date : 'd') === savedDate}">
+        <p class="material-icons" *ngIf="(item | date : 'd') !== savedDate">arrow_forward</p>
+        <p class="material-icons active" *ngIf="(item | date : 'd') === savedDate">check</p>
       </div>
     </div>
   </div>

@@ -1,6 +1,11 @@
 export interface MoveDate {
   day: number;
-  name: string;
+  month: number;
+}
+
+export interface MoveDates {
+  in: MoveDate[];
+  out: MoveDate[];
 }
 
 export interface ResidenceHall {

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { MoveInSettings } from '../../../../interfaces/move-in-out.interface';
+import { MoveinOutServiceService } from '../../../map/services/move-in-out-service.service';
 
 @Component({
   selector: 'tamu-gisc-review',
@@ -11,10 +12,16 @@ import { MoveInSettings } from '../../../../interfaces/move-in-out.interface';
   styleUrls: ['./review.component.scss']
 })
 export class ReviewComponent implements OnInit {
-  constructor(private store: LocalStoreService, private router: Router, private route: ActivatedRoute) {}
-
   public settings: MoveInSettings;
   public settingsValid = false;
+  public moveDate: Date;
+
+  constructor(
+    private store: LocalStoreService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private move: MoveinOutServiceService
+  ) {}
 
   public ngOnInit() {
     this.settings = this.store.getStorage<MoveInSettings>({ primaryKey: 'aggiemap-movein' });
@@ -22,6 +29,14 @@ export class ReviewComponent implements OnInit {
     if (this.settings !== undefined) {
       this.settingsValid =
         this.settings.date !== undefined && this.settings.residence !== undefined && this.settings.accessible !== undefined;
+
+      if (this.settingsValid) {
+        const d = this.move.getDateForDay('in', this.settings.date);
+
+        if (d) {
+          this.moveDate = new Date(new Date().getFullYear(), d.month - 1, d.day);
+        }
+      }
     }
   }
 

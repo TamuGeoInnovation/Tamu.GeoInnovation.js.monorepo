@@ -7,7 +7,7 @@ import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 
-import { MoveInSettings } from '../../../interfaces/move-in-out.interface';
+import { MoveDate, MoveDates, MoveInSettings } from '../../../interfaces/move-in-out.interface';
 import { BOUNDARIES } from '../dictionaries/move-in-out.dictionary';
 
 import esri = __esri;
@@ -30,6 +30,7 @@ const LayerReferences = {
 })
 export class MoveinOutServiceService {
   public settings: MoveInSettings = this.store.getStorage({ primaryKey: 'aggiemap-movein' });
+  public days: MoveDates = this.env.value('MoveInOutDates', false);
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -52,6 +53,63 @@ export class MoveinOutServiceService {
     this.drawParking();
     this.drawAccessibleParkingSpaces();
     this.drawPOIs();
+  }
+
+  /**
+   * Returns MoveDates for either move-in or move-out event.
+   */
+  public getDaysForType(type: MoveEventType) {
+    if (this.days && this.days[type] && this.days[type].length > 0) {
+      return this.days[type];
+    } else {
+      console.warn(`No move dates found for ${type} event.`);
+      return undefined;
+    }
+  }
+
+  /**
+   * Returns the move-in/out date object for the provided matching calendar day (find operation)
+   */
+  public getDateForDay(type: MoveEventType, day: number | string) {
+    if (this.days[type]?.length > 0) {
+      return this.days[type].find((d) => d.day == day);
+    } else {
+      console.warn(`No move date for provided '${type}' type and '${day}' day.`);
+      return undefined;
+    }
+  }
+
+  /**
+   * Returns the first move in/out MoveDate object or the provided event type.
+   */
+  public getFirstMoveDate(type: MoveEventType) {
+    return this.getDaysForType(type)?.[0];
+  }
+
+  /**
+   * Accepts a move event type and a MoveDate object and determines the index of the `date` object relative to the
+   * event type's MoveDates array.
+   */
+  public getMoveDateEventDayNumber(type: MoveEventType, date: MoveDate) {
+    const dates = this.getDaysForType(type);
+
+    if (dates) {
+      return dates.findIndex((d) => d.day == date.day) + 1;
+    } else {
+      console.warn(`No move dates found for ${type} event.`);
+      return undefined;
+    }
+  }
+
+  public getMoveDateEventDayNumberForSettings() {
+    const savedDate = this.getDateForDay('in', this.settings.date);
+
+    if (savedDate) {
+      return this.getMoveDateEventDayNumber('in', savedDate);
+    } else {
+      console.warn(`No move date found for settings date.`);
+      return undefined;
+    }
   }
 
   public async drawResidence() {
@@ -164,8 +222,11 @@ export class MoveinOutServiceService {
    */
   public async drawParking() {
     try {
-      // Calendar day of event start
-      const eventDayStart = 15;
+      const eventDayStart = this.getFirstMoveDate('in')?.day;
+
+      if (eventDayStart === undefined) {
+        throw new Error('No event day start found.');
+      }
 
       // User selected event attendance day
       const day = this.settings.date;
@@ -443,3 +504,5 @@ export class MoveinOutServiceService {
     }
   }
 }
+
+type MoveEventType = 'in' | 'out';

@@ -5,7 +5,8 @@ import { Angulartics2 } from 'angulartics2';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { MoveDate } from '../../../../interfaces/move-in-out.interface';
+import { MoveDates } from '../../../../interfaces/move-in-out.interface';
+import { MoveinOutServiceService } from '../../../map/services/move-in-out-service.service';
 
 @Component({
   selector: 'tamu-gisc-date-select',
@@ -13,37 +14,28 @@ import { MoveDate } from '../../../../interfaces/move-in-out.interface';
   styleUrls: ['./date-select.component.scss']
 })
 export class DateSelectComponent implements OnInit {
-  public savedDate: number;
-
-  public dates: Array<MoveDate> = [
-    {
-      day: 15,
-      name: 'Thursday'
-    },
-    {
-      day: 16,
-      name: 'Friday'
-    },
-    {
-      day: 17,
-      name: 'Saturday'
-    },
-    {
-      day: 18,
-      name: 'Sunday'
-    }
-  ];
+  public dates: MoveDates;
+  public timestampedDates: Array<Date>;
+  public savedDate: string;
 
   constructor(
-    private store: LocalStoreService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private angulartics: Angulartics2
+    private readonly store: LocalStoreService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly angulartics: Angulartics2,
+    private readonly movein: MoveinOutServiceService
   ) {}
 
   public ngOnInit() {
+    this.dates = this.movein.days;
+
     // Load saved value from local storage
-    this.savedDate = this.store.getStorageObjectKeyValue<number>({ subKey: 'date', primaryKey: 'aggiemap-movein' });
+    this.savedDate = this.store
+      .getStorageObjectKeyValue<number>({ subKey: 'date', primaryKey: 'aggiemap-movein' })
+      .toString();
+
+    // Convert dates objects using day and month properties to Date objects. These will be used in template with date pipe.
+    this.timestampedDates = this.dates.in.map((d) => new Date(new Date().getFullYear(), d.month - 1, d.day));
   }
 
   /**
@@ -51,15 +43,15 @@ export class DateSelectComponent implements OnInit {
    *
    * @param {*} item
    */
-  public saveDate = (item: MoveDate) => {
+  public saveDate = (item: Date) => {
     this.store.setStorageObjectKeyValue({
       primaryKey: 'aggiemap-movein',
       subKey: 'date',
-      value: item.day
+      value: item.getDate()
     });
 
     // Verify that the value store was successful.
-    const confirm = this.store.getStorageObjectKeyValue<number>({
+    const confirm = this.store.getStorageObjectKeyValue<string>({
       primaryKey: 'aggiemap-movein',
       subKey: 'date'
     });

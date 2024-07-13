@@ -1,7 +1,7 @@
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
-import { Popups as MoveInOutPopups } from '@tamu-gisc/ts/movein/ngx';
+import { MoveDates, Popups as MoveInOutPopups } from '@tamu-gisc/ts/movein/ngx';
 
 export const NotificationEvents = [];
 
@@ -879,6 +879,28 @@ export const SearchSources: SearchSource[] = [
     searchActive: false
   }
 ];
+
+export const MoveInOutDates: MoveDates = {
+  in: [
+    {
+      day: 15,
+      month: 8
+    },
+    {
+      day: 16,
+      month: 8
+    },
+    {
+      day: 17,
+      month: 8
+    },
+    {
+      day: 18,
+      month: 8
+    }
+  ],
+  out: []
+};
 
 export const SelectionSymbols: any = {
   polygon: {
