@@ -32,7 +32,7 @@ export class DateSelectComponent implements OnInit {
     // Load saved value from local storage
     this.savedDate = this.store
       .getStorageObjectKeyValue<number>({ subKey: 'date', primaryKey: 'aggiemap-movein' })
-      .toString();
+      ?.toString();
 
     // Convert dates objects using day and month properties to Date objects. These will be used in template with date pipe.
     this.timestampedDates = this.dates.in.map((d) => new Date(new Date().getFullYear(), d.month - 1, d.day));
