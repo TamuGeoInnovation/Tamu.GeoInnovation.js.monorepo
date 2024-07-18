@@ -112,6 +112,22 @@ export class MoveinOutServiceService {
     }
   }
 
+  /**
+   * Returns the move-in/out date as a Date object for the provided MoveDate object.
+   *
+   * Optionally provide a date object. Settings date will be used if not provided.
+   */
+  public getMoveDateEventAsDate(type: MoveEventType, date?: MoveDate) {
+    const savedDate = this.getDateForDay(type, date ? date.day : this.settings.date);
+
+    if (savedDate) {
+      return new Date(new Date().getFullYear(), savedDate.month - 1, savedDate.day);
+    } else {
+      console.warn(`No event day found for provided date.`);
+      return undefined;
+    }
+  }
+
   public async drawResidence() {
     try {
       const source = this.getLayerSourceCopy(LayerReferences.residence) as FeatureLayerSourceProperties;

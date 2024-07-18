@@ -103,6 +103,11 @@ export const Definitions = {
     id: 'move-in-out-checkin',
     layerId: 'move-in-out-checkin-layer',
     url: `${Connections.moveInOutUrl}/2`
+  },
+  MOVE_IN_OUT_STREET_PARKING: {
+    id: 'move-in-out-street-parking',
+    layerId: 'move-in-out-street-parking-layer',
+    url: `${Connections.moveInOutUrl}/5`
   }
 };
 
@@ -113,7 +118,7 @@ export const ColdLayerSources: LayerSource[] = [
     title: 'Residence Hall',
     listMode: 'show',
     visible: true,
-    url: `${Connections.basemapUrl}/1`,
+    url: Definitions.BUILDINGS.url,
     popupComponent: Definitions.BUILDINGS.popupComponent,
     native: {
       outFields: ['*'],
@@ -130,32 +135,6 @@ export const ColdLayerSources: LayerSource[] = [
         }
       }
     }
-  },
-  {
-    type: 'feature',
-    id: 'move-in-parking-streets-layer',
-    title: 'Movein Street Parking',
-    url: `${Definitions.MOVE_IN_OUT.url}/5`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [76, 0, 115, 0.5],
-          outline: {
-            color: [76, 0, 115, 0.75],
-            width: '1'
-          }
-        }
-      }
-    },
-    // popupComponent: 'MoveInStreetPopupComponent',
-    popupComponent: Popups.BasePopupComponent,
-    layerIndex: 4
   },
   {
     type: 'feature',
@@ -268,6 +247,32 @@ export const ColdLayerSources: LayerSource[] = [
     },
     popupComponent: MoveInOutPopups.MoveInOutParkingSpacePopupComponent,
     layerIndex: 3
+  },
+  {
+    type: 'feature',
+    id: 'move-in-parking-streets-layer',
+    title: 'Movein Street Parking',
+    url: Definitions.MOVE_IN_OUT_STREET_PARKING.url,
+    listMode: 'show',
+    visible: true,
+    native: {
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [76, 0, 115, 0.5],
+          outline: {
+            color: [76, 0, 115, 0.75],
+            width: '1'
+          }
+        }
+      }
+    },
+    // popupComponent: 'MoveInStreetPopupComponent',
+    popupComponent: Popups.BasePopupComponent,
+    layerIndex: 4
   },
   {
     type: 'feature',
@@ -425,6 +430,29 @@ export const ColdLayerSources: LayerSource[] = [
     },
     popupComponent: Popups.BasePopupComponent
     // popupComponent: 'MoveInRecyclePopupComponent'
+  },
+  {
+    type: 'feature',
+    id: Definitions.SURFACE_LOTS.layerId,
+    title: Definitions.SURFACE_LOTS.name,
+    url: Definitions.SURFACE_LOTS.url,
+    popupComponent: Definitions.SURFACE_LOTS.popupComponent,
+    listMode: 'hide',
+    visible: true,
+    layerIndex: 1,
+    native: {
+      legendEnabled: false,
+      outFields: ['*'],
+      opacity: 0.001,
+      labelingInfo: [
+        {
+          symbol: {
+            type: 'text',
+            color: [0, 0, 0, 0.001]
+          }
+        }
+      ]
+    }
   }
 ];
 
@@ -461,7 +489,10 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.CONSTRUCTION.url,
     popupComponent: Definitions.CONSTRUCTION.popupComponent,
     listMode: 'show',
-    visible: true
+    visible: true,
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
