@@ -270,8 +270,7 @@ export const ColdLayerSources: LayerSource[] = [
         }
       }
     },
-    // popupComponent: 'MoveInStreetPopupComponent',
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: MoveInOutPopups.MoveInOutStreetParkingPopupComponent,
     layerIndex: 4
   },
   {

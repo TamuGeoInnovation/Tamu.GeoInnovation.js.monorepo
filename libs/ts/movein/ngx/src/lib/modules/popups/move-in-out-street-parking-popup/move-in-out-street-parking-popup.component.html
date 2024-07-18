@@ -1,0 +1,11 @@
+<div class="popup-section">
+  <div *ngIf="data?.attributes?.A_Name" class="feature-style-1" tabindex="0">{{data.attributes.A_Name}}</div>
+  <div class="feature-style-2" tabindex="0">Move-In Street Parking</div>
+</div>
+
+<div class="popup-section">
+  <p [innerHTML]="data.attributes?.SP_SH_Notes" class="trailer-1"></p>
+
+  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+</div>
+
