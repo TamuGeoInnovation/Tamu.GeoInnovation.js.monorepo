@@ -141,7 +141,7 @@ export class MoveinOutServiceService {
             })
           });
 
-          this.mapService.zoomTo({ graphics: [boundaryGraphic], zoom: 17 });
+          this.mapService.zoomTo({ graphics: [boundaryGraphic], zoom: 18 });
         }
       });
     } catch (err) {
