@@ -275,7 +275,6 @@ export const ColdLayerSources: LayerSource[] = [
     title: 'Accessible Parking',
     url: `${Definitions.MOVE_IN_OUT.url}/2`,
     listMode: 'show',
-    loadOnInit: false,
     visible: true,
     native: {
       definitionExpression: `Type = 'Disabled'`,
@@ -299,7 +298,6 @@ export const ColdLayerSources: LayerSource[] = [
     title: 'Free Personal Possessions Engraving',
     url: `${Definitions.MOVE_IN_OUT.url}/2`,
     listMode: 'show',
-    loadOnInit: false,
     visible: true,
     native: {
       definitionExpression: `Type = 'Bike'`,
@@ -323,7 +321,6 @@ export const ColdLayerSources: LayerSource[] = [
     title: 'Check-In Locations',
     url: `${Definitions.MOVE_IN_OUT_CHECKIN.url}`,
     listMode: 'show',
-    loadOnInit: false,
     visible: true,
     native: {
       definitionExpression: `Type = 'Keys'`,
@@ -345,7 +342,6 @@ export const ColdLayerSources: LayerSource[] = [
     title: 'Move-In Shuttle Bus Stops',
     url: `${Definitions.MOVE_IN_OUT.url}/2`,
     listMode: 'show',
-    loadOnInit: false,
     visible: true,
     native: {
       definitionExpression: `Type = 'BusStop'`,
@@ -368,7 +364,6 @@ export const ColdLayerSources: LayerSource[] = [
     title: 'Dining Areas',
     url: `${Definitions.MOVE_IN_OUT.url}/2`,
     listMode: 'show',
-    loadOnInit: true,
     visible: true,
     native: {
       definitionExpression: `Type = 'Dining'`,
@@ -391,7 +386,6 @@ export const ColdLayerSources: LayerSource[] = [
     title: 'Info, Refreshments, Volunteers',
     url: `${Definitions.MOVE_IN_OUT.url}/2`,
     listMode: 'show',
-    loadOnInit: false,
     visible: true,
     native: {
       definitionExpression: `Type = 'Info'`,
@@ -415,7 +409,6 @@ export const ColdLayerSources: LayerSource[] = [
     title: 'Cardboard Recycling Locations',
     url: `${Definitions.MOVE_IN_OUT.url}/2`,
     listMode: 'show',
-    loadOnInit: false,
     visible: true,
     native: {
       definitionExpression: `Type = 'Recycle'`,
@@ -444,7 +437,6 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.BUILDINGS.url,
     popupComponent: Definitions.BUILDINGS.popupComponent,
     listMode: 'hide',
-    loadOnInit: true,
     visible: true,
     native: {
       legendEnabled: false,
@@ -469,7 +461,6 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.CONSTRUCTION.url,
     popupComponent: Definitions.CONSTRUCTION.popupComponent,
     listMode: 'show',
-    loadOnInit: true,
     visible: true
   },
   {
@@ -479,8 +470,7 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.POINTS_OF_INTEREST.url,
     popupComponent: Definitions.POINTS_OF_INTEREST.popupComponent,
     listMode: 'show',
-    loadOnInit: false,
-    visible: true,
+    visible: false,
     native: {
       outFields: ['*']
     }
@@ -492,8 +482,7 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.RESTROOMS.url,
     popupComponent: Definitions.RESTROOMS.popupComponent,
     listMode: 'show',
-    loadOnInit: false,
-    visible: true,
+    visible: false,
     native: {
       outFields: ['*']
     }
@@ -505,8 +494,7 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.LACTATION_ROOMS.url,
     popupComponent: Definitions.LACTATION_ROOMS.popupComponent,
     listMode: 'show',
-    loadOnInit: false,
-    visible: true,
+    visible: false,
     native: {
       outFields: ['*']
     }
@@ -518,7 +506,6 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.SURFACE_LOTS.url,
     popupComponent: Definitions.SURFACE_LOTS.popupComponent,
     listMode: 'hide',
-    loadOnInit: true,
     visible: true,
     layerIndex: 1,
     native: {
@@ -542,7 +529,6 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.VISITOR_PARKING.url,
     popupComponent: Definitions.VISITOR_PARKING.popupComponent,
     listMode: 'show',
-    loadOnInit: false,
     visible: true,
     native: {
       outFields: ['*']
@@ -555,7 +541,6 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.ACESSIBLE_ENTRANCES.url,
     popupComponent: Definitions.ACESSIBLE_ENTRANCES.popupComponent,
     listMode: 'show',
-    loadOnInit: true,
     visible: false
   },
   {
@@ -563,7 +548,6 @@ export const LayerSources: LayerSource[] = [
     id: 'selection-layer',
     title: 'Selected Buildings',
     listMode: 'hide',
-    loadOnInit: false,
     visible: true,
     popupComponent: Definitions.BUILDINGS.popupComponent
   },
@@ -579,7 +563,6 @@ export const LayerSources: LayerSource[] = [
         title: 'No Parking Locations',
         url: `${Definitions.MOVE_IN_OUT.url}/2`,
         listMode: 'show',
-        loadOnInit: false,
         visible: true,
         native: {
           outFields: ['*'],
@@ -602,7 +585,6 @@ export const LayerSources: LayerSource[] = [
         title: 'No Parking Locations',
         url: `${Definitions.MOVE_IN_OUT.url}/1`,
         listMode: 'hide',
-        loadOnInit: false,
         visible: true,
         native: {
           outFields: ['*'],
