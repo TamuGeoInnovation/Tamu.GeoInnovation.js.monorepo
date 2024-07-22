@@ -315,8 +315,7 @@ export const ColdLayerSources: LayerSource[] = [
       },
       outFields: ['*']
     },
-    popupComponent: Popups.BasePopupComponent
-    // popupComponent: 'MoveInRecyclePopupComponent'
+    popupComponent: MoveInOutPopups.MoveInOutPersonalEngravingPopupComponent
   },
   {
     type: 'feature',
