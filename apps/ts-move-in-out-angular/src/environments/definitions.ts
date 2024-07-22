@@ -358,7 +358,7 @@ export const ColdLayerSources: LayerSource[] = [
       },
       outFields: ['*']
     },
-    popupComponent: Popups.BasePopupComponent
+    popupComponent: MoveInOutPopups.MoveInOutBusStopPopupComponent
   },
   {
     type: 'feature',
@@ -616,6 +616,7 @@ export const LayerSources: LayerSource[] = [
         visible: true,
         native: {
           outFields: ['*'],
+          definitionExpression: `Type = 'NoParking'`,
           renderer: {
             type: 'simple',
             symbol: {
