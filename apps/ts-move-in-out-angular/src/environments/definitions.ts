@@ -402,8 +402,7 @@ export const ColdLayerSources: LayerSource[] = [
       },
       outFields: ['*']
     },
-    // popupComponent: 'MoveInInfoPopupComponent',
-    popupComponent: Popups.BasePopupComponent
+    popupComponent: MoveInOutPopups.MoveInOutInformationPopupComponent
   },
   {
     type: 'feature',
@@ -425,8 +424,7 @@ export const ColdLayerSources: LayerSource[] = [
       },
       outFields: ['*']
     },
-    popupComponent: Popups.BasePopupComponent
-    // popupComponent: 'MoveInRecyclePopupComponent'
+    popupComponent: MoveInOutPopups.MoveInOutRecyclePopupComponent
   },
   {
     type: 'feature',
@@ -605,7 +603,7 @@ export const LayerSources: LayerSource[] = [
             }
           }
         },
-        popupComponent: Popups.BasePopupComponent
+        popupComponent: MoveInOutPopups.MoveInOutNoParkingPopupComponent
       },
       {
         type: 'feature',
@@ -628,7 +626,7 @@ export const LayerSources: LayerSource[] = [
           },
           legendEnabled: false
         },
-        popupComponent: Popups.BasePopupComponent
+        popupComponent: MoveInOutPopups.MoveInOutNoParkingPopupComponent
       }
     ],
     native: {

@@ -14,6 +14,9 @@ import { MoveInOutAccessibleParkingPopupComponent } from './move-in-out-accessib
 import { MoveInOutPersonalEngravingPopupComponent } from './move-in-out-personal-engraving-popup/move-in-out-personal-engraving-popup.component';
 import { MoveInOutBusStopPopupComponent } from './move-in-out-bus-stop-popup/move-in-out-bus-stop-popup.component';
 import { MoveInOutDiningPopupComponent } from './move-in-out-dining-popup/move-in-out-dining-popup.component';
+import { MoveInOutInformationPopupComponent } from './move-in-out-information-popup/move-in-out-information-popup.component';
+import { MoveInOutRecyclePopupComponent } from './move-in-out-recycle-popup/move-in-out-recycle-popup.component';
+import { MoveInOutNoParkingPopupComponent } from './move-in-out-no-parking-popup/move-in-out-no-parking-popup.component';
 
 const popups = [
   MoveInOutParkingSpacePopupComponent,
@@ -22,7 +25,10 @@ const popups = [
   MoveInOutAccessibleParkingPopupComponent,
   MoveInOutPersonalEngravingPopupComponent,
   MoveInOutBusStopPopupComponent,
-  MoveInOutDiningPopupComponent
+  MoveInOutDiningPopupComponent,
+  MoveInOutInformationPopupComponent,
+  MoveInOutRecyclePopupComponent,
+  MoveInOutNoParkingPopupComponent
 ];
 
 @NgModule({
@@ -34,7 +40,10 @@ const popups = [
     MoveInOutAccessibleParkingPopupComponent,
     MoveInOutPersonalEngravingPopupComponent,
     MoveInOutBusStopPopupComponent,
-    MoveInOutDiningPopupComponent
+    MoveInOutDiningPopupComponent,
+    MoveInOutInformationPopupComponent,
+    MoveInOutRecyclePopupComponent,
+    MoveInOutNoParkingPopupComponent
   ],
   exports: popups
 })
@@ -47,5 +56,8 @@ export const Popups = {
   MoveInOutAccessibleParkingPopupComponent,
   MoveInOutPersonalEngravingPopupComponent,
   MoveInOutBusStopPopupComponent,
-  MoveInOutDiningPopupComponent
+  MoveInOutDiningPopupComponent,
+  MoveInOutInformationPopupComponent,
+  MoveInOutRecyclePopupComponent,
+  MoveInOutNoParkingPopupComponent
 };
