@@ -293,8 +293,7 @@ export const ColdLayerSources: LayerSource[] = [
       },
       outFields: ['*']
     },
-    // popupComponent: 'MoveInAccessiblePopupComponent'
-    popupComponent: Popups.BasePopupComponent
+    popupComponent: MoveInOutPopups.MoveInOutAccessibleParkingPopupComponent
   },
   {
     type: 'feature',
