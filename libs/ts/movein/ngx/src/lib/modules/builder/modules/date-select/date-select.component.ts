@@ -4,8 +4,6 @@ import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-
 import { MoveDates } from '../../../../interfaces/move-in-out.interface';
 import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
 
@@ -22,7 +20,6 @@ export class DateSelectComponent implements OnInit {
   private _$refresh: Subject<void> = new Subject();
 
   constructor(
-    private readonly store: LocalStoreService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly angulartics: Angulartics2,

@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-
 import { ResidenceHall, ResidenceZones } from '../../../../interfaces/move-in-out.interface';
-import { RESIDENCES } from '../../../../dictionaries/move-in-out.dictionary';
+import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
 
 @Component({
   selector: 'tamu-gisc-zone-select',
@@ -14,77 +13,52 @@ import { RESIDENCES } from '../../../../dictionaries/move-in-out.dictionary';
   styleUrls: ['./zone-select.component.scss']
 })
 export class ZoneSelectComponent implements OnInit {
-  public savedResidence: ResidenceHall;
-  private halls = [];
+  public savedResidence: Observable<ResidenceHall>;
 
-  public zones: ResidenceZones = RESIDENCES;
+  public zones: ResidenceZones = this.mioSettings.zones;
+
+  private _$refresh: Subject<void> = new Subject();
 
   constructor(
-    private store: LocalStoreService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private angulartics: Angulartics2
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly angulartics: Angulartics2,
+    private readonly mioSettings: MoveInOutSettingsService
   ) {}
 
   public ngOnInit() {
     // Load saved value from local storage
-    this.savedResidence = this.store.getStorageObjectKeyValue({
-      primaryKey: 'aggiemap-movein',
-      subKey: 'residence'
-    });
+    this.savedResidence = this._$refresh.pipe(
+      startWith(undefined),
+      map(() => this.mioSettings.savedResidence),
+      shareReplay()
+    );
   }
 
   /**
    * Saves component value in local storage
-   *
-   * @param {*} item
    */
   public saveResidence = (item: ResidenceHall): void => {
-    // Iterate through residence hall zones and find the zone that includes the provided residence hall.
-    // This is used to determine which zone the residence hall belongs to.
-    const zone = Object.keys(this.zones).find((key) => {
-      return this.zones[key].halls.find((hall) => {
-        return hall.name === item.name;
-      });
-    });
+    const confirm = this.mioSettings.saveResidence(item);
 
-    if (zone !== undefined) {
-      // Append zone to the residence. Used to render map elements based on region
-      item.zone = this.zones[zone].name;
-
-      this.store.setStorageObjectKeyValue({
-        primaryKey: 'aggiemap-movein',
-        subKey: 'residence',
-        value: item
-      });
-
-      // Verify that the value store was successful.
-      const confirm = this.store.getStorageObjectKeyValue<ResidenceHall>({
-        primaryKey: 'aggiemap-movein',
-        subKey: 'residence'
-      });
-
-      if (confirm != undefined) {
-        this.angulartics.eventTrack.next({
-          action: 'Hall Select',
-          properties: {
-            category: 'UI Interaction',
-            label: confirm.name
-          }
-        });
-
-        this.savedResidence = confirm;
-
-        const hasRet = this.route.snapshot.queryParams['ret'];
-
-        if (hasRet !== undefined) {
-          this.router.navigate([`builder/${hasRet}`]);
-        } else {
-          this.router.navigate(['builder/accommodations']);
+    if (confirm != undefined) {
+      this.angulartics.eventTrack.next({
+        action: 'Hall Select',
+        properties: {
+          category: 'UI Interaction',
+          label: confirm.name
         }
+      });
+
+      this._$refresh.next();
+
+      const hasRet = this.route.snapshot.queryParams['ret'];
+
+      if (hasRet !== undefined) {
+        this.router.navigate([`builder/${hasRet}`]);
+      } else {
+        this.router.navigate(['builder/accommodations']);
       }
-    } else {
-      console.error('Zone not found for hall ', item.name);
     }
   };
 }
