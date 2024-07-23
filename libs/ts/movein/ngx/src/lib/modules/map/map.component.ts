@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { loadModules } from 'esri-loader';
@@ -15,7 +15,7 @@ import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { MoveinOutServiceService } from './services/move-in-out-service.service';
+import { MoveinOutService } from './services/move-in-out.service';
 
 import esri = __esri;
 
@@ -23,7 +23,7 @@ import esri = __esri;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [MoveinOutServiceService, EsriMapService, LayerListService, LegendService, TripPlannerService]
+  providers: [MoveinOutService, EsriMapService, LayerListService, LegendService, TripPlannerService]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
@@ -40,19 +40,23 @@ export class MapComponent implements OnInit, OnDestroy {
   private _connections: { [key: string]: string };
 
   constructor(
-    private responsiveService: ResponsiveService,
-    private env: EnvironmentService,
+    private readonly responsiveService: ResponsiveService,
+    private readonly env: EnvironmentService,
     private readonly ss: SettingsService,
     private readonly ts: TestingService,
-    private readonly mio: MoveinOutServiceService,
+    private readonly mio: MoveinOutService,
     private readonly store: LocalStoreService,
-    private readonly rt: Router
+    private readonly rt: Router,
+    private readonly ar: ActivatedRoute
   ) {}
 
   public ngOnInit() {
+    // Settings can come from either local storage or from the url query parameters
     const moveinSettings = this.store.getStorage({ primaryKey: 'aggiemap-movein' });
+    const queryParams = this.ar.snapshot.queryParams;
+    const urlSettings = queryParams['date'] !== undefined && queryParams['residence'] !== undefined;
 
-    if (!moveinSettings) {
+    if (!moveinSettings && !urlSettings) {
       this.rt.navigate(['/builder']);
     }
 

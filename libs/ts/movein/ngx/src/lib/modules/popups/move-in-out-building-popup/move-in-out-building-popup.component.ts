@@ -8,7 +8,7 @@ import { BuildingPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { MoveinOutServiceService } from '../../map/services/move-in-out-service.service';
+import { MoveinOutService } from '../../map/services/move-in-out.service';
 
 import esri = __esri;
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -31,7 +31,7 @@ export class MoveInOutBuildingPopupComponent extends BuildingPopupComponent impl
     private readonly agl: Angulartics2,
     private readonly ems: EsriMapService,
     private readonly env: EnvironmentService,
-    private readonly mss: MoveinOutServiceService
+    private readonly mss: MoveinOutService
   ) {
     super(rrt, rtt, pss, agl, ems);
   }

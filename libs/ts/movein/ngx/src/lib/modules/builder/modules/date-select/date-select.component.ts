@@ -6,7 +6,7 @@ import { Angulartics2 } from 'angulartics2';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { MoveDates } from '../../../../interfaces/move-in-out.interface';
-import { MoveinOutServiceService } from '../../../map/services/move-in-out-service.service';
+import { MoveinOutService } from '../../../map/services/move-in-out.service';
 
 @Component({
   selector: 'tamu-gisc-date-select',
@@ -23,7 +23,7 @@ export class DateSelectComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly angulartics: Angulartics2,
-    private readonly movein: MoveinOutServiceService
+    private readonly movein: MoveinOutService
   ) {}
 
   public ngOnInit() {

@@ -29,7 +29,7 @@ const LayerReferences = {
 @Injectable({
   providedIn: 'root'
 })
-export class MoveinOutServiceService {
+export class MoveinOutService {
   public settings: MoveInSettings = this.store.getStorage({ primaryKey: 'aggiemap-movein' });
   public days: MoveDates = this.env.value('MoveInOutDates', false);
 

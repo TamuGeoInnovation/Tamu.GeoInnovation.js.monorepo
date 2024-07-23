@@ -39,7 +39,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'builder'
+    redirectTo: 'map'
   },
   {
     path: '**',
