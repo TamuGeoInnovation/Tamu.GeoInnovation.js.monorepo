@@ -28,6 +28,6 @@ export interface ResidenceZones {
 
 export interface MoveInSettings {
   accessible: boolean;
-  date: number;
+  date: string;
   residence: ResidenceHall;
 }

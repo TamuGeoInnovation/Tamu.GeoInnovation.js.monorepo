@@ -8,9 +8,9 @@
         <p class="month">{{item | date : 'MMMM'}} {{item | date : 'd'}}, {{item | date : 'YYYY'}}</p>
       </div>
 
-      <div class="action" [ngClass]="{'active': (item | date : 'd') === savedDate}">
-        <p class="material-icons" *ngIf="(item | date : 'd') !== savedDate">arrow_forward</p>
-        <p class="material-icons active" *ngIf="(item | date : 'd') === savedDate">check</p>
+      <div class="action" [ngClass]="{'active': (item | date : 'd') === (savedDate | async)}">
+        <p class="material-icons" *ngIf="(item | date : 'd') !== (savedDate | async)">arrow_forward</p>
+        <p class="material-icons active" *ngIf="(item | date : 'd') === (savedDate | async)">check</p>
       </div>
     </div>
   </div>

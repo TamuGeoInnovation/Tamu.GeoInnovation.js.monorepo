@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { MoveDates } from '../../../../interfaces/move-in-out.interface';
-import { MoveinOutService } from '../../../map/services/move-in-out/move-in-out.service';
+import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
 
 @Component({
   selector: 'tamu-gisc-date-select',
@@ -16,23 +17,25 @@ import { MoveinOutService } from '../../../map/services/move-in-out/move-in-out.
 export class DateSelectComponent implements OnInit {
   public dates: MoveDates;
   public timestampedDates: Array<Date>;
-  public savedDate: string;
+  public savedDate: Observable<string>;
+
+  private _$refresh: Subject<void> = new Subject();
 
   constructor(
     private readonly store: LocalStoreService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly angulartics: Angulartics2,
-    private readonly movein: MoveinOutService
+    private readonly mioSettings: MoveInOutSettingsService
   ) {}
 
   public ngOnInit() {
-    this.dates = this.movein.days;
-
-    // Load saved value from local storage
-    this.savedDate = this.store
-      .getStorageObjectKeyValue<number>({ subKey: 'date', primaryKey: 'aggiemap-movein' })
-      ?.toString();
+    this.dates = this.mioSettings.days;
+    this.savedDate = this._$refresh.pipe(
+      startWith(undefined),
+      map(() => this.mioSettings.eventDate),
+      shareReplay()
+    );
 
     // Convert dates objects using day and month properties to Date objects. These will be used in template with date pipe.
     this.timestampedDates = this.dates.in.map((d) => new Date(new Date().getFullYear(), d.month - 1, d.day));
@@ -40,23 +43,11 @@ export class DateSelectComponent implements OnInit {
 
   /**
    * Saves component value in local storage
-   *
-   * @param {*} item
    */
   public saveDate = (item: Date) => {
-    this.store.setStorageObjectKeyValue({
-      primaryKey: 'aggiemap-movein',
-      subKey: 'date',
-      value: item.getDate()
-    });
+    const saved = this.mioSettings.saveEventDate(item);
 
-    // Verify that the value store was successful.
-    const confirm = this.store.getStorageObjectKeyValue<string>({
-      primaryKey: 'aggiemap-movein',
-      subKey: 'date'
-    });
-
-    if (confirm != undefined) {
+    if (saved != undefined) {
       this.angulartics.eventTrack.next({
         action: 'Date Select',
         properties: {
@@ -65,7 +56,7 @@ export class DateSelectComponent implements OnInit {
         }
       });
 
-      this.savedDate = confirm;
+      this._$refresh.next();
 
       const hasRet = this.route.snapshot.queryParams['ret'];
 

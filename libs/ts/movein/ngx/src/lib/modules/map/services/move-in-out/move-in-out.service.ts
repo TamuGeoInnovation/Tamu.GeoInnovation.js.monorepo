@@ -8,7 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 
 import { MoveDate, MoveDates, MoveInSettings } from '../../../../interfaces/move-in-out.interface';
-import { BOUNDARIES } from '../../dictionaries/move-in-out.dictionary';
+import { BOUNDARIES } from '../../../../dictionaries/move-in-out.dictionary';
 
 import esri = __esri;
 
@@ -103,7 +103,7 @@ export class MoveinOutService {
   }
 
   public getMoveDateEventDayNumberForSettings() {
-    const savedDate = this.getDateForDay('in', this.settings.date);
+    const savedDate = this.getDateForDay('in', parseInt(this.settings.date));
 
     if (savedDate) {
       return this.getMoveDateEventDayNumber('in', savedDate);
@@ -119,7 +119,7 @@ export class MoveinOutService {
    * Optionally provide a date object. Settings date will be used if not provided.
    */
   public getMoveDateEventAsDate(type: MoveEventType, date?: MoveDate) {
-    const savedDate = this.getDateForDay(type, date ? date.day : this.settings.date);
+    const savedDate = this.getDateForDay(type, date ? date.day : parseInt(this.settings.date));
 
     if (savedDate) {
       return new Date(new Date().getFullYear(), savedDate.month - 1, savedDate.day);
@@ -247,7 +247,7 @@ export class MoveinOutService {
       }
 
       // User selected event attendance day
-      const day = this.settings.date;
+      const day = parseInt(this.settings.date);
 
       // Moveindays table has a series of columns for each event day from (1 to n).
       // The columns are prefixed `Day_`.
@@ -355,7 +355,9 @@ export class MoveinOutService {
         const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets) as FeatureLayerSourceProperties;
 
         const dateFilter =
-          this.settings.date >= 17 && this.settings.date <= 18 ? `'LZAllWeek', 'LZSundayOnly'` : `'LZAllWeek'`;
+          parseInt(this.settings.date) >= 17 && parseInt(this.settings.date) <= 18
+            ? `'LZAllWeek', 'LZSundayOnly'`
+            : `'LZAllWeek'`;
 
         const intersectingStreets = await this.runTask(
           streetParkingSource.url,
