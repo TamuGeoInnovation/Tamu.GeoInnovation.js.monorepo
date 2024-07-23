@@ -17,7 +17,7 @@ export class ZoneSelectComponent implements OnInit {
 
   public zones: ResidenceZones = this.mioSettings.zones;
 
-  private _$refresh: Subject<void> = new Subject();
+  private _refresh$: Subject<void> = new Subject();
 
   constructor(
     private readonly router: Router,
@@ -28,7 +28,7 @@ export class ZoneSelectComponent implements OnInit {
 
   public ngOnInit() {
     // Load saved value from local storage
-    this.savedResidence = this._$refresh.pipe(
+    this.savedResidence = this._refresh$.pipe(
       startWith(undefined),
       map(() => this.mioSettings.savedResidence),
       shareReplay()
@@ -50,7 +50,7 @@ export class ZoneSelectComponent implements OnInit {
         }
       });
 
-      this._$refresh.next();
+      this._refresh$.next();
 
       const hasRet = this.route.snapshot.queryParams['ret'];
 
@@ -59,6 +59,8 @@ export class ZoneSelectComponent implements OnInit {
       } else {
         this.router.navigate(['builder/accommodations']);
       }
+    } else {
+      throw new Error('Failed to save hall selection.');
     }
   };
 }

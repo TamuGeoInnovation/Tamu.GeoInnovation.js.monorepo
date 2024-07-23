@@ -17,7 +17,7 @@ export class DateSelectComponent implements OnInit {
   public timestampedDates: Array<Date>;
   public savedDate: Observable<string>;
 
-  private _$refresh: Subject<void> = new Subject();
+  private _refresh$: Subject<void> = new Subject();
 
   constructor(
     private readonly router: Router,
@@ -28,7 +28,7 @@ export class DateSelectComponent implements OnInit {
 
   public ngOnInit() {
     this.dates = this.mioSettings.days;
-    this.savedDate = this._$refresh.pipe(
+    this.savedDate = this._refresh$.pipe(
       startWith(undefined),
       map(() => this.mioSettings.eventDate),
       shareReplay()
@@ -53,7 +53,7 @@ export class DateSelectComponent implements OnInit {
         }
       });
 
-      this._$refresh.next();
+      this._refresh$.next();
 
       const hasRet = this.route.snapshot.queryParams['ret'];
 
@@ -62,6 +62,8 @@ export class DateSelectComponent implements OnInit {
       } else {
         this.router.navigate(['builder/zone']);
       }
+    } else {
+      throw new Error('Failed to save date selection.');
     }
   };
 }

@@ -30,6 +30,10 @@ export class MoveInOutSettingsService {
     return this.settings?.residence;
   }
 
+  public get savedAccessible() {
+    return this.settings?.accessible;
+  }
+
   constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
 
   public saveEventDate(date: Date) {
@@ -78,6 +82,21 @@ export class MoveInOutSettingsService {
       console.error('Zone not found for hall ', res.name);
       return null;
     }
+  }
+
+  public saveAccommodations(requiresAccommodations: boolean) {
+    this.store.setStorageObjectKeyValue({
+      primaryKey: this._settingsPrimaryKey,
+      subKey: 'accessible',
+      value: requiresAccommodations
+    });
+
+    const confirm = this.store.getStorageObjectKeyValue<boolean>({
+      primaryKey: this._settingsPrimaryKey,
+      subKey: 'accessible'
+    });
+
+    return confirm;
   }
 }
 

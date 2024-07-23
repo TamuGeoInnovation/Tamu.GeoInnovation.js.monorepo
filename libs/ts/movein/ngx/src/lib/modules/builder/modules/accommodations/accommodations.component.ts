@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
 
 @Component({
   selector: 'tamu-gisc-accommodations',
@@ -11,50 +12,51 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
   styleUrls: ['./accommodations.component.scss']
 })
 export class AccommodationsComponent implements OnInit {
-  public savedAccessible: boolean;
+  public savedAccessible: Observable<boolean>;
+
+  private _refresh$: Subject<void> = new Subject();
 
   constructor(
-    private store: LocalStoreService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private angulartics: Angulartics2
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly angulartics: Angulartics2,
+    private readonly mioSettings: MoveInOutSettingsService
   ) {}
 
   public ngOnInit() {
-    this.savedAccessible = this.store.getStorageObjectKeyValue({ primaryKey: 'aggiemap-movein', subKey: 'accessible' });
+    this.savedAccessible = this._refresh$.pipe(
+      startWith(undefined),
+      map(() => this.mioSettings.savedAccessible),
+      shareReplay()
+    );
   }
 
   /**
    * Saves component value in local storage
-   *
-   * @param {*} item
    */
   public saveAccessible = (item: boolean): void => {
-    this.store.setStorageObjectKeyValue({
-      primaryKey: 'aggiemap-movein',
-      subKey: 'accessible',
-      value: item
-    });
+    const confirm = this.mioSettings.saveAccommodations(item);
 
-    const confirm = this.store.getStorageObjectKeyValue({
-      primaryKey: 'aggiemap-movein',
-      subKey: 'accessible'
-    });
+    if (confirm !== undefined) {
+      this.angulartics.eventTrack.next({
+        action: 'Accommodation Selection',
+        properties: {
+          category: 'UI Interaction',
+          label: confirm
+        }
+      });
 
-    this.angulartics.eventTrack.next({
-      action: 'Accommodation Selection',
-      properties: {
-        category: 'UI Interaction',
-        label: confirm
+      this._refresh$.next();
+
+      const hasRet = this.route.snapshot.queryParams['ret'];
+
+      if (hasRet !== undefined) {
+        this.router.navigate([`builder/${hasRet}`]);
+      } else {
+        this.router.navigate(['builder/review']);
       }
-    });
-
-    const hasRet = this.route.snapshot.queryParams['ret'];
-
-    if (hasRet !== undefined) {
-      this.router.navigate([`builder/${hasRet}`]);
     } else {
-      this.router.navigate(['builder/review']);
+      throw new Error('Error saving accommodation selection.');
     }
   };
 }
