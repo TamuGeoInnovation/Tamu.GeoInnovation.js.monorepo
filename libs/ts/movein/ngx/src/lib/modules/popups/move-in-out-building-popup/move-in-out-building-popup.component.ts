@@ -8,7 +8,7 @@ import { BuildingPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { MoveinOutService } from '../../map/services/move-in-out.service';
+import { MoveinOutService } from '../../map/services/move-in-out/move-in-out.service';
 
 import esri = __esri;
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';

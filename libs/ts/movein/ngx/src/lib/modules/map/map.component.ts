@@ -15,7 +15,7 @@ import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { MoveinOutService } from './services/move-in-out.service';
+import { MoveinOutService } from './services/move-in-out/move-in-out.service';
 
 import esri = __esri;
 

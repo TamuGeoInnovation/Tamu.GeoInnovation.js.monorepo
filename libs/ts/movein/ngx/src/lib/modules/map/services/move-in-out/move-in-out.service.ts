@@ -7,8 +7,8 @@ import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 
-import { MoveDate, MoveDates, MoveInSettings } from '../../../interfaces/move-in-out.interface';
-import { BOUNDARIES } from '../dictionaries/move-in-out.dictionary';
+import { MoveDate, MoveDates, MoveInSettings } from '../../../../interfaces/move-in-out.interface';
+import { BOUNDARIES } from '../../dictionaries/move-in-out.dictionary';
 
 import esri = __esri;
 

@@ -6,7 +6,7 @@ import { Angulartics2 } from 'angulartics2';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { MoveDates } from '../../../../interfaces/move-in-out.interface';
-import { MoveinOutService } from '../../../map/services/move-in-out.service';
+import { MoveinOutService } from '../../../map/services/move-in-out/move-in-out.service';
 
 @Component({
   selector: 'tamu-gisc-date-select',
