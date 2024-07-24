@@ -8,11 +8,7 @@ import {
   ReportBadRouteComponent,
   AggiemapFormsModule
 } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import {
-  AggiemapSidebarModule,
-  SidebarReferenceComponent,
-  SidebarTripPlannerComponent
-} from '@tamu-gisc/aggiemap/ngx/ui/desktop';
+import { AggiemapSidebarModule, SidebarTripPlannerComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   AggiemapNgxUiMobileModule,
   OmnisearchComponent,
@@ -47,6 +43,7 @@ import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessib
 import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
 import { MapComponent } from './map.component';
 import { MoveInOutSidebarComponent } from '../sidebar/sidebar.component';
+import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 
 const routes: Routes = [
   {

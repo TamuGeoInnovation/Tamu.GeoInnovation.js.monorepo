@@ -132,6 +132,16 @@ export class MoveInOutSettingsService {
     }
   }
 
+  public get queryParamsFromSettings() {
+    const settings = this.settings;
+
+    if (!settings) {
+      return null;
+    }
+
+    return `date=${settings.date}&residence=${settings.residence.Bldg_Number}&accessible=${settings.accessible}`;
+  }
+
   private _validateDate(date: string, event: MoveEventType) {
     const day = this.days[event].find((d) => {
       return d.day.toString() === date;
