@@ -8,14 +8,15 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
-import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
+import { QueryParamSettings } from '../../interfaces/move-in-out.interface';
 import { MoveinOutService } from './services/move-in-out/move-in-out.service';
+import { MoveInOutSettingsService } from './services/move-in-out-settings/move-in-out-settings.service';
 
 import esri = __esri;
 
@@ -42,22 +43,36 @@ export class MapComponent implements OnInit, OnDestroy {
   constructor(
     private readonly responsiveService: ResponsiveService,
     private readonly env: EnvironmentService,
-    private readonly ss: SettingsService,
+    private readonly ns: NotificationService,
     private readonly ts: TestingService,
-    private readonly mio: MoveinOutService,
-    private readonly store: LocalStoreService,
     private readonly rt: Router,
-    private readonly ar: ActivatedRoute
+    private readonly ar: ActivatedRoute,
+    private readonly mioSettings: MoveInOutSettingsService,
+    private readonly mioService: MoveinOutService
   ) {}
 
   public ngOnInit() {
     // Settings can come from either local storage or from the url query parameters
-    const moveinSettings = this.store.getStorage({ primaryKey: 'aggiemap-movein' });
-    const queryParams = this.ar.snapshot.queryParams;
-    const urlSettings = queryParams['date'] !== undefined && queryParams['residence'] !== undefined;
+    const moveinSettings = this.mioSettings.settings;
+    const queryParams = this.ar.snapshot.queryParams as QueryParamSettings;
+    const queryParamsKeySize = Object.keys(queryParams).length;
 
-    if (!moveinSettings && !urlSettings) {
+    if (!moveinSettings && queryParamsKeySize) {
       this.rt.navigate(['/builder']);
+    }
+
+    try {
+      // Call move-in/out settings service to update and set/overwrite any settings in local storage.
+      if (queryParamsKeySize) {
+        this.mioSettings.setSettingsFromQueryParams(queryParams);
+      }
+    } catch (err) {
+      this.ns.toast({
+        id: 'movein-settings-error',
+        title: 'Error Validating URL Parameters',
+        message:
+          'There was an error reading and parsing parameters from URL. Please ensure the correct format or set your preferences manually.'
+      });
     }
 
     this._connections = this.env.value('Connections');

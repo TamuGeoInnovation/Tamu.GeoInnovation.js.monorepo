@@ -31,3 +31,22 @@ export interface MoveInSettings {
   date: string;
   residence: ResidenceHall;
 }
+
+export type MoveEventType = 'in' | 'out';
+
+export interface QueryParamSettings {
+  /**
+   * Calendar day of the month
+   */
+  date: string;
+
+  /**
+   * Building number of the residence hall
+   */
+  residence: string;
+
+  /**
+   * Whether or not the user requires accessible accommodations
+   */
+  accessible?: string;
+}

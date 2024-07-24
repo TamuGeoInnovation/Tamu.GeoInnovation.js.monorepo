@@ -3,7 +3,14 @@ import { Injectable } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { MoveDates, MoveInSettings, ResidenceHall, ResidenceZones } from '../../../../interfaces/move-in-out.interface';
+import {
+  MoveDates,
+  MoveEventType,
+  MoveInSettings,
+  QueryParamSettings,
+  ResidenceHall,
+  ResidenceZones
+} from '../../../../interfaces/move-in-out.interface';
 import { RESIDENCES } from '../../../../dictionaries/move-in-out.dictionary';
 
 @Injectable({
@@ -97,6 +104,78 @@ export class MoveInOutSettingsService {
     });
 
     return confirm;
+  }
+
+  public setSettingsFromQueryParams(params: QueryParamSettings) {
+    try {
+      // Check if params have at least a date and residence
+      if (!params.date || !params.residence) {
+        console.warn('Invalid query parameters. Will not set settings from query parameters.');
+      }
+
+      const date = this._validateDate(params.date, 'in');
+      const residence = this._validateResidence(params.residence);
+      const accommodations = params.accessible ? this._validateAccommodations(params.accessible) : false;
+
+      this.store.setStorage({
+        primaryKey: this._settingsPrimaryKey,
+        value: {
+          date: date.day.toString(),
+          residence: residence,
+          accessible: accommodations
+        }
+      });
+
+      return this.settings;
+    } catch (err) {
+      throw new Error((err as Error)['message']);
+    }
+  }
+
+  private _validateDate(date: string, event: MoveEventType) {
+    const day = this.days[event].find((d) => {
+      return d.day.toString() === date;
+    });
+
+    if (!day) {
+      throw new Error('Invalid date');
+    }
+
+    return day;
+  }
+
+  private _validateResidence(buildingNumber: string) {
+    const match = Object.entries(this.zones).find(([key]) => {
+      return this.zones[key].halls.find((hall) => {
+        return hall.Bldg_Number.includes(buildingNumber);
+      });
+    });
+
+    if (!match) {
+      throw new Error('Invalid residence hall (no zone identified)');
+    }
+
+    const [, zone] = match;
+
+    const residence = zone.halls.find((hall) => {
+      return hall.Bldg_Number.includes(buildingNumber);
+    });
+
+    if (residence === undefined) {
+      throw new Error('Invalid residence hall');
+    }
+
+    residence.zone = zone.name;
+
+    return residence;
+  }
+
+  private _validateAccommodations(accommodations: string) {
+    if (accommodations === 'true' || accommodations === 'false') {
+      return accommodations === 'true';
+    }
+
+    throw new Error('Invalid accommodations value');
   }
 }
 

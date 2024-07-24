@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
+import { delay } from 'rxjs';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 
-import { MoveDate, MoveDates, MoveInSettings } from '../../../../interfaces/move-in-out.interface';
+import { MoveDate, MoveDates, MoveEventType, MoveInSettings } from '../../../../interfaces/move-in-out.interface';
 import { BOUNDARIES } from '../../../../dictionaries/move-in-out.dictionary';
+import { MoveInOutSettingsService } from '../move-in-out-settings/move-in-out-settings.service';
 
 import esri = __esri;
 
@@ -30,19 +31,19 @@ const LayerReferences = {
   providedIn: 'root'
 })
 export class MoveinOutService {
-  public settings: MoveInSettings = this.store.getStorage({ primaryKey: 'aggiemap-movein' });
-  public days: MoveDates = this.env.value('MoveInOutDates', false);
+  public settings: MoveInSettings;
+  public days: MoveDates = this.mioSettings.days;
 
   private _map: esri.Map;
   private _view: esri.MapView;
 
   constructor(
-    private mapService: EsriMapService,
-    private store: LocalStoreService,
-    private moduleProvider: EsriModuleProviderService,
-    private env: EnvironmentService
+    private readonly env: EnvironmentService,
+    private readonly moduleProvider: EsriModuleProviderService,
+    private readonly mapService: EsriMapService,
+    private readonly mioSettings: MoveInOutSettingsService
   ) {
-    this.mapService.store.subscribe((instanced) => {
+    this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
       this._view = instanced.view as esri.MapView;
       this.init();
@@ -50,6 +51,8 @@ export class MoveinOutService {
   }
 
   public init() {
+    this.settings = this.mioSettings.settings;
+
     this.drawResidence();
     this.drawParking();
     this.drawAccessibleParkingSpaces();
@@ -524,5 +527,3 @@ export class MoveinOutService {
     }
   }
 }
-
-type MoveEventType = 'in' | 'out';
