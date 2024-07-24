@@ -5,6 +5,7 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
+import { MoveInSettings } from '../../../../interfaces/move-in-out.interface';
 
 import esri = __esri;
 
@@ -16,6 +17,8 @@ import esri = __esri;
 export class SidebarReferenceComponent<T extends esri.Graphic> implements OnInit {
   public shareUrl: string;
   public hasSettings: boolean;
+  public settings: MoveInSettings;
+  public moveDate: Date | undefined;
 
   constructor(
     private readonly helper: AltSearchHelper,
@@ -25,7 +28,9 @@ export class SidebarReferenceComponent<T extends esri.Graphic> implements OnInit
 
   public ngOnInit(): void {
     this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
+    this.settings = this.mioSettings.settings;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
+    this.moveDate = this.mioSettings.getMoveDateEventAsDate('in');
   }
 
   public onSearchResult(result: SearchSelection<T>) {

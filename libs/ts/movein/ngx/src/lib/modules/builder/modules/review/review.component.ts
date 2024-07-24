@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { MoveInSettings } from '../../../../interfaces/move-in-out.interface';
-import { MoveinOutService } from '../../../map/services/move-in-out/move-in-out.service';
+import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
 
 @Component({
   selector: 'tamu-gisc-review',
@@ -20,7 +20,7 @@ export class ReviewComponent implements OnInit {
     private store: LocalStoreService,
     private router: Router,
     private route: ActivatedRoute,
-    private move: MoveinOutService
+    private move: MoveInOutSettingsService
   ) {}
 
   public ngOnInit() {

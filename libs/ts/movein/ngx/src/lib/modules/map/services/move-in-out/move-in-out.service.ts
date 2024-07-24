@@ -7,7 +7,7 @@ import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 
-import { MoveDate, MoveDates, MoveEventType, MoveInSettings } from '../../../../interfaces/move-in-out.interface';
+import { MoveInSettings } from '../../../../interfaces/move-in-out.interface';
 import { BOUNDARIES } from '../../../../dictionaries/move-in-out.dictionary';
 import { MoveInOutSettingsService } from '../move-in-out-settings/move-in-out-settings.service';
 
@@ -32,7 +32,6 @@ const LayerReferences = {
 })
 export class MoveinOutService {
   public settings: MoveInSettings;
-  public days: MoveDates = this.mioSettings.days;
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -57,79 +56,6 @@ export class MoveinOutService {
     this.drawParking();
     this.drawAccessibleParkingSpaces();
     this.drawPOIs();
-  }
-
-  /**
-   * Returns MoveDates for either move-in or move-out event.
-   */
-  public getDaysForType(type: MoveEventType) {
-    if (this.days && this.days[type] && this.days[type].length > 0) {
-      return this.days[type];
-    } else {
-      console.warn(`No move dates found for ${type} event.`);
-      return undefined;
-    }
-  }
-
-  /**
-   * Returns the move-in/out date object for the provided matching calendar day (find operation)
-   */
-  public getDateForDay(type: MoveEventType, day: number | string) {
-    if (this.days[type]?.length > 0) {
-      return this.days[type].find((d) => d.day == day);
-    } else {
-      console.warn(`No move date for provided '${type}' type and '${day}' day.`);
-      return undefined;
-    }
-  }
-
-  /**
-   * Returns the first move in/out MoveDate object or the provided event type.
-   */
-  public getFirstMoveDate(type: MoveEventType) {
-    return this.getDaysForType(type)?.[0];
-  }
-
-  /**
-   * Accepts a move event type and a MoveDate object and determines the index of the `date` object relative to the
-   * event type's MoveDates array.
-   */
-  public getMoveDateEventDayNumber(type: MoveEventType, date: MoveDate) {
-    const dates = this.getDaysForType(type);
-
-    if (dates) {
-      return dates.findIndex((d) => d.day == date.day) + 1;
-    } else {
-      console.warn(`No move dates found for ${type} event.`);
-      return undefined;
-    }
-  }
-
-  public getMoveDateEventDayNumberForSettings() {
-    const savedDate = this.getDateForDay('in', parseInt(this.settings.date));
-
-    if (savedDate) {
-      return this.getMoveDateEventDayNumber('in', savedDate);
-    } else {
-      console.warn(`No move date found for settings date.`);
-      return undefined;
-    }
-  }
-
-  /**
-   * Returns the move-in/out date as a Date object for the provided MoveDate object.
-   *
-   * Optionally provide a date object. Settings date will be used if not provided.
-   */
-  public getMoveDateEventAsDate(type: MoveEventType, date?: MoveDate) {
-    const savedDate = this.getDateForDay(type, date ? date.day : parseInt(this.settings.date));
-
-    if (savedDate) {
-      return new Date(new Date().getFullYear(), savedDate.month - 1, savedDate.day);
-    } else {
-      console.warn(`No event day found for provided date.`);
-      return undefined;
-    }
   }
 
   public async drawResidence() {
@@ -243,7 +169,7 @@ export class MoveinOutService {
    */
   public async drawParking() {
     try {
-      const eventDayStart = this.getFirstMoveDate('in')?.day;
+      const eventDayStart = this.mioSettings.getFirstMoveDate('in')?.day;
 
       if (eventDayStart === undefined) {
         throw new Error('No event day start found.');
@@ -404,19 +330,6 @@ export class MoveinOutService {
       return copied;
     } else {
       throw new Error(`Layer source reference '${reference}' not found.`);
-    }
-  }
-
-  private getLayerSourcePopupReference(reference: string) {
-    const sources: Array<LayerSource> = this.env.value('ColdLayerSources', false);
-    const root = sources.find((s) => s.id == reference);
-
-    if (root && root.popupComponent) {
-      return root.popupComponent;
-    } else {
-      console.error(`Popup component reference '${reference}' not found.`);
-
-      return undefined;
     }
   }
 

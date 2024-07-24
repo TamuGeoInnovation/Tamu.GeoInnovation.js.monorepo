@@ -67,12 +67,12 @@ export class MapComponent implements OnInit, OnDestroy {
     const queryParams = this.ar.snapshot.queryParams as QueryParamSettings;
     const queryParamsKeySize = Object.keys(queryParams).length;
 
-    this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
-    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
-
     if (!moveinSettings && queryParamsKeySize === 0) {
       this.rt.navigate(['/builder']);
     }
+
+    this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
+    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
 
     try {
       // Call move-in/out settings service to update and set/overwrite any settings in local storage.

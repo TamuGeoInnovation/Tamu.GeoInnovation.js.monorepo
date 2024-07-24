@@ -6,9 +6,15 @@
   </div>
 
   <div class="sidebar-component-content-container">
-    <p>Make coordination easy! The following link can be shared with friends and family to load the same map you have configured.</p>
+    <p>Make coordination easy! The following link can be shared with friends and family to load the same map you have configured:</p>
+
+    <p>
+      <strong>{{moveDate | date : 'mediumDate'}}</strong> @ <strong>{{settings.residence.name}} </strong> <span *ngIf="settings.accessible"> with <strong>accessible parking accommodations</strong>.</span>
+    </p>
 
     <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+
+    <p class="settings-edit"><a routerLink="/builder/review">Incorrect settings?</a></p>
   </div>
 </div>
 

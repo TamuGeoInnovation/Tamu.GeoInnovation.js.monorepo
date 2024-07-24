@@ -10,6 +10,7 @@ import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { MoveinOutService } from '../../map/services/move-in-out/move-in-out.service';
+import { MoveInOutSettingsService } from '../../map/services/move-in-out-settings/move-in-out-settings.service';
 
 import esri = __esri;
 
@@ -34,7 +35,8 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
     private readonly pss: TripPlannerService,
     private readonly agl: Angulartics2,
     private readonly ems: EsriMapService,
-    private readonly mss: MoveinOutService
+    private readonly mss: MoveinOutService,
+    private readonly mios: MoveInOutSettingsService
   ) {
     super(rrt, rtt, pss, agl, ems);
   }
@@ -42,7 +44,7 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
   public override ngOnInit() {
     super.ngOnInit();
 
-    const daySuffix = this.mss.getMoveDateEventDayNumberForSettings();
+    const daySuffix = this.mios.getMoveDateEventDayNumberForSettings();
 
     if (daySuffix !== undefined) {
       this.lotParkingType = this.data.attributes[`Day_${daySuffix}`];
@@ -96,7 +98,7 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
     );
 
     this.selectedMoveInDate = of(true).pipe(
-      map(() => this.mss.getMoveDateEventAsDate('in')),
+      map(() => this.mios.getMoveDateEventAsDate('in')),
       filter((date) => date !== undefined)
     );
   }
