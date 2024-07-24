@@ -37,6 +37,16 @@ export class MapComponent implements OnInit, OnDestroy {
   public isDev: Observable<boolean>;
   public urlBasemap: string;
 
+  /**
+   * Used to whether store application settings are set or not, for the purposes of displaying/hiding the url share button (mobile)
+   */
+  public hasSettings: boolean;
+
+  /**
+   * Text content for the share button (mobile)
+   */
+  public shareUrl: string;
+
   private _destroy$: Subject<boolean> = new Subject();
   private _connections: { [key: string]: string };
 
@@ -57,7 +67,10 @@ export class MapComponent implements OnInit, OnDestroy {
     const queryParams = this.ar.snapshot.queryParams as QueryParamSettings;
     const queryParamsKeySize = Object.keys(queryParams).length;
 
-    if (!moveinSettings && queryParamsKeySize) {
+    this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
+    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
+
+    if (!moveinSettings && queryParamsKeySize === 0) {
       this.rt.navigate(['/builder']);
     }
 
@@ -214,4 +227,13 @@ export class MapComponent implements OnInit, OnDestroy {
       throw new Error('No event provided.');
     }
   };
+
+  public notifyUrlCopy() {
+    this.ns.toast({
+      id: 'url-copied',
+      title: 'URL Copied',
+      message:
+        'Your personalized move-in URL has been copied to your clipboard. Share it with your friends and family to load the map you have configured!'
+    });
+  }
 }

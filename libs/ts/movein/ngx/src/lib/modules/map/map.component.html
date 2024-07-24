@@ -25,7 +25,11 @@
     <div class="map-overlay-ui">
       <div class="overlay-zone top left"></div>
 
-      <div class="overlay-zone bottom right"></div>
+      <div class="overlay-zone bottom right">
+        <div *ngIf="hasSettings" class="esri-component esri-track esri-widget--button esri-widget" role="button" alt="URL Share" clipboard-copy [text]="shareUrl"><span class="material-icons" (click)="notifyUrlCopy()">share</span></div>
+        <div routerLink="/builder/review" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Map Settings">settings</span></div>
+        <div routerLink="/map/m/sidebar/layers" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Layer List">layers</span></div>
+      </div>
     </div>
   </tamu-gisc-esri-map>
 </ng-container>

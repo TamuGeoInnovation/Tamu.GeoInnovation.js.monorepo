@@ -25,7 +25,7 @@ export class SidebarReferenceComponent<T extends esri.Graphic> implements OnInit
 
   public ngOnInit(): void {
     this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
-    this.shareUrl = `${window.location.href}/?${this.mioSettings.queryParamsFromSettings}`;
+    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
   }
 
   public onSearchResult(result: SearchSelection<T>) {
