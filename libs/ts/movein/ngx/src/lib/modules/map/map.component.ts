@@ -14,7 +14,6 @@ import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { QueryParamSettings } from '../../interfaces/move-in-out.interface';
 import { MoveinOutService } from './services/move-in-out/move-in-out.service';
 import { MoveInOutSettingsService } from './services/move-in-out-settings/move-in-out-settings.service';
 
@@ -63,32 +62,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     // Settings can come from either local storage or from the url query parameters
-    const moveinSettings = this.mioSettings.settings;
-    const queryParams = this.ar.snapshot.queryParams as QueryParamSettings;
-    const queryParamsKeySize = Object.keys(queryParams).length;
 
-    if (!moveinSettings && queryParamsKeySize === 0) {
-      this.rt.navigate(['/builder']);
-    }
-
-    setTimeout(() => {
-      this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
-      this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
-    }, 0);
-
-    try {
-      // Call move-in/out settings service to update and set/overwrite any settings in local storage.
-      if (queryParamsKeySize) {
-        this.mioSettings.setSettingsFromQueryParams(queryParams);
-      }
-    } catch (err) {
-      this.ns.toast({
-        id: 'movein-settings-error',
-        title: 'Error Validating URL Parameters',
-        message:
-          'There was an error reading and parsing parameters from URL. Please ensure the correct format or set your preferences manually.'
-      });
-    }
+    this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
+    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
 
     this._connections = this.env.value('Connections');
     this.isDev = this.ts.get('isTesting');

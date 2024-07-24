@@ -2,9 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { BuilderComponent } from './modules/builder/builder.component';
+import { SettingsGuard } from './guards/settings/settings.guard';
 
 const routes: Routes = [
-  { path: 'map', loadChildren: () => import('./modules/map/map.module').then((m) => m.MapModule) },
+  {
+    path: 'map',
+    loadChildren: () => import('./modules/map/map.module').then((m) => m.MapModule),
+    canActivate: [SettingsGuard]
+  },
   {
     path: 'builder',
     component: BuilderComponent,
