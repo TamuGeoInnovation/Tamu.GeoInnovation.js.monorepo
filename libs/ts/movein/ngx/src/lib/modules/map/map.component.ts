@@ -71,8 +71,10 @@ export class MapComponent implements OnInit, OnDestroy {
       this.rt.navigate(['/builder']);
     }
 
-    this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
-    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
+    setTimeout(() => {
+      this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
+      this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
+    }, 0);
 
     try {
       // Call move-in/out settings service to update and set/overwrite any settings in local storage.
