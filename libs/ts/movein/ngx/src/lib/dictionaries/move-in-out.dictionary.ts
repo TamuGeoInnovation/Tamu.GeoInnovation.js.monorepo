@@ -53,7 +53,7 @@ export const RESIDENCES: ResidenceZones = {
         Bldg_Number: ['0447']
       },
       {
-        name: 'Dun Hall',
+        name: 'Dunn Hall',
         Bldg_Number: ['0442']
       },
       {
@@ -65,7 +65,7 @@ export const RESIDENCES: ResidenceZones = {
         Bldg_Number: ['0417']
       },
       {
-        name: 'Kreuger Hall',
+        name: 'Krueger Hall',
         Bldg_Number: ['0441']
       },
       {
@@ -156,7 +156,7 @@ export const RESIDENCES: ResidenceZones = {
     halls: [
       {
         name: 'White Creek Apartments',
-        Bldg_Number: ['1590', '1591', '1592', '0064']
+        Bldg_Number: ['1590', '1591', '1592']
       }
     ]
   }
