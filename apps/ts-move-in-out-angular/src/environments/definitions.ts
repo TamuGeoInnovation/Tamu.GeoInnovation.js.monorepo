@@ -139,7 +139,7 @@ export const ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: 'move-in-parking-lots-layer',
-    title: 'Movein Parking Lots',
+    title: 'Move-In Parking Lots',
     url: `${Definitions.MOVE_IN_OUT.url}/6`,
     listMode: 'show',
     visible: true,
@@ -251,7 +251,7 @@ export const ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: 'move-in-parking-streets-layer',
-    title: 'Movein Street Parking',
+    title: 'Move-In Street Parking',
     url: Definitions.MOVE_IN_OUT_STREET_PARKING.url,
     listMode: 'show',
     visible: true,

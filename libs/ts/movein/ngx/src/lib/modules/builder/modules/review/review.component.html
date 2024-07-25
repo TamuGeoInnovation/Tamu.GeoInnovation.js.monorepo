@@ -4,7 +4,7 @@
   <div class="flex flex-row justify-center">
     <div class="column6 flex flex-column" id="settings-table">
       <div class="setting-item">
-        <div>Move-in date:</div>
+        <div>Move-In Date:</div>
         <div>
           <p *ngIf="!settings || settings.date === undefined">Not Set</p>
           <p *ngIf="settings && settings.date !== undefined">{{moveDate | date : 'MMMM'}} {{ moveDate | date : 'd' }}, {{moveDate | date : 'YYYY'}}</p>
