@@ -69,27 +69,19 @@ export class MoveinOutService {
       }
 
       // Add the residence layer
-      this.mapService.loadLayers([source as LayerSource]);
+      await this.mapService.loadLayers([source as LayerSource]);
 
-      // Once view is ready, zoom to the boundary.
-      this._view.when(async () => {
-        const boundary = BOUNDARIES.find((b) => b.name == this.settings.residence.zone);
+      setTimeout(() => {
+        const layer = this.mapService.findLayerById((source as LayerSource)?.id) as esri.FeatureLayer;
 
-        if (boundary) {
-          const [Polygon, Graphic]: [esri.PolygonConstructor, esri.GraphicConstructor] = await this.moduleProvider.require([
-            'Polygon',
-            'Graphic'
-          ]);
-
-          const boundaryGraphic = new Graphic({
-            geometry: new Polygon({
-              rings: [boundary.paths]
-            })
+        if (layer) {
+          layer.queryFeatures().then((result) => {
+            if (result.features.length > 0) {
+              this.mapService.zoomTo({ graphics: result.features, zoom: 18 });
+            }
           });
-
-          this.mapService.zoomTo({ graphics: [boundaryGraphic], zoom: 18 });
         }
-      });
+      }, 100);
     } catch (err) {
       console.error(`Failed to draw residence`, err);
     }
