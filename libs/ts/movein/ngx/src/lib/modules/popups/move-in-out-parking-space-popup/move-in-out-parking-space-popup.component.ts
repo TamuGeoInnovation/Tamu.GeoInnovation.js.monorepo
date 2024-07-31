@@ -113,14 +113,15 @@ export class ParkingLotLabelPipe implements PipeTransform {
   // 'Free', 'Paid', '1HR DZ w P', '1HR Drop', 'SSG', 'Free 6-9', 'NoParking', 'LSP Req'
   public displayDictionary: ParkingLotTypes = {
     Free: 'Free parking',
-    Paid: 'Paid parking',
-    '1HR DZ w P': '1HR DZ w P',
+    Paid: 'Hourly paid parking',
+    '1HR DZ w P': '1-hour drop off zone, lot specific permit required after 1 hour',
     '1HR Drop': '1-hour drop zone',
-    SSG: 'Free parking',
-    'Free 6-9': 'Free visitor parking from 6-9PM',
-    NoParking: 'No parking at all times',
+    SSG: 'Free parking during move-in, no overnight parking parking without SSG permit',
+    'Free 6-9': 'Free parking from 6am to 9pm, no overnight parking without lot-specific permit',
+    NoParking: 'No move-in parking allowed at all times',
     'LSP Req': 'Lot-specific permit required',
-    Disabled: 'Accessible parking. Valid placard required.'
+    'LSP Reqd': 'Lot-specific permit required', // Typo in the dataset
+    Disabled: 'Accessible parking ONLY. Valid placard required.'
   };
 
   public transform(parkingLotType: keyof ParkingLotTypes): string | undefined {
@@ -144,5 +145,6 @@ export interface ParkingLotTypes {
   'Free 6-9': string;
   NoParking: string;
   'LSP Req': string;
+  'LSP Reqd': string; // Typo in the dataset
   Disabled: string;
 }
