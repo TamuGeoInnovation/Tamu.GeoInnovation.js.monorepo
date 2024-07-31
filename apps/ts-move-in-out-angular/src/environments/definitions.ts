@@ -158,6 +158,7 @@ export const ColdLayerSources: LayerSource[] = [
           }
         } as unknown,
         defaultLabel: 'No move-in parking. Lot specific permit required.',
+
         uniqueValueInfos: [
           {
             value: 'Free',
@@ -248,7 +249,7 @@ export const ColdLayerSources: LayerSource[] = [
                 width: '1'
               }
             } as unknown,
-            label: 'SSG Free parking during move-in, no overnight parking parking without SSG permit'
+            label: 'Free parking from 6am to 9pm, no overnight parking without lot-specific permit'
           }
         ]
       }
