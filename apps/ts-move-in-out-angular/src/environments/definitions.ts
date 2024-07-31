@@ -718,7 +718,7 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'building-exact',
     name: 'Building',
-    url: `${Definitions.BUILDINGS.url}`,
+    url: `${Connections.basemapUrl}/1`,
     queryParams: {
       ...commonQueryParams,
       where: {
@@ -746,7 +746,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.DeptName}',
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: 'BasePopupComponent',
     searchActive: false,
     altLookup: {
       source: 'building-exact',
@@ -850,7 +850,7 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'parking-lot',
     name: 'Parking Lot',
-    url: `${Connections.basemapUrl}/12`,
+    url: `${Connections.basemapUrl}/9`,
     queryParams: {
       ...commonQueryParams,
       where: {
