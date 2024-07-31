@@ -157,6 +157,7 @@ export const ColdLayerSources: LayerSource[] = [
             width: '1'
           }
         } as unknown,
+        defaultLabel: 'No move-in parking. Lot specific permit required.',
         uniqueValueInfos: [
           {
             value: 'Free',
@@ -168,7 +169,8 @@ export const ColdLayerSources: LayerSource[] = [
                 color: [0, 150, 0, 0.75],
                 width: '1'
               }
-            } as unknown
+            } as unknown,
+            label: 'Free parking'
           },
           {
             value: 'Disabled',
@@ -180,7 +182,8 @@ export const ColdLayerSources: LayerSource[] = [
                 color: [0, 105, 200, 0.75],
                 width: '1'
               }
-            } as unknown
+            } as unknown,
+            label: 'Accessible parking ONLY. Valid placard required.'
           },
           {
             value: '1HR DZ w P',
@@ -192,7 +195,8 @@ export const ColdLayerSources: LayerSource[] = [
                 color: [236, 14, 129, 0.75],
                 width: '1'
               }
-            } as unknown
+            } as unknown,
+            label: '1-hour drop off zone, lot specific permit required after 1 hour'
           },
           {
             value: '1HR Drop',
@@ -204,7 +208,8 @@ export const ColdLayerSources: LayerSource[] = [
                 color: [117, 117, 255, 0.75],
                 width: '1'
               }
-            } as unknown
+            } as unknown,
+            label: '1-hour drop zone'
           },
           {
             value: 'Paid',
@@ -216,7 +221,8 @@ export const ColdLayerSources: LayerSource[] = [
                 color: [104, 159, 56],
                 width: '1'
               }
-            } as unknown
+            } as unknown,
+            label: 'Hourly paid parking'
           },
           {
             value: 'Free 6-9',
@@ -228,7 +234,8 @@ export const ColdLayerSources: LayerSource[] = [
                 color: [255, 165, 0],
                 width: '1'
               }
-            } as unknown
+            } as unknown,
+            label: 'Free parking from 6am to 9pm, no overnight parking without lot-specific permit'
           },
           {
             value: 'SSG',
@@ -240,7 +247,8 @@ export const ColdLayerSources: LayerSource[] = [
                 color: [255, 165, 0],
                 width: '1'
               }
-            } as unknown
+            } as unknown,
+            label: 'SSG Free parking during move-in, no overnight parking parking without SSG permit'
           }
         ]
       }
@@ -660,7 +668,7 @@ export const LegendSources: LegendItem[] = [
   {
     id: 'restricted-legend',
     title: 'Restricted 6am to 6pm',
-    src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAFtJREFUOI1jYKAyYIQxHB0dGygxaP/+/Q0MDAwMLDDDQkMC6+OfviDLsFmiwnBDmWCC5BrGwMDAkPb6LZzNhEcdWWDUwFEDRw0cZgbCiiBywEJpCTib6gUs1QEATW0WjAt6JIYAAAAASUVORK5CYII='
+    src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAFBJREFUOI1jYaAyYIExzq5Mb6DEIOPwmQ1wA8+uTG9gZPhfT4mBZ1emMxiHz2xgIayUNDBq4KiBowaOGkhHA43DZzacXZlOkUEoBSyyAKUAAGgHEnMWcHNYAAAAAElFTkSuQmCC'
   },
   {
     id: 'paved-surface-legend',
