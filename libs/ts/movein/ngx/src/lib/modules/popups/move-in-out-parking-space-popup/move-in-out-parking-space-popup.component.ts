@@ -120,7 +120,6 @@ export class ParkingLotLabelPipe implements PipeTransform {
     'Free 6-9': 'Free parking from 6am to 9pm, no overnight parking without lot-specific permit',
     NoParking: 'No move-in parking allowed at all times',
     'LSP Req': 'Lot specific permit required',
-    'LSP Reqd': 'Lot specific permit required', // Typo in the dataset
     Disabled: 'Accessible parking ONLY. Valid placard required.'
   };
 
@@ -145,6 +144,5 @@ export interface ParkingLotTypes {
   'Free 6-9': string;
   NoParking: string;
   'LSP Req': string;
-  'LSP Reqd': string; // Typo in the dataset
   Disabled: string;
 }

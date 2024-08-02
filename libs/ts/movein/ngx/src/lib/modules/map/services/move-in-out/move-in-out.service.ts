@@ -178,17 +178,7 @@ export class MoveinOutService {
       // to the correct column.
       const dateSuffix = day - eventDayStart + 1;
 
-      const parkingCategories = [
-        'Free',
-        'Paid',
-        '1HR DZ w P',
-        '1HR Drop',
-        'SSG',
-        'Free 6-9',
-        'NoParking',
-        'LSP Req',
-        'LSP Reqd' // This is a typo in the table
-      ];
+      const parkingCategories = ['Free', 'Paid', '1HR DZ w P', '1HR Drop', 'SSG', 'Free 6-9', 'NoParking', 'LSP Req'];
 
       if (this.settings.accessible) {
         parkingCategories.push('Disabled');
