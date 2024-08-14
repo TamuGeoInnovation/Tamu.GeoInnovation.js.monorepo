@@ -4,16 +4,14 @@
   <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" *ngIf="!isMobile" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
     <span class="material-icons">help</span>
     <div class="topics">
-      <p><a title="" routerLink="/instructions" tabindex="0">Map Instructions</a></p>
-      <p><a title="" routerLink="/directory" tabindex="0">Building Directory</a></p>
-      <p><a title="" href="https://aggiemap.tamu.edu/feedback.asp" tabindex="0">Feedback</a></p>
-      <p><a title="" routerLink="/about" tabindex="0">About</a></p>
-      <p><a title="" href="https://aggiemap.tamu.edu/movein/" tabindex="0">Move-in Parking App</a></p>
-      <p><a title="" href="https://aggiemap.tamu.edu/graduation/arrival" tabindex="0">Graduation Parking App</a></p>
-      <p><a title="" href="https://www.tamu.edu/statements/index.html" tabindex="0">Site Policies</a></p>
-      <p><a title="" href="http://itaccessibility.tamu.edu" tabindex="0">Accessibility Policy</a></p>
-      <p><a title="" routerLink="/privacy" tabindex="0">Privacy &amp; Security</a></p>
-      <p><a title="" routerLink="/changelog" tabindex="0">Changelog</a></p>
+      <p><a routerLink="/instructions" tabindex="0">Map Instructions</a></p>
+      <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
+      <p><a href="mailto:aggiemap@tamu.edu?subject=Aggiemap%20Feedback" target="_blank" tabindex="0">Feedback</a></p>
+      <p><a routerLink="/about" tabindex="0">About</a></p>
+      <p><a href="https://www.tamu.edu/statements/index.html" tabindex="0">Site Policies</a></p>
+      <p><a href="http://itaccessibility.tamu.edu" tabindex="0">Accessibility Policy</a></p>
+      <p><a routerLink="/privacy" tabindex="0">Privacy &amp; Security</a></p>
+      <p><a routerLink="/changelog" tabindex="0">Changelog</a></p>
     </div>
   </div>
 
@@ -38,3 +36,4 @@
     <p class="phrase"></p>
   </div>
 </div>
+
