@@ -3,11 +3,39 @@
   <head>
     <meta charset="utf-8" />
     <title>Move-In Transportation Map</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#332c2c" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="HandheldFriendly" content="true" />
+
     <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <script>
+      var dojoConfig = {
+        has: {
+          'esri-featurelayer-webgl': 1
+        }
+      };
+    </script>
   </head>
+  
   <body>
     <tamu-gisc-root></tamu-gisc-root>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-7RKDTJJQ9F"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-7RKDTJJQ9F');
+        </script></script>
   </body>
 </html>

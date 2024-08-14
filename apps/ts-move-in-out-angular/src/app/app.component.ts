@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
+
 @Component({
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
@@ -7,4 +9,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ts-move-in-out-angular';
+
+  constructor(public analytics: Angulartics2GoogleGlobalSiteTag) {
+    analytics.startTracking();
+  }
 }
