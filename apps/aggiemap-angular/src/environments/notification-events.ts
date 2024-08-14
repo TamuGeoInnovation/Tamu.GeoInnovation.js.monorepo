@@ -15,11 +15,11 @@ export const NotificationEvents: NotificationProperties[] = [
   },
   {
     id: 'move_in',
-    title: 'Move-In',
-    range: [1534309200000, 1534957200000],
+    title: 'Moving In?',
+    range: [1723659767000, 1724047200000],
     acknowledge: false,
     message:
-      'Moving-in? Get the best parking information on your move-in day with the <a href="https://aggiemap.tamu.edu/movein/" target="_blank">move-in day parking app</a>.',
+      'Get the best parking information on your move-in day with the <a href="https://aggiemap.tamu.edu/movein/" target="_blank">move-in day parking app</a>.',
     imgUrl: './assets/images/package-orig.svg',
     imgAltText: '"Box Icon'
   },
@@ -58,14 +58,14 @@ export const NotificationEvents: NotificationProperties[] = [
     message: 'Thank you! Your feedback has been submitted successfully and the Aggiemap team notified.',
     imgUrl: './assets/images/like.svg',
     imgAltText: 'Feedback Icon'
-  },
-  {
-    id: 'beta-prompt',
-    title: 'Aggiemap Beta Branch',
-    range: [0, 9999999999999],
-    acknowledge: false,
-    message:
-      'Check out the latest and greatest features coming to Aggiemap @ <a href="https://dev.aggiemap.tamu.edu" target="_blank">dev.aggiemap.tamu.edu</a>.',
-    imgUrl: './assets/images/text-lines.svg'
   }
+  // {
+  //   id: 'beta-prompt',
+  //   title: 'Aggiemap Beta Branch',
+  //   range: [0, 9999999999999],
+  //   acknowledge: false,
+  //   message:
+  //     'Check out the latest and greatest features coming to Aggiemap @ <a href="https://dev.aggiemap.tamu.edu" target="_blank">dev.aggiemap.tamu.edu</a>.',
+  //   imgUrl: './assets/images/text-lines.svg'
+  // }
 ];
