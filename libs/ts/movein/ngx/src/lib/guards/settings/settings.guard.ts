@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router';
 import { delay, Observable, of } from 'rxjs';
 
+import { Angulartics2 } from 'angulartics2';
+
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { QueryParamSettings } from '../../interfaces/move-in-out.interface';
@@ -14,7 +16,8 @@ export class SettingsGuard implements CanActivate {
   constructor(
     private readonly mioSettings: MoveInOutSettingsService,
     private readonly router: Router,
-    private readonly ns: NotificationService
+    private readonly ns: NotificationService,
+    private readonly anl: Angulartics2
   ) {}
 
   public canActivate(
@@ -34,6 +37,14 @@ export class SettingsGuard implements CanActivate {
       if (queryParamsKeySize) {
         this.mioSettings.setSettingsFromQueryParams(queryParams);
 
+        this.anl.eventTrack.next({
+          action: 'settings_load',
+          properties: {
+            category: 'url',
+            gstCustom: { ...queryParams }
+          }
+        });
+
         return of(true).pipe(delay(100)); // Add artificial delay to allow settings to be set before proceeding.
       } else if (moveinSettings) {
         return of(true).pipe(delay(100)); // Add artificial delay to allow settings to be set before proceeding.
@@ -51,4 +62,3 @@ export class SettingsGuard implements CanActivate {
     return false;
   }
 }
-

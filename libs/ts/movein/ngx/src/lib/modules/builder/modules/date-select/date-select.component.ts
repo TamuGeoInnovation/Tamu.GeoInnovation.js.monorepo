@@ -46,10 +46,12 @@ export class DateSelectComponent implements OnInit {
 
     if (saved != undefined) {
       this.angulartics.eventTrack.next({
-        action: 'Date Select',
+        action: 'settings_set',
         properties: {
-          category: 'UI Interaction',
-          label: confirm
+          category: 'date',
+          gstCustom: {
+            event_value: item.getTime()
+          }
         }
       });
 

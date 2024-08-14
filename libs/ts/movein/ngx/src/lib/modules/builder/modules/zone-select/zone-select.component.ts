@@ -43,10 +43,13 @@ export class ZoneSelectComponent implements OnInit {
 
     if (confirm != undefined) {
       this.angulartics.eventTrack.next({
-        action: 'Hall Select',
+        action: 'settings_set',
         properties: {
-          category: 'UI Interaction',
-          label: confirm.name
+          category: 'residence',
+          gstCustom: {
+            residence_name: confirm.name,
+            residence_number: confirm.Bldg_Number
+          }
         }
       });
 

@@ -39,10 +39,12 @@ export class AccommodationsComponent implements OnInit {
 
     if (confirm !== undefined) {
       this.angulartics.eventTrack.next({
-        action: 'Accommodation Selection',
+        action: 'settings_set',
         properties: {
-          category: 'UI Interaction',
-          label: confirm
+          category: 'accessible',
+          gstCustom: {
+            event_value: `${item}`
+          }
         }
       });
 
