@@ -34,7 +34,7 @@ export const Definitions = {
     id: 'poi',
     layerId: 'poi-layer',
     name: 'Points of Interest',
-    url: `${Connections.inforUrl}/0`,
+    url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/AgMap_Statues/FeatureServer/0`,
     popupComponent: Popups.PoiPopupComponent
   },
   RESTROOMS: {
