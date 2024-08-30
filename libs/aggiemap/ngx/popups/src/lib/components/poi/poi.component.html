@@ -4,7 +4,17 @@
 </div>
 
 <div class="popup-section">
-  <p *ngFor="let path of images">{{path}}</p>
+  <ng-container *ngIf="(medias) as medias">
+    <p>This feature has {{medias.length}} medias.</p>
+
+    <lightgallery [settings]="settings">
+      <ng-container *ngFor="let media of medias">
+        <a [href]="media">
+          <img [src]="media" />
+        </a>
+      </ng-container>
+    </lightgallery>
+  </ng-container>
 
   <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
 </div>

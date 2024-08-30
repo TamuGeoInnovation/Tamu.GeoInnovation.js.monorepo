@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { LightgalleryModule } from 'lightgallery/angular/13';
+
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { ReferenceModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
@@ -42,7 +44,7 @@ const PopsObj = {
 };
 
 @NgModule({
-  imports: [CommonModule, UIClipboardModule, ReferenceModule],
+  imports: [CommonModule, UIClipboardModule, ReferenceModule, LightgalleryModule],
   declarations: PopsArr
 })
 export class AggiemapNgxPopupsModule {}

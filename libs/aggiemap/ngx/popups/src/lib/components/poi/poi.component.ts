@@ -14,7 +14,11 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   styleUrls: ['../base/base.popup.component.scss']
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit {
-  public images: Array<string> = [];
+  public medias: Array<string> = [];
+
+  public settings = {
+    counter: false
+  };
 
   constructor(
     private rtr: Router,
@@ -29,7 +33,9 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
   public ngOnInit(): void {
     super.ngOnInit();
 
-    this.images = this.data.attributes.images.split(',');
+    this.medias = this.data.attributes.images.split(',').map((imgName) => {
+      return `https://aggiemap.tamu.edu/images/cb/${imgName}`;
+    });
   }
 
   public startDirections() {
