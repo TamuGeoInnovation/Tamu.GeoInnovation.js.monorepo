@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
@@ -13,7 +13,9 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   templateUrl: './poi.component.html',
   styleUrls: ['../base/base.popup.component.scss']
 })
-export class PoiPopupComponent extends BaseDirectionsComponent {
+export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit {
+  public images: Array<string> = [];
+
   constructor(
     private rtr: Router,
     private rt: ActivatedRoute,
@@ -24,7 +26,14 @@ export class PoiPopupComponent extends BaseDirectionsComponent {
     super(rtr, rt, ps, anl, mp);
   }
 
+  public ngOnInit(): void {
+    super.ngOnInit();
+
+    this.images = this.data.attributes.images.split(',');
+  }
+
   public startDirections() {
     super.startDirections(`${this.data.attributes.Name}`);
   }
 }
+
