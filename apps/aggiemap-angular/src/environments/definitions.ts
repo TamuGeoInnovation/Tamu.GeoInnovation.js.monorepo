@@ -528,11 +528,11 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'points-of-interest',
     name: 'Points of Interest',
-    url: `${Connections.inforUrl}/0`,
+    url: Definitions.POINTS_OF_INTEREST.url,
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['Name'],
+        keys: ['name'],
         operators: ['LIKE'],
         wildcards: ['includes'],
         transformations: ['UPPER']
