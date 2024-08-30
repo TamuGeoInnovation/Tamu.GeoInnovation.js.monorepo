@@ -61,8 +61,6 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
       preventClicks: true,
       on: {
         init: () => {
-          console.log('swiper initialized');
-
           this._lgInstance = lightGallery(this._swiperRef.nativeElement, {});
         }
       }
@@ -73,13 +71,13 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
     this._swiperRef.nativeElement.initialize();
   }
 
+  // TODO: can be cleaned up?
   public onLightGalleryInit = (detail: InitDetail) => {
-    console.log('LightGallery initialized');
-
     this._lgInstance = detail.instance;
     this._needsRefresh = true;
   };
 
+  // TODO: can be cleaned up?
   public ngAfterViewChecked(): void {
     if (this._needsRefresh) {
       this._lgInstance.refresh();
