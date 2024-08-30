@@ -1,20 +1,15 @@
 <div class="popup-section">
-  <div class="feature-style-1" tabindex="0">{{ data.attributes.Name }}</div>
-  <div class="feature-style-2" tabindex="0">College Station, TX 77843</div>
+  <swiper-container #swiperRef init="false">
+    <swiper-slide *ngFor="let media of medias" [attr.data-src]="media">
+      <a [href]="media" target="_blank">
+        <img [src]="media" />
+      </a>
+    </swiper-slide>
+  </swiper-container>
 </div>
 
 <div class="popup-section">
-  <ng-container *ngIf="(medias) as medias">
-    <p>This feature has {{medias.length}} medias.</p>
-
-    <lightgallery [settings]="settings">
-      <ng-container *ngFor="let media of medias">
-        <a [href]="media">
-          <img [src]="media" />
-        </a>
-      </ng-container>
-    </lightgallery>
-  </ng-container>
+  <div [innerHTML]="data?.attributes?.description | markdownParse" class="trailer-2"></div>
 
   <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
 </div>
