@@ -156,7 +156,16 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     visible: false,
     native: {
-      ...commonLayerProps
+      ...commonLayerProps,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/images/markers/statue-icon.png',
+          width: '20px',
+          height: '30.2px'
+        }
+      }
     }
   },
   {
@@ -530,7 +539,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{attributes.Name}',
+    displayTemplate: '{attributes.name}',
     popupComponent: Popups.PoiPopupComponent,
     searchActive: true
   },
