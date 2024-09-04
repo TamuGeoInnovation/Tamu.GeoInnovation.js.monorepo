@@ -6,17 +6,38 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const globalPrefix = '';
+  // Simple check for required environment variables
+  if (environment.logging) {
+    console.log('Logging is enabled');
+    console.log('Environment variables: ', process.env);
+    console.log('Origins: ', environment.origins);
+  }
+
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: environment.origins,
+      methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+      credentials: true
+    }
+  });
+
+  const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
   app.enableCors();
-  const port = process.env.PORT || 3333;
-  await app.listen(port);
-  Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
-  Logger.log(`Using mailroom endpoint: ${process.env.MAILROOM_URL}`);
+
+  const port = environment.port;
+  await app.listen(port, () => {
+    Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+  });
+
+  Logger.log(`Using mailroom endpoint: ${environment.mailroomUrl}`);
 }
 
 bootstrap();

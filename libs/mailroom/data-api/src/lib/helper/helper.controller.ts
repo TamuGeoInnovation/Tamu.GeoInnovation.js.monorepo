@@ -1,11 +1,15 @@
 import { Body, Controller, HttpException, HttpStatus, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
+import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
+
 import * as FormData from 'form-data';
 import got from 'got';
 
 @Controller('mail')
 export class HelperController {
+  constructor(private readonly env: EnvironmentService) {}
+
   @Post('')
   @UseInterceptors(AnyFilesInterceptor())
   public async forwardMail(
@@ -29,17 +33,17 @@ export class HelperController {
     // Since this module is used either as a standalone microservice or imported into another,
     // some variables are fixed and known.
     form.append('replyTo', body['from']);
-    form.append('to', process.env.MAILROOM_TO);
-    form.append('from', process.env.MAILROOM_FROM);
+    form.append('to', this.env.value('mailroomToAddress'));
+    form.append('from', this.env.value('mailroomFromAddress'));
 
     // Repackage files as form data
     files.forEach((file) => {
       form.append('attachments', file.buffer, file.originalname);
     });
 
-    const reject = process.env.REJECT_UNAUTHORIZED === undefined ? true : process.env.REJECT_UNAUTHORIZED == '1';
+    const reject = this.env.value('rejectUnauthorized');
 
-    const status = await got(`${process.env.MAILROOM_URL}`, {
+    const status = await got(`${this.env.value('mailroomUrl')}/form`, {
       method: 'POST',
       https: {
         rejectUnauthorized: reject
