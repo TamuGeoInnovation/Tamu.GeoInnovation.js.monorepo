@@ -59,3 +59,19 @@
     color: initial;
   }
 }
+
+swiper-slide {
+  a {
+    display: block;
+    height: 25rem;
+    width: 100%;
+
+    img {
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
+      object-position: center;
+    }
+  }
+}
+
