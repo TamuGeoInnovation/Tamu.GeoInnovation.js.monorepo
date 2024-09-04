@@ -27,7 +27,7 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
   public lotParkingType: keyof ParkingLotTypes;
   public lotOrBuildingSource: Observable<'lot' | 'garage' | 'other'>;
   public lotOrBuilding: Observable<esri.Graphic>;
-  public selectedMoveInDate: Observable<Date>;
+  public selectedMoveInDate: Observable<Date | undefined>;
 
   constructor(
     private readonly rrt: Router,

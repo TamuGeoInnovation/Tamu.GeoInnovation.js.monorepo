@@ -33,16 +33,15 @@ export class SidebarReferenceComponent<T extends esri.Graphic> implements OnInit
     this.moveDate = this.mioSettings.getMoveDateEventAsDate('in');
   }
 
-  public onSearchResult(result: SearchSelection<T>) {
-    this.helper.handleSearchResultFeatureSelection(result).subscribe((res) => {
-      const tPoint = TripPoint.from(res);
+  public onSearchResult(result: SearchSelection<unknown>): void {
+    this.helper.handleSearchResultFeatureSelection(result as SearchSelection<object>).subscribe((res) => {
+      const tPoint = TripPoint.from(res as SearchSelection<esri.Graphic>);
 
       this.mapService.selectFeatures({
         graphics: [tPoint.toEsriGraphic()],
         shouldShowPopup: true,
-        popupComponent: res.result.breadcrumbs.source.popupComponent
+        popupComponent: (res as SearchSelection<esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
       });
     });
   }
 }
-

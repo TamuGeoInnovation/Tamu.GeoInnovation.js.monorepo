@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { RouterModule } from '@angular/router';
+
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';

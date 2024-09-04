@@ -113,4 +113,3 @@ export interface StorageConfig {
 export interface ValueConfig<T> extends StorageConfig {
   value?: T;
 }
-

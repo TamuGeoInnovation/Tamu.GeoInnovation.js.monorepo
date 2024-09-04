@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+
 import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
 
 @Component({
@@ -7,4 +8,3 @@ import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
   styleUrls: ['./move-in-out-no-parking-popup.component.scss']
 })
 export class MoveInOutNoParkingPopupComponent extends BasePopupComponent {}
-

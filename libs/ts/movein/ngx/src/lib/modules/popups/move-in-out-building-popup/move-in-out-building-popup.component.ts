@@ -4,6 +4,8 @@ import { from, map, filter, Observable, shareReplay, mergeMap, switchMap, toArra
 
 import { Angulartics2 } from 'angulartics2';
 
+import { FeatureLayerSourceProperties } from '@tamu-gisc/common/types';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { BuildingPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
@@ -11,8 +13,6 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { MoveinOutService } from '../../map/services/move-in-out/move-in-out.service';
 
 import esri = __esri;
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { FeatureLayerSourceProperties } from '@tamu-gisc/common/types';
 
 @Component({
   selector: 'tamu-gisc-move-in-out-building-popup',
