@@ -12,4 +12,3 @@ export class MoveInOutInformationPopupComponent extends BaseDirectionsComponent 
     super.startDirections(`Information ${this.data.attributes.OBJECTID}`);
   }
 }
-

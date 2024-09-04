@@ -12,4 +12,3 @@ export class MoveInOutDiningPopupComponent extends BaseDirectionsComponent {
     super.startDirections(`Dining Area ${this.data.attributes.OBJECTID}`);
   }
 }
-

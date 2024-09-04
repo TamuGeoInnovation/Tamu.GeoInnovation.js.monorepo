@@ -22,4 +22,3 @@ describe('MoveInOutInformationPopupComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

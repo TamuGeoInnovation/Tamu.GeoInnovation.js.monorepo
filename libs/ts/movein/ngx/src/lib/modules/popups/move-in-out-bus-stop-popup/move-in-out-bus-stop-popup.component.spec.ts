@@ -22,4 +22,3 @@ describe('MoveInOutBusStopPopupComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

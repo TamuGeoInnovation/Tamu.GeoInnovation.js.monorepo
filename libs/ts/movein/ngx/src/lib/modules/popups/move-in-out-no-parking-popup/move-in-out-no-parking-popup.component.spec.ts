@@ -22,4 +22,3 @@ describe('MoveInOutNoParkingPopupComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

@@ -262,4 +262,3 @@ export class MoveInOutSettingsService {
     throw new Error('Invalid accommodations value');
   }
 }
-

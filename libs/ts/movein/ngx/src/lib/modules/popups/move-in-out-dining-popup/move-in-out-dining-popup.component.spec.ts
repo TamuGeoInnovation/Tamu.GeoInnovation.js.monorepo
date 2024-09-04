@@ -22,4 +22,3 @@ describe('MoveInOutDiningPopupComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

@@ -12,4 +12,3 @@ export class MoveInOutAccessibleParkingPopupComponent extends BaseDirectionsComp
     super.startDirections(`Accessible Parking ${this.data.attributes.OBJECTID}`);
   }
 }
-

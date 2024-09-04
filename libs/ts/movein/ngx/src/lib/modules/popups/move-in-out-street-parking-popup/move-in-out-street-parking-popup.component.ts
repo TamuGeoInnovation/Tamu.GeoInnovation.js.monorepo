@@ -27,4 +27,3 @@ export class MoveInOutStreetParkingPopupComponent extends BaseDirectionsComponen
     super.startDirections(`Lot ${this.data.attributes.A_Name}`);
   }
 }
-

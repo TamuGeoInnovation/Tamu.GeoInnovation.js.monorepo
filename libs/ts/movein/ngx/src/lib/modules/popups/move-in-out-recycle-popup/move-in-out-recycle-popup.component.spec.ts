@@ -22,4 +22,3 @@ describe('MoveInOutRecyclePopupComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

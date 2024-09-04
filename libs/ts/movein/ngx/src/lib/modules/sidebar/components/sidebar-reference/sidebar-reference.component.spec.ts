@@ -22,4 +22,3 @@ describe('SidebarReferenceComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

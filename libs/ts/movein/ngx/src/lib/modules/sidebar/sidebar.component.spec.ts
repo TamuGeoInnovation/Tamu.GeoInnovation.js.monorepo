@@ -22,4 +22,3 @@ describe('MoveInOutSidebarComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

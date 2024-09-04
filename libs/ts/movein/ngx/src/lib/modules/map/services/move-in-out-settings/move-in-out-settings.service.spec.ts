@@ -14,4 +14,3 @@ describe('MoveInOutSettingsService', () => {
     expect(service).toBeTruthy();
   });
 });
-

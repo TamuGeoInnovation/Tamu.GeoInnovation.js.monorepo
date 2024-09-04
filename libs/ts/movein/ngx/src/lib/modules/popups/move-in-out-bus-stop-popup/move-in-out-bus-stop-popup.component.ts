@@ -12,4 +12,3 @@ export class MoveInOutBusStopPopupComponent extends BaseDirectionsComponent {
     super.startDirections(`Move Shuttle Stop ${this.data.attributes.OBJECTID}`);
   }
 }
-
