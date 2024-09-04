@@ -129,7 +129,7 @@ export class EsriModuleProviderService {
       name: 'PopupTemplate'
     },
     {
-      class: 'esri/tasks/support/Query',
+      class: 'esri/rest/support/Query',
       name: 'Query'
     },
     {

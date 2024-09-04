@@ -7,7 +7,7 @@
 
     <!-- If the current group has more children, render another collection group. This represents nested layers/groups. -->
     <div *ngSwitchDefault>
-      <tamu-gisc-legend-collection *ngFor="let group of group.children.items" [group]="group"></tamu-gisc-legend-collection>
+      <tamu-gisc-legend-collection *ngFor="let group of group.children" [group]="group"></tamu-gisc-legend-collection>
     </div>
   </div>
 </div>

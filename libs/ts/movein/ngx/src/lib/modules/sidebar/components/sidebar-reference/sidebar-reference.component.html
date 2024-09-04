@@ -1,0 +1,23 @@
+<tamu-gisc-search [placeholder]="'Find Building or Parking'" [leftActionIcon]="'search'" [rightActionIcon]="'close'" (result)="onSearchResult($event)"></tamu-gisc-search>
+
+<div *ngIf="hasSettings" class="leader-1">
+  <div class="sidebar-component-name">
+    <p>Share Map</p>
+  </div>
+
+  <div class="sidebar-component-content-container">
+    <p>Make coordination easy! The following link can be shared with friends and family to load the same map you have configured:</p>
+
+    <p>
+      <strong>{{moveDate | date : 'mediumDate'}}</strong> &#64; <strong>{{settings.residence.name}} </strong> <span *ngIf="settings.accessible"> with <strong>accessible parking accommodations</strong>.</span>
+    </p>
+
+    <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+
+    <p class="settings-edit"><a routerLink="/builder/review">Change Move-In Map Settings</a></p>
+  </div>
+</div>
+
+<tamu-gisc-legend [staticElementsPosition]="'bottom'"></tamu-gisc-legend>
+
+<tamu-gisc-layer-list></tamu-gisc-layer-list>

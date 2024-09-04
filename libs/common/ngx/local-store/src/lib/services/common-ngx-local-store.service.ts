@@ -14,7 +14,7 @@ export class LocalStoreService {
    * @param config Object
    * @returns If no local storage reference provided in config, application default storage will be used.
    */
-  public getStorage<T>(config: StorageConfig): T | undefined {
+  public getStorage<T>(config: StorageConfig): T {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
     const content = this.store.get(storeKey);
@@ -64,7 +64,7 @@ export class LocalStoreService {
    * @param config Object
    * @returns Undefined if key does not exist, else key value
    */
-  public getStorageObjectKeyValue<T>(config: ValueConfig<T>): T | undefined {
+  public getStorageObjectKeyValue<T>(config: ValueConfig<T>): T {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
     const content = this.store.get(storeKey);

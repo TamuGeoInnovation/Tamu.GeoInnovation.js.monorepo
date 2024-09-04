@@ -1,0 +1,74 @@
+<ng-container *ngIf="(lotOrBuildingSource | async) === 'lot'">
+  <ng-container *ngIf="(lotOrBuilding | async)?.attributes as attr">
+    <div class="popup-section">
+      <div class="feature-style-1" tabindex="0">Lot {{ (lotOrBuilding | async)?.attributes?.Name }}</div>
+      <div class="feature-style-2" tabindex="0">College Station, TX 77843</div>
+    </div>
+
+    <div class="popup-section">
+      <div class="context-section">
+        <p class="context-title">Move-In Parking Restriction</p>
+
+        <div class="context-body">
+          <p><strong class="context-subtitle">{{selectedMoveInDate | async | date : 'MMM d, y' }}</strong>: {{lotParkingType | parkingLotLabel}}</p>
+        </div>
+      </div>
+
+      <div class="button" tabindex="0" role="button" (click)="startDirections(attr?.Name)">Directions To Here</div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="(lotOrBuildingSource | async) === 'garage'">
+  <ng-container *ngIf="(lotOrBuilding | async)?.attributes as attr">
+    <div class="popup-section">
+      <div class="feature-style-1" tabindex="0">{{ attr.BldgName }}</div>
+      <div class="feature-style-2" tabindex="0" *ngIf="attr.Number">Building {{ attr.Number }}</div>
+      <div class="feature-style-2" tabindex="0"><span *ngIf="attr.Address">{{attr.Address}}, </span><span>{{attr.City}}</span>, TX <span>{{attr.Zip}}</span></div>
+    </div>
+
+    <div class="popup-section">
+      <div class="context-section">
+        <p class="context-title">Move-In Parking Restriction</p>
+
+        <div class="context-body">
+          <p><strong class="context-subtitle">{{selectedMoveInDate | async | date : 'MMM d, y' }}</strong>: {{lotParkingType | parkingLotLabel}}</p>
+        </div>
+      </div>
+
+      <!-- Copy URL component -->
+      <!-- <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field> -->
+
+      <!-- Directions To Button -->
+      <div class="button" tabindex="0" role="button" [attr.building-number]="attr.Number" (click)="startDirections(attr.BldgName)">Directions To Here</div>
+    </div>
+
+    <div class="popup-section">
+      <div class="image" tabindex="0" aria-label="Image of feature">
+        <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ attr.Number }}.jpg" />
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="(lotOrBuildingSource | async) === 'other'">
+  <ng-container *ngIf="(lotOrBuilding | async)?.attributes as attr">
+    <div class="popup-section">
+      <div class="feature-style-1" tabindex="0">{{ attr.LotName }}</div>
+      <div class="feature-style-2" tabindex="0">College Station, TX 77843</div>
+    </div>
+
+    <div class="popup-section">
+      <div class="context-section">
+        <p class="context-title">Move-In Parking Restriction</p>
+
+        <div class="context-body">
+          <p><strong class="context-subtitle">{{selectedMoveInDate | async | date : 'MMM d, y' }}</strong>: {{lotParkingType | parkingLotLabel}}</p>
+        </div>
+      </div>
+
+      <!-- Directions To Button -->
+      <div class="button" tabindex="0" role="button" [attr.building-number]="attr.Number" (click)="startDirections(attr.LotName)">Directions To Here</div>
+    </div>
+  </ng-container>
+</ng-container>

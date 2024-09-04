@@ -31,4 +31,10 @@
 .sidebar-component-content-container {
   padding-left: 0.5rem;
   box-sizing: border-box;
+  @include flexbox();
+  @include flex-direction(column);
+
+  &.reverse {
+    @include flex-direction(column-reverse);
+  }
 }

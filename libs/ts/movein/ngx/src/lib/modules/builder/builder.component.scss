@@ -1,0 +1,10 @@
+@import 'libs/sass/mixins';
+
+:host {
+  background: #500000;
+  color: #eeeeee;
+  padding: 2rem 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  @include flex(1);
+}
