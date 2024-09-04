@@ -3,7 +3,7 @@
 
 version: '3'
 
-name: gisday
+name: geoservices
 services:
   api:
     build: . # Path is assumed inside the /dist/apps/<app-name> folder
@@ -12,11 +12,10 @@ services:
     ports:
       - '3333:3333'
     environment:
+      - PORT=${PORT}
       - GLOBAL_PREFIX=${GLOBAL_PREFIX}
       - ORIGINS=${ORIGINS}
+      - LOGGING=${LOGGING}
       - MAILROOM_URL=${MAILROOM_URL}
       - MAILROOM_FROM=${MAILROOM_FROM}
     restart: always
-
-volumes:
-  data:

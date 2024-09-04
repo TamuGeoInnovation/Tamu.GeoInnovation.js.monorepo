@@ -5,7 +5,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { AppModule } from './app/app.module';
-
 import { environment } from './environments/environment';
 
 async function bootstrap() {
