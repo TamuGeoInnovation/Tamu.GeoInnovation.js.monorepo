@@ -16,7 +16,7 @@ import { environment } from './environments/environment';
 
 async function bootstrap() {
   // Simple check for required environment variables
-  if (process.env.LOGGING) {
+  if (environment.logging) {
     console.log('Logging is enabled');
     console.log('Environment variables: ', process.env);
   }
@@ -52,7 +52,7 @@ async function bootstrap() {
   Mailer.build('tamu-relay', environment.dev === 'true' ? true : false);
 
   await app.listen(port, () => {
-    Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
+    Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
   });
 }
 

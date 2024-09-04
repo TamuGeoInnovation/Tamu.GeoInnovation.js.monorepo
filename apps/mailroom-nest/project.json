@@ -15,6 +15,7 @@
           "apps/mailroom-nest/src/assets",
           "apps/mailroom-nest/src/Dockerfile",
           "apps/mailroom-nest/src/docker-compose.yml",
+          "apps/mailroom-nest/src/.dockerignore",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
