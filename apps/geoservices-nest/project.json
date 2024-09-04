@@ -10,7 +10,12 @@
         "outputPath": "dist/apps/geoservices-nest",
         "main": "apps/geoservices-nest/src/main.ts",
         "tsConfig": "apps/geoservices-nest/tsconfig.app.json",
-        "assets": ["apps/geoservices-nest/src/assets"]
+        "assets": [
+          "apps/geoservices-nest/src/assets",
+          "apps/geoservices-nest/src/Dockerfile",
+          "apps/geoservices-nest/src/docker-compose.yml",
+          "apps/geoservices-nest/src/.dockerignore"
+        ]
       },
       "configurations": {
         "production": {
