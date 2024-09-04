@@ -1,3 +1,7 @@
+:host {
+  --swiper-navigation-color: #e0e0e0;
+}
+
 .popup {
   display: block;
   position: absolute;
@@ -57,6 +61,16 @@
 
   &:hover {
     color: initial;
+  }
+}
+
+swiper-container {
+  --swiper-navigation-size: 33px;
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    width: calc(var(--swiper-navigation-size) / 44 * 27);
+    height: var(--swiper-navigation-size);
   }
 }
 
