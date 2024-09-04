@@ -2,9 +2,9 @@
 @import 'libs/sass/modules/loaders';
 
 :host {
-  margin: 0.55rem 0;
-  position: relative;
   display: block;
+  position: relative;
+  margin-bottom: 0.5rem;
 }
 
 .layer-item {
