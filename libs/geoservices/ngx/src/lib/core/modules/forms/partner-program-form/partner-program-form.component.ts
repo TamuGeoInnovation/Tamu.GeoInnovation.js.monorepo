@@ -109,10 +109,10 @@ export class PartnerProgramFormComponent implements OnInit {
         text: message
       })
       .subscribe({
-        next: (res) => {
+        next: () => {
           this.submissionState.next('complete');
         },
-        error: (err) => {
+        error: () => {
           this.submissionState.next('error');
           this.submissionStateText.next('Submit application');
           this.form.enable();

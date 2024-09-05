@@ -293,10 +293,10 @@ export class ParkingService {
       }, {}),
       switchMap((filtered) => {
         return from(Object.entries(filtered)).pipe(
-          filter(([key, value]: [string, { count: number; attributes: unknown; geometry: unknown }]) => {
+          filter(([, value]: [string, { count: number; attributes: unknown; geometry: unknown }]) => {
             return value.count === queries.length;
           }),
-          map(([key, value]) => {
+          map(([, value]) => {
             return {
               attributes: value.attributes,
               geometry: value.geometry

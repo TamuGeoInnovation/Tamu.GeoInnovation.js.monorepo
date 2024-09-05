@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { InteractionResults } from 'oidc-provider';
 import * as otplib from 'otplib';
 
-import { urlHas, urlFragment, UserService, Mailer, TwoFactorAuthUtils } from '@tamu-gisc/oidc/common';
+import { urlHas, urlFragment, UserService, TwoFactorAuthUtils } from '@tamu-gisc/oidc/common';
 import { MailerService } from '@tamu-gisc/common/nest/services';
 
 import { OidcProviderService } from '../../services/provider/provider.service';

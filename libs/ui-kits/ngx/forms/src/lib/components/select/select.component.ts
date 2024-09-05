@@ -90,7 +90,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   private _onChange = (value: T) => {};
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function

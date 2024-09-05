@@ -138,7 +138,7 @@ export class MapComponent implements OnInit, OnDestroy {
         }),
         withLatestFrom(this.isDev)
       )
-      .subscribe(([settingValue, isDev]) => {
+      .subscribe(([, isDev]) => {
         this.openBetaModal(isDev);
       });
   }

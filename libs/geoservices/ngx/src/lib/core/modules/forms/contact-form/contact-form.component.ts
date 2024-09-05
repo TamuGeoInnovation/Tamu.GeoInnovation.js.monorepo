@@ -51,10 +51,10 @@ export class ContactFormComponent implements OnInit {
         text: `${value.body}`
       })
       .subscribe({
-        next: (res) => {
+        next: () => {
           this.submissionState.next('complete');
         },
-        error: (err) => {
+        error: () => {
           this.submissionState.next('error');
           this.submissionStateText.next('Send message');
           this.form.enable();

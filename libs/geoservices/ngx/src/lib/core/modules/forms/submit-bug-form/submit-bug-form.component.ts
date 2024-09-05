@@ -45,10 +45,10 @@ export class SubmitBugFormComponent implements OnInit {
         text: value.body
       })
       .subscribe({
-        next: (res) => {
+        next: () => {
           this.submissionState.next('complete');
         },
-        error: (err) => {
+        error: () => {
           this.submissionState.next('error');
           this.submissionStateText.next('Submit bug report');
           this.form.enable();

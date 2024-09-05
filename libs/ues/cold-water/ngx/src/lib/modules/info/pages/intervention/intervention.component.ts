@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, iif, Observable, of, Subject } from 'rxjs';
-import { finalize, map, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
+import { map, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
 import { ValveInterventionAttributes } from '@tamu-gisc/ues/cold-water/data-api';
@@ -285,7 +285,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
         })
       )
     ]).subscribe({
-      next: ([interventionResults, valveStateResults]) => {
+      next: () => {
         if (type === 'create') {
           if (formValue.OBJECTID === '') {
             this.ns.toast({

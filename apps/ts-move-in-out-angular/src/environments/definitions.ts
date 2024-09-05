@@ -1,4 +1,4 @@
-import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { MoveDates, Popups as MoveInOutPopups } from '@tamu-gisc/ts/movein/ngx';
@@ -674,7 +674,7 @@ export const LegendSources: LegendItem[] = [
   }
 ];
 
-const commonQueryParams: any = {
+const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
   f: 'json',
   resultRecordCount: 5,
   outFields: '*',
@@ -918,7 +918,7 @@ export const MoveInOutDates: MoveDates = {
   out: []
 };
 
-export const SelectionSymbols: any = {
+export const SelectionSymbols = {
   polygon: {
     type: 'simple-fill',
     style: 'solid',

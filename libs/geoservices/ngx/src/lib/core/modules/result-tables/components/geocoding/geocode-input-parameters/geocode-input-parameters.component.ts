@@ -20,7 +20,7 @@ export class GeocodeInputParametersComponent implements OnInit {
   public ngOnInit(): void {
     this.filteredProps = from(Object.entries(this.parameters)).pipe(
       // Filter only properties whose values are primitives and arrays
-      filter(([key, value]) => {
+      filter(([, value]) => {
         return value instanceof Object === false || Array.isArray(value) === true;
       }),
 

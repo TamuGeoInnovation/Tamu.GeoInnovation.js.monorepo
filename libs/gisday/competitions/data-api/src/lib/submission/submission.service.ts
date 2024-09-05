@@ -26,7 +26,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
   public async createCompetitionSubmission(
     entity: DeepPartial<CompetitionSubmission>,
-    blobs: Array<DeepPartial<SubmissionMedia>>
+    blobs?: Array<DeepPartial<SubmissionMedia>>
   ) {
     if (entity.season && entity.location && entity.userGuid && entity.value) {
       const truncated: DeepPartial<CompetitionSubmission['location']> = {
@@ -49,12 +49,15 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
       const sub = await this.submissionRepo.create(withTrunc).save();
 
-      // await Promise.all(
-      //   blobs.map((b) => {
-      //     b.submission = sub;
-      //     return this.mediaRepo.create(b).save();
-      //   })
-      // );
+      if (blobs) {
+        // await Promise.all(
+        //   blobs.map((b) => {
+        //     b.submission = sub;
+        //     return this.mediaRepo.create(b).save();
+        //   })
+        // );
+        console.log(`Blob handling not implemented.`);
+      }
 
       return sub;
     } else {

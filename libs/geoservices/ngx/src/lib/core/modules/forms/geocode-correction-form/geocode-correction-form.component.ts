@@ -60,10 +60,10 @@ export class GeocodeCorrectionFormComponent implements OnInit {
         `
       })
       .subscribe({
-        next: (res) => {
+        next: () => {
           this.submissionState.next('complete');
         },
-        error: (err) => {
+        error: () => {
           this.submissionState.next('error');
           this.submissionStateText.next('Submit correction');
           this.form.enable();
