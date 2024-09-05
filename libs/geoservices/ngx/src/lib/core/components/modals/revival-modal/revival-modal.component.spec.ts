@@ -8,9 +8,8 @@ describe('RevivalModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RevivalModalComponent ]
-    })
-    .compileComponents();
+      declarations: [RevivalModalComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

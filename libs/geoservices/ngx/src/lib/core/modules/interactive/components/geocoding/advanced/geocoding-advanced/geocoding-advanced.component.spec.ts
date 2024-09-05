@@ -22,4 +22,3 @@ describe('GeocodingAdvancedComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

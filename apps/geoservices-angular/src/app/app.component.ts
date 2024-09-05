@@ -14,4 +14,3 @@ export class AppComponent implements OnInit {
     this.ms.registerGlobalViewRef(this.vcr);
   }
 }
-

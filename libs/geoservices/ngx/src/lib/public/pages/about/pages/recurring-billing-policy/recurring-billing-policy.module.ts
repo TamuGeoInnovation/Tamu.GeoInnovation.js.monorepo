@@ -16,4 +16,3 @@ const routes: Routes = [
   declarations: [RecurringBillingPolicyComponent]
 })
 export class RecurringBillingPolicyModule {}
-

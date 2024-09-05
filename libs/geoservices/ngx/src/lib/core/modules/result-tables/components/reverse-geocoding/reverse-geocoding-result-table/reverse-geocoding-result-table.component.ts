@@ -42,4 +42,3 @@ export class ReverseGeocodingResultTableComponent implements OnInit {
     );
   }
 }
-

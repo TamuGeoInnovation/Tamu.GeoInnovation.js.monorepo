@@ -22,4 +22,3 @@ export class AddressProcessingComponent {
     addressFormat: [AddressProcessingAddressFormat.USPSPublication28]
   });
 }
-

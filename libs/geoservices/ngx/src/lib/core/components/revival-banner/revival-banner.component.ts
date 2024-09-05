@@ -39,4 +39,3 @@ export class RevivalBannerComponent implements OnInit {
     });
   }
 }
-

@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./recurring-billing-policy.component.scss']
 })
 export class RecurringBillingPolicyComponent {}
-

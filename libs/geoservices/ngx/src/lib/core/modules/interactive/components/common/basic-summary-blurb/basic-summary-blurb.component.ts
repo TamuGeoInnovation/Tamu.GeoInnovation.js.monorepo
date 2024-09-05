@@ -59,4 +59,3 @@ export class BasicSummaryBlurbComponent implements OnInit {
     );
   }
 }
-

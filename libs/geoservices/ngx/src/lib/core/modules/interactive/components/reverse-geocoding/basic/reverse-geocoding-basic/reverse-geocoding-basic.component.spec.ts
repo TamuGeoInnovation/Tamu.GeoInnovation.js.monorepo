@@ -8,9 +8,8 @@ describe('ReverseGeocodingBasicComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReverseGeocodingBasicComponent ]
-    })
-    .compileComponents();
+      declarations: [ReverseGeocodingBasicComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

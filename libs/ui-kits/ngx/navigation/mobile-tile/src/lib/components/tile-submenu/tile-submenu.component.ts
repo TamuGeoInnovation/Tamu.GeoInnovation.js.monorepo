@@ -50,4 +50,3 @@ export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
     this.service.toggleSubmenu();
   }
 }
-

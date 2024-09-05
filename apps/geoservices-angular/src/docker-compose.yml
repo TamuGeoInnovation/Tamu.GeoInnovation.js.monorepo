@@ -13,4 +13,3 @@ services:
       - ACCOUNTS_URL=${ACCOUNTS_URL}
       - G_TAG=${G_TAG}
     restart: always
-

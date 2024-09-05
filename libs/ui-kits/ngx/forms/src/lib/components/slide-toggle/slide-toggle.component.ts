@@ -58,4 +58,3 @@ export class SlideToggleComponent<Option extends object, Value>
     }
   }
 }
-

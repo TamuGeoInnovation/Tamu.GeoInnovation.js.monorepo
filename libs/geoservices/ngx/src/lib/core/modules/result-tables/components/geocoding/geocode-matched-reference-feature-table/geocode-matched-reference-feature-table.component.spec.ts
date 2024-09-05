@@ -8,9 +8,8 @@ describe('GeocodeMatchedReferenceFeatureTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GeocodeMatchedReferenceFeatureTableComponent ]
-    })
-    .compileComponents();
+      declarations: [GeocodeMatchedReferenceFeatureTableComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

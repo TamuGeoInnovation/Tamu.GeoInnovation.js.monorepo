@@ -22,4 +22,3 @@ describe('InteractiveComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

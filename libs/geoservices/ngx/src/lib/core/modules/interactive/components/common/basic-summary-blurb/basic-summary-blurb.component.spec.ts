@@ -8,9 +8,8 @@ describe('BasicSummaryBlurbComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BasicSummaryBlurbComponent ]
-    })
-    .compileComponents();
+      declarations: [BasicSummaryBlurbComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

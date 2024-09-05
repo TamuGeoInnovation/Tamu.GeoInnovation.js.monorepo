@@ -8,9 +8,8 @@ describe('RecurringBillingPolicyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecurringBillingPolicyComponent ]
-    })
-    .compileComponents();
+      declarations: [RecurringBillingPolicyComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

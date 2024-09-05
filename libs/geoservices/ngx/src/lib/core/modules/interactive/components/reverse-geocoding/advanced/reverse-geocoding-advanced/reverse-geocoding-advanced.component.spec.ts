@@ -22,4 +22,3 @@ describe('ReverseGeocodingAdvancedComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

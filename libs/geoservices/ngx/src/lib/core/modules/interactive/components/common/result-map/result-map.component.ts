@@ -83,4 +83,3 @@ export class ResultMapComponent implements OnInit {
     });
   }
 }
-

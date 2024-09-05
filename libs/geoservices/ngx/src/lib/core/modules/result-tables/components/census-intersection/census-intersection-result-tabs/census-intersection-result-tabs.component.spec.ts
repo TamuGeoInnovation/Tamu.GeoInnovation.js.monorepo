@@ -8,9 +8,8 @@ describe('CensusIntersectionResultTabsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CensusIntersectionResultTabsComponent ]
-    })
-    .compileComponents();
+      declarations: [CensusIntersectionResultTabsComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

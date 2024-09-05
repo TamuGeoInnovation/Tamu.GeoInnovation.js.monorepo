@@ -8,9 +8,8 @@ describe('CensusIntersectionBasicComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CensusIntersectionBasicComponent ]
-    })
-    .compileComponents();
+      declarations: [CensusIntersectionBasicComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

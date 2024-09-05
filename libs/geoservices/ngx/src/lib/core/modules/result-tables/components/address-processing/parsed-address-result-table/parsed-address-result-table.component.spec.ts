@@ -8,9 +8,8 @@ describe('ParsedAddressResultTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ParsedAddressResultTableComponent ]
-    })
-    .compileComponents();
+      declarations: [ParsedAddressResultTableComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

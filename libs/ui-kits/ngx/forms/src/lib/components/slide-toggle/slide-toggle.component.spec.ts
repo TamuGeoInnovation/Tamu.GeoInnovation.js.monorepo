@@ -8,9 +8,8 @@ describe('SlideToggleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SlideToggleComponent ]
-    })
-    .compileComponents();
+      declarations: [SlideToggleComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

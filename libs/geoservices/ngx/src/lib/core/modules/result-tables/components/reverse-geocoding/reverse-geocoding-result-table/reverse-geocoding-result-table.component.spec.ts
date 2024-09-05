@@ -8,9 +8,8 @@ describe('ReverseGeocodingResultTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReverseGeocodingResultTableComponent ]
-    })
-    .compileComponents();
+      declarations: [ReverseGeocodingResultTableComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -22,4 +22,3 @@ describe('CensusIntersectionAdvancedComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

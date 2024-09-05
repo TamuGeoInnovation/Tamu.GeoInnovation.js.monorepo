@@ -17,4 +17,3 @@ const routes: Routes = [
   declarations: [InteractiveComponent]
 })
 export class InteractiveModule {}
-

@@ -8,9 +8,8 @@ describe('AddressProcessingBasicComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddressProcessingBasicComponent ]
-    })
-    .compileComponents();
+      declarations: [AddressProcessingBasicComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

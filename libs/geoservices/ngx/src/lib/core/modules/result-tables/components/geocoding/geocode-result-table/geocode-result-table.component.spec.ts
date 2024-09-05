@@ -8,9 +8,8 @@ describe('GeocodeResultTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GeocodeResultTableComponent ]
-    })
-    .compileComponents();
+      declarations: [GeocodeResultTableComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

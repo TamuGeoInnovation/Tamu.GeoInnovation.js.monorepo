@@ -11,4 +11,3 @@ export class StatusResultTableComponent {
   @Input()
   public status: ITransactionData<unknown, unknown>;
 }
-

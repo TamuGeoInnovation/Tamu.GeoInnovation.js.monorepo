@@ -8,9 +8,8 @@ describe('BaseInteractiveGeoprocessingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BaseInteractiveGeoprocessingComponent ]
-    })
-    .compileComponents();
+      declarations: [BaseInteractiveGeoprocessingComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

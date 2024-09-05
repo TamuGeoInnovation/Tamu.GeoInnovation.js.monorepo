@@ -8,9 +8,8 @@ describe('GeocodeInputParametersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GeocodeInputParametersComponent ]
-    })
-    .compileComponents();
+      declarations: [GeocodeInputParametersComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

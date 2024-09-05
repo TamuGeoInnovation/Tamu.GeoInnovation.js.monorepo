@@ -48,4 +48,3 @@ export class CensusIntersectionResultTableComponent implements OnInit {
     );
   }
 }
-

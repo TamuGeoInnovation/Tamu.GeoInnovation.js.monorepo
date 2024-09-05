@@ -8,9 +8,8 @@ describe('InteractiveResponseMetadataComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InteractiveResponseMetadataComponent ]
-    })
-    .compileComponents();
+      declarations: [InteractiveResponseMetadataComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -8,4 +8,3 @@ import { AddressProcessingBasicComponent } from '../../basic/address-processing-
   styleUrls: ['./address-processing-advanced.component.scss']
 })
 export class AddressProcessingAdvancedComponent extends AddressProcessingBasicComponent {}
-
