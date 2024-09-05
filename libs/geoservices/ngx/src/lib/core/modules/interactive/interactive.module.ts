@@ -11,4 +11,3 @@ import { RequestBaseComponent } from './components/request-base/request-base.com
   exports: [RequestViewerComponent, GeocodingRequestComponent]
 })
 export class GeoservicesCoreInteractiveModule {}
-

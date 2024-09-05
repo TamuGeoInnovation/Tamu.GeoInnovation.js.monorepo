@@ -65,6 +65,7 @@
       "@tamu-gisc/dev-tools/application-testing": ["libs/dev-tools/application-testing/src/index.ts"],
       "@tamu-gisc/dev-tools/responsive": ["libs/dev-tools/responsive/src/index.ts"],
       "@tamu-gisc/geoservices/data-access": ["libs/geoservices/data-access/src/index.ts"],
+      "@tamu-gisc/geoservices/data-api": ["libs/geoservices/data-api/src/index.ts"],
       "@tamu-gisc/geoservices/ngx": ["libs/geoservices/ngx/src/index.ts"],
       "@tamu-gisc/gisday/bridge": ["libs/gisday/bridge/src/index.ts"],
       "@tamu-gisc/gisday/competitions/data-api": ["libs/gisday/competitions/data-api/src/index.ts"],

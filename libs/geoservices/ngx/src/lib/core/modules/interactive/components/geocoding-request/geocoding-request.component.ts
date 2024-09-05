@@ -15,4 +15,3 @@ import { RequestBaseComponent } from '../request-base/request-base.component';
   ]
 })
 export class GeocodingRequestComponent extends RequestBaseComponent {}
-

@@ -8,9 +8,8 @@ describe('RequestViewerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RequestViewerComponent ]
-    })
-    .compileComponents();
+      declarations: [RequestViewerComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

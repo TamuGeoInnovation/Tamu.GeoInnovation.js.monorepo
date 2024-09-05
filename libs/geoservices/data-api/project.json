@@ -1,0 +1,23 @@
+{
+  "root": "libs/geoservices/data-api",
+  "sourceRoot": "libs/geoservices/data-api/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/geoservices/data-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/geoservices/data-api"],
+      "options": {
+        "jestConfig": "libs/geoservices/data-api/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -9,4 +9,3 @@ export class RequestBaseComponent {
     return 'https://url.here';
   }
 }
-
