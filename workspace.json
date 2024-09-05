@@ -9,6 +9,7 @@
     "aggiemap-ngx-ui-mobile": "libs/aggiemap/ngx/ui/mobile",
     "aggiemap-ngx-ui-shared": "libs/aggiemap/ngx/ui/shared",
     "assets": "libs/assets",
+    "common-datasets-geographic": "libs/common/datasets/geographic",
     "common-nest-auth": "libs/common/nest/auth",
     "common-nest-environment": "libs/common/nest/environment",
     "common-nest-services": "libs/common/nest/services",
