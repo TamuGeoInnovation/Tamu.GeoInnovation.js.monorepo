@@ -3,6 +3,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getData(): { message: string } {
-    return { message: 'Welcome to mailroom-helper-nest!' };
+    return { message: 'mailroom-helper-nest!' };
   }
 }

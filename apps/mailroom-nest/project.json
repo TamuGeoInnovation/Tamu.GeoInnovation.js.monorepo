@@ -13,6 +13,9 @@
         "tsConfig": "apps/mailroom-nest/tsconfig.app.json",
         "assets": [
           "apps/mailroom-nest/src/assets",
+          "apps/mailroom-nest/src/Dockerfile",
+          "apps/mailroom-nest/src/docker-compose.yml",
+          "apps/mailroom-nest/src/.dockerignore",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -31,7 +34,7 @@
               "with": "apps/mailroom-nest/src/environments/environment.prod.ts"
             }
           ],
-          "generatePackageJson": true
+          "generatePackageJson": false
         },
         "development": {
           "optimization": true,
@@ -43,7 +46,7 @@
               "with": "apps/mailroom-nest/src/environments/environment.dev.ts"
             }
           ],
-          "generatePackageJson": true
+          "generatePackageJson": false
         }
       }
     },

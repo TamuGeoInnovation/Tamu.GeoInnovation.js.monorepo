@@ -1,0 +1,43 @@
+# This is a sample docker-compose.yml file for the mailroom-nest API
+# Can be combined with the docker-compose.dev.yml + the docker-compose for the front-end for a full stack in production
+
+version: '3'
+
+name: mailroom
+services:
+  api:
+    build: . # Path is assumed inside the /dist/apps/<app-name> folder
+    image: ghcr.io/tamugeoinnovation/mailroom-nest:latest
+    container_name: api
+    ports:
+      - '3333:3333'
+    environment:
+      - DEV_MODE=${DEV_MODE}
+      - GLOBAL_PREFIX=${GLOBAL_PREFIX}
+      - TYPEORM_CONNECTION=${TYPEORM_CONNECTION}
+      - TYPEORM_HOST=${TYPEORM_HOST}
+      - TYPEORM_DATABASE=${TYPEORM_DATABASE}
+      - TYPEORM_USERNAME=${TYPEORM_USERNAME}
+      - TYPEORM_PASSWORD=${TYPEORM_PASSWORD}
+      - TYPEORM_SYNCHRONIZE=${TYPEORM_SYNCHRONIZE}
+      - TYPEORM_DROP_SCHEMA=${TYPEORM_DROP_SCHEMA}
+      - TYPEORM_LOGGING=${TYPEORM_LOGGING}
+      - 'TYPEORM_DRIVER_EXTRA={"options": {"enableArithAbort": true,"trustedConnection": true}}'
+    restart: always
+  database:
+    image: ghcr.io/tamugeoinnovation/mssqldocker:latest
+    container_name: database
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: ${SA_PASSWORD}
+      MSSQL_DB: ${TYPEORM_DATABASE}
+      MSSQL_USER: ${TYPEORM_USERNAME}
+      MSSQL_PASSWORD: ${TYPEORM_PASSWORD}
+    ports:
+      - '1433:1433'
+    volumes:
+      - db:/var/opt/mssql
+    restart: always
+
+volumes:
+  data:

@@ -12,6 +12,9 @@
         "tsConfig": "apps/mailroom-helper-nest/tsconfig.app.json",
         "assets": [
           "apps/mailroom-helper-nest/src/assets",
+          "apps/mailroom-helper-nest/src/Dockerfile",
+          "apps/mailroom-helper-nest/src/docker-compose.yml",
+          "apps/mailroom-helper-nest/src/.dockerignore",
           {
             "glob": "**/*",
             "input": "./libs/assets/powershell",
@@ -24,7 +27,7 @@
           "optimization": true,
           "extractLicenses": true,
           "inspect": false,
-          "generatePackageJson": true,
+          "generatePackageJson": false,
           "fileReplacements": [
             {
               "replace": "apps/mailroom-helper-nest/src/environments/environment.ts",

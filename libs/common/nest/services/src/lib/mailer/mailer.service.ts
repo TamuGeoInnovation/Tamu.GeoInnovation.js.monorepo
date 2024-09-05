@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 
 import got from 'got';
 
@@ -25,7 +25,9 @@ export class MailerService {
       })
       .json()
       .catch((e) => {
-        console.warn('ERROR', e.code);
+        Logger.error('Failed to send email: ' + e.message, 'MailerService');
+        throw new InternalServerErrorException('Could not send email');
       });
   }
 }
+
