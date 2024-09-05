@@ -56,6 +56,7 @@
     "cpa-sass": "libs/cpa/sass",
     "dev-tools-application-testing": "libs/dev-tools/application-testing",
     "dev-tools-responsive": "libs/dev-tools/responsive",
+    "geoprocessing-core": "libs/geoprocessing/core",
     "geoservices-angular": "apps/geoservices-angular",
     "geoservices-angular-e2e": "apps/geoservices-angular-e2e",
     "geoservices-data-access": "libs/geoservices/data-access",

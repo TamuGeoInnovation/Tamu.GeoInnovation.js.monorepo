@@ -1,0 +1,34 @@
+{
+  "root": "libs/geoprocessing/core",
+  "sourceRoot": "libs/geoprocessing/core/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/geoprocessing/core",
+        "tsConfig": "libs/geoprocessing/core/tsconfig.lib.json",
+        "packageJson": "libs/geoprocessing/core/package.json",
+        "main": "libs/geoprocessing/core/src/index.ts",
+        "assets": ["libs/geoprocessing/core/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/geoprocessing/core/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/geoprocessing/core"],
+      "options": {
+        "jestConfig": "libs/geoprocessing/core/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
