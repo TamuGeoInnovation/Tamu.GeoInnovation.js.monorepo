@@ -11,7 +11,7 @@ export class CodeRunnerComponent implements OnInit {
   public code: string;
 
   @Input()
-  public result: Observable<unknown>;
+  public result: Observable<string>;
 
   public renderable = false;
 
