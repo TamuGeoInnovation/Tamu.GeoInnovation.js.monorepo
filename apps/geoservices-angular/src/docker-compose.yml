@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    build: . # Path is assumed inside the /dist/apps/<app-name> folder
+    image: ghcr.io/tamugeoinnovation/geoservices-angular:latest
+    container_name: site
+    ports:
+      - '4200:80'
+    environment:
+      - API_URL=${API_URL}
+      - LEGACY_API_URL=${LEGACY_API_URL}
+      - ACCOUNTS_URL=${ACCOUNTS_URL}
+      - G_TAG=${G_TAG}
+    restart: always

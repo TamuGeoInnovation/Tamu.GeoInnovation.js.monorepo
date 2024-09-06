@@ -1,0 +1,166 @@
+@import 'libs/sass/mixins';
+
+header {
+  position: relative;
+  background: #ffffff;
+  width: 100%;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.05));
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  z-index: 1;
+}
+
+nav {
+  @include flexbox();
+  @include flex-direction(row);
+  padding: 0.75rem 0;
+
+  ul {
+    list-style: none;
+    @include flexbox();
+  }
+
+  li {
+    margin: 0;
+  }
+
+  // Main menu header item font style
+  a {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    color: #424242;
+    font-weight: 400;
+
+    .material-icons {
+      font-size: 1.1rem;
+      padding: 0.25rem;
+      will-change: transform, color;
+      @include transition(transform 0.2s, color, 0.2s);
+    }
+  }
+
+  .logo {
+    width: 13rem;
+    cursor: pointer;
+  }
+
+  .menu {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    @include justify-content(space-between);
+    @include flex(1);
+    margin-left: 1rem;
+    margin-right: 1rem;
+
+    // Disable text decoration for the root-level menu
+    // anchor tags
+    & > ul > li > a {
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+    }
+
+    // Display root-level navigation items in a row
+    & > ul {
+      @include flex-direction(row);
+
+      & > li {
+        // On root-level list item hover, rotate the dropdown carat icon.
+        &:hover {
+          & > a .material-icons {
+            @include transform(rotate3d(0, 0, 1, -180deg));
+          }
+        }
+      }
+    }
+  }
+
+  // Hide the initial dropdown menus
+  .dropdown {
+    position: relative;
+    perspective: 400px;
+
+    .dropdown__menu,
+    .dropdown__menu__submenu {
+      display: initial;
+      position: absolute;
+      background: #ffffff;
+      min-width: 20rem;
+      padding: 1rem 0;
+      margin: 0;
+      border-radius: 5pt;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .dropdown__menu {
+      left: 50%;
+      top: 100%;
+      z-index: 1;
+      @include transform-origin(top center);
+      @include transform(translate3d(-50%, 0, 0) rotate3d(1, 0, 0, -15deg));
+      @include transition(transform 0.15s, opacity 0.15s);
+      will-change: transform;
+
+      li {
+        padding: 0.75rem 1.5rem;
+        position: relative;
+
+        // Display the slide out submenu when the li is hovered.
+        &:hover {
+          .dropdown__menu__submenu {
+            opacity: 1;
+            pointer-events: inherit;
+            @include transform(translateX(0));
+          }
+        }
+      }
+
+      .dropdown__menu__descriptor {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #757575;
+      }
+
+      .dropdown__menu__submenu {
+        left: 100%;
+        top: 0;
+        border-top-left-radius: 0;
+        @include transform(translateX(-15%));
+        @include transition(transform 0.15s, opacity 0.15s);
+
+        // Persist the opacity of of the submenu when user transitions from the
+        // parent li to the submenu.
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+
+    &:hover {
+      > .dropdown__menu {
+        opacity: 1;
+        pointer-events: auto;
+        @include transform(translate3d(-50%, 0, 0) rotate3d(1, 0, 0, 0deg));
+      }
+    }
+
+    &.offset-left {
+      .dropdown__menu {
+        @include transform(translate3d(-100%, 0, 0) rotate3d(1, 0, 0, -15deg));
+        left: 100%;
+      }
+
+      &:hover {
+        > .dropdown__menu {
+          @include transform(translate3d(-100%, 0, 0) rotate3d(1, 0, 0, 0deg));
+        }
+      }
+    }
+  }
+
+  .no-pointer {
+    pointer-events: none !important;
+  }
+}

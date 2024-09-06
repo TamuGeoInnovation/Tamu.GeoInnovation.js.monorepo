@@ -1,0 +1,86 @@
+<div [@inOutAnimation]>
+  <form [formGroup]="form" (submit)="processInteractiveQuery()">
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Input Address</p>
+        </div>
+
+        <div class="form-section-actions">
+          <tamu-gisc-interactive-mode-toggle [mode]="componentMode | async" (modeChange)="toggleMode($event)"></tamu-gisc-interactive-mode-toggle>
+        </div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Non-parsed Street Address (e.g 123 main street)'" formControlName="address"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row" *ngIf="isAdvanced | async">
+          <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Non-parsed City (Optional)'" formControlName="city"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row" *ngIf="isAdvanced | async">
+          <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state" [floatLabel]="true"></tamu-gisc-select>
+        </div>
+
+        <div class="form-collection row" *ngIf="isAdvanced | async">
+          <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Non-parsed Zip (Optional)'" formControlName="zip"></tamu-gisc-textbox>
+        </div>
+
+        <!-- Display a simple select input when the component is in simple mode -->
+        <div class="form-collection row" *ngIf="(isAdvanced | async) === false">
+          <tamu-gisc-select [placeholder]="'Address Format'" [data]="formats" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="addressFormat" [floatLabel]="true"></tamu-gisc-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section" *ngIf="isAdvanced | async">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Address Formats</p>
+        </div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p>Select all applicable return address formats. For an explanation of each and their differences, see the API <a [routerLink]="['/docs/address-processing']" target="_blank">documentation.</a></p>
+
+          <tamu-gisc-checkbox-group formControlName="addressFormat" [referenceId]="'value'">
+            <tamu-gisc-checkbox *ngFor="let format of formats" [label]="format.name" [data]="format"></tamu-gisc-checkbox>
+          </tamu-gisc-checkbox-group>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<ng-container *ngIf="(result | async) !== null && (resultError | async) === false;">
+  <ng-container *ngIf="result | async as res">
+    <div [@inOutAnimation] class="leader-3">
+      <h2 class="section-header">Results</h2>
+
+      <tamu-gisc-accordion [expanded]="true">
+        <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <tamu-gisc-status-result-table [status]="res?.data"></tamu-gisc-status-result-table>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion>
+
+      <tamu-gisc-accordion *ngFor="let cr of (result | async)?.data?.results" [expanded]="true">
+        <tamu-gisc-accordion-header>Result: {{cr?.parsedAddress?.addressFormatType}}</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <tamu-gisc-parsed-address-result-table [address]="cr?.parsedAddress" type="expanded"></tamu-gisc-parsed-address-result-table>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion>
+    </div>
+  </ng-container>
+</ng-container>

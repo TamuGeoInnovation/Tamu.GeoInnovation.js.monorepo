@@ -1,0 +1,143 @@
+<div id="root">
+  <div class="sidebar" *ngIf="(this.mobile | async) === false">
+    <tamu-gisc-drawer layout="relative" width="17rem">
+      <div class="content">
+        <p class="sidebar-section-title">
+          <img class="logo" src="assets/img/logos/logo-2.svg" alt="Geoservices Logo" [routerLink]="['/']" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="router-link-active" />
+        </p>
+        <div class="sidebar-menu">
+          <div class="menu-item" [routerLink]="['getting-started']" routerLinkActive="active">
+            <span class="material-icons">code</span>
+            <ul>
+              <li class="category">Getting Started</li>
+              <ul>
+                <li scrollTo="#overview">Overview</li>
+                <li scrollTo="#authentication">Authentication</li>
+                <li scrollTo="#quota-rate-limits">Quota and Rate Limits</li>
+                <li scrollTo="#raw-requests">Raw Requests</li>
+                <li scrollTo="#library-sdks">Libraries &amp; SDK's</li>
+              </ul>
+            </ul>
+          </div>
+          <div class="menu-item" [routerLink]="['geocoding']" routerLinkActive="active">
+            <div class="product-logo">
+              <img src="assets/img/graphics/services/geocoding.svg" alt="Geocoding service logo" />
+            </div>
+
+            <ul>
+              <li class="category">Geocoding</li>
+              <ul>
+                <li scrollTo="#overview">Overview</li>
+                <li scrollTo="#parameters">Parameters</li>
+                <li scrollTo="#response">Response</li>
+              </ul>
+            </ul>
+          </div>
+
+          <div class="menu-item" [routerLink]="['reverse-geocoding']" routerLinkActive="active">
+            <div class="product-logo">
+              <img src="assets/img/graphics/services/reverse-geocoding.svg" alt="Reverse geocoding service logo" />
+            </div>
+
+            <ul>
+              <li class="category">Reverse Geocoding</li>
+              <ul>
+                <li scrollTo="#overview">Overview</li>
+                <li scrollTo="#parameters">Parameters</li>
+                <li scrollTo="#response">Response</li>
+              </ul>
+            </ul>
+          </div>
+
+          <div class="menu-item" [routerLink]="['address-processing']" routerLinkActive="active">
+            <div class="product-logo">
+              <img src="assets/img/graphics/services/address-processing.svg" alt="Address processing service logo" />
+            </div>
+
+            <ul>
+              <li class="category">Address Processing</li>
+              <ul>
+                <li scrollTo="#overview">Overview</li>
+                <li scrollTo="#parameters">Parameters</li>
+                <li scrollTo="#response">Response</li>
+              </ul>
+            </ul>
+          </div>
+
+          <div class="menu-item" [routerLink]="['census-intersection']" routerLinkActive="active">
+            <div class="product-logo">
+              <img src="assets/img/graphics/services/census-intersection.svg" alt="Census intersection service logo" />
+            </div>
+
+            <ul>
+              <li class="category">Census Intersection</li>
+              <ul>
+                <li scrollTo="#overview">Overview</li>
+                <li scrollTo="#parameters">Parameters</li>
+                <li scrollTo="#response">Response</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </tamu-gisc-drawer>
+  </div>
+
+  <tamu-gisc-hamburger-trigger *ngIf="mobile| async" [active]="mobileNavToggle | async" (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
+
+  <ng-container *ngIf="(mobile | async)">
+    <tamu-gisc-tile-navigation [toggle]="mobileNavToggle" (closed)="mobileNavToggle.next(false)">
+      <tamu-gisc-tile>
+        <tamu-gisc-tile-icon><div class="material-icons">code</div></tamu-gisc-tile-icon>
+        <tamu-gisc-tile-title tamuGiscTileLink location="/docs">Getting Started</tamu-gisc-tile-title>
+      </tamu-gisc-tile>
+
+      <tamu-gisc-tile>
+        <tamu-gisc-tile-icon>
+          <div class="product-logo color">
+            <img src="assets/img/graphics/services/geocoding.svg" alt="Geocoding service logo" />
+          </div>
+        </tamu-gisc-tile-icon>
+        <tamu-gisc-tile-title tamuGiscTileLink location="/docs/geocoding">Geocoding</tamu-gisc-tile-title>
+      </tamu-gisc-tile>
+
+      <tamu-gisc-tile>
+        <tamu-gisc-tile-icon>
+          <div class="product-logo color">
+            <img src="assets/img/graphics/services/reverse-geocoding.svg" alt="Reverse geocoding service logo" />
+          </div>
+        </tamu-gisc-tile-icon>
+        <tamu-gisc-tile-title tamuGiscTileLink location="/docs/reverse-geocoding">Reverse Geocoding</tamu-gisc-tile-title>
+      </tamu-gisc-tile>
+
+      <tamu-gisc-tile>
+        <tamu-gisc-tile-icon>
+          <div class="product-logo color">
+            <img src="assets/img/graphics/services/address-processing.svg" alt="Address processing service logo" />
+          </div>
+        </tamu-gisc-tile-icon>
+        <tamu-gisc-tile-title tamuGiscTileLink location="/docs/address-processing">Address Processing</tamu-gisc-tile-title>
+      </tamu-gisc-tile>
+
+      <tamu-gisc-tile>
+        <tamu-gisc-tile-icon>
+          <div class="product-logo color">
+            <img src="assets/img/graphics/services/census-intersection.svg" alt="Census intersection service logo" />
+          </div>
+        </tamu-gisc-tile-icon>
+        <tamu-gisc-tile-title tamuGiscTileLink location="/docs/census-intersection">Census Intersection</tamu-gisc-tile-title>
+      </tamu-gisc-tile>
+
+      <tamu-gisc-tile>
+        <tamu-gisc-tile-icon><div class="material-icons">reply</div></tamu-gisc-tile-icon>
+        <tamu-gisc-tile-title tamuGiscTileLink location="/">Main Site</tamu-gisc-tile-title>
+      </tamu-gisc-tile>
+    </tamu-gisc-tile-navigation>
+  </ng-container>
+
+  <div id="documentation-container" #scrollContainer>
+    <div class="flexible-container">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

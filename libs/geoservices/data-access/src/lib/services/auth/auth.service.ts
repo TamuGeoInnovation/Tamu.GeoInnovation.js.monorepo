@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, of, catchError, map, shareReplay } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -11,23 +10,57 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class AuthService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = this.env.value('api_url') + 'login';
-  }
-
   /**
    * Returns logged in state
    */
-  public state() {
-    return this.http
-      .get<ILoggedInResponse>(this.env.value('api_url') + 'userServices/getDetails', {
+  public state: Observable<LoggedInState>;
+  public apiKey: Observable<string>;
+
+  constructor(private env: EnvironmentService, private http: HttpClient) {
+    this.resource = this.env.value('legacy_api_url') + 'login';
+
+    this.state = this.http
+      .get<INotLoggedInResponse | ILoggedInResponse>(this.env.value('legacy_api_url') + 'userServices/getDetails/', {
         withCredentials: true
       })
       .pipe(
-        switchMap((res) => {
-          return of(res.Status === undefined);
-        })
+        map((res) => {
+          let loggedIn = true;
+
+          // The logged in object is not standard and will only return `Status` or `result` if the user is not logged in.
+          if ((res as INotLoggedInResponse)?.Status) {
+            loggedIn = false;
+          }
+
+          if ((res as INotLoggedInResponse)?.result) {
+            loggedIn = false;
+          }
+
+          return {
+            loggedIn,
+            data: res,
+            isManager: res?.isManager === 'true'
+          };
+        }),
+        catchError(() => {
+          return of({
+            loggedIn: false,
+            data: null,
+            isManager: false
+          });
+        }),
+        shareReplay()
       );
+
+    this.apiKey = this.state.pipe(
+      map((state) => {
+        if (state.loggedIn) {
+          return (state.data as ILoggedInResponse).APIKey;
+        } else {
+          return 'demo';
+        }
+      })
+    );
   }
 
   /**
@@ -44,6 +77,20 @@ export class AuthService {
   }
 }
 
+interface INotLoggedInResponse {
+  Status?: string;
+  result?: string;
+  isManager?: string;
+}
+
 interface ILoggedInResponse {
-  Status: string;
+  APIKey: string;
+  Guid: string;
+  isManager: string;
+}
+
+export interface LoggedInState {
+  loggedIn: boolean;
+  isManager: boolean;
+  data: null | ILoggedInResponse;
 }

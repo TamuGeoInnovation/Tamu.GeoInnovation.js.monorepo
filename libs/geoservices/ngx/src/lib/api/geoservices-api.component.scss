@@ -1,0 +1,62 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox;
+  @include flex-direction(row);
+  height: inherit;
+}
+
+#root {
+  @include flexbox;
+  @include flex-direction(row);
+  width: 100%;
+}
+
+#documentation-container {
+  @include flex(1);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 0 3rem;
+  box-sizing: border-box;
+
+  .flexible-container {
+    max-width: 80rem;
+    padding-left: 5%;
+  }
+}
+
+.product-logo {
+  img {
+    display: block;
+    height: auto;
+    width: 1.4rem;
+    filter: grayscale(1);
+    opacity: 0.75;
+    @include transition(filter 0.5s);
+  }
+
+  &.color {
+    img {
+      filter: none;
+      opacity: 1;
+    }
+  }
+}
+
+.menu-item {
+  &.active,
+  &:hover {
+    .product-logo {
+      img {
+        filter: none;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+img.logo {
+  cursor: pointer;
+  max-width: 12rem;
+  margin: 0 auto;
+}

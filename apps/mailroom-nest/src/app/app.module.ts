@@ -9,6 +9,7 @@ import { ormConfig } from '../environments/environment';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       type: ormConfig.type as any,
       host: ormConfig.host,
       username: ormConfig.username,

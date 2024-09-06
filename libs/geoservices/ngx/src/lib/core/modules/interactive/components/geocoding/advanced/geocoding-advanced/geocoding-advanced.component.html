@@ -1,0 +1,216 @@
+<div [@inOutAnimation]>
+  <form [formGroup]="form" (submit)="processInteractiveQuery()">
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Input Address (Required)</p>
+        </div>
+
+        <div class="form-section-actions">
+          <tamu-gisc-interactive-mode-toggle [mode]="componentMode | async" (modeChange)="toggleMode($event)"></tamu-gisc-interactive-mode-toggle>
+        </div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Street Address'" formControlName="streetAddress"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'City'" formControlName="city"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-select [placeholder]="'State'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state" [floatLabel]="true"></tamu-gisc-select>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Zip'" formControlName="zip"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row" *ngIf="(isAdvanced | async) === false">
+          <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYears" [floatLabel]="true"></tamu-gisc-select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section" *ngIf="isAdvanced | async">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Geocoding Options</p>
+        </div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <tamu-gisc-checkbox label="Use attribute relaxation" formControlName="attributeRelaxation"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use substring matching" formControlName="substringMatching"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use soundex matching" formControlName="soundexMatching"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Use uncertainty hierarchy" formControlName="uncertaintyHierarchy"></tamu-gisc-checkbox>
+          <tamu-gisc-checkbox label="Allow ties" formControlName="allowTies"></tamu-gisc-checkbox>
+
+          <ng-container *ngIf="form.controls.allowTies.value === false">
+            <p>If <strong>no</strong> ties are allowed, use the following tie breaking strategy:</p>
+
+            <tamu-gisc-select class="leader-1" [data]="tieBreakingStrategies" valueTemplate="value" displayTemplate="name" formControlName="tieBreakingStrategy" [floatLabel]="true" placeholder="Tie-breaking strategy"></tamu-gisc-select>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section" *ngIf="isAdvanced | async">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Census Years (Required)</p>
+        </div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p>Select all applicable return census years to intersect latitude and longitude with.</p>
+
+          <tamu-gisc-checkbox-group formControlName="censusYears" [referenceId]="'value'">
+            <tamu-gisc-checkbox *ngFor="let year of censusYears" [label]="year.name" [data]="year"></tamu-gisc-checkbox>
+          </tamu-gisc-checkbox-group>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section" *ngIf="isAdvanced | async">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Reference Sources</p>
+        </div>
+
+        <div class="forms-section-actions">
+          <div class="faux-link" (click)="deselectAllRefs()">Deselect All</div>
+        </div>
+      </div>
+
+      <div class="form-section-body" formGroupName="refs">
+        <div class="form-collection column">
+          <p><strong>Address Points</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.addressPoints" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+
+          <tamu-gisc-select class="leader-1" [data]="cls" valueTemplate="value" displayTemplate="name" formControlName="openAddressesMinimumConfLevel" [floatLabel]="true" placeholder="Minimum confidence level"></tamu-gisc-select>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Building Footprints</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.buildingFootprints" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Parcels</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.parcels" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Streets</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.streets" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Census 2020</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.census2020" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Census 2010</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.census2010" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Census 2008</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.census2000" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Zip</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.zip" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column">
+          <p><strong>Pre-Computed Points</strong></p>
+
+          <tamu-gisc-checkbox *ngFor="let r of refs.preComputedPoints" [formControlName]="r.value" [label]="r.name"></tamu-gisc-checkbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true || form.pristine" [type]="'submit'"></tamu-gisc-button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<ng-container *ngIf="(result | async) !== null && (resultError | async) === false;">
+  <ng-container *ngIf="result | async as res">
+    <div [@inOutAnimation] class="leader-3">
+      <h2 class="section-header">Results</h2>
+
+      <tamu-gisc-accordion [expanded]="true">
+        <tamu-gisc-accordion-header>Transaction Details</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <tamu-gisc-status-result-table [status]="res.data"></tamu-gisc-status-result-table>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion>
+
+      <tamu-gisc-accordion [expanded]="false">
+        <tamu-gisc-accordion-header>Input Parameters</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <p>The following table displays the input parameters (including defaults) that were used to process the query. These are helpful to know when debugging a response.</p>
+
+          <tamu-gisc-geocode-input-parameters [parameters]="res?.data?.inputParameterSet"></tamu-gisc-geocode-input-parameters>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion>
+
+      <ng-container *ngFor="let result of res?.data?.results; let last = last; let i = index;">
+        <tamu-gisc-accordion [expanded]="true">
+          <tamu-gisc-accordion-header>
+            <ng-container *ngIf="i === 0; else notFirst"> Best Match Result</ng-container>
+            <ng-template #notFirst>Possible Geocode #{{i}}</ng-template>
+          </tamu-gisc-accordion-header>
+
+          <tamu-gisc-accordion-content>
+            <tamu-gisc-result-map [points]="mapPoints | async" [size]="'lg'" class="trailer-2"></tamu-gisc-result-map>
+
+            <h4>Geocode Result</h4>
+
+            <p>The following represents the geocoded output for the best match from the input parameters.</p>
+
+            <tamu-gisc-geocode-result-table [geocode]="result"></tamu-gisc-geocode-result-table>
+
+            <ng-container *ngIf="result.censusRecords">
+              <h4 class="leader-2">Census Values</h4>
+
+              <p>The following represents the census records for the best match geocode.</p>
+
+              <tamu-gisc-census-intersection-result-tabs [censusRecords]="result.censusRecords"></tamu-gisc-census-intersection-result-tabs>
+            </ng-container>
+
+            <h4 class="leader-2">Parsed Address</h4>
+
+            <tamu-gisc-parsed-address-result-table [address]="result?.matchedAddress" [type]="'expanded'"></tamu-gisc-parsed-address-result-table>
+
+            <h4 class="leader-2">Reference Feature</h4>
+
+            <tamu-gisc-geocode-matched-reference-feature-table [matchedFeature]="result?.referenceFeature"></tamu-gisc-geocode-matched-reference-feature-table>
+          </tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+      </ng-container>
+    </div>
+  </ng-container>
+</ng-container>

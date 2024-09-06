@@ -1,6 +1,6 @@
 @import 'libs/sass/mixins';
 
-.header {
+.submenu__header {
   @include flexbox();
   @include flex-direction(row);
   @include align-items(center);
@@ -17,15 +17,60 @@
 }
 
 ::ng-deep {
-  .body {
+  .submenu__body {
     @include flexbox();
     @include flex-direction(column);
 
-    text-align: center;
-
-    p {
+    // Submenu items can be a list of links (p) or a list of expandable items (.submenu__row)
+    p,
+    .submenu__row {
       margin: 0;
       padding: 1.25rem 0;
+      @include flexbox();
+      @include flex-direction(column);
+      @include justify-content(center);
+      @include align-items(center);
+
+      .row__title {
+        display: inherit;
+        margin-bottom: 0.3rem;
+        @include align-items(center);
+
+        &.active {
+          font-weight: 500;
+        }
+      }
+
+      .row__content {
+        overflow: hidden;
+
+        ul {
+          list-style: none;
+          margin-left: 0rem;
+          padding-left: 0.75rem;
+          padding-top: 0.2rem;
+          padding-bottom: 0.2rem;
+          text-align: center;
+
+          li {
+            padding: 0.2rem;
+
+            &:first-child {
+              padding-top: 0;
+            }
+
+            &:last-child {
+              padding-bottom: 0;
+            }
+          }
+        }
+      }
+
+      span.material-icons {
+        margin-left: 0.3rem;
+        font-size: 1.25rem;
+        display: none;
+      }
 
       // Add border bottom to all submenu list items except the last
       &:not(:last-child) {

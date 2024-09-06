@@ -1,0 +1,53 @@
+<div class="card">
+  <ng-container *ngIf="(result | async) === null || (resultError | async) === true; else resultContainer">
+    <div [@inOutAnimation]>
+      <form [formGroup]="form" (submit)="processInteractiveQuery()">
+        <div class="form-section">
+          <div class="form-section-toolbar">
+            <div class="form-section-name">
+              <p>Census Intersection Demo</p>
+            </div>
+          </div>
+
+          <div class="form-section-body">
+            <div class="form-collection row">
+              <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Longitude (e.g. -118.397965182076)'" formControlName="lon"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Latitude (e.g. 34.0726207994348)'" formControlName="lat"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYear" [floatLabel]="true"></tamu-gisc-select>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state" [floatLabel]="true"></tamu-gisc-select>
+            </div>
+
+            <div class="form-collection column">
+              <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+
+              <!-- <div class="leader-2 flex flex-row justify-center">
+                <a (click)="navigateToAdvanced()" class="material-icons-container"><span class="material-icons-outlined centered">settings</span> Advanced Options</a>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+  <ng-template #resultContainer>
+    <div *ngIf="result | async as res" [@inOutAnimation]>
+      <tamu-gisc-basic-summary-blurb [keyFragment]="'census_intersect'" (navigateFull)="navigateToAdvanced(res)"></tamu-gisc-basic-summary-blurb>
+
+      <tamu-gisc-census-intersection-result-tabs [censusRecords]="(result | async)?.data?.results"></tamu-gisc-census-intersection-result-tabs>
+
+      <div class="flex flex-row">
+        <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
+      </div>
+    </div>
+  </ng-template>
+</div>

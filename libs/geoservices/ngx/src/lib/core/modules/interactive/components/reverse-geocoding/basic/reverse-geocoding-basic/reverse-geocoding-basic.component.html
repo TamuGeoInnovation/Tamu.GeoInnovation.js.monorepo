@@ -1,0 +1,60 @@
+<div class="card">
+  <ng-container *ngIf="(result | async) === null || (resultError | async) === true; else resultContainer">
+    <div [@inOutAnimation]>
+      <form [formGroup]="form" (submit)="processInteractiveQuery()">
+        <div class="form-section">
+          <div class="form-section-toolbar">
+            <div class="form-section-name">
+              <p>Reverse Geocoding Demo</p>
+            </div>
+          </div>
+
+          <div class="form-section-body">
+            <div class="form-collection row">
+              <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Longitude (e.g. -118.397965182076)'" formControlName="lon"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Latitude (e.g. 34.0726207994348)'" formControlName="lat"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-select [placeholder]="'State (Optional)'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state" [floatLabel]="true"></tamu-gisc-select>
+            </div>
+
+            <div class="form-collection column">
+              <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true" [type]="'submit'"></tamu-gisc-button>
+
+              <!-- <div class="leader-2 flex flex-row justify-center">
+                <a (click)="navigateToAdvanced()" class="material-icons-container"><span class="material-icons-outlined centered">settings</span> Advanced Options</a>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+  <ng-template #resultContainer>
+    <div *ngIf="result | async as res" [@inOutAnimation]>
+      <tamu-gisc-basic-summary-blurb [keyFragment]="'reverse_geocode'" (navigateFull)="navigateToAdvanced(res)"></tamu-gisc-basic-summary-blurb>
+
+      <tamu-gisc-tabs>
+        <tamu-gisc-tab label="Result">
+          <div>
+            <tamu-gisc-reverse-geocoding-result-table *ngFor="let reverseGeocode of res.data.results" [result]="reverseGeocode"></tamu-gisc-reverse-geocoding-result-table>
+          </div>
+        </tamu-gisc-tab>
+        <tamu-gisc-tab label="Map">
+          <ng-container *ngIf="mapPoints | async as cnf">
+            <tamu-gisc-result-map [points]="cnf"></tamu-gisc-result-map>
+          </ng-container>
+        </tamu-gisc-tab>
+      </tamu-gisc-tabs>
+
+      <div class="flex flex-row">
+        <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
+      </div>
+    </div>
+  </ng-template>
+</div>

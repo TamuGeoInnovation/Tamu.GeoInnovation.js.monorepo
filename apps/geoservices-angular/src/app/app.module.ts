@@ -7,33 +7,35 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import * as WebFont from 'webfontloader';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { Angulartics2Module } from 'angulartics2';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
+import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
 
 const routes: Routes = [
   {
-    path: 'public',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesPublicModule)
-  },
-  {
     path: 'internal',
     loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesInternalModule)
     // canActivateChild: [AuthGuard]
   },
   {
-    path: 'api',
+    path: 'docs',
     loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesApiModule)
+  },
+  {
+    path: '',
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesPublicModule)
   }
 ];
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Ubuntu:300,400,500,600', 'Muli:300,400']
+    families: ['Material Icons', 'Material Icons Outlined', 'Ubuntu:300,400,500,600', 'Muli:300,400']
   }
 });
 
@@ -48,11 +50,18 @@ export function getHighlightLanguages() {
 @NgModule({
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
+    Angulartics2Module.forRoot(),
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: 'enabled',
+      relativeLinkResolution: 'corrected',
+      anchorScrolling: 'enabled',
+      scrollOffset: [0, 64]
+    }),
     BrowserAnimationsModule,
     HighlightPlusModule,
     EnvironmentModule,
-    LocalStoreModule
+    LocalStoreModule,
+    NotificationModule
   ],
   declarations: [AppComponent],
   providers: [
@@ -60,8 +69,9 @@ export function getHighlightLanguages() {
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: {
-        languages: getHighlightLanguages(),
-        lineNumbers: true
+        coreLibraryLoader: () => import('highlight.js/lib/core'),
+        lineNumbersLoader: () => import('highlightjs-line-numbers.js'),
+        languages: getHighlightLanguages()
       }
     },
     {

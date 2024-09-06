@@ -1,8 +1,36 @@
+@import 'libs/sass/mixins';
+
 :host {
   width: 100%;
+  position: relative;
+  z-index: 0;
 }
 
 select {
   padding: 0.25rem;
   width: inherit;
+  z-index: 1;
+  position: relative;
+}
+
+label {
+  position: absolute;
+  color: #757575;
+  left: 1rem;
+  top: 0.4rem;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+  @include transition(transform 0.2s, font-size 0.15s);
+
+  &.float {
+    transform: translate3d((0, -1.75rem, 0));
+    font-size: 0.85rem;
+    z-index: 1;
+  }
+
+  &.static {
+    transform: translate3d((0, -1.75rem, 0));
+    font-size: 0.85rem;
+  }
 }

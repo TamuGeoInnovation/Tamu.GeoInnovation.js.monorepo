@@ -33,6 +33,12 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   @Input('value')
   private _value: T = undefined;
 
+  @Input()
+  public formControlName = 'default';
+
+  @Input()
+  public floatLabel = false;
+
   public get value() {
     return this._value;
   }
@@ -84,7 +90,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   private _onChange = (value: T) => {};
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function

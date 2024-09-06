@@ -21,7 +21,7 @@ $warning-color: #ffca28;
 $lightened-alert-color: lighten($alert-color, 25%);
 $lightened-warning-color: lighten($warning-color, 25%);
 
-$primary-text-color: #62707d;
+$primary-text-color: #333333;
 
 @import 'libs/sass/modules/forms';
 
@@ -32,7 +32,7 @@ $primary-text-color: #62707d;
 html {
   height: 100%;
   width: 100%;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.5;
   font-family: $primary-font-family;
   color: $primary-text-color;
@@ -76,7 +76,7 @@ h2,
 h3.alt,
 h4.alt,
 h5.alt {
-  color: #2d3e4c;
+  color: #202020;
 }
 
 h2,
@@ -134,6 +134,20 @@ ul {
   margin-left: 1rem;
   list-style-position: inside;
 
+  &.roman {
+    list-style: upper-roman;
+  }
+
+  &.alphabetic {
+    &.lowercase {
+      list-style: lower-alpha;
+    }
+
+    &.uppercase {
+      list-style: upper-alpha;
+    }
+  }
+
   li {
     margin: 0.5rem 0;
   }
@@ -143,8 +157,8 @@ code {
   font-size: 0.8rem;
   border: 1.5pt solid $inactive-color;
   color: $inactive-color;
-  font-weight: 600;
-  padding: 0.2rem 0.5rem;
+  font-weight: 500;
+  padding: 0.2rem 0.25rem;
   margin: 0 0.1rem;
   border-radius: 3pt;
 
@@ -232,13 +246,23 @@ table {
   }
 }
 
+.product-focus-image {
+  max-width: 70%;
+}
+
 .material-icons-container {
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     margin: 0 0.3rem;
+
+    &.centered {
+      vertical-align: middle;
+    }
   }
 }
 
-.material-icons {
+.material-icons,
+.material-icons-outlined {
   color: inherit;
   font-size: 1.4rem;
   @include transition(color 0.3s);
@@ -282,7 +306,8 @@ table {
     // Have material icons inherit the color from the sidebar menu item,
     // instead of using global styles which are OK, but not 100% in line
     // with the application color scheme.
-    .material-icons {
+    .material-icons,
+    .material-icons-outlined {
       color: inherit;
     }
 
@@ -292,7 +317,12 @@ table {
 
     &.active {
       color: $active-color;
-      font-weight: 500;
+
+      .category {
+        // Does effectively the same thing as bolding but without changing
+        // the container size
+        text-shadow: 0px 0px 1px $active-color;
+      }
 
       ul > li + ul {
         display: block;
@@ -360,24 +390,17 @@ table {
   color: $inactive-color;
 }
 
-// Main content container in sidebar layouts
-#root {
-  @include flex(1);
-  margin: 0rem 5rem;
-  box-sizing: border-box;
-  max-width: 80rem; // Limit container widths, a little over 1140px
-}
-
 .service-endpoint {
   @include flexbox;
   @include flex-direction(row);
   border: 1.5pt solid;
   border-color: #e0e0e0;
-  border-radius: 5px;
+  border-radius: 5pt;
   overflow: hidden;
 
   margin-top: 1rem;
   margin-bottom: 1rem;
+  overflow-x: hidden;
 
   .service-verb,
   .service-address {
@@ -436,14 +459,14 @@ table {
 }
 
 .parameter-detail-container {
-  margin: 0.75rem 0 2rem 0;
+  margin: 0.75rem 0 3rem 0;
   .parameter-detail-header {
     @include flexbox();
     @include flex-direction(row);
     @include align-items(center);
-    // border-bottom: 1.5pt solid #e0e0e0;
     border-bottom: 1.5pt solid $lightened-inactive-color;
     padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
     position: relative;
 
     span.permalink {
@@ -491,7 +514,37 @@ table {
   }
 
   .parameter-detail-content {
-    margin-left: 1rem;
+    display: flex;
+    flex-direction: row;
+
+    .parameter-description {
+      flex: 1;
+    }
+
+    .parameter-attributes {
+      flex: 1;
+      .attributes-content {
+        border-radius: 5pt;
+        padding: 1rem;
+        margin: 1.5rem 0 1.5rem 2rem;
+        background: #fff;
+        filter: drop-shadow(0px 2px 5px rgba(0, 0, 0, 0.15));
+
+        p {
+          margin: 0;
+        }
+
+        h4 {
+          font-size: 1rem;
+          font-weight: 500;
+          display: inline-block;
+
+          &:not(:first-child) {
+            margin-top: 0.5rem;
+          }
+        }
+      }
+    }
   }
 
   &:hover {
@@ -563,7 +616,8 @@ table {
     display: inline-block;
     vertical-align: middle;
 
-    &.material-icons {
+    &.material-icons,
+    &.material-icons-outlined {
       margin-left: 0.2rem;
     }
   }
@@ -630,7 +684,8 @@ form {
   }
 }
 
-.button {
+.button,
+input[type='submit'] {
   padding: 0.75rem 1rem;
   border-radius: 99rem;
   color: #fafafa;
@@ -654,6 +709,10 @@ form {
 
   &.small {
     height: 4.5rem;
+  }
+
+  &.medium {
+    height: 5rem;
   }
 }
 
@@ -697,12 +756,14 @@ tamu-gisc-step-toggle {
   color: lighten($inactive-color, 10%);
   @include no-select();
 
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     font-size: 1.75rem;
   }
 
   p {
     margin: 0.3rem;
+    margin-top: 0;
   }
 
   &.active {
@@ -714,11 +775,11 @@ tamu-gisc-step-toggle {
     &::after {
       content: '';
       height: 1pt;
-      width: 5rem;
       position: absolute;
       top: 50%;
-      left: 120%;
+      left: 150%;
       background: #e0e0e0;
+      transform: translateX(-125%);
     }
   }
 }
@@ -778,7 +839,8 @@ tamu-gisc-step-toggle {
   border: 2pt solid $lightened-inactive-color;
   border-style: dashed;
 
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     font-size: 2.5rem;
   }
 
@@ -821,7 +883,8 @@ tamu-gisc-checkbox-group {
 
 .select-collection {
   @include align-items(center);
-  .material-icons {
+  .material-icons,
+  .material-icons-outlined {
     flex: 0 !important;
     opacity: 0.5;
 
@@ -866,5 +929,113 @@ tamu-gisc-checkbox-group {
         padding-right: 0;
       }
     }
+  }
+}
+// Card styles
+//
+
+.card {
+  border: 1pt solid lighten($inactive-color, 40%);
+  border-radius: 5pt;
+  padding: 1rem 1.5rem;
+  box-sizing: border-box;
+  background: #ffffff;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+// Tooltip overrides
+
+tamu-gisc-tooltip {
+  font-weight: 500;
+
+  .tooltip-container {
+    padding: 0.5rem 0.75rem;
+
+    p {
+      margin: 0.5rem 0;
+    }
+  }
+
+  .material-icons,
+  .material-icons-outlined {
+    font-size: 1.1rem;
+    color: $inactive-color;
+
+    &:hover {
+      color: initial;
+    }
+  }
+}
+
+.info-block {
+  background: lighten($active-color, 27%);
+  padding: 1rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1pt solid lighten($active-color, 15%);
+  border-radius: 5pt;
+
+  .info-block__body,
+  .info-block__header {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-block__header {
+    font-weight: 600;
+  }
+}
+
+.contact-block {
+  margin-bottom: 1rem;
+
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+// Natural breakpoints are 768px, 478px
+
+@media only screen and (min-width: 960px) {
+  tamu-gisc-step-toggle {
+    &:not(:last-child) {
+      &::after {
+        width: 50%;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  html {
+    font-size: 14px;
+  }
+
+  .container12 {
+    &.flex-row,
+    &.flex-row-reverse {
+      flex-direction: column;
+    }
+  }
+
+  .section-header {
+    text-align: center;
+  }
+
+  .intro-logo {
+    margin-left: 0;
+  }
+}
+
+@media only screen and (max-width: 477px) {
+  section {
+    &.content-fill-pad {
+      padding-bottom: 4rem;
+    }
+  }
+
+  tamu-gisc-step-toggle {
+    padding: 0.5rem;
   }
 }

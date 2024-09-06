@@ -1,0 +1,11 @@
+:host {
+  display: block;
+
+  &.sm {
+    height: 20rem;
+  }
+
+  &.lg {
+    height: 30rem;
+  }
+}

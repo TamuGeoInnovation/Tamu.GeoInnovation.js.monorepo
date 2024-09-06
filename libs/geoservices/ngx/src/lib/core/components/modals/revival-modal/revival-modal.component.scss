@@ -1,0 +1,28 @@
+$active-color: hsl(223, 75%, 67%);
+
+.img-container {
+  display: flex;
+  justify-content: center;
+}
+
+img {
+  width: 35%;
+}
+
+h1,
+h3 {
+  text-align: center;
+}
+
+.emphasis {
+  color: $active-color;
+}
+
+.button-container {
+  display: flex;
+
+  .button {
+    display: inline-block;
+    margin: 0 auto;
+  }
+}

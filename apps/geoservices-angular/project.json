@@ -16,6 +16,10 @@
         "assets": [
           "apps/geoservices-angular/src/favicon.ico",
           "apps/geoservices-angular/src/assets",
+          "apps/geoservices-angular/src/Dockerfile",
+          "apps/geoservices-angular/src/.dockerignore",
+          "apps/geoservices-angular/src/docker-compose.yml",
+          "apps/geoservices-angular/src/.nginx",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -95,7 +99,8 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "geoservices-angular:build"
+        "browserTarget": "geoservices-angular:build",
+        "proxyConfig": "apps/geoservices-angular/proxy.conf.json"
       },
       "configurations": {
         "production": {

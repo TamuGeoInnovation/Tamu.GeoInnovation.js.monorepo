@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-my-submissions',
   templateUrl: './my-submissions.component.html',
   styleUrls: ['./my-submissions.component.scss']
 })
-export class MySubmissionsComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class MySubmissionsComponent {}

@@ -1,0 +1,75 @@
+@import 'libs/sass/mixins';
+
+ul {
+  list-style: none;
+  margin-left: 0;
+  color: inherit;
+
+  li {
+    font-size: 0.9rem;
+    color: inherit;
+
+    a {
+      color: inherit;
+      font-weight: inherit;
+      font-size: inherit;
+    }
+  }
+}
+
+.copyright,
+.legal,
+.attribute {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+  @include flex-wrap(wrap);
+  margin-top: 2rem;
+
+  & > [class^='column'] {
+    display: inherit;
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include flex-wrap(wrap);
+  }
+
+  p,
+  a {
+    color: #7a7d7d;
+    font-size: 0.75rem;
+    font-weight: inherit;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  p {
+    text-align: center;
+    // Apply an inline separator to all links except the last
+    &:not(:last-child) {
+      &::after {
+        content: '-';
+        position: block;
+        margin: 0 0.2rem;
+      }
+    }
+  }
+}
+
+.legal {
+  margin-top: 1.75rem;
+}
+
+.attribute {
+  margin-top: 0.5rem;
+}
+
+@media only screen and (min-width: 100px) {
+  .copyright,
+  .legal,
+  .attribute {
+    div[class^='column-'] {
+      margin-bottom: 0;
+      display: none;
+    }
+  }
+}

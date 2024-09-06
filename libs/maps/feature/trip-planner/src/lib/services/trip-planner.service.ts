@@ -2595,7 +2595,7 @@ export class TripPlannerService implements OnDestroy {
   }
 
   private graphicsToStopsCollection(tripPoints: Array<TripPoint>) {
-    const collection = new (this._Modules.Collection as any)();
+    const collection = new this._Modules.Collection();
 
     const stops = tripPoints.map((feature) => {
       return new this._Modules.Stop({
@@ -2914,6 +2914,10 @@ interface TripPointAttributesWithBldgNumber extends TripPointAttributes {
   Bldg_Number: string;
 }
 
+interface CollectionConstructor {
+  new (): esri.Collection;
+}
+
 interface TripPlannerModules {
   TripTask: esri.RouteTaskConstructor;
   RouteParameters: esri.supportRouteParametersConstructor;
@@ -2922,7 +2926,7 @@ interface TripPlannerModules {
   route: esri.route;
   networkService: esri.networkService;
   Stop: esri.StopConstructor;
-  Collection: esri.Collection['constructor'];
+  Collection: CollectionConstructor;
 }
 
 interface SuccessTripResultWithOriginalTaskParams {

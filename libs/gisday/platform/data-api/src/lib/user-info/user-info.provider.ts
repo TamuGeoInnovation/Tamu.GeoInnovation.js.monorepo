@@ -33,7 +33,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
   }
 
   public async getUser(userGuid: string) {
-    throw new NotImplementedException('service: get user');
+    throw new NotImplementedException(`service: get user ${userGuid}`);
   }
 
   public async getUserMetadata(guid: string) {

@@ -1,10 +1,8 @@
 import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { UserRsvpProvider } from './user-rsvp.provider';
-import { UserRsvp } from '../entities/all.entity';
 
 @Controller('rsvps')
 export class UserRsvpController {
@@ -48,7 +46,7 @@ export class UserRsvpController {
 
   @UseGuards(JwtGuard)
   @Patch(':guid')
-  public async updateEntity(@Param('guid') guid: string, @Body() body: DeepPartial<UserRsvp>) {
+  public async updateEntity() {
     throw new NotImplementedException();
   }
 

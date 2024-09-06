@@ -1,0 +1,512 @@
+<section class="internal" id="overview">
+  <h1 class="section-header">Address Processing API <span class="section-header-api-version">| {{ apiVersion }}</span></h1>
+
+  <div class="section-content">
+    <div class="service-endpoint">
+      <div class="service-verb get">GET</div>
+      <div class="service-address">{{ url }}</div>
+    </div>
+
+    <!-- <p><a href="http://" target="_blank" rel="noopener noreferrer">Looking for an older version?</a></p> -->
+
+    <p>Address processing is a combination of two processes bundled into one: address parsing and address normalization.</p>
+
+    <p><strong>Address parsing</strong> is the process of dividing a single address string into its individual component parts. A set of rules have been developed using tokenization on white spaces between words, the ordering of the tokens, and a series of alias tables to determine each of the individual address components.</p>
+
+    <p>The Texas A&M Geoservices Geocoder uses a deterministic token-based context-aware substitution table strategy to parse the input data. A set of rules have been developed using tokenization on white spaces between words, the ordering of the tokens, and a series of alias tables to determine each of the individual address components.</p>
+
+    <p><strong>Address normalization</strong> converts pieces of an input address into their standardized equivalents. Once the type of the tokens have been identified, normalization is performed with more alias tables to make a best effort attempt to normalize the components to the desired output format. Currently, we have fairly compliant implementations of the <a href="http://pe.usps.gov/text/pub28/welcome.htm">USPS Publication 28 Standard</a>, the <a href="http://www.census.gov/geo/www/tiger/">US Census TIGER/Line Address Format</a>, the address format used by the <a href="http://portal.lacounty.gov/wps/portal/cio/home">Los Angeles County Chief Information Office</a>.</p>
+
+    <h3>CASS Certification</h3>
+
+    <p>Note: Please note that this software is <strong>not </strong><a href="http://www.usps.com/ncsc/addressservices/certprograms/cass.htm">USPS CASS Certified</a> but works fairly well on most normal address data and is constantly being improved. If you encounter any problems or find any cases where the software fails, <a [routerLink]="['/contact/address-correction']">we would like to hear about it</a> so we can work to improve the quality of the services.</p>
+  </div>
+</section>
+
+<section id="parameters">
+  <h2 class="trailer-1" id="parameters">Input Parameters</h2>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">apiKey</div>
+      <div class="attribute-title-type">String</div>
+      <div class="attribute-title-badge">Required</div>
+    </ng-container>
+
+    <ng-container attr-description>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform.</ng-container>
+
+    <ng-container attr-body>
+      <p>Each request will deduct one credit from your account balance</p>
+
+      <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">version</div>
+      <div class="attribute-title-type">String</div>
+      <div class="attribute-title-badge">Required</div>
+    </ng-container>
+
+    <ng-container attr-description>Target API version.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
+      <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a address processing request.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">nonParsedAddress</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Non-parsed street address value.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
+      <p>Non-parsed street address.</p>
+
+      <p><span class="attr-body-heading">Example</span>: 3620 North Vermont Ave W.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">nonParsedStreetCity</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Non-parsed city value.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+      <p>City value, case-insensitive. Examples:</p>
+
+      <ul>
+        <li>Los Angeles</li>
+        <li>San Francisco</li>
+        <li>New York</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">nonParsedStreetState</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description> State abbreviation code.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
+      <p>Two-letter U.S. state code, case-insensitive. Examples:</p>
+
+      <ul>
+        <li>CA</li>
+        <li>TX</li>
+        <li>NY</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">nonParsedStreetZIP</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
+
+    <ng-container attr-description>Zip code number.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
+      <p>Numeric zip code. Does not support Zip + 4. Allowed examples:</p>
+
+      <ul>
+        <li>90210</li>
+        <li>90007</li>
+        <li>77840</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">addressFormat</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Output address format.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
+      <p>Users can select which output format they would like their data placed into. Currently we are fairly compliant with the following address formats.</p>
+
+      <ul>
+        <li><a href="http://pe.usps.gov/text/pub28/welcome.htm">USPS Publication 28 Address Standard</a></li>
+        <li><a href="http://www.census.gov/geo/www/tiger/">US Census TIGER/Line Address Format</a></li>
+        <li><a href="http://portal.lacounty.gov/wps/portal/cio/home">Los Angeles County Chief Information Office</a></li>
+      </ul>
+
+      <tamu-gisc-address-format-fragment></tamu-gisc-address-format-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">responseFormat</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Response return format.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+      <p>Value describing the geocode response format.</p>
+
+      <p><span class="attr-body-heading">Supported response formats:</span></p>
+      <ul>
+        <li>csv</li>
+        <li>tsv</li>
+        <li>xml</li>
+        <li>json</li>
+      </ul>
+
+      <p>JSON is response type is only available in API version 2.96 and newer.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">notStore</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes whether the geocode transaction details will be stored in your account.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+</section>
+
+<section id="response">
+  <h2>Response</h2>
+
+  <p>The following represents the response structure when requesting JSON format.</p>
+
+  <!-- 
+  <p>Response contents depend with the requested <span class="faux-link" scrollTo="#format">response format</span>.</p>
+  <tamu-gisc-tabs>
+    <tamu-gisc-tab label="JSON">
+  <div>
+    <tamu-gisc-response-viewer [runner]="runner" [format]="'json'"></tamu-gisc-response-viewer> -->
+  <!-- </div> -->
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">version</div>
+      <div class="attribute-title-type">ApiVersion</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</ng-container>
+
+    <ng-container attr-body>
+      <tamu-gisc-api-version-fragment></tamu-gisc-api-version-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">timeTaken</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
+
+    <ng-container attr-description>Time required to execute the transaction, reported in milliseconds.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">transactionGuid</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Unique ID assigned to the response.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">apiHost</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Server name that processed the transaction.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">clientHost</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Public hostname where the transaction was executed. </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">queryStatusCode</div>
+      <div class="attribute-title-type">Enumerable&lt;QueryStatusCode&gt;</div>
+    </ng-container>
+
+    <ng-container attr-description>The value for the response status code.</ng-container>
+
+    <ng-container attr-body>
+      <tamu-gisc-query-status-fragment></tamu-gisc-query-status-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">inputParameterSet</div>
+      <div class="attribute-title-type">AddressProcessSerializedInputs</div>
+    </ng-container>
+
+    <ng-container attr-description>Object representing the serialized input parameters the transaction was executed against.</ng-container>
+
+    <ng-container attr-body>
+      <div class="attribute-list">
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">streetAddress</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input address for the executed transaction.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">city</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input city for the executed transaction.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">state</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input state for the executed transaction.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">zip</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input zip for the executed transaction.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">version</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Requested API version for the executed transaction.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">apiKey</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input customer apiKey for the executed transaction.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">dontStoreTransactionDetails</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input option to prevent storing the transaction in account.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">addressFormatTypes</div>
+            <code class="secondary">Array&lt;String&gt;</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Requested address processing format types. Will be a list containing one or many of the following:</p>
+
+            <ul>
+              <li>USPSPublication28</li>
+              <li>USCensusTiger</li>
+              <li>LACounty</li>
+            </ul>
+
+            <tamu-gisc-address-format-fragment></tamu-gisc-address-format-fragment>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">multiThreading</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input request for multi-threaded processing of the transaction.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">includeHeader</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input request to include column names as the first row header when requesting <code>csv</code> as the <code>responseFormat</code>.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">verbose</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input request to return a verbose transaction response.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">outputFormat</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Input request for the format of the returned transaction response.</p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">results</div>
+      <div class="attribute-title-type">Array&lt;AddressRecordResult&gt;</div>
+    </ng-container>
+
+    <ng-container attr-description>Address processing results.</ng-container>
+
+    <ng-container attr-body>
+      <p>A list of results based on the input address and the total number of input <code>addressFormat</code>'s.</p>
+
+      <p>
+        <span class="attr-body-heading">The AddressRecordResult object:</span>
+      </p>
+
+      <div class="attribute-list">
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">timeTaken</div>
+            <code class="secondary">Number</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Time to process the input address for a single <code>addressFormat</code>.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">exceptionOccurred</div>
+            <code class="secondary">Boolean</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Describes if there was an error processing the input address for an addressFormat.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">errorMessage</div>
+            <code class="secondary">String</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>Text message describing the exception, if any.</p>
+          </div>
+        </div>
+
+        <div class="attribute-unit">
+          <div class="attribute-header">
+            <div class="attribute-name">parsedAddress</div>
+            <code class="secondary">Address</code>
+          </div>
+
+          <div class="attribute-description">
+            <p>The processed address result for an input address for a single <code>addressFormat</code>.</p>
+
+            <div *giscAccordion="let parent;">
+              <div class="pill" [giscAccordionHeader]="parent">
+                <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+              </div>
+
+              <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
+                <tamu-gisc-address-attribute-list></tamu-gisc-address-attribute-list>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <!-- </tamu-gisc-tab>
+
+    <tamu-gisc-tab label="CSV/TSV">
+      <div>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'tsv'"></tamu-gisc-response-viewer>
+      </div>
+    </tamu-gisc-tab>
+    <tamu-gisc-tab label="XML">
+      <div>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'xml'"></tamu-gisc-response-viewer>
+      </div>
+    </tamu-gisc-tab>
+  </tamu-gisc-tabs> -->
+</section>

@@ -1,0 +1,69 @@
+<div class="card">
+  <ng-container *ngIf="(result | async) === null || (resultError | async) === true; else resultContainer">
+    <div [@inOutAnimation]>
+      <form [formGroup]="form" (submit)="processInteractiveQuery()">
+        <div class="form-section">
+          <div class="form-section-toolbar">
+            <div class="form-section-name">
+              <p>Geocoding Demo</p>
+            </div>
+          </div>
+
+          <div class="form-section-body">
+            <div class="form-collection row">
+              <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'Street Address'" formControlName="streetAddress"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-textbox [type]="'text'" [floatLabel]="true" [placeholder]="'City'" formControlName="city"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-select [placeholder]="'State'" [data]="states" [displayTemplate]="'name'" [valueTemplate]="'abbreviation'" formControlName="state" [floatLabel]="true"></tamu-gisc-select>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-textbox [type]="'number'" [floatLabel]="true" [placeholder]="'Zip'" formControlName="zip"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection row">
+              <tamu-gisc-select [placeholder]="'Census Year'" [data]="censusYears" [displayTemplate]="'name'" [valueTemplate]="'value'" formControlName="censusYears" [floatLabel]="true"></tamu-gisc-select>
+            </div>
+
+            <div class="form-collection column">
+              <tamu-gisc-button [value]="buttonLanguage | async" [disabled]="form.invalid || (processing | async) === true || form.pristine" [type]="'submit'"></tamu-gisc-button>
+
+              <!-- <div class="leader-2 flex flex-row justify-center">
+                <a (click)="navigateToAdvanced()" class="material-icons-container"><span class="material-icons-outlined centered">settings</span> Advanced Options</a>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+  <ng-template #resultContainer>
+    <div *ngIf="result | async as res" [@inOutAnimation]>
+      <tamu-gisc-basic-summary-blurb [keyFragment]="'geocode'" (navigateFull)="navigateToAdvanced(res)"></tamu-gisc-basic-summary-blurb>
+
+      <tamu-gisc-tabs>
+        <tamu-gisc-tab [label]="'Geocode'">
+          <tamu-gisc-geocode-result-table [geocode]="res.data?.results[0]"></tamu-gisc-geocode-result-table>
+
+          <p class="text-content text-content--center" *ngIf="res?.data?.results?.length > 1"><i>{{res.data.results.length - 1}} additional result not shown. See full response for details.</i></p>
+        </tamu-gisc-tab>
+
+        <tamu-gisc-tab label="Map">
+          <ng-container *ngIf="mapPoints | async as cnf">
+            <tamu-gisc-result-map [points]="cnf"></tamu-gisc-result-map>
+          </ng-container>
+        </tamu-gisc-tab>
+      </tamu-gisc-tabs>
+
+      <div class="flex flex-row">
+        <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
+      </div>
+    </div>
+  </ng-template>
+</div>

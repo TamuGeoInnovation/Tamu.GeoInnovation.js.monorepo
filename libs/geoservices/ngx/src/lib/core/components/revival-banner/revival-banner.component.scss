@@ -1,0 +1,31 @@
+$alert-color: #ef5350;
+$warning-color: #ffca28;
+
+#banner-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  background: #333333;
+  color: #f5f5f5;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 0.9rem;
+
+  p {
+    margin-bottom: 0.3rem;
+  }
+
+  #banner-dismiss {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    display: block;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<form [formGroup]="form" class="container12" (submit)="sendMessage()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Bug Details</p>
+      </div>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Your Name" formControlName="fullName" [floatLabel]="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Your email address" formControlName="email" [floatLabel]="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox type="textarea" placeholder="Bug details" formControlName="body" [floatLabel]="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <ng-container *ngIf="(submissionState | async) as ss">
+        <ng-container *ngIf="ss === 'complete' || ss === 'error'">
+          <div class="inform-context trailer-1 flex justify-center" [ngClass]="{alert: ss === 'error' }">
+            <span *ngIf="ss === 'error'"><strong>There was a problem submitting your message. Please try again or try again at a later time.</strong></span>
+            <span *ngIf="ss === 'complete'"><strong>Your message has been received. Thank you for your feedback!.</strong></span>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="(submissionState | async) === null || (submissionState | async) === 'pending'">
+        <tamu-gisc-button [value]="submissionStateText | async" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+      </ng-container>
+    </div>
+  </div>
+</form>

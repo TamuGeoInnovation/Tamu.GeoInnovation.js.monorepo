@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Observable, Subject } from 'rxjs';
@@ -11,7 +11,7 @@ import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
   templateUrl: './upload-submission.component.html',
   styleUrls: ['./upload-submission.component.scss']
 })
-export class UploadSubmissionComponent implements OnDestroy, OnInit {
+export class UploadSubmissionComponent implements OnDestroy {
   public form: FormGroup;
 
   public $submissionTypes: Observable<Array<Partial<SubmissionType>>>;
@@ -32,8 +32,6 @@ export class UploadSubmissionComponent implements OnDestroy, OnInit {
 
     this.fetchSubmissionTypes();
   }
-
-  public ngOnInit(): void {}
 
   public ngOnDestroy(): void {
     this._$destroy.next(undefined);

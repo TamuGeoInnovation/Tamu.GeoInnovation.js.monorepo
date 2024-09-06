@@ -14,7 +14,7 @@ import esri = __esri;
   templateUrl: './sidebar-reference.component.html',
   styleUrls: ['./sidebar-reference.component.scss']
 })
-export class SidebarReferenceComponent<T extends esri.Graphic> implements OnInit {
+export class SidebarReferenceComponent implements OnInit {
   public shareUrl: string;
   public hasSettings: boolean;
   public settings: MoveInSettings;

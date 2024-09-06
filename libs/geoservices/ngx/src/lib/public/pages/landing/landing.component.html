@@ -1,0 +1,203 @@
+<section class="content-fill-pad" style="background: linear-gradient(45deg, #ffffff, #c3d6fd, #e3d6fa, #ffd4d4, #d1eee2)">
+  <div class="container12">
+    <div class="column8">
+      <h1>Geo-Enablement At Your Fingertips</h1>
+      <h4 class="column6 alpha omega">Powerful, Affordable, and Research-Backed Geoprocessing Tools For Everyone</h4>
+    </div>
+  </div>
+</section>
+
+<section class="content-fill-pad">
+  <div class="container12">
+    <div class="flex flex-column align-center section-header">
+      <h2>Services</h2>
+      <h3>Our most popular geoprocesing products</h3>
+    </div>
+
+    <div class="product-tiles section-block">
+      <div class="product-tiles__tile">
+        <img src="assets/img/graphics/services/geocoding.svg" alt="" class="product-tiles_tile__identity" />
+        <h3 class="product-tiles_tile__name alt">Geocoding</h3>
+        <div class="product-tiles__tile__description">
+          <p>Turn address data into latitude and longitude pair values that can used to identify an exact location on the Earth.</p>
+
+          <p>Our geocoding engine is the result of the last seven years of work and gets better every day. Our algorithms are state of the art and peer-reviewed.</p>
+
+          <a [routerLink]="['services/geocoding']" routerLinkActive="router-link-active">Learn more about geocoding ></a>
+        </div>
+      </div>
+
+      <div class="product-tiles__tile">
+        <img src="assets/img/graphics/services/reverse-geocoding.svg" alt="" class="product-tiles_tile__identity" />
+        <h3 class="product-tiles_tile__name alt">Reverse Geocoding</h3>
+        <div class="product-tiles__tile__description">
+          <p>If you instead have latitude and longitude value pairs, reverse geocoding turns those pairs into a human-readable address that can be used to identify nearby street names, places, subdivisions, counties, cities, etc.</p>
+
+          <a [routerLink]="['services/reverse-geocoding']" routerLinkActive="router-link-active">Learn more about reverse geocoding ></a>
+        </div>
+      </div>
+
+      <div class="product-tiles__tile">
+        <img src="assets/img/graphics/services/address-processing.svg" alt="" class="product-tiles_tile__identity" />
+        <h3 class="product-tiles_tile__name alt">Address Processing</h3>
+        <div class="product-tiles__tile__description">
+          <p>Clean up that messy data. Our address parsing and normalization services will help you turn unstructured address data into neat and tidy columns of address fields. Choose from a variety of output formats that conform to the specification of your application.</p>
+
+          <a [routerLink]="['services/address-processing']" routerLinkActive="router-link-active">Learn more about address processing ></a>
+        </div>
+      </div>
+
+      <div class="product-tiles__tile">
+        <img src="assets/img/graphics/services/census-intersection.svg" alt="" class="product-tiles_tile__identity" />
+        <h3 class="product-tiles_tile__name alt">Census Intersection</h3>
+        <div class="product-tiles__tile__description">
+          <p>Take it one step further and process geocoded data by intersecting it with Census tract boundaries to receive Census tract data.</p>
+
+          <a [routerLink]="['services/census-intersection']" routerLinkActive="router-link-active">Learn more about census intersection ></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background: #f5f5f5" class="content-fill-pad">
+  <div class="container12 flex flex-row align-center">
+    <div class="column5">
+      <h2>Simple. Flexible. Affordable.</h2>
+      <p>Our pricing model is one of the most affordable in the industry.</p>
+
+      <p>In fact, the vast majority of our users never pay a single penny. Beyond that, we offer several tiers of membership options including one-time credit purchases, recurring subscriptions, and service level contracts.</p>
+
+      <p>Whether you're looking to process tens, hundreds, or millions of records, we've got something for you.</p>
+    </div>
+
+    <div class="column6">
+      <tamu-gisc-tabs toggleLayout="column">
+        <tamu-gisc-tab label="Free Usage">
+          <p>Every registered users receives an initial 2,500 credits free of charge simply for registering. These credits may be used for any service we offer and is a great way to test our suite of services to determine if they're right for you.</p>
+
+          <a [href]="url + '/Signup/'">Get started for free ></a>
+        </tamu-gisc-tab>
+
+        <tamu-gisc-tab label="Credit Packs">
+          <p>Credit packs are the perfect solution if you have a known and/or fixed number of records that require processing.</p>
+
+          <a routerLink="/pricing">View pricing ></a>
+        </tamu-gisc-tab>
+
+        <tamu-gisc-tab label="Recurring">
+          <p>In need of a consistent number of records every month? A monthly recurring plan is the way to go. We can help you figure out what credit subscription works best for you project and your budget!</p>
+
+          <a routerLink="/pricing" [queryParams]="{recurring: true}">View pricing ></a>
+        </tamu-gisc-tab>
+
+        <!-- <tamu-gisc-tab label="Partnerships">
+          <p>Partners can add batches of 2500 credits as frequently and often as needed with a click of a button. Becoming a partner is free in exchange for a link from your public-facing website to ours or published work citations.</p>
+
+          <a routerLink="/pricing" fragment="partner-program">Learn more about partnerships ></a>
+        </tamu-gisc-tab> -->
+
+        <tamu-gisc-tab label="SLA's">
+          <p>If you anticipate needing to process a large number of records for long periods of time such as in a scheduled, automated, or web-service type process, we offer service level agreements whereby a user can pay one set price per month and process up to a certain amount of records (including unlimited).</p>
+
+          <a routerLink="/contact" [queryParams]="{subject: 'SLA Inquiry'}">Inquire about SLA's ></a>
+        </tamu-gisc-tab>
+      </tamu-gisc-tabs>
+    </div>
+  </div>
+</section>
+
+<section class="content-fill-pad">
+  <div class="container12 flex flex-row-reverse justify-around">
+    <div class="column5 flex flex-column justify-center">
+      <h2>Who Needs Geoprocessing Tools?</h2>
+      <p>If you or your organization collects or relies on customer and user data that requires spatial analysis for purposes such as shipping, validation, etc, then you need the power of advanced and affordable geoprocessing tools. Whatever you business is, we can help.</p>
+    </div>
+
+    <div class="column6">
+      <tamu-gisc-tabs tabSizing="contain" layoutDirection="reverse">
+        <tamu-gisc-tab label="Organizations">
+          <div class="service-example">
+            <img src="assets/img/graphics/undraw_best_place_r685.svg" alt="" />
+            <p>Funded by the National Cancer Institute (NCI), the North American Association of Central Cancer Registries (NACCR) processes patient records with Texas A&amp;M Geoservices to ensure data accuracy and consistency.</p>
+          </div>
+        </tamu-gisc-tab>
+        <tamu-gisc-tab label="Private">
+          <div class="service-example">
+            <img src="assets/img/graphics/undraw_business_shop_qw5t.svg" alt="" />
+            <p>Funded by the National Cancer Institute (NCI), the North American Association of Central Cancer Registries (NACCR) processes patient records with Texas A&amp;M Geoservices to ensure data accuracy and consistency.</p>
+          </div>
+        </tamu-gisc-tab>
+        <tamu-gisc-tab label="Non-Profit">
+          <div class="service-example">
+            <img src="assets/img/graphics/undraw_coming_home_52ir.svg" alt="" />
+            <p>Funded by the National Cancer Institute (NCI), the North American Association of Central Cancer Registries (NACCR) processes patient records with Texas A&amp;M Geoservices to ensure data accuracy and consistency.</p>
+          </div>
+        </tamu-gisc-tab>
+      </tamu-gisc-tabs>
+    </div>
+  </div>
+</section>
+
+<section style="background: white" class="content-fill-pad">
+  <div class="container12">
+    <div class="column12 flex flex-column align-center section-header">
+      <h2>Key Features</h2>
+      <h3>Why consider Texas A&amp;M Geoservices?</h3>
+    </div>
+
+    <div class="column12 flex flex-row justify-center wrap feature-tile-container">
+      <div class="feature-tile">
+        <h5 class="alt">High Availability</h5>
+        <p>Our services leverage Texas A&M's network infrastructure with additional automatic cloud-based fail-over for reliable service guaranteeing 99% uptime SLA.</p>
+      </div>
+
+      <div class="feature-tile">
+        <h5 class="alt">Secure</h5>
+        <p>Your data is safe with us. Every step in our processing pipeline is HIPPA and XXXX certified and compliant. No records or logs are kept unless you grant us explicit permission.</p>
+      </div>
+
+      <div class="feature-tile">
+        <h5 class="alt">Exceptional Customer Service</h5>
+        <p>Highly trained and friendly customer service staff are on standby eager to assist you at every step of your service utilization.</p>
+      </div>
+
+      <div class="feature-tile">
+        <h5 class="alt">Zero-Risk Commitment</h5>
+        <p>Unsure if our services are right for you? Registered users are granted a whopping 2,500 FREE transactions to use across our suite of services.</p>
+      </div>
+
+      <div class="feature-tile">
+        <h5 class="alt">Unified Credit System</h5>
+        <p>We keep things simple with a single credit system. One credit for one transactions for <i>any</i> of our offered services.</p>
+      </div>
+
+      <div class="feature-tile">
+        <h5 class="alt">Batch Processing</h5>
+        <p>Have BIG data? Upload your database and let us take care of the rest. We'll let you know when your dataset processing is complete!</p>
+      </div>
+
+      <div class="feature-tile">
+        <h5 class="alt">Interactive Tools</h5>
+        <p>All of our services are available on easy-to-use web-based interactive apps. Experiment with our product options and settings, and get quick and visual feedback on the output of your workflow.</p>
+      </div>
+
+      <div class="feature-tile">
+        <h5 class="alt">Comprehensive API's</h5>
+        <p>By developers, for developers &mdash; Our service API's enable you to quickly integrate geo-processing tools in your websites and apps through industry-standard HTTP, SOAP, and RESTful API's.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-fill-pad" style="background-color: #f5f5f5">
+  <div class="container12">
+    <div class="column12 flex flex-column align-center section-header">
+      <h2>Take Our Services For A Spin</h2>
+    </div>
+
+    <div class="column12 flex flex-row justify-center">
+      <a [href]="url + '/Signup/'" class="button">Create a Free Account</a>
+    </div>
+  </div>
+</section>

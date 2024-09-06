@@ -1,0 +1,23 @@
+{
+  "root": "libs/common/datasets/geographic",
+  "sourceRoot": "libs/common/datasets/geographic/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/common/datasets/geographic/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common/datasets/geographic"],
+      "options": {
+        "jestConfig": "libs/common/datasets/geographic/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,270 @@
+<section class="internal" id="overview">
+  <h1 class="section-header">Census Intersection API <span class="section-header-api-version">| {{ apiVersion }}</span></h1>
+
+  <div class="section-content">
+    <div class="service-endpoint">
+      <div class="service-verb get">GET</div>
+      <div class="service-address">{{ url }}</div>
+    </div>
+
+    <!-- <p><a href="http://" target="_blank" rel="noopener noreferrer">Looking for an older version?</a></p> -->
+
+    <p>Point-in-polygon intersection is the process of assigning an input coordinate the values from an areal unit within which it resides. The Texas A&M Point-in-Polygon Census Intersection Service will assign Census 1990, 2000, or 2010 geographic variables to input coordinates (latitude and longitude pairs).</p>
+
+    <div class="info-block leader-2">
+      <p class="info-block__header">New for V5</p>
+      <p class="info-block__body">The Texas A&M Census Intersection Service stores the Census 1990, 2000, and 2010 tabulation block, block group, and tract information in a SQL Server Spatial database along with other Census data as available by year. Census values are returned by performing a spatial intersect using the input coordinates.</p>
+    </div>
+  </div>
+</section>
+
+<section id="parameters">
+  <h2 class="trailer-1" id="parameters">Input Parameters</h2>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">apiKey</div>
+      <div class="attribute-title-type">String</div>
+      <div class="attribute-title-badge">Required</div>
+    </ng-container>
+
+    <ng-container attr-description>Every geoprocessing API call requires an accompanying API key and is unique for every registered user on the platform.</ng-container>
+
+    <ng-container attr-body>
+      <p>Each request will deduct one credit from your account balance</p>
+
+      <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">version</div>
+      <div class="attribute-title-type">String</div>
+      <div class="attribute-title-badge">Required</div>
+    </ng-container>
+
+    <ng-container attr-description>Target API version.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
+      <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a address processing request.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">censusYears</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Comma-separated list of the year of census data to intersect with.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.96</p>
+
+      <tamu-gisc-census-years-parameter-fragment></tamu-gisc-census-years-parameter-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">lat</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
+
+    <ng-container attr-description>Latitude value for the input coordinate.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
+      <p><span class="attr-body-heading">Example:</span></p>
+
+      <ul>
+        <li>34.0726207994348</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">lon</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
+
+    <ng-container attr-description>Longitude value for the input coordinate.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+
+      <p><span class="attr-body-heading">Example:</span></p>
+
+      <ul>
+        <li>-118.397965182076</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">s</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Abbreviation of state.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+      <p>Abbreviated, two-letter U.S. state code, case-insensitive. Including this field reduces processing time.</p>
+
+      <p><span class="attr-body-heading">Examples:</span></p>
+
+      <ul>
+        <li>CA</li>
+        <li>TX</li>
+        <li>NY</li>
+      </ul>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">format</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Response return format.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">Since API Version</span>: 2.0</p>
+      <p>Value describing the geocode response format.</p>
+
+      <p><span class="attr-body-heading">Supported response formats</span>:</p>
+
+      <ul>
+        <li>csv</li>
+        <li>tsv</li>
+        <li>xml</li>
+        <li>json</li>
+      </ul>
+
+      <p>JSON is response type is only available in API version 2.96 and newer.</p>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">notStore</div>
+      <div class="attribute-title-type">Boolean</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes whether the geocode transaction details will be stored in your account.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+</section>
+
+<section id="response">
+  <h2>Response</h2>
+
+  <p>Response contents depend with the requested <span class="faux-link" scrollTo="#format">response format</span>.</p>
+
+  <!-- <tamu-gisc-tabs>
+    <tamu-gisc-tab label="JSON">
+      <div>
+  <tamu-gisc-response-viewer [runner]="runner" [format]="'json'"></tamu-gisc-response-viewer> -->
+
+  <!-- </div> -->
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">version</div>
+      <div class="attribute-title-type">ApiVersion</div>
+    </ng-container>
+
+    <ng-container attr-description>Describes the full API version that processed the transaction, reporting the major, minor, and patch version.</ng-container>
+
+    <ng-container attr-body>
+      <tamu-gisc-api-version-fragment></tamu-gisc-api-version-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">timeTaken</div>
+      <div class="attribute-title-type">Number</div>
+    </ng-container>
+
+    <ng-container attr-description>Time required to execute the transaction, reported in milliseconds.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">transactionGuid</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Unique ID assigned to the response.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">apiHost</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Server name that processed the transaction.</ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion [collapsable]="false">
+    <ng-container attr-title>
+      <div class="attribute-title-key">clientHost</div>
+      <div class="attribute-title-type">String</div>
+    </ng-container>
+
+    <ng-container attr-description>Public hostname where the transaction was executed. </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">queryStatusCode</div>
+      <div class="attribute-title-type">Enumerable&lt;QueryStatusCode&gt;</div>
+    </ng-container>
+
+    <ng-container attr-description>The value for the response status code.</ng-container>
+
+    <ng-container attr-body>
+      <tamu-gisc-query-status-fragment></tamu-gisc-query-status-fragment>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <tamu-gisc-service-attribute-accordion>
+    <ng-container attr-title>
+      <div class="attribute-title-key">results</div>
+      <div class="attribute-title-type">Array&lt;CensusRecord&gt;</div>
+    </ng-container>
+
+    <ng-container attr-description>Processed census intersections, one for each census year provided.</ng-container>
+
+    <ng-container attr-body>
+      <p><span class="attr-body-heading">The CensusRecord object:</span></p>
+
+      <div class="attribute-list">
+        <tamu-gisc-census-record-fragment></tamu-gisc-census-record-fragment>
+      </div>
+    </ng-container>
+  </tamu-gisc-service-attribute-accordion>
+
+  <!-- </tamu-gisc-tab>
+
+    <tamu-gisc-tab label="CSV/TSV">
+      <div>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'tsv'"></tamu-gisc-response-viewer>
+      </div>
+    </tamu-gisc-tab>
+    <tamu-gisc-tab label="XML">
+      <div>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'xml'"></tamu-gisc-response-viewer>
+      </div>
+    </tamu-gisc-tab>
+  </tamu-gisc-tabs> -->
+</section>

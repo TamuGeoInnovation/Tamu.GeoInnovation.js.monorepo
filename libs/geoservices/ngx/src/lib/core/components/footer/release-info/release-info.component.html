@@ -1,0 +1,5 @@
+<div class="container12">
+  <div class="column12">
+    <p><span>{{ (release_meta.args | async)?.machine_name }}</span> | <span *ngIf="release_meta.isRelease | async">{{(release_meta.args | async)?.release}} |</span> {{ (release_meta.args | async)?.environment }}</p>
+  </div>
+</div>

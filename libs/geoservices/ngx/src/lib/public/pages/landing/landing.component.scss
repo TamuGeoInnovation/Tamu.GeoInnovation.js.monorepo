@@ -1,0 +1,47 @@
+@import 'libs/sass/mixins';
+
+.product-tiles {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-around);
+  @include flex-wrap(wrap);
+
+  .product-tiles__tile {
+    display: inherit;
+    @include flex-direction(column);
+    @include align-items(center);
+    width: 37.5%;
+    margin: 3rem 2rem;
+
+    .product-tiles_tile__identity {
+      width: 5rem;
+      margin-bottom: 1.25rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .product-tiles {
+    .product-tiles__tile {
+      width: 100%;
+    }
+  }
+
+  .feature-tile-container {
+    @include justify-content(space-between);
+    .feature-tile {
+      width: 48%;
+      box-sizing: border-box;
+      margin: 0.5rem 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 478px) {
+  .feature-tile-container {
+    @include justify-content(space-between);
+    .feature-tile {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,5 @@
+<div class="info-block leader-1" *ngIf="showBlurb | async">
+  <span class="material-icons-outlined close" title="Dismiss and don't show again" (click)="dismiss()">close</span>
+
+  <p class="info-block__body">The following is a summarized list of the complete response. You can explore the full response <span class="faux-link" (click)="emitNavigationRequest()">here</span>.</p>
+</div>

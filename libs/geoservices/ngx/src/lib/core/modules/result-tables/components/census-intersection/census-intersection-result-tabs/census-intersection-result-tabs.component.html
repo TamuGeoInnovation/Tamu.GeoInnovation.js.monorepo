@@ -1,0 +1,5 @@
+<tamu-gisc-tabs>
+  <tamu-gisc-tab *ngFor="let cr of censusRecords" [label]="cr.censusYear.toString()">
+    <tamu-gisc-census-intersection-result-table [address]="cr"></tamu-gisc-census-intersection-result-table>
+  </tamu-gisc-tab>
+</tamu-gisc-tabs>

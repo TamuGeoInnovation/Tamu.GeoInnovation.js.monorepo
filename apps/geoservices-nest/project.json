@@ -1,0 +1,57 @@
+{
+  "root": "apps/geoservices-nest",
+  "sourceRoot": "apps/geoservices-nest/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/geoservices-nest",
+        "main": "apps/geoservices-nest/src/main.ts",
+        "tsConfig": "apps/geoservices-nest/tsconfig.app.json",
+        "assets": [
+          "apps/geoservices-nest/src/assets",
+          "apps/geoservices-nest/src/Dockerfile",
+          "apps/geoservices-nest/src/docker-compose.yml",
+          "apps/geoservices-nest/src/.dockerignore"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/geoservices-nest/src/environments/environment.ts",
+              "with": "apps/geoservices-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "geoservices-nest:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/geoservices-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/geoservices-nest"],
+      "options": {
+        "jestConfig": "apps/geoservices-nest/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
