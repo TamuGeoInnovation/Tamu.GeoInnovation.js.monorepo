@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { PreferencesComponent } from './preferences.component';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { PreferencesComponent } from './preferences.component';
 
 const routes: Routes = [
   {
