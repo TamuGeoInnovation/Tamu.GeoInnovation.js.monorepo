@@ -10,4 +10,3 @@ import { BetaPromptComponent } from './components/beta-prompt/beta-prompt.compon
   declarations: [BetaPromptComponent]
 })
 export class ModalsModule {}
-

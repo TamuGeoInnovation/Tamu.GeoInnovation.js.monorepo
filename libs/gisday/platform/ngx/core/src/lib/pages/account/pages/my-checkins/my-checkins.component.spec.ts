@@ -8,9 +8,8 @@ describe('MyCheckinsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MyCheckinsComponent ]
-    })
-    .compileComponents();
+      declarations: [MyCheckinsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

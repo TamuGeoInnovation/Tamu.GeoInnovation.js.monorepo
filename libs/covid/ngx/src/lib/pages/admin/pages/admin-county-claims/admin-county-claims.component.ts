@@ -63,18 +63,16 @@ export class AdminCountyClaimsComponent extends UrlFormHandlerComponent implemen
         return calculated;
       }),
       map((claims) => {
-        return claims.map(
-          (c): CalculatedCountyClaim => {
-            const closed = c.statuses.find((s) => s.type.id === STATUS.CLOSED);
+        return claims.map((c): CalculatedCountyClaim => {
+          const closed = c.statuses.find((s) => s.type.id === STATUS.CLOSED);
 
-            const duration =
-              closed === undefined
-                ? Date.now() - Date.parse((c.created as unknown) as string)
-                : Date.parse((closed.created as unknown) as string) - Date.parse((c.created as unknown) as string);
+          const duration =
+            closed === undefined
+              ? Date.now() - Date.parse(c.created as unknown as string)
+              : Date.parse(closed.created as unknown as string) - Date.parse(c.created as unknown as string);
 
-            return { ...c, active: closed === undefined, duration: (duration / 1000 / 60).toFixed(2) };
-          }
-        );
+          return { ...c, active: closed === undefined, duration: (duration / 1000 / 60).toFixed(2) };
+        });
       }),
       shareReplay(1)
     );

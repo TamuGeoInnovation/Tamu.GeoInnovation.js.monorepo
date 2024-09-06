@@ -23,7 +23,7 @@ describe('SidebarTabComponent', () => {
   });
 
   it('should respond to click events', (done) => {
-    const mouseEvent: MouseEvent = ({ altKey: 10 } as unknown) as MouseEvent;
+    const mouseEvent: MouseEvent = { altKey: 10 } as unknown as MouseEvent;
     component.$clicked.subscribe((event) => {
       expect(event).toEqual({
         event: mouseEvent,
@@ -31,6 +31,6 @@ describe('SidebarTabComponent', () => {
       });
       done();
     });
-    ((component as unknown) as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
+    (component as unknown as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
   });
 });

@@ -8,9 +8,8 @@ describe('LockupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LockupComponent ]
-    })
-    .compileComponents();
+      declarations: [LockupComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

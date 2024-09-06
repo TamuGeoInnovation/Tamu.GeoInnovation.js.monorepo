@@ -8,9 +8,8 @@ describe('AdminAddSubmissionTypesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminAddSubmissionTypesComponent ]
-    })
-    .compileComponents();
+      declarations: [AdminAddSubmissionTypesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

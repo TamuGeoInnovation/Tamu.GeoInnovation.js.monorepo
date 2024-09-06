@@ -6,7 +6,7 @@ describe('LeaderboardService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LeaderboardService],
+      providers: [LeaderboardService]
     }).compile();
 
     service = module.get<LeaderboardService>(LeaderboardService);

@@ -8,9 +8,8 @@ describe('AdminEditRsvpTypeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminEditRsvpTypeComponent ]
-    })
-    .compileComponents();
+      declarations: [AdminEditRsvpTypeComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

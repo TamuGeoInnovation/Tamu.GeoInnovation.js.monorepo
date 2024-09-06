@@ -57,4 +57,3 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
   @Input()
   public floatLabel = false;
 }
-

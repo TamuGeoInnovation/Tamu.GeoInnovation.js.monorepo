@@ -8,9 +8,8 @@ describe('AdminDetailSessionTypeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminDetailSessionTypeComponent ]
-    })
-    .compileComponents();
+      declarations: [AdminDetailSessionTypeComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

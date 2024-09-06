@@ -30,4 +30,3 @@ export const Definitions = {
     popupComponent: 'BasePopupComponent'
   }
 };
-

@@ -17,7 +17,7 @@ export class TasksService {
 
     copy.parameters = JSON.parse(task.parameters);
 
-    return (copy as unknown) as DataTaskRequestPayloadDto;
+    return copy as unknown as DataTaskRequestPayloadDto;
   }
 }
 

@@ -8,9 +8,8 @@ describe('RecycleLocationDetailsCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecycleLocationDetailsCardComponent ]
-    })
-    .compileComponents();
+      declarations: [RecycleLocationDetailsCardComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

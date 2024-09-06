@@ -5,4 +5,3 @@ export const environment = {
   api_url: '___API_URL___',
   NotificationEvents
 };
-

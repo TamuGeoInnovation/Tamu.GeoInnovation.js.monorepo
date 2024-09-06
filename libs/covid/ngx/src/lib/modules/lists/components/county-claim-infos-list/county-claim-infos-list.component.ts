@@ -27,7 +27,7 @@ export class CountyClaimInfosListComponent implements OnInit {
     this.infos = this.cl.getClaimInfos(guid).pipe(
       map((claim) => {
         claim.infos = claim.infos.sort(
-          (a, b) => Date.parse((b.created as unknown) as string) - Date.parse((a.created as unknown) as string)
+          (a, b) => Date.parse(b.created as unknown as string) - Date.parse(a.created as unknown as string)
         );
         return claim;
       }),

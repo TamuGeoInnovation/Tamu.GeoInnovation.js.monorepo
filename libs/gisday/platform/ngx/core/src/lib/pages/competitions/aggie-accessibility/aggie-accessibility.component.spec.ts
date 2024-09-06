@@ -8,9 +8,8 @@ describe('AggieAccessibilityComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AggieAccessibilityComponent ]
-    })
-    .compileComponents();
+      declarations: [AggieAccessibilityComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

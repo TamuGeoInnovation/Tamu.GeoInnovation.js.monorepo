@@ -8,9 +8,8 @@ describe('PrintResourceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PrintResourceComponent ]
-    })
-    .compileComponents();
+      declarations: [PrintResourceComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

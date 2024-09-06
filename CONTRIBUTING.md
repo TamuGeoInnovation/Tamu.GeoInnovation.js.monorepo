@@ -3,16 +3,18 @@
 We are excited that you're considering contributing; thank you! As a member of the Aggie community, contributing to Aggiemap is a great way to leave your mark and improve a tool that so many rely on daily.
 
 #### Table of Contents
+
 ---
 
 How can I contribute?
+
 - [Reporting issues/bugs](#reporting-issuesbugs)
 - [Suggesting enhancements](#suggesting-enhancements)
 - [Pull requests](#pull-requests)
 - [General feedback](#general-feedback-or-inquiries)
 
-
 ### Reporting issues/bugs
+
 ---
 
 Despite our best efforts, bugs will occasionally slip through the cracks. If you find one, from text to functionality issues, please [submit an issue](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues). Issues allow us to keep track of and prioritize fixes. Before submitting an issue, please take a quick stroll through the posted issues and check if it has been raised already.
@@ -20,7 +22,7 @@ Despite our best efforts, bugs will occasionally slip through the cracks. If you
 When submitting an issue, please try to be as descriptive as possible and include details such as:
 
 - Description of current behavior
-- Description of what the behavior should be 
+- Description of what the behavior should be
 - Steps to reproduce
 - Screenshots
 - Your device information
@@ -32,6 +34,7 @@ When submitting an issue, please try to be as descriptive as possible and includ
 As the issue gets picked up, we might reach out for more information, and you might receive emails from us.
 
 ### Suggesting enhancements
+
 ---
 
 Aggiemap is far from perfect; if you have any ideas for features or changes that would improve the usability and experience, we would love to hear from you. Like bugs, enhancements we track as [issues with the "enhancement" label](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement).
@@ -46,11 +49,12 @@ The format for a suggestion/enhancement is as follows:
 - If you have the technical background, a list of resources such as required data, libraries, packages, etc. Pseudo-code is also acceptable
 
 Additionally, the following would be particularly useful for UI, design, and complex user flows:
+
 - Sketches or diagrams
 - Animations
 
-
 ### Pull requests
+
 ---
 
 You must follow some guidelines to ensure that contributions improve not only the functionality but also the quality of the code base to maintain some resemblance of maintainability and extensibility.
@@ -70,7 +74,7 @@ Your PR must follow the following naming pattern:
 
 The above format keeps a consistent history format, glance-able understanding in a `log` format, and allows for filtering by project and scope. Please use any of the [closed PR's as examples for titles](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed)
 
-*Scope* can be broken down into a few common categories:
+_Scope_ can be broken down into a few common categories:
 
 - fix
   - General bug fixes
@@ -84,9 +88,9 @@ The above format keeps a consistent history format, glance-able understanding in
 - ci
   - Updates related to ci/cd pipelines
 
-*Project name* is typically the workspace project name (whether an app or lib). Most Aggiemap-related PR's will use `aggiemap-angular` as the project name. A full list of project names can be found by opening the `workspace.json` file at the root of the repository. Each key represents a project name.
+_Project name_ is typically the workspace project name (whether an app or lib). Most Aggiemap-related PR's will use `aggiemap-angular` as the project name. A full list of project names can be found by opening the `workspace.json` file at the root of the repository. Each key represents a project name.
 
-While it should be minimized, it's not uncommon to violate cross-app/lib boundaries in a PR. In these cases, the name of the app/lib that was the reason for the PR shall be used. 
+While it should be minimized, it's not uncommon to violate cross-app/lib boundaries in a PR. In these cases, the name of the app/lib that was the reason for the PR shall be used.
 
 In cases where a PR affects various projects, and quite likely, the entire workspace, the project name can be omitted.
 
@@ -108,7 +112,7 @@ Please review and follow the [code style guide](https://github.com/TamuGeoInnova
 
 This repository is powered by [Nx](https://nx.dev/). It provides the development tooling that enables many applications and libraries to co-exist in the same repository.
 
-Of interest are two root-level directories: `apps` and `libs`. `apps` contains application entry points but contain very little actual logic. This is by design. 
+Of interest are two root-level directories: `apps` and `libs`. `apps` contains application entry points but contain very little actual logic. This is by design.
 
 `libs` on the other hand, contain all the business logic for any given application. Libraries can be used in one or many different applications, and this flexibility allows the authoring of re-usable units across the entire repository.
 
@@ -118,19 +122,18 @@ While there is a long list of applications in the `apps` directory, some of them
 
 #### Regressions and status checks
 
-All changes cannot break Aggiemap or other applications. Continuous integration pipelines will catch most show-stopping problems but keep in mind the potential for downstream breaking changes. 
+All changes cannot break Aggiemap or other applications. Continuous integration pipelines will catch most show-stopping problems but keep in mind the potential for downstream breaking changes.
 
 Nx provides a nifty interactive dependency graph tool that allows you to select applications/libraries and displays a complete diagram of apps/libs that depend on it and that it depends on. You can use this tool to get insight into the impact of your changes.
 
 `nx dep-graph`
-
-
 
 #### Unit tests
 
 The lack of coverage is where we could see a lot of improvement. However, they are NOT required at the moment but are highly appreciated. Unit tests are written with Jest and e2e tests with Cypress.
 
 ### General feedback or inquiries
+
 ---
 
 For general questions, feedback, or inquiries that require private communication, please email gis@tamu.edu.

@@ -8,9 +8,8 @@ describe('StrapiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ StrapiComponent ]
-    })
-    .compileComponents();
+      declarations: [StrapiComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

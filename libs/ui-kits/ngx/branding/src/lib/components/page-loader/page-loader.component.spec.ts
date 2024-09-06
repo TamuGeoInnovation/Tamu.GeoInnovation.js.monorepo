@@ -8,9 +8,8 @@ describe('PageLoaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PageLoaderComponent ]
-    })
-    .compileComponents();
+      declarations: [PageLoaderComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

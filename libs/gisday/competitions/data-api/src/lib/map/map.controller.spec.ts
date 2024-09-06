@@ -6,7 +6,7 @@ describe('Map Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [MapController],
+      controllers: [MapController]
     }).compile();
 
     controller = module.get<MapController>(MapController);

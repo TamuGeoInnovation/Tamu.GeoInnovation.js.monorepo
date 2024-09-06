@@ -39,7 +39,7 @@ export class LockdownsService {
     return this.http.get<Array<Lockdown>>(`${this.resource}/user/${email}`).pipe(
       map((lockdowns) => {
         return lockdowns.sort((a, b) => {
-          return Date.parse((b.created as unknown) as string) - Date.parse((a.created as unknown) as string);
+          return Date.parse(b.created as unknown as string) - Date.parse(a.created as unknown as string);
         });
       })
     );

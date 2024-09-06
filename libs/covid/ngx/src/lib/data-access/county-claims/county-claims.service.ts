@@ -28,7 +28,7 @@ export class CountyClaimsService {
     return this.http.get<Array<Partial<CountyClaim>>>(`${this.resource}/claim/${email}`).pipe(
       map((claims) => {
         return claims.sort((a, b) => {
-          return Date.parse((b.created as unknown) as string) - Date.parse((a.created as unknown) as string);
+          return Date.parse(b.created as unknown as string) - Date.parse(a.created as unknown as string);
         });
       })
     );

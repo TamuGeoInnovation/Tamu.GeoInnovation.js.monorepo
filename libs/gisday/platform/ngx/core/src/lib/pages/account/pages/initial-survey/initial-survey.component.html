@@ -30,7 +30,8 @@
         <div class="flex flex-column session-rating-questionnaire leader-1">
           <form [formGroup]="dataGroup">
             <div *ngFor="let question of ($initalSurveyQuestions | async)">
-              <div *ngIf="question.questionType.type === 'boolean'"> <!-- If I remember correctly this works weird with === instead of ==, probably my fault - Aaron H -->
+              <div *ngIf="question.questionType.type === 'boolean'">
+                <!-- If I remember correctly this works weird with === instead of ==, probably my fault - Aaron H -->
                 <p>{{question.questionText}}</p>
                 <div class="interactive-controls boolean">
                   <div class="control-inputs trailer-1 flex flex-row">

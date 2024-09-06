@@ -7,7 +7,7 @@
     </ng-template>
     <p [innerHTML]="dataSource.text | markdownParse"></p>
   </div>
-  <div class="section-content-block" *ngSwitchCase="'h2'"  id="{{dataSource?.anchor}}">
+  <div class="section-content-block" *ngSwitchCase="'h2'" id="{{dataSource?.anchor}}">
     <h2>{{dataSource.title}} <span> {{'&mdash; ' + dataSource.subtitle}}</span></h2>
     <p [innerHTML]="dataSource.text | markdownParse"></p>
   </div>

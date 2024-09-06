@@ -8,9 +8,8 @@ describe('BetaPromptComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BetaPromptComponent ]
-    })
-    .compileComponents();
+      declarations: [BetaPromptComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

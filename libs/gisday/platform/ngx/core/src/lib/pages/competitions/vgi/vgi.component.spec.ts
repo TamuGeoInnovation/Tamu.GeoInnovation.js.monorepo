@@ -8,9 +8,8 @@ describe('VgiComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VgiComponent ]
-    })
-    .compileComponents();
+      declarations: [VgiComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

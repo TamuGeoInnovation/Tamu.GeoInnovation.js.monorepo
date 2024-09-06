@@ -8,9 +8,8 @@ describe('TotalRecycledCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TotalRecycledCardComponent ]
-    })
-    .compileComponents();
+      declarations: [TotalRecycledCardComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

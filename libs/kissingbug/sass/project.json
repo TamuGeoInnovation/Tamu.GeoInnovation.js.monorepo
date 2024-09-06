@@ -1,6 +1,6 @@
 {
   "projectType": "library",
-  "root": "kissingbug/sass",
+  "root": "libs/kissingbug/sass",
   "tags": ["type:styles"],
   "targets": {}
 }

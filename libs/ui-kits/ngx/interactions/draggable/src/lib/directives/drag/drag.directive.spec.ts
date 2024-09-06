@@ -4,9 +4,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { DragDirective } from './drag.directive';
 
 @Component({
-  template: `
-    <div draggable></div>
-  `
+  template: ` <div draggable></div> `
 })
 class MockDraggableDirectiveComponent {
   @ViewChild(DragDirective, { static: true })

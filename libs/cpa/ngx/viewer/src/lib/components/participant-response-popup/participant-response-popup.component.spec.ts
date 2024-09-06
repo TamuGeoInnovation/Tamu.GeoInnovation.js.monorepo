@@ -8,9 +8,8 @@ describe('ParticipantResponsePopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ParticipantResponsePopupComponent ]
-    })
-    .compileComponents();
+      declarations: [ParticipantResponsePopupComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

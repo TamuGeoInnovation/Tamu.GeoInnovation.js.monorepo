@@ -26,7 +26,7 @@ export class LockdownInfosListComponent implements OnInit {
     this.infos = this.ls.getLockdownInfos(guid).pipe(
       map((lockdown) => {
         lockdown.infos = lockdown.infos.sort(
-          (a, b) => Date.parse((b.created as unknown) as string) - Date.parse((a.created as unknown) as string)
+          (a, b) => Date.parse(b.created as unknown as string) - Date.parse(a.created as unknown as string)
         );
         return lockdown;
       }),

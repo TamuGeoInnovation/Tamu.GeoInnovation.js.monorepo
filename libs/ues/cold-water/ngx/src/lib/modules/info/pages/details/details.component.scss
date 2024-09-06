@@ -32,13 +32,13 @@
   }
 }
 
-.content-status{
+.content-status {
   @include flexbox();
   @include flex-direction(row);
   @include justify-content(center);
   @include align-items(center);
 }
 
-table tbody tr{
+table tbody tr {
   cursor: pointer;
 }

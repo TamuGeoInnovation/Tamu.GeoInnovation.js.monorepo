@@ -8,9 +8,8 @@ describe('StormwaterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StormwaterComponent ]
-    })
-    .compileComponents();
+      declarations: [StormwaterComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
