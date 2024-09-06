@@ -1,4 +1,4 @@
-﻿param( 
+param( 
     [parameter(Position=0, Mandatory=$true, HelpMessage="Value of the target sites IIS binding.")]
     [string]$SiteBinding
 )
