@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-submit-bug-form',

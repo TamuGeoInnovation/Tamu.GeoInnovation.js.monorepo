@@ -7,9 +7,9 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { IReverseGeocoderOptions, ReverseGeocode, ReverseGeocodeResult } from '@tamu-gisc/geoprocessing-v5';
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-reverse-geocoding-basic',
