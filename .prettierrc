@@ -3,7 +3,7 @@
   "semi": true,
   "singleQuote": true,
   "arrowParens": "always",
-  "endOfLine": "crlf",
+  "endOfLine": "lf",
   "trailingComma": "none",
   "overrides": [
     {
@@ -22,3 +22,4 @@
     }
   ]
 }
+

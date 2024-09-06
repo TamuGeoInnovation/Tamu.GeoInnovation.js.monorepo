@@ -1,6 +1,7 @@
 {
   "projectType": "library",
-  "root": "gisday/sass",
+  "root": "libs/gisday/sass",
   "tags": ["type:styles"],
   "targets": {}
 }
+
