@@ -20,11 +20,9 @@ export class UserService {
   };
 
   constructor(private http: HttpClient, private env: EnvironmentService) {
-    this.http
-      .get<IUser>(this.env.value('apiUrl') + '/oidc/userinfo', { withCredentials: true })
-      .subscribe((user) => {
-        this.user.next(user);
-      });
+    this.http.get<IUser>(this.env.value('apiUrl') + '/oidc/userinfo', { withCredentials: true }).subscribe((user) => {
+      this.user.next(user);
+    });
   }
 
   public isAuthorized(authorizedRoles: Array<Roles>): Observable<boolean> {

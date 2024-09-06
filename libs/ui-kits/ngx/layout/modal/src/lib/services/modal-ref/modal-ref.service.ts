@@ -22,4 +22,3 @@ export class ModalRefService {
     this.closeSignal.next(d);
   }
 }
-

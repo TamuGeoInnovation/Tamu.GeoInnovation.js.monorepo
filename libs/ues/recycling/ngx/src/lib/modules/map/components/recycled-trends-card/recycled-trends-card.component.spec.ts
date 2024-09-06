@@ -8,9 +8,8 @@ describe('RecycledTrendsCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecycledTrendsCardComponent ]
-    })
-    .compileComponents();
+      declarations: [RecycledTrendsCardComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

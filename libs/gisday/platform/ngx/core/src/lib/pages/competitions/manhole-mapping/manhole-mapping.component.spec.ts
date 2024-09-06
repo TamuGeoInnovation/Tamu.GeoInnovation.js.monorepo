@@ -8,9 +8,8 @@ describe('ManholeMappingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManholeMappingComponent ]
-    })
-    .compileComponents();
+      declarations: [ManholeMappingComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

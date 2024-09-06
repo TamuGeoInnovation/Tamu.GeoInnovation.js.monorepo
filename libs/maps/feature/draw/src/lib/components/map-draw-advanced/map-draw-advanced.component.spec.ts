@@ -8,9 +8,8 @@ describe('MapDrawAdvancedComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MapDrawAdvancedComponent ]
-    })
-    .compileComponents();
+      declarations: [MapDrawAdvancedComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

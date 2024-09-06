@@ -14,4 +14,3 @@ export class BetaPromptComponent {
     this.mr.close(true);
   }
 }
-

@@ -8,9 +8,8 @@ describe('DynamicZoneComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DynamicZoneComponent ]
-    })
-    .compileComponents();
+      declarations: [DynamicZoneComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

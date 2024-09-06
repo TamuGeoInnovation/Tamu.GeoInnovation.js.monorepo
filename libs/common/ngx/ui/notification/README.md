@@ -1,4 +1,3 @@
-
 # TAMU GISC Ngx Toast Notifications
 
 This library allows developers to quickly invoke toast-style notifications prompts with a couple display strategies such as on-demand, time-restricted, and recurring.
@@ -133,14 +132,11 @@ export class ExampleComponent implements OnInit {
 | `range`       | [number, number]   | An array of two unix timestamps (start and end). When provided, the notification will ONLY display when system time is between the provided ranges.                                                     |
 | `action`      | NotificationAction | Object representing an internal app routing event. If provided, the application will route to the action value.                                                                                         |
 
-
 ## NotificationAction
 
-|   Property | Type | Description  |
-|---|---|---|
-| `action` \* | string | Only action `route` is valid at the moment |
-| `value` \* | string | The internal application route that will be navigated to when the notification is clicked on  |
-
-
+| Property    | Type   | Description                                                                                  |
+| ----------- | ------ | -------------------------------------------------------------------------------------------- |
+| `action` \* | string | Only action `route` is valid at the moment                                                   |
+| `value` \*  | string | The internal application route that will be navigated to when the notification is clicked on |
 
 _\* denotes required fields_

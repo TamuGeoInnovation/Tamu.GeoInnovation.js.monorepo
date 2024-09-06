@@ -8,9 +8,8 @@ describe('BuildingBountyComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BuildingBountyComponent ]
-    })
-    .compileComponents();
+      declarations: [BuildingBountyComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('FacebookComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FacebookComponent ]
-    })
-    .compileComponents();
+      declarations: [FacebookComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

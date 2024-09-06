@@ -8,9 +8,8 @@ describe('WaybackComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WaybackComponent ]
-    })
-    .compileComponents();
+      declarations: [WaybackComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

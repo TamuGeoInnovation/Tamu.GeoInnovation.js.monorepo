@@ -15,9 +15,6 @@ export function timeStringForDate(date: Date): string {
     hours -= 12;
     ampm = 'PM';
   }
-  const minutes = date
-    .getMinutes()
-    .toString()
-    .padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
   return hours.toString().padStart(2, '0') + ':' + minutes + ' ' + ampm;
 }

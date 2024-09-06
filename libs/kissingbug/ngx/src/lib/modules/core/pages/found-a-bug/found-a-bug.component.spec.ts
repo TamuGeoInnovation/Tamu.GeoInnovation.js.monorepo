@@ -8,9 +8,8 @@ describe('FoundABugComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FoundABugComponent ]
-    })
-    .compileComponents();
+      declarations: [FoundABugComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

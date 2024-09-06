@@ -8,9 +8,8 @@ describe('PerspectiveToggleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PerspectiveToggleComponent ]
-    })
-    .compileComponents();
+      declarations: [PerspectiveToggleComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

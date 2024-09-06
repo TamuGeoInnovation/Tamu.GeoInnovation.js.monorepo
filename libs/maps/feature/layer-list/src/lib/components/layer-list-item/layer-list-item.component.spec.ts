@@ -8,9 +8,8 @@ describe('LayerListItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LayerListItemComponent ]
-    })
-    .compileComponents();
+      declarations: [LayerListItemComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

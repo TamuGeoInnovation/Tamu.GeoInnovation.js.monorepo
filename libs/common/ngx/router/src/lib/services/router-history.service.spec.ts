@@ -15,7 +15,7 @@ class MockRouter {
 describe('RouterHistoryService', () => {
   it('should work for a single event', (done) => {
     const mockRouter = new MockRouter();
-    const service: RouterHistoryService = new RouterHistoryService((mockRouter as unknown) as Router);
+    const service: RouterHistoryService = new RouterHistoryService(mockRouter as unknown as Router);
     expect(service).toBeTruthy();
     service.last().subscribe((event) => {
       expect(event).toEqual(mockRouter.ne1);

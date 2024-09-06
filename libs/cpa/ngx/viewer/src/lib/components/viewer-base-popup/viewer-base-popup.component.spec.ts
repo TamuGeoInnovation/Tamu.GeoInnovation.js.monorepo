@@ -8,9 +8,8 @@ describe('ViewerBasePopupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ViewerBasePopupComponent ]
-    })
-    .compileComponents();
+      declarations: [ViewerBasePopupComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

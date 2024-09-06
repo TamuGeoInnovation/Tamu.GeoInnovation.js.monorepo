@@ -4,9 +4,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { RenderHostDirective } from './render-host.directive';
 
 @Component({
-  template: `
-    <div render-host></div>
-  `
+  template: ` <div render-host></div> `
 })
 class MockRenderHostDirectiveComponent {
   @ViewChild(RenderHostDirective, { static: true })

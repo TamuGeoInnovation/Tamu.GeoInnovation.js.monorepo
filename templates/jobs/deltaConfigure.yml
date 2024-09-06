@@ -31,4 +31,3 @@ jobs:
         name: 'last_successful_sha'
         env:
           AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
-

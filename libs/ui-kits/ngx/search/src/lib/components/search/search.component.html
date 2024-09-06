@@ -15,9 +15,7 @@
   <div class="search-results-container" role="listbox" (keydown)="keyControl($event, 'focus', '.focusable')">
     <div *ngIf="searchActionsActive">
       <div class="my-location" *ngIf="canGeolocate">
-        <p (mousedown)="geolocate()" (keydown.space)="geolocate()" (keydown.enter)="geolocate()" (focus)="setFocus()" (blur)="loseFocus()" class="focusable" tabindex="-1" role="option">
-          Current Location
-        </p>
+        <p (mousedown)="geolocate()" (keydown.space)="geolocate()" (keydown.enter)="geolocate()" (focus)="setFocus()" (blur)="loseFocus()" class="focusable" tabindex="-1" role="option">Current Location</p>
       </div>
     </div>
 
@@ -26,9 +24,7 @@
         <div *ngIf="result.features && result.features.length > 0">
           <p class="category-name">{{ result.name }}</p>
           <div class="result-item" *ngFor="let feature of result.features">
-            <p (mousedown)="setSelected(feature, result)" (keydown.space)="setSelected(feature, result)" (keydown.enter)="setSelected(feature, result)" (keydown.esc)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" class="focusable" tabindex="-1" role="option">
-              {{ evaluateDisplayTemplate(feature, result.displayTemplate) | titlecase }}
-            </p>
+            <p (mousedown)="setSelected(feature, result)" (keydown.space)="setSelected(feature, result)" (keydown.enter)="setSelected(feature, result)" (keydown.esc)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" class="focusable" tabindex="-1" role="option">{{ evaluateDisplayTemplate(feature, result.displayTemplate) | titlecase }}</p>
           </div>
         </div>
       </div>

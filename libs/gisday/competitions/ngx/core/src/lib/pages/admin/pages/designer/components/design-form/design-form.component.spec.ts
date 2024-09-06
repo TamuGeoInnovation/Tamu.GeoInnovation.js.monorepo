@@ -8,9 +8,8 @@ describe('DesignFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DesignFormComponent ]
-    })
-    .compileComponents();
+      declarations: [DesignFormComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

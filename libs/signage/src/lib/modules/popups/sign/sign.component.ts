@@ -24,10 +24,7 @@ export class SignPopupComponent extends BasePopupComponent implements OnInit {
           submissionGuid: this.data.attributes.guid
         }
       })
-      .pipe(
-        pluck<ISignagePhotoResponse, ISignagePhoto>('items', '0'),
-        shareReplay(1)
-      );
+      .pipe(pluck<ISignagePhotoResponse, ISignagePhoto>('items', '0'), shareReplay(1));
   }
 }
 

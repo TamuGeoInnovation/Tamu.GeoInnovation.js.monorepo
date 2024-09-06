@@ -8,9 +8,8 @@ describe('AdminTagComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminTagComponent ]
-    })
-    .compileComponents();
+      declarations: [AdminTagComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

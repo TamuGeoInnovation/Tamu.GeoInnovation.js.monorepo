@@ -8,9 +8,8 @@ describe('LightPoleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LightPoleComponent ]
-    })
-    .compileComponents();
+      declarations: [LightPoleComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

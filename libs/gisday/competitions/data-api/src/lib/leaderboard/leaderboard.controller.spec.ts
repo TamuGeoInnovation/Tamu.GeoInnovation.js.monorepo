@@ -6,7 +6,7 @@ describe('Leaderboard Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [LeaderboardController],
+      controllers: [LeaderboardController]
     }).compile();
 
     controller = module.get<LeaderboardController>(LeaderboardController);

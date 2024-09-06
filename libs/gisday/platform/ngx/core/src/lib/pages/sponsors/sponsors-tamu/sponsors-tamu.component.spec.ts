@@ -8,9 +8,8 @@ describe('SponsorsTamuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SponsorsTamuComponent ]
-    })
-    .compileComponents();
+      declarations: [SponsorsTamuComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

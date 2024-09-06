@@ -8,9 +8,8 @@ describe('TimeSliderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TimeSliderComponent ]
-    })
-    .compileComponents();
+      declarations: [TimeSliderComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

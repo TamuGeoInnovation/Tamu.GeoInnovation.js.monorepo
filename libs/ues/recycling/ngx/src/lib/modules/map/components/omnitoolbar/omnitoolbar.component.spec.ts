@@ -8,9 +8,8 @@ describe('OmnitoolbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OmnitoolbarComponent ]
-    })
-    .compileComponents();
+      declarations: [OmnitoolbarComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

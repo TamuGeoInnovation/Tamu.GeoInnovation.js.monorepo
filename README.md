@@ -21,7 +21,7 @@ The project name is exactly the name of the directory. For example, the command 
 
 `nx run aggiemap-angular:serve`
 
-*Note: On macOS systems it might be required to prepend the command with `npx`*
+_Note: On macOS systems it might be required to prepend the command with `npx`_
 
 Once the application is running, it will be available locally @ http://localhost:4200.
 
@@ -29,6 +29,6 @@ As you make changes to the project, the local web server will automatically rebu
 
 ## Contributing
 
-If you would like to contribute, please read the[ contribution guidelines](CONTRIBUTING.md). 
+If you would like to contribute, please read the[ contribution guidelines](CONTRIBUTING.md).
 
 For general questions, feedback, or inquiries that require private communication, please email gis@tamu.edu.

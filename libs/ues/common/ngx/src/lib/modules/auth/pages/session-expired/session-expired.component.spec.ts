@@ -8,9 +8,8 @@ describe('SessionExpiredComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SessionExpiredComponent ]
-    })
-    .compileComponents();
+      declarations: [SessionExpiredComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

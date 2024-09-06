@@ -18,13 +18,11 @@ export class InterventionService {
    * Gets a specific intervention record by intervention id.
    */
   public getIntervention(id: number | string) {
-    return this.http
-      .get<ValveIntervention>(`${this.url}/interventions/${id}`, { withCredentials: true })
-      .pipe(
-        map((intervention) => {
-          return intervention.attributes;
-        })
-      );
+    return this.http.get<ValveIntervention>(`${this.url}/interventions/${id}`, { withCredentials: true }).pipe(
+      map((intervention) => {
+        return intervention.attributes;
+      })
+    );
   }
 
   /**

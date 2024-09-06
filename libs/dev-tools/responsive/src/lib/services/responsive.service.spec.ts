@@ -22,14 +22,14 @@ describe('ResponsiveService', () => {
   }));
 
   it('should be mobile for <768', () => {
-    ((window as unknown) as { innerWidth: number }).innerWidth = 700;
+    (window as unknown as { innerWidth: number }).innerWidth = 700;
     inject([ResponsiveService], (responsiveService: ResponsiveService) => {
       expect(responsiveService.snapshot).toEqual({ isMobile: true, screenWidth: 700 });
     })();
   });
 
   it('should not be mobile for >768 && <992', () => {
-    ((window as unknown) as { innerWidth: number }).innerWidth = 900;
+    (window as unknown as { innerWidth: number }).innerWidth = 900;
     inject([ResponsiveService], (responsiveService: ResponsiveService) => {
       expect(responsiveService.snapshot).toEqual({ isMobile: false, screenWidth: 900 });
     })();

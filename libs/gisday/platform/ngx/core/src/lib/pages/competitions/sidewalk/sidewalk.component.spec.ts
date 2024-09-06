@@ -8,9 +8,8 @@ describe('SidewalkComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SidewalkComponent ]
-    })
-    .compileComponents();
+      declarations: [SidewalkComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
