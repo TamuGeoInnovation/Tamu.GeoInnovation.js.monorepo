@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
@@ -9,6 +9,7 @@ import {
   Event,
   EventBroadcast,
   EventLocation,
+  Season,
   Speaker,
   Sponsor,
   Tag,
@@ -17,6 +18,8 @@ import {
 import { BaseProvider } from '../_base/base-provider';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
+import { SeasonService } from '../season/season.service';
+import { ActiveSeasonDto } from '../season/dto/active-season.dto';
 
 @Injectable()
 export class EventProvider extends BaseProvider<Event> {
@@ -27,15 +30,48 @@ export class EventProvider extends BaseProvider<Event> {
     @InjectRepository(Speaker) private speakerRepo: Repository<Speaker>,
     @InjectRepository(Tag) private readonly tagRepo: Repository<Tag>,
     @InjectRepository(Sponsor) private sponsorRepo: Repository<Sponsor>,
-    @InjectRepository(UserRsvp) private userRsvpRepo: Repository<UserRsvp>
+    @InjectRepository(UserRsvp) private userRsvpRepo: Repository<UserRsvp>,
+    private readonly seasonProvider: SeasonService
   ) {
     super(eventRepo);
   }
 
-  public getEvents() {
-    return this.find({
-      relations: EntityRelationsLUT.getRelation('event')
-    });
+  public async getEvents(seasonGuid?: string) {
+    try {
+      let season: ActiveSeasonDto | Season;
+
+      if (seasonGuid) {
+        season = await this.seasonProvider.findOne({
+          where: {
+            guid: seasonGuid
+          }
+        });
+      } else {
+        season = await this.seasonProvider.findOneActive();
+      }
+
+      if (season) {
+        const eventDays = await this.seasonProvider.findOne({
+          where: {
+            guid: season.guid
+          },
+          relations: ['days', 'days.events', 'days.events.day', 'days.events.location']
+        });
+
+        return eventDays.days.reduce((acc, curr) => {
+          return acc.concat(curr.events);
+        }, []);
+      } else {
+        return this.eventRepo.find({
+          relations: EntityRelationsLUT.getRelation('event'),
+          order: {
+            startTime: 'ASC'
+          }
+        });
+      }
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   public async insertEvent(event: DeepPartial<Event>) {

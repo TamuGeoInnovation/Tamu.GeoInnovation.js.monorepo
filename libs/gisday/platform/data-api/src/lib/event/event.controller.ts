@@ -1,4 +1,16 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards
+} from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
@@ -45,13 +57,8 @@ export class EventController {
   }
 
   @Get()
-  public async getEvents() {
-    return this.provider.eventRepo.find({
-      relations: EntityRelationsLUT.getRelation('event'),
-      order: {
-        startTime: 'ASC'
-      }
-    });
+  public async getEvents(@Query('seasonGuid') seasonGuid?: string) {
+    return this.provider.getEvents(seasonGuid);
   }
 
   @Permissions(['create:events'])
