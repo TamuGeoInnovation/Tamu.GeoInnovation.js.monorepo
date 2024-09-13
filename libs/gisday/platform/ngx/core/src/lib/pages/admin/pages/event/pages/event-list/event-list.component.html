@@ -3,6 +3,7 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">Events</div>
       <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(activeSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
         <a routerLink="add">Add event <span class="material-icons action">add</span></a>
       </div>
     </div>
@@ -16,7 +17,6 @@
             <th>Day</th>
             <th>Start Time</th>
             <th>End Time</th>
-            <th>Updated</th>
           </tr>
         </thead>
 
@@ -27,7 +27,6 @@
             <td>{{entity?.day?.date | date:'shortDate'}}</td>
             <td>{{entity?.day.date | parseDateTimeStrings: entity?.startTime | date: 'h:mm a'}}</td>
             <td>{{entity?.day.date | parseDateTimeStrings: entity?.endTime | date: 'h:mm a'}}</td>
-            <td>{{entity?.updated | date:'short'}}</td>
           </tr>
         </tbody>
       </table>

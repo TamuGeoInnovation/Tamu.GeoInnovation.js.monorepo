@@ -31,6 +31,7 @@ export class EventProvider extends BaseProvider<Event> {
     @InjectRepository(Tag) private readonly tagRepo: Repository<Tag>,
     @InjectRepository(Sponsor) private sponsorRepo: Repository<Sponsor>,
     @InjectRepository(UserRsvp) private userRsvpRepo: Repository<UserRsvp>,
+    @InjectRepository(Season) private seasonRepo: Repository<Season>,
     private readonly seasonProvider: SeasonService
   ) {
     super(eventRepo);
@@ -51,16 +52,18 @@ export class EventProvider extends BaseProvider<Event> {
       }
 
       if (season) {
-        const eventDays = await this.seasonProvider.findOne({
-          where: {
-            guid: season.guid
-          },
-          relations: ['days', 'days.events', 'days.events.day', 'days.events.location']
-        });
+        const [s] = await this.seasonRepo
+          .createQueryBuilder('season')
+          .leftJoinAndSelect('season.days', 'day')
+          .leftJoinAndSelect('day.events', 'event')
+          .leftJoinAndSelect('event.day', 'eventDay')
+          .leftJoinAndSelect('event.location', 'location')
+          .where('season.guid = :guid', { guid: season.guid })
+          .orderBy('day.date', 'ASC')
+          .addOrderBy('event.startTime', 'ASC')
+          .getMany();
 
-        return eventDays.days.reduce((acc, curr) => {
-          return acc.concat(curr.events);
-        }, []);
+        return s.days.map((day) => day.events).flat();
       } else {
         return this.eventRepo.find({
           relations: EntityRelationsLUT.getRelation('event'),
