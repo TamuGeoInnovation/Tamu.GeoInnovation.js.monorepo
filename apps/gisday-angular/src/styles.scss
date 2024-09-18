@@ -1571,6 +1571,9 @@ tr:hover td > span.delete {
   @include flex-direction(row);
   @include justify-content(space-between);
   font-size: 1rem;
+  position: sticky;
+  bottom: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
   .selected-actions {
     @include flexbox();
