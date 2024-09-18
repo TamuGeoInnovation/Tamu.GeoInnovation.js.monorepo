@@ -3,33 +3,48 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">Events</div>
       <div class="form-section-actions">
-        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(activeSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
         <a routerLink="add">Add event <span class="material-icons action">add</span></a>
       </div>
     </div>
 
-    <div class="form-section-body">
-      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noTags">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>Day</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-          </tr>
-        </thead>
+    <div class="selected-action-container info-block context" *ngIf="(selectedRows$ | async)?.length > 0">
+      <div>
+        <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
+      </div>
 
-        <tbody>
-          <tr class="selectable" *ngFor="let entity of ($entities | async)" [routerLink]="['edit', entity.guid]">
-            <td>{{entity?.name}}</td>
-            <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
-            <td>{{entity?.day?.date | date:'shortDate'}}</td>
-            <td>{{entity?.day.date | parseDateTimeStrings: entity?.startTime | date: 'h:mm a'}}</td>
-            <td>{{entity?.day.date | parseDateTimeStrings: entity?.endTime | date: 'h:mm a'}}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="selected-actions">
+        <p class="selected-action">Copy <span class="material-icons action">content_copy</span></p>
+        <p class="selected-action caution">Delete <span class="material-icons action">delete_forever</span></p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <ng-container *ngIf="$entities | async as events">
+        <table class="floating-table" *ngIf="events.length > 0; else noTags">
+          <thead>
+            <tr>
+              <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(events)" [checked]="(selectedRows$ | async)?.length === events.length "></tamu-gisc-checkbox></th>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Day</th>
+              <th class="nowrap">Start Time</th>
+              <th class="nowrap">End Time</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="selectable" *ngFor="let entity of ($entities | async)" [routerLink]="['edit', entity.guid]">
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
+              <td>{{entity?.name}}</td>
+              <td>{{entity?.location?.building}} {{entity?.location?.room}}</td>
+              <td>{{entity?.day?.date | date:'shortDate'}}</td>
+              <td>{{entity?.day.date | parseDateTimeStrings: entity?.startTime | date: 'h:mm a'}}</td>
+              <td>{{entity?.day.date | parseDateTimeStrings: entity?.endTime | date: 'h:mm a'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
 
       <ng-template #noTags>
         <p>There are no events for the active season.</p>
