@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { iif, map, Observable, of, scan, shareReplay, startWith, Subject, switchMap } from 'rxjs';
+import { iif, map, Observable, of, scan, shareReplay, startWith, Subject, switchMap, tap, withLatestFrom } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EventService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event, Season } from '@tamu-gisc/gisday/platform/data-api';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { EntityCopyModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
@@ -24,7 +26,8 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
     private readonly eventService: EventService,
     private readonly ss: SeasonService,
     private readonly ar: ActivatedRoute,
-    private readonly rt: Router
+    private readonly rt: Router,
+    private readonly ms: ModalService
   ) {
     super(eventService);
   }
@@ -51,6 +54,11 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
         } else {
           return this.activeSeason$.pipe(map((activeSeason) => activeSeason));
         }
+      }),
+      tap((season) => {
+        if (season) {
+          this._selectRow$.next(null);
+        }
       })
     );
 
@@ -63,6 +71,11 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
 
     this.selectedRows$ = this._selectRow$.pipe(
       scan((acc, guidOrList) => {
+        // Clearing mechanism for whenever the entity list changes, reset selected rows
+        if (guidOrList === null) {
+          return [];
+        }
+
         if (Array.isArray(guidOrList)) {
           // If the acc is the same size as the incoming list, we assume that all items are selected
           if (acc.length === guidOrList.length) {
@@ -98,5 +111,33 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
 
   public toggleAllRows(events: Array<Partial<Event>>) {
     this._selectRow$.next(events.map((event) => event.guid));
+  }
+
+  public promptCopyModal() {
+    of(true)
+      .pipe(
+        withLatestFrom(this.selectedRows$),
+        switchMap(([, guids]) => {
+          return this.ms.open(EntityCopyModalComponent, {
+            data: {
+              identities: guids,
+              entityType: 'Event',
+              notice:
+                'This action will only copy event details and not any associated relations such as event date, presenters, or location as those change from season to season. Those will have to be set manually on a per-event basis.'
+            }
+          });
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          if (result) {
+            console.log('Copy confirmed', result);
+
+            this._selectRow$.next(null);
+          } else {
+            console.log('Copy canceled');
+          }
+        }
+      });
   }
 }
