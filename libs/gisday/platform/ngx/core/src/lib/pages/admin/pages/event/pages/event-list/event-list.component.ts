@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { map, merge, shareReplay, Subject, switchMap, withLatestFrom } from 'rxjs';
+import { iif, map, Observable, of, scan, shareReplay, startWith, Subject, switchMap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { EventService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { Event } from '@tamu-gisc/gisday/platform/data-api';
+import { Event, Season } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
@@ -14,32 +15,88 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 export class EventListComponent extends BaseAdminListComponent<Event> implements OnInit {
   public seasons$ = this.ss.seasons$;
   public activeSeason$ = this.ss.activeSeason$;
-  public selectedSeason$: Subject<string> = new Subject();
+  public selectedSeason$: Observable<Partial<Season>>;
 
-  constructor(private readonly eventService: EventService, private readonly ss: SeasonService) {
+  private _selectRow$: Subject<string | Array<string>> = new Subject();
+  public selectedRows$: Observable<Array<string>>;
+
+  constructor(
+    private readonly eventService: EventService,
+    private readonly ss: SeasonService,
+    private readonly ar: ActivatedRoute,
+    private readonly rt: Router
+  ) {
     super(eventService);
   }
 
   public ngOnInit() {
     super.ngOnInit();
 
-    this.$entities = merge(
-      this.activeSeason$,
-      this.selectedSeason$.pipe(
-        withLatestFrom(this.seasons$),
-        map(([seasonGuid, seasons]) => {
-          return seasons.find((season) => season.guid === seasonGuid);
-        })
-      )
-    ).pipe(
-      switchMap((season) => {
-        return this.eventService.getEvents(season.guid);
+    this.selectedSeason$ = this.ar.queryParams.pipe(
+      map((params) => params.season),
+      switchMap((seasonGuid) => {
+        return this.seasons$.pipe(
+          map((seasons) => {
+            if (seasonGuid) {
+              return seasons.find((season) => season.guid === seasonGuid);
+            }
+
+            return null;
+          })
+        );
       }),
+      switchMap((season) => {
+        if (season) {
+          return of(season);
+        } else {
+          return this.activeSeason$.pipe(map((activeSeason) => activeSeason));
+        }
+      })
+    );
+
+    this.$entities = this.selectedSeason$.pipe(
+      switchMap((season) => {
+        return iif(() => season === null, this.eventService.getEntities(), this.eventService.getEvents(season.guid));
+      }),
+      shareReplay()
+    );
+
+    this.selectedRows$ = this._selectRow$.pipe(
+      scan((acc, guidOrList) => {
+        if (Array.isArray(guidOrList)) {
+          // If the acc is the same size as the incoming list, we assume that all items are selected
+          if (acc.length === guidOrList.length) {
+            return [];
+          }
+
+          return guidOrList;
+        }
+
+        if (acc.includes(guidOrList)) {
+          return acc.filter((g) => g !== guidOrList);
+        } else {
+          return [...acc, guidOrList];
+        }
+      }, []),
+      startWith([]),
       shareReplay()
     );
   }
 
   public setSeason(seasonGuid: string) {
-    this.selectedSeason$.next(seasonGuid);
+    this.rt.navigate([], {
+      relativeTo: this.ar,
+      queryParams: {
+        season: seasonGuid
+      }
+    });
+  }
+
+  public toggleRow(guid: string) {
+    this._selectRow$.next(guid);
+  }
+
+  public toggleAllRows(events: Array<Partial<Event>>) {
+    this._selectRow$.next(events.map((event) => event.guid));
   }
 }
