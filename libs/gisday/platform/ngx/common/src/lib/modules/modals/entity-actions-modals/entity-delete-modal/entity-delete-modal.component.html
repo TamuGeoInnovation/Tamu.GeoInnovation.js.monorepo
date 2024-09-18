@@ -1,1 +1,14 @@
-<p>entity-delete-modal works!</p>
+<h2 class="trailer-1">Events {{entityType}}</h2>
+
+<p>You are about to <strong>permanently delete {{data?.identities?.length}} {{entityType}}</strong>.</p>
+
+<p class="info-block warning"><strong>Note</strong>: This action is immediate an irreversible.</p>
+
+<form [formGroup]="form" (ngSubmit)="confirmDeleteEntities()">
+  <tamu-gisc-textbox class="leader-1 trailer-2" type="number" formControlName="confirmationCount" [placeholder]="'Enter the number '+ data?.identities?.length+ ' to confirm this action.'" [floatLabel]="true"></tamu-gisc-textbox>
+
+  <div class="flex flex-row justify-end button-container">
+    <tamu-gisc-button class="trailer-1" fit="snug" look="secondary" value="Cancel" (click)="cancelDeleteEntities()"></tamu-gisc-button>
+    <tamu-gisc-button class="trailer-1" fit="snug" look="danger" value="Permanently Delete" [disabled]="(matchingConfirmationCount$ | async) === false" type="submit"></tamu-gisc-button>
+  </div>
+</form>

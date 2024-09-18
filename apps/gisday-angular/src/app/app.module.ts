@@ -3,6 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import * as WebFont from 'webfontloader';
@@ -70,7 +71,9 @@ const routeOptions: ExtraOptions = {
     RouterModule.forRoot(routes, routeOptions),
     EnvironmentModule,
     HttpClientModule,
-    NotificationModule
+    NotificationModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [AppComponent],
   providers: [

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EventService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { EntityCopyModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import { EntityCopyModalComponent, EntityDeleteModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
@@ -136,6 +136,32 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
             this._selectRow$.next(null);
           } else {
             console.log('Copy canceled');
+          }
+        }
+      });
+  }
+
+  public promptDeleteModal() {
+    of(true)
+      .pipe(
+        withLatestFrom(this.selectedRows$),
+        switchMap(([, guids]) => {
+          return this.ms.open(EntityDeleteModalComponent, {
+            data: {
+              identities: guids,
+              entityType: 'Event'
+            }
+          });
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          if (result) {
+            console.log('Delete confirmed', result);
+
+            this._selectRow$.next(null);
+          } else {
+            console.log('Delete canceled');
           }
         }
       });

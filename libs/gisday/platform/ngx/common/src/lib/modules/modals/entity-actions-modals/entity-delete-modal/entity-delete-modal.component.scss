@@ -1,0 +1,11 @@
+.button-container {
+  tamu-gisc-button {
+    &:first-child {
+      margin-right: 0.5rem;
+    }
+
+    &:last-child {
+      margin-left: 0.5rem;
+    }
+  }
+}
