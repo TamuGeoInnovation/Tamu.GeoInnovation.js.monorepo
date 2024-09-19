@@ -79,6 +79,10 @@ export abstract class BaseProvider<T> {
     }
   }
 
+  public async deleteEntities(guids: Array<string>) {
+    return this.repo.delete(guids);
+  }
+
   private _makeLookupOptions(guidOrOptions?: LookupManyOptions<T> | LookupOneOptions<T>) {
     let lookupOpts: FindOneOptions<T> | FindManyOptions<T>;
 

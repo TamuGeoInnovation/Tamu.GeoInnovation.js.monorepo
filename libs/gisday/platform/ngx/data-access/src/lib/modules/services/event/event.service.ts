@@ -42,6 +42,14 @@ export class EventService extends BaseService<Event> {
   public updateEventAttendance(guid: string, counts: EventAttendanceDto) {
     return this.http1.patch<EventAttendanceDto>(`${this.resource}/${guid}/attendance`, counts);
   }
+
+  public copyEventsIntoSeason(seasonGuid: string, eventGuids: Array<string>) {
+    return this.http1.post(`${this.resource}/clone`, { seasonGuid, eventGuids });
+  }
+
+  public deleteEvents(eventGuids: Array<string>) {
+    return this.http1.delete(`${this.resource}/${eventGuids.join(',')}`);
+  }
 }
 
 export interface EventResponse {

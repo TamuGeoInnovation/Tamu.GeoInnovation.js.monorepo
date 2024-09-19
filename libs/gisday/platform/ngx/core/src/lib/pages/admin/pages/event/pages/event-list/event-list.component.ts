@@ -1,11 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { iif, map, Observable, of, scan, shareReplay, startWith, Subject, switchMap, tap, withLatestFrom } from 'rxjs';
+import {
+  iif,
+  map,
+  merge,
+  Observable,
+  of,
+  scan,
+  shareReplay,
+  startWith,
+  Subject,
+  switchMap,
+  tap,
+  withLatestFrom
+} from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { EventService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { EntityCopyModalComponent, EntityDeleteModalComponent } from '@tamu-gisc/gisday/platform/ngx/common';
+import {
+  CopyEntityModalResponse,
+  EntityCopyModalComponent,
+  EntityDeleteModalComponent,
+  EntityDeleteModalResponse
+} from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
@@ -20,6 +39,7 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
   public selectedSeason$: Observable<Partial<Season>>;
 
   private _selectRow$: Subject<string | Array<string>> = new Subject();
+  private _refresh$: Subject<void> = new Subject();
   public selectedRows$: Observable<Array<string>>;
 
   constructor(
@@ -27,7 +47,8 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
     private readonly ss: SeasonService,
     private readonly ar: ActivatedRoute,
     private readonly rt: Router,
-    private readonly ms: ModalService
+    private readonly ms: ModalService,
+    private readonly ns: NotificationService
   ) {
     super(eventService);
   }
@@ -35,7 +56,7 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
   public ngOnInit() {
     super.ngOnInit();
 
-    this.selectedSeason$ = this.ar.queryParams.pipe(
+    this.selectedSeason$ = merge(this._refresh$.pipe(map(() => this.ar.snapshot.queryParams)), this.ar.queryParams).pipe(
       map((params) => params.season),
       switchMap((seasonGuid) => {
         return this.seasons$.pipe(
@@ -129,11 +150,19 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
         })
       )
       .subscribe({
-        next: (result) => {
-          if (result) {
-            console.log('Copy confirmed', result);
+        next: (result: CopyEntityModalResponse<string>) => {
+          if (result?.copy) {
+            this.eventService.copyEventsIntoSeason(result?.season?.guid, result.identities).subscribe(() => {
+              this.ns.toast({
+                message: `${result.identities.length} event${result?.identities.length > 1 ? 's' : ''} copied into season ${
+                  result.season?.year
+                }`,
+                id: 'event-copy-success',
+                title: 'Events Copied'
+              });
 
-            this._selectRow$.next(null);
+              this._selectRow$.next(null);
+            });
           } else {
             console.log('Copy canceled');
           }
@@ -155,11 +184,17 @@ export class EventListComponent extends BaseAdminListComponent<Event> implements
         })
       )
       .subscribe({
-        next: (result) => {
-          if (result) {
-            console.log('Delete confirmed', result);
+        next: (result: EntityDeleteModalResponse) => {
+          if (result?.delete) {
+            this.eventService.deleteEvents(result?.identities).subscribe(() => {
+              this.ns.toast({
+                message: `${result.identities.length} event${result.identities.length > 1 ? 's' : ''} deleted`,
+                id: 'event-delete-success',
+                title: 'Events Deleted'
+              });
 
-            this._selectRow$.next(null);
+              this._refresh$.next(null);
+            });
           } else {
             console.log('Delete canceled');
           }

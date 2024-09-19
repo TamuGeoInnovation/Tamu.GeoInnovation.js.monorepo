@@ -56,11 +56,13 @@ export class EntityCopyModalComponent implements OnInit {
   }
 
   public cancelCopyEntities() {
-    this.modalRef.close(false);
+    this.modalRef.close({
+      copy: false
+    });
   }
 }
 
-interface EntityCopyModalData {
+export interface EntityCopyModalData {
   /**
    * Array of identities to be copied. This is only used for displaying the count in the modal.
    */
@@ -75,4 +77,10 @@ interface EntityCopyModalData {
    * Optional notice to be displayed in the modal body.
    */
   notice?: string;
+}
+
+export interface CopyEntityModalResponse<T> {
+  copy: boolean;
+  season?: Partial<Season>;
+  identities?: Array<T>;
 }
