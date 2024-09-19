@@ -238,4 +238,73 @@ export class EventProvider extends BaseProvider<Event> {
 
     return event.save();
   }
+
+  /**
+   * Copies the provided events into the provided season.
+   *
+   * Lookups are performed for the provided season guid and event guids
+   */
+  public async copyEventsIntoSeason(seasonGuid: string, eventGuids: Array<string>) {
+    // User query builder to get season by guid, getting days relation, and ordering by date
+    const season = await this.seasonRepo
+      .createQueryBuilder('season')
+      .leftJoinAndSelect('season.days', 'day')
+      .where('season.guid = :guid', { guid: seasonGuid })
+      .orderBy('day.date', 'ASC')
+      .getOne();
+
+    if (!season) {
+      throw new NotFoundException();
+    }
+
+    if (season.days.length === 0) {
+      throw new UnprocessableEntityException(null, 'Season has no days');
+    }
+
+    const events = await this.eventRepo.find({
+      where: {
+        guid: In(eventGuids)
+      }
+    });
+
+    if (!events) {
+      throw new NotFoundException();
+    }
+
+    const newEvents = events.map((event) => {
+      delete event.speakers;
+      delete event.broadcast;
+      delete event.location;
+      delete event.courseCredit;
+      delete event.sponsors;
+      delete event.guid;
+
+      const newEvent = this.eventRepo.create({
+        ...event,
+        day: season.days[0]
+      });
+
+      return newEvent.save();
+    });
+
+    try {
+      return Promise.all(newEvents);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not copy events into season');
+    }
+  }
+
+  public deleteEvents(guidOrEventGuids: string) {
+    const eventGuidsArray = guidOrEventGuids.split(',');
+
+    if (eventGuidsArray.length === 0) {
+      throw new UnprocessableEntityException(null, 'No event guids provided');
+    }
+
+    try {
+      return this.deleteEntities(eventGuidsArray);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not delete events');
+    }
+  }
 }

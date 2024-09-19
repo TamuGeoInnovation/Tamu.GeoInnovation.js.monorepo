@@ -63,6 +63,13 @@ export class EventController {
 
   @Permissions(['create:events'])
   @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public async copyEventsIntoSeason(@Body() body: { seasonGuid: string; eventGuids: Array<string> }) {
+    return this.provider.copyEventsIntoSeason(body.seasonGuid, body.eventGuids);
+  }
+
+  @Permissions(['create:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEvent(@Body() body: DeepPartial<Event>) {
     return this.provider.insertEvent(body);
@@ -90,10 +97,6 @@ export class EventController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    return this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    return this.provider.deleteEvents(guid);
   }
 }

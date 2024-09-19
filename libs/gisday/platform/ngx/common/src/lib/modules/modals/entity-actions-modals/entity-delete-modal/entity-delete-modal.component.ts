@@ -50,11 +50,18 @@ export class EntityDeleteModalComponent implements OnInit {
   }
 
   public cancelDeleteEntities() {
-    this.modalRef.close(false);
+    this.modalRef.close({
+      delete: false
+    });
   }
 }
 
 export interface EntityDeleteData {
   entityType: string;
+  identities: Array<string>;
+}
+
+export interface EntityDeleteModalResponse {
+  delete: boolean;
   identities: Array<string>;
 }
