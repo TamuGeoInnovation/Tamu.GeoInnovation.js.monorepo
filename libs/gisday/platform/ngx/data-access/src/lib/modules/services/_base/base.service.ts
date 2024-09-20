@@ -11,16 +11,24 @@ export abstract class BaseService<T> {
     this.resource = this.environmentService.value('api_url') + `/${route}`;
   }
 
+  public getEntitiesForActiveSeason() {
+    return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/active`);
+  }
+
+  public getEntitiesForSeason(seasonGuid?: string) {
+    return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/`, { params: { seasonGuid } });
+  }
+
   public getEntities() {
     return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/`);
   }
 
-  public getEntity(guid: string) {
-    return this.httpClient.get<Partial<T>>(`${this.resource}/${guid}`);
-  }
-
   public getEntityWithRelations(guid: string) {
     return this.httpClient.get<DeepPartial<T>>(`${this.resource}/${guid}/deep`);
+  }
+
+  public getEntity(guid: string) {
+    return this.httpClient.get<Partial<T>>(`${this.resource}/${guid}`);
   }
 
   public updateEntity(guid: string, updatedEntity: Partial<T>) {

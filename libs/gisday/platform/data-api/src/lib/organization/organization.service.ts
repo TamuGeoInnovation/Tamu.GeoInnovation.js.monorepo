@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { Organization, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
+import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class OrganizationService extends BaseProvider<Organization> {
@@ -19,9 +20,54 @@ export class OrganizationService extends BaseProvider<Organization> {
   constructor(
     @InjectRepository(Organization) private orgRepo: Repository<Organization>,
     @InjectRepository(Event) private readonly es: Repository<Event>,
+    private readonly ss: SeasonService,
     private readonly assetService: AssetsService
   ) {
     super(orgRepo);
+  }
+
+  public async getOrganizationsForActiveSeason() {
+    const activeSeason = await this.ss.findOneActive();
+
+    try {
+      return this.find({
+        where: {
+          season: activeSeason
+        },
+        relations: ['season', 'logos']
+      });
+    } catch (err) {
+      Logger.error(err.message, 'OrganizationService');
+      throw new InternalServerErrorException('Could not find organizations for active season.');
+    }
+  }
+
+  public getOrganizations() {
+    try {
+      return this.find({
+        relations: ['season', 'logos'],
+        order: {
+          name: 'ASC'
+        }
+      });
+    } catch (err) {
+      Logger.error(err.message, 'OrganizationService');
+      throw new InternalServerErrorException('Could not find organizations.');
+    }
+  }
+
+  public getOrganization(guid: string) {
+    try {
+      return this.findOne({
+        where: {
+          guid
+        },
+        relations: ['season', 'logos']
+      });
+    } catch (err) {
+      Logger.error(err.message, 'OrganizationService');
+      throw new InternalServerErrorException('Could not find organization.');
+    }
   }
 
   public async createOrganization(organization: Partial<Organization>, file?: Express.Multer.File) {

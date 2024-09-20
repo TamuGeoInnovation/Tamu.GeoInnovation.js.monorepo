@@ -105,7 +105,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
 
     this.isAuthed$ = this.as.isAuthenticated$;
     this.activeSeason$ = this.ss.activeSeason$.pipe(shareReplay());
-    this.events$ = this.eventService.getEvents().pipe(shareReplay());
+    this.events$ = this.eventService.getEntities().pipe(shareReplay());
     this.tags$ = this.tagService.getEntities().pipe(shareReplay());
     this.organizations$ = this.os.getEntities().pipe(shareReplay());
     this.userInfo$ = this.isAuthed$.pipe(

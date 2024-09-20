@@ -20,13 +20,6 @@ export class EventService extends BaseService<Event> {
     return this.http1.get<number>(`${this.resource}/${eventGuid}/rsvps`);
   }
 
-  /**
-   * Retrieves events for the active season if no `seasonGuid` is provided.
-   */
-  public getEvents(seasonGuid?: string) {
-    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/`, { params: { seasonGuid } });
-  }
-
   public getEvent(guid: string) {
     return this.http1.get<Partial<Event>>(`${this.resource}/${guid}`);
   }

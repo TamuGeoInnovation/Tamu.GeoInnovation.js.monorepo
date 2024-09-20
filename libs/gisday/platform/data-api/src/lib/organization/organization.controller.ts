@@ -15,24 +15,19 @@ export class OrganizationController {
     return this.orgService.getOrgsWithEvents();
   }
 
+  @Get('active')
+  public getActive() {
+    return this.orgService.getOrganizationsForActiveSeason();
+  }
+
   @Get(':guid')
   public findOne(@Param('guid') guid: string) {
-    return this.orgService.findOne({
-      where: {
-        guid
-      },
-      relations: ['season', 'logos']
-    });
+    return this.orgService.getOrganization(guid);
   }
 
   @Get()
   public findAll() {
-    return this.orgService.find({
-      relations: ['season', 'logos'],
-      order: {
-        name: 'ASC'
-      }
-    });
+    return this.orgService.getOrganizations();
   }
 
   @Permissions(['create:organizations'])
