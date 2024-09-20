@@ -24,6 +24,11 @@ import { UpdateEventDto } from './dto/update-event.dto';
 export class EventController {
   constructor(private readonly provider: EventProvider) {}
 
+  @Get('season/:guid')
+  public async getEventsForSeason(@Param('guid') seasonGuid) {
+    return this.provider.getEventsForSeason(seasonGuid);
+  }
+
   @Get(':guid/attendance')
   public async getAttendance(@Param('guid') guid) {
     return this.provider.getEventAttendance(guid);
@@ -49,6 +54,11 @@ export class EventController {
     return this.provider.getEntitiesByDay();
   }
 
+  @Get('active')
+  public async getEventsForActiveSeason() {
+    return this.provider.getEventsForActiveSeason();
+  }
+
   @UseGuards(JwtGuard)
   @AllowAny()
   @Get(':guid')
@@ -57,15 +67,15 @@ export class EventController {
   }
 
   @Get()
-  public async getEvents(@Query('seasonGuid') seasonGuid?: string) {
-    return this.provider.getEvents(seasonGuid);
+  public async getEvents() {
+    return this.provider.getEvents();
   }
 
   @Permissions(['create:events'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('clone')
-  public async copyEventsIntoSeason(@Body() body: { seasonGuid: string; eventGuids: Array<string> }) {
-    return this.provider.copyEventsIntoSeason(body.seasonGuid, body.eventGuids);
+  public async copyEventsIntoSeason(@Body() body: { seasonGuid: string; existingEntityGuids: Array<string> }) {
+    return this.provider.copyEventsIntoSeason(body.seasonGuid, body.existingEntityGuids);
   }
 
   @Permissions(['create:events'])

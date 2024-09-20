@@ -15,8 +15,8 @@ export abstract class BaseService<T> {
     return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/active`);
   }
 
-  public getEntitiesForSeason(seasonGuid?: string) {
-    return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/`, { params: { seasonGuid } });
+  public getEntitiesForSeason(guid: string) {
+    return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/season/${guid}`);
   }
 
   public getEntities() {
@@ -39,7 +39,15 @@ export abstract class BaseService<T> {
     return this.httpClient.post<Partial<T>>(this.resource, newEntity);
   }
 
+  public copyEntitiesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
+    return this.httpClient.post<Partial<T>>(`${this.resource}/clone`, { seasonGuid, existingEntityGuids });
+  }
+
+  public deleteEntities(entityGuids: Array<string>) {
+    return this.httpClient.delete<Partial<T>>(`${this.resource}/${entityGuids.join(',')}`);
+  }
+
   public deleteEntity(entityGuid: string) {
-    return this.httpClient.delete<Partial<T>>(`${this.resource}/${entityGuid}`);
+    return this.deleteEntities([entityGuid]);
   }
 }
