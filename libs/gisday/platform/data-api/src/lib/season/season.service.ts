@@ -47,6 +47,9 @@ export class SeasonService extends BaseProvider<Season> {
     }
   }
 
+  /**
+   * Finds the active season and returns it with ordered days.
+   */
   public async findOneActive() {
     const season = await this.seasonRepo.findOne({
       where: {
@@ -83,7 +86,7 @@ export class SeasonService extends BaseProvider<Season> {
       return ordered;
     }
 
-    throw new NotFoundException();
+    throw new NotFoundException('No active season found.');
   }
 
   public async create(createSeasonDto?: Partial<Season>) {
