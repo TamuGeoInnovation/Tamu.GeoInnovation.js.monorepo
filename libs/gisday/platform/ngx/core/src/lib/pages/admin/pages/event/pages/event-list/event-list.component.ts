@@ -24,4 +24,15 @@ export class EventListComponent extends BaseAdminListComponent<Event> {
   ) {
     super(eventService, ss, ar, rt, ms, ns);
   }
+
+  public override promptCopyModal() {
+    super.promptCopyModal(
+      'Event',
+      'This action will only copy event details and not any associated relations such as event date, presenters, or location as those change from season to season. Those will have to be set manually on a per-event basis.'
+    );
+  }
+
+  public override promptDeleteModal() {
+    super.promptDeleteModal('Event');
+  }
 }
