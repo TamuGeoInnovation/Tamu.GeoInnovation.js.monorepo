@@ -12,7 +12,7 @@
         <p class="trailer-1">Affiliations are institutions which a speaker is a member of and represents during an event (e.g. company, university).</p>
       </div>
 
-      <table class="floating-table" *ngIf="(entitiesForActiveSeasonOrFromUrl$ | async)?.length > 0; else noTags">
+      <table class="floating-table" *ngIf="(entitiesForActiveSeasonOrForSeasonGuid$ | async)?.length > 0; else noTags">
         <thead>
           <tr>
             <th>Name</th>

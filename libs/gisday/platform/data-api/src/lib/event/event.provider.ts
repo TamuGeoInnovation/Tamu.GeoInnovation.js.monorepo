@@ -19,7 +19,6 @@ import { BaseProvider } from '../_base/base-provider';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
 import { SeasonService } from '../season/season.service';
-import { ActiveSeasonDto } from '../season/dto/active-season.dto';
 
 @Injectable()
 export class EventProvider extends BaseProvider<Event> {
@@ -37,44 +36,42 @@ export class EventProvider extends BaseProvider<Event> {
     super(eventRepo);
   }
 
-  public async getEvents(seasonGuid?: string) {
+  public async getEventsForActiveSeason() {
+    const season = await this.seasonProvider.findOneActive();
+
     try {
-      let season: ActiveSeasonDto | Season;
-
-      if (seasonGuid) {
-        season = await this.seasonProvider.findOne({
-          where: {
-            guid: seasonGuid
-          }
-        });
-      } else {
-        season = await this.seasonProvider.findOneActive();
-      }
-
-      if (season) {
-        const [s] = await this.seasonRepo
-          .createQueryBuilder('season')
-          .leftJoinAndSelect('season.days', 'day')
-          .leftJoinAndSelect('day.events', 'event')
-          .leftJoinAndSelect('event.day', 'eventDay')
-          .leftJoinAndSelect('event.location', 'location')
-          .where('season.guid = :guid', { guid: season.guid })
-          .orderBy('day.date', 'ASC')
-          .addOrderBy('event.startTime', 'ASC')
-          .getMany();
-
-        return s.days.map((day) => day.events).flat();
-      } else {
-        return this.eventRepo.find({
-          relations: EntityRelationsLUT.getRelation('event'),
-          order: {
-            startTime: 'ASC'
-          }
-        });
-      }
+      return this.getEventsForSeason(season.guid);
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Could not get events for active season.');
     }
+  }
+
+  public async getEventsForSeason(seasonGuid: string) {
+    if (seasonGuid) {
+      const [s] = await this.seasonRepo
+        .createQueryBuilder('season')
+        .leftJoinAndSelect('season.days', 'day')
+        .leftJoinAndSelect('day.events', 'event')
+        .leftJoinAndSelect('event.day', 'eventDay')
+        .leftJoinAndSelect('event.location', 'location')
+        .where('season.guid = :guid', { guid: seasonGuid })
+        .orderBy('day.date', 'ASC')
+        .addOrderBy('event.startTime', 'ASC')
+        .getMany();
+
+      return s.days.map((day) => day.events).flat();
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
+  public async getEvents() {
+    return this.eventRepo.find({
+      relations: EntityRelationsLUT.getRelation('event'),
+      order: {
+        startTime: 'ASC'
+      }
+    });
   }
 
   public async insertEvent(event: DeepPartial<Event>) {
