@@ -1,16 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Req,
-  UseGuards
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { AllowAny, JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
@@ -107,6 +95,6 @@ export class EventController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    return this.provider.deleteEvents(guid);
+    return this.provider.deleteEntities(guid);
   }
 }

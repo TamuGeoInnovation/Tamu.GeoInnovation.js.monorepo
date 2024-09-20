@@ -290,18 +290,4 @@ export class EventProvider extends BaseProvider<Event> {
       throw new InternalServerErrorException('Could not copy events into season');
     }
   }
-
-  public deleteEvents(guidOrEventGuids: string) {
-    const eventGuidsArray = guidOrEventGuids.split(',');
-
-    if (eventGuidsArray.length === 0) {
-      throw new UnprocessableEntityException(null, 'No event guids provided');
-    }
-
-    try {
-      return this.deleteEntities(eventGuidsArray);
-    } catch (err) {
-      throw new InternalServerErrorException('Could not delete events');
-    }
-  }
 }

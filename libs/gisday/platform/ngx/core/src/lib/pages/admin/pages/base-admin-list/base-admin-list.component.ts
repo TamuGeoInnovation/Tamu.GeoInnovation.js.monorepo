@@ -70,7 +70,8 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
         if (season) {
           this._selectRow$.next(null);
         }
-      })
+      }),
+      shareReplay(1)
     );
 
     this.$entities = this.$signal.pipe(
@@ -145,7 +146,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
     this._selectRow$.next(events.map((event) => event.guid));
   }
 
-  public promptCopyModal() {
+  public promptCopyModal(singularEntityName: string, message?: string) {
     of(true)
       .pipe(
         withLatestFrom(this.selectedRows$),
@@ -153,9 +154,8 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
           return this.modalService.open(EntityCopyModalComponent, {
             data: {
               identities: guids,
-              entityType: 'Event',
-              notice:
-                'This action will only copy event details and not any associated relations such as event date, presenters, or location as those change from season to season. Those will have to be set manually on a per-event basis.'
+              entityType: singularEntityName,
+              notice: message
             }
           });
         })
@@ -163,13 +163,15 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       .subscribe({
         next: (result: CopyEntityModalResponse<string>) => {
           if (result?.copy) {
+            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities);
+
             this.entityService.copyEntitiesIntoSeason(result?.season?.guid, result.identities).subscribe(() => {
               this.notificationService.toast({
-                message: `${result.identities.length} event${result?.identities.length > 1 ? 's' : ''} copied into season ${
+                message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} copied into season ${
                   result.season?.year
                 }`,
-                id: 'event-copy-success',
-                title: 'Events Copied'
+                id: 'entity-copy-success',
+                title: `${normalizedEntityName} Copied`
               });
 
               this.$signal.next(null);
@@ -181,7 +183,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       });
   }
 
-  public promptDeleteModal() {
+  public promptDeleteModal(singularEntityName: string, message?: string) {
     of(true)
       .pipe(
         withLatestFrom(this.selectedRows$),
@@ -189,7 +191,8 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
           return this.modalService.open(EntityDeleteModalComponent, {
             data: {
               identities: guids,
-              entityType: 'Event'
+              entityType: singularEntityName,
+              notice: message
             }
           });
         })
@@ -197,11 +200,13 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       .subscribe({
         next: (result: EntityDeleteModalResponse) => {
           if (result?.delete) {
+            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities);
+
             this.entityService.deleteEntities(result?.identities).subscribe(() => {
               this.notificationService.toast({
-                message: `${result.identities.length} event${result.identities.length > 1 ? 's' : ''} deleted`,
-                id: 'event-delete-success',
-                title: 'Events Deleted'
+                message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} deleted`,
+                id: 'entity-delete-success',
+                title: `${normalizedEntityName} Deleted`
               });
 
               this.$signal.next(null);
@@ -211,6 +216,10 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
           }
         }
       });
+  }
+
+  private _pluralizeEntityName(entityName: string, count: Array<unknown>) {
+    return count.length > 1 ? `${entityName}s` : entityName;
   }
 }
 
