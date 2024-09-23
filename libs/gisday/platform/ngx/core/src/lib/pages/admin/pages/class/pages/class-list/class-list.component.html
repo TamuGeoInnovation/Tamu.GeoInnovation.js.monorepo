@@ -3,6 +3,8 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">Classes</div>
       <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+
         <a routerLink="add">Add class <span class="material-icons action">add</span></a>
       </div>
     </div>
@@ -12,26 +14,41 @@
         <p class="trailer-1">Participating professors can request their classes added, where students can register and and receive credit for attending events.</p>
       </div>
 
-      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noTags">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Professor</th>
-          </tr>
-        </thead>
+      <ng-container *ngIf="entitiesForActiveSeasonOrForSeasonGuid$ | async as entities">
+        <table class="floating-table" *ngIf="entities?.length > 0; else noTags">
+          <thead>
+            <tr>
+              <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Professor</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
-            <td>{{entity?.code}} {{entity?.number}}</td>
-            <td>{{entity?.title}}</td>
-            <td>{{entity?.professorName}}</td>
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of entities">
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
+              <td>{{entity?.code}} {{entity?.number}}</td>
+              <td>{{entity?.title}}</td>
+              <td>{{entity?.professorName}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="selected-action-container info-block context" *ngIf="(selectedRows$ | async)?.length > 0">
+          <div>
+            <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
+          </div>
+
+          <div class="selected-actions">
+            <p class="selected-action" (click)="promptCopyModal('Class', null, 'Classes')">Copy <span class="material-icons action">content_copy</span></p>
+            <p class="selected-action caution" (click)="promptDeleteModal('Class', null, 'Classes')">Delete <span class="material-icons action">delete_forever</span></p>
+          </div>
+        </div>
+      </ng-container>
 
       <ng-template #noTags>
-        <p>There are no classes yet.</p>
+        <p>There are no classes for the selected season.</p>
       </ng-template>
     </div>
   </div>

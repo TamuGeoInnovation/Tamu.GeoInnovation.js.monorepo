@@ -20,7 +20,15 @@ export class EntityCopyModalComponent implements OnInit {
     // If entityType is not defined, return 'entity'
     if (this.data.entityType === undefined) return 'entity';
 
-    return this.data.identities.length > 1 ? this.data.entityType + 's' : this.data.entityType;
+    if (this.data.identities.length > 1) {
+      if (this.data.pluralEntityType) {
+        return this.data.pluralEntityType;
+      } else {
+        return this.data.entityType + 's';
+      }
+    } else {
+      return this.data.entityType;
+    }
   }
 
   constructor(
@@ -72,6 +80,8 @@ export interface EntityCopyModalData {
    * The type of entity being copied. Displayed in the modal header.
    */
   entityType: string;
+
+  pluralEntityType?: string;
 
   /**
    * Optional notice to be displayed in the modal body.
