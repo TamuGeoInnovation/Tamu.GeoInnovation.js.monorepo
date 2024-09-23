@@ -3,6 +3,7 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">Venues</div>
       <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
         <a routerLink="add">Add venue <span class="material-icons action">add</span></a>
       </div>
     </div>
@@ -12,26 +13,41 @@
         <p>Venues are physical areas located within or in the surrounding area of an event hosted by a TxGIS Day <a [routerLink]="['/admin/places']" routerLinkActive="router-link-active">organization</a>. Examples include campus buildings, arenas, auditoriums, restaurants, and bars.</p>
       </div>
 
-      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noEntities">
-        <thead>
-          <tr>
-            <th>Building Name</th>
-            <th>Room Number</th>
-            <th>Organization</th>
-          </tr>
-        </thead>
+      <ng-container *ngIf="entitiesForActiveSeasonOrForSeasonGuid$ | async as entities">
+        <table class="floating-table" *ngIf="entities?.length > 0; else noEntities">
+          <thead>
+            <tr>
+              <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
+              <th>Building Name</th>
+              <th>Room Number</th>
+              <th>Organization</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
-            <td>{{entity.building}}</td>
-            <td>{{entity.room}}</td>
-            <td>{{entity?.place?.name}}</td>
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of entities">
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
+              <td>{{entity.building}}</td>
+              <td>{{entity.room}}</td>
+              <td>{{entity?.place?.name}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="selected-action-container info-block context" *ngIf="(selectedRows$ | async)?.length > 0">
+          <div>
+            <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
+          </div>
+
+          <div class="selected-actions">
+            <p class="selected-action" (click)="promptCopyModal('Venue')">Copy <span class="material-icons action">content_copy</span></p>
+            <p class="selected-action caution" (click)="promptDeleteModal('Venue')">Delete <span class="material-icons action">delete_forever</span></p>
+          </div>
+        </div>
+      </ng-container>
 
       <ng-template #noEntities>
-        <p>There are no venues yet.</p>
+        <p>There are no venues for selected season.</p>
       </ng-template>
     </div>
   </div>

@@ -161,6 +161,9 @@ export class Season extends GuidIdentity {
 
   @OneToMany(() => EventBroadcast, (broadcast) => broadcast.season)
   public broadcasts: EventBroadcast[];
+
+  @OneToMany(() => EventLocation, (location) => location.season)
+  public event_locations: EventLocation[];
 }
 
 @Entity({ name: 'seasons_days' })
@@ -280,6 +283,14 @@ export class EventLocation extends GuidIdentity {
     onDelete: 'SET NULL'
   })
   public place: Place;
+
+  @ManyToOne(() => Season, (season) => season.event_locations, {
+    cascade: true,
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public season?: Season;
 }
 
 @Entity({
