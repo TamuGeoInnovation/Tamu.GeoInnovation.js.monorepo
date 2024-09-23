@@ -13,7 +13,7 @@ export class EventController {
   constructor(private readonly provider: EventProvider) {}
 
   @Get('season/:guid')
-  public async getEventsForSeason(@Param('guid') seasonGuid) {
+  public async getEventsForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getEventsForSeason(seasonGuid);
   }
 

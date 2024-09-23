@@ -10,6 +10,11 @@ import { Class } from '../entities/all.entity';
 export class ClassController {
   constructor(private readonly provider: ClassProvider) {}
 
+  @Get('season/:guid')
+  public async getClassesForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getClassesForSeason(seasonGuid);
+  }
+
   @Permissions(['read:classes'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Get(':guid/attendance/export')
@@ -40,6 +45,13 @@ export class ClassController {
 
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions(['create:classes'])
+  @Post('clone')
+  public async copyClassIntoSeason(@Body() body: { seasonGuid: string; existingEntityGuids: Array<string> }) {
+    return this.provider.copyClassesIntoSeason(body.seasonGuid, body.existingEntityGuids);
+  }
+
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['create:classes'])
   @Post()
   public async insertClass(@Body() body: Class) {
     return this.provider.createClass(body);
@@ -56,10 +68,6 @@ export class ClassController {
   @Permissions(['delete:classes'])
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    this.provider.deleteEntities(guid);
   }
 }

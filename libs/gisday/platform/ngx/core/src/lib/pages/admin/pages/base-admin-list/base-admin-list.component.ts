@@ -146,7 +146,14 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
     this._selectRow$.next(events.map((event) => event.guid));
   }
 
-  public promptCopyModal(singularEntityName: string, message?: string) {
+  /**
+   * Prompts the user with a modal to copy entities.
+   *
+   * @param singularEntityName Singular entity name to be used in the modal. If pluralEntityName is not provided, the suffix 's' will be appended to the entity name
+   * @param message Optional message to be displayed in the modal
+   * @param pluralEntityName Optional plural entity name to be used in the modal. Used when the ending suffix is not a simple 's'
+   */
+  public promptCopyModal(singularEntityName: string, message?: string, pluralEntityName?: string) {
     of(true)
       .pipe(
         withLatestFrom(this.selectedRows$),
@@ -155,6 +162,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
             data: {
               identities: guids,
               entityType: singularEntityName,
+              pluralEntityTypename: pluralEntityName,
               notice: message
             }
           });
@@ -163,7 +171,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       .subscribe({
         next: (result: CopyEntityModalResponse<string>) => {
           if (result?.copy) {
-            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities);
+            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
 
             this.entityService.copyEntitiesIntoSeason(result?.season?.guid, result.identities).subscribe(() => {
               this.notificationService.toast({
@@ -183,7 +191,14 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       });
   }
 
-  public promptDeleteModal(singularEntityName: string, message?: string) {
+  /**
+   * Prompts the user with a confirmation modal to delete entities.
+   *
+   * @param singularEntityName Singular entity name to be used in the modal. If pluralEntityName is not provided, the suffix 's' will be appended to the entity name
+   * @param message Optional message to be displayed in the modal
+   * @param pluralEntityName Optional plural entity name to be used in the modal. Used when the ending suffix is not a simple 's'
+   */
+  public promptDeleteModal(singularEntityName: string, message?: string, pluralEntityName?: string) {
     of(true)
       .pipe(
         withLatestFrom(this.selectedRows$),
@@ -192,6 +207,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
             data: {
               identities: guids,
               entityType: singularEntityName,
+              pluralEntityTypename: pluralEntityName,
               notice: message
             }
           });
@@ -200,7 +216,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       .subscribe({
         next: (result: EntityDeleteModalResponse) => {
           if (result?.delete) {
-            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities);
+            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
 
             this.entityService.deleteEntities(result?.identities).subscribe(() => {
               this.notificationService.toast({
@@ -218,8 +234,15 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
       });
   }
 
-  private _pluralizeEntityName(entityName: string, count: Array<unknown>) {
-    return count.length > 1 ? `${entityName}s` : entityName;
+  private _pluralizeEntityName(entityName: string, count: Array<unknown>, pluralEntityName?: string) {
+    if (count.length > 1) {
+      if (pluralEntityName) {
+        return pluralEntityName;
+      } else {
+        return `${entityName}s`;
+      }
+    }
+    return entityName;
   }
 }
 
