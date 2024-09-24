@@ -6,7 +6,7 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { Organization, Event } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -26,6 +26,25 @@ export class OrganizationService extends BaseProvider<Organization> {
     super(orgRepo);
   }
 
+  public async getOrganizationsForSeason(guid: string) {
+    try {
+      return this.find({
+        where: {
+          season: {
+            guid
+          }
+        },
+        relations: ['season', 'logos'],
+        order: {
+          name: 'ASC'
+        }
+      });
+    } catch (err) {
+      Logger.error(err.message, 'OrganizationService');
+      throw new InternalServerErrorException('Could not find organizations for season.');
+    }
+  }
+
   public async getOrganizationsForActiveSeason() {
     const activeSeason = await this.ss.findOneActive();
 
@@ -34,7 +53,10 @@ export class OrganizationService extends BaseProvider<Organization> {
         where: {
           season: activeSeason
         },
-        relations: ['season', 'logos']
+        relations: ['season', 'logos'],
+        order: {
+          name: 'ASC'
+        }
       });
     } catch (err) {
       Logger.error(err.message, 'OrganizationService');
@@ -94,6 +116,51 @@ export class OrganizationService extends BaseProvider<Organization> {
       }
     } else {
       throw new UnprocessableEntityException(null, 'Could not create organization.');
+    }
+  }
+
+  public async copyOrganizationsIntoSeason(seasonGuid: string, entityGuids: Array<string>) {
+    const season = await this.ss.findOne(seasonGuid);
+
+    if (!season) {
+      throw new UnprocessableEntityException('Could not find season.');
+    }
+
+    const entities = await this.find({
+      where: {
+        guid: In(entityGuids)
+      },
+      relations: ['logos']
+    });
+
+    if (!entities || entities.length === 0) {
+      throw new UnprocessableEntityException('Could not find organizations.');
+    }
+
+    const newEntities = entities.map((entity) => {
+      delete entity.guid;
+
+      // Delete references to logos to prevent the logo from being transferred from one org to another
+      // since the asset entity is a one-to-one relationship
+      if (entity.logos) {
+        entity.logos = entity.logos.map((logo) => {
+          delete logo.guid;
+          return logo;
+        });
+      }
+
+      const newEntity = this.orgRepo.create({
+        ...entity,
+        season
+      });
+
+      return newEntity.save();
+    });
+
+    try {
+      return Promise.all(newEntities);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not copy organizations into season.');
     }
   }
 
