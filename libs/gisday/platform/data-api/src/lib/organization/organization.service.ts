@@ -145,6 +145,9 @@ export class OrganizationService extends BaseProvider<Organization> {
       if (entity.logos) {
         entity.logos = entity.logos.map((logo) => {
           delete logo.guid;
+          delete logo.created;
+          delete logo.updated;
+
           return logo;
         });
       }

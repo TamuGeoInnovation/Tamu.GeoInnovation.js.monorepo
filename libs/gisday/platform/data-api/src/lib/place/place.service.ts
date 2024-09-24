@@ -1,10 +1,17 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { Place, PlaceLink } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
+import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class PlaceService extends BaseProvider<Place> {
@@ -13,9 +20,27 @@ export class PlaceService extends BaseProvider<Place> {
   constructor(
     @InjectRepository(Place) private pRepo: Repository<Place>,
     @InjectRepository(PlaceLink) private plRepo: Repository<PlaceLink>,
-    private readonly assetService: AssetsService
+    private readonly assetService: AssetsService,
+    private readonly seasonService: SeasonService
   ) {
     super(pRepo);
+  }
+
+  public async getPlacesForSeason(seasonGuid: string) {
+    try {
+      return this.pRepo
+        .createQueryBuilder('place')
+        .leftJoinAndSelect('place.links', 'links')
+        .leftJoinAndSelect('place.logos', 'logos')
+        .leftJoin('place.season', 'season')
+        .where('season.guid = :seasonGuid', { seasonGuid })
+        .orderBy('place.name', 'ASC')
+        .addOrderBy('links.label', 'ASC')
+        .getMany();
+    } catch (err) {
+      Logger.error(`Error retrieving places for season, ${err.message}`, 'PlaceService');
+      throw new InternalServerErrorException(err);
+    }
   }
 
   public getEntity(guid: string) {
@@ -44,6 +69,60 @@ export class PlaceService extends BaseProvider<Place> {
         .getMany();
     } catch (err) {
       Logger.error(`Error retrieving places, ${err.message}`, 'PlaceService');
+      throw new InternalServerErrorException(err);
+    }
+  }
+
+  public async copyPlacesIntoSeason(seasonGuid: string, existingEntityGuids?: Array<string>) {
+    try {
+      const season = await this.seasonService.findOne(seasonGuid);
+
+      if (!season) {
+        throw new UnprocessableEntityException('Season does not exist');
+      }
+
+      const entities = await this.pRepo.find({
+        where: {
+          guid: In(existingEntityGuids)
+        },
+        relations: ['links', 'logos']
+      });
+
+      if (!entities || entities.length === 0) {
+        throw new UnprocessableEntityException('No entities found to copy');
+      }
+
+      const copied = entities.map((entity) => {
+        delete entity.guid;
+        delete entity.created;
+        delete entity.updated;
+
+        if (entity.logos?.length > 0) {
+          entity.logos = entity.logos.map((logo) => {
+            delete logo.guid;
+            delete logo.created;
+            delete logo.updated;
+
+            return logo;
+          });
+        }
+
+        if (entity.links?.length > 0) {
+          entity.links.map((link) => {
+            delete link.guid;
+            delete link.created;
+            delete link.updated;
+
+            return link;
+          });
+        }
+
+        return this.pRepo.create({ ...entity, season }).save();
+      });
+
+      return Promise.all(copied);
+    } catch (err) {
+      Logger.error(`Error copying places into season, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
   }

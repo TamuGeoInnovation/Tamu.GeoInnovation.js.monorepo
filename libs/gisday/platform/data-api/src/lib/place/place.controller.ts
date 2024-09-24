@@ -1,14 +1,19 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { Place } from '../entities/all.entity';
 import { PlaceService } from './place.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('places')
 export class PlaceController {
   constructor(private readonly ps: PlaceService) {}
+
+  @Get('season/:guid')
+  public getPlacesForSeason(@Param('guid') guid: string) {
+    return this.ps.getPlacesForSeason(guid);
+  }
 
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
@@ -18,6 +23,16 @@ export class PlaceController {
   @Get()
   public async getEntities() {
     return this.ps.getEntities();
+  }
+
+  @Permissions(['create:places'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public async copy(
+    @Body('seasonGuid') seasonGuid: string,
+    @Body('existingEntityGuids') existingEntityGuids?: Array<string>
+  ) {
+    return this.ps.copyPlacesIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   @Permissions(['create:places'])
@@ -44,10 +59,6 @@ export class PlaceController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    return this.ps.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    return this.ps.deleteEntities(guid);
   }
 }
