@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { OrganizationsComponent } from './organizations.component';
@@ -31,7 +33,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule],
+  imports: [CommonModule, RouterModule.forChild(routes), GisdayFormsModule, UIFormsModule, PipesModule],
   declarations: [OrganizationsComponent, OrganizationListComponent, OrganizationAddComponent, OrganizationEditComponent]
 })
 export class OrganizationsModule {}

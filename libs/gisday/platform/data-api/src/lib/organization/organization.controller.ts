@@ -10,6 +10,11 @@ import { Organization } from '../entities/all.entity';
 export class OrganizationController {
   constructor(private readonly orgService: OrganizationService) {}
 
+  @Get('season/:guid')
+  public getOrgsForSeason(@Param('guid') guid: string) {
+    return this.orgService.getOrganizationsForSeason(guid);
+  }
+
   @Get('active-events')
   public activeSeasonOrgs() {
     return this.orgService.getOrgsWithEvents();
@@ -28,6 +33,14 @@ export class OrganizationController {
   @Get()
   public findAll() {
     return this.orgService.getOrganizations();
+  }
+
+  @Permissions(['create:organizations'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  @UseInterceptors(FileInterceptor('file'))
+  public copy(@Body('seasonGuid') seasonGuid: string, @Body('existingEntityGuids') existingEntityGuids?: Array<string>) {
+    return this.orgService.copyOrganizationsIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   @Permissions(['create:organizations'])
@@ -54,6 +67,6 @@ export class OrganizationController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public remove(@Param('guid') guid: string) {
-    return this.orgService.deleteEntity(guid);
+    return this.orgService.deleteEntities(guid);
   }
 }
