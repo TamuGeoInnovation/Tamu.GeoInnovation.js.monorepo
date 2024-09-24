@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Observable, filter, map, merge, switchMap, take } from 'rxjs';
+import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
 
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
 import { AssetsService, PlaceService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -50,7 +50,8 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
-        switchMap((guid) => this.ps.getEntity(guid))
+        switchMap((guid) => this.ps.getEntity(guid)),
+        shareReplay(1)
       );
 
       this.entity$.pipe(take(1)).subscribe((entity) => {

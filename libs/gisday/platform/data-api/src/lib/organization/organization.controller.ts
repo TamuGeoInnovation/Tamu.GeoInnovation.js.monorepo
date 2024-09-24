@@ -38,7 +38,6 @@ export class OrganizationController {
   @Permissions(['create:organizations'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post('clone')
-  @UseInterceptors(FileInterceptor('file'))
   public copy(@Body('seasonGuid') seasonGuid: string, @Body('existingEntityGuids') existingEntityGuids?: Array<string>) {
     return this.orgService.copyOrganizationsIntoSeason(seasonGuid, existingEntityGuids);
   }

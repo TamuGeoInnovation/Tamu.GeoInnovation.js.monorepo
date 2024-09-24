@@ -164,6 +164,9 @@ export class Season extends GuidIdentity {
 
   @OneToMany(() => EventLocation, (location) => location.season)
   public event_locations: EventLocation[];
+
+  @OneToMany(() => Place, (place) => place.season)
+  public places: Place[];
 }
 
 @Entity({ name: 'seasons_days' })
@@ -209,6 +212,14 @@ export class Place extends GuidIdentity {
 
   @OneToMany(() => Asset, (asset) => asset.places, { cascade: true, nullable: true })
   public logos?: Asset[];
+
+  @ManyToOne(() => Season, (season) => season.places, {
+    cascade: true,
+    nullable: true,
+    orphanedRowAction: 'nullify',
+    onDelete: 'SET NULL'
+  })
+  public season?: Season;
 }
 
 @Entity({
@@ -654,7 +665,7 @@ export class Asset extends GuidIdentity {
   @Column({ nullable: true })
   public type: string;
 
-  @ManyToOne(() => Place, (o) => o.logos, { nullable: true, orphanedRowAction: 'nullify' })
+  @ManyToOne(() => Place, (o) => o.logos, { nullable: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
   public places?: Place;
 
   @ManyToOne(() => Organization, (o) => o.logos, { nullable: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
