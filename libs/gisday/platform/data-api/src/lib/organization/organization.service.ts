@@ -139,6 +139,8 @@ export class OrganizationService extends BaseProvider<Organization> {
 
     const newEntities = entities.map((entity) => {
       delete entity.guid;
+      delete entity.created;
+      delete entity.updated;
 
       // Delete references to logos to prevent the logo from being transferred from one org to another
       // since the asset entity is a one-to-one relationship
