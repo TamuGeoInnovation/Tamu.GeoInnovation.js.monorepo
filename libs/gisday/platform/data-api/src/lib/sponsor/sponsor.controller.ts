@@ -10,6 +10,11 @@ import { SponsorProvider } from './sponsor.provider';
 export class SponsorController {
   constructor(private readonly provider: SponsorProvider) {}
 
+  @Get('season/active')
+  public getActive() {
+    return this.provider.getSponsorsForActiveSeason();
+  }
+
   @Get('season/:guid')
   public getSponsorsForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getSponsorsForSeason(seasonGuid);

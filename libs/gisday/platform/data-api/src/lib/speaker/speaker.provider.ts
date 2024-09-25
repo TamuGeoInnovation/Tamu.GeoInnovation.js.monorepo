@@ -60,6 +60,16 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     const season = await this.seasonService.findOneActive();
 
     if (!season) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    return this.getSpeakersForSeason(season.guid);
+  }
+
+  public async getSpeakersForActiveSeasonInEvents() {
+    const season = await this.seasonService.findOneActive();
+
+    if (!season) {
       return [];
     }
 

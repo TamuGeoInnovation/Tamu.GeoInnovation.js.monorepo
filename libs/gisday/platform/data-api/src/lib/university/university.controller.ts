@@ -10,6 +10,11 @@ import { UniversityProvider } from './university.provider';
 export class UniversityController {
   constructor(private readonly provider: UniversityProvider) {}
 
+  @Get('season/active')
+  public getActive() {
+    return this.provider.getEntitiesForActiveSeason();
+  }
+
   @Get('season/:guid')
   public getUniversitiesForSeason(@Param('guid') guid: string) {
     return this.provider.getEntitiesForSeason(guid);

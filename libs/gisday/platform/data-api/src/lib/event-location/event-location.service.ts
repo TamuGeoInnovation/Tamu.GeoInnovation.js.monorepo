@@ -2,21 +2,22 @@ import { Injectable, InternalServerErrorException, UnprocessableEntityException 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import { EventLocation, Season } from '../entities/all.entity';
+import { EventLocation } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class EventLocationService extends BaseProvider<EventLocation> {
   constructor(
     @InjectRepository(EventLocation) private esRepo: Repository<EventLocation>,
-    @InjectRepository(Season) private readonly seasonRepo: Repository<Season>
+    private readonly seasonService: SeasonService
   ) {
     super(esRepo);
   }
 
   public getEventLocationsForSeason(seasonGuid: string) {
     try {
-      const season = this.seasonRepo.findOne({ where: { guid: seasonGuid } });
+      const season = this.seasonService.findOne({ where: { guid: seasonGuid } });
 
       if (!season) {
         throw new UnprocessableEntityException('Season not found');
@@ -36,6 +37,20 @@ export class EventLocationService extends BaseProvider<EventLocation> {
     }
   }
 
+  public async getEventLocationsForActiveSeason() {
+    try {
+      const season = await this.seasonService.findOneActive();
+
+      if (!season) {
+        throw new UnprocessableEntityException('No active season found');
+      }
+
+      return this.getEventLocationsForSeason(season.guid);
+    } catch (err) {
+      throw new InternalServerErrorException(err);
+    }
+  }
+
   public getEntities() {
     try {
       const q = this.esRepo.createQueryBuilder('event-location').leftJoinAndSelect('event-location.place', 'organization');
@@ -50,7 +65,7 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
   public async copyEventLocationsIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
     try {
-      const season = await this.seasonRepo.findOne({ where: { guid: seasonGuid } });
+      const season = await this.seasonService.findOne({ where: { guid: seasonGuid } });
 
       if (!season) {
         throw new UnprocessableEntityException('Season not found');

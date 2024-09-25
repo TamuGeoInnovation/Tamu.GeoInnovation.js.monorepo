@@ -5,16 +5,17 @@ import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
 
-import { Class, CheckIn, Season } from '../entities/all.entity';
+import { Class, CheckIn } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class ClassProvider extends BaseProvider<Class> {
   constructor(
     @InjectRepository(Class) private classRepo: Repository<Class>,
     @InjectRepository(CheckIn) private readonly checkinRepo: Repository<CheckIn>,
-    @InjectRepository(Season) private readonly seasonRepo: Repository<Season>,
-    private readonly ms: ManagementService
+    private readonly ms: ManagementService,
+    private readonly seasonService: SeasonService
   ) {
     super(classRepo);
   }
@@ -28,6 +29,16 @@ export class ClassProvider extends BaseProvider<Class> {
         title: 'ASC'
       }
     });
+  }
+
+  public async getClassesForActiveSeason() {
+    const season = await this.seasonService.findOneActive();
+
+    if (!season) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    return this.getClassesForSeason(season.guid);
   }
 
   public async createClass(dto: Class) {
@@ -50,7 +61,7 @@ export class ClassProvider extends BaseProvider<Class> {
   }
 
   public async copyClassesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
-    const season = await this.seasonRepo.findOne({
+    const season = await this.seasonService.findOne({
       where: {
         guid: seasonGuid
       }

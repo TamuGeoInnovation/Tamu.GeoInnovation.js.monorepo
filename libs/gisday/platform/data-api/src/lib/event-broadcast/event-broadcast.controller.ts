@@ -9,6 +9,11 @@ import { EventBroadcastService } from './event-broadcast.service';
 export class EventBroadcastController {
   constructor(private readonly ebs: EventBroadcastService) {}
 
+  @Get('season/active')
+  public async getEventsForActiveSeason() {
+    return this.ebs.getBroadcastsForActiveSeason();
+  }
+
   @Get('season/:guid')
   public async getBroadcastsForSeason(@Param('guid') seasonGuid) {
     return this.ebs.getBroadcastsForSeason(seasonGuid);
@@ -21,11 +26,6 @@ export class EventBroadcastController {
         guid: guid
       }
     });
-  }
-
-  @Get('active')
-  public async getEventsForActiveSeason() {
-    return this.ebs.getBroadcastsForActiveSeason();
   }
 
   @Get()

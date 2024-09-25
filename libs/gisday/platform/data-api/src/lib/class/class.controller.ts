@@ -10,6 +10,11 @@ import { Class } from '../entities/all.entity';
 export class ClassController {
   constructor(private readonly provider: ClassProvider) {}
 
+  @Get('season/active')
+  public async getClassesForActiveSeason() {
+    return this.provider.getClassesForActiveSeason();
+  }
+
   @Get('season/:guid')
   public async getClassesForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getClassesForSeason(seasonGuid);

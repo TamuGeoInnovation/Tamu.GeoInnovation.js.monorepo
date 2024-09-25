@@ -11,6 +11,11 @@ import { SpeakerProvider } from './speaker.provider';
 export class SpeakerController {
   constructor(private readonly provider: SpeakerProvider) {}
 
+  @Get('season/active')
+  public async getActiveEntities() {
+    return this.provider.getSpeakersForActiveSeason();
+  }
+
   @Get('season/:guid')
   public async getSpeakersForSeason(@Param('guid') seasonGuid) {
     return this.provider.getSpeakersForSeason(seasonGuid);
@@ -21,9 +26,9 @@ export class SpeakerController {
     return this.provider.getOrganizationCommittee();
   }
 
-  @Get('active')
-  public async getActiveEntities() {
-    return this.provider.getSpeakersForActiveSeason();
+  @Get('participating')
+  public async getParticipatingSpeakersForActiveSeason() {
+    return this.provider.getSpeakersForActiveSeasonInEvents();
   }
 
   @Get(':guid')

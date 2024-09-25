@@ -10,6 +10,11 @@ import { TagProvider } from './tag.provider';
 export class TagController {
   constructor(private readonly provider: TagProvider) {}
 
+  @Get('season/active')
+  public getActive() {
+    return this.provider.getTagsForActiveSeason();
+  }
+
   @Get('season/:guid')
   public getTagsForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getTagsForSeason(seasonGuid);

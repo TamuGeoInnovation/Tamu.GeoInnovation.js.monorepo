@@ -10,6 +10,11 @@ import { Organization } from '../entities/all.entity';
 export class OrganizationController {
   constructor(private readonly orgService: OrganizationService) {}
 
+  @Get('season/active')
+  public getActive() {
+    return this.orgService.getOrganizationsForActiveSeason();
+  }
+
   @Get('season/:guid')
   public getOrgsForSeason(@Param('guid') guid: string) {
     return this.orgService.getOrganizationsForSeason(guid);
@@ -18,11 +23,6 @@ export class OrganizationController {
   @Get('active-events')
   public activeSeasonOrgs() {
     return this.orgService.getOrgsWithEvents();
-  }
-
-  @Get('active')
-  public getActive() {
-    return this.orgService.getOrganizationsForActiveSeason();
   }
 
   @Get(':guid')

@@ -12,7 +12,7 @@ export abstract class BaseService<T> {
   }
 
   public getEntitiesForActiveSeason() {
-    return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/active`);
+    return this.httpClient.get<Array<Partial<T>>>(`${this.resource}/season/active`);
   }
 
   public getEntitiesForSeason(guid: string) {

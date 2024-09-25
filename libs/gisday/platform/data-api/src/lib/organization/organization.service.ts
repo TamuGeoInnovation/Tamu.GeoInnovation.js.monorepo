@@ -48,16 +48,12 @@ export class OrganizationService extends BaseProvider<Organization> {
   public async getOrganizationsForActiveSeason() {
     const activeSeason = await this.ss.findOneActive();
 
+    if (!activeSeason) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
     try {
-      return this.find({
-        where: {
-          season: activeSeason
-        },
-        relations: ['season', 'logos'],
-        order: {
-          name: 'ASC'
-        }
-      });
+      return this.getOrganizationsForSeason(activeSeason.guid);
     } catch (err) {
       Logger.error(err.message, 'OrganizationService');
       throw new InternalServerErrorException('Could not find organizations for active season.');

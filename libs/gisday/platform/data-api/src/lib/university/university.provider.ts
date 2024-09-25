@@ -30,6 +30,16 @@ export class UniversityProvider extends BaseProvider<University> {
     });
   }
 
+  public async getEntitiesForActiveSeason() {
+    const activeSeason = await this.seasonService.findOneActive();
+
+    if (!activeSeason) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    return this.getEntitiesForSeason(activeSeason.guid);
+  }
+
   public async insertUniversitiesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
     const season = await this.seasonService.findOne({
       where: {

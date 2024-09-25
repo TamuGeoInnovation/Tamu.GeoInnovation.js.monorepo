@@ -12,6 +12,11 @@ import { UpdateEventDto } from './dto/update-event.dto';
 export class EventController {
   constructor(private readonly provider: EventProvider) {}
 
+  @Get('season/active')
+  public async getEventsForActiveSeason() {
+    return this.provider.getEventsForActiveSeason();
+  }
+
   @Get('season/:guid')
   public async getEventsForSeason(@Param('guid') seasonGuid: string) {
     return this.provider.getEventsForSeason(seasonGuid);
@@ -40,11 +45,6 @@ export class EventController {
   @Get('by-day')
   public async getEntitiesByDay() {
     return this.provider.getEntitiesByDay();
-  }
-
-  @Get('active')
-  public async getEventsForActiveSeason() {
-    return this.provider.getEventsForActiveSeason();
   }
 
   @UseGuards(JwtGuard)
