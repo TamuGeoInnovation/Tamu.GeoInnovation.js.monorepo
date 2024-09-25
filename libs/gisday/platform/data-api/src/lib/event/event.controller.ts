@@ -97,4 +97,11 @@ export class EventController {
   public deleteEntity(@Param('guid') guid: string) {
     return this.provider.deleteEntities(guid);
   }
+
+  @Permissions(['delete:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteMany(@Body('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
+  }
 }

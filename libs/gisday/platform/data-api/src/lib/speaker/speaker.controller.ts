@@ -73,4 +73,11 @@ export class SpeakerController {
   public deleteEntity(@Param('guid') guid: string) {
     return this.provider.deleteEntities(guid);
   }
+
+  @Permissions(['delete:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteManyEntities(@Body('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
+  }
 }

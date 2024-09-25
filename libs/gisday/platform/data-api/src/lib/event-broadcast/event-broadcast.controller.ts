@@ -60,4 +60,11 @@ export class EventBroadcastController {
   public deleteEntity(@Param('guid') guid: string) {
     return this.ebs.deleteEntities(guid);
   }
+
+  @Permissions(['delete:event-broadcasts'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteMany(@Body('guid') guid: string) {
+    return this.ebs.deleteEntities(guid);
+  }
 }

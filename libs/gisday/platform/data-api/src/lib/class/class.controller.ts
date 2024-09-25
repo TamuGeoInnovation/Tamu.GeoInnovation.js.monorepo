@@ -70,4 +70,11 @@ export class ClassController {
   public deleteEntity(@Param('guid') guid: string) {
     this.provider.deleteEntities(guid);
   }
+
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions(['delete:classes'])
+  @Delete()
+  public deleteMany(@Body('guid') guid: string) {
+    this.provider.deleteEntities(guid);
+  }
 }
