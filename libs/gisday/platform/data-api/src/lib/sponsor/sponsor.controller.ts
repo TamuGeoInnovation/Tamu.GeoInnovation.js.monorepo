@@ -10,6 +10,11 @@ import { SponsorProvider } from './sponsor.provider';
 export class SponsorController {
   constructor(private readonly provider: SponsorProvider) {}
 
+  @Get('season/:guid')
+  public getSponsorsForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getSponsorsForSeason(seasonGuid);
+  }
+
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -25,6 +30,16 @@ export class SponsorController {
     return this.provider.find({
       relations: ['season', 'logos']
     });
+  }
+
+  @Permissions(['create:sponsors'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public copySponsorsIntoSeason(
+    @Body('seasonGuid') seasonGuid: string,
+    @Body('existingEntityGuids') existingEntityGuids: Array<string>
+  ) {
+    return this.provider.copyEntitiesIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   @Permissions(['create:sponsors'])
@@ -51,6 +66,13 @@ export class SponsorController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public remove(@Param('guid') guid: string) {
-    return this.provider.deleteEntity(guid);
+    return this.provider.deleteEntities(guid);
+  }
+
+  @Permissions(['delete:sponsors'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public removeMany(@Body('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
   }
 }
