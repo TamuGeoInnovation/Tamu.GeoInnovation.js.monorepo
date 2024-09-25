@@ -28,6 +28,25 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     super(speakerRepo);
   }
 
+  public async getSpeakersForSeason(seasonGuid: string) {
+    try {
+      return this.find({
+        where: {
+          season: {
+            guid: seasonGuid
+          }
+        },
+        relations: EntityRelationsLUT.getRelation('speaker'),
+        order: {
+          lastName: 'ASC'
+        }
+      });
+    } catch (err) {
+      Logger.error(err.message, 'SpeakerProvider');
+      throw new InternalServerErrorException('Could not find speakers for season.');
+    }
+  }
+
   public async getPresenter(guid: string) {
     return this.speakerRepo.findOne({
       where: {
@@ -160,6 +179,56 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       }
     } else {
       throw new UnprocessableEntityException(null, 'Could not create speaker');
+    }
+  }
+
+  public async copySpeakersIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
+    const season = await this.seasonService.findOne({
+      where: {
+        guid: seasonGuid
+      }
+    });
+
+    if (!season) {
+      throw new UnprocessableEntityException('Could not find season.');
+    }
+
+    const existingSpeakers = await this.speakerRepo.find({
+      where: {
+        guid: In(existingEntityGuids)
+      },
+      relations: ['images', 'university']
+    });
+
+    if (!existingSpeakers || existingSpeakers.length === 0) {
+      throw new UnprocessableEntityException('Could not find speakers.');
+    }
+
+    const newEntities = existingSpeakers.map((entity) => {
+      delete entity.guid;
+      delete entity.created;
+      delete entity.updated;
+
+      if (entity.images?.length > 0) {
+        entity.images = entity.images.map((image) => {
+          delete image.guid;
+          delete image.created;
+          delete image.updated;
+
+          return image;
+        });
+      }
+
+      return this.speakerRepo.create({
+        ...entity,
+        season
+      });
+    });
+
+    try {
+      return Promise.all(newEntities.map((entity) => entity.save()));
+    } catch (err) {
+      throw new InternalServerErrorException('Could not copy speakers into season.');
     }
   }
 

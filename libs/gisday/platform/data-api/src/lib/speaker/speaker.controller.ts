@@ -11,6 +11,11 @@ import { SpeakerProvider } from './speaker.provider';
 export class SpeakerController {
   constructor(private readonly provider: SpeakerProvider) {}
 
+  @Get('season/:guid')
+  public async getSpeakersForSeason(@Param('guid') seasonGuid) {
+    return this.provider.getSpeakersForSeason(seasonGuid);
+  }
+
   @Get('organizers')
   public async getOrganizingEntities() {
     return this.provider.getOrganizationCommittee();
@@ -40,6 +45,13 @@ export class SpeakerController {
 
   @Permissions(['create:speakers'])
   @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public copy(@Body('seasonGuid') seasonGuid: string, @Body('existingEntityGuids') existingEntityGuids: Array<string>) {
+    return this.provider.copySpeakersIntoSeason(seasonGuid, existingEntityGuids);
+  }
+
+  @Permissions(['create:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
   public async speakerAndInfo(@Body() body, @UploadedFile() file) {
@@ -59,10 +71,6 @@ export class SpeakerController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    return this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    return this.provider.deleteEntities(guid);
   }
 }
