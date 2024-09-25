@@ -68,4 +68,11 @@ export class OrganizationController {
   public remove(@Param('guid') guid: string) {
     return this.orgService.deleteEntities(guid);
   }
+
+  @Permissions(['delete:organizations'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public removeMany(@Body('guid') guid: string) {
+    return this.orgService.deleteEntities(guid);
+  }
 }

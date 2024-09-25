@@ -61,4 +61,11 @@ export class PlaceController {
   public deleteEntity(@Param('guid') guid: string) {
     return this.ps.deleteEntities(guid);
   }
+
+  @Permissions(['delete:places'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteManyEntities(@Body('guid') guid: string) {
+    return this.ps.deleteEntities(guid);
+  }
 }
