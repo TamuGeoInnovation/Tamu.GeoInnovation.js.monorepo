@@ -43,6 +43,21 @@ export class PlaceService extends BaseProvider<Place> {
     }
   }
 
+  public async getPlacesForActiveSeason() {
+    try {
+      const season = await this.seasonService.findOneActive();
+
+      if (!season) {
+        throw new UnprocessableEntityException('No active season found.');
+      }
+
+      return this.getPlacesForSeason(season.guid);
+    } catch (err) {
+      Logger.error(`Error retrieving places for active season, ${err.message}`, 'PlaceService');
+      throw new InternalServerErrorException(err);
+    }
+  }
+
   public getEntity(guid: string) {
     try {
       return this.pRepo

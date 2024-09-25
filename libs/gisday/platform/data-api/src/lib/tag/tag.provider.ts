@@ -25,6 +25,16 @@ export class TagProvider extends BaseProvider<Tag> {
     });
   }
 
+  public async getTagsForActiveSeason() {
+    const activeSeason = await this.seasonService.findOneActive();
+
+    if (!activeSeason) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    return this.getTagsForSeason(activeSeason.guid);
+  }
+
   public async getTags() {
     return this.tagRepo.find({
       order: {

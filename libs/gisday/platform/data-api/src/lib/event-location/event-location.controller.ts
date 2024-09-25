@@ -9,6 +9,11 @@ import { EventLocationService } from './event-location.service';
 export class EventLocationController {
   constructor(private readonly ebs: EventLocationService) {}
 
+  @Get('season/active')
+  public async getActive() {
+    return this.ebs.getEventLocationsForActiveSeason();
+  }
+
   @Get('season/:guid')
   public async getEventLocationsForSeason(@Param('guid') seasonGuid: string) {
     return this.ebs.getEventLocationsForSeason(seasonGuid);

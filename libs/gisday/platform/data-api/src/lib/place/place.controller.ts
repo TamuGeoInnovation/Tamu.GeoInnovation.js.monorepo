@@ -10,6 +10,11 @@ import { PlaceService } from './place.service';
 export class PlaceController {
   constructor(private readonly ps: PlaceService) {}
 
+  @Get('season/active')
+  public getActive() {
+    return this.ps.getPlacesForActiveSeason();
+  }
+
   @Get('season/:guid')
   public getPlacesForSeason(@Param('guid') guid: string) {
     return this.ps.getPlacesForSeason(guid);

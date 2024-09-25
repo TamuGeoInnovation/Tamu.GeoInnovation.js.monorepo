@@ -51,6 +51,21 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
     }
   }
 
+  public async getSponsorsForActiveSeason() {
+    const activeSeason = await this.seasonService.findOneActive();
+
+    if (!activeSeason) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    try {
+      return this.getSponsorsForSeason(activeSeason.guid);
+    } catch (err) {
+      Logger.error(err.message, 'SponsorProvider');
+      throw new InternalServerErrorException('Could not find sponsors for active season.');
+    }
+  }
+
   public async copyEntitiesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
     const season = await this.seasonService.findOne({
       where: {
