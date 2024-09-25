@@ -275,6 +275,8 @@ export class EventProvider extends BaseProvider<Event> {
       delete event.courseCredit;
       delete event.sponsors;
       delete event.guid;
+      delete event.created;
+      delete event.updated;
 
       const newEvent = this.eventRepo.create({
         ...event,

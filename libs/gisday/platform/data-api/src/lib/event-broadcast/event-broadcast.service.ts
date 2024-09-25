@@ -67,6 +67,8 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
       const newEntities = existingEntities.map((entity) => {
         delete entity.guid;
         delete entity.season;
+        delete entity.created;
+        delete entity.updated;
 
         return this.eb
           .create({

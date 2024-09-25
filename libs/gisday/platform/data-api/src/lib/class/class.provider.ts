@@ -85,6 +85,9 @@ export class ClassProvider extends BaseProvider<Class> {
       delete c.guid;
       delete c.season;
       delete c.students;
+      delete c.created;
+      delete c.updated;
+
       const newClass = this.classRepo.create({
         ...c,
         season: {
