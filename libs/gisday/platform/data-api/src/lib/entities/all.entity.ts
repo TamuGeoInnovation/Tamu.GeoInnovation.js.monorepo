@@ -170,6 +170,9 @@ export class Season extends GuidIdentity {
 
   @OneToMany(() => Tag, (tag) => tag.season)
   public tags: Tag[];
+
+  @OneToMany(() => University, (university) => university.season)
+  public universities: University[];
 }
 
 @Entity({ name: 'seasons_days' })
@@ -496,6 +499,9 @@ export class University extends GuidIdentity {
 
   @Column({ nullable: true })
   public hexTriplet?: string;
+
+  @ManyToOne(() => Season, (season) => season.universities, { cascade: true, nullable: true })
+  public season: Season;
 }
 
 @Entity({

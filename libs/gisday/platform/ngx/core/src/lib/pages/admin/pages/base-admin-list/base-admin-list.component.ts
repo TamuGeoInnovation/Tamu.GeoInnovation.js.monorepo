@@ -162,7 +162,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
             data: {
               identities: guids,
               entityType: singularEntityName,
-              pluralEntityTypename: pluralEntityName,
+              pluralEntityType: pluralEntityName,
               notice: message
             }
           });
@@ -207,7 +207,7 @@ export abstract class BaseAdminListComponent<T extends GuidIdentity> implements 
             data: {
               identities: guids,
               entityType: singularEntityName,
-              pluralEntityTypename: pluralEntityName,
+              pluralEntityType: pluralEntityName,
               notice: message
             }
           });
