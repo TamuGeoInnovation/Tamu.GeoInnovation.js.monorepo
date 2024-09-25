@@ -674,7 +674,7 @@ export class Asset extends GuidIdentity {
   @ManyToOne(() => Speaker, (s) => s.images, { nullable: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
   public speaker?: Speaker;
 
-  @ManyToOne(() => Sponsor, (s) => s.logos, { nullable: true, orphanedRowAction: 'nullify' })
+  @ManyToOne(() => Sponsor, (s) => s.logos, { nullable: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
   public sponsor?: Sponsor;
 }
 

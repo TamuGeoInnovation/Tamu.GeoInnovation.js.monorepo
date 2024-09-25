@@ -6,20 +6,102 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { Sponsor } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
+import { SeasonService } from '../season/season.service';
 @Injectable()
 export class SponsorProvider extends BaseProvider<Sponsor> {
   private _resourcePath = `images/sponsors`;
 
   constructor(
     @InjectRepository(Sponsor) private sponsorRepo: Repository<Sponsor>,
-    private readonly assetService: AssetsService
+    private readonly assetService: AssetsService,
+    private readonly seasonService: SeasonService
   ) {
     super(sponsorRepo);
+  }
+
+  public async getSponsorsForSeason(seasonGuid: string) {
+    try {
+      const season = await this.seasonService.findOne({
+        where: {
+          guid: seasonGuid
+        }
+      });
+
+      if (!season) {
+        throw new UnprocessableEntityException('Season does not exist.');
+      }
+
+      return this.find({
+        where: {
+          season: season
+        },
+        relations: ['season', 'logos'],
+        order: {
+          name: 'ASC'
+        }
+      });
+    } catch (err) {
+      Logger.error(err.message, 'SponsorProvider');
+      throw new InternalServerErrorException('Could not find sponsors for season.');
+    }
+  }
+
+  public async copyEntitiesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
+    const season = await this.seasonService.findOne({
+      where: {
+        guid: seasonGuid
+      }
+    });
+
+    if (!season) {
+      throw new UnprocessableEntityException('Season does not exist.');
+    }
+
+    const entities = await this.find({
+      where: {
+        guid: In(existingEntityGuids)
+      },
+      relations: ['logos']
+    });
+
+    if (!entities || entities.length === 0) {
+      throw new UnprocessableEntityException('Could not find sponsors.');
+    }
+
+    const newEntities = entities.map((entity) => {
+      delete entity.guid;
+      delete entity.created;
+      delete entity.updated;
+
+      if (entity.logos?.length > 0) {
+        entity.logos = entity.logos.map((logo) => {
+          delete logo.guid;
+          delete logo.created;
+          delete logo.updated;
+
+          return logo;
+        });
+      }
+
+      const newEntity = this.sponsorRepo.create({
+        ...entity,
+        season: season
+      });
+
+      return newEntity.save();
+    });
+
+    try {
+      return Promise.all(newEntities);
+    } catch (err) {
+      Logger.error(err.message, 'SponsorProvider');
+      throw new InternalServerErrorException('Could not copy sponsors into season.');
+    }
   }
 
   public async createSponsor(sponsor: Partial<Sponsor>, file?: Express.Multer.File) {
