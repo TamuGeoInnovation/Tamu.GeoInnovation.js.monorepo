@@ -82,6 +82,8 @@ export class EventLocationService extends BaseProvider<EventLocation> {
         delete entity.season;
         delete entity.place;
         delete entity.events;
+        delete entity.created;
+        delete entity.updated;
 
         return this.esRepo.create({
           ...entity,

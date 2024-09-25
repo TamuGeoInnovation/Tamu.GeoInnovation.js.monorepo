@@ -781,7 +781,7 @@ export class UserClass extends GuidIdentity {
   @Column({ nullable: false })
   public accountGuid: string;
 
-  @ManyToOne(() => Class, { cascade: true, eager: true })
+  @ManyToOne(() => Class, { cascade: true, eager: true, orphanedRowAction: 'nullify', onDelete: 'SET NULL' })
   @JoinColumn()
   public class: Class;
 }
