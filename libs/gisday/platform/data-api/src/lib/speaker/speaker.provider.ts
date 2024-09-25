@@ -112,7 +112,39 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
   }
 
-  public async getOrganizationCommittee() {
+  public async getOrganizersForSeason(seasonGuid: string) {
+    return this.speakerRepo.find({
+      where: {
+        isOrganizer: true,
+        season: seasonGuid
+      },
+      relations: ['organization', 'university', 'images'],
+      order: {
+        lastName: 'ASC'
+      }
+    });
+  }
+
+  public async getOrganizersForActiveSeason() {
+    const season = await this.seasonService.findOneActive();
+
+    if (!season) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    return this.speakerRepo.find({
+      where: {
+        isOrganizer: true,
+        season: season.guid
+      },
+      relations: ['organization', 'university', 'images'],
+      order: {
+        lastName: 'ASC'
+      }
+    });
+  }
+
+  public async getAllTimeOrganizers() {
     return this.speakerRepo.find({
       where: {
         isOrganizer: true

@@ -19,6 +19,6 @@ export class FooterComponent implements OnInit {
   public ngOnInit(): void {
     this.activeSeason$ = this.ss.activeSeason$;
     this.currentYear = new Date().getFullYear();
-    this.organizations$ = this.os.getEntities();
+    this.organizations$ = this.os.getEntitiesForActiveSeason();
   }
 }
