@@ -23,7 +23,7 @@ export class MyClassesComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.classes$ = this.cs.getEntities().pipe(shareReplay());
+    this.classes$ = this.cs.getEntitiesForActiveSeason().pipe(shareReplay());
     this.userClasses$ = this.ucs.getEntities().pipe(shareReplay());
   }
 

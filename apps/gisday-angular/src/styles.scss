@@ -422,7 +422,7 @@ footer .logo-container {
   }
 
   &.greyscale {
-    color: lighten($gisday-blue-support, 50%);
+    color: #424242;
 
     span {
       -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */

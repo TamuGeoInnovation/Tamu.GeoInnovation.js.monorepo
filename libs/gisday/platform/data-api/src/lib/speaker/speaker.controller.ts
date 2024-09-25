@@ -21,9 +21,19 @@ export class SpeakerController {
     return this.provider.getSpeakersForSeason(seasonGuid);
   }
 
+  @Get('organizers/season/active')
+  public async getActiveOrganizers() {
+    return this.provider.getOrganizersForActiveSeason();
+  }
+
+  @Get('organizers/season/:guid')
+  public async getOrganizersForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getOrganizersForSeason(seasonGuid);
+  }
+
   @Get('organizers')
   public async getOrganizingEntities() {
-    return this.provider.getOrganizationCommittee();
+    return this.provider.getAllTimeOrganizers();
   }
 
   @Get('participating')
