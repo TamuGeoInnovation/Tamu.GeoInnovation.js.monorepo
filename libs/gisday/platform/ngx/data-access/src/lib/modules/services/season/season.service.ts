@@ -11,8 +11,8 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class SeasonService extends BaseService<Season> {
-  public seasons$: Observable<Array<Partial<Season>>> = this.getEntities().pipe(shareReplay());
-  public activeSeason$: Observable<ActiveSeasonDto> = this.getActiveSeason().pipe(shareReplay());
+  public seasons$: Observable<Array<Partial<Season>>> = this.getEntities().pipe(shareReplay(1));
+  public activeSeason$: Observable<ActiveSeasonDto> = this.getActiveSeason().pipe(shareReplay(1));
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
     super(env1, http1, 'seasons');

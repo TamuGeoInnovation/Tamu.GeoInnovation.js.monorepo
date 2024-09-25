@@ -27,8 +27,4 @@ export class RsvpService extends BaseService<UserRsvp> {
   public getUserRsvpForEvent(eventGuid: string) {
     return this.http1.get<UserRsvp>(`${this.resource}/user/event/${eventGuid}`);
   }
-
-  public override deleteEntity(guid: string) {
-    return this.http1.delete(`${this.resource}/${guid}`);
-  }
 }
