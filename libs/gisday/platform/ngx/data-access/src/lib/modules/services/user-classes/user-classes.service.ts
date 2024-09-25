@@ -15,8 +15,4 @@ export class UserClassesService extends BaseService<UserClass> {
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
     super(env1, http1, 'user-classes');
   }
-
-  public override deleteEntity(guid: string) {
-    return this.http1.delete(`${this.resource}/${guid}`);
-  }
 }

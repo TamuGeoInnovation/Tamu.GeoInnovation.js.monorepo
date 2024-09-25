@@ -52,6 +52,6 @@ export abstract class BaseService<T> {
   }
 
   public deleteEntity(entityGuid: string) {
-    return this.deleteEntities([entityGuid]);
+    return this.httpClient.delete<Partial<T>>(`${this.resource}/${entityGuid}`);
   }
 }

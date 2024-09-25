@@ -72,7 +72,7 @@ export class MyClassesComponent implements OnInit {
   public isUserClassSelected$(classGuid: string): Observable<boolean> {
     return this.userClasses$.pipe(
       map((userClasses) => {
-        const found = userClasses.find((uc) => uc.class.guid === classGuid);
+        const found = userClasses.find((uc) => uc?.class?.guid === classGuid);
 
         return found !== undefined;
       }),
