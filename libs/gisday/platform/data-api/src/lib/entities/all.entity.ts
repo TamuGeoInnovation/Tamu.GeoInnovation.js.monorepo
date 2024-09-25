@@ -167,6 +167,9 @@ export class Season extends GuidIdentity {
 
   @OneToMany(() => Place, (place) => place.season)
   public places: Place[];
+
+  @OneToMany(() => Tag, (tag) => tag.season)
+  public tags: Tag[];
 }
 
 @Entity({ name: 'seasons_days' })
@@ -615,6 +618,9 @@ export class Speaker extends GuidIdentity {
 export class Tag extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
+
+  @ManyToOne(() => Season, (season) => season.tags, { cascade: true, nullable: true })
+  public season: Season;
 }
 
 @Entity({

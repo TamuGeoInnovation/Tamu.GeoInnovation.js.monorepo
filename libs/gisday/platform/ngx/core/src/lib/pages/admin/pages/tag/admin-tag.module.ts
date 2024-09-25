@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GisdayFormsModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
@@ -33,7 +34,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, GisdayFormsModule],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    FormsModule,
+    ReactiveFormsModule,
+    UIFormsModule,
+    GisdayFormsModule,
+    PipesModule
+  ],
   declarations: [AdminTagComponent, TagsEditComponent, TagsListComponent, TagsAddComponent],
   exports: [RouterModule]
 })
