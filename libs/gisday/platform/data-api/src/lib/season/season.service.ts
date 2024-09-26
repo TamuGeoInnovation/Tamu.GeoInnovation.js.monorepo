@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import { BaseProvider, LookupOneOptions } from '../_base/base-provider';
-import { Asset, Season, SeasonDay, Speaker, Sponsor, Tag } from '../entities/all.entity';
+import { Asset, Organization, Season, SeasonDay, Speaker, Sponsor, Tag } from '../entities/all.entity';
 import { ActiveSeasonDto } from './dto/active-season.dto';
 
 @Injectable()
@@ -246,6 +246,7 @@ export class SeasonService extends BaseProvider<Season> {
           //
 
           const speakers = await this.seasonRepo.manager.findByIds(Speaker, existing.speakers);
+          const organizations = await this.seasonRepo.manager.findByIds(Organization, existing.organizations);
           const sponsors = await this.seasonRepo.manager.findByIds(Sponsor, existing.sponsors);
           const tags = await this.seasonRepo.manager.findByIds(Tag, existing.tags);
 
@@ -254,6 +255,7 @@ export class SeasonService extends BaseProvider<Season> {
           await manager.remove(sponsorImages);
           await manager.remove(placeImages);
           await manager.remove(speakers);
+          await manager.remove(organizations);
           await manager.remove(sponsors);
           await manager.remove(tags);
 
