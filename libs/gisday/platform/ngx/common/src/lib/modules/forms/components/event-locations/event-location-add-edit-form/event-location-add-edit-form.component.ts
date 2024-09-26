@@ -40,7 +40,7 @@ export class EventLocationAddEditFormComponent implements OnInit {
       streetAddressOverride: [null]
     });
 
-    this.places$ = this.ps.getEntities();
+    this.places$ = this.ps.getEntitiesForActiveSeason();
 
     if (this.type === 'edit') {
       this.entity$ = this.at.params.pipe(
