@@ -660,7 +660,7 @@ export class Asset extends GuidIdentity {
   name: 'checkins'
 })
 export class CheckIn extends GuidIdentity {
-  @ManyToOne(() => Event, { cascade: false })
+  @ManyToOne(() => Event, { nullable: true, cascade: false, onDelete: 'SET NULL' })
   public event: Event;
 
   @Column({ nullable: false })
@@ -759,7 +759,7 @@ export class UserRsvp extends GuidIdentity {
   @Column({ nullable: false })
   public accountGuid: string;
 
-  @ManyToOne(() => Event, { eager: true })
+  @ManyToOne(() => Event, { nullable: true, eager: true, onDelete: 'SET NULL' })
   public event: Event;
 
   @ManyToOne(() => RsvpType, { eager: true })
