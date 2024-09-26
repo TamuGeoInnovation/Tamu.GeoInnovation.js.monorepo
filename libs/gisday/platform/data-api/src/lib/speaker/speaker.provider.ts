@@ -239,7 +239,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: In(existingEntityGuids)
       },
-      relations: ['images', 'university']
+      relations: ['images']
     });
 
     if (!existingSpeakers || existingSpeakers.length === 0) {
