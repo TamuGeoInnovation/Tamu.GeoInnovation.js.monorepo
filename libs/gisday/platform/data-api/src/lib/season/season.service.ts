@@ -1,9 +1,16 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { BaseProvider, LookupOneOptions } from '../_base/base-provider';
-import { Season, SeasonDay } from '../entities/all.entity';
+import { Asset, Season, SeasonDay, Speaker, Sponsor, Tag } from '../entities/all.entity';
 import { ActiveSeasonDto } from './dto/active-season.dto';
 
 @Injectable()
@@ -196,67 +203,66 @@ export class SeasonService extends BaseProvider<Season> {
       where: {
         guid: guidOrOptions
       },
-      relations: [
-        'speakers',
-        'speakers.images',
-        'organizations',
-        'organizations.logos',
-        'sponsors',
-        'sponsors.logos',
-        'places',
-        'places.logos',
-        'tags'
-      ]
+      loadRelationIds: {
+        relations: ['speakers', 'organizations', 'sponsors', 'places', 'tags']
+      }
     });
 
     if (existing) {
       // in a typeorm transaction, remove all the speaker images, organization logos, sponsor logos, and places logos,
       // then remove the season
-      return await this.seasonRepo.manager.transaction(async (manager) => {
-        await Promise.all(
-          existing.speakers.map((speaker) => {
-            return manager.remove(speaker.images);
-          })
-        );
+      return await this.seasonRepo.manager
+        .transaction(async (manager) => {
+          //
+          // Get all the images and delete those from entities first
+          //
 
-        await Promise.all(
-          existing.organizations.map((organization) => {
-            return manager.remove(organization.logos);
-          })
-        );
+          const speakerImages = await this.seasonRepo.manager.find(Asset, {
+            where: {
+              speaker: In(existing.speakers)
+            }
+          });
 
-        await Promise.all(
-          existing.sponsors.map((sponsor) => {
-            return manager.remove(sponsor.logos);
-          })
-        );
+          const organizationImages = await this.seasonRepo.manager.find(Asset, {
+            where: {
+              organization: In(existing.organizations)
+            }
+          });
 
-        await Promise.all(
-          existing.places.map((place) => {
-            return manager.remove(place.logos);
-          })
-        );
+          const sponsorImages = await this.seasonRepo.manager.find(Asset, {
+            where: {
+              sponsor: In(existing.sponsors)
+            }
+          });
 
-        await Promise.all(
-          existing.speakers.map((speaker) => {
-            return manager.remove(speaker);
-          })
-        );
+          const placeImages = await this.seasonRepo.manager.find(Asset, {
+            where: {
+              places: In(existing.places)
+            }
+          });
 
-        await Promise.all(
-          existing.sponsors.map((sponsor) => {
-            return manager.remove(sponsor);
-          })
-        );
+          //
+          // Get the actual speakers, sponsor, and tag entities since the `remove` method requires the actual entity
+          //
 
-        await Promise.all(
-          existing.tags.map((tag) => {
-            return manager.remove(tag);
-          })
-        );
+          const speakers = await this.seasonRepo.manager.findByIds(Speaker, existing.speakers);
+          const sponsors = await this.seasonRepo.manager.findByIds(Sponsor, existing.sponsors);
+          const tags = await this.seasonRepo.manager.findByIds(Tag, existing.tags);
 
-        return manager.remove(existing);
-      });
+          await manager.remove(speakerImages);
+          await manager.remove(organizationImages);
+          await manager.remove(sponsorImages);
+          await manager.remove(placeImages);
+          await manager.remove(speakers);
+          await manager.remove(sponsors);
+          await manager.remove(tags);
+
+          return manager.remove(existing);
+        })
+        .catch((error) => {
+          Logger.error(error.message, error.stack, 'SeasonService.deleteEntity');
+          throw new InternalServerErrorException('Error deleting season.');
+        });
     } else {
       throw new NotFoundException();
     }
