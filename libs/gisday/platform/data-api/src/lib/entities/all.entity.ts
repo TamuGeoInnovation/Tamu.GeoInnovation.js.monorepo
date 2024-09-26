@@ -147,10 +147,10 @@ export class Season extends GuidIdentity {
   @OneToMany(() => Speaker, (speaker) => speaker.season, { cascade: true })
   public speakers: Speaker[];
 
-  @OneToMany(() => Organization, (organization) => organization.season)
+  @OneToMany(() => Organization, (organization) => organization.season, { cascade: true })
   public organizations: Organization[];
 
-  @OneToMany(() => Sponsor, (sponsor) => sponsor.season)
+  @OneToMany(() => Sponsor, (sponsor) => sponsor.season, { cascade: true })
   public sponsors: Sponsor[];
 
   @OneToMany(() => Class, (cl) => cl.season, { cascade: true })
@@ -159,33 +159,33 @@ export class Season extends GuidIdentity {
   @OneToMany(() => Submission, (submission) => submission.season, { cascade: true })
   public submissions: Submission[];
 
-  @OneToMany(() => EventBroadcast, (broadcast) => broadcast.season)
+  @OneToMany(() => EventBroadcast, (broadcast) => broadcast.season, { cascade: true })
   public broadcasts: EventBroadcast[];
 
-  @OneToMany(() => EventLocation, (location) => location.season)
+  @OneToMany(() => EventLocation, (location) => location.season, { cascade: true })
   public event_locations: EventLocation[];
 
-  @OneToMany(() => Place, (place) => place.season)
+  @OneToMany(() => Place, (place) => place.season, { cascade: true })
   public places: Place[];
 
-  @OneToMany(() => Tag, (tag) => tag.season)
+  @OneToMany(() => Tag, (tag) => tag.season, { cascade: true })
   public tags: Tag[];
 
-  @OneToMany(() => University, (university) => university.season)
+  @OneToMany(() => University, (university) => university.season, { cascade: true })
   public universities: University[];
 }
 
 @Entity({ name: 'seasons_days' })
 export class SeasonDay extends GuidIdentity {
   @Column({ nullable: false })
-  date: Date;
+  public date: Date;
+
+  @OneToMany(() => Event, (event) => event.day, { cascade: true })
+  public events: Event[];
 
   // Season day belongs to a season
-  @ManyToOne(() => Season, (season) => season.days, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
-  season: Season;
-
-  @OneToMany(() => Event, (event) => event.day)
-  events: Event[];
+  @ManyToOne(() => Season, (season) => season.days, { onDelete: 'CASCADE' })
+  public season: Season;
 }
 
 @Entity({
@@ -210,7 +210,7 @@ export class Place extends GuidIdentity {
   @Column({ nullable: true })
   public website?: string;
 
-  @OneToMany(() => EventLocation, (location) => location.place)
+  @OneToMany(() => EventLocation, (location) => location.place, { cascade: true })
   public locations?: EventLocation[];
 
   @OneToMany(() => PlaceLink, (link) => link.place, { cascade: true })
@@ -219,12 +219,7 @@ export class Place extends GuidIdentity {
   @OneToMany(() => Asset, (asset) => asset.places, { cascade: true, nullable: true })
   public logos?: Asset[];
 
-  @ManyToOne(() => Season, (season) => season.places, {
-    cascade: true,
-    nullable: true,
-    orphanedRowAction: 'nullify',
-    onDelete: 'SET NULL'
-  })
+  @ManyToOne(() => Season, (season) => season.places, { nullable: true, onDelete: 'CASCADE' })
   public season?: Season;
 }
 
@@ -253,15 +248,10 @@ export class EventBroadcast extends GuidIdentity {
   @Column({ nullable: true, length: 'MAX' })
   public details?: string;
 
-  @OneToMany(() => Event, (event) => event.broadcast)
+  @OneToMany(() => Event, (event) => event.broadcast, { cascade: true })
   public events?: Event[];
 
-  @ManyToOne(() => Season, (season) => season.broadcasts, {
-    cascade: true,
-    nullable: true,
-    orphanedRowAction: 'nullify',
-    onDelete: 'SET NULL'
-  })
+  @ManyToOne(() => Season, (season) => season.broadcasts, { onDelete: 'CASCADE' })
   public season?: Season;
 }
 
@@ -293,20 +283,10 @@ export class EventLocation extends GuidIdentity {
   @OneToMany(() => Event, (event) => event.location)
   public events?: Event[];
 
-  @ManyToOne(() => Place, (place) => place.locations, {
-    cascade: true,
-    nullable: true,
-    orphanedRowAction: 'nullify',
-    onDelete: 'SET NULL'
-  })
+  @ManyToOne(() => Place, (place) => place.locations, { nullable: true })
   public place: Place;
 
-  @ManyToOne(() => Season, (season) => season.event_locations, {
-    cascade: true,
-    nullable: true,
-    orphanedRowAction: 'nullify',
-    onDelete: 'SET NULL'
-  })
+  @ManyToOne(() => Season, (season) => season.event_locations, { nullable: true, onDelete: 'CASCADE' })
   public season?: Season;
 }
 
@@ -365,42 +345,32 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true, length: 'MAX' })
   public requirements: string;
 
-  @ManyToOne(() => SeasonDay, (day) => day.events)
+  @ManyToOne(() => SeasonDay, (day) => day.events, { onDelete: 'CASCADE' })
   public day: SeasonDay;
 
-  @ManyToMany(() => Speaker, { cascade: true, nullable: true })
+  @ManyToMany(() => Speaker, { nullable: true })
   @JoinTable({
     name: 'event_speakers'
   })
   public speakers?: Speaker[];
 
-  @ManyToMany(() => Tag, { cascade: true, nullable: true })
+  @ManyToMany(() => Tag, { nullable: true })
   @JoinTable({
     name: 'event_tags'
   })
   public tags?: Tag[];
 
-  @ManyToOne(() => EventBroadcast, (broadcast) => broadcast.events, {
-    cascade: true,
-    nullable: true,
-    orphanedRowAction: 'nullify',
-    onDelete: 'SET NULL'
-  })
+  @ManyToOne(() => EventBroadcast, (broadcast) => broadcast.events, { nullable: true })
   public broadcast?: EventBroadcast;
 
-  @ManyToOne(() => EventLocation, (location) => location.events, {
-    cascade: true,
-    nullable: true,
-    orphanedRowAction: 'nullify',
-    onDelete: 'SET NULL'
-  })
+  @ManyToOne(() => EventLocation, (location) => location.events, { nullable: true })
   public location?: EventLocation;
 
-  @ManyToMany(() => CourseCredit, { cascade: true })
+  @ManyToMany(() => CourseCredit)
   @JoinTable({ name: 'event_course_credits' })
   public courseCredit?: CourseCredit[];
 
-  @ManyToMany(() => Sponsor, { cascade: true })
+  @ManyToMany(() => Sponsor, { orphanedRowAction: 'delete' })
   @JoinTable({
     name: 'event_sponsors'
   })
@@ -500,7 +470,7 @@ export class University extends GuidIdentity {
   @Column({ nullable: true })
   public hexTriplet?: string;
 
-  @ManyToOne(() => Season, (season) => season.universities, { cascade: true, nullable: true })
+  @ManyToOne(() => Season, (season) => season.universities, { nullable: true, onDelete: 'CASCADE' })
   public season: Season;
 }
 
@@ -524,7 +494,7 @@ export class Organization extends GuidIdentity {
 
   @Column({ nullable: true })
   public website: string;
-
+  y;
   @Column({ nullable: true, length: 'MAX' })
   public text: string;
 
@@ -540,11 +510,11 @@ export class Organization extends GuidIdentity {
   @OneToMany(() => Asset, (asset) => asset.organization, { cascade: true, nullable: true })
   public logos?: Asset[];
 
-  @ManyToOne(() => Season, (season) => season.organizations, { cascade: true, orphanedRowAction: 'nullify' })
-  public season: Season;
-
-  @OneToMany(() => Speaker, (speaker) => speaker.organization, { orphanedRowAction: 'nullify' })
+  @OneToMany(() => Speaker, (speaker) => speaker.organization, { nullable: true })
   public speakers: Speaker[];
+
+  @ManyToOne(() => Season, (season) => season.organizations, { onDelete: 'CASCADE' })
+  public season: Season;
 }
 
 @Entity({
@@ -557,7 +527,7 @@ export class PlaceLink extends GuidIdentity {
   @Column({ nullable: false })
   public url: string;
 
-  @ManyToOne(() => Place, (place) => place.links, { orphanedRowAction: 'delete', onDelete: 'CASCADE' })
+  @ManyToOne(() => Place, (place) => place.links, { onDelete: 'CASCADE' })
   public place: Place[];
 }
 
@@ -601,17 +571,13 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
   public accountGuid: string;
 
-  @ManyToOne(() => Season, (season) => season.speakers, { cascade: false, nullable: true })
+  @ManyToOne(() => Season, (season) => season.speakers, { nullable: true })
   public season: Season;
 
-  @ManyToOne(() => Organization, (o) => o.speakers, {
-    nullable: true,
-    orphanedRowAction: 'nullify',
-    onDelete: 'SET NULL'
-  })
+  @ManyToOne(() => Organization, (o) => o.speakers, { nullable: true })
   public organization: Organization;
 
-  @ManyToOne(() => University, { cascade: true, nullable: true })
+  @ManyToOne(() => University, { nullable: true })
   public university?: University;
 
   @OneToMany(() => Asset, (asset) => asset.speaker, { cascade: true, nullable: true })
@@ -625,7 +591,7 @@ export class Tag extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
 
-  @ManyToOne(() => Season, (season) => season.tags, { cascade: true, nullable: true })
+  @ManyToOne(() => Season, (season) => season.tags, { nullable: true })
   public season: Season;
 }
 
@@ -657,7 +623,7 @@ export class Sponsor extends GuidIdentity {
   @Column({ nullable: true })
   public sponsorshipAmount: string;
 
-  @ManyToOne(() => Season, (season) => season.sponsors, { cascade: true, nullable: true })
+  @ManyToOne(() => Season, (season) => season.sponsors)
   public season: Season;
 
   @OneToMany(() => Asset, (asset) => asset.sponsor, { cascade: true, nullable: true })
@@ -677,16 +643,16 @@ export class Asset extends GuidIdentity {
   @Column({ nullable: true })
   public type: string;
 
-  @ManyToOne(() => Place, (o) => o.logos, { nullable: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
+  @ManyToOne(() => Place, (o) => o.logos, { nullable: true })
   public places?: Place;
 
-  @ManyToOne(() => Organization, (o) => o.logos, { nullable: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
+  @ManyToOne(() => Organization, (o) => o.logos, { nullable: true })
   public organization?: Organization;
 
-  @ManyToOne(() => Speaker, (s) => s.images, { nullable: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
+  @ManyToOne(() => Speaker, (s) => s.images, { nullable: true })
   public speaker?: Speaker;
 
-  @ManyToOne(() => Sponsor, (s) => s.logos, { nullable: true, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
+  @ManyToOne(() => Sponsor, (s) => s.logos, { nullable: true })
   public sponsor?: Sponsor;
 }
 
@@ -717,10 +683,10 @@ export class Class extends GuidIdentity {
   @Column({ nullable: true })
   public number: string;
 
-  @ManyToOne(() => Season, (season) => season.classes, { cascade: false, nullable: true })
+  @ManyToOne(() => Season, (season) => season.classes, { nullable: true, onDelete: 'CASCADE' })
   public season: Season;
 
-  @OneToMany(() => UserClass, (userClass) => userClass.class, { cascade: false })
+  @OneToMany(() => UserClass, (userClass) => userClass.class)
   public students: UserClass[];
 }
 
@@ -728,10 +694,10 @@ export class Class extends GuidIdentity {
   name: 'course_credits'
 })
 export class CourseCredit extends GuidIdentity {
-  @ManyToOne(() => Event, { cascade: false, nullable: true })
+  @ManyToOne(() => Event, { nullable: true })
   public event?: Event;
 
-  @ManyToOne(() => Class, { cascade: false, nullable: true })
+  @ManyToOne(() => Class, { nullable: true })
   public class?: Class;
 }
 
@@ -781,7 +747,7 @@ export class UserClass extends GuidIdentity {
   @Column({ nullable: false })
   public accountGuid: string;
 
-  @ManyToOne(() => Class, { cascade: true, eager: true, orphanedRowAction: 'nullify', onDelete: 'SET NULL' })
+  @ManyToOne(() => Class, { eager: true, orphanedRowAction: 'nullify', onDelete: 'SET NULL' })
   @JoinColumn()
   public class: Class;
 }
@@ -793,10 +759,10 @@ export class UserRsvp extends GuidIdentity {
   @Column({ nullable: false })
   public accountGuid: string;
 
-  @ManyToOne(() => Event, { cascade: true, eager: true })
+  @ManyToOne(() => Event, { eager: true })
   public event: Event;
 
-  @ManyToOne(() => RsvpType, { cascade: true, eager: true })
+  @ManyToOne(() => RsvpType, { eager: true })
   public rsvpType: RsvpType;
 }
 
@@ -804,7 +770,7 @@ export class UserRsvp extends GuidIdentity {
   name: 'submissions'
 })
 export class Submission extends GuidIdentity {
-  @ManyToOne(() => Season, (season) => season.submissions, { cascade: false, nullable: true })
+  @ManyToOne(() => Season, (season) => season.submissions, { nullable: true })
   public season: Season;
 
   @Column({ nullable: true })
