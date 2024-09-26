@@ -510,7 +510,7 @@ export class Organization extends GuidIdentity {
   @OneToMany(() => Asset, (asset) => asset.organization, { cascade: true, nullable: true })
   public logos?: Asset[];
 
-  @OneToMany(() => Speaker, (speaker) => speaker.organization, { nullable: true })
+  @OneToMany(() => Speaker, (speaker) => speaker.organization, { cascade: true, nullable: true })
   public speakers: Speaker[];
 
   @ManyToOne(() => Season, (season) => season.organizations, { onDelete: 'CASCADE' })
