@@ -154,10 +154,10 @@ export class EventAddEditFormComponent implements OnInit {
       speakers: [[]]
     });
 
-    this.tags$ = this.tagService.getEntities().pipe(shareReplay(1));
-    this.speakers$ = this.speakerService.getEntities().pipe(shareReplay(1));
-    this.broadcasts$ = this.eventBroadcastService.getEntities().pipe(shareReplay(1));
-    this.locations$ = this.eventLocationService.getEntities().pipe(
+    this.tags$ = this.tagService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    this.speakers$ = this.speakerService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    this.broadcasts$ = this.eventBroadcastService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    this.locations$ = this.eventLocationService.getEntitiesForActiveSeason().pipe(
       mergeMap((locations) => locations),
       map((loc) => {
         return {

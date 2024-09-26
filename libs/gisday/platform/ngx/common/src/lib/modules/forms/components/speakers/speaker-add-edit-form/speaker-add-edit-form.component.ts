@@ -62,8 +62,8 @@ export class SpeakerAddEditFormComponent implements OnInit {
       file: [null]
     });
 
-    this.universities$ = this.us.getEntities();
-    this.organizations$ = this.os.getEntities();
+    this.universities$ = this.us.getEntitiesForActiveSeason();
+    this.organizations$ = this.os.getEntitiesForActiveSeason();
 
     this.entity$ = this.at.params.pipe(
       map((params) => params.guid),
