@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { BaseProvider } from '../_base/base-provider';
+import { BaseProvider, LookupOneOptions } from '../_base/base-provider';
 import { Season, SeasonDay } from '../entities/all.entity';
 import { ActiveSeasonDto } from './dto/active-season.dto';
 
@@ -188,6 +188,77 @@ export class SeasonService extends BaseProvider<Season> {
       existingCurrent.days = [...newDays, ...updateDays];
 
       return existingCurrent.save();
+    }
+  }
+
+  public override async deleteEntity(guidOrOptions?: LookupOneOptions<Season>) {
+    const existing = await this.seasonRepo.findOne({
+      where: {
+        guid: guidOrOptions
+      },
+      relations: [
+        'speakers',
+        'speakers.images',
+        'organizations',
+        'organizations.logos',
+        'sponsors',
+        'sponsors.logos',
+        'places',
+        'places.logos',
+        'tags'
+      ]
+    });
+
+    if (existing) {
+      // in a typeorm transaction, remove all the speaker images, organization logos, sponsor logos, and places logos,
+      // then remove the season
+      return await this.seasonRepo.manager.transaction(async (manager) => {
+        await Promise.all(
+          existing.speakers.map((speaker) => {
+            return manager.remove(speaker.images);
+          })
+        );
+
+        await Promise.all(
+          existing.organizations.map((organization) => {
+            return manager.remove(organization.logos);
+          })
+        );
+
+        await Promise.all(
+          existing.sponsors.map((sponsor) => {
+            return manager.remove(sponsor.logos);
+          })
+        );
+
+        await Promise.all(
+          existing.places.map((place) => {
+            return manager.remove(place.logos);
+          })
+        );
+
+        await Promise.all(
+          existing.speakers.map((speaker) => {
+            return manager.remove(speaker);
+          })
+        );
+
+        await Promise.all(
+          existing.sponsors.map((sponsor) => {
+            return manager.remove(sponsor);
+          })
+        );
+
+        await Promise.all(
+          existing.tags.map((tag) => {
+            return manager.remove(tag);
+          })
+        );
+
+        return manager.remove(existing);
+      });
+    } else {
+      throw new NotFoundException();
     }
   }
 
