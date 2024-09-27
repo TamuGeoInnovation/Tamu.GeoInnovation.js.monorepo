@@ -6,9 +6,9 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 
-import { Place, PlaceLink } from '../entities/all.entity';
+import { Asset, EventLocation, Place, PlaceLink } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -241,6 +241,44 @@ export class PlaceService extends BaseProvider<Place> {
     } catch (err) {
       Logger.error(`Error updating place, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
+    }
+  }
+
+  public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+    const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+
+    try {
+      return this.pRepo.manager.transaction(async (manager) => {
+        const places = await manager.find(Place, {
+          where: {
+            guid: In(guids)
+          },
+          relations: ['logos']
+        });
+
+        const logos = places.map((place) => place.logos).flat();
+
+        if (logos.length > 0) {
+          await manager.delete(Asset, logos);
+        }
+
+        const eventLocationsForPlace = await manager.find(EventLocation, {
+          where: {
+            place: In(guids)
+          }
+        });
+
+        eventLocationsForPlace.forEach((el) => {
+          el.place = null;
+        });
+
+        await manager.save(eventLocationsForPlace);
+
+        return manager.delete(Place, guids);
+      });
+    } catch (err) {
+      Logger.error(err.message, 'PlaceService.deleteEntities');
+      throw new InternalServerErrorException('Could not delete entities.');
     }
   }
 
