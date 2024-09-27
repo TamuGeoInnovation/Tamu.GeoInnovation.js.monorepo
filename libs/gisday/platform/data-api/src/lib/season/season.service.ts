@@ -8,7 +8,7 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, FindManyOptions, In, Repository } from 'typeorm';
+import { BaseEntity, EntityManager, FindManyOptions, In, Repository } from 'typeorm';
 
 import { BaseProvider, LookupOneOptions } from '../_base/base-provider';
 import {
@@ -163,113 +163,87 @@ export class SeasonService extends BaseProvider<Season> {
         season: last
       };
 
+      // Clone days, stripping guid, created, updated, and season properties
       const days = (await manager.find(SeasonDay, { where })).map((d: SeasonDay) => {
-        delete d.guid;
-        delete d.season;
-        delete d.created;
-        delete d.updated;
+        const day = this._stripEntityProperties(d, ['season', 'date']);
 
         // Change the year of the date object to `nextSeason.year`
-        d.date.setFullYear(nextSeason.year);
+        const dateClone = new Date(d.date);
+        dateClone.setFullYear(nextSeason.year);
 
-        return this.seasonRepo.manager.create(SeasonDay, {
-          ...d
-        });
+        day.date = dateClone;
+
+        return this.seasonRepo.manager.create(SeasonDay, day);
       });
 
+      // Clone broadcasts, stripping guid, created, updated, and season properties
       const broadcasts = (await manager.find(EventBroadcast, { where })).map((b: EventBroadcast) => {
-        delete b.guid;
-        delete b.season;
-        delete b.created;
-        delete b.updated;
+        const eventBroadcast = this._stripEntityProperties(b, ['season']);
 
-        return this.seasonRepo.manager.create(EventBroadcast, {
-          ...b
-        });
+        return this.seasonRepo.manager.create(EventBroadcast, eventBroadcast);
       });
 
+      // Clone classes, stripping guid, created, updated, and season properties
       const classes = (await manager.find(Class, { where })).map((c: Class) => {
-        delete c.guid;
-        delete c.season;
-        delete c.created;
-        delete c.updated;
+        const clonedClass = this._stripEntityProperties(c, ['season']);
 
-        return this.seasonRepo.manager.create(Class, {
-          ...c
-        });
+        return this.seasonRepo.manager.create(Class, clonedClass);
       });
 
+      // Clone tags, stripping guid, created, updated, and season properties
       const tags = (await manager.find(Tag, { where })).map((t: Tag) => {
-        delete t.guid;
-        delete t.season;
-        delete t.created;
-        delete t.updated;
+        const tag = this._stripEntityProperties(t, ['season']);
 
-        return this.seasonRepo.manager.create(Tag, {
-          ...t
-        });
+        return this.seasonRepo.manager.create(Tag, tag);
       });
 
+      // Clone universities, stripping guid, created, updated, and season properties
       const universities = (await manager.find(University, { where })).map((u: University) => {
-        delete u.guid;
-        delete u.season;
-        delete u.created;
-        delete u.updated;
+        const university = this._stripEntityProperties(u, ['season']);
 
-        return this.seasonRepo.manager.create(University, {
-          ...u
-        });
+        return this.seasonRepo.manager.create(University, university);
       });
 
+      // Clone places, stripping guid, created, updated, and season properties. Also clones inner locations, links, and logos
+      // The inner entities cascade down when the parent is saved. This saves time and hassle of cloning those entities separately
+      // and linking them to the parent.
       const places = (await manager.find(Place, { where, relations: ['locations', 'links', 'logos'] })).map((p) => {
-        delete p.guid;
-        delete p.season;
-        delete p.created;
-        delete p.updated;
+        const place = this._stripEntityProperties(p, ['season']);
 
-        p.locations = p.locations.map((l) => {
-          delete l.guid;
-          delete l.created;
-          delete l.updated;
+        // Clone locations and stripping guid, created, and updated properties
+        place.locations = p.locations.map((l) => {
+          const location = this._stripEntityProperties(l);
 
           return this.seasonRepo.manager.create(EventLocation, {
-            ...l,
+            ...location,
             season: nextSeason
           });
         });
 
-        p.links = p.links.map((l) => {
-          delete l.guid;
-          delete l.created;
-          delete l.updated;
+        // Clone links and stripping guid, created, and updated properties
+        place.links = p.links.map((l) => {
+          const link = this._stripEntityProperties(l);
 
-          return this.seasonRepo.manager.create(PlaceLink, {
-            ...l
-          });
+          return this.seasonRepo.manager.create(PlaceLink, link);
         });
 
-        p.logos = p.logos.map((l) => {
-          delete l.guid;
-          delete l.created;
-          delete l.updated;
+        // Clone logos and stripping guid, created, and updated properties
+        place.logos = p.logos.map((l) => {
+          const logo = this._stripEntityProperties(l);
 
-          return this.seasonRepo.manager.create(Asset, {
-            ...l
-          });
+          return this.seasonRepo.manager.create(Asset, logo);
         });
 
         return this.seasonRepo.manager.create(Place, {
-          ...p
+          ...place
         });
       });
 
-      // const eventLocations = await manager.find(EventLocation, { where, loadRelationIds: true });
-
       // const organizations = await manager.find(Organization, { where, loadRelationIds: true });
 
-      // const speakers = await manager.find(Speaker, { where, loadRelationIds: true });
-
       // const sponsors = await manager.find(Sponsor, { where, loadRelationIds: true });
+
+      // const speakers = await manager.find(Speaker, { where, loadRelationIds: true });
 
       nextSeason.active = true;
       nextSeason.days = days;
@@ -279,7 +253,7 @@ export class SeasonService extends BaseProvider<Season> {
       nextSeason.universities = universities;
       nextSeason.places = places;
 
-      return nextSeason.save();
+      return manager.save(nextSeason);
     });
   }
 
@@ -448,5 +422,17 @@ export class SeasonService extends BaseProvider<Season> {
     return days.sort((a, b) => {
       return (a.date as unknown as number) - (b.date as unknown as number);
     });
+  }
+
+  private _stripEntityProperties<T extends BaseEntity>(entity: T, properties?: Array<keyof T>) {
+    const defaultRemoveList = ['guid', 'created', 'updated'] as Array<keyof T>;
+    const shallowClone = { ...entity };
+    const completePropList = properties && properties.length > 0 ? [...defaultRemoveList, ...properties] : defaultRemoveList;
+
+    completePropList.forEach((property) => {
+      delete shallowClone[property];
+    });
+
+    return { ...shallowClone };
   }
 }
