@@ -6,9 +6,9 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 
-import { Sponsor } from '../entities/all.entity';
+import { Asset, Sponsor } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -181,6 +181,32 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
       return this.sponsorRepo.save(toSave);
     } else {
       throw new NotFoundException();
+    }
+  }
+
+  public override deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+    const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+
+    try {
+      return this.sponsorRepo.manager.transaction(async (manager) => {
+        const sponsors = await manager.find(Sponsor, {
+          where: {
+            guid: In(guids)
+          },
+          relations: ['logos']
+        });
+
+        const logos = sponsors.map((sponsor) => sponsor.logos).flat();
+
+        if (logos.length > 0) {
+          await manager.delete(Asset, logos);
+        }
+
+        return manager.delete(Sponsor, guids);
+      });
+    } catch (err) {
+      Logger.error(err.message, 'SponsorProvider.deleteEntities');
+      throw new InternalServerErrorException('Could not delete entities.');
     }
   }
 
