@@ -295,7 +295,7 @@ export class EventLocation extends GuidIdentity {
   @Column({ nullable: true })
   public streetAddressOverride?: string;
 
-  @OneToMany(() => Event, (event) => event.location)
+  @OneToMany(() => Event, (event) => event.location, { nullable: true, cascade: true })
   public events?: Event[];
 
   @ManyToOne(() => Place, (place) => place.locations, { nullable: true })
@@ -381,7 +381,7 @@ export class Event extends GuidIdentity {
   @ManyToOne(() => EventBroadcast, (broadcast) => broadcast.events)
   public broadcast?: EventBroadcast;
 
-  @ManyToOne(() => EventLocation, (location) => location.events)
+  @ManyToOne(() => EventLocation, (location) => location.events, { nullable: true })
   public location?: EventLocation;
 
   @ManyToMany(() => CourseCredit)

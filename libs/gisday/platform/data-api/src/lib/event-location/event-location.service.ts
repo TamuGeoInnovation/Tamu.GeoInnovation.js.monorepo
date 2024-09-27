@@ -1,6 +1,6 @@
-import { Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { DeleteResult, In, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { EventLocation } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -99,5 +99,34 @@ export class EventLocationService extends BaseProvider<EventLocation> {
 
   private applyDefaultOrdering(query: SelectQueryBuilder<EventLocation>) {
     return query.orderBy('organization.name', 'ASC').addOrderBy('event-location.building', 'ASC');
+  }
+
+  public override deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+    const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+
+    try {
+      return this.esRepo.manager.transaction(async (transactionalEntityManager) => {
+        const locationEvents = await transactionalEntityManager.find(EventLocation, {
+          where: {
+            guid: In(guids)
+          },
+          relations: ['events']
+        });
+
+        const events = locationEvents.map((location) => location.events).flat();
+
+        // Remove location from all events
+        events.forEach((event) => {
+          event.location = null;
+        });
+
+        await transactionalEntityManager.save(events);
+
+        return transactionalEntityManager.delete(EventLocation, guids);
+      });
+    } catch (err) {
+      Logger.error(err.message, 'EventLocationService.deleteEntities');
+      throw new InternalServerErrorException('Could not delete entities');
+    }
   }
 }
