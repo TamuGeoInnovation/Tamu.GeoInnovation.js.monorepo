@@ -66,13 +66,13 @@ export class UniversityController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public delete(@Param('guid') guid: string) {
-    this.provider.deleteEntities(guid);
+    return this.provider.deleteEntities(guid);
   }
 
   @Permissions(['delete:universities'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete()
   public deleteMany(@Body('guid') guid: string) {
-    this.provider.deleteEntities(guid);
+    return this.provider.deleteEntities(guid);
   }
 }
