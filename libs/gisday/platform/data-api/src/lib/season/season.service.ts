@@ -14,6 +14,7 @@ import { BaseProvider, LookupOneOptions } from '../_base/base-provider';
 import {
   Asset,
   Class,
+  Event,
   EventBroadcast,
   EventLocation,
   Organization,
@@ -165,7 +166,7 @@ export class SeasonService extends BaseProvider<Season> {
 
       // Clone days, stripping guid, created, updated, and season properties
       const days = (await manager.find(SeasonDay, { where })).map((d: SeasonDay) => {
-        const day = this._stripEntityProperties(d, ['season', 'date']);
+        const day = this._stripEntityProperties(d, ['date']);
 
         // Change the year of the date object to `nextSeason.year`
         const dateClone = new Date(d.date);
@@ -178,28 +179,28 @@ export class SeasonService extends BaseProvider<Season> {
 
       // Clone broadcasts, stripping guid, created, updated, and season properties
       const broadcasts = (await manager.find(EventBroadcast, { where })).map((b: EventBroadcast) => {
-        const eventBroadcast = this._stripEntityProperties(b, ['season']);
+        const eventBroadcast = this._stripEntityProperties(b);
 
         return this.seasonRepo.manager.create(EventBroadcast, eventBroadcast);
       });
 
       // Clone classes, stripping guid, created, updated, and season properties
       const classes = (await manager.find(Class, { where })).map((c: Class) => {
-        const clonedClass = this._stripEntityProperties(c, ['season']);
+        const clonedClass = this._stripEntityProperties(c);
 
         return this.seasonRepo.manager.create(Class, clonedClass);
       });
 
       // Clone tags, stripping guid, created, updated, and season properties
       const tags = (await manager.find(Tag, { where })).map((t: Tag) => {
-        const tag = this._stripEntityProperties(t, ['season']);
+        const tag = this._stripEntityProperties(t);
 
         return this.seasonRepo.manager.create(Tag, tag);
       });
 
       // Clone universities, stripping guid, created, updated, and season properties
       const universities = (await manager.find(University, { where })).map((u: University) => {
-        const university = this._stripEntityProperties(u, ['season']);
+        const university = this._stripEntityProperties(u);
 
         return this.seasonRepo.manager.create(University, university);
       });
@@ -208,7 +209,7 @@ export class SeasonService extends BaseProvider<Season> {
       // The inner entities cascade down when the parent is saved. This saves time and hassle of cloning those entities separately
       // and linking them to the parent.
       const places = (await manager.find(Place, { where, relations: ['locations', 'links', 'logos'] })).map((p) => {
-        const place = this._stripEntityProperties(p, ['season']);
+        const place = this._stripEntityProperties(p);
 
         // Clone locations and stripping guid, created, and updated properties
         place.locations = p.locations.map((l) => {
@@ -239,11 +240,37 @@ export class SeasonService extends BaseProvider<Season> {
         });
       });
 
-      // const organizations = await manager.find(Organization, { where, loadRelationIds: true });
+      // Clone organizations stripping guid, created, and updated properties. Also clones logos
+      const organizations = (await manager.find(Organization, { where, relations: ['logos'] })).map((o: Organization) => {
+        const organization = this._stripEntityProperties(o);
 
-      // const sponsors = await manager.find(Sponsor, { where, loadRelationIds: true });
+        organization.logos = o.logos.map((l) => {
+          const logo = this._stripEntityProperties(l);
 
-      // const speakers = await manager.find(Speaker, { where, loadRelationIds: true });
+          return this.seasonRepo.manager.create(Asset, logo);
+        });
+
+        return this.seasonRepo.manager.create(Organization, {
+          ...organization,
+          season: nextSeason
+        });
+      });
+
+      // Clone sponsors stripping guid, created, and updated properties. Also clones logos
+      const sponsors = (await manager.find(Sponsor, { where, relations: ['logos'] })).map((s: Sponsor) => {
+        const sponsor = this._stripEntityProperties(s);
+
+        sponsor.logos = s.logos.map((l) => {
+          const logo = this._stripEntityProperties(l);
+
+          return this.seasonRepo.manager.create(Asset, logo);
+        });
+
+        return this.seasonRepo.manager.create(Sponsor, {
+          ...sponsor,
+          season: nextSeason
+        });
+      });
 
       nextSeason.active = true;
       nextSeason.days = days;
@@ -253,7 +280,87 @@ export class SeasonService extends BaseProvider<Season> {
       nextSeason.universities = universities;
       nextSeason.places = places;
 
-      return manager.save(nextSeason);
+      // Chunk these otherwise the query will fail because parameter limit exceeded.
+      const savedOrgs = await manager.save(organizations, { chunk: 25 });
+
+      // Save sponsors, but not necessary to store the results in variable
+      await manager.save(sponsors, { chunk: 25 });
+
+      // Save nextSeason here so we have the generated guids that are required for speakers and events
+      const savedSeason = await manager.save(nextSeason);
+
+      // Prepare dictionaries to set the correct relationships on speakers and events
+      const orgDict = new EntityKeyDictionary(savedOrgs, this.ENTITY_PK_LUT.organization);
+      const uniDict = new EntityKeyDictionary(nextSeason.universities, this.ENTITY_PK_LUT.university);
+
+      const speakers = (await manager.find(Speaker, { where, relations: ['organization', 'university', 'images'] })).map(
+        (s: Speaker) => {
+          const speaker = this._stripEntityProperties(s);
+
+          speaker.organization = orgDict.find(speaker.organization);
+          speaker.university = uniDict.find(speaker.university);
+
+          speaker.images = s.images.map((i) => {
+            const image = this._stripEntityProperties(i);
+
+            return this.seasonRepo.manager.create(Asset, image);
+          });
+
+          return this.seasonRepo.manager.create(Speaker, {
+            ...speaker,
+            season: savedSeason
+          });
+        }
+      );
+
+      const savedSpeakers = await manager.save(speakers, { chunk: 25 });
+      const savedLocations = nextSeason.places.reduce((acc, place) => {
+        return [...acc, ...place.locations];
+      }, [] as Array<EventLocation>);
+
+      const dayDict = new EntityKeyDictionary(nextSeason.days, this.ENTITY_PK_LUT.seasonDay, (day) => {
+        // get day and month only in MM-DD format
+        return day.date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
+      });
+      const speakerDict = new EntityKeyDictionary(savedSpeakers, this.ENTITY_PK_LUT.speaker);
+      const tagDict = new EntityKeyDictionary(nextSeason.tags, this.ENTITY_PK_LUT.tag);
+      const broadcastDict = new EntityKeyDictionary(nextSeason.broadcasts, this.ENTITY_PK_LUT.eventBroadcast);
+      const locationDict = new EntityKeyDictionary(savedLocations, this.ENTITY_PK_LUT.eventLocation);
+
+      // Get all events for previous season
+      const events = (
+        await manager
+          .createQueryBuilder(Season, 'season')
+          .leftJoinAndSelect('season.days', 'day')
+          .leftJoinAndSelect('day.events', 'event')
+          .leftJoinAndSelect('event.day', 'eventDay')
+          .leftJoinAndSelect('event.speakers', 'speakers')
+          .leftJoinAndSelect('event.tags', 'tags')
+          .leftJoinAndSelect('event.broadcast', 'broadcast')
+          .leftJoinAndSelect('event.location', 'location')
+          .where('season.guid = :guid', { guid: where.season.guid })
+          .getOne()
+      ).days
+        .map((d) => d.events)
+        .flat()
+        .map((e: Event) => {
+          const event = this._stripEntityProperties(e);
+
+          // OOF, YIKES, WOWZERS
+          event.day = dayDict.find(event.day);
+          event.speakers = e.speakers.map((s) => speakerDict.find(s));
+          event.tags = e.tags.map((t) => tagDict.find(t));
+          event.broadcast = broadcastDict.find(e.broadcast);
+          event.location = locationDict.find(e.location);
+
+          return this.seasonRepo.manager.create(Event, {
+            ...event
+          });
+        });
+
+      await manager.save(events, { chunk: 25 });
+
+      return nextSeason;
     });
   }
 
@@ -435,4 +542,77 @@ export class SeasonService extends BaseProvider<Season> {
 
     return { ...shallowClone };
   }
+
+  private ENTITY_PK_LUT: EntityPrimaryKeyMap = {
+    organization: ['name', 'acronym', 'website'],
+    university: ['name', 'acronym', 'hexTriplet'],
+    speaker: ['firstName', 'lastName', 'email'],
+    seasonDay: ['date'],
+    tag: ['name'],
+    eventBroadcast: ['name', 'presenterUrl'],
+    eventLocation: ['building', 'room']
+  };
+}
+
+class EntityKeyDictionary<T extends BaseEntity> {
+  private _dict: Map<string, BaseEntity>;
+  private _entities: Array<T>;
+  private _entityPkRef: Array<keyof T>;
+  private _primaryKeyFn: (e: T) => string;
+
+  /**
+   * Creates a dictionary of entities, using the primary key as a concatenation of the entity key values and the value
+   * as the entity itself.
+   *
+   * This map is used to relate cloned entities to their original entities when cloning a season. This is necessary because
+   * the cloned entities will have new guids.
+   *
+   * Can optionally provide a function to generate the primary key. This function will be used for generation and lookups.
+   */
+  constructor(entities: Array<T>, primaryKey: Array<keyof T>, primaryKeyFn?: (e: T) => string) {
+    this._entities = entities;
+    this._entityPkRef = primaryKey;
+    this._primaryKeyFn = primaryKeyFn;
+    this._dict = this._generateKeyDict(entities, primaryKey, primaryKeyFn);
+  }
+
+  private _generateKeyDict<T extends BaseEntity>(
+    entities: Array<T>,
+    primaryKey: Array<keyof T>,
+    primaryKeyFn?: (k: T) => string
+  ) {
+    const dict = new Map<string, T>();
+
+    entities.forEach((e: T) => {
+      const key = primaryKey.map((k) => {
+        return primaryKeyFn !== undefined ? primaryKeyFn(e) : e[`${String(k)}`];
+      });
+
+      dict.set(key.join(''), e);
+    });
+
+    return dict;
+  }
+
+  public find(entity: T): T {
+    if (!entity) {
+      return undefined;
+    }
+
+    const key = this._entityPkRef.map((k) => {
+      return this._primaryKeyFn !== undefined ? this._primaryKeyFn(entity) : entity[`${String(k)}`];
+    });
+
+    return this._dict.get(key.join('')) as T;
+  }
+}
+
+interface EntityPrimaryKeyMap {
+  organization: Array<keyof Organization>;
+  university: Array<keyof University>;
+  speaker: Array<keyof Speaker>;
+  seasonDay: Array<keyof SeasonDay>;
+  tag: Array<keyof Tag>;
+  eventBroadcast: Array<keyof EventBroadcast>;
+  eventLocation: Array<keyof EventLocation>;
 }
