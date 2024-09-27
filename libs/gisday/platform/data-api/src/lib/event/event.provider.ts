@@ -48,18 +48,16 @@ export class EventProvider extends BaseProvider<Event> {
 
   public async getEventsForSeason(seasonGuid: string) {
     if (seasonGuid) {
-      const [s] = await this.seasonRepo
-        .createQueryBuilder('season')
-        .leftJoinAndSelect('season.days', 'day')
-        .leftJoinAndSelect('day.events', 'event')
+      const events = await this.eventRepo
+        .createQueryBuilder('event')
         .leftJoinAndSelect('event.day', 'eventDay')
         .leftJoinAndSelect('event.location', 'location')
-        .where('season.guid = :guid', { guid: seasonGuid })
-        .orderBy('day.date', 'ASC')
+        .where('event.season = :guid', { guid: seasonGuid })
+        .orderBy('eventDay.date', 'ASC')
         .addOrderBy('event.startTime', 'ASC')
         .getMany();
 
-      return s.days.map((day) => day.events).flat();
+      return events;
     } else {
       throw new NotFoundException();
     }

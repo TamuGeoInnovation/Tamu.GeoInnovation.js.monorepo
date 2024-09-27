@@ -330,33 +330,29 @@ export class SeasonService extends BaseProvider<Season> {
       // Get all events for previous season
       const events = (
         await manager
-          .createQueryBuilder(Season, 'season')
-          .leftJoinAndSelect('season.days', 'day')
-          .leftJoinAndSelect('day.events', 'event')
+          .createQueryBuilder(Event, 'event')
           .leftJoinAndSelect('event.day', 'eventDay')
           .leftJoinAndSelect('event.speakers', 'speakers')
           .leftJoinAndSelect('event.tags', 'tags')
           .leftJoinAndSelect('event.broadcast', 'broadcast')
           .leftJoinAndSelect('event.location', 'location')
-          .where('season.guid = :guid', { guid: where.season.guid })
-          .getOne()
-      ).days
-        .map((d) => d.events)
-        .flat()
-        .map((e: Event) => {
-          const event = this._stripEntityProperties(e);
+          .where('event.season = :guid', { guid: where.season.guid })
+          .getMany()
+      ).map((e: Event) => {
+        const event = this._stripEntityProperties(e);
 
-          // OOF, YIKES, WOWZERS
-          event.day = dayDict.find(event.day);
-          event.speakers = e.speakers.map((s) => speakerDict.find(s));
-          event.tags = e.tags.map((t) => tagDict.find(t));
-          event.broadcast = broadcastDict.find(e.broadcast);
-          event.location = locationDict.find(e.location);
+        // OOF, YIKES, WOWZERS
+        event.day = dayDict.find(event.day);
+        event.speakers = e.speakers.map((s) => speakerDict.find(s));
+        event.tags = e.tags.map((t) => tagDict.find(t));
+        event.broadcast = broadcastDict.find(e.broadcast);
+        event.location = locationDict.find(e.location);
 
-          return this.seasonRepo.manager.create(Event, {
-            ...event
-          });
+        return this.seasonRepo.manager.create(Event, {
+          ...event,
+          season: nextSeason
         });
+      });
 
       await manager.save(events, { chunk: 25 });
 

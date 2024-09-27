@@ -135,7 +135,7 @@ export class Season extends GuidIdentity {
   public active: boolean;
 
   // Season has multiple days
-  @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true })
+  @OneToMany(() => SeasonDay, (seasonDay) => seasonDay.season, { cascade: true, onDelete: 'CASCADE' })
   public days: SeasonDay[];
 
   @OneToMany(() => InitialSurveyResponse, (response) => response.season, { cascade: true })
@@ -174,6 +174,9 @@ export class Season extends GuidIdentity {
   @OneToMany(() => University, (university) => university.season, { cascade: true })
   public universities: University[];
 
+  @OneToMany(() => Event, (event) => event.season, { nullable: true })
+  public events: Event[];
+
   public static incrementYear(season: Season): Season {
     return this.getRepository().create({
       year: season.year + 1
@@ -196,7 +199,7 @@ export class SeasonDay extends GuidIdentity {
   public events: Event[];
 
   // Season day belongs to a season
-  @ManyToOne(() => Season, (season) => season.days, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Season, (season) => season.days, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
   public season: Season;
 }
 
@@ -357,8 +360,11 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true, length: 'MAX' })
   public requirements: string;
 
-  @ManyToOne(() => SeasonDay, (day) => day.events, { onDelete: 'CASCADE' })
+  @ManyToOne(() => SeasonDay, (day) => day.events, { onDelete: 'SET NULL', orphanedRowAction: 'nullify' })
   public day: SeasonDay;
+
+  @ManyToOne(() => Season, (season) => season.events)
+  public season: Season;
 
   @ManyToMany(() => Speaker, { nullable: true })
   @JoinTable({
@@ -372,10 +378,10 @@ export class Event extends GuidIdentity {
   })
   public tags?: Tag[];
 
-  @ManyToOne(() => EventBroadcast, (broadcast) => broadcast.events, { nullable: true })
+  @ManyToOne(() => EventBroadcast, (broadcast) => broadcast.events)
   public broadcast?: EventBroadcast;
 
-  @ManyToOne(() => EventLocation, (location) => location.events, { nullable: true })
+  @ManyToOne(() => EventLocation, (location) => location.events)
   public location?: EventLocation;
 
   @ManyToMany(() => CourseCredit)
