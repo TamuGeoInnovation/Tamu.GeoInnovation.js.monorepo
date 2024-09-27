@@ -6,9 +6,9 @@ import {
   Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, In, Repository } from 'typeorm';
+import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 
-import { Speaker, EntityRelationsLUT, University, Organization, Event } from '../entities/all.entity';
+import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -394,6 +394,32 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       };
     } catch (err) {
       throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+    const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+
+    try {
+      return this.speakerRepo.manager.transaction(async (manager) => {
+        const speakers = await manager.find(Speaker, {
+          where: {
+            guid: In(guids)
+          },
+          relations: ['images']
+        });
+
+        const images = speakers.map((speaker) => speaker.images).flat();
+
+        if (images.length > 0) {
+          await manager.delete(Asset, images);
+        }
+
+        return manager.delete(Speaker, guids);
+      });
+    } catch (err) {
+      Logger.error(err.message, 'SpeakerProvider.deleteEntities');
+      throw new InternalServerErrorException('Could not delete entities');
     }
   }
 
