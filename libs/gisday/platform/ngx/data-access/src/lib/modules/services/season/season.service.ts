@@ -36,6 +36,12 @@ export class SeasonService extends BaseService<Season> {
     return this.http1.post<Partial<Season>>(this.resource, newEntity).pipe(tap(() => this._signal$.next()));
   }
 
+  public override updateEntity(guid: string, updatedEntity: Partial<Season>) {
+    return this.http1
+      .patch<Partial<Season>>(`${this.resource}/${guid}`, updatedEntity)
+      .pipe(tap(() => this._signal$.next()));
+  }
+
   public override deleteEntity(entityGuid: string) {
     return this.http1.delete<Partial<Season>>(`${this.resource}/${entityGuid}`).pipe(tap(() => this._signal$.next()));
   }
