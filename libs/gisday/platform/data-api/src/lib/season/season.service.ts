@@ -446,7 +446,7 @@ export class SeasonService extends BaseProvider<Season> {
         guid: guidOrOptions
       },
       loadRelationIds: {
-        relations: ['speakers', 'organizations', 'sponsors', 'places', 'tags']
+        relations: ['speakers', 'organizations', 'sponsors', 'places', 'tags', 'events']
       }
     });
 
@@ -484,13 +484,14 @@ export class SeasonService extends BaseProvider<Season> {
           });
 
           //
-          // Get the actual speakers, sponsor, and tag entities since the `remove` method requires the actual entity
+          // Get the actual speakers, sponso  r, and tag entities since the `remove` method requires the actual entity
           //
 
           const speakers = await this.seasonRepo.manager.findByIds(Speaker, existing.speakers);
           const organizations = await this.seasonRepo.manager.findByIds(Organization, existing.organizations);
           const sponsors = await this.seasonRepo.manager.findByIds(Sponsor, existing.sponsors);
           const tags = await this.seasonRepo.manager.findByIds(Tag, existing.tags);
+          const evemts = await this.seasonRepo.manager.findByIds(Event, existing.events);
 
           await manager.remove(speakerImages);
           await manager.remove(organizationImages);
@@ -500,6 +501,7 @@ export class SeasonService extends BaseProvider<Season> {
           await manager.remove(organizations);
           await manager.remove(sponsors);
           await manager.remove(tags);
+          await manager.remove(evemts);
 
           const result = await manager.remove(existing);
 
