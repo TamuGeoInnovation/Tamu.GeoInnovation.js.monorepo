@@ -6,9 +6,9 @@ import {
   UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 
-import { Organization, Event } from '../entities/all.entity';
+import { Organization, Event, Asset, Speaker } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -223,6 +223,46 @@ export class OrganizationService extends BaseProvider<Organization> {
     });
 
     return uniqueOrgs;
+  }
+
+  public override deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+    const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+
+    try {
+      return this.orgRepo.manager.transaction(async (manager) => {
+        const orgs = await manager.find(Organization, {
+          where: {
+            guid: In(guids)
+          },
+          relations: ['logos']
+        });
+
+        const logos = orgs.map((org) => org.logos).flat();
+
+        if (logos.length > 0) {
+          await manager.delete(Asset, logos);
+        }
+
+        const speakers = await manager.find(Speaker, {
+          where: {
+            organization: In(guids)
+          }
+        });
+
+        if (speakers.length > 0) {
+          speakers.forEach((speaker) => {
+            speaker.organization = null;
+          });
+
+          await manager.save(Speaker, speakers, { chunk: 25 });
+        }
+
+        return manager.delete(Organization, guids);
+      });
+    } catch (err) {
+      Logger.error(err.message, 'OrganizationService.deleteEntities');
+      throw new InternalServerErrorException('Could not delete entities');
+    }
   }
 
   private async _saveImage(file) {
