@@ -38,7 +38,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         },
         relations: EntityRelationsLUT.getRelation('speaker'),
         order: {
-          lastName: 'ASC'
+          lastName: 'ASC',
+          firstName: 'ASC'
         }
       });
     } catch (err) {
