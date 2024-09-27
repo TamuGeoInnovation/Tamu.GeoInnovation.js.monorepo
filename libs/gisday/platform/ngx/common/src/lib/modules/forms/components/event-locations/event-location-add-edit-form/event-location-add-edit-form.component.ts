@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { EventLocation, Place } from '@tamu-gisc/gisday/platform/data-api';
-import { LocationService, PlaceService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
@@ -26,7 +26,8 @@ export class EventLocationAddEditFormComponent implements OnInit {
     private readonly at: ActivatedRoute,
     private readonly els: LocationService,
     private readonly ps: PlaceService,
-    private readonly ns: NotificationService
+    private readonly ns: NotificationService,
+    private readonly ss: SeasonService
   ) {}
 
   public ngOnInit(): void {
@@ -37,7 +38,8 @@ export class EventLocationAddEditFormComponent implements OnInit {
       capacity: [null],
       link: [null],
       place: [null],
-      streetAddressOverride: [null]
+      streetAddressOverride: [null],
+      season: [null]
     });
 
     this.places$ = this.ps.getEntitiesForActiveSeason();
@@ -53,6 +55,15 @@ export class EventLocationAddEditFormComponent implements OnInit {
         this.form.patchValue({
           ...entity,
           place: entity.place?.guid
+        });
+
+        // If the entity has a season, remove the season control from the form
+        this.form.removeControl('season');
+      });
+    } else {
+      this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
+        this.form.patchValue({
+          season: season.guid
         });
       });
     }

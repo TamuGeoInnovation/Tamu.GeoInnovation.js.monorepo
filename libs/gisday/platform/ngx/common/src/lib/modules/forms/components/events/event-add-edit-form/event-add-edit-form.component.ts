@@ -152,7 +152,8 @@ export class EventAddEditFormComponent implements OnInit {
       broadcast: [null],
       location: [null],
       tags: [[]],
-      speakers: [[]]
+      speakers: [[]],
+      season: [null]
     });
 
     this.tags$ = this.tagService.getEntitiesForActiveSeason().pipe(shareReplay(1));
@@ -217,6 +218,10 @@ export class EventAddEditFormComponent implements OnInit {
           location: event?.location?.guid,
           broadcast: event?.broadcast?.guid
         });
+
+        // Remove the season form control since we are editing an existing event
+        // Will otherwise move to the active season
+        this.form.removeControl('season');
       });
 
       this.selectedEventDateStart$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('startTime'), shareReplay());
@@ -232,6 +237,12 @@ export class EventAddEditFormComponent implements OnInit {
         this._applyTimeToForm('endTime'),
         shareReplay()
       );
+
+      this.seasonService.activeSeason$.pipe(take(1)).subscribe((season) => {
+        this.form.patchValue({
+          season: season.guid
+        });
+      });
     }
   }
 

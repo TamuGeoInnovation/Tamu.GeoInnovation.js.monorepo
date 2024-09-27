@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { University } from '@tamu-gisc/gisday/platform/data-api';
-import { UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { SeasonService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
@@ -24,7 +24,8 @@ export class UniversityAddEditFormComponent implements OnInit {
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
     private readonly us: UniversityService,
-    private readonly ns: NotificationService
+    private readonly ns: NotificationService,
+    private readonly ss: SeasonService
   ) {}
 
   public ngOnInit(): void {
@@ -32,7 +33,8 @@ export class UniversityAddEditFormComponent implements OnInit {
       guid: [null],
       name: [null],
       acronym: [null],
-      hexTriplet: [null]
+      hexTriplet: [null],
+      season: [null]
     });
 
     if (this.type === 'edit') {
@@ -44,6 +46,15 @@ export class UniversityAddEditFormComponent implements OnInit {
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue(entity);
+
+        // If the entity has a season, remove the season control from the form
+        this.form.removeControl('season');
+      });
+    } else {
+      this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
+        this.form.patchValue({
+          season: season.guid
+        });
       });
     }
   }
