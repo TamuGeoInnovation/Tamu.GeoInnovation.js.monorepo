@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
   filter,
+  from,
   map,
   mergeMap,
   of,
@@ -171,15 +172,16 @@ export class EventAddEditFormComponent implements OnInit {
 
     this.activeSeasonDays$ = this.seasonService.activeSeason$.pipe(
       mergeMap((season) => {
-        return season.days;
-      }),
-      map((day) => {
-        return {
-          guid: day.guid,
-          date: new Date(day.date)
-        };
-      }),
-      toArray()
+        return from(season.days).pipe(
+          map((day) => {
+            return {
+              guid: day.guid,
+              date: new Date(day.date)
+            };
+          }),
+          toArray()
+        );
+      })
     );
 
     this.selectedEventDate$ = this.form.valueChanges.pipe(
