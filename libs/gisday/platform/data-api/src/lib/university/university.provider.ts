@@ -1,9 +1,9 @@
 import { Injectable, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 
-import { University } from '../entities/all.entity';
+import { Speaker, University } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 
@@ -77,6 +77,33 @@ export class UniversityProvider extends BaseProvider<University> {
     } catch (err) {
       Logger.error(err.message, 'UniversityProvider');
       throw new UnprocessableEntityException('Could not insert universities into season.');
+    }
+  }
+
+  public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+    const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+
+    try {
+      return this.universityRepo.manager.transaction(async (transactionalEntityManager) => {
+        const speakersForUniversity = await transactionalEntityManager.find(Speaker, {
+          where: {
+            university: In(guids)
+          },
+          relations: ['university']
+        });
+
+        // Remove university from all events
+        speakersForUniversity.forEach((speaker) => {
+          speaker.university = null;
+        });
+
+        await transactionalEntityManager.save(speakersForUniversity);
+
+        return transactionalEntityManager.delete(University, guids);
+      });
+    } catch (err) {
+      Logger.error(err.message, 'UniversityProvider.deleteEntities');
+      throw new UnprocessableEntityException('Could not delete universities.');
     }
   }
 }
