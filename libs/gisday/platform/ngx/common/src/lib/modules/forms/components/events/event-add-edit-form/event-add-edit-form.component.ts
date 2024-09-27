@@ -360,10 +360,10 @@ export class EventAddEditFormComponent implements OnInit {
   private _timeStringFromEvent$(timeProp: 'startTime' | 'endTime') {
     return pipe(
       switchMap((event: Event) => {
-        const dateStringFromEvent = new Date(event?.day?.date).toDateString();
+        const dateStringFromEvent = event?.day !== null ? new Date(event?.day?.date).toDateString() : null;
         const timeStringFromEvent = event?.[timeProp];
 
-        if (timeStringFromEvent === null || timeStringFromEvent === undefined) {
+        if (dateStringFromEvent === null || timeStringFromEvent === null || timeStringFromEvent === undefined) {
           return this._defaultTimeFromSelectedEvent$();
         } else {
           return of(new Date(`${dateStringFromEvent} ${timeStringFromEvent}`));
