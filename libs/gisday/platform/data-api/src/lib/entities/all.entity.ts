@@ -173,6 +173,18 @@ export class Season extends GuidIdentity {
 
   @OneToMany(() => University, (university) => university.season, { cascade: true })
   public universities: University[];
+
+  public static incrementYear(season: Season): Season {
+    return this.getRepository().create({
+      year: season.year + 1
+    });
+  }
+
+  public static createForCurrentYear() {
+    return this.getRepository().create({
+      year: new Date().getFullYear()
+    });
+  }
 }
 
 @Entity({ name: 'seasons_days' })

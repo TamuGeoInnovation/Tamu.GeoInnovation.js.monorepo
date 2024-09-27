@@ -4,13 +4,28 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
-  NotFoundException
+  NotFoundException,
+  UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { EntityManager, FindManyOptions, In, Repository } from 'typeorm';
 
 import { BaseProvider, LookupOneOptions } from '../_base/base-provider';
-import { Asset, Organization, Season, SeasonDay, Speaker, Sponsor, Tag } from '../entities/all.entity';
+import {
+  Asset,
+  Class,
+  EventBroadcast,
+  EventLocation,
+  Organization,
+  Place,
+  PlaceLink,
+  Season,
+  SeasonDay,
+  Speaker,
+  Sponsor,
+  Tag,
+  University
+} from '../entities/all.entity';
 import { ActiveSeasonDto } from './dto/active-season.dto';
 
 @Injectable()
@@ -116,26 +131,176 @@ export class SeasonService extends BaseProvider<Season> {
     } else {
       // If no season is provided, check if there are any other seasons,
       // and if so, create a new season with the next year
-      const [latest] = await this.seasonRepo.find({
-        order: {
-          year: 'DESC'
-        },
-        take: 1
-      });
+      const last = await this.getPreviousSeason();
 
       let newSeason;
 
-      if (latest) {
-        newSeason = this.seasonRepo.create({
-          year: latest.year + 1
-        });
+      if (last) {
+        newSeason = Season.incrementYear(last);
       } else {
-        newSeason = this.seasonRepo.create({
-          year: new Date().getFullYear()
-        });
+        newSeason = Season.createForCurrentYear();
       }
 
       return this.seasonRepo.save(newSeason);
+    }
+  }
+
+  public async clonePreviousSeason() {
+    const last = await this.getPreviousSeason();
+
+    return await this.seasonRepo.manager.transaction(async (manager) => {
+      // Disable previous season. Do this first to prevent any
+      // potential side effects;
+      if (last.active === true) {
+        last.active = false;
+        await manager.save(last);
+      }
+
+      // Save it first so we have the guid in subsequent relationships
+      const nextSeason = await Season.incrementYear(last).save();
+
+      const where = {
+        season: last
+      };
+
+      const days = (await manager.find(SeasonDay, { where })).map((d: SeasonDay) => {
+        delete d.guid;
+        delete d.season;
+        delete d.created;
+        delete d.updated;
+
+        // Change the year of the date object to `nextSeason.year`
+        d.date.setFullYear(nextSeason.year);
+
+        return this.seasonRepo.manager.create(SeasonDay, {
+          ...d
+        });
+      });
+
+      const broadcasts = (await manager.find(EventBroadcast, { where })).map((b: EventBroadcast) => {
+        delete b.guid;
+        delete b.season;
+        delete b.created;
+        delete b.updated;
+
+        return this.seasonRepo.manager.create(EventBroadcast, {
+          ...b
+        });
+      });
+
+      const classes = (await manager.find(Class, { where })).map((c: Class) => {
+        delete c.guid;
+        delete c.season;
+        delete c.created;
+        delete c.updated;
+
+        return this.seasonRepo.manager.create(Class, {
+          ...c
+        });
+      });
+
+      const tags = (await manager.find(Tag, { where })).map((t: Tag) => {
+        delete t.guid;
+        delete t.season;
+        delete t.created;
+        delete t.updated;
+
+        return this.seasonRepo.manager.create(Tag, {
+          ...t
+        });
+      });
+
+      const universities = (await manager.find(University, { where })).map((u: University) => {
+        delete u.guid;
+        delete u.season;
+        delete u.created;
+        delete u.updated;
+
+        return this.seasonRepo.manager.create(University, {
+          ...u
+        });
+      });
+
+      const places = (await manager.find(Place, { where, relations: ['locations', 'links', 'logos'] })).map((p) => {
+        delete p.guid;
+        delete p.season;
+        delete p.created;
+        delete p.updated;
+
+        p.locations = p.locations.map((l) => {
+          delete l.guid;
+          delete l.created;
+          delete l.updated;
+
+          return this.seasonRepo.manager.create(EventLocation, {
+            ...l,
+            season: nextSeason
+          });
+        });
+
+        p.links = p.links.map((l) => {
+          delete l.guid;
+          delete l.created;
+          delete l.updated;
+
+          return this.seasonRepo.manager.create(PlaceLink, {
+            ...l
+          });
+        });
+
+        p.logos = p.logos.map((l) => {
+          delete l.guid;
+          delete l.created;
+          delete l.updated;
+
+          return this.seasonRepo.manager.create(Asset, {
+            ...l
+          });
+        });
+
+        return this.seasonRepo.manager.create(Place, {
+          ...p
+        });
+      });
+
+      // const eventLocations = await manager.find(EventLocation, { where, loadRelationIds: true });
+
+      // const organizations = await manager.find(Organization, { where, loadRelationIds: true });
+
+      // const speakers = await manager.find(Speaker, { where, loadRelationIds: true });
+
+      // const sponsors = await manager.find(Sponsor, { where, loadRelationIds: true });
+
+      nextSeason.active = true;
+      nextSeason.days = days;
+      nextSeason.broadcasts = broadcasts;
+      nextSeason.classes = classes;
+      nextSeason.tags = tags;
+      nextSeason.universities = universities;
+      nextSeason.places = places;
+
+      return nextSeason.save();
+    });
+  }
+
+  public async getPreviousSeason(manager?: EntityManager) {
+    const findOptions: FindManyOptions = {
+      order: {
+        year: 'DESC'
+      },
+      take: 1
+    };
+
+    try {
+      if (manager) {
+        const [latest] = await manager.find(Season, findOptions);
+        return latest;
+      } else {
+        const [latest] = await this.seasonRepo.find(findOptions);
+        return latest;
+      }
+    } catch (err) {
+      throw new UnprocessableEntityException('No previous season found.');
     }
   }
 
@@ -259,7 +424,16 @@ export class SeasonService extends BaseProvider<Season> {
           await manager.remove(sponsors);
           await manager.remove(tags);
 
-          return manager.remove(existing);
+          const result = await manager.remove(existing);
+
+          const last = await this.getPreviousSeason(manager);
+
+          if (last && last.active === false) {
+            last.active = true;
+            await manager.save(last);
+          }
+
+          return result;
         })
         .catch((error) => {
           Logger.error(error.message, error.stack, 'SeasonService.deleteEntity');
