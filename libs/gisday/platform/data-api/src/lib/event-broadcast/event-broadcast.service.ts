@@ -1,6 +1,6 @@
-import { Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 
 import { EventBroadcast } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -87,6 +87,35 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
       }
     } catch (err) {
       throw new UnprocessableEntityException(err);
+    }
+  }
+
+  public override deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+    const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+
+    try {
+      return this.eb.manager.transaction(async (transactionalEntityManager) => {
+        const broadcastEvents = await transactionalEntityManager.find(EventBroadcast, {
+          where: {
+            guid: In(guids)
+          },
+          relations: ['events']
+        });
+
+        const events = broadcastEvents.map((broadcast) => broadcast.events).flat();
+
+        // Remove broadcast from all events
+        events.forEach((event) => {
+          event.broadcast = null;
+        });
+
+        await transactionalEntityManager.save(events);
+
+        return transactionalEntityManager.delete(EventBroadcast, guids);
+      });
+    } catch (err) {
+      Logger.error(err.message, 'EventBroadcastService.deleteEntities');
+      throw new InternalServerErrorException('Could not delete entities');
     }
   }
 }
