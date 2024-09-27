@@ -62,10 +62,8 @@ export class TagController {
   @Permissions(['create:tags'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
-  public async insertEntity(@Body('name') name: string) {
-    return this.provider.createTag({
-      name: name
-    });
+  public async insertEntity(@Body() dto: Partial<Tag>) {
+    return this.provider.createTag(dto);
   }
 
   @Permissions(['update:tags'])
