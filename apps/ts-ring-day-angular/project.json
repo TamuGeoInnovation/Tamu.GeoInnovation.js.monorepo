@@ -14,7 +14,15 @@
         "polyfills": "apps/ts-ring-day-angular/src/polyfills.ts",
         "tsConfig": "apps/ts-ring-day-angular/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/ts-ring-day-angular/src/favicon.ico", "apps/ts-ring-day-angular/src/assets"],
+        "assets": [
+          "apps/ts-ring-day-angular/src/favicon.ico",
+          "apps/ts-ring-day-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
         "styles": ["apps/ts-ring-day-angular/src/styles.scss"],
         "scripts": []
       },
