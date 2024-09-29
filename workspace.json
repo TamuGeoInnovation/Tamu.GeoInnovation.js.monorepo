@@ -128,6 +128,8 @@
     "ts-move-in-out-angular": "apps/ts-move-in-out-angular",
     "ts-move-in-out-angular-e2e": "apps/ts-move-in-out-angular-e2e",
     "ts-movein-ngx": "libs/ts/movein/ngx",
+    "ts-ring-day-angular": "apps/ts-ring-day-angular",
+    "ts-ring-day-angular-e2e": "apps/ts-ring-day-angular-e2e",
     "two-angular": "apps/two-angular",
     "two-angular-e2e": "apps/two-angular-e2e",
     "two-common": "libs/two/common",
