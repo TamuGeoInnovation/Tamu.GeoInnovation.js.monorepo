@@ -1,0 +1,96 @@
+ul {
+  list-style-position: inside;
+}
+
+h3 {
+  font-size: 1.25rem;
+  text-transform: none;
+}
+
+.zone-container {
+  margin-bottom: 1rem;
+
+  h3 {
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+}
+
+.hall-item-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+
+  p {
+    padding-bottom: 0;
+  }
+
+  & > div {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border: 1px solid #eeeeee;
+    padding: 1.25rem 1rem;
+    margin-bottom: 1.5rem;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 30%;
+    cursor: pointer;
+  }
+}
+
+.button {
+  text-transform: none;
+  letter-spacing: initial;
+}
+
+.action {
+  color: #eeeeee;
+  p {
+    padding: 0.5rem;
+    border: 1px solid #eeeeee;
+    border-radius: 99rem;
+  }
+
+  &.active {
+    p {
+      background: #eeeeee;
+      color: #500000;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .hall-item-container {
+    & > div {
+      width: 45%;
+    }
+  }
+}
+
+@media only screen and (max-width: 560px) {
+  .hall-item-container {
+    & > div {
+      width: 100%;
+    }
+  }
+}

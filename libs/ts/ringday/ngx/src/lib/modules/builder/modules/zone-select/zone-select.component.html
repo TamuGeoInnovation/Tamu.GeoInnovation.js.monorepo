@@ -1,0 +1,51 @@
+<div class="container12">
+  <p class="center-text component-instructions">Select your residence hall.</p>
+
+  <div class="zone-container">
+    <h3>North Side</h3>
+    <div class="hall-item-container">
+      <div *ngFor="let hall of zones.northSide.halls; let i = index;" (click)="saveResidence(hall)" (keyup.space)="saveResidence(hall)" (keyup.enter)="saveResidence(hall)" tabindex="0">
+        <div class="name">
+          <p [ngClass]="{'active': (savedResidence | async) && (savedResidence | async)?.name === hall.name}">{{hall.name}}</p>
+        </div>
+
+        <div class="action" [ngClass]="{'active': (savedResidence | async) && (savedResidence | async)?.name === hall.name}">
+          <p class="material-icons" *ngIf="(savedResidence | async) && (savedResidence | async)?.name === hall.name">check</p>
+          <p class="material-icons" *ngIf="(savedResidence | async) === undefined || (savedResidence | async)?.name !== hall.name">arrow_forward</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="zone-container">
+    <h3>South Side</h3>
+    <div class="hall-item-container">
+      <div *ngFor="let hall of zones.southSide.halls; let i = index;" (click)="saveResidence(hall)" (keyup.space)="saveResidence(hall)" (keyup.enter)="saveResidence(hall)" tabindex="0">
+        <div class="name">
+          <p [ngClass]="{'active': (savedResidence | async) && (savedResidence | async)?.name === hall.name}">{{hall.name}}</p>
+        </div>
+
+        <div class="action" [ngClass]="{'active': (savedResidence | async) && (savedResidence | async)?.name === hall.name}">
+          <p class="material-icons" *ngIf="(savedResidence | async) && (savedResidence | async)?.name === hall.name">check</p>
+          <p class="material-icons" *ngIf="(savedResidence | async) === undefined || (savedResidence | async)?.name !== hall.name">arrow_forward</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="zone-container">
+    <h3>White Creek</h3>
+    <div class="hall-item-container">
+      <div *ngFor="let hall of zones.whiteCreek.halls; let i = index;" (click)="saveResidence(hall)" (keyup.space)="saveResidence(hall)" (keyup.enter)="saveResidence(hall)" tabindex="0">
+        <div class="name">
+          <p [ngClass]="{'active': (savedResidence | async) && (savedResidence | async)?.name === hall.name}">{{hall.name}}</p>
+        </div>
+
+        <div class="action" [ngClass]="{'active': (savedResidence | async) && (savedResidence | async)?.name === hall.name}">
+          <p class="material-icons" *ngIf="(savedResidence | async) && (savedResidence | async)?.name === hall.name">check</p>
+          <p class="material-icons" *ngIf="(savedResidence | async) === undefined || (savedResidence | async)?.name !== hall.name">arrow_forward</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

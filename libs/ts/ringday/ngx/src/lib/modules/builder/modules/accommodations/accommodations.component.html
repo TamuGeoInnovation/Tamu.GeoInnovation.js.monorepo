@@ -1,0 +1,9 @@
+<div class="container12">
+  <p class="center-text component-instructions">Will you or a relative require accessible parking accommodations?</p>
+
+  <div class="options-container">
+    <div (click)="saveAccessible(true)" (keyup.space)="saveAccessible(true)" (keyup.enter)="saveAccessible(true)" class="button terciary" [ngClass]="{'active': (savedAccessible | async) === true}" tabindex="0">Yes</div>
+
+    <div (click)="saveAccessible(false)" (keyup.space)="saveAccessible(false)" (keyup.enter)="saveAccessible(false)" class="button terciary" [ngClass]="{'active': (savedAccessible | async) === false}" tabindex="0">No</div>
+  </div>
+</div>
