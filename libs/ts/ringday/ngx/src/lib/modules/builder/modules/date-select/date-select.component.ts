@@ -4,8 +4,8 @@ import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { MoveDates } from '../../../../interfaces/ring-day.interface';
-import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
+import { EventDates } from '../../../../interfaces/ring-day.interface';
+import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
 
 @Component({
   selector: 'tamu-gisc-date-select',
@@ -13,7 +13,7 @@ import { MoveInOutSettingsService } from '../../../map/services/move-in-out-sett
   styleUrls: ['./date-select.component.scss']
 })
 export class DateSelectComponent implements OnInit {
-  public dates: MoveDates;
+  public dates: EventDates;
   public timestampedDates: Array<Date>;
   public savedDate: Observable<string>;
 
@@ -23,26 +23,26 @@ export class DateSelectComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly angulartics: Angulartics2,
-    private readonly mioSettings: MoveInOutSettingsService
+    private readonly eventSettingsService: RingDaySettingsService
   ) {}
 
   public ngOnInit() {
-    this.dates = this.mioSettings.days;
+    this.dates = this.eventSettingsService.days;
     this.savedDate = this._refresh$.pipe(
       startWith(undefined),
-      map(() => this.mioSettings.eventDate),
+      map(() => this.eventSettingsService.eventDate),
       shareReplay()
     );
 
     // Convert dates objects using day and month properties to Date objects. These will be used in template with date pipe.
-    this.timestampedDates = this.dates.in.map((d) => new Date(new Date().getFullYear(), d.month - 1, d.day));
+    this.timestampedDates = this.dates.map((d) => new Date(new Date().getFullYear(), d.month - 1, d.day));
   }
 
   /**
    * Saves component value in local storage
    */
   public saveDate = (item: Date) => {
-    const saved = this.mioSettings.saveEventDate(item);
+    const saved = this.eventSettingsService.saveEventDate(item);
 
     if (saved != undefined) {
       this.angulartics.eventTrack.next({
@@ -62,7 +62,7 @@ export class DateSelectComponent implements OnInit {
       if (hasRet !== undefined) {
         this.router.navigate([`builder/${hasRet}`]);
       } else {
-        this.router.navigate(['builder/zone']);
+        this.router.navigate(['builder/review']);
       }
     } else {
       throw new Error('Failed to save date selection.');

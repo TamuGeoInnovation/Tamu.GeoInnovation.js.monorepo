@@ -4,7 +4,7 @@ import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
+import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
 
 @Component({
   selector: 'tamu-gisc-accommodations',
@@ -20,13 +20,13 @@ export class AccommodationsComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly angulartics: Angulartics2,
-    private readonly mioSettings: MoveInOutSettingsService
+    private readonly eventSettingsService: RingDaySettingsService
   ) {}
 
   public ngOnInit() {
     this.savedAccessible = this._refresh$.pipe(
       startWith(undefined),
-      map(() => this.mioSettings.savedAccessible),
+      map(() => this.eventSettingsService.savedAccessible),
       shareReplay()
     );
   }
@@ -35,7 +35,7 @@ export class AccommodationsComponent implements OnInit {
    * Saves component value in local storage
    */
   public saveAccessible = (item: boolean): void => {
-    const confirm = this.mioSettings.saveAccommodations(item);
+    const confirm = this.eventSettingsService.saveAccommodations(item);
 
     if (confirm !== undefined) {
       this.angulartics.eventTrack.next({
@@ -55,7 +55,7 @@ export class AccommodationsComponent implements OnInit {
       if (hasRet !== undefined) {
         this.router.navigate([`builder/${hasRet}`]);
       } else {
-        this.router.navigate(['builder/review']);
+        this.router.navigate(['builder/date']);
       }
     } else {
       throw new Error('Error saving accommodation selection.');

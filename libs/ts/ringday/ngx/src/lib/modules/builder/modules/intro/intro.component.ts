@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { Angulartics2 } from 'angulartics2';
 
 @Component({
@@ -22,6 +23,6 @@ export class IntroComponent {
       }
     });
 
-    this.router.navigate(['builder/date']);
+    this.router.navigate(['builder/accommodations']);
   }
 }

@@ -1,7 +1,7 @@
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
-import { MoveDates, Popups as MoveInOutPopups } from '@tamu-gisc/ts/movein/ngx';
+import { EventDates, Popups as MoveInOutPopups } from '@tamu-gisc/ts/ringday/ngx';
 
 export const NotificationEvents = [];
 
@@ -14,8 +14,7 @@ export const Connections = {
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
-  moveInOutUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer',
-  moveInOutDaysTable: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MoveInDays/FeatureServer/0'
+  eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/ArcGIS/rest/services/Ring_Day_view/FeatureServer'
 };
 
 export const Definitions = {
@@ -46,13 +45,6 @@ export const Definitions = {
     name: 'Restrooms',
     url: `${Connections.inforUrl}/1`,
     popupComponent: Popups.RestroomPopupComponent
-  },
-  LACTATION_ROOMS: {
-    id: 'lactation-rooms',
-    layerId: 'lactation-rooms-layer',
-    name: 'Lactation Rooms',
-    url: `${Connections.inforUrl}/2`,
-    popupComponent: Popups.LactationPopupComponent
   },
   SURFACE_LOTS: {
     id: 'surface-lots',
@@ -94,357 +86,27 @@ export const Definitions = {
     name: 'VeoRide Bikes',
     url: `${Connections.bikeLocationsUrl}`
   },
-  MOVE_IN_OUT: {
-    id: 'move-in-out',
-    layerId: 'move-in-out-layer',
-    url: `${Connections.moveInOutUrl}`
+  RING_DAY_POIS: {
+    id: 'ring-day-pois',
+    layerId: 'ring-day-pois-layer',
+    name: 'Ring Day Points of Interest',
+    url: `${Connections.eventUrl}/0`
   },
-  MOVE_IN_OUT_CHECKIN: {
-    id: 'move-in-out-checkin',
-    layerId: 'move-in-out-checkin-layer',
-    url: `${Connections.moveInOutUrl}/2`
+  RING_DAY_ROUTES: {
+    id: 'ring-day-routes',
+    layerId: 'ring-day-routes-layer',
+    name: 'Ring Day Routes',
+    url: `${Connections.eventUrl}/1`
   },
-  MOVE_IN_OUT_STREET_PARKING: {
-    id: 'move-in-out-street-parking',
-    layerId: 'move-in-out-street-parking-layer',
-    url: `${Connections.moveInOutUrl}/5`
+  RING_DAY_AREAS: {
+    id: 'ring-day-areas',
+    layerId: 'ring-day-areas-layer',
+    name: 'Ring Day Areas',
+    url: `${Connections.eventUrl}/2`
   }
 };
 
-export const ColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: 'residence-layer',
-    title: 'Residence Hall',
-    listMode: 'show',
-    visible: true,
-    url: Definitions.BUILDINGS.url,
-    popupComponent: Definitions.BUILDINGS.popupComponent,
-    native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [24, 255, 255, 0.75],
-          outline: {
-            color: [24, 255, 255, 1],
-            width: '3px'
-          }
-        }
-      }
-    }
-  },
-  {
-    type: 'feature',
-    id: 'move-in-parking-lots-layer',
-    title: 'Move-In Parking Lots',
-    url: `${Definitions.MOVE_IN_OUT.url}/6`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'type',
-        defaultSymbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [255, 0, 0, 0.5],
-          outline: {
-            color: [80, 0, 0, 0.5],
-            width: '1'
-          }
-        } as unknown,
-        defaultLabel: 'No move-in parking. Lot specific permit required.',
-
-        uniqueValueInfos: [
-          {
-            value: 'Free',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [0, 204, 0, 0.5],
-              outline: {
-                color: [0, 150, 0, 0.75],
-                width: '1'
-              }
-            } as unknown,
-            label: 'Free parking'
-          },
-          {
-            value: 'Disabled',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [0, 105, 230, 0.5],
-              outline: {
-                color: [0, 105, 200, 0.75],
-                width: '1'
-              }
-            } as unknown,
-            label: 'Accessible parking ONLY. Valid placard required.'
-          },
-          {
-            value: '1HR DZ w P',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [245, 81, 166, 0.5],
-              outline: {
-                color: [236, 14, 129, 0.75],
-                width: '1'
-              }
-            } as unknown,
-            label: '1-hour drop off zone, lot specific permit required after 1 hour'
-          },
-          {
-            value: '1HR Drop',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [168, 168, 255, 0.75],
-              outline: {
-                color: [117, 117, 255, 0.75],
-                width: '1'
-              }
-            } as unknown,
-            label: '1-hour drop zone'
-          },
-          {
-            value: 'Paid',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [153, 230, 0, 0.5],
-              outline: {
-                color: [104, 159, 56],
-                width: '1'
-              }
-            } as unknown,
-            label: 'Hourly paid parking'
-          },
-          {
-            value: 'Free 6-9',
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [255, 165, 0, 0.5],
-              outline: {
-                color: [255, 165, 0],
-                width: '1'
-              }
-            } as unknown,
-            label: 'Free parking from 6am to 9pm, no overnight parking without lot-specific permit'
-          }
-        ]
-      }
-    },
-    popupComponent: MoveInOutPopups.MoveInOutParkingSpacePopupComponent,
-    layerIndex: 3
-  },
-  {
-    type: 'feature',
-    id: 'move-in-parking-streets-layer',
-    title: 'Move-In Street Parking',
-    url: Definitions.MOVE_IN_OUT_STREET_PARKING.url,
-    listMode: 'show',
-    visible: true,
-    native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [76, 0, 115, 0.5],
-          outline: {
-            color: [76, 0, 115, 0.75],
-            width: '1'
-          }
-        }
-      }
-    },
-    popupComponent: MoveInOutPopups.MoveInOutStreetParkingPopupComponent,
-    layerIndex: 4
-  },
-  {
-    type: 'feature',
-    id: 'accessible-parking-spaces-layer',
-    title: 'Accessible Parking',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'Disabled'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: '/assets/icons/wheelchair.svg',
-          width: '20px',
-          height: '20px'
-        }
-      },
-      outFields: ['*']
-    },
-    popupComponent: MoveInOutPopups.MoveInOutAccessibleParkingPopupComponent
-  },
-  {
-    type: 'feature',
-    id: 'personal-engraving-layer',
-    title: 'Free Personal Possessions Engraving',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'Bike'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: '/assets/icons/engraving.png',
-          width: '22.5px',
-          height: '22.5px'
-        }
-      },
-      outFields: ['*']
-    },
-    popupComponent: MoveInOutPopups.MoveInOutPersonalEngravingPopupComponent
-  },
-  {
-    type: 'feature',
-    id: `${Definitions.MOVE_IN_OUT_CHECKIN.layerId}`,
-    title: 'Check-In Locations',
-    url: `${Definitions.MOVE_IN_OUT_CHECKIN.url}`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'Keys'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: '/assets/icons/checkin.png',
-          width: '22.5px',
-          height: '22.5px'
-        }
-      },
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: 'move-in-bus-stops-layer',
-    title: 'Move-In Shuttle Bus Stops',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'BusStop'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: '/assets/icons/bus-stop.png',
-          width: '22.5px',
-          height: '22.5px'
-        }
-      },
-      outFields: ['*']
-    },
-    popupComponent: MoveInOutPopups.MoveInOutBusStopPopupComponent
-  },
-  {
-    type: 'feature',
-    id: 'dining-areas-layer',
-    title: 'Dining Areas',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'Dining'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: '/assets/icons/dining.png',
-          width: '22.5px',
-          height: '22.5px'
-        }
-      },
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: 'move-in-info-layer',
-    title: 'Info, Refreshments, Volunteers',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'Info'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: '/assets/icons/information.png',
-          width: '22.5px',
-          height: '22.5px'
-        }
-      },
-      outFields: ['*']
-    },
-    popupComponent: MoveInOutPopups.MoveInOutInformationPopupComponent
-  },
-  {
-    type: 'feature',
-    id: 'recycle-layer',
-    title: 'Cardboard Recycling Locations',
-    url: `${Definitions.MOVE_IN_OUT.url}/2`,
-    listMode: 'show',
-    visible: true,
-    native: {
-      definitionExpression: `Type = 'Recycle'`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: '/assets/icons/recycle.png',
-          width: '22.5px',
-          height: '22.5px'
-        }
-      },
-      outFields: ['*']
-    },
-    popupComponent: MoveInOutPopups.MoveInOutRecyclePopupComponent
-  },
-  {
-    type: 'feature',
-    id: Definitions.SURFACE_LOTS.layerId,
-    title: Definitions.SURFACE_LOTS.name,
-    url: Definitions.SURFACE_LOTS.url,
-    popupComponent: Definitions.SURFACE_LOTS.popupComponent,
-    listMode: 'hide',
-    visible: true,
-    layerIndex: 1,
-    native: {
-      legendEnabled: false,
-      outFields: ['*'],
-      opacity: 0.001,
-      labelingInfo: [
-        {
-          symbol: {
-            type: 'text',
-            color: [0, 0, 0, 0.001]
-          }
-        }
-      ]
-    }
-  }
-];
+export const ColdLayerSources: LayerSource[] = [];
 
 // Persistent layer definitions that will be processed by a factory and added to the map.
 export const LayerSources: LayerSource[] = [
@@ -510,18 +172,6 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: Definitions.LACTATION_ROOMS.layerId,
-    title: Definitions.LACTATION_ROOMS.name,
-    url: Definitions.LACTATION_ROOMS.url,
-    popupComponent: Definitions.LACTATION_ROOMS.popupComponent,
-    listMode: 'show',
-    visible: false,
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
     id: Definitions.SURFACE_LOTS.layerId,
     title: Definitions.SURFACE_LOTS.name,
     url: Definitions.SURFACE_LOTS.url,
@@ -564,6 +214,528 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     visible: false
   },
+  // {
+  //   type: 'feature',
+  //   id: Definitions.RING_DAY_ROUTES.layerId,
+  //   title: Definitions.RING_DAY_ROUTES.name,
+  //   url: Definitions.RING_DAY_ROUTES.url,
+  //   popupComponent: Popups.BaseDirectionsComponent,
+  //   listMode: 'show',
+  //   visible: false,
+  //   native: {
+  //     outFields: ['*']
+  //   }
+  // },
+  // {
+  //   type: 'feature',
+  //   id: Definitions.RING_DAY_AREAS.layerId,
+  //   title: Definitions.RING_DAY_AREAS.name,
+  //   url: Definitions.RING_DAY_AREAS.url,
+  //   popupComponent: Popups.BaseDirectionsComponent,
+  //   listMode: 'show',
+  //   visible: false,
+  //   native: {
+  //     outFields: ['*']
+  //   }
+  // },
+  // {
+  //   type: 'feature',
+  //   id: Definitions.POINTS_OF_INTEREST.layerId,
+  //   title: Definitions.POINTS_OF_INTEREST.name,
+  //   url: Definitions.POINTS_OF_INTEREST.url,
+  //   popupComponent: Popups.BaseDirectionsComponent,
+  //   listMode: 'show',
+  //   visible: false,
+  //   native: {
+  //     outFields: ['*']
+  //   }
+  // },
+  {
+    type: 'feature',
+    id: 'ring-day-closures',
+    title: 'Closures',
+    url: Definitions.RING_DAY_AREAS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "type = 'Lot Closed' OR type = 'Street Closure' OR type = 'Lot-Gate Closure'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [255, 0, 0, 0.5],
+          outline: {
+            color: [255, 0, 0, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-shuttle-route',
+    title: 'Ring Day Shuttle Route',
+    url: Definitions.RING_DAY_ROUTES.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name like '%Shuttle Route%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-line',
+          color: [0, 197, 255, 1],
+          width: '5px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-walking-path',
+    title: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)',
+    url: Definitions.RING_DAY_ROUTES.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name like '%pickard pass%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-line',
+          // B2FF59 in rgba
+          color: [178, 255, 89, 1],
+          width: '5px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-exit-path',
+    title: 'Aggie Ring Day Exit Path',
+    url: Definitions.RING_DAY_ROUTES.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name like '%exit path%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-line',
+          color: [80, 0, 0, 1],
+          width: '5px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-shuttle-entrance-path',
+    title: 'Aggie Ring Day Shuttle - Entry to Aggie Ring Day',
+    url: Definitions.RING_DAY_ROUTES.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "mrkid = '473899'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-line',
+          color: [255, 183, 77, 1],
+          width: '5px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-afs',
+    title: 'Clayton Williams Jr. Alumni Center',
+    url: Definitions.RING_DAY_AREAS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "type = 'AFS'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [80, 0, 0, 0.5],
+          outline: {
+            color: [80, 0, 0, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-ticketed-areas',
+    title: 'Ticketed Area',
+    url: Definitions.RING_DAY_AREAS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "type = 'Ticketed Area'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [255, 255, 0, 0.5],
+          outline: {
+            color: [255, 255, 0, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-ada-paths',
+    title: 'ADA Building Entrance',
+    url: Definitions.RING_DAY_AREAS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "type = 'ADA'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          // blue in rgba
+          color: [0, 0, 255, 0.5],
+          outline: {
+            color: [0, 0, 255, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-gathering-area',
+    title: 'Gathering Area',
+    url: Definitions.RING_DAY_AREAS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "type = 'Gather'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          // light green in rgba
+          color: [0, 255, 0, 0.5],
+          outline: {
+            // brown outline in rgba
+            color: [139, 69, 19, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-marketplace',
+    title: 'Ring Day Marketplace',
+    url: Definitions.RING_DAY_AREAS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "type = 'Sales'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          // dark green in rgba
+          color: [0, 100, 0, 0.5],
+          outline: {
+            color: [0, 100, 0, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-parking',
+    title: 'Event Parking',
+    url: Definitions.RING_DAY_AREAS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "type = 'Special Parking' AND name like '%parking%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          // light blue in rgba
+          color: [0, 255, 255, 0.5],
+          outline: {
+            color: [0, 255, 255, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-medical-stations',
+    title: 'First Aid',
+    url: Definitions.RING_DAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name = 'Medical Station'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/medical-stations.png',
+          width: '26px',
+          height: '40px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-entrance',
+    title: 'Entrance',
+    url: Definitions.RING_DAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name LIKE '%ENTER HERE%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/entrance.png',
+          width: '30px',
+          height: '30px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-concessions',
+    title: 'Concessions',
+    url: Definitions.RING_DAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name LIKE '%concession%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/concessions.png',
+          width: '26px',
+          height: '40px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-ride-share-drop-off',
+    title: 'Ride Share Drop Off',
+    url: Definitions.RING_DAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name LIKE '%rideshare%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/rideshare.png',
+          width: '30px',
+          height: '30px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-restrooms',
+    title: 'Restrooms',
+    url: Definitions.RING_DAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name LIKE '%restroom%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/restrooms.png',
+          width: '30px',
+          height: '30px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-photo-op',
+    title: 'Photo Stations',
+    url: Definitions.RING_DAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "name LIKE '%photo%'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/photo-op.png',
+          width: '26px',
+          height: '40px'
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-shuttle-stops-layer',
+    title: 'Shuttle Stops',
+    url: Definitions.RING_DAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      outFields: ['*'],
+      definitionExpression: "name LIKE '%shuttle%'",
+      renderer: {
+        type: 'unique-value',
+        field: 'name',
+        uniqueValueInfos: [
+          {
+            value: 'Shuttle Stop - Drop Off Only',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/shuttle-drop-off.png',
+              width: '26px',
+              height: '40px'
+            } as unknown,
+            label: 'Drop Off Only'
+          },
+          {
+            value: 'Shuttle Stop - Pick Up Only',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/shuttle-pick-up.png',
+              width: '26px',
+              height: '40px'
+            } as unknown,
+            label: 'Pick Up Only'
+          },
+          {
+            value: 'Shuttle Stop - Pickup and Drop Off',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/shuttle-pick-and-drop.png',
+              width: '26px',
+              height: '40px'
+            } as unknown,
+            label: 'Pick Up and Drop Off'
+          }
+        ]
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: 'ring-day-points-of-interest',
+    title: 'Points of Interest',
+    url: Definitions.RING_DAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "mrkId = '467555' OR mrkId = '468345'",
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'mrkId',
+        uniqueValueInfos: [
+          {
+            value: '467555',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/musical.png',
+              width: '26px',
+              height: '40px'
+            } as unknown,
+            label: 'The Stage at Aggie Park - Musical Performances'
+          },
+          {
+            value: '468345',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/landmark.png',
+              width: '26px',
+              height: '40px'
+            } as unknown,
+            label: "Spirit of '02 Cannon - Parsons Mounted Cavalry"
+          }
+        ]
+      }
+    }
+  },
+
   {
     type: 'graphics',
     id: 'selection-layer',
@@ -571,62 +743,6 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     visible: true,
     popupComponent: Definitions.BUILDINGS.popupComponent
-  },
-  {
-    type: 'group',
-    id: 'no-parking-areas-group-layer',
-    title: 'No Parking Locations',
-    listMode: 'show',
-    sources: [
-      {
-        type: 'feature',
-        id: 'no-parking-from-pos-layer',
-        title: 'No Parking Locations',
-        url: `${Definitions.MOVE_IN_OUT.url}/2`,
-        listMode: 'show',
-        visible: true,
-        native: {
-          outFields: ['*'],
-          definitionExpression: `Type = 'NoParking'`,
-          renderer: {
-            type: 'simple',
-            symbol: {
-              type: 'picture-marker',
-              width: '22.5px',
-              height: '22.5px',
-              url: '/assets/icons/no-parking.png'
-            }
-          }
-        },
-        popupComponent: MoveInOutPopups.MoveInOutNoParkingPopupComponent
-      },
-      {
-        type: 'feature',
-        id: 'no-parking-from-pos-layer',
-        title: 'No Parking Locations',
-        url: `${Definitions.MOVE_IN_OUT.url}/1`,
-        listMode: 'hide',
-        visible: true,
-        native: {
-          outFields: ['*'],
-          definitionExpression: `Type = 'NoParking'`,
-          renderer: {
-            type: 'simple',
-            symbol: {
-              type: 'picture-marker',
-              width: '22.5px',
-              height: '22.5px',
-              url: '/assets/icons/no-parking.png'
-            }
-          },
-          legendEnabled: false
-        },
-        popupComponent: MoveInOutPopups.MoveInOutNoParkingPopupComponent
-      }
-    ],
-    native: {
-      listMode: 'hide-children'
-    }
   }
 ];
 
@@ -896,27 +1012,20 @@ export const SearchSources: SearchSource[] = [
   }
 ];
 
-export const MoveInOutDates: MoveDates = {
-  in: [
-    {
-      day: 15,
-      month: 8
-    },
-    {
-      day: 16,
-      month: 8
-    },
-    {
-      day: 17,
-      month: 8
-    },
-    {
-      day: 18,
-      month: 8
-    }
-  ],
-  out: []
-};
+export const Dates: EventDates = [
+  {
+    day: 10,
+    month: 10
+  },
+  {
+    day: 11,
+    month: 10
+  },
+  {
+    day: 12,
+    month: 10
+  }
+];
 
 export const SelectionSymbols = {
   polygon: {

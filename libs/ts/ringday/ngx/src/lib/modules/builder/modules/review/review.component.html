@@ -1,23 +1,14 @@
 <div class="container12">
-  <p class="trailer-2 center-text component-instructions">Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations on your move-in day.</p>
+  <p class="trailer-2 center-text component-instructions">Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations on your Ring Day.</p>
 
   <div class="flex flex-row justify-center">
     <div class="column6 flex flex-column" id="settings-table">
       <div class="setting-item">
-        <div>Move-In Date:</div>
+        <div>Ring Day Appointment Date:</div>
         <div>
           <p *ngIf="!settings || settings.date === undefined">Not Set</p>
-          <p *ngIf="settings && settings.date !== undefined">{{moveDate | date : 'MMMM'}} {{ moveDate | date : 'd' }}, {{moveDate | date : 'YYYY'}}</p>
+          <p *ngIf="settings && settings.date !== undefined">{{eventDate | date : 'MMMM'}} {{ eventDate | date : 'd' }}, {{eventDate | date : 'YYYY'}}</p>
           <p [routerLink]="['/builder/date']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/date', {ret: 'review'})" (keyup.enter)="next('builder/date', {ret: 'review'})" tabindex="0">Change</p>
-        </div>
-      </div>
-
-      <div class="setting-item">
-        <div>Residence Hall</div>
-        <div>
-          <p *ngIf="!settings || settings.residence === undefined">Not Set</p>
-          <p *ngIf="settings && settings.residence !== undefined">{{ settings.residence.name }}</p>
-          <p [routerLink]="['/builder/zone']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/zone', {ret: 'review'})" (keyup.enter)="next('builder/zone', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
 

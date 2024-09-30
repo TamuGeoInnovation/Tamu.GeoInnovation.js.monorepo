@@ -10,7 +10,7 @@ import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { MoveinOutService } from '../../map/services/move-in-out/move-in-out.service';
-import { MoveInOutSettingsService } from '../../map/services/move-in-out-settings/move-in-out-settings.service';
+import { RingDaySettingsService } from '../../map/services/settings/ring-day-settings.service';
 
 import esri = __esri;
 
@@ -36,7 +36,7 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
     private readonly agl: Angulartics2,
     private readonly ems: EsriMapService,
     private readonly mss: MoveinOutService,
-    private readonly mios: MoveInOutSettingsService
+    private readonly rds: RingDaySettingsService
   ) {
     super(rrt, rtt, pss, agl, ems);
   }
@@ -44,11 +44,12 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
   public override ngOnInit() {
     super.ngOnInit();
 
-    const daySuffix = this.mios.getMoveDateEventDayNumberForSettings();
+    // TODO: Fix the lot parking type
+    // const daySuffix = this.mios.getMoveDateEventDayNumberForSettings();
 
-    if (daySuffix !== undefined) {
-      this.lotParkingType = this.data.attributes[`Day_${daySuffix}`];
-    }
+    // if (daySuffix !== undefined) {
+    //   this.lotParkingType = this.data.attributes[`Day_${daySuffix}`];
+    // }
 
     // In the move-in dataset, parking lots and parking garages are stored in the same table. This is problematic because
     // parking garages are also buildings with building cod es and numbers which is the reason they they have richer popup content (e.g. images).
@@ -98,7 +99,7 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
     );
 
     this.selectedMoveInDate = of(true).pipe(
-      map(() => this.mios.getMoveDateEventAsDate('in')),
+      map(() => this.rds.getMoveDateEventAsDate()),
       filter((date) => date !== undefined)
     );
   }
