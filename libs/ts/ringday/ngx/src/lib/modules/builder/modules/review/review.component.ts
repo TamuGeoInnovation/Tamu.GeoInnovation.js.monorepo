@@ -27,7 +27,7 @@ export class ReviewComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.settings = this.store.getStorage<RingDaySettings>({ primaryKey: 'aggiemap-movein' });
+    this.settings = this.store.getStorage<RingDaySettings>({ primaryKey: 'ring-day-settings' });
 
     if (this.settings !== undefined) {
       this.settingsValid = this.settings.date !== undefined && this.settings.accessible !== undefined;
