@@ -1,7 +1,7 @@
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
-import { EventDates, Popups as MoveInOutPopups } from '@tamu-gisc/ts/ringday/ngx';
+import { EventDates, Popups as EventPopups } from '@tamu-gisc/ts/ringday/ngx';
 
 export const NotificationEvents = [];
 
@@ -23,7 +23,7 @@ export const Definitions = {
     layerId: 'buildings-layer',
     name: 'Buildings',
     url: `${Connections.basemapUrl}/1`,
-    popupComponent: MoveInOutPopups.MoveInOutBuildingPopupComponent
+    popupComponent: Popups.BuildingPopupComponent
   },
   CONSTRUCTION: {
     id: 'construction_zone',
@@ -255,7 +255,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-closures',
     title: 'Closures',
     url: Definitions.RING_DAY_AREAS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -280,7 +280,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-shuttle-route',
     title: 'Ring Day Shuttle Route',
     url: Definitions.RING_DAY_ROUTES.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -301,7 +301,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-walking-path',
     title: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)',
     url: Definitions.RING_DAY_ROUTES.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -323,7 +323,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-exit-path',
     title: 'Aggie Ring Day Exit Path',
     url: Definitions.RING_DAY_ROUTES.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -344,7 +344,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-shuttle-entrance-path',
     title: 'Aggie Ring Day Shuttle - Entry to Aggie Ring Day',
     url: Definitions.RING_DAY_ROUTES.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -362,10 +362,36 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
+    id: 'ring-day-ada-paths',
+    title: 'ADA Building Entrance',
+    url: Definitions.RING_DAY_AREAS.url,
+    popupComponent: EventPopups.RingDayMarkdownComponent,
+    listMode: 'show',
+    visible: true,
+    native: {
+      definitionExpression: "type = 'ADA'",
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          // blue in rgba
+          color: [0, 0, 255, 0.5],
+          outline: {
+            color: [0, 0, 255, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
+  {
+    type: 'feature',
     id: 'ring-day-afs',
     title: 'Clayton Williams Jr. Alumni Center',
     url: Definitions.RING_DAY_AREAS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -390,7 +416,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-ticketed-areas',
     title: 'Ticketed Area',
     url: Definitions.RING_DAY_AREAS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -412,36 +438,10 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: 'ring-day-ada-paths',
-    title: 'ADA Building Entrance',
-    url: Definitions.RING_DAY_AREAS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
-    listMode: 'show',
-    visible: true,
-    native: {
-      definitionExpression: "type = 'ADA'",
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          // blue in rgba
-          color: [0, 0, 255, 0.5],
-          outline: {
-            color: [0, 0, 255, 1],
-            width: '3px'
-          }
-        }
-      }
-    }
-  },
-  {
-    type: 'feature',
     id: 'ring-day-gathering-area',
     title: 'Gathering Area',
     url: Definitions.RING_DAY_AREAS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -468,7 +468,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-marketplace',
     title: 'Ring Day Marketplace',
     url: Definitions.RING_DAY_AREAS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -494,7 +494,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-parking',
     title: 'Event Parking',
     url: Definitions.RING_DAY_AREAS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -520,7 +520,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-medical-stations',
     title: 'First Aid',
     url: Definitions.RING_DAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -542,7 +542,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-entrance',
     title: 'Entrance',
     url: Definitions.RING_DAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -564,7 +564,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-concessions',
     title: 'Concessions',
     url: Definitions.RING_DAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -586,7 +586,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-ride-share-drop-off',
     title: 'Ride Share Drop Off',
     url: Definitions.RING_DAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -608,7 +608,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-restrooms',
     title: 'Restrooms',
     url: Definitions.RING_DAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -630,7 +630,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-photo-op',
     title: 'Photo Stations',
     url: Definitions.RING_DAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -652,7 +652,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-shuttle-stops-layer',
     title: 'Shuttle Stops',
     url: Definitions.RING_DAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
@@ -701,7 +701,7 @@ export const LayerSources: LayerSource[] = [
     id: 'ring-day-points-of-interest',
     title: 'Points of Interest',
     url: Definitions.RING_DAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
     native: {
