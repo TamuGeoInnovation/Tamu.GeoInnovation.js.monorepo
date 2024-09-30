@@ -7,14 +7,14 @@ import { Angulartics2 } from 'angulartics2';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { QueryParamSettings } from '../../interfaces/ring-day.interface';
-import { MoveInOutSettingsService } from '../../modules/map/services/move-in-out-settings/move-in-out-settings.service';
+import { RingDaySettingsService } from '../../modules/map/services/settings/ring-day-settings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsGuard implements CanActivate {
   constructor(
-    private readonly mioSettings: MoveInOutSettingsService,
+    private readonly mioSettings: RingDaySettingsService,
     private readonly router: Router,
     private readonly ns: NotificationService,
     private readonly anl: Angulartics2

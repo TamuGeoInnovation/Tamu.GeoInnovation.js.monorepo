@@ -24,11 +24,6 @@ const routes: Routes = [
           import('./modules/builder/modules/date-select/date-select.module').then((m) => m.DateSelectModule)
       },
       {
-        path: 'zone',
-        loadChildren: () =>
-          import('./modules/builder/modules/zone-select/zone-select.module').then((m) => m.ZoneSelectModule)
-      },
-      {
         path: 'accommodations',
         loadChildren: () =>
           import('./modules/builder/modules/accommodations/accommodations.module').then((m) => m.AccommodationsModule)

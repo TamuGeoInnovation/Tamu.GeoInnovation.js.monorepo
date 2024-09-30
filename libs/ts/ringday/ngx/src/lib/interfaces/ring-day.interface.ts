@@ -1,38 +1,14 @@
-export interface MoveDate {
+export interface EventDate {
   day: number;
   month: number;
 }
 
-export interface MoveDates {
-  in: MoveDate[];
-  out: MoveDate[];
-}
+export type EventDates = EventDate[];
 
-export interface ResidenceHall {
-  name: string;
-  Bldg_Number: string[];
-  zone?: string;
-}
-
-export interface ResidenceZone {
-  name: string;
-  halls: ResidenceHall[];
-}
-
-export interface ResidenceZones {
-  [key: string]: ResidenceZone;
-  southSide: ResidenceZone;
-  northSide: ResidenceZone;
-  whiteCreek: ResidenceZone;
-}
-
-export interface MoveInSettings {
+export interface RingDaySettings {
   accessible: boolean;
   date: string;
-  residence: ResidenceHall;
 }
-
-export type MoveEventType = 'in' | 'out';
 
 export interface QueryParamSettings {
   /**

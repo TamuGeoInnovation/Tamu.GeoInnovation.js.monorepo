@@ -7,31 +7,23 @@ import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 
-import { MoveInSettings } from '../../../../interfaces/ring-day.interface';
+import { RingDaySettings } from '../../../../interfaces/ring-day.interface';
 import { BOUNDARIES } from '../../../../dictionaries/ring-day.dictionary';
-import { MoveInOutSettingsService } from '../move-in-out-settings/move-in-out-settings.service';
+import { RingDaySettingsService } from '../settings/ring-day-settings.service';
 
 import esri = __esri;
 
 const LayerReferences = {
   residence: 'residence-layer',
   noParking: 'no-parking-layer',
-  personalEngraving: 'personal-engraving-layer',
-  busStops: 'move-in-bus-stops-layer',
-  refreshments: 'move-in-info-layer',
-  recycle: 'recycle-layer',
-  parkingLots: 'move-in-parking-lots-layer',
-  parkingStreets: 'move-in-parking-streets-layer',
-  accessible: 'accessible-parking-spaces-layer',
-  checkin: 'move-in-out-checkin-layer',
-  dining: 'dining-areas-layer'
+  accessible: 'accessible-parking-spaces-layer'
 };
 
 @Injectable({
   providedIn: 'root'
 })
 export class MoveinOutService {
-  public settings: MoveInSettings;
+  public settings: RingDaySettings;
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -40,7 +32,7 @@ export class MoveinOutService {
     private readonly env: EnvironmentService,
     private readonly moduleProvider: EsriModuleProviderService,
     private readonly mapService: EsriMapService,
-    private readonly mioSettings: MoveInOutSettingsService
+    private readonly mioSettings: RingDaySettingsService
   ) {
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
@@ -52,39 +44,9 @@ export class MoveinOutService {
   public init() {
     this.settings = this.mioSettings.settings;
 
-    this.drawResidence();
     this.drawParking();
     this.drawAccessibleParkingSpaces();
     this.drawPOIs();
-  }
-
-  public async drawResidence() {
-    try {
-      const source = this.getLayerSourceCopy(LayerReferences.residence) as FeatureLayerSourceProperties;
-
-      const buildingListString = this.makeSQLInStringList(this.settings.residence.Bldg_Number);
-
-      if (source.native) {
-        source.native.definitionExpression = `Bldg_Number IN (${buildingListString})`;
-      }
-
-      // Add the residence layer
-      await this.mapService.loadLayers([source as LayerSource]);
-
-      setTimeout(() => {
-        const layer = this.mapService.findLayerById((source as LayerSource)?.id) as esri.FeatureLayer;
-
-        if (layer) {
-          layer.queryFeatures().then((result) => {
-            if (result.features.length > 0) {
-              this.mapService.zoomTo({ graphics: result.features, zoom: 18 });
-            }
-          });
-        }
-      }, 100);
-    } catch (err) {
-      console.error(`Failed to draw residence`, err);
-    }
   }
 
   public async drawAccessibleParkingSpaces() {
@@ -114,24 +76,11 @@ export class MoveinOutService {
   }
 
   /**
-   * POI's to load include:
-   *  - No Parking Locations
-   *  - Personal Engraving Stations
-   *  - Shuttle Bus Stops
-   *  - Refreshment stations
-   *  - Recycling stations
+   * POI's to load
    */
   public async drawPOIs() {
     try {
-      const references = [
-        LayerReferences.noParking,
-        LayerReferences.personalEngraving,
-        LayerReferences.busStops,
-        LayerReferences.refreshments,
-        LayerReferences.recycle,
-        LayerReferences.checkin,
-        LayerReferences.dining
-      ];
+      const references = [LayerReferences.noParking];
 
       const processes = references.map(async (reference) => {
         const source = this.getLayerSourceCopy(reference) as FeatureLayerSourceProperties;
@@ -161,143 +110,116 @@ export class MoveinOutService {
    */
   public async drawParking() {
     try {
-      const eventDayStart = this.mioSettings.getFirstMoveDate('in')?.day;
-
-      if (eventDayStart === undefined) {
-        throw new Error('No event day start found.');
-      }
-
-      // User selected event attendance day
-      const day = parseInt(this.settings.date);
-
-      // Moveindays table has a series of columns for each event day from (1 to n).
-      // The columns are prefixed `Day_`.
-      // Each column specifies the type of parking for the given feature on the event day.
-      //
-      // To generate the proper SQL query, the user-selected attendance event date has to be related
-      // to the correct column.
-      const dateSuffix = day - eventDayStart + 1;
-
-      const parkingCategories = ['Free', 'Paid', '1HR DZ w P', '1HR Drop', 'SSG', 'Free 6-9', 'NoParking', 'LSP Req'];
-
-      if (this.settings.accessible) {
-        parkingCategories.push('Disabled');
-      }
-
-      // Executing query will return a list of parking features that should be drawn.
-      //
-      // The resulting features will be a mix of lots, decks, and street parking.
-      // Lots and decks both have a CIT_CODE which can be used against the MoveInLots table
-      // to get their geometry.
-      //
-      // The move-in streets service does not contain the CIT_CODES from the MoveInDays table, so it is not possible
-      // to get geometries for street parking. Move-in streets only has street names, so a lookup using a wildcard expression
-      // will be used to get their geometries.
-
-      const operator: CompoundOperator = {
-        comparison: '=',
-        logical: 'OR'
-      };
-
-      const query = {
-        where: makeWhere(
-          Array(parkingCategories.length).fill(`Day_${dateSuffix}`),
-          parkingCategories,
-          Array(parkingCategories.length).fill(operator)
-        )
-      };
-
-      const connections = this.env.value('Connections', false)?.['moveInOutDaysTable'];
-
-      // Execute query task
-      const parkingForDay = await this.runTask(`${connections}`, query);
-
-      if (parkingForDay.features.length > 0) {
-        // Pull the CIT_CODE for every feature in the result. This list will include features that are not decks or lots
-        // but the arcgis api will only filter out the features in the movein lots table.
-        const decksLotsCitCodes = this.getAttributeList(parkingForDay.features, 'CIT_Code');
-
-        // TODO: Lots and decks will be loaded from a local dictionary. This logic might be useful for a next event.
-        // There were several complications with missing features in the tables.
-        //
-        // The following creates the CIT_CODES used as the value of an "IN" SQL expression.
-        // More efficient than a series of "OR"'s for a list of items.
-        const citCodesString = this.makeSQLInStringList(decksLotsCitCodes);
-
-        // Get a copy of the parking lot source defined in environments
-        // Used to pluck values for feature layer instantiation.
-        const source = this.getLayerSourceCopy(LayerReferences.parkingLots) as FeatureLayerSourceProperties;
-
-        const parkingLotsIntersected = await this.runTask(
-          source.url,
-          { where: `GIS.TS.ParkingLots.CIT_CODE IN (${citCodesString})` },
-          true
-        );
-
-        const featureLayerSource = parkingLotsIntersected.features.reduce((acc, curr) => {
-          // For the current intersected parking feature, get the MoveInDay entry which has the valid move-in type
-          const moveInDayFeature = parkingForDay.features.find((f) => {
-            return f.attributes.CIT_Code == curr.attributes['GIS.TS.ParkingLots.CIT_CODE'];
-          });
-
-          if (moveInDayFeature) {
-            const feature = {
-              attributes: {
-                ...moveInDayFeature.attributes,
-                type: moveInDayFeature.attributes[`Day_${dateSuffix}`].trim()
-              },
-              geometry: curr.geometry.clone()
-            };
-
-            return [...acc, feature];
-          } else {
-            return acc;
-          }
-        }, [] as esri.CollectionProperties<esri.GraphicProperties>);
-
-        // We are adding the parking lots layer from client-side graphics.
-        const typeField = { name: 'type', type: 'string' } as esri.FieldProperties;
-
-        if (source.native) {
-          if (source.url) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            delete (source as any).url;
-          }
-          source.native.fields = [...parkingForDay.fields, typeField];
-          source.native.source = featureLayerSource;
-
-          this.mapService.loadLayers([source as LayerSource]);
-        }
-
-        //
-        // Add street parking by simply display lzallweek, lzsundayonly (meaning full weekend, oddly enough), or both.
-        //
-
-        const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets) as FeatureLayerSourceProperties;
-
-        const dateFilter =
-          parseInt(this.settings.date) >= 17 && parseInt(this.settings.date) <= 18
-            ? `'LZAllWeek', 'LZSundayOnly'`
-            : `'LZAllWeek'`;
-
-        const intersectingStreets = await this.runTask(
-          streetParkingSource.url,
-          { where: `Event IN ('mi', 'mio') AND Type IN (${dateFilter})` },
-          true
-        );
-
-        if (intersectingStreets.features.length > 0) {
-          const objectIDList = this.getAttributeList(intersectingStreets.features, 'OBJECTID');
-
-          if (streetParkingSource.native !== undefined) {
-            streetParkingSource.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
-
-            this.mapService.loadLayers([streetParkingSource as LayerSource]);
-          }
-        }
-      } else {
-        console.warn(`No parking lots for event day ${dateSuffix}.`);
-      }
+      // const eventDayStart = this.mioSettings.getFirstMoveDate('in')?.day;
+      // if (eventDayStart === undefined) {
+      //   throw new Error('No event day start found.');
+      // }
+      // // User selected event attendance day
+      // const day = parseInt(this.settings.date);
+      // // Moveindays table has a series of columns for each event day from (1 to n).
+      // // The columns are prefixed `Day_`.
+      // // Each column specifies the type of parking for the given feature on the event day.
+      // //
+      // // To generate the proper SQL query, the user-selected attendance event date has to be related
+      // // to the correct column.
+      // const dateSuffix = day - eventDayStart + 1;
+      // const parkingCategories = ['Free', 'Paid', '1HR DZ w P', '1HR Drop', 'SSG', 'Free 6-9', 'NoParking', 'LSP Req'];
+      // if (this.settings.accessible) {
+      //   parkingCategories.push('Disabled');
+      // }
+      // // Executing query will return a list of parking features that should be drawn.
+      // //
+      // // The resulting features will be a mix of lots, decks, and street parking.
+      // // Lots and decks both have a CIT_CODE which can be used against the MoveInLots table
+      // // to get their geometry.
+      // //
+      // // The move-in streets service does not contain the CIT_CODES from the MoveInDays table, so it is not possible
+      // // to get geometries for street parking. Move-in streets only has street names, so a lookup using a wildcard expression
+      // // will be used to get their geometries.
+      // const operator: CompoundOperator = {
+      //   comparison: '=',
+      //   logical: 'OR'
+      // };
+      // const query = {
+      //   where: makeWhere(
+      //     Array(parkingCategories.length).fill(`Day_${dateSuffix}`),
+      //     parkingCategories,
+      //     Array(parkingCategories.length).fill(operator)
+      //   )
+      // };
+      // const connections = this.env.value('Connections', false)?.['moveInOutDaysTable'];
+      // // Execute query task
+      // const parkingForDay = await this.runTask(`${connections}`, query);
+      // if (parkingForDay.features.length > 0) {
+      //   // Pull the CIT_CODE for every feature in the result. This list will include features that are not decks or lots
+      //   // but the arcgis api will only filter out the features in the movein lots table.
+      //   const decksLotsCitCodes = this.getAttributeList(parkingForDay.features, 'CIT_Code');
+      //   // TODO: Lots and decks will be loaded from a local dictionary. This logic might be useful for a next event.
+      //   // There were several complications with missing features in the tables.
+      //   //
+      //   // The following creates the CIT_CODES used as the value of an "IN" SQL expression.
+      //   // More efficient than a series of "OR"'s for a list of items.
+      //   const citCodesString = this.makeSQLInStringList(decksLotsCitCodes);
+      //   // Get a copy of the parking lot source defined in environments
+      //   // Used to pluck values for feature layer instantiation.
+      //   const source = this.getLayerSourceCopy(LayerReferences.parkingLots) as FeatureLayerSourceProperties;
+      //   const parkingLotsIntersected = await this.runTask(
+      //     source.url,
+      //     { where: `GIS.TS.ParkingLots.CIT_CODE IN (${citCodesString})` },
+      //     true
+      //   );
+      //   const featureLayerSource = parkingLotsIntersected.features.reduce((acc, curr) => {
+      //     // For the current intersected parking feature, get the MoveInDay entry which has the valid move-in type
+      //     const moveInDayFeature = parkingForDay.features.find((f) => {
+      //       return f.attributes.CIT_Code == curr.attributes['GIS.TS.ParkingLots.CIT_CODE'];
+      //     });
+      //     if (moveInDayFeature) {
+      //       const feature = {
+      //         attributes: {
+      //           ...moveInDayFeature.attributes,
+      //           type: moveInDayFeature.attributes[`Day_${dateSuffix}`].trim()
+      //         },
+      //         geometry: curr.geometry.clone()
+      //       };
+      //       return [...acc, feature];
+      //     } else {
+      //       return acc;
+      //     }
+      //   }, [] as esri.CollectionProperties<esri.GraphicProperties>);
+      //   // We are adding the parking lots layer from client-side graphics.
+      //   const typeField = { name: 'type', type: 'string' } as esri.FieldProperties;
+      //   if (source.native) {
+      //     if (source.url) {
+      //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      //       delete (source as any).url;
+      //     }
+      //     source.native.fields = [...parkingForDay.fields, typeField];
+      //     source.native.source = featureLayerSource;
+      //     this.mapService.loadLayers([source as LayerSource]);
+      //   }
+      //   //
+      //   // Add street parking by simply display lzallweek, lzsundayonly (meaning full weekend, oddly enough), or both.
+      //   //
+      //   const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets) as FeatureLayerSourceProperties;
+      //   const dateFilter =
+      //     parseInt(this.settings.date) >= 17 && parseInt(this.settings.date) <= 18
+      //       ? `'LZAllWeek', 'LZSundayOnly'`
+      //       : `'LZAllWeek'`;
+      //   const intersectingStreets = await this.runTask(
+      //     streetParkingSource.url,
+      //     { where: `Event IN ('mi', 'mio') AND Type IN (${dateFilter})` },
+      //     true
+      //   );
+      //   if (intersectingStreets.features.length > 0) {
+      //     const objectIDList = this.getAttributeList(intersectingStreets.features, 'OBJECTID');
+      //     if (streetParkingSource.native !== undefined) {
+      //       streetParkingSource.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
+      //       this.mapService.loadLayers([streetParkingSource as LayerSource]);
+      //     }
+      //   }
+      // } else {
+      //   console.warn(`No parking lots for event day ${dateSuffix}.`);
+      // }
     } catch (err) {
       console.error(`Failed to draw parking`, err);
     }
@@ -396,28 +318,28 @@ export class MoveinOutService {
     // Assign provided query options.
     Object.assign(q, query);
 
-    if (intersect) {
-      let polygon: esri.PolygonProperties;
+    // if (intersect) {
+    //   let polygon: esri.PolygonProperties;
 
-      if (typeof intersect === 'boolean') {
-        const existingBoundary = BOUNDARIES.find((b) => b.name == this.settings.residence.zone);
+    //   if (typeof intersect === 'boolean') {
+    //     const existingBoundary = BOUNDARIES.find((b) => b.name == this.settings.residence.zone);
 
-        if (existingBoundary && existingBoundary.paths) {
-          polygon = { rings: [existingBoundary.paths] };
-        } else {
-          throw new Error('No existing boundary for provided residence zone.');
-        }
-      } else if (Array.isArray(intersect)) {
-        polygon = { rings: [intersect] };
-      } else if (typeof intersect === 'object' && intersect.toJSON) {
-        polygon = intersect.toJSON();
-      } else {
-        throw new Error('Invalid intersect value. Must be boolean or number[][]');
-      }
+    //     if (existingBoundary && existingBoundary.paths) {
+    //       polygon = { rings: [existingBoundary.paths] };
+    //     } else {
+    //       throw new Error('No existing boundary for provided residence zone.');
+    //     }
+    //   } else if (Array.isArray(intersect)) {
+    //     polygon = { rings: [intersect] };
+    //   } else if (typeof intersect === 'object' && intersect.toJSON) {
+    //     polygon = intersect.toJSON();
+    //   } else {
+    //     throw new Error('Invalid intersect value. Must be boolean or number[][]');
+    //   }
 
-      q.geometry = new Polygon(polygon);
-      q.spatialRelationship = 'intersects';
-    }
+    //   q.geometry = new Polygon(polygon);
+    //   q.spatialRelationship = 'intersects';
+    // }
 
     const result = await task.execute(q);
 

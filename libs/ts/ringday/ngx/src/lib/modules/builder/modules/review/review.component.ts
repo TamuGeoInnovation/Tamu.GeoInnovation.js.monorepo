@@ -5,8 +5,8 @@ import { Angulartics2 } from 'angulartics2';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { MoveInSettings } from '../../../../interfaces/ring-day.interface';
-import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
+import { RingDaySettings } from '../../../../interfaces/ring-day.interface';
+import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
 
 @Component({
   selector: 'tamu-gisc-review',
@@ -14,30 +14,29 @@ import { MoveInOutSettingsService } from '../../../map/services/move-in-out-sett
   styleUrls: ['./review.component.scss']
 })
 export class ReviewComponent implements OnInit {
-  public settings: MoveInSettings;
+  public settings: RingDaySettings;
   public settingsValid = false;
-  public moveDate: Date;
+  public eventDate: Date;
 
   constructor(
     private store: LocalStoreService,
     private router: Router,
     private route: ActivatedRoute,
-    private move: MoveInOutSettingsService,
+    private move: RingDaySettingsService,
     private angulartics: Angulartics2
   ) {}
 
   public ngOnInit() {
-    this.settings = this.store.getStorage<MoveInSettings>({ primaryKey: 'aggiemap-movein' });
+    this.settings = this.store.getStorage<RingDaySettings>({ primaryKey: 'aggiemap-movein' });
 
     if (this.settings !== undefined) {
-      this.settingsValid =
-        this.settings.date !== undefined && this.settings.residence !== undefined && this.settings.accessible !== undefined;
+      this.settingsValid = this.settings.date !== undefined && this.settings.accessible !== undefined;
 
       if (this.settingsValid) {
-        const d = this.move.getDateForDay('in', this.settings.date);
+        const d = this.move.getDateForDay(this.settings.date);
 
         if (d) {
-          this.moveDate = new Date(new Date().getFullYear(), d.month - 1, d.day);
+          this.eventDate = new Date(new Date().getFullYear(), d.month - 1, d.day);
         }
       }
     }

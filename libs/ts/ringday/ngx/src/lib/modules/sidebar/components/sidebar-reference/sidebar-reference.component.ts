@@ -4,8 +4,8 @@ import { AltSearchHelper, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search'
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
-import { MoveInSettings } from '../../../../interfaces/ring-day.interface';
+import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
+import { RingDaySettings } from '../../../../interfaces/ring-day.interface';
 
 import esri = __esri;
 
@@ -17,20 +17,20 @@ import esri = __esri;
 export class SidebarReferenceComponent implements OnInit {
   public shareUrl: string;
   public hasSettings: boolean;
-  public settings: MoveInSettings;
+  public settings: RingDaySettings;
   public moveDate: Date | undefined;
 
   constructor(
     private readonly helper: AltSearchHelper,
     private readonly mapService: EsriMapService,
-    private readonly mioSettings: MoveInOutSettingsService
+    private readonly mioSettings: RingDaySettingsService
   ) {}
 
   public ngOnInit(): void {
     this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
     this.settings = this.mioSettings.settings;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
-    this.moveDate = this.mioSettings.getMoveDateEventAsDate('in');
+    this.moveDate = this.mioSettings.getMoveDateEventAsDate();
   }
 
   public onSearchResult(result: SearchSelection<unknown>): void {

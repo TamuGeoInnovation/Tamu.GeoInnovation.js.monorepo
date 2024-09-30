@@ -15,7 +15,7 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { MoveinOutService } from './services/move-in-out/move-in-out.service';
-import { MoveInOutSettingsService } from './services/move-in-out-settings/move-in-out-settings.service';
+import { RingDaySettingsService } from './services/settings/ring-day-settings.service';
 
 import esri = __esri;
 
@@ -56,7 +56,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly ts: TestingService,
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
-    private readonly mioSettings: MoveInOutSettingsService,
+    private readonly mioSettings: RingDaySettingsService,
     private readonly mioService: MoveinOutService
   ) {}
 
@@ -104,7 +104,7 @@ export class MapComponent implements OnInit, OnDestroy {
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
-            center: [-96.344672, 30.61306],
+            center: [-96.33869, 30.60914],
             spatialReference: {
               wkid: 102100
             },
@@ -112,7 +112,7 @@ export class MapComponent implements OnInit, OnDestroy {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
               maxScale: 0 // maxZoom is the max you can zoom INTO the ground
             },
-            zoom: 16,
+            zoom: 17,
             ui: {
               components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
             },
