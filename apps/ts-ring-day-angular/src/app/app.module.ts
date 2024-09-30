@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
-import { TsMoveinNgxModule } from '@tamu-gisc/ts/movein/ngx';
+import { TsRingdayNgxModule } from '@tamu-gisc/ts/ringday/ngx';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
@@ -30,7 +30,7 @@ WebFont.load({
     EnvironmentModule,
     SettingsModule,
     NotificationModule,
-    TsMoveinNgxModule,
+    TsRingdayNgxModule,
     RouterModule.forRoot([])
   ],
   declarations: [AppComponent],
