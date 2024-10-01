@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { delay } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
@@ -13,9 +12,6 @@ import { RingDaySettingsService } from '../settings/ring-day-settings.service';
 import esri = __esri;
 
 const LayerReferences = {
-  residence: 'residence-layer',
-  noParking: 'no-parking-layer',
-  accessible: 'accessible-parking-spaces-layer',
   areas: 'ring-day-areas-layer',
   paths: 'ring-day-routes-layer',
   pois: 'ring-day-pois-layer'
@@ -46,9 +42,9 @@ export class EventService {
   public init() {
     this.settings = this.settingsService.settings;
 
-    this.drawPaths();
     this.drawAreas();
     this.drawPOIs();
+    this.drawPaths();
   }
 
   public async drawAreas() {
@@ -60,21 +56,10 @@ export class EventService {
         // Set the hour of eventDateStart to 3AM since that's what the data uses as the start of the day
         eventDateStart?.setHours(3);
 
-        // Format the date to follow the format: MM/DD/YYYY, H:MM AM/PM (local time)
-        const formattedStringDate = this._formatDate(eventDateStart);
-
-        const timeStartDefinitionExpression = `StartDate >= date '${formattedStringDate}'`;
-
-        // Default definition expression is the start date of the event which also includes ADA types.
-        let completeDefinitionExpression = timeStartDefinitionExpression;
-
-        // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
-        if (!this.settings.accessible) {
-          completeDefinitionExpression = `${timeStartDefinitionExpression} AND type not like '%ada%'`;
-        }
+        const timeStartDefinitionExpression = this._getDateStartExpression(eventDateStart, this.settings.accessible);
 
         // Get features intersecting in user-selected zone
-        const features = await this.runTask(source.url, { where: completeDefinitionExpression }, false);
+        const features = await this.runTask(source.url, { where: timeStartDefinitionExpression }, false);
 
         if (features.features.length > 0) {
           // Make list of object id's in user-selected zone.
@@ -87,7 +72,7 @@ export class EventService {
           this.mapService.loadLayers([source as LayerSource]);
         }
       } else {
-        throw new Error('No event date start found or invalid source.');
+        throw new Error('drawAreas: No event date start found or invalid source.');
       }
     } catch (err) {
       console.error(`Failed to draw ring day areas`, err);
@@ -99,25 +84,37 @@ export class EventService {
    */
   public async drawPOIs() {
     try {
-      const references = [LayerReferences.noParking];
+      const source = this.getLayerSourceCopy(LayerReferences.pois) as FeatureLayerSourceProperties;
+      const eventDateStart = this.settingsService.getMoveDateEventAsDate();
 
-      const processes = references.map(async (reference) => {
-        const source = this.getLayerSourceCopy(reference) as FeatureLayerSourceProperties;
+      if (source.native && eventDateStart) {
+        // Set the hour of eventDateStart to 3AM since that's what the data uses as the start of the day
+        eventDateStart?.setHours(3);
 
-        if (source.native) {
-          const intersectingFeatures = await this.runTask(source.url, { where: source.native.definitionExpression }, true);
+        // There are no accessible POI's in the data, so we don't need to filter them out
+        // const timeStartDefinitionExpression = this._getDateStartExpression(eventDateStart, true);
 
-          if (intersectingFeatures.features.length > 0) {
-            const objectIDList = this.getAttributeList(intersectingFeatures.features, 'OBJECTID');
+        // POIs don't have a type field, so we can't filter them by type
+        // We can only filter them by name, anything that does not have "%accessib%" in the title
+        let expression;
 
-            source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
-
-            this.mapService.loadLayers([source as LayerSource]);
-          }
+        if (!this.settings.accessible) {
+          expression = `name not like '%accessib%'`;
+        } else {
+          expression = '1=1';
         }
-      });
+        const intersectingFeatures = await this.runTask(source.url, { where: expression }, false);
 
-      Promise.allSettled(processes);
+        if (intersectingFeatures.features.length > 0) {
+          const objectIDList = this.getAttributeList(intersectingFeatures.features, 'OBJECTID');
+
+          source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
+
+          this.mapService.loadLayers([source as LayerSource]);
+        }
+      } else {
+        throw new Error('drawPOIs: No event date start found or invalid source.');
+      }
     } catch (err) {
       console.error(`Failed to draw POIs`, err);
     }
@@ -129,116 +126,27 @@ export class EventService {
    */
   public async drawPaths() {
     try {
-      // const eventDayStart = this.mioSettings.getFirstMoveDate('in')?.day;
-      // if (eventDayStart === undefined) {
-      //   throw new Error('No event day start found.');
-      // }
-      // // User selected event attendance day
-      // const day = parseInt(this.settings.date);
-      // // Moveindays table has a series of columns for each event day from (1 to n).
-      // // The columns are prefixed `Day_`.
-      // // Each column specifies the type of parking for the given feature on the event day.
-      // //
-      // // To generate the proper SQL query, the user-selected attendance event date has to be related
-      // // to the correct column.
-      // const dateSuffix = day - eventDayStart + 1;
-      // const parkingCategories = ['Free', 'Paid', '1HR DZ w P', '1HR Drop', 'SSG', 'Free 6-9', 'NoParking', 'LSP Req'];
-      // if (this.settings.accessible) {
-      //   parkingCategories.push('Disabled');
-      // }
-      // // Executing query will return a list of parking features that should be drawn.
-      // //
-      // // The resulting features will be a mix of lots, decks, and street parking.
-      // // Lots and decks both have a CIT_CODE which can be used against the MoveInLots table
-      // // to get their geometry.
-      // //
-      // // The move-in streets service does not contain the CIT_CODES from the MoveInDays table, so it is not possible
-      // // to get geometries for street parking. Move-in streets only has street names, so a lookup using a wildcard expression
-      // // will be used to get their geometries.
-      // const operator: CompoundOperator = {
-      //   comparison: '=',
-      //   logical: 'OR'
-      // };
-      // const query = {
-      //   where: makeWhere(
-      //     Array(parkingCategories.length).fill(`Day_${dateSuffix}`),
-      //     parkingCategories,
-      //     Array(parkingCategories.length).fill(operator)
-      //   )
-      // };
-      // const connections = this.env.value('Connections', false)?.['moveInOutDaysTable'];
-      // // Execute query task
-      // const parkingForDay = await this.runTask(`${connections}`, query);
-      // if (parkingForDay.features.length > 0) {
-      //   // Pull the CIT_CODE for every feature in the result. This list will include features that are not decks or lots
-      //   // but the arcgis api will only filter out the features in the movein lots table.
-      //   const decksLotsCitCodes = this.getAttributeList(parkingForDay.features, 'CIT_Code');
-      //   // TODO: Lots and decks will be loaded from a local dictionary. This logic might be useful for a next event.
-      //   // There were several complications with missing features in the tables.
-      //   //
-      //   // The following creates the CIT_CODES used as the value of an "IN" SQL expression.
-      //   // More efficient than a series of "OR"'s for a list of items.
-      //   const citCodesString = this.makeSQLInStringList(decksLotsCitCodes);
-      //   // Get a copy of the parking lot source defined in environments
-      //   // Used to pluck values for feature layer instantiation.
-      //   const source = this.getLayerSourceCopy(LayerReferences.parkingLots) as FeatureLayerSourceProperties;
-      //   const parkingLotsIntersected = await this.runTask(
-      //     source.url,
-      //     { where: `GIS.TS.ParkingLots.CIT_CODE IN (${citCodesString})` },
-      //     true
-      //   );
-      //   const featureLayerSource = parkingLotsIntersected.features.reduce((acc, curr) => {
-      //     // For the current intersected parking feature, get the MoveInDay entry which has the valid move-in type
-      //     const moveInDayFeature = parkingForDay.features.find((f) => {
-      //       return f.attributes.CIT_Code == curr.attributes['GIS.TS.ParkingLots.CIT_CODE'];
-      //     });
-      //     if (moveInDayFeature) {
-      //       const feature = {
-      //         attributes: {
-      //           ...moveInDayFeature.attributes,
-      //           type: moveInDayFeature.attributes[`Day_${dateSuffix}`].trim()
-      //         },
-      //         geometry: curr.geometry.clone()
-      //       };
-      //       return [...acc, feature];
-      //     } else {
-      //       return acc;
-      //     }
-      //   }, [] as esri.CollectionProperties<esri.GraphicProperties>);
-      //   // We are adding the parking lots layer from client-side graphics.
-      //   const typeField = { name: 'type', type: 'string' } as esri.FieldProperties;
-      //   if (source.native) {
-      //     if (source.url) {
-      //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      //       delete (source as any).url;
-      //     }
-      //     source.native.fields = [...parkingForDay.fields, typeField];
-      //     source.native.source = featureLayerSource;
-      //     this.mapService.loadLayers([source as LayerSource]);
-      //   }
-      //   //
-      //   // Add street parking by simply display lzallweek, lzsundayonly (meaning full weekend, oddly enough), or both.
-      //   //
-      //   const streetParkingSource = this.getLayerSourceCopy(LayerReferences.parkingStreets) as FeatureLayerSourceProperties;
-      //   const dateFilter =
-      //     parseInt(this.settings.date) >= 17 && parseInt(this.settings.date) <= 18
-      //       ? `'LZAllWeek', 'LZSundayOnly'`
-      //       : `'LZAllWeek'`;
-      //   const intersectingStreets = await this.runTask(
-      //     streetParkingSource.url,
-      //     { where: `Event IN ('mi', 'mio') AND Type IN (${dateFilter})` },
-      //     true
-      //   );
-      //   if (intersectingStreets.features.length > 0) {
-      //     const objectIDList = this.getAttributeList(intersectingStreets.features, 'OBJECTID');
-      //     if (streetParkingSource.native !== undefined) {
-      //       streetParkingSource.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
-      //       this.mapService.loadLayers([streetParkingSource as LayerSource]);
-      //     }
-      //   }
-      // } else {
-      //   console.warn(`No parking lots for event day ${dateSuffix}.`);
-      // }
+      const source = this.getLayerSourceCopy(LayerReferences.paths) as FeatureLayerSourceProperties;
+      const eventDateStart = this.settingsService.getMoveDateEventAsDate();
+
+      if (source.native && eventDateStart) {
+        // Set the hour of eventDateStart to 3AM since that's what the data uses as the start of the day
+        eventDateStart?.setHours(3);
+
+        // const timeStartDefinitionExpression = this._getDateStartExpression(eventDateStart, this.settings.accessible);
+
+        const intersectingFeatures = await this.runTask(source.url, { where: '1=1' }, false);
+
+        if (intersectingFeatures.features.length > 0) {
+          const objectIDList = this.getAttributeList(intersectingFeatures.features, 'OBJECTID');
+
+          source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
+
+          this.mapService.loadLayers([source as LayerSource]);
+        }
+      } else {
+        throw new Error('drawPaths: No event date start found or invalid source.');
+      }
     } catch (err) {
       console.error(`Failed to draw parking`, err);
     }
@@ -385,5 +293,16 @@ export class EventService {
       minute: '2-digit',
       hour12: true
     });
+  }
+
+  private _getDateStartExpression(date: Date, includeAda: boolean): string {
+    let expression = `StartDate >= date '${this._formatDate(date)}'`;
+
+    // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
+    if (!includeAda) {
+      expression += ` AND type not like '%ada%'`;
+    }
+
+    return expression;
   }
 }
