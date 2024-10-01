@@ -53,13 +53,20 @@ export class EventService {
       const eventDateStart = this.settingsService.getMoveDateEventAsDate();
 
       if (source.native && eventDateStart) {
-        // Set the hour of eventDateStart to 3AM since that's what the data uses as the start of the day
-        eventDateStart?.setHours(3);
+        const endOfDayTime = new Date(eventDateStart);
+        endOfDayTime.setHours(23, 59, 59, 999);
 
-        const timeStartDefinitionExpression = this._getDateStartExpression(eventDateStart, this.settings.accessible);
+        let expression = `(StartDate <= date '${this._formatDate(endOfDayTime)}') AND (EndDate >= date '${this._formatDate(
+          eventDateStart
+        )}')`;
+
+        // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
+        if (!this.settings.accessible) {
+          expression += ` AND type not like '%ada%'`;
+        }
 
         // Get features intersecting in user-selected zone
-        const features = await this.runTask(source.url, { where: timeStartDefinitionExpression }, false);
+        const features = await this.runTask(source.url, { where: expression }, false);
 
         if (features.features.length > 0) {
           // Make list of object id's in user-selected zone.
@@ -284,8 +291,19 @@ export class EventService {
   /**
    * Formats a date object derived from an EventDate object into a string suitable for use in ArcGIS REST API queries.
    */
-  private _formatDate(date: Date): string {
-    return date.toLocaleString('en-US', {
+  private _formatDate(date: Date, subtractHours?: number, addHours?: number): string {
+    const cloneDate = new Date(date);
+
+    // If subtractHours is provided, subtract that many hours from the date
+    if (subtractHours !== undefined && typeof subtractHours === 'number') {
+      cloneDate.setHours(cloneDate.getHours() - subtractHours);
+    }
+
+    if (addHours !== undefined && typeof addHours === 'number') {
+      cloneDate.setHours(cloneDate.getHours() + addHours);
+    }
+
+    return cloneDate.toLocaleString('en-US', {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric',
@@ -295,13 +313,14 @@ export class EventService {
     });
   }
 
-  private _getDateStartExpression(date: Date, includeAda: boolean): string {
-    let expression = `StartDate >= date '${this._formatDate(date)}'`;
-
-    // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
-    if (!includeAda) {
-      expression += ` AND type not like '%ada%'`;
-    }
+  private _getDateExpression(
+    date: Date,
+    field: string,
+    operator: string,
+    subtractHours?: number,
+    addHours?: number
+  ): string {
+    const expression = `${field} ${operator} date '${this._formatDate(date, subtractHours, addHours)}'`;
 
     return expression;
   }
