@@ -14,7 +14,7 @@ import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { MoveinOutService } from './services/move-in-out/move-in-out.service';
+import { EventService } from './services/event/event.service';
 import { RingDaySettingsService } from './services/settings/ring-day-settings.service';
 
 import esri = __esri;
@@ -23,7 +23,7 @@ import esri = __esri;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [MoveinOutService, EsriMapService, LayerListService, LegendService, TripPlannerService]
+  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
@@ -57,7 +57,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly mioSettings: RingDaySettingsService,
-    private readonly mioService: MoveinOutService
+    private readonly mioService: EventService
   ) {}
 
   public ngOnInit() {

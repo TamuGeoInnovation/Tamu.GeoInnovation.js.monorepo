@@ -8,7 +8,6 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 
 import { RingDaySettings } from '../../../../interfaces/ring-day.interface';
-import { BOUNDARIES } from '../../../../dictionaries/ring-day.dictionary';
 import { RingDaySettingsService } from '../settings/ring-day-settings.service';
 
 import esri = __esri;
@@ -16,13 +15,16 @@ import esri = __esri;
 const LayerReferences = {
   residence: 'residence-layer',
   noParking: 'no-parking-layer',
-  accessible: 'accessible-parking-spaces-layer'
+  accessible: 'accessible-parking-spaces-layer',
+  areas: 'ring-day-areas-layer',
+  paths: 'ring-day-routes-layer',
+  pois: 'ring-day-pois-layer'
 };
 
 @Injectable({
   providedIn: 'root'
 })
-export class MoveinOutService {
+export class EventService {
   public settings: RingDaySettings;
 
   private _map: esri.Map;
@@ -32,7 +34,7 @@ export class MoveinOutService {
     private readonly env: EnvironmentService,
     private readonly moduleProvider: EsriModuleProviderService,
     private readonly mapService: EsriMapService,
-    private readonly mioSettings: RingDaySettingsService
+    private readonly settingsService: RingDaySettingsService
   ) {
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
@@ -42,36 +44,53 @@ export class MoveinOutService {
   }
 
   public init() {
-    this.settings = this.mioSettings.settings;
+    this.settings = this.settingsService.settings;
 
-    this.drawParking();
-    this.drawAccessibleParkingSpaces();
+    this.drawPaths();
+    this.drawAreas();
     this.drawPOIs();
   }
 
-  public async drawAccessibleParkingSpaces() {
+  public async drawAreas() {
     try {
-      if (this.settings.accessible) {
-        const source = this.getLayerSourceCopy(LayerReferences.accessible) as FeatureLayerSourceProperties;
+      const source = this.getLayerSourceCopy(LayerReferences.areas) as FeatureLayerSourceProperties;
+      const eventDateStart = this.settingsService.getMoveDateEventAsDate();
 
-        if (source.native) {
-          // Get features intersecting in user-selected zone
-          const features = await this.runTask(source.url, { where: source.native.definitionExpression }, true);
+      if (source.native && eventDateStart) {
+        // Set the hour of eventDateStart to 3AM since that's what the data uses as the start of the day
+        eventDateStart?.setHours(3);
 
-          if (features.features.length > 0) {
-            // Make list of object id's in user-selected zone.
-            // This list will be used to make a new definition expression for the layer that will only display
-            // provided objectID's
-            const objectIdList = this.getAttributeList(features.features, 'OBJECTID');
+        // Format the date to follow the format: MM/DD/YYYY, H:MM AM/PM (local time)
+        const formattedStringDate = this._formatDate(eventDateStart);
 
-            source.native.definitionExpression = `OBJECTID IN (${objectIdList.toString()})`;
+        const timeStartDefinitionExpression = `StartDate >= date '${formattedStringDate}'`;
 
-            this.mapService.loadLayers([source as LayerSource]);
-          }
+        // Default definition expression is the start date of the event which also includes ADA types.
+        let completeDefinitionExpression = timeStartDefinitionExpression;
+
+        // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
+        if (!this.settings.accessible) {
+          completeDefinitionExpression = `${timeStartDefinitionExpression} AND type not like '%ada%'`;
         }
+
+        // Get features intersecting in user-selected zone
+        const features = await this.runTask(source.url, { where: completeDefinitionExpression }, false);
+
+        if (features.features.length > 0) {
+          // Make list of object id's in user-selected zone.
+          // This list will be used to make a new definition expression for the layer that will only display
+          // provided objectID's
+          const objectIdList = this.getAttributeList(features.features, 'OBJECTID');
+
+          source.native.definitionExpression = `OBJECTID IN (${objectIdList.toString()})`;
+
+          this.mapService.loadLayers([source as LayerSource]);
+        }
+      } else {
+        throw new Error('No event date start found or invalid source.');
       }
     } catch (err) {
-      console.error(`Failed to draw parking spaces`, err);
+      console.error(`Failed to draw ring day areas`, err);
     }
   }
 
@@ -108,7 +127,7 @@ export class MoveinOutService {
    * Draws parking lots and surface lots
    *
    */
-  public async drawParking() {
+  public async drawPaths() {
     try {
       // const eventDayStart = this.mioSettings.getFirstMoveDate('in')?.day;
       // if (eventDayStart === undefined) {
@@ -352,5 +371,19 @@ export class MoveinOutService {
     } else {
       return result;
     }
+  }
+
+  /**
+   * Formats a date object derived from an EventDate object into a string suitable for use in ArcGIS REST API queries.
+   */
+  private _formatDate(date: Date): string {
+    return date.toLocaleString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
   }
 }
