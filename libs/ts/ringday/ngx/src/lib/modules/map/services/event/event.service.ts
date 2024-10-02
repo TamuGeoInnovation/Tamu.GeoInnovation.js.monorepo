@@ -53,12 +53,7 @@ export class EventService {
       const eventDateStart = this.settingsService.getMoveDateEventAsDate();
 
       if (source.native && eventDateStart) {
-        const endOfDayTime = new Date(eventDateStart);
-        endOfDayTime.setHours(23, 59, 59, 999);
-
-        let expression = `(StartDate <= date '${this._formatDate(endOfDayTime)}') AND (EndDate >= date '${this._formatDate(
-          eventDateStart
-        )}')`;
+        let expression = this._getFullDayExpression(eventDateStart, 'StartDate', 'EndDate');
 
         // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
         if (!this.settings.accessible) {
@@ -77,6 +72,8 @@ export class EventService {
           source.native.definitionExpression = `OBJECTID IN (${objectIdList.toString()})`;
 
           this.mapService.loadLayers([source as LayerSource]);
+        } else {
+          console.log('No Areas found for the definition expression: ', expression);
         }
       } else {
         throw new Error('drawAreas: No event date start found or invalid source.');
@@ -95,20 +92,12 @@ export class EventService {
       const eventDateStart = this.settingsService.getMoveDateEventAsDate();
 
       if (source.native && eventDateStart) {
-        // Set the hour of eventDateStart to 3AM since that's what the data uses as the start of the day
-        eventDateStart?.setHours(3);
-
-        // There are no accessible POI's in the data, so we don't need to filter them out
-        // const timeStartDefinitionExpression = this._getDateStartExpression(eventDateStart, true);
-
         // POIs don't have a type field, so we can't filter them by type
         // We can only filter them by name, anything that does not have "%accessib%" in the title
-        let expression;
+        let expression = this._getFullDayExpression(eventDateStart, 'Start_Date', 'End_Date');
 
         if (!this.settings.accessible) {
-          expression = `name not like '%accessib%'`;
-        } else {
-          expression = '1=1';
+          expression += ` AND name not like '%accessib%'`;
         }
         const intersectingFeatures = await this.runTask(source.url, { where: expression }, false);
 
@@ -118,6 +107,8 @@ export class EventService {
           source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
 
           this.mapService.loadLayers([source as LayerSource]);
+        } else {
+          console.log('No POIs found for the definition expression: ', expression);
         }
       } else {
         throw new Error('drawPOIs: No event date start found or invalid source.');
@@ -137,12 +128,9 @@ export class EventService {
       const eventDateStart = this.settingsService.getMoveDateEventAsDate();
 
       if (source.native && eventDateStart) {
-        // Set the hour of eventDateStart to 3AM since that's what the data uses as the start of the day
-        eventDateStart?.setHours(3);
+        const expression = this._getFullDayExpression(eventDateStart, 'Start_Date', 'End_Date');
 
-        // const timeStartDefinitionExpression = this._getDateStartExpression(eventDateStart, this.settings.accessible);
-
-        const intersectingFeatures = await this.runTask(source.url, { where: '1=1' }, false);
+        const intersectingFeatures = await this.runTask(source.url, { where: expression }, false);
 
         if (intersectingFeatures.features.length > 0) {
           const objectIDList = this.getAttributeList(intersectingFeatures.features, 'OBJECTID');
@@ -150,6 +138,8 @@ export class EventService {
           source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
 
           this.mapService.loadLayers([source as LayerSource]);
+        } else {
+          console.log('No Paths found for the definition expression: ', expression);
         }
       } else {
         throw new Error('drawPaths: No event date start found or invalid source.');
@@ -313,6 +303,9 @@ export class EventService {
     });
   }
 
+  /**
+   * Gets definition expression for a given date, field, and operator.
+   */
   private _getDateExpression(
     date: Date,
     field: string,
@@ -321,6 +314,23 @@ export class EventService {
     addHours?: number
   ): string {
     const expression = `${field} ${operator} date '${this._formatDate(date, subtractHours, addHours)}'`;
+
+    return expression;
+  }
+
+  /**
+   * Gets definition expression setting start and end time for the day.
+   */
+  private _getFullDayExpression(date: Date, startField: string, endField: string): string {
+    const startOfDayTime = new Date(date);
+    const endOfDayTime = new Date(startOfDayTime);
+    endOfDayTime.setHours(23, 59, 59, 999);
+
+    const expression = `(${this._getDateExpression(endOfDayTime, startField, '<=')}) AND (${this._getDateExpression(
+      startOfDayTime,
+      endField,
+      '>='
+    )})`;
 
     return expression;
   }

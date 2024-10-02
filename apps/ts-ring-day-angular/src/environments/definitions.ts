@@ -14,7 +14,8 @@ export const Connections = {
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
-  eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Ring_Day_2_view/FeatureServer'
+  // eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/ArcGIS/rest/services/Ring_Day_2_view/FeatureServer'
+  eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/ArcGIS/rest/services/Ring_Day_3_view/FeatureServer'
 };
 
 export const Definitions = {
