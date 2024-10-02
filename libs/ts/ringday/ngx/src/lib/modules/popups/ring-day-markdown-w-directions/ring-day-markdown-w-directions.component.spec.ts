@@ -8,9 +8,8 @@ describe('RingDayMarkdownWDirectionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RingDayMarkdownWDirectionsComponent ]
-    })
-    .compileComponents();
+      declarations: [RingDayMarkdownWDirectionsComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
