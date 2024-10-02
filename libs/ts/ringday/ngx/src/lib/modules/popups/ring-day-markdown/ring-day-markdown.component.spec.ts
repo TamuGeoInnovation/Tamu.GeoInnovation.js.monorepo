@@ -8,9 +8,8 @@ describe('RingDayMarkdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RingDayMarkdownComponent ]
-    })
-    .compileComponents();
+      declarations: [RingDayMarkdownComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
