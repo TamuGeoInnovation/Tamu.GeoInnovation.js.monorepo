@@ -130,7 +130,53 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     layerIndex: 2,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'name',
+        uniqueValueInfos: [
+          {
+            symbol: {
+              type: 'simple-line',
+              style: 'short-dash',
+              color: [90, 0, 0, 255],
+              width: 4
+            },
+            value: 'Aggie Ring Day Exit Path',
+            label: 'Aggie Ring Day Exit Path'
+          },
+          {
+            symbol: {
+              type: 'simple-line',
+              style: 'short-dash-dot-dot',
+              color: [169, 0, 230, 255],
+              width: 4
+            },
+            value: 'Aggie Ring Day Shuttle - Entry to Aggie Ring Day',
+            label: 'Walking Path from Shuttle to Alumni Center'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-line',
+              style: 'solid',
+              color: [223, 115, 255, 255],
+              width: 4
+            },
+            value: 'Aggie Ring Day Shuttle Route',
+            label: 'Aggie Ring Day Shuttle Route'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-line',
+              style: 'short-dot',
+              color: [169, 0, 230, 255],
+              width: 4
+            },
+            value: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)',
+            label: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)'
+          } as unknown
+        ]
+      }
     }
   },
   {
