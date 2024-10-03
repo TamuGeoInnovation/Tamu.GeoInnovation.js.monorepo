@@ -34,7 +34,7 @@ export const Definitions = {
     id: 'poi',
     layerId: 'poi-layer',
     name: 'Points of Interest',
-    url: `${Connections.inforUrl}/0`,
+    url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/AgMap_Statues/FeatureServer/0`,
     popupComponent: Popups.PoiPopupComponent
   },
   RESTROOMS: {
@@ -156,7 +156,16 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     visible: false,
     native: {
-      ...commonLayerProps
+      ...commonLayerProps,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/images/markers/statue-icon.png',
+          width: '20px',
+          height: '30.2px'
+        }
+      }
     }
   },
   {
@@ -519,18 +528,18 @@ export const SearchSources: SearchSource[] = [
   {
     source: 'points-of-interest',
     name: 'Points of Interest',
-    url: `${Connections.inforUrl}/0`,
+    url: Definitions.POINTS_OF_INTEREST.url,
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['Name'],
+        keys: ['name'],
         operators: ['LIKE'],
         wildcards: ['includes'],
         transformations: ['UPPER']
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{attributes.Name}',
+    displayTemplate: '{attributes.name}',
     popupComponent: Popups.PoiPopupComponent,
     searchActive: true
   },

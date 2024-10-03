@@ -1,3 +1,7 @@
+:host {
+  --swiper-navigation-color: #e0e0e0;
+}
+
 .popup {
   display: block;
   position: absolute;
@@ -59,3 +63,29 @@
     color: initial;
   }
 }
+
+swiper-container {
+  --swiper-navigation-size: 33px;
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    width: calc(var(--swiper-navigation-size) / 44 * 27);
+    height: var(--swiper-navigation-size);
+  }
+}
+
+swiper-slide {
+  a {
+    display: block;
+    height: 25rem;
+    width: 100%;
+
+    img {
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
+      object-position: center;
+    }
+  }
+}
+
