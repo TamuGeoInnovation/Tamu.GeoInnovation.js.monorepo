@@ -156,9 +156,9 @@ export const ColdLayerSources: LayerSource[] = [
               style: 'solid',
               color: [171, 205, 102, 0.75],
               outline: {
-                style: 'esriSLSSolid',
+                style: 'solid',
                 color: [90, 0, 0, 255],
-                width: 2
+                width: 0
               }
             },
             value: 'Gather',
@@ -210,9 +210,9 @@ export const ColdLayerSources: LayerSource[] = [
               style: 'solid',
               color: [223, 115, 255, 0.65],
               outline: {
-                style: 'esriSLSSolid',
+                style: 'solid',
                 color: [132, 0, 168, 255],
-                width: 2
+                width: 0
               }
             },
             value: 'Special Parking',
@@ -1097,7 +1097,30 @@ export const LayerSources: LayerSource[] = [
   //     }
   //   }
   // },
-
+  {
+    type: 'graphics',
+    id: 'ring-layer',
+    title: 'Aggie Ring Replica',
+    listMode: 'show',
+    visible: true,
+    native: {
+      graphics: [
+        {
+          geometry: {
+            type: 'point',
+            x: -96.33628,
+            y: 30.60884
+          },
+          symbol: {
+            type: 'picture-marker',
+            url: '/assets/icons/aggie/Ring Day.png',
+            width: 20,
+            height: 25
+          }
+        } as unknown
+      ]
+    }
+  },
   {
     type: 'graphics',
     id: 'selection-layer',

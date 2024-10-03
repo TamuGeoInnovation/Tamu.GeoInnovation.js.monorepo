@@ -62,7 +62,7 @@ export class DateSelectComponent implements OnInit {
       if (hasRet !== undefined) {
         this.router.navigate([`builder/${hasRet}`]);
       } else {
-        this.router.navigate(['builder/review']);
+        this.router.navigate(['builder/accommodations']);
       }
     } else {
       throw new Error('Failed to save date selection.');
