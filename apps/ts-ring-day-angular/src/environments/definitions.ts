@@ -128,6 +128,7 @@ export const ColdLayerSources: LayerSource[] = [
     popupComponent: EventPopups.RingDayMarkdownComponent,
     listMode: 'show',
     visible: true,
+    layerIndex: 2,
     native: {
       outFields: ['*']
     }
@@ -141,7 +142,192 @@ export const ColdLayerSources: LayerSource[] = [
     listMode: 'show',
     visible: true,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'name',
+        defaultSymbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/aggie/Ring Day.png',
+          width: 20,
+          height: 25,
+          angle: 0,
+          xoffset: 0,
+          yoffset: 0
+        } as unknown,
+        uniqueValueInfos: [
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/shops-food/Dining.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'Creamery - Concessions',
+            label: 'Concessions'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/shops-food/Dining.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'Concessions',
+            label: 'Concessions'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/accessibility/Entrance.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'ENTER HERE',
+            label: 'ENTER HERE'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/accessibility/Entrance.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'ENTER HERE (w/Accessibility)',
+            label: 'ENTER HERE'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/personal-care/First Aid.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'Medical Station',
+            label: 'First Aid'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/personal-care/Restrooms.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 10
+            },
+            value: 'Public Restrooms',
+            label: 'Public Restrooms'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/transportation/Car.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'Rideshare drop-off & pick up for Aggie Ring Day',
+            label: 'Rideshare drop-off & pick up'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/transportation/Bus.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'Shuttle Stop - Drop Off Only',
+            label: 'Shuttle Stop - Drop Off Only; Shuttle Stop - Pick Up Only; Shuttle Stop - Pickup and Drop Off'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/transportation/Bus.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'Shuttle Stop - Pick Up Only',
+            label: 'Shuttle Stop - Drop Off Only; Shuttle Stop - Pick Up Only; Shuttle Stop - Pickup and Drop Off'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/transportation/Bus.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'Shuttle Stop - Pickup and Drop Off',
+            label: 'Shuttle Stop - Drop Off Only; Shuttle Stop - Pick Up Only; Shuttle Stop - Pickup and Drop Off'
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/aggie/Cannon.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: "Spirit of '02 Cannon - Parsons Mounted Cavalry",
+            label: "Spirit of '02 Cannon - Parsons Mounted Cavalry"
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/fixtures/Photo Opportunity.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: "Spirit of '02 Cannon Photo Station",
+            label: "Spirit of '02 Cannon Photo Station"
+          } as unknown,
+          {
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/icons/fixtures/Theater.png',
+              width: 20,
+              height: 25,
+              angle: 0,
+              xoffset: 0,
+              yoffset: 0
+            },
+            value: 'The Stage at Aggie Park - Musical Performances ',
+            label: 'The Stage at Aggie Park - Musical Performances '
+          }
+        ],
+        fieldDelimiter: ','
+      }
     }
   }
 ];
