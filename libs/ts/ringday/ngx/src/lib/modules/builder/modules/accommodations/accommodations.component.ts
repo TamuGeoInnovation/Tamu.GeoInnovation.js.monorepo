@@ -55,7 +55,7 @@ export class AccommodationsComponent implements OnInit {
       if (hasRet !== undefined) {
         this.router.navigate([`builder/${hasRet}`]);
       } else {
-        this.router.navigate(['builder/date']);
+        this.router.navigate(['builder/review']);
       }
     } else {
       throw new Error('Error saving accommodation selection.');

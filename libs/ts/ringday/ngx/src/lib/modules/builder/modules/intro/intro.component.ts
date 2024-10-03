@@ -23,6 +23,6 @@ export class IntroComponent {
       }
     });
 
-    this.router.navigate(['builder/accommodations']);
+    this.router.navigate(['builder/date']);
   }
 }
