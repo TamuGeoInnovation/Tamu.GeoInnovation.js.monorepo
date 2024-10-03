@@ -116,8 +116,136 @@ export const ColdLayerSources: LayerSource[] = [
     popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
     listMode: 'show',
     visible: true,
+    layerIndex: 2,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'Type',
+        uniqueValueInfos: [
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [0, 112, 255, 0.75],
+              outline: {
+                color: [110, 110, 110, 255],
+                width: 0
+              }
+            },
+            value: 'ADA',
+            label: 'ADA Route'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'backward-diagonal',
+              color: [215, 158, 158, 0.75],
+              outline: {
+                style: 'solid',
+                color: [90, 0, 0, 255],
+                width: 2
+              }
+            },
+            value: 'AFS',
+            label: 'Clayton Williams Jr. Alumni Center'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [171, 205, 102, 0.75],
+              outline: {
+                style: 'esriSLSSolid',
+                color: [90, 0, 0, 255],
+                width: 2
+              }
+            },
+            value: 'Gather',
+            label: 'Gathering Area'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [255, 0, 0, 0.65],
+              outline: {
+                color: [110, 110, 110, 255],
+                width: 0
+              }
+            },
+            value: 'Lot Closed',
+            label: 'Lot Closed'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [255, 0, 0, 0.65],
+              outline: {
+                color: [110, 110, 110, 255],
+                width: 0
+              }
+            },
+            value: 'Lot-Gate Closure',
+            label: 'Lot-Gate Closure'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              // 009688 in rgba
+              color: [0, 150, 136, 0.75],
+              outline: {
+                color: [110, 110, 110, 255],
+                width: 0
+              }
+            },
+            value: 'Sales',
+            label: 'Aggie Ring Day Marketplace'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [223, 115, 255, 0.65],
+              outline: {
+                style: 'esriSLSSolid',
+                color: [132, 0, 168, 255],
+                width: 2
+              }
+            },
+            value: 'Special Parking',
+            label: 'Special Parking'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [255, 0, 0, 0.65],
+              outline: {
+                color: [110, 110, 110, 255],
+                width: 0
+              }
+            },
+            value: 'Street Closure',
+            label: 'Street Closure'
+          } as unknown,
+          {
+            symbol: {
+              type: 'simple-fill',
+              style: 'solid',
+              color: [255, 255, 115, 0.75],
+              outline: {
+                color: [110, 110, 110, 255],
+                width: 0
+              }
+            },
+            value: 'Ticketed Area',
+            label: 'Ticketed Area'
+          }
+        ]
+      }
     }
   },
   {
@@ -128,7 +256,7 @@ export const ColdLayerSources: LayerSource[] = [
     popupComponent: EventPopups.RingDayMarkdownComponent,
     listMode: 'show',
     visible: true,
-    layerIndex: 2,
+    layerIndex: 3,
     native: {
       outFields: ['*'],
       renderer: {
@@ -500,7 +628,7 @@ export const LayerSources: LayerSource[] = [
   //       symbol: {
   //         type: 'simple-fill',
   //         style: 'solid',
-  //         color: [255, 0, 0, 0.5],
+  //         color: [255, 0, 0, 0.65],
   //         outline: {
   //           color: [255, 0, 0, 1],
   //           width: '1px'
@@ -611,7 +739,7 @@ export const LayerSources: LayerSource[] = [
   //         type: 'simple-fill',
   //         style: 'solid',
   //         // blue in rgba
-  //         color: [0, 0, 255, 0.5],
+  //         color: [0, 0, 255, 0.65],
   //         outline: {
   //           color: [0, 0, 255, 1],
   //           width: '1px'
@@ -636,7 +764,7 @@ export const LayerSources: LayerSource[] = [
   //       symbol: {
   //         type: 'simple-fill',
   //         style: 'solid',
-  //         color: [80, 0, 0, 0.5],
+  //         color: [80, 0, 0, 0.65],
   //         outline: {
   //           color: [80, 0, 0, 1],
   //           width: '1px'
@@ -661,7 +789,7 @@ export const LayerSources: LayerSource[] = [
   //       symbol: {
   //         type: 'simple-fill',
   //         style: 'solid',
-  //         color: [255, 255, 0, 0.5],
+  //         color: [255, 255, 0, 0.65],
   //         outline: {
   //           color: [255, 255, 0, 1],
   //           width: '1px'
@@ -687,7 +815,7 @@ export const LayerSources: LayerSource[] = [
   //         type: 'simple-fill',
   //         style: 'solid',
   //         // light green in rgba
-  //         color: [0, 255, 0, 0.5],
+  //         color: [0, 255, 0, 0.65],
   //         outline: {
   //           // brown outline in rgba
   //           color: [139, 69, 19, 1],
@@ -714,7 +842,7 @@ export const LayerSources: LayerSource[] = [
   //         type: 'simple-fill',
   //         style: 'solid',
   //         // dark green in rgba
-  //         color: [0, 100, 0, 0.5],
+  //         color: [0, 100, 0, 0.65],
   //         outline: {
   //           color: [0, 100, 0, 1],
   //           width: '1px'
@@ -740,7 +868,7 @@ export const LayerSources: LayerSource[] = [
   //         type: 'simple-fill',
   //         style: 'solid',
   //         // light blue in rgba
-  //         color: [0, 255, 255, 0.5],
+  //         color: [0, 255, 255, 0.65],
   //         outline: {
   //           color: [0, 255, 255, 1],
   //           width: '1px'
@@ -1265,7 +1393,7 @@ export const SelectionSymbols = {
   polygon: {
     type: 'simple-fill',
     style: 'solid',
-    color: [252, 227, 0, 0.55],
+    color: [252, 227, 0, 0.655],
     outline: {
       color: [252, 227, 0, 0.8],
       width: '2px'
