@@ -17,6 +17,8 @@ import { v4 as guid } from 'uuid';
 
 import { ValidObject } from '@tamu-gisc/oidc/common';
 
+// TODO:
+
 @Entity()
 export class OldCompetitionEntity extends BaseEntity {
   @PrimaryColumn()
