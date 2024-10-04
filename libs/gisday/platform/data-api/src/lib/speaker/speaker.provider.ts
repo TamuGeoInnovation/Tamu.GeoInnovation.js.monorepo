@@ -6,9 +6,9 @@ import {
   Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, In, Repository } from 'typeorm';
+import { DeepPartial, DeleteResult, In, Repository } from 'typeorm';
 
-import { Speaker, EntityRelationsLUT, University, Organization, Event } from '../entities/all.entity';
+import { Speaker, EntityRelationsLUT, University, Organization, Event, Asset } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
@@ -28,6 +28,26 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     super(speakerRepo);
   }
 
+  public async getSpeakersForSeason(seasonGuid: string) {
+    try {
+      return this.find({
+        where: {
+          season: {
+            guid: seasonGuid
+          }
+        },
+        relations: EntityRelationsLUT.getRelation('speaker'),
+        order: {
+          lastName: 'ASC',
+          firstName: 'ASC'
+        }
+      });
+    } catch (err) {
+      Logger.error(err.message, 'SpeakerProvider');
+      throw new InternalServerErrorException('Could not find speakers for season.');
+    }
+  }
+
   public async getPresenter(guid: string) {
     return this.speakerRepo.findOne({
       where: {
@@ -38,6 +58,16 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async getSpeakersForActiveSeason() {
+    const season = await this.seasonService.findOneActive();
+
+    if (!season) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    return this.getSpeakersForSeason(season.guid);
+  }
+
+  public async getSpeakersForActiveSeasonInEvents() {
     const season = await this.seasonService.findOneActive();
 
     if (!season) {
@@ -83,7 +113,39 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
   }
 
-  public async getOrganizationCommittee() {
+  public async getOrganizersForSeason(seasonGuid: string) {
+    return this.speakerRepo.find({
+      where: {
+        isOrganizer: true,
+        season: seasonGuid
+      },
+      relations: ['organization', 'university', 'images'],
+      order: {
+        lastName: 'ASC'
+      }
+    });
+  }
+
+  public async getOrganizersForActiveSeason() {
+    const season = await this.seasonService.findOneActive();
+
+    if (!season) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    return this.speakerRepo.find({
+      where: {
+        isOrganizer: true,
+        season: season.guid
+      },
+      relations: ['organization', 'university', 'images'],
+      order: {
+        lastName: 'ASC'
+      }
+    });
+  }
+
+  public async getAllTimeOrganizers() {
     return this.speakerRepo.find({
       where: {
         isOrganizer: true
@@ -160,6 +222,56 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       }
     } else {
       throw new UnprocessableEntityException(null, 'Could not create speaker');
+    }
+  }
+
+  public async copySpeakersIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
+    const season = await this.seasonService.findOne({
+      where: {
+        guid: seasonGuid
+      }
+    });
+
+    if (!season) {
+      throw new UnprocessableEntityException('Could not find season.');
+    }
+
+    const existingSpeakers = await this.speakerRepo.find({
+      where: {
+        guid: In(existingEntityGuids)
+      },
+      relations: ['images']
+    });
+
+    if (!existingSpeakers || existingSpeakers.length === 0) {
+      throw new UnprocessableEntityException('Could not find speakers.');
+    }
+
+    const newEntities = existingSpeakers.map((entity) => {
+      delete entity.guid;
+      delete entity.created;
+      delete entity.updated;
+
+      if (entity.images?.length > 0) {
+        entity.images = entity.images.map((image) => {
+          delete image.guid;
+          delete image.created;
+          delete image.updated;
+
+          return image;
+        });
+      }
+
+      return this.speakerRepo.create({
+        ...entity,
+        season
+      });
+    });
+
+    try {
+      return Promise.all(newEntities.map((entity) => entity.save()));
+    } catch (err) {
+      throw new InternalServerErrorException('Could not copy speakers into season.');
     }
   }
 
@@ -282,6 +394,32 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       };
     } catch (err) {
       throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  public override async deleteEntities(oneOrMoreEntityGuids: Array<string> | string): Promise<DeleteResult> {
+    const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
+
+    try {
+      return this.speakerRepo.manager.transaction(async (manager) => {
+        const speakers = await manager.find(Speaker, {
+          where: {
+            guid: In(guids)
+          },
+          relations: ['images']
+        });
+
+        const images = speakers.map((speaker) => speaker.images).flat();
+
+        if (images.length > 0) {
+          await manager.delete(Asset, images);
+        }
+
+        return manager.delete(Speaker, guids);
+      });
+    } catch (err) {
+      Logger.error(err.message, 'SpeakerProvider.deleteEntities');
+      throw new InternalServerErrorException('Could not delete entities');
     }
   }
 

@@ -1,21 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
 
 import { Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { Class, CheckIn } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
+import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class ClassProvider extends BaseProvider<Class> {
   constructor(
     @InjectRepository(Class) private classRepo: Repository<Class>,
     @InjectRepository(CheckIn) private readonly checkinRepo: Repository<CheckIn>,
-    private readonly ms: ManagementService
+    private readonly ms: ManagementService,
+    private readonly seasonService: SeasonService
   ) {
     super(classRepo);
+  }
+
+  public getClassesForSeason(seasonGuid: string) {
+    return this.classRepo.find({
+      where: {
+        season: seasonGuid
+      },
+      order: {
+        title: 'ASC'
+      }
+    });
+  }
+
+  public async getClassesForActiveSeason() {
+    const season = await this.seasonService.findOneActive();
+
+    if (!season) {
+      throw new UnprocessableEntityException('No active season found.');
+    }
+
+    return this.getClassesForSeason(season.guid);
   }
 
   public async createClass(dto: Class) {
@@ -34,6 +57,51 @@ export class ClassProvider extends BaseProvider<Class> {
       return created.save();
     } else {
       return existing;
+    }
+  }
+
+  public async copyClassesIntoSeason(seasonGuid: string, existingEntityGuids: Array<string>) {
+    const season = await this.seasonService.findOne({
+      where: {
+        guid: seasonGuid
+      }
+    });
+
+    if (!season) {
+      throw new UnprocessableEntityException('Season not found.');
+    }
+
+    const classes = await this.classRepo.find({
+      where: {
+        guid: In(existingEntityGuids)
+      }
+    });
+
+    if (!classes) {
+      throw new UnprocessableEntityException('Events not found.');
+    }
+
+    const newClasses = classes.map((c) => {
+      delete c.guid;
+      delete c.season;
+      delete c.students;
+      delete c.created;
+      delete c.updated;
+
+      const newClass = this.classRepo.create({
+        ...c,
+        season: {
+          guid: season.guid
+        }
+      });
+
+      return newClass.save();
+    });
+
+    try {
+      return Promise.all(newClasses);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not copy classes into season');
     }
   }
 

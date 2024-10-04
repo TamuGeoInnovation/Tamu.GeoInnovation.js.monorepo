@@ -422,7 +422,7 @@ footer .logo-container {
   }
 
   &.greyscale {
-    color: lighten($gisday-blue-support, 50%);
+    color: #424242;
 
     span {
       -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
@@ -1507,7 +1507,12 @@ th {
 
 td,
 th {
+  vertical-align: top;
   padding: 0.75rem 0.325rem;
+
+  &.nowrap {
+    white-space: nowrap;
+  }
 }
 
 .clickableRow:hover {
@@ -1559,6 +1564,47 @@ tr.selectable {
 
 tr:hover td > span.delete {
   opacity: 1;
+}
+
+.selected-action-container {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  font-size: 1rem;
+  position: sticky;
+  bottom: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  .selected-actions {
+    @include flexbox();
+    @include flex-direction(row);
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    .selected-action {
+      display: inherit;
+      @include align-items(center);
+      margin: 0 0.75rem;
+      opacity: 0.75;
+      color: $gisday-blue-secondary;
+      cursor: pointer;
+      @include transition(opacity 0.3s);
+
+      &.caution {
+        color: $error-color;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+
+      .material-icons {
+        font-size: 1.25rem;
+        color: inherit;
+        padding: 0 0.25rem;
+      }
+    }
+  }
 }
 
 .toggleWrapper {
@@ -2816,6 +2862,11 @@ session-time-table {
   p {
     margin-bottom: 0;
     padding-bottom: 0;
+  }
+
+  &.context {
+    background: lighten($color: $gisday-blue-support, $amount: 76%);
+    border-color: lighten($color: $gisday-blue-support, $amount: 65%);
   }
 
   &.notice {

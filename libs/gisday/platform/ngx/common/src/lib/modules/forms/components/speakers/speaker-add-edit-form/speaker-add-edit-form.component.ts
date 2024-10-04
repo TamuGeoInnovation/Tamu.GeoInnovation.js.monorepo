@@ -2,12 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, map, merge, shareReplay, switchMap } from 'rxjs';
+import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import {
   AssetsService,
   OrganizationService,
+  SeasonService,
   SpeakerService,
   UniversityService
 } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -40,7 +41,8 @@ export class SpeakerAddEditFormComponent implements OnInit {
     private readonly us: UniversityService,
     private readonly os: OrganizationService,
     private readonly sn: DomSanitizer,
-    private readonly ns: NotificationService
+    private readonly ns: NotificationService,
+    private readonly sss: SeasonService
   ) {}
 
   public ngOnInit() {
@@ -59,11 +61,12 @@ export class SpeakerAddEditFormComponent implements OnInit {
       socialMedia: [''],
       isOrganizer: [false],
       isActive: [false],
-      file: [null]
+      file: [null],
+      season: [null]
     });
 
-    this.universities$ = this.us.getEntities();
-    this.organizations$ = this.os.getEntities();
+    this.universities$ = this.us.getEntitiesForActiveSeason();
+    this.organizations$ = this.os.getEntitiesForActiveSeason();
 
     this.entity$ = this.at.params.pipe(
       map((params) => params.guid),
@@ -97,6 +100,15 @@ export class SpeakerAddEditFormComponent implements OnInit {
           university: entity?.university?.guid,
           isOrganizer: entity?.isOrganizer === true,
           isActive: entity?.isActive === true
+        });
+
+        // If the entity has a season, remove the season control from the form
+        this.form.removeControl('season');
+      });
+    } else {
+      this.sss.activeSeason$.pipe(take(1)).subscribe((season) => {
+        this.form.patchValue({
+          season: season.guid
         });
       });
     }

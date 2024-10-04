@@ -9,6 +9,16 @@ import { EventLocationService } from './event-location.service';
 export class EventLocationController {
   constructor(private readonly ebs: EventLocationService) {}
 
+  @Get('season/active')
+  public async getActive() {
+    return this.ebs.getEventLocationsForActiveSeason();
+  }
+
+  @Get('season/:guid')
+  public async getEventLocationsForSeason(@Param('guid') seasonGuid: string) {
+    return this.ebs.getEventLocationsForSeason(seasonGuid);
+  }
+
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.ebs.findOne({
@@ -22,6 +32,13 @@ export class EventLocationController {
   @Get()
   public async getEntities() {
     return this.ebs.getEntities();
+  }
+
+  @Permissions(['create:event-locations'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public async copy(@Body() body: { seasonGuid: string; existingEntityGuids: Array<string> }) {
+    return this.ebs.copyEventLocationsIntoSeason(body.seasonGuid, body.existingEntityGuids);
   }
 
   @Permissions(['create:event-locations'])
@@ -42,10 +59,13 @@ export class EventLocationController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    return this.ebs.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    return this.ebs.deleteEntities(guid);
+  }
+
+  @Permissions(['delete:event-locations'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteMany(@Body('guid') guid: string) {
+    return this.ebs.deleteEntities(guid);
   }
 }

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
   filter,
+  from,
   map,
   mergeMap,
   of,
@@ -151,13 +152,14 @@ export class EventAddEditFormComponent implements OnInit {
       broadcast: [null],
       location: [null],
       tags: [[]],
-      speakers: [[]]
+      speakers: [[]],
+      season: [null]
     });
 
-    this.tags$ = this.tagService.getEntities().pipe(shareReplay(1));
-    this.speakers$ = this.speakerService.getEntities().pipe(shareReplay(1));
-    this.broadcasts$ = this.eventBroadcastService.getEntities().pipe(shareReplay(1));
-    this.locations$ = this.eventLocationService.getEntities().pipe(
+    this.tags$ = this.tagService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    this.speakers$ = this.speakerService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    this.broadcasts$ = this.eventBroadcastService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    this.locations$ = this.eventLocationService.getEntitiesForActiveSeason().pipe(
       mergeMap((locations) => locations),
       map((loc) => {
         return {
@@ -171,15 +173,16 @@ export class EventAddEditFormComponent implements OnInit {
 
     this.activeSeasonDays$ = this.seasonService.activeSeason$.pipe(
       mergeMap((season) => {
-        return season.days;
-      }),
-      map((day) => {
-        return {
-          guid: day.guid,
-          date: new Date(day.date)
-        };
-      }),
-      toArray()
+        return from(season.days).pipe(
+          map((day) => {
+            return {
+              guid: day.guid,
+              date: new Date(day.date)
+            };
+          }),
+          toArray()
+        );
+      })
     );
 
     this.selectedEventDate$ = this.form.valueChanges.pipe(
@@ -215,6 +218,10 @@ export class EventAddEditFormComponent implements OnInit {
           location: event?.location?.guid,
           broadcast: event?.broadcast?.guid
         });
+
+        // Remove the season form control since we are editing an existing event
+        // Will otherwise move to the active season
+        this.form.removeControl('season');
       });
 
       this.selectedEventDateStart$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('startTime'), shareReplay());
@@ -230,6 +237,12 @@ export class EventAddEditFormComponent implements OnInit {
         this._applyTimeToForm('endTime'),
         shareReplay()
       );
+
+      this.seasonService.activeSeason$.pipe(take(1)).subscribe((season) => {
+        this.form.patchValue({
+          season: season.guid
+        });
+      });
     }
   }
 
@@ -358,10 +371,10 @@ export class EventAddEditFormComponent implements OnInit {
   private _timeStringFromEvent$(timeProp: 'startTime' | 'endTime') {
     return pipe(
       switchMap((event: Event) => {
-        const dateStringFromEvent = new Date(event?.day?.date).toDateString();
+        const dateStringFromEvent = event?.day !== null ? new Date(event?.day?.date).toDateString() : null;
         const timeStringFromEvent = event?.[timeProp];
 
-        if (timeStringFromEvent === null || timeStringFromEvent === undefined) {
+        if (dateStringFromEvent === null || timeStringFromEvent === null || timeStringFromEvent === undefined) {
           return this._defaultTimeFromSelectedEvent$();
         } else {
           return of(new Date(`${dateStringFromEvent} ${timeStringFromEvent}`));

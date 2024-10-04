@@ -9,6 +9,16 @@ import { EventBroadcastService } from './event-broadcast.service';
 export class EventBroadcastController {
   constructor(private readonly ebs: EventBroadcastService) {}
 
+  @Get('season/active')
+  public async getEventsForActiveSeason() {
+    return this.ebs.getBroadcastsForActiveSeason();
+  }
+
+  @Get('season/:guid')
+  public async getBroadcastsForSeason(@Param('guid') seasonGuid) {
+    return this.ebs.getBroadcastsForSeason(seasonGuid);
+  }
+
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.ebs.findOne({
@@ -21,6 +31,13 @@ export class EventBroadcastController {
   @Get()
   public async getEntities() {
     return this.ebs.getEntities();
+  }
+
+  @Permissions(['create:event-broadcasts'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public async copyBroadcastsIntoSeason(@Body() body: { seasonGuid: string; existingEntityGuids: Array<string> }) {
+    return this.ebs.copyBroadcastsIntoSeason(body.seasonGuid, body.existingEntityGuids);
   }
 
   @Permissions(['create:event-broadcasts'])
@@ -41,10 +58,13 @@ export class EventBroadcastController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    return this.ebs.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    return this.ebs.deleteEntities(guid);
+  }
+
+  @Permissions(['delete:event-broadcasts'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteMany(@Body('guid') guid: string) {
+    return this.ebs.deleteEntities(guid);
   }
 }

@@ -20,10 +20,6 @@ export class EventService extends BaseService<Event> {
     return this.http1.get<number>(`${this.resource}/${eventGuid}/rsvps`);
   }
 
-  public getEvents() {
-    return this.http1.get<Array<Partial<Event>>>(`${this.resource}/`);
-  }
-
   public getEvent(guid: string) {
     return this.http1.get<Partial<Event>>(`${this.resource}/${guid}`);
   }

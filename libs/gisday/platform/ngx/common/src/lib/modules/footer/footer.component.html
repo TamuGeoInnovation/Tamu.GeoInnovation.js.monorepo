@@ -33,11 +33,20 @@
       </div>
       <div class="column3">
         <p class="footer-column-title">TxGIS Day Partners</p>
-        <ul>
-          <li *ngFor="let org of organizations$ | async">
-            <a [href]="org.website" target="_blank">{{org.name}}</a>
-          </li>
-        </ul>
+
+        <ng-container *ngIf="organizations$ | async as orgs">
+          <ng-container *ngIf="orgs.length > 0; else noOrgs">
+            <ul>
+              <li *ngFor="let org of orgs">
+                <a [href]="org.website" target="_blank">{{org.name}}</a>
+              </li>
+            </ul>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #noOrgs>
+          <p>Coming soon!</p>
+        </ng-template>
       </div>
     </div>
   </div>

@@ -11,14 +11,34 @@ import { SpeakerProvider } from './speaker.provider';
 export class SpeakerController {
   constructor(private readonly provider: SpeakerProvider) {}
 
-  @Get('organizers')
-  public async getOrganizingEntities() {
-    return this.provider.getOrganizationCommittee();
-  }
-
-  @Get('active')
+  @Get('season/active')
   public async getActiveEntities() {
     return this.provider.getSpeakersForActiveSeason();
+  }
+
+  @Get('season/:guid')
+  public async getSpeakersForSeason(@Param('guid') seasonGuid) {
+    return this.provider.getSpeakersForSeason(seasonGuid);
+  }
+
+  @Get('organizers/season/active')
+  public async getActiveOrganizers() {
+    return this.provider.getOrganizersForActiveSeason();
+  }
+
+  @Get('organizers/season/:guid')
+  public async getOrganizersForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getOrganizersForSeason(seasonGuid);
+  }
+
+  @Get('organizers')
+  public async getOrganizingEntities() {
+    return this.provider.getAllTimeOrganizers();
+  }
+
+  @Get('participating')
+  public async getParticipatingSpeakersForActiveSeason() {
+    return this.provider.getSpeakersForActiveSeasonInEvents();
   }
 
   @Get(':guid')
@@ -36,6 +56,13 @@ export class SpeakerController {
   @Post('bulk')
   public async postBulkSpeakers(@Body() payload) {
     return this.provider.insertBulk(payload);
+  }
+
+  @Permissions(['create:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public copy(@Body('seasonGuid') seasonGuid: string, @Body('existingEntityGuids') existingEntityGuids: Array<string>) {
+    return this.provider.copySpeakersIntoSeason(seasonGuid, existingEntityGuids);
   }
 
   @Permissions(['create:speakers'])
@@ -59,10 +86,13 @@ export class SpeakerController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    return this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    return this.provider.deleteEntities(guid);
+  }
+
+  @Permissions(['delete:speakers'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteManyEntities(@Body('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
   }
 }

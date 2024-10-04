@@ -1,12 +1,16 @@
-<div class="container12 flex flex-row justify-center wrap" *ngIf="(people$ | async) as people; else noSpeakers">
-  <ng-container *ngIf="people?.length > 0; else noSpeakers">
-    <tamu-gisc-speaker-card *ngFor="let person of people" [speaker]="person"></tamu-gisc-speaker-card>
+<ng-container *ngIf="people$ | async as people">
+  <ng-container *ngIf="people.length > 0; else zeroSpeakers">
+    <div class="container12 flex flex-row justify-center wrap" *ngIf="people.length  > 0; else noSpeakers">
+      <ng-container *ngIf="people?.length > 0; else noSpeakers">
+        <tamu-gisc-speaker-card *ngFor="let person of people" [speaker]="person"></tamu-gisc-speaker-card>
+      </ng-container>
+    </div>
   </ng-container>
+</ng-container>
 
-  <ng-template #zeroSpeakers>
-    <p>We're putting together something special, please come back later.</p>
-  </ng-template>
-</div>
+<ng-template #zeroSpeakers>
+  <p>We're putting together an amazing lineup, please check back later!</p>
+</ng-template>
 
 <ng-template #noSpeakers>
   <div class="loader"></div>

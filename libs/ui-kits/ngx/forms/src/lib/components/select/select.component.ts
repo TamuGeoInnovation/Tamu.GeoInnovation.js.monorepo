@@ -31,7 +31,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    */
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
-  private _value: T = undefined;
+  private _value: string = undefined;
 
   @Input()
   public formControlName = 'default';
@@ -43,7 +43,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
     return this._value;
   }
 
-  public set value(value: T) {
+  public set value(value: string) {
     this._value = value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value;
     this._onChange(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
     this._onTouched();
@@ -86,12 +86,12 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * Event emitted when the value of the select input element is changed.
    */
   @Output()
-  public changed: EventEmitter<T> = new EventEmitter();
+  public changed: EventEmitter<string> = new EventEmitter();
 
   constructor(private cd: ChangeDetectorRef) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  private _onChange = (value: T) => {};
+  private _onChange = (value: string) => {};
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private _onTouched = () => {};
@@ -116,7 +116,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
     }
   }
 
-  public writeValue(value: T) {
+  public writeValue(value: string) {
     this.value = value;
   }
 

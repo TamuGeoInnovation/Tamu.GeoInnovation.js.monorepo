@@ -1,4 +1,4 @@
-param( 
+﻿param( 
     [parameter(Position=0, Mandatory=$true, HelpMessage="Name to be assigned to the redirect rule that is created.")]
     [string]$RuleName,
     [parameter(Position=1, Mandatory=$true, HelpMessage="URL pattern to match.")]

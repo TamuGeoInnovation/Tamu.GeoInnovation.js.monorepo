@@ -12,6 +12,16 @@ import { UpdateEventDto } from './dto/update-event.dto';
 export class EventController {
   constructor(private readonly provider: EventProvider) {}
 
+  @Get('season/active')
+  public async getEventsForActiveSeason() {
+    return this.provider.getEventsForActiveSeason();
+  }
+
+  @Get('season/:guid')
+  public async getEventsForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getEventsForSeason(seasonGuid);
+  }
+
   @Get(':guid/attendance')
   public async getAttendance(@Param('guid') guid) {
     return this.provider.getEventAttendance(guid);
@@ -46,12 +56,14 @@ export class EventController {
 
   @Get()
   public async getEvents() {
-    return this.provider.eventRepo.find({
-      relations: EntityRelationsLUT.getRelation('event'),
-      order: {
-        startTime: 'ASC'
-      }
-    });
+    return this.provider.getEvents();
+  }
+
+  @Permissions(['create:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public async copyEventsIntoSeason(@Body() body: { seasonGuid: string; existingEntityGuids: Array<string> }) {
+    return this.provider.copyEventsIntoSeason(body.seasonGuid, body.existingEntityGuids);
   }
 
   @Permissions(['create:events'])
@@ -83,10 +95,13 @@ export class EventController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
   public deleteEntity(@Param('guid') guid: string) {
-    return this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+    return this.provider.deleteEntities(guid);
+  }
+
+  @Permissions(['delete:events'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteMany(@Body('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
   }
 }

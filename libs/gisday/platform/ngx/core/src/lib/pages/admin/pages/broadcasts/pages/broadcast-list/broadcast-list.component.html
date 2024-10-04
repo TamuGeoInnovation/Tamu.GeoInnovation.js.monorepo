@@ -3,32 +3,50 @@
     <div class="form-section-toolbar">
       <div class="form-section-name">Broadcasts</div>
       <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+
         <a routerLink="add">Add broadcast <span class="material-icons action">add</span></a>
       </div>
     </div>
 
     <div class="form-section-body">
-      <table class="floating-table" *ngIf="($entities | async)?.length > 0; else noEntities">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Meeting ID</th>
-            <th>Updated</th>
-          </tr>
-        </thead>
+      <ng-container *ngIf="entitiesForActiveSeasonOrForSeasonGuid$ | async as entities">
+        <table class="floating-table" *ngIf="entities.length > 0; else noEntities">
+          <thead>
+            <tr></tr>
+            <tr>
+              <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
+              <th>Name</th>
+              <th>Meeting ID</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of ($entities | async)">
-            <td>{{entity.name}}</td>
-            <td>{{entity.meetingId}}</td>
-            <td>{{entity.updated | date:'short'}}</td>
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of entities">
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
+              <td>{{entity.name}}</td>
+              <td>{{entity.meetingId}}</td>
+              <td>{{entity.updated | date:'short'}}</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <ng-template #noEntities>
-        <p>There are no broadcasts yet.</p>
-      </ng-template>
+        <div class="selected-action-container info-block context" *ngIf="(selectedRows$ | async)?.length > 0">
+          <div>
+            <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
+          </div>
+
+          <div class="selected-actions">
+            <p class="selected-action" (click)="promptCopyModal('Event Broadcast')">Copy <span class="material-icons action">content_copy</span></p>
+            <p class="selected-action caution" (click)="promptDeleteModal('Event Broadcast')">Delete <span class="material-icons action">delete_forever</span></p>
+          </div>
+        </div>
+
+        <ng-template #noEntities>
+          <p>There are no broadcasts for the selected season.</p>
+        </ng-template>
+      </ng-container>
     </div>
   </div>
 </div>

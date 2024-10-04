@@ -2,10 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Observable, filter, map, merge, switchMap, take } from 'rxjs';
+import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
 
 import { Place, PlaceLink } from '@tamu-gisc/gisday/platform/data-api';
-import { AssetsService, PlaceService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { AssetsService, PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
@@ -30,7 +30,8 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
     private readonly as: AssetsService,
     private readonly ps: PlaceService,
     private readonly sn: DomSanitizer,
-    private readonly ns: NotificationService
+    private readonly ns: NotificationService,
+    private readonly ss: SeasonService
   ) {}
 
   public ngOnInit(): void {
@@ -43,14 +44,16 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       zip: [null],
       website: [null],
       links: this.fb.array([]),
-      file: [null]
+      file: [null],
+      season: [null]
     });
 
     if (this.type === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
-        switchMap((guid) => this.ps.getEntity(guid))
+        switchMap((guid) => this.ps.getEntity(guid)),
+        shareReplay(1)
       );
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
@@ -59,6 +62,9 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.form.patchValue({ ...entity });
 
         links.forEach((l) => (this.form.get('links') as FormArray).push(l));
+
+        // If the entity has a season, remove the season control from the form
+        this.form.removeControl('season');
       });
 
       // Image preview can come from two sources:
@@ -77,6 +83,12 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
           map((file) => this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)))
         )
       );
+    } else {
+      this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
+        this.form.patchValue({
+          season: season.guid
+        });
+      });
     }
   }
 
