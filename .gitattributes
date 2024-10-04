@@ -1,1 +1,5 @@
+# Disable text handling for all files by default
 * -text
+
+# Exception for PowerShell scripts to ensure proper line endings and encoding
+*.ps1 text eol=lf working-tree-encoding=UTF-8
