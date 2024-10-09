@@ -37,7 +37,7 @@ export const Definitions = {
     id: 'poi',
     layerId: 'poi-layer',
     name: 'Points of Interest',
-    url: `${Connections.inforUrl}/0`,
+    url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/AgMap_Statues/FeatureServer/0`,
     popupComponent: Popups.PoiPopupComponent
   },
   RESTROOMS: {
@@ -322,13 +322,14 @@ export const ColdLayerSources: LayerSource[] = [
         field: 'name',
         defaultSymbol: {
           type: 'picture-marker',
-          url: '/assets/icons/aggie/Ring Day.png',
+          url: '/assets/icons/aggie/Ring Day-Negative.png',
           width: 20,
           height: 25,
           angle: 0,
           xoffset: 0,
           yoffset: 0
         } as unknown,
+        defaultLabel: 'Points of Interest',
         uniqueValueInfos: [
           {
             symbol: {
@@ -553,7 +554,16 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     visible: false,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/icons/statue-icon.png',
+          width: '20px',
+          height: '30.2px'
+        }
+      }
     }
   },
   {
@@ -1100,7 +1110,7 @@ export const LayerSources: LayerSource[] = [
   {
     type: 'graphics',
     id: 'ring-layer',
-    title: 'Aggie Ring Replica',
+    title: 'Haynes Ring Plaza',
     listMode: 'show',
     visible: true,
     native: {
@@ -1113,7 +1123,7 @@ export const LayerSources: LayerSource[] = [
           },
           symbol: {
             type: 'picture-marker',
-            url: '/assets/icons/aggie/Ring Day.png',
+            url: '/assets/icons/aggie/Ring Day-Negative.png',
             width: 20,
             height: 25
           }
