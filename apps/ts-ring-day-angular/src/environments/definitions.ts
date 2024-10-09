@@ -14,8 +14,7 @@ export const Connections = {
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
-  // eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/ArcGIS/rest/services/Ring_Day_2_view/FeatureServer'
-  eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/ArcGIS/rest/services/Ring_Day_3_view/FeatureServer'
+  eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Ring_Day_4_view/FeatureServer'
 };
 
 export const Definitions = {
@@ -122,6 +121,16 @@ export const ColdLayerSources: LayerSource[] = [
       renderer: {
         type: 'unique-value',
         field: 'Type',
+        defaultSymbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [255, 0, 0, 0.65],
+          outline: {
+            color: [110, 110, 110, 255],
+            width: 0
+          }
+        } as unknown,
+        defaultLabel: 'Lot or Street Closure',
         uniqueValueInfos: [
           {
             symbol: {
@@ -147,48 +156,22 @@ export const ColdLayerSources: LayerSource[] = [
                 width: 2
               }
             },
-            value: 'AFS',
-            label: 'Clayton Williams Jr. Alumni Center'
+            value: 'The Williams Alumni Center'
           } as unknown,
           {
             symbol: {
               type: 'simple-fill',
               style: 'solid',
-              color: [171, 205, 102, 0.75],
+              // #C6FF00 in rgba
+              color: [198, 255, 0, 0.75],
+
               outline: {
                 style: 'solid',
                 color: [90, 0, 0, 255],
                 width: 0
               }
             },
-            value: 'Gather',
-            label: 'Gathering Area'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [255, 0, 0, 0.65],
-              outline: {
-                color: [110, 110, 110, 255],
-                width: 0
-              }
-            },
-            value: 'Lot Closed',
-            label: 'Lot Closed'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [255, 0, 0, 0.65],
-              outline: {
-                color: [110, 110, 110, 255],
-                width: 0
-              }
-            },
-            value: 'Lot-Gate Closure',
-            label: 'Lot-Gate Closure'
+            value: 'Gathering Area'
           } as unknown,
           {
             symbol: {
@@ -215,21 +198,7 @@ export const ColdLayerSources: LayerSource[] = [
                 width: 0
               }
             },
-            value: 'Special Parking',
-            label: 'Special Parking'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [255, 0, 0, 0.65],
-              outline: {
-                color: [110, 110, 110, 255],
-                width: 0
-              }
-            },
-            value: 'Street Closure',
-            label: 'Street Closure'
+            value: 'Event Parking'
           } as unknown,
           {
             symbol: {
@@ -241,8 +210,7 @@ export const ColdLayerSources: LayerSource[] = [
                 width: 0
               }
             },
-            value: 'Ticketed Area',
-            label: 'Ticketed Area'
+            value: 'Ticketed Area'
           }
         ]
       }
@@ -268,40 +236,36 @@ export const ColdLayerSources: LayerSource[] = [
               type: 'simple-line',
               style: 'short-dash',
               color: [90, 0, 0, 255],
-              width: 4
+              width: 3
             },
-            value: 'Aggie Ring Day Exit Path',
-            label: 'Aggie Ring Day Exit Path'
+            value: 'Aggie Ring Day Exit Path'
           },
           {
             symbol: {
               type: 'simple-line',
               style: 'short-dash-dot-dot',
               color: [169, 0, 230, 255],
-              width: 4
+              width: 3
             },
-            value: 'Aggie Ring Day Shuttle - Entry to Aggie Ring Day',
-            label: 'Walking Path from Shuttle to Alumni Center'
+            value: 'Aggie Ring Day Shuttle - Entry to Aggie Ring Day'
           } as unknown,
           {
             symbol: {
               type: 'simple-line',
               style: 'solid',
               color: [223, 115, 255, 255],
-              width: 4
+              width: 3
             },
-            value: 'Aggie Ring Day Shuttle Route',
-            label: 'Aggie Ring Day Shuttle Route'
+            value: 'Aggie Ring Day Shuttle Route'
           } as unknown,
           {
             symbol: {
               type: 'simple-line',
               style: 'short-dot',
               color: [169, 0, 230, 255],
-              width: 4
+              width: 3
             },
-            value: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)',
-            label: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)'
+            value: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)'
           } as unknown
         ]
       }
@@ -341,8 +305,8 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: 'Creamery - Concessions',
-            label: 'Concessions'
+            value: 'Moore Family Creamery',
+            label: 'Moore Family Creamery'
           } as unknown,
           {
             symbol: {
@@ -354,8 +318,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: 'Concessions',
-            label: 'Concessions'
+            value: 'Concessions'
           } as unknown,
           {
             symbol: {
@@ -367,8 +330,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: 'ENTER HERE',
-            label: 'ENTER HERE'
+            value: 'Entrance'
           } as unknown,
           {
             symbol: {
@@ -380,8 +342,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: 'ENTER HERE (w/Accessibility)',
-            label: 'ENTER HERE'
+            value: 'Accessible Entrance'
           } as unknown,
           {
             symbol: {
@@ -393,8 +354,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: 'Medical Station',
-            label: 'First Aid'
+            value: 'Medical Station'
           } as unknown,
           {
             symbol: {
@@ -406,8 +366,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 10
             },
-            value: 'Public Restrooms',
-            label: 'Public Restrooms'
+            value: 'Public Restrooms'
           } as unknown,
           {
             symbol: {
@@ -432,34 +391,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: 'Shuttle Stop - Drop Off Only',
-            label: 'Shuttle Stop - Drop Off Only; Shuttle Stop - Pick Up Only; Shuttle Stop - Pickup and Drop Off'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/transportation/Bus.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Shuttle Stop - Pick Up Only',
-            label: 'Shuttle Stop - Drop Off Only; Shuttle Stop - Pick Up Only; Shuttle Stop - Pickup and Drop Off'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/transportation/Bus.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Shuttle Stop - Pickup and Drop Off',
-            label: 'Shuttle Stop - Drop Off Only; Shuttle Stop - Pick Up Only; Shuttle Stop - Pickup and Drop Off'
+            value: 'Shuttle Stop'
           } as unknown,
           {
             symbol: {
@@ -471,8 +403,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: "Spirit of '02 Cannon - Parsons Mounted Cavalry",
-            label: "Spirit of '02 Cannon - Parsons Mounted Cavalry"
+            value: "Spirit of '02 Cannon - Parsons Mounted Cavalry"
           } as unknown,
           {
             symbol: {
@@ -484,8 +415,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: "Spirit of '02 Cannon Photo Station",
-            label: "Spirit of '02 Cannon Photo Station"
+            value: 'Photo Station'
           } as unknown,
           {
             symbol: {
@@ -497,8 +427,7 @@ export const ColdLayerSources: LayerSource[] = [
               xoffset: 0,
               yoffset: 0
             },
-            value: 'The Stage at Aggie Park - Musical Performances ',
-            label: 'The Stage at Aggie Park - Musical Performances '
+            value: 'The Swaim Amphitheater - Musical Performances'
           }
         ],
         fieldDelimiter: ','
@@ -621,515 +550,6 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.ACESSIBLE_ENTRANCES.popupComponent,
     listMode: 'show',
     visible: false
-  },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-closures',
-  //   title: 'Closures',
-  //   url: Definitions.RING_DAY_AREAS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "type = 'Lot Closed' OR type = 'Street Closure' OR type = 'Lot-Gate Closure'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-fill',
-  //         style: 'solid',
-  //         color: [255, 0, 0, 0.65],
-  //         outline: {
-  //           color: [255, 0, 0, 1],
-  //           width: '1px'
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-shuttle-route',
-  //   title: 'Ring Day Shuttle Route',
-  //   url: Definitions.RING_DAY_ROUTES.url,
-  //   popupComponent: EventPopups.RingDayMarkdownComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name like '%Shuttle Route%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-line',
-  //         color: [0, 197, 255, 1],
-  //         width: '3px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-walking-path',
-  //   title: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)',
-  //   url: Definitions.RING_DAY_ROUTES.url,
-  //   popupComponent: EventPopups.RingDayMarkdownComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name like '%pickard pass%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-line',
-  //         // B2FF59 in rgba
-  //         color: [178, 255, 89, 1],
-  //         width: '3px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-exit-path',
-  //   title: 'Aggie Ring Day Exit Path',
-  //   url: Definitions.RING_DAY_ROUTES.url,
-  //   popupComponent: EventPopups.RingDayMarkdownComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name like '%exit path%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-line',
-  //         color: [80, 0, 0, 1],
-  //         width: '3px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-shuttle-entrance-path',
-  //   title: 'Aggie Ring Day Shuttle - Entry to Aggie Ring Day',
-  //   url: Definitions.RING_DAY_ROUTES.url,
-  //   popupComponent: EventPopups.RingDayMarkdownComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "mrkid = '473899'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-line',
-  //         color: [255, 183, 77, 1],
-  //         width: '3px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-ada-paths',
-  //   title: 'ADA Building Entrance',
-  //   url: Definitions.RING_DAY_AREAS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "type = 'ADA'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-fill',
-  //         style: 'solid',
-  //         // blue in rgba
-  //         color: [0, 0, 255, 0.65],
-  //         outline: {
-  //           color: [0, 0, 255, 1],
-  //           width: '1px'
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-afs',
-  //   title: 'Clayton Williams Jr. Alumni Center',
-  //   url: Definitions.RING_DAY_AREAS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "type = 'AFS'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-fill',
-  //         style: 'solid',
-  //         color: [80, 0, 0, 0.65],
-  //         outline: {
-  //           color: [80, 0, 0, 1],
-  //           width: '1px'
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-ticketed-areas',
-  //   title: 'Ticketed Area',
-  //   url: Definitions.RING_DAY_AREAS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "type = 'Ticketed Area'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-fill',
-  //         style: 'solid',
-  //         color: [255, 255, 0, 0.65],
-  //         outline: {
-  //           color: [255, 255, 0, 1],
-  //           width: '1px'
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-gathering-area',
-  //   title: 'Gathering Area',
-  //   url: Definitions.RING_DAY_AREAS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "type = 'Gather'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-fill',
-  //         style: 'solid',
-  //         // light green in rgba
-  //         color: [0, 255, 0, 0.65],
-  //         outline: {
-  //           // brown outline in rgba
-  //           color: [139, 69, 19, 1],
-  //           width: '1px'
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-marketplace',
-  //   title: 'Ring Day Marketplace',
-  //   url: Definitions.RING_DAY_AREAS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "type = 'Sales'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-fill',
-  //         style: 'solid',
-  //         // dark green in rgba
-  //         color: [0, 100, 0, 0.65],
-  //         outline: {
-  //           color: [0, 100, 0, 1],
-  //           width: '1px'
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-parking',
-  //   title: 'Event Parking',
-  //   url: Definitions.RING_DAY_AREAS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "type = 'Special Parking' AND name like '%parking%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'simple-fill',
-  //         style: 'solid',
-  //         // light blue in rgba
-  //         color: [0, 255, 255, 0.65],
-  //         outline: {
-  //           color: [0, 255, 255, 1],
-  //           width: '1px'
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-medical-stations',
-  //   title: 'First Aid',
-  //   url: Definitions.RING_DAY_POIS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name = 'Medical Station'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'picture-marker',
-  //         url: '/assets/icons/medical-stations.png',
-  //         width: '26px',
-  //         height: '40px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-entrance',
-  //   title: 'Entrance',
-  //   url: Definitions.RING_DAY_POIS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name LIKE '%ENTER HERE%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'picture-marker',
-  //         url: '/assets/icons/entrance.png',
-  //         width: '30px',
-  //         height: '30px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-concessions',
-  //   title: 'Concessions',
-  //   url: Definitions.RING_DAY_POIS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name LIKE '%concession%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'picture-marker',
-  //         url: '/assets/icons/concessions.png',
-  //         width: '26px',
-  //         height: '40px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-ride-share-drop-off',
-  //   title: 'Ride Share Drop Off',
-  //   url: Definitions.RING_DAY_POIS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name LIKE '%rideshare%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'picture-marker',
-  //         url: '/assets/icons/rideshare.png',
-  //         width: '30px',
-  //         height: '30px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-restrooms',
-  //   title: 'Restrooms',
-  //   url: Definitions.RING_DAY_POIS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name LIKE '%restroom%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'picture-marker',
-  //         url: '/assets/icons/restrooms.png',
-  //         width: '30px',
-  //         height: '30px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-photo-op',
-  //   title: 'Photo Stations',
-  //   url: Definitions.RING_DAY_POIS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "name LIKE '%photo%'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'simple',
-  //       symbol: {
-  //         type: 'picture-marker',
-  //         url: '/assets/icons/photo-op.png',
-  //         width: '26px',
-  //         height: '40px'
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-shuttle-stops-layer',
-  //   title: 'Shuttle Stops',
-  //   url: Definitions.RING_DAY_POIS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     outFields: ['*'],
-  //     definitionExpression: "name LIKE '%shuttle%'",
-  //     renderer: {
-  //       type: 'unique-value',
-  //       field: 'name',
-  //       uniqueValueInfos: [
-  //         {
-  //           value: 'Shuttle Stop - Drop Off Only',
-  //           symbol: {
-  //             type: 'picture-marker',
-  //             url: '/assets/icons/shuttle-drop-off.png',
-  //             width: '26px',
-  //             height: '40px'
-  //           } as unknown,
-  //           label: 'Drop Off Only'
-  //         },
-  //         {
-  //           value: 'Shuttle Stop - Pick Up Only',
-  //           symbol: {
-  //             type: 'picture-marker',
-  //             url: '/assets/icons/shuttle-pick-up.png',
-  //             width: '26px',
-  //             height: '40px'
-  //           } as unknown,
-  //           label: 'Pick Up Only'
-  //         },
-  //         {
-  //           value: 'Shuttle Stop - Pickup and Drop Off',
-  //           symbol: {
-  //             type: 'picture-marker',
-  //             url: '/assets/icons/shuttle-pick-and-drop.png',
-  //             width: '26px',
-  //             height: '40px'
-  //           } as unknown,
-  //           label: 'Pick Up and Drop Off'
-  //         }
-  //       ]
-  //     }
-  //   }
-  // },
-  // {
-  //   type: 'feature',
-  //   id: 'ring-day-points-of-interest',
-  //   title: 'Points of Interest',
-  //   url: Definitions.RING_DAY_POIS.url,
-  //   popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-  //   listMode: 'show',
-  //   visible: true,
-  //   native: {
-  //     definitionExpression: "mrkId = '467555' OR mrkId = '468345'",
-  //     outFields: ['*'],
-  //     renderer: {
-  //       type: 'unique-value',
-  //       field: 'mrkId',
-  //       uniqueValueInfos: [
-  //         {
-  //           value: '467555',
-  //           symbol: {
-  //             type: 'picture-marker',
-  //             url: '/assets/icons/musical.png',
-  //             width: '26px',
-  //             height: '40px'
-  //           } as unknown,
-  //           label: 'The Stage at Aggie Park - Musical Performances'
-  //         },
-  //         {
-  //           value: '468345',
-  //           symbol: {
-  //             type: 'picture-marker',
-  //             url: '/assets/icons/landmark.png',
-  //             width: '26px',
-  //             height: '40px'
-  //           } as unknown,
-  //           label: "Spirit of '02 Cannon - Parsons Mounted Cavalry"
-  //         }
-  //       ]
-  //     }
-  //   }
-  // },
-  {
-    type: 'graphics',
-    id: 'ring-layer',
-    title: 'Haynes Ring Plaza',
-    listMode: 'show',
-    visible: true,
-    native: {
-      graphics: [
-        {
-          geometry: {
-            type: 'point',
-            x: -96.33628,
-            y: 30.60884
-          },
-          symbol: {
-            type: 'picture-marker',
-            url: '/assets/icons/aggie/Ring Day-Negative.png',
-            width: 20,
-            height: 25
-          }
-        } as unknown
-      ]
-    }
   },
   {
     type: 'graphics',
