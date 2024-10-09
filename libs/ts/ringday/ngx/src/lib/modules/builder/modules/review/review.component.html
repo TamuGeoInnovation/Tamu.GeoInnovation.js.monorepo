@@ -4,7 +4,7 @@
   <div class="flex flex-row justify-center">
     <div class="column6 flex flex-column" id="settings-table">
       <div class="setting-item">
-        <div>Ring Day Appointment Date:</div>
+        <div>Ring Day Appointment Date</div>
         <div>
           <p *ngIf="!settings || settings.date === undefined">Not Set</p>
           <p *ngIf="settings && settings.date !== undefined">{{eventDate | date : 'MMMM'}} {{ eventDate | date : 'd' }}, {{eventDate | date : 'YYYY'}}</p>
@@ -13,7 +13,7 @@
       </div>
 
       <div class="setting-item">
-        <div>Require Accessible Parking</div>
+        <div>Require Accessible (ADA) Accommodations</div>
         <div>
           <p *ngIf="!settings || settings.accessible === undefined">Not Set</p>
           <p *ngIf="settings && settings.accessible !== undefined">{{ settings.accessible ? 'Yes' : 'No' }}</p>
