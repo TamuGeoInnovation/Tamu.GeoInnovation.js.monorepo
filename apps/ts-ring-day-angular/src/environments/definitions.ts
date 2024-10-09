@@ -323,7 +323,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/accessibility/Entrance.png',
+              url: '/assets/icons/accessibility/entry.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -335,7 +335,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/accessibility/Entrance.png',
+              url: '/assets/icons/accessibility/accessibleentry.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -347,7 +347,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/personal-care/First Aid.png',
+              url: '/assets/icons/personal-care/firstaid.png',
               width: 20,
               height: 25,
               angle: 0,
