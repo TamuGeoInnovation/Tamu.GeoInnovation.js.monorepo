@@ -9,7 +9,7 @@ import { EventDate, EventDates, RingDaySettings, QueryParamSettings } from '../.
   providedIn: 'root'
 })
 export class RingDaySettingsService {
-  private _settingsPrimaryKey = 'ring-day-settings';
+  private _settingsPrimaryKey = 'ring-day-settings-2';
 
   public days: EventDates = this.env.value('Dates', false);
 
