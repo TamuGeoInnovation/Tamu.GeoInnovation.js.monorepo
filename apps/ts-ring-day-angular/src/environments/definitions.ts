@@ -14,7 +14,7 @@ export const Connections = {
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
-  eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Ring_Day_4_view/FeatureServer'
+  eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Ring_Day_2_view/FeatureServer'
 };
 
 export const Definitions = {
@@ -829,16 +829,12 @@ export const SearchSources: SearchSource[] = [
 
 export const Dates: EventDates = [
   {
-    day: 10,
+    day: 31,
     month: 10
   },
   {
-    day: 11,
-    month: 10
-  },
-  {
-    day: 12,
-    month: 10
+    day: 1,
+    month: 11
   }
 ];
 

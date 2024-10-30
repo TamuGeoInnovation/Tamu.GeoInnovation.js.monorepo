@@ -53,12 +53,14 @@ export class EventService {
       const eventDateStart = this.settingsService.getMoveDateEventAsDate();
 
       if (source.native && eventDateStart) {
-        let expression = this._getFullDayExpression(eventDateStart, 'StartDate', 'EndDate');
+        // let expression = this._getFullDayExpression(eventDateStart, 'StartDate', 'EndDate');
 
-        // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
-        if (!this.settings.accessible) {
-          expression += ` AND type not like '%ada%'`;
-        }
+        // // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
+        // if (!this.settings.accessible) {
+        //   expression += ` AND type not like '%ada%'`;
+        // }
+
+        const expression = this._getSuffixDayExpression(eventDateStart);
 
         // Get features intersecting in user-selected zone
         const features = await this.runTask(source.url, { where: expression }, false);
@@ -94,11 +96,14 @@ export class EventService {
       if (source.native && eventDateStart) {
         // POIs don't have a type field, so we can't filter them by type
         // We can only filter them by name, anything that does not have "%accessib%" in the title
-        let expression = this._getFullDayExpression(eventDateStart, 'Start_Date', 'End_Date');
+        // let expression = this._getFullDayExpression(eventDateStart, 'Start_Date', 'End_Date');
 
-        if (!this.settings.accessible) {
-          expression += ` AND name not like '%accessib%'`;
-        }
+        // if (!this.settings.accessible) {
+        //   expression += ` AND name not like '%accessib%'`;
+        // }
+
+        const expression = this._getSuffixDayExpression(eventDateStart);
+
         const intersectingFeatures = await this.runTask(source.url, { where: expression }, false);
 
         if (intersectingFeatures.features.length > 0) {
@@ -128,7 +133,8 @@ export class EventService {
       const eventDateStart = this.settingsService.getMoveDateEventAsDate();
 
       if (source.native && eventDateStart) {
-        const expression = this._getFullDayExpression(eventDateStart, 'Start_Date', 'End_Date');
+        // const expression = this._getFullDayExpression(eventDateStart, 'Start_Date', 'End_Date');
+        const expression = this._getSuffixDayExpression(eventDateStart);
 
         const intersectingFeatures = await this.runTask(source.url, { where: expression }, false);
 
@@ -331,6 +337,18 @@ export class EventService {
       endField,
       '>='
     )})`;
+
+    return expression;
+  }
+
+  private _getSuffixDayExpression(date: Date): string {
+    const day = new Date(date).getUTCDate();
+
+    // This is strictly for the second ring day event which uses a different active schema.
+    // The first day is day 31, the second day is day 1.
+    const field = day === 31 ? 'Day1' : 'Day2';
+
+    const expression = `${field} = 1`;
 
     return expression;
   }
