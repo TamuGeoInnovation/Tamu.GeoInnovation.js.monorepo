@@ -8,6 +8,29 @@
   @include mixins.align-items(center);
   padding: 0.5rem;
   width: 25rem;
+  position: relative;
+
+  .presenter-actions {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    font-size: 1.5rem;
+    color: #959aaa;
+
+    .action {
+      cursor: pointer;
+      margin-right: 0.5rem;
+      font-size: inherit;
+      opacity: 0.5;
+      @include mixins.transition(opacity 0.3s, color 0.3s);
+
+      &:hover {
+        color: #ef5350;
+        opacity: 1;
+      }
+    }
+  }
 
   tamu-gisc-speaker-avatar {
     width: 3.75rem;
@@ -22,7 +45,7 @@
     margin-left: 1rem;
 
     .name {
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .organization,

@@ -1,0 +1,37 @@
+form {
+  position: relative;
+  &:focus,
+  &:focus-within {
+    .select-list-container {
+      display: initial;
+    }
+  }
+}
+
+.select-list-container {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: 100%;
+  max-height: 30rem;
+  overflow-y: auto;
+  background-color: white;
+  z-index: 100;
+  border-radius: 5pt;
+  border: 1pt solid #e0e0e0;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+
+  &:focus,
+  &:focus-within {
+    display: block;
+  }
+}
+
+#no-results-message {
+  position: relative;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}

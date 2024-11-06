@@ -6,6 +6,7 @@ import {
   filter,
   from,
   map,
+  merge,
   mergeMap,
   of,
   pipe,
@@ -46,6 +47,12 @@ export class EventAddEditFormComponent implements OnInit {
   public speakers$: Observable<Array<Partial<Speaker>>>;
   public locations$: Observable<Array<Partial<EventLocation>>>;
   public broadcasts$: Observable<Array<Partial<EventBroadcast>>>;
+
+  /**
+   * Filtered list of speakers that are present in the event presenters list. This is effectively only the speakers
+   * that are participating in the event.
+   */
+  public eventSpeakers$: Observable<Array<Partial<Speaker>>>;
 
   /**
    * The days that are available for selection in the event date picker.
@@ -209,6 +216,22 @@ export class EventAddEditFormComponent implements OnInit {
         shareReplay()
       );
 
+      this.eventSpeakers$ = merge(
+        this.form.get('speakers').valueChanges.pipe(
+          withLatestFrom(this.speakers$),
+          map(([speakerGuids, speakers]) => {
+            return speakerGuids.map((guid) => {
+              return speakers.find((speaker) => speaker.guid === guid);
+            });
+          })
+        ),
+        this.entity$.pipe(
+          map((event) => {
+            return event.speakers;
+          })
+        )
+      ).pipe(shareReplay(1));
+
       this.entity$.pipe(take(1)).subscribe((event) => {
         this.form.patchValue({
           ...event,
@@ -244,6 +267,29 @@ export class EventAddEditFormComponent implements OnInit {
         });
       });
     }
+  }
+
+  public patchSpeaker(speaker: Partial<Speaker>, operation?: 'add' | 'remove') {
+    const currentSpeakers = this.form.getRawValue().speakers;
+    let updatedSpeakers;
+
+    if (operation) {
+      if (operation === 'add') {
+        updatedSpeakers = currentSpeakers.includes(speaker.guid) ? currentSpeakers : [...currentSpeakers, speaker.guid];
+      } else {
+        updatedSpeakers = currentSpeakers.filter((guid) => guid !== speaker.guid);
+      }
+    } else {
+      if (currentSpeakers.includes(speaker.guid)) {
+        updatedSpeakers = currentSpeakers.filter((guid) => guid !== speaker.guid);
+      } else {
+        updatedSpeakers = currentSpeakers.includes(speaker.guid) ? currentSpeakers : [...currentSpeakers, speaker.guid];
+      }
+    }
+
+    this.form.patchValue({
+      speakers: updatedSpeakers
+    });
   }
 
   public setEventDate(day: Partial<SeasonDay>) {

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 
@@ -18,9 +18,17 @@ import { RangeComponent } from './components/range/range.component';
 import { FileComponent } from './components/file/file.component';
 import { RadioGroupComponent } from './components/radio-group/radio-group.component';
 import { SlideToggleComponent } from './components/slide-toggle/slide-toggle.component';
+import { SelectListComponent } from './components/select-list/select-list.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, UILayoutModule, DlDateTimePickerDateModule, DlDateTimePickerModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UILayoutModule,
+    DlDateTimePickerDateModule,
+    DlDateTimePickerModule
+  ],
   declarations: [
     SelectComponent,
     CheckboxComponent,
@@ -32,7 +40,8 @@ import { SlideToggleComponent } from './components/slide-toggle/slide-toggle.com
     FileComponent,
     RadioGroupComponent,
     RangeComponent,
-    SlideToggleComponent
+    SlideToggleComponent,
+    SelectListComponent
   ],
   exports: [
     SelectComponent,
@@ -44,7 +53,8 @@ import { SlideToggleComponent } from './components/slide-toggle/slide-toggle.com
     FileComponent,
     RadioGroupComponent,
     RangeComponent,
-    SlideToggleComponent
+    SlideToggleComponent,
+    SelectListComponent
   ]
 })
 export class UIFormsModule {}
