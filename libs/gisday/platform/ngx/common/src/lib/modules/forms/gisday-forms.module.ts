@@ -19,6 +19,7 @@ import { SponsorAddEditFormComponent } from './components/sponsors/sponsor-add-e
 import { PlaceLinkFormComponent } from './components/places/place-link-form/place-link-form.component';
 import { ClassAddEditFormComponent } from './components/classes/class-add-edit-form/class-add-edit-form.component';
 import { GisDayPeopleModule } from '../people/people.module';
+import { UserSubmissionAddEditFormComponent } from './components/user-submissions/user-submission-add-edit-form/user-submission-add-edit-form.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule, GisDayPeopleModule],
@@ -35,7 +36,8 @@ import { GisDayPeopleModule } from '../people/people.module';
     PlaceLocationAddEditFormComponent,
     SponsorAddEditFormComponent,
     PlaceLinkFormComponent,
-    ClassAddEditFormComponent
+    ClassAddEditFormComponent,
+    UserSubmissionAddEditFormComponent
   ],
   exports: [
     TagAddEditFormComponent,
@@ -49,7 +51,8 @@ import { GisDayPeopleModule } from '../people/people.module';
     EventLocationAddEditFormComponent,
     PlaceLocationAddEditFormComponent,
     SponsorAddEditFormComponent,
-    ClassAddEditFormComponent
+    ClassAddEditFormComponent,
+    UserSubmissionAddEditFormComponent
   ]
 })
 export class GisdayFormsModule {}

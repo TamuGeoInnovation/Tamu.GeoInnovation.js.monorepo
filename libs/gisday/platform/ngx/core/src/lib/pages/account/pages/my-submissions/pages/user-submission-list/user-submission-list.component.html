@@ -1,0 +1,45 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Research Presentations</div>
+
+      <div class="form-section-actions">
+        <a routerLink="add">Submit research <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div>
+        <p class="trailer-1">Submit your research for presentation in <a routerLink="competitions/presentation" target="_blank">TX GIS Day's yearly competitions</a>, open to all undergraduate and graduate students!</p>
+      </div>
+
+      <table class="floating-table" *ngIf="(presentationSubmissions$ | async)?.length > 0; else noPosters">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Format</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let sub of (presentationSubmissions$ | async)">
+            <td>{{sub?.title}}</td>
+            <td>{{sub?.submissionType}}</td>
+            <td>{{sub?.presentationFormat}}</td>
+            <td>{{sub?.reviewed}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #noPosters>
+        <p class="leader-1">You currently have no entries for this seasons' research presentation competition.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<ng-template #loader>
+  <div class="loader"></div>
+</ng-template>

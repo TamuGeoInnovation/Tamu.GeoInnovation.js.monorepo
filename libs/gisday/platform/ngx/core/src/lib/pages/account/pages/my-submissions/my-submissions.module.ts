@@ -13,20 +13,27 @@ const routes: Routes = [
     component: MySubmissionsComponent,
     children: [
       {
-        path: '',
-        loadChildren: () => import('./view-submission/view-submission.module').then((m) => m.ViewSubmissionModule)
+        path: 'edit/:guid',
+        loadChildren: () =>
+          import('./pages/user-submission-edit/user-submission-edit.module').then((m) => m.UserSubmissionEditModule)
       },
       {
-        path: 'upload',
-        loadChildren: () => import('./upload-submission/upload-submission.module').then((m) => m.UploadSubmissionModule)
+        path: 'add',
+        loadChildren: () =>
+          import('./pages/user-submission-add/user-submission-add.module').then((m) => m.UserSubmissionAddModule)
+      },
+      {
+        path: '',
+        loadChildren: () =>
+          import('./pages/user-submission-list/user-submission-list.module').then((m) => m.UserSubmissionListModule)
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [MySubmissionsComponent],
   imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule],
+  declarations: [MySubmissionsComponent],
   exports: [RouterModule]
 })
 export class MySubmissionsModule {}

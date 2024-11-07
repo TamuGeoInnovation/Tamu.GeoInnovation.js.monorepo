@@ -786,6 +786,21 @@ export class UserRsvp extends GuidIdentity {
   public rsvpType: RsvpType;
 }
 
+export enum PRESENTATION_SUBMISSION_TYPE {
+  POSTER = 'poster',
+  PRESENTATION = 'presentation'
+}
+
+export enum PRESENTATION_FORMAT {
+  INDIVIDUAL = 'individual',
+  GROUP = 'group'
+}
+
+export enum PRESENTATION_STUDENT_TYPE {
+  UNDERGRADUATE = 'undergraduate',
+  GRADUATE = 'graduate'
+}
+
 @Entity({
   name: 'submissions'
 })
@@ -808,11 +823,17 @@ export class Submission extends GuidIdentity {
   @Column({ nullable: true })
   public link: string;
 
-  @Column({ nullable: true })
-  public submissionType: 'Poster' | 'Presentation' | string;
+  @Column({ default: false })
+  public reviewed: boolean;
 
   @Column({ nullable: true })
-  public studentType: 'Undergraduate' | 'Graduate' | string;
+  public presentationFormat: PRESENTATION_FORMAT | string;
+
+  @Column({ nullable: true })
+  public submissionType: PRESENTATION_SUBMISSION_TYPE | string;
+
+  @Column({ nullable: true })
+  public studentType: PRESENTATION_STUDENT_TYPE | string;
 }
 
 @Entity({

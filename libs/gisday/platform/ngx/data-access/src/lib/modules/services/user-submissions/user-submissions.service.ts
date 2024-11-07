@@ -17,8 +17,8 @@ export class UserSubmissionsService extends BaseService<Submission> {
     super(env1, http1, 'user-submissions');
   }
 
-  public getPresentations() {
-    return this.http1.get<Array<Partial<Submission>>>(`${this.resource}/presentations`);
+  public getPresentationsForActiveSeason() {
+    return this.http1.get<Array<Partial<Submission>>>(`${this.resource}/me`);
   }
 
   public getPosters() {

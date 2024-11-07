@@ -1,17 +1,19 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-
 import { Observable, Subject } from 'rxjs';
 
-import { SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
+import { SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
-  selector: 'tamu-gisc-upload-submission',
-  templateUrl: './upload-submission.component.html',
-  styleUrls: ['./upload-submission.component.scss']
+  selector: 'tamu-gisc-user-submission-add-edit-form',
+  templateUrl: './user-submission-add-edit-form.component.html',
+  styleUrls: ['./user-submission-add-edit-form.component.scss']
 })
-export class UploadSubmissionComponent implements OnDestroy {
+export class UserSubmissionAddEditFormComponent implements OnDestroy {
+  @Input()
+  public type: 'create' | 'edit';
+
   public form: FormGroup;
 
   public $submissionTypes: Observable<Array<Partial<SubmissionType>>>;
