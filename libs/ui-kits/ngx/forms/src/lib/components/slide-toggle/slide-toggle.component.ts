@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren, forwardRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChildren, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, Subject, map, shareReplay } from 'rxjs';
 
@@ -18,13 +18,15 @@ import { RadioGroupComponent } from '../radio-group/radio-group.component';
 })
 export class SlideToggleComponent<Option extends object, Value>
   extends RadioGroupComponent<Option, Value>
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   @ViewChildren('toggleOption')
   public toggleOptions: QueryList<ElementRef>;
 
   public activeOptionElement$: Subject<ElementRef> = new Subject<ElementRef>();
   public activeDimensions$: Observable<{ width: number; translate: number }>;
+
+  private _initialValue: Value;
 
   public ngOnInit(): void {
     this.activeDimensions$ = this.activeOptionElement$.pipe(
@@ -38,8 +40,12 @@ export class SlideToggleComponent<Option extends object, Value>
     );
   }
 
+  public ngAfterViewInit(): void {
+    this._findActiveElement(this._value);
+  }
+
   public override onInitialValue(v: Value): void {
-    this._findActiveElement(v);
+    this._initialValue = v;
   }
 
   public override evaluateSetValue(option: Option): void {

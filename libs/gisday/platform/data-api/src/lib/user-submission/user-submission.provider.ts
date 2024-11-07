@@ -65,20 +65,16 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 
   public async insertUserSubmission(accountGuid: string, submission: Partial<Submission>) {
-    // const submissionType = await this.submissionTypeRepo.findOne({
-    //   where: {
-    //     guid: _userSubmission.submissionType
-    //   }
-    // });
+    if (!submission || !accountGuid) {
+      throw new InternalServerErrorException('Missing required parameters.');
+    }
 
-    // if (submissionType) {
-    submission.accountGuid = accountGuid;
+    const userSubmission = this.userSubmissionRepo.create({ ...submission, accountGuid });
 
-    const userSubmission = this.userSubmissionRepo.create(submission);
-
-    return this.userSubmissionRepo.save(userSubmission);
-    // } else {
-    // throw new UnprocessableEntityException(null, 'Could not find submission type');
-    // }
+    try {
+      return this.userSubmissionRepo.save(userSubmission);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not insert user submission.');
+    }
   }
 }

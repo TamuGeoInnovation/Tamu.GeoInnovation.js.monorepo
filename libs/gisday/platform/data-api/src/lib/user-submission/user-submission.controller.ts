@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -49,10 +50,9 @@ export class UserSubmissionController {
 
   @UseGuards(JwtGuard)
   @Post()
-  public async insertUserSubmission(@Request() req) {
+  public async insertUserSubmission(@Request() req, @Body() submission: Partial<Submission>) {
     if (req.user) {
-      const _userSubmission: Partial<Submission> = req.body;
-      return this.provider.insertUserSubmission(req.user.sub, _userSubmission);
+      return this.provider.insertUserSubmission(req.user.sub, submission);
     } else {
       throw new UnauthorizedException();
     }

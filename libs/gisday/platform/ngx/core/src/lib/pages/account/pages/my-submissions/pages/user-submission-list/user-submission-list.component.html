@@ -24,7 +24,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let sub of (presentationSubmissions$ | async)">
+          <tr class="selectable" [routerLink]="['edit', sub.guid]" *ngFor="let sub of (presentationSubmissions$ | async)">
             <td>{{sub?.title}}</td>
             <td>{{sub?.submissionType}}</td>
             <td>{{sub?.presentationFormat}}</td>

@@ -247,7 +247,7 @@ export class EventBroadcast extends GuidIdentity {
   @Column({ nullable: true })
   public name?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'MAX' })
   public presenterUrl?: string;
 
   @Column({ nullable: true })
@@ -259,7 +259,7 @@ export class EventBroadcast extends GuidIdentity {
   @Column({ nullable: true })
   public meetingId?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'MAX' })
   public publicUrl?: string;
 
   @Column({ nullable: true, length: 'MAX' })
@@ -805,9 +805,6 @@ export enum PRESENTATION_STUDENT_TYPE {
   name: 'submissions'
 })
 export class Submission extends GuidIdentity {
-  @ManyToOne(() => Season, (season) => season.submissions, { nullable: true })
-  public season: Season;
-
   @Column({ nullable: true })
   public accountGuid: string;
 
@@ -820,7 +817,7 @@ export class Submission extends GuidIdentity {
   @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'MAX' })
   public link: string;
 
   @Column({ default: false })
@@ -834,6 +831,9 @@ export class Submission extends GuidIdentity {
 
   @Column({ nullable: true })
   public studentType: PRESENTATION_STUDENT_TYPE | string;
+
+  @ManyToOne(() => Season, (season) => season.submissions, { nullable: true })
+  public season: Season;
 }
 
 @Entity({

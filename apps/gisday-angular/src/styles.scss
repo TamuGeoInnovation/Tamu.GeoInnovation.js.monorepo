@@ -7,6 +7,11 @@
 @import 'libs/sass/spacing';
 @import 'libs/sass/dom_flexbox';
 
+:root {
+  --link-color: #{$gisday-blue-secondary};
+  --support-link-color: rgba(85, 138, 216, 1);
+}
+
 .success {
   color: $success-color;
 }

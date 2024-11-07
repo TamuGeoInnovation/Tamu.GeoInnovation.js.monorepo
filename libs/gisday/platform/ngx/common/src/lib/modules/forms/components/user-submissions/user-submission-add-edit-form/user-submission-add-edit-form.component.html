@@ -1,19 +1,64 @@
-<div class="card leader-3">
-  <h2>Submit a paper or poster</h2>
-  <form [formGroup]="form">
-    <div class="form-section">
-      <div class="form-section-body">
-        <div class="form-collection row pad-top">
-          <p></p>
-          <tamu-gisc-textbox formControlName="title" placeholder="Title" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          <tamu-gisc-textbox formControlName="author" placeholder="Author(s)" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          <tamu-gisc-textbox formControlName="abstract" placeholder="Abstract" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          <tamu-gisc-textbox formControlName="link" placeholder="Link" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-          <tamu-gisc-select formControlName="submissionType" [data]="$submissionTypes | async" displayTemplate="type" valueTemplate="guid"></tamu-gisc-select>
-          <p></p>
-          <tamu-gisc-button (click)="submit()" [value]="'Submit'" type="submit"></tamu-gisc-button>
-        </div>
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Submit Research</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Modify Research Submission</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column pad-top">
+        <p class="form-input-description">Select student presentation classification.</p>
+
+        <tamu-gisc-slide-toggle [options]="presentationStudentTypeOptions" [displayPath]="'label'" [valuePath]="'type'" formControlName="presentationStudentType"></tamu-gisc-slide-toggle>
+      </div>
+
+      <div class="form-collection column pad-top">
+        <tamu-gisc-textbox formControlName="title" placeholder="Research title" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="abstract" placeholder="Research abstract" type="textarea" [rows]="12" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p class="form-input-description">Indicate whether this presentation is an individual or group effort. For group presentations, only one submission is required. For group presentations, all participants' name, email, and student ID are required to be eligible for a distributed award.</p>
+
+        <tamu-gisc-slide-toggle class="trailer-1" [options]="presentationFormatOptions" [displayPath]="'label'" [valuePath]="'format'" formControlName="presentationFormat"></tamu-gisc-slide-toggle>
+      </div>
+
+      <div class="form-collection column">
+        <ng-container *ngFor="let author of form.get('authors')['controls']; let i = index;" formArrayName="authors">
+          <div class="form-collection row" [formGroupName]="i">
+            <tamu-gisc-textbox formControlName="name" placeholder="Full Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+            <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+            <tamu-gisc-textbox formControlName="studentId" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="flex flex-row justify-end" *ngIf="(selectedPresentationFormat$ | async) === 'group'">
+        <p class="form-collection-actions" (click)="addAuthor()">Add participant <span class="material-icons">add</span></p>
+      </div>
+
+      <div class="form-collection column">
+        <p class="form-input-description">Upload your presentation to a cloud storage provider of your choice (Google Drive, OneDrive, etc.) and provide the public URL below. To make the presentation session seamless, please ensure that the link permissions are correctly setup so that it is accessible to anyone. Your presentation will be downloaded on a stage computer on the day of.</p>
+
+        <tamu-gisc-textbox formControlName="link" placeholder="URL" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
     </div>
-  </form>
-</div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Venue" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Submit' : 'Update'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>
