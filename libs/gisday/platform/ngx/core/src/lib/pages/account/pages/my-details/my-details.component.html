@@ -52,14 +52,14 @@
       </div>
 
       <div class="form-section-body">
-        <div class="form-collection column pad-top">
-          <tamu-gisc-textbox formControlName="id" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-        </div>
-
         <div class="form-collection column">
-          <p>Select the educational institution which you attend.</p>
+          <p class="trailer-1">Select the educational institution which you attend.</p>
 
           <tamu-gisc-select formControlName="institution" [data]="universities$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
+        </div>
+
+        <div class="form-collection column pad-top">
+          <tamu-gisc-textbox formControlName="id" placeholder="Student ID" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
         </div>
 
         <div class="form-collection column" *ngIf="otherInstitutionSelected$ | async">
@@ -85,7 +85,7 @@
 
       <div class="form-section-body">
         <div class="form-collection column">
-          <p>Select your employer from the following list</p>
+          <p class="trailer-1">Select your employer from the following list</p>
 
           <tamu-gisc-select formControlName="employer" [data]="organizations$ | async" valueTemplate="guid" displayTemplate="name" placeholder="Select Employer"> </tamu-gisc-select>
         </div>
@@ -113,7 +113,7 @@
 
       <div class="form-section-body">
         <div class="form-collection column">
-          <p>Select your institution from the following list</p>
+          <p class="trailer-1">Select your institution from the following list</p>
 
           <tamu-gisc-select formControlName="employer" [data]="universities$| async" valueTemplate="guid" displayTemplate="name" placeholder="Select Institution"> </tamu-gisc-select>
         </div>

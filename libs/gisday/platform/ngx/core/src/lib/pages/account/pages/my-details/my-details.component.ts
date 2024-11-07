@@ -142,7 +142,7 @@ export class MyDetailsComponent implements OnInit {
       })
     );
 
-    this.universities$ = this.is.getEntities().pipe(
+    this.universities$ = this.is.getEntitiesForActiveSeason().pipe(
       map((universities) => {
         universities.push({
           guid: 'other',
@@ -154,7 +154,7 @@ export class MyDetailsComponent implements OnInit {
       shareReplay()
     );
 
-    this.organizations$ = this.os.getEntities().pipe(
+    this.organizations$ = this.os.getEntitiesForActiveSeason().pipe(
       map((organizations) => {
         organizations.push({
           guid: 'other',
