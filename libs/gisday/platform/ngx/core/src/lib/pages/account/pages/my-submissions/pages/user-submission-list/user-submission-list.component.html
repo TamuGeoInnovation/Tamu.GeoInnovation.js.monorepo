@@ -32,7 +32,7 @@
           <tr class="selectable" [routerLink]="['edit', sub.guid]" *ngFor="let sub of (presentationSubmissions$ | async)">
             <td class="title" [title]="sub?.title">{{sub?.title}}</td>
             <td>{{sub?.format | titlecase}}</td>
-            <td>{{sub?.reviewed}}</td>
+            <td class="status" [ngClass]="{'clr-md-amber-800': SubmissionReviewStatus.InReview}">{{sub | submissionReviewStatus}}</td>
           </tr>
         </tbody>
       </table>
