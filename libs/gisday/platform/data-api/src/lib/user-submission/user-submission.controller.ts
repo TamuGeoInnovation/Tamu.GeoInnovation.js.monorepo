@@ -61,8 +61,12 @@ export class UserSubmissionController {
 
   @UseGuards(JwtGuard)
   @Patch(':guid')
-  public async updateEntity() {
-    throw new NotImplementedException();
+  public async updateEntity(@Request() req, @Param('guid') guid, @Body() submission: Partial<Submission>) {
+    if (req.user) {
+      return this.provider.updateUserSubmission(guid, req.user.sub, submission, req.user.permissions);
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 
   @UseGuards(JwtGuard)

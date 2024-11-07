@@ -120,33 +120,12 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
     this._$destroy.complete();
   }
 
-  /**
-   *
-   *
-   * @memberof UserSubmissionAddEditFormComponent
-   */
   public handleSubmission() {
-    const form = this.form.getRawValue();
-
-    this.userSubmissionService.createEntity(form).subscribe({
-      next: () => {
-        this.ns.toast({
-          id: 'submission-create-success',
-          title: 'Research Submitted Successfully',
-          message:
-            'Thank you for your submission! The TxGIS Day team will review your submission - you can check the status on your dashboard.'
-        });
-
-        this.rt.navigate(['/account/submissions']);
-      },
-      error: () => {
-        this.ns.toast({
-          id: 'submission-create-error',
-          title: 'Submission Error',
-          message: 'There was an error creating the submission. Please try again later.'
-        });
-      }
-    });
+    if (this.type === 'create') {
+      this._createSubmission();
+    } else {
+      this._updateSubmission();
+    }
   }
 
   public deleteEntity() {
@@ -179,6 +158,60 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
 
   public addParticipant() {
     this._getParticipantsControl().push(this._createParticipantGroup());
+  }
+
+  private _createSubmission() {
+    const form = this.form.getRawValue();
+
+    this.userSubmissionService.createEntity(form).subscribe({
+      next: () => {
+        this.ns.toast({
+          id: 'submission-create-success',
+          title: 'Research Submitted Successfully',
+          message:
+            'Thank you for your submission! The TxGIS Day team will review your submission - you can check the status on your dashboard.'
+        });
+
+        this.rt.navigate(['/account/submissions']);
+      },
+      error: () => {
+        this.ns.toast({
+          id: 'submission-create-error',
+          title: 'Submission Error',
+          message: 'There was an error creating the submission. Please try again later.'
+        });
+      }
+    });
+  }
+
+  private _updateSubmission() {
+    const form = this.form.getRawValue();
+
+    this.entity$
+      .pipe(
+        take(1),
+        switchMap((entity) => {
+          return this.userSubmissionService.updateEntity(entity.guid, form);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.ns.toast({
+            id: 'submission-update-success',
+            title: 'Research Submission Updated Successfully',
+            message: 'Your submission has been updated.'
+          });
+
+          this.rt.navigate(['/account/submissions']);
+        },
+        error: () => {
+          this.ns.toast({
+            id: 'submission-update-error',
+            title: 'Update Error',
+            message: 'There was an error updating the submission. Please try again later.'
+          });
+        }
+      });
   }
 
   private _createParticipantGroup(fields: ICompetitionParticipant = { name: '', email: '', studentId: '' }) {

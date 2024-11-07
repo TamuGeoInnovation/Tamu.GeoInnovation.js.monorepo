@@ -45,10 +45,10 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   /**
    * Retrieves a single presentation for a given user.
    */
-  public async getUserPresentation(presentationGuid: string, userGuid: string, requestorPermissions: Array<string> = []) {
+  public async getUserPresentation(submissionGuid: string, userGuid: string, requestorPermissions: Array<string> = []) {
     const presentation = await this.userSubmissionRepo.findOne({
       where: {
-        guid: presentationGuid
+        guid: submissionGuid
       }
     });
 
@@ -74,6 +74,33 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       return this.userSubmissionRepo.save(userSubmission);
     } catch (err) {
       throw new InternalServerErrorException('Could not insert user submission.');
+    }
+  }
+
+  public async updateUserSubmission(
+    submissionGuid: string,
+    userGuid: string,
+    submission: Partial<Submission>,
+    requestorPermissions: Array<string> = []
+  ) {
+    const existingSubmission = await this.userSubmissionRepo.findOne({
+      where: {
+        guid: submissionGuid
+      }
+    });
+
+    if (!existingSubmission) {
+      throw new NotFoundException('Submission not found.');
+    }
+
+    if (existingSubmission.accountGuid !== userGuid && requestorPermissions.indexOf('update:competitions') === -1) {
+      throw new UnauthorizedException();
+    }
+
+    try {
+      return this.userSubmissionRepo.update(submissionGuid, submission);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not update user submission.');
     }
   }
 
