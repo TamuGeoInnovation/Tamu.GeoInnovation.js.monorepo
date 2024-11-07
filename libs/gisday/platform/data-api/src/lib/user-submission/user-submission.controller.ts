@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   Request,
   UnauthorizedException,
   UseGuards
@@ -31,7 +32,7 @@ export class UserSubmissionController {
   @Get(':guid')
   public async getEntity(@Param('guid') guid, @Request() req) {
     // TODO: Validate user/admin access to this resource
-    return this.provider.getUserPresentation(guid, req.user.sub, req.user.roles);
+    return this.provider.getUserPresentation(guid, req.user.sub, req.user.permissions);
   }
 
   @UseGuards(JwtGuard)
@@ -66,11 +67,7 @@ export class UserSubmissionController {
 
   @UseGuards(JwtGuard)
   @Delete(':guid')
-  public deleteEntity(@Param('guid') guid: string) {
-    this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+  public deleteEntity(@Req() req, @Param('guid') guid: string) {
+    return this.provider.deleteUserSubmission(guid, req.user.sub, req.user.permissions);
   }
 }

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChildren, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Observable, Subject, map, shareReplay } from 'rxjs';
+import { Observable, Subject, delay, map, shareReplay } from 'rxjs';
 
 import { RadioGroupComponent } from '../radio-group/radio-group.component';
 
@@ -26,17 +26,17 @@ export class SlideToggleComponent<Option extends object, Value>
   public activeOptionElement$: Subject<ElementRef> = new Subject<ElementRef>();
   public activeDimensions$: Observable<{ width: number; translate: number }>;
 
-  private _initialValue: Value;
-
   public ngOnInit(): void {
     this.activeDimensions$ = this.activeOptionElement$.pipe(
+      // Wait for the next tick to ensure that the element has been rendered and avoid ExpressionChangedAfterItHasBeenCheckedError
+      delay(0),
       map((option) => {
         const width = option.nativeElement.offsetWidth;
         const translate = option.nativeElement.offsetLeft;
 
         return { width, translate };
       }),
-      shareReplay()
+      shareReplay(1)
     );
   }
 
@@ -45,7 +45,7 @@ export class SlideToggleComponent<Option extends object, Value>
   }
 
   public override onInitialValue(v: Value): void {
-    this._initialValue = v;
+    this._findActiveElement(v);
   }
 
   public override evaluateSetValue(option: Option): void {
@@ -55,7 +55,7 @@ export class SlideToggleComponent<Option extends object, Value>
   }
 
   private _findActiveElement(plainValue: Value) {
-    if (plainValue !== null) {
+    if (plainValue !== null && this.toggleOptions) {
       const active = this.toggleOptions.find((option) => {
         return option.nativeElement.attributes['attr-value'].value === plainValue;
       });

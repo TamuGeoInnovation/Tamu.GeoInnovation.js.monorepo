@@ -11,13 +11,13 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection column pad-top">
+      <div class="form-collection column">
         <p class="form-input-description">Select student presentation classification.</p>
 
-        <tamu-gisc-slide-toggle [options]="presentationStudentTypeOptions" [displayPath]="'label'" [valuePath]="'type'" formControlName="presentationStudentType"></tamu-gisc-slide-toggle>
+        <tamu-gisc-slide-toggle formControlName="classificationType" [options]="presentationStudentTypeOptions" [displayPath]="'label'" [valuePath]="'type'"></tamu-gisc-slide-toggle>
       </div>
 
-      <div class="form-collection column pad-top">
+      <div class="form-collection column">
         <tamu-gisc-textbox formControlName="title" placeholder="Research title" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
@@ -28,11 +28,11 @@
       <div class="form-collection column">
         <p class="form-input-description">Indicate whether this presentation is an individual or group effort. For group presentations, only one submission is required. For group presentations, all participants' name, email, and student ID are required to be eligible for a distributed award.</p>
 
-        <tamu-gisc-slide-toggle class="trailer-1" [options]="presentationFormatOptions" [displayPath]="'label'" [valuePath]="'format'" formControlName="presentationFormat"></tamu-gisc-slide-toggle>
+        <tamu-gisc-slide-toggle formControlName="format" class="trailer-1" [options]="presentationFormatOptions" [displayPath]="'label'" [valuePath]="'format'"></tamu-gisc-slide-toggle>
       </div>
 
       <div class="form-collection column">
-        <ng-container *ngFor="let author of form.get('authors')['controls']; let i = index;" formArrayName="authors">
+        <ng-container *ngFor="let author of form.get('participants')['controls']; let i = index;" formArrayName="participants">
           <div class="form-collection row" [formGroupName]="i">
             <tamu-gisc-textbox formControlName="name" placeholder="Full Name" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
             <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
@@ -42,7 +42,7 @@
       </div>
 
       <div class="flex flex-row justify-end" *ngIf="(selectedPresentationFormat$ | async) === 'group'">
-        <p class="form-collection-actions" (click)="addAuthor()">Add participant <span class="material-icons">add</span></p>
+        <p class="form-collection-actions" (click)="addParticipant()">Add participant <span class="material-icons">add</span></p>
       </div>
 
       <div class="form-collection column">
@@ -56,7 +56,7 @@
   <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-button type="button" look="danger" value="Delete Venue" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        <tamu-gisc-button type="button" look="danger" value="Withdraw Submission" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
         <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Submit' : 'Update'"></tamu-gisc-button>
       </div>
     </div>

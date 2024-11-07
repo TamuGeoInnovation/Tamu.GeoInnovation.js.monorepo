@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, startWith, Subject, take } from 'rxjs';
+import { filter, map, Observable, startWith, Subject, switchMap, take } from 'rxjs';
 
-import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
+import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-user-submission-add-edit-form',
@@ -39,13 +40,16 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
     }
   ];
 
-  public $submissionTypes: Observable<Array<Partial<SubmissionType>>>;
+  public entity$: Observable<Partial<Submission>>;
+  public submissionTypes$: Observable<Array<Partial<SubmissionType>>>;
   public selectedPresentationFormat$: Observable<string>;
 
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
     private readonly fb: FormBuilder,
+    private readonly at: ActivatedRoute,
+    private readonly rt: Router,
     private readonly submissionTypeService: SubmissionTypeService,
     private readonly userSubmissionService: UserSubmissionsService,
     private readonly seasonService: SeasonService,
@@ -53,41 +57,62 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   ) {
     this.form = this.fb.group({
       title: [''],
-      authors: this.fb.array([this._createAuthor()]),
+      participants: this.fb.array([]),
       abstract: [''],
       link: [''],
       submissionType: ['presentation'],
-      presentationFormat: ['individual'],
-      presentationStudentType: ['undergraduate'],
+      format: ['individual'],
+      classificationType: ['undergraduate'],
       season: ['']
     });
-
-    this.fetchSubmissionTypes();
   }
 
   public ngOnInit(): void {
-    this.selectedPresentationFormat$ = this.form
-      .get('presentationFormat')
-      .valueChanges.pipe(startWith(this.form.get('presentationFormat').value));
+    this.selectedPresentationFormat$ = this.form.get('format').valueChanges.pipe(startWith(this.form.get('format').value));
 
-    // If the presentationFormat changes from group to individual, remove all authors except the first one.
+    // If the `format` changes from group to individual, remove all participants except the first one.
     this.form
-      .get('presentationFormat')
+      .get('format')
       .valueChanges.pipe()
       .subscribe((format) => {
         if (format === 'individual') {
-          while ((this.form.get('authors') as FormArray).length > 1) {
-            (this.form.get('authors') as FormArray).removeAt(1);
+          while (this._getParticipantsControl().length > 1) {
+            this._getParticipantsControl().removeAt(1);
           }
         }
       });
 
-    this.seasonService
-      .getActiveSeason()
-      .pipe(take(1))
-      .subscribe((season) => {
-        this.form.get('season').setValue(season.guid);
+    if (this.type === 'edit') {
+      this.entity$ = this.at.params.pipe(
+        map((params) => params.guid),
+        filter((guid) => guid !== undefined),
+        switchMap((guid) => this.userSubmissionService.getEntity(guid))
+      );
+
+      this.entity$.pipe(take(1)).subscribe((entity) => {
+        // Form patch will only add the participants if there are a matching number of entries in the form array. Without empty entries, the form array will not be populated.
+        // Add each blank participant to participants form array
+        while (this._getParticipantsControl().length < entity.participants.length) {
+          this.addParticipant();
+        }
+
+        this.form.patchValue({
+          ...entity
+        });
+
+        // If the entity has a season, remove the season control from the form
+        this.form.removeControl('season');
       });
+    } else {
+      this.seasonService
+        .getActiveSeason()
+        .pipe(take(1))
+        .subscribe((season) => {
+          this.form.get('season').setValue(season.guid);
+        });
+
+      this.addParticipant();
+    }
   }
 
   public ngOnDestroy(): void {
@@ -95,9 +120,6 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
     this._$destroy.complete();
   }
 
-  public fetchSubmissionTypes() {
-    this.$submissionTypes = this.submissionTypeService.getEntities();
-  }
   /**
    *
    *
@@ -114,6 +136,8 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
           message:
             'Thank you for your submission! The TxGIS Day team will review your submission - you can check the status on your dashboard.'
         });
+
+        this.rt.navigate(['/account/submissions']);
       },
       error: () => {
         this.ns.toast({
@@ -126,18 +150,52 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   }
 
   public deleteEntity() {
-    throw new Error('Method not implemented.');
+    this.entity$
+      .pipe(
+        take(1),
+        switchMap((entity) => {
+          return this.userSubmissionService.deleteEntity(entity.guid);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.ns.toast({
+            id: 'submission-delete-success',
+            title: 'Research Submission Deleted Successfully',
+            message: 'Your submission has been deleted.'
+          });
+
+          this.rt.navigate(['/account/submissions']);
+        },
+        error: () => {
+          this.ns.toast({
+            id: 'submission-delete-error',
+            title: 'Deletion Error',
+            message: 'There was an error deleting the submission. Please try again later.'
+          });
+        }
+      });
   }
 
-  public addAuthor() {
-    (this.form.get('authors') as FormArray).push(this._createAuthor());
+  public addParticipant() {
+    this._getParticipantsControl().push(this._createParticipantGroup());
   }
 
-  private _createAuthor() {
+  private _createParticipantGroup(fields: ICompetitionParticipant = { name: '', email: '', studentId: '' }) {
     return this.fb.group({
-      name: [''],
-      email: [''],
-      studentId: ['']
+      name: [fields.name],
+      email: [fields.email],
+      studentId: [fields.studentId]
     });
   }
+
+  private _getParticipantsControl() {
+    return this.form.get('participants') as FormArray;
+  }
+}
+
+interface ICompetitionParticipant {
+  name: string;
+  email: string;
+  studentId: string;
 }

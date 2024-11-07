@@ -19,7 +19,10 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   /**
    * Retrieves all presentations for the active season for a given user.
    */
-  public async getUserPresentationsForActiveSeason(userGuid: string) {
+  public async getUserPresentationsForActiveSeason(
+    userGuid: string,
+    type: PRESENTATION_SUBMISSION_TYPE = PRESENTATION_SUBMISSION_TYPE.PRESENTATION
+  ) {
     const season = await this.seasonService.findOneActive();
 
     if (!season) {
@@ -31,7 +34,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
         where: {
           accountGuid: userGuid,
           season: season,
-          submissionType: PRESENTATION_SUBMISSION_TYPE.PRESENTATION
+          submissionType: type
         }
       });
     } catch (err) {
@@ -42,7 +45,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   /**
    * Retrieves a single presentation for a given user.
    */
-  public async getUserPresentation(presentationGuid: string, userGuid: string, requestorRoles: Array<string> = []) {
+  public async getUserPresentation(presentationGuid: string, userGuid: string, requestorPermissions: Array<string> = []) {
     const presentation = await this.userSubmissionRepo.findOne({
       where: {
         guid: presentationGuid
@@ -53,15 +56,11 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new NotFoundException('Presentation not found');
     }
 
-    if (presentation && presentation.accountGuid === userGuid) {
-      return presentation;
+    if (presentation.accountGuid !== userGuid && requestorPermissions.indexOf('read:competitions') === -1) {
+      throw new UnauthorizedException();
     }
 
-    if (requestorRoles.indexOf('admin') === -1) {
-      return presentation;
-    }
-
-    throw new UnauthorizedException();
+    return presentation;
   }
 
   public async insertUserSubmission(accountGuid: string, submission: Partial<Submission>) {
@@ -75,6 +74,28 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       return this.userSubmissionRepo.save(userSubmission);
     } catch (err) {
       throw new InternalServerErrorException('Could not insert user submission.');
+    }
+  }
+
+  public async deleteUserSubmission(submissionGuid: string, accountGuid: string, requestorPermissions: Array<string> = []) {
+    const submission = await this.userSubmissionRepo.findOne({
+      where: {
+        guid: submissionGuid
+      }
+    });
+
+    if (!submission) {
+      throw new NotFoundException('Submission not found.');
+    }
+
+    if (submission.accountGuid !== accountGuid && requestorPermissions.indexOf('delete:competitions') > -1) {
+      throw new UnauthorizedException();
+    }
+
+    try {
+      return this.userSubmissionRepo.delete(submissionGuid);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not delete user submission.');
     }
   }
 }

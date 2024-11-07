@@ -10,14 +10,19 @@
 
     <div class="form-section-body">
       <div>
-        <p class="trailer-1">Submit your research for presentation in <a routerLink="competitions/presentation" target="_blank">TX GIS Day's yearly competitions</a>, open to all undergraduate and graduate students!</p>
+        <p class="trailer-1">Submit your research for presentation in <a routerLink="/competitions/presentation" target="_blank">TX GIS Day's yearly competitions</a>, open to all undergraduate and graduate students!</p>
       </div>
 
       <table class="floating-table" *ngIf="(presentationSubmissions$ | async)?.length > 0; else noPosters">
+        <colgroup>
+          <col class="title-col" />
+          <col />
+          <col />
+        </colgroup>
+
         <thead>
           <tr>
             <th>Title</th>
-            <th>Type</th>
             <th>Format</th>
             <th>Status</th>
           </tr>
@@ -25,9 +30,8 @@
 
         <tbody>
           <tr class="selectable" [routerLink]="['edit', sub.guid]" *ngFor="let sub of (presentationSubmissions$ | async)">
-            <td>{{sub?.title}}</td>
-            <td>{{sub?.submissionType}}</td>
-            <td>{{sub?.presentationFormat}}</td>
+            <td class="title" [title]="sub?.title">{{sub?.title}}</td>
+            <td>{{sub?.format | titlecase}}</td>
             <td>{{sub?.reviewed}}</td>
           </tr>
         </tbody>

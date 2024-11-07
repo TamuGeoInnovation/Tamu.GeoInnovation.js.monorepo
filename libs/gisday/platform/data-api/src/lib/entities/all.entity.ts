@@ -811,8 +811,8 @@ export class Submission extends GuidIdentity {
   @Column({ nullable: true })
   public title: string;
 
-  @Column({ nullable: true, length: 'MAX' })
-  public author: string;
+  @Column({ nullable: true, type: 'simple-json' })
+  public participants: Array<{ name: string; email: string; studentId: string }>;
 
   @Column({ nullable: true, length: 'MAX' })
   public abstract: string;
@@ -823,14 +823,20 @@ export class Submission extends GuidIdentity {
   @Column({ default: false })
   public reviewed: boolean;
 
+  @Column({ default: false })
+  public acceptance: boolean;
+
+  @Column({ default: false, length: 'MAX' })
+  public message: string;
+
   @Column({ nullable: true })
-  public presentationFormat: PRESENTATION_FORMAT | string;
+  public format: PRESENTATION_FORMAT | string;
 
   @Column({ nullable: true })
   public submissionType: PRESENTATION_SUBMISSION_TYPE | string;
 
   @Column({ nullable: true })
-  public studentType: PRESENTATION_STUDENT_TYPE | string;
+  public classificationType: PRESENTATION_STUDENT_TYPE | string;
 
   @ManyToOne(() => Season, (season) => season.submissions, { nullable: true })
   public season: Season;
