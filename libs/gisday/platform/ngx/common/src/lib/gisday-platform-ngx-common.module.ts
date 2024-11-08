@@ -21,6 +21,6 @@ import { GISDayPipesModule } from './pipes/gisday-pipes.module';
   ],
   declarations: [FooterComponent, HeaderComponent],
   providers: [],
-  exports: [FooterComponent, HeaderComponent]
+  exports: [FooterComponent, HeaderComponent, GISDayPipesModule]
 })
 export class GisdayPlatformNgxCommonModule {}
