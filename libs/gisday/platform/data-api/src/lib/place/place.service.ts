@@ -54,7 +54,7 @@ export class PlaceService extends BaseProvider<Place> {
       return this.getPlacesForSeason(season.guid);
     } catch (err) {
       Logger.error(`Error retrieving places for active season, ${err.message}`, 'PlaceService');
-      throw new InternalServerErrorException(err);
+      throw new InternalServerErrorException();
     }
   }
 
