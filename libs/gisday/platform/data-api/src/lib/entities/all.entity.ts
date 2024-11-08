@@ -703,6 +703,9 @@ export class Class extends GuidIdentity {
   @Column({ nullable: true })
   public number: string;
 
+  @Column({ nullable: true })
+  public section: string;
+
   @ManyToOne(() => Season, (season) => season.classes, { nullable: true, onDelete: 'CASCADE' })
   public season: Season;
 

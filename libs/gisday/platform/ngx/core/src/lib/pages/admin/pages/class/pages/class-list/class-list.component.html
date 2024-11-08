@@ -20,6 +20,7 @@
             <tr>
               <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
               <th>Code</th>
+              <th>Section</th>
               <th>Name</th>
               <th>Professor</th>
             </tr>
@@ -29,6 +30,7 @@
             <tr class="selectable" [routerLink]="['edit', entity.guid]" *ngFor="let entity of entities">
               <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
               <td>{{entity?.code}} {{entity?.number}}</td>
+              <td>{{entity?.section}}</td>
               <td>{{entity?.title}}</td>
               <td>{{entity?.professorName}}</td>
             </tr>

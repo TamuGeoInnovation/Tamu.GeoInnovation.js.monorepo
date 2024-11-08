@@ -48,7 +48,7 @@ export class ClassEditComponent implements OnInit {
           const url = window.URL.createObjectURL(blob);
 
           const a = document.createElement('a');
-          const fileName = `${cl.code}-${cl.number}-${cl.professorName
+          const fileName = `${cl.code}-${cl.number}${cl?.section ? '-' + cl?.section : ''}-${cl.professorName
             .toLowerCase()
             .split(' ')
             .join('_')}_gisday_attendance.csv`;
