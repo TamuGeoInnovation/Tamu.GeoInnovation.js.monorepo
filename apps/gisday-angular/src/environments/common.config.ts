@@ -13,6 +13,14 @@ export const auth0 = {
   urls: ['___ANGULAR_AUTH0_URLS___']
 };
 
+export const metadata = {
+  buildDate: '___BUILD_DATE___',
+  gitCommit: '___GIT_COMMIT___',
+  gitTag: '___GIT_TAG___',
+  containerName: '___CONTAINER_NAME___',
+  nodeName: '___NODE_NAME___'
+};
+
 export const NotificationEvents: NotificationProperties[] = [
   {
     id: 'no_gps',

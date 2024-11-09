@@ -10,6 +10,19 @@ export class EnvironmentService {
     if (environment) {
       // Freeze the environment object to ensure immutability
       this._config = Object.freeze(this.environment);
+
+      if (this._config.metadata) {
+        // eslint-disable-next-line no-restricted-syntax
+        console.info(`Environment module initialized.\n`);
+        // eslint-disable-next-line no-restricted-syntax
+        console.info(`\n
+Build Date: ${this._config.metadata.buildDate}
+Git Commit: ${this._config.metadata.gitCommit}
+Git Tag: ${this._config.metadata.gitTag}
+Container Name: ${this._config.metadata.containerName}
+Node Name: ${this._config.metadata.nodeName}\n
+          `);
+      }
     } else {
       throw new Error(`Environment module expects an 'env' token value. None provided.`);
     }
