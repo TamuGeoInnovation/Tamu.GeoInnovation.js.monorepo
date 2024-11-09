@@ -74,7 +74,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
         this.entity$.pipe(
           filter((ent) => ent?.logos?.[0]?.guid !== undefined && ent?.logos?.[0]?.guid !== null),
           switchMap((entity) => {
-            return this.as.getAssetUrl(entity?.logos?.[0]?.guid);
+            return this.as.getAssetUrl(entity?.logos?.[0]?.path);
           })
         ),
         this.form.valueChanges.pipe(

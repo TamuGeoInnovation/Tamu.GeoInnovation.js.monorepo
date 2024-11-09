@@ -82,7 +82,7 @@ export class SpeakerAddEditFormComponent implements OnInit {
       this.entity$.pipe(
         filter((ent) => ent?.images?.[0]?.guid !== undefined && ent?.images?.[0]?.guid !== null),
         switchMap((entity) => {
-          return this.as.getAssetUrl(entity?.images?.[0]?.guid);
+          return this.as.getAssetUrl(entity?.images?.[0]?.path);
         })
       ),
       this.form.valueChanges.pipe(

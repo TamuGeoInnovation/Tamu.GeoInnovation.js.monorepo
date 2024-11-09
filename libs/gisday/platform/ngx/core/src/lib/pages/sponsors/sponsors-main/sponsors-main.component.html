@@ -33,7 +33,7 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of rasterSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.guid | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          <div class="icon-item large" *ngFor="let s of rasterSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of polygonSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.guid | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          <div class="icon-item large" *ngFor="let s of polygonSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
         </div>
       </div>
     </div>
@@ -65,7 +65,7 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of lineSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.guid | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          <div class="icon-item large" *ngFor="let s of lineSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
         </div>
       </div>
     </div>

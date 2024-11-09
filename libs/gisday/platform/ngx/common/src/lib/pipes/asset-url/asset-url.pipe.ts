@@ -9,11 +9,11 @@ import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 export class AssetUrlPipe implements PipeTransform {
   constructor(private readonly assetService: AssetsService) {}
 
-  public transform(guid: string): Observable<string> {
-    if (!guid) {
+  public transform(path: string): Observable<string> {
+    if (!path) {
       return null;
     }
 
-    return this.assetService.getAssetUrl(guid);
+    return this.assetService.getAssetUrl(path);
   }
 }
