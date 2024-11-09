@@ -15,7 +15,7 @@ import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
-  private _resourcePath = `images/speakers/`;
+  private _resourcePath = `images/speakers`;
 
   constructor(
     @InjectRepository(Speaker) private speakerRepo: Repository<Speaker>,
