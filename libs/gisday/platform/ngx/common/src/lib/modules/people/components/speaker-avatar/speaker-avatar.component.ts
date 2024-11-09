@@ -11,10 +11,10 @@ import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 })
 export class SpeakerAvatarComponent implements OnInit {
   @Input()
-  public avatarGuid: string;
+  public avatarImageUrl: string;
 
   /**
-   * If the speaker photo is not available, this will determine whether to display the speaker's initials or a default icon.
+   * If the avatar photo is not available, this will determine whether to display the avatar's initials or a default icon.
    *
    * Defaults to `icon`.
    *
@@ -48,12 +48,12 @@ export class SpeakerAvatarComponent implements OnInit {
   public avatarInitials: string;
 
   /**
-   * The speaker's photo URL, based on the speaker's GUID.
+   * The avatar's image URL, based on the avatars's GUID. This endpoint simply returns the relative path to the image.
    */
-  public speakerImageUrl$: Observable<string>;
+  public avatarImageUrl$: Observable<string>;
 
   /**
-   * Performs a HEAD request to the against the speaker image url to determine if the image exists.
+   * Performs a HEAD request to the against the avatar image url to determine if the image exists.
    */
   public imageExists$: Observable<boolean>;
   public initials$: Observable<string>;
@@ -61,7 +61,7 @@ export class SpeakerAvatarComponent implements OnInit {
   constructor(private readonly http: HttpClient, private readonly as: AssetsService) {}
 
   public ngOnInit(): void {
-    this.speakerImageUrl$ = of(this.avatarGuid).pipe(
+    this.avatarImageUrl$ = of(this.avatarImageUrl).pipe(
       filter((guid) => {
         return guid !== undefined && guid !== null;
       }),
@@ -70,7 +70,7 @@ export class SpeakerAvatarComponent implements OnInit {
       })
     );
 
-    this.imageExists$ = this.speakerImageUrl$.pipe(
+    this.imageExists$ = this.avatarImageUrl$.pipe(
       switchMap((url) => {
         return this.http.head(url).pipe(mapTo(true));
       }),

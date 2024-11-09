@@ -1,4 +1,4 @@
-<img class="image" *ngIf="imageExists$ | async; else default" presenter="presenter" [src]="speakerImageUrl$ | async" />
+<img class="image" *ngIf="imageExists$ | async; else default" presenter="presenter" [src]="avatarImageUrl$ | async" />
 
 <ng-template #default>
   <div class="image default">
