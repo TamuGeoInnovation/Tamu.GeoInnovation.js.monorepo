@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Running token substitution script"
-
 # Define the directory containing the script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
