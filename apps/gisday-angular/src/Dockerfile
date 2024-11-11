@@ -1,4 +1,4 @@
-FROM nginx-base:latest
+FROM ghcr.io/tamugeoinnovation/nginx-base:latest
 
 ENV FILES_DIR=/usr/share/nginx/html
 
