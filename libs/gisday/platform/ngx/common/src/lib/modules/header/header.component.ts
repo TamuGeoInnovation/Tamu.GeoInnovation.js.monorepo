@@ -48,7 +48,7 @@ export class HeaderComponent implements OnInit {
     this.loggedIn$ = this.as.isAuthenticated$;
     this.userRoles$ = this.as.userRoles$;
     this.activeSeason$ = this.ss.activeSeason$;
-    this.places$ = this.ps.getEntities();
+    this.places$ = this.ps.getEntitiesForActiveSeason();
 
     const currUrl = this.rt.events.pipe(
       startWith(''),

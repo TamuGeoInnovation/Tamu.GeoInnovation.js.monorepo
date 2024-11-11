@@ -36,6 +36,7 @@ export class ClassAddEditFormComponent implements OnInit {
       title: [null],
       number: [null],
       code: [null],
+      section: [null],
       professorName: [null],
       season: [null]
     });

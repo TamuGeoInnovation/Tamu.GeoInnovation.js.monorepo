@@ -1,3 +1,17 @@
 tamu-gisc-date-time-picker {
   display: inline-block;
 }
+
+::ng-deep {
+  tamu-gisc-select-list {
+    tamu-gisc-presenter-card {
+      display: inline-block;
+      width: 100%;
+
+      &:hover {
+        background: #f5f5f5;
+        cursor: pointer;
+      }
+    }
+  }
+}

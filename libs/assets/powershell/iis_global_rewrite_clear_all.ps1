@@ -1,4 +1,4 @@
-$path = "MACHINE/WEBROOT/APPHOST";
+﻿$path = "MACHINE/WEBROOT/APPHOST";
 $baseRulesFilter= "/system.webServer/rewrite/globalRules";
 $baseRuleFilter= "$baseRulesFilter/rule";
 $filter = "$baseRuleFilter";

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
@@ -9,6 +9,7 @@ import {
   Event,
   EventBroadcast,
   EventLocation,
+  Season,
   Speaker,
   Sponsor,
   Tag,
@@ -17,6 +18,7 @@ import {
 import { BaseProvider } from '../_base/base-provider';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventAttendanceDto } from './dto/event-attendance.dto';
+import { SeasonService } from '../season/season.service';
 
 @Injectable()
 export class EventProvider extends BaseProvider<Event> {
@@ -27,14 +29,46 @@ export class EventProvider extends BaseProvider<Event> {
     @InjectRepository(Speaker) private speakerRepo: Repository<Speaker>,
     @InjectRepository(Tag) private readonly tagRepo: Repository<Tag>,
     @InjectRepository(Sponsor) private sponsorRepo: Repository<Sponsor>,
-    @InjectRepository(UserRsvp) private userRsvpRepo: Repository<UserRsvp>
+    @InjectRepository(UserRsvp) private userRsvpRepo: Repository<UserRsvp>,
+    @InjectRepository(Season) private seasonRepo: Repository<Season>,
+    private readonly seasonProvider: SeasonService
   ) {
     super(eventRepo);
   }
 
-  public getEvents() {
-    return this.find({
-      relations: EntityRelationsLUT.getRelation('event')
+  public async getEventsForActiveSeason() {
+    const season = await this.seasonProvider.findOneActive();
+
+    try {
+      return this.getEventsForSeason(season.guid);
+    } catch (error) {
+      throw new InternalServerErrorException('Could not get events for active season.');
+    }
+  }
+
+  public async getEventsForSeason(seasonGuid: string) {
+    if (seasonGuid) {
+      const events = await this.eventRepo
+        .createQueryBuilder('event')
+        .leftJoinAndSelect('event.day', 'eventDay')
+        .leftJoinAndSelect('event.location', 'location')
+        .where('event.season = :guid', { guid: seasonGuid })
+        .orderBy('eventDay.date', 'ASC')
+        .addOrderBy('event.startTime', 'ASC')
+        .getMany();
+
+      return events;
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
+  public async getEvents() {
+    return this.eventRepo.find({
+      relations: EntityRelationsLUT.getRelation('event'),
+      order: {
+        startTime: 'ASC'
+      }
     });
   }
 
@@ -198,5 +232,62 @@ export class EventProvider extends BaseProvider<Event> {
     }
 
     return event.save();
+  }
+
+  /**
+   * Copies the provided events into the provided season.
+   *
+   * Lookups are performed for the provided season guid and event guids
+   */
+  public async copyEventsIntoSeason(seasonGuid: string, eventGuids: Array<string>) {
+    // User query builder to get season by guid, getting days relation, and ordering by date
+    const season = await this.seasonRepo
+      .createQueryBuilder('season')
+      .leftJoinAndSelect('season.days', 'day')
+      .where('season.guid = :guid', { guid: seasonGuid })
+      .orderBy('day.date', 'ASC')
+      .getOne();
+
+    if (!season) {
+      throw new NotFoundException();
+    }
+
+    if (season.days.length === 0) {
+      throw new UnprocessableEntityException(null, 'Season has no days');
+    }
+
+    const events = await this.eventRepo.find({
+      where: {
+        guid: In(eventGuids)
+      }
+    });
+
+    if (!events) {
+      throw new NotFoundException();
+    }
+
+    const newEvents = events.map((event) => {
+      delete event.speakers;
+      delete event.broadcast;
+      delete event.location;
+      delete event.courseCredit;
+      delete event.sponsors;
+      delete event.guid;
+      delete event.created;
+      delete event.updated;
+
+      const newEvent = this.eventRepo.create({
+        ...event,
+        day: season.days[0]
+      });
+
+      return newEvent.save();
+    });
+
+    try {
+      return Promise.all(newEvents);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not copy events into season');
+    }
   }
 }

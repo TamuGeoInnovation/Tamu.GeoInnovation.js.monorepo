@@ -10,6 +10,16 @@ import { UniversityProvider } from './university.provider';
 export class UniversityController {
   constructor(private readonly provider: UniversityProvider) {}
 
+  @Get('season/active')
+  public getActive() {
+    return this.provider.getEntitiesForActiveSeason();
+  }
+
+  @Get('season/:guid')
+  public getUniversitiesForSeason(@Param('guid') guid: string) {
+    return this.provider.getEntitiesForSeason(guid);
+  }
+
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -30,6 +40,16 @@ export class UniversityController {
 
   @Permissions(['create:universities'])
   @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public async copy(
+    @Body('seasonGuid') seasonGuid: string,
+    @Body('existingEntityGuids') existingEntityGuids: Array<string>
+  ) {
+    return this.provider.insertUniversitiesIntoSeason(seasonGuid, existingEntityGuids);
+  }
+
+  @Permissions(['create:universities'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
   public async insertEntity(@Body() body: DeepPartial<University>) {
     return this.provider.create(body);
@@ -45,11 +65,14 @@ export class UniversityController {
   @Permissions(['delete:universities'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
-  public deleteEntity(@Param('guid') guid: string) {
-    this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+  public delete(@Param('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
+  }
+
+  @Permissions(['delete:universities'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteMany(@Body('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
   }
 }

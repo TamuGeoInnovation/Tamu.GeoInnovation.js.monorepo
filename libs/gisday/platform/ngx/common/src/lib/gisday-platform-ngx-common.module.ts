@@ -8,14 +8,19 @@ import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/tr
 
 import { FooterComponent } from './modules/footer/footer.component';
 import { HeaderComponent } from './modules/header/header.component';
-import { OrderByPipe } from './pipes/order-by/order-by-pipe';
-import { ParseDateTimeStringsPipe } from './pipes/parse-date-time-strings/parse-date-time-strings.pipe';
-import { AssetUrlPipe } from './pipes/asset-url/asset-url.pipe';
+import { GISDayPipesModule } from './pipes/gisday-pipes.module';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, UITileNavigationModule, UINavigationTriggersModule, CommonNgxAuthModule],
-  declarations: [FooterComponent, HeaderComponent, OrderByPipe, ParseDateTimeStringsPipe, AssetUrlPipe],
+  imports: [
+    CommonModule,
+    RouterModule,
+    UITileNavigationModule,
+    UINavigationTriggersModule,
+    CommonNgxAuthModule,
+    GISDayPipesModule
+  ],
+  declarations: [FooterComponent, HeaderComponent],
   providers: [],
-  exports: [FooterComponent, HeaderComponent, OrderByPipe, ParseDateTimeStringsPipe, AssetUrlPipe]
+  exports: [FooterComponent, HeaderComponent, GISDayPipesModule]
 })
 export class GisdayPlatformNgxCommonModule {}

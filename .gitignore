@@ -70,3 +70,6 @@ secrets.ts
 .env.dev
 .env.staging
 .env.prod
+
+# Files in any application assets directory
+**/assets/uploads/**

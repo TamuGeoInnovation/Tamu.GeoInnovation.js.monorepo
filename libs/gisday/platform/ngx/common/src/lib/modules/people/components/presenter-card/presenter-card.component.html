@@ -1,12 +1,18 @@
 <div class="presenter-item">
-  <tamu-gisc-speaker-avatar [avatarGuid]="speaker?.images?.[0]?.guid" [fallbackStyle]="'initials'" [avatarInitials]="speakerInitials"></tamu-gisc-speaker-avatar>
+  <div class="presenter-actions" *ngIf="showActions">
+    <span class="action material-icons" (click)="emitAction('delete')">cancel</span>
+  </div>
+
+  <tamu-gisc-speaker-avatar [avatarImageUrl]="speaker?.images?.[0]?.path" [fallbackStyle]="'initials'" [avatarInitials]="speakerInitials"></tamu-gisc-speaker-avatar>
 
   <div class="details">
     <div class="name">
-      <a href="/presenters/details/{{speaker.guid}}"> {{speaker.firstName}} {{speaker.lastName}} </a>
+      <div [ngSwitch]="linkable">
+        <p *ngSwitchCase="false">{{speaker.firstName}} {{speaker.lastName}}</p>
+        <a *ngSwitchDefault href="/presenters/details/{{speaker.guid}}"> {{speaker.firstName}} {{speaker.lastName}} </a>
+      </div>
     </div>
 
     <div class="organization">{{speaker?.organization?.name}}</div>
-    <!-- <div class="role">{{presenter?.affiliation}}</div> -->
   </div>
 </div>

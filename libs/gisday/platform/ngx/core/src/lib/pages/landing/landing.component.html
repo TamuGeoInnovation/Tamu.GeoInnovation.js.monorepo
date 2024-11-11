@@ -88,7 +88,7 @@
       <ng-container *ngIf="sponsors$ | async as sponsors; else noSponsors">
         <div class="icon-grid column12">
           <div class="icon-item" *ngFor="let sponsor of sponsors">
-            <img [src]="sponsor?.logos?.[0]?.guid | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
+            <img [src]="sponsor?.logos?.[0]?.path | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
           </div>
         </div>
 
@@ -113,7 +113,7 @@
 
       <div class="icon-grid column12">
         <div class="icon-item" *ngFor="let org of organizations$ | async">
-          <img [src]="org?.logos?.[0]?.guid | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
+          <img [src]="org?.logos?.[0]?.path | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
           <p *ngIf="org.website !== null && org.website !== ''; else noOrgWebsite"><a [href]="org.website" target="_blank">{{org.name}}</a></p>
           <ng-template #noOrgWebsite>
             <p>{{org.name}}</p>

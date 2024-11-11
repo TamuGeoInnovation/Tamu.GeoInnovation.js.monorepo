@@ -86,16 +86,30 @@
 
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-title">Attendance</div>
+      <div class="form-section-title">Speakers</div>
     </div>
 
     <div class="form-section-body">
       <div class="form-collection column">
-        <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Observed attendee start" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
-      </div>
+        <ng-container *ngIf="(speakers$ | async)?.length > 0 else noSpeakers">
+          <ng-container *ngIf="speakers$ | async as speakers">
+            <tamu-gisc-select-list placeholder="Search speakers..." [options]="speakers" [rowTemplate]="speakerListRowTemplate">
+              <ng-template #speakerListRowTemplate let-speaker>
+                <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" (click)="patchSpeaker(speaker)"></tamu-gisc-presenter-card>
+              </ng-template>
+            </tamu-gisc-select-list>
 
-      <div class="form-collection column">
-        <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="Observed attendee end" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+            <div class="flex flex-row wrap">
+              <ng-container *ngFor="let speaker of eventSpeakers$ | async">
+                <tamu-gisc-presenter-card [speaker]="speaker" [linkable]="false" [showActions]="true" (delete)="patchSpeaker(speaker, 'remove')"></tamu-gisc-presenter-card>
+              </ng-container>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #noSpeakers>
+          <p>No speakers registered yet.</p>
+        </ng-template>
       </div>
     </div>
   </div>
@@ -124,27 +138,21 @@
 
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-title">Speakers</div>
+      <div class="form-section-title">Attendance</div>
     </div>
 
     <div class="form-section-body">
       <div class="form-collection column">
-        <ng-container *ngIf="(speakers$ | async)?.length > 0 else noSpeakers">
-          <ng-container *ngIf="speakers$ | async as speakers">
-            <tamu-gisc-checkbox-group referenceId="guid" formControlName="speakers">
-              <tamu-gisc-checkbox *ngFor="let speaker of speakers" [data]="speaker" [label]="speaker.lastName + ', ' + speaker.firstName"></tamu-gisc-checkbox>
-            </tamu-gisc-checkbox-group>
-          </ng-container>
-        </ng-container>
+        <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Observed attendee start" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
 
-        <ng-template #noSpeakers>
-          <p>No speakers registered yet.</p>
-        </ng-template>
+      <div class="form-collection column">
+        <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="Observed attendee end" type="text" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
     </div>
   </div>
 
-  <div class="form-section">
+  <div class="form-section leader-2">
     <div class="form-section-body">
       <div class="form-collection row">
         <tamu-gisc-button type="button" look="danger" value="Delete Event" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>

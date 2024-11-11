@@ -10,6 +10,16 @@ import { TagProvider } from './tag.provider';
 export class TagController {
   constructor(private readonly provider: TagProvider) {}
 
+  @Get('season/active')
+  public getActive() {
+    return this.provider.getTagsForActiveSeason();
+  }
+
+  @Get('season/:guid')
+  public getTagsForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getTagsForSeason(seasonGuid);
+  }
+
   @Get(':guid')
   public async getEntity(@Param('guid') guid) {
     return this.provider.findOne({
@@ -41,11 +51,19 @@ export class TagController {
 
   @Permissions(['create:tags'])
   @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('clone')
+  public async copy(
+    @Body('seasonGuid') seasonGuid: string,
+    @Body('existingEntityGuids') existingEntityGuids: Array<string>
+  ) {
+    return this.provider.copyTagsIntoSeason(seasonGuid, existingEntityGuids);
+  }
+
+  @Permissions(['create:tags'])
+  @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
-  public async insertEntity(@Body('name') name: string) {
-    return this.provider.createTag({
-      name: name
-    });
+  public async insertEntity(@Body() dto: Partial<Tag>) {
+    return this.provider.createTag(dto);
   }
 
   @Permissions(['update:tags'])
@@ -58,11 +76,14 @@ export class TagController {
   @Permissions(['delete:tags'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Delete(':guid')
-  public deleteEntity(@Param('guid') guid: string) {
-    return this.provider.deleteEntity({
-      where: {
-        guid: guid
-      }
-    });
+  public delete(@Param('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
+  }
+
+  @Permissions(['delete:tags'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Delete()
+  public deleteMany(@Body('guid') guid: string) {
+    return this.provider.deleteEntities(guid);
   }
 }

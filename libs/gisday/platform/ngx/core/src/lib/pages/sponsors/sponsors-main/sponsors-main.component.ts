@@ -19,7 +19,7 @@ export class SponsorsMainComponent implements OnInit {
   constructor(private readonly ss: SponsorService) {}
 
   public ngOnInit(): void {
-    this._sponsors$ = this.ss.getEntities().pipe(shareReplay());
+    this._sponsors$ = this.ss.getEntitiesForActiveSeason().pipe(shareReplay(1));
     this.rasterSponsors$ = this._sponsors$.pipe(this.filterSponsors('raster'));
     this.polygonSponsors$ = this._sponsors$.pipe(this.filterSponsors('polygon'));
     this.lineSponsors$ = this._sponsors$.pipe(this.filterSponsors('line'));

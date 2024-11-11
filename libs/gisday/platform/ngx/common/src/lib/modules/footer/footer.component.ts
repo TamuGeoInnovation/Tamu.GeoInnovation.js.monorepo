@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 
 import { Place, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -19,6 +19,10 @@ export class FooterComponent implements OnInit {
   public ngOnInit(): void {
     this.activeSeason$ = this.ss.activeSeason$;
     this.currentYear = new Date().getFullYear();
-    this.organizations$ = this.os.getEntities();
+    this.organizations$ = this.activeSeason$.pipe(
+      switchMap(() => {
+        return this.os.getEntitiesForActiveSeason();
+      })
+    );
   }
 }

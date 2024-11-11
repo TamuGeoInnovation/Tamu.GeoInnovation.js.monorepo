@@ -1,4 +1,31 @@
 @use 'libs/sass/mixins';
+@use 'libs/sass/variables';
+
+// Reusable unit for form actions styles
+.__form-action {
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+  color: var(--link-color, variables.$main-blue);
+  font-weight: 600;
+
+  // Some buttons don't have link so we need to make sure the cursor
+  // is a pointer on all toolbar action links
+  cursor: pointer;
+
+  @include mixins.flexbox();
+  @include mixins.flex-direction(row);
+  @include mixins.align-items(center);
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  .material-icons {
+    font-size: 1.5em;
+    margin-left: 0.25rem;
+  }
+}
 
 form,
 .form {
@@ -68,7 +95,7 @@ form,
   .form-section {
     display: inherit;
     @include mixins.flex-direction(column);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     font-weight: 400;
 
     // Do not add extra margin to the last instance of form section inside a form.
@@ -92,25 +119,7 @@ form,
         padding: 0.5rem;
 
         a {
-          padding: 0;
-          margin: 0;
-
-          // Some buttons don't have link so we need to make sure the cursor
-          // is a pointer on all toolbar action links
-          cursor: pointer;
-
-          @include mixins.flexbox();
-          @include mixins.flex-direction(row);
-          @include mixins.align-items(center);
-
-          &:hover {
-            text-decoration: none;
-          }
-
-          .material-icons {
-            font-size: 1.5em;
-            margin-left: 0.25rem;
-          }
+          @extend .__form-action;
         }
       }
 
@@ -127,6 +136,12 @@ form,
           padding-bottom: 0;
         }
       }
+
+      .form-section-actions {
+        display: inherit;
+        @include mixins.flex-direction(row);
+        @include mixins.justify-content(flex-end);
+      }
     }
 
     .form-section-body {
@@ -137,6 +152,10 @@ form,
         margin-top: 0.75rem;
         margin-bottom: 0.75rem;
         margin-left: 0.75rem;
+      }
+
+      .form-collection-actions {
+        @extend .__form-action;
       }
     }
   }

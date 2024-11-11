@@ -32,7 +32,7 @@
   height: 100%;
   z-index: 1;
   pointer-events: none;
-  background: #536dfe;
+  background: var(--support-link-color, #536dfe);
   box-shadow: inset 0 0 5px 1px #4154be;
   @include mixins.transform-origin(center center);
   @include mixins.transform(translateX(0));
@@ -49,6 +49,7 @@
     color: #424242;
     opacity: 0.7;
     margin-bottom: 0;
+    padding-bottom: 0;
     @include mixins.transition(opacity 0.2s, color 0.2s);
 
     &.active {

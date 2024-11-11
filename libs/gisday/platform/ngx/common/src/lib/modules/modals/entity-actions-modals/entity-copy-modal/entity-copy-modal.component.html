@@ -1,0 +1,12 @@
+<h2 class="trailer-1">Copy {{entityType}}</h2>
+
+<p>Select the season to copy <strong>{{data.identities.length}} {{entityType | lowercase}}</strong> into:</p>
+
+<p class="info-block notice" *ngIf="data?.notice"><strong>Note</strong>: {{data.notice}}</p>
+
+<tamu-gisc-select class="leader-2 trailer-2" [value]="(season$ | async)?.guid" placeholder="Season to Copy Into" [floatLabel]="true" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" (changed)="setSeason($event)"></tamu-gisc-select>
+
+<div class="flex flex-row justify-end button-container">
+  <tamu-gisc-button class="trailer-1" fit="snug" look="secondary" value="Cancel" (click)="cancelCopyEntities()">Cancel</tamu-gisc-button>
+  <tamu-gisc-button class="trailer-1" fit="snug" value="Copy" (click)="confirmCopyEntities()">Copy</tamu-gisc-button>
+</div>

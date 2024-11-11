@@ -23,7 +23,7 @@ export class MyClassesComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.classes$ = this.cs.getEntities().pipe(shareReplay());
+    this.classes$ = this.cs.getEntitiesForActiveSeason().pipe(shareReplay());
     this.userClasses$ = this.ucs.getEntities().pipe(shareReplay());
   }
 
@@ -72,7 +72,7 @@ export class MyClassesComponent implements OnInit {
   public isUserClassSelected$(classGuid: string): Observable<boolean> {
     return this.userClasses$.pipe(
       map((userClasses) => {
-        const found = userClasses.find((uc) => uc.class.guid === classGuid);
+        const found = userClasses.find((uc) => uc?.class?.guid === classGuid);
 
         return found !== undefined;
       }),

@@ -78,3 +78,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}`
+          build-args: |
+            BUILD_DATE=${{ steps.meta.outputs.labels.org.opencontainers.image.created }}
+            GIT_TAG=${{ steps.meta.outputs.labels.org.opencontainers.image.version }}
+            GIT_COMMIT=${{ steps.meta.outputs.labels.org.opencontainers.image.revision }}

@@ -21,7 +21,7 @@ export class AssetsService extends BaseService<Asset> {
     return this.getAssetUrl(guid).pipe(switchMap((url) => this.http1.get<string>(url)));
   }
 
-  public getAssetUrl(guid: string) {
-    return of(`${this.resource}/${guid}`);
+  public getAssetUrl(path: string) {
+    return of(`assets/uploads/${path}`);
   }
 }

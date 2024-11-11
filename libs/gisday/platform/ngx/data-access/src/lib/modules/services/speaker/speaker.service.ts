@@ -24,13 +24,25 @@ export class SpeakerService extends BaseService<Speaker> {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}`);
   }
 
+  public getParticipatingPresenters() {
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/participating`);
+  }
+
   public getActivePresenters() {
-    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/active`);
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/season/active`);
   }
 
   /**
    * Gets a list of speakers that are part of the organizing committee.
    */
+  public getOrganizingEntitiesForSeason(seasonGuid: string) {
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/organizers/season/${seasonGuid}`);
+  }
+
+  public getOrganizingEntitiesForActiveSeason() {
+    return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/organizers/season/active`);
+  }
+
   public getOrganizingEntities() {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/organizers`);
   }

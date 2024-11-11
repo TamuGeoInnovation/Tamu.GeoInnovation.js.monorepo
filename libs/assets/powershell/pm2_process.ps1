@@ -1,4 +1,4 @@
-param( 
+﻿param( 
     [parameter(Position=0, Mandatory=$true, HelpMessage="The name of the process to test against.")]
     [string]$ProcessName,
     [parameter(Position=1, Mandatory=$true, HelpMessage="The script file entry point. Needs to be an absolute path.")]

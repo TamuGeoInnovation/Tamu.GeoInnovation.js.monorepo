@@ -27,8 +27,8 @@ export class SeasonController {
   @Permissions(['create:seasons'])
   @UseGuards(JwtGuard, PermissionsGuard)
   @Post()
-  public create(@Body() createSeasonDto?: Partial<Season>) {
-    return this.seasonService.create(createSeasonDto);
+  public create() {
+    return this.seasonService.clonePreviousSeason();
   }
 
   @Permissions(['update:seasons'])

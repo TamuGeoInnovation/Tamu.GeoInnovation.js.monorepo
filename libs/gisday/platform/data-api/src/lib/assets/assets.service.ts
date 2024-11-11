@@ -1,9 +1,6 @@
-import { createReadStream } from 'node:fs';
-import { Injectable, Logger, NotFoundException, StreamableFile } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-import * as mime from 'mime-types';
 
 import { WriteFileToDiskOptions, ensureDirectoryExists, fileExists, writeFileToDisk } from '@tamu-gisc/common/node/fs';
 
@@ -11,7 +8,7 @@ import { Asset } from '../entities/all.entity';
 
 @Injectable()
 export class AssetsService {
-  private _assetsDir = `${process.env.APP_DATA}/assets`;
+  private _assetsDir = `${process.env.APP_DATA}`;
 
   constructor(@InjectRepository(Asset) private readonly ar: Repository<Asset>) {}
 
@@ -33,10 +30,7 @@ export class AssetsService {
         throw new NotFoundException();
       }
 
-      const file = createReadStream(filePath);
-      return new StreamableFile(file, {
-        type: mime.lookup(filePath)
-      });
+      return asset;
     } else {
       throw new NotFoundException();
     }

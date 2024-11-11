@@ -15,6 +15,7 @@
             <tr>
               <th></th>
               <th>Course Code</th>
+              <th>Course Section</th>
               <th>Course Name</th>
               <th>Professor</th>
             </tr>
@@ -23,9 +24,10 @@
           <tbody>
             <tr *ngFor="let class of (classes$ | async)">
               <td id="control">
-                <tamu-gisc-checkbox label="" [checked]="isUserClassSelected$(class.guid) | async" (changed)="setClassValue($event, class.guid)"></tamu-gisc-checkbox>
+                <tamu-gisc-checkbox label="" [checked]="isUserClassSelected$(class?.guid) | async" (changed)="setClassValue($event, class?.guid)"></tamu-gisc-checkbox>
               </td>
               <td>{{class?.code}} {{class?.number}}</td>
+              <td>{{class?.section}}</td>
               <td>{{class?.title}}</td>
               <td>{{class?.professorName}}</td>
             </tr>

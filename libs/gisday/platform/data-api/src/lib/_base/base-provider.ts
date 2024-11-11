@@ -1,4 +1,4 @@
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 
 import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
 
@@ -75,7 +75,34 @@ export abstract class BaseProvider<T> {
     if (entity) {
       return this.repo.remove(entity);
     } else {
-      throw new InternalServerErrorException();
+      throw new NotFoundException();
+    }
+  }
+
+  /**
+   * Deletes multiple entities based on the default `guid` property.
+   *
+   * If a string is passed in, it is assumed to be a comma-separated list of guids.
+   */
+  public async deleteEntities(oneOrMoreEntityGuids: Array<string> | string) {
+    if (typeof oneOrMoreEntityGuids === 'string') {
+      const eventGuidsArray = oneOrMoreEntityGuids.split(',');
+
+      if (eventGuidsArray.length === 0) {
+        throw new UnprocessableEntityException(null, 'No entity guids provided');
+      }
+
+      try {
+        return this.repo.delete(eventGuidsArray);
+      } catch (err) {
+        throw new InternalServerErrorException('Could not delete entities');
+      }
+    } else if (oneOrMoreEntityGuids instanceof Array && oneOrMoreEntityGuids.length > 0) {
+      try {
+        return this.repo.delete(oneOrMoreEntityGuids);
+      } catch (err) {
+        throw new InternalServerErrorException('Could not delete entities');
+      }
     }
   }
 

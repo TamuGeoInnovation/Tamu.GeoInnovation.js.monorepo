@@ -1,0 +1,13 @@
+<form [formGroup]="form">
+  <tamu-gisc-textbox [formControlName]="'search'" type="text" [floatLabel]="floatLabel" [placeholder]="placeholder"></tamu-gisc-textbox>
+
+  <div class="select-list-container" *ngIf="rowTemplate !== undefined" tabindex="-1">
+    <div class="row-item" *ngIf="(options$ | async)?.length > 0; else noResults">
+      <ng-container [ngTemplateOutlet]="rowTemplate" [ngTemplateOutletContext]="{$implicit: item}" *ngFor="let item of (options$ | async)"></ng-container>
+    </div>
+
+    <ng-template #noResults>
+      <p id="no-results-message">No items to show...</p>
+    </ng-template>
+  </div>
+</form>

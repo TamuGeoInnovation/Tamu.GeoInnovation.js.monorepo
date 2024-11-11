@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
 import { EventBroadcast } from '@tamu-gisc/gisday/platform/data-api';
-import { BroadcastService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { BroadcastService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
@@ -24,7 +24,8 @@ export class BroadcastAddEditFormComponent implements OnInit {
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
     private readonly bs: BroadcastService,
-    private readonly ns: NotificationService
+    private readonly ns: NotificationService,
+    private readonly ss: SeasonService
   ) {}
 
   public ngOnInit(): void {
@@ -36,7 +37,8 @@ export class BroadcastAddEditFormComponent implements OnInit {
       phoneNumber: [''],
       meetingId: [''],
       publicUrl: [''],
-      details: ['']
+      details: [''],
+      season: ['']
     });
 
     if (this.type === 'edit') {
@@ -48,6 +50,13 @@ export class BroadcastAddEditFormComponent implements OnInit {
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
         this.form.patchValue(entity);
+        this.form.removeControl('season');
+      });
+    } else {
+      this.ss.activeSeason$.pipe(take(1)).subscribe((season) => {
+        this.form.patchValue({
+          season: season.guid
+        });
       });
     }
   }
