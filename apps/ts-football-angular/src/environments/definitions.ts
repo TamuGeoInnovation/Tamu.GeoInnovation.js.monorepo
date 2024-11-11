@@ -39,7 +39,7 @@ export const Definitions = {
     id: 'poi',
     layerId: 'poi-layer',
     name: 'Points of Interest',
-    url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/AgMap_Statues/FeatureServer/0`,
+    url: `https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer`,
     popupComponent: Popups.PoiPopupComponent
   },
   RESTROOMS: {
@@ -328,7 +328,7 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: Definitions.POINTS_OF_INTEREST.layerId,
     title: Definitions.POINTS_OF_INTEREST.name,
-    url: Definitions.POINTS_OF_INTEREST.url,
+    url: Definitions.POINTS_OF_INTEREST.url + '/0',
     popupComponent: Definitions.POINTS_OF_INTEREST.popupComponent,
     listMode: 'show',
     visible: false,
@@ -343,6 +343,18 @@ export const LayerSources: LayerSource[] = [
           height: '30.2px'
         }
       }
+    }
+  },
+  {
+    type: 'feature',
+    id: `bonfire-layer`,
+    title: `Bonfire Memorial`,
+    url: Definitions.POINTS_OF_INTEREST.url + '/1',
+    popupComponent: Popups.BonfirePopupComponent,
+    listMode: 'hide',
+    visible: true,
+    native: {
+      ...commonLayerProps
     }
   },
   {

@@ -1,0 +1,18 @@
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.Name }}</div>
+  <div class="feature-style-2" tabindex="0" *ngIf="data.attributes.Name !== 'Bonfire Memorial'">Bonfire Memorial</div>
+</div>
+
+<div class="popup-section" *ngIf="medias?.length > 0">
+  <swiper-container #swiperRef init="false">
+    <swiper-slide *ngFor="let media of medias" [attr.data-src]="media">
+      <a [href]="media" target="_blank">
+        <img [src]="media" />
+      </a>
+    </swiper-slide>
+  </swiper-container>
+</div>
+
+<div class="popup-section">
+  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+</div>

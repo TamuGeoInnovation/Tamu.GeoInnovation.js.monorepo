@@ -89,4 +89,3 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
     super.startDirections(`${this.data.attributes.Name}`);
   }
 }
-
