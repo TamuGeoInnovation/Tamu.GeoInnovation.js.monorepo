@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, merge } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -55,7 +56,9 @@ export class EventViewComponent implements OnInit, OnDestroy {
     private readonly us: UserService,
     private readonly ns: NotificationService,
     private readonly st: SettingsService,
-    private readonly as: AuthService
+    private readonly as: AuthService,
+    private readonly at: ActivatedRoute,
+    private readonly rt: Router
   ) {}
 
   public ngOnInit() {
@@ -82,6 +85,9 @@ export class EventViewComponent implements OnInit, OnDestroy {
       })
       .pipe(shareReplay());
 
+    this.tags$ = this.tagService.getEntitiesForActiveSeason().pipe(shareReplay(1));
+    this.organizations$ = this.os.getEntitiesForActiveSeason().pipe(shareReplay(1));
+
     // Subscription needs to remain active for the lifetime of the component, otherwise
     // the settings will not be written to localStorage when `updateSettings` is called.
     //
@@ -89,24 +95,69 @@ export class EventViewComponent implements OnInit, OnDestroy {
     //
     settings.pipe(takeUntil(this._destroy$)).subscribe((settings) => {
       console.log('Set new filters', settings);
+
+      this.rt.navigate([], {
+        relativeTo: this.at,
+        queryParams: {
+          tags: settings.tags ? settings.tags.toString() : null,
+          orgs: settings.organizations ? settings.organizations.toString() : null
+        },
+        queryParamsHandling: 'merge'
+      });
     });
 
     // Shorthand for getting the initial settings state value and using as seed value for
     // form and filters.
-    const singularSettings = settings.pipe(take(1));
+    const singularSettings = forkJoin([settings.pipe(take(1)), this.at.queryParams.pipe(take(1))]).pipe(
+      map(([settings, params]) => {
+        // If either tags or orgs are present in the query params, use them, including overriding one or the other of the missing query params.
+        // When entering the page with query params, the query params represent an absolute state and as such no settings should be used, even if they exist.
+        if (params.tags || params.orgs) {
+          return {
+            tags: params.tags ? params.tags : '',
+            organizations: params.orgs ? params.orgs : ''
+          };
+        } else {
+          return settings;
+        }
+      }),
+      shareReplay(1)
+    );
 
     // Initial form patch so that the filters get passed down to the day cards
-    singularSettings.subscribe((settings) => {
-      this.form.patchValue({
-        tags: settings.tags ? (settings.tags as string).split(',') : null,
-        organizations: settings.organizations ? (settings.organizations as string).split(',') : null
+    // In the case that the user has already set filters and there was a change to the orgs or tags which results in a guid no longer existing,
+    // since we use an exclusive filter, we need to ensure that the filters are valid otherwise it's possible that no events will be displayed.
+    // Logic is simple: Get filters from local storage, and then compare against current tags and orgs and filter
+    singularSettings
+      .pipe(
+        switchMap((settings) => {
+          return forkJoin([this.tags$, this.organizations$]).pipe(map(([tags, orgs]) => ({ settings, tags, orgs })));
+        })
+      )
+      .subscribe((combined) => {
+        const splitTags = combined.settings.tags ? (combined.settings.tags as string).split(',') : [];
+        const splitOrgs = combined.settings.organizations ? (combined.settings.organizations as string).split(',') : [];
+
+        const onlyValidTags = splitTags.filter((tag) => {
+          return combined.tags.some((t) => {
+            return t.guid === tag;
+          });
+        });
+
+        const onlyValidOrgs = splitOrgs.filter((org) => {
+          return combined.orgs.some((o) => {
+            return o.guid === org;
+          });
+        });
+
+        this.form.patchValue({
+          tags: onlyValidTags,
+          organizations: onlyValidOrgs
+        });
       });
-    });
 
     this.isAuthed$ = this.as.isAuthenticated$;
     this.activeSeason$ = this.ss.activeSeason$.pipe(shareReplay());
-    this.tags$ = this.tagService.getEntitiesForActiveSeason().pipe(shareReplay());
-    this.organizations$ = this.os.getEntitiesForActiveSeason().pipe(shareReplay());
     this.userInfo$ = this.isAuthed$.pipe(
       filter((auth) => {
         return auth === true;
