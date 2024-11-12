@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -55,7 +56,9 @@ export class EventViewComponent implements OnInit, OnDestroy {
     private readonly us: UserService,
     private readonly ns: NotificationService,
     private readonly st: SettingsService,
-    private readonly as: AuthService
+    private readonly as: AuthService,
+    private readonly at: ActivatedRoute,
+    private readonly rt: Router
   ) {}
 
   public ngOnInit() {
@@ -92,11 +95,34 @@ export class EventViewComponent implements OnInit, OnDestroy {
     //
     settings.pipe(takeUntil(this._destroy$)).subscribe((settings) => {
       console.log('Set new filters', settings);
+
+      this.rt.navigate([], {
+        relativeTo: this.at,
+        queryParams: {
+          tags: settings.tags ? settings.tags.toString() : null,
+          orgs: settings.organizations ? settings.organizations.toString() : null
+        },
+        queryParamsHandling: 'merge'
+      });
     });
 
     // Shorthand for getting the initial settings state value and using as seed value for
     // form and filters.
-    const singularSettings = settings.pipe(take(1));
+    const singularSettings = forkJoin([settings.pipe(take(1)), this.at.queryParams.pipe(take(1))]).pipe(
+      map(([settings, params]) => {
+        // If either tags or orgs are present in the query params, use them, including overriding one or the other of the missing query params.
+        // When entering the page with query params, the query params represent an absolute state and as such no settings should be used, even if they exist.
+        if (params.tags || params.orgs) {
+          return {
+            tags: params.tags ? params.tags : '',
+            organizations: params.orgs ? params.orgs : ''
+          };
+        } else {
+          return settings;
+        }
+      }),
+      shareReplay(1)
+    );
 
     // Initial form patch so that the filters get passed down to the day cards
     // In the case that the user has already set filters and there was a change to the orgs or tags which results in a guid no longer existing,
