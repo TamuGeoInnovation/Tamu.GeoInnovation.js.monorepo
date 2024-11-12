@@ -1,9 +1,13 @@
 name: Build and Publish Images
 
-# On workflow call if in a pull request
+# On pull request and depends on the build job
 on:
   pull_request:
     types: [opened, synchronize]
+  workflow_run:
+    workflows: ['Build Affected']
+    types:
+      - completed
 
 # Environment variables to use in the workflow
 
