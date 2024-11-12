@@ -1,7 +1,10 @@
 name: Build and Publish Images
 
+# On workflow call if in a pull request
 on:
   workflow_call:
+
+# Environment variables to use in the workflow
 
 env:
   REGISTRY: ghcr.io
@@ -9,9 +12,8 @@ env:
 
 jobs:
   list-publishable:
-    # Only run this job if pull request label is equal to "release"
-    # If this condition fails, build-and-publish will not run
-    if: ${{ github.event.label.name == 'release' }}
+    # Only run this job if the workflow was called from a pull request
+    if: github.event_name == 'workflow_call' && github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
