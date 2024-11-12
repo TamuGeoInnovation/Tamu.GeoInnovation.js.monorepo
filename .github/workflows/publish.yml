@@ -2,8 +2,6 @@ name: Build and Publish Images
 
 # On pull request and depends on the build job
 on:
-  pull_request:
-    types: [opened, synchronize]
   workflow_run:
     workflows: ['Build Affected']
     types:
@@ -18,6 +16,7 @@ env:
 jobs:
   list-publishable:
     # Only run this job if the workflow was called from a pull request
+    if: github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -26,7 +25,8 @@ jobs:
         uses: dawidd6/action-download-artifact@v6
         with:
           workflow: main.yml
-          name: ${{ github.event.pull_request.head.sha }}
+          # name: ${{ github.event.pull_request.head.sha }}
+          name: ${{ github.event.workflow_run.head_sha }}
           path: artifacts
       - name: 'Set matrix'
         id: set-matrix
@@ -50,7 +50,8 @@ jobs:
         uses: dawidd6/action-download-artifact@v6
         with:
           workflow: main.yml
-          name: ${{ github.event.pull_request.head.sha }}
+          # name: ${{ github.event.pull_request.head.sha }}
+          name: ${{ github.event.workflow_run.head_sha }}
           path: artifacts
 
       - name: Docker login
