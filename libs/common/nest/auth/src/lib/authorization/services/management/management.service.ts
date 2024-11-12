@@ -66,7 +66,7 @@ export class ManagementService {
     const user = await this._client.getUser({ id: userId });
 
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException('User not found.');
     }
 
     try {
@@ -98,6 +98,7 @@ export class ManagementService {
 
       return this._composeMetadata(updatedMetadata, filters);
     } catch (err) {
+      Logger.error(err.message, 'ManagementService');
       throw new UnprocessableEntityException(err.message);
     }
   }
