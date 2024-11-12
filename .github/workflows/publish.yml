@@ -2,7 +2,8 @@ name: Build and Publish Images
 
 # On workflow call if in a pull request
 on:
-  workflow_call:
+  pull_request:
+    types: [opened, synchronize]
 
 # Environment variables to use in the workflow
 
@@ -13,7 +14,6 @@ env:
 jobs:
   list-publishable:
     # Only run this job if the workflow was called from a pull request
-    if: github.event_name == 'workflow_call' && github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
