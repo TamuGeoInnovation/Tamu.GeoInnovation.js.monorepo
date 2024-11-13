@@ -38,7 +38,7 @@ export class SpeakerController {
 
   @Get('participating')
   public async getParticipatingSpeakersForActiveSeason() {
-    return this.provider.getSpeakersForActiveSeasonInEvents();
+    return this.provider.getSpeakersForActiveSeasonInEvents(true);
   }
 
   @Get(':guid')

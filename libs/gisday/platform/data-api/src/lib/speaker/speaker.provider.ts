@@ -67,7 +67,12 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     return this.getSpeakersForSeason(season.guid);
   }
 
-  public async getSpeakersForActiveSeasonInEvents() {
+  /**
+   * Returns speakers that are participating in events for the active season.
+   *
+   * @param limitToPopulated If true, further filters speakers that have a photo an bio.
+   */
+  public async getSpeakersForActiveSeasonInEvents(limitToPopulated?: boolean) {
     const season = await this.seasonService.findOneActive();
 
     if (!season) {
@@ -87,21 +92,31 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university']
     });
 
-    const speakers = events
+    // Extract ALL speakers from ALL events
+    const eventSpeakers = events
       .map((event) => event.speakers)
       .reduce((acc, curr) => {
         return acc.concat(curr);
       }, []);
 
-    return speakers.reduce((acc, curr) => {
+    // Remove duplicates
+    const unique = eventSpeakers.reduce((acc, curr) => {
       const existing = acc.find((speaker) => speaker.guid === curr.guid);
 
       if (!existing) {
-        return acc.concat(curr);
-      } else {
-        return acc;
+        if (limitToPopulated) {
+          if (curr?.description?.length > 0 && curr?.images?.length > 0) {
+            return acc.concat(curr);
+          }
+        } else {
+          return acc.concat(curr);
+        }
       }
+
+      return acc;
     }, []);
+
+    return unique;
   }
 
   public async getPresenters() {
