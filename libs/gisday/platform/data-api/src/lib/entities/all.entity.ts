@@ -829,7 +829,7 @@ export class Submission extends GuidIdentity {
   @Column({ default: false })
   public acceptance: boolean;
 
-  @Column({ length: 'MAX' })
+  @Column({ length: 'MAX', nullable: true })
   public message: string;
 
   @Column({ nullable: true })

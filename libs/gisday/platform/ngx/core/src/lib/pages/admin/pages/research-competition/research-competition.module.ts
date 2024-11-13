@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import { GISDayPipesModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { ResearchCompetitionComponent } from './research-competition.component';
 import { ResearchCompetitionListComponent } from './pages/research-competition-list/research-competition-list.component';
@@ -28,7 +29,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, UIFormsModule, PipesModule],
+  imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, UIFormsModule, PipesModule, GISDayPipesModule],
   declarations: [ResearchCompetitionComponent, ResearchCompetitionListComponent, ResearchCompetitionReviewComponent]
 })
 export class ResearchCompetitionModule {}

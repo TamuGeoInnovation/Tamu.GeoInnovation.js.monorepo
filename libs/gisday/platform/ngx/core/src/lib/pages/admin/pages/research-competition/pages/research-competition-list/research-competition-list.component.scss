@@ -1,0 +1,21 @@
+table {
+  table-layout: fixed;
+
+  .selection-col {
+    width: 2.5rem;
+  }
+
+  .title-col {
+    width: 40%;
+  }
+
+  .title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .status {
+    font-weight: 600;
+  }
+}

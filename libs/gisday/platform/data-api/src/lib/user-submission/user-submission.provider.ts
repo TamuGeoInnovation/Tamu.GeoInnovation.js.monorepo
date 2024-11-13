@@ -134,6 +134,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       if (submission.acceptance !== undefined) {
         existingSubmission.reviewed = true;
         existingSubmission.acceptance = submission.acceptance;
+        existingSubmission.message = submission.message;
       } else {
         delete existingSubmission.acceptance;
         delete existingSubmission.message;
@@ -145,7 +146,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     try {
-      return this.userSubmissionRepo.update(submissionGuid, submission);
+      return this.userSubmissionRepo.update(submissionGuid, existingSubmission);
     } catch (err) {
       throw new InternalServerErrorException('Could not update user submission.');
     }
@@ -162,7 +163,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new NotFoundException('Submission not found.');
     }
 
-    if (submission.accountGuid !== accountGuid && requestorPermissions.indexOf('delete:competitions') > -1) {
+    if (submission.accountGuid !== accountGuid && requestorPermissions.indexOf('delete:competitions') === -1) {
       throw new UnauthorizedException();
     }
 
