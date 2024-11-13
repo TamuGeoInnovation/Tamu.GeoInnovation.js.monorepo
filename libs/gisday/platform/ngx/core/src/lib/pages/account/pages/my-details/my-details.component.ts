@@ -169,6 +169,10 @@ export class MyDetailsComponent implements OnInit {
     this._signedOnEntity.subscribe({
       next: (result) => {
         this.form.patchValue(result);
+
+        if (result?.user_info?.email === '' || result?.user_info?.email === null || result?.user_info?.email?.length === 0) {
+          this.form.get('user_info.email').enable();
+        }
       },
       error: (e) => {
         this.ns.toast({
