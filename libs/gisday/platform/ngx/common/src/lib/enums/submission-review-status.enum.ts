@@ -1,5 +1,5 @@
 export enum SUBMISSION_REVIEW_STATUS {
-  InReview = 'In Review',
+  InReview = 'Pending Review',
   Accepted = 'Accepted',
   Rejected = 'Rejected',
   Unknown = 'Unknown'

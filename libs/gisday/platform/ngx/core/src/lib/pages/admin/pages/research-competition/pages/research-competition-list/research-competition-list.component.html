@@ -1,0 +1,58 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Research Competition Submissions</div>
+      <div class="form-section-actions">
+        <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <ng-container *ngIf="entitiesForActiveSeasonOrForSeasonGuid$ | async as entities">
+        <table class="floating-table" *ngIf="entities?.length > 0; else noEntities">
+          <colgroup>
+            <col class="selection-col" />
+            <col class="title-col" />
+            <col />
+            <col />
+            <col />
+          </colgroup>
+
+          <thead>
+            <tr>
+              <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
+              <th>Name</th>
+              <th>Format</th>
+              <th>Classification</th>
+              <th class="status">Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="selectable" [routerLink]="['review', entity.guid]" *ngFor="let entity of entities">
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
+              <td class="title" [title]="entity.title">{{entity.title}}</td>
+              <td>{{entity.format | titlecase}}</td>
+              <td>{{entity.classificationType | titlecase}}</td>
+              <td class="status" [ngClass]="{'clr-md-amber-800': (entity | submissionReviewStatus) === SubmissionReviewStatus.InReview, 'clr-md-green-600': (entity | submissionReviewStatus) === SubmissionReviewStatus.Accepted, 'clr-md-red-500': (entity | submissionReviewStatus) === SubmissionReviewStatus.Rejected}">{{entity | submissionReviewStatus}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="selected-action-container info-block context" *ngIf="(selectedRows$ | async)?.length > 0">
+          <div>
+            <p><strong>{{(selectedRows$ | async).length}} selected</strong></p>
+          </div>
+
+          <div class="selected-actions">
+            <p class="selected-action caution" (click)="promptDeleteModal('Submission')">Delete <span class="material-icons action">delete_forever</span></p>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #noEntities>
+        <p>There are no research competition submissions for the selected season.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

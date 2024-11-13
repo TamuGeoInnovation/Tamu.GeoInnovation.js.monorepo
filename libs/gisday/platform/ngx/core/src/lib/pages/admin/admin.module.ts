@@ -55,6 +55,11 @@ const routes: Routes = [
         loadChildren: () => import('./pages/rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
       },
       {
+        path: 'research-competition',
+        loadChildren: () =>
+          import('./pages/research-competition/research-competition.module').then((m) => m.ResearchCompetitionModule)
+      },
+      {
         path: 'places',
         loadChildren: () => import('./pages/places/places.module').then((m) => m.PlacesModule)
       },
