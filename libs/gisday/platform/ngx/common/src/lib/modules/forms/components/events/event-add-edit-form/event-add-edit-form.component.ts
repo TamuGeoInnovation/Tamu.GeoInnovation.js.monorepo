@@ -202,6 +202,15 @@ export class EventAddEditFormComponent implements OnInit {
       shareReplay()
     );
 
+    const formSpeakerChanges = (this.eventSpeakers$ = this.form.get('speakers').valueChanges.pipe(
+      withLatestFrom(this.speakers$),
+      map(([speakerGuids, speakers]) => {
+        return speakerGuids.map((guid) => {
+          return speakers.find((speaker) => speaker.guid === guid);
+        });
+      })
+    ));
+
     if (this.type === 'edit') {
       this.entity$ = this.at.params.pipe(
         map((params) => {
@@ -217,14 +226,7 @@ export class EventAddEditFormComponent implements OnInit {
       );
 
       this.eventSpeakers$ = merge(
-        this.form.get('speakers').valueChanges.pipe(
-          withLatestFrom(this.speakers$),
-          map(([speakerGuids, speakers]) => {
-            return speakerGuids.map((guid) => {
-              return speakers.find((speaker) => speaker.guid === guid);
-            });
-          })
-        ),
+        formSpeakerChanges,
         this.entity$.pipe(
           map((event) => {
             return event.speakers;
@@ -251,6 +253,8 @@ export class EventAddEditFormComponent implements OnInit {
 
       this.selectedEventDateEnd$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('endTime'), shareReplay());
     } else {
+      this.eventSpeakers$ = formSpeakerChanges;
+
       this.selectedEventDateStart$ = this._defaultTimeFromSelectedEvent$().pipe(
         this._applyTimeToForm('startTime'),
         shareReplay()
