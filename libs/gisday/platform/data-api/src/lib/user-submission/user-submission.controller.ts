@@ -12,7 +12,7 @@ import {
   UseGuards
 } from '@nestjs/common';
 
-import { JwtGuard } from '@tamu-gisc/common/nest/auth';
+import { JwtGuard, PermissionsGuard, Permissions } from '@tamu-gisc/common/nest/auth';
 
 import { Submission } from '../entities/all.entity';
 import { UserSubmissionProvider } from './user-submission.provider';
@@ -34,18 +34,18 @@ export class UserSubmissionController {
     return this.provider.getUserPresentation(guid, req.user.sub, req.user.permissions);
   }
 
-  @UseGuards(JwtGuard)
-  @Get()
-  public async getUserSubmissions(@Request() req) {
-    if (req.user) {
-      return this.provider.find({
-        where: {
-          accountGuid: req.user.sub
-        }
-      });
-    } else {
-      throw new UnauthorizedException();
-    }
+  @Permissions(['read:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('season/active')
+  public async getSubmissionForActiveSeason() {
+    return this.provider.getSubmissionsForActiveSeason();
+  }
+
+  @Permissions(['read:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Get('season/:guid')
+  public async getSubmissionsForSeason(@Param('guid') seasonGuid: string) {
+    return this.provider.getSubmissionsForSeason(seasonGuid);
   }
 
   @UseGuards(JwtGuard)

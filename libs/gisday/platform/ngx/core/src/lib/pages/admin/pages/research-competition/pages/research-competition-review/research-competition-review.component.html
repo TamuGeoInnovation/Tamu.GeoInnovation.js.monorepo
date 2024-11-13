@@ -1,0 +1,61 @@
+<form [formGroup]="form" (ngSubmit)="updateSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Review Submission</div>
+    </div>
+
+    <div class="form-section-body" *ngIf="entity$ | async as entity">
+      <div class="info-block warning" *ngIf="(entity$ | async)?.reviewed === true">
+        <p class="bold">This submission has already been reviewed by a TxGIS Day committee member. Submitting a review once again will trigger an additional email notice to all listed participants!</p>
+      </div>
+
+      <div class="form-collection column">
+        <h5>Title</h5>
+        <p class="review-value">{{entity.title}}</p>
+
+        <h5>Abstract</h5>
+        <p class="review-value">{{entity.abstract}}</p>
+
+        <h5>URL</h5>
+        <a class="review-value" [href]="entity.link" target="_blank">{{entity.link}}</a>
+
+        <h5>Format</h5>
+        <p class="review-value">{{entity.format | titlecase}}</p>
+
+        <h5>Classification</h5>
+        <p class="review-value">{{entity.classificationType | titlecase}}</p>
+
+        <h5>Participant(s)</h5>
+        <ul>
+          <li *ngFor="let participant of entity?.participants">{{participant.name}} <ng-container *ngIf="participant?.email">({{participant.email}}) </ng-container> <ng-container *ngIf="participant?.studentId">({{participant.studentId}})</ng-container></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Review Decision</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-slide-toggle formControlName="acceptance" [options]="reviewOptions" [displayPath]="'label'" [valuePath]="'value'"></tamu-gisc-slide-toggle>
+      </div>
+
+      <div class="form-collection column pad-top">
+        <p class="form-input-description">Optional: Provide a description on the review decision. This message will be relayed to the participant(s) via email on review submission.</p>
+        <tamu-gisc-textbox formControlName="message" [type]="'textarea'" [placeholder]="'Message'" [floatLabel]="true" [rows]="10"></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Submission" (click)="deleteEntity()"></tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="'Submit Review'"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -17,6 +17,37 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 
   /**
+   * Retrieves all presentations for the active season.
+   */
+  public async getSubmissionsForSeason(seasonGuid: string) {
+    const existingSeason = await this.seasonService.findOne({
+      where: {
+        guid: seasonGuid
+      }
+    });
+
+    if (!existingSeason) {
+      return [];
+    }
+
+    try {
+      return this.userSubmissionRepo.find({
+        where: {
+          season: existingSeason
+        }
+      });
+    } catch (err) {
+      throw new InternalServerErrorException('Could not retrieve user submissions.');
+    }
+  }
+
+  public async getSubmissionsForActiveSeason() {
+    const season = await this.seasonService.findOneActive();
+
+    return this.getSubmissionsForSeason(season.guid);
+  }
+
+  /**
    * Retrieves all presentations for the active season for a given user.
    */
   public async getUserPresentationsForActiveSeason(
@@ -95,6 +126,22 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
 
     if (existingSubmission.accountGuid !== userGuid && requestorPermissions.indexOf('update:competitions') === -1) {
       throw new UnauthorizedException();
+    }
+
+    // Only attempt to modify review fields if the user has permission
+    // Otherwise, remove them preemptively to avoid users setting these.
+    if (requestorPermissions.indexOf('update:competitions') > -1) {
+      if (submission.acceptance !== undefined) {
+        existingSubmission.reviewed = true;
+        existingSubmission.acceptance = submission.acceptance;
+      } else {
+        delete existingSubmission.acceptance;
+        delete existingSubmission.message;
+        delete existingSubmission.reviewed;
+      }
+
+      // At this point we have resolved the existing submission, so we can remove the guid.
+      delete submission.guid;
     }
 
     try {
