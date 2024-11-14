@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { CurbCutsComponent } from './curb-cuts.component';
 import { RouterModule, Routes } from '@angular/router';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 const routes: Routes = [
   {
@@ -12,7 +13,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule],
   declarations: [CurbCutsComponent]
 })
 export class CurbCutsModule {}
