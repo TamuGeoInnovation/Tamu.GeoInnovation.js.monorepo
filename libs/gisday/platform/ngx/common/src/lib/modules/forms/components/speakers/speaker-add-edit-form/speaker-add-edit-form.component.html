@@ -34,7 +34,7 @@
       <div class="form-collection row">
         <div>
           <img [src]="speakerPhotoUrl$ | async" />
-          <tamu-gisc-file formControlName="file">
+          <tamu-gisc-file formControlName="file" clearMessage="Undo" accept="image/*">
             <p class="placeholder">Select Profile Picture</p>
           </tamu-gisc-file>
         </div>

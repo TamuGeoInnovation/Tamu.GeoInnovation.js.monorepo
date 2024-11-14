@@ -1,3 +1,4 @@
+@use 'libs/gisday/sass/variables' as vars;
 @import 'libs/sass/mixins';
 
 :host {
@@ -14,6 +15,14 @@ input[type='file'] {
   left: 0;
   height: 100%;
   width: 100%;
+  cursor: pointer;
+}
+
+.inline-link {
+  position: relative;
+  z-index: 1;
+  color: vars.$gisday-blue-secondary;
+  font-weight: 600;
   cursor: pointer;
 }
 

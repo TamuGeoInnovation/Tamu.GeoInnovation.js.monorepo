@@ -8,6 +8,7 @@
 
 <ng-template #hasFile>
   <p>{{fileName}}</p>
+  <p class="inline-link" (click)="reset()">{{clearMessage}}</p>
 </ng-template>
 
 <input type="file" [accept]="accept" (change)="handleFileChange($event)" />
