@@ -52,7 +52,7 @@
       <div class="form-collection row">
         <div>
           <img [src]="logoUrl$ | async" />
-          <tamu-gisc-file formControlName="file">
+          <tamu-gisc-file formControlName="file" accept="image/*">
             <p class="placeholder">Select Logo Image</p>
           </tamu-gisc-file>
         </div>

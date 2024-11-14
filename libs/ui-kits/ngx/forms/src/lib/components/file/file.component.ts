@@ -14,17 +14,23 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ]
 })
 export class FileComponent implements ControlValueAccessor {
-  /**
-   * Determines the checked state of the checkbox ref element.
-   *
-   * Defaults to `false`.
-   */
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
-  private _value = false;
+  private _value = null;
 
+  /**
+   * File formats to accept. Default is all.
+   *
+   * https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept#unique_file_type_specifiers
+   */
   @Input()
   public accept = '*';
+
+  /**
+   * Reset CTA action text, displayed after a file has been selected.
+   */
+  @Input()
+  public clearMessage = 'Clear';
 
   @Output()
   public fileSelected: EventEmitter<File> = new EventEmitter();
@@ -46,8 +52,6 @@ export class FileComponent implements ControlValueAccessor {
   }
 
   public handleFileChange(event) {
-    // const reader = new FileReader();
-
     if (event.target.files && event.target.files.length) {
       const [file]: [File] = event.target.files;
 
@@ -64,19 +68,8 @@ export class FileComponent implements ControlValueAccessor {
 
       this.fileSelected.emit(file);
 
-      // reader.readAsDataURL(file);
-
-      // reader.onload = () => {
-      //   // this.value = reader.result;
-
-      //   this.fileSelected.emit({
-      //     name: this.fileName,
-      //     type: this.dataType,
-      //     extension: this.fileExtension,
-      //     size: file.size,
-      //     content: reader.result
-      //   });
-      // };
+      // Immediately clear the input value to prepare for the next file selection. This is important when the file input is cleared and the same file is selected again.
+      event.target.value = '';
     }
   }
 
@@ -101,5 +94,13 @@ export class FileComponent implements ControlValueAccessor {
 
   public setDisabledState(disabled?: boolean) {
     this.value = disabled;
+  }
+
+  public reset() {
+    this.value = null;
+    this.fileName = undefined;
+    this.dataType = undefined;
+    this.fileExtension = undefined;
+    this.fileSelected.next(undefined);
   }
 }

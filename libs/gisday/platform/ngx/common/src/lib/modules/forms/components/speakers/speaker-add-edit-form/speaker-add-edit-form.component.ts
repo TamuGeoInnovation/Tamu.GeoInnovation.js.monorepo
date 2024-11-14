@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
+import { Observable, distinctUntilChanged, filter, map, merge, of, race, shareReplay, switchMap, take } from 'rxjs';
 
 import { Organization, Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -72,23 +72,36 @@ export class SpeakerAddEditFormComponent implements OnInit {
       map((params) => params.guid),
       filter((guid) => guid !== undefined),
       switchMap((guid) => this.ss.getEntity(guid)),
-      shareReplay()
+      shareReplay(1)
+    );
+
+    const speakerImageFromEntity$ = this.entity$.pipe(
+      switchMap((ent) => {
+        if (ent?.images?.[0]?.guid !== undefined && ent?.images?.[0]?.guid !== null) {
+          return this.as.getAssetUrl(ent?.images?.[0]?.path);
+        } else {
+          return of(null);
+        }
+      }),
+      shareReplay(1)
     );
 
     // Image preview can come from two sources:
     // 1. The entity itself, if it has a photoUrl property
     // 2. The form, if the user has selected a file
     this.speakerPhotoUrl$ = merge(
-      this.entity$.pipe(
-        filter((ent) => ent?.images?.[0]?.guid !== undefined && ent?.images?.[0]?.guid !== null),
-        switchMap((entity) => {
-          return this.as.getAssetUrl(entity?.images?.[0]?.path);
+      speakerImageFromEntity$,
+      this.form.get('file').valueChanges.pipe(
+        distinctUntilChanged(),
+        switchMap((file) => {
+          if (file !== null) {
+            return of(this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)));
+          } else {
+            this.form.get('file').reset();
+            // speakerImageFromEntity$ relies on the entity resolving which will not happen in a "create" state, and so we need to return a null value when the entity is not resolved.
+            return race(speakerImageFromEntity$, of(null));
+          }
         })
-      ),
-      this.form.valueChanges.pipe(
-        map((value) => value.file),
-        filter((file) => file !== null),
-        map((file) => this.sn.bypassSecurityTrustUrl(URL.createObjectURL(file)))
       )
     );
 
