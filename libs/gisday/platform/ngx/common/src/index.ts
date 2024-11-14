@@ -18,6 +18,7 @@ export * from './lib/utils/parse-date-strings';
 
 // Enums
 export * from './lib/enums/submission-review-status.enum';
+export * from './lib/enums/place-visibility-options.enum';
 
 // Roles
 export * from './lib/roles/gisday.roles';

@@ -1,13 +1,14 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map, startWith, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, mergeMap, startWith, tap, toArray } from 'rxjs/operators';
 
 import { ActiveSeasonDto, Place } from '@tamu-gisc/gisday/platform/data-api';
 import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 import { GISDayRoles } from '../../roles/gisday.roles';
+import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enum';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -48,7 +49,11 @@ export class HeaderComponent implements OnInit {
     this.loggedIn$ = this.as.isAuthenticated$;
     this.userRoles$ = this.as.userRoles$;
     this.activeSeason$ = this.ss.activeSeason$;
-    this.places$ = this.ps.getEntitiesForActiveSeason();
+    this.places$ = this.ps.getEntitiesForActiveSeason().pipe(
+      mergeMap((places) => places),
+      filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.Header)),
+      toArray()
+    );
 
     const currUrl = this.rt.events.pipe(
       startWith(''),

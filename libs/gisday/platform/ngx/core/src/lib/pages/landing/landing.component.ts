@@ -5,17 +5,20 @@ import {
   filter,
   interval,
   map,
+  mergeMap,
   NEVER,
   Observable,
   pipe,
   shareReplay,
   startWith,
   Subscription,
-  switchMap
+  switchMap,
+  toArray
 } from 'rxjs';
 
 import { PlaceService, SeasonService, SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { ActiveSeasonDto, Place, SeasonDay, Sponsor } from '@tamu-gisc/gisday/platform/data-api';
+import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const numberDictionary = {
   0: 'Zero',
@@ -70,7 +73,12 @@ export class LandingComponent implements OnInit {
 
     this.activeSeason$ = this.seasonService.getActiveSeason().pipe(shareReplay());
     this.sponsors$ = this.sponsorService.getEntitiesForActiveSeason().pipe(shareReplay());
-    this.organizations$ = this.placeService.getEntitiesForActiveSeason().pipe(shareReplay());
+    this.organizations$ = this.placeService.getEntitiesForActiveSeason().pipe(
+      mergeMap((places) => places),
+      filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.OrgPage)),
+      toArray(),
+      shareReplay()
+    );
 
     this.activeSeasonDays$ = this.activeSeason$.pipe(
       map((season) => season?.days),

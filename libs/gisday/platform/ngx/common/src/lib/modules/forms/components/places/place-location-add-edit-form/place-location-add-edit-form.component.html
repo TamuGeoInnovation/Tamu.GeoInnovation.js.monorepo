@@ -58,6 +58,21 @@
 
   <div class="form-section">
     <div class="form-section-toolbar">
+      <div class="form-section-title">Visibility Settings</div>
+    </div>
+
+    <div class="form-section-body">
+      <p>In many cases, it's not necessary or appropriate to list all organizations in footers, headers, and about pages which generate create flow-breaking content. Select the locations in which this organization should be listed:</p>
+      <div class="form-collection column">
+        <tamu-gisc-checkbox-group referenceId="value" formControlName="visibilitySettings">
+          <tamu-gisc-checkbox *ngFor="let option of visibilitySettingsOptions" [data]="option" [label]="option.label"></tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
       <div class="form-section-title">Links</div>
       <div class="form-section-actions">
         <a (click)="addOrgLink()">Add link <span class="material-icons action">add</span></a>

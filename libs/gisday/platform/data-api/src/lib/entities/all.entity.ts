@@ -227,6 +227,9 @@ export class Place extends GuidIdentity {
   @Column({ nullable: true })
   public website?: string;
 
+  @Column({ nullable: true, type: 'simple-json' })
+  public visibilitySettings?: Array<string>;
+
   @OneToMany(() => EventLocation, (location) => location.place, { cascade: true })
   public locations?: EventLocation[];
 
