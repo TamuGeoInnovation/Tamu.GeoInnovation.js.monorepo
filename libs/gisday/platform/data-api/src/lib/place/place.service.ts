@@ -145,6 +145,7 @@ export class PlaceService extends BaseProvider<Place> {
   public async createPlace(place: Partial<Place>, file?: Express.Multer.File) {
     try {
       let links: Array<PlaceLink> = [];
+      const visibilitySettings = this._deserializeStringifiedJSON(place.visibilitySettings as unknown as string);
 
       if (place.links && place.links.length > 0) {
         // Because the payload is formData, we need to parse the stringified JSON
@@ -157,7 +158,7 @@ export class PlaceService extends BaseProvider<Place> {
         });
       }
 
-      const created = this.pRepo.create({ ...place, links });
+      const created = this.pRepo.create({ ...place, links, visibilitySettings });
 
       const saved = await this.pRepo.save(created);
 
@@ -197,6 +198,7 @@ export class PlaceService extends BaseProvider<Place> {
       }
 
       let links: Array<Partial<PlaceLink>> = [];
+      const visibilitySettings = this._deserializeStringifiedJSON(place.visibilitySettings as unknown as string);
 
       if (place.links && place.links.length > 0) {
         // Because the payload is formData, we need to parse the stringified JSON
@@ -228,7 +230,8 @@ export class PlaceService extends BaseProvider<Place> {
         ...existing,
         ...place,
         links: links,
-        logos: [logoImage]
+        logos: [logoImage],
+        visibilitySettings
       };
 
       if (logoImage === undefined) {
@@ -284,5 +287,17 @@ export class PlaceService extends BaseProvider<Place> {
 
   private async _saveImage(file) {
     return this.assetService.saveAsset(this._resourcePath, file, 'place-logo');
+  }
+
+  private _deserializeStringifiedJSON(value: string) {
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    if (typeof value !== 'string') {
+      return value;
+    }
+
+    return JSON.parse(value);
   }
 }

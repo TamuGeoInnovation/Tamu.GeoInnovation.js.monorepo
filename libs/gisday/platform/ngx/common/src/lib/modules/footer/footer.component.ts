@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, switchMap } from 'rxjs';
+import { filter, mergeMap, Observable, switchMap, toArray } from 'rxjs';
 
 import { Place, Season } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+
+import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enum';
 
 @Component({
   selector: 'tamu-gisc-app-footer',
@@ -21,7 +23,11 @@ export class FooterComponent implements OnInit {
     this.currentYear = new Date().getFullYear();
     this.organizations$ = this.activeSeason$.pipe(
       switchMap(() => {
-        return this.os.getEntitiesForActiveSeason();
+        return this.os.getEntitiesForActiveSeason().pipe(
+          mergeMap((places) => places),
+          filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.Footer)),
+          toArray()
+        );
       })
     );
   }

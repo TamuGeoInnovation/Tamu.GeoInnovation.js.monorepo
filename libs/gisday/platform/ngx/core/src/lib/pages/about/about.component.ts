@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Observable, filter, map, shareReplay, startWith } from 'rxjs';
+import { Observable, filter, map, mergeMap, shareReplay, startWith, toArray } from 'rxjs';
 
 import { ActiveSeasonDto, Place, SeasonDay, Speaker } from '@tamu-gisc/gisday/platform/data-api';
 import { PlaceService, SeasonService, SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { PlaceVisibilityOptions } from '@tamu-gisc/gisday/platform/ngx/common';
 
 const numberDictionary = {
   0: 'Zero',
@@ -44,7 +45,12 @@ export class AboutComponent implements OnInit {
 
   public ngOnInit(): void {
     this.activeSeason$ = this.seasonService.getActiveSeason().pipe(shareReplay());
-    this.organizations$ = this.placeServices.getEntitiesForActiveSeason().pipe(shareReplay());
+    this.organizations$ = this.placeServices.getEntitiesForActiveSeason().pipe(
+      mergeMap((places) => places),
+      filter((place) => place?.visibilitySettings && place.visibilitySettings.includes(PlaceVisibilityOptions.OrgPage)),
+      toArray(),
+      shareReplay(1)
+    );
     this.organizingMembers$ = this.speakerService.getOrganizingEntitiesForActiveSeason().pipe(shareReplay());
 
     this.activeSeasonDays$ = this.activeSeason$.pipe(

@@ -9,6 +9,7 @@ import { AssetsService, PlaceService, SeasonService } from '@tamu-gisc/gisday/pl
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { formToFormData } from '../../../../../utils/form-to-form-data';
+import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-options.enum';
 
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
@@ -22,6 +23,12 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   public form: FormGroup;
   public entity$: Observable<Partial<Place>>;
   public logoUrl$: Observable<SafeUrl>;
+
+  public visibilitySettingsOptions = [
+    { label: 'Header', value: PlaceVisibilityOptions.Header },
+    { label: 'Footer', value: PlaceVisibilityOptions.Footer },
+    { label: 'About Page', value: PlaceVisibilityOptions.OrgPage }
+  ];
 
   constructor(
     private readonly fb: FormBuilder,
@@ -45,6 +52,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
       website: [null],
       links: this.fb.array([]),
       file: [null],
+      visibilitySettings: [null],
       season: [null]
     });
 
