@@ -61,9 +61,9 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
 
   private fallenMap = {
     "Lucas John Kimmel '03": 'fallen_LucasJohnKimmel.jpg',
-    "Bryan A. Mclain '02": 'fallen_BryanAMcClain.jpg',
-    "Christopher D. Breen '02": 'fallen_ChristopherDBreen.jpg',
-    "Jeremy richard Frampton '99": 'fallen_JeremyRichardFrampton.jpg',
+    "Bryan A. McClain '02": 'fallen_BryanAMcClain.jpg',
+    "Christopher D. Breen '96": 'fallen_ChristopherDBreen.jpg',
+    "Jeremy Richard Frampton '99": 'fallen_JeremyRichardFrampton.jpg',
     "Chad A. Powell '03": 'fallen_ChadAPowell.jpg',
     "Jerry Don Self '01": 'fallen_JerryDonSelf.jpg',
     "Michael Stephen Ebanks '03": 'fallen_MichaelStephenEbanks.jpg',
