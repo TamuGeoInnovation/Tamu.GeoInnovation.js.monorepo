@@ -33,6 +33,8 @@ export class NotificationContainerComponent implements OnInit {
   }
 
   public action(event: Notification): void {
+    this.service.registerAction(event);
+
     if (this.analytics !== null) {
       const label = {
         guid: guid(),
