@@ -354,7 +354,18 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     visible: true,
     native: {
-      ...commonLayerProps
+      ...commonLayerProps,
+      labelingInfo: [],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          color: [0, 0, 0, 0.0],
+          outline: {
+            width: 0
+          }
+        }
+      }
     }
   },
   {
