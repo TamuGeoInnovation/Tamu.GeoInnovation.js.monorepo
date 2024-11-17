@@ -24,16 +24,6 @@
       }
     },
     {
-      "name": "google-fonts",
-      "cacheConfig": {
-        "strategy": "performance",
-        "maxAge": "5d",
-        "maxSize": 100,
-        "timeout": "100u"
-      },
-      "urls": ["https://fonts.googleapis.com/**", "https://fonts.gstatic.com/**"]
-    },
-    {
       "name": "arcgis-js",
       "cacheConfig": {
         "strategy": "performance",
