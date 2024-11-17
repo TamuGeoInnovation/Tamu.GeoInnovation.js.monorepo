@@ -1,0 +1,22 @@
+@use 'libs/sass/mixins' as m;
+
+.event-image {
+  @include m.flexbox();
+  @include m.flex-direction(row);
+  @include m.justify-content(center);
+  margin-bottom: 1.5rem;
+
+  img {
+    width: 8.5rem;
+  }
+}
+
+tamu-gisc-button {
+  &:first-child {
+    margin-right: 0.5rem;
+  }
+
+  &:last-child {
+    margin-left: 0.5rem;
+  }
+}

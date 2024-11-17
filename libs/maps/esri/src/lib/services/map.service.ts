@@ -2,7 +2,7 @@ import { Injectable, Component, Type } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
-import { debounceTime, filter, switchMap, take } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import {
@@ -52,51 +52,7 @@ export class EsriMapService {
     private environment: EnvironmentService,
     private http: HttpClient,
     private notificationService: NotificationService
-  ) {
-    this.store
-      .pipe(
-        take(1),
-        switchMap(() => {
-          return this.notificationService.actions.pipe(
-            filter((ns) => {
-              return ns.id === 'bonfire_remembrance';
-            }),
-            debounceTime(1),
-            switchMap(async () => {
-              const layer = this.findLayerById('poi-layer') as esri.FeatureLayer;
-              const bonfireLayer = this.findLayerById('bonfire-layer') as esri.FeatureLayer;
-
-              if (layer && layer.visible === false) {
-                layer.visible = true;
-              }
-
-              // This should be illegal, promise inside an observable stream
-              const feature = await layer.queryFeatures({
-                where: `name LIKE '%Bonfire Memorial%'`,
-                outFields: ['*'],
-                returnGeometry: true
-              });
-
-              const allFeatures = await bonfireLayer.queryFeatures();
-
-              if (feature && feature.features && feature.features.length > 0) {
-                const graphic = feature.features[0];
-
-                this._hitTest.next({ graphics: [graphic], popupComponent: (layer as any).popupComponent });
-
-                this.zoomTo({
-                  graphics: allFeatures.features,
-                  zoom: 19
-                });
-              }
-            })
-          );
-        })
-      )
-      .subscribe(() => {
-        console.log('Loaded bonfire remembrance...');
-      });
-  }
+  ) {}
 
   public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {
     // If properties specifies 2d mode, load 2d map view.
@@ -670,6 +626,10 @@ export class EsriMapService {
     } else {
       throw new Error('Map instances does not exist.');
     }
+  }
+
+  public triggerHitTest(hit: HitTestSnapshot) {
+    this._hitTest.next({ ...hit });
   }
 
   /**
