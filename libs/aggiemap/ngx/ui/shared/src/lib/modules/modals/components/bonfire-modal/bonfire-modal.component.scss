@@ -1,5 +1,9 @@
 @use 'libs/sass/mixins' as m;
 
+h2 {
+  font-size: 1.75rem;
+}
+
 .event-image {
   @include m.flexbox();
   @include m.flex-direction(row);
@@ -12,11 +16,31 @@
 }
 
 tamu-gisc-button {
+  margin-bottom: 0.5rem;
+
   &:first-child {
     margin-right: 0.5rem;
   }
 
   &:last-child {
     margin-left: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .event-image {
+    img {
+      width: 5rem;
+    }
+  }
+
+  #cta-button-container {
+    @include m.justify-content(center);
+
+    tamu-gisc-button {
+      margin-bottom: 1rem;
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
 }
