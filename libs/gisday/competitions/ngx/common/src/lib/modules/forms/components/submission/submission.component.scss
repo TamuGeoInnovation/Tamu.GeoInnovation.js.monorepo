@@ -129,3 +129,16 @@
   font-size: 0.75rem;
   margin-bottom: 1rem;
 }
+
+.button {
+  position: relative;
+
+  .progress {
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    height: 5rem;
+    background: #757575;
+    opacity: 0.5;
+  }
+}

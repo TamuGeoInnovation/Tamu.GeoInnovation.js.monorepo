@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, EMPTY, NEVER, Observable, of, Subject } from 'rxjs';
-import { catchError, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, filter, map, shareReplay, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { HttpEventType } from '@angular/common/http';
 
 import { Angulartics2 } from 'angulartics2';
@@ -94,8 +94,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
       // will be no form controls to ever emit form statusChanges. If that's the case, emit a VALID state for the form statusChanges so the
       // only other thing to check is the image input change.
       this.formValid = combineLatest([
-        (this.form.get('fields') as FormArray).controls.length > 0 ? this.form.statusChanges : of('VALID')
-        // this.file.pipe(filter((e) => e !== undefined))
+        (this.form.get('fields') as FormArray).controls.length > 0 ? this.form.statusChanges : of('VALID'),
+        this.file.pipe(filter((e) => e !== undefined))
       ]).pipe(
         startWith(['INVALID']),
         map(([formValid]) => {
@@ -124,11 +124,11 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public submitResponse() {
     return (
-      combineLatest([this.as.user$])
-        // return combineLatest([this.file.pipe(take(1)), this.as.user$])
+      // combineLatest([this.as.user$])
+      combineLatest([this.file.pipe(take(1)), this.as.user$])
         .pipe(
           // switchMap(([file, user]) => {
-          switchMap(([user]) => {
+          switchMap(([file, user]) => {
             // if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
             if (this.form.valid && this.submissionStatus.getValue() !== 1 && this.formModel?.allowSubmissions === true) {
               // FormData gets sent as multi-part form in request.
@@ -154,7 +154,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
               data.append('location', JSON.stringify(location));
               data.append('value', JSON.stringify(value));
               data.append('season', this.formModel.season.guid);
-              // data.append('head1', file);
+              data.append('head1', file);
 
               return this.ss.postSubmission(data).pipe(
                 switchMap((event) => {
