@@ -14,7 +14,15 @@
         "polyfills": "apps/ts-football-angular/src/polyfills.ts",
         "tsConfig": "apps/ts-football-angular/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/ts-football-angular/src/favicon.ico", "apps/ts-football-angular/src/assets"],
+        "assets": [
+          "apps/ts-football-angular/src/favicon.ico",
+          "apps/ts-football-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
         "styles": ["apps/ts-football-angular/src/styles.scss"],
         "scripts": []
       },
