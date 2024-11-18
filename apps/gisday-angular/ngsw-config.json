@@ -12,26 +12,6 @@
         "strategy": "freshness",
         "timeout": "250u"
       }
-    },
-    {
-      "name": "tiles",
-      "urls": ["https://basemaps.arcgis.com/arcgis/rest/services/**"],
-      "cacheConfig": {
-        "maxSize": 3000,
-        "maxAge": "30d",
-        "strategy": "performance",
-        "timeout": "10u"
-      }
-    },
-    {
-      "name": "arcgis-js",
-      "cacheConfig": {
-        "strategy": "performance",
-        "maxAge": "5d",
-        "maxSize": 100,
-        "timeout": "100u"
-      },
-      "urls": ["https://js.arcgis.com/**", "https://www.arcgis.com/sharing/**", "https://cdn.arcgis.com/sharing/**"]
     }
   ]
 }
