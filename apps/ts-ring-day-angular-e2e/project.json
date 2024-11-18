@@ -1,0 +1,29 @@
+{
+  "root": "apps/ts-ring-day-angular-e2e",
+  "sourceRoot": "apps/ts-ring-day-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/ts-ring-day-angular-e2e/cypress.json",
+        "devServerTarget": "ts-ring-day-angular:serve:development",
+        "tsConfig": "apps/ts-ring-day-angular-e2e/tsconfig.json"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "ts-ring-day-angular:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ts-ring-day-angular-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ts-ring-day-angular"]
+}

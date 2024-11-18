@@ -1,0 +1,6 @@
+{
+  "projectType": "library",
+  "root": "libs/ts/sass",
+  "tags": ["type:styles"],
+  "targets": {}
+}

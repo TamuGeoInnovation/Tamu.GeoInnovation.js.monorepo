@@ -24,6 +24,16 @@ export const NotificationEvents: NotificationProperties[] = [
     imgAltText: '"Box Icon'
   },
   {
+    id: 'ring-day-fall-1',
+    title: 'Aggie Ring Day',
+    range: [1728495718000, 1728752400000],
+    acknowledge: false,
+    message:
+      'Congratulations Ags! Get the best transportation information on your Ring Day with the <a href="https://aggiemap.tamu.edu/ringday/" target="_blank">Ring Day Event Map</a>.',
+    imgUrl: './assets/images/aggie-ring.svg',
+    imgAltText: 'Ring Day Icon'
+  },
+  {
     id: 'graduation',
     title: 'Graduation',
     range: [1557247098694, 1557637200000],
