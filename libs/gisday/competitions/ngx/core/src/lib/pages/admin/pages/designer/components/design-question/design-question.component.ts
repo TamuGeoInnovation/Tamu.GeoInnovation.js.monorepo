@@ -44,7 +44,7 @@ export class DesignQuestionComponent {
     },
     {
       type: 'checkbox',
-      name: 'checkbox'
+      name: 'Checkbox'
     }
   ];
 }

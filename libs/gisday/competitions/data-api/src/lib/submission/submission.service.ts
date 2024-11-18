@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, getRepository, Repository } from 'typeorm';
 
@@ -50,13 +50,14 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       const sub = await this.submissionRepo.create(withTrunc).save();
 
       if (blobs) {
-        // await Promise.all(
-        //   blobs.map((b) => {
-        //     b.submission = sub;
-        //     return this.mediaRepo.create(b).save();
-        //   })
-        // );
-        console.log(`Blob handling not implemented.`);
+        await Promise.all(
+          blobs.map((b) => {
+            b.submission = sub;
+            return this.mediaRepo.create(b).save();
+          })
+        );
+
+        Logger.log(`Created submission with media attachments.`, 'SubmissionService');
       }
 
       return sub;

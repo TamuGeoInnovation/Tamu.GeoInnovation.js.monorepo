@@ -52,7 +52,7 @@ async function bootstrap() {
 
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
-  app.use(json({ limit: '5mb' }));
+  app.use(json({ limit: '50mb' }));
 
   const port = environment.port;
   await app.listen(port, () => {

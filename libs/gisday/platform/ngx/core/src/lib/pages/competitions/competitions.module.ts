@@ -74,6 +74,10 @@ const routes: Routes = [
         loadChildren: () => import('./manhole-mapping/manhole-mapping.module').then((m) => m.ManholeMappingModule)
       },
       {
+        path: 'curb-cuts',
+        loadChildren: () => import('./curb-cuts/curb-cuts.module').then((m) => m.CurbCutsModule)
+      },
+      {
         path: '',
         loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
       }
