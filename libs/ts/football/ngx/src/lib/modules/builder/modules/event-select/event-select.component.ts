@@ -68,4 +68,8 @@ export class EventSelectComponent implements OnInit {
       throw new Error('Failed to save date selection.');
     }
   };
+
+  public setEvent(eventName: string) {
+    console.warn(`Setting event to ${eventName}`);
+  }
 }
