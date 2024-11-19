@@ -19,9 +19,9 @@ const routes: Routes = [
         loadChildren: () => import('./modules/builder/modules/intro/intro.module').then((m) => m.IntroModule)
       },
       {
-        path: 'date',
+        path: 'event',
         loadChildren: () =>
-          import('./modules/builder/modules/date-select/date-select.module').then((m) => m.DateSelectModule)
+          import('./modules/builder/modules/event-select/event-select.module').then((m) => m.EventSelectModule)
       },
       {
         path: 'accommodations',

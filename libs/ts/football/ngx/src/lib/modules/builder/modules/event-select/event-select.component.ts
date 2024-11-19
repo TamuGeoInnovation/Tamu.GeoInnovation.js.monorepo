@@ -8,11 +8,11 @@ import { EventDates } from '../../../../interfaces/football.interface';
 import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
 
 @Component({
-  selector: 'tamu-gisc-date-select',
-  templateUrl: './date-select.component.html',
-  styleUrls: ['./date-select.component.scss']
+  selector: 'tamu-gisc-event-select',
+  templateUrl: './event-select.component.html',
+  styleUrls: ['./event-select.component.scss']
 })
-export class DateSelectComponent implements OnInit {
+export class EventSelectComponent implements OnInit {
   public dates: EventDates;
   public timestampedDates: Array<Date>;
   public savedDate: Observable<string>;

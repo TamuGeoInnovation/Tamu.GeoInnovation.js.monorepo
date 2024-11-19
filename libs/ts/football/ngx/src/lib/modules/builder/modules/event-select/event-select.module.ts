@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DateSelectComponent } from './date-select.component';
+import { EventSelectComponent } from './event-select.component';
 
-const routes: Routes = [{ path: '', component: DateSelectComponent }];
+const routes: Routes = [{ path: '', component: EventSelectComponent }];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [DateSelectComponent]
+  declarations: [EventSelectComponent]
 })
-export class DateSelectModule {}
+export class EventSelectModule {}
