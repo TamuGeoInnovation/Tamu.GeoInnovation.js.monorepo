@@ -3,11 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { BasePopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 
 @Component({
-  selector: 'tamu-gisc-ring-day-markdown',
-  templateUrl: './ring-day-markdown.component.html',
-  styleUrls: ['./ring-day-markdown.component.scss']
+  selector: 'tamu-gisc-game-day-markdown',
+  templateUrl: './game-day-markdown.component.html',
+  styleUrls: ['./game-day-markdown.component.scss']
 })
-export class RingDayMarkdownComponent extends BasePopupComponent implements OnInit {
+export class GameDayMarkdownComponent extends BasePopupComponent implements OnInit {
   public title: string;
   public isContentTheSame: boolean;
 

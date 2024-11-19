@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RingDayMarkdownComponent } from './ring-day-markdown.component';
+import { GameDayMarkdownComponent } from './game-day-markdown.component';
 
-describe('RingDayMarkdownComponent', () => {
-  let component: RingDayMarkdownComponent;
-  let fixture: ComponentFixture<RingDayMarkdownComponent>;
+describe('GameDayMarkdownComponent', () => {
+  let component: GameDayMarkdownComponent;
+  let fixture: ComponentFixture<GameDayMarkdownComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RingDayMarkdownComponent]
+      declarations: [GameDayMarkdownComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RingDayMarkdownComponent);
+    fixture = TestBed.createComponent(GameDayMarkdownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

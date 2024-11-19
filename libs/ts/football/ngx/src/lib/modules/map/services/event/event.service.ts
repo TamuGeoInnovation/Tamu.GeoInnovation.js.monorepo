@@ -17,8 +17,9 @@ import esri = __esri;
 export class EventService {
   public settings: FootballSettings;
 
-  public layerReferences: [
-    GAMEDAY_LAYERS.GAMEDAY_ROOT,
+  public layerReferences = [
+    GAMEDAY_LAYERS.GAMEDAY_ROOT_DISABLED_AND_PRESALE,
+    GAMEDAY_LAYERS.GAMEDAY_ROOT_POIS,
     GAMEDAY_LAYERS.GAMEDAY_STRIPES,
     GAMEDAY_LAYERS.GAMEDAY_RNS_SPACES,
     GAMEDAY_LAYERS.GAMEDAY_FOOTBALL_PARKING_LOTS,

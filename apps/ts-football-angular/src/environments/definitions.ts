@@ -3,6 +3,8 @@ import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { GAMEDAY_LAYERS } from '@tamu-gisc/ts/football/ngx';
 
+import { Popups as EventPopups } from '@tamu-gisc/ts/football/ngx';
+
 export const NotificationEvents = [];
 
 export const Connections = {
@@ -137,77 +139,109 @@ export const Definitions = {
 };
 
 export const ColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: Definitions.GAMEDAY.id,
-    title: Definitions.GAMEDAY.name,
-    url: Definitions.GAMEDAY.url,
-    popupComponent: Popups.BaseDirectionsComponent,
-    visible: true,
-    listMode: 'show'
-  },
+  // {
+  //   type: 'feature',
+  //   id: Definitions.GAMEDAY.id,
+  //   title: Definitions.GAMEDAY.name,
+  //   url: Definitions.GAMEDAY.url,
+  //   popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+  //   popupData: {
+  //     name: 'attributes.Name',
+  //     description: 'attributes.Description'
+  //   },
+  //   visible: true,
+  //   listMode: 'show',
+  //   native: {
+  //     outFields: ['*']
+  //   }
+  // },
   {
     type: 'feature',
     id: Definitions.GAMEDAY_DISABLED_AND_PRESALE.id,
     title: Definitions.GAMEDAY_DISABLED_AND_PRESALE.name,
     url: Definitions.GAMEDAY_DISABLED_AND_PRESALE.url,
-    popupComponent: Popups.BaseDirectionsComponent,
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    popupData: {
+      name: 'attributes.Name',
+      description: 'attributes.Description'
+    },
     visible: true,
-    listMode: 'show'
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
     id: Definitions.GAMEDAY_POIS.id,
     title: Definitions.GAMEDAY_POIS.name,
     url: Definitions.GAMEDAY_POIS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
-    visible: true,
-    listMode: 'show'
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    visible: false,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
     id: Definitions.GAMEDAY_STRIPES.id,
     title: Definitions.GAMEDAY_STRIPES.name,
     url: Definitions.GAMEDAY_STRIPES.url,
-    popupComponent: Popups.BaseDirectionsComponent,
-    visible: true,
-    listMode: 'show'
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    visible: false,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
     id: Definitions.GAMEDAY_RNS_SPACES.id,
     title: Definitions.GAMEDAY_RNS_SPACES.name,
     url: Definitions.GAMEDAY_RNS_SPACES.url,
-    popupComponent: Popups.BaseDirectionsComponent,
-    visible: true,
-    listMode: 'show'
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    visible: false,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
     id: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.id,
     title: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.name,
     url: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
-    visible: true,
-    listMode: 'show'
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    visible: false,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
     id: Definitions.GAMEDAY_GRASS_MALL_AREAS.id,
     title: Definitions.GAMEDAY_GRASS_MALL_AREAS.name,
     url: Definitions.GAMEDAY_GRASS_MALL_AREAS.url,
-    popupComponent: Popups.BaseDirectionsComponent,
-    visible: true,
-    listMode: 'show'
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    visible: false,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
   },
   {
     type: 'feature',
     id: Definitions.GAMEDAY_GET_TO_THE_GRID.id,
     title: Definitions.GAMEDAY_GET_TO_THE_GRID.name,
     url: Definitions.GAMEDAY_GET_TO_THE_GRID.url,
-    popupComponent: Popups.BaseDirectionsComponent,
-    visible: true,
-    listMode: 'show'
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    visible: false,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
   }
 ];
 

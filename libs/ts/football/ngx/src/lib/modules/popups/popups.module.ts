@@ -4,10 +4,10 @@ import { CommonModule } from '@angular/common';
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
-import { RingDayMarkdownWDirectionsComponent } from './ring-day-markdown-w-directions/ring-day-markdown-w-directions.component';
-import { RingDayMarkdownComponent } from './ring-day-markdown/ring-day-markdown.component';
+import { GameDayMarkdownWDirectionsComponent } from './game-day-markdown-w-directions/game-day-markdown-w-directions.component';
+import { GameDayMarkdownComponent } from './game-day-markdown/game-day-markdown.component';
 
-const popups = [RingDayMarkdownWDirectionsComponent, RingDayMarkdownComponent];
+const popups = [GameDayMarkdownWDirectionsComponent, GameDayMarkdownComponent];
 
 @NgModule({
   imports: [CommonModule, AggiemapNgxPopupsModule, UIClipboardModule],
@@ -17,6 +17,6 @@ const popups = [RingDayMarkdownWDirectionsComponent, RingDayMarkdownComponent];
 export class PopupsModule {}
 
 export const Popups = {
-  RingDayMarkdownWDirectionsComponent,
-  RingDayMarkdownComponent
+  GameDayMarkdownWDirectionsComponent: GameDayMarkdownWDirectionsComponent,
+  GameDayMarkdownComponent: GameDayMarkdownComponent
 };

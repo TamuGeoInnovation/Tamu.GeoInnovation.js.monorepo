@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
 import esri = __esri;
 
@@ -54,6 +55,22 @@ export class PopupService {
         return;
       }
 
+      let resolved;
+
+      if (graphicLayer.popupData) {
+        resolved = Object.entries(graphicLayer.popupData).reduce((acc, [key, value]) => {
+          if (acc[key] === undefined) {
+            acc[key] = getPropertyValue(topGraphic, graphicLayer.popupData[value]);
+          }
+
+          return acc;
+        }, {});
+      }
+
+      if (resolved) {
+        topGraphic.attributes = { ...topGraphic.attributes, ...resolved };
+      }
+
       return {
         component: graphicLayer.popupComponent,
         data: topGraphic
@@ -80,4 +97,5 @@ export class PopupService {
 
 interface ILayerWithPopupComponent extends esri.Layer {
   popupComponent: Type<Component>;
+  popupData?: Record<string, any>;
 }

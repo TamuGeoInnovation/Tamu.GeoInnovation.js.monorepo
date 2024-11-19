@@ -56,15 +56,15 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly ts: TestingService,
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
-    private readonly mioSettings: GameDaySettingsService,
-    private readonly mioService: EventService
+    private readonly eventsSettingsService: GameDaySettingsService,
+    private readonly eventService: EventService
   ) {}
 
   public ngOnInit() {
     // Settings can come from either local storage or from the url query parameters
 
-    this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
-    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
+    this.hasSettings = this.eventsSettingsService.queryParamsFromSettings !== null;
+    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventsSettingsService.queryParamsFromSettings}`;
 
     this._connections = this.env.value('Connections');
     this.isDev = this.ts.get('isTesting');
