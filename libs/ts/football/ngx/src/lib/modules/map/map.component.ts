@@ -112,7 +112,7 @@ export class MapComponent implements OnInit, OnDestroy {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
               maxScale: 0 // maxZoom is the max you can zoom INTO the ground
             },
-            zoom: 17,
+            zoom: 16,
             ui: {
               components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
             },

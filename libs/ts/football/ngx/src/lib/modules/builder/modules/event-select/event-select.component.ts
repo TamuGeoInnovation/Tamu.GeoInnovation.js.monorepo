@@ -54,7 +54,7 @@ export class EventSelectComponent implements OnInit {
       if (hasRet !== undefined) {
         this.router.navigate([`builder/${hasRet}`]);
       } else {
-        this.router.navigate(['builder/review']);
+        this.router.navigate(['map']);
       }
     } else {
       throw new Error('Failed to save event selection.');
