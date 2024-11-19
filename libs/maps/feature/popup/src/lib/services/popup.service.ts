@@ -58,9 +58,9 @@ export class PopupService {
       let resolved;
 
       if (graphicLayer.popupData) {
-        resolved = Object.entries(graphicLayer.popupData).reduce((acc, [key, value]) => {
+        resolved = Object.entries(graphicLayer.popupData).reduce((acc, [key, dotNotationPath]) => {
           if (acc[key] === undefined) {
-            acc[key] = getPropertyValue(topGraphic, graphicLayer.popupData[value]);
+            acc[key] = getPropertyValue(topGraphic, dotNotationPath);
           }
 
           return acc;

@@ -97,13 +97,13 @@ export const Definitions = {
   GAMEDAY_DISABLED_AND_PRESALE: {
     id: GAMEDAY_LAYERS.GAMEDAY_ROOT_DISABLED_AND_PRESALE,
     layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT_DISABLED_AND_PRESALE,
-    name: 'Game Day Disabled and Presale',
+    name: 'Accessible Parking and Presale',
     url: `${Connections.gamedayUrl}/1`
   },
   GAMEDAY_POIS: {
     id: GAMEDAY_LAYERS.GAMEDAY_ROOT_POIS,
     layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT_POIS,
-    name: 'Game Day POIs',
+    name: 'Game Day Points of Interest',
     url: `${Connections.gamedayUrl}/2`
   },
   GAMEDAY_STRIPES: {
@@ -162,11 +162,10 @@ export const ColdLayerSources: LayerSource[] = [
     url: Definitions.GAMEDAY_DISABLED_AND_PRESALE.url,
     popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
     popupData: {
-      name: 'attributes.Name',
-      description: 'attributes.Description'
+      description: 'attributes.Notes_1'
     },
-    visible: true,
-    listMode: 'show',
+    visible: false,
+    listMode: 'hide',
     native: {
       outFields: ['*']
     }
@@ -177,7 +176,10 @@ export const ColdLayerSources: LayerSource[] = [
     title: Definitions.GAMEDAY_POIS.name,
     url: Definitions.GAMEDAY_POIS.url,
     popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-    visible: false,
+    popupData: {
+      description: 'attributes.Notes_1'
+    },
+    visible: true,
     listMode: 'show',
     native: {
       outFields: ['*']
@@ -189,8 +191,8 @@ export const ColdLayerSources: LayerSource[] = [
     title: Definitions.GAMEDAY_STRIPES.name,
     url: Definitions.GAMEDAY_STRIPES.url,
     popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-    visible: false,
-    listMode: 'show',
+    visible: true,
+    listMode: 'hide',
     native: {
       outFields: ['*']
     }
@@ -201,8 +203,8 @@ export const ColdLayerSources: LayerSource[] = [
     title: Definitions.GAMEDAY_RNS_SPACES.name,
     url: Definitions.GAMEDAY_RNS_SPACES.url,
     popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-    visible: false,
-    listMode: 'show',
+    visible: true,
+    listMode: 'hide',
     native: {
       outFields: ['*']
     }
@@ -213,7 +215,11 @@ export const ColdLayerSources: LayerSource[] = [
     title: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.name,
     url: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.url,
     popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-    visible: false,
+    popupData: {
+      name: 'attributes.LotName',
+      description: 'attributes.Note'
+    },
+    visible: true,
     listMode: 'show',
     native: {
       outFields: ['*']
@@ -225,7 +231,11 @@ export const ColdLayerSources: LayerSource[] = [
     title: Definitions.GAMEDAY_GRASS_MALL_AREAS.name,
     url: Definitions.GAMEDAY_GRASS_MALL_AREAS.url,
     popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-    visible: false,
+    popupData: {
+      name: 'attributes.Type',
+      description: 'attributes.aNote'
+    },
+    visible: true,
     listMode: 'show',
     native: {
       outFields: ['*']
