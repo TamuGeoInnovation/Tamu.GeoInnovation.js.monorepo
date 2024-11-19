@@ -4,8 +4,8 @@ import { AltSearchHelper, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search'
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
-import { FootballSettings } from '../../../../interfaces/football.interface';
+import { GameDaySettingsService } from '../../../map/services/settings/game-day-settings.service';
+import { FootballSettings, SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
 
 import esri = __esri;
 
@@ -18,19 +18,19 @@ export class SidebarReferenceComponent implements OnInit {
   public shareUrl: string;
   public hasSettings: boolean;
   public settings: FootballSettings;
-  public moveDate: Date | undefined;
+  public eventName: SHOWDOWN_EVENT;
 
   constructor(
     private readonly helper: AltSearchHelper,
     private readonly mapService: EsriMapService,
-    private readonly mioSettings: RingDaySettingsService
+    private readonly eventSettingsService: GameDaySettingsService
   ) {}
 
   public ngOnInit(): void {
-    this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
-    this.settings = this.mioSettings.settings;
-    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
-    this.moveDate = this.mioSettings.getMoveDateEventAsDate();
+    this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
+    this.settings = this.eventSettingsService.settings;
+    this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
+    this.eventName = this.eventSettingsService.savedEventType;
   }
 
   public onSearchResult(result: SearchSelection<unknown>): void {

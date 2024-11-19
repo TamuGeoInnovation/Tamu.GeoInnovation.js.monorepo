@@ -1,14 +1,14 @@
 <div class="container12">
-  <p class="trailer-2 center-text component-instructions">Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations on your Ring Day.</p>
+  <p class="trailer-2 center-text component-instructions">Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations.</p>
 
   <div class="flex flex-row justify-center">
     <div class="column6 flex flex-column" id="settings-table">
       <div class="setting-item">
-        <div>Ring Day Appointment Date</div>
+        <div>Showdown Event</div>
         <div>
-          <p *ngIf="!settings || settings.date === undefined">Not Set</p>
-          <p *ngIf="settings && settings.date !== undefined">{{eventDate | date : 'MMMM'}} {{ eventDate | date : 'd' }}, {{eventDate | date : 'YYYY'}}</p>
-          <p [routerLink]="['/builder/date']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/date', {ret: 'review'})" (keyup.enter)="next('builder/date', {ret: 'review'})" tabindex="0">Change</p>
+          <p *ngIf="!settings || settings.event === undefined">Not Set</p>
+          <p *ngIf="settings && settings.event !== undefined">{{eventName}}</p>
+          <p [routerLink]="['/builder/event']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/event', {ret: 'review'})" (keyup.enter)="next('builder/event', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
 

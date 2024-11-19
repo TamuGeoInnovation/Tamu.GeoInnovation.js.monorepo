@@ -1,7 +1,7 @@
 <div class="container12">
   <p class="center-text component-instructions">Select a Showdown Rivalry event.</p>
 
-  <div class="event-card-container" (click)="setEvent('yell-practice')">
+  <div class="event-card-container" (click)="saveEvent(eventTypes.YellPractice)">
     <div class="event-card">
       <div class="event-card__image-container">
         <img src="./assets/images/yell-practice.jpg" alt="The Texas A&M Yell Leaders with their backs to the camera at midnight yell practice." />
@@ -13,11 +13,11 @@
 
       <div class="event-card__body-content">
         <p class="location">Kyle Field</p>
-        <p class="description">Vestibulum ut aliquam ipsum, non semper nunc. Ut tristique tempus enim imperdiet bibendum. Ut blandit sed metus interdum mattis. Nulla facilisi.</p>
+        <p class="description">Kick off the weekend with Fighting Texas Aggie Yell Practice. An evening filled with your favorite Aggie stories, guest appearances from Head Coach Mike Elko and the Texas A&M Football team! Join as we get the crowd and team ready for the game. Following Yell Practice, we will have a Texas-sized 12th Man Fireworks Show.</p>
       </div>
     </div>
 
-    <div class="event-card" (click)="setEvent('yell-practice')">
+    <div class="event-card" (click)="saveEvent(eventTypes.ShowdownConcert)">
       <div class="event-card__image-container">
         <img src="./assets/images/shane-smith-and-the-saints.jpg" alt="Shane Smith and the Saints group photo" />
       </div>
@@ -27,11 +27,11 @@
       </div>
       <div class="event-card__body-content">
         <p class="location">Reed Arena</p>
-        <p class="description">Sed porttitor pretium dolor id cursus. Phasellus cursus tortor nibh, eget euismod arcu pretium vitae. Aliquam consectetur massa felis, non blandit sem pellentesque non.</p>
+        <p class="description">Carry on the weekend and let Aggieland steal you away for a night of musical fun with some of Texas country's finest artists! Dance the night away with performances by Pat Green, Shane Smith and the Saints, and the Randy Rogers Band.</p>
       </div>
     </div>
 
-    <div class="event-card" (click)="setEvent('yell-practice')">
+    <div class="event-card" (click)="saveEvent(eventTypes.BBQ)">
       <div class="event-card__image-container">
         <img src="./assets/images/bbq-1.jpg" alt="An Aggie pitmaster checks a rack of ribs over the grill." />
       </div>
@@ -41,7 +41,7 @@
       </div>
       <div class="event-card__body-content">
         <p class="location">Aggie Spirit Lawn</p>
-        <p class="description">Etiam a urna tristique, rhoncus quam eu, fringilla arcu. Mauris at vehicula diam. Proin varius et odio in efficitur. Quisque et blandit mauris, ut interdum leo. Fusce scelerisque lorem nec purus dapibus auctor.</p>
+        <p class="description">The 13-0 Burn is a nod to a rivalry event dating back to 1920. This year, we are firing up the grills and serving up mouthwatering BBQ in a cook-off to celebrate our Aggie pride with unmatched enthusiasm. Whether you're a seasoned fan or new to the rivalry, this event is all about savoring great food and embracing the heart of the Aggie Spirit. Sign up a team to compete in the cook off!</p>
       </div>
     </div>
   </div>

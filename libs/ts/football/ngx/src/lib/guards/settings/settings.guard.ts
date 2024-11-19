@@ -7,14 +7,14 @@ import { Angulartics2 } from 'angulartics2';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { QueryParamSettings } from '../../interfaces/football.interface';
-import { RingDaySettingsService } from '../../modules/map/services/settings/ring-day-settings.service';
+import { GameDaySettingsService } from '../../modules/map/services/settings/game-day-settings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsGuard implements CanActivate {
   constructor(
-    private readonly mioSettings: RingDaySettingsService,
+    private readonly eventSettingsService: GameDaySettingsService,
     private readonly router: Router,
     private readonly ns: NotificationService,
     private readonly anl: Angulartics2
@@ -24,7 +24,7 @@ export class SettingsGuard implements CanActivate {
     route: ActivatedRouteSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     // Settings can come from either local storage or from the url query parameters
-    const moveinSettings = this.mioSettings.settings;
+    const moveinSettings = this.eventSettingsService.settings;
     const queryParams = route.queryParams as QueryParamSettings;
     const queryParamsKeySize = Object.keys(queryParams).length;
 
@@ -35,7 +35,7 @@ export class SettingsGuard implements CanActivate {
     try {
       // Call move-in/out settings service to update and set/overwrite any settings in local storage.
       if (queryParamsKeySize) {
-        this.mioSettings.setSettingsFromQueryParams(queryParams);
+        this.eventSettingsService.setSettingsFromQueryParams(queryParams);
 
         this.anl.eventTrack.next({
           action: 'settings_load',

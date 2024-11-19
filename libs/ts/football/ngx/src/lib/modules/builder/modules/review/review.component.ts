@@ -5,8 +5,8 @@ import { Angulartics2 } from 'angulartics2';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { FootballSettings } from '../../../../interfaces/football.interface';
-import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
+import { FootballSettings, GAMEDAY_EVENT_NAMES, SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
+import { GameDaySettingsService } from '../../../map/services/settings/game-day-settings.service';
 
 @Component({
   selector: 'tamu-gisc-review',
@@ -16,29 +16,23 @@ import { RingDaySettingsService } from '../../../map/services/settings/ring-day-
 export class ReviewComponent implements OnInit {
   public settings: FootballSettings;
   public settingsValid = false;
-  public eventDate: Date;
+  public eventName: SHOWDOWN_EVENT;
+  public eventNames = GAMEDAY_EVENT_NAMES;
 
   constructor(
     private store: LocalStoreService,
     private router: Router,
     private route: ActivatedRoute,
-    private move: RingDaySettingsService,
+    private eventSettingsService: GameDaySettingsService,
     private angulartics: Angulartics2
   ) {}
 
   public ngOnInit() {
-    this.settings = this.store.getStorage<FootballSettings>({ primaryKey: 'ring-day-settings-2' });
+    this.settings = this.eventSettingsService.settings;
+    this.eventName = this.eventSettingsService.savedEventType;
 
     if (this.settings !== undefined) {
-      this.settingsValid = this.settings.date !== undefined && this.settings.accessible !== undefined;
-
-      if (this.settingsValid) {
-        const d = this.move.getDateForDay(this.settings.date);
-
-        if (d) {
-          this.eventDate = new Date(new Date().getFullYear(), d.month - 1, d.day);
-        }
-      }
+      this.settingsValid = this.settings.event !== undefined && this.settings.accessible !== undefined;
     }
   }
 

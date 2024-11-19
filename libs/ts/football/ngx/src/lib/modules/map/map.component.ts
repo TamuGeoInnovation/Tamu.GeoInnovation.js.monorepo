@@ -15,7 +15,7 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { EventService } from './services/event/event.service';
-import { RingDaySettingsService } from './services/settings/ring-day-settings.service';
+import { GameDaySettingsService } from './services/settings/game-day-settings.service';
 
 import esri = __esri;
 
@@ -56,7 +56,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly ts: TestingService,
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
-    private readonly mioSettings: RingDaySettingsService,
+    private readonly mioSettings: GameDaySettingsService,
     private readonly mioService: EventService
   ) {}
 

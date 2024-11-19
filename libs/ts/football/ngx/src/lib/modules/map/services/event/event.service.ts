@@ -4,24 +4,27 @@ import { delay } from 'rxjs';
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
+import { LayerSource } from '@tamu-gisc/common/types';
 
-import { FootballSettings } from '../../../../interfaces/football.interface';
-import { RingDaySettingsService } from '../settings/ring-day-settings.service';
+import { FootballSettings, GAMEDAY_LAYERS } from '../../../../interfaces/football.interface';
+import { GameDaySettingsService } from '../settings/game-day-settings.service';
 
 import esri = __esri;
-
-const LayerReferences = {
-  areas: 'ring-day-areas-layer',
-  paths: 'ring-day-routes-layer',
-  pois: 'ring-day-pois-layer'
-};
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
   public settings: FootballSettings;
+
+  public layerReferences: [
+    GAMEDAY_LAYERS.GAMEDAY_ROOT,
+    GAMEDAY_LAYERS.GAMEDAY_STRIPES,
+    GAMEDAY_LAYERS.GAMEDAY_RNS_SPACES,
+    GAMEDAY_LAYERS.GAMEDAY_FOOTBALL_PARKING_LOTS,
+    GAMEDAY_LAYERS.GAMEDAY_GRASS_MALL_AREAS,
+    GAMEDAY_LAYERS.GAMEDAY_GET_TO_THE_GRID
+  ];
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -30,7 +33,7 @@ export class EventService {
     private readonly env: EnvironmentService,
     private readonly moduleProvider: EsriModuleProviderService,
     private readonly mapService: EsriMapService,
-    private readonly settingsService: RingDaySettingsService
+    private readonly eventSettingsService: GameDaySettingsService
   ) {
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
@@ -40,118 +43,22 @@ export class EventService {
   }
 
   public init() {
-    this.settings = this.settingsService.settings;
+    this.settings = this.eventSettingsService.settings;
 
-    this.drawAreas();
-    this.drawPOIs();
-    this.drawPaths();
+    this.drawEvent();
   }
 
-  public async drawAreas() {
+  public async drawEvent() {
     try {
-      const source = this.getLayerSourceCopy(LayerReferences.areas) as FeatureLayerSourceProperties;
-      const eventDateStart = this.settingsService.getMoveDateEventAsDate();
+      const sources = this.layerReferences.map((ref) => this.getLayerSourceCopy(ref));
 
-      if (source.native && eventDateStart) {
-        // let expression = this._getFullDayExpression(eventDateStart, 'StartDate', 'EndDate');
-
-        // // If the user does not require ADA accommodations, the expression will be updated to exclude ADA types.
-        // if (!this.settings.accessible) {
-        //   expression += ` AND type not like '%ada%'`;
-        // }
-
-        const expression = this._getSuffixDayExpression(eventDateStart);
-
-        // Get features intersecting in user-selected zone
-        const features = await this.runTask(source.url, { where: expression }, false);
-
-        if (features.features.length > 0) {
-          // Make list of object id's in user-selected zone.
-          // This list will be used to make a new definition expression for the layer that will only display
-          // provided objectID's
-          const objectIdList = this.getAttributeList(features.features, 'OBJECTID');
-
-          source.native.definitionExpression = `OBJECTID IN (${objectIdList.toString()})`;
-
-          this.mapService.loadLayers([source as LayerSource]);
-        } else {
-          console.log('No Areas found for the definition expression: ', expression);
-        }
+      if (sources.length > 0) {
+        this.mapService.loadLayers(sources);
       } else {
-        throw new Error('drawAreas: No event date start found or invalid source.');
+        throw new Error('drawEvent: No layer sources found.');
       }
     } catch (err) {
       console.error(`Failed to draw ring day areas`, err);
-    }
-  }
-
-  /**
-   * POI's to load
-   */
-  public async drawPOIs() {
-    try {
-      const source = this.getLayerSourceCopy(LayerReferences.pois) as FeatureLayerSourceProperties;
-      const eventDateStart = this.settingsService.getMoveDateEventAsDate();
-
-      if (source.native && eventDateStart) {
-        // POIs don't have a type field, so we can't filter them by type
-        // We can only filter them by name, anything that does not have "%accessib%" in the title
-        // let expression = this._getFullDayExpression(eventDateStart, 'Start_Date', 'End_Date');
-
-        // if (!this.settings.accessible) {
-        //   expression += ` AND name not like '%accessib%'`;
-        // }
-
-        const expression = this._getSuffixDayExpression(eventDateStart);
-
-        const intersectingFeatures = await this.runTask(source.url, { where: expression }, false);
-
-        if (intersectingFeatures.features.length > 0) {
-          const objectIDList = this.getAttributeList(intersectingFeatures.features, 'OBJECTID');
-
-          source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
-
-          this.mapService.loadLayers([source as LayerSource]);
-        } else {
-          console.log('No POIs found for the definition expression: ', expression);
-        }
-      } else {
-        throw new Error('drawPOIs: No event date start found or invalid source.');
-      }
-    } catch (err) {
-      console.error(`Failed to draw POIs`, err);
-    }
-  }
-
-  /**
-   * Draws parking lots and surface lots
-   *
-   */
-  public async drawPaths() {
-    try {
-      const source = this.getLayerSourceCopy(LayerReferences.paths) as FeatureLayerSourceProperties;
-      const eventDateStart = this.settingsService.getMoveDateEventAsDate();
-
-      if (source.native && eventDateStart) {
-        // const expression = this._getFullDayExpression(eventDateStart, 'Start_Date', 'End_Date');
-        const expression = this._getSuffixDayExpression(eventDateStart);
-
-        const intersectingFeatures = await this.runTask(source.url, { where: expression }, false);
-
-        if (intersectingFeatures.features.length > 0) {
-          const objectIDList = this.getAttributeList(intersectingFeatures.features, 'OBJECTID');
-
-          source.native.definitionExpression = `OBJECTID IN (${objectIDList.toString()})`;
-
-          this.mapService.loadLayers([source as LayerSource]);
-        } else {
-          console.log('No Paths found for the definition expression: ', expression);
-        }
-      } else {
-        throw new Error('drawPaths: No event date start found or invalid source.');
-      }
-    } catch (err) {
-      console.error(`Failed to draw parking`, err);
     }
   }
 
@@ -248,29 +155,6 @@ export class EventService {
     // Assign provided query options.
     Object.assign(q, query);
 
-    // if (intersect) {
-    //   let polygon: esri.PolygonProperties;
-
-    //   if (typeof intersect === 'boolean') {
-    //     const existingBoundary = BOUNDARIES.find((b) => b.name == this.settings.residence.zone);
-
-    //     if (existingBoundary && existingBoundary.paths) {
-    //       polygon = { rings: [existingBoundary.paths] };
-    //     } else {
-    //       throw new Error('No existing boundary for provided residence zone.');
-    //     }
-    //   } else if (Array.isArray(intersect)) {
-    //     polygon = { rings: [intersect] };
-    //   } else if (typeof intersect === 'object' && intersect.toJSON) {
-    //     polygon = intersect.toJSON();
-    //   } else {
-    //     throw new Error('Invalid intersect value. Must be boolean or number[][]');
-    //   }
-
-    //   q.geometry = new Polygon(polygon);
-    //   q.spatialRelationship = 'intersects';
-    // }
-
     const result = await task.execute(q);
 
     if (returnFeatureLayer) {
@@ -282,74 +166,5 @@ export class EventService {
     } else {
       return result;
     }
-  }
-
-  /**
-   * Formats a date object derived from an EventDate object into a string suitable for use in ArcGIS REST API queries.
-   */
-  private _formatDate(date: Date, subtractHours?: number, addHours?: number): string {
-    const cloneDate = new Date(date);
-
-    // If subtractHours is provided, subtract that many hours from the date
-    if (subtractHours !== undefined && typeof subtractHours === 'number') {
-      cloneDate.setHours(cloneDate.getHours() - subtractHours);
-    }
-
-    if (addHours !== undefined && typeof addHours === 'number') {
-      cloneDate.setHours(cloneDate.getHours() + addHours);
-    }
-
-    return cloneDate.toLocaleString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  }
-
-  /**
-   * Gets definition expression for a given date, field, and operator.
-   */
-  private _getDateExpression(
-    date: Date,
-    field: string,
-    operator: string,
-    subtractHours?: number,
-    addHours?: number
-  ): string {
-    const expression = `${field} ${operator} date '${this._formatDate(date, subtractHours, addHours)}'`;
-
-    return expression;
-  }
-
-  /**
-   * Gets definition expression setting start and end time for the day.
-   */
-  private _getFullDayExpression(date: Date, startField: string, endField: string): string {
-    const startOfDayTime = new Date(date);
-    const endOfDayTime = new Date(startOfDayTime);
-    endOfDayTime.setHours(23, 59, 59, 999);
-
-    const expression = `(${this._getDateExpression(endOfDayTime, startField, '<=')}) AND (${this._getDateExpression(
-      startOfDayTime,
-      endField,
-      '>='
-    )})`;
-
-    return expression;
-  }
-
-  private _getSuffixDayExpression(date: Date): string {
-    const day = new Date(date).getUTCDate();
-
-    // This is strictly for the second ring day event which uses a different active schema.
-    // The first day is day 31, the second day is day 1.
-    const field = day === 31 ? 'Day1' : 'Day2';
-
-    const expression = `${field} = 1`;
-
-    return expression;
   }
 }

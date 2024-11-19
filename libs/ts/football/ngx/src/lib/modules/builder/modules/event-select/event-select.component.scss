@@ -3,17 +3,19 @@
 
 .event-card-container {
   @include m.flexbox();
+  @include m.flex-wrap(wrap);
 
   .event-card {
     background-color: #fff;
     border-radius: 5pt;
     margin: 0.75rem;
-    width: 33%;
+    width: 30%;
     padding-bottom: 0.75rem;
     overflow: hidden;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
     color: $font-color;
     cursor: pointer;
+    box-sizing: border-box;
     @include m.transition(box-shadow 0.2s);
 
     .event-card__image-container {

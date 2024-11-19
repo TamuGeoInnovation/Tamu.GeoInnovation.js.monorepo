@@ -1,7 +1,7 @@
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
-import { EventDates, Popups as EventPopups } from '@tamu-gisc/ts/ringday/ngx';
+import { GAMEDAY_LAYERS } from '@tamu-gisc/ts/football/ngx';
 
 export const NotificationEvents = [];
 
@@ -14,7 +14,7 @@ export const Connections = {
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
-  eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Ring_Day_2_view/FeatureServer'
+  gamedayUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer'
 };
 
 export const Definitions = {
@@ -86,353 +86,128 @@ export const Definitions = {
     name: 'VeoRide Bikes',
     url: `${Connections.bikeLocationsUrl}`
   },
-  RING_DAY_POIS: {
-    id: 'ring-day-pois',
-    layerId: 'ring-day-pois-layer',
-    name: 'Ring Day Points of Interest',
-    url: `${Connections.eventUrl}/0`
+  GAMEDAY: {
+    id: GAMEDAY_LAYERS.GAMEDAY_ROOT,
+    layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT,
+    name: 'Game Day',
+    url: `${Connections.gamedayUrl}/0`
   },
-  RING_DAY_ROUTES: {
-    id: 'ring-day-routes',
-    layerId: 'ring-day-routes-layer',
-    name: 'Ring Day Routes',
-    url: `${Connections.eventUrl}/1`
+  GAMEDAY_DISABLED_AND_PRESALE: {
+    id: GAMEDAY_LAYERS.GAMEDAY_ROOT_DISABLED_AND_PRESALE,
+    layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT_DISABLED_AND_PRESALE,
+    name: 'Game Day Disabled and Presale',
+    url: `${Connections.gamedayUrl}/1`
   },
-  RING_DAY_AREAS: {
-    id: 'ring-day-areas',
-    layerId: 'ring-day-areas-layer',
-    name: 'Ring Day Areas',
-    url: `${Connections.eventUrl}/2`
+  GAMEDAY_POIS: {
+    id: GAMEDAY_LAYERS.GAMEDAY_ROOT_POIS,
+    layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT_POIS,
+    name: 'Game Day POIs',
+    url: `${Connections.gamedayUrl}/2`
+  },
+  GAMEDAY_STRIPES: {
+    id: GAMEDAY_LAYERS.GAMEDAY_STRIPES,
+    layerId: GAMEDAY_LAYERS.GAMEDAY_STRIPES,
+    name: 'Game Day Stripes',
+    url: `${Connections.gamedayUrl}/3`
+  },
+  GAMEDAY_RNS_SPACES: {
+    id: GAMEDAY_LAYERS.GAMEDAY_RNS_SPACES,
+    layerId: GAMEDAY_LAYERS.GAMEDAY_RNS_SPACES,
+    name: 'Game Day RNS Spaces',
+    url: `${Connections.gamedayUrl}/4`
+  },
+  GAMEDAY_FOOTBALL_PARKING_LOTS: {
+    id: GAMEDAY_LAYERS.GAMEDAY_FOOTBALL_PARKING_LOTS,
+    layerId: GAMEDAY_LAYERS.GAMEDAY_FOOTBALL_PARKING_LOTS,
+    name: 'Game Day Football Parking Lots',
+    url: `${Connections.gamedayUrl}/5`
+  },
+  GAMEDAY_GRASS_MALL_AREAS: {
+    id: GAMEDAY_LAYERS.GAMEDAY_GRASS_MALL_AREAS,
+    layerId: GAMEDAY_LAYERS.GAMEDAY_GRASS_MALL_AREAS,
+    name: 'Game Day Grass Mall Areas',
+    url: `${Connections.gamedayUrl}/6`
+  },
+  GAMEDAY_GET_TO_THE_GRID: {
+    id: GAMEDAY_LAYERS.GAMEDAY_GET_TO_THE_GRID,
+    layerId: GAMEDAY_LAYERS.GAMEDAY_GET_TO_THE_GRID,
+    name: 'Game Day Get to the Grid',
+    url: `${Connections.gamedayUrl}/7`
   }
 };
 
 export const ColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: Definitions.RING_DAY_AREAS.layerId,
-    title: Definitions.RING_DAY_AREAS.name,
-    url: Definitions.RING_DAY_AREAS.url,
-    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-    listMode: 'show',
+    id: Definitions.GAMEDAY.id,
+    title: Definitions.GAMEDAY.name,
+    url: Definitions.GAMEDAY.url,
+    popupComponent: Popups.BaseDirectionsComponent,
     visible: true,
-    layerIndex: 2,
-    native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'Type',
-        defaultSymbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [255, 0, 0, 0.65],
-          outline: {
-            color: [110, 110, 110, 255],
-            width: 0
-          }
-        } as unknown,
-        defaultLabel: 'Lot or Street Closure',
-        uniqueValueInfos: [
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [0, 112, 255, 0.75],
-              outline: {
-                color: [110, 110, 110, 255],
-                width: 0
-              }
-            },
-            value: 'ADA',
-            label: 'ADA Route'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'backward-diagonal',
-              color: [215, 158, 158, 0.75],
-              outline: {
-                style: 'solid',
-                color: [90, 0, 0, 255],
-                width: 2
-              }
-            },
-            value: 'The Williams Alumni Center'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              // #C6FF00 in rgba
-              color: [198, 255, 0, 0.75],
-
-              outline: {
-                style: 'solid',
-                color: [90, 0, 0, 255],
-                width: 0
-              }
-            },
-            value: 'Gathering Area'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              // 009688 in rgba
-              color: [0, 150, 136, 0.75],
-              outline: {
-                color: [110, 110, 110, 255],
-                width: 0
-              }
-            },
-            value: 'Sales',
-            label: 'Aggie Ring Day Marketplace'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [223, 115, 255, 0.65],
-              outline: {
-                style: 'solid',
-                color: [132, 0, 168, 255],
-                width: 0
-              }
-            },
-            value: 'Event Parking'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-fill',
-              style: 'solid',
-              color: [255, 255, 115, 0.75],
-              outline: {
-                color: [110, 110, 110, 255],
-                width: 0
-              }
-            },
-            value: 'Ticketed Area'
-          }
-        ]
-      }
-    }
+    listMode: 'show'
   },
   {
     type: 'feature',
-    id: Definitions.RING_DAY_ROUTES.layerId,
-    title: Definitions.RING_DAY_ROUTES.name,
-    url: Definitions.RING_DAY_ROUTES.url,
-    popupComponent: EventPopups.RingDayMarkdownComponent,
-    listMode: 'show',
+    id: Definitions.GAMEDAY_DISABLED_AND_PRESALE.id,
+    title: Definitions.GAMEDAY_DISABLED_AND_PRESALE.name,
+    url: Definitions.GAMEDAY_DISABLED_AND_PRESALE.url,
+    popupComponent: Popups.BaseDirectionsComponent,
     visible: true,
-    layerIndex: 3,
-    native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'name',
-        uniqueValueInfos: [
-          {
-            symbol: {
-              type: 'simple-line',
-              style: 'short-dash',
-              color: [90, 0, 0, 255],
-              width: 3
-            },
-            value: 'Aggie Ring Day Exit Path'
-          },
-          {
-            symbol: {
-              type: 'simple-line',
-              style: 'short-dash-dot-dot',
-              color: [169, 0, 230, 255],
-              width: 3
-            },
-            value: 'Aggie Ring Day Shuttle - Entry to Aggie Ring Day'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-line',
-              style: 'solid',
-              color: [223, 115, 255, 255],
-              width: 3
-            },
-            value: 'Aggie Ring Day Shuttle Route'
-          } as unknown,
-          {
-            symbol: {
-              type: 'simple-line',
-              style: 'short-dot',
-              color: [169, 0, 230, 255],
-              width: 3
-            },
-            value: 'Walking Path to Aggie Ring Day (Via Pickard Pass Tunnel)'
-          } as unknown
-        ]
-      }
-    }
+    listMode: 'show'
   },
   {
     type: 'feature',
-    id: Definitions.RING_DAY_POIS.layerId,
-    title: Definitions.RING_DAY_POIS.name,
-    url: Definitions.RING_DAY_POIS.url,
-    popupComponent: EventPopups.RingDayMarkdownWDirectionsComponent,
-    listMode: 'show',
+    id: Definitions.GAMEDAY_POIS.id,
+    title: Definitions.GAMEDAY_POIS.name,
+    url: Definitions.GAMEDAY_POIS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
     visible: true,
-    native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'name',
-        defaultSymbol: {
-          type: 'picture-marker',
-          url: '/assets/icons/aggie/Ring Day-Negative.png',
-          width: 20,
-          height: 25,
-          angle: 0,
-          xoffset: 0,
-          yoffset: 0
-        } as unknown,
-        defaultLabel: 'Points of Interest',
-        uniqueValueInfos: [
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/shops-food/Dining.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Moore Family Creamery',
-            label: 'Moore Family Creamery'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/shops-food/Dining.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Concessions'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/accessibility/entry.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Entrance'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/accessibility/accessibleentry.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Accessible Entrance'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/personal-care/firstaid.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Medical Station'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/personal-care/Restrooms.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 10
-            },
-            value: 'Public Restrooms'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/transportation/Car.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Rideshare drop-off & pick up for Aggie Ring Day',
-            label: 'Rideshare drop-off & pick up'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/transportation/Bus.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Shuttle Stop'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/aggie/Cannon.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: "Spirit of '02 Cannon - Parsons Mounted Cavalry"
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/fixtures/Photo Opportunity.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'Photo Station'
-          } as unknown,
-          {
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/icons/fixtures/Theater.png',
-              width: 20,
-              height: 25,
-              angle: 0,
-              xoffset: 0,
-              yoffset: 0
-            },
-            value: 'The Swaim Amphitheater - Musical Performances'
-          }
-        ],
-        fieldDelimiter: ','
-      }
-    }
+    listMode: 'show'
+  },
+  {
+    type: 'feature',
+    id: Definitions.GAMEDAY_STRIPES.id,
+    title: Definitions.GAMEDAY_STRIPES.name,
+    url: Definitions.GAMEDAY_STRIPES.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    visible: true,
+    listMode: 'show'
+  },
+  {
+    type: 'feature',
+    id: Definitions.GAMEDAY_RNS_SPACES.id,
+    title: Definitions.GAMEDAY_RNS_SPACES.name,
+    url: Definitions.GAMEDAY_RNS_SPACES.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    visible: true,
+    listMode: 'show'
+  },
+  {
+    type: 'feature',
+    id: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.id,
+    title: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.name,
+    url: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    visible: true,
+    listMode: 'show'
+  },
+  {
+    type: 'feature',
+    id: Definitions.GAMEDAY_GRASS_MALL_AREAS.id,
+    title: Definitions.GAMEDAY_GRASS_MALL_AREAS.name,
+    url: Definitions.GAMEDAY_GRASS_MALL_AREAS.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    visible: true,
+    listMode: 'show'
+  },
+  {
+    type: 'feature',
+    id: Definitions.GAMEDAY_GET_TO_THE_GRID.id,
+    title: Definitions.GAMEDAY_GET_TO_THE_GRID.name,
+    url: Definitions.GAMEDAY_GET_TO_THE_GRID.url,
+    popupComponent: Popups.BaseDirectionsComponent,
+    visible: true,
+    listMode: 'show'
   }
 ];
 
@@ -824,17 +599,6 @@ export const SearchSources: SearchSource[] = [
     featuresLocation: 'features',
     displayTemplate: '{attributes.Type}',
     searchActive: false
-  }
-];
-
-export const Dates: EventDates = [
-  {
-    day: 31,
-    month: 10
-  },
-  {
-    day: 1,
-    month: 11
   }
 ];
 

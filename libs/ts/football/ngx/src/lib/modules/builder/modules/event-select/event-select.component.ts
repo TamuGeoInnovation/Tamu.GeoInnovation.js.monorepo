@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EventDates } from '../../../../interfaces/football.interface';
-import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
+import { SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
+import { GameDaySettingsService } from '../../../map/services/settings/game-day-settings.service';
 
 @Component({
   selector: 'tamu-gisc-event-select',
@@ -13,9 +13,9 @@ import { RingDaySettingsService } from '../../../map/services/settings/ring-day-
   styleUrls: ['./event-select.component.scss']
 })
 export class EventSelectComponent implements OnInit {
-  public dates: EventDates;
-  public timestampedDates: Array<Date>;
-  public savedDate: Observable<string>;
+  public event: SHOWDOWN_EVENT;
+
+  public eventTypes = SHOWDOWN_EVENT;
 
   private _refresh$: Subject<void> = new Subject();
 
@@ -23,34 +23,26 @@ export class EventSelectComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly angulartics: Angulartics2,
-    private readonly eventSettingsService: RingDaySettingsService
+    private readonly eventSettingsService: GameDaySettingsService
   ) {}
 
   public ngOnInit() {
-    this.dates = this.eventSettingsService.days;
-    this.savedDate = this._refresh$.pipe(
-      startWith(undefined),
-      map(() => this.eventSettingsService.eventDate),
-      shareReplay()
-    );
-
-    // Convert dates objects using day and month properties to Date objects. These will be used in template with date pipe.
-    this.timestampedDates = this.dates.map((d) => new Date(new Date().getFullYear(), d.month - 1, d.day));
+    this.event = this.eventSettingsService.savedEventType;
   }
 
   /**
    * Saves component value in local storage
    */
-  public saveDate = (item: Date) => {
-    const saved = this.eventSettingsService.saveEventDate(item);
+  public saveEvent = (item: SHOWDOWN_EVENT) => {
+    const saved = this.eventSettingsService.saveEventType(item);
 
     if (saved != undefined) {
       this.angulartics.eventTrack.next({
         action: 'settings_set',
         properties: {
-          category: 'date',
+          category: 'event',
           gstCustom: {
-            event_value: item.getTime()
+            event_value: item
           }
         }
       });
@@ -62,14 +54,10 @@ export class EventSelectComponent implements OnInit {
       if (hasRet !== undefined) {
         this.router.navigate([`builder/${hasRet}`]);
       } else {
-        this.router.navigate(['builder/accommodations']);
+        this.router.navigate(['builder/review']);
       }
     } else {
-      throw new Error('Failed to save date selection.');
+      throw new Error('Failed to save event selection.');
     }
   };
-
-  public setEvent(eventName: string) {
-    console.warn(`Setting event to ${eventName}`);
-  }
 }
