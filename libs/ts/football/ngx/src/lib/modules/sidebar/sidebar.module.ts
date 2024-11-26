@@ -10,6 +10,7 @@ import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 import { MoveInOutSidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
@@ -25,7 +26,8 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     SearchModule,
     MapsFeatureTripPlannerModule,
     LayerListModule,
-    LegendModule
+    LegendModule,
+    PipesModule
   ],
   declarations: [MoveInOutSidebarComponent, SidebarReferenceComponent],
   exports: [MoveInOutSidebarComponent]

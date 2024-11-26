@@ -5,7 +5,7 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { GameDaySettingsService } from '../../../map/services/settings/game-day-settings.service';
-import { FootballSettings, SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
+import { FootballSettings, GAMEDAY_EVENT_NAMES, SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
 
 import esri = __esri;
 
@@ -19,6 +19,7 @@ export class SidebarReferenceComponent implements OnInit {
   public hasSettings: boolean;
   public settings: FootballSettings;
   public eventName: SHOWDOWN_EVENT;
+  public eventNames = GAMEDAY_EVENT_NAMES;
 
   constructor(
     private readonly helper: AltSearchHelper,

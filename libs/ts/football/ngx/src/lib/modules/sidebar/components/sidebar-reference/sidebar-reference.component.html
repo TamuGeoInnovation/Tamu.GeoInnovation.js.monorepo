@@ -6,7 +6,7 @@
   </div>
 
   <div class="sidebar-component-content-container">
-    <p>Make coordination easy! The following link can be shared with friends and family to load map to <strong>{{eventName}}</strong></p>
+    <p>Make coordination easy! The following link can be shared with friends and family to load map to <strong>{{eventName | lookup : eventNames}}</strong></p>
 
     <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 

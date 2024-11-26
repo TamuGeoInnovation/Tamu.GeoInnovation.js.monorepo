@@ -7,7 +7,7 @@
         <div>Showdown Event</div>
         <div>
           <p *ngIf="!settings || settings.event === undefined">Not Set</p>
-          <p *ngIf="settings && settings.event !== undefined">{{eventName}}</p>
+          <p *ngIf="settings && settings.event !== undefined">{{eventName | lookup : eventNames}}</p>
           <p [routerLink]="['/builder/event']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/event', {ret: 'review'})" (keyup.enter)="next('builder/event', {ret: 'review'})" tabindex="0">Change</p>
         </div>
       </div>
