@@ -32,7 +32,7 @@ export class ReviewComponent implements OnInit {
     this.eventName = this.eventSettingsService.savedEventType;
 
     if (this.settings !== undefined) {
-      this.settingsValid = this.settings.event !== undefined && this.settings.accessible !== undefined;
+      this.settingsValid = this.settings.event !== undefined;
     }
   }
 

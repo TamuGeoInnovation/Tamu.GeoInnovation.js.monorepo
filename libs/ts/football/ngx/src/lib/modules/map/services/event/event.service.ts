@@ -6,7 +6,12 @@ import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri'
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { FootballSettings, GAMEDAY_LAYERS } from '../../../../interfaces/football.interface';
+import {
+  FootballSettings,
+  GAMEDAY_LAYERS,
+  SHOWDOWN_EVENT,
+  SHOWDOWN_LAYERS
+} from '../../../../interfaces/football.interface';
 import { GameDaySettingsService } from '../settings/game-day-settings.service';
 
 import esri = __esri;
@@ -17,15 +22,8 @@ import esri = __esri;
 export class EventService {
   public settings: FootballSettings;
 
-  public layerReferences = [
-    GAMEDAY_LAYERS.GAMEDAY_ROOT_DISABLED_AND_PRESALE,
-    GAMEDAY_LAYERS.GAMEDAY_ROOT_POIS,
-    GAMEDAY_LAYERS.GAMEDAY_STRIPES,
-    GAMEDAY_LAYERS.GAMEDAY_RNS_SPACES,
-    GAMEDAY_LAYERS.GAMEDAY_FOOTBALL_PARKING_LOTS,
-    GAMEDAY_LAYERS.GAMEDAY_GRASS_MALL_AREAS,
-    GAMEDAY_LAYERS.GAMEDAY_GET_TO_THE_GRID
-  ];
+  public gamedayLayerReferences: Array<GAMEDAY_LAYERS>;
+  public showdownLayerReferences: Array<SHOWDOWN_LAYERS>;
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -45,13 +43,27 @@ export class EventService {
 
   public init() {
     this.settings = this.eventSettingsService.settings;
+    this.gamedayLayerReferences = Object.entries(GAMEDAY_LAYERS).map(([, value]) => value);
+    this.showdownLayerReferences = Object.entries(SHOWDOWN_LAYERS).map(([, value]) => value);
 
-    this.drawEvent();
+    const event = this.settings.event as SHOWDOWN_EVENT;
+
+    this.drawEvent(event);
   }
 
-  public async drawEvent() {
+  public async drawEvent(event: SHOWDOWN_EVENT) {
     try {
-      const sources = this.layerReferences.map((ref) => this.getLayerSourceCopy(ref));
+      let eventLayers: Array<GAMEDAY_LAYERS | SHOWDOWN_LAYERS>;
+
+      if (event === SHOWDOWN_EVENT.YellPractice || event === SHOWDOWN_EVENT.ShowdownConcert) {
+        eventLayers = this.showdownLayerReferences;
+      } else if (event === SHOWDOWN_EVENT.ShowdownGame || event === SHOWDOWN_EVENT.BBQ) {
+        eventLayers = this.gamedayLayerReferences;
+      } else {
+        throw new Error(`drawEvent: Event '${event}' not recognized.`);
+      }
+
+      const sources = eventLayers.map((ref) => this.getLayerSourceCopy(ref));
 
       if (sources.length > 0) {
         this.mapService.loadLayers(sources);

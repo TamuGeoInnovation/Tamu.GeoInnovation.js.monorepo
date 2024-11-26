@@ -1,7 +1,7 @@
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
-import { GAMEDAY_LAYERS } from '@tamu-gisc/ts/football/ngx';
+import { GAMEDAY_LAYERS, SHOWDOWN_LAYERS } from '@tamu-gisc/ts/football/ngx';
 
 import { Popups as EventPopups } from '@tamu-gisc/ts/football/ngx';
 
@@ -16,7 +16,8 @@ export const Connections = {
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
-  gamedayUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer'
+  gamedayUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer',
+  showdownUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Lonestar_Showdown/FeatureServer'
 };
 
 export const Definitions = {
@@ -88,12 +89,12 @@ export const Definitions = {
     name: 'VeoRide Bikes',
     url: `${Connections.bikeLocationsUrl}`
   },
-  GAMEDAY: {
-    id: GAMEDAY_LAYERS.GAMEDAY_ROOT,
-    layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT,
-    name: 'Game Day',
-    url: `${Connections.gamedayUrl}/0`
-  },
+  // GAMEDAY: {
+  //   id: GAMEDAY_LAYERS.GAMEDAY_ROOT,
+  //   layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT,
+  //   name: 'Game Day',
+  //   url: `${Connections.gamedayUrl}/0`
+  // },
   GAMEDAY_DISABLED_AND_PRESALE: {
     id: GAMEDAY_LAYERS.GAMEDAY_ROOT_DISABLED_AND_PRESALE,
     layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT_DISABLED_AND_PRESALE,
@@ -135,26 +136,38 @@ export const Definitions = {
     layerId: GAMEDAY_LAYERS.GAMEDAY_GET_TO_THE_GRID,
     name: 'Game Day Get to the Grid',
     url: `${Connections.gamedayUrl}/7`
+  },
+  SHOWDOWN_PRE_PAY: {
+    id: SHOWDOWN_LAYERS.SHOWDOWN_PARKMOBILE_PREPAY,
+    layerId: SHOWDOWN_LAYERS.SHOWDOWN_PARKMOBILE_PREPAY,
+    name: 'Showdown Pre-Pay with ParkMobile',
+    url: `${Connections.showdownUrl}/0`
+  },
+  SHOWDOWN_PARKING_LOTS: {
+    id: SHOWDOWN_LAYERS.SHOWDOWN_PARKING_LOTS,
+    layerId: SHOWDOWN_LAYERS.SHOWDOWN_PARKING_LOTS,
+    name: 'Showdown Parking',
+    url: `${Connections.showdownUrl}/1`
   }
 };
 
 export const ColdLayerSources: LayerSource[] = [
-  // {
-  //   type: 'feature',
-  //   id: Definitions.GAMEDAY.id,
-  //   title: Definitions.GAMEDAY.name,
-  //   url: Definitions.GAMEDAY.url,
-  //   popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-  //   popupData: {
-  //     name: 'attributes.Name',
-  //     description: 'attributes.Description'
-  //   },
-  //   visible: true,
-  //   listMode: 'show',
-  //   native: {
-  //     outFields: ['*']
-  //   }
-  // },
+  {
+    type: 'feature',
+    id: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.id,
+    title: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.name,
+    url: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.url,
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    popupData: {
+      name: 'attributes.LotName',
+      description: 'attributes.Note'
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
   {
     type: 'feature',
     id: Definitions.GAMEDAY_DISABLED_AND_PRESALE.id,
@@ -182,7 +195,8 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      minScale: 0
     }
   },
   {
@@ -203,28 +217,13 @@ export const ColdLayerSources: LayerSource[] = [
     title: Definitions.GAMEDAY_RNS_SPACES.name,
     url: Definitions.GAMEDAY_RNS_SPACES.url,
     popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-    visible: true,
+    visible: false,
     listMode: 'hide',
     native: {
       outFields: ['*']
     }
   },
-  {
-    type: 'feature',
-    id: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.id,
-    title: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.name,
-    url: Definitions.GAMEDAY_FOOTBALL_PARKING_LOTS.url,
-    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-    popupData: {
-      name: 'attributes.LotName',
-      description: 'attributes.Note'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
+
   {
     type: 'feature',
     id: Definitions.GAMEDAY_GRASS_MALL_AREAS.id,
@@ -247,7 +246,39 @@ export const ColdLayerSources: LayerSource[] = [
     title: Definitions.GAMEDAY_GET_TO_THE_GRID.name,
     url: Definitions.GAMEDAY_GET_TO_THE_GRID.url,
     popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
-    visible: false,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: Definitions.SHOWDOWN_PRE_PAY.id,
+    title: Definitions.SHOWDOWN_PRE_PAY.name,
+    url: Definitions.SHOWDOWN_PRE_PAY.url,
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    popupData: {
+      name: 'attributes.Type',
+      description: 'attributes.aNote'
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: Definitions.SHOWDOWN_PARKING_LOTS.id,
+    title: Definitions.SHOWDOWN_PARKING_LOTS.name,
+    url: Definitions.SHOWDOWN_PARKING_LOTS.url,
+    popupComponent: EventPopups.GameDayMarkdownWDirectionsComponent,
+    popupData: {
+      name: 'attributes.LotNum',
+      description: 'attributes.aNote'
+    },
+    visible: true,
     listMode: 'show',
     native: {
       outFields: ['*']
