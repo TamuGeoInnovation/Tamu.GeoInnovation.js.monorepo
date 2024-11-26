@@ -90,7 +90,7 @@ export class GameDaySettingsService {
       return null;
     }
 
-    return `event=${settings.event}&accessible=${settings.accessible}`;
+    return `event=${settings.event}`;
   }
 
   private _validateAccommodations(accommodations: string) {

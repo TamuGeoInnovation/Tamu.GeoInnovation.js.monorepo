@@ -23,7 +23,7 @@ export enum SHOWDOWN_LAYERS {
 
 export const GAMEDAY_EVENT_NAMES = {
   [SHOWDOWN_EVENT.ShowdownConcert]: 'Cotton Holdings Lone Star Showdown Concert',
-  [SHOWDOWN_EVENT.ShowdownGame]: 'Showdown Football Game',
+  [SHOWDOWN_EVENT.ShowdownGame]: 'Fightin’ Texas Aggie Football Maroon Out Game',
   [SHOWDOWN_EVENT.YellPractice]: 'Yell Practice',
   [SHOWDOWN_EVENT.BBQ]: '13-0 Burn'
 };

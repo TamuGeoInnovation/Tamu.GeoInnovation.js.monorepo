@@ -4,12 +4,13 @@
 .event-card-container {
   @include m.flexbox();
   @include m.flex-wrap(wrap);
+  @include m.justify-content(center);
 
   .event-card {
     background-color: #fff;
     border-radius: 5pt;
     margin: 0.75rem;
-    width: 30%;
+    width: 37%;
     padding-bottom: 0.75rem;
     overflow: hidden;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
@@ -37,6 +38,10 @@
       .location {
         font-style: italic;
         color: lighten($font-color, 20%);
+      }
+
+      .date {
+        padding-bottom: 0;
       }
     }
 

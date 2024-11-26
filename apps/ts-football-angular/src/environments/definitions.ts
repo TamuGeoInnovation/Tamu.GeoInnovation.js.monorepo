@@ -92,7 +92,7 @@ export const Definitions = {
   // GAMEDAY: {
   //   id: GAMEDAY_LAYERS.GAMEDAY_ROOT,
   //   layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT,
-  //   name: 'Game Day',
+  //   name: 'Gameday',
   //   url: `${Connections.gamedayUrl}/0`
   // },
   GAMEDAY_DISABLED_AND_PRESALE: {
@@ -104,37 +104,37 @@ export const Definitions = {
   GAMEDAY_POIS: {
     id: GAMEDAY_LAYERS.GAMEDAY_ROOT_POIS,
     layerId: GAMEDAY_LAYERS.GAMEDAY_ROOT_POIS,
-    name: 'Game Day Points of Interest',
+    name: 'Gameday Points of Interest',
     url: `${Connections.gamedayUrl}/2`
   },
   GAMEDAY_STRIPES: {
     id: GAMEDAY_LAYERS.GAMEDAY_STRIPES,
     layerId: GAMEDAY_LAYERS.GAMEDAY_STRIPES,
-    name: 'Game Day Stripes',
+    name: 'Gameday Stripes',
     url: `${Connections.gamedayUrl}/3`
   },
   GAMEDAY_RNS_SPACES: {
     id: GAMEDAY_LAYERS.GAMEDAY_RNS_SPACES,
     layerId: GAMEDAY_LAYERS.GAMEDAY_RNS_SPACES,
-    name: 'Game Day RNS Spaces',
+    name: 'Gameday RNS Spaces',
     url: `${Connections.gamedayUrl}/4`
   },
   GAMEDAY_FOOTBALL_PARKING_LOTS: {
     id: GAMEDAY_LAYERS.GAMEDAY_FOOTBALL_PARKING_LOTS,
     layerId: GAMEDAY_LAYERS.GAMEDAY_FOOTBALL_PARKING_LOTS,
-    name: 'Game Day Football Parking Lots',
+    name: 'Gameday Football Parking Lots',
     url: `${Connections.gamedayUrl}/5`
   },
   GAMEDAY_GRASS_MALL_AREAS: {
     id: GAMEDAY_LAYERS.GAMEDAY_GRASS_MALL_AREAS,
     layerId: GAMEDAY_LAYERS.GAMEDAY_GRASS_MALL_AREAS,
-    name: 'Game Day Grass Mall Areas',
+    name: 'Gameday Grass Mall Areas',
     url: `${Connections.gamedayUrl}/6`
   },
   GAMEDAY_GET_TO_THE_GRID: {
     id: GAMEDAY_LAYERS.GAMEDAY_GET_TO_THE_GRID,
     layerId: GAMEDAY_LAYERS.GAMEDAY_GET_TO_THE_GRID,
-    name: 'Game Day Get to the Grid',
+    name: 'Gameday Get to the Grid',
     url: `${Connections.gamedayUrl}/7`
   },
   SHOWDOWN_PRE_PAY: {
