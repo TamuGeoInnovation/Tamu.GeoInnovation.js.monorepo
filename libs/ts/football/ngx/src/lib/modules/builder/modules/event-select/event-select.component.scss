@@ -62,3 +62,20 @@
     padding-right: 1rem;
   }
 }
+
+// 1160 max width query increase event card width to 50%
+@media (max-width: 1160px) {
+  .event-card-container {
+    .event-card {
+      width: 45%;
+    }
+  }
+}
+
+@media (max-width: 790px) {
+  .event-card-container {
+    .event-card {
+      width: 100%;
+    }
+  }
+}
