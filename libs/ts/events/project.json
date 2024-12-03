@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/ts/events",
+  "sourceRoot": "libs/ts/events/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ts/events"],
+      "options": {
+        "jestConfig": "libs/ts/events/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ts/events/src/**/*.ts", "libs/ts/events/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

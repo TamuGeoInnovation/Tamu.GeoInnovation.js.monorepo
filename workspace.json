@@ -126,6 +126,7 @@
     "signage-angular-e2e": "apps/signage-angular-e2e",
     "trees-angular": "apps/trees-angular",
     "trees-angular-e2e": "apps/trees-angular-e2e",
+    "ts-events": "libs/ts/events",
     "ts-events-angular": "apps/ts-events-angular",
     "ts-events-angular-e2e": "apps/ts-events-angular-e2e",
     "ts-football-angular": "apps/ts-football-angular",
