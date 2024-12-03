@@ -1,0 +1,29 @@
+{
+  "root": "apps/ts-events-angular-e2e",
+  "sourceRoot": "apps/ts-events-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/ts-events-angular-e2e/cypress.json",
+        "devServerTarget": "ts-events-angular:serve:development",
+        "tsConfig": "apps/ts-events-angular-e2e/tsconfig.json"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "ts-events-angular:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ts-events-angular-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ts-events-angular"]
+}
