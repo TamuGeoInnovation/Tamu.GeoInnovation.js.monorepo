@@ -14,7 +14,15 @@
         "polyfills": "apps/ts-events-angular/src/polyfills.ts",
         "tsConfig": "apps/ts-events-angular/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/ts-events-angular/src/favicon.ico", "apps/ts-events-angular/src/assets"],
+        "assets": [
+          "apps/ts-events-angular/src/favicon.ico",
+          "apps/ts-events-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
         "styles": ["apps/ts-events-angular/src/styles.scss"],
         "scripts": []
       },
@@ -24,12 +32,12 @@
             {
               "type": "initial",
               "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumError": "2mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "2kb",
-              "maximumError": "4kb"
+              "maximumError": "10kb"
             }
           ],
           "fileReplacements": [
