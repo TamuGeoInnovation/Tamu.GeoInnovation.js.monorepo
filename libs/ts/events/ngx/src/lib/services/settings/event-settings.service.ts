@@ -9,7 +9,7 @@ import { EventSettings } from '../../interfaces/graduation.interface';
   providedIn: 'root'
 })
 export class EventSettingsService {
-  private _settingsPrimaryKey = 'game-day-settings';
+  private _settingsPrimaryKey = 'ts-events-settings';
 
   public get settings(): EventSettings {
     return this.store.getStorage({ primaryKey: this._settingsPrimaryKey });

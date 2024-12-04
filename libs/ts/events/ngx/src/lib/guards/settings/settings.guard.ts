@@ -29,7 +29,9 @@ export class SettingsGuard implements CanActivate {
     const queryParamsKeySize = Object.keys(queryParams).length;
 
     if (!moveinSettings && queryParamsKeySize === 0) {
-      return this.router.parseUrl('/builder');
+      // return this.router.parseUrl('/builder');
+
+      return true;
     }
 
     try {
