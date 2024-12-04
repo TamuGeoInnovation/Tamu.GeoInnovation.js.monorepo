@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EventSelectComponent } from './event-select.component';
+import { MarkdownPopupComponent } from './markdown-popup.component';
 
-describe('EventSelectComponent', () => {
-  let component: EventSelectComponent;
-  let fixture: ComponentFixture<EventSelectComponent>;
+describe('MarkdownPopupComponent', () => {
+  let component: MarkdownPopupComponent;
+  let fixture: ComponentFixture<MarkdownPopupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EventSelectComponent]
+      declarations: [MarkdownPopupComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EventSelectComponent);
+    fixture = TestBed.createComponent(MarkdownPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

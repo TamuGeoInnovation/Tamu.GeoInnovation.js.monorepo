@@ -3,15 +3,15 @@ import { Injectable } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { FootballSettings, QueryParamSettings, SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
+import { EventSettings } from '../../interfaces/graduation.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GameDaySettingsService {
+export class EventSettingsService {
   private _settingsPrimaryKey = 'game-day-settings';
 
-  public get settings(): FootballSettings {
+  public get settings(): EventSettings {
     return this.store.getStorage({ primaryKey: this._settingsPrimaryKey });
   }
 
@@ -19,29 +19,21 @@ export class GameDaySettingsService {
    * Retrieves the saved event date from local storage
    */
   public get savedEventType() {
-    return this.settings?.event;
+    throw new Error('getSavedEventType: Method not implemented.');
   }
 
-  public get savedAccessible() {
-    return this.settings?.accessible;
+  public get savedAccessible(): boolean {
+    if (this.settings !== null && this.settings !== undefined) {
+      return this.settings?.accessible ? this.settings.accessible : false;
+    } else {
+      return false;
+    }
   }
 
   constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
 
-  public saveEventType(eventType: SHOWDOWN_EVENT) {
-    this.store.setStorageObjectKeyValue({
-      primaryKey: this._settingsPrimaryKey,
-      subKey: 'event',
-      value: eventType
-    });
-
-    // Verify that the value store was successful.
-    const confirm = this.store.getStorageObjectKeyValue<string>({
-      primaryKey: this._settingsPrimaryKey,
-      subKey: 'event'
-    });
-
-    return confirm;
+  public saveEventType() {
+    throw new Error('saveEventType: Method not implemented.');
   }
 
   public saveAccommodations(requiresAccommodations: boolean) {
@@ -59,20 +51,18 @@ export class GameDaySettingsService {
     return confirm;
   }
 
-  public setSettingsFromQueryParams(params: QueryParamSettings) {
+  public setSettingsFromQueryParams(params: EventSettings) {
     try {
       // Check if params have at least a date and residence
-      if (!params.event || !params.accessible) {
+      if (!params['event'] || !params.accessible) {
         console.warn('Invalid query parameters. Will not set settings from query parameters.');
       }
 
-      const event = params.event ? this._validateEvent(params.event) : false;
       const accommodations = params.accessible ? this._validateAccommodations(params.accessible) : false;
 
       this.store.setStorage({
         primaryKey: this._settingsPrimaryKey,
         value: {
-          event: event,
           accessible: accommodations
         }
       });
@@ -90,22 +80,14 @@ export class GameDaySettingsService {
       return null;
     }
 
-    return `event=${settings.event}`;
+    return `event=${settings['event']}`;
   }
 
-  private _validateAccommodations(accommodations: string) {
-    if (accommodations === 'true' || accommodations === 'false') {
-      return accommodations === 'true';
-    }
-
-    throw new Error('Invalid accommodations value');
+  private _validateAccommodations(accommodations: boolean) {
+    return accommodations === true;
   }
 
-  private _validateEvent(event: SHOWDOWN_EVENT) {
-    if (Object.values(SHOWDOWN_EVENT).includes(event)) {
-      return event;
-    }
-
-    throw new Error('Invalid event value');
+  private _validateEvent() {
+    throw new Error('_validateEvent: Method not implemented.');
   }
 }

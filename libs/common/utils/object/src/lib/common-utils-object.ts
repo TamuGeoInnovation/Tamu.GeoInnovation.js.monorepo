@@ -9,12 +9,12 @@
  * @param lookup Source object
  * @param property Dot notation string representing the location of the property
  */
-export function getPropertyValue<T>(lookup: object, property: string): T {
+export function getPropertyValue<T>(lookup: object, property: string, isFlatPath = false): T {
   if (!lookup || !property) {
     return undefined;
   }
 
-  const path = property.split('.');
+  const path = isFlatPath ? [property] : property.split('.');
   let value = JSON.parse(JSON.stringify(lookup));
 
   // Recursively test if the next item in the properties array exists in the lookup object.

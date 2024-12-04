@@ -4,7 +4,7 @@ import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { GameDaySettingsService } from '../../../map/services/settings/game-day-settings.service';
+import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 
 @Component({
   selector: 'tamu-gisc-accommodations',
@@ -20,7 +20,7 @@ export class AccommodationsComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly angulartics: Angulartics2,
-    private readonly eventSettingsService: GameDaySettingsService
+    private readonly eventSettingsService: EventSettingsService
   ) {}
 
   public ngOnInit() {

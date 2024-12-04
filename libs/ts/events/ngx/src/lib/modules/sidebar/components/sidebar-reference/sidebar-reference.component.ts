@@ -4,8 +4,8 @@ import { AltSearchHelper, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search'
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { GameDaySettingsService } from '../../../map/services/settings/game-day-settings.service';
-import { FootballSettings, GAMEDAY_EVENT_NAMES, SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
+import { EventSettings } from '../../../../interfaces/graduation.interface';
+import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 
 import esri = __esri;
 
@@ -17,21 +17,18 @@ import esri = __esri;
 export class SidebarReferenceComponent implements OnInit {
   public shareUrl: string;
   public hasSettings: boolean;
-  public settings: FootballSettings;
-  public eventName: SHOWDOWN_EVENT;
-  public eventNames = GAMEDAY_EVENT_NAMES;
+  public settings: EventSettings;
 
   constructor(
     private readonly helper: AltSearchHelper,
     private readonly mapService: EsriMapService,
-    private readonly eventSettingsService: GameDaySettingsService
+    private readonly eventSettingsService: EventSettingsService
   ) {}
 
   public ngOnInit(): void {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
     this.settings = this.eventSettingsService.settings;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
-    this.eventName = this.eventSettingsService.savedEventType;
   }
 
   public onSearchResult(result: SearchSelection<unknown>): void {

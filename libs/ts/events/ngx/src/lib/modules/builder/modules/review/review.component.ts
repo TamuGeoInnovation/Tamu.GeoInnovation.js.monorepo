@@ -5,8 +5,8 @@ import { Angulartics2 } from 'angulartics2';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { FootballSettings, GAMEDAY_EVENT_NAMES, SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
-import { GameDaySettingsService } from '../../../map/services/settings/game-day-settings.service';
+import { EventSettingsService } from '../../../../services/settings/event-settings.service';
+import { EventSettings } from '../../../../interfaces/graduation.interface';
 
 @Component({
   selector: 'tamu-gisc-review',
@@ -14,26 +14,19 @@ import { GameDaySettingsService } from '../../../map/services/settings/game-day-
   styleUrls: ['./review.component.scss']
 })
 export class ReviewComponent implements OnInit {
-  public settings: FootballSettings;
+  public settings: EventSettings;
   public settingsValid = false;
-  public eventName: SHOWDOWN_EVENT;
-  public eventNames = GAMEDAY_EVENT_NAMES;
 
   constructor(
     private store: LocalStoreService,
     private router: Router,
     private route: ActivatedRoute,
-    private eventSettingsService: GameDaySettingsService,
+    private eventSettingsService: EventSettingsService,
     private angulartics: Angulartics2
   ) {}
 
   public ngOnInit() {
     this.settings = this.eventSettingsService.settings;
-    this.eventName = this.eventSettingsService.savedEventType;
-
-    if (this.settings !== undefined) {
-      this.settingsValid = this.settings.event !== undefined;
-    }
   }
 
   public next = (route: string, params?: { ret: string }) => {

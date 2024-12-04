@@ -19,11 +19,6 @@ const routes: Routes = [
         loadChildren: () => import('./modules/builder/modules/intro/intro.module').then((m) => m.IntroModule)
       },
       {
-        path: 'event',
-        loadChildren: () =>
-          import('./modules/builder/modules/event-select/event-select.module').then((m) => m.EventSelectModule)
-      },
-      {
         path: 'accommodations',
         loadChildren: () =>
           import('./modules/builder/modules/accommodations/accommodations.module').then((m) => m.AccommodationsModule)

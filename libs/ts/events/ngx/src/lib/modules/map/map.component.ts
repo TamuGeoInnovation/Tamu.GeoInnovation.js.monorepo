@@ -14,8 +14,8 @@ import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { EventService } from './services/event/event.service';
-import { GameDaySettingsService } from './services/settings/game-day-settings.service';
+import { EventSettingsService } from '../../services/settings/event-settings.service';
+import { EventService } from '../../services/event/event.service';
 
 import esri = __esri;
 
@@ -56,7 +56,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly ts: TestingService,
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
-    private readonly eventsSettingsService: GameDaySettingsService,
+    private readonly eventsSettingsService: EventSettingsService,
     private readonly eventService: EventService
   ) {}
 
@@ -104,7 +104,7 @@ export class MapComponent implements OnInit, OnDestroy {
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
-            center: [-96.33869, 30.60914],
+            center: [-96.34439, 30.60644],
             spatialReference: {
               wkid: 102100
             },

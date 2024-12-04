@@ -3,11 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 
 @Component({
-  selector: 'tamu-gisc-game-day-markdown-w-directions',
-  templateUrl: './game-day-markdown-w-directions.component.html',
-  styleUrls: ['./game-day-markdown-w-directions.component.scss']
+  selector: 'tamu-gisc-markdown-w-directions-popup',
+  templateUrl: './markdown-w-directions-popup.component.html',
+  styleUrls: ['./markdown-w-directions-popup.component.scss']
 })
-export class GameDayMarkdownWDirectionsComponent extends BaseDirectionsComponent implements OnInit {
+export class MarkdownWDirectionsPopupComponent extends BaseDirectionsComponent implements OnInit {
   public title: string;
   public isContentTheSame: boolean;
 

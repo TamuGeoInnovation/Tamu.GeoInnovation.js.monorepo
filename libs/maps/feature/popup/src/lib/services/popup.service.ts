@@ -58,9 +58,20 @@ export class PopupService {
       let resolved;
 
       if (graphicLayer.popupData) {
-        resolved = Object.entries(graphicLayer.popupData).reduce((acc, [key, dotNotationPath]) => {
+        resolved = Object.entries(graphicLayer.popupData).reduce((acc, [key, dotNotationPathOrDefinition]) => {
           if (acc[key] === undefined) {
-            acc[key] = getPropertyValue(topGraphic, dotNotationPath);
+            // If dotNotationPathOrDefinition is a string, resolve the value
+            // If it is an object, assume it is a definition object, and the path to resolve is the `key` sub-path.
+
+            if (typeof dotNotationPathOrDefinition === 'string') {
+              acc[key] = getPropertyValue(topGraphic, dotNotationPathOrDefinition);
+            } else {
+              acc[key] = getPropertyValue(
+                topGraphic.attributes,
+                dotNotationPathOrDefinition['field'],
+                dotNotationPathOrDefinition['collapsed']
+              );
+            }
           }
 
           return acc;
