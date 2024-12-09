@@ -6,8 +6,8 @@ import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri'
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { GRADUATION_LAYERS, EventSettings } from '@tamu-gisc/ts/events/ngx';
 import { EventSettingsService } from '../settings/event-settings.service';
+import { EventSettings, GRADUATION_LAYERS } from '../../interfaces/graduation.interface';
 
 import esri = __esri;
 

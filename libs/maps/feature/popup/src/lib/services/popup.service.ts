@@ -108,5 +108,5 @@ export class PopupService {
 
 interface ILayerWithPopupComponent extends esri.Layer {
   popupComponent: Type<Component>;
-  popupData?: Record<string, any>;
+  popupData?: Record<string, unknown>;
 }
