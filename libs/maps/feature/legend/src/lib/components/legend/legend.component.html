@@ -16,5 +16,5 @@
   </div>
 
   <!-- Followed by dynamic legend items -->
-  <tamu-gisc-legend-collection *ngFor="let group of legend | async" [group]="group"></tamu-gisc-legend-collection>
+  <tamu-gisc-legend-collection *ngFor="let group of legend | async" [group]="group" [deduplicate]="deduplicate"></tamu-gisc-legend-collection>
 </div>

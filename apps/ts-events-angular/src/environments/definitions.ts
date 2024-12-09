@@ -168,31 +168,31 @@ export const ColdLayerSources: LayerSource[] = [
             }
           }
         ]
-      } as any,
-      labelingInfo: [
-        {
-          labelExpressionInfo: {
-            expression: '$feature.STF_Notes'
-          },
-          labelPlacement: 'center-along',
-          maxScale: 0,
-          minScale: 0,
-          useCodedValues: true,
-          symbol: {
-            type: 'text', // autocasts as new TextSymbol()
-            color: 'white',
-            haloColor: 'blue',
-            haloSize: 1,
-            angle: 0,
-            font: {
-              // autocast as new Font()
-              family: 'Arial Unicode MS',
-              size: 14,
-              weight: 'bold'
-            }
-          }
-        }
-      ]
+      } as any
+      // labelingInfo: [
+      //   {
+      //     labelExpressionInfo: {
+      //       expression: '$feature.STF_Notes'
+      //     },
+      //     labelPlacement: 'center-along',
+      //     maxScale: 0,
+      //     minScale: 0,
+      //     useCodedValues: true,
+      //     symbol: {
+      //       type: 'text', // autocasts as new TextSymbol()
+      //       color: 'white',
+      //       haloColor: 'blue',
+      //       haloSize: 1,
+      //       angle: 0,
+      //       font: {
+      //         // autocast as new Font()
+      //         family: 'Arial Unicode MS',
+      //         size: 14,
+      //         weight: 'bold'
+      //       }
+      //     }
+      //   }
+      // ]
     }
   },
   {
@@ -205,9 +205,9 @@ export const ColdLayerSources: LayerSource[] = [
       name: 'attributes.LotName',
       description: 'attributes.Note'
     },
-    visible: true,
-    listMode: 'hide',
+    visible: false,
     native: {
+      listMode: 'hide',
       outFields: ['*']
     }
   },

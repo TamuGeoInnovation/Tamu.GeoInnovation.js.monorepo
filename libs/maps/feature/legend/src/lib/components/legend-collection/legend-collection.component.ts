@@ -10,6 +10,14 @@ import esri = __esri;
 export class LegendCollectionComponent {
   @Input()
   public group: IActiveLayerInfo;
+
+  /**
+   * Certain layers may have duplicate icon/label entries as a result of their unique value renderer definitions.
+   *
+   * This flag will de-duplicate the legend entries based on the layer title.
+   */
+  @Input()
+  public deduplicate = false;
 }
 
 // Browser doesn't like direct esri types for inputs.

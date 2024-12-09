@@ -8,7 +8,7 @@ of the table -->
   <ng-container [ngSwitch]="element.type">
     <!-- For SymbolTable element type -->
     <div *ngSwitchCase="'symbol-table'" class="element-group">
-      <div class="legend-info" *ngFor="let info of element.infos">
+      <div class="legend-info" *ngFor="let info of infos">
         <div [ngSwitch]="info.type">
           <!-- Support for infos with nested infos. This case will continue to recursively iterate through n-nested infos until reaching the last node. -->
           <div *ngSwitchCase="'symbol-table'">

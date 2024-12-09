@@ -23,6 +23,14 @@ export class LegendComponent implements OnInit, OnDestroy {
   @Input()
   public staticElementsPosition: 'top' | 'bottom' = 'top';
 
+  /**
+   * Certain layers may have duplicate icon/label entries as a result of their unique value renderer definitions.
+   *
+   * This flag will de-duplicate the legend entries based on the layer title.
+   */
+  @Input()
+  public deduplicate = false;
+
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
   public staticLegend: Array<LegendItem>;
 
