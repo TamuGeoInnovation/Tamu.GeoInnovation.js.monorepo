@@ -49,6 +49,7 @@
           "outputHashing": "all"
         },
         "development": {
+          "baseHref": "/graduation/",
           "buildOptimizer": false,
           "optimization": false,
           "vendorChunk": true,
