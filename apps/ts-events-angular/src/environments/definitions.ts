@@ -168,31 +168,31 @@ export const ColdLayerSources: LayerSource[] = [
             }
           }
         ]
-      } as any
-      // labelingInfo: [
-      //   {
-      //     labelExpressionInfo: {
-      //       expression: '$feature.STF_Notes'
-      //     },
-      //     labelPlacement: 'center-along',
-      //     maxScale: 0,
-      //     minScale: 0,
-      //     useCodedValues: true,
-      //     symbol: {
-      //       type: 'text', // autocasts as new TextSymbol()
-      //       color: 'white',
-      //       haloColor: 'blue',
-      //       haloSize: 1,
-      //       angle: 0,
-      //       font: {
-      //         // autocast as new Font()
-      //         family: 'Arial Unicode MS',
-      //         size: 14,
-      //         weight: 'bold'
-      //       }
-      //     }
-      //   }
-      // ]
+      } as any,
+      labelingInfo: [
+        {
+          labelExpressionInfo: {
+            expression: '$feature.STF_Notes'
+          },
+          minScale: 0,
+          maxScale: 0,
+          useCodedValues: true,
+          allowOverrun: true,
+          symbol: {
+            type: 'text', // autocasts as new TextSymbol()
+            color: 'red',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              // autocast as new Font()
+              family: 'Arial Unicode MS',
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
     }
   },
   {
@@ -246,7 +246,54 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      labelingInfo: [
+        {
+          labelExpressionInfo: {
+            expression: '"Lot 97" + TextFormatting.NewLine + "Available After 5PM Friday"'
+          },
+          maxScale: 0,
+          minScale: 0,
+          where: "GIS.TS.ParkingLots.Name = '97'",
+          useCodedValues: true,
+          allowOverrun: true,
+          symbol: {
+            type: 'text', // autocasts as new TextSymbol()
+            color: 'red',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              // autocast as new Font()
+              family: 'Arial Unicode MS',
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        },
+        {
+          labelExpressionInfo: {
+            expression: '$feature["GIS.TS.ParkingLots.LotName"]'
+          },
+          maxScale: 0,
+          minScale: 0,
+          where: "GIS.TS.ParkingLots.Name NOT LIKE '97'",
+          useCodedValues: true,
+          symbol: {
+            type: 'text', // autocasts as new TextSymbol()
+            color: 'black',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              // autocast as new Font()
+              family: 'Arial Unicode MS',
+              size: 10,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
     }
   },
   {
@@ -262,7 +309,31 @@ export const ColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      labelingInfo: [
+        {
+          labelExpressionInfo: {
+            expression: '$feature.SP_SH_Notes'
+          },
+          minScale: 0,
+          maxScale: 0,
+          useCodedValues: true,
+          allowOverrun: true,
+          symbol: {
+            type: 'text', // autocasts as new TextSymbol()
+            color: 'red',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              // autocast as new Font()
+              family: 'Arial Unicode MS',
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
     }
   }
 ];
