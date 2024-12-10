@@ -221,8 +221,8 @@ export const ColdLayerSources: LayerSource[] = [
       name: 'attributes.LotName',
       description: 'attributes.Note'
     },
-    visible: true,
-    listMode: 'show',
+    visible: false,
+    listMode: 'hide',
     native: {
       outFields: ['*']
     }
