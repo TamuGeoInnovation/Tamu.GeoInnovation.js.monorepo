@@ -3,16 +3,16 @@
 </div>
 
 <!-- Gallery Container -->
-<ng-container *ngIf="(medias | async) as medias">
-  <p>This feature has {{medias.length}} medias.</p>
-
-  <lightgallery [settings]="settings">
-    <ng-container *ngFor="let media of medias">
-      <a [href]="media.attributes.url">
-        <img [alt]="media.attributes.alternativeText" [src]="media.attributes.url" />
-      </a>
-    </ng-container>
-  </lightgallery>
+<ng-container>
+  <swiper-container #swiperRef navigation="true" init="false">
+    <lightgallery [onInit]="onLightGalleryInit" *ngIf="load | async">
+      <swiper-slide *ngFor="let media of medias | async" [attr.data-src]="media.attributes.url">
+        <a [href]="media.attributes.url">
+          <img [alt]="media.attributes.alternativeText" [src]="media.attributes.url" />
+        </a>
+      </swiper-slide>
+    </lightgallery>
+  </swiper-container>
 </ng-container>
 
 <div class="popup-section">
