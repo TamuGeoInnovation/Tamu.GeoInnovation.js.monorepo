@@ -5,7 +5,8 @@
 import { factory } from '@tamu-gisc/aggiemap/ngx/common';
 
 export const environment = {
-  production: true
+  production: true,
+  overrideShowDevFeatures: '___SHOW_PRODUCTION_DEV_FEATURES___'
 };
 
 export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
