@@ -49,9 +49,6 @@ stages:
           buildType: development
       - template: templates/jobs/build.yml
         parameters:
-          buildType: staging
-      - template: templates/jobs/build.yml
-        parameters:
           buildType: production
 
   - stage: Tag
