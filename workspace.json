@@ -3,6 +3,7 @@
   "projects": {
     "aggiemap-angular": "apps/aggiemap-angular",
     "aggiemap-angular-e2e": "apps/aggiemap-angular-e2e",
+    "aggiemap-ngx-common": "libs/aggiemap/ngx/common",
     "aggiemap-ngx-core": "libs/aggiemap/ngx/core",
     "aggiemap-ngx-popups": "libs/aggiemap/ngx/popups",
     "aggiemap-ngx-ui-desktop": "libs/aggiemap/ngx/ui/desktop",
