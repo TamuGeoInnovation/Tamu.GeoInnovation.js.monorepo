@@ -1,4 +1,4 @@
-export const RegionalBoundary = {
+export const Polygons = {
   type: 'FeatureCollection',
   features: [
     {

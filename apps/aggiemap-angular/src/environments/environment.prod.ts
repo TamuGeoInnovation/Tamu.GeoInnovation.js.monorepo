@@ -7,6 +7,12 @@ export const environment = {
   production: true
 };
 
-export * from './definitions';
+export {
+  SearchSources,
+  Connections,
+  Definitions,
+  LegendSources,
+  SelectionSymbols,
+  Polygons
+} from '@tamu-gisc/aggiemap/ngx/common';
 export * from './notification-events';
-export * from './polygons';

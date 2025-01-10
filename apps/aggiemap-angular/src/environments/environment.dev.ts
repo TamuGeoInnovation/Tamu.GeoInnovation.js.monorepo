@@ -4,19 +4,23 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 import { LayerSource } from '@tamu-gisc/common/types';
-import { LayerSources as LS, Definitions, commonLayerProps } from './definitions';
+import { LayerSources as LS, Definitions, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
 export const environment = {
   production: true
 };
 
-export * from './definitions';
 export * from './notification-events';
-export * from './polygons';
 
-export { SearchSources, Connections, Definitions, LegendSources, SelectionSymbols } from './definitions';
+export {
+  SearchSources,
+  Connections,
+  Definitions,
+  LegendSources,
+  SelectionSymbols,
+  Polygons
+} from '@tamu-gisc/aggiemap/ngx/common';
 export * from './notification-events';
-export * from './polygons';
 
 export const LayerSources = [
   ...LS,
