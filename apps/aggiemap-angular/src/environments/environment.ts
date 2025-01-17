@@ -4,29 +4,25 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 import { LayerSource } from '@tamu-gisc/common/types';
-import { LayerSources as LS, Definitions, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
+import { commonLayerProps, factory } from '@tamu-gisc/aggiemap/ngx/common';
 
 export const environment = {
   production: false
 };
 
-export {
-  SearchSources,
-  Connections,
-  Definitions,
-  LegendSources,
-  SelectionSymbols,
-  Polygons
-} from '@tamu-gisc/aggiemap/ngx/common';
+export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
 export * from './notification-events';
 
+const sources = factory();
+
+export const { Definitions, Connections, LegendSources, SearchSources } = sources;
 export const LayerSources = [
-  ...LS,
+  ...sources.LayerSources,
   {
     type: 'geojson',
-    id: Definitions.BIKE_LOCATIONS.layerId,
-    title: Definitions.BIKE_LOCATIONS.name,
-    url: Definitions.BIKE_LOCATIONS.url,
+    id: sources.Definitions.BIKE_LOCATIONS.layerId,
+    title: sources.Definitions.BIKE_LOCATIONS.name,
+    url: sources.Definitions.BIKE_LOCATIONS.url,
     listMode: 'show',
     visible: false,
     native: {

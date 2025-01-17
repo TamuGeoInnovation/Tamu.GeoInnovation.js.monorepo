@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TripPlannerConnectionService {
@@ -19,7 +20,7 @@ export class TripPlannerConnectionService {
     currentNetwork: <TripPlannerConnection>{}
   };
 
-  private _serviceURL = 'https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson';
+  private _serviceURL: string;
 
   public readonly allNetworks: Observable<TripPlannerConnection[]>;
   public readonly abNetworks: Observable<TripPlannerConnection[]>;
@@ -27,18 +28,22 @@ export class TripPlannerConnectionService {
   public readonly currentNetwork: Observable<TripPlannerConnection>;
   public readonly override: Observable<boolean>;
 
-  constructor(private http: HttpClient) {
-    // Instantiate Subjets and observables from subjects
+  constructor(private http: HttpClient, private readonly env: EnvironmentService) {
+    this._serviceURL = this.env.value('Connections', false)?.routingBaseUrl + '?f=pjson';
+
+    // Instantiate Subjects and observables from subjects
     this._allNetworks = new BehaviorSubject([]);
     this._abNetworks = new BehaviorSubject([]);
     this._latestNonAbNetwork = new BehaviorSubject(
       new TripPlannerConnection({
+        baseServiceUrl: this._serviceURL,
         name: '',
         type: ''
       })
     );
     this._currentNetwork = new BehaviorSubject(
       new TripPlannerConnection({
+        baseServiceUrl: this._serviceURL,
         name: '',
         type: ''
       })
@@ -56,8 +61,8 @@ export class TripPlannerConnectionService {
   }
 
   private fetchNetworks() {
-    this.http.get(this._serviceURL).subscribe(
-      (res: { services: TripPlannerServiceType[] }) => {
+    this.http.get(this._serviceURL).subscribe({
+      next: (res: { services: TripPlannerServiceType[] }) => {
         // Regex expression that checks against the allowed format for a service name.
         // Name must match the following pattern:
         //
@@ -66,7 +71,7 @@ export class TripPlannerConnectionService {
         // YYYY - Long year
         // MM - Two digit month
         // DD - Two digit day
-        // [A|B] - Single charcter denoting if service is A or B
+        // [A|B] - Single character denoting if service is A or B
         //
         const abRxp = new RegExp('^(Routing/)\\d{8}[A|B]$');
         const defaultRxp = new RegExp('^(Routing/)\\d{8}$');
@@ -74,7 +79,10 @@ export class TripPlannerConnectionService {
         this._store.allNetworks = res.services
           .filter((s: TripPlannerServiceType) => s.type === 'NAServer')
           .sort()
-          .map((s: TripPlannerServiceType) => new TripPlannerConnection({ name: s.name, type: s.type }));
+          .map(
+            (s: TripPlannerServiceType) =>
+              new TripPlannerConnection({ baseServiceUrl: this._serviceURL, name: s.name, type: s.type })
+          );
 
         // Store all NA Services as networks
         this._allNetworks.next(Array.from(this._store.allNetworks));
@@ -142,10 +150,10 @@ export class TripPlannerConnectionService {
         // Select a random AB network and set it as the initial current network
         this.connection();
       },
-      (err) => {
-        console.log(err);
+      error: (err) => {
+        console.error('Error fetching routing services', err);
       }
-    );
+    });
   }
 
   /**
@@ -164,6 +172,7 @@ export class TripPlannerConnectionService {
 
         // TODO: Remove this return once new implementation is in place
         return new TripPlannerConnection({
+          baseServiceUrl: this._serviceURL,
           name: this._store.latestNonAbNetwork.name,
           type: this._store.latestNonAbNetwork.type
         });
@@ -172,6 +181,7 @@ export class TripPlannerConnectionService {
 
         // TODO: Remove this return once new implementation is in place
         return new TripPlannerConnection({
+          baseServiceUrl: this._serviceURL,
           name: this._store.currentNetwork.name,
           type: this._store.currentNetwork.type
         });
@@ -186,6 +196,7 @@ export class TripPlannerConnectionService {
 
         // TODO: Remove this return once new implementation is in place
         return new TripPlannerConnection({
+          baseServiceUrl: this._serviceURL,
           name: this._store.currentNetwork.name,
           type: this._store.currentNetwork.type
         });
@@ -218,7 +229,7 @@ export class TripPlannerConnectionService {
    * connection when request or a user-defined.
    *
    * @param {boolean} value `true` will instruct connection() method to return a user-defined network.
-   * `false` will instruct conection() method to return a random a/b network.
+   * `false` will instruct connection() method to return a random a/b network.
    */
   public setOverride(value: boolean) {
     this._override.next(value);
@@ -236,6 +247,7 @@ export class TripPlannerConnectionService {
 
     // Create a new immutable class reference
     const connection = new TripPlannerConnection({
+      baseServiceUrl: this._serviceURL,
       name: props.name,
       type: props.type
     });
@@ -249,15 +261,18 @@ export class TripPlannerConnectionService {
 }
 
 export interface TripPlannerServiceType {
+  baseServiceUrl: string;
   type: string;
   name: string;
 }
 
 export class TripPlannerConnection {
+  public baseServiceUrl: string;
   public name: string;
   public type: string;
 
   constructor(props: TripPlannerServiceType) {
+    this.baseServiceUrl = props.baseServiceUrl;
     this.name = props.name;
     this.type = props.type;
   }
@@ -266,6 +281,7 @@ export class TripPlannerConnection {
    * Returns a constructed URL from its name and type properties.
    */
   public url(): string {
-    return `https://gis.tamu.edu/arcgis/rest/services/${this.name}/${this.type}/Route`;
+    const url = new URL(this.baseServiceUrl);
+    return `https://${url.host}/arcgis/rest/services/${this.name}/${this.type}/Route`;
   }
 }
