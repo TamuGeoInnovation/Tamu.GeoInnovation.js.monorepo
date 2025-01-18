@@ -8,7 +8,7 @@ import { LegendSources } from '../legend-sources';
 import { SearchSources } from '../search-sources';
 
 export function factory(environment: 'dev' | 'prod' = 'dev'): Definitions {
-  const gisHost = environment === 'dev' ? 'gis.dev.tamu.edu' : 'gis.it.tamu.edu';
+  const gisHost = environment === 'dev' ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
 
   const c = Connections(gisHost);
   const d = Definitions(c);
