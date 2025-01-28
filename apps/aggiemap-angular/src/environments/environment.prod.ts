@@ -11,4 +11,8 @@ export const environment = {
 };
 
 export * from './notification-events';
-export const { Connections, Definitions, LayerSources, SearchSources, LegendSources } = factory('prod');
+export const { Connections, Definitions, LayerSources, SearchSources, LegendSources } = factory('prod', {
+  layerSources: {
+    exclude: ['BIKE_LOCATIONS']
+  }
+});

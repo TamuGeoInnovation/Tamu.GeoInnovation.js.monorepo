@@ -14,8 +14,12 @@ export const commonLayerProps = {
 };
 
 // Persistent layer definitions that will be processed by a factory and added to the map.
-export function LayerSources(connections: IComposedConnections, definitions: IComposedIDefinitions): Array<LayerSource> {
-  return [
+export function LayerSources(
+  connections: IComposedConnections,
+  definitions: IComposedIDefinitions,
+  options?: { exclude: Array<keyof IComposedIDefinitions> }
+): Array<LayerSource> {
+  const all: Array<LayerSource> = [
     {
       type: 'feature',
       id: definitions.BUILDINGS.layerId,
@@ -177,6 +181,55 @@ export function LayerSources(connections: IComposedConnections, definitions: ICo
       native: {
         ...commonLayerProps
       }
+    },
+    {
+      type: 'geojson',
+      id: definitions.BIKE_LOCATIONS.layerId,
+      title: definitions.BIKE_LOCATIONS.name,
+      url: definitions.BIKE_LOCATIONS.url,
+      listMode: 'show',
+      visible: false,
+      native: {
+        ...commonLayerProps,
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'simple-marker',
+            style: 'circle',
+            size: 8,
+            color: '#03C4A6'
+          }
+        }
+      }
     }
   ];
+
+  return all.filter((source) => {
+    // Filter out any sources that are in the exclude list
+    if (options && options.exclude && options.exclude.length > 0) {
+      const keyId = options.exclude.some((key) => {
+        return definitions[key].layerId === source.id;
+      });
+
+      if (keyId) {
+        return false;
+      }
+    }
+
+    return true;
+  });
 }
+
+export const ThreeDLayers: Array<LayerSource> = [
+  {
+    type: 'scene',
+    id: 'three-d-buildings-scene-layer',
+    title: '3D Buildings',
+    url: 'https://arcportal.ts.tamu.edu/arcgis/rest/services/Hosted/ESRI_3D_Presentation_2_0_WSL1/SceneServer',
+    listMode: 'show',
+    visible: true,
+    native: {
+      popupEnabled: false
+    }
+  }
+];

@@ -3,16 +3,16 @@ import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { Connections } from '../connections';
 import { Definitions, IComposedIDefinitions } from '../definitions';
-import { LayerSources } from '../layer-sources';
+import { LayerSources, ThreeDLayers } from '../layer-sources';
 import { LegendSources } from '../legend-sources';
 import { SearchSources } from '../search-sources';
 
-export function factory(environment: 'dev' | 'prod' = 'dev'): Definitions {
+export function factory(environment: 'dev' | 'prod' = 'dev', options?: IFactoryOptions): Definitions {
   const gisHost = environment === 'dev' ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
 
   const c = Connections(gisHost);
   const d = Definitions(c);
-  const l = LayerSources(c, d);
+  const l = LayerSources(c, d, options?.layerSources);
   const s = SearchSources(c, d);
 
   return {
@@ -20,7 +20,14 @@ export function factory(environment: 'dev' | 'prod' = 'dev'): Definitions {
     Definitions: d,
     LayerSources: l,
     LegendSources: LegendSources,
-    SearchSources: s
+    SearchSources: s,
+    ThreeDLayers
+  };
+}
+
+export interface IFactoryOptions {
+  layerSources: {
+    exclude: Array<keyof IComposedIDefinitions>;
   };
 }
 
@@ -30,4 +37,5 @@ export interface Definitions {
   LayerSources: Array<LayerSource>;
   LegendSources: Array<LegendItem>;
   SearchSources: Array<SearchSource>;
+  ThreeDLayers: Array<LayerSource>;
 }
