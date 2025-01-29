@@ -5,7 +5,7 @@
 // export * from './lib/definitions';
 
 // // Layer definitions
-export { commonLayerProps } from './lib/layer-sources';
+export { commonLayerProps } from './lib/layer-sources/layer-sources';
 
 // // Static legend items
 // export * from './lib/legend-sources';

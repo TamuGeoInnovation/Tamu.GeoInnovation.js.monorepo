@@ -3,7 +3,7 @@ import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { Connections } from '../connections';
 import { Definitions, IComposedIDefinitions } from '../definitions';
-import { LayerSources, ThreeDLayers } from '../layer-sources';
+import { LayerSources, ThreeDLayers } from '../layer-sources/layer-sources';
 import { LegendSources } from '../legend-sources';
 import { ComposedSearchSourcesKeyMap, SearchSources } from '../search-sources';
 

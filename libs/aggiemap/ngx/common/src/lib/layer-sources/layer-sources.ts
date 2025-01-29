@@ -1,8 +1,8 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { IComposedIDefinitions } from './definitions';
-import { IComposedConnections } from './connections';
-import { IFactoryExcludeOptions } from './utils/definitionFactory';
+import { IComposedIDefinitions } from '../definitions';
+import { IComposedConnections } from '../connections';
+import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 
 import esri = __esri;
 
