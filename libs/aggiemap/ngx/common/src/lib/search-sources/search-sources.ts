@@ -1,9 +1,9 @@
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { IComposedConnections } from './connections';
-import { IComposedIDefinitions } from './definitions';
-import { IFactoryExcludeOptions } from './utils/definitionFactory';
+import { IComposedConnections } from '../connections';
+import { IComposedIDefinitions } from '../definitions';
+import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 
 const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
   f: 'json',
