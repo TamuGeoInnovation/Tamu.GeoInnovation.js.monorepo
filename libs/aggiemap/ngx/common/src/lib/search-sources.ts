@@ -3,6 +3,7 @@ import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-k
 
 import { IComposedConnections } from './connections';
 import { IComposedIDefinitions } from './definitions';
+import { IFactoryExcludeOptions } from './utils/definitionFactory';
 
 const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
   f: 'json',
@@ -14,9 +15,13 @@ const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
 };
 
 // Search sources used for querying features.
-export function SearchSources(connections: IComposedConnections, definitions: IComposedIDefinitions): Array<SearchSource> {
-  return [
-    {
+export function SearchSources(
+  connections: IComposedConnections,
+  definitions: IComposedIDefinitions,
+  options?: IFactoryExcludeOptions<ComposedSearchSourcesKeyMap>
+): Array<SearchSource> {
+  const SEARCH_SOURCES: ComposedSearchSourcesKeyMap = {
+    BUILDING: {
       source: 'building',
       name: 'Building',
       url: `${connections.basemapUrl}/1`,
@@ -41,7 +46,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: true
     },
-    {
+    BUILDING_EXACT: {
       source: 'building-exact',
       name: 'Building',
       url: `${connections.basemapUrl}/1`,
@@ -57,7 +62,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: false
     },
-    {
+    UNIVERSITY_DEPARTMENTS: {
       source: 'university-departments',
       name: 'University Departments',
       url: `${connections.departmentUrl}`,
@@ -81,7 +86,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
         }
       }
     },
-    {
+    UNIVERSITY_DEPARTMENTS_EXACT: {
       source: 'university-departments-exact',
       name: 'University Departments',
       url: `${connections.departmentUrl}`,
@@ -97,7 +102,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       displayTemplate: '{attributes.DeptName}',
       searchActive: false
     },
-    {
+    ALL_PARKING: {
       source: 'all-parking',
       name: 'Parking',
       url: `${definitions.TRANSPORTATION_PARKING.url}`,
@@ -119,7 +124,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       displayTemplate: '{attributes.LotName}',
       searchActive: false
     },
-    {
+    VISITOR_PARKING: {
       source: 'visitor-parking',
       name: 'Visitor Parking',
       url: `${definitions.TRANSPORTATION_PARKING.url}`,
@@ -140,7 +145,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       displayTemplate: '{attributes.LotName}',
       searchActive: false
     },
-    {
+    NIGHT_PARKING: {
       source: 'night-parking',
       name: 'Night Parking',
       url: `https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
@@ -160,7 +165,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       displayTemplate: '{attributes.LotName}',
       searchActive: false
     },
-    {
+    ONE_PARKING: {
       source: 'one-parking',
       name: 'Parking',
       url: `${definitions.TRANSPORTATION_PARKING.url}`,
@@ -177,7 +182,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       displayTemplate: '{attributes.LotName}',
       searchActive: false
     },
-    {
+    PARKING_GARAGE: {
       source: 'parking-garage',
       name: 'Parking Garage',
       url: `${connections.basemapUrl}/0`,
@@ -195,7 +200,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: true
     },
-    {
+    PARKING_LOT: {
       source: 'parking-lot',
       name: 'Parking Lot',
       url: `${connections.basemapUrl}/9`,
@@ -213,7 +218,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       popupComponent: Popups.ParkingLotPopupComponent,
       searchActive: true
     },
-    {
+    POINTS_OF_INTEREST: {
       source: 'points-of-interest',
       name: 'Points of Interest',
       url: definitions.POINTS_OF_INTEREST.url,
@@ -231,7 +236,7 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       popupComponent: Popups.PoiPopupComponent,
       searchActive: true
     },
-    {
+    BIKE_RACKS: {
       source: 'bike-racks',
       name: 'Bike Racks',
       url: `${connections.bikeRacksUrl}`,
@@ -247,5 +252,38 @@ export function SearchSources(connections: IComposedConnections, definitions: IC
       displayTemplate: '{attributes.Type}',
       searchActive: false
     }
-  ];
+  };
+
+  return Object.entries(SEARCH_SOURCES)
+    .filter(([key]) => {
+      if (options && options.exclude && options.exclude.length > 0) {
+        const keyId = options.exclude.some((excludeKey) => {
+          return key === excludeKey;
+        });
+
+        if (keyId) {
+          return false;
+        }
+      }
+
+      return true;
+    })
+    .map(([, value]) => {
+      return value;
+    });
 }
+
+export type ComposedSearchSourcesKeyMap = {
+  BUILDING: SearchSource;
+  BUILDING_EXACT: SearchSource;
+  UNIVERSITY_DEPARTMENTS: SearchSource;
+  UNIVERSITY_DEPARTMENTS_EXACT: SearchSource;
+  ALL_PARKING: SearchSource;
+  VISITOR_PARKING: SearchSource;
+  NIGHT_PARKING: SearchSource;
+  ONE_PARKING: SearchSource;
+  PARKING_GARAGE: SearchSource;
+  PARKING_LOT: SearchSource;
+  POINTS_OF_INTEREST: SearchSource;
+  BIKE_RACKS: SearchSource;
+};

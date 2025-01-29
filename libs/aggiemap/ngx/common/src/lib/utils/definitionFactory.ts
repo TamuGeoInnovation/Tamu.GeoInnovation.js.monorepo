@@ -5,15 +5,16 @@ import { Connections } from '../connections';
 import { Definitions, IComposedIDefinitions } from '../definitions';
 import { LayerSources, ThreeDLayers } from '../layer-sources';
 import { LegendSources } from '../legend-sources';
-import { SearchSources } from '../search-sources';
+import { ComposedSearchSourcesKeyMap, SearchSources } from '../search-sources';
 
-export function factory(environment: 'dev' | 'prod' = 'dev', options?: IFactoryOptions): Definitions {
-  const gisHost = environment === 'dev' ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+export function factory(options?: IFactoryOptions): Definitions {
+  const gisHost =
+    options?.environment === undefined || options?.environment === 'dev' ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
 
   const c = Connections(gisHost);
   const d = Definitions(c);
   const l = LayerSources(c, d, options?.layerSources);
-  const s = SearchSources(c, d);
+  const s = SearchSources(c, d, options?.searchSources);
 
   return {
     Connections: c,
@@ -26,9 +27,18 @@ export function factory(environment: 'dev' | 'prod' = 'dev', options?: IFactoryO
 }
 
 export interface IFactoryOptions {
-  layerSources: {
-    exclude: Array<keyof IComposedIDefinitions>;
-  };
+  environment?: 'dev' | 'prod';
+
+  layerSources?: IFactoryExcludeOptions<IComposedIDefinitions>;
+
+  searchSources?: IFactoryExcludeOptions<ComposedSearchSourcesKeyMap>;
+}
+
+/**
+ * Options that limit specific resource types from being included in the factory output.
+ */
+export interface IFactoryExcludeOptions<T> {
+  exclude?: Array<keyof T>;
 }
 
 export interface Definitions {

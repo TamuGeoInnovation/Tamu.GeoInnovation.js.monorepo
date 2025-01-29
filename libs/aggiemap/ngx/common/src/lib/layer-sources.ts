@@ -2,6 +2,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { IComposedIDefinitions } from './definitions';
 import { IComposedConnections } from './connections';
+import { IFactoryExcludeOptions } from './utils/definitionFactory';
 
 import esri = __esri;
 
@@ -17,7 +18,7 @@ export const commonLayerProps = {
 export function LayerSources(
   connections: IComposedConnections,
   definitions: IComposedIDefinitions,
-  options?: { exclude: Array<keyof IComposedIDefinitions> }
+  options?: IFactoryExcludeOptions<IComposedIDefinitions>
 ): Array<LayerSource> {
   const all: Array<LayerSource> = [
     {
