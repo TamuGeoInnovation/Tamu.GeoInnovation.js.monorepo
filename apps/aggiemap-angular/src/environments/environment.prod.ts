@@ -3,10 +3,17 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
+import { factory } from '@tamu-gisc/aggiemap/ngx/common';
+export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
+
 export const environment = {
   production: true
 };
 
-export * from './definitions';
 export * from './notification-events';
-export * from './polygons';
+export const { Connections, Definitions, LayerSources, SearchSources, LegendSources } = factory({
+  environment: 'prod',
+  layerSources: {
+    exclude: ['BIKE_LOCATIONS']
+  }
+});
