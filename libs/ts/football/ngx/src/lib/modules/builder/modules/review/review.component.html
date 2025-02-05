@@ -1,0 +1,19 @@
+<div class="container12">
+  <p class="trailer-2 center-text component-instructions">Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations.</p>
+
+  <div class="flex flex-row justify-center">
+    <div class="column6 flex flex-column" id="settings-table">
+      <div class="setting-item">
+        <div>Showdown Event</div>
+        <div>
+          <p *ngIf="!settings || settings.event === undefined">Not Set</p>
+          <p *ngIf="settings && settings.event !== undefined">{{eventName | lookup : eventNames}}</p>
+          <p [routerLink]="['/builder/event']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/event', {ret: 'review'})" (keyup.enter)="next('builder/event', {ret: 'review'})" tabindex="0">Change</p>
+        </div>
+      </div>
+
+      <div class="button terciary" *ngIf="settingsValid" [routerLink]="'../../map'" (keyup.space)="next('map')" (keyup.enter)="next('map')" tabindex="0">Take Me To My Map</div>
+      <div class="button disabled" *ngIf="!settingsValid">Please ensure all selections are valid</div>
+    </div>
+  </div>
+</div>

@@ -11,6 +11,8 @@ import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
 import { TimeUntilPipe } from './transformation/time-until.pipe';
 import { PhoneNumberFormatPipe } from './transformation/phone-number-format.pipe';
 
+import { LookupPipe } from './object/lookup/lookup.pipe';
+
 @NgModule({
   declarations: [
     GroupByPipe,
@@ -19,9 +21,19 @@ import { PhoneNumberFormatPipe } from './transformation/phone-number-format.pipe
     SafeHtmlPipe,
     TimeUntilPipe,
     PhoneNumberFormatPipe,
-    ExistsPipe
+    ExistsPipe,
+    LookupPipe
   ],
   imports: [CommonModule],
-  exports: [GroupByPipe, OrderByPipe, MarkdownParsePipe, SafeHtmlPipe, TimeUntilPipe, PhoneNumberFormatPipe, ExistsPipe]
+  exports: [
+    GroupByPipe,
+    OrderByPipe,
+    MarkdownParsePipe,
+    SafeHtmlPipe,
+    TimeUntilPipe,
+    PhoneNumberFormatPipe,
+    ExistsPipe,
+    LookupPipe
+  ]
 })
 export class PipesModule {}

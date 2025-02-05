@@ -1,0 +1,29 @@
+{
+  "root": "apps/ts-football-angular-e2e",
+  "sourceRoot": "apps/ts-football-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/ts-football-angular-e2e/cypress.json",
+        "devServerTarget": "ts-football-angular:serve:development",
+        "tsConfig": "apps/ts-football-angular-e2e/tsconfig.json"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "ts-football-angular:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ts-football-angular-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ts-football-angular"]
+}

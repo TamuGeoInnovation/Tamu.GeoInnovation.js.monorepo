@@ -1,0 +1,9 @@
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0" [title]="title">{{ title }}</div>
+</div>
+
+<div class="popup-section">
+  <p class="trailer-1" *ngIf="data?.attributes?.description" [innerHTML]="data.attributes?.description"></p>
+
+  <p class="trailer-1" *ngIf="data?.attributes?.Notes && isContentTheSame === false" [innerHTML]="data.attributes?.Notes"></p>
+</div>

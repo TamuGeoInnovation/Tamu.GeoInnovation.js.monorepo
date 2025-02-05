@@ -312,6 +312,13 @@ export type LayerSource = LayerSourceType & {
   popupComponent?: unknown;
 
   /**
+   * Object with dot notation keys that will be used to populate the popup template.
+   *
+   * If the feature selected contains the same keys, they will be overwritten in favor of the defined popupData.
+   */
+  popupData?: Record<string, unknown>;
+
+  /**
    * Legend items that are shown disabled in the legend as the layer visibility is on/off
    *
    * @deprecated Legend items are now rendered through the legend view model

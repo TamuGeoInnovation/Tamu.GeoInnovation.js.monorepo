@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/ts/football/ngx",
+  "sourceRoot": "libs/ts/football/ngx/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ts/football/ngx"],
+      "options": {
+        "jestConfig": "libs/ts/football/ngx/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ts/football/ngx/src/**/*.ts", "libs/ts/football/ngx/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}
