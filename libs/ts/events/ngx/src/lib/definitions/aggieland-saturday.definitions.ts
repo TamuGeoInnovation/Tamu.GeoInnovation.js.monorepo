@@ -41,8 +41,8 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     url: AggielandSaturdayEventDefinitions.EVENT_PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Event',
-      description: 'attributes.Type'
+      name: '{attributes.Event} Parking',
+      description: `Type: {attributes.Type}\nLot Name: {attributes.name}`
     },
     visible: true,
     listMode: 'show',
@@ -57,8 +57,8 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     url: AggielandSaturdayEventDefinitions.EVENT_BUS_STOPS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: 'attributes.StopName',
-      description: 'attributes.Route'
+      name: 'Aggieland Saturday Bus Stop ({attributes.StopType})',
+      description: `Stop Name: {attributes.StopName}\nRoute Number: {attributes.Route}`
     },
     visible: true,
     listMode: 'show',
@@ -118,8 +118,8 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     url: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: 'attributes.Event',
-      description: 'attributes.Type'
+      name: `Aggieland Saturday Points of Interest`,
+      description: `Type: {attributes.Type}`
     },
     visible: true,
     listMode: 'show',
