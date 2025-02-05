@@ -24,11 +24,11 @@ export class SettingsGuard implements CanActivate {
     route: ActivatedRouteSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     // Settings can come from either local storage or from the url query parameters
-    const moveinSettings = this.ess.settings;
+    const appSettings = this.ess.settings;
     const queryParams = route.queryParams as EventSettings;
     const queryParamsKeySize = Object.keys(queryParams).length;
 
-    if (!moveinSettings && queryParamsKeySize === 0) {
+    if (!appSettings && queryParamsKeySize === 0) {
       // return this.router.parseUrl('/builder');
 
       return true;
@@ -48,12 +48,12 @@ export class SettingsGuard implements CanActivate {
         });
 
         return of(true).pipe(delay(100)); // Add artificial delay to allow settings to be set before proceeding.
-      } else if (moveinSettings) {
+      } else if (appSettings) {
         return of(true).pipe(delay(100)); // Add artificial delay to allow settings to be set before proceeding.
       }
     } catch (err) {
       this.ns.toast({
-        id: 'movein-settings-error',
+        id: 'special-events-settings-error',
         title: 'Error Validating URL Parameters',
         message: 'Could not load map from URL parameters. Please set your preferences manually using the map configurator.'
       });

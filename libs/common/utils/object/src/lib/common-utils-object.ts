@@ -8,6 +8,7 @@
  * @export
  * @param lookup Source object
  * @param property Dot notation string representing the location of the property
+ * @param isFlatPath If true, the property string is treated as a flat path and not split by '.'
  */
 export function getPropertyValue<T>(lookup: object, property: string, isFlatPath = false): T {
   if (!lookup || !property) {
