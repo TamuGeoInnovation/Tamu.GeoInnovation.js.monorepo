@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { EventSettings } from '../../interfaces/graduation.interface';
+import { EventSettings } from '../../interfaces/special-event.interface';
 
 @Injectable({
   providedIn: 'root'

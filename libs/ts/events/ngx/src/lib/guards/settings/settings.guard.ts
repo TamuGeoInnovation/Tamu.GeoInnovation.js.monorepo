@@ -6,8 +6,8 @@ import { Angulartics2 } from 'angulartics2';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { EventSettings } from '../../interfaces/graduation.interface';
 import { EventSettingsService } from '../../services/settings/event-settings.service';
+import { EventSettings } from '../../interfaces/special-event.interface';
 
 @Injectable({
   providedIn: 'root'

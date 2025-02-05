@@ -4,8 +4,8 @@ import { AltSearchHelper, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search'
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { EventSettings } from '../../../../interfaces/graduation.interface';
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
+import { EventSettings } from '../../../../interfaces/special-event.interface';
 
 import esri = __esri;
 
