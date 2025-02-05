@@ -1,0 +1,25 @@
+import { Component, OnInit } from '@angular/core';
+
+import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
+
+@Component({
+  selector: 'tamu-gisc-markdown-w-directions-popup',
+  templateUrl: './markdown-w-directions-popup.component.html',
+  styleUrls: ['./markdown-w-directions-popup.component.scss']
+})
+export class MarkdownWDirectionsPopupComponent extends BaseDirectionsComponent implements OnInit {
+  public title: string;
+  public isContentTheSame: boolean;
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+
+    this.title = this.data?.attributes?.name ? this.data.attributes.name : this.data.layer.title;
+
+    this.isContentTheSame = this.data?.attributes?.description === this.data?.attributes?.Notes;
+  }
+
+  public override startDirections() {
+    super.startDirections(`${this.data.attributes.OBJECTID}`);
+  }
+}

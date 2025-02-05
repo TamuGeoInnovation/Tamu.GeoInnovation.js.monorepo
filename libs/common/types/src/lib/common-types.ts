@@ -316,7 +316,23 @@ export type LayerSource = LayerSourceType & {
    *
    * If the feature selected contains the same keys, they will be overwritten in favor of the defined popupData.
    */
-  popupData?: Record<string, unknown>;
+  popupData?: Record<
+    string,
+    | string
+    | {
+        /**
+         * Key used to reference the value in the feature attributes.
+         */
+        field: string;
+
+        /**
+         * Describes if the `field` is a flat property or a nested property.
+         *
+         * Some objects carry key paths with dot (.) delimiters but are not part of a nested object and should be treated as flat properties.
+         */
+        collapsed?: boolean;
+      }
+  >;
 
   /**
    * Legend items that are shown disabled in the legend as the layer visibility is on/off

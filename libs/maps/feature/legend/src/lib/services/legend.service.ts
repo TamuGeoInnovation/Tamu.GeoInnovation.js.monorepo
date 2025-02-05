@@ -49,7 +49,7 @@ export class LegendService {
         return fromEventPattern(add, remove).pipe(
           startWith({ target: model.activeLayerInfos }),
           map((event: IActiveLayerInfosChangeEvent) => {
-            return event.target.toArray();
+            return event.target.filter((l) => l.layer.listMode !== 'hide').toArray();
           })
         );
       })
