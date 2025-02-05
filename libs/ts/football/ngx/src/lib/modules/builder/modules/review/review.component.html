@@ -12,15 +12,6 @@
         </div>
       </div>
 
-      <!-- <div class="setting-item">
-        <div>Require Accessible (ADA) Accommodations</div>
-        <div>
-          <p *ngIf="!settings || settings.accessible === undefined">Not Set</p>
-          <p *ngIf="settings && settings.accessible !== undefined">{{ settings.accessible ? 'Yes' : 'No' }}</p>
-          <p [routerLink]="['/builder/accommodations']" [queryParams]="{ret: 'review'}" (keyup.space)="next('builder/accommodations', {ret: 'review'})" (keyup.enter)="next('builder/accommodations', {ret: 'review'})" tabindex="0">Change</p>
-        </div>
-      </div> -->
-
       <div class="button terciary" *ngIf="settingsValid" [routerLink]="'../../map'" (keyup.space)="next('map')" (keyup.enter)="next('map')" tabindex="0">Take Me To My Map</div>
       <div class="button disabled" *ngIf="!settingsValid">Please ensure all selections are valid</div>
     </div>

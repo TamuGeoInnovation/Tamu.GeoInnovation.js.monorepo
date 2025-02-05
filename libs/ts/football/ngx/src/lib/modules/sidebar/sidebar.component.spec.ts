@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MoveInOutSidebarComponent } from './sidebar.component';
+import { GamedaySidebarComponent } from './sidebar.component';
 
-describe('MoveInOutSidebarComponent', () => {
-  let component: MoveInOutSidebarComponent;
-  let fixture: ComponentFixture<MoveInOutSidebarComponent>;
+describe('GamedaySidebarComponent', () => {
+  let component: GamedaySidebarComponent;
+  let fixture: ComponentFixture<GamedaySidebarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MoveInOutSidebarComponent]
+      declarations: [GamedaySidebarComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MoveInOutSidebarComponent);
+    fixture = TestBed.createComponent(GamedaySidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

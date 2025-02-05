@@ -42,7 +42,7 @@ import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessib
 
 import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
 import { MapComponent } from './map.component';
-import { MoveInOutSidebarComponent } from '../sidebar/sidebar.component';
+import { GamedaySidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 
 const routes: Routes = [
@@ -57,7 +57,7 @@ const routes: Routes = [
       },
       {
         path: 'd',
-        component: MoveInOutSidebarComponent,
+        component: GamedaySidebarComponent,
         canActivateChild: [DesktopGuard],
         children: [
           { path: '', component: SidebarReferenceComponent },

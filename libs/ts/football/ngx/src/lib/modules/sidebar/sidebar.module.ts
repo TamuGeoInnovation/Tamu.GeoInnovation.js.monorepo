@@ -12,7 +12,7 @@ import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-import { MoveInOutSidebarComponent } from './sidebar.component';
+import { GamedaySidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
 
 @NgModule({
@@ -29,7 +29,7 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     LegendModule,
     PipesModule
   ],
-  declarations: [MoveInOutSidebarComponent, SidebarReferenceComponent],
-  exports: [MoveInOutSidebarComponent]
+  declarations: [GamedaySidebarComponent, SidebarReferenceComponent],
+  exports: [GamedaySidebarComponent]
 })
 export class MoveInOutSidebarModule {}

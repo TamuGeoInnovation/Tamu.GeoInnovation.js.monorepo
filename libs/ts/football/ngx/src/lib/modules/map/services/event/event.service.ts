@@ -148,13 +148,12 @@ export class EventService {
     returnFeatureLayer?: boolean,
     featureLayerProperties?: esri.FeatureLayerProperties
   ): Promise<unknown> {
-    const [QueryTask, Query, FeatureLayer, SpatialReference, Polygon]: [
+    const [QueryTask, Query, FeatureLayer, SpatialReference]: [
       esri.QueryTaskConstructor,
       esri.QueryConstructor,
       esri.FeatureLayerConstructor,
-      esri.SpatialReferenceConstructor,
-      esri.PolygonConstructor
-    ] = await this.moduleProvider.require(['QueryTask', 'Query', 'FeatureLayer', 'SpatialReference', 'Polygon']);
+      esri.SpatialReferenceConstructor
+    ] = await this.moduleProvider.require(['QueryTask', 'Query', 'FeatureLayer', 'SpatialReference']);
 
     const task = new QueryTask({
       url: url

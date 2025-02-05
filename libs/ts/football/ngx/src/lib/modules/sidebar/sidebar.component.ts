@@ -5,4 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class MoveInOutSidebarComponent {}
+export class GamedaySidebarComponent {}
