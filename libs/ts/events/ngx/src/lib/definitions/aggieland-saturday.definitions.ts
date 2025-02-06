@@ -63,7 +63,33 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'Route',
+        uniqueValueInfos: [
+          {
+            value: '13',
+            label: 'East Bus Stops',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/transportation/Bus-Blue.png',
+              width: '24px',
+              height: '32px'
+            }
+          },
+          {
+            value: '12',
+            label: 'West Bus Stops',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/transportation/Bus-Red.png',
+              width: '24px',
+              height: '32px'
+            }
+          }
+        ]
+      } as any
     }
   },
   {
@@ -124,7 +150,63 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'Type',
+        uniqueValueInfos: [
+          {
+            value: 'Pay Parking',
+            label: 'Paid Parking',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/transportation/Paid-Parking.png',
+              width: '24px',
+              height: '32px'
+            }
+          },
+          {
+            value: 'Dining',
+            label: 'Dining',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/shops-food/Dining.png',
+              width: '24px',
+              height: '32px'
+            }
+          },
+          {
+            value: 'Performance',
+            label: 'Performance',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/fixtures/Theater.png',
+              width: '24px',
+              height: '32px'
+            }
+          },
+          {
+            value: 'Shopping',
+            label: 'Shopping',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/shops-food/Store.png',
+              width: '24px',
+              height: '32px'
+            }
+          },
+          {
+            value: 'Bus Parking',
+            label: 'Bus Parking',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/hazards/Hazard.png',
+              width: '24px',
+              height: '32px'
+            }
+          }
+        ]
+      } as any
     }
   }
 ];
