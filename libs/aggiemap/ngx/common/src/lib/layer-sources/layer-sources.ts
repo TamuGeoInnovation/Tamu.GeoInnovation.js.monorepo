@@ -237,14 +237,31 @@ export function LayerSources(
       native: {
         ...commonLayerProps,
         renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-marker',
-            style: 'circle',
-            size: 8,
-            color: '#03C4A6'
-          }
-        }
+          type: 'unique-value',
+          field: 'label',
+          uniqueValueInfos: [
+            {
+              value: 'open',
+              label: 'Open dining location',
+              symbol: {
+                type: 'simple-marker',
+                style: 'circle',
+                size: 8,
+                color: 'green'
+              }
+            },
+            {
+              value: 'closed',
+              label: 'Closed dining location',
+              symbol: {
+                type: 'simple-marker',
+                style: 'circle',
+                size: 8,
+                color: 'red'
+              }
+            }
+          ]
+        } as any
       }
     }
   ];
