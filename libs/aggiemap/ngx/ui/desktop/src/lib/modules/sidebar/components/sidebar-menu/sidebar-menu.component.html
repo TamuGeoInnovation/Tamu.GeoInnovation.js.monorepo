@@ -4,7 +4,7 @@
     <p>{{levelText | async}}</p>
   </div>
 
-  <div class="sidebar-component-actions">
+  <div class="sidebar-component-actions" *ngIf="(locations | async)?.data?.length > 0">
     <p class="action" (click)="export()">Export</p>
   </div>
 </div>
