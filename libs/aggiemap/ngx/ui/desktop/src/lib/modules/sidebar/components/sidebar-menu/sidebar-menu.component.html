@@ -1,6 +1,12 @@
 <div class="sidebar-component-name">
-  <i class="material-icons" id="return" [class]="{available: (parentId | async) !== 0, disabled: (parentId | async) === 0}" [title]="(parentId | async) === 0 ? 'Not available' : 'Go to previous level'" (click)="setParentId()">arrow_back</i>
-  <p>{{levelText | async}}</p>
+  <div class="sidebar-component-actions">
+    <i class="material-icons" id="return" [class]="{available: (parentId | async) !== 0, disabled: (parentId | async) === 0}" [title]="(parentId | async) === 0 ? 'Not available' : 'Go to previous level'" (click)="setParentId()">arrow_back</i>
+    <p>{{levelText | async}}</p>
+  </div>
+
+  <div class="sidebar-component-actions">
+    <p class="action" (click)="export()">Export</p>
+  </div>
 </div>
 
 <div class="sidebar-component-content-container">

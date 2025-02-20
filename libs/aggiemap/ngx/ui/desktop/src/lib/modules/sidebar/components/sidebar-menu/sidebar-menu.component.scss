@@ -2,11 +2,15 @@
 @import 'libs/sass/components/sidebar';
 
 .sidebar-component-name {
+  justify-content: space-between;
+}
+
+.sidebar-component-name {
   display: flex;
   flex-direction: row;
   align-items: center;
 
-  #return {
+  i {
     &.disabled {
       color: #bdbdbd;
       cursor: not-allowed;
@@ -17,6 +21,17 @@
       cursor: pointer;
     }
   }
+
+  p.action {
+    color: #0079c1;
+    cursor: pointer;
+  }
+}
+
+.sidebar-component-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .category-location-container {

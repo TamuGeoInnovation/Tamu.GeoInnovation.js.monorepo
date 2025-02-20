@@ -216,6 +216,10 @@ export class CategoryLocationMenuService {
     });
   }
 
+  public export(id: number) {
+    return this.ls.exportLocationsForCategory(id);
+  }
+
   /**
    * Accepts a category entry and returns an array of observables that resolve to the layers and graphics.
    *

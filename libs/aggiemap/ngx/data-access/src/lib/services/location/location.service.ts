@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, filter, map, mergeMap, toArray } from 'rxjs';
+import { Observable, filter, map, mergeMap, tap, toArray } from 'rxjs';
 
 import qs from 'qs';
 
@@ -73,6 +73,29 @@ export class LocationService {
       }),
       toArray()
     );
+  }
+
+  public exportLocationsForCategory(catId: number): Observable<Blob> {
+    return this.http
+      .get(`${this._resource}/export/${catId}`, {
+        responseType: 'blob'
+      })
+      .pipe(
+        tap((blob) => {
+          this.downloadFile(blob, `locations-${catId}-${Date.now()}.zip`);
+        })
+      );
+  }
+
+  public downloadFile(blob: Blob, filename: string) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   }
 }
 

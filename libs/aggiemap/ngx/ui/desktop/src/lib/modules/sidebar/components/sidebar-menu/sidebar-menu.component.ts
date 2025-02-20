@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, map, of, shareReplay, switchMap, withLatestFrom } from 'rxjs';
+import { Observable, Subject, map, of, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
 
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { CategoryEntry, CategoryService, CmsResponse, LocationEntry } from '@tamu-gisc/aggiemap/ngx/data-access';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -26,7 +27,8 @@ export class SidebarMenuComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private env: EnvironmentService,
     private readonly cs: CategoryService,
-    private readonly ss: CategoryLocationMenuService
+    private readonly ss: CategoryLocationMenuService,
+    private readonly ns: NotificationService
   ) {}
 
   public ngOnInit(): void {
@@ -121,5 +123,23 @@ export class SidebarMenuComponent implements OnInit {
 
   public toggleCategory(category: CategoryEntry) {
     this.ss.toggleCategory(category);
+  }
+
+  public export() {
+    this.parentId
+      .pipe(
+        take(1),
+        switchMap((id) => {
+          return this.ss.export(id);
+        })
+      )
+      .subscribe((res) => {
+        console.log('Export started');
+        this.ns.toast({
+          message: 'Export started. Check your downloads folder.',
+          id: 'export-started',
+          title: 'Export Started'
+        });
+      });
   }
 }
