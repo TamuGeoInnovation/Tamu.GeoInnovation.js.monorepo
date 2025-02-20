@@ -5,6 +5,8 @@ import qs from 'qs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+import { CmsDataEntity, CmsFile, CmsResponse } from '../../types/types';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +16,7 @@ export class CategoryService {
   constructor(private readonly env: EnvironmentService, private readonly http: HttpClient) {
     const connections = this.env.value('Connections');
 
-    this._resource = connections.cms_url + 'categories';
+    this._resource = connections.cms_api + 'categories';
   }
 
   public getCategories(parent?: number) {
@@ -36,30 +38,11 @@ export class CategoryService {
       populate: ['list_icon']
     });
 
-    return this.http.get<CmsResponse<Category>>(this._resource + '?' + query);
+    return this.http.get<CmsResponse<CategoryEntry>>(this._resource + '?' + query);
   }
 }
 
-export interface CmsResponse<E> {
-  data: Array<E>;
-  meta: CmsResponseMetadata;
-}
-
-export interface CmsResponseMetadata {
-  pagination: {
-    page: number;
-    pageCount: number;
-    pageSize: number;
-    total: number;
-  };
-}
-
-export interface CmsDataEntity<E> {
-  id: number;
-  attributes: E;
-}
-
-export interface Category extends CmsDataEntity<Category> {
+export interface CategoryEntry extends CmsDataEntity<CategoryEntry> {
   author: string;
   catId: number;
   catIid: number;
@@ -108,22 +91,3 @@ export interface Category extends CmsDataEntity<Category> {
 }
 
 export type CategoryListIcon = CmsResponse<CmsFile>;
-
-export interface CmsFile {
-  name: string;
-  alternativeText: string;
-  caption: string;
-  width: number;
-  height: number;
-  formats: null;
-  hash: string;
-  ext: string;
-  mime: 'image/png';
-  size: number;
-  url: string;
-  previewUrl: string;
-  provider: string;
-  provider_metadata: null;
-  createdAt: Date;
-  updatedAt: Date;
-}

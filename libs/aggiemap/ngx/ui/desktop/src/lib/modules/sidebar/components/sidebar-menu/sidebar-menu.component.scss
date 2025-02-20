@@ -1,24 +1,45 @@
 @import 'libs/sass/mixins';
+@import 'libs/sass/components/sidebar';
 
 .category-location-container {
   display: flex;
   flex-direction: column;
 }
 
-.category {
+.category,
+.location {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  justify-content: space-between;
   padding: 0.5rem;
-  border-bottom: 1.25pt solid #e0e0e0;
-  cursor: pointer;
   @include transition(background-color 0.3s);
 
   &:hover {
     background-color: #f0f0f0;
   }
 
-  .category--icon {
+  &:not(:last-child) {
+    border-bottom: 1.25pt solid #e0e0e0;
+  }
+
+  &:not(.toggle) {
+    cursor: pointer;
+  }
+}
+
+.category__identity,
+.location__identity {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.category {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .category__icon {
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
     margin-right: 0.75rem;
@@ -29,5 +50,18 @@
       max-height: 1.5rem;
       max-width: 1.5rem;
     }
+  }
+}
+
+.location {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+
+  .location__name {
+    color: #323232;
+  }
+
+  &:hover {
+    color: initial;
   }
 }
