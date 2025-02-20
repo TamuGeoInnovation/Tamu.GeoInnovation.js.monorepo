@@ -1,0 +1,42 @@
+<div class="sidebar-component-name">
+  <div class="sidebar-component-actions">
+    <i class="material-icons" id="return" [class]="{available: (parentId | async) !== 0, disabled: (parentId | async) === 0}" [title]="(parentId | async) === 0 ? 'Not available' : 'Go to previous level'" (click)="setParentId()">arrow_back</i>
+    <p>{{levelText | async}}</p>
+  </div>
+
+  <div class="sidebar-component-actions" *ngIf="(locations | async)?.data?.length > 0">
+    <p class="action" (click)="export()">Export</p>
+  </div>
+</div>
+
+<div class="sidebar-component-content-container">
+  <div class="category-location-container">
+    <div class="category" *ngFor="let category of (categories | async)?.data" (click)="setParent($event, category)" [class]="{toggle: category.attributes.type === 'toggle'}">
+      <div class="category__identity">
+        <div class="category__icon">
+          <img *ngIf="category.attributes.list_icon as li" [src]="assetsUrl + li.data?.attributes.url" alt="" />
+        </div>
+        <div class="category__name">{{category.attributes.name}}</div>
+      </div>
+
+      <div class="category__controls">
+        <div class="category__controls__drilldown" *ngIf="category.attributes.type !== 'toggle'">
+          <i class="material-icons">chevron_right</i>
+        </div>
+
+        <div class="category__controls__toggle">
+          <!-- To avoid the checkbox from being clickable, we use a label and hide the checkbox instead of using a placeholder element of the exact size
+          or using grid -->
+          <tamu-gisc-checkbox [label]="''" [checked]="category | categoryStatus | async" [class]="{placeholder: !category.attributes.checkbox}" (change)="toggleCategory(category)"></tamu-gisc-checkbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="location" *ngFor="let location of (locations | async)?.data" [ngClass]="{active: location | locationStatus | async}" (click)="toggleLocation(location)">
+      <div class="location__identity">
+        <div class="location__name">{{location.attributes.name}}</div>
+      </div>
+      <div class="location__controls"></div>
+    </div>
+  </div>
+</div>

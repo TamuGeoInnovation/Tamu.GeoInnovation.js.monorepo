@@ -41,7 +41,8 @@ import {
   AggiemapSidebarComponent,
   SidebarReferenceComponent,
   SidebarTripPlannerComponent,
-  SidebarBusListComponent
+  SidebarBusListComponent,
+  SidebarMenuComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   AggiemapNgxUiMobileModule,
@@ -78,7 +79,8 @@ const routes: Routes = [
           { path: 'bus', component: SidebarBusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
           { path: 'trip/options', component: TripPlannerOptionsComponent },
-          { path: 'experiments', component: ExperimentsListComponent }
+          { path: 'experiments', component: ExperimentsListComponent },
+          { path: 'features-beta', component: SidebarMenuComponent }
         ]
       },
       {
@@ -189,3 +191,4 @@ const routes: Routes = [
   declarations: [MapComponent]
 })
 export class MapModule {}
+

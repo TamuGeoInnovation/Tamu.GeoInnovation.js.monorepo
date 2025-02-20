@@ -6,7 +6,7 @@ import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@
 
 import esri = __esri;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LayerListService {
   private _model: esri.LayerListViewModel;
 

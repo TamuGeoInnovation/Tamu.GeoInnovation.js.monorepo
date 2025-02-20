@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
 const _initialState: TestingStore = { isTesting: false, next: false };
 
 @Injectable({ providedIn: 'root' })
@@ -9,7 +11,7 @@ export class TestingService {
   private _store: BehaviorSubject<TestingStore> = new BehaviorSubject(_initialState);
   public store: Observable<TestingStore> = this._store.asObservable();
 
-  constructor() {
+  constructor(private readonly env: EnvironmentService) {
     this._determineTestingMode();
   }
 
@@ -24,7 +26,9 @@ export class TestingService {
   }
 
   private _determineTestingMode() {
-    if (window.location.host.includes('dev') || window.location.host.includes('localhost')) {
+    const isDevOverride = this.env.value('environment', true)?.showProductionDevFeatures === 'true';
+
+    if (isDevOverride || window.location.host.includes('dev') || window.location.host.includes('localhost')) {
       this.set('isTesting', true);
     }
 
