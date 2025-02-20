@@ -9,8 +9,13 @@ export const environment = {
 };
 
 export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
+
 export * from './notification-events';
 
 const sources = factory();
 
-export const { Definitions, Connections, LegendSources, SearchSources, ThreeDLayers, LayerSources } = sources;
+export const { Definitions, LegendSources, SearchSources, ThreeDLayers, LayerSources } = sources;
+export const Connections = {
+  ...sources.Connections,
+  cms_url: 'http://localhost:1337/api'
+};
