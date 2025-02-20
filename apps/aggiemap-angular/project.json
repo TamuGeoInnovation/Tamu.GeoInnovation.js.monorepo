@@ -87,6 +87,9 @@
         "assets": [
           "apps/aggiemap-angular/src/favicon.ico",
           "apps/aggiemap-angular/src/assets",
+          "apps/aggiemap-angular/src/Dockerfile",
+          "apps/aggiemap-angular/src/.dockerignore",
+          "apps/aggiemap-angular/src/.nginx",
           {
             "glob": "**/*",
             "input": "./libs/assets/",
@@ -110,6 +113,17 @@
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "browserTarget": "aggiemap-angular:build"
+      }
+    },
+    "image-build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "docker build . -t aggiemap-angular"
+          }
+        ],
+        "cwd": "dist/apps/aggiemap-angular"
       }
     },
     "serve": {
@@ -145,3 +159,4 @@
   "tags": [],
   "implicitDependencies": ["assets", "sass"]
 }
+
