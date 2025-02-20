@@ -42,7 +42,7 @@ export class SidebarMenuComponent implements OnInit {
           return 0;
         }
       }),
-      shareReplay()
+      shareReplay(1)
     );
 
     this.parent = this.parentId.pipe(
