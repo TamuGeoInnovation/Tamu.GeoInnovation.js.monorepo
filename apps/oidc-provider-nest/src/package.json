@@ -11,7 +11,7 @@
     "@nestjs/core": "8.2.6",
     "@nestjs/platform-express": "8.2.6",
     "typeorm": "0.2.41",
-    "better-sqlite3": "7.5.0",
+    "better-sqlite3-session-store": "^0.1.0",
     "mssql": "6.4.0",
     "@nestjs/passport": "8.1.0",
     "passport": "0.4.1",
