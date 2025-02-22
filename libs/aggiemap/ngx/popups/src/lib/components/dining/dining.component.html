@@ -1,12 +1,11 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0">{{ data.attributes.name }}</div>
-  <ng-container *ngIf="(details | async) as details">
-    <div class="feature-style-2" tabindex="0"><span>{{details.location.address.street}} </span><span>{{details.location.address.city}}</span>, TX <span>{{details.location.address.zip_code}}</span></div>
-    <div class="feature-style-2" tabindex="0">{{ data.attributes.message }}</div>
-  </ng-container>
+  <div class="feature-style-2" tabindex="0"><span>{{data?.attributes?.street}} </span><span>{{data?.attributes?.city}}</span>, TX <span>{{data?.attributes?.zip_code}}</span></div>
+  <div class="feature-style-2" tabindex="0" *ngIf="data?.attributes?.message">{{data.attributes.message}}</div>
 </div>
 
 <div class="popup-section">
+  <div *ngIf="data?.attributes?.description" [innerHTML]="data.attributes.description| markdownParse"></div>
   <!-- Directions To Button -->
   <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.name" (click)="startDirections()">Directions To Here</div>
 </div>
