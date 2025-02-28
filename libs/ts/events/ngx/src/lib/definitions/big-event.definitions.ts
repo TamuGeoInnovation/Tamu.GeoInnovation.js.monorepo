@@ -50,30 +50,99 @@ export const BigEventColdLayerSources: LayerSource[] = [
         uniqueValueInfos: [
           {
             value: 'Leave Kickoff,Exit Route',
-            label: 'Leave Kickoff, Exit Route',
+            label: 'Leave Kickoff - Exit Route',
             symbol: {
               type: 'simple-line',
-              color: 'blue',
-              width: 3.5,
+              color: 'rgb(56, 168, 0)',
+              width: 2.5,
               marker: {
                 style: 'arrow',
-                color: 'blue',
+                color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
             }
           },
           {
-            value: 'Aggieland Saturday W',
-            label: 'West Route',
+            value: 'Leave Kickoff,Road Closed',
+            label: 'Leave Kickoff - Road Closed',
             symbol: {
               type: 'simple-line',
-              color: 'red',
-              width: 3.5,
+              color: 'rgb(230, 0, 0)',
+              width: 2.5
+            }
+          },
+          {
+            value: 'To Kickoff,Expect Delays',
+            label: 'To Kickoff - Expect Delays',
+            symbol: {
+              type: 'simple-line',
+              color: 'rgb(230, 0, 0)',
+              width: 2.5,
               marker: {
                 style: 'arrow',
-                color: 'red',
+                color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
+            }
+          },
+          {
+            value: 'To Kickoff,Fast Route',
+            label: 'To Kickoff - Fast Route',
+            symbol: {
+              type: 'simple-line',
+              color: 'rgb(56, 168, 0)',
+              width: 2.5,
+              marker: {
+                style: 'arrow',
+                color: 'rgb(56, 168, 0)',
+                placement: 'end'
+              }
+            }
+          },
+          {
+            value: 'To Kickoff,Road Closed',
+            label: 'To Kickoff - Road Closed',
+            symbol: {
+              type: 'simple-line',
+              color: 'rgb(230, 0, 0)',
+              width: 2.5
+            }
+          },
+          {
+            value: 'Tool Dropoff,Expect Delays',
+            label: 'Tool Dropoff - Expect Delays',
+            symbol: {
+              type: 'simple-line',
+              color: 'rgb(230, 0, 0)',
+              width: 2.5,
+              marker: {
+                style: 'arrow',
+                color: 'rgb(230, 0, 0)',
+                placement: 'end'
+              }
+            }
+          },
+          {
+            value: 'Tool Dropoff,Fastest Route',
+            label: 'Tool Dropoff - Fastest Route',
+            symbol: {
+              type: 'simple-line',
+              color: 'rgb(56, 168, 0)',
+              width: 2.5,
+              marker: {
+                style: 'arrow',
+                color: 'rgb(56, 168, 0)',
+                placement: 'end'
+              }
+            }
+          },
+          {
+            value: 'Tool Dropoff,Road Closed',
+            label: 'Tool Dropoff - Road Closed',
+            symbol: {
+              type: 'simple-line',
+              color: 'rgb(230, 0, 0)',
+              width: 2.5
             }
           }
         ]
