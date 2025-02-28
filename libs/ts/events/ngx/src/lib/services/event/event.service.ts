@@ -55,7 +55,7 @@ export class EventService {
         throw new Error('drawEvent: No layer sources found.');
       }
     } catch (err) {
-      console.error(`Failed to draw ring day areas`, err);
+      console.error(`Failed to event areas`, err);
     }
   }
 

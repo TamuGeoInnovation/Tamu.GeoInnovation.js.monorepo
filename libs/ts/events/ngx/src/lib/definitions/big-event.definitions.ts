@@ -3,6 +3,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { BIG_EVENT_LAYERS } from '../interfaces/big-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
+import { EventAccommodation } from '../interfaces/special-event.interface';
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Big_Event/MapServer';
 
@@ -231,5 +232,27 @@ export const BigEventColdLayerSources: LayerSource[] = [
       //   ]
       // } as any
     }
+  }
+];
+
+export const BigEventAccommodations: Array<EventAccommodation> = [
+  {
+    value: 'accessible',
+    label: 'Accessible Accommodations',
+    description: 'Will you or a relative require accessible (ADA) accommodations?',
+    options: [
+      {
+        label: 'Yes',
+        value: 'yes',
+        effects: {
+          layers: [
+            {
+              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
+              definitionExpression: "Type = 'Accessible Parking'"
+            }
+          ]
+        }
+      }
+    ]
   }
 ];
