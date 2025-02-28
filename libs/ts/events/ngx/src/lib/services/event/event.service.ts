@@ -8,7 +8,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { EventSettings } from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../settings/event-settings.service';
-import { AGGIELAND_SATURDAY_LAYERS } from '../../interfaces/aggieland-saturday.interface';
+import { BIG_EVENT_LAYERS } from '../../interfaces/big-event.interface';
 
 import esri = __esri;
 
@@ -18,7 +18,7 @@ import esri = __esri;
 export class EventService {
   public settings: EventSettings;
 
-  public specialEventLayerReferences: Array<AGGIELAND_SATURDAY_LAYERS>;
+  public specialEventLayerReferences: Array<BIG_EVENT_LAYERS>;
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -38,14 +38,14 @@ export class EventService {
 
   public init() {
     this.settings = this.eventSettingsService.settings;
-    this.specialEventLayerReferences = Object.entries(AGGIELAND_SATURDAY_LAYERS).map(([, value]) => value);
+    this.specialEventLayerReferences = Object.entries(BIG_EVENT_LAYERS).map(([, value]) => value);
 
     this.drawEvent();
   }
 
   public async drawEvent() {
     try {
-      const eventLayers: Array<AGGIELAND_SATURDAY_LAYERS> = this.specialEventLayerReferences;
+      const eventLayers: Array<BIG_EVENT_LAYERS> = this.specialEventLayerReferences;
 
       const sources = eventLayers.map((ref) => this.getLayerSourceCopy(ref));
 

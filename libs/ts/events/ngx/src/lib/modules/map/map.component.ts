@@ -104,7 +104,7 @@ export class MapComponent implements OnInit, OnDestroy {
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
-            center: [-96.344672, 30.61306],
+            center: [-96.34618, 30.60605],
             spatialReference: {
               wkid: 102100
             },
