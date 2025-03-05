@@ -3,7 +3,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { BIG_EVENT_LAYERS } from '../interfaces/big-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventAccommodation } from '../interfaces/special-event.interface';
+import { SpecialEventOptions } from '../interfaces/special-event.interface';
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Big_Event/MapServer';
 
@@ -235,15 +235,70 @@ export const BigEventColdLayerSources: LayerSource[] = [
   }
 ];
 
-export const BigEventAccommodations: Array<EventAccommodation> = [
+export const BigEventOptions: Array<SpecialEventOptions> = [
+  {
+    value: 'map-type',
+    label: 'Map Type',
+    description: 'Select the type of map you would like to view.',
+    options: [
+      {
+        label: 'Pre-Kickoff Parking',
+        value: 'pre-kickoff',
+        effects: {
+          layers: [
+            {
+              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
+              definitionExpression: "Type = 'Pre-Kickoff Parking'"
+            }
+          ]
+        }
+      },
+      {
+        label: 'Leaving Kickoff',
+        value: 'leave-kickoff',
+        effects: {
+          layers: [
+            {
+              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
+              definitionExpression: "Type = 'Leave Kickoff'"
+            }
+          ]
+        }
+      },
+      {
+        label: 'Tool Return',
+        value: 'tool-return',
+        effects: {
+          layers: [
+            {
+              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
+              definitionExpression: "Type = 'Tool Return'"
+            }
+          ]
+        }
+      }
+    ]
+  },
   {
     value: 'accessible',
     label: 'Accessible Accommodations',
     description: 'Will you or a relative require accessible (ADA) accommodations?',
     options: [
       {
+        label: 'No',
+        value: false,
+        effects: {
+          layers: [
+            {
+              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
+              definitionExpression: "Type = 'Accessible Parking'"
+            }
+          ]
+        }
+      },
+      {
         label: 'Yes',
-        value: 'yes',
+        value: true,
         effects: {
           layers: [
             {

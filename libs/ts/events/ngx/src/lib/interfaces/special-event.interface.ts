@@ -1,11 +1,11 @@
-export interface EventSettings extends Record<string, unknown> {
+export interface EventSettings extends Record<string, any> {
   /**
    * Whether or not the user requires accessible accommodations
    */
   accessible?: boolean;
 }
 
-export interface EventAccommodation {
+export interface SpecialEventOptions {
   /**
    * The value of the option. This is used to store the option in local store.
    */
@@ -27,7 +27,7 @@ export interface EventAccommodationOption {
   /**
    * The value of the option. This is the result of a user selection for a given accommodation.
    */
-  value: string;
+  value: string | boolean | number;
 
   /**
    * The label of the option. This is used to display the option to the user.

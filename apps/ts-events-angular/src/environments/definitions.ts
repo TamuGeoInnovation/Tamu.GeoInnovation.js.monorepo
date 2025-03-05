@@ -1,6 +1,6 @@
 export {
   BigEventColdLayerSources as ColdLayerSources,
-  BigEventAccommodations as Accommodations
+  BigEventOptions as SpecialEventOptions
 } from '@tamu-gisc/ts/events/ngx';
 
 export const NotificationEvents = [];

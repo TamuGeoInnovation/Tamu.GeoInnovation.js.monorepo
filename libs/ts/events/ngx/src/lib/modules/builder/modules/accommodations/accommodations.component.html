@@ -1,9 +1,9 @@
 <div class="container12">
-  <p class="center-text component-instructions">Will you or a relative require accessible (ADA) accommodations?</p>
+  <ng-container *ngIf="accommodation$ | async as accommodation">
+    <p class="center-text component-instructions">{{accommodation.description}}</p>
 
-  <div class="options-container">
-    <div (click)="saveAccessible(true)" (keyup.space)="saveAccessible(true)" (keyup.enter)="saveAccessible(true)" class="button terciary" [ngClass]="{'active': (savedAccessible | async) === true}" tabindex="0">Yes</div>
-
-    <div (click)="saveAccessible(false)" (keyup.space)="saveAccessible(false)" (keyup.enter)="saveAccessible(false)" class="button terciary" [ngClass]="{'active': (savedAccessible | async) === false}" tabindex="0">No</div>
-  </div>
+    <div class="options-container">
+      <div *ngFor="let option of accommodation.options" (click)="saveOption(accommodation.value, option.value)" (keyup.space)="saveOption(accommodation.value, option.value)" (keyup.enter)="saveOption(accommodation.value, option.value)" class="button terciary" [ngClass]="{'active': (savedOptionValue | async) === option.value}" tabindex="0">{{option.label}}</div>
+    </div>
+  </ng-container>
 </div>

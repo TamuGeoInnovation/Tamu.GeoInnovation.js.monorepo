@@ -15,40 +15,29 @@ export class EventSettingsService {
     return this.store.getStorage({ primaryKey: this._settingsPrimaryKey });
   }
 
-  /**
-   * Retrieves the saved event date from local storage
-   */
-  public get savedEventType() {
-    throw new Error('getSavedEventType: Method not implemented.');
-  }
-
-  public get savedAccessible(): boolean {
-    if (this.settings !== null && this.settings !== undefined) {
-      return this.settings?.accessible ? this.settings.accessible : false;
-    } else {
-      return false;
-    }
-  }
-
   constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
 
-  public saveEventType() {
-    throw new Error('saveEventType: Method not implemented.');
-  }
-
-  public saveAccommodations(requiresAccommodations: boolean) {
+  public saveAccommodation(accommodationKey: string, accommodationValue: string | boolean | number) {
     this.store.setStorageObjectKeyValue({
       primaryKey: this._settingsPrimaryKey,
-      subKey: 'accessible',
-      value: requiresAccommodations
+      subKey: accommodationKey,
+      value: accommodationValue
     });
 
     const confirm = this.store.getStorageObjectKeyValue<boolean>({
       primaryKey: this._settingsPrimaryKey,
-      subKey: 'accessible'
+      subKey: accommodationKey
     });
 
     return confirm;
+  }
+
+  public getSavedAccommodation(accommodationKey: string) {
+    if (this.settings !== null && this.settings !== undefined) {
+      return this.settings[accommodationKey] !== undefined ? this.settings[accommodationKey] : null;
+    } else {
+      return null;
+    }
   }
 
   public setSettingsFromQueryParams(params: EventSettings) {
@@ -85,9 +74,5 @@ export class EventSettingsService {
 
   private _validateAccommodations(accommodations: boolean) {
     return accommodations === true;
-  }
-
-  private _validateEvent() {
-    throw new Error('_validateEvent: Method not implemented.');
   }
 }
