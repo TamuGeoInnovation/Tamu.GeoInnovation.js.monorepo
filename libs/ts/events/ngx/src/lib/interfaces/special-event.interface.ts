@@ -18,7 +18,12 @@ export interface SpecialEventOptions {
   /**
    * Description of the option. This is used to provide more information to the user.
    */
-  description?: string;
+  description: string;
+
+  /**
+   * Short description of the option. This is used to provide a brief description to the user in summary views.
+   */
+  shortDescription: string;
 
   options: Array<EventAccommodationOption>;
 }
@@ -43,5 +48,15 @@ export interface EventAccommodationOption {
 
       definitionExpression: string;
     }>;
+  };
+}
+
+export interface ResolvedEventSettings {
+  [key: SpecialEventOptions['value']]: {
+    shortDescription: string;
+    option: {
+      value: string | boolean | number;
+      label: string;
+    } | null;
   };
 }

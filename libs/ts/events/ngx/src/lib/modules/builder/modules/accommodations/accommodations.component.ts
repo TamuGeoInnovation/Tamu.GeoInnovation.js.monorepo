@@ -43,7 +43,7 @@ export class AccommodationsComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this._eventOptions$ = new BehaviorSubject(this.env.value('SpecialEventOptions', true));
+    this._eventOptions$ = new BehaviorSubject(this.eventSettingsService.eventOptions());
 
     if (!this._eventOptions$.value) {
       console.log('No special event options available. Directing to map.');
@@ -124,11 +124,11 @@ export class AccommodationsComponent implements OnInit {
       } else {
         if (this.nextAccommodation$) {
           return this.nextAccommodation$.pipe(take(1)).subscribe((res) => {
-            if (res === null) {
-              this.router.navigate(['builder/review']);
+            if (res === null || res === undefined) {
+              return this.router.navigate(['builder/review']);
             }
 
-            this.router.navigate(['builder/accommodations', res?.value]);
+            return this.router.navigate(['builder/accommodations', res?.value]);
           });
         } else {
           return this.router.navigate(['builder/review']);

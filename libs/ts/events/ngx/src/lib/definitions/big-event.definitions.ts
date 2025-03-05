@@ -240,6 +240,7 @@ export const BigEventOptions: Array<SpecialEventOptions> = [
     value: 'map-type',
     label: 'Map Type',
     description: 'Select the type of map you would like to view.',
+    shortDescription: 'Map Type',
     options: [
       {
         label: 'Pre-Kickoff Parking',
@@ -283,6 +284,7 @@ export const BigEventOptions: Array<SpecialEventOptions> = [
     value: 'accessible',
     label: 'Accessible Accommodations',
     description: 'Will you or a relative require accessible (ADA) accommodations?',
+    shortDescription: 'Require Accessible (ADA) Accommodations',
     options: [
       {
         label: 'No',
