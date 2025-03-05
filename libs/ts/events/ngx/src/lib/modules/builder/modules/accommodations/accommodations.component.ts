@@ -15,8 +15,6 @@ import {
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { SpecialEventOptions } from '../../../../interfaces/special-event.interface';
 
@@ -38,8 +36,7 @@ export class AccommodationsComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly angulartics: Angulartics2,
-    private readonly eventSettingsService: EventSettingsService,
-    private readonly env: EnvironmentService
+    private readonly eventSettingsService: EventSettingsService
   ) {}
 
   public ngOnInit() {

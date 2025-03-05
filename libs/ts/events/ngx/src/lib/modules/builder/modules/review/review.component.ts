@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
-
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { EventSettings, ResolvedEventSettings, SpecialEventOptions } from '../../../../interfaces/special-event.interface';
@@ -22,12 +19,9 @@ export class ReviewComponent implements OnInit {
   public settingsValid = false;
 
   constructor(
-    private store: LocalStoreService,
     private router: Router,
-    private route: ActivatedRoute,
     private eventSettingsService: EventSettingsService,
-    private angulartics: Angulartics2,
-    private env: EnvironmentService
+    private angulartics: Angulartics2
   ) {}
 
   public ngOnInit() {
