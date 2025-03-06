@@ -64,6 +64,10 @@ export class MapComponent implements OnInit, OnDestroy {
     // Settings can come from either local storage or from the url query parameters
 
     this.hasSettings = this.eventsSettingsService.queryParamsFromSettings !== null;
+    if (this.hasSettings === false) {
+      return this.rt.navigate(['/builder']);
+    }
+
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventsSettingsService.queryParamsFromSettings}`;
 
     this._connections = this.env.value('Connections');

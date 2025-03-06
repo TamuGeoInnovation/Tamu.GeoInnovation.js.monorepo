@@ -6,7 +6,7 @@ import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri'
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventSettings } from '../../interfaces/special-event.interface';
+import { EventSettings, SpecialEventOptions } from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../settings/event-settings.service';
 import { BIG_EVENT_LAYERS } from '../../interfaces/big-event.interface';
 
@@ -17,6 +17,7 @@ import esri = __esri;
 })
 export class EventService {
   public settings: EventSettings;
+  public eventOptions: Array<SpecialEventOptions>;
 
   public specialEventLayerReferences: Array<BIG_EVENT_LAYERS>;
 
@@ -29,25 +30,49 @@ export class EventService {
     private readonly mapService: EsriMapService,
     private readonly eventSettingsService: EventSettingsService
   ) {
+    this.eventOptions = this.eventSettingsService.eventOptions();
+    this.settings = this.eventSettingsService.settings();
+    this.specialEventLayerReferences = Object.entries(BIG_EVENT_LAYERS).map(([, value]) => value);
+
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
       this._view = instanced.view as esri.MapView;
-      this.init();
+      this.drawEvent();
     });
-  }
-
-  public init() {
-    this.settings = this.eventSettingsService.settings;
-    this.specialEventLayerReferences = Object.entries(BIG_EVENT_LAYERS).map(([, value]) => value);
-
-    this.drawEvent();
   }
 
   public async drawEvent() {
     try {
       const eventLayers: Array<BIG_EVENT_LAYERS> = this.specialEventLayerReferences;
 
-      const sources = eventLayers.map((ref) => this.getLayerSourceCopy(ref));
+      // For each source, iterate through event options and determine if any of the option effect targets apply to the immediate source.
+      // If so, apply the effect.
+      const sources = eventLayers
+        .map((ref) => this.getLayerSourceCopy(ref))
+        .map((source) => {
+          // Determine the list of options that list the current source as an effect target
+          const specialEventOptionsTargetingSource = this.eventOptions.filter((o) => {
+            return o.effects.layers?.some((layer) => layer.layerId === source.id);
+          });
+
+          if (specialEventOptionsTargetingSource.length > 0) {
+            for (const option of specialEventOptionsTargetingSource) {
+              if (option.effects.layers && option.effects.layers?.length > 0) {
+                for (const layer of option.effects.layers) {
+                  if (layer.layerId === source.id) {
+                    const settingValue = this.settings[option.value];
+
+                    if (settingValue !== undefined) {
+                      (source as esri.FeatureLayer).definitionExpression = `${layer.field} = '${settingValue}'`;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          return source;
+        });
 
       if (sources.length > 0) {
         this.mapService.loadLayers(sources);

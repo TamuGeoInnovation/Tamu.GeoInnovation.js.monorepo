@@ -1,17 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  of,
-  shareReplay,
-  Subject,
-  switchMap,
-  take,
-  withLatestFrom
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -29,8 +18,6 @@ export class AccommodationsComponent implements OnInit {
   private _accommodationIndex$: Observable<number>;
   public accommodation$: Observable<SpecialEventOptions>;
   public nextAccommodation$: Observable<SpecialEventOptions | null>;
-
-  private _refresh$: Subject<void> = new Subject();
 
   constructor(
     private readonly router: Router,
@@ -111,8 +98,6 @@ export class AccommodationsComponent implements OnInit {
           }
         }
       });
-
-      this._refresh$.next();
 
       const hasRet = this.route.snapshot.queryParams['ret'];
 

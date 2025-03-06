@@ -1,6 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { BIG_EVENT_LAYERS } from '../interfaces/big-event.interface';
+import { BIG_EVENT_LAYERS, BIG_EVENT_MAP_TYPE_OPTIONS } from '../interfaces/big-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { SpecialEventOptions } from '../interfaces/special-event.interface';
@@ -244,72 +244,35 @@ export const BigEventOptions: Array<SpecialEventOptions> = [
     options: [
       {
         label: 'Pre-Kickoff Parking',
-        value: 'pre-kickoff',
-        effects: {
-          layers: [
-            {
-              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
-              definitionExpression: "Type = 'Pre-Kickoff Parking'"
-            }
-          ]
-        }
+        value: BIG_EVENT_MAP_TYPE_OPTIONS.PRE_KICKOFF
       },
       {
         label: 'Leaving Kickoff',
-        value: 'leave-kickoff',
-        effects: {
-          layers: [
-            {
-              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
-              definitionExpression: "Type = 'Leave Kickoff'"
-            }
-          ]
-        }
+        value: BIG_EVENT_MAP_TYPE_OPTIONS.LEAVE_KICKOFF
       },
       {
         label: 'Tool Return',
-        value: 'tool-return',
-        effects: {
-          layers: [
-            {
-              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
-              definitionExpression: "Type = 'Tool Return'"
-            }
-          ]
-        }
+        value: BIG_EVENT_MAP_TYPE_OPTIONS.TOOL_RETURN
       }
-    ]
-  },
-  {
-    value: 'accessible',
-    label: 'Accessible Accommodations',
-    description: 'Will you or a relative require accessible (ADA) accommodations?',
-    shortDescription: 'Require Accessible (ADA) Accommodations',
-    options: [
-      {
-        label: 'No',
-        value: false,
-        effects: {
-          layers: [
+    ],
+    effects: {
+      layers: [
+        {
+          layerId: BIG_EVENT_LAYERS.TRAFFIC,
+          field: 'edited'
+        },
+        {
+          layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
+          field: 'Type',
+          conversions: [
             {
-              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
-              definitionExpression: "Type = 'Accessible Parking'"
+              input: BIG_EVENT_MAP_TYPE_OPTIONS.TOOL_RETURN,
+              output: 'Tool Distribution'
             }
           ]
         }
-      },
-      {
-        label: 'Yes',
-        value: true,
-        effects: {
-          layers: [
-            {
-              layerId: BIG_EVENT_LAYERS.PARKING_LOTS,
-              definitionExpression: "Type = 'Accessible Parking'"
-            }
-          ]
-        }
-      }
-    ]
+      ],
+      deconflictingStrategy: 'append-or'
+    }
   }
 ];
