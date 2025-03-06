@@ -5,7 +5,7 @@ import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switc
 import { Angulartics2 } from 'angulartics2';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
-import { SpecialEventOptions } from '../../../../interfaces/special-event.interface';
+import { SpecialEventOption, SpecialEventOptions } from '../../../../interfaces/special-event.interface';
 
 @Component({
   selector: 'tamu-gisc-accommodations',
@@ -14,10 +14,10 @@ import { SpecialEventOptions } from '../../../../interfaces/special-event.interf
 })
 export class AccommodationsComponent implements OnInit {
   public savedOptionValue: Observable<string | boolean | number | null>;
-  private _eventOptions$: BehaviorSubject<Array<SpecialEventOptions>>;
+  private _eventOptions$: BehaviorSubject<SpecialEventOptions>;
   private _accommodationIndex$: Observable<number>;
-  public accommodation$: Observable<SpecialEventOptions>;
-  public nextAccommodation$: Observable<SpecialEventOptions | null>;
+  public accommodation$: Observable<SpecialEventOption>;
+  public nextAccommodation$: Observable<SpecialEventOption | null>;
 
   constructor(
     private readonly router: Router,

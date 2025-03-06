@@ -3,7 +3,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { BIG_EVENT_LAYERS, BIG_EVENT_MAP_TYPE_OPTIONS } from '../interfaces/big-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { SpecialEventOptions } from '../interfaces/special-event.interface';
+import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Big_Event/MapServer';
 
@@ -180,13 +180,20 @@ export const BigEventColdLayerSources: LayerSource[] = [
   }
 ];
 
-export const BigEventOptions: Array<SpecialEventOptions> = [
+export const BigEventConfiguration: EventConfiguration = {
+  id: 'big-event',
+  name: 'Big Event',
+  applicationName: 'Big Event Transportation Map',
+  shortApplicationName: 'Big Event Map'
+};
+
+export const BigEventOptions: SpecialEventOptions = [
   {
     value: 'map-type',
     label: 'Map Type',
     description: 'Select the type of map you would like to view.',
     shortDescription: 'Map Type',
-    options: [
+    choices: [
       {
         label: 'Pre-Kickoff Parking',
         value: BIG_EVENT_MAP_TYPE_OPTIONS.PRE_KICKOFF

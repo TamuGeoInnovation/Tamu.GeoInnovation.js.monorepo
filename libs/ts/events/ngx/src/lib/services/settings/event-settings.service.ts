@@ -6,6 +6,7 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import {
   EventAccommodationOption,
+  EventConfiguration,
   EventSettings,
   ResolvedEventSettings,
   SpecialEventOptions
@@ -47,16 +48,29 @@ export class EventSettingsService {
     }
   }
 
-  public eventOptions(): Array<SpecialEventOptions>;
-  public eventOptions(asObservable: true): Observable<Array<SpecialEventOptions>>;
-  public eventOptions(asObservable: false): Array<SpecialEventOptions>;
-  public eventOptions(asObservable?: boolean): Array<SpecialEventOptions> | Observable<Array<SpecialEventOptions>> {
-    const options: Array<SpecialEventOptions> = this.env.value('SpecialEventOptions', true);
+  public eventOptions(): SpecialEventOptions;
+  public eventOptions(asObservable: true): Observable<SpecialEventOptions>;
+  public eventOptions(asObservable: false): SpecialEventOptions;
+  public eventOptions(asObservable?: boolean): SpecialEventOptions | Observable<SpecialEventOptions> {
+    const options: SpecialEventOptions = this.env.value('SpecialEventOptions', true);
 
     if (asObservable) {
       return of(options);
     } else {
       return options;
+    }
+  }
+
+  public eventConfiguration(): EventConfiguration;
+  public eventConfiguration(asObservable: true): Observable<EventConfiguration>;
+  public eventConfiguration(asObservable: false): EventConfiguration;
+  public eventConfiguration(asObservable?: boolean): EventConfiguration | Observable<EventConfiguration> {
+    const config: EventConfiguration = this.env.value('SpecialEventConfiguration', true);
+
+    if (asObservable) {
+      return of(config);
+    } else {
+      return config;
     }
   }
 
@@ -117,7 +131,7 @@ export class EventSettingsService {
             shortDescription: option.shortDescription,
             option: {
               value: value,
-              label: (option.options.find((o) => o.value === value) as EventAccommodationOption).label
+              label: (option.choices.find((o) => o.value === value) as EventAccommodationOption).label
             }
           };
         } else {
@@ -151,14 +165,14 @@ export class EventSettingsService {
    *
    * Returns a new settings object with only the keys that exist in the event options with a valid value.
    */
-  public validateSettings(settings: EventSettings, options: Array<SpecialEventOptions>): EventSettings {
+  public validateSettings(settings: EventSettings, options: SpecialEventOptions): EventSettings {
     return Object.entries(settings).reduce((acc, [key, setting]) => {
       // Find the event option that has the current settings key in its options
-      const option = options.find((o) => o.options.find((opt) => opt.value === setting));
+      const option = options.find((o) => o.choices.find((opt) => opt.value === setting));
 
       if (option) {
         // Determine if the current setting value is in the list of valid options for the current option
-        const valid = option.options.some((opt) => opt.value === setting);
+        const valid = option.choices.some((opt) => opt.value === setting);
 
         if (valid) {
           acc[key] = setting;

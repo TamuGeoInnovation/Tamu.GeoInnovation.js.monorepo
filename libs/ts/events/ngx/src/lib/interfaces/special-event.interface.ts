@@ -1,3 +1,30 @@
+export interface EventConfiguration {
+  /**
+   * Unique identifier for the event. This is partially used to store the specific event settings in storage
+   * and to identify the event in the application.
+   */
+  id: string;
+
+  /**
+   * The name of the event. This is used for display purposes. For example, in the event selection dropdown.
+   */
+  name: string;
+
+  /**
+   * The name of the application. This is used for display purposes. For example, as a title in the application.
+   */
+  applicationName: string;
+
+  /**
+   * The short name of the application. This is used for display purposes. Used in places where the long name would create
+   * layout issues.
+   */
+  shortApplicationName: string;
+}
+
+/**
+ * Representation of key-value pairs that define how the event map should be configured.
+ */
 export interface EventSettings extends Record<string, any> {
   /**
    * Whether or not the user requires accessible accommodations
@@ -5,11 +32,15 @@ export interface EventSettings extends Record<string, any> {
   accessible?: boolean;
 }
 
-export interface SpecialEventOptions {
+/**
+ * Object representing an event accommodation/options that can be selected by the user to customize the event map.
+ */
+export interface SpecialEventOption {
   /**
    * The value of the option. This is used to store the option in local store.
    */
   value: string;
+
   /**
    * Title of the option. This is used to display the option to the user.
    */
@@ -25,7 +56,7 @@ export interface SpecialEventOptions {
    */
   shortDescription: string;
 
-  options: Array<EventAccommodationOption>;
+  choices: Array<EventAccommodationOption>;
 
   effects: {
     layers?: Array<{
@@ -81,6 +112,11 @@ export interface SpecialEventOptions {
   };
 }
 
+/**
+ * A collection of special event options that can be selected by the user to customize the event map.
+ */
+export type SpecialEventOptions = Array<SpecialEventOption>;
+
 export interface EventAccommodationOption {
   /**
    * The value of the option. This is the result of a user selection for a given accommodation.
@@ -98,7 +134,7 @@ export interface EventAccommodationOption {
 }
 
 export interface ResolvedEventSettings {
-  [key: SpecialEventOptions['value']]: {
+  [key: SpecialEventOption['value']]: {
     shortDescription: string;
     option: {
       value: string | boolean | number;

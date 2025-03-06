@@ -13,7 +13,7 @@ import { EventSettings, ResolvedEventSettings, SpecialEventOptions } from '../..
   styleUrls: ['./review.component.scss']
 })
 export class ReviewComponent implements OnInit {
-  public eventOptions: BehaviorSubject<Array<SpecialEventOptions>>;
+  public eventOptions: BehaviorSubject<SpecialEventOptions>;
   public settings: EventSettings;
   public mergedSettings: ResolvedEventSettings;
   public settingsValid = false;

@@ -17,7 +17,7 @@ import esri = __esri;
 })
 export class EventService {
   public settings: EventSettings;
-  public eventOptions: Array<SpecialEventOptions>;
+  public eventOptions: SpecialEventOptions;
 
   public specialEventLayerReferences: Array<BIG_EVENT_LAYERS>;
 
