@@ -34,7 +34,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
     id: BigEventDefinitions.TRAFFIC.id,
     title: BigEventDefinitions.TRAFFIC.name,
     url: BigEventDefinitions.TRAFFIC.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: MarkdownPopupComponent,
     // popupData: {
     //   name: 'Aggieland Saturday Bus Stop ({attributes.StopType})',
     //   description: `Stop Name: {attributes.StopName}\nRoute Number: {attributes.Route}`
@@ -155,6 +155,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
     id: BigEventDefinitions.ROAD_CLOSURES.id,
     title: BigEventDefinitions.ROAD_CLOSURES.name,
     url: BigEventDefinitions.ROAD_CLOSURES.url,
+    popupComponent: MarkdownPopupComponent,
     visible: true,
     native: {
       listMode: 'show',
@@ -175,62 +176,6 @@ export const BigEventColdLayerSources: LayerSource[] = [
     listMode: 'show',
     native: {
       outFields: ['*']
-      // renderer: {
-      //   type: 'unique-value',
-      //   field: 'Type',
-      //   uniqueValueInfos: [
-      //     {
-      //       value: 'Pay Parking',
-      //       label: 'Paid Parking',
-      //       symbol: {
-      //         type: 'picture-marker',
-      //         url: '/assets/images/icons/transportation/Paid-Parking.png',
-      //         width: '24px',
-      //         height: '32px'
-      //       }
-      //     },
-      //     {
-      //       value: 'Dining',
-      //       label: 'Dining',
-      //       symbol: {
-      //         type: 'picture-marker',
-      //         url: '/assets/images/icons/shops-food/Dining.png',
-      //         width: '24px',
-      //         height: '32px'
-      //       }
-      //     },
-      //     {
-      //       value: 'Performance',
-      //       label: 'Performance',
-      //       symbol: {
-      //         type: 'picture-marker',
-      //         url: '/assets/images/icons/fixtures/Theater.png',
-      //         width: '24px',
-      //         height: '32px'
-      //       }
-      //     },
-      //     {
-      //       value: 'Shopping',
-      //       label: 'Shopping',
-      //       symbol: {
-      //         type: 'picture-marker',
-      //         url: '/assets/images/icons/shops-food/Store.png',
-      //         width: '24px',
-      //         height: '32px'
-      //       }
-      //     },
-      //     {
-      //       value: 'Bus Parking',
-      //       label: 'Bus Parking',
-      //       symbol: {
-      //         type: 'picture-marker',
-      //         url: '/assets/images/icons/hazards/Hazard.png',
-      //         width: '24px',
-      //         height: '32px'
-      //       }
-      //     }
-      //   ]
-      // } as any
     }
   }
 ];
