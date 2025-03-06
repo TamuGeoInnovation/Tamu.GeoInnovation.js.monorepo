@@ -24,7 +24,12 @@ export class EventSettingsService {
       return null;
     }
 
-    return `event=${settings['event']}`;
+    const validSettings = this.validateSettings(settings, this.eventOptions());
+
+    // Prepare the key-value settings as an array of key-value pairs to create url search params.
+    const settingsAsList = Object.entries(validSettings).map((s) => s);
+
+    return new URLSearchParams(settingsAsList);
   }
 
   constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
@@ -82,21 +87,12 @@ export class EventSettingsService {
 
   public setSettingsFromQueryParams(params: EventSettings) {
     try {
-      // Check if params have at least a date and residence
-      if (!params['event'] || !params.accessible) {
-        console.warn('Invalid query parameters. Will not set settings from query parameters.');
-      }
+      const settings = this.validateSettings(params, this.eventOptions());
 
-      const accommodations = params.accessible ? this._validateAccommodations(params.accessible) : false;
-
-      this.store.setStorage({
+      return this.store.setStorage({
         primaryKey: this._settingsPrimaryKey,
-        value: {
-          accessible: accommodations
-        }
+        value: settings
       });
-
-      return this.settings;
     } catch (err) {
       throw new Error((err as Error)['message']);
     }
@@ -150,7 +146,30 @@ export class EventSettingsService {
     });
   }
 
-  public _validateAccommodations(accommodations: boolean) {
-    return accommodations === true;
+  /**
+   * Validates the provided settings object against the provided event options.
+   *
+   * Returns a new settings object with only the keys that exist in the event options with a valid value.
+   */
+  public validateSettings(settings: EventSettings, options: Array<SpecialEventOptions>): EventSettings {
+    return Object.entries(settings).reduce((acc, [key, setting]) => {
+      // Find the event option that has the current settings key in its options
+      const option = options.find((o) => o.options.find((opt) => opt.value === setting));
+
+      if (option) {
+        // Determine if the current setting value is in the list of valid options for the current option
+        const valid = option.options.some((opt) => opt.value === setting);
+
+        if (valid) {
+          acc[key] = setting;
+        } else {
+          console.warn(`Setting for key '${key}' is not valid according to provided options.`);
+        }
+      } else {
+        console.warn(`Setting for key '${key}' is not valid according to provided options.`);
+      }
+
+      return acc;
+    }, {} as EventSettings);
   }
 }

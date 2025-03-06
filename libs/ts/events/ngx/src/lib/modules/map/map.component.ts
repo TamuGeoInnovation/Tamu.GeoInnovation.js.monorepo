@@ -216,7 +216,7 @@ export class MapComponent implements OnInit, OnDestroy {
       id: 'url-copied',
       title: 'URL Copied',
       message:
-        'Your personalized move-in URL has been copied to your clipboard. Share it with your friends and family to load the map you have configured!'
+        'Your personalized event URL has been copied to your clipboard. Share it with your friends and family to load the map you have configured!'
     });
   }
 }

@@ -127,17 +127,6 @@ export class EventService {
     }
   }
 
-  private makeSQLInStringList(list: Array<string>): string {
-    return list.reduce((acc, curr, index, arr) => {
-      acc += `'${curr}'`;
-
-      if (index !== arr.length - 1) {
-        acc += ',';
-      }
-      return acc;
-    }, '');
-  }
-
   /**
    * Converts an array of features into a list of attribute values.
    *
