@@ -27,6 +27,10 @@ export class EventSettingsService {
 
     const validSettings = this.validateSettings(settings, this.eventOptions());
 
+    if (!validSettings) {
+      return null;
+    }
+
     // Prepare the key-value settings as an array of key-value pairs to create url search params.
     const settingsAsList = Object.entries(validSettings).map((s) => s);
 
@@ -103,6 +107,12 @@ export class EventSettingsService {
     try {
       const settings = this.validateSettings(params, this.eventOptions());
 
+      if (settings === null) {
+        return this.store.getStorage({
+          primaryKey: this._settingsPrimaryKey
+        });
+      }
+
       return this.store.setStorage({
         primaryKey: this._settingsPrimaryKey,
         value: settings
@@ -165,8 +175,8 @@ export class EventSettingsService {
    *
    * Returns a new settings object with only the keys that exist in the event options with a valid value.
    */
-  public validateSettings(settings: EventSettings, options: SpecialEventOptions): EventSettings {
-    return Object.entries(settings).reduce((acc, [key, setting]) => {
+  public validateSettings(settings: EventSettings, options: SpecialEventOptions): EventSettings | null {
+    const validated = Object.entries(settings).reduce((acc, [key, setting]) => {
       // Find the event option that has the current settings key in its options
       const option = options.find((o) => o.choices.find((opt) => opt.value === setting));
 
@@ -185,5 +195,9 @@ export class EventSettingsService {
 
       return acc;
     }, {} as EventSettings);
+
+    if (Object.keys(validated).length === 0) {
+      return null;
+    } else return validated;
   }
 }
