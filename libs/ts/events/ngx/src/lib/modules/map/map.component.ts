@@ -57,7 +57,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly eventsSettingsService: EventSettingsService,
-    private readonly eventService: EventService
+    private readonly eventService: EventService // While not called, needs to be injected to initialize event layers  loading
   ) {}
 
   public ngOnInit() {
@@ -79,13 +79,12 @@ export class MapComponent implements OnInit, OnDestroy {
     const preferencesString = localStorage.getItem('user-preferences');
     const preferencesSettings = preferencesString !== null ? JSON.parse(preferencesString) : { experiments: null };
     const experimentSettings = preferencesSettings.experiments || {};
+    const basemapIdFromUrl = this.ar.snapshot.queryParams['basemap'];
 
-    this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
-      this.isMobile = value;
-
-      this.config.next({
-        basemap: {
-          basemap: {
+    const basemap: MapConfig['basemap'] = {
+      basemap: basemapIdFromUrl
+        ? basemapIdFromUrl
+        : {
             baseLayers: [
               {
                 type: 'TileLayer',
@@ -103,7 +102,13 @@ export class MapComponent implements OnInit, OnDestroy {
             id: 'aggie_basemap',
             title: 'Aggie Basemap'
           }
-        },
+    };
+
+    this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
+      this.isMobile = value;
+
+      this.config.next({
+        basemap,
         view: {
           mode: '2d',
           properties: {
