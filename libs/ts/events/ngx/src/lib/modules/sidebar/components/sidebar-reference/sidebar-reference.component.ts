@@ -5,7 +5,7 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
-import { EventConfiguration, EventSettings } from '../../../../interfaces/special-event.interface';
+import { EventConfiguration, EventSettings, ResolvedEventSettings } from '../../../../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -18,6 +18,7 @@ export class SidebarReferenceComponent implements OnInit {
   public shareUrl: string;
   public hasSettings: boolean;
   public settings: EventSettings;
+  public mergedSettings: ResolvedEventSettings;
   public configuration: EventConfiguration;
 
   constructor(
@@ -30,6 +31,7 @@ export class SidebarReferenceComponent implements OnInit {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
     this.configuration = this.eventSettingsService.eventConfiguration();
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
+    this.mergedSettings = this.eventSettingsService.getMergedSettings();
   }
 
   public onSearchResult(result: SearchSelection<unknown>): void {
