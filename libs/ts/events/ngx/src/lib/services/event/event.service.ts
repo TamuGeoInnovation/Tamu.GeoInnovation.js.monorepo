@@ -63,7 +63,28 @@ export class EventService {
                     const settingValue = this.settings[option.value];
 
                     if (settingValue !== undefined) {
-                      (source as esri.FeatureLayer).definitionExpression = `${layer.field} = '${settingValue}'`;
+                      let value: string;
+
+                      // If the layer has conversion options, convert the setting value to the appropriate value.
+                      if (layer.conversions) {
+                        // Using the value of the current setting, locate the conversion object that uses the setting value as an input.
+                        // Its output property will be used as the value for the definition expression.
+                        const correspondingOption = layer.conversions.find((c) => c.input === settingValue);
+
+                        if (correspondingOption) {
+                          value = correspondingOption.output;
+                        } else {
+                          console.log(
+                            `No conversion found for setting value '${settingValue}' on layer '${source.id}'. Not applying definition expression.`
+                          );
+
+                          return source;
+                        }
+                      } else {
+                        value = settingValue;
+                      }
+
+                      (source as esri.FeatureLayer).definitionExpression = `${layer.field} = '${value}'`;
                     }
                   }
                 }

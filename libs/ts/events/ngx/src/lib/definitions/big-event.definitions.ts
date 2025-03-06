@@ -87,7 +87,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
             }
           },
           {
-            value: 'To Kickoff,Fast Route',
+            value: 'To Kickoff,Fast Route ',
             label: 'To Kickoff - Fast Route',
             symbol: {
               type: 'simple-line',
@@ -268,6 +268,10 @@ export const BigEventOptions: Array<SpecialEventOptions> = [
             {
               input: BIG_EVENT_MAP_TYPE_OPTIONS.TOOL_RETURN,
               output: 'Tool Distribution'
+            },
+            {
+              input: BIG_EVENT_MAP_TYPE_OPTIONS.LEAVE_KICKOFF,
+              output: 'Tool Distribution' // Simply to not show any actual parking lots, only the return area
             }
           ]
         }

@@ -65,7 +65,8 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.hasSettings = this.eventsSettingsService.queryParamsFromSettings !== null;
     if (this.hasSettings === false) {
-      return this.rt.navigate(['/builder']);
+      this.rt.navigate(['/builder']);
+      return;
     }
 
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventsSettingsService.queryParamsFromSettings}`;
