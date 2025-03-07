@@ -239,25 +239,47 @@ export function LayerSources(
         renderer: {
           type: 'unique-value',
           field: 'label',
+          field2: 'type',
+          fieldDelimiter: ',',
           uniqueValueInfos: [
             {
-              value: 'open',
-              label: 'Open dining location',
+              value: 'open,food-truck',
+              label: 'Food Truck - Open',
               symbol: {
-                type: 'simple-marker',
-                style: 'circle',
-                size: 8,
-                color: 'green'
+                type: 'picture-marker',
+                url: '/assets/images/icons/FoodTruck_open.png',
+                width: '24px',
+                height: '32px'
               }
             },
             {
-              value: 'closed',
-              label: 'Closed dining location',
+              value: 'closed,food-truck',
+              label: 'Food Truck - Closed',
               symbol: {
-                type: 'simple-marker',
-                style: 'circle',
-                size: 8,
-                color: 'red'
+                type: 'picture-marker',
+                url: '/assets/images/icons/FoodTruck_closed.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'open,fixed',
+              label: 'Dining - Open',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/Dining_open.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'closed,fixed',
+              label: 'Dining - Closed',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/Dining_closed.png',
+                width: '24px',
+                height: '32px'
               }
             }
           ]
