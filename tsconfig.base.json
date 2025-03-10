@@ -86,6 +86,7 @@
       "@tamu-gisc/mailroom/ngx": ["libs/mailroom/ngx/src/index.ts"],
       "@tamu-gisc/maps/esri": ["libs/maps/esri/src/index.ts"],
       "@tamu-gisc/maps/feature/accessibility": ["libs/maps/feature/accessibility/src/index.ts"],
+      "@tamu-gisc/maps/feature/basemap": ["libs/maps/feature/basemap/src/index.ts"],
       "@tamu-gisc/maps/feature/coordinates": ["libs/maps/feature/coordinates/src/index.ts"],
       "@tamu-gisc/maps/feature/data": ["libs/maps/feature/data/src/index.ts"],
       "@tamu-gisc/maps/feature/draw": ["libs/maps/feature/draw/src/index.ts"],
