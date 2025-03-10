@@ -4,6 +4,7 @@ import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
+import { AggiemapBasemap } from '@tamu-gisc/maps/feature/basemap';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
@@ -56,24 +57,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
       this.config.next({
         basemap: {
-          basemap: {
-            baseLayers: [
-              {
-                type: 'TileLayer',
-                url: experimentSettings.basemap_url ? experimentSettings.basemap_url : this._connections['basemapUrl'],
-                spatialReference: {
-                  wkid: 102100
-                },
-                listMode: 'hide',
-                visible: true,
-                minScale: 100000,
-                maxScale: 0,
-                title: 'Base Map'
-              }
-            ],
-            id: 'aggie_basemap',
-            title: 'Aggie Basemap'
-          }
+          basemap: AggiemapBasemap
         },
         view: {
           mode: '2d',

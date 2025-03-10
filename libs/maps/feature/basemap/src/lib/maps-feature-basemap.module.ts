@@ -10,4 +10,4 @@ import { BasemapGalleryService } from './services/basemap-gallery/basemap-galler
   providers: [BasemapGalleryService],
   exports: [BasemapGalleryComponent]
 })
-export class MapsFeatureBasemapModule {}
+export class MapsFeatureBasemapGalleryModule {}

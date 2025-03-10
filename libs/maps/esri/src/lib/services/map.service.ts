@@ -876,7 +876,7 @@ interface MapProperties extends esri.MapProperties {
       );
 }
 
-interface BaseMapProperties extends esri.BasemapProperties {
+export interface BaseMapProperties extends esri.BasemapProperties {
   baseLayers: [LayerProperties];
 }
 

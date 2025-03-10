@@ -324,6 +324,10 @@ const dictionary = [
   {
     class: 'esri/widgets/BasemapGallery/BasemapGalleryViewModel',
     name: 'BaseMapGalleryViewModel'
+  },
+  {
+    class: 'esri/widgets/BasemapGallery/support/LocalBasemapsSource',
+    name: 'LocalBasemapsSource'
   }
 ];
 
