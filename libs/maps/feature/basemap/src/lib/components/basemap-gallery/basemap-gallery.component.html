@@ -1,6 +1,12 @@
-<div *ngIf="(gallery | async) as gallery" class="flex flex-column">
-  <div *ngFor="let basemap of gallery.items" class="basemap flex flex-row align-center" [ngClass]="{active: gallery.activeBasemap.id === basemap.basemap.id}" (click)="selectBasemap(basemap)">
-    <img [src]="basemap.basemap.thumbnailUrl" alt="Basemap thumbnail" />
-    <p class="basemap-title">{{ basemap.basemap.title }}</p>
+<div class="sidebar-component-name">
+  <p>Basemap</p>
+</div>
+
+<div class="sidebar-component-content-container">
+  <div *ngIf="(gallery | async) as gallery" class="flex flex-column">
+    <div *ngFor="let basemap of gallery.items" class="basemap flex flex-row align-center" [ngClass]="{active: gallery.activeBasemap.id === basemap.basemap.id}" (click)="selectBasemap(basemap)">
+      <img [src]="basemap.basemap.thumbnailUrl" alt="Basemap thumbnail" />
+      <p class="basemap-title">{{ basemap.basemap.title }}</p>
+    </div>
   </div>
 </div>
