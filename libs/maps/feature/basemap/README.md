@@ -1,7 +1,15 @@
-# maps-feature-basemap
+# Esri Basemap Feature
 
-This library was generated with [Nx](https://nx.dev).
+This library provides a feature module for the Esri Basemap.
 
-## Running unit tests
+## Components
 
-Run `nx test maps-feature-basemap` to execute the unit tests.
+The following components are available in this library:
+
+- `BaseMapGalleryComponent`: A component that displays a gallery of basemaps that can be selected by the user.
+
+## Services
+
+The following services are available in this library:
+
+- `BaseMapGalleryService`: A service that links the basemap gallery component into the esri map and view models to allow the user to select a basemap.
