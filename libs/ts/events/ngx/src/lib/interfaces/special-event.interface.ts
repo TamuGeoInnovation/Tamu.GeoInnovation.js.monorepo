@@ -20,6 +20,20 @@ export interface EventConfiguration {
    * layout issues.
    */
   shortApplicationName: string;
+
+  /**
+   * The event dates. This is used to display the event dates to the user.
+   *
+   * This can be a string, date, or number
+   *
+   * - If a string is provided, it should be a valid date string that can be parsed by the
+   * `Date` constructor.
+   *
+   * - If a number is provided, it should be a valid epoch timestamp.
+   *
+   * - If a date is provided, it should be a valid date object.
+   */
+  eventDates: Array<string | Date | number>;
 }
 
 /**
