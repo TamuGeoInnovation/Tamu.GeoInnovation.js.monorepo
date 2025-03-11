@@ -39,7 +39,7 @@ export const Definitions = {
     id: 'poi',
     layerId: 'poi-layer',
     name: 'Points of Interest',
-    url: `https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer`,
+    url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/AgMap_Statues/FeatureServer/0`,
     popupComponent: Popups.PoiPopupComponent
   },
   RESTROOMS: {
@@ -328,7 +328,7 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: Definitions.POINTS_OF_INTEREST.layerId,
     title: Definitions.POINTS_OF_INTEREST.name,
-    url: Definitions.POINTS_OF_INTEREST.url + '/0',
+    url: Definitions.POINTS_OF_INTEREST.url,
     popupComponent: Definitions.POINTS_OF_INTEREST.popupComponent,
     listMode: 'show',
     visible: false,
@@ -341,29 +341,6 @@ export const LayerSources: LayerSource[] = [
           url: '/assets/icons/statue-icon.png',
           width: '20px',
           height: '30.2px'
-        }
-      }
-    }
-  },
-  {
-    type: 'feature',
-    id: `bonfire-layer`,
-    title: `Bonfire Memorial`,
-    url: Definitions.POINTS_OF_INTEREST.url + '/1',
-    popupComponent: Popups.BonfirePopupComponent,
-    listMode: 'hide',
-    visible: true,
-    native: {
-      ...commonLayerProps,
-      labelingInfo: [],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          color: [0, 0, 0, 0.0],
-          outline: {
-            width: 0
-          }
         }
       }
     }
