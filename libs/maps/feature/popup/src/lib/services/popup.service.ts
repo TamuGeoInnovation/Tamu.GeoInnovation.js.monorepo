@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
 import esri = __esri;
 
@@ -64,7 +65,15 @@ export class PopupService {
             // If it is an object, assume it is a definition object, and the path to resolve is the `key` sub-path.
 
             if (typeof dotNotationPathOrDefinition === 'string') {
-              acc[key] = getPropertyValue(topGraphic, dotNotationPathOrDefinition);
+              // Handle the case where the content is a template vs just a notation path. Templates contain at least a single bracket pair.
+              if (dotNotationPathOrDefinition.includes('{') && dotNotationPathOrDefinition.includes('}')) {
+                acc[key] = new TemplateRenderer({
+                  template: dotNotationPathOrDefinition,
+                  lookup: topGraphic
+                }).render();
+              } else {
+                acc[key] = getPropertyValue(topGraphic, dotNotationPathOrDefinition);
+              }
             } else {
               acc[key] = getPropertyValue(
                 topGraphic.attributes,

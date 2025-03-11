@@ -104,7 +104,7 @@ export class MapComponent implements OnInit, OnDestroy {
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
-            center: [-96.34546, 30.60523],
+            center: [-96.344672, 30.61306],
             spatialReference: {
               wkid: 102100
             },
@@ -112,7 +112,7 @@ export class MapComponent implements OnInit, OnDestroy {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
               maxScale: 0 // maxZoom is the max you can zoom INTO the ground
             },
-            zoom: 17,
+            zoom: 16,
             ui: {
               components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
             },

@@ -6,8 +6,9 @@ import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri'
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { EventSettings } from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../settings/event-settings.service';
-import { EventSettings, GRADUATION_LAYERS } from '../../interfaces/graduation.interface';
+import { AGGIELAND_SATURDAY_LAYERS } from '../../interfaces/aggieland-saturday.interface';
 
 import esri = __esri;
 
@@ -17,7 +18,7 @@ import esri = __esri;
 export class EventService {
   public settings: EventSettings;
 
-  public graduationLayerReferences: Array<GRADUATION_LAYERS>;
+  public specialEventLayerReferences: Array<AGGIELAND_SATURDAY_LAYERS>;
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -37,14 +38,14 @@ export class EventService {
 
   public init() {
     this.settings = this.eventSettingsService.settings;
-    this.graduationLayerReferences = Object.entries(GRADUATION_LAYERS).map(([, value]) => value);
+    this.specialEventLayerReferences = Object.entries(AGGIELAND_SATURDAY_LAYERS).map(([, value]) => value);
 
     this.drawEvent();
   }
 
   public async drawEvent() {
     try {
-      const eventLayers: Array<GRADUATION_LAYERS> = this.graduationLayerReferences;
+      const eventLayers: Array<AGGIELAND_SATURDAY_LAYERS> = this.specialEventLayerReferences;
 
       const sources = eventLayers.map((ref) => this.getLayerSourceCopy(ref));
 

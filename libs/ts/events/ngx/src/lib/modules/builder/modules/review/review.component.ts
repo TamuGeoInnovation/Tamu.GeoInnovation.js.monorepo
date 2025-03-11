@@ -6,7 +6,7 @@ import { Angulartics2 } from 'angulartics2';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
-import { EventSettings } from '../../../../interfaces/graduation.interface';
+import { EventSettings } from '../../../../interfaces/special-event.interface';
 
 @Component({
   selector: 'tamu-gisc-review',
