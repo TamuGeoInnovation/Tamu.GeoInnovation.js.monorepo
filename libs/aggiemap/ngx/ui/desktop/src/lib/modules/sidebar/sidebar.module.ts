@@ -10,11 +10,13 @@ import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-plann
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { TransportationModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { MapsFeatureBasemapGalleryModule } from '@tamu-gisc/maps/feature/basemap';
 
 import { AggiemapSidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
 import { SidebarTripPlannerComponent } from './components/sidebar-trip-planner/sidebar-trip-planner.component';
 import { SidebarBusListComponent } from './components/sidebar-bus-list/sidebar-bus-list.component';
+import { SidebarSettingsComponent } from './components/sidebar-settings/sidebar-settings.component';
 
 @NgModule({
   imports: [
@@ -27,9 +29,16 @@ import { SidebarBusListComponent } from './components/sidebar-bus-list/sidebar-b
     MapsFeatureTripPlannerModule,
     LayerListModule,
     LegendModule,
-    TransportationModule
+    TransportationModule,
+    MapsFeatureBasemapGalleryModule
   ],
-  declarations: [AggiemapSidebarComponent, SidebarReferenceComponent, SidebarTripPlannerComponent, SidebarBusListComponent],
-  exports: [AggiemapSidebarComponent, SidebarReferenceComponent, SidebarTripPlannerComponent]
+  declarations: [
+    AggiemapSidebarComponent,
+    SidebarReferenceComponent,
+    SidebarTripPlannerComponent,
+    SidebarBusListComponent,
+    SidebarSettingsComponent
+  ],
+  exports: [AggiemapSidebarComponent, SidebarReferenceComponent, SidebarTripPlannerComponent, SidebarSettingsComponent]
 })
 export class AggiemapSidebarModule {}

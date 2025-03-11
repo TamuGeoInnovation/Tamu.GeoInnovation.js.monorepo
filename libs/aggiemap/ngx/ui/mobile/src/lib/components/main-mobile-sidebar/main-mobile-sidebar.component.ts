@@ -28,6 +28,11 @@ export class MainMobileSidebarComponent {
       path: 'layers'
     },
     {
+      name: 'Basemap',
+      type: 'outlet',
+      path: 'basemap'
+    },
+    {
       name: 'Bus Routes',
       type: 'router-path',
       path: '/map/m/bus'

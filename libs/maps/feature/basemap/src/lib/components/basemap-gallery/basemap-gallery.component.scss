@@ -1,0 +1,28 @@
+@import 'libs/sass/components/sidebar';
+@import 'libs/sass/mixins';
+
+.basemap {
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+
+  .basemap-title {
+    padding-bottom: 0;
+  }
+
+  &.active {
+    .basemap-title {
+      font-weight: 600;
+    }
+
+    img {
+      border-color: #616161;
+    }
+  }
+}
+
+img {
+  max-width: 25%;
+  margin-right: 0.5rem;
+  border: 2px solid transparent;
+  border-radius: 2pt;
+}

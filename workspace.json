@@ -96,6 +96,7 @@
     "mailroom-ngx": "libs/mailroom/ngx",
     "maps-esri": "libs/maps/esri",
     "maps-feature-accessibility": "libs/maps/feature/accessibility",
+    "maps-feature-basemap": "libs/maps/feature/basemap",
     "maps-feature-coordinates": "libs/maps/feature/coordinates",
     "maps-feature-data": "libs/maps/feature/data",
     "maps-feature-draw": "libs/maps/feature/draw",

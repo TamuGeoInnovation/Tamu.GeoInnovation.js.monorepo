@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/maps/feature/basemap",
+  "sourceRoot": "libs/maps/feature/basemap/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/maps/feature/basemap"],
+      "options": {
+        "jestConfig": "libs/maps/feature/basemap/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/maps/feature/basemap/src/**/*.ts", "libs/maps/feature/basemap/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

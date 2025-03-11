@@ -41,7 +41,8 @@ import {
   AggiemapSidebarComponent,
   SidebarReferenceComponent,
   SidebarTripPlannerComponent,
-  SidebarBusListComponent
+  SidebarBusListComponent,
+  SidebarSettingsComponent
 } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   AggiemapNgxUiMobileModule,
@@ -56,6 +57,7 @@ import {
 } from '@tamu-gisc/aggiemap/ngx/ui/mobile';
 
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
+import { BasemapGalleryComponent } from '@tamu-gisc/maps/feature/basemap';
 
 import { MapComponent } from './map.component';
 
@@ -78,7 +80,8 @@ const routes: Routes = [
           { path: 'bus', component: SidebarBusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
           { path: 'trip/options', component: TripPlannerOptionsComponent },
-          { path: 'experiments', component: ExperimentsListComponent }
+          { path: 'experiments', component: ExperimentsListComponent },
+          { path: 'settings', component: SidebarSettingsComponent }
         ]
       },
       {
@@ -110,7 +113,8 @@ const routes: Routes = [
             children: [
               { path: '', component: MainMobileSidebarComponent },
               { path: 'legend', component: LegendComponent },
-              { path: 'layers', component: LayerListComponent }
+              { path: 'layers', component: LayerListComponent },
+              { path: 'basemap', component: BasemapGalleryComponent }
             ]
           },
           {
