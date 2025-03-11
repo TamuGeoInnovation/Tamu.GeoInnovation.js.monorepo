@@ -82,6 +82,29 @@ export function LayerSources(
     },
     {
       type: 'feature',
+      id: definitions.BONFIRE.layerId,
+      title: definitions.BONFIRE.name,
+      url: definitions.BONFIRE.url,
+      popupComponent: definitions.BONFIRE.popupComponent,
+      listMode: 'hide',
+      visible: true,
+      native: {
+        ...commonLayerProps,
+        labelingInfo: [],
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'simple-fill',
+            color: [0, 0, 0, 0.0],
+            outline: {
+              width: 0
+            }
+          }
+        }
+      }
+    },
+    {
+      type: 'feature',
       id: definitions.RESTROOMS.layerId,
       title: definitions.RESTROOMS.name,
       url: definitions.RESTROOMS.url,

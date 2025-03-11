@@ -1,5 +1,5 @@
 import { Injectable, Optional, InjectionToken, Inject } from '@angular/core';
-import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 
@@ -15,9 +15,6 @@ export class NotificationService {
 
   public readonly notifications: Observable<Notification[]>;
   private _notifications: BehaviorSubject<Notification[]>;
-
-  private _actions: ReplaySubject<Notification> = new ReplaySubject(1);
-  public actions: Observable<Notification> = this._actions.asObservable();
 
   constructor(
     private store: LocalStoreService,
@@ -268,10 +265,6 @@ export class NotificationService {
     } else {
       console.warn('Could not emit notification because the referenced item does not exist');
     }
-  }
-
-  public registerAction(notification: Notification): void {
-    this._actions.next(notification);
   }
 }
 

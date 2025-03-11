@@ -14,7 +14,6 @@ import {
 } from '@tamu-gisc/common/utils/geometry/esri';
 import { LayerSource, IRemoteLayerService, GroupLayerSourceProperties } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { EsriModuleProviderService } from './module-provider.service';
 
@@ -50,8 +49,7 @@ export class EsriMapService {
     private router: Router,
     private searchService: SearchService,
     private environment: EnvironmentService,
-    private http: HttpClient,
-    private notificationService: NotificationService
+    private http: HttpClient
   ) {}
 
   public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {

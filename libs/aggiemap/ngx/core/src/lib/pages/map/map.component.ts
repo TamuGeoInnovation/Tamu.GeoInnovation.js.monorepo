@@ -1,18 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-import { BetaPromptComponent, BonfireModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { BetaPromptComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 @Component({
@@ -39,9 +38,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private env: EnvironmentService,
     private readonly ms: ModalService,
     private readonly ss: SettingsService,
-    private readonly mapService: EsriMapService,
-    private readonly ts: TestingService,
-    private readonly ns: NotificationService
+    private readonly ts: TestingService
   ) {}
 
   public ngOnInit() {
@@ -129,7 +126,7 @@ export class MapComponent implements OnInit, OnDestroy {
           subKey: 'modals'
         },
         settings: {
-          bonfire_acknowledge: {
+          beta_acknowledge: {
             value: false,
             persistent: true
           }
@@ -137,12 +134,12 @@ export class MapComponent implements OnInit, OnDestroy {
       })
       .pipe(
         filter((settings) => {
-          return settings['bonfire_acknowledge'] === false;
-        })
-        // withLatestFrom(this.isDev)
+          return settings['beta_acknowledge'] === false;
+        }),
+        withLatestFrom(this.isDev)
       )
-      .subscribe(() => {
-        this.openBonfireModal();
+      .subscribe(([, isDev]) => {
+        this.openBetaModal(isDev);
       });
   }
 
@@ -207,80 +204,24 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   };
 
-  public openModal(shouldOpen: boolean) {
+  public openBetaModal(shouldOpen: boolean) {
     if (shouldOpen) {
       this.ms
         .open<boolean>(BetaPromptComponent)
         .pipe(
           filter((acknowledged) => {
-            const nowDate = Date.now();
-
-            return acknowledged && nowDate < 1731945600000;
+            return acknowledged;
           })
         )
-        .subscribe((res) => {
-          this.updateModalSettings('beta_acknowledge', res);
+        .subscribe(() => {
+          this.updateModalSettings();
         });
     }
   }
 
-  public openBonfireModal() {
-    this.ms.open<boolean>(BonfireModalComponent).subscribe((res) => {
-      // False is the state for dismiss and commit setting to storage
-      if (res === false) {
-        this.updateModalSettings('bonfire_acknowledge', true);
-      }
-
-      // Do not commit setting in storage when true because we want the modal to load on each visit
-      if (res) {
-        this._loadbonfire();
-      }
+  private updateModalSettings() {
+    this.ss.updateSettings({
+      beta_acknowledge: true
     });
-  }
-
-  private updateModalSettings(modalName: string, acknowledged: boolean) {
-    if (acknowledged && modalName) {
-      this.ss.updateSettings({
-        [`${modalName}`]: true
-      });
-    }
-  }
-
-  private _loadbonfire() {
-    this.mapService.store
-      .pipe(
-        take(1),
-        switchMap(async () => {
-          const layer = this.mapService.findLayerById('poi-layer') as esri.FeatureLayer;
-          const bonfireLayer = this.mapService.findLayerById('bonfire-layer') as esri.FeatureLayer;
-
-          if (layer && layer.visible === false) {
-            layer.visible = true;
-          }
-
-          // This should be illegal, promise inside an observable stream
-          const feature = await layer.queryFeatures({
-            where: `name LIKE '%Bonfire Memorial%'`,
-            outFields: ['*'],
-            returnGeometry: true
-          });
-
-          const allFeatures = await bonfireLayer.queryFeatures();
-
-          if (feature && feature.features && feature.features.length > 0) {
-            const graphic = feature.features[0];
-
-            this.mapService.triggerHitTest({ graphics: [graphic], popupComponent: (layer as any).popupComponent });
-
-            this.mapService.zoomTo({
-              graphics: allFeatures.features,
-              zoom: 18
-            });
-          }
-        })
-      )
-      .subscribe(() => {
-        console.log('Loaded bonfire remembrance...');
-      });
   }
 }
