@@ -626,6 +626,10 @@ export class EsriMapService {
     }
   }
 
+  public triggerHitTest(hit: HitTestSnapshot) {
+    this._hitTest.next({ ...hit });
+  }
+
   /**
    * Sets hit test subject value to an empty array.
    *

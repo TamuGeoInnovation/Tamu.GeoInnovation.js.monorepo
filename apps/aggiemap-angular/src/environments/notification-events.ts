@@ -70,6 +70,20 @@ export const NotificationEvents: NotificationProperties[] = [
     imgAltText: 'Feedback Icon'
   }
   // {
+  //   id: 'bonfire_remembrance',
+  //   title: 'Bonfire Remembrance Ceremony',
+  //   acknowledge: false,
+  //   message:
+  //     'The Bonfire Memorial celebrates the tradition, history and camaraderie of Texas A&M and the dedication of those involved in the tragic 1999 collapse. Uniting Aggies past, present and future, the memorial is comprised of the Tradition Plaza, the History Walk, the Spirit Ring and the 12 portals. Click on me to learn more.',
+  //   imgUrl: './assets/images/BonfireSocialAvatar.jpg',
+  //   imgAltText: 'Bonfire Remembrance Icon',
+  //   range: [1731709932000, 1731945600000],
+  //   action: {
+  //     type: 'route',
+  //     value: 'bonfire'
+  //   }
+  // }
+  // {
   //   id: 'beta-prompt',
   //   title: 'Aggiemap Beta Branch',
   //   range: [0, 9999999999999],

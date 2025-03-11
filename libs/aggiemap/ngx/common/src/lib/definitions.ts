@@ -21,8 +21,15 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       id: 'poi',
       layerId: 'poi-layer',
       name: 'Points of Interest',
-      url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/AgMap_Statues/FeatureServer/0`,
+      url: `${Connections.poiUrl}/0`,
       popupComponent: Popups.PoiPopupComponent
+    },
+    BONFIRE: {
+      id: 'bonfire',
+      layerId: 'bonfire-layer',
+      name: 'Bonfire Memorial',
+      url: `${Connections.poiUrl}/1`,
+      popupComponent: Popups.BonfirePopupComponent
     },
     RESTROOMS: {
       id: 'restrooms',
@@ -99,6 +106,7 @@ export interface IComposedIDefinitions {
   BUILDINGS: IDefinition;
   CONSTRUCTION: IDefinition;
   POINTS_OF_INTEREST: IDefinition;
+  BONFIRE: IDefinition;
   RESTROOMS: IDefinition;
   LACTATION_ROOMS: IDefinition;
   SURFACE_LOTS: IDefinition;
