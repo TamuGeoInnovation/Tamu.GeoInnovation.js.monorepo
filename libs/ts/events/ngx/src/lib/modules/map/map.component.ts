@@ -6,11 +6,14 @@ import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { AggiemapBasemap } from '@tamu-gisc/maps/feature/basemap';
+import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { LegendService } from '@tamu-gisc/maps/feature/legend';
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
+import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventService } from '../../services/event/event.service';
@@ -20,7 +23,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
@@ -79,7 +83,7 @@ export class MapComponent implements OnInit, OnDestroy {
     const basemapIdFromUrl = this.ar.snapshot.queryParams['basemap'];
 
     const basemap: MapConfig['basemap'] = {
-      basemap: basemapIdFromUrl ? basemapIdFromUrl : AggiemapBasemap
+      basemap: basemapIdFromUrl ? basemapIdFromUrl : 'topo-vector'
     };
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
