@@ -8,9 +8,8 @@ describe('BonfireComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BonfireComponent ]
-    })
-    .compileComponents();
+      declarations: [BonfireComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
