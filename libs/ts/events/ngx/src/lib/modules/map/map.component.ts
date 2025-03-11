@@ -6,13 +6,11 @@ import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-import { LegendService } from '@tamu-gisc/maps/feature/legend';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { AggiemapBasemap } from '@tamu-gisc/maps/feature/basemap';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventService } from '../../services/event/event.service';
@@ -22,8 +20,7 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
-  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService]
+  styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
@@ -82,26 +79,7 @@ export class MapComponent implements OnInit, OnDestroy {
     const basemapIdFromUrl = this.ar.snapshot.queryParams['basemap'];
 
     const basemap: MapConfig['basemap'] = {
-      basemap: basemapIdFromUrl
-        ? basemapIdFromUrl
-        : {
-            baseLayers: [
-              {
-                type: 'TileLayer',
-                url: experimentSettings.basemap_url ? experimentSettings.basemap_url : this._connections['basemapUrl'],
-                spatialReference: {
-                  wkid: 102100
-                },
-                listMode: 'hide',
-                visible: true,
-                minScale: 100000,
-                maxScale: 0,
-                title: 'Base Map'
-              }
-            ],
-            id: 'aggie_basemap',
-            title: 'Aggie Basemap'
-          }
+      basemap: basemapIdFromUrl ? basemapIdFromUrl : AggiemapBasemap
     };
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
@@ -114,7 +92,7 @@ export class MapComponent implements OnInit, OnDestroy {
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
-            center: [-96.34618, 30.60605],
+            center: [-96.34442, 30.60665],
             spatialReference: {
               wkid: 102100
             },
