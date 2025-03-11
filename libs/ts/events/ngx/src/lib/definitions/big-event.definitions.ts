@@ -226,6 +226,24 @@ export const BigEventOptions: SpecialEventOptions = [
               output: 'Tool Distribution' // Simply to not show any actual parking lots, only the return area
             }
           ]
+        },
+        {
+          layerId: BIG_EVENT_LAYERS.ROAD_CLOSURES,
+          field: 'OBJECTID',
+          conversions: [
+            {
+              input: BIG_EVENT_MAP_TYPE_OPTIONS.PRE_KICKOFF,
+              output: 81
+            },
+            {
+              input: BIG_EVENT_MAP_TYPE_OPTIONS.LEAVE_KICKOFF,
+              output: 82
+            },
+            {
+              input: BIG_EVENT_MAP_TYPE_OPTIONS.TOOL_RETURN,
+              output: 999 // Some bogus value that will always return no results, to hide layer when this input is selected
+            }
+          ]
         }
       ],
       deconflictingStrategy: 'append-or'

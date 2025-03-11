@@ -97,7 +97,7 @@ export interface SpecialEventOption {
        * ```
        *
        */
-      conversions?: Array<{ input: string; output: string }>;
+      conversions?: Array<{ input: string; output: string | number | boolean }>;
     }>;
 
     /**

@@ -63,7 +63,7 @@ export class EventService {
                     const settingValue = this.settings[option.value];
 
                     if (settingValue !== undefined) {
-                      let value: string;
+                      let value: string | number | boolean;
 
                       // If the layer has conversion options, convert the setting value to the appropriate value.
                       if (layer.conversions) {
@@ -84,7 +84,9 @@ export class EventService {
                         value = settingValue;
                       }
 
-                      (source as esri.FeatureLayer).definitionExpression = `${layer.field} = '${value}'`;
+                      (source as esri.FeatureLayer).definitionExpression = `${layer.field} = ${
+                        typeof value === 'string' ? `'${value}'` : value
+                      }`;
                     }
                   }
                 }
