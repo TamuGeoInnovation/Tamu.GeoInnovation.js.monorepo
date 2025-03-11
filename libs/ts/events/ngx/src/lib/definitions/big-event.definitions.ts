@@ -185,7 +185,7 @@ export const BigEventConfiguration: EventConfiguration = {
   name: 'Big Event',
   applicationName: 'Big Event Transportation Map',
   shortApplicationName: 'Big Event Map',
-  eventDates: ['2025-03-23']
+  eventDates: ['2025-03-22']
 };
 
 export const BigEventOptions: SpecialEventOptions = [
