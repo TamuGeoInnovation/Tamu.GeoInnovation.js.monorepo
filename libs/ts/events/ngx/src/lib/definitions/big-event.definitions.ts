@@ -237,10 +237,6 @@ export const BigEventOptions: SpecialEventOptions = [
               output: 81
             },
             {
-              input: BIG_EVENT_MAP_TYPE_OPTIONS.LEAVE_KICKOFF,
-              output: 82
-            },
-            {
               input: BIG_EVENT_MAP_TYPE_OPTIONS.TOOL_RETURN,
               output: 999 // Some bogus value that will always return no results, to hide layer when this input is selected
             }
