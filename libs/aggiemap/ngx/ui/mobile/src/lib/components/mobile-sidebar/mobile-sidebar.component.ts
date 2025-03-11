@@ -17,7 +17,7 @@ export class MobileSidebarComponent {
     // Get the parent route.
     const parent = getPathFromRouteSnapshot(this.route.snapshot).slice(0, -1);
 
-    // Absolute nagivation to the parent.
+    // Absolute navigation to the parent.
     this.router.navigate(parent);
   }
 }
