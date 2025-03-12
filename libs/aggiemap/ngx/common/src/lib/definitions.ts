@@ -96,7 +96,7 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       layerId: 'dining-locations-layer',
       name: 'Dining Locations',
       url: `${Connections.diningLocationsUrl}`,
-      popupComponent: Popups.BaseDirectionsComponent
+      popupComponent: Popups.DiningPopupComponent
     }
   };
 }

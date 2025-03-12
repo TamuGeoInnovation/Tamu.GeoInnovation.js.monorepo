@@ -18,6 +18,7 @@ import { ParkingLotPopupComponent } from './components/parking-lot/parking-lot.c
 import { RestroomPopupComponent } from './components/restroom/restroom.component';
 import { PoiPopupComponent } from './components/poi/poi.component';
 import { BonfirePopupComponent } from './components/bonfire/bonfire.component';
+import { DiningPopupComponent } from './components/dining/dining.component';
 
 const PopsArr = [
   BasePopupComponent,
@@ -30,7 +31,8 @@ const PopsArr = [
   ParkingLotPopupComponent,
   RestroomPopupComponent,
   PoiPopupComponent,
-  BonfirePopupComponent
+  BonfirePopupComponent,
+  DiningPopupComponent
 ];
 
 const PopsObj = {
@@ -44,7 +46,8 @@ const PopsObj = {
   ParkingLotPopupComponent,
   RestroomPopupComponent,
   PoiPopupComponent,
-  BonfirePopupComponent
+  BonfirePopupComponent,
+  DiningPopupComponent
 };
 
 @NgModule({

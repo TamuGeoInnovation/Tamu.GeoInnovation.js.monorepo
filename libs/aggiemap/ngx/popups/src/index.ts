@@ -11,3 +11,4 @@ export * from './lib/components/parking-kiosk/parking-kiosk.component';
 export * from './lib/components/parking-lot/parking-lot.component';
 export * from './lib/components/poi/poi.component';
 export * from './lib/components/restroom/restroom.component';
+export * from './lib/components/dining/dining.component';
