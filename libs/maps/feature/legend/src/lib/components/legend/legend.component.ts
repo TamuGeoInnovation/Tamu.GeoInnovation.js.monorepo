@@ -31,6 +31,9 @@ export class LegendComponent implements OnInit, OnDestroy {
   @Input()
   public deduplicate = false;
 
+  @Input()
+  public respectDefinitionExpression = false;
+
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
   public staticLegend: Array<LegendItem>;
 

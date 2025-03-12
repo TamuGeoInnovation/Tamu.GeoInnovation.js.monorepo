@@ -2,7 +2,7 @@
   <!-- If there is only one legend element, don't apply a group title. Will apply the parent label on the
 single child so that there aren't groups with a single child, because it will break the cleanliness
 of the table -->
-  <div class="element-parent-name" *ngIf="element.infos.length > 1"><span class="material-icons">expand_more</span> {{ groupTitle }}</div>
+  <div class="element-parent-name" *ngIf="element.infos && element.infos.length > 1"><span class="material-icons">expand_more</span> {{ groupTitle }}</div>
 
   <!-- Switch through the different element types. The default is a "not supported" message printout. -->
   <ng-container [ngSwitch]="element.type">
@@ -25,7 +25,7 @@ of the table -->
         </div>
 
         <!-- Apply the legend item from the parent group or child -->
-        <div>{{element.infos.length === 1 ? groupTitle : info?.label}}</div>
+        <div>{{element.infos?.length === 1 ? groupTitle : info?.label}}</div>
       </div>
     </div>
 
