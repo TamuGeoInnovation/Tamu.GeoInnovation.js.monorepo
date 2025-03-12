@@ -90,6 +90,13 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       layerId: 'bike-locations-layer',
       name: 'VeoRide Bikes',
       url: `${Connections.bikeLocationsUrl}`
+    },
+    DINING_LOCATIONS: {
+      id: 'dining-locations',
+      layerId: 'dining-locations-layer',
+      name: 'Dining Locations',
+      url: `${Connections.diningLocationsUrl}`,
+      popupComponent: Popups.BaseDirectionsComponent
     }
   };
 }
@@ -116,4 +123,5 @@ export interface IComposedIDefinitions {
   EMERGENCY_PHONES: IDefinition;
   BIKE_RACKS: IDefinition;
   BIKE_LOCATIONS: IDefinition;
+  DINING_LOCATIONS: IDefinition;
 }

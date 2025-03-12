@@ -225,6 +225,27 @@ export function LayerSources(
           }
         }
       }
+    },
+    {
+      type: 'geojson',
+      id: definitions.DINING_LOCATIONS.layerId,
+      title: definitions.DINING_LOCATIONS.name,
+      url: definitions.DINING_LOCATIONS.url,
+      listMode: 'show',
+      visible: false,
+      popupComponent: definitions.DINING_LOCATIONS.popupComponent,
+      native: {
+        ...commonLayerProps,
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'simple-marker',
+            style: 'circle',
+            size: 8,
+            color: '#03C4A6'
+          }
+        }
+      }
     }
   ];
 
