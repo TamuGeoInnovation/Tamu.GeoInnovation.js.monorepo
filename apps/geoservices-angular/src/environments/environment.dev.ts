@@ -11,5 +11,6 @@ export const geoprocessing_api_host_override = `https://geoservices-dev.geoservi
 export const release_id = '___RELEASE_ID___';
 export const machine_name = '___MACHINE_NAME___';
 export const environment_mode = '___ENVIRONMENT_MODE___';
+export const turnstile_sitekey = '___TURNSTILE_SITE_KEY___';
 
 export * from './definitions';

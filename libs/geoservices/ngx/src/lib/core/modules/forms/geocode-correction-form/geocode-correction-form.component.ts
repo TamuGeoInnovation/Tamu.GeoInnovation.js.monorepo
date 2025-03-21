@@ -34,7 +34,8 @@ export class GeocodeCorrectionFormComponent implements OnInit {
       state: [null, Validators.required],
       zip: ['', Validators.required],
       correctedLat: ['', Validators.required],
-      correctedLon: ['', Validators.required]
+      correctedLon: ['', Validators.required],
+      turnstile_token: [null, Validators.required]
     });
   }
 
@@ -57,7 +58,8 @@ export class GeocodeCorrectionFormComponent implements OnInit {
           Zip: ${value.zip}
           Corrected latitude: ${value.correctedLat}
           Corrected longitude: ${value.correctedLon}
-        `
+        `,
+        token: value.turnstile_token
       })
       .subscribe({
         next: () => {

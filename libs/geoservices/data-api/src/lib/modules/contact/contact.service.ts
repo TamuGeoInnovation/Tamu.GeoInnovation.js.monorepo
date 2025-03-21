@@ -26,4 +26,6 @@ export class ContactMessageDto {
 
   @IsNotEmpty()
   public text: string;
+
+  public token: string;
 }

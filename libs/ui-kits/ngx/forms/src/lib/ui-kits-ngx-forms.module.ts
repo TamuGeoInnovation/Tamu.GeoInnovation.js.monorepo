@@ -19,6 +19,7 @@ import { FileComponent } from './components/file/file.component';
 import { RadioGroupComponent } from './components/radio-group/radio-group.component';
 import { SlideToggleComponent } from './components/slide-toggle/slide-toggle.component';
 import { SelectListComponent } from './components/select-list/select-list.component';
+import { TurnstileChallengeComponent } from './components/turnstile-challenge/turnstile-challenge.component';
 
 @NgModule({
   imports: [
@@ -41,7 +42,8 @@ import { SelectListComponent } from './components/select-list/select-list.compon
     RadioGroupComponent,
     RangeComponent,
     SlideToggleComponent,
-    SelectListComponent
+    SelectListComponent,
+    TurnstileChallengeComponent
   ],
   exports: [
     SelectComponent,
@@ -54,7 +56,8 @@ import { SelectListComponent } from './components/select-list/select-list.compon
     RadioGroupComponent,
     RangeComponent,
     SlideToggleComponent,
-    SelectListComponent
+    SelectListComponent,
+    TurnstileChallengeComponent
   ]
 })
 export class UIFormsModule {}

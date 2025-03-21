@@ -23,6 +23,10 @@
     </div>
 
     <div class="form-collection column">
+      <tamu-gisc-turnstile-challenge formControlName="turnstile_token"></tamu-gisc-turnstile-challenge>
+    </div>
+
+    <div class="form-collection column">
       <ng-container *ngIf="(submissionState | async) as ss">
         <ng-container *ngIf="ss === 'complete' || ss === 'error'">
           <div class="inform-context trailer-1 flex justify-center" [ngClass]="{alert: ss === 'error' }">

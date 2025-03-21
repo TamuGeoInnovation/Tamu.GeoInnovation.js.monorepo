@@ -24,5 +24,6 @@ export const geoprocessing_api_host_override = 'http://localhost/wap.api.geoserv
 export const release_id = 'v0.0.0';
 export const machine_name = 'localhost';
 export const environment_mode = 'Local';
+export const turnstile_sitekey = 'TURNSTILE_SITE_KEY';
 
 export * from './definitions';

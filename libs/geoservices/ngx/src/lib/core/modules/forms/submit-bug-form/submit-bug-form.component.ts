@@ -27,7 +27,8 @@ export class SubmitBugFormComponent implements OnInit {
       subject: ['Bug report', Validators.required],
       fullName: ['', Validators.required],
       email: ['', Validators.required],
-      body: ['', Validators.required]
+      body: ['', Validators.required],
+      turnstile_token: [null, Validators.required]
     });
   }
 
@@ -42,7 +43,8 @@ export class SubmitBugFormComponent implements OnInit {
       .postFormMessage({
         from: value.email,
         subject: `${value.subject} ${value.fullName !== '' ? '- from ' + value.fullName : ''}`,
-        text: value.body
+        text: value.body,
+        token: value.turnstile_token
       })
       .subscribe({
         next: () => {
