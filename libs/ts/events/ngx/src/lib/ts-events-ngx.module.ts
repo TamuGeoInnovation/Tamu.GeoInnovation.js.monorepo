@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { SettingsGuard } from './guards/settings/settings.guard';
@@ -19,11 +20,15 @@ const routes: Routes = [
         loadChildren: () => import('./modules/builder/modules/intro/intro.module').then((m) => m.IntroModule)
       },
       {
+        path: 'accommodations/:accommodation',
+        loadChildren: () =>
+          import('./modules/builder/modules/accommodations/accommodations.module').then((m) => m.AccommodationsModule)
+      },
+      {
         path: 'accommodations',
         loadChildren: () =>
           import('./modules/builder/modules/accommodations/accommodations.module').then((m) => m.AccommodationsModule)
       },
-
       {
         path: 'review',
         loadChildren: () => import('./modules/builder/modules/review/review.module').then((m) => m.ReviewModule)
@@ -43,7 +48,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [CommonModule, RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   declarations: [BuilderComponent],
   exports: [RouterModule]
 })

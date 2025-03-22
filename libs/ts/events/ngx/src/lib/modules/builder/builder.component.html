@@ -1,6 +1,10 @@
 <div class="container12">
-  <div class="flex flex-column">
-    <h1 id="component-title">Graduation Transportation Map</h1>
+  <div class="flex flex-column justify-center align-center">
+    <h1 id="component-title">{{ config.applicationName }}</h1>
+
+    <ng-container *ngIf="config.eventDates">
+      <h4>{{ config.eventDates[0] | date}}</h4>
+    </ng-container>
   </div>
 
   <router-outlet></router-outlet>

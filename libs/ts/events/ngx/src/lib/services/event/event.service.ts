@@ -6,9 +6,9 @@ import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri'
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventSettings } from '../../interfaces/special-event.interface';
+import { EventSettings, SpecialEventOptions } from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../settings/event-settings.service';
-import { AGGIELAND_SATURDAY_LAYERS } from '../../interfaces/aggieland-saturday.interface';
+import { BIG_EVENT_LAYERS } from '../../interfaces/big-event.interface';
 
 import esri = __esri;
 
@@ -17,8 +17,9 @@ import esri = __esri;
 })
 export class EventService {
   public settings: EventSettings;
+  public eventOptions: SpecialEventOptions;
 
-  public specialEventLayerReferences: Array<AGGIELAND_SATURDAY_LAYERS>;
+  public specialEventLayerReferences: Array<BIG_EVENT_LAYERS>;
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -29,25 +30,72 @@ export class EventService {
     private readonly mapService: EsriMapService,
     private readonly eventSettingsService: EventSettingsService
   ) {
+    this.eventOptions = this.eventSettingsService.eventOptions();
+    this.settings = this.eventSettingsService.settings();
+    this.specialEventLayerReferences = Object.entries(BIG_EVENT_LAYERS).map(([, value]) => value);
+
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
       this._view = instanced.view as esri.MapView;
-      this.init();
+      this.drawEvent();
     });
-  }
-
-  public init() {
-    this.settings = this.eventSettingsService.settings;
-    this.specialEventLayerReferences = Object.entries(AGGIELAND_SATURDAY_LAYERS).map(([, value]) => value);
-
-    this.drawEvent();
   }
 
   public async drawEvent() {
     try {
-      const eventLayers: Array<AGGIELAND_SATURDAY_LAYERS> = this.specialEventLayerReferences;
+      const eventLayers: Array<BIG_EVENT_LAYERS> = this.specialEventLayerReferences;
 
-      const sources = eventLayers.map((ref) => this.getLayerSourceCopy(ref));
+      // For each source, iterate through event options and determine if any of the option effect targets apply to the immediate source.
+      // If so, apply the effect.
+      const sources = eventLayers
+        .map((ref) => this.getLayerSourceCopy(ref))
+        .map((source) => {
+          // Determine the list of options that list the current source as an effect target
+          const specialEventOptionsTargetingSource = this.eventOptions.filter((o) => {
+            return o.effects.layers?.some((layer) => layer.layerId === source.id);
+          });
+
+          if (specialEventOptionsTargetingSource.length > 0) {
+            for (const option of specialEventOptionsTargetingSource) {
+              if (option.effects.layers && option.effects.layers?.length > 0) {
+                for (const layer of option.effects.layers) {
+                  if (layer.layerId === source.id) {
+                    const settingValue = this.settings[option.value];
+
+                    if (settingValue !== undefined) {
+                      let value: string | number | boolean;
+
+                      // If the layer has conversion options, convert the setting value to the appropriate value.
+                      if (layer.conversions) {
+                        // Using the value of the current setting, locate the conversion object that uses the setting value as an input.
+                        // Its output property will be used as the value for the definition expression.
+                        const correspondingOption = layer.conversions.find((c) => c.input === settingValue);
+
+                        if (correspondingOption) {
+                          value = correspondingOption.output;
+                        } else {
+                          console.log(
+                            `No conversion found for setting value '${settingValue}' on layer '${source.id}'. Not applying definition expression.`
+                          );
+
+                          return source;
+                        }
+                      } else {
+                        value = settingValue;
+                      }
+
+                      (source as esri.FeatureLayer).definitionExpression = `${layer.field} = ${
+                        typeof value === 'string' ? `'${value}'` : value
+                      }`;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          return source;
+        });
 
       if (sources.length > 0) {
         this.mapService.loadLayers(sources);
@@ -55,7 +103,7 @@ export class EventService {
         throw new Error('drawEvent: No layer sources found.');
       }
     } catch (err) {
-      console.error(`Failed to draw ring day areas`, err);
+      console.error(`Failed to event areas`, err);
     }
   }
 
@@ -79,17 +127,6 @@ export class EventService {
     } else {
       throw new Error(`Layer source reference '${reference}' not found.`);
     }
-  }
-
-  private makeSQLInStringList(list: Array<string>): string {
-    return list.reduce((acc, curr, index, arr) => {
-      acc += `'${curr}'`;
-
-      if (index !== arr.length - 1) {
-        acc += ',';
-      }
-      return acc;
-    }, '');
   }
 
   /**

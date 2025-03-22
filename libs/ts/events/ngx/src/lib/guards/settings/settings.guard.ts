@@ -24,7 +24,7 @@ export class SettingsGuard implements CanActivate {
     route: ActivatedRouteSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     // Settings can come from either local storage or from the url query parameters
-    const appSettings = this.ess.settings;
+    const appSettings = this.ess.settings();
     const queryParams = route.queryParams as EventSettings;
     const queryParamsKeySize = Object.keys(queryParams).length;
 

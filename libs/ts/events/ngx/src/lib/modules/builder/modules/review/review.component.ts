@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { BehaviorSubject, shareReplay } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
-import { EventSettings } from '../../../../interfaces/special-event.interface';
+import { EventSettings, ResolvedEventSettings, SpecialEventOptions } from '../../../../interfaces/special-event.interface';
 
 @Component({
   selector: 'tamu-gisc-review',
@@ -14,19 +13,22 @@ import { EventSettings } from '../../../../interfaces/special-event.interface';
   styleUrls: ['./review.component.scss']
 })
 export class ReviewComponent implements OnInit {
+  public eventOptions: BehaviorSubject<SpecialEventOptions>;
   public settings: EventSettings;
+  public mergedSettings: ResolvedEventSettings;
   public settingsValid = false;
 
   constructor(
-    private store: LocalStoreService,
     private router: Router,
-    private route: ActivatedRoute,
     private eventSettingsService: EventSettingsService,
     private angulartics: Angulartics2
   ) {}
 
   public ngOnInit() {
-    this.settings = this.eventSettingsService.settings;
+    this.eventOptions = new BehaviorSubject(this.eventSettingsService.eventOptions());
+    this.settings = this.eventSettingsService.settings(true).pipe(shareReplay(1));
+    this.mergedSettings = this.eventSettingsService.getMergedSettings();
+    this.settingsValid = this.eventSettingsService.accommodationsValid();
   }
 
   public next = (route: string, params?: { ret: string }) => {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, switchMap } from 'rxjs';
+import { combineLatest, map } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
@@ -18,8 +18,8 @@ export class BasemapGalleryService {
       this.mp.require(['BaseMapGalleryViewModel', 'LocalBasemapsSource', 'Basemap', 'TileLayer']),
       this.ms.store
     ]).pipe(
-      switchMap(
-        async ([[BasemapGalleryViewModel, LocalBasemapsSource, Basemap, TileLayer], instances]: [
+      map(
+        ([[BasemapGalleryViewModel, LocalBasemapsSource, Basemap, TileLayer], instances]: [
           [
             esri.BasemapGalleryViewModelConstructor,
             esri.LocalBasemapsSourceConstructor,

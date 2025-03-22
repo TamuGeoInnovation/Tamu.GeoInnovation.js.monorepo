@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { EventSettings } from '../../interfaces/special-event.interface';
+import {
+  EventAccommodationOption,
+  EventConfiguration,
+  EventSettings,
+  ResolvedEventSettings,
+  SpecialEventOptions
+} from '../../interfaces/special-event.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,83 +18,186 @@ import { EventSettings } from '../../interfaces/special-event.interface';
 export class EventSettingsService {
   private _settingsPrimaryKey = 'ts-events-settings';
 
-  public get settings(): EventSettings {
-    return this.store.getStorage({ primaryKey: this._settingsPrimaryKey });
-  }
-
-  /**
-   * Retrieves the saved event date from local storage
-   */
-  public get savedEventType() {
-    throw new Error('getSavedEventType: Method not implemented.');
-  }
-
-  public get savedAccessible(): boolean {
-    if (this.settings !== null && this.settings !== undefined) {
-      return this.settings?.accessible ? this.settings.accessible : false;
-    } else {
-      return false;
-    }
-  }
-
-  constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
-
-  public saveEventType() {
-    throw new Error('saveEventType: Method not implemented.');
-  }
-
-  public saveAccommodations(requiresAccommodations: boolean) {
-    this.store.setStorageObjectKeyValue({
-      primaryKey: this._settingsPrimaryKey,
-      subKey: 'accessible',
-      value: requiresAccommodations
-    });
-
-    const confirm = this.store.getStorageObjectKeyValue<boolean>({
-      primaryKey: this._settingsPrimaryKey,
-      subKey: 'accessible'
-    });
-
-    return confirm;
-  }
-
-  public setSettingsFromQueryParams(params: EventSettings) {
-    try {
-      // Check if params have at least a date and residence
-      if (!params['event'] || !params.accessible) {
-        console.warn('Invalid query parameters. Will not set settings from query parameters.');
-      }
-
-      const accommodations = params.accessible ? this._validateAccommodations(params.accessible) : false;
-
-      this.store.setStorage({
-        primaryKey: this._settingsPrimaryKey,
-        value: {
-          accessible: accommodations
-        }
-      });
-
-      return this.settings;
-    } catch (err) {
-      throw new Error((err as Error)['message']);
-    }
-  }
-
   public get queryParamsFromSettings() {
-    const settings = this.settings;
+    const settings = this.settings();
 
     if (!settings) {
       return null;
     }
 
-    return `event=${settings['event']}`;
+    const validSettings = this.validateSettings(settings, this.eventOptions());
+
+    if (!validSettings) {
+      return null;
+    }
+
+    // Prepare the key-value settings as an array of key-value pairs to create url search params.
+    const settingsAsList = Object.entries(validSettings).map((s) => s);
+
+    return new URLSearchParams(settingsAsList);
   }
 
-  private _validateAccommodations(accommodations: boolean) {
-    return accommodations === true;
+  constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
+
+  public settings(): EventSettings;
+  public settings(asObservable: true): Observable<EventSettings>;
+  public settings(asObservable: false): EventSettings;
+  public settings(asObservable?: boolean): EventSettings | Observable<EventSettings> {
+    const settings: EventSettings = this.store.getStorage({ primaryKey: this._settingsPrimaryKey });
+
+    if (asObservable) {
+      return of(settings);
+    } else {
+      return settings;
+    }
   }
 
-  private _validateEvent() {
-    throw new Error('_validateEvent: Method not implemented.');
+  public eventOptions(): SpecialEventOptions;
+  public eventOptions(asObservable: true): Observable<SpecialEventOptions>;
+  public eventOptions(asObservable: false): SpecialEventOptions;
+  public eventOptions(asObservable?: boolean): SpecialEventOptions | Observable<SpecialEventOptions> {
+    const options: SpecialEventOptions = this.env.value('SpecialEventOptions', true);
+
+    if (asObservable) {
+      return of(options);
+    } else {
+      return options;
+    }
+  }
+
+  public eventConfiguration(): EventConfiguration;
+  public eventConfiguration(asObservable: true): Observable<EventConfiguration>;
+  public eventConfiguration(asObservable: false): EventConfiguration;
+  public eventConfiguration(asObservable?: boolean): EventConfiguration | Observable<EventConfiguration> {
+    const config: EventConfiguration = this.env.value('SpecialEventConfiguration', true);
+
+    if (asObservable) {
+      return of(config);
+    } else {
+      return config;
+    }
+  }
+
+  public saveAccommodation(accommodationKey: string, accommodationValue: string | boolean | number) {
+    this.store.setStorageObjectKeyValue({
+      primaryKey: this._settingsPrimaryKey,
+      subKey: accommodationKey,
+      value: accommodationValue
+    });
+
+    const confirm = this.store.getStorageObjectKeyValue<boolean>({
+      primaryKey: this._settingsPrimaryKey,
+      subKey: accommodationKey
+    });
+
+    return confirm;
+  }
+
+  public getSavedAccommodation(accommodationKey: string) {
+    const settings = this.settings();
+
+    if (settings !== null && settings !== undefined) {
+      return settings[accommodationKey] !== undefined ? settings[accommodationKey] : null;
+    } else {
+      return null;
+    }
+  }
+
+  public setSettingsFromQueryParams(params: EventSettings) {
+    try {
+      const settings = this.validateSettings(params, this.eventOptions());
+
+      if (settings === null) {
+        return this.store.getStorage({
+          primaryKey: this._settingsPrimaryKey
+        });
+      }
+
+      return this.store.setStorage({
+        primaryKey: this._settingsPrimaryKey,
+        value: settings
+      });
+    } catch (err) {
+      throw new Error((err as Error)['message']);
+    }
+  }
+
+  /**
+   * Merges the settings from local storage with the environment definitions.
+   * to return a dictionary of event option keys with their respective value label and key.
+   *
+   * This is used for UI representation of the settings.
+   */
+  public getMergedSettings() {
+    const options = this.eventOptions();
+    const settings = this.settings();
+
+    return options.reduce((merged, option) => {
+      if (settings && settings[option.value] !== undefined) {
+        const value = settings[option.value];
+
+        if (value !== undefined) {
+          merged[option.value] = {
+            shortDescription: option.shortDescription,
+            option: {
+              value: value,
+              label: (option.choices.find((o) => o.value === value) as EventAccommodationOption).label
+            }
+          };
+        } else {
+          merged[option.value] = {
+            shortDescription: option.shortDescription,
+            option: null
+          };
+        }
+      } else {
+        merged[option.value] = {
+          shortDescription: option.shortDescription,
+          option: null
+        };
+      }
+
+      return merged;
+    }, {} as ResolvedEventSettings);
+  }
+
+  public accommodationsValid() {
+    const options = this.eventOptions();
+    const settings = this.settings();
+
+    return options.every((opt) => {
+      return settings?.[opt.value] !== undefined;
+    });
+  }
+
+  /**
+   * Validates the provided settings object against the provided event options.
+   *
+   * Returns a new settings object with only the keys that exist in the event options with a valid value.
+   */
+  public validateSettings(settings: EventSettings, options: SpecialEventOptions): EventSettings | null {
+    const validated = Object.entries(settings).reduce((acc, [key, setting]) => {
+      // Find the event option that has the current settings key in its options
+      const option = options.find((o) => o.choices.find((opt) => opt.value === setting));
+
+      if (option) {
+        // Determine if the current setting value is in the list of valid options for the current option
+        const valid = option.choices.some((opt) => opt.value === setting);
+
+        if (valid) {
+          acc[key] = setting;
+        } else {
+          console.warn(`Setting for key '${key}' is not valid according to provided options.`);
+        }
+      } else {
+        console.warn(`Setting for key '${key}' is not valid according to provided options.`);
+      }
+
+      return acc;
+    }, {} as EventSettings);
+
+    if (Object.keys(validated).length === 0) {
+      return null;
+    } else return validated;
   }
 }
