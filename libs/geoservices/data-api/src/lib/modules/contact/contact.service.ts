@@ -1,13 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 
 import { MailerService, TurnstileVerifyService } from '@tamu-gisc/common/nest/services';
 
 import { IsEmail, IsNotEmpty } from 'class-validator';
 @Injectable()
 export class ContactService {
-  constructor(private readonly ms: MailerService, private readonly ts: TurnstileVerifyService) {}
+  constructor(
+    private readonly ms: MailerService,
+    private readonly ts: TurnstileVerifyService,
+    private readonly env: EnvironmentService
+  ) {}
 
   public async sendMessage(body: ContactMessageDto) {
+    const to = this.env.value('mailroomToAddress');
+
+    if (!to) {
+      throw new InternalServerErrorException('Unset mailroom settings.');
+    }
+
     if (!body.token) {
       return;
     }
@@ -21,7 +32,8 @@ export class ContactService {
 
     return this.ms.sendMail({
       from: undefined,
-      to: body.from,
+      to,
+      replyTo: body.from,
       subject: body.subject,
       text: body.text
     });
