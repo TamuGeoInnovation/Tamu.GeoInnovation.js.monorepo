@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, delay } from 'rxjs';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-revival-banner',
@@ -11,8 +12,9 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 export class RevivalBannerComponent implements OnInit {
   private _acknowledged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public acknowledged$ = this._acknowledged$.asObservable().pipe(delay(25));
+  public legacyHost: string;
 
-  constructor(private readonly ss: SettingsService) {}
+  constructor(private readonly ss: SettingsService, private readonly env: EnvironmentService) {}
 
   public ngOnInit(): void {
     this.ss
@@ -30,6 +32,8 @@ export class RevivalBannerComponent implements OnInit {
       .subscribe((settings) => {
         this._acknowledged$.next(settings['reskin_banner_acknowledge'] as boolean);
       });
+
+    this.legacyHost = this.env.value('legacy_host');
   }
 
   public dismiss() {

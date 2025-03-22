@@ -60,7 +60,8 @@ export class PartnerProgramFormComponent implements OnInit {
       partnerWebsite: [null, Validators.required],
       partnerOrgDescription: [null, Validators.required],
       partnerUsageDescription: [null, Validators.required],
-      partnerTermsOfUseAgree: [false, Validators.requiredTrue]
+      partnerTermsOfUseAgree: [false, Validators.requiredTrue],
+      turnstile_token: [null, Validators.required]
     });
   }
 
@@ -106,7 +107,8 @@ export class PartnerProgramFormComponent implements OnInit {
       .postFormMessage({
         from: value.email,
         subject: 'Partner Application',
-        text: message
+        text: message,
+        token: value.turnstile_token
       })
       .subscribe({
         next: () => {

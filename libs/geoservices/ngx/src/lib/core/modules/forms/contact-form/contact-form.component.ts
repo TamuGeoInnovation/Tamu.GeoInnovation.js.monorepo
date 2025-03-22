@@ -29,7 +29,8 @@ export class ContactFormComponent implements OnInit {
       fullName: ['', Validators.required],
       email: ['', Validators.required],
       subject: ['', Validators.required],
-      body: ['', Validators.required]
+      body: ['', Validators.required],
+      turnstile_token: [null, Validators.required]
     });
 
     if (this.route.snapshot.queryParams.subject !== undefined) {
@@ -48,7 +49,8 @@ export class ContactFormComponent implements OnInit {
       .postFormMessage({
         from: value.email,
         subject: `Contact - ${value.subject} ${value.fullName !== '' ? '- from ' + value.fullName : ''}`,
-        text: `${value.body}`
+        text: `${value.body}`,
+        token: value.turnstile_token
       })
       .subscribe({
         next: () => {

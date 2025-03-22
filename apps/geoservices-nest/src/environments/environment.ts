@@ -5,5 +5,7 @@ export const environment = {
   logging: process.env?.LOGGING === 'true' ? true : false,
   globalPrefix: process.env?.GLOBAL_PREFIX || '',
   mailroomUrl: process.env.MAILROOM_URL,
-  mailroomFromAddress: process.env.MAILROOM_FROM_ADDRESS
+  mailroomToAddress: process.env.MAILROOM_TO_ADDRESS,
+  turnstileClientKey: process.env.TURNSTILE_SITE_KEY,
+  turnstileSecretKey: process.env.TURNSTILE_SECRET_KEY
 };
