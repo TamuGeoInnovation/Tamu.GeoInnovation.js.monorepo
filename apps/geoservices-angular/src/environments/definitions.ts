@@ -1,6 +1,8 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
+export { metadata } from '@tamu-gisc/common/ngx/environment';
+
 export const NotificationEvents = [];
 
 export const SearchSources: SearchSource[] = [];

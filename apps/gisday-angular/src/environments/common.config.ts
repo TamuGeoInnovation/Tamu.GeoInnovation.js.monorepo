@@ -2,6 +2,8 @@ import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
+export { metadata } from '@tamu-gisc/common/ngx/environment';
+
 export const api_url = '___ANGULAR_API_URL___';
 
 export const auth0 = {
@@ -11,14 +13,6 @@ export const auth0 = {
   audience: '___ANGULAR_AUTH0_AUDIENCE___',
   roles_claim: '___ANGULAR_AUTH0_ROLES_CLAIM___',
   urls: ['___ANGULAR_AUTH0_URLS___']
-};
-
-export const metadata = {
-  buildDate: '___BUILD_DATE___',
-  gitCommit: '___GIT_COMMIT___',
-  gitTag: '___GIT_TAG___',
-  containerName: '___CONTAINER_NAME___',
-  nodeName: '___NODE_NAME___'
 };
 
 export const NotificationEvents: NotificationProperties[] = [
