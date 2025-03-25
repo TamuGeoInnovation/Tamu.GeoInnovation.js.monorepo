@@ -72,7 +72,15 @@ export class EventService {
                         // Its output property will be used as the value for the definition expression.
                         const correspondingOption = layer.conversions.find((c) => c.input === settingValue);
 
-                        if (correspondingOption) {
+                        if (correspondingOption && correspondingOption.expression) {
+                          value = correspondingOption.expression;
+
+                          (source as esri.FeatureLayer).definitionExpression = value;
+
+                          return source;
+                        }
+
+                        if (correspondingOption && correspondingOption.output) {
                           value = correspondingOption.output;
                         } else {
                           console.log(
