@@ -12,8 +12,10 @@ import { TimeUntilPipe } from './transformation/time-until.pipe';
 import { PhoneNumberFormatPipe } from './transformation/phone-number-format.pipe';
 
 import { LookupPipe } from './object/lookup/lookup.pipe';
+import { DateRangePipe } from './date/date-range/date-range.pipe';
 
 @NgModule({
+  imports: [CommonModule],
   declarations: [
     GroupByPipe,
     OrderByPipe,
@@ -22,9 +24,9 @@ import { LookupPipe } from './object/lookup/lookup.pipe';
     TimeUntilPipe,
     PhoneNumberFormatPipe,
     ExistsPipe,
-    LookupPipe
+    LookupPipe,
+    DateRangePipe
   ],
-  imports: [CommonModule],
   exports: [
     GroupByPipe,
     OrderByPipe,
@@ -33,7 +35,8 @@ import { LookupPipe } from './object/lookup/lookup.pipe';
     TimeUntilPipe,
     PhoneNumberFormatPipe,
     ExistsPipe,
-    LookupPipe
+    LookupPipe,
+    DateRangePipe
   ]
 })
 export class PipesModule {}
