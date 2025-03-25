@@ -1,6 +1,11 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+import { factory } from '@tamu-gisc/aggiemap/ngx/common';
+
+const sources = factory({
+  environment: 'dev'
+});
 
 export const environment = {
   production: false
@@ -16,3 +21,5 @@ export const environment = {
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
 
 export * from './definitions';
+
+export const { Definitions, Connections, LegendSources, SearchSources, ThreeDLayers, LayerSources } = sources;
