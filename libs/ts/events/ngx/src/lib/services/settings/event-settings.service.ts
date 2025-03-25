@@ -37,6 +37,27 @@ export class EventSettingsService {
     return new URLSearchParams(settingsAsList);
   }
 
+  /**
+   * Returns a boolean result based on whether the event has any settings saved in local storage.
+   */
+  public get hasSettings() {
+    const validSettings = this.validateSettings(this.settings(), this.eventOptions());
+
+    if (validSettings === null) {
+      return false;
+    }
+
+    return Object.keys(validSettings).length > 0;
+  }
+
+  /**
+   * Returns a boolean result based on whether the event has any configuration options. This is used to determine
+   * whether the event has any settings that can be configured via the builder and/or determine routing behavior.
+   */
+  public get hasOptions() {
+    return this.eventOptions().length > 0;
+  }
+
   constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
 
   public settings(): EventSettings;
@@ -177,8 +198,8 @@ export class EventSettingsService {
    */
   public validateSettings(settings: EventSettings, options: SpecialEventOptions): EventSettings | null {
     const validated = Object.entries(settings).reduce((acc, [key, setting]) => {
+      const option = options.find((o) => o.value === key);
       // Find the event option that has the current settings key in its options
-      const option = options.find((o) => o.choices.find((opt) => opt.value === setting));
 
       if (option) {
         // Determine if the current setting value is in the list of valid options for the current option
