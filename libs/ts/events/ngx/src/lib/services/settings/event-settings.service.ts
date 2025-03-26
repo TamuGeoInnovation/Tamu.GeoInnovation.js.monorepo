@@ -17,6 +17,7 @@ import {
 })
 export class EventSettingsService {
   private _settingsPrimaryKey = 'ts-events-settings';
+  private _settingsSecondaryKey = this.env.value('SpecialEventConfiguration', true).id;
 
   public get queryParamsFromSettings() {
     const settings = this.settings();
@@ -64,7 +65,10 @@ export class EventSettingsService {
   public settings(asObservable: true): Observable<EventSettings>;
   public settings(asObservable: false): EventSettings;
   public settings(asObservable?: boolean): EventSettings | Observable<EventSettings> {
-    const settings: EventSettings = this.store.getStorage({ primaryKey: this._settingsPrimaryKey });
+    const settings: EventSettings = this.store.getStorageObjectKeyValue({
+      primaryKey: this._settingsPrimaryKey,
+      subKey: this._settingsSecondaryKey
+    });
 
     if (asObservable) {
       return of(settings);
@@ -100,15 +104,20 @@ export class EventSettingsService {
   }
 
   public saveAccommodation(accommodationKey: string, accommodationValue: string | boolean | number) {
+    const existing = this.store.getStorageObjectKeyValue<EventSettings>({
+      primaryKey: this._settingsPrimaryKey,
+      subKey: this._settingsSecondaryKey
+    });
+
     this.store.setStorageObjectKeyValue({
       primaryKey: this._settingsPrimaryKey,
-      subKey: accommodationKey,
-      value: accommodationValue
+      subKey: this._settingsSecondaryKey,
+      value: { ...existing, [accommodationKey]: accommodationValue }
     });
 
     const confirm = this.store.getStorageObjectKeyValue<boolean>({
       primaryKey: this._settingsPrimaryKey,
-      subKey: accommodationKey
+      subKey: this._settingsSecondaryKey
     });
 
     return confirm;
@@ -129,13 +138,16 @@ export class EventSettingsService {
       const settings = this.validateSettings(params, this.eventOptions());
 
       if (settings === null) {
-        return this.store.getStorage({
-          primaryKey: this._settingsPrimaryKey
+        return this.store.setStorageObjectKeyValue({
+          primaryKey: this._settingsPrimaryKey,
+          subKey: this._settingsSecondaryKey,
+          value: {}
         });
       }
 
-      return this.store.setStorage({
+      return this.store.setStorageObjectKeyValue({
         primaryKey: this._settingsPrimaryKey,
+        subKey: this._settingsSecondaryKey,
         value: settings
       });
     } catch (err) {
@@ -197,6 +209,10 @@ export class EventSettingsService {
    * Returns a new settings object with only the keys that exist in the event options with a valid value.
    */
   public validateSettings(settings: EventSettings, options: SpecialEventOptions): EventSettings | null {
+    if (settings === undefined || settings === null) {
+      return null;
+    }
+
     const validated = Object.entries(settings).reduce((acc, [key, setting]) => {
       const option = options.find((o) => o.value === key);
       // Find the event option that has the current settings key in its options
@@ -208,7 +224,7 @@ export class EventSettingsService {
         if (valid) {
           acc[key] = setting;
         } else {
-          console.warn(`Setting for key '${key}' is not valid according to provided options.`);
+          console.warn(`Setting for key '${key}:${setting}' is not valid according to provided options.`);
         }
       } else {
         console.warn(`Setting for key '${key}' is not valid according to provided options.`);
