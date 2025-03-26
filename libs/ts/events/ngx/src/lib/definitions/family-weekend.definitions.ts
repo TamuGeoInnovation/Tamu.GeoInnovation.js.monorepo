@@ -53,7 +53,7 @@ enum FamilyWeekendAttendanceDateChoices {
 
 export const FamilyWeekendOptions: SpecialEventOptions = [
   {
-    value: 'family-weekend-date',
+    value: 'date',
     description:
       'To best provide you with the most accurate parking information, please select the day you plan to attend Family Weekend.',
     shortDescription: 'Attendance Day',
