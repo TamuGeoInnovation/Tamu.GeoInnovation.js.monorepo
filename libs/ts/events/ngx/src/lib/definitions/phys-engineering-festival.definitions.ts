@@ -31,6 +31,10 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     visible: true,
     listMode: 'show',
+    popupData: {
+      name: 'attributes.Type',
+      description: 'attributes.name'
+    },
     native: {
       outFields: ['*']
     }
