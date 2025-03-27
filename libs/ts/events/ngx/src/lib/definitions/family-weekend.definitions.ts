@@ -5,6 +5,7 @@ import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-e
 import { FAMILY_WEEKEND_LAYERS } from '../interfaces/family-weekend.interface';
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Family_Weekend/MapServer';
+const visitorParkingUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
 
 export const FamilyWeekendDefinitions = {
   PARKING_LOTS: {
@@ -12,6 +13,12 @@ export const FamilyWeekendDefinitions = {
     layerId: FAMILY_WEEKEND_LAYERS.PARKING_LOTS,
     name: 'Family Weekend Parking Lots',
     url: `${eventUrl}/0`
+  },
+  VISITOR_PARKING: {
+    id: FAMILY_WEEKEND_LAYERS.VISITOR_PARKING,
+    layerId: FAMILY_WEEKEND_LAYERS.VISITOR_PARKING,
+    name: 'Family Weekend Visitor Parking',
+    url: `${visitorParkingUrl}/10`
   }
 };
 
@@ -30,6 +37,40 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
     listMode: 'show',
     native: {
       outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: FamilyWeekendDefinitions.VISITOR_PARKING.id,
+    title: FamilyWeekendDefinitions.VISITOR_PARKING.name,
+    url: FamilyWeekendDefinitions.VISITOR_PARKING.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    // popupData: {
+    //   name: 'GIS.TS.ParkingLots.LotName',
+    //   description: '{GIS.TS.Lot_Notes.VisitorN}'
+    // },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'GIS.TS.Lot_Use.Visitor_Lot',
+        uniqueValueInfos: [
+          {
+            value: 1,
+            symbol: {
+              type: 'simple-fill',
+              color: [0, 77, 168, 0.75],
+              outline: {
+                color: [0, 77, 168, 1],
+                width: 1
+              }
+            } as any,
+            label: 'Visitor Parking'
+          }
+        ]
+      }
     }
   }
 ];
@@ -102,6 +143,23 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
               ]}' AND EndDate > date'${new Date(FamilyWeekendAttendanceDateChoices.DayThree).toLocaleDateString()} ${[
                 new Date(FamilyWeekendAttendanceDateChoices.DayThree).toLocaleTimeString()
               ]}' OR (StartDate IS NULL AND EndDate IS NULL)`
+            }
+          ]
+        },
+        {
+          layerId: FAMILY_WEEKEND_LAYERS.VISITOR_PARKING,
+          conversions: [
+            {
+              input: FamilyWeekendAttendanceDateChoices.DayOne,
+              expression: '0=1'
+            },
+            {
+              input: FamilyWeekendAttendanceDateChoices.DayTwo,
+              expression: '0=1'
+            },
+            {
+              input: FamilyWeekendAttendanceDateChoices.DayThree,
+              expression: 'GIS.TS.Lot_Use.Visitor_Lot = 1'
             }
           ]
         }
