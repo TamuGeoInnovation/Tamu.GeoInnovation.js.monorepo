@@ -71,6 +71,7 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
   name: 'Physics and Engineering Festival',
   applicationName: 'Physics and Engineering Festival Transportation Map',
   shortApplicationName: 'Physics and Engineering Festival Map',
+  introductionText: 'Get the best parking information for the',
   eventDates: ['2025-04-05'],
   mapCenter: [-96.33771, 30.62143],
   zoom: 17
