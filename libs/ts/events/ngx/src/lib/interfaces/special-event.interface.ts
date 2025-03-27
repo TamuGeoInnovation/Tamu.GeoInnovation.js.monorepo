@@ -22,6 +22,17 @@ export interface EventConfiguration {
   shortApplicationName: string;
 
   /**
+   * Text to display to the user on the builder intro screen.
+   *
+   * This text gets merged with the event name with the template form:
+   *
+   * `${event.introductionText} ${event.name}`
+   *
+   * A default placeholder is thus provided if no introduction text is provided.
+   */
+  introductionText?: string;
+
+  /**
    * The event dates. This is used to display the event dates to the user.
    *
    * This can be a string, date, or number
