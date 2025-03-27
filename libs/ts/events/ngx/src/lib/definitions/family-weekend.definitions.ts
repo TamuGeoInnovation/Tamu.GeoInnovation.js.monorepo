@@ -80,6 +80,7 @@ export const FamilyWeekendConfiguration: EventConfiguration = {
   name: 'Family Weekend',
   applicationName: 'Family Weekend Transportation Map',
   shortApplicationName: 'Family Weekend Map',
+  introductionText: 'Get the best parking information for',
   eventDates: ['2025-04-04', '2025-04-05', '2025-04-06'],
   mapCenter: [-96.3405, 30.61114],
   zoom: 16
@@ -97,8 +98,8 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
     value: 'date',
     description:
       'To best provide you with the most accurate parking information, please select the day you plan to attend Family Weekend.',
-    shortDescription: 'Attendance Day',
-    label: 'Attendance Day',
+    shortDescription: 'Event Day',
+    label: 'Event Day',
     choices: [
       {
         value: FamilyWeekendAttendanceDateChoices.DayOne,
