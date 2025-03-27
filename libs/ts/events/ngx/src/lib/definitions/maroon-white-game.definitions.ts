@@ -41,7 +41,7 @@ export const MaroonWhiteGameConfiguration: EventConfiguration = {
   shortApplicationName: 'Maroon & White Game Map',
   introductionText: 'Get the best parking information for',
   eventDates: ['2025-04-20'],
-  mapCenter: [-96.3405, 30.61114],
+  mapCenter: [-96.34046, 30.60798],
   zoom: 16
 };
 
