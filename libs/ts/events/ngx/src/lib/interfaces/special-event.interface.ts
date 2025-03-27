@@ -34,6 +34,10 @@ export interface EventConfiguration {
    * - If a date is provided, it should be a valid date object.
    */
   eventDates: Array<string | Date | number>;
+
+  mapCenter?: Array<number>;
+
+  zoom?: number;
 }
 
 /**
