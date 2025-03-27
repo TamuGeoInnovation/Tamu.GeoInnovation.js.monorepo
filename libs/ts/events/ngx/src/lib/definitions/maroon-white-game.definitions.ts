@@ -24,7 +24,7 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.Type',
-      description: 'attributes.description'
+      description: '{attributes.description}\n{attributes.Notes}'
     },
     visible: true,
     listMode: 'show',
