@@ -35,8 +35,8 @@ export class SettingsGuard implements CanActivate {
     }
 
     try {
-      // Call move-in/out settings service to update and set/overwrite any settings in local storage.
-      if (queryParamsKeySize) {
+      // Call event settings service to update and set/overwrite any settings in local storage.
+      if (queryParamsKeySize && queryParamsKeySize > 0) {
         this.ess.setSettingsFromQueryParams(queryParams);
 
         this.anl.eventTrack.next({

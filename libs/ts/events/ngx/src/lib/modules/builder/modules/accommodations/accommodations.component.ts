@@ -29,10 +29,10 @@ export class AccommodationsComponent implements OnInit {
   public ngOnInit() {
     this._eventOptions$ = new BehaviorSubject(this.eventSettingsService.eventOptions());
 
-    if (!this._eventOptions$.value) {
+    if (!this._eventOptions$.value || (this._eventOptions$.value as Array<unknown>).length === 0) {
       console.log('No special event options available. Directing to map.');
 
-      this.router.navigate(['map']);
+      return this.router.navigate(['map']);
     }
 
     // Test if the route has an accommodation. If it does not, redirect to the first available accommodation.

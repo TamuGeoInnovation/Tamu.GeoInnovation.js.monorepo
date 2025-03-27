@@ -103,6 +103,19 @@ export class EventSettingsService {
     }
   }
 
+  public eventLayerReferences(): Array<string>;
+  public eventLayerReferences(asObservable: true): Observable<Array<string>>;
+  public eventLayerReferences(asObservable: false): Array<string>;
+  public eventLayerReferences(asObservable?: boolean): Array<string> | Observable<Array<string>> {
+    const references: Array<string> = this.env.value('SpecialEventLayerReferences', true);
+
+    if (asObservable) {
+      return of(references);
+    } else {
+      return references;
+    }
+  }
+
   public saveAccommodation(accommodationKey: string, accommodationValue: string | boolean | number) {
     const existing = this.store.getStorageObjectKeyValue<EventSettings>({
       primaryKey: this._settingsPrimaryKey,
