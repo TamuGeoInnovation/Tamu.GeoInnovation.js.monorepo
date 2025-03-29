@@ -1,3 +1,5 @@
+@use 'libs/sass/mixins' as *;
+
 #dining-location-schedule-container {
   &:hover {
     cursor: pointer;
@@ -6,6 +8,15 @@
   p {
     padding-bottom: 0;
   }
+
+  .material-icons {
+    color: initial;
+    font-size: 1.2rem;
+    margin-right: 0.3rem;
+  }
+}
+
+#dining-location-at-a-glance {
 }
 
 .status-text,
@@ -14,12 +25,20 @@
 }
 
 .status-text {
-  margin-right: 1rem;
-
-  .material-icons {
+  &:after {
+    content: '\00B7';
     color: initial;
-    font-size: 1.1rem;
+    margin-left: 0.3rem;
     margin-right: 0.3rem;
+  }
+}
+
+.expand-icon {
+  @include transition(transform 0.3s);
+  @include transform-origin(center center);
+
+  &.expanded {
+    @include transform(rotateX(180deg));
   }
 }
 

@@ -4,9 +4,15 @@
 </div>
 
 <div class="popup-section" *giscAccordion="let parent;" id="dining-location-schedule-container">
-  <div class="flex flex-row justify-between" tabindex="0" *ngIf="(statusText | async) as status" [giscAccordionHeader]="parent">
-    <p [ngClass]="{'clr-md-green-600': status.statusCode === 'open', 'clr-md-red-600': status.statusCode === 'closed'}" class="status-text flex flex-row align-center"><span class="material-icons">schedule</span>{{status.status}}</p>
-    <p class="status-message">{{status?.message}}</p>
+  <div class="flex flex-row align-center justify-between" tab-index="0" *ngIf="(statusText | async) as status" [giscAccordionHeader]="parent">
+    <div class="flex flex-row">
+      <p [ngClass]="{'clr-md-green-700': status.statusCode === 'open', 'clr-md-red-600': status.statusCode === 'closed'}" class="status-text flex flex-row align-center"><span class="material-icons">schedule</span>{{status.status}}</p>
+      <p class="status-message">{{status?.message}}</p>
+    </div>
+
+    <div class="flex flex-row expand-icon" [ngClass]="{expanded: parent.expanded}">
+      <span class="material-icons">keyboard_arrow_down</span>
+    </div>
   </div>
 
   <div class="leader-1" *giscAccordionContent="parent.expanded">
@@ -15,9 +21,7 @@
         <p>{{ day.key | date : 'EEEE' }}</p>
         <div [ngSwitch]="day.value.hours.length > 0">
           <div *ngSwitchCase="true" class="flex flex-column">
-            <p *ngFor="let hours of day.value.hours">
-              <span>{{hours.start | date : 'h:mm a'}} - {{hours.end | date : 'h:mm a'}}</span>
-            </p>
+            <p *ngFor="let hours of day.value.hours"><span class="time-block time-block__start">{{hours.start | date : 'h:mm a'}}</span> &mdash; <span class="time-block time-block__end">{{hours.end | date : 'h:mm a'}}</span></p>
           </div>
           <div *ngSwitchDefault><p>Closed</p></div>
         </div>

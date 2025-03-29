@@ -48,7 +48,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
     this.menu = this.http.get<IDiningLocationMenu>(`${this._serviceUrl}/locations/${this.data.attributes.id}/menu`);
     this.statusText = of(this.data?.attributes?.message).pipe(
       map((text) => {
-        const [status, message] = text.split('.');
+        const [status, message] = text.split('.').map((text) => text.trim());
         const statusCode =
           status.toLowerCase() === 'open' ? DINING_LOCATION_OPERATION_STATUS.OPEN : DINING_LOCATION_OPERATION_STATUS.CLOSED;
 
