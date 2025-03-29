@@ -94,8 +94,13 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
         const today = schedule[todayDatestamp];
         const todayIndex = scheduleKeys.findIndex((key) => key === todayDatestamp);
 
-        // If current day has no hours, location is closed. Find next day with hours
-        if (today.hours.length === 0) {
+        // If current day has no hours, location is closed.
+        // If current day has hours and now > the last time block, location is closed.
+        // If either of these two conditions are true, find the next day with hours.
+        const todayHasHours = today.hours.length > 0;
+        const todayHasHoursAndIsLateClosed = todayHasHours && today.hours[today.hours.length - 1].end < new Date();
+
+        if (!todayHasHours || todayHasHoursAndIsLateClosed) {
           const nextOpenDay = scheduleKeys.slice(todayIndex).find((key) => {
             const day = schedule[key];
 
@@ -154,9 +159,9 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
             hour12: true
           })}`;
         } else {
-          // If the location is closed, it's either too early or too late. If too early, simply return the time when it opens
-          // If too late, return the time for when it opens next.
-
+          // If the location is closed, it's either too early or too late
+          // The second case is already covered by the first condition above
+          // So we the only remaining case is if the current time is before the first time block's start
           if (now < firstRelevantTimeBlock.start) {
             text = `Opens ${firstRelevantTimeBlock.start.toLocaleString('en-US', {
               weekday: 'long',
@@ -165,18 +170,9 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
               hour12: true
             })}`;
           } else {
-            const nextOpenDay = scheduleKeys.slice(todayIndex).find((key) => {
-              const day = schedule[key];
-
-              return day.hours.length > 0;
-            });
-
-            text = `Opens ${firstRelevantTimeBlock.start.toLocaleString('en-US', {
-              weekday: 'long',
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true
-            })}`;
+            // Should never hit this case, but just in case
+            console.warn('Location is closed but no implementation for this case.');
+            text = '';
           }
         }
 
