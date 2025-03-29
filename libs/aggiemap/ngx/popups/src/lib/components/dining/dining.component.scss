@@ -16,15 +16,14 @@
   }
 }
 
-#dining-location-at-a-glance {
-}
-
 .status-text,
 .status-message {
   font-weight: 600;
 }
 
 .status-text {
+  text-transform: capitalize;
+
   &:after {
     content: '\00B7';
     color: initial;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { combineLatestWith, concatMap, map, Observable, of, reduce } from 'rxjs';
+import { combineLatestWith, concatMap, map, Observable, of, reduce, shareReplay, withLatestFrom } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -16,7 +16,6 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   styleUrls: ['../base/base.popup.component.scss', './dining.component.scss']
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
-  public details: Observable<IDiningLocationInfo>;
   public menu: Observable<IDiningLocationMenu>;
   public schedule: Observable<ISimplifiedDiningLocationHours>;
   public statusText: Observable<IDeconstructedStatusText>;
@@ -44,21 +43,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
   }
 
   private _fetchDiningDetails() {
-    this.details = this.http.get<IDiningLocationInfo>(`${this._serviceUrl}/locations/${this.data.attributes.id}`);
     this.menu = this.http.get<IDiningLocationMenu>(`${this._serviceUrl}/locations/${this.data.attributes.id}/menu`);
-    this.statusText = of(this.data?.attributes?.message).pipe(
-      map((text) => {
-        const [status, message] = text.split('.').map((text) => text.trim());
-        const statusCode =
-          status.toLowerCase() === 'open' ? DINING_LOCATION_OPERATION_STATUS.OPEN : DINING_LOCATION_OPERATION_STATUS.CLOSED;
-
-        return {
-          status,
-          message,
-          statusCode
-        };
-      })
-    );
 
     this.schedule = this.http
       .get<IDiningLocationHours>(`${this._serviceUrl}/locations/${this.data.attributes.id}/schedule`)
@@ -98,8 +83,110 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
           };
 
           return acc;
-        }, {} as ISimplifiedDiningLocationHours)
+        }, {} as ISimplifiedDiningLocationHours),
+        shareReplay(1)
       );
+
+    this.statusText = this.schedule.pipe(
+      withLatestFrom(of(new Date().toISOString().split('T')[0])),
+      map(([schedule, todayDatestamp]) => {
+        const scheduleKeys = Object.keys(schedule);
+        const today = schedule[todayDatestamp];
+        const todayIndex = scheduleKeys.findIndex((key) => key === todayDatestamp);
+
+        // If current day has no hours, location is closed. Find next day with hours
+        if (today.hours.length === 0) {
+          const nextOpenDay = scheduleKeys.slice(todayIndex).find((key) => {
+            const day = schedule[key];
+
+            return day.hours.length > 0;
+          });
+
+          return {
+            status: 'Closed',
+            statusCode: DINING_LOCATION_OPERATION_STATUS.CLOSED,
+            message: `Opens ${schedule[nextOpenDay].hours[0].start.toLocaleString('en-US', {
+              weekday: 'long',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })}` // date should be format EEEE hh:mm a
+          } as IDeconstructedStatusText;
+        }
+
+        const now = new Date();
+
+        // If today has hours, check if current time is within those hours
+        // If it is, location is open. If not, then location is going to open later or is closed for the rest of the day
+        const firstRelevantTimeBlock = today?.hours.find((timeBlock) => {
+          const start = timeBlock.start;
+          const end = timeBlock.end;
+
+          // If current time is before the current time block's start, then the location has not opened yet
+          // This should only ever return early if the condition is true for the first time block.
+          if (now < start) {
+            return true;
+          }
+
+          // If we got this far, then we are not in the first time block. Check if the current time is after the last time block's end
+          // If it is, then the location is closed
+          if (now > end) {
+            return true;
+          }
+
+          // If we got this far, then the current time is within the time block
+          // Check if the current time is between the start and end of the time block
+
+          return now >= start && now <= end;
+        });
+
+        const statusCode =
+          now > firstRelevantTimeBlock.start && now < firstRelevantTimeBlock.end
+            ? DINING_LOCATION_OPERATION_STATUS.OPEN
+            : DINING_LOCATION_OPERATION_STATUS.CLOSED;
+
+        let text: string;
+
+        if (statusCode === DINING_LOCATION_OPERATION_STATUS.OPEN) {
+          text = `Closes ${firstRelevantTimeBlock.end.toLocaleString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+          })}`;
+        } else {
+          // If the location is closed, it's either too early or too late. If too early, simply return the time when it opens
+          // If too late, return the time for when it opens next.
+
+          if (now < firstRelevantTimeBlock.start) {
+            text = `Opens ${firstRelevantTimeBlock.start.toLocaleString('en-US', {
+              weekday: 'long',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })}`;
+          } else {
+            const nextOpenDay = scheduleKeys.slice(todayIndex).find((key) => {
+              const day = schedule[key];
+
+              return day.hours.length > 0;
+            });
+
+            text = `Opens ${firstRelevantTimeBlock.start.toLocaleString('en-US', {
+              weekday: 'long',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })}`;
+          }
+        }
+
+        return {
+          status: statusCode,
+          statusCode,
+          message: text
+        } as IDeconstructedStatusText;
+      })
+    );
   }
 }
 
