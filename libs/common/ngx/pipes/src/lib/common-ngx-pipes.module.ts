@@ -6,7 +6,8 @@ import { OrderByPipe } from './collections/order-by.pipe';
 import { ExistsPipe } from './collections/exists.pipe';
 
 import { MarkdownParsePipe } from './parsing/markdown-parse.pipe';
-import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
+import { SafeHtmlPipe } from './sanitation/safe-html/safe-html.pipe';
+import { SafeUrlPipe } from './sanitation/safe-url/safe-url.pipe';
 
 import { TimeUntilPipe } from './transformation/time-until.pipe';
 import { PhoneNumberFormatPipe } from './transformation/phone-number-format.pipe';
@@ -22,7 +23,8 @@ import { LookupPipe } from './object/lookup/lookup.pipe';
     TimeUntilPipe,
     PhoneNumberFormatPipe,
     ExistsPipe,
-    LookupPipe
+    LookupPipe,
+    SafeUrlPipe
   ],
   imports: [CommonModule],
   exports: [
@@ -33,7 +35,8 @@ import { LookupPipe } from './object/lookup/lookup.pipe';
     TimeUntilPipe,
     PhoneNumberFormatPipe,
     ExistsPipe,
-    LookupPipe
+    LookupPipe,
+    SafeUrlPipe
   ]
 })
 export class PipesModule {}
