@@ -11,6 +11,6 @@ export class NVPTransformer {
       acc[key] = decodeURIComponent(value);
 
       return acc;
-    }, {} as Record<string, string>) as T;
+    }, {} as Record<string, string>) as unknown as T;
   }
 }

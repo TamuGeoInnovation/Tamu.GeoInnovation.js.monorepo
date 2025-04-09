@@ -35,11 +35,12 @@ export class PaymentsService {
       USER: this.env.value('payflowUser'),
       VENDOR: this.env.value('payflowMerchant'),
       PWD: this.env.value('payflowPassword'),
-      TRXTYPE: 'A',
+      TRXTYPE: 'S',
       AMT: '24.35',
       CURRENCY: 'USD',
       CREATESECURETOKEN: 'Y',
-      SECURETOKENID: token
+      SECURETOKENID: token,
+      TENDER: 'C'
     };
 
     const nvpString = NVPTransformer.serialize(form);
@@ -59,8 +60,8 @@ export class PaymentsService {
     Logger.debug(`Secure token response: ${JSON.stringify(deserialized)}`, 'PaymentsService');
 
     return {
-      token: deserialized.SECURETOKEN,
-      tokenId: deserialized.SECURETOKENID
+      SECURETOKEN: deserialized.SECURETOKEN,
+      SECURETOKENID: deserialized.SECURETOKENID
     };
   }
 }

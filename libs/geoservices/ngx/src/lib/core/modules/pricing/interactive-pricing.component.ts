@@ -6,6 +6,8 @@ import { debounceTime, map, shareReplay, startWith, take, tap, withLatestFrom } 
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PaymentsService } from '@tamu-gisc/geoservices/data-access';
+import { IPayflowSecureTokenResponse } from '@tamu-gisc/geoservices/data-api';
 
 @Component({
   selector: 'tamu-gisc-interactive-pricing',
@@ -92,11 +94,15 @@ export class InteractivePricingComponent implements OnInit {
   public eligiblePricingTiers: Observable<Array<PricingTier>>;
   public pricingSliderDataMap: Observable<RangeInputDataMap>;
 
+  public order: Observable<IPayflowSecureTokenResponse>;
+  public orderSrc: Observable<string>;
+
   constructor(
     private readonly router: Router,
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
-    private readonly env: EnvironmentService
+    private readonly env: EnvironmentService,
+    private readonly ps: PaymentsService
   ) {}
 
   public ngOnInit(): void {
@@ -285,6 +291,15 @@ export class InteractivePricingComponent implements OnInit {
         });
       }),
       shareReplay()
+    );
+
+    this.order = this.ps.initializeOrder().pipe(shareReplay(1));
+    this.orderSrc = this.order.pipe(
+      // https://pilot-payflowlink.paypal.com?SECURETOKEN=ABC123...&SECURETOKENID=yourUniqueToken123&MODE=LIVE
+      map((order) => {
+        return `https://pilot-payflowlink.paypal.com/?SECURETOKEN=${order.SECURETOKEN}&SECURETOKENID=${order.SECURETOKENID}`;
+      }),
+      shareReplay(1)
     );
   }
 
