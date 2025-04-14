@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
-import { debounceTime, map, shareReplay, startWith, take, tap, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, map, shareReplay, startWith, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
-import { PaymentsService } from '@tamu-gisc/geoservices/data-access';
+import { AuthService, PaymentsService } from '@tamu-gisc/geoservices/data-access';
 import { IPayflowSecureTokenResponse } from '@tamu-gisc/geoservices/data-api';
 
 @Component({
@@ -102,13 +102,14 @@ export class InteractivePricingComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly env: EnvironmentService,
-    private readonly ps: PaymentsService
+    private readonly ps: PaymentsService,
+    private readonly auth: AuthService
   ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
       creditCount: [0],
-      frequency: [FREQUENCY.ONE_TIME],
+      frequency: [FREQUENCY.RECURRING_MONTHLY],
       partnerProgram: [false],
       sla: [false]
     });
@@ -293,7 +294,12 @@ export class InteractivePricingComponent implements OnInit {
       shareReplay()
     );
 
-    this.order = this.ps.initializeOrder().pipe(shareReplay(1));
+    this.order = this.auth.state.pipe(
+      switchMap((state) => {
+        return this.ps.initializeOrder(state.data.Guid, state.data.Email);
+      }),
+      shareReplay(1)
+    );
     this.orderSrc = this.order.pipe(
       // https://pilot-payflowlink.paypal.com?SECURETOKEN=ABC123...&SECURETOKENID=yourUniqueToken123&MODE=LIVE
       map((order) => {

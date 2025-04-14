@@ -87,6 +87,7 @@ interface ILoggedInResponse {
   APIKey: string;
   Guid: string;
   isManager: string;
+  Email: string;
 }
 
 export interface LoggedInState {

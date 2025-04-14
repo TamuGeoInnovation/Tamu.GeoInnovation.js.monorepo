@@ -1,3 +1,7 @@
+<!-- <div class="flex flex-row justify-center leader-2 trailer-1" *ngIf="orderSrc | async as url">
+  <iframe name="payflow_iframe" [src]="url | safeUrl : 'resource'" width="1200" height="1000" frameborder="0" scrolling="no" allowtransparency="false"> </iframe>
+</div> -->
+
 <div class="container12 flex flex-row justify-between">
   <div class="column6">
     <form [formGroup]="form">
@@ -126,8 +130,8 @@
 
       <div class="flex flex-row justify-center leader-2 trailer-1" *ngIf="orderSrc | async as url">
         <!-- <p class="button secondary" id="ctaButton" (click)="navigateCtaAction()">{{ ctaText | async }}</p> -->
-        <pre>{{url}}</pre>
-        <iframe name="payflow_iframe" [src]="url | safeUrl : 'resource'" width="490" height="565" frameborder="0" scrolling="no" allowtransparency="false"> </iframe>
+        <a class="button secondary" [href]="url | safeUrl">Subscribe</a>
+        <!-- <iframe name="payflow_iframe" [src]="url | safeUrl : 'resource'" width="490" height="565" frameborder="0" scrolling="no" allowtransparency="false"> </iframe> -->
       </div>
     </div>
 

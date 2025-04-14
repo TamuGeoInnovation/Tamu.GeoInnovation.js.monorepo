@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 
 import got from 'got';
 import { v4 as guid } from 'uuid';
@@ -25,10 +25,15 @@ export class PaymentsService {
   }
 
   // Example method
-  public async initiateSecureOrder() {
-    Logger.debug(`Initiating secure order. Fetching secure token from ${this._payflowUrl}`, 'PaymentsService');
+  public async initiateSecureOrder(userGuid: string, email: string) {
+    if (!userGuid || !email) {
+      throw new BadRequestException('User GUID and email are required to initiate a secure order.');
+    }
+
     const token = guid().replace(/-/g, '');
+    Logger.debug(`Initiating secure order. Fetching secure token from ${this._payflowUrl}`, 'PaymentsService');
     Logger.debug(`Secure token: ${token}`, 'PaymentsService');
+    Logger.debug(`Service URL: ${this._payflowUrl}`, 'PaymentsService');
 
     const form = {
       PARTNER: this.env.value('payflowPartner'),
@@ -36,11 +41,14 @@ export class PaymentsService {
       VENDOR: this.env.value('payflowMerchant'),
       PWD: this.env.value('payflowPassword'),
       TRXTYPE: 'S',
-      AMT: '24.35',
       CURRENCY: 'USD',
+      AMT: '1.00',
       CREATESECURETOKEN: 'Y',
       SECURETOKENID: token,
-      TENDER: 'C'
+      COMMENT1: userGuid,
+      COMMENT2: email,
+      CANCELURL: 'http://localhost:4200/order/cancel',
+      RETURNURL: 'http://localhost:4200/order/complete'
     };
 
     const nvpString = NVPTransformer.serialize(form);
@@ -63,6 +71,28 @@ export class PaymentsService {
       SECURETOKEN: deserialized.SECURETOKEN,
       SECURETOKENID: deserialized.SECURETOKENID
     };
+  }
+
+  public async getOrderDetails(orderId: string) {
+    const form = {
+      PARTNER: this.env.value('payflowPartner'),
+      USER: this.env.value('payflowUser'),
+      VENDOR: this.env.value('payflowMerchant'),
+      PWD: this.env.value('payflowPassword'),
+      TRXTYPE: 'I',
+      ORIGID: orderId,
+      VERBOSITY: 'HIGH',
+      ECHODATA: 'custdata'
+    };
+
+    const nvpString = NVPTransformer.serialize(form);
+
+    const res = await got.post(`${this._payflowUrl}`, {
+      method: 'POST',
+      body: nvpString
+    });
+
+    return res.body;
   }
 }
 
