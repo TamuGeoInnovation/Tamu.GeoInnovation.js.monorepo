@@ -10,6 +10,7 @@ import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 export class MarkdownWDirectionsPopupComponent extends BaseDirectionsComponent implements OnInit {
   public title: string;
   public isContentTheSame: boolean;
+  public isContentLengthZero: boolean;
 
   public override ngOnInit(): void {
     super.ngOnInit();
@@ -17,6 +18,9 @@ export class MarkdownWDirectionsPopupComponent extends BaseDirectionsComponent i
     this.title = this.data?.attributes?.name ? this.data.attributes.name : this.data.layer.title;
 
     this.isContentTheSame = this.data?.attributes?.description === this.data?.attributes?.Notes;
+
+    this.isContentLengthZero =
+      typeof this.data?.attributes?.description === 'string' && this.data?.attributes?.description.trim().length === 0;
   }
 
   public override startDirections() {

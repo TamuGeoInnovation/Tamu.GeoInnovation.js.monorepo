@@ -10,6 +10,7 @@ export class TemplateRenderer {
   public template: TemplateRendererOptions['template'];
   public lookup: TemplateRendererOptions['lookup'];
   public replacement: TemplateRendererOptions['replacement'];
+  public options: TemplateRendererOptions['options'];
 
   /**
    * Creates an instance of TemplateRenderer.
@@ -23,6 +24,7 @@ export class TemplateRenderer {
     this.template = props.template || undefined;
     this.lookup = props.lookup || undefined;
     this.replacement = props.replacement || undefined;
+    this.options = props.options || {};
   }
 
   /**
@@ -36,8 +38,18 @@ export class TemplateRenderer {
       });
     } else if (this.template && this.lookup) {
       return this.template.replace(/\{.*?\}/g, (match: string) => {
+        const resolved = getPropertyValue<string>(this.lookup, match.replace('{', '').replace('}', ''));
         // Remove template braces before setting value from lookup object.
-        return getPropertyValue<string>(this.lookup, match.replace('{', '').replace('}', ''));
+
+        if (this.options?.nullishReplacement !== undefined && (resolved === undefined || resolved === null)) {
+          return this.options.nullishReplacement;
+        }
+
+        if (this.options?.trim) {
+          return resolved.trim();
+        }
+
+        return resolved;
       });
     }
   }
@@ -78,4 +90,22 @@ export interface TemplateRendererOptions {
    * If using inputObject, values will be derived from property value lookup.
    */
   replacement?: string;
+
+  options?: {
+    /**
+     * String to replace null\undefined values with.
+     *
+     * This is useful when rendering templates that may contain nullish values.
+     *
+     * Default behavior is to render the template as is.
+     */
+    nullishReplacement?: string;
+
+    /**
+     * Trim the resulting string.
+     *
+     * Default is `false`: behavior is to not trim the resulting string.
+     */
+    trim?: boolean;
+  };
 }

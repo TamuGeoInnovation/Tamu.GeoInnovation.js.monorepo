@@ -69,7 +69,11 @@ export class PopupService {
               if (dotNotationPathOrDefinition.includes('{') && dotNotationPathOrDefinition.includes('}')) {
                 acc[key] = new TemplateRenderer({
                   template: dotNotationPathOrDefinition,
-                  lookup: topGraphic
+                  lookup: topGraphic,
+                  options: {
+                    nullishReplacement: '',
+                    trim: true
+                  }
                 }).render();
               } else {
                 acc[key] = getPropertyValue(topGraphic, dotNotationPathOrDefinition);
