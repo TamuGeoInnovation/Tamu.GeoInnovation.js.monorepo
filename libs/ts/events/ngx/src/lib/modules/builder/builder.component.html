@@ -3,7 +3,7 @@
     <h1 id="component-title">{{ config.applicationName }}</h1>
 
     <ng-container *ngIf="config.eventDates">
-      <h4>{{ config.eventDates[0] | date}}</h4>
+      <h4>{{ config.eventDates | dateRange}}</h4>
     </ng-container>
   </div>
 

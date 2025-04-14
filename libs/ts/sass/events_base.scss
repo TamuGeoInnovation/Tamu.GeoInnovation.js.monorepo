@@ -849,6 +849,27 @@ button[type='submit'] {
   }
 }
 
+tamu-gisc-builder {
+  tamu-gisc-button {
+    border-color: #eeeeee !important;
+    border: 1pt solid;
+    color: #eeeeee !important;
+    background: none !important;
+    font-size: 1rem;
+    font-weight: 400;
+
+    input {
+      font-size: inherit;
+      font-weight: inherit !important;
+    }
+
+    &:hover {
+      background: #eeeeee !important;
+      color: #500000 !important;
+    }
+  }
+}
+
 //  ==========================================================================
 //   Toast Notification
 //  ==========================================================================

@@ -8,7 +8,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { EventSettings, SpecialEventOptions } from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../settings/event-settings.service';
-import { BIG_EVENT_LAYERS } from '../../interfaces/big-event.interface';
 
 import esri = __esri;
 
@@ -19,7 +18,7 @@ export class EventService {
   public settings: EventSettings;
   public eventOptions: SpecialEventOptions;
 
-  public specialEventLayerReferences: Array<BIG_EVENT_LAYERS>;
+  public specialEventLayerReferences: Array<string>;
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -32,7 +31,9 @@ export class EventService {
   ) {
     this.eventOptions = this.eventSettingsService.eventOptions();
     this.settings = this.eventSettingsService.settings();
-    this.specialEventLayerReferences = Object.entries(BIG_EVENT_LAYERS).map(([, value]) => value);
+    this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences()).map(
+      ([, value]) => value
+    );
 
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
@@ -43,7 +44,7 @@ export class EventService {
 
   public async drawEvent() {
     try {
-      const eventLayers: Array<BIG_EVENT_LAYERS> = this.specialEventLayerReferences;
+      const eventLayers = this.specialEventLayerReferences;
 
       // For each source, iterate through event options and determine if any of the option effect targets apply to the immediate source.
       // If so, apply the effect.

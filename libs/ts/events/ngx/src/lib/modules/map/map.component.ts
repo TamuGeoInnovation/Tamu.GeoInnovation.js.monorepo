@@ -44,6 +44,11 @@ export class MapComponent implements OnInit, OnDestroy {
   public hasSettings: boolean;
 
   /**
+   * Describes if the current has any options available to it.
+   */
+  public hasOptions: boolean;
+
+  /**
    * Text content for the share button (mobile)
    */
   public shareUrl: string;
@@ -66,8 +71,12 @@ export class MapComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     // Settings can come from either local storage or from the url query parameters
 
-    this.hasSettings = this.eventsSettingsService.queryParamsFromSettings !== null;
-    if (this.hasSettings === false) {
+    this.hasSettings = this.eventsSettingsService.hasSettings;
+    this.hasOptions = this.eventsSettingsService.hasOptions;
+    const configuration = this.eventsSettingsService.eventConfiguration();
+
+    // If the current event has options but none are set, redirect to the builder
+    if (this.hasOptions === true && this.hasSettings === false) {
       this.rt.navigate(['/builder']);
       return;
     }
@@ -112,7 +121,7 @@ export class MapComponent implements OnInit, OnDestroy {
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
-            center: [-96.34442, 30.60665],
+            center: configuration?.mapCenter !== undefined ? configuration.mapCenter : [-96.34442, 30.60665],
             spatialReference: {
               wkid: 102100
             },
@@ -120,7 +129,7 @@ export class MapComponent implements OnInit, OnDestroy {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
               maxScale: 0 // maxZoom is the max you can zoom INTO the ground
             },
-            zoom: 16,
+            zoom: configuration?.zoom !== undefined ? configuration.zoom : 16,
             ui: {
               components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
             },
