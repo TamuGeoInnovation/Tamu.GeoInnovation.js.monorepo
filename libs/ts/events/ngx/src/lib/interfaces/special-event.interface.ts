@@ -95,9 +95,11 @@ export interface SpecialEventOption {
       layerId: string;
 
       /**
-       * The published layer field id
+       * The published layer field id. Only used when simple input/output conversions are needed.
+       *
+       * Is not used when an expression is provided.
        */
-      field: string;
+      field?: string;
 
       /**
        * Since the effecting fields are not always the same across affecting layers, this property is used to
@@ -126,7 +128,7 @@ export interface SpecialEventOption {
        * ```
        *
        */
-      conversions?: Array<{ input: string; output: string | number | boolean }>;
+      conversions?: Array<{ input: string; output?: string | number | boolean; expression?: string }>;
     }>;
 
     /**
