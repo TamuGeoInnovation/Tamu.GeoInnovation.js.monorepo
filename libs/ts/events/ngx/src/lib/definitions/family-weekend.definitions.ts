@@ -121,29 +121,39 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
           conversions: [
             {
               input: FamilyWeekendAttendanceDateChoices.DayOne,
-              expression: `StartDate < date'${new Date(FamilyWeekendAttendanceDateChoices.DayTwo).toLocaleDateString()} ${[
-                new Date(FamilyWeekendAttendanceDateChoices.DayTwo).toLocaleTimeString()
-              ]}' AND EndDate > date'${new Date(FamilyWeekendAttendanceDateChoices.DayOne).toLocaleDateString()} ${[
-                new Date(FamilyWeekendAttendanceDateChoices.DayOne).toLocaleTimeString()
-              ]}' OR (StartDate IS NULL AND EndDate IS NULL)`
+              expression: `StartDate < date'${new Date(
+                FamilyWeekendAttendanceDateChoices.DayTwo
+              ).toLocaleDateString()} ${new Date(
+                FamilyWeekendAttendanceDateChoices.DayTwo
+              ).toLocaleTimeString()}' AND EndDate > date'${new Date(
+                FamilyWeekendAttendanceDateChoices.DayOne
+              ).toLocaleDateString()} ${new Date(
+                FamilyWeekendAttendanceDateChoices.DayOne
+              ).toLocaleTimeString()}' OR (StartDate IS NULL AND EndDate IS NULL)`
             },
             {
               input: FamilyWeekendAttendanceDateChoices.DayTwo,
-              expression: `StartDate < date'${new Date(FamilyWeekendAttendanceDateChoices.DayThree).toLocaleDateString()} ${[
-                new Date(FamilyWeekendAttendanceDateChoices.DayThree).toLocaleTimeString()
-              ]}' AND EndDate > date'${new Date(FamilyWeekendAttendanceDateChoices.DayTwo).toLocaleDateString()} ${[
-                new Date(FamilyWeekendAttendanceDateChoices.DayTwo).toLocaleTimeString()
-              ]}' OR (StartDate IS NULL AND EndDate IS NULL)`
+              expression: `StartDate < date'${new Date(
+                FamilyWeekendAttendanceDateChoices.DayThree
+              ).toLocaleDateString()} ${new Date(
+                FamilyWeekendAttendanceDateChoices.DayThree
+              ).toLocaleTimeString()}' AND EndDate > date'${new Date(
+                FamilyWeekendAttendanceDateChoices.DayTwo
+              ).toLocaleDateString()} ${new Date(
+                FamilyWeekendAttendanceDateChoices.DayTwo
+              ).toLocaleTimeString()}' OR (StartDate IS NULL AND EndDate IS NULL)`
             },
             {
               input: FamilyWeekendAttendanceDateChoices.DayThree,
               expression: `StartDate < date'${new Date(
                 FamilyWeekendAttendanceDateChoices.Conclusion
-              ).toLocaleDateString()} ${[
-                new Date(FamilyWeekendAttendanceDateChoices.Conclusion).toLocaleTimeString()
-              ]}' AND EndDate > date'${new Date(FamilyWeekendAttendanceDateChoices.DayThree).toLocaleDateString()} ${[
-                new Date(FamilyWeekendAttendanceDateChoices.DayThree).toLocaleTimeString()
-              ]}' OR (StartDate IS NULL AND EndDate IS NULL)`
+              ).toLocaleDateString()} ${new Date(
+                FamilyWeekendAttendanceDateChoices.Conclusion
+              ).toLocaleTimeString()}' AND EndDate > date'${new Date(
+                FamilyWeekendAttendanceDateChoices.DayThree
+              ).toLocaleDateString()} ${new Date(
+                FamilyWeekendAttendanceDateChoices.DayThree
+              ).toLocaleTimeString()}' OR (StartDate IS NULL AND EndDate IS NULL)`
             }
           ]
         },
