@@ -1,3 +1,5 @@
+@use 'libs/sass/mixins' as *;
+
 .date-card-container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -7,15 +9,17 @@
   -ms-flex-direction: row;
   flex-direction: row;
   -ms-flex-pack: distribute;
-  justify-content: space-around;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
+  @include justify-content(center);
 }
 
 .date-card {
   border: 1px solid rgba(238, 238, 238, 0.75);
   padding: 1.5rem 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

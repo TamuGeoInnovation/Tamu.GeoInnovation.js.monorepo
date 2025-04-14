@@ -13,6 +13,8 @@ import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { AggiemapBasemap, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { EventService } from './services/event/event.service';
 import { RingDaySettingsService } from './services/settings/ring-day-settings.service';
@@ -23,7 +25,7 @@ import esri = __esri;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService]
+  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
@@ -56,6 +58,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly ts: TestingService,
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
+    private readonly store: LocalStoreService,
     private readonly mioSettings: RingDaySettingsService,
     private readonly mioService: EventService
   ) {}
@@ -64,6 +67,7 @@ export class MapComponent implements OnInit, OnDestroy {
     // Settings can come from either local storage or from the url query parameters
 
     this.hasSettings = this.mioSettings.queryParamsFromSettings !== null;
+
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.mioSettings.queryParamsFromSettings}`;
 
     this._connections = this.env.value('Connections');
@@ -71,34 +75,34 @@ export class MapComponent implements OnInit, OnDestroy {
 
     // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.
     // https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/274
-    const preferencesString = localStorage.getItem('user-preferences');
-    const preferencesSettings = preferencesString !== null ? JSON.parse(preferencesString) : { experiments: null };
-    const experimentSettings = preferencesSettings.experiments || {};
+    const settings = this.store.getStorageObjectKeyValue<{ basemap: string }>({
+      primaryKey: 'user-preferences',
+      subKey: 'settings'
+    });
+
+    const basemapIdFromUrl = this.ar.snapshot.queryParams['basemap'];
+
+    // Determine basemap to use
+    //
+    // 1. If a basemap is provided in the URL, use that.
+    // 2. If a basemap is provided in the settings, use that.
+    // 3. If the basemap provided in settings is the default Aggiemap basemap, resolve the Aggiemap basemap from the id
+    // 4. If no basemap is provided in the URL or settings, use the default 'topo-vector' basemap.
+    const basemap: MapConfig['basemap'] = {
+      basemap: basemapIdFromUrl
+        ? basemapIdFromUrl
+        : settings && settings.basemap
+        ? settings.basemap && settings.basemap !== 'aggie_basemap'
+          ? settings.basemap
+          : AggiemapBasemap
+        : 'topo-vector'
+    };
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile = value;
 
       this.config.next({
-        basemap: {
-          basemap: {
-            baseLayers: [
-              {
-                type: 'TileLayer',
-                url: experimentSettings.basemap_url ? experimentSettings.basemap_url : this._connections['basemapUrl'],
-                spatialReference: {
-                  wkid: 102100
-                },
-                listMode: 'hide',
-                visible: true,
-                minScale: 100000,
-                maxScale: 0,
-                title: 'Base Map'
-              }
-            ],
-            id: 'aggie_basemap',
-            title: 'Aggie Basemap'
-          }
-        },
+        basemap,
         view: {
           mode: '2d',
           properties: {

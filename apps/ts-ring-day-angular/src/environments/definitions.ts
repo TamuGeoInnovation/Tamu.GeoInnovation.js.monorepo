@@ -286,7 +286,7 @@ export const ColdLayerSources: LayerSource[] = [
         field: 'name',
         defaultSymbol: {
           type: 'picture-marker',
-          url: '/assets/icons/aggie/Ring Day-Negative.png',
+          url: '/assets/images/icons/aggie/Ring Day-Negative.png',
           width: 20,
           height: 25,
           angle: 0,
@@ -298,7 +298,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/shops-food/Dining.png',
+              url: '/assets/images/icons/shops-food/Dining.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -311,7 +311,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/shops-food/Dining.png',
+              url: '/assets/images/icons/shops-food/Dining.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -323,7 +323,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/accessibility/entry.png',
+              url: '/assets/images/icons/accessibility/entry.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -335,7 +335,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/accessibility/accessibleentry.png',
+              url: '/assets/images/icons/accessibility/accessibleentry.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -347,7 +347,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/personal-care/firstaid.png',
+              url: '/assets/images/icons/personal-care/firstaid.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -359,7 +359,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/personal-care/Restrooms.png',
+              url: '/assets/images/icons/personal-care/Restrooms.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -371,7 +371,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/transportation/Car.png',
+              url: '/assets/images/icons/transportation/Car.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -384,7 +384,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/transportation/Bus.png',
+              url: '/assets/images/icons/transportation/Bus.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -396,7 +396,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/aggie/Cannon.png',
+              url: '/assets/images/icons/aggie/Cannon.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -408,7 +408,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/fixtures/Photo Opportunity.png',
+              url: '/assets/images/icons/fixtures/Photo Opportunity.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -420,7 +420,7 @@ export const ColdLayerSources: LayerSource[] = [
           {
             symbol: {
               type: 'picture-marker',
-              url: '/assets/icons/fixtures/Theater.png',
+              url: '/assets/images/icons/fixtures/Theater.png',
               width: 20,
               height: 25,
               angle: 0,
@@ -488,7 +488,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'picture-marker',
-          url: '/assets/icons/statue-icon.png',
+          url: '/assets/images/icons/statue-icon.png',
           width: '20px',
           height: '30.2px'
         }
@@ -829,12 +829,14 @@ export const SearchSources: SearchSource[] = [
 
 export const Dates: EventDates = [
   {
-    day: 31,
-    month: 10
+    day: 4,
+    month: 4,
+    year: 2025
   },
   {
-    day: 1,
-    month: 11
+    day: 5,
+    month: 4,
+    year: 2025
   }
 ];
 
