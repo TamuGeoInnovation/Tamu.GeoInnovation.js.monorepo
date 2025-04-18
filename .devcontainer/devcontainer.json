@@ -32,6 +32,10 @@
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installOhMyZsh": true,
       "installOhMyZshConfig": true
+    },
+    "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+      "plugins": "zsh-autosuggestions",
+      "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions.git"
     }
   }
 
