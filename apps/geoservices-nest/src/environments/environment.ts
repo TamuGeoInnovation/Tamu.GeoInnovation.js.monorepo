@@ -14,3 +14,5 @@ export const environment = {
   payflowUser: process.env.PAYFLOW_USER,
   payflowPassword: process.env.PAYFLOW_PASSWORD
 };
+
+export { ormConfig } from './definitions';
