@@ -140,3 +140,42 @@ export interface IPayflowCreateSubscriptionResponse {
   RESULT: string;
   RPREF: string;
 }
+
+export interface IPayflowRecurringProfileDetailsResponse {
+  RESULT: string;
+  RPREF: string;
+  PROFILEID: string;
+  STATUS: string;
+  CREATIONDATE: string;
+  PROFILENAME: string;
+  START: string;
+  TERM: string;
+  NEXTPAYMENT: string;
+  PAYPERIOD: string;
+  LASTCHANGED: string;
+  RPSTATE: string;
+  NEXTPAYMENTNUM: string;
+  COMMENT1: string;
+  FREQUENCY: string;
+  TENDER: string;
+  AMT: string;
+  ACCT: string;
+  ABA: string;
+  ACCTTYPE: string;
+  AGGREGATEAMT: string;
+  AGGREGATEOPTIONALAMT: string;
+  MAXFAILPAYMENTS: string;
+  NUMFAILPAYMENTS: string;
+  RETRYNUMDAYS: string;
+  EMAIL: string;
+  NAME: string;
+  LASTNAME: string;
+  COUNTRY: string;
+  SHIPTOSTREET: string;
+  SHIPTOCITY: string;
+  SHIPTOSTATE: string;
+  SHIPTOZIP: string;
+  SHIPTOCOUNTRY: string;
+  BAID: string;
+  CURRENCY: string;
+}

@@ -14,7 +14,8 @@ import {
   IPayflowCreateSubscriptionResponse,
   IPayflowExpressCheckoutPostbackResponse,
   IPayflowExpressCheckoutTokenResponse,
-  IPayflowPostbackVerboseResponse
+  IPayflowPostbackVerboseResponse,
+  IPayflowRecurringProfileDetailsResponse
 } from '../../interfaces/paypal/paypal-payflow.interface';
 import { User } from '../../entities/user.entity';
 import { Payment } from '../../entities/payment.entity';
@@ -359,5 +360,99 @@ export class PaymentsService {
     } catch (err) {
       Logger.error(`Error creating subscription: ${err.message}`, 'PaymentsService');
     }
+  }
+
+  public getRecurringSubscriptionDetails(subscriptionId: string) {
+    const form = {
+      PARTNER: this.env.value('payflowPartner'),
+      USER: this.env.value('payflowUser'),
+      VENDOR: this.env.value('payflowMerchant'),
+      PWD: this.env.value('payflowPassword'),
+      TRXTYPE: 'R',
+      TENDER: 'P',
+      ACTION: 'I',
+      ORIGPROFILEID: subscriptionId,
+      VERBOSITY: 'HIGH'
+    };
+
+    const nvpString = NVPTransformer.serialize(form);
+
+    return got
+      .post(`${this._payflowUrl}`, {
+        method: 'POST',
+        body: nvpString
+      })
+      .then((res) => NVPTransformer.deserialize<IPayflowRecurringProfileDetailsResponse>(res.body));
+  }
+
+  public getRecurringProfilePayments(profileId: string) {
+    const form = {
+      PARTNER: this.env.value('payflowPartner'),
+      USER: this.env.value('payflowUser'),
+      VENDOR: this.env.value('payflowMerchant'),
+      PWD: this.env.value('payflowPassword'),
+      TRXTYPE: 'R',
+      TENDER: 'P',
+      ACTION: 'I',
+      ORIGPROFILEID: profileId,
+      PAYMENTHISTORY: 'Y'
+    };
+
+    const nvpString = NVPTransformer.serialize(form);
+
+    return got
+      .post(`${this._payflowUrl}`, {
+        method: 'POST',
+        body: nvpString
+      })
+      .then((res) => NVPTransformer.deserialize<IPayflowRecurringProfileDetailsResponse>(res.body));
+  }
+
+  public deactivateRecurringSubscription(profileId: string) {
+    const form = {
+      PARTNER: this.env.value('payflowPartner'),
+      USER: this.env.value('payflowUser'),
+      VENDOR: this.env.value('payflowMerchant'),
+      PWD: this.env.value('payflowPassword'),
+      TRXTYPE: 'R',
+      TENDER: 'P',
+      ACTION: 'C',
+      ORIGPROFILEID: profileId
+    };
+
+    const nvpString = NVPTransformer.serialize(form);
+
+    return got
+      .post(`${this._payflowUrl}`, {
+        method: 'POST',
+        body: nvpString
+      })
+      .then((res) => {
+        return NVPTransformer.deserialize(res.body);
+      });
+  }
+
+  public reactiveRecurringSubscription(profileId: string) {
+    const form = {
+      PARTNER: this.env.value('payflowPartner'),
+      USER: this.env.value('payflowUser'),
+      VENDOR: this.env.value('payflowMerchant'),
+      PWD: this.env.value('payflowPassword'),
+      TRXTYPE: 'R',
+      TENDER: 'P',
+      ACTION: 'R',
+      ORIGPROFILEID: profileId
+    };
+
+    const nvpString = NVPTransformer.serialize(form);
+
+    return got
+      .post(`${this._payflowUrl}`, {
+        method: 'POST',
+        body: nvpString
+      })
+      .then((res) => {
+        return NVPTransformer.deserialize(res.body);
+      });
   }
 }

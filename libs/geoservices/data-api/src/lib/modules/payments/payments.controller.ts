@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
 import { PaymentsService } from './payments.service';
 import { IPayflowExpressCheckoutPostbackResponse } from '../../interfaces/paypal/paypal-payflow.interface';
@@ -25,5 +25,25 @@ export class PaymentsController {
   @Get('order/details')
   public async getOrderDetails(@Body('orderId') orderId: string) {
     return this.paymentService.getPayflowDetails(orderId);
+  }
+
+  @Delete('subscription/:profileId')
+  public async cancelSubscription(@Param('profileId') profileId: string) {
+    return this.paymentService.deactivateRecurringSubscription(profileId);
+  }
+
+  @Post('subscription/:profileId/activate')
+  public async reactivateSubscription(@Param('profileId') profileId: string) {
+    return this.paymentService.reactiveRecurringSubscription(profileId);
+  }
+
+  @Get('subscription/:profileId/details')
+  public async getSubscriptionDetails(@Param('profileId') profileId: string) {
+    return this.paymentService.getRecurringSubscriptionDetails(profileId);
+  }
+
+  @Get('subscription/:profileId/payments')
+  public async getProfilePayments(@Param('profileId') profileId: string) {
+    return this.paymentService.getRecurringProfilePayments(profileId);
   }
 }
