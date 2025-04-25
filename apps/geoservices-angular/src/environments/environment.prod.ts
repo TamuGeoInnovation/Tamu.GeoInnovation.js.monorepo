@@ -11,5 +11,6 @@ export const accounts_url = `___ACCOUNTS_URL___`;
 export const geoprocessing_api_host_override = `___GEOPROCESSING_API_HOST_OVERRIDE___`;
 
 export const turnstile_sitekey = '___TURNSTILE_SITE_KEY___';
+export const paypal_client_id = '___PAYPAL_CLIENT_ID___';
 
 export * from './definitions';

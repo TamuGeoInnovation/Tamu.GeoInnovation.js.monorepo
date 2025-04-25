@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { OnApproveData } from '@paypal/paypal-js';
+
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { IPayflowExpressCheckoutTokenResponse, IPayflowPostbackResponse } from '@tamu-gisc/geoservices/data-api';
-import { OnApproveData } from '@paypal/paypal-js';
 
 @Injectable({
   providedIn: 'root'

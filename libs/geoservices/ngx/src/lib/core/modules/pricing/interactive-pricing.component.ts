@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, firstValueFrom, Observable } from 'rxjs';
@@ -101,6 +101,7 @@ export class InteractivePricingComponent implements OnInit {
 
   @ViewChild('paypalButtonContainer', { static: true })
   private _buttonElement: ElementRef;
+  private _ppClient: string;
 
   constructor(
     private readonly router: Router,
@@ -108,8 +109,7 @@ export class InteractivePricingComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly env: EnvironmentService,
     private readonly ps: PaymentsService,
-    private readonly auth: AuthService,
-    private readonly render: Renderer2
+    private readonly auth: AuthService
   ) {}
 
   public ngOnInit(): void {
@@ -119,6 +119,8 @@ export class InteractivePricingComponent implements OnInit {
       partnerProgram: [false],
       sla: [false]
     });
+
+    this._ppClient = this.env.value('paypal_client_id', false);
 
     const snapParams = this.route.snapshot.queryParams;
 
@@ -307,18 +309,9 @@ export class InteractivePricingComponent implements OnInit {
       shareReplay(1)
     );
 
-    // this.orderSrc = this.order.pipe(
-    //   map((order) => {
-    //     return `https://pilot-payflowlink.paypal.com/?SECURETOKEN=${order.SECURETOKEN}&SECURETOKENID=${order.SECURETOKENID}`;
-    //   }),
-    //   shareReplay(1)
-    // );
-
     try {
-      this._buttonElement;
-
       loadScript({
-        clientId: 'AUY5yBRhmoH4AS0AkEz-CLrHKgrGgY7QHdWwPcDGUcutn8He7NekeSqtpsimSwtK70FCKqDs63vApNUU',
+        clientId: this._ppClient ?? 'sb',
         currency: 'USD',
         components: 'buttons',
         vault: true
