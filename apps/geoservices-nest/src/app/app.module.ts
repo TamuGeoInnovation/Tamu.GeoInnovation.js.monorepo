@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { GeoservicesDataApiModule, Payment, User } from '@tamu-gisc/geoservices/data-api';
+import { GeoservicesDataApiModule, Payment, Subscription, User } from '@tamu-gisc/geoservices/data-api';
 import { EnvironmentModule } from '@tamu-gisc/common/nest/environment';
 
 import { environment, ormConfig } from '../environments/environment';
@@ -21,7 +21,7 @@ import { AppService } from './app.service';
       dropSchema: ormConfig.dropSchema,
       logging: ormConfig.logging,
       extra: ormConfig.extra,
-      entities: [Payment, User]
+      entities: [Payment, User, Subscription]
     }),
     EnvironmentModule.forRoot(environment),
     GeoservicesDataApiModule

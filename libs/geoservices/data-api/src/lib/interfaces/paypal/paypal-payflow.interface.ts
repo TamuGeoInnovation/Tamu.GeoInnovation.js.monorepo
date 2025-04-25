@@ -12,6 +12,15 @@ export interface IPayflowExpressCheckoutTokenResponse {
   TOKEN: string;
 }
 
+export interface IPayflowExpressCheckoutPostbackResponse {
+  billingToken: null;
+  facilitatorAccessToken: string;
+  orderID: string;
+  payerID: string;
+  paymentID: string;
+  paymentSource: string;
+}
+
 export interface IPayflowPostbackResponse {
   BILLTOCOUNTRY: string;
   AVSADDR: string;
@@ -71,4 +80,63 @@ export interface IPayflowPostbackVerboseResponse extends IPayflowPostbackRespons
   COMMENT2: string;
 
   ORIGPNREF?: string;
+}
+
+export interface IGetExpressCheckoutDetailsResponse {
+  ADDRESSSTATUS: string;
+  AMT: string;
+  AVSADDR: string;
+  AVSZIP: string;
+  CORRELATIONID: string;
+  COUNTRYCODE: string;
+  CURRENCY: string;
+  CUSTOM?: string;
+  EMAIL: string;
+  FIRSTNAME: string;
+  LASTNAME: string;
+  PAYERID: string;
+  PAYERSTATUS: string;
+  RESPMSG: string;
+  RESULT: string;
+  SHIPTOCITY: string;
+  SHIPTOCOUNTRY: string;
+  SHIPTONAME: string;
+  SHIPTOSTATE: string;
+  SHIPTOSTREET: string;
+  SHIPTOZIP: string;
+  TOKEN: string;
+  TRANSTIME: string;
+  TRXTYPE: string;
+}
+
+export interface IDoExpressCheckoutPaymentResponse {
+  AVSADDR: string;
+  AVSZIP: string;
+
+  /**
+   * Used to convert a transaction with billing agreement to a subscription
+   */
+  BAID: string;
+  CORRELATIONID: string;
+  FEEAMT: string;
+  PAYERID: string;
+  PAYMENTTYPE: string;
+  PENDINGREASON: string;
+
+  /**
+   * Could be used to convert a transaction with billing agreement to a subscription
+   */
+  PNREF: string;
+  PPREF: string;
+  RESPMSG: string;
+  RESULT: string;
+  TOKEN: string;
+  TXID: string;
+}
+
+export interface IPayflowCreateSubscriptionResponse {
+  PROFILEID: string;
+  RESPMSG: string;
+  RESULT: string;
+  RPREF: string;
 }

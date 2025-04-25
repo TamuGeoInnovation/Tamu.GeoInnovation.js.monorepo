@@ -1,22 +1,24 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { concatMap, delay, interval, mergeMap, Observable, startWith, switchMap, tap } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 
 import got from 'got';
-import { v4 as guid } from 'uuid';
 
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 
 import { NVPTransformer } from '../../utils/payflow.utils';
 import {
+  IDoExpressCheckoutPaymentResponse,
+  IGetExpressCheckoutDetailsResponse,
+  IPayflowCreateSubscriptionResponse,
+  IPayflowExpressCheckoutPostbackResponse,
   IPayflowExpressCheckoutTokenResponse,
-  IPayflowPostbackResponse,
-  IPayflowPostbackVerboseResponse,
-  IPayflowSecureTokenResponse
+  IPayflowPostbackVerboseResponse
 } from '../../interfaces/paypal/paypal-payflow.interface';
 import { User } from '../../entities/user.entity';
 import { Payment } from '../../entities/payment.entity';
+import { Subscription } from '../../entities/subscription.entity';
 
 @Injectable()
 export class PaymentsService {
@@ -26,7 +28,8 @@ export class PaymentsService {
   constructor(
     private readonly env: EnvironmentService,
     @InjectRepository(User) private readonly users: Repository<User>,
-    @InjectRepository(Payment) private readonly payments: Repository<Payment>
+    @InjectRepository(Payment) private readonly payments: Repository<Payment>,
+    @InjectRepository(Subscription) private readonly subscriptions: Repository<Subscription>
   ) {
     const payflowEnvironment: string = this.env.value('payflowEnvironment');
 
@@ -39,30 +42,43 @@ export class PaymentsService {
     this._payflowUrl =
       payflowEnvironment === 'live' ? 'https://payflowpro.paypal.com' : 'https://pilot-payflowpro.paypal.com';
 
-    // this._recurringScheduler$ = interval(60000).pipe(
-    //   startWith(true),
-    //   delay(5000),
-    //   switchMap(() => this._collectUnprocessedSubscriptions()),
-    //   mergeMap((payments) => payments),
-    //   concatMap((payment) => {
-    //     return this.createSubscription(payment);
-    //   })
-    // );
+    this._recurringScheduler$ = interval(60000).pipe(
+      startWith(true),
+      delay(5000),
+      tap(() => {
+        Logger.debug('Recurring payment scheduler triggered', 'PaymentsService');
+      }),
+      switchMap(() => this._collectUnprocessedSubscriptions()),
+      tap((payments) => {
+        Logger.debug(`Found ${payments.length} unprocessed payments`, 'PaymentsService');
+      }),
+      mergeMap((payments) => payments),
+      concatMap((payment) => {
+        return this.createSubscription(payment);
+      })
+    );
 
-    // this._recurringScheduler$.subscribe((res) => {
-    //   Logger.debug(`Recurring payment processed: ${JSON.stringify(res)}`, 'PaymentsService');
-    // });
+    this._recurringScheduler$.subscribe((res) => {
+      Logger.debug(`Recurring payment processed: ${JSON.stringify(res)}`, 'PaymentsService');
+    });
   }
 
-  // Example method
+  /**
+   *
+   * Initialize and generate a paypal express checkout token that will be used to guide the user to the paypal checkout page
+   * The result is not a completed payment, but a verification of intent and payment source. The returned token should be used
+   * to finalize payment and create a new recurring subscription
+   *
+   * @param {string} userGuid Value that gets passed to paypal as the COMMENT1 field. This is used to identify the user in the postback
+   * @param {string} email Value that gets passed to paypal as the COMMENT2 field. This is used to identify the user in the postback
+   * @return {*}
+   * @memberof PaymentsService
+   */
   public async initiateSecureOrder(userGuid: string, email: string) {
     if (!userGuid || !email) {
       throw new BadRequestException('User GUID and email are required to initiate a secure order.');
     }
-
-    const token = guid().replace(/-/g, '');
-    Logger.debug(`Initiating secure order. Fetching secure token from ${this._payflowUrl}`, 'PaymentsService');
-    Logger.debug(`Secure token: ${token}`, 'PaymentsService');
+    Logger.debug(`Initialize set express checkout (payflow)`, 'PaymentsService');
     Logger.debug(`Service URL: ${this._payflowUrl}`, 'PaymentsService');
 
     const form = {
@@ -71,15 +87,14 @@ export class PaymentsService {
       PARTNER: this.env.value('payflowPartner'),
       PWD: this.env.value('payflowPassword'),
       TRXTYPE: 'S',
+      BILLINGTYPE: 'RecurringBilling',
       TENDER: 'P',
       ACTION: 'S',
       AMT: '1.00',
       CURRENCY: 'USD',
-      COMMENT1: userGuid,
-      COMMENT2: email,
+      CUSTOM: `${userGuid}:${email}`,
       CANCELURL: 'http://localhost:4200/order/cancel',
-      RETURNURL: 'http://localhost:4200/order/complete',
-      ORDERDESC: 'Test Order'
+      RETURNURL: 'http://localhost:4200/order/complete'
     };
 
     const nvpString = NVPTransformer.serialize(form);
@@ -96,23 +111,21 @@ export class PaymentsService {
       throw new Error(deserialized.RESPMSG);
     }
 
-    Logger.debug(`Secure token response: ${JSON.stringify(deserialized)}`, 'PaymentsService');
-
     return {
       TOKEN: deserialized.TOKEN
     };
   }
 
-  public async getOrderDetails(orderId: string): Promise<IPayflowPostbackVerboseResponse> {
+  public async getPayflowDetails(payflowTokenId: string): Promise<IPayflowPostbackVerboseResponse> {
     const form = {
       PARTNER: this.env.value('payflowPartner'),
       USER: this.env.value('payflowUser'),
       VENDOR: this.env.value('payflowMerchant'),
       PWD: this.env.value('payflowPassword'),
       TRXTYPE: 'I',
-      ORIGID: orderId,
-      VERBOSITY: 'HIGH',
-      ECHODATA: 'custdata'
+      ORIGID: payflowTokenId
+      // VERBOSITY: 'HIGH',
+      // ECHODATA: 'custdata'
     };
 
     const nvpString = NVPTransformer.serialize(form);
@@ -130,40 +143,92 @@ export class PaymentsService {
     }
   }
 
-  public async capturePayment(postbackPayload: IPayflowPostbackResponse) {
-    // The postback payload does not contain the user guid or email. We need to retrieve the transaction details with high verbosity from PayPal
-    // before proceeding
-    if (!postbackPayload || !postbackPayload.PNREF) {
+  public async getExpressCheckoutDetails(expressCheckoutToken: string): Promise<IGetExpressCheckoutDetailsResponse> {
+    const form = {
+      USER: this.env.value('payflowUser'),
+      VENDOR: this.env.value('payflowMerchant'),
+      PARTNER: this.env.value('payflowPartner'),
+      PWD: this.env.value('payflowPassword'),
+      TRXTYPE: 'S',
+      TENDER: 'P',
+      ACTION: 'G',
+      TOKEN: expressCheckoutToken,
+      VERBOSITY: 'HIGH',
+      ECHODATA: 'custdata'
+    };
+
+    const nvpString = NVPTransformer.serialize(form);
+
+    try {
+      const res = await got.post<string>(`${this._payflowUrl}`, {
+        method: 'POST',
+        body: nvpString
+      });
+
+      return NVPTransformer.deserialize<IGetExpressCheckoutDetailsResponse>(res.body);
+    } catch (err) {
+      Logger.error(`Error getting express checkout details order details: ${err}`, 'PaymentsService');
+      throw new BadRequestException('Could not get express checkout details');
+    }
+  }
+
+  public async capturePayment(postbackPayload: IPayflowExpressCheckoutPostbackResponse) {
+    if (!postbackPayload || !postbackPayload.orderID) {
       Logger.error('Incomplete transaction received', 'PaymentsService');
       throw new BadRequestException('Incomplete transaction received');
     }
 
-    const transaction = await this.getOrderDetails(postbackPayload.PNREF);
+    const transaction = await this.getExpressCheckoutDetails(postbackPayload.orderID);
+    const [transactionUserGuid, transactionUserEmail] = transaction.CUSTOM.split(':');
+
+    const form = NVPTransformer.serialize({
+      USER: this.env.value('payflowUser'),
+      VENDOR: this.env.value('payflowMerchant'),
+      PARTNER: this.env.value('payflowPartner'),
+      PWD: this.env.value('payflowPassword'),
+      TRXTYPE: 'S',
+      TENDER: 'P',
+      ACTION: 'D',
+      AMT: '2.00',
+      CURRENCY: 'USD',
+      COMMENT1: transactionUserGuid,
+      COMMENT2: transactionUserEmail,
+      PAYERID: transaction.PAYERID,
+      TOKEN: postbackPayload.orderID
+    });
+
+    const res = await got.post<string>(`${this._payflowUrl}`, {
+      method: 'POST',
+      body: form
+    });
+
+    const postedInitial = NVPTransformer.deserialize<IDoExpressCheckoutPaymentResponse>(res.body);
 
     // Check if the payment has already been recorded in db
     const existingPayment = await this.payments.findOne({
       where: {
-        ctsTrans: transaction.ORIGPNREF
+        ctsTrans: postedInitial.PNREF
       }
     });
 
     if (existingPayment) {
-      Logger.warn(`Payment already recorded for transaction ID: ${transaction.PNREF}.`, 'PaymentsService');
+      Logger.warn(`Payment already recorded for transaction ID: ${existingPayment.ctsTrans}.`, 'PaymentsService');
       return existingPayment;
     }
 
     // Get a user to fetch their user ID
     let user;
+    const [userGuid] = transaction.CUSTOM.split(':');
 
     try {
       user = await this.users.findOne({
         where: {
-          userGuid: transaction.COMMENT1
+          userGuid
         }
       });
 
       if (!user) {
-        Logger.error(`User not found for GUID: ${transaction.COMMENT1}`, 'PaymentsService');
+        Logger.error(`User not found for GUID: ${userGuid}`, 'PaymentsService');
         throw new BadRequestException('User not found for the provided GUID.');
       }
     } catch (err) {
@@ -185,7 +250,7 @@ export class PaymentsService {
       payment.firstName = transaction.FIRSTNAME;
       payment.lastName = transaction.LASTNAME;
       payment.email = transaction.EMAIL;
-      payment.ctsTrans = transaction.ORIGPNREF;
+      payment.ctsTrans = postedInitial.PNREF;
       payment.paymentAmount = Number.parseFloat(transaction.AMT);
       payment.fromCount = 0;
       payment.toCount = 100;
@@ -193,7 +258,9 @@ export class PaymentsService {
       payment.numberRemaining = 100;
       payment.transactionsPerCent = payment.numberOfRecords / (payment.paymentAmount * 100);
 
-      return await this.payments.save(payment);
+      const savedPayment = await this.payments.save(payment);
+
+      return savedPayment;
     } catch (err) {
       Logger.error(`Error saving payment: ${err.message}`, 'PaymentsService');
       throw new BadRequestException('Could not save payment information.');
@@ -215,9 +282,21 @@ export class PaymentsService {
     }
   }
 
-  public async createSubscription(payment: string) {
-    // public async createSubscription(payment: Payment) {
-    Logger.debug(`Creating subscription for payment ID: ${payment}`, 'PaymentsService');
+  public async createSubscription(payment: Payment) {
+    Logger.debug(`Creating subscription for payment ID: ${payment.ctsTrans}`, 'PaymentsService');
+
+    const user = await this.users.findOne({
+      where: {
+        userGuid: payment.userGuid
+      }
+    });
+
+    if (!user) {
+      Logger.error(
+        `Cannot create subscription because could not find user for GUID: ${payment.userGuid}`,
+        'PaymentsService'
+      );
+    }
 
     const form = {
       PARTNER: this.env.value('payflowPartner'),
@@ -225,26 +304,60 @@ export class PaymentsService {
       VENDOR: this.env.value('payflowMerchant'),
       PWD: this.env.value('payflowPassword'),
       TRXTYPE: 'R',
-      TENDER: 'C',
+      TENDER: 'P',
       ACTION: 'A',
-      PROFILENAME: 'TESTProfile',
-      ORIGID: payment,
-      START: '05252025',
+      PROFILENAME: `${user.firstName}-${user.lastName}-${user.id}`,
+      ORIGID: payment.ctsTrans,
+      START: '04262025',
       PAYPERIOD: 'MONT',
-      AMT: '1.00'
-      // COMMENT1: payment.userGuid,
-      // COMMENT2: payment.email
+      AMT: Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(payment.paymentAmount),
+      COMMENT1: user.userGuid
     };
 
     const nvpString = NVPTransformer.serialize(form);
 
-    const res = await got.post(`${this._payflowUrl}`, {
-      method: 'POST',
-      body: nvpString
-    });
+    try {
+      const res = await got.post(`${this._payflowUrl}`, {
+        method: 'POST',
+        body: nvpString
+      });
 
-    const deserialized = NVPTransformer.deserialize<IPayflowSecureTokenResponse>(res.body);
+      const deserialized = NVPTransformer.deserialize<IPayflowCreateSubscriptionResponse>(res.body);
 
-    return { ...deserialized, origId: payment, requestString: nvpString };
+      const subscription = new Subscription();
+      subscription.userGuid = user.userGuid;
+      subscription.billingPeriod = 'MONT';
+      subscription.billingType = 'PrePay';
+      subscription.billingAmount = payment.paymentAmount.toString();
+      subscription.billingDayOfMonth = new Date().getDate().toString();
+      subscription.description = 'Monthly Subscription';
+      subscription.numberOfRecords = '100';
+      subscription.active = true;
+      subscription.recurringProfileID = deserialized.PROFILEID;
+      subscription.PREF = payment.ctsTrans;
+      subscription.status = 'completed';
+
+      const savedSubscription = await this.subscriptions.save(subscription);
+
+      if (savedSubscription) {
+        Logger.debug(`Subscription saved successfully: ${savedSubscription.subscriptionGuid}`, 'PaymentsService');
+
+        payment.note = deserialized.PROFILEID;
+        payment.subscriptionGuid = savedSubscription.subscriptionGuid;
+        payment.status = 'success';
+        payment.active = true;
+
+        const savedPayment = await getRepository(Payment).save(payment);
+
+        Logger.debug(`Payment saved successfully: ${savedPayment.ctsTrans}`, 'PaymentsService');
+      }
+
+      return deserialized;
+    } catch (err) {
+      Logger.error(`Error creating subscription: ${err.message}`, 'PaymentsService');
+    }
   }
 }
