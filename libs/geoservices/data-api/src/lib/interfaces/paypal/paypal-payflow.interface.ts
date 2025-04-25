@@ -5,6 +5,13 @@ export interface IPayflowSecureTokenResponse {
   RESPMSG: string;
 }
 
+export interface IPayflowExpressCheckoutTokenResponse {
+  CORRELATIONID: string;
+  RESPMSG: string;
+  RESULT: string;
+  TOKEN: string;
+}
+
 export interface IPayflowPostbackResponse {
   BILLTOCOUNTRY: string;
   AVSADDR: string;

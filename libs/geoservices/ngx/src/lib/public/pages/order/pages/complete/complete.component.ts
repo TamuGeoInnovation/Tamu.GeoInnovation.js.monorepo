@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap, take } from 'rxjs';
+import { of, switchMap, take } from 'rxjs';
 
 import { PaymentsService } from '@tamu-gisc/geoservices/data-access';
 import { IPayflowPostbackResponse } from '@tamu-gisc/geoservices/data-api';
@@ -18,7 +18,9 @@ export class CompleteComponent implements OnInit {
       .pipe(
         take(1),
         switchMap((res: IPayflowPostbackResponse) => {
-          return this.paymentService.captureOrder(res);
+          // return this.paymentService.captureOrder(res);
+          // TODO: Need to test capture
+          return of(true);
         })
       )
       .subscribe((params) => {

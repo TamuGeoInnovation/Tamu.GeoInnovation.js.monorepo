@@ -128,11 +128,11 @@
         <em *ngIf="(isSLA | async) === true"><strong>*</strong> Optional services</em>
       </div>
 
-      <div class="flex flex-row justify-center leader-2 trailer-1" *ngIf="orderSrc | async as url">
-        <!-- <p class="button secondary" id="ctaButton" (click)="navigateCtaAction()">{{ ctaText | async }}</p> -->
+      <!-- <div class="flex flex-row justify-center leader-2 trailer-1" *ngIf="orderSrc | async as url">
         <a class="button secondary" [href]="url | safeUrl">Subscribe</a>
-        <!-- <iframe name="payflow_iframe" [src]="url | safeUrl : 'resource'" width="490" height="565" frameborder="0" scrolling="no" allowtransparency="false"> </iframe> -->
-      </div>
+      </div> -->
+
+      <div #paypalButtonContainer></div>
     </div>
 
     <div class="card leader-2 cta" id="freeCTA">

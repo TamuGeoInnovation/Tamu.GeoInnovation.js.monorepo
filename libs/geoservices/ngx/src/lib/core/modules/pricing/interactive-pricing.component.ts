@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+
+import { loadScript } from '@paypal/paypal-js';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AuthService, PaymentsService } from '@tamu-gisc/geoservices/data-access';
-import { IPayflowSecureTokenResponse } from '@tamu-gisc/geoservices/data-api';
+import { IPayflowExpressCheckoutTokenResponse } from '@tamu-gisc/geoservices/data-api';
 
 @Component({
   selector: 'tamu-gisc-interactive-pricing',
@@ -94,8 +96,11 @@ export class InteractivePricingComponent implements OnInit {
   public eligiblePricingTiers: Observable<Array<PricingTier>>;
   public pricingSliderDataMap: Observable<RangeInputDataMap>;
 
-  public order: Observable<IPayflowSecureTokenResponse>;
+  public order: Observable<IPayflowExpressCheckoutTokenResponse>;
   public orderSrc: Observable<string>;
+
+  @ViewChild('paypalButtonContainer', { static: true })
+  private _buttonElement: ElementRef;
 
   constructor(
     private readonly router: Router,
@@ -103,7 +108,8 @@ export class InteractivePricingComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly env: EnvironmentService,
     private readonly ps: PaymentsService,
-    private readonly auth: AuthService
+    private readonly auth: AuthService,
+    private readonly render: Renderer2
   ) {}
 
   public ngOnInit(): void {
@@ -300,13 +306,53 @@ export class InteractivePricingComponent implements OnInit {
       }),
       shareReplay(1)
     );
-    this.orderSrc = this.order.pipe(
-      // https://pilot-payflowlink.paypal.com?SECURETOKEN=ABC123...&SECURETOKENID=yourUniqueToken123&MODE=LIVE
-      map((order) => {
-        return `https://pilot-payflowlink.paypal.com/?SECURETOKEN=${order.SECURETOKEN}&SECURETOKENID=${order.SECURETOKENID}`;
-      }),
-      shareReplay(1)
-    );
+
+    // this.orderSrc = this.order.pipe(
+    //   map((order) => {
+    //     return `https://pilot-payflowlink.paypal.com/?SECURETOKEN=${order.SECURETOKEN}&SECURETOKENID=${order.SECURETOKENID}`;
+    //   }),
+    //   shareReplay(1)
+    // );
+
+    try {
+      this._buttonElement;
+
+      loadScript({
+        clientId: 'AUY5yBRhmoH4AS0AkEz-CLrHKgrGgY7QHdWwPcDGUcutn8He7NekeSqtpsimSwtK70FCKqDs63vApNUU',
+        currency: 'USD',
+        components: 'buttons',
+        vault: true
+      }).then((paypal) => {
+        paypal
+          .Buttons({
+            createOrder: async () => {
+              const order = await this.auth.state
+                .pipe(
+                  switchMap((state) => {
+                    return this.ps.initializeOrder(state.data.Guid, state.data.Email);
+                  })
+                )
+                .toPromise();
+
+              return order.TOKEN;
+            },
+            onApprove: async (data) => {
+              firstValueFrom(this.ps.captureOrder(data)).then((res) => {
+                console.log('Payment successful', res);
+              });
+            },
+            onCancel: (data) => {
+              console.log('Payment cancelled', data);
+            },
+            onError: (err) => {
+              console.error('Error with PayPal button', err);
+            }
+          })
+          .render(this._buttonElement.nativeElement);
+      });
+    } catch (e) {
+      console.error('Error loading PayPal script', e);
+    }
   }
 
   private _getFrequencyCosts(base: number): PricingTier['frequency'] {
