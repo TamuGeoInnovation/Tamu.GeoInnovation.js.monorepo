@@ -30,7 +30,7 @@ const GraduationEventDefinitions = {
     id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
     layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
     name: 'Graduation Event Parking Lots',
-    url: `${eventUrl}/4`
+    url: `${eventUrl}/5`
   },
   GRADUATION_ROAD_CLOSURES: {
     id: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
@@ -263,7 +263,7 @@ export const GraduationConfiguration: EventConfiguration = {
   name: 'Graduation',
   applicationName: 'Graduation Transportation Map',
   shortApplicationName: 'Graduation Map',
-  introductionText: 'Get the best parking information for',
+  introductionText: 'Get the best transportation and parking information for the commencement and commissioning ceremonies.',
   eventDates: ['2025-05-08', '2025-05-09', '2025-05-10'],
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
@@ -280,7 +280,7 @@ export const GraduationOptions: SpecialEventOptions = [
   {
     value: 'date',
     description:
-      'To best provide you with the most accurate parking information, please select the day of your graduation ceremony.',
+      'Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.',
     shortDescription: 'Event Day',
     label: 'Event Day',
     choices: [
