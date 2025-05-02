@@ -26,9 +26,15 @@ const GraduationEventDefinitions = {
     name: 'Graduation Construction',
     url: `${eventUrl}/3`
   },
-  GRADUATION_EVENT_PARKING_LOTS: {
-    id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
-    layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
+  GRADUATION_EVENT_PARKING_LOTS_A: {
+    id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_A,
+    layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_A,
+    name: 'Graduation Event Parking Lots',
+    url: `${eventUrl}/4`
+  },
+  GRADUATION_EVENT_PARKING_LOTS_B: {
+    id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_B,
+    layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_B,
     name: 'Graduation Event Parking Lots',
     url: `${eventUrl}/5`
   },
@@ -149,9 +155,78 @@ export const GraduationColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.id,
-    title: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.name,
-    url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.url,
+    id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_A.id,
+    title: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_A.name,
+    url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_A.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.SpEv_Lot_Notes.GraduationN',
+        collapsed: true
+      }
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*'],
+      labelingInfo: [
+        {
+          labelExpressionInfo: {
+            expression: '"Lot 97" + TextFormatting.NewLine + "Available After 5PM Friday"'
+          },
+          maxScale: 0,
+          minScale: 0,
+          where: "GIS.TS.ParkingLots.Name = '97'",
+          useCodedValues: true,
+          allowOverrun: true,
+          symbol: {
+            type: 'text', // autocasts as new TextSymbol()
+            color: 'red',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              // autocast as new Font()
+              family: 'Arial Unicode MS',
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        },
+        {
+          labelExpressionInfo: {
+            expression: '$feature["GIS.TS.ParkingLots.LotName"]'
+          },
+          maxScale: 0,
+          minScale: 0,
+          where: "GIS.TS.ParkingLots.Name NOT LIKE '97'",
+          useCodedValues: true,
+          symbol: {
+            type: 'text', // autocasts as new TextSymbol()
+            color: 'black',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              // autocast as new Font()
+              family: 'Arial Unicode MS',
+              size: 10,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    type: 'feature',
+    id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_B.id,
+    title: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_B.name,
+    url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_B.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
@@ -297,6 +372,55 @@ export const GraduationOptions: SpecialEventOptions = [
         label: 'Saturday, May 10th'
       }
     ],
-    effects: {}
+    effects: {
+      layers: [
+        {
+          layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_A,
+          conversions: [
+            {
+              input: GraduationAttendanceDateChoices.DayOne,
+              propOverrides: {
+                visible: true
+              }
+            },
+            {
+              input: GraduationAttendanceDateChoices.DayTwo,
+              propOverrides: {
+                visible: false
+              }
+            },
+            {
+              input: GraduationAttendanceDateChoices.DayThree,
+              propOverrides: {
+                visible: false
+              }
+            }
+          ]
+        },
+        {
+          layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_B,
+          conversions: [
+            {
+              input: GraduationAttendanceDateChoices.DayOne,
+              propOverrides: {
+                visible: false
+              }
+            },
+            {
+              input: GraduationAttendanceDateChoices.DayTwo,
+              propOverrides: {
+                visible: true
+              }
+            },
+            {
+              input: GraduationAttendanceDateChoices.DayThree,
+              propOverrides: {
+                visible: true
+              }
+            }
+          ]
+        }
+      ]
+    }
   }
 ];
