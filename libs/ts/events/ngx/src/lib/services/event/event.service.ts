@@ -72,6 +72,12 @@ export class EventService {
                         // Its output property will be used as the value for the definition expression.
                         const correspondingOption = layer.conversions.find((c) => c.input === settingValue);
 
+                        // If propOverrides are provided, assign them to the source layer.
+                        // This enables the ability to, for example, show/hide layers based on accommodation selections.
+                        if (correspondingOption && correspondingOption.propOverrides) {
+                          Object.assign(source, correspondingOption.propOverrides);
+                        }
+
                         if (correspondingOption && correspondingOption.expression) {
                           value = correspondingOption.expression;
 

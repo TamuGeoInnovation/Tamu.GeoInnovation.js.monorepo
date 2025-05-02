@@ -1,3 +1,5 @@
+import { LayerSource } from '@tamu-gisc/common/types';
+
 export interface EventConfiguration {
   /**
    * Unique identifier for the event. This is partially used to store the specific event settings in storage
@@ -128,7 +130,7 @@ export interface SpecialEventOption {
        * ```
        *
        */
-      conversions?: Array<{ input: string; output?: string | number | boolean; expression?: string }>;
+      conversions?: Array<ISpecialEventOptionEffectsConversion>;
     }>;
 
     /**
@@ -141,6 +143,32 @@ export interface SpecialEventOption {
      */
     deconflictingStrategy?: 'replace' | 'ignore' | 'append-and' | 'append-or';
   };
+}
+
+interface ISpecialEventOptionEffectsConversion {
+  /**
+   * The input value of the conversion. This is the value that will be used to determine the output value. Typically an event accommodation choice
+   */
+  input: string;
+
+  /**
+   * Given an input value, this is the output value that will be used to set the definition expression on the layer. Useful for simple input/output conversions.
+   *
+   * This is not used when an expression is provided.
+   */
+  output?: string | number | boolean;
+
+  /**
+   * Given an input value, this is used to set a raw definition expression on the source layers, which is useful for more complex expressions.
+   */
+  expression?: string;
+
+  /**
+   * Object of layer properties that will be merged and overwritten in the source layer source.
+   *
+   * This enables the ability to, for example, show/hide layers based on accommodation selections.
+   */
+  propOverrides?: Partial<Omit<LayerSource, 'type' | 'id' | 'title' | 'url'>>;
 }
 
 /**

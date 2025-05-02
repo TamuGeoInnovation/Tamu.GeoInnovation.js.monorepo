@@ -3,10 +3,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { GRADUATION_LAYERS } from '../interfaces/graduation.interface';
+import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/GraduationMuster/MapServer';
 
-const ShowdownEventDefinitions = {
+const GraduationEventDefinitions = {
   GRADUATION_TRAFFIC_FLOW: {
     id: GRADUATION_LAYERS.GRADUATION_TRAFFIC_FLOW,
     layerId: GRADUATION_LAYERS.GRADUATION_TRAFFIC_FLOW,
@@ -25,11 +26,17 @@ const ShowdownEventDefinitions = {
     name: 'Graduation Construction',
     url: `${eventUrl}/3`
   },
-  GRADUATION_EVENT_PARKING_LOTS: {
-    id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
-    layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
+  GRADUATION_EVENT_PARKING_LOTS_A: {
+    id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_A,
+    layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_A,
     name: 'Graduation Event Parking Lots',
     url: `${eventUrl}/4`
+  },
+  GRADUATION_EVENT_PARKING_LOTS_B: {
+    id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_B,
+    layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_B,
+    name: 'Graduation Event Parking Lots',
+    url: `${eventUrl}/5`
   },
   GRADUATION_ROAD_CLOSURES: {
     id: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
@@ -39,12 +46,12 @@ const ShowdownEventDefinitions = {
   }
 };
 
-export const ShowdownEventColdLayerSources: LayerSource[] = [
+export const GraduationColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: ShowdownEventDefinitions.GRADUATION_TRAFFIC_FLOW.id,
-    title: ShowdownEventDefinitions.GRADUATION_TRAFFIC_FLOW.name,
-    url: ShowdownEventDefinitions.GRADUATION_TRAFFIC_FLOW.url,
+    id: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.id,
+    title: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.name,
+    url: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.LotName',
@@ -63,11 +70,11 @@ export const ShowdownEventColdLayerSources: LayerSource[] = [
             label: 'Recommended Routes',
             symbol: {
               type: 'simple-line',
-              color: [0, 115, 76, 255],
-              width: 3.5,
+              color: 'rgb(56, 168, 0)',
+              width: 3,
               marker: {
                 style: 'arrow',
-                color: [0, 115, 76, 255],
+                color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
             }
@@ -77,11 +84,11 @@ export const ShowdownEventColdLayerSources: LayerSource[] = [
             label: 'Expect Delays',
             symbol: {
               type: 'simple-line',
-              color: [255, 0, 0, 255],
-              width: 3.5,
+              color: 'rgb(230, 0, 0)',
+              width: 2,
               marker: {
                 style: 'arrow',
-                color: [255, 0, 0, 255],
+                color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
             }
@@ -116,9 +123,9 @@ export const ShowdownEventColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: ShowdownEventDefinitions.GRADUATION_LINE_PAINT.id,
-    title: ShowdownEventDefinitions.GRADUATION_LINE_PAINT.name,
-    url: ShowdownEventDefinitions.GRADUATION_LINE_PAINT.url,
+    id: GraduationEventDefinitions.GRADUATION_LINE_PAINT.id,
+    title: GraduationEventDefinitions.GRADUATION_LINE_PAINT.name,
+    url: GraduationEventDefinitions.GRADUATION_LINE_PAINT.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.LotName',
@@ -132,9 +139,9 @@ export const ShowdownEventColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: ShowdownEventDefinitions.GRADUATION_CONSTRUCTION.id,
-    title: ShowdownEventDefinitions.GRADUATION_CONSTRUCTION.name,
-    url: ShowdownEventDefinitions.GRADUATION_CONSTRUCTION.url,
+    id: GraduationEventDefinitions.GRADUATION_CONSTRUCTION.id,
+    title: GraduationEventDefinitions.GRADUATION_CONSTRUCTION.name,
+    url: GraduationEventDefinitions.GRADUATION_CONSTRUCTION.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.LotName',
@@ -148,9 +155,9 @@ export const ShowdownEventColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: ShowdownEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.id,
-    title: ShowdownEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.name,
-    url: ShowdownEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.url,
+    id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_A.id,
+    title: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_A.name,
+    url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_A.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
@@ -217,9 +224,78 @@ export const ShowdownEventColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: ShowdownEventDefinitions.GRADUATION_ROAD_CLOSURES.id,
-    title: ShowdownEventDefinitions.GRADUATION_ROAD_CLOSURES.name,
-    url: ShowdownEventDefinitions.GRADUATION_ROAD_CLOSURES.url,
+    id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_B.id,
+    title: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_B.name,
+    url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_B.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.SpEv_Lot_Notes.GraduationN',
+        collapsed: true
+      }
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*'],
+      labelingInfo: [
+        {
+          labelExpressionInfo: {
+            expression: '"Lot 97" + TextFormatting.NewLine + "Available After 5PM Friday"'
+          },
+          maxScale: 0,
+          minScale: 0,
+          where: "GIS.TS.ParkingLots.Name = '97'",
+          useCodedValues: true,
+          allowOverrun: true,
+          symbol: {
+            type: 'text', // autocasts as new TextSymbol()
+            color: 'red',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              // autocast as new Font()
+              family: 'Arial Unicode MS',
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        },
+        {
+          labelExpressionInfo: {
+            expression: '$feature["GIS.TS.ParkingLots.LotName"]'
+          },
+          maxScale: 0,
+          minScale: 0,
+          where: "GIS.TS.ParkingLots.Name NOT LIKE '97'",
+          useCodedValues: true,
+          symbol: {
+            type: 'text', // autocasts as new TextSymbol()
+            color: 'black',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              // autocast as new Font()
+              family: 'Arial Unicode MS',
+              size: 10,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    type: 'feature',
+    id: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.id,
+    title: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.name,
+    url: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.A_Name',
@@ -251,6 +327,98 @@ export const ShowdownEventColdLayerSources: LayerSource[] = [
               weight: 'bold'
             }
           }
+        }
+      ]
+    }
+  }
+];
+
+export const GraduationConfiguration: EventConfiguration = {
+  id: 'graduation-2025',
+  name: 'Graduation',
+  applicationName: 'Graduation Transportation Map',
+  shortApplicationName: 'Graduation Map',
+  introductionText: 'Get the best transportation and parking information for the commencement and commissioning ceremonies.',
+  eventDates: ['2025-05-08', '2025-05-09', '2025-05-10'],
+  mapCenter: [-96.34458, 30.60629],
+  zoom: 16
+};
+
+enum GraduationAttendanceDateChoices {
+  DayOne = '2025-05-08T05:00:00.000Z', // May 8, 12AM UTC
+  DayTwo = '2025-05-09T05:00:00.000Z', // May 9, 12AM UTC
+  DayThree = '2025-05-10T05:00:00.000Z', // May 10, 12AM UTC
+  Conclusion = '2025-05-11T05:00:00.000Z' // May 11, 12AM UTC
+}
+
+export const GraduationOptions: SpecialEventOptions = [
+  {
+    value: 'date',
+    description:
+      'Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.',
+    shortDescription: 'Event Day',
+    label: 'Event Day',
+    choices: [
+      {
+        value: GraduationAttendanceDateChoices.DayOne,
+        label: 'Thursday, May 8th'
+      },
+      {
+        value: GraduationAttendanceDateChoices.DayTwo,
+        label: 'Friday, May 9th'
+      },
+      {
+        value: GraduationAttendanceDateChoices.DayThree,
+        label: 'Saturday, May 10th'
+      }
+    ],
+    effects: {
+      layers: [
+        {
+          layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_A,
+          conversions: [
+            {
+              input: GraduationAttendanceDateChoices.DayOne,
+              propOverrides: {
+                visible: true
+              }
+            },
+            {
+              input: GraduationAttendanceDateChoices.DayTwo,
+              propOverrides: {
+                visible: false
+              }
+            },
+            {
+              input: GraduationAttendanceDateChoices.DayThree,
+              propOverrides: {
+                visible: false
+              }
+            }
+          ]
+        },
+        {
+          layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_B,
+          conversions: [
+            {
+              input: GraduationAttendanceDateChoices.DayOne,
+              propOverrides: {
+                visible: false
+              }
+            },
+            {
+              input: GraduationAttendanceDateChoices.DayTwo,
+              propOverrides: {
+                visible: true
+              }
+            },
+            {
+              input: GraduationAttendanceDateChoices.DayThree,
+              propOverrides: {
+                visible: true
+              }
+            }
+          ]
         }
       ]
     }

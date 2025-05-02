@@ -1,4 +1,8 @@
-<p class="center-text">{{settings.introductionText !== undefined ? settings.introductionText : 'Get the best transportation and parking information for'}} {{settings.name}}.</p>
+<p class="center-text">
+  <ng-container *ngIf="settings.introductionText !== undefined; else noIntroText">{{settings.introductionText}}</ng-container>
+
+  <ng-template #noIntroText> Get the best transportation and parking information for {{settings.name}} </ng-template>
+</p>
 
 <div class="trailer-1 leader-2 flex flex-row justify-center">
   <a class="button terciary uppercase no-decor" [routerLink]="'/builder/accommodations'" (keyup.space)="next()" (keyup.enter)="next()">Get Started</a>
