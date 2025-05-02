@@ -9,6 +9,7 @@ export * from './lib/interfaces/big-event.interface';
 export * from './lib/interfaces/physics-engineering-festival.interface';
 export * from './lib/interfaces/family-weekend.interface';
 export * from './lib/interfaces/maroon-white-game.interface';
+export * from './lib/interfaces/muster.interface';
 
 export * from './lib/definitions/graduation.definitions';
 export * from './lib/definitions/aggieland-saturday.definitions';
@@ -16,3 +17,4 @@ export * from './lib/definitions/big-event.definitions';
 export * from './lib/definitions/phys-engineering-festival.definitions';
 export * from './lib/definitions/family-weekend.definitions';
 export * from './lib/definitions/maroon-white-game.definitions';
+export * from './lib/definitions/muster.definitions';
