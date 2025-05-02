@@ -1,13 +1,29 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0">{{ data.attributes.name }}</div>
   <div class="feature-style-2" tabindex="0"><span>{{data?.attributes?.street}} </span><span>{{data?.attributes?.city}}</span>, TX <span>{{data?.attributes?.zip_code}}</span></div>
-  <div class="feature-style-2" tabindex="0" *ngIf="data?.attributes?.message">{{data.attributes.message}}</div>
 </div>
 
-<div class="popup-section">
-  <div *ngIf="data?.attributes?.description" [innerHTML]="data.attributes.description| markdownParse"></div>
-  <!-- Directions To Button -->
-  <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.name" (click)="startDirections()">Directions To Here</div>
+<div class="popup-section" *giscAccordion="let parent;" id="dining-location-schedule-container">
+  <div class="flex flex-row justify-between" tabindex="0" *ngIf="(statusText | async) as status" [giscAccordionHeader]="parent">
+    <p [ngClass]="{'clr-md-green-600': status.statusCode === 'open', 'clr-md-red-600': status.statusCode === 'closed'}" class="status-text flex flex-row align-center"><span class="material-icons">schedule</span>{{status.status}}</p>
+    <p class="status-message">{{status?.message}}</p>
+  </div>
+
+  <div class="leader-1" *giscAccordionContent="parent.expanded">
+    <ng-container *ngIf="schedule | async as schedule">
+      <div *ngFor="let day of schedule | keyvalue" class="flex flex-row justify-between schedule-day-row">
+        <p>{{ day.key | date : 'EEEE' }}</p>
+        <div [ngSwitch]="day.value.hours.length > 0">
+          <div *ngSwitchCase="true" class="flex flex-column">
+            <p *ngFor="let hours of day.value.hours">
+              <span>{{hours.start | date : 'h:mm a'}} - {{hours.end | date : 'h:mm a'}}</span>
+            </p>
+          </div>
+          <div *ngSwitchDefault><p>Closed</p></div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
 </div>
 
 <!-- <div class="popup-section">
@@ -15,3 +31,9 @@
     <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.Number }}.jpg" />
   </div>
 </div> -->
+
+<div class="popup-section">
+  <div *ngIf="data?.attributes?.description" [innerHTML]="data.attributes.description| markdownParse"></div>
+  <!-- Directions To Button -->
+  <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.name" (click)="startDirections()">Directions To Here</div>
+</div>

@@ -1,0 +1,32 @@
+#dining-location-schedule-container {
+  &:hover {
+    cursor: pointer;
+  }
+
+  p {
+    padding-bottom: 0;
+  }
+}
+
+.status-text,
+.status-message {
+  font-weight: 600;
+}
+
+.status-text {
+  margin-right: 1rem;
+
+  .material-icons {
+    color: initial;
+    font-size: 1.1rem;
+    margin-right: 0.3rem;
+  }
+}
+
+.schedule-day-row {
+  padding-bottom: 0.5rem;
+
+  &:first-child {
+    font-weight: 600;
+  }
+}

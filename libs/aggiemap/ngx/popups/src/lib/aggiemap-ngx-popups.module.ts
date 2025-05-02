@@ -19,6 +19,7 @@ import { RestroomPopupComponent } from './components/restroom/restroom.component
 import { PoiPopupComponent } from './components/poi/poi.component';
 import { BonfirePopupComponent } from './components/bonfire/bonfire.component';
 import { DiningPopupComponent } from './components/dining/dining.component';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 const PopsArr = [
   BasePopupComponent,
@@ -51,7 +52,7 @@ const PopsObj = {
 };
 
 @NgModule({
-  imports: [CommonModule, UIClipboardModule, PipesModule, ReferenceModule, LightgalleryModule],
+  imports: [CommonModule, UIClipboardModule, PipesModule, ReferenceModule, LightgalleryModule, UILayoutModule],
   declarations: PopsArr,
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
