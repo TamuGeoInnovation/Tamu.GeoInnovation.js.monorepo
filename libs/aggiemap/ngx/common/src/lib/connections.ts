@@ -10,7 +10,7 @@ export function Connections(gisHost: string) {
     bikeLocationsUrl: `https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson`,
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
-    diningLocationsUrl: `https://c3d.aggiemap.tamu.edu/dining/locations/geojson`
+    diningLocationsUrl: `https://api.aggiemap.tamu.edu/dining/locations/geojson`
   };
 }
 

@@ -20,7 +20,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
   public schedule: Observable<ISimplifiedDiningLocationHours>;
   public statusText: Observable<IDeconstructedStatusText>;
 
-  private _serviceUrl = 'https://c3d.aggiemap.tamu.edu/dining';
+  private _serviceUrl = 'https://api.aggiemap.tamu.edu/dining';
 
   constructor(
     private rtr: Router,
@@ -106,6 +106,14 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
 
             return day.hours.length > 0;
           });
+
+          if (nextOpenDay === undefined) {
+            return {
+              status: 'Closed',
+              statusCode: DINING_LOCATION_OPERATION_STATUS.CLOSED,
+              message: 'Closed'
+            } as IDeconstructedStatusText;
+          }
 
           return {
             status: 'Closed',
