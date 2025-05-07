@@ -21,6 +21,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
   public statusText: Observable<IDeconstructedStatusText>;
 
   private _serviceUrl = 'https://api.aggiemap.tamu.edu/dining';
+  private _todaysDateStamp: Observable<string>;
 
   constructor(
     private rtr: Router,
@@ -35,6 +36,17 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
 
   public ngOnInit() {
     super.ngOnInit();
+    this._todaysDateStamp = of(new Date()).pipe(
+      map((date) => {
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${year}-${month}-${day}`;
+      }),
+      shareReplay(1)
+    );
+
     this._fetchDiningDetails();
   }
 
@@ -49,7 +61,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
       .get<IDiningLocationHours>(`${this._serviceUrl}/locations/${this.data.attributes.id}/schedule`)
       .pipe(
         concatMap((days) => Object.entries(days)),
-        combineLatestWith(of(new Date().toISOString().split('T')[0])),
+        combineLatestWith(this._todaysDateStamp),
         reduce((acc, [[entryKey, entryValue], todayDatestamp]) => {
           // The first entry should always be today's date
           if (Object.keys(acc).length === 0 && entryKey === todayDatestamp) {
@@ -65,9 +77,6 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
         }, {} as IDiningLocationHours),
         concatMap((days) => Object.entries(days)),
         reduce((acc, [datestamp, info]) => {
-          const dateHasHours = info.hours.length > 0;
-          // new Date('2025-04-01, 16:40:00').toLocaleString()
-
           const formattedHours = info.hours.map((hour) => {
             const start = new Date(`${datestamp}, ${hour.start_hour}:${hour.start_minutes}:00`);
             const end = new Date(`${datestamp}, ${hour.end_hour}:${hour.end_minutes}:00`);
@@ -88,7 +97,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
       );
 
     this.statusText = this.schedule.pipe(
-      withLatestFrom(of(new Date().toISOString().split('T')[0])),
+      withLatestFrom(this._todaysDateStamp),
       map(([schedule, todayDatestamp]) => {
         const scheduleKeys = Object.keys(schedule);
         const today = schedule[todayDatestamp];
@@ -96,12 +105,22 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
 
         // If current day has no hours, location is closed.
         // If current day has hours and now > the last time block, location is closed.
+        // If current day has hours and the end time of the last time block is 00:00 then location closes at midnight.
         // If either of these two conditions are true, find the next day with hours.
         const todayHasHours = today.hours.length > 0;
-        const todayHasHoursAndIsLateClosed = todayHasHours && today.hours[today.hours.length - 1].end < new Date();
+        const lastTimeBlock = today.hours[today.hours.length - 1];
+        const lastTimeBBlockEndCarriesOverAndIsElapsed =
+          lastTimeBlock?.end < lastTimeBlock?.start &&
+          lastTimeBlock?.end.setDate(lastTimeBlock?.end.getDate() + 1) < new Date().getMilliseconds();
+        const todayHasHoursAndIsClosed = todayHasHours && lastTimeBlock?.end < new Date();
 
-        if (!todayHasHours || todayHasHoursAndIsLateClosed) {
-          const nextOpenDay = scheduleKeys.slice(todayIndex).find((key) => {
+        if (
+          todayHasHours === false ||
+          todayHasHoursAndIsClosed === true ||
+          lastTimeBBlockEndCarriesOverAndIsElapsed === true
+        ) {
+          const nextOpenDay = scheduleKeys.slice(todayIndex + 1).find((key) => {
+            // todayIndex + 1 to skip today since we have already determined it is closed for the rest of the day
             const day = schedule[key];
 
             return day.hours.length > 0;
@@ -111,7 +130,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
             return {
               status: 'Closed',
               statusCode: DINING_LOCATION_OPERATION_STATUS.CLOSED,
-              message: 'Closed'
+              message: null
             } as IDeconstructedStatusText;
           }
 
@@ -141,6 +160,12 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
             return true;
           }
 
+          // If we get this far, then the current time block has an ending time of 00:00 or next day
+          // If the current time is after the current time block's end, then the location is closed
+          if (now > end && end < start) {
+            return true;
+          }
+
           // If we got this far, then we are not in the first time block. Check if the current time is after the last time block's end
           // If it is, then the location is closed
           if (now > end) {
@@ -153,10 +178,15 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
           return now >= start && now <= end;
         });
 
-        const statusCode =
-          now > firstRelevantTimeBlock.start && now < firstRelevantTimeBlock.end
-            ? DINING_LOCATION_OPERATION_STATUS.OPEN
-            : DINING_LOCATION_OPERATION_STATUS.CLOSED;
+        let statusCode;
+
+        if (now > firstRelevantTimeBlock.start && now < firstRelevantTimeBlock.end) {
+          statusCode = DINING_LOCATION_OPERATION_STATUS.OPEN;
+        } else if (firstRelevantTimeBlock.end < firstRelevantTimeBlock.start) {
+          statusCode = DINING_LOCATION_OPERATION_STATUS.OPEN_NEXT_DAY;
+        } else {
+          statusCode = DINING_LOCATION_OPERATION_STATUS.CLOSED;
+        }
 
         let text: string;
 
@@ -166,6 +196,19 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
             minute: 'numeric',
             hour12: true
           })}`;
+        } else if (statusCode === DINING_LOCATION_OPERATION_STATUS.OPEN_NEXT_DAY) {
+          // Add one day to the end time to get the next day's closing time
+          const lateClosingDate = new Date(firstRelevantTimeBlock.end);
+          lateClosingDate.setDate(lateClosingDate.getDate() + 1);
+
+          text = `Closes ${lateClosingDate.toLocaleString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+          })}`;
+
+          // Change status code to simple open to avoid having to deal with custom text and additional enums for this case.
+          statusCode = DINING_LOCATION_OPERATION_STATUS.OPEN;
         } else {
           // If the location is closed, it's either too early or too late
           // The second case is already covered by the first condition above
@@ -293,6 +336,7 @@ interface ISimplifiedDiningLocationHours {
 
 enum DINING_LOCATION_OPERATION_STATUS {
   OPEN = 'open',
+  OPEN_NEXT_DAY = 'open-next-day',
   CLOSED = 'closed'
 }
 

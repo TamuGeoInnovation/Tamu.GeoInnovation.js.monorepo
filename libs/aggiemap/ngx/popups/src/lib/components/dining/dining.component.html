@@ -6,8 +6,8 @@
 <div class="popup-section" *giscAccordion="let parent;" id="dining-location-schedule-container">
   <div class="flex flex-row align-center justify-between" tab-index="0" *ngIf="(statusText | async) as status" [giscAccordionHeader]="parent">
     <div class="flex flex-row">
-      <p [ngClass]="{'clr-md-green-700': status.statusCode === 'open', 'clr-md-red-600': status.statusCode === 'closed'}" class="status-text flex flex-row align-center"><span class="material-icons">schedule</span>{{status.status}}</p>
-      <p class="status-message">{{status?.message}}</p>
+      <p [ngClass]="{'clr-md-green-700': status.statusCode === 'open', 'clr-md-red-600': status.statusCode === 'closed', 'no-message' : status?.message === null}" class="status-text flex flex-row align-center"><span class="material-icons">schedule</span>{{status.status}}</p>
+      <p class="status-message" *ngIf="status.message">{{status?.message}}</p>
     </div>
 
     <div class="flex flex-row expand-icon" [ngClass]="{expanded: parent.expanded}">

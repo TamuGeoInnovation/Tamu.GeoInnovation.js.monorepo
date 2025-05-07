@@ -24,11 +24,13 @@
 .status-text {
   text-transform: capitalize;
 
-  &:after {
-    content: '\00B7';
-    color: initial;
-    margin-left: 0.3rem;
-    margin-right: 0.3rem;
+  &:not(.no-message) {
+    &:after {
+      content: '\00B7';
+      color: initial;
+      margin-left: 0.3rem;
+      margin-right: 0.3rem;
+    }
   }
 }
 
