@@ -50,7 +50,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         uniqueValueInfos: [
           {
             value: 'Departing - Recommended Route',
-            label: 'Recommended Route',
+            label: 'Fast Route',
             symbol: commonSymbols.GREEN_ARROW
           },
           {
@@ -64,31 +64,7 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
             symbol: commonSymbols.RED_ARROW
           }
         ]
-      } as any,
-      labelingInfo: [
-        {
-          labelExpressionInfo: {
-            expression: '$feature.STF_Notes'
-          },
-          minScale: 0,
-          maxScale: 0,
-          useCodedValues: true,
-          allowOverrun: true,
-          symbol: {
-            type: 'text', // autocasts as new TextSymbol()
-            color: 'red',
-            haloColor: 'white',
-            haloSize: 1,
-            angle: 0,
-            font: {
-              // autocast as new Font()
-              family: 'Arial Unicode MS',
-              size: 12,
-              weight: 'bold'
-            }
-          }
-        }
-      ]
+      }
     }
   },
   {
