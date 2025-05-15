@@ -1,0 +1,23 @@
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Contact Details</p>
+      </div>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Your name" formControlName="fullName" [floatLabel]="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Your email address" formControlName="email" [floatLabel]="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column">
+      <tamu-gisc-textbox placeholder="Subject" formControlName="subject" [floatLabel]="true"></tamu-gisc-textbox>
+    </div>
+
+    <div class="form-collection column"></div>
+  </div>
+</form>
