@@ -1,0 +1,49 @@
+import { LayerSource } from '@tamu-gisc/common/types';
+
+import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
+
+import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { TROUBADOUR_LAYERS } from '../interfaces/troubadour-festival.interface';
+
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Troubadour_Festival/MapServer';
+
+const TroubadourFestivalEventDefinitions = {
+  TROUBADOUR_PARKING: {
+    id: TROUBADOUR_LAYERS.PARKING,
+    layerId: TROUBADOUR_LAYERS.PARKING,
+    name: 'Troubadour Festival Parking',
+    url: `${eventUrl}/0`
+  }
+};
+
+export const TroubadourColdLayerSources: LayerSource[] = [
+  {
+    type: 'feature',
+    id: TroubadourFestivalEventDefinitions.TROUBADOUR_PARKING.id,
+    title: TroubadourFestivalEventDefinitions.TROUBADOUR_PARKING.name,
+    url: TroubadourFestivalEventDefinitions.TROUBADOUR_PARKING.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: 'attributes.name',
+      description: 'attributes.description'
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  }
+];
+
+export const TroubadourConfiguration: EventConfiguration = {
+  id: 'troubadour-festival-2025',
+  name: 'Troubadour Festival',
+  applicationName: 'Troubadour Festival Parking Map',
+  shortApplicationName: 'Troubadour Festival Map',
+  introductionText: 'Get the best transportation and parking information for Troubadour Festival.',
+  eventDates: ['2025-05-17'],
+  mapCenter: [-96.33636, 30.6101],
+  zoom: 16
+};
+
+export const TroubadourOptions: SpecialEventOptions = [];
