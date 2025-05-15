@@ -4,6 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
+    path: 'checkout',
+    loadChildren: () => import('./pages/checkout/checkout.module').then((m) => m.CheckoutModule)
+  },
+  {
     path: 'complete',
     loadChildren: () => import('./pages/complete/complete.module').then((m) => m.CompleteModule)
   },
