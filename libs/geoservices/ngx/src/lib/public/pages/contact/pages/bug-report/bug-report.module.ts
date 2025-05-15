@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { BugReportComponent } from './bug-report.component';
-import { SubmitBugFormModule } from '../../../../../core/modules/forms/submit-bug-form/submit-bug-form.module';
+import { SubmitBugFormModule } from '../../../../../core/modules/forms/contact/submit-bug-form/submit-bug-form.module';
 
 const routes: Routes = [
   {

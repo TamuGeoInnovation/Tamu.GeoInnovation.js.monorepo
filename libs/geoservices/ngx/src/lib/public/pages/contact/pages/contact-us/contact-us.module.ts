@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { ContactUsComponent } from './contact-us.component';
-import { ContactFormModule } from '../../../../../core/modules/forms/contact-form/contact-form.module';
+import { ContactFormModule } from '../../../../../core/modules/forms/contact/contact-form/contact-form.module';
 
 const routes: Routes = [
   {

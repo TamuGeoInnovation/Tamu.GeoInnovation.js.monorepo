@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { PartnerComponent } from './partner.component';
-import { PartnerProgramFormModule } from '../../../../../core/modules/forms/partner-program-form/partner-program-form.module';
+import { PartnerProgramFormModule } from '../../../../../core/modules/forms/contact/partner-program-form/partner-program-form.module';
 
 const routes: Routes = [
   {
