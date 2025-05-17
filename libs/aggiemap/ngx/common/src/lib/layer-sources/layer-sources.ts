@@ -283,7 +283,7 @@ export function LayerSources(
               }
             }
           ]
-        } as any
+        } as unknown as esri.UniqueValueRenderer
       }
     }
   ];

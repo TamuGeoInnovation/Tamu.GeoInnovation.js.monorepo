@@ -111,7 +111,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
         const lastTimeBlock = today.hours[today.hours.length - 1];
         const lastTimeBBlockEndCarriesOverAndIsElapsed =
           lastTimeBlock?.end < lastTimeBlock?.start &&
-          lastTimeBlock?.end.setDate(lastTimeBlock?.end.getDate() + 1) < new Date().getMilliseconds();
+          lastTimeBlock?.end.setDate(lastTimeBlock?.end.getDate() + 1) < Date.now();
         const todayHasHoursAndIsClosed = todayHasHours && lastTimeBlock?.end < new Date();
 
         if (
@@ -178,7 +178,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
           return now >= start && now <= end;
         });
 
-        let statusCode;
+        let statusCode: DINING_LOCATION_OPERATION_STATUS;
 
         if (now > firstRelevantTimeBlock.start && now < firstRelevantTimeBlock.end) {
           statusCode = DINING_LOCATION_OPERATION_STATUS.OPEN;
