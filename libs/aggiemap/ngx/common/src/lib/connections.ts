@@ -9,7 +9,8 @@ export function Connections(gisHost: string) {
     bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
     bikeLocationsUrl: `https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson`,
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
-    poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer'
+    poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
+    diningLocationsUrl: `https://api.aggiemap.tamu.edu/dining/locations/geojson`
   };
 }
 
@@ -23,4 +24,5 @@ export interface IComposedConnections {
   bikeRacksUrl: string;
   bikeLocationsUrl: string;
   poiUrl: string;
+  diningLocationsUrl: string;
 }

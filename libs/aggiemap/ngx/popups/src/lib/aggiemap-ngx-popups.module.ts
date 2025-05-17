@@ -6,6 +6,7 @@ import { LightgalleryModule } from 'lightgallery/angular/13';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { ReferenceModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { BasePopupComponent } from './components/base/base.popup.component';
 import { BaseDirectionsComponent } from './components/base-directions/base-directions.component';
@@ -18,6 +19,7 @@ import { ParkingLotPopupComponent } from './components/parking-lot/parking-lot.c
 import { RestroomPopupComponent } from './components/restroom/restroom.component';
 import { PoiPopupComponent } from './components/poi/poi.component';
 import { BonfirePopupComponent } from './components/bonfire/bonfire.component';
+import { DiningPopupComponent } from './components/dining/dining.component';
 
 const PopsArr = [
   BasePopupComponent,
@@ -30,7 +32,8 @@ const PopsArr = [
   ParkingLotPopupComponent,
   RestroomPopupComponent,
   PoiPopupComponent,
-  BonfirePopupComponent
+  BonfirePopupComponent,
+  DiningPopupComponent
 ];
 
 const PopsObj = {
@@ -44,11 +47,12 @@ const PopsObj = {
   ParkingLotPopupComponent,
   RestroomPopupComponent,
   PoiPopupComponent,
-  BonfirePopupComponent
+  BonfirePopupComponent,
+  DiningPopupComponent
 };
 
 @NgModule({
-  imports: [CommonModule, UIClipboardModule, PipesModule, ReferenceModule, LightgalleryModule],
+  imports: [CommonModule, UIClipboardModule, PipesModule, ReferenceModule, LightgalleryModule, UILayoutModule],
   declarations: PopsArr,
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

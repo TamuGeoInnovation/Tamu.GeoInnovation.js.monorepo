@@ -225,6 +225,66 @@ export function LayerSources(
           }
         }
       }
+    },
+    {
+      type: 'geojson',
+      id: definitions.DINING_LOCATIONS.layerId,
+      title: definitions.DINING_LOCATIONS.name,
+      url: definitions.DINING_LOCATIONS.url,
+      listMode: 'show',
+      visible: false,
+      popupComponent: definitions.DINING_LOCATIONS.popupComponent,
+      native: {
+        ...commonLayerProps,
+        renderer: {
+          type: 'unique-value',
+          field: 'label',
+          field2: 'type',
+          fieldDelimiter: ',',
+          uniqueValueInfos: [
+            {
+              value: 'open,food-truck',
+              label: 'Food Truck - Open',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/FoodTruck_open.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'closed,food-truck',
+              label: 'Food Truck - Closed',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/FoodTruck_closed.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'open,fixed',
+              label: 'Dining - Open',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/Dining_open.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'closed,fixed',
+              label: 'Dining - Closed',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/Dining_closed.png',
+                width: '24px',
+                height: '32px'
+              }
+            }
+          ]
+        } as unknown as esri.UniqueValueRenderer
+      }
     }
   ];
 
