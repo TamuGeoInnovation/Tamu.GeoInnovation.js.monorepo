@@ -313,11 +313,16 @@ export const ThreeDLayers: Array<LayerSource> = [
     type: 'scene',
     id: 'three-d-buildings-scene-layer',
     title: '3D Buildings',
-    url: 'https://arcportal.ts.tamu.edu/arcgis/rest/services/Hosted/ESRI_3D_Presentation_2_0_WSL1/SceneServer',
+    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/SketchupCampus_2082019/SceneServer',
     listMode: 'show',
     visible: true,
     native: {
-      popupEnabled: false
+      popupEnabled: false,
+      elevationInfo: {
+        mode: 'absolute-height',
+        offset: -107,
+        unit: 'meters'
+      }
     }
   }
 ];
