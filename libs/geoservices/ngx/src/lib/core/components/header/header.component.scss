@@ -57,7 +57,8 @@ nav {
     // Disable text decoration for the root-level menu
     // anchor tags
     & > ul > li > a {
-      padding: 0.75rem 1rem;
+      padding: 0 1rem;
+      margin: 0.75rem auto;
       text-decoration: none;
     }
 
@@ -104,7 +105,8 @@ nav {
       will-change: transform;
 
       li {
-        padding: 0.75rem 1.5rem;
+        padding: 0 1.5rem;
+        margin: 0.75rem auto;
         position: relative;
 
         // Display the slide out submenu when the li is hovered.

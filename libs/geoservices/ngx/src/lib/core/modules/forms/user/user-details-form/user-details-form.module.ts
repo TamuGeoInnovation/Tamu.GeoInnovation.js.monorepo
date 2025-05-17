@@ -4,11 +4,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
-import { UserDetailsComponent } from './user-details.component';
+import { UserDetailsFormComponent } from './user-details-form.component';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, UIFormsModule],
-  declarations: [UserDetailsComponent],
-  exports: [UserDetailsComponent]
+  declarations: [UserDetailsFormComponent],
+  exports: [UserDetailsFormComponent]
 })
-export class UserDetailsModule {}
+export class UserDetailsFormModule {}

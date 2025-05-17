@@ -1,15 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, firstValueFrom, Observable } from 'rxjs';
-import { debounceTime, map, shareReplay, startWith, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
-
-import { loadScript } from '@paypal/paypal-js';
+import { combineLatest, Observable } from 'rxjs';
+import { debounceTime, map, shareReplay, startWith, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
-import { AuthService, PaymentsService } from '@tamu-gisc/geoservices/data-access';
-import { IPayflowExpressCheckoutTokenResponse } from '@tamu-gisc/geoservices/data-api';
+import { AuthService } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
   selector: 'tamu-gisc-interactive-pricing',
@@ -96,19 +93,11 @@ export class InteractivePricingComponent implements OnInit {
   public eligiblePricingTiers: Observable<Array<PricingTier>>;
   public pricingSliderDataMap: Observable<RangeInputDataMap>;
 
-  public order: Observable<IPayflowExpressCheckoutTokenResponse>;
-  public orderSrc: Observable<string>;
-
-  @ViewChild('paypalButtonContainer', { static: true })
-  private _buttonElement: ElementRef;
-  private _ppClient: string;
-
   constructor(
     private readonly router: Router,
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly env: EnvironmentService,
-    private readonly ps: PaymentsService,
     private readonly auth: AuthService
   ) {}
 
@@ -119,8 +108,6 @@ export class InteractivePricingComponent implements OnInit {
       partnerProgram: [false],
       sla: [false]
     });
-
-    this._ppClient = this.env.value('paypal_client_id', false);
 
     const snapParams = this.route.snapshot.queryParams;
 
@@ -271,21 +258,21 @@ export class InteractivePricingComponent implements OnInit {
       // resolving the cta link.
       debounceTime(0),
       map(([tier, frequency, sla]) => {
-        const baseUrl = `${this.env.value('accounts_url', false)}/UserServices/Payments/Make`;
+        const baseUrl = `/order/checkout`;
 
         // return link for each frequency type
 
         switch (frequency) {
           case FREQUENCY.ONE_TIME:
-            return `${baseUrl}/SinglePayment.aspx?plan=${tier.points}&cost=${tier.frequency.oneTime}&paymentType=OneTime&billingPeriod=ONETIME`;
+            return `${baseUrl}?plan=${tier.points}&cost=${tier.frequency.oneTime}&paymentType=OneTime&billingPeriod=ONETIME`;
           case FREQUENCY.RECURRING_MONTHLY:
-            return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.frequency.monthly}&paymentType=Recurring&billingPeriod=MONT`;
+            return `${baseUrl}?plan=${tier.points}&cost=${tier.frequency.monthly}&paymentType=Recurring&billingPeriod=MONT`;
           case FREQUENCY.RECURRING_YEARLY:
             if (sla) {
               return `/contact?subject=SLA%20Inquiry%20-%20${tier.points.toLocaleString()}%20Credits`;
             }
 
-            return `${baseUrl}/PaymentPlan.aspx?plan=${tier.points}&cost=${tier.frequency.yearly}&paymentType=Recurring&billingPeriod=YEAR`;
+            return `${baseUrl}?plan=${tier.points}&cost=${tier.frequency.yearly}&paymentType=Recurring&billingPeriod=YEAR`;
         }
       })
     );
@@ -301,51 +288,6 @@ export class InteractivePricingComponent implements OnInit {
       }),
       shareReplay()
     );
-
-    this.order = this.auth.state.pipe(
-      switchMap((state) => {
-        return this.ps.initializeOrder(state.data.Guid, state.data.Email);
-      }),
-      shareReplay(1)
-    );
-
-    try {
-      loadScript({
-        clientId: this._ppClient ?? 'sb',
-        currency: 'USD',
-        components: 'buttons',
-        vault: true
-      }).then((paypal) => {
-        paypal
-          .Buttons({
-            createOrder: async () => {
-              const order = await this.auth.state
-                .pipe(
-                  switchMap((state) => {
-                    return this.ps.initializeOrder(state.data.Guid, state.data.Email);
-                  })
-                )
-                .toPromise();
-
-              return order.TOKEN;
-            },
-            onApprove: async (data) => {
-              firstValueFrom(this.ps.captureOrder(data)).then((res) => {
-                console.log('Payment successful', res);
-              });
-            },
-            onCancel: (data) => {
-              console.log('Payment cancelled', data);
-            },
-            onError: (err) => {
-              console.error('Error with PayPal button', err);
-            }
-          })
-          .render(this._buttonElement.nativeElement);
-      });
-    } catch (e) {
-      console.error('Error loading PayPal script', e);
-    }
   }
 
   private _getFrequencyCosts(base: number): PricingTier['frequency'] {

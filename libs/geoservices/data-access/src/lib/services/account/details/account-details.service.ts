@@ -79,6 +79,8 @@ export class AccountDetailsService {
 }
 
 export interface IAccountDetails {
+  isManager?: string;
+  APIKey: string;
   Active: string;
   Added: string;
   Address1: string;

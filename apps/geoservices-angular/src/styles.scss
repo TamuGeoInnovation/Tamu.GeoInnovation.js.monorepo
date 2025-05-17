@@ -15,8 +15,9 @@ $state-transition-color: #536dfe;
 $inactive-color: hsl(223, 15%, 60%);
 $lightened-inactive-color: lighten($inactive-color, 25%);
 
-$alert-color: #ef5350;
+$success-color: #4caf50;
 $warning-color: #ffca28;
+$alert-color: #ef5350;
 
 $lightened-alert-color: lighten($alert-color, 25%);
 $lightened-warning-color: lighten($warning-color, 25%);
@@ -940,7 +941,18 @@ tamu-gisc-checkbox-group {
   padding: 1rem 1.5rem;
   box-sizing: border-box;
   background: #ffffff;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 5px 15px 0px;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    padding-bottom: 0.5rem;
+    border-bottom: 1pt solid #eee;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 }
 
 // Tooltip overrides
@@ -968,12 +980,28 @@ tamu-gisc-tooltip {
 }
 
 .info-block {
-  background: lighten($active-color, 27%);
   padding: 1rem 1.5rem;
   width: 100%;
   box-sizing: border-box;
-  border: 1pt solid lighten($active-color, 15%);
+  border: 1pt solid;
   border-radius: 5pt;
+  background: lighten($color: $active-color, $amount: 27%);
+  border-color: lighten($color: $active-color, $amount: 15%);
+
+  &.context {
+    background: lighten($color: $inactive-color, $amount: 35%);
+    border-color: lighten($color: $inactive-color, $amount: 15%);
+  }
+
+  &.warning {
+    background: lighten($color: $alert-color, $amount: 37%);
+    border-color: lighten($color: $alert-color, $amount: 25%);
+  }
+
+  &.success {
+    background: lighten($color: $success-color, $amount: 45%);
+    border-color: lighten($color: $success-color, $amount: 25%);
+  }
 
   .info-block__body,
   .info-block__header {

@@ -128,11 +128,9 @@
         <em *ngIf="(isSLA | async) === true"><strong>*</strong> Optional services</em>
       </div>
 
-      <!-- <div class="flex flex-row justify-center leader-2 trailer-1" *ngIf="orderSrc | async as url">
-        <a class="button secondary" [href]="url | safeUrl">Subscribe</a>
-      </div> -->
-
-      <div #paypalButtonContainer class="leader-1"></div>
+      <div class="flex flex-row justify-center leader-2 trailer-1" *ngIf="ctaLink | async as url">
+        <a class="button secondary" [href]="url | safeUrl">{{ctaText | async}}</a>
+      </div>
     </div>
 
     <div class="card leader-2 cta" id="freeCTA">

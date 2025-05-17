@@ -23,22 +23,16 @@ export class PaymentsService {
       {
         userGuid,
         email
+      },
+      {
+        withCredentials: true
       }
-      //,
-      // {
-      //   withCredentials: true
-      // }
     );
   }
 
   public captureOrder(postback: OnApproveData): Observable<IPayflowPostbackResponse> {
-    return this.http.post<IPayflowPostbackResponse>(
-      `${this.resource}/order/callback`,
-      postback
-      //,
-      //   {
-      //   withCredentials: true
-      // }
-    );
+    return this.http.post<IPayflowPostbackResponse>(`${this.resource}/order/callback`, postback, {
+      withCredentials: true
+    });
   }
 }

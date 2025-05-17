@@ -4,6 +4,8 @@ import { Observable, of, catchError, map, shareReplay } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+import { IAccountDetails } from '../account/details/account-details.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +22,7 @@ export class AuthService {
     this.resource = this.env.value('legacy_api_url') + 'login';
 
     this.state = this.http
-      .get<INotLoggedInResponse | ILoggedInResponse>(this.env.value('legacy_api_url') + 'userServices/getDetails/', {
+      .get<INotLoggedInResponse | IAccountDetails>(this.env.value('legacy_api_url') + 'userServices/getDetails/', {
         withCredentials: true
       })
       .pipe(
@@ -55,7 +57,7 @@ export class AuthService {
     this.apiKey = this.state.pipe(
       map((state) => {
         if (state.loggedIn) {
-          return (state.data as ILoggedInResponse).APIKey;
+          return (state.data as IAccountDetails).APIKey;
         } else {
           return 'demo';
         }
@@ -83,15 +85,8 @@ interface INotLoggedInResponse {
   isManager?: string;
 }
 
-interface ILoggedInResponse {
-  APIKey: string;
-  Guid: string;
-  isManager: string;
-  Email: string;
-}
-
 export interface LoggedInState {
   loggedIn: boolean;
   isManager: boolean;
-  data: null | ILoggedInResponse;
+  data: null | IAccountDetails;
 }

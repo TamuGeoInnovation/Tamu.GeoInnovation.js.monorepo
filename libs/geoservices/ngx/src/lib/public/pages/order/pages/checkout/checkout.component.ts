@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { firstValueFrom, map, Observable, shareReplay, switchMap } from 'rxjs';
+
+import { loadScript } from '@paypal/paypal-js';
+
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { AuthService, LoggedInState, PaymentsService } from '@tamu-gisc/geoservices/data-access';
+import { IPayflowExpressCheckoutTokenResponse } from '@tamu-gisc/geoservices/data-api';
 
 @Component({
   selector: 'tamu-gisc-checkout',
@@ -6,10 +13,80 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent implements OnInit {
+  private _accountsUrl: string;
+  public accountSettingsUrl: string;
+  public profileData: Observable<LoggedInState['data']>;
 
-  constructor() { }
+  public order: Observable<IPayflowExpressCheckoutTokenResponse>;
 
-  ngOnInit(): void {
+  @ViewChild('paypalButtonContainer', { static: true })
+  private _buttonElement: ElementRef;
+  private _ppClient: string;
+
+  constructor(
+    private readonly env: EnvironmentService,
+    private readonly auth: AuthService,
+    private readonly ps: PaymentsService
+  ) {}
+
+  public ngOnInit(): void {
+    this._accountsUrl = this.env.value('accounts_url', false);
+    this.accountSettingsUrl = `${this._accountsUrl}/UserServices/Profile`;
+    this.profileData = this.auth.state.pipe(
+      map((state) => {
+        if (state.loggedIn) {
+          return state.data;
+        } else {
+          return null;
+        }
+      })
+    );
+
+    this._ppClient = this.env.value('paypal_client_id', false);
+
+    this.order = this.auth.state.pipe(
+      switchMap((state) => {
+        return this.ps.initializeOrder(state.data.Guid, state.data.Email);
+      }),
+      shareReplay(1)
+    );
+
+    try {
+      loadScript({
+        clientId: this._ppClient ?? 'sb',
+        currency: 'USD',
+        components: 'buttons',
+        vault: true
+      }).then((paypal) => {
+        paypal
+          .Buttons({
+            createOrder: async () => {
+              const order = await this.auth.state
+                .pipe(
+                  switchMap((state) => {
+                    return this.ps.initializeOrder(state.data.Guid, state.data.Email);
+                  })
+                )
+                .toPromise();
+
+              return order.TOKEN;
+            },
+            onApprove: async (data) => {
+              firstValueFrom(this.ps.captureOrder(data)).then((res) => {
+                console.log('Payment successful', res);
+              });
+            },
+            onCancel: (data) => {
+              console.log('Payment cancelled', data);
+            },
+            onError: (err) => {
+              console.error('Error with PayPal button', err);
+            }
+          })
+          .render(this._buttonElement.nativeElement);
+      });
+    } catch (e) {
+      console.error('Error loading PayPal script', e);
+    }
   }
-
 }

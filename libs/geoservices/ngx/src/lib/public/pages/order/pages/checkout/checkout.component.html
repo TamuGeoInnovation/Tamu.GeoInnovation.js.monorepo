@@ -1,18 +1,40 @@
-<section class="content-fill-pad">
+<section>
   <div class="container12 flex flex-column justify-center">
     <h1 class="trailer-1">Checkout</h1>
     <h3>You're one step closer to accessing powerful geoprocessing tools.</h3>
   </div>
 </section>
 
-<section class="container12 flex flex-row justify-center">
+<section class="container12 flex flex-row justify-between">
   <div class="column6 trailer-4">
-    <p class="trailer-2">User contact details will be displayed here</p>
+    <div class="info-block">
+      <p class="info-block__header">Customer Information</p>
+      <p class="info-block__body">Please review the information below for accuracy and completeness before proceeding. You can update your profile information in your <a [href]="accountSettingsUrl">account settings</a>.</p>
+    </div>
 
-    <p class="trailer-2">User address details will be displayed here</p>
+    <tamu-gisc-user-details-form [contactInfo]="profileData | async"></tamu-gisc-user-details-form>
+
+    <tamu-gisc-user-mailing-form [addressInfo]="profileData | async"></tamu-gisc-user-mailing-form>
   </div>
 
-  <div class="column6 trailer-4">
-    <p>Order summary will be displayed here</p>
+  <div class="column5 trailer-4">
+    <div class="card">
+      <h4>Summary</h4>
+
+      <p><strong>Billing Type</strong>: Recurring</p>
+      <p><strong>Billing Frequency</strong>: Monthly</p>
+      <p><strong>Billing Amount</strong>: $10.00</p>
+      <p><strong>Billing Date</strong>: 1st of every month</p>
+      <p><strong>Credits Per Period</strong>: 500</p>
+    </div>
+
+    <div class="card leader-2">
+      <div class="info-block context leader-2 trailer-2">
+        <!-- <p class="info-block__header">Acknowledgement</p> -->
+        <p class="info-block__body">By continuing, you agree to our <a [href]="">Recurring Billing Policy</a>, <a [href]="">Terms of Service</a>, and <a [href]="">Privacy Policy</a>.</p>
+      </div>
+
+      <div #paypalButtonContainer></div>
+    </div>
   </div>
 </section>

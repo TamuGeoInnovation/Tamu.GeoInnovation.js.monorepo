@@ -15,17 +15,15 @@ async function bootstrap() {
     console.log('Origins: ', environment.origins);
   }
 
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: environment.origins,
-      methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-      credentials: true
-    }
-  });
+  const app = await NestFactory.create(AppModule);
 
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
-  app.enableCors();
+  app.enableCors({
+    origin: environment.origins,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    credentials: true
+  });
 
   const port = environment.port;
   await app.listen(port, () => {
