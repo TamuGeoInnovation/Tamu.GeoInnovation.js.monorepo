@@ -78,8 +78,14 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
         concatMap((days) => Object.entries(days)),
         reduce((acc, [datestamp, info]) => {
           const formattedHours = info.hours.map((hour) => {
-            const start = new Date(`${datestamp}, ${hour.start_hour}:${hour.start_minutes}:00`);
-            const end = new Date(`${datestamp}, ${hour.end_hour}:${hour.end_minutes}:00`);
+            const start = new Date(
+              `${datestamp}T${hour.start_hour.toString().padStart(2, '0')}:${hour.start_minutes
+                .toString()
+                .padStart(2, '0')}:00`
+            );
+            const end = new Date(
+              `${datestamp}T${hour.end_hour.toString().padStart(2, '0')}:${hour.end_minutes.toString().padStart(2, '0')}:00`
+            );
 
             return {
               start,
