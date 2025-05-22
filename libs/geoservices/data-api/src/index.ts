@@ -7,6 +7,7 @@ export * from './lib/modules/payments/payments.module';
 export * from './lib/modules/payments/payments.service';
 
 export * from './lib/interfaces/paypal/paypal-payflow.interface';
+export * from './lib/interfaces/subscription/subscription.interface';
 
 export * from './lib/entities/payment.entity';
 export * from './lib/entities/user.entity';

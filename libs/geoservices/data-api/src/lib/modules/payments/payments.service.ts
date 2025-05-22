@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { concatMap, delay, interval, mergeMap, Observable, startWith, switchMap, tap } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Not, Repository } from 'typeorm';
 
 import got from 'got';
 
@@ -20,6 +20,7 @@ import {
 import { User } from '../../entities/user.entity';
 import { Payment } from '../../entities/payment.entity';
 import { Subscription } from '../../entities/subscription.entity';
+import { GsvcsSubscription } from '../../interfaces/subscription/subscription.interface';
 
 @Injectable()
 export class PaymentsService {
@@ -43,7 +44,7 @@ export class PaymentsService {
     this._payflowUrl =
       payflowEnvironment === 'live' ? 'https://payflowpro.paypal.com' : 'https://pilot-payflowpro.paypal.com';
 
-    this._recurringScheduler$ = interval(60000).pipe(
+    this._recurringScheduler$ = interval(parseInt(process.env.PAYFLOW_PROCESSING_INTERVAL, 10) || 600000).pipe(
       startWith(true),
       delay(5000),
       tap(() => {
@@ -454,5 +455,78 @@ export class PaymentsService {
       .then((res) => {
         return NVPTransformer.deserialize(res.body);
       });
+  }
+
+  public async getSubscriptionDetailsForUser(userGuid: string): Promise<GsvcsSubscription> {
+    if (process.env.LOG_LEVEL === 'verbose') {
+      Logger.verbose(`Searching for existing subscription for : ${userGuid}`, 'PaymentsService');
+    }
+
+    const sub = await this.subscriptions.find({
+      where: {
+        userGuid,
+        recurringProfileID: Not('')
+      }
+    });
+
+    if (sub.length > 0) {
+      const subscription = sub[0];
+      const profileId = subscription.recurringProfileID;
+
+      if (process.env.LOG_LEVEL === 'verbose') {
+        Logger.verbose(`Existing subscription found. Fetching details from PayPal`, 'PaymentsService');
+      }
+
+      const details = await this.getRecurringSubscriptionDetails(profileId);
+
+      // TODO: These are mock values. Update with valid tiers when they are coming from a database
+      return {
+        tier: {
+          id: 'lite',
+          name: 'Lite',
+          description: 'Basic access to features, ideal for individuals or small teams',
+          benefits: [
+            {
+              id: 'daily-transactions',
+              name: 'Daily Transactions',
+              description: 'Transactions per day',
+              value: 5000,
+              showcase: true
+            },
+            {
+              id: 'rate-limit',
+              name: 'Rate Limit',
+              description: 'Requests per second',
+              value: 15,
+              showcase: true
+            },
+            {
+              id: 'api-access',
+              name: 'API Feature Access',
+              description: 'API features',
+              value: 'basic',
+              showcase: true
+            },
+            {
+              id: 'users',
+              name: 'Users',
+              description: 'Managed users',
+              value: 1,
+              showcase: true
+            }
+          ]
+        },
+        status: details.STATUS,
+        active: details.STATUS === 'ACTIVE',
+        nextPaymentDate: details.NEXTPAYMENT, // Date is in the format MMDDYYYY. Convert to ISO format
+        // nextPaymentDateISO: new Date(
+        //   `${details.NEXTPAYMENT.substring(4, 8)}-${details.NEXTPAYMENT.substring(0, 2)}-${details.NEXTPAYMENT.substring(
+        //     2,
+        //     4
+        //   )}`
+        // ).toISOString(),
+        amount: details.AMT
+      };
+    }
   }
 }

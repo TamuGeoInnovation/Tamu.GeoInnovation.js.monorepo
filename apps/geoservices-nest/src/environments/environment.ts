@@ -4,6 +4,7 @@ export const environment = {
   origins: process.env?.ORIGINS?.split(',') || [],
   logging: process.env?.LOGGING === 'true' ? true : false,
   globalPrefix: process.env?.GLOBAL_PREFIX || '',
+  legacyApiUrl: process.env?.LEGACY_API_URL || 'http://localhost',
   mailroomUrl: process.env.MAILROOM_URL,
   mailroomToAddress: process.env.MAILROOM_TO_ADDRESS,
   turnstileClientKey: process.env.TURNSTILE_SITE_KEY,

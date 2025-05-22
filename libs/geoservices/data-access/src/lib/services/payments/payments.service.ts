@@ -35,4 +35,10 @@ export class PaymentsService {
       withCredentials: true
     });
   }
+
+  public getUserSubscriptionDetails(): Observable<any> {
+    return this.http.get<any>(`${this.resource}/subscription/`, {
+      withCredentials: true
+    });
+  }
 }

@@ -1,0 +1,26 @@
+.info-block {
+  p {
+    margin: 0;
+  }
+}
+
+#tier__icon {
+  margin-right: 1rem;
+  padding: 0.25rem;
+}
+
+#tier__header {
+  margin-bottom: 0.35rem;
+
+  p {
+    font-weight: 600;
+  }
+
+  #tier__name {
+    margin-right: 0.5rem;
+  }
+
+  #tier__cost {
+    color: var(--state-transition-color);
+  }
+}

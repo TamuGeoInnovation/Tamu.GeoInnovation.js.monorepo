@@ -30,6 +30,12 @@ $primary-text-color: #333333;
 
 @import 'libs/sass/modules/tabs';
 
+:root {
+  --primary-active-color: hsl(223, 75%, 67%);
+  --primary-inactive-color: hsl(223, 15%, 60%);
+  --state-transition-color: #536dfe;
+}
+
 html {
   height: 100%;
   width: 100%;

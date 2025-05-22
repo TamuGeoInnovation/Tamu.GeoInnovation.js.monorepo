@@ -1,0 +1,22 @@
+<p>Review and manage your subscription plan at any time to best suit your needs.</p>
+
+<ng-container *ngIf="(subscription | async) as subscription">
+  <div class="info-block context trailer-1">
+    <div class="info-block__content flex flex-row">
+      <div id="tier__icon">
+        <span class="material-icons">category</span>
+      </div>
+
+      <div class="flex flex-column">
+        <div class="flex flex-row" id="tier__header">
+          <p id="tier__name">{{subscription?.tier?.name}} Plan</p>
+          <p id="tier__cost">{{subscription?.amount | currency}}/mo</p>
+        </div>
+
+        <div>
+          <p>{{subscription?.tier?.description}}. Includes {{composedTierBenefits | async}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -22,6 +22,10 @@ const routes: Routes = [
       {
         path: 'preferences',
         loadChildren: () => import('./preferences/preferences.module').then((m) => m.PreferencesModule)
+      },
+      {
+        path: 'subscription',
+        loadChildren: () => import('./subscription/subscription.module').then((m) => m.SubscriptionModule)
       }
     ]
   }

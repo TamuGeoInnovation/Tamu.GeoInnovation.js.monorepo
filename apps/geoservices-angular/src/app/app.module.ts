@@ -10,7 +10,7 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { Angulartics2Module } from 'angulartics2';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
+import { AuthService, AuthInterceptor, AuthGuard } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -20,8 +20,8 @@ import * as environment from '../environments/environment';
 const routes: Routes = [
   {
     path: 'internal',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesInternalModule)
-    // canActivateChild: [AuthGuard]
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesInternalModule),
+    canActivateChild: [AuthGuard]
   },
   {
     path: 'docs',
