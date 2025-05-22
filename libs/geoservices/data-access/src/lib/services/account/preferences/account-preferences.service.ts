@@ -20,9 +20,9 @@ export class AccountPreferencesService {
     return this.details.getDetails().pipe(
       switchMap((details) => {
         return of({
-          NewsUpdates: JSON.parse(details.NotifyNewsUpdates.toLowerCase()),
-          ServiceUpdates: JSON.parse(details.NotifyServiceUpdates.toLowerCase()),
-          ServiceOutages: JSON.parse(details.NotifyServiceOutages.toLowerCase())
+          NewsUpdates: details?.NotifyNewsUpdates?.toLowerCase() === 'true' || false,
+          ServiceUpdates: details?.NotifyServiceUpdates?.toLowerCase() === 'true' || false,
+          ServiceOutages: details?.NotifyServiceOutages?.toLowerCase() === 'true' || false
         });
       })
     );
