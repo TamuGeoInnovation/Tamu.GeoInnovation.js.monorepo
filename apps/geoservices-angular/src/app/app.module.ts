@@ -19,7 +19,7 @@ import * as environment from '../environments/environment';
 
 const routes: Routes = [
   {
-    path: 'internal',
+    path: 'account',
     loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesInternalModule),
     canActivateChild: [AuthGuard]
   },

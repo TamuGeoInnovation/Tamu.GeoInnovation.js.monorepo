@@ -383,7 +383,11 @@ export class PaymentsService {
         method: 'POST',
         body: nvpString
       })
-      .then((res) => NVPTransformer.deserialize<IPayflowRecurringProfileDetailsResponse>(res.body));
+      .then((res) => NVPTransformer.deserialize<IPayflowRecurringProfileDetailsResponse>(res.body))
+      .catch((err) => {
+        Logger.error(`Error getting subscription details: ${err}`, 'PaymentsService');
+        throw new BadRequestException('Could not get subscription details');
+      });
   }
 
   public getRecurringProfilePayments(profileId: string) {

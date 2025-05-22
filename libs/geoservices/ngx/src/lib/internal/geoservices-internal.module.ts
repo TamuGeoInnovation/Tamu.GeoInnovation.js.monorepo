@@ -16,10 +16,10 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'account'
+        redirectTo: 'profile'
       },
       {
-        path: 'account',
+        path: 'profile',
         loadChildren: () => import('./pages/account/account.module').then((m) => m.AccountModule)
       },
       {
