@@ -11,11 +11,14 @@ import { NVPTransformer } from '../../utils/payflow.utils';
 import {
   IDoExpressCheckoutPaymentResponse,
   IGetExpressCheckoutDetailsResponse,
+  IPayflowCancelledRecurringProfileResponse,
+  IPayflowModifySubscriptionResponse,
   IPayflowCreateSubscriptionResponse,
   IPayflowExpressCheckoutPostbackResponse,
   IPayflowExpressCheckoutTokenResponse,
   IPayflowPostbackVerboseResponse,
-  IPayflowRecurringProfileDetailsResponse
+  IPayflowRecurringProfileDetailsResponse,
+  PAYFLOW_SUBSCRIPTION_STATUS
 } from '../../interfaces/paypal/paypal-payflow.interface';
 import { User } from '../../entities/user.entity';
 import { Payment } from '../../entities/payment.entity';
@@ -364,6 +367,10 @@ export class PaymentsService {
   }
 
   public getRecurringSubscriptionDetails(subscriptionId: string) {
+    if (process.env.LOG_LEVEL === 'verbose') {
+      Logger.verbose(`Fetching subscription details from PayPal for ${subscriptionId}`, 'PaymentsService');
+    }
+
     const form = {
       PARTNER: this.env.value('payflowPartner'),
       USER: this.env.value('payflowUser'),
@@ -433,11 +440,32 @@ export class PaymentsService {
         body: nvpString
       })
       .then((res) => {
-        return NVPTransformer.deserialize(res.body);
+        return NVPTransformer.deserialize<IPayflowModifySubscriptionResponse>(res.body);
       });
   }
 
-  public reactiveRecurringSubscription(profileId: string) {
+  /**
+   * Reactivates a recurring subscription using the profile ID.
+   *
+   * `startDate` must be a MMDDYYYY format and represents the date when the next payment for the date should be processed.
+   *
+   * TODO: DANGER: If not provided, the start date will be set to the current date which will create an overlap in the subscription.
+   */
+  public reactiveRecurringSubscription(profileId: string, startDate?: string) {
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    const startDateString = tomorrowDate
+      .toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      })
+      .replace(/\//g, '');
+
+    if (!startDate) {
+      startDate = startDateString;
+    }
+
     const form = {
       PARTNER: this.env.value('payflowPartner'),
       USER: this.env.value('payflowUser'),
@@ -446,7 +474,8 @@ export class PaymentsService {
       TRXTYPE: 'R',
       TENDER: 'P',
       ACTION: 'R',
-      ORIGPROFILEID: profileId
+      ORIGPROFILEID: profileId,
+      START: startDate
     };
 
     const nvpString = NVPTransformer.serialize(form);
@@ -457,86 +486,123 @@ export class PaymentsService {
         body: nvpString
       })
       .then((res) => {
-        return NVPTransformer.deserialize(res.body);
+        return NVPTransformer.deserialize<IPayflowCancelledRecurringProfileResponse>(res.body);
       });
   }
 
   public async getSubscriptionDetailsForUser(userGuid: string): Promise<GsvcsSubscription> {
+    const subscription = await this.getActiveSubscriptionEntityForUser(userGuid);
+
+    if (subscription) {
+      const profileId = subscription.recurringProfileID;
+
+      const details = await this.getRecurringSubscriptionDetails(profileId);
+
+      return this._getFakeTier(details);
+    }
+  }
+
+  public async getActiveSubscriptionEntityForUser(userGuid: string): Promise<Subscription> {
     if (process.env.LOG_LEVEL === 'verbose') {
-      Logger.verbose(`Searching for existing subscription for : ${userGuid}`, 'PaymentsService');
+      Logger.verbose(`Searching for existing subscription entity for : ${userGuid}`, 'PaymentsService');
     }
 
-    const sub = await this.subscriptions.find({
+    const subscription = await this.subscriptions.findOne({
       where: {
         userGuid,
         recurringProfileID: Not('')
       }
     });
 
-    if (sub.length > 0) {
-      const subscription = sub[0];
-      const profileId = subscription.recurringProfileID;
+    return subscription;
+  }
 
-      if (process.env.LOG_LEVEL === 'verbose') {
-        Logger.verbose(`Existing subscription found. Fetching details from PayPal`, 'PaymentsService');
-      }
+  public async cancelUserSubscription(userGuid: string) {
+    // First get the user's subscription details to verify they have an active subscription
+    const subscription = await this.getSubscriptionDetailsForUser(userGuid);
 
-      const details = await this.getRecurringSubscriptionDetails(profileId);
-
-      // TODO: These are mock values. Update with valid tiers when they are coming from a database
-      try {
-        return {
-          tier: {
-            id: 'lite',
-            name: 'Lite',
-            description: 'Basic access to features, ideal for individuals or small teams',
-            benefits: [
-              {
-                id: 'daily-transactions',
-                name: 'Daily Transactions',
-                description: 'Transactions per day',
-                value: 5000,
-                showcase: true
-              },
-              {
-                id: 'rate-limit',
-                name: 'Rate Limit',
-                description: 'Requests per second',
-                value: 15,
-                showcase: true
-              },
-              {
-                id: 'api-access',
-                name: 'API Feature Access',
-                description: 'API features',
-                value: 'basic',
-                showcase: true
-              },
-              {
-                id: 'users',
-                name: 'Users',
-                description: 'Managed users',
-                value: 1,
-                showcase: true
-              }
-            ]
-          },
-          status: details.STATUS,
-          active: details.STATUS === 'ACTIVE',
-          nextPaymentDate: details.NEXTPAYMENT, // Date is in the format MMDDYYYY. Convert to ISO format
-          nextPaymentDateISO: new Date(
-            `${details.NEXTPAYMENT.substring(4, 8)}-${details.NEXTPAYMENT.substring(0, 2)}-${details.NEXTPAYMENT.substring(
-              2,
-              4
-            )}`
-          ).toISOString(),
-          amount: details.AMT
-        };
-      } catch (err) {
-        Logger.error(`Error getting subscription details`, 'PaymentsService');
-        Logger.error(details, 'PaymentsService');
-        throw new BadRequestException('Could not get subscription details');
-      }
+    if (!subscription) {
+      throw new BadRequestException('No active subscription found for user');
     }
+
+    // Get the subscription entity to access the recurringProfileID
+    const subscriptionEntity = await this.getActiveSubscriptionEntityForUser(userGuid);
+
+    if (!subscriptionEntity || !subscriptionEntity.recurringProfileID) {
+      throw new BadRequestException('No recurring profile ID found for subscription');
+    }
+
+    // Cancel the subscription using the profile ID
+    return this.deactivateRecurringSubscription(subscriptionEntity.recurringProfileID);
+  }
+
+  public async reactivateUserSubscription(userGuid: string) {
+    // First get the user's subscription details to verify they have an active subscription
+    const subscription = await this.getActiveSubscriptionEntityForUser(userGuid);
+
+    if (!subscription) {
+      throw new BadRequestException('No subscription eligible for reactivation found for user');
+    }
+
+    if (!subscription.recurringProfileID) {
+      throw new BadRequestException('No recurring profile ID found for subscription');
+    }
+
+    // Reactivate the subscription using the profile ID
+    const rest = await this.reactiveRecurringSubscription(subscription.recurringProfileID);
+
+    return rest;
+  }
+
+  private _getFakeTier(details: IPayflowRecurringProfileDetailsResponse): GsvcsSubscription {
+    return {
+      tier: {
+        id: 'lite',
+        name: 'Lite',
+        description: 'Basic access to features, ideal for individuals or small teams',
+        benefits: [
+          {
+            id: 'daily-transactions',
+            name: 'Daily Transactions',
+            description: 'Transactions per day',
+            value: 5000,
+            showcase: true
+          },
+          {
+            id: 'rate-limit',
+            name: 'Rate Limit',
+            description: 'Requests per second',
+            value: 15,
+            showcase: true
+          },
+          {
+            id: 'api-access',
+            name: 'API Feature Access',
+            description: 'API features',
+            value: 'basic',
+            showcase: true
+          },
+          {
+            id: 'users',
+            name: 'Users',
+            description: 'Managed users',
+            value: 1,
+            showcase: true
+          }
+        ]
+      },
+      status: details.STATUS,
+      active: details.STATUS === PAYFLOW_SUBSCRIPTION_STATUS.ACTIVE,
+      nextPaymentDate: details?.NEXTPAYMENT || null, // Date is in the format MMDDYYYY. Convert to ISO format
+      nextPaymentDateISO: details?.NEXTPAYMENT
+        ? new Date(
+            `${details?.NEXTPAYMENT?.substring(4, 8)}-${details?.NEXTPAYMENT?.substring(
+              0,
+              2
+            )}-${details?.NEXTPAYMENT?.substring(2, 4)}`
+          ).toUTCString()
+        : null,
+      amount: details?.AMT || null
+    };
   }
 }

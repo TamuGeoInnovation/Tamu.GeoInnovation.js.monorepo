@@ -47,6 +47,10 @@ export class PaymentsService {
   }
 
   public cancelSubscription() {
-    return this.http.delete(`${this.resource}/subscription/cancel`, { withCredentials: true });
+    return this.http.delete(`${this.resource}/subscription`, { withCredentials: true });
+  }
+
+  public reactivateSubscription() {
+    return this.http.post(`${this.resource}/subscription/activate`, {}, { withCredentials: true });
   }
 }

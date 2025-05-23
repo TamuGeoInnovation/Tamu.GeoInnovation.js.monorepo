@@ -141,11 +141,14 @@ export interface IPayflowCreateSubscriptionResponse {
   RPREF: string;
 }
 
+/**
+ * Response when fetching the details for an active subscription
+ */
 export interface IPayflowRecurringProfileDetailsResponse {
   RESULT: string;
   RPREF: string;
   PROFILEID: string;
-  STATUS: string;
+  STATUS: PAYFLOW_SUBSCRIPTION_STATUS;
   CREATIONDATE: string;
   PROFILENAME: string;
   START: string;
@@ -178,4 +181,47 @@ export interface IPayflowRecurringProfileDetailsResponse {
   SHIPTOCOUNTRY: string;
   BAID: string;
   CURRENCY: string;
+}
+
+/**
+ * Response when fetching the details for a cancelled subscription
+ */
+export interface IPayflowCancelledRecurringProfileResponse {
+  /**
+   * Dollar amount as a string (e.g. '10.00')
+   */
+  AGGREGATEAMT: string;
+
+  /**
+   * Format MMDDYYYY
+   */
+  CANCELDATE: string;
+
+  /**
+   * Format MMDDYYYY
+   */
+  CREATIONDATE: string;
+
+  PROFILEID: string;
+  RESULT: string;
+  RPREF: string;
+  STATUS: PAYFLOW_SUBSCRIPTION_STATUS;
+}
+
+/**
+ * Response when cancelling a subscription
+ */
+export interface IPayflowModifySubscriptionResponse {
+  PROFILEID: string;
+  RESPMSG: string;
+  RESULT: string;
+  RPREF: string;
+}
+
+export enum PAYFLOW_SUBSCRIPTION_STATUS {
+  VENDOR_INACTIVE = 'VENDOR INACTIVE',
+  DEACTIVATED_BY_MERCHANT = 'DEACTIVATED BY MERCHANT',
+  EXPIRED = 'EXPIRED',
+  TOO_MANY_FAILURES = 'TOO MANY FAILURES',
+  ACTIVE = 'ACTIVE'
 }

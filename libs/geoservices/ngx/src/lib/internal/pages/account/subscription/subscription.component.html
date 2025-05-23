@@ -1,30 +1,38 @@
 <p>Review and manage your subscription plan at any time to best suit your needs.</p>
 
-<ng-container *ngIf="(subscription | async) as subscription; else noInfo">
-  <div class="info-block context trailer-1">
-    <div class="info-block__content flex flex-row">
-      <div id="tier__icon">
-        <span class="material-icons">category</span>
-      </div>
-
-      <div class="flex flex-column">
-        <div class="flex flex-row" id="tier__header">
-          <p id="tier__name">{{subscription?.tier?.name}} Plan</p>
-          <p id="tier__cost">{{subscription?.amount | currency}}/mo</p>
+<ng-container *ngIf="(subscription | async) !== null; else noInfo">
+  <ng-container *ngIf="(subscription | async) as subscription">
+    <div class="info-block context trailer-1">
+      <div class="info-block__content flex flex-row">
+        <div id="tier__icon">
+          <span class="material-icons">category</span>
         </div>
 
-        <div>
-          <p>{{subscription?.tier?.description}}. Includes {{composedTierBenefits | async}}</p>
-          <p id="tier__renewal">Renews on {{subscription?.nextPaymentDateISO | date}}</p>
+        <div class="flex flex-column">
+          <div class="flex flex-row" id="tier__header">
+            <p id="tier__name">{{subscription?.tier?.name}} Plan</p>
+            <p id="tier__cost">{{subscription?.amount | currency}}/mo</p>
+          </div>
+
+          <div>
+            <p>{{subscription?.tier?.description}}. Includes {{composedTierBenefits | async}}</p>
+            <p id="tier__renewal">Renews on {{subscription?.nextPaymentDateISO | date : undefined : 'UTC'}}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="tier__actions" class="flex flex-row justify-end">
-    <a (click)="openSubscriptionCancelModal()" id="cancel">Cancel Subscription</a>
-    <a href="" id="change">Modify Subscription</a>
-  </div>
+    <div id="tier__actions" class="flex flex-row justify-end" *ngIf="subscription.active; else renewLinks">
+      <a (click)="openSubscriptionCancelModal()" id="cancel">Cancel Subscription</a>
+      <a href="" id="change">Modify Subscription</a>
+    </div>
+
+    <ng-template #renewLinks>
+      <div id="tier__actions" class="flex flex-row justify-end">
+        <a (click)="openSubscriptionReactivateModal()" id="renew">Renew Subscription</a>
+      </div>
+    </ng-template>
+  </ng-container>
 </ng-container>
 
 <ng-template #noInfo> <div class="spinning-loader"></div> </ng-template>
