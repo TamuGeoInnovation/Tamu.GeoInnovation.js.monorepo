@@ -1,0 +1,15 @@
+<ng-container *ngIf="data.title">
+  <h2>{{data.title}}</h2>
+</ng-container>
+
+<ng-container *ngIf="data.subTitle">
+  <h3 class="trailer-1">{{data.subTitle}}</h3>
+</ng-container>
+
+<div class="trailer-2" [innerHTML]="body | async | markdownParse" *ngIf="data.body"></div>
+
+<ng-container *ngIf="data.actions as actions">
+  <div id="generic-modal__button-container" class="flex flex-row justify-end" *ngIf="actions.buttons && actions.buttons.length && actions.buttons.length > 0">
+    <tamu-gisc-button *ngFor="let action of actions.buttons" [look]="action.style" (click)="callAction(action.value)" [value]="action.label"></tamu-gisc-button>
+  </div>
+</ng-container>

@@ -3,6 +3,7 @@ import { ComponentRef, Inject, Injectable, Type, ViewContainerRef } from '@angul
 import { Observable } from 'rxjs';
 
 import { ModalHostComponent } from '../../components/modal-host/modal-host.component';
+import { GenericModalComponent, GenericModalContext } from '../../components/generic-modal/generic-modal.component';
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {
@@ -21,7 +22,10 @@ export class ModalService {
     this._viewRef = ref;
   }
 
-  public open<T>(component: Type<unknown>, options?: ModalOpenOptions): Observable<T> {
+  public open<PayloadType, ReturnType>(
+    componentOrGenericContext: Type<unknown> | GenericModalContext<PayloadType>,
+    options?: ModalOpenOptions<PayloadType>
+  ): Observable<ReturnType> {
     if (options && options.viewRef) {
       this._modalRef = options.viewRef.createComponent(ModalHostComponent);
 
@@ -38,12 +42,26 @@ export class ModalService {
     // modal host component.
     this.document.body.classList.add('modal-open');
 
-    // Pass in provided data to the host component which will pass it down to the actual inner
-    // modal component.
-    //
-    // The return value is an `close` event observable from the ModalHostComponent that
-    // hosts the provided component as a child.
-    return this._modalRef.instance.mountModalChild(component, options?.data) as Observable<T>;
+    // If componentOrGenericContext is a class (not an object), then we need to create a new instance
+    // of the component and pass it to the modal host.
+    if (typeof componentOrGenericContext === 'function') {
+      // Pass in provided data to the host component which will pass it down to the actual inner
+      // modal component.
+      //
+      // The return value is an `close` event observable from the ModalHostComponent that
+      // hosts the provided component as a child.
+
+      return this._modalRef.instance.mountModalChild(componentOrGenericContext, options?.data) as Observable<ReturnType>;
+    } else if (typeof componentOrGenericContext === 'object') {
+      // If componentOrGenericContext is an object, then we need to pass it to the modal host as a
+      // generic context.
+      return this._modalRef.instance.mountModalChild(
+        GenericModalComponent,
+        componentOrGenericContext
+      ) as Observable<ReturnType>;
+    } else {
+      throw new Error('Invalid component or generic context provided to modal service.');
+    }
   }
 
   private listenForChildClose() {
@@ -57,7 +75,7 @@ export class ModalService {
   }
 }
 
-export interface ModalOpenOptions {
+export interface ModalOpenOptions<T> {
   /**
    * View container ref where the modal host is created.
    *
@@ -72,5 +90,5 @@ export interface ModalOpenOptions {
    *
    * Passed in data is available in the inner modal component through the `MODAL_DATA` provider.
    */
-  data: unknown;
+  data: T | Observable<T>;
 }
