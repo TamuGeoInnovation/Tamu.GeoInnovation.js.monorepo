@@ -1,6 +1,6 @@
 <p>Review and manage your subscription plan at any time to best suit your needs.</p>
 
-<ng-container *ngIf="(subscription | async) as subscription">
+<ng-container *ngIf="(subscription | async) as subscription; else noInfo">
   <div class="info-block context trailer-1">
     <div class="info-block__content flex flex-row">
       <div id="tier__icon">
@@ -15,8 +15,16 @@
 
         <div>
           <p>{{subscription?.tier?.description}}. Includes {{composedTierBenefits | async}}</p>
+          <p id="tier__renewal">Renews on {{subscription?.nextPaymentDateISO | date}}</p>
         </div>
       </div>
     </div>
   </div>
+
+  <div id="tier__actions" class="flex flex-row justify-end">
+    <a (click)="openSubscriptionCancelModal()" id="cancel">Cancel Subscription</a>
+    <a href="" id="change">Modify Subscription</a>
+  </div>
 </ng-container>
+
+<ng-template #noInfo> <div class="spinning-loader"></div> </ng-template>

@@ -5,7 +5,11 @@ import { Observable } from 'rxjs';
 import { OnApproveData } from '@paypal/paypal-js';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { IPayflowExpressCheckoutTokenResponse, IPayflowPostbackResponse } from '@tamu-gisc/geoservices/data-api';
+import {
+  GsvcsSubscription,
+  IPayflowExpressCheckoutTokenResponse,
+  IPayflowPostbackResponse
+} from '@tamu-gisc/geoservices/data-api';
 
 @Injectable({
   providedIn: 'root'
@@ -36,9 +40,13 @@ export class PaymentsService {
     });
   }
 
-  public getUserSubscriptionDetails(): Observable<any> {
-    return this.http.get<any>(`${this.resource}/subscription/`, {
+  public getUserSubscriptionDetails() {
+    return this.http.get<GsvcsSubscription>(`${this.resource}/subscription/`, {
       withCredentials: true
     });
+  }
+
+  public cancelSubscription() {
+    return this.http.delete(`${this.resource}/subscription/cancel`, { withCredentials: true });
   }
 }

@@ -24,3 +24,20 @@
     color: var(--state-transition-color);
   }
 }
+
+#tier__renewal {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+#tier__actions {
+  a {
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+  }
+
+  #cancel {
+    color: var(--alert-color);
+  }
+}

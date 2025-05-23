@@ -385,7 +385,7 @@ export class PaymentsService {
       })
       .then((res) => NVPTransformer.deserialize<IPayflowRecurringProfileDetailsResponse>(res.body))
       .catch((err) => {
-        Logger.error(`Error getting subscription details: ${err}`, 'PaymentsService');
+        Logger.error(`Error getting subscription details: ${err.message}`, 'PaymentsService');
         throw new BadRequestException('Could not get subscription details');
       });
   }
@@ -484,53 +484,59 @@ export class PaymentsService {
       const details = await this.getRecurringSubscriptionDetails(profileId);
 
       // TODO: These are mock values. Update with valid tiers when they are coming from a database
-      return {
-        tier: {
-          id: 'lite',
-          name: 'Lite',
-          description: 'Basic access to features, ideal for individuals or small teams',
-          benefits: [
-            {
-              id: 'daily-transactions',
-              name: 'Daily Transactions',
-              description: 'Transactions per day',
-              value: 5000,
-              showcase: true
-            },
-            {
-              id: 'rate-limit',
-              name: 'Rate Limit',
-              description: 'Requests per second',
-              value: 15,
-              showcase: true
-            },
-            {
-              id: 'api-access',
-              name: 'API Feature Access',
-              description: 'API features',
-              value: 'basic',
-              showcase: true
-            },
-            {
-              id: 'users',
-              name: 'Users',
-              description: 'Managed users',
-              value: 1,
-              showcase: true
-            }
-          ]
-        },
-        status: details.STATUS,
-        active: details.STATUS === 'ACTIVE',
-        nextPaymentDate: details.NEXTPAYMENT, // Date is in the format MMDDYYYY. Convert to ISO format
-        // nextPaymentDateISO: new Date(
-        //   `${details.NEXTPAYMENT.substring(4, 8)}-${details.NEXTPAYMENT.substring(0, 2)}-${details.NEXTPAYMENT.substring(
-        //     2,
-        //     4
-        //   )}`
-        // ).toISOString(),
-        amount: details.AMT
-      };
+      try {
+        return {
+          tier: {
+            id: 'lite',
+            name: 'Lite',
+            description: 'Basic access to features, ideal for individuals or small teams',
+            benefits: [
+              {
+                id: 'daily-transactions',
+                name: 'Daily Transactions',
+                description: 'Transactions per day',
+                value: 5000,
+                showcase: true
+              },
+              {
+                id: 'rate-limit',
+                name: 'Rate Limit',
+                description: 'Requests per second',
+                value: 15,
+                showcase: true
+              },
+              {
+                id: 'api-access',
+                name: 'API Feature Access',
+                description: 'API features',
+                value: 'basic',
+                showcase: true
+              },
+              {
+                id: 'users',
+                name: 'Users',
+                description: 'Managed users',
+                value: 1,
+                showcase: true
+              }
+            ]
+          },
+          status: details.STATUS,
+          active: details.STATUS === 'ACTIVE',
+          nextPaymentDate: details.NEXTPAYMENT, // Date is in the format MMDDYYYY. Convert to ISO format
+          nextPaymentDateISO: new Date(
+            `${details.NEXTPAYMENT.substring(4, 8)}-${details.NEXTPAYMENT.substring(0, 2)}-${details.NEXTPAYMENT.substring(
+              2,
+              4
+            )}`
+          ).toISOString(),
+          amount: details.AMT
+        };
+      } catch (err) {
+        Logger.error(`Error getting subscription details`, 'PaymentsService');
+        Logger.error(details, 'PaymentsService');
+        throw new BadRequestException('Could not get subscription details');
+      }
     }
   }
 }

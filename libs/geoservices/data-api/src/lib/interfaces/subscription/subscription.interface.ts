@@ -18,6 +18,6 @@ export interface GsvcsSubscription {
   status: string;
   active: boolean;
   nextPaymentDate: string; // MMDDYYYY format
-  // nextPaymentDateISO: string; // ISO format, if needed
+  nextPaymentDateISO: string; // ISO format, if needed
   amount: number | string;
 }

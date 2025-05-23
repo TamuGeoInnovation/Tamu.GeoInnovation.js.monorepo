@@ -3,6 +3,7 @@ import { concatMap, filter, map, Observable, reduce, shareReplay } from 'rxjs';
 
 import { PaymentsService } from '@tamu-gisc/geoservices/data-access';
 import { GsvcsSubscription } from '@tamu-gisc/geoservices/data-api';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
   selector: 'tamu-gisc-subscription',
@@ -13,7 +14,7 @@ export class SubscriptionComponent implements OnInit {
   public subscription: Observable<GsvcsSubscription>;
   public composedTierBenefits: Observable<string>;
 
-  constructor(private readonly ps: PaymentsService) {}
+  constructor(private readonly ps: PaymentsService, private readonly ms: ModalService) {}
 
   public ngOnInit(): void {
     this.subscription = this.ps.getUserSubscriptionDetails().pipe(shareReplay(1));
@@ -35,5 +36,38 @@ export class SubscriptionComponent implements OnInit {
       }),
       shareReplay(1)
     );
+  }
+
+  public openSubscriptionCancelModal(): void {
+    this.ms
+      .open<GsvcsSubscription, boolean>({
+        title: 'Manage Subscription',
+        subTitle: 'Are you sure you want to cancel your subscription?',
+        context: this.subscription,
+        body: (ctx) => {
+          return `We're sorry to see you go! Your subscription to the **${
+            ctx.tier.name
+          }** tier is set to renew on *${new Date(
+            ctx.nextPaymentDateISO
+          ).toLocaleDateString()}*. By cancelling, you will no longer be charged at the time or renewal but will maintain all your current benefits until the end of your subscription period. If you change your mind before the end of your subscription period, you can re-activate your subscription by visiting this page again.`;
+        },
+        actions: {
+          buttons: [
+            {
+              label: 'No, take me back',
+              value: false,
+              style: 'secondary'
+            },
+            {
+              label: `Yes, I'm sure`,
+              value: true,
+              style: 'danger'
+            }
+          ]
+        }
+      })
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 }

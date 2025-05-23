@@ -22,6 +22,14 @@ export class ModalService {
     this._viewRef = ref;
   }
 
+  public open<ReturnType>(
+    componentOrGenericContext: Type<unknown>,
+    options?: ModalOpenOptions<Record<string, unknown>>
+  ): Observable<ReturnType>;
+  public open<PayloadType, ReturnType>(
+    componentOrGenericContext: GenericModalContext<PayloadType>,
+    options?: ModalOpenOptions<PayloadType>
+  ): Observable<ReturnType>;
   public open<PayloadType, ReturnType>(
     componentOrGenericContext: Type<unknown> | GenericModalContext<PayloadType>,
     options?: ModalOpenOptions<PayloadType>
