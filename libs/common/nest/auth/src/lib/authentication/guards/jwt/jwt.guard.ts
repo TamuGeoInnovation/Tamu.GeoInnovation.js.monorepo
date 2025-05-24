@@ -8,7 +8,7 @@ export class JwtGuard extends AuthGuard('jwt') {
     super();
   }
 
-  public handleRequest<TUser>(err, user, info, context): TUser {
+  public override handleRequest<TUser>(err, user, info, context): TUser {
     const allowAny = this.rf.get<string[]>('AllowAny', context.getHandler());
 
     if (user) {

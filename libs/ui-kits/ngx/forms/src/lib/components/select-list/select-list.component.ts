@@ -83,8 +83,8 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes?.options?.currentValue) {
-      this.initializeOptions(changes.options.currentValue);
+    if (changes?.['options']?.currentValue) {
+      this.initializeOptions(changes['options'].currentValue);
     }
   }
 

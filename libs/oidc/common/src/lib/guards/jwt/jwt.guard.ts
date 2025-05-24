@@ -3,11 +3,11 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class JwtGuard extends AuthGuard('jwt') {
-  public canActivate(context: ExecutionContext) {
+  public override canActivate(context: ExecutionContext) {
     return super.canActivate(context);
   }
 
-  public handleRequest(err, user, info) {
+  public override handleRequest(err, user, info) {
     if (err || !user) {
       console.warn(info);
 

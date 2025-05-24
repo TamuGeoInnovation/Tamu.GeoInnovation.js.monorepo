@@ -14,7 +14,7 @@ export class PieChartComponent extends BaseChartComponent implements AfterViewIn
     super();
   }
 
-  public ngAfterViewInit() {
+  public override ngAfterViewInit() {
     this.baseConfig = new PieChartConfiguration();
     super.ngAfterViewInit();
   }

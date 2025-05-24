@@ -14,7 +14,7 @@ export class BarChartComponent extends BaseChartComponent implements AfterViewIn
     super();
   }
 
-  public ngAfterViewInit() {
+  public override ngAfterViewInit() {
     this.baseConfig = new BarChartConfiguration();
 
     super.ngAfterViewInit();

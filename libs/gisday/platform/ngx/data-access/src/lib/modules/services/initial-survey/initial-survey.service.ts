@@ -10,7 +10,7 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class InitialSurveyService extends BaseService<InitialSurveyResponse> {
-  public resource: string;
+  public override resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
     super(env1, http1, 'initial-surveys');

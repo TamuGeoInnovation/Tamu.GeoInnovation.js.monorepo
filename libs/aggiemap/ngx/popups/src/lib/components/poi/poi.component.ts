@@ -42,7 +42,7 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
     super(rtr, rt, ps, anl, mp);
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     super.ngOnInit();
 
     this.medias = this.data.attributes.images.split(',').map((imgName) => {
@@ -85,7 +85,7 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
     }
   }
 
-  public startDirections() {
+  public override startDirections() {
     super.startDirections(`${this.data.attributes.Name}`);
   }
 }

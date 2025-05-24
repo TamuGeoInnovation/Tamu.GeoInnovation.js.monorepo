@@ -12,7 +12,7 @@ export class LoginGuard extends AuthGuard(OpenIdClient.strategyName) {
   constructor(@Inject('HOST') public host: OidcClientModuleParameters['host']) {
     super();
   }
-  public async canActivate(context: ExecutionContext) {
+  public override async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     if (request.query && request.query.ret) {
       console.log('Setting return url to be: ', request.query.ret);

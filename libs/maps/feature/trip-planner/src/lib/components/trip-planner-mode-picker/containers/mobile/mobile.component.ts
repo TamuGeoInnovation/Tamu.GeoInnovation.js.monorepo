@@ -22,7 +22,9 @@ export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerC
     super(tps, dts);
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
+    super.ngOnInit();
+
     this.accessible = this.tps.TravelOptions.pipe(pluck('accessible'));
     this.isAccessibleMode = this.tps.TravelOptions.pipe(
       pluck('travel_mode'),

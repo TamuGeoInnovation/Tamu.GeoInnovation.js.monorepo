@@ -18,7 +18,7 @@ export class AdminDetailRsvpTypeComponent extends BaseAdminDetailComponent<RsvpT
     super(fb1, route1, rsvpTypeService);
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     super.ngOnInit();
 
     this.form = formExporter();

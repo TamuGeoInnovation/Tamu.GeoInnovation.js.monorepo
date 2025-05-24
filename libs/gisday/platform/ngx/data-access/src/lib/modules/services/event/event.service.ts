@@ -10,7 +10,7 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class EventService extends BaseService<Event> {
-  public resource: string;
+  public override resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
     super(env1, http1, 'events');

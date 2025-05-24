@@ -24,7 +24,7 @@ export class ParkingLotPopupComponent extends BaseDirectionsComponent {
     super(rtr, rt, ps, anl, mp);
   }
 
-  public startDirections() {
+  public override startDirections() {
     super.startDirections(`Lot ${this.data.attributes.Name}`);
   }
 }

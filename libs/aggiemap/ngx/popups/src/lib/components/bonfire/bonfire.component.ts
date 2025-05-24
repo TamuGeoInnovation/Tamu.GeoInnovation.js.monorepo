@@ -84,7 +84,7 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     super(rtr, rt, ps, anl, mp);
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     super.ngOnInit();
 
     if (this.data.attributes.Name) {
@@ -161,7 +161,7 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     }
   }
 
-  public startDirections() {
+  public override startDirections() {
     super.startDirections(`${this.data.attributes.Name}`);
   }
 }

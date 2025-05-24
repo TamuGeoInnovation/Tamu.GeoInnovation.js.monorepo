@@ -30,7 +30,7 @@ export class PopupMobileComponent extends PopupComponent implements OnDestroy {
     this.identifier = dragService.register(this);
   }
 
-  public ngOnDestroy() {
+  public override ngOnDestroy() {
     // Call base class on destroy method
     super.ngOnDestroy();
 

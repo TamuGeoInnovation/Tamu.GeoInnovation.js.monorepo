@@ -143,7 +143,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
       // thumbOffset can be negative or positive which is why it makes sense to add the two values together.
       const tooltipOffset = halfTooltipWidth + thumbOffset;
 
-      // Set the tooltip position to the center of the slider.
+      // Set the tooltip position to the center of the slider thumb.
       // This is based on the fact that the slider is broken down into even steps from 0 to max
       // and the tooltip is positioned as a percentage of the slider width minus half the width of the tooltip.
       this.liveValue.nativeElement.style.left = `calc(${(this.value / this.max) * 100}% - ${tooltipOffset}px)`;
@@ -151,7 +151,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.customDataMap && changes.customDataMap.currentValue !== undefined) {
+    if (changes['customDataMap'] && changes['customDataMap'].currentValue !== undefined) {
       // Simplify the template by having mapped and vanilla limits referenced by the same property.
       // This might need to be moved to OnChanges because the data source can change at any point in time
       // and the limits will not update.

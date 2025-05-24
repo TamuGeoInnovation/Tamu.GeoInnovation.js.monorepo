@@ -22,7 +22,7 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
   /**
    * Data set by the parent popup component.
    */
-  public data: esri.Graphic;
+  public override data: esri.Graphic;
 
   /**
    * Current href string, used in UI

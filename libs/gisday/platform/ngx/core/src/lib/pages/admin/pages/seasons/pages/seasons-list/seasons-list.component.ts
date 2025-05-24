@@ -27,7 +27,7 @@ export class SeasonsListComponent extends BaseAdminListComponent<Season> impleme
     super(ss, ss, ar, rt, ms, ns);
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     super.ngOnInit();
   }
 

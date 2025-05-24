@@ -7,11 +7,11 @@ import { IAuthorizationGuardUser } from '../../oidc-common';
 export class AdminGuard extends AuthGuard('jwt') {
   private ADMIN_LEVEL = '99';
 
-  public canActivate(context: ExecutionContext) {
+  public override canActivate(context: ExecutionContext) {
     return super.canActivate(context);
   }
 
-  public handleRequest(err, user, info) {
+  public override handleRequest(err, user, info) {
     if (err || !user) {
       console.warn(info);
 

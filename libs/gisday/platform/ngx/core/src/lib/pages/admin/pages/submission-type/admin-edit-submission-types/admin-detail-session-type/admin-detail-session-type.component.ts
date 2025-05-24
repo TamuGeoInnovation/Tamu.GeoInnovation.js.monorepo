@@ -22,7 +22,7 @@ export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<Su
     super(fb1, route1, submissionTypeService);
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     super.ngOnInit();
 
     this.form = formExporter();

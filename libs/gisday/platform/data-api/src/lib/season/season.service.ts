@@ -112,7 +112,7 @@ export class SeasonService extends BaseProvider<Season> {
     throw new NotFoundException('No active season found.');
   }
 
-  public async create(createSeasonDto?: Partial<Season>) {
+  public override async create(createSeasonDto?: Partial<Season>) {
     // If a season is provided, create using params
     if (createSeasonDto && createSeasonDto.year) {
       // If years param is not a number, this will throw a database error
@@ -293,7 +293,7 @@ export class SeasonService extends BaseProvider<Season> {
       const orgDict = new EntityKeyDictionary(savedOrgs, this.ENTITY_PK_LUT.organization);
       const uniDict = new EntityKeyDictionary(nextSeason.universities, this.ENTITY_PK_LUT.university);
 
-      const speakers = (await manager.find(Speaker, { where, relations: ['organization', 'university', 'images'] })).map(
+      const speakers = (await manager.find(Speaker, { where: { organization: {}, university: {}, images: {} } })).map(
         (s: Speaker) => {
           const speaker = this._stripEntityProperties(s);
 

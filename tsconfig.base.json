@@ -11,6 +11,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
+    "noImplicitOverride": true,
     "typeRoots": ["node_modules/@types"],
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,

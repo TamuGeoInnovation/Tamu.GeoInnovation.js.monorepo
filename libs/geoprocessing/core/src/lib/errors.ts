@@ -3,7 +3,7 @@ import { getXmlStatusCode } from './utils';
 
 export class GeoservicesError extends Error {
   public statusCode: number;
-  public message: string;
+  public override message: string;
   public type: string;
   public response: Responses | string | XMLDocument | AxiosError;
 

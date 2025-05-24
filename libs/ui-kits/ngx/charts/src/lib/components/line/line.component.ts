@@ -14,7 +14,7 @@ export class LineChartComponent extends BaseChartComponent implements AfterViewI
     super();
   }
 
-  public ngAfterViewInit() {
+  public override ngAfterViewInit() {
     this.baseConfig = new LineChartConfiguration();
 
     super.ngAfterViewInit();

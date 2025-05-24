@@ -14,7 +14,7 @@ export class DoughnutChartComponent extends BaseChartComponent implements AfterV
     super();
   }
 
-  public ngAfterViewInit() {
+  public override ngAfterViewInit() {
     this.baseConfig = new DoughnutChartConfiguration();
 
     super.ngAfterViewInit();

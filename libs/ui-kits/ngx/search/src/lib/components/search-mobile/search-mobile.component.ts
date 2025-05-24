@@ -26,7 +26,7 @@ export class SearchMobileComponent extends SearchComponent {
     super(cdr, anltcs, nss, ss, env);
   }
 
-  public emitLeftActionEvent(): void {
+  public override emitLeftActionEvent(): void {
     if (this.leftActionIcon) {
       if (this.leftActionIcon === 'arrow_back') {
         this.loseFocus();
