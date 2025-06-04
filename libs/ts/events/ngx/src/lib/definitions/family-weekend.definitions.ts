@@ -4,6 +4,8 @@ import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-
 import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 import { FAMILY_WEEKEND_LAYERS } from '../interfaces/family-weekend.interface';
 
+import esri = __esri;
+
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Family_Weekend/MapServer';
 const visitorParkingUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
 
@@ -66,7 +68,7 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
                 color: [0, 77, 168, 1],
                 width: 1
               }
-            } as any,
+            } as unknown as esri.SimpleFillSymbolProperties,
             label: 'Visitor Parking'
           }
         ]

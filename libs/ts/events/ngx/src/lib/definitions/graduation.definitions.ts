@@ -5,6 +5,8 @@ import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-
 import { GRADUATION_LAYERS } from '../interfaces/graduation.interface';
 import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/GraduationMuster/MapServer';
 
 const GraduationEventDefinitions = {
@@ -77,7 +79,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            }
+            } as unknown as esri.SimpleLineSymbolProperties
           },
           {
             value: 'Red',
@@ -91,10 +93,10 @@ export const GraduationColdLayerSources: LayerSource[] = [
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
-            }
+            } as unknown as esri.SimpleLineSymbolProperties
           }
         ]
-      } as any,
+      },
       labelingInfo: [
         {
           labelExpressionInfo: {

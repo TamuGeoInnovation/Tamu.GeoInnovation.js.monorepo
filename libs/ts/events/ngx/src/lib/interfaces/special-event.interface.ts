@@ -56,7 +56,7 @@ export interface EventConfiguration {
 /**
  * Representation of key-value pairs that define how the event map should be configured.
  */
-export interface EventSettings extends Record<string, any> {
+export interface EventSettings extends Record<string, string | boolean | number | null | undefined> {
   /**
    * Whether or not the user requires accessible accommodations
    */
