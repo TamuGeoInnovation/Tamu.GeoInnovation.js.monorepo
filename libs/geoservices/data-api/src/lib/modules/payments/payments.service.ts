@@ -560,34 +560,46 @@ export class PaymentsService {
         id: 'lite',
         name: 'Lite',
         description: 'Basic access to features, ideal for individuals or small teams',
-        benefits: [
+        categories: [
           {
-            id: 'daily-transactions',
-            name: 'Daily Transactions',
-            description: 'Transactions per day',
-            value: 5000,
-            showcase: true
-          },
-          {
-            id: 'rate-limit',
-            name: 'Rate Limit',
-            description: 'Requests per second',
-            value: 15,
-            showcase: true
-          },
-          {
-            id: 'api-access',
-            name: 'API Feature Access',
-            description: 'API features',
-            value: 'basic',
-            showcase: true
-          },
-          {
-            id: 'users',
-            name: 'Users',
-            description: 'Managed users',
-            value: 1,
-            showcase: true
+            id: 'services',
+            name: 'Services',
+            description: 'Access to basic services',
+            order: 1,
+            benefits: [
+              {
+                id: 'daily-transactions',
+                name: 'Daily Transactions',
+                description: 'Transactions per day',
+                value: 5000,
+                showcase: true,
+                order: 1
+              },
+              {
+                id: 'rate-limit',
+                name: 'Rate Limit',
+                description: 'Requests per second',
+                value: 15,
+                showcase: true,
+                order: 2
+              },
+              {
+                id: 'api-access',
+                name: 'API Feature Access',
+                description: 'API features',
+                value: 'basic',
+                showcase: true,
+                order: 3
+              },
+              {
+                id: 'users',
+                name: 'Users',
+                description: 'Managed users',
+                value: 1,
+                showcase: true,
+                order: 4
+              }
+            ]
           }
         ]
       },

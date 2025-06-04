@@ -12,3 +12,6 @@ export * from './lib/interfaces/subscription/subscription.interface';
 export * from './lib/entities/payment.entity';
 export * from './lib/entities/user.entity';
 export * from './lib/entities/subscription.entity';
+export * from './lib/entities/tier.entity';
+export * from './lib/entities/tier-category.entity';
+export * from './lib/entities/tier-benefit.entity';
