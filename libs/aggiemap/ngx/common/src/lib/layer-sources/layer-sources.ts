@@ -278,6 +278,47 @@ export function LayerSources(
           ]
         } as unknown as esri.UniqueValueRenderer
       }
+    },
+    {
+      type: 'geojson',
+      id: definitions.OAL_PRINTERS.layerId,
+      title: definitions.OAL_PRINTERS.name,
+      url: definitions.OAL_PRINTERS.url,
+      listMode: 'show',
+      visible: false,
+      popupComponent: definitions.OAL_PRINTERS.popupComponent,
+      popupData: {
+        description: `<strong>Access</strong>: {attributes.Access}\n<strong>Building</strong>: {attributes.BuildingName} ({attributes.BuildingNumber})\n<strong>Printer Type</strong>: {attributes.PrinterType}\n<strong>Details</strong>: {attributes.PrinterDetails}`
+      },
+      native: {
+        ...commonLayerProps,
+        renderer: {
+          type: 'unique-value',
+          valueExpression: `When($feature.Access == 'Public', 'all',  'restricted')`,
+          uniqueValueInfos: [
+            {
+              value: 'all',
+              label: 'Public Access Printers',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/services/printer-all-access.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'restricted',
+              label: 'Restricted Access Printers',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/services/printer-restricted.png',
+                width: '24px',
+                height: '32px'
+              }
+            }
+          ]
+        } as unknown as esri.UniqueValueRenderer
+      }
     }
   ];
 

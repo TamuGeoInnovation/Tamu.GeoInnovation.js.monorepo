@@ -90,6 +90,13 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       name: 'Dining Locations',
       url: `${Connections.diningLocationsUrl}`,
       popupComponent: Popups.DiningPopupComponent
+    },
+    OAL_PRINTERS: {
+      id: 'oal-printers',
+      layerId: 'oal-printers-layer',
+      name: 'OAL Printers',
+      url: 'https://api.aggiemap.tamu.edu/proxy/https://isf2.apogee.tamu.edu/maps/data/tamuprinters.json',
+      popupComponent: Popups.MarkdownWDirectionsPopupComponent
     }
   };
 }
@@ -116,4 +123,5 @@ export interface IComposedIDefinitions {
   BIKE_RACKS: IDefinition;
   BIKE_LOCATIONS: IDefinition;
   DINING_LOCATIONS: IDefinition;
+  OAL_PRINTERS: IDefinition;
 }
