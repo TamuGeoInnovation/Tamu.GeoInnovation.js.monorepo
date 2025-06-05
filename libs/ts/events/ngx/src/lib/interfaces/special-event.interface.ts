@@ -196,7 +196,7 @@ export interface ResolvedEventSettings {
   [key: SpecialEventOption['value']]: {
     shortDescription: string;
     option: {
-      value: string | boolean | number;
+      value: string | boolean | number | null;
       label: string;
     } | null;
   };

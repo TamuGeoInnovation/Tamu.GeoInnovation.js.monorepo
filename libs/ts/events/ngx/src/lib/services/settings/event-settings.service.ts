@@ -33,7 +33,7 @@ export class EventSettingsService {
     }
 
     // Prepare the key-value settings as an array of key-value pairs to create url search params.
-    const settingsAsList = Object.entries(validSettings).map((s) => s);
+    const settingsAsList = Object.entries(validSettings) as unknown as string[][];
 
     return new URLSearchParams(settingsAsList);
   }
