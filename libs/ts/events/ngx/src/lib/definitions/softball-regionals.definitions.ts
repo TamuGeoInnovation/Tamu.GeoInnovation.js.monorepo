@@ -4,6 +4,8 @@ import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdow
 import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 import { SOFTBALL_LAYERS } from '../interfaces/softball-regionals.interface';
 
+import esri = __esri;
+
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Softball_Regionals/MapServer';
 
 const SoftballEventDefinitions = {
@@ -44,13 +46,13 @@ export const SoftballLayerSources: LayerSource[] = [
             symbol: {
               type: 'simple-line',
               color: 'rgb(56, 168, 0)',
-              width: 3,
+              width: 2,
               marker: {
                 style: 'arrow',
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            }
+            } as unknown as esri.SimpleLineSymbolProperties
           },
           {
             value: 'Expect Delays',
@@ -64,10 +66,10 @@ export const SoftballLayerSources: LayerSource[] = [
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
-            }
+            } as unknown as esri.SimpleLineSymbolProperties
           }
         ]
-      } as any
+      }
     }
   },
   {
