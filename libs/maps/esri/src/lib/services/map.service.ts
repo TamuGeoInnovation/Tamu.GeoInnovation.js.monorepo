@@ -1,6 +1,6 @@
 import { Injectable, Component, Type } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -47,6 +47,7 @@ export class EsriMapService {
   constructor(
     private moduleProvider: EsriModuleProviderService,
     private router: Router,
+    private route: ActivatedRoute,
     private searchService: SearchService,
     private environment: EnvironmentService,
     private http: HttpClient
@@ -116,7 +117,7 @@ export class EsriMapService {
       view: this._modules.view
     });
 
-    const layerSources: Array<LayerSource> = this.environment.value('LayerSources');
+    const layerSources: Array<LayerSource> = this.filterLayerSources(null, { params: true });
 
     // Filter list of layers that need to be added on map load
     await this.loadLayers(layerSources);
@@ -636,6 +637,50 @@ export class EsriMapService {
    */
   public clearHitTest() {
     this._hitTest.next({ graphics: [] });
+  }
+
+  /**
+   * Returns a list of layer sources, applying various filters if specified. This is used
+   * to limit the number of layers that are loaded on map load when requested.
+   *
+   * @param {LayerSource} sources
+   * @param {{ params?: boolean }} [filters] Optional filters to apply to the layer sources.
+   * If `params` is set to true, it will return only those layers that have an `essential` property defined AND
+   * the current application route contains 'layers' query params.
+   * @return {*}  {Array<LayerSource>}
+   * @memberof EsriMapService
+   */
+  public filterLayerSources(sources?: LayerSource, filters?: { params?: boolean }): Array<LayerSource> {
+    // Get the layer sources from the environment
+    let ret: Array<LayerSource> = sources || this.environment.value('LayerSources');
+
+    if (!ret || ret.length === 0) {
+      // If no layer sources are defined, return an empty array
+      console.warn('No layer sources defined in the environment. Not loading any layers.');
+
+      return [];
+    }
+
+    if (filters && filters?.params) {
+      const queryParams = this.route.snapshot.queryParams;
+
+      if (queryParams && queryParams['layers']) {
+        const requestedLayerIds: Array<string> = queryParams['layers'].split(',');
+
+        // If the filters parameter is set, filter out any layer sources that do not have a params property
+        ret = ret
+          .filter((source) => {
+            return source?.essential || requestedLayerIds.includes(source.id);
+          })
+          .map((s) => {
+            s.visible = true;
+
+            return s;
+          });
+      }
+    }
+
+    return ret;
   }
 
   /**

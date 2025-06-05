@@ -292,6 +292,10 @@ export type LayerSource = LayerSourceType & {
    * Defaults to `true`
    *
    * @deprecated Property has no function since implementation of esri's LayerListViewModel.
+   *
+   * Prefer the use of the `visible` property to control the initial visibility of the layer.
+   * Do note that layer visibility still ads the layer to the map, but it will not be rendered until the layer is visible.
+   * There is no support for lazy loading layers at the moment.
    */
   loadOnInit?: boolean;
 
@@ -301,6 +305,19 @@ export type LayerSource = LayerSourceType & {
    * Will default to true;
    */
   visible?: boolean;
+
+  /**
+   * Determines whether this layer is essential and should always be added to the map,
+   * regardless of specific layer requests or filtering.
+   *
+   * Essential layers are typically foundational layers like base buildings, roads,
+   * or other infrastructure that provide necessary context for the map.
+   *
+   * If layer visibility is set to `false`, it will be overridden in favor of `true`
+   *
+   * Defaults to `false`
+   */
+  essential?: boolean;
 
   /**
    * Template that is shows when a feature from this layer is selected.
