@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, shareReplay } from 'rxjs';
+import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -14,7 +14,7 @@ import { EventSettings, ResolvedEventSettings, SpecialEventOptions } from '../..
 })
 export class ReviewComponent implements OnInit {
   public eventOptions: BehaviorSubject<SpecialEventOptions>;
-  public settings: EventSettings;
+  public settings: Observable<EventSettings>;
   public mergedSettings: ResolvedEventSettings;
   public settingsValid = false;
 

@@ -4,6 +4,8 @@ import { AGGIELAND_SATURDAY_LAYERS } from '../interfaces/aggieland-saturday.inte
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
+import esri = __esri;
+
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AggielandSaturday/MapServer';
 
 export const AggielandSaturdayEventDefinitions = {
@@ -76,7 +78,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               url: '/assets/images/icons/transportation/Bus-Blue.png',
               width: '24px',
               height: '32px'
-            }
+            } as unknown as esri.PictureMarkerSymbolProperties
           },
           {
             value: '12',
@@ -86,10 +88,10 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               url: '/assets/images/icons/transportation/Bus-Red.png',
               width: '24px',
               height: '32px'
-            }
+            } as unknown as esri.PictureMarkerSymbolProperties
           }
         ]
-      } as any
+      }
     }
   },
   {
@@ -117,7 +119,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
                 color: 'blue',
                 placement: 'end'
               }
-            }
+            } as unknown as esri.SimpleLineSymbolProperties
           },
           {
             value: 'Aggieland Saturday W',
@@ -131,10 +133,10 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
                 color: 'red',
                 placement: 'end'
               }
-            }
+            } as unknown as esri.SimpleLineSymbolProperties
           }
         ]
-      } as any
+      }
     }
   },
   {
@@ -163,7 +165,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               url: '/assets/images/icons/transportation/Paid-Parking.png',
               width: '24px',
               height: '32px'
-            }
+            } as unknown as esri.PictureMarkerSymbolProperties
           },
           {
             value: 'Dining',
@@ -173,7 +175,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               url: '/assets/images/icons/shops-food/Dining.png',
               width: '24px',
               height: '32px'
-            }
+            } as unknown as esri.PictureMarkerSymbolProperties
           },
           {
             value: 'Performance',
@@ -183,7 +185,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               url: '/assets/images/icons/fixtures/Theater.png',
               width: '24px',
               height: '32px'
-            }
+            } as unknown as esri.PictureMarkerSymbolProperties
           },
           {
             value: 'Shopping',
@@ -193,7 +195,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               url: '/assets/images/icons/shops-food/Store.png',
               width: '24px',
               height: '32px'
-            }
+            } as unknown as esri.PictureMarkerSymbolProperties
           },
           {
             value: 'Bus Parking',
@@ -203,10 +205,10 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               url: '/assets/images/icons/hazards/Hazard.png',
               width: '24px',
               height: '32px'
-            }
+            } as unknown as esri.PictureMarkerSymbolProperties
           }
         ]
-      } as any
+      }
     }
   }
 ];

@@ -4,6 +4,8 @@ import { MUSTER_LAYERS } from '../interfaces/muster.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Muster/MapServer';
 
 export const MusterEventDefinitions = {
@@ -64,7 +66,7 @@ export const MusterEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            }
+            } as unknown as esri.SimpleLineSymbolProperties
           },
           {
             value: 'Expect Delays',
@@ -78,10 +80,10 @@ export const MusterEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
-            }
+            } as unknown as esri.SimpleLineSymbolProperties
           }
         ]
-      } as any
+      }
     }
   }
 ];

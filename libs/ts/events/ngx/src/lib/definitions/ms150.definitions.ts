@@ -59,12 +59,8 @@ export const MS150ColdLayerSources: LayerSource[] = [
             style: 'arrow',
             color: 'rgb(56, 168, 0)',
             placement: 'end'
-          },
-          outline: {
-            color: 'rgb(0, 0, 0)',
-            width: 2.5
           }
-        } as any
+        }
       }
     }
   }

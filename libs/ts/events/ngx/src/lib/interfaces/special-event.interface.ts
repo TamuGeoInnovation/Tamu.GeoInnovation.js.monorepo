@@ -56,7 +56,7 @@ export interface EventConfiguration {
 /**
  * Representation of key-value pairs that define how the event map should be configured.
  */
-export interface EventSettings extends Record<string, any> {
+export interface EventSettings extends Record<string, string | boolean | number | null | undefined> {
   /**
    * Whether or not the user requires accessible accommodations
    */
@@ -196,7 +196,7 @@ export interface ResolvedEventSettings {
   [key: SpecialEventOption['value']]: {
     shortDescription: string;
     option: {
-      value: string | boolean | number;
+      value: string | boolean | number | null;
       label: string;
     } | null;
   };
