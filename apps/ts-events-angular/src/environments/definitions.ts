@@ -1,8 +1,8 @@
 export {
-  FourHColdLayerSources as ColdLayerSources,
-  FourHRoundupOptions as SpecialEventOptions,
-  FourHRoundupConfiguration as SpecialEventConfiguration,
-  FOUR_H_ROUNDUP_LAYERS as SpecialEventLayerReferences
+  SoftballLayerSources as ColdLayerSources,
+  SoftballOptions as SpecialEventOptions,
+  SoftballConfiguration as SpecialEventConfiguration,
+  SOFTBALL_LAYERS as SpecialEventLayerReferences
 } from '@tamu-gisc/ts/events/ngx';
 
 export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
