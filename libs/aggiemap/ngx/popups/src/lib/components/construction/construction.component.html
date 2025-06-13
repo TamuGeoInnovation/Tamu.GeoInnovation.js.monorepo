@@ -4,9 +4,9 @@
 
 <div class="popup-section">
   <!-- Copy URL component -->
-  <div class="feature-style-2" tabindex="0"><strong>Scope</strong>: {{ data.attributes.Notes }}</div>
   <div class="feature-style-2" tabindex="0"><strong>Start Date</strong>: {{ data.attributes.StartDate | date: 'longDate' }}</div>
   <div class="feature-style-2" tabindex="0"><strong>End Date</strong>: {{ data.attributes.EndDate | date: 'longDate' }}</div>
   <div class="feature-style-2" tabindex="0" *ngIf="showContactName"><strong>Contact Name</strong>: {{ data.attributes.ContactName }}</div>
   <div class="feature-style-2" tabindex="0" *ngIf="showContactInfo"><strong>Contact Info</strong>: {{ data.attributes.ContactInfo }}</div>
+  <div class="feature-style-2" tabindex="0"><strong>Notes</strong>: {{ data.attributes.Notes }}</div>
 </div>

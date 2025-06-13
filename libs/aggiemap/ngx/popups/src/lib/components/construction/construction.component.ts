@@ -30,7 +30,7 @@ export class ConstructionPopupComponent extends BaseDirectionsComponent implemen
   public ngOnInit(): void {
     super.ngOnInit();
 
-    // Set contact visibility based on the attributes value is either not null or not empty
+    // Determine if the contact name and info should be shown based valid attribute data (not null or empty)
     this.showContactName = this.data.attributes.ContactName && this.data.attributes.ContactName.trim() !== '';
     this.showContactInfo = this.data.attributes.ContactInfo && this.data.attributes.ContactInfo.trim() !== '';
   }
