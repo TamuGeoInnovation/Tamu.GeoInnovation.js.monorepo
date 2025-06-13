@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
@@ -13,7 +13,10 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   templateUrl: './construction.component.html',
   styleUrls: ['../base/base.popup.component.scss']
 })
-export class ConstructionPopupComponent extends BaseDirectionsComponent {
+export class ConstructionPopupComponent extends BaseDirectionsComponent implements OnInit {
+  public showContactName = false;
+  public showContactInfo = false;
+
   constructor(
     private rtr: Router,
     private rt: ActivatedRoute,
@@ -22,5 +25,13 @@ export class ConstructionPopupComponent extends BaseDirectionsComponent {
     private mp: EsriMapService
   ) {
     super(rtr, rt, ps, anl, mp);
+  }
+
+  public ngOnInit(): void {
+    super.ngOnInit();
+
+    // Set contact visibility based on the attributes value is either not null or not empty
+    this.showContactName = this.data.attributes.ContactName && this.data.attributes.ContactName.trim() !== '';
+    this.showContactInfo = this.data.attributes.ContactInfo && this.data.attributes.ContactInfo.trim() !== '';
   }
 }
