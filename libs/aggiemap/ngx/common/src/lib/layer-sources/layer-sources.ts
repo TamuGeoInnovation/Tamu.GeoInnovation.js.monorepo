@@ -56,7 +56,8 @@ export function LayerSources(
       visible: true,
       layerIndex: 2,
       native: {
-        ...commonLayerProps
+        ...commonLayerProps,
+        definitionExpression: `EndDate > CAST('${new Date().toISOString()}' AS DATE )`
       }
     },
     {
