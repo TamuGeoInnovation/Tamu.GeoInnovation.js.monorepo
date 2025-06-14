@@ -11,6 +11,7 @@ import {
   ResolvedEventSettings,
   SpecialEventOptions
 } from '../../interfaces/special-event.interface';
+import { EventDefinitions } from '../../definitions/all.definitions';
 
 @Injectable({
   providedIn: 'root'
@@ -249,5 +250,21 @@ export class EventSettingsService {
     if (Object.keys(validated).length === 0) {
       return null;
     } else return validated;
+  }
+
+  /**
+   * Validates the event ID against the EventDefinitions.
+   *
+   * @param {string} eventId A string that represents the event configuration Id
+   * @return {*}  {boolean} Returns true if the eventId is valid, false otherwise.
+   */
+  public validateEventId(eventId: string): boolean {
+    // Implement your logic to validate the event ID
+    if (!eventId || eventId.length === 0) {
+      return false;
+    }
+
+    // Check if the eventId exists in the EventDefinitions
+    return EventDefinitions.findIndex((event) => event?.configuration?.id === eventId) !== -1;
   }
 }
