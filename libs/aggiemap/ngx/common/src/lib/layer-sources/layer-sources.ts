@@ -29,6 +29,7 @@ export function LayerSources(
       popupComponent: definitions.BUILDINGS.popupComponent,
       listMode: 'hide',
       visible: true,
+      essential: true,
       layerIndex: 1,
       native: {
         ...commonLayerProps,
@@ -54,6 +55,7 @@ export function LayerSources(
       popupComponent: definitions.CONSTRUCTION.popupComponent,
       listMode: 'show',
       visible: true,
+      essential: true,
       layerIndex: 2,
       native: {
         ...commonLayerProps,
@@ -192,6 +194,7 @@ export function LayerSources(
       title: 'Selected Buildings',
       listMode: 'hide',
       visible: true,
+      essential: true,
       popupComponent: definitions.BUILDINGS.popupComponent,
       native: {
         ...commonLayerProps
