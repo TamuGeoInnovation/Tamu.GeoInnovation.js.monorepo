@@ -643,14 +643,12 @@ export class EsriMapService {
    * Returns a list of layer sources, applying various filters if specified. This is used
    * to limit the number of layers that are loaded on map load when requested.
    *
-   * @param {LayerSource} sources
+   * @param {LayerSource[]} sources
    * @param {{ params?: boolean }} [filters] Optional filters to apply to the layer sources.
    * If `params` is set to true, it will return only those layers that have an `essential` property defined AND
    * the current application route contains 'layers' query params.
-   * @return {*}  {Array<LayerSource>}
-   * @memberof EsriMapService
    */
-  public filterLayerSources(sources?: LayerSource, filters?: { params?: boolean }): Array<LayerSource> {
+  public filterLayerSources(sources?: LayerSource[], filters?: { params?: boolean }): Array<LayerSource> {
     // Get the layer sources from the environment
     let ret: Array<LayerSource> = sources || this.environment.value('LayerSources');
 
@@ -673,9 +671,7 @@ export class EsriMapService {
             return source?.essential || requestedLayerIds.includes(source.id);
           })
           .map((s) => {
-            s.visible = true;
-
-            return s;
+            return { ...s, visible: true };
           });
       }
     }
