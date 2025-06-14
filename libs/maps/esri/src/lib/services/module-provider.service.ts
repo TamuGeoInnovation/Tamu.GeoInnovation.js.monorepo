@@ -328,6 +328,10 @@ const dictionary = [
   {
     class: 'esri/widgets/BasemapGallery/support/LocalBasemapsSource',
     name: 'LocalBasemapsSource'
+  },
+  {
+    class: 'esri/layers/WMSLayer',
+    name: 'WMSLayer'
   }
 ];
 
