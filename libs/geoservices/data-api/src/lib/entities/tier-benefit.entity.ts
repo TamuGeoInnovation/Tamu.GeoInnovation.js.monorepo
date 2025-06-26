@@ -1,8 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+
 import { TierCategory } from './tier-category.entity';
+import { BaseDatestampedEntity } from './base-datestamped.entity';
 
 @Entity('TierBenefits')
-export class TierBenefit {
+export class TierBenefit extends BaseDatestampedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,12 +28,6 @@ export class TierBenefit {
 
   @Column({ type: 'bit', nullable: false, default: true })
   active: boolean;
-
-  @Column({ type: 'datetime', nullable: false, default: () => 'GETDATE()' })
-  created: Date;
-
-  @Column({ type: 'datetime', nullable: true })
-  updated: Date;
 
   @ManyToOne(() => TierCategory, (category) => category.benefits, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'categoryId' })

@@ -32,27 +32,27 @@ export class SubscriptionComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.composedTierBenefits = this.subscription.pipe(
-      map((subscription) => subscription?.tier?.benefits),
-      concatMap((benefits) =>
-        from(benefits).pipe(
-          filter((benefit) => benefit.showcase),
-          reduce((acc, curr) => {
-            return `${acc}${acc.length > 0 ? ', ' : ''}${curr.value} ${curr.description.toLowerCase()}`;
-          }, ''),
-          map((benefitsString) => {
-            // Break off the last , and replace with an 'and'
-            const lastComma = benefitsString.lastIndexOf(',');
-            if (lastComma > -1) {
-              return `${benefitsString.substring(0, lastComma)}, and ${benefitsString.substring(lastComma + 1)}`;
-            }
-            // If no comma, just return the string
-            return benefitsString;
-          })
-        )
-      ),
-      shareReplay(1)
-    );
+    // this.composedTierBenefits = this.subscription.pipe(
+    //   map((subscription) => subscription?.tier?.benefits),
+    //   concatMap((benefits) =>
+    //     from(benefits).pipe(
+    //       filter((benefit) => benefit.showcase),
+    //       reduce((acc, curr) => {
+    //         return `${acc}${acc.length > 0 ? ', ' : ''}${curr.value} ${curr.description.toLowerCase()}`;
+    //       }, ''),
+    //       map((benefitsString) => {
+    //         // Break off the last , and replace with an 'and'
+    //         const lastComma = benefitsString.lastIndexOf(',');
+    //         if (lastComma > -1) {
+    //           return `${benefitsString.substring(0, lastComma)}, and ${benefitsString.substring(lastComma + 1)}`;
+    //         }
+    //         // If no comma, just return the string
+    //         return benefitsString;
+    //       })
+    //     )
+    //   ),
+    //   shareReplay(1)
+    // );
   }
 
   public openSubscriptionCancelModal(): void {

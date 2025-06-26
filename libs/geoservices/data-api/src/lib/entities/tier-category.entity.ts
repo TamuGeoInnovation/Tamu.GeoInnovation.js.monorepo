@@ -2,9 +2,10 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColum
 
 import { Tier } from './tier.entity';
 import { TierBenefit } from './tier-benefit.entity';
+import { BaseDatestampedEntity } from './base-datestamped.entity';
 
 @Entity('TierCategories')
-export class TierCategory {
+export class TierCategory extends BaseDatestampedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,12 +23,6 @@ export class TierCategory {
 
   @Column({ type: 'bit', nullable: false, default: true })
   active: boolean;
-
-  @Column({ type: 'datetime', nullable: false, default: () => 'GETDATE()' })
-  created: Date;
-
-  @Column({ type: 'datetime', nullable: true })
-  updated: Date;
 
   @ManyToOne(() => Tier, (tier) => tier.categories, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tierId' })

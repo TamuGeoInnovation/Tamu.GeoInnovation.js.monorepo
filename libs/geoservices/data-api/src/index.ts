@@ -6,6 +6,15 @@ export * from './lib/modules/contact/contact.service';
 export * from './lib/modules/payments/payments.module';
 export * from './lib/modules/payments/payments.service';
 
+export * from './lib/modules/tier/tier.module';
+export * from './lib/modules/tier/tier.service';
+
+export * from './lib/modules/tier-category/tier-category.module';
+export * from './lib/modules/tier-category/tier-category.service';
+
+export * from './lib/modules/tier-benefit/tier-benefit.module';
+export * from './lib/modules/tier-benefit/tier-benefit.service';
+
 export * from './lib/interfaces/paypal/paypal-payflow.interface';
 export * from './lib/interfaces/subscription/subscription.interface';
 

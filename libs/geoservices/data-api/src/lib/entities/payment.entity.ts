@@ -1,17 +1,11 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  BeforeUpdate,
-  BeforeInsert,
-  CreateDateColumn,
-  UpdateDateColumn
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, BeforeInsert } from 'typeorm';
 
 import { v4 as guid } from 'uuid';
 
+import { BaseDatestampedEntity } from './base-datestamped.entity';
+
 @Entity('Payments')
-export class Payment {
+export class Payment extends BaseDatestampedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,12 +14,6 @@ export class Payment {
 
   @Column({ type: 'int', nullable: true })
   UserId: number;
-
-  @CreateDateColumn({ type: 'datetime', nullable: true })
-  added: Date;
-
-  @UpdateDateColumn({ type: 'datetime', nullable: true })
-  updated: Date;
 
   @Column({ type: 'bit', nullable: true })
   success: boolean;
@@ -95,20 +83,6 @@ export class Payment {
   private generateGuid(): void {
     if (this.paymentGuid === undefined) {
       this.paymentGuid = guid();
-    }
-  }
-
-  @BeforeInsert()
-  private _setAdded(): void {
-    if (this.added === undefined) {
-      this.added = new Date();
-    }
-  }
-
-  @BeforeUpdate()
-  private _setUpdated(): void {
-    if (this.updated === undefined) {
-      this.updated = new Date();
     }
   }
 }

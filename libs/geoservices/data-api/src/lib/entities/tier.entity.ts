@@ -1,8 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+
 import { TierCategory } from './tier-category.entity';
+import { BaseDatestampedEntity } from './base-datestamped.entity';
 
 @Entity('Tiers')
-export class Tier {
+export class Tier extends BaseDatestampedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,12 +19,6 @@ export class Tier {
 
   @Column({ type: 'bit', nullable: false, default: true })
   active: boolean;
-
-  @Column({ type: 'datetime', nullable: false, default: () => 'GETDATE()' })
-  created: Date;
-
-  @Column({ type: 'datetime', nullable: true })
-  updated: Date;
 
   @OneToMany(() => TierCategory, (category) => category.tier, { cascade: true })
   categories: TierCategory[];

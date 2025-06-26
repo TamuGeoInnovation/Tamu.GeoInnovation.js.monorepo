@@ -26,7 +26,7 @@ export const geoprocessing_api_host_override = `${current_base}/wap.api.geoservi
 export const release_id = 'v0.0.0';
 export const machine_name = 'localhost';
 export const environment_mode = 'Local';
-export const turnstile_sitekey = 'TURNSTILE_SITE_KEY';
+export const turnstile_sitekey = '0x4AAAAAABB_PC4dY2WB6qMk';
 export const paypal_client_id = 'sb';
 
 export * from './definitions';

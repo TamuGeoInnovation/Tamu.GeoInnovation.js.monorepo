@@ -37,7 +37,8 @@
       "plugins": "zsh-autosuggestions",
       "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions.git"
     }
-  }
+  },
+  "runArgs": ["--network=host"]
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
