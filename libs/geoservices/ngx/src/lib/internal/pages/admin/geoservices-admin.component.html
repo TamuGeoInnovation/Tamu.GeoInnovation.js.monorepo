@@ -1,0 +1,39 @@
+<tamu-gisc-drawer layout="relative" width="18rem">
+  <div class="content">
+    <div class="sidebar-menu">
+      <div class="menu-item" [routerLink]="['users']" routerLinkActive="active">
+        <span class="material-icons">group</span>
+        <p>User Management</p>
+      </div>
+
+      <div class="menu-item" [routerLink]="['services']" routerLinkActive="active">
+        <span class="material-icons">cloud</span>
+        <p>Service Management</p>
+      </div>
+
+      <div class="menu-item" [routerLink]="['analytics']" routerLinkActive="active">
+        <span class="material-icons">analytics</span>
+        <p>Analytics</p>
+      </div>
+
+      <div class="menu-item" [routerLink]="['billing']" routerLinkActive="active">
+        <span class="material-icons">receipt</span>
+        <p>Billing Overview</p>
+      </div>
+
+      <div class="menu-item" [routerLink]="['system']" routerLinkActive="active">
+        <span class="material-icons">settings</span>
+        <p>System Settings</p>
+      </div>
+
+      <div class="menu-item" [routerLink]="['logs']" routerLinkActive="active">
+        <span class="material-icons">description</span>
+        <p>System Logs</p>
+      </div>
+    </div>
+  </div>
+</tamu-gisc-drawer>
+
+<div id="root">
+  <router-outlet></router-outlet>
+</div>
