@@ -1,0 +1,64 @@
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+
+  &.active {
+    background-color: #e6f7e6;
+    color: #2e7d2e;
+  }
+
+  &.inactive {
+    background-color: #f7e6e6;
+    color: #7d2e2e;
+  }
+}
+
+.selected-action-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.25rem;
+
+  .selected-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .selected-action {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    &.caution {
+      color: #d32f2f;
+
+      &:hover {
+        background-color: rgba(211, 47, 47, 0.1);
+      }
+    }
+
+    .material-icons {
+      font-size: 1rem;
+    }
+  }
+}
+
+table.floating-table {
+  tr.selectable:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+  }
+}

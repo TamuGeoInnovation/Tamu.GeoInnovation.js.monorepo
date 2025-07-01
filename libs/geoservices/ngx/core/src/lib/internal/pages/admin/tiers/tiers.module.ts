@@ -2,21 +2,44 @@ import { NgModule, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
+import { TiersListComponent } from './pages/tiers-list/tiers-list.component';
+
 @Component({
-  template: '<div><h1>Tiers</h1><p>Admin tiers functionality will be implemented here.</p></div>'
+  selector: 'tamu-gisc-tiers',
+  template: `
+    <div class="tiers-container">
+      <h1>Tiers Management</h1>
+      <router-outlet></router-outlet>
+    </div>
+  `,
+  styleUrls: ['./tiers.component.scss']
 })
 export class TiersComponent {}
 
 const routes: Routes = [
   {
     path: '',
-    component: TiersComponent
+    component: TiersComponent,
+    children: [
+      {
+        path: '',
+        component: TiersListComponent
+      },
+      {
+        path: 'list',
+        component: TiersListComponent
+      }
+      // TODO: Add routes for 'add' and 'edit/:id' when those components are created
+    ]
   }
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [TiersComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, PipesModule],
+  declarations: [TiersComponent, TiersListComponent],
   exports: [RouterModule]
 })
 export class TiersModule {}
