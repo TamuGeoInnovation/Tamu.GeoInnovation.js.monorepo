@@ -1,7 +1,5 @@
 export * from './lib/geoservices-ngx-common.module';
 
-// Export all modules from the common library
-
 // Contact forms
 export * from './lib/modules/forms/contact/contact-form/contact-form.module';
 export * from './lib/modules/forms/contact/geocode-correction-form/geocode-correction-form.module';
@@ -17,3 +15,6 @@ export * from './lib/modules/pricing/interactive-pricing.module';
 
 // Interactive geoprocessing module
 export * from './lib/modules/interactive/interactive.module';
+
+// Admin forms
+export * from './lib/modules/forms/admin/tier-add-edit-form/tier-add-edit-form.module';

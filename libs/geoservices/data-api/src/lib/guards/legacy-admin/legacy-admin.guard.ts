@@ -33,6 +33,6 @@ export class LegacyAdminGuard implements CanActivate {
     const user = request.user;
 
     // Check if user exists and has the isManager property set to true
-    return user && user.isManager === true;
+    return (user && user.isManager === true) || user.isManager === 'true';
   }
 }

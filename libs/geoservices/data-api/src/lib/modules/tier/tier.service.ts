@@ -64,10 +64,13 @@ export class TierService {
    * Update a tier
    */
   async update(id: number, updateData: Partial<Tier>): Promise<Tier> {
+    delete updateData.id;
+
     await this.tierRepository.update(id, {
       ...updateData,
       updated: new Date()
     });
+
     return this.findOne(id);
   }
 

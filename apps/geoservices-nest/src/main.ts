@@ -21,7 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   app.enableCors({
     origin: environment.origins,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
     credentials: true
   });
 

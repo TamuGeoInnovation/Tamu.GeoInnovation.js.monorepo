@@ -12,7 +12,7 @@ CREATE TABLE [dbo].[Tiers] (
     [name] NVARCHAR(255) NOT NULL,
     [description] NVARCHAR(MAX) NULL,
     [active] BIT NOT NULL DEFAULT 1,
-    [created] DATETIME NOT NULL DEFAULT GETDATE(),
+    [added] DATETIME NOT NULL DEFAULT GETDATE(),
     [updated] DATETIME NULL,
     
     CONSTRAINT [PK_Tiers] PRIMARY KEY CLUSTERED ([id] ASC),
@@ -27,7 +27,7 @@ CREATE TABLE [dbo].[TierCategories] (
     [description] NVARCHAR(MAX) NULL,
     [order] INT NOT NULL DEFAULT 1,
     [active] BIT NOT NULL DEFAULT 1,
-    [created] DATETIME NOT NULL DEFAULT GETDATE(),
+    [added] DATETIME NOT NULL DEFAULT GETDATE(),
     [updated] DATETIME NULL,
     [tierId] INT NOT NULL,
     
@@ -47,7 +47,7 @@ CREATE TABLE [dbo].[TierBenefits] (
     [showcase] BIT NOT NULL DEFAULT 0,
     [order] INT NOT NULL DEFAULT 1,
     [active] BIT NOT NULL DEFAULT 1,
-    [created] DATETIME NOT NULL DEFAULT GETDATE(),
+    [added] DATETIME NOT NULL DEFAULT GETDATE(),
     [updated] DATETIME NULL,
     [categoryId] INT NOT NULL,
     
@@ -64,7 +64,7 @@ CREATE TABLE [dbo].[TierBenefits] (
 -- Indexes on Tiers table
 CREATE NONCLUSTERED INDEX [IX_Tiers_tierId] ON [dbo].[Tiers] ([tierId]);
 CREATE NONCLUSTERED INDEX [IX_Tiers_active] ON [dbo].[Tiers] ([active]);
-CREATE NONCLUSTERED INDEX [IX_Tiers_created] ON [dbo].[Tiers] ([created]);
+CREATE NONCLUSTERED INDEX [IX_Tiers_added] ON [dbo].[Tiers] ([added]);
 
 -- Indexes on TierCategories table
 CREATE NONCLUSTERED INDEX [IX_TierCategories_tierId] ON [dbo].[TierCategories] ([tierId]);
