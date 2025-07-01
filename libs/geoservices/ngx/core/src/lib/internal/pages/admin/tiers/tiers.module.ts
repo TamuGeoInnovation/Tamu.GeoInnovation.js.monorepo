@@ -1,23 +1,12 @@
-import { NgModule, Component } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
+import { TiersComponent } from './tiers.component';
 import { TiersListComponent } from './pages/tiers-list/tiers-list.component';
-
-@Component({
-  selector: 'tamu-gisc-tiers',
-  template: `
-    <div class="tiers-container">
-      <h1>Tiers Management</h1>
-      <router-outlet></router-outlet>
-    </div>
-  `,
-  styleUrls: ['./tiers.component.scss']
-})
-export class TiersComponent {}
 
 const routes: Routes = [
   {
