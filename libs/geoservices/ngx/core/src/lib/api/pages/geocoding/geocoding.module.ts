@@ -7,10 +7,10 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { UIScrollToModule } from '@tamu-gisc/ui-kits/ngx/interactions/scroll-to';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { GeoservicesCoreInteractiveModule } from '@tamu-gisc/geoservices/ngx/common';
 
 import { GeocodingComponent } from './geocoding.component';
 import { ApiComponentsModule } from '../../components/components.module';
-import { GeoservicesCoreInteractiveModule } from '../../../../../../common/src/lib/modules/interactive/interactive.module';
 
 const routes: Routes = [
   {

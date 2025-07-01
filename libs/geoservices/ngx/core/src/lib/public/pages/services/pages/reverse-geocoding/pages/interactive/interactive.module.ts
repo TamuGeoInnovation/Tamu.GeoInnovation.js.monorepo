@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
+import { GeoservicesCoreInteractiveModule } from '@tamu-gisc/geoservices/ngx/common';
+
 import { InteractiveComponent } from './interactive.component';
-import { GeoservicesCoreInteractiveModule } from '../../../../../../../../../../common/src/lib/modules/interactive/interactive.module';
 
 const routes: Routes = [
   {
