@@ -3,20 +3,20 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 @Component({
-  template: '<div><h1>System Logs</h1><p>Admin system logs functionality will be implemented here.</p></div>'
+  template: '<div><h1>Subscriptions</h1><p>Admin subscriptions functionality will be implemented here.</p></div>'
 })
-export class LogsComponent {}
+export class SubscriptionsComponent {}
 
 const routes: Routes = [
   {
     path: '',
-    component: LogsComponent
+    component: SubscriptionsComponent
   }
 ];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [LogsComponent],
+  declarations: [SubscriptionsComponent],
   exports: [RouterModule]
 })
-export class LogsModule {}
+export class SubscriptionsModule {}

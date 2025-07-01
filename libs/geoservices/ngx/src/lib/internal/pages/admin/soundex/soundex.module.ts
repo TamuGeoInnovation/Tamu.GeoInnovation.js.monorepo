@@ -3,20 +3,20 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 @Component({
-  template: '<div><h1>Users</h1><p>Admin users functionality will be implemented here.</p></div>'
+  template: '<div><h1>Soundex</h1><p>Admin soundex functionality will be implemented here.</p></div>'
 })
-export class UsersComponent {}
+export class SoundexComponent {}
 
 const routes: Routes = [
   {
     path: '',
-    component: UsersComponent
+    component: SoundexComponent
   }
 ];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [UsersComponent],
+  declarations: [SoundexComponent],
   exports: [RouterModule]
 })
-export class UsersModule {}
+export class SoundexModule {}

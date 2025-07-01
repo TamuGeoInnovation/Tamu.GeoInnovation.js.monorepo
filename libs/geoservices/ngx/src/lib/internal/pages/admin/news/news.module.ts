@@ -3,20 +3,20 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 @Component({
-  template: '<div><h1>Users</h1><p>Admin users functionality will be implemented here.</p></div>'
+  template: '<div><h1>News</h1><p>Admin news functionality will be implemented here.</p></div>'
 })
-export class UsersComponent {}
+export class NewsComponent {}
 
 const routes: Routes = [
   {
     path: '',
-    component: UsersComponent
+    component: NewsComponent
   }
 ];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [UsersComponent],
+  declarations: [NewsComponent],
   exports: [RouterModule]
 })
-export class UsersModule {}
+export class NewsModule {}
