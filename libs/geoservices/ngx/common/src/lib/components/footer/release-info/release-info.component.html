@@ -1,0 +1,5 @@
+<div class="container12">
+  <div class="column12">
+    <p><span>{{ release_meta?.containerName }}</span> | <span clipboard-copy [text]="release_meta.gitCommit">{{(release_meta)?.gitTag}} |</span> {{ release_meta?.environment }}</p>
+  </div>
+</div>

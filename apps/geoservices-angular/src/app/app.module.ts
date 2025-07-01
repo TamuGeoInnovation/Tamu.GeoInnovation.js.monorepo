@@ -10,7 +10,7 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { Angulartics2Module } from 'angulartics2';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthService, AuthInterceptor, AuthGuard } from '@tamu-gisc/geoservices/data-access';
+import { AuthService, AuthInterceptor, AuthGuard } from '@tamu-gisc/geoservices/ngx/data-access';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -20,21 +20,21 @@ import * as environment from '../environments/environment';
 const routes: Routes = [
   {
     path: 'admin',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesAdminModule),
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx/core').then((m) => m.GeoservicesAdminModule),
     canActivateChild: [AuthGuard]
   },
   {
     path: 'user',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesUserModule),
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx/core').then((m) => m.GeoservicesUserModule),
     canActivateChild: [AuthGuard]
   },
   {
     path: 'docs',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesApiModule)
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx/core').then((m) => m.GeoservicesApiModule)
   },
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.GeoservicesPublicModule)
+    loadChildren: () => import('@tamu-gisc/geoservices/ngx/core').then((m) => m.GeoservicesPublicModule)
   }
 ];
 

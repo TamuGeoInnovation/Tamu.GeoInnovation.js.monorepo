@@ -19,7 +19,7 @@ export class ButtonComponent {
    * Button display text.
    */
   @Input()
-  public value = 'Button';
+  public value: string | null = 'Button';
 
   /**
    * Templating style.

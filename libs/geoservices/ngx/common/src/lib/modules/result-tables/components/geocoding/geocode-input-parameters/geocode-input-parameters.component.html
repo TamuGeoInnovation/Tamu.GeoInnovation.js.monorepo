@@ -1,0 +1,15 @@
+<table *ngIf="filteredProps | async as props">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let item of (props | keyvalue)">
+      <td>{{item.key | fieldLabel: propsDict}}</td>
+      <td>{{item.value}}</td>
+    </tr>
+  </tbody>
+</table>

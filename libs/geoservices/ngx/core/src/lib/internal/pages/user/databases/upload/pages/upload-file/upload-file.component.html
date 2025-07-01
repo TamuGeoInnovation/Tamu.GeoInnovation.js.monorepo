@@ -1,0 +1,39 @@
+<form [formGroup]="form" (ngSubmit)="upload()">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <tamu-gisc-upload-form-input formControlName="file" (fileSelected)="file.next($event)"></tamu-gisc-upload-form-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section" *ngIf="(fileExtension | async) === 'txt' || (fileExtension | async) === 'csv' || (fileExtension | async)=== 'tsv'">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Parsing Options</div>
+    </div>
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <div class="form-collection row">
+          <ng-container *ngIf="(delimiters | async) as delimiters">
+            <ng-container *ngIf="(qualifiers | async) as qualifiers">
+              <tamu-gisc-select [data]="delimiters" displayTemplate="name" valueTemplate="character" placeholder="Text delimiter" formControlName="txtDelimiter" [floatLabel]="true"></tamu-gisc-select>
+              <tamu-gisc-select [data]="qualifiers" displayTemplate="name" valueTemplate="character" placeholder="Text qualifier" formControlName="txtQualifier" [floatLabel]="true"></tamu-gisc-select>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="form-collection column">
+        <tamu-gisc-button type="submit" value="Upload" fit="snug" [disabled]="!form.valid"></tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="inform-context">
+  <ul>
+    <li>Use only alphanumeric characters in your file names. Illegal characters such as punctuation and spaces will be removed.</li>
+    <li>File names will be truncated to 15 characters, not including file extensions.</li>
+    <li>TXT, CSV, or TSV files must have column names as the first row.</li>
+  </ul>
+</div>

@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/geoservices/ngx/common",
+  "sourceRoot": "libs/geoservices/ngx/common/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/geoservices/ngx/common"],
+      "options": {
+        "jestConfig": "libs/geoservices/ngx/common/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/geoservices/ngx/common/src/**/*.ts", "libs/geoservices/ngx/common/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}
