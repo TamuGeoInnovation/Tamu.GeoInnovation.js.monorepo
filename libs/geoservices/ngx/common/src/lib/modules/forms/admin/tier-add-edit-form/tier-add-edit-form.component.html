@@ -11,36 +11,24 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection row pad-top">
+      <div class="form-collection column pad-top">
+        <p>The tier ID is a unique identifier used internally for the tier (e.g., 'basic', 'premium', 'enterprise').</p>
         <tamu-gisc-textbox formControlName="tierId" placeholder="Tier ID" type="text" [floatLabel]="true" [required]="true"> </tamu-gisc-textbox>
       </div>
 
-      <div class="form-collection column pad-top">
-        <p>The tier ID is a unique identifier used internally for the tier (e.g., 'basic', 'premium', 'enterprise').</p>
-      </div>
-
-      <div class="form-collection row">
+      <div class="form-collection column">
+        <p>The display name for the tier that will be shown to users.</p>
         <tamu-gisc-textbox formControlName="name" placeholder="Tier Name" type="text" [floatLabel]="true" [required]="true"> </tamu-gisc-textbox>
       </div>
 
-      <div class="form-collection column pad-top">
-        <p>The display name for the tier that will be shown to users.</p>
-      </div>
-
-      <div class="form-collection row">
+      <div class="form-collection column">
+        <p>Optional description of the tier and its features.</p>
         <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
-      <div class="form-collection column pad-top">
-        <p>Optional description of the tier and its features.</p>
-      </div>
-
-      <div class="form-collection row">
-        <tamu-gisc-checkbox formControlName="active" label="Active"> </tamu-gisc-checkbox>
-      </div>
-
-      <div class="form-collection column pad-top">
+      <div class="form-collection column">
         <p>Whether this tier is currently active and available for selection.</p>
+        <tamu-gisc-checkbox formControlName="active" label="Active"> </tamu-gisc-checkbox>
       </div>
     </div>
   </div>

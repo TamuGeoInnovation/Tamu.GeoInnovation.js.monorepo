@@ -1,119 +1,99 @@
-<tamu-gisc-drawer layout="relative" width="18rem">
-  <div class="content">
-    <div class="sidebar-menu">
-      <div class="menu-item" [routerLink]="['configurations']" routerLinkActive="active">
-        <span class="material-icons">settings</span>
-        <p>Configurations</p>
-      </div>
+<tamu-gisc-header></tamu-gisc-header>
 
-      <div class="menu-item" [routerLink]="['databases']" routerLinkActive="active">
-        <span class="material-icons">storage</span>
-        <p>Databases</p>
-      </div>
+<section class="internal borderless">
+  <div class="container12">
+    <ul class="column3 sidebar">
+      <li>
+        <a [routerLink]="['./configurations']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">settings</span>Configurations </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['diagnostics']" routerLinkActive="active">
-        <span class="material-icons">health_and_safety</span>
-        <p>Diagnostics</p>
-      </div>
+      <li>
+        <a [routerLink]="['./databases']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">storage</span>Databases </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['emails']" routerLinkActive="active">
-        <span class="material-icons">email</span>
-        <p>Emails</p>
-      </div>
+      <li>
+        <a [routerLink]="['./diagnostics']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">health_and_safety</span>Diagnostics </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['news']" routerLinkActive="active">
-        <span class="material-icons">newspaper</span>
-        <p>News</p>
-      </div>
+      <li>
+        <a [routerLink]="['./emails']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">email</span>Emails </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['payments']" routerLinkActive="active">
-        <span class="material-icons">payment</span>
-        <p>Payments</p>
-      </div>
+      <li>
+        <a [routerLink]="['./news']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">newspaper</span>News </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['processes']" routerLinkActive="active">
-        <span class="material-icons">memory</span>
-        <p>Processes</p>
-      </div>
+      <li>
+        <a [routerLink]="['./payments']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">payment</span>Payments </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['promotions']" routerLinkActive="active">
-        <span class="material-icons">campaign</span>
-        <p>Promotions</p>
-      </div>
+      <li>
+        <a [routerLink]="['./processes']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">memory</span>Processes </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['qa']" routerLinkActive="active">
-        <span class="material-icons">quiz</span>
-        <p>QA</p>
-      </div>
+      <li>
+        <a [routerLink]="['./promotions']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">campaign</span>Promotions </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['reports']" routerLinkActive="active">
-        <span class="material-icons">assessment</span>
-        <p>Reports</p>
-      </div>
+      <li>
+        <a [routerLink]="['./qa']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">quiz</span>QA </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['security']" routerLinkActive="active">
-        <span class="material-icons">security</span>
-        <p>Security</p>
-      </div>
+      <li>
+        <a [routerLink]="['./reports']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">assessment</span>Reports </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['subscriptions']" routerLinkActive="active">
-        <span class="material-icons">subscriptions</span>
-        <p>Subscriptions</p>
-      </div>
+      <li>
+        <a [routerLink]="['./security']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">security</span>Security </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['surveys']" routerLinkActive="active">
-        <span class="material-icons">poll</span>
-        <p>Surveys</p>
-      </div>
+      <li>
+        <a [routerLink]="['./subscriptions']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">subscriptions</span>Subscriptions </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['transactions']" routerLinkActive="active">
-        <span class="material-icons">receipt_long</span>
-        <p>Transactions</p>
-      </div>
+      <li>
+        <a [routerLink]="['./surveys']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">poll</span>Surveys </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['tiers']" routerLinkActive="active">
-        <span class="material-icons">layers</span>
-        <p>Tiers</p>
-      </div>
+      <li>
+        <a [routerLink]="['./transactions']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">receipt_long</span>Transactions </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['users']" routerLinkActive="active">
-        <span class="material-icons">group</span>
-        <p>Users</p>
-      </div>
+      <li>
+        <a [routerLink]="['./tiers']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">layers</span>Tiers </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['soundex']" routerLinkActive="active">
-        <span class="material-icons">hearing</span>
-        <p>Soundex</p>
-      </div>
+      <li>
+        <a [routerLink]="['./users']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">group</span>Users </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['sales']" routerLinkActive="active">
-        <span class="material-icons">sell</span>
-        <p>Sales</p>
-      </div>
+      <li>
+        <a [routerLink]="['./soundex']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">hearing</span>Soundex </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['charts1']" routerLinkActive="active">
-        <span class="material-icons">bar_chart</span>
-        <p>Charts1</p>
-      </div>
+      <li>
+        <a [routerLink]="['./sales']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">sell</span>Sales </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['site-monitoring']" routerLinkActive="active">
-        <span class="material-icons">monitor</span>
-        <p>Site Monitoring</p>
-      </div>
+      <li>
+        <a [routerLink]="['./charts1']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">bar_chart</span>Charts1 </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['source-census-database']" routerLinkActive="active">
-        <span class="material-icons">table_view</span>
-        <p>Source and Census Database Table</p>
-      </div>
+      <li>
+        <a [routerLink]="['./site-monitoring']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">monitor</span>Site Monitoring </a>
+      </li>
 
-      <div class="menu-item" [routerLink]="['admin-tools']" routerLinkActive="active">
-        <span class="material-icons">build</span>
-        <p>Admin Tools</p>
-      </div>
+      <li>
+        <a [routerLink]="['./source-census-database']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">table_view</span>Source and Census Database </a>
+      </li>
+
+      <li>
+        <a [routerLink]="['./admin-tools']" queryParamsHandling="merge" routerLinkActive="active"> <span class="material-icons">build</span>Admin Tools </a>
+      </li>
+    </ul>
+
+    <div class="column9 content">
+      <router-outlet></router-outlet>
     </div>
   </div>
-</tamu-gisc-drawer>
-
-<div id="root">
-  <router-outlet></router-outlet>
-</div>
+</section>

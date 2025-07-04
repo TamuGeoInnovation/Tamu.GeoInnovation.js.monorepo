@@ -1,9 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
-@import 'libs/sass/1140';
-
 @import 'libs/sass/mixins';
-@import 'libs/sass/dom_flexbox';
+@import 'libs/sass/1140';
+@import 'libs/sass/colors'; // Imports complete material design colors for use as classes in markup
+@import 'libs/sass/modules/forms';
 @import 'libs/sass/spacing';
+@import 'libs/sass/dom_flexbox';
 
 @import '~highlight.js/styles/atom-one-dark.css';
 
@@ -1029,6 +1029,90 @@ tamu-gisc-tooltip {
   p {
     margin-top: 0;
     margin-bottom: 0;
+  }
+}
+
+//  ==========================================================================
+//   Internal Admin Layout (adapted from gisday-angular)
+//  ==========================================================================
+
+.internal {
+  height: inherit;
+  width: 100%;
+  border-top: 1pt solid #eeeeee;
+  margin: 0 auto;
+
+  &.borderless {
+    border: none;
+  }
+
+  .sidebar,
+  .content {
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+  }
+
+  .sidebar {
+    @include flexbox();
+    @include flex-direction(column);
+    height: 100%;
+    border-right: 1pt solid #eeeeee;
+    list-style: none;
+
+    .sidebar_sublevel {
+      display: none;
+    }
+
+    a {
+      @include flexbox;
+      @include flex-direction(row);
+      @include align-items(center);
+      color: $inactive-color;
+      padding: 0.4rem 0.75rem;
+
+      span.material-icons {
+        margin-right: 0.5rem;
+        font-size: 1.15rem;
+      }
+
+      &.active {
+        color: $primary-text-color;
+        background: lighten($active-color, 35%);
+        border-radius: 0.25rem;
+
+        & + .sidebar_sublevel {
+          display: block;
+        }
+      }
+
+      &:hover {
+        text-decoration: none;
+
+        &:not(.active) {
+          color: $state-transition-color;
+        }
+      }
+    }
+
+    li {
+      padding-bottom: 0;
+      padding-top: 0;
+      margin: 0 0;
+
+      & {
+        ul.sidebar_sublevel {
+          list-style: inherit;
+
+          a.active {
+            background: none;
+          }
+        }
+      }
+    }
+  }
+
+  .content {
+    height: 100%;
   }
 }
 

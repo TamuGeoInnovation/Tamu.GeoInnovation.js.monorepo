@@ -1,13 +1,2 @@
-@import 'libs/sass/mixins';
-
-:host {
-  @include flexbox;
-  @include flex-direction(row);
-
-  height: inherit;
-  width: 100%;
-}
-
-#root {
-  padding: 0 3rem;
-}
+// Component uses global .internal styles from the application styles.scss
+// No additional component-specific styles needed for the sidebar layout
