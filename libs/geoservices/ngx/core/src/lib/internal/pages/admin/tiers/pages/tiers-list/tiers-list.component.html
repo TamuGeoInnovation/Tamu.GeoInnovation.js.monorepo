@@ -16,7 +16,7 @@
         <table class="floating-table" *ngIf="tiers && tiers.length > 0; else noTiers">
           <thead>
             <tr>
-              <th><input type="checkbox" (change)="toggleAllRows(tiers)" [checked]="(selectedRows$ | async)?.length === tiers.length" /></th>
+              <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(tiers)" [checked]="(selectedRows$ | async)?.length === tiers.length "></tamu-gisc-checkbox></th>
               <th>Name</th>
               <th>Tier ID</th>
               <th>Description</th>
@@ -27,7 +27,7 @@
 
           <tbody>
             <tr class="selectable" [routerLink]="['edit', tier.id]" *ngFor="let tier of tiers">
-              <td (click)="$event.stopPropagation()"><input type="checkbox" (change)="tier.id && toggleRow(tier.id)" [checked]="(isSelected(tier?.id) | async) || false" /></td>
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(tier?.id)" [checked]="(selectedRows$ | async) | exists: tier?.id"></tamu-gisc-checkbox></td>
               <td>{{tier?.name}}</td>
               <td>{{tier?.tierId}}</td>
               <td>{{tier?.description || 'No description'}}</td>
