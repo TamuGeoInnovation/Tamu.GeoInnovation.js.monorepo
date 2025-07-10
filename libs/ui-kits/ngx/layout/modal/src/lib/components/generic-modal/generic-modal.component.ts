@@ -31,6 +31,9 @@ export class GenericModalComponent<T> implements OnInit {
           }
         })
       );
+    } else if (this.data.body && typeof this.data.body === 'string') {
+      // If the body is a static string, just use it directly
+      this.body = of(this.data.body);
     }
   }
 

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { merge, Observable, of, Subject } from 'rxjs';
-import { scan, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
+import { map, scan, shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import { BaseService } from '@tamu-gisc/geoservices/ngx/data-access';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -105,37 +105,57 @@ export abstract class BaseListComponent<T extends IdIdentity> implements IBaseLi
       .pipe(
         withLatestFrom(this.selectedRows$),
         switchMap(([, ids]) => {
-          // This would need to be replaced with an actual modal component
-          // For now, using a simple confirm dialog
           const entityName = this._pluralizeEntityName(singularEntityName, ids, pluralEntityName);
-          const confirmMessage = message || `Are you sure you want to delete ${ids.length} ${entityName.toLowerCase()}?`;
 
-          return of({
-            delete: confirm(confirmMessage),
-            identities: ids
-          } as DeleteModalResponse);
+          return this.modalService
+            .open<Record<string, never>, boolean>({
+              title: `Delete ${entityName}`,
+              subTitle: `Are you sure you want to delete the selected ${entityName.toLowerCase()}?`,
+              body: 'This action is immediate and cannot be undone. Please confirm that you understand the consequences of this action.',
+              actions: {
+                buttons: [
+                  {
+                    label: "No, I've changed my mind",
+                    value: false,
+                    style: 'secondary'
+                  },
+                  {
+                    label: 'Yes, I understand',
+                    value: true,
+                    style: 'danger'
+                  }
+                ]
+              }
+            })
+            .pipe(
+              map(
+                (confirmed: boolean) =>
+                  ({
+                    delete: !!confirmed,
+                    identities: ids
+                  } as DeleteModalResponse)
+              )
+            );
         })
       )
-      .subscribe({
-        next: (result: DeleteModalResponse) => {
-          if (result?.delete) {
-            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
+      .subscribe((result: DeleteModalResponse) => {
+        if (result?.delete) {
+          const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
 
-            // Delete entities one by one - could be optimized with bulk delete endpoint
-            const deleteRequests = result.identities.map((id) => this.entityService.delete(Number(id)));
+          // Delete entities one by one - could be optimized with bulk delete endpoint
+          const deleteRequests = result.identities.map((id) => this.entityService.delete(Number(id)));
 
-            merge(...deleteRequests).subscribe(() => {
-              this.notificationService.toast({
-                message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} deleted`,
-                id: 'entity-delete-success',
-                title: `${normalizedEntityName} Deleted`
-              });
-
-              this.$signal.next(true);
+          merge(...deleteRequests).subscribe(() => {
+            this.notificationService.toast({
+              message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} deleted`,
+              id: 'entity-delete-success',
+              title: `${normalizedEntityName} Deleted`
             });
-          } else {
-            console.log('Delete canceled');
-          }
+
+            this.$signal.next(true);
+          });
+        } else {
+          console.log('Delete canceled');
         }
       });
   }
@@ -156,35 +176,66 @@ export abstract class BaseListComponent<T extends IdIdentity> implements IBaseLi
           const entityName = this._pluralizeEntityName(singularEntityName, ids, pluralEntityName);
           const confirmMessage = message || `Are you sure you want to clone ${ids.length} ${entityName.toLowerCase()}?`;
 
-          return of({
-            clone: confirm(confirmMessage),
-            identities: ids
-          } as CloneModalResponse);
+          return this.modalService
+            .open<Record<string, never>, boolean>({
+              title: `Clone ${entityName}`,
+              body: confirmMessage,
+              actions: {
+                buttons: [
+                  {
+                    label: 'No',
+                    value: false,
+                    style: 'secondary'
+                  },
+                  {
+                    label: 'Yes',
+                    value: true,
+                    style: 'success'
+                  }
+                ]
+              }
+            })
+            .pipe(
+              map(
+                (confirmed: boolean) =>
+                  ({
+                    clone: !!confirmed,
+                    identities: ids
+                  } as CloneModalResponse)
+              )
+            );
         })
       )
-      .subscribe({
-        next: (result: CloneModalResponse) => {
-          if (result?.clone) {
-            const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
+      .subscribe((result: CloneModalResponse) => {
+        if (result?.clone) {
+          const normalizedEntityName = this._pluralizeEntityName(singularEntityName, result.identities, pluralEntityName);
 
-            // Clone logic would need to be implemented based on requirements
-            // This is a placeholder
-            console.log(`Cloning ${result.identities.length} ${normalizedEntityName.toLowerCase()}`);
+          // Clone logic would need to be implemented based on requirements
+          // This is a placeholder
+          console.log(`Cloning ${result.identities.length} ${normalizedEntityName.toLowerCase()}`);
 
-            this.notificationService.toast({
-              message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} cloned`,
-              id: 'entity-clone-success',
-              title: `${normalizedEntityName} Cloned`
-            });
+          this.notificationService.toast({
+            message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} cloned`,
+            id: 'entity-clone-success',
+            title: `${normalizedEntityName} Cloned`
+          });
 
-            this.$signal.next(true);
-          } else {
-            console.log('Clone canceled');
-          }
+          this.$signal.next(true);
+        } else {
+          console.log('Clone canceled');
         }
       });
   }
 
+  /**
+   * Helper function to pluralize entity names based on count.
+   * If `pluralEntityName` is provided, it will be used; otherwise, the default pluralization by appending 's' is applied.
+   *
+   * @param entityName The singular entity name
+   * @param count The array of entities to determine the count
+   * @param pluralEntityName Optional plural entity name to be used if provided
+   * @returns The pluralized entity name based on the count
+   */
   private _pluralizeEntityName(entityName: string, count: Array<unknown>, pluralEntityName?: string) {
     if (count.length > 1) {
       if (pluralEntityName) {

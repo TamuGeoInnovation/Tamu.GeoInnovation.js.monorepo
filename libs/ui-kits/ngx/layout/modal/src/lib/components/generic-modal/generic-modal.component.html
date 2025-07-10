@@ -6,7 +6,9 @@
   <h3 class="trailer-1">{{data.subTitle}}</h3>
 </ng-container>
 
-<div class="trailer-2" [innerHTML]="body | async | markdownParse" *ngIf="data.body"></div>
+<ng-container *ngIf="body | async  as body">
+  <div class="trailer-2" [innerHTML]="body | markdownParse" *ngIf="data.body"></div>
+</ng-container>
 
 <ng-container *ngIf="data.actions as actions">
   <div id="generic-modal__button-container" class="flex flex-row justify-end" *ngIf="actions.buttons && actions.buttons.length && actions.buttons.length > 0">

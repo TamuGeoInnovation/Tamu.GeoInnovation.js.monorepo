@@ -6,6 +6,7 @@ import { Observable, catchError, of, take } from 'rxjs';
 import { Tier } from '@tamu-gisc/geoservices/data-api';
 import { TiersService } from '@tamu-gisc/geoservices/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
   selector: 'tamu-gisc-tier-add-edit-form',
@@ -26,7 +27,8 @@ export class TierAddEditFormComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly tiersService: TiersService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly modalService: ModalService
   ) {}
 
   public ngOnInit(): void {
@@ -73,26 +75,48 @@ export class TierAddEditFormComponent implements OnInit {
 
   public deleteEntity() {
     if (this.entityId && this.type === 'edit') {
-      if (confirm('Are you sure you want to delete this tier?')) {
-        this.tiersService.delete(this.entityId).subscribe({
-          next: () => {
-            this.notificationService.toast({
-              id: 'tier-delete-success',
-              title: 'Delete Tier',
-              message: 'Tier was successfully deleted.'
-            });
-            this._navigateBack();
-          },
-          error: (err) => {
-            console.error('Error deleting tier:', err);
-            this.notificationService.toast({
-              id: 'tier-delete-failed',
-              title: 'Delete Tier',
-              message: `Error deleting tier: ${err.status || 'Unknown error'}`
+      this.modalService
+        .open<Record<string, never>, boolean>({
+          title: 'Delete Tier',
+          subTitle: 'Are you sure you want to delete this tier?',
+          body: 'This action is immediate and cannot be undone. Please confirm that you understand the consequences of this action.',
+          actions: {
+            buttons: [
+              {
+                label: "No, I've changed my mind",
+                value: false,
+                style: 'secondary'
+              },
+              {
+                label: 'Yes, I understand',
+                value: true,
+                style: 'danger'
+              }
+            ]
+          }
+        })
+        .subscribe((confirmed: boolean) => {
+          if (confirmed && this.entityId) {
+            this.tiersService.delete(this.entityId).subscribe({
+              next: () => {
+                this.notificationService.toast({
+                  id: 'tier-delete-success',
+                  title: 'Delete Tier',
+                  message: 'Tier was successfully deleted.'
+                });
+                this._navigateBack();
+              },
+              error: (err) => {
+                console.error('Error deleting tier:', err);
+                this.notificationService.toast({
+                  id: 'tier-delete-failed',
+                  title: 'Delete Tier',
+                  message: `Error deleting tier: ${err.status || 'Unknown error'}`
+                });
+              }
             });
           }
         });
-      }
     }
   }
 
