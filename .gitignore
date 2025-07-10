@@ -73,3 +73,5 @@ secrets.ts
 
 # Files in any application assets directory
 **/assets/uploads/**
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
