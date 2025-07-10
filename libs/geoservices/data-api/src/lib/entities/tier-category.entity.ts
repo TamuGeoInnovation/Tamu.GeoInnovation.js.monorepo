@@ -31,6 +31,9 @@ export class TierCategory extends BaseDatestampedEntity {
   @Column({ type: 'int', nullable: false })
   tierId: number;
 
-  @OneToMany(() => TierBenefit, (benefit) => benefit.category, { cascade: true })
+  @OneToMany(() => TierBenefit, (benefit) => benefit.category, {
+    cascade: ['insert', 'update'],
+    onDelete: 'CASCADE'
+  })
   benefits: TierBenefit[];
 }

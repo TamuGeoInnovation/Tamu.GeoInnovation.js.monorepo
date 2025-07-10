@@ -3,15 +3,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Tier } from '../../entities/tier.entity';
+import { TierCategory } from '../../entities/tier-category.entity';
+import { TierBenefit } from '../../entities/tier-benefit.entity';
 
 @Injectable()
 export class TierService {
-  constructor(@InjectRepository(Tier) private readonly tierRepository: Repository<Tier>) {}
+  constructor(
+    @InjectRepository(Tier) private readonly tierRepository: Repository<Tier>,
+    @InjectRepository(TierCategory) private readonly tierCategoryRepository: Repository<TierCategory>,
+    @InjectRepository(TierBenefit) private readonly tierBenefitRepository: Repository<TierBenefit>
+  ) {}
 
   /**
    * Create a new tier
    */
-  async create(tierData: Partial<Tier>): Promise<Tier> {
+  public async create(tierData: Partial<Tier>): Promise<Tier> {
+    // Create the tier entity using the repository's create method
+    // This properly handles the cascade operations for nested entities
     const tier = this.tierRepository.create({
       ...tierData
     });
@@ -20,11 +28,24 @@ export class TierService {
   }
 
   /**
+   * Create or update a tier with full cascade support
+   */
+  public async createOrUpdate(tierData: Partial<Tier>): Promise<Tier> {
+    if (tierData.id) {
+      // If ID exists, it's an update operation
+      return this.update(tierData.id, tierData);
+    } else {
+      // If no ID, it's a create operation
+      return this.create(tierData);
+    }
+  }
+
+  /**
    * Get all tiers
    */
-  async findAll(): Promise<Tier[]> {
+  public async findAll(): Promise<Tier[]> {
     return this.tierRepository.find({
-      relations: ['categories'],
+      relations: ['categories', 'categories.benefits'],
       order: { added: 'DESC' }
     });
   }
@@ -32,10 +53,10 @@ export class TierService {
   /**
    * Get active tiers only
    */
-  async findActive(): Promise<Tier[]> {
+  public async findActive(): Promise<Tier[]> {
     return this.tierRepository.find({
       where: { active: true },
-      relations: ['categories'],
+      relations: ['categories', 'categories.benefits'],
       order: { added: 'DESC' }
     });
   }
@@ -43,55 +64,67 @@ export class TierService {
   /**
    * Get a tier by ID
    */
-  async findOne(id: number): Promise<Tier> {
+  public async findOne(id: number): Promise<Tier> {
     return this.tierRepository.findOne({
       where: { id },
-      relations: ['categories']
+      relations: ['categories', 'categories.benefits']
     });
   }
 
   /**
    * Get a tier by tierId
    */
-  async findByTierId(tierId: string): Promise<Tier> {
+  public async findByTierId(tierId: string): Promise<Tier> {
     return this.tierRepository.findOne({
       where: { tierId },
-      relations: ['categories']
+      relations: ['categories', 'categories.benefits']
     });
   }
 
   /**
    * Update a tier
    */
-  async update(id: number, updateData: Partial<Tier>): Promise<Tier> {
+  public async update(id: number, updateData: Partial<Tier>): Promise<Tier> {
     delete updateData.id;
 
-    await this.tierRepository.update(id, {
+    const existingTier = await this.tierRepository.findOne({
+      where: { id },
+      relations: ['categories', 'categories.benefits']
+    });
+
+    if (!existingTier) {
+      throw new Error(`Tier with ID ${id} not found`);
+    }
+
+    // Use merge and save instead of update to handle cascades properly
+    const updatedTier = this.tierRepository.merge(existingTier, {
       ...updateData,
+      id: id, // Ensure we preserve the ID
       updated: new Date()
     });
 
-    return this.findOne(id);
+    // Save with cascade operations for categories and benefits
+    return this.tierRepository.save(updatedTier);
   }
 
   /**
    * Delete a tier
    */
-  async remove(id: number): Promise<void> {
+  public async remove(id: number): Promise<void> {
     await this.tierRepository.delete(id);
   }
 
   /**
    * Soft delete a tier by setting active to false
    */
-  async deactivate(id: number): Promise<Tier> {
+  public async deactivate(id: number): Promise<Tier> {
     return this.update(id, { active: false });
   }
 
   /**
    * Reactivate a tier by setting active to true
    */
-  async activate(id: number): Promise<Tier> {
+  public async activate(id: number): Promise<Tier> {
     return this.update(id, { active: true });
   }
 }

@@ -33,6 +33,106 @@
     </div>
   </div>
 
+  <!-- Categories Section -->
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Categories</div>
+      <tamu-gisc-button type="button" look="success" value="Add Category" (click)="addCategory()"></tamu-gisc-button>
+    </div>
+
+    <div class="form-section-body">
+      <div formArrayName="categories">
+        <div *ngFor="let category of categoriesArray.controls; let categoryIndex = index" [formGroupName]="categoryIndex" class="category-group">
+          <div class="category-header">
+            <h4>Category {{ categoryIndex + 1 }}</h4>
+            <tamu-gisc-button type="button" look="danger" value="Remove Category" (click)="removeCategory(categoryIndex)"></tamu-gisc-button>
+          </div>
+
+          <div class="form-collection column">
+            <p>The category ID is a unique identifier used internally for the category (e.g., 'features', 'limits', 'support').</p>
+            <tamu-gisc-textbox formControlName="categoryId" placeholder="Category ID" type="text" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection column">
+            <p>The display name for the category that will be shown to users.</p>
+            <tamu-gisc-textbox formControlName="name" placeholder="Category Name" type="text" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection column">
+            <p>Optional description of the category.</p>
+            <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="3" [floatLabel]="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection row">
+            <div class="form-collection column">
+              <p>Display order for this category.</p>
+              <tamu-gisc-textbox formControlName="order" placeholder="Order" type="number" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+            </div>
+
+            <div class="form-collection column">
+              <p>Whether this category is currently active.</p>
+              <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
+            </div>
+          </div>
+
+          <!-- Benefits Section -->
+          <div class="benefits-section">
+            <div class="benefits-header">
+              <h5>Benefits</h5>
+              <tamu-gisc-button type="button" look="secondary" value="Add Benefit" (click)="addBenefit(categoryIndex)"></tamu-gisc-button>
+            </div>
+
+            <div formArrayName="benefits">
+              <div *ngFor="let benefit of getBenefitsArray(categoryIndex).controls; let benefitIndex = index" [formGroupName]="benefitIndex" class="benefit-group">
+                <div class="benefit-header">
+                  <h6>Benefit {{ benefitIndex + 1 }}</h6>
+                  <tamu-gisc-button type="button" look="danger" value="Remove" (click)="removeBenefit(categoryIndex, benefitIndex)"></tamu-gisc-button>
+                </div>
+
+                <div class="form-collection column">
+                  <p>The benefit ID is a unique identifier used internally for the benefit.</p>
+                  <tamu-gisc-textbox formControlName="benefitId" placeholder="Benefit ID" type="text" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+                </div>
+
+                <div class="form-collection column">
+                  <p>The display name for the benefit that will be shown to users.</p>
+                  <tamu-gisc-textbox formControlName="name" placeholder="Benefit Name" type="text" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+                </div>
+
+                <div class="form-collection column">
+                  <p>Optional description of the benefit.</p>
+                  <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="2" [floatLabel]="true"></tamu-gisc-textbox>
+                </div>
+
+                <div class="form-collection column">
+                  <p>Optional value or limit for this benefit (e.g., "Unlimited", "100 GB", "24/7").</p>
+                  <tamu-gisc-textbox formControlName="value" placeholder="Value" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                </div>
+
+                <div class="form-collection row">
+                  <div class="form-collection column">
+                    <p>Display order for this benefit.</p>
+                    <tamu-gisc-textbox formControlName="order" placeholder="Order" type="number" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+                  </div>
+
+                  <div class="form-collection column">
+                    <p>Whether this is a showcase benefit (highlighted feature).</p>
+                    <tamu-gisc-checkbox formControlName="showcase" label="Showcase"></tamu-gisc-checkbox>
+                  </div>
+
+                  <div class="form-collection column">
+                    <p>Whether this benefit is currently active.</p>
+                    <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, catchError, of, take } from 'rxjs';
 
@@ -37,7 +37,8 @@ export class TierAddEditFormComponent implements OnInit {
       tierId: [null, [Validators.required, Validators.maxLength(50)]],
       name: [null, [Validators.required, Validators.maxLength(255)]],
       description: [null],
-      active: [true, Validators.required]
+      active: [true, Validators.required],
+      categories: this.fb.array([])
     });
 
     if (this.type === 'edit' && this.entityId) {
@@ -55,10 +56,69 @@ export class TierAddEditFormComponent implements OnInit {
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
         if (entity) {
-          this.form.patchValue(entity);
+          this.form.patchValue({
+            id: entity.id,
+            tierId: entity.tierId,
+            name: entity.name,
+            description: entity.description,
+            active: entity.active
+          });
+
+          // Populate categories if they exist
+          if (entity.categories && entity.categories.length > 0) {
+            const categoriesArray = this.form.get('categories') as FormArray;
+            entity.categories.forEach((category) => {
+              categoriesArray.push(this._createCategoryFormGroup(category));
+            });
+          }
         }
       });
     }
+  }
+
+  // Getter for categories form array
+  public get categoriesArray(): FormArray {
+    return this.form.get('categories') as FormArray;
+  }
+
+  // Category management methods
+  public addCategory(): void {
+    this.categoriesArray.push(this._createCategoryFormGroup());
+  }
+
+  public removeCategory(index: number): void {
+    this.categoriesArray.removeAt(index);
+  }
+
+  public getCategoryFormGroup(index: number): FormGroup {
+    return this.categoriesArray.at(index) as FormGroup;
+  }
+
+  // Convenience method to add a category with a default benefit
+  public addCategoryWithBenefit(): void {
+    const categoryIndex = this.categoriesArray.length;
+    this.addCategory();
+    // Add a default benefit to the new category
+    this.addBenefit(categoryIndex);
+  }
+
+  // Benefit management methods
+  public getBenefitsArray(categoryIndex: number): FormArray {
+    return this.getCategoryFormGroup(categoryIndex).get('benefits') as FormArray;
+  }
+
+  public addBenefit(categoryIndex: number): void {
+    const benefitsArray = this.getBenefitsArray(categoryIndex);
+    benefitsArray.push(this._createBenefitFormGroup());
+  }
+
+  public removeBenefit(categoryIndex: number, benefitIndex: number): void {
+    const benefitsArray = this.getBenefitsArray(categoryIndex);
+    benefitsArray.removeAt(benefitIndex);
+  }
+
+  public getBenefitFormGroup(categoryIndex: number, benefitIndex: number): FormGroup {
+    return this.getBenefitsArray(categoryIndex).at(benefitIndex) as FormGroup;
   }
 
   public handleSubmission() {
@@ -176,7 +236,124 @@ export class TierAddEditFormComponent implements OnInit {
   private _markFormGroupTouched() {
     Object.keys(this.form.controls).forEach((key) => {
       const control = this.form.get(key);
-      control?.markAsTouched();
+
+      if (control instanceof FormArray) {
+        // Mark form array and all its controls as touched
+        control.markAsTouched();
+        control.controls.forEach((arrayControl) => {
+          if (arrayControl instanceof FormGroup) {
+            this._markFormGroupTouchedRecursive(arrayControl);
+          } else {
+            arrayControl.markAsTouched();
+          }
+        });
+      } else {
+        control?.markAsTouched();
+      }
     });
+  }
+
+  private _markFormGroupTouchedRecursive(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((key) => {
+      const control = formGroup.get(key);
+
+      if (control instanceof FormArray) {
+        control.markAsTouched();
+        control.controls.forEach((arrayControl) => {
+          if (arrayControl instanceof FormGroup) {
+            this._markFormGroupTouchedRecursive(arrayControl);
+          } else {
+            arrayControl.markAsTouched();
+          }
+        });
+      } else if (control instanceof FormGroup) {
+        this._markFormGroupTouchedRecursive(control);
+      } else {
+        control?.markAsTouched();
+      }
+    });
+  }
+
+  private _createCategoryFormGroup(
+    categoryData?: Partial<{
+      id: number;
+      categoryId: string;
+      name: string;
+      description: string;
+      order: number;
+      active: boolean;
+      benefits: unknown[];
+    }>
+  ): FormGroup {
+    const categoryGroup = this.fb.group({
+      id: [categoryData?.id || null],
+      categoryId: [categoryData?.categoryId || null, [Validators.required, Validators.maxLength(50)]],
+      name: [categoryData?.name || null, [Validators.required, Validators.maxLength(255)]],
+      description: [categoryData?.description || null],
+      order: [categoryData?.order || 1, [Validators.required, Validators.min(1)]],
+      active: [categoryData?.active !== undefined ? categoryData.active : true, Validators.required],
+      benefits: this.fb.array([])
+    });
+
+    // Populate benefits if they exist
+    if (categoryData?.benefits && categoryData.benefits.length > 0) {
+      const benefitsArray = categoryGroup.get('benefits') as FormArray;
+      categoryData.benefits.forEach((benefit) => {
+        benefitsArray.push(
+          this._createBenefitFormGroup(
+            benefit as Partial<{
+              id: number;
+              benefitId: string;
+              name: string;
+              description: string;
+              value: string;
+              showcase: boolean;
+              order: number;
+              active: boolean;
+            }>
+          )
+        );
+      });
+    }
+
+    return categoryGroup;
+  }
+
+  private _createBenefitFormGroup(
+    benefitData?: Partial<{
+      id: number;
+      benefitId: string;
+      name: string;
+      description: string;
+      value: string;
+      showcase: boolean;
+      order: number;
+      active: boolean;
+    }>
+  ): FormGroup {
+    return this.fb.group({
+      id: [benefitData?.id || null],
+      benefitId: [benefitData?.benefitId || null, [Validators.required, Validators.maxLength(50)]],
+      name: [benefitData?.name || null, [Validators.required, Validators.maxLength(255)]],
+      description: [benefitData?.description || null],
+      value: [benefitData?.value || null, [Validators.maxLength(255)]],
+      showcase: [benefitData?.showcase !== undefined ? benefitData.showcase : false, Validators.required],
+      order: [benefitData?.order || 1, [Validators.required, Validators.min(1)]],
+      active: [benefitData?.active !== undefined ? benefitData.active : true, Validators.required]
+    });
+  }
+
+  public moveCategory(fromIndex: number, toIndex: number): void {
+    const categoriesArray = this.categoriesArray;
+    const categoryToMove = categoriesArray.at(fromIndex);
+    categoriesArray.removeAt(fromIndex);
+    categoriesArray.insert(toIndex, categoryToMove);
+  }
+
+  public moveBenefit(categoryIndex: number, fromIndex: number, toIndex: number): void {
+    const benefitsArray = this.getBenefitsArray(categoryIndex);
+    const benefitToMove = benefitsArray.at(fromIndex);
+    benefitsArray.removeAt(fromIndex);
+    benefitsArray.insert(toIndex, benefitToMove);
   }
 }
