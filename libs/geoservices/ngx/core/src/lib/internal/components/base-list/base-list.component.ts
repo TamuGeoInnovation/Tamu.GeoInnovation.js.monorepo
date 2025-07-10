@@ -25,7 +25,7 @@ export interface CloneModalResponse {
   template: ''
 })
 export abstract class BaseListComponent<T extends IdIdentity> implements IBaseListComponent, OnInit, OnDestroy {
-  public $entities: Observable<Array<Partial<T>>>;
+  public $entities: Observable<Array<T>>;
   public $signal: Subject<boolean> = new Subject();
   public selectedRows$: Observable<Array<string | number>>;
 

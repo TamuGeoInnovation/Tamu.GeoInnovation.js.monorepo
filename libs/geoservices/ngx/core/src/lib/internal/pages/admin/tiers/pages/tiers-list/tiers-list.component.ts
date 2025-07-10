@@ -17,11 +17,6 @@ import { BaseListComponent } from '../../../../../components/base-list/base-list
   styleUrls: ['./tiers-list.component.scss']
 })
 export class TiersListComponent extends BaseListComponent<Tier> implements OnInit, OnDestroy {
-  // Alias for template usage - the base class uses $entities
-  public get $tiers(): Observable<Array<Partial<Tier>>> {
-    return this.$entities;
-  }
-
   constructor(
     private readonly ts: TiersService,
     private readonly rt: Router,

@@ -24,7 +24,7 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('checked')
-  private _checked = false;
+  public _checked: boolean | null = false;
 
   public get checked() {
     return this._checked;

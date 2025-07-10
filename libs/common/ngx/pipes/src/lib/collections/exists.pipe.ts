@@ -14,7 +14,7 @@ export class ExistsPipe implements PipeTransform {
    * @memberof ExistsPipe
    */
   public transform(
-    collection: Array<string | number | boolean>,
+    collection: Array<string | number | boolean> | null,
     matcher: string | number | boolean,
     threshold?: 'some' | 'all'
   ): boolean {

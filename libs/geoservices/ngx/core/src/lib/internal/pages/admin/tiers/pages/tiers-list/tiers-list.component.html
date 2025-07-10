@@ -12,7 +12,7 @@
         <p class="trailer-1">Tiers are configurable service levels that define different categories and benefits for GeoServices offerings.</p>
       </div>
 
-      <ng-container *ngIf="$tiers | async as tiers">
+      <ng-container *ngIf="$entities | async as tiers">
         <table class="floating-table" *ngIf="tiers && tiers.length > 0; else noTiers">
           <thead>
             <tr>
@@ -27,7 +27,7 @@
 
           <tbody>
             <tr class="selectable" [routerLink]="['edit', tier.id]" *ngFor="let tier of tiers">
-              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(tier?.id)" [checked]="(selectedRows$ | async) | exists: tier?.id"></tamu-gisc-checkbox></td>
+              <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(tier.id)" [checked]="(selectedRows$ | async) | exists: tier.id "></tamu-gisc-checkbox></td>
               <td>{{tier?.name}}</td>
               <td>{{tier?.tierId}}</td>
               <td>{{tier?.description || 'No description'}}</td>
