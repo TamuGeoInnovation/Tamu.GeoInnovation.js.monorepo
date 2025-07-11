@@ -1,6 +1,7 @@
 export interface MoveDate {
   day: number;
   month: number;
+  year: number;
 }
 
 export interface MoveDates {
