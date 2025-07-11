@@ -37,7 +37,9 @@
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-title">Categories</div>
-      <tamu-gisc-button type="button" look="success" value="Add Category" (click)="addCategory()"></tamu-gisc-button>
+      <div class="form-section-actions">
+        <a (click)="addCategory()">Add Category <span class="material-icons action">add</span></a>
+      </div>
     </div>
 
     <div class="form-section-body">
@@ -45,7 +47,6 @@
         <div *ngFor="let category of categoriesArray.controls; let categoryIndex = index" [formGroupName]="categoryIndex" class="category-group">
           <div class="category-header">
             <h4>Category {{ categoryIndex + 1 }}</h4>
-            <tamu-gisc-button type="button" look="danger" value="Remove Category" (click)="removeCategory(categoryIndex)"></tamu-gisc-button>
           </div>
 
           <div class="form-collection column">
@@ -75,18 +76,18 @@
             </div>
           </div>
 
-          <!-- Benefits Section -->
-          <div class="benefits-section">
-            <div class="benefits-header">
-              <h5>Benefits</h5>
-              <tamu-gisc-button type="button" look="secondary" value="Add Benefit" (click)="addBenefit(categoryIndex)"></tamu-gisc-button>
+          <div class="form-section pre-2">
+            <div class="form-section-toolbar">
+              <div class="form-section-title">Benefits</div>
+              <div class="form-section-actions">
+                <a (click)="addBenefit(categoryIndex)">Add Benefit<span class="material-icons action">add</span></a>
+              </div>
             </div>
 
-            <div formArrayName="benefits">
-              <div *ngFor="let benefit of getBenefitsArray(categoryIndex).controls; let benefitIndex = index" [formGroupName]="benefitIndex" class="benefit-group">
+            <div class="form-section-body" formArrayName="benefits">
+              <div *ngFor="let benefit of getBenefitsArray(categoryIndex).controls; let benefitIndex = index" [formGroupName]="benefitIndex" class="trailer-2">
                 <div class="benefit-header">
                   <h6>Benefit {{ benefitIndex + 1 }}</h6>
-                  <tamu-gisc-button type="button" look="danger" value="Remove" (click)="removeBenefit(categoryIndex, benefitIndex)"></tamu-gisc-button>
                 </div>
 
                 <div class="form-collection column">
@@ -125,9 +126,12 @@
                     <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
                   </div>
                 </div>
+
+                <tamu-gisc-button type="button" look="danger" value="Remove" (click)="removeBenefit(categoryIndex, benefitIndex)"></tamu-gisc-button>
               </div>
             </div>
           </div>
+          <tamu-gisc-button type="button" look="danger" value="Remove Category" (click)="removeCategory(categoryIndex)"></tamu-gisc-button>
         </div>
       </div>
     </div>

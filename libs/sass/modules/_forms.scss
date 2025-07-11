@@ -110,6 +110,7 @@ form,
       margin-bottom: 1.75rem;
       font-weight: 600;
 
+      @include mixins.flexbox();
       @include mixins.flex-direction(row);
       @include mixins.justify-content(space-between);
       @include mixins.align-items(center);
