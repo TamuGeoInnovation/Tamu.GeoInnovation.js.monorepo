@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { TierAddEditFormComponent } from './tier-add-edit-form.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, UIFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule],
   declarations: [TierAddEditFormComponent],
   exports: [TierAddEditFormComponent]
 })
