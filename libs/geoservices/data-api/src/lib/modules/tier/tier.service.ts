@@ -65,10 +65,14 @@ export class TierService {
    * Get a tier by ID
    */
   public async findOne(id: number): Promise<Tier> {
-    return this.tierRepository.findOne({
-      where: { id },
-      relations: ['categories', 'categories.benefits']
-    });
+    return this.tierRepository
+      .createQueryBuilder('tier')
+      .where('tier.id = :id', { id })
+      .leftJoinAndSelect('tier.categories', 'category')
+      .leftJoinAndSelect('category.benefits', 'benefit')
+      .orderBy('category.order', 'ASC')
+      .addOrderBy('benefit.order', 'ASC')
+      .getOne();
   }
 
   /**

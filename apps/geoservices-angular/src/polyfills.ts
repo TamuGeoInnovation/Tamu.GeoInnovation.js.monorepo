@@ -50,3 +50,7 @@ import 'zone.js'; // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+// Dragula package requirement
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).global = window;

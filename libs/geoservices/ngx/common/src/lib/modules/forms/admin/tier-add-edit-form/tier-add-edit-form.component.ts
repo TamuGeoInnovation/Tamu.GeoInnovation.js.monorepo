@@ -1,9 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, catchError, of, take } from 'rxjs';
 
-import { Tier } from '@tamu-gisc/geoservices/data-api';
+import { DragulaService } from 'ng2-dragula';
+
+import { Tier, TierBenefit, TierCategory } from '@tamu-gisc/geoservices/data-api';
 import { TiersService } from '@tamu-gisc/geoservices/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -13,7 +15,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
   templateUrl: './tier-add-edit-form.component.html',
   styleUrls: ['./tier-add-edit-form.component.scss']
 })
-export class TierAddEditFormComponent implements OnInit {
+export class TierAddEditFormComponent implements OnInit, OnDestroy {
   @Input()
   public type: 'create' | 'edit' = 'create';
 
@@ -28,8 +30,35 @@ export class TierAddEditFormComponent implements OnInit {
     private readonly router: Router,
     private readonly tiersService: TiersService,
     private readonly notificationService: NotificationService,
-    private readonly modalService: ModalService
-  ) {}
+    private readonly modalService: ModalService,
+    private readonly ds: DragulaService
+  ) {
+    this.ds.createGroup('CATEGORIES', {
+      direction: 'vertical',
+      moves: (el, container, handle) => {
+        const nearestDragulaElement = handle?.closest('[dragula]');
+        const hasCorrectDragulaAttribute = nearestDragulaElement?.getAttribute('dragula') === 'CATEGORIES';
+
+        return hasCorrectDragulaAttribute;
+      },
+      accepts: (el, target) => {
+        return target?.getAttribute('dragula') === 'CATEGORIES';
+      }
+    });
+
+    this.ds.createGroup('BENEFITS', {
+      direction: 'vertical',
+      moves: (el, container, handle) => {
+        const nearestDragulaElement = handle?.closest('[dragula]');
+        const hasCorrectDragulaAttribute = nearestDragulaElement?.getAttribute('dragula') === 'BENEFITS';
+
+        return hasCorrectDragulaAttribute;
+      },
+      accepts: (el, target) => {
+        return target?.getAttribute('dragula') === 'BENEFITS';
+      }
+    });
+  }
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -67,13 +96,20 @@ export class TierAddEditFormComponent implements OnInit {
           // Populate categories if they exist
           if (entity.categories && entity.categories.length > 0) {
             const categoriesArray = this.form.get('categories') as FormArray;
-            entity.categories.forEach((category) => {
-              categoriesArray.push(this._createCategoryFormGroup(category));
+
+            entity.categories.forEach((category, index) => {
+              categoriesArray.insert(index, this._createCategoryFormGroup({ ...category, order: index }));
             });
           }
         }
       });
     }
+  }
+
+  public ngOnDestroy(): void {
+    // Cleanup Dragula subscriptions
+    this.ds.destroy('CATEGORIES');
+    this.ds.destroy('BENEFITS');
   }
 
   // Getter for categories form array
@@ -83,7 +119,7 @@ export class TierAddEditFormComponent implements OnInit {
 
   // Category management methods
   public addCategory(): void {
-    this.categoriesArray.push(this._createCategoryFormGroup());
+    this.categoriesArray.push(this._createCategoryFormGroup(undefined, this.categoriesArray.length));
   }
 
   public removeCategory(index: number): void {
@@ -97,7 +133,9 @@ export class TierAddEditFormComponent implements OnInit {
   // Convenience method to add a category with a default benefit
   public addCategoryWithBenefit(): void {
     const categoryIndex = this.categoriesArray.length;
+
     this.addCategory();
+
     // Add a default benefit to the new category
     this.addBenefit(categoryIndex);
   }
@@ -109,7 +147,9 @@ export class TierAddEditFormComponent implements OnInit {
 
   public addBenefit(categoryIndex: number): void {
     const benefitsArray = this.getBenefitsArray(categoryIndex);
-    benefitsArray.push(this._createBenefitFormGroup());
+    const newBenefit = this._createBenefitFormGroup(undefined, benefitsArray.length);
+
+    benefitsArray.push(newBenefit);
   }
 
   public removeBenefit(categoryIndex: number, benefitIndex: number): void {
@@ -178,6 +218,14 @@ export class TierAddEditFormComponent implements OnInit {
           }
         });
     }
+  }
+
+  public calculateControlArrayOrder(type: 'categories' | 'benefits', index?: number) {
+    const formArray = type === 'categories' ? this.categoriesArray : this.getBenefitsArray(index ?? 0);
+
+    formArray.controls.forEach((control, index) => {
+      control.get('order')?.setValue(index);
+    });
   }
 
   private _createEntity() {
@@ -274,23 +322,17 @@ export class TierAddEditFormComponent implements OnInit {
     });
   }
 
-  private _createCategoryFormGroup(
-    categoryData?: Partial<{
-      id: number;
-      categoryId: string;
-      name: string;
-      description: string;
-      order: number;
-      active: boolean;
-      benefits: unknown[];
-    }>
-  ): FormGroup {
+  private _createCategoryFormGroup(categoryData?: Partial<TierCategory>, atIndex?: number): FormGroup {
+    const defaultCategoryName = categoryData?.name ?? 'New Category' ?? null;
+    const defaultCategoryId =
+      categoryData?.categoryId ?? `${defaultCategoryName.toLowerCase().split(' ').join('-')}-${Date.now()}` ?? null;
+
     const categoryGroup = this.fb.group({
-      id: [categoryData?.id || null],
-      categoryId: [categoryData?.categoryId || null, [Validators.required, Validators.maxLength(50)]],
-      name: [categoryData?.name || null, [Validators.required, Validators.maxLength(255)]],
+      id: [{ value: categoryData?.id || null, disabled: true }],
+      categoryId: [{ value: defaultCategoryId, disabled: true }, [Validators.required, Validators.maxLength(50)]],
+      name: [defaultCategoryName, [Validators.required, Validators.maxLength(255)]],
       description: [categoryData?.description || null],
-      order: [categoryData?.order || 1, [Validators.required, Validators.min(1)]],
+      order: [{ value: categoryData?.order ?? atIndex ?? 0, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [categoryData?.active !== undefined ? categoryData.active : true, Validators.required],
       benefits: this.fb.array([])
     });
@@ -298,62 +340,28 @@ export class TierAddEditFormComponent implements OnInit {
     // Populate benefits if they exist
     if (categoryData?.benefits && categoryData.benefits.length > 0) {
       const benefitsArray = categoryGroup.get('benefits') as FormArray;
-      categoryData.benefits.forEach((benefit) => {
-        benefitsArray.push(
-          this._createBenefitFormGroup(
-            benefit as Partial<{
-              id: number;
-              benefitId: string;
-              name: string;
-              description: string;
-              value: string;
-              showcase: boolean;
-              order: number;
-              active: boolean;
-            }>
-          )
-        );
+
+      categoryData.benefits.forEach((benefit, index) => {
+        benefitsArray.insert(index, this._createBenefitFormGroup({ ...benefit, order: index }));
       });
     }
 
     return categoryGroup;
   }
 
-  private _createBenefitFormGroup(
-    benefitData?: Partial<{
-      id: number;
-      benefitId: string;
-      name: string;
-      description: string;
-      value: string;
-      showcase: boolean;
-      order: number;
-      active: boolean;
-    }>
-  ): FormGroup {
+  private _createBenefitFormGroup(benefitData?: Partial<TierBenefit>, atIndex?: number): FormGroup {
+    const defaultBenefitName = benefitData?.name ?? 'New Benefit' ?? null;
+    const defaultBenefitId = (benefitData?.benefitId || `${defaultBenefitName.toLowerCase().split(' ').join('-')}`) ?? null;
+
     return this.fb.group({
-      id: [benefitData?.id || null],
-      benefitId: [benefitData?.benefitId || null, [Validators.required, Validators.maxLength(50)]],
-      name: [benefitData?.name || null, [Validators.required, Validators.maxLength(255)]],
+      id: [{ value: benefitData?.id || null, disabled: true }],
+      benefitId: [{ value: defaultBenefitId, disabled: true }, [Validators.required, Validators.maxLength(50)]],
+      name: [defaultBenefitName, [Validators.required, Validators.maxLength(255)]],
       description: [benefitData?.description || null],
       value: [benefitData?.value || null, [Validators.maxLength(255)]],
       showcase: [benefitData?.showcase !== undefined ? benefitData.showcase : false, Validators.required],
-      order: [benefitData?.order || 1, [Validators.required, Validators.min(1)]],
+      order: [{ value: benefitData?.order ?? atIndex ?? 0, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [benefitData?.active !== undefined ? benefitData.active : true, Validators.required]
     });
-  }
-
-  public moveCategory(fromIndex: number, toIndex: number): void {
-    const categoriesArray = this.categoriesArray;
-    const categoryToMove = categoriesArray.at(fromIndex);
-    categoriesArray.removeAt(fromIndex);
-    categoriesArray.insert(toIndex, categoryToMove);
-  }
-
-  public moveBenefit(categoryIndex: number, fromIndex: number, toIndex: number): void {
-    const benefitsArray = this.getBenefitsArray(categoryIndex);
-    const benefitToMove = benefitsArray.at(fromIndex);
-    benefitsArray.removeAt(fromIndex);
-    benefitsArray.insert(toIndex, benefitToMove);
   }
 }
