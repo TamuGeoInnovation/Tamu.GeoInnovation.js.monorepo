@@ -38,8 +38,9 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
       moves: (el, container, handle) => {
         const nearestDragulaElement = handle?.closest('[dragula]');
         const hasCorrectDragulaAttribute = nearestDragulaElement?.getAttribute('dragula') === 'CATEGORIES';
+        const isOnHandle = handle?.classList.contains('title-container') || false;
 
-        return hasCorrectDragulaAttribute;
+        return hasCorrectDragulaAttribute && isOnHandle;
       },
       accepts: (el, target) => {
         return target?.getAttribute('dragula') === 'CATEGORIES';
@@ -51,8 +52,9 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
       moves: (el, container, handle) => {
         const nearestDragulaElement = handle?.closest('[dragula]');
         const hasCorrectDragulaAttribute = nearestDragulaElement?.getAttribute('dragula') === 'BENEFITS';
+        const isOnHandle = handle?.classList.contains('title-container') || false;
 
-        return hasCorrectDragulaAttribute;
+        return hasCorrectDragulaAttribute && isOnHandle;
       },
       accepts: (el, target) => {
         return target?.getAttribute('dragula') === 'BENEFITS';

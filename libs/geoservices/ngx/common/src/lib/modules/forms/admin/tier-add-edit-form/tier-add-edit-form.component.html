@@ -51,6 +51,12 @@
             <tamu-gisc-accordion-header>{{ category.get('name')?.value }}</tamu-gisc-accordion-header>
 
             <tamu-gisc-accordion-content>
+              <!-- // TODO: Remove -->
+              <div class="form-collection column">
+                <p>Display order for this category.</p>
+                <tamu-gisc-textbox formControlName="order" placeholder="Order" type="number" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+              </div>
+
               <div class="form-collection column">
                 <p>The category ID is a unique identifier used internally for the category (e.g., 'features', 'limits', 'support').</p>
                 <tamu-gisc-textbox formControlName="categoryId" placeholder="Category ID" type="text" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
@@ -66,17 +72,9 @@
                 <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="3" [floatLabel]="true"></tamu-gisc-textbox>
               </div>
 
-              <div class="form-collection row">
-                <!-- // TODO: Remove -->
-                <div class="form-collection column">
-                  <p>Display order for this category.</p>
-                  <tamu-gisc-textbox formControlName="order" placeholder="Order" type="number" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
-                </div>
-
-                <div class="form-collection column">
-                  <p>Whether this category is currently active.</p>
-                  <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
-                </div>
+              <div class="form-collection column">
+                <p>Whether this category is currently active.</p>
+                <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
               </div>
 
               <div class="form-section pre-1">
@@ -94,6 +92,12 @@
                       <tamu-gisc-accordion-header>{{ benefit.get('name')?.value }}</tamu-gisc-accordion-header>
 
                       <tamu-gisc-accordion-content>
+                        <!-- // TODO: Remove -->
+                        <div class="form-collection column">
+                          <p>Display order for this benefit.</p>
+                          <tamu-gisc-textbox formControlName="order" placeholder="Order" type="number" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+                        </div>
+
                         <div class="form-collection column">
                           <p>The benefit ID is a unique identifier used internally for the benefit.</p>
                           <tamu-gisc-textbox formControlName="benefitId" placeholder="Benefit ID" type="text" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
@@ -114,22 +118,14 @@
                           <tamu-gisc-textbox formControlName="value" placeholder="Value" type="text" [floatLabel]="true"></tamu-gisc-textbox>
                         </div>
 
-                        <div class="form-collection row">
-                          <!-- // TODO: Remove -->
-                          <div class="form-collection column">
-                            <p>Display order for this benefit.</p>
-                            <tamu-gisc-textbox formControlName="order" placeholder="Order" type="number" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
-                          </div>
+                        <div class="form-collection column">
+                          <p>Whether this is a showcase benefit (highlighted feature).</p>
+                          <tamu-gisc-checkbox formControlName="showcase" label="Showcase"></tamu-gisc-checkbox>
+                        </div>
 
-                          <div class="form-collection column">
-                            <p>Whether this is a showcase benefit (highlighted feature).</p>
-                            <tamu-gisc-checkbox formControlName="showcase" label="Showcase"></tamu-gisc-checkbox>
-                          </div>
-
-                          <div class="form-collection column">
-                            <p>Whether this benefit is currently active.</p>
-                            <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
-                          </div>
+                        <div class="form-collection column">
+                          <p>Whether this benefit is currently active.</p>
+                          <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
                         </div>
 
                         <tamu-gisc-button type="button" look="danger" value="Remove" (click)="removeBenefit(categoryIndex, benefitIndex)"></tamu-gisc-button>
