@@ -25,10 +25,9 @@ $lightened-warning-color: lighten($warning-color, 25%);
 $primary-text-color: #333333;
 
 @import 'libs/sass/modules/forms';
-
 @import 'libs/sass/modules/loaders';
-
 @import 'libs/sass/modules/tabs';
+@import 'libs/sass/modules/dragula';
 
 :root {
   --primary-active-color: hsl(223, 75%, 67%);
