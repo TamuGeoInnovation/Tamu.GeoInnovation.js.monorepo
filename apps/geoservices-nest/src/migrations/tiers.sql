@@ -12,7 +12,7 @@ CREATE TABLE [dbo].[Tiers] (
     [name] NVARCHAR(255) NOT NULL,
     [description] NVARCHAR(MAX) NULL,
     [active] BIT NOT NULL DEFAULT 1,
-    [added] DATETIME NOT NULL DEFAULT GETDATE(),
+    [added] DATETIME NULL,
     [updated] DATETIME NULL,
     
     CONSTRAINT [PK_Tiers] PRIMARY KEY CLUSTERED ([id] ASC),
@@ -27,9 +27,9 @@ CREATE TABLE [dbo].[TierCategories] (
     [description] NVARCHAR(MAX) NULL,
     [order] INT NOT NULL DEFAULT 1,
     [active] BIT NOT NULL DEFAULT 1,
-    [added] DATETIME NOT NULL DEFAULT GETDATE(),
+    [added] DATETIME NULL,
     [updated] DATETIME NULL,
-    [tierId] INT NOT NULL,
+    [tierId] INT NULL,
     
     CONSTRAINT [PK_TierCategories] PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [UQ_TierCategories_categoryId] UNIQUE ([categoryId]),
@@ -47,9 +47,9 @@ CREATE TABLE [dbo].[TierBenefits] (
     [showcase] BIT NOT NULL DEFAULT 0,
     [order] INT NOT NULL DEFAULT 1,
     [active] BIT NOT NULL DEFAULT 1,
-    [added] DATETIME NOT NULL DEFAULT GETDATE(),
+    [added] DATETIME NULL,
     [updated] DATETIME NULL,
-    [categoryId] INT NOT NULL,
+    [categoryId] INT NULL,
     
     CONSTRAINT [PK_TierBenefits] PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [UQ_TierBenefits_benefitId] UNIQUE ([benefitId]),
@@ -78,19 +78,3 @@ CREATE NONCLUSTERED INDEX [IX_TierBenefits_benefitId] ON [dbo].[TierBenefits] ([
 CREATE NONCLUSTERED INDEX [IX_TierBenefits_active] ON [dbo].[TierBenefits] ([active]);
 CREATE NONCLUSTERED INDEX [IX_TierBenefits_showcase] ON [dbo].[TierBenefits] ([showcase]);
 CREATE NONCLUSTERED INDEX [IX_TierBenefits_order] ON [dbo].[TierBenefits] ([order]);
-
--- =============================================
--- Sample Data (Optional)
--- =============================================
-
--- Insert sample tier
-INSERT INTO [dbo].[Tiers] ([tierId], [name], [description])
-VALUES ('BASIC', 'Basic Tier', 'Entry level tier with basic features');
-
--- Insert sample category
-INSERT INTO [dbo].[TierCategories] ([categoryId], [name], [description], [order], [tierId])
-VALUES ('FEATURES', 'Features', 'Available features for this tier', 1, 1);
-
--- Insert sample benefit
-INSERT INTO [dbo].[TierBenefits] ([benefitId], [name], [description], [value], [showcase], [order], [categoryId])
-VALUES ('API_CALLS', 'API Calls', 'Number of API calls per month', '1000', 1, 1, 1);

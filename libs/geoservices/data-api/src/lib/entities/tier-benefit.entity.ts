@@ -32,7 +32,4 @@ export class TierBenefit extends BaseDatestampedEntity {
   @ManyToOne(() => TierCategory, (category) => category.benefits, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'categoryId' })
   category: TierCategory;
-
-  @Column({ type: 'int', nullable: false })
-  categoryId: number;
 }

@@ -21,8 +21,10 @@ export class Tier extends BaseDatestampedEntity {
   active: boolean;
 
   @OneToMany(() => TierCategory, (category) => category.tier, {
-    cascade: ['insert', 'update'],
-    onDelete: 'CASCADE'
+    cascade: ['insert', 'update', 'remove'],
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    orphanedRowAction: 'delete'
   })
   categories: TierCategory[];
 }

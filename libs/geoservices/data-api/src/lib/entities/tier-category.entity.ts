@@ -24,16 +24,14 @@ export class TierCategory extends BaseDatestampedEntity {
   @Column({ type: 'bit', nullable: false, default: true })
   active: boolean;
 
-  @ManyToOne(() => Tier, (tier) => tier.categories, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Tier, (tier) => tier.categories, { onDelete: 'CASCADE', orphanedRowAction: 'delete' })
   @JoinColumn({ name: 'tierId' })
   tier: Tier;
 
-  @Column({ type: 'int', nullable: false })
-  tierId: number;
-
   @OneToMany(() => TierBenefit, (benefit) => benefit.category, {
-    cascade: ['insert', 'update'],
-    onDelete: 'CASCADE'
+    cascade: ['insert', 'update', 'remove'],
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   benefits: TierBenefit[];
 }
