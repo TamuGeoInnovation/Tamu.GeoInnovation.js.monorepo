@@ -77,6 +77,10 @@
                 <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
               </div>
 
+              <div class="form-collection column">
+                <tamu-gisc-button type="button" look="danger" value="Delete Category" (click)="deleteCategory(categoryIndex)" *ngIf="type === 'edit'"> </tamu-gisc-button>
+              </div>
+
               <div class="form-section pre-1">
                 <div class="form-section-toolbar">
                   <div class="form-section-title">Benefits</div>
@@ -128,7 +132,7 @@
                           <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
                         </div>
 
-                        <tamu-gisc-button type="button" look="danger" value="Remove" (click)="removeBenefit(categoryIndex, benefitIndex)"></tamu-gisc-button>
+                        <tamu-gisc-button type="button" look="danger" [value]="'Remove ' + benefit.get('name')?.value" (click)="removeBenefit(categoryIndex, benefitIndex)"></tamu-gisc-button>
                       </tamu-gisc-accordion-content>
                     </tamu-gisc-accordion>
                   </div>

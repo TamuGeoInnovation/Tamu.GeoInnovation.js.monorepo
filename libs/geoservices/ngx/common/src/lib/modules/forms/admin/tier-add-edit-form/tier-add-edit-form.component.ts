@@ -128,6 +128,36 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
     this.categoriesArray.removeAt(index);
   }
 
+  public deleteCategory(index: number): void {
+    const categoryName = this.getCategoryFormGroup(index).get('name')?.value || 'this category';
+
+    this.modalService
+      .open<Record<string, never>, boolean>({
+        title: 'Delete Category',
+        subTitle: `Are you sure you want to delete "${categoryName}"?`,
+        body: 'This action will remove the category and all its benefits. Changes will be applied upon saving the tier',
+        actions: {
+          buttons: [
+            {
+              label: 'No, keep it',
+              value: false,
+              style: 'secondary'
+            },
+            {
+              label: 'Yes, delete it',
+              value: true,
+              style: 'danger'
+            }
+          ]
+        }
+      })
+      .subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.removeCategory(index);
+        }
+      });
+  }
+
   public getCategoryFormGroup(index: number): FormGroup {
     return this.categoriesArray.at(index) as FormGroup;
   }
