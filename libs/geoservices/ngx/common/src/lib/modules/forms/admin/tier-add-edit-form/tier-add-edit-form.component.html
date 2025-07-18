@@ -117,9 +117,13 @@
                           <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="2" [floatLabel]="true"></tamu-gisc-textbox>
                         </div>
 
-                        <div class="form-collection column">
-                          <p>Optional value or limit for this benefit (e.g., "Unlimited", "100 GB", "24/7").</p>
+                        <p>Optional value or limit for this benefit (e.g., "unlimited", "100", "24-7", "true"). This value should be numeric, boolean, or string with no spaces, or special characters except for dashes and underscores. Use <strong>Value Label</strong> to set a user-friendly label for this value.</p>
+
+                        <div class="form-collection row">
+                          <tamu-gisc-select formControlName="valueType" [data]="benefitValueTypes" displayTemplate="label" valueTemplate="value" placeholder="Select value type"></tamu-gisc-select>
                           <tamu-gisc-textbox formControlName="value" placeholder="Value" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                          <tamu-gisc-textbox formControlName="valueLabel" placeholder="Value Label" type="text" [floatLabel]="true"></tamu-gisc-textbox>
+                          <tamu-gisc-textbox formControlName="unit" placeholder="Value Unit" type="text" [floatLabel]="true"></tamu-gisc-textbox>
                         </div>
 
                         <div class="form-collection column">

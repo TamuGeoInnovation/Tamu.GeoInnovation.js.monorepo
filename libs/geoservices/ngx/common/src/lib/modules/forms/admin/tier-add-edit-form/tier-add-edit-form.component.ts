@@ -25,6 +25,13 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
   public entity$: Observable<Tier | undefined>;
   public form: FormGroup;
 
+  public benefitValueTypes = [
+    { label: 'Numeric', value: 'numeric' },
+    { label: 'Boolean', value: 'boolean' },
+    { label: 'String', value: 'string' },
+    { label: 'Choose a value type', value: null }
+  ];
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly router: Router,
@@ -361,7 +368,7 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
 
     const categoryGroup = this.fb.group({
       id: [{ value: categoryData?.id || null, disabled: true }],
-      categoryId: [{ value: defaultCategoryId, disabled: true }, [Validators.required, Validators.maxLength(50)]],
+      categoryId: [{ value: defaultCategoryId, disabled: false }, [Validators.required, Validators.maxLength(50)]],
       name: [defaultCategoryName, [Validators.required, Validators.maxLength(255)]],
       description: [categoryData?.description || null],
       order: [{ value: categoryData?.order ?? atIndex ?? 0, disabled: true }, [Validators.required, Validators.min(0)]],
@@ -387,10 +394,13 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
 
     return this.fb.group({
       id: [{ value: benefitData?.id || null, disabled: true }],
-      benefitId: [{ value: defaultBenefitId, disabled: true }, [Validators.required, Validators.maxLength(50)]],
+      benefitId: [{ value: defaultBenefitId, disabled: false }, [Validators.required, Validators.maxLength(50)]],
       name: [defaultBenefitName, [Validators.required, Validators.maxLength(255)]],
       description: [benefitData?.description || null],
       value: [benefitData?.value || null, [Validators.maxLength(255)]],
+      valueType: [benefitData?.valueType || null, [Validators.maxLength(255)]],
+      valueLabel: [benefitData?.valueLabel || null, [Validators.maxLength(255)]],
+      unit: [benefitData?.unit || null, [Validators.maxLength(255)]],
       showcase: [benefitData?.showcase !== undefined ? benefitData.showcase : false, Validators.required],
       order: [{ value: benefitData?.order ?? atIndex ?? 0, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [benefitData?.active !== undefined ? benefitData.active : true, Validators.required]

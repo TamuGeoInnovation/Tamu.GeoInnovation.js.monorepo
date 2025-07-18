@@ -37,7 +37,7 @@ form,
   margin-bottom: 1rem;
 
   .form-collection {
-    display: inherit;
+    @include mixins.flexbox();
     @include mixins.justify-content(space-around);
 
     // Add top and bottom margin to the form row itself

@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nes
 
 import { TierBenefitService } from './tier-benefit.service';
 import { TierBenefit } from '../../entities/tier-benefit.entity';
+import { CreateTierBenefitDto, UpdateTierBenefitDto } from '../../dto/tier-benefit.dto';
 import { LegacyAuthGuard } from '../../guards/legacy-auth/legacy-auth.guard';
 import { LegacyAdminGuard } from '../../guards/legacy-admin/legacy-admin.guard';
 
@@ -14,7 +15,7 @@ export class TierBenefitController {
    * Create a new tier benefit
    */
   @Post()
-  async create(@Body() benefitData: Partial<TierBenefit>): Promise<TierBenefit> {
+  async create(@Body() benefitData: CreateTierBenefitDto): Promise<TierBenefit> {
     return this.tierBenefitService.create(benefitData);
   }
 
@@ -70,7 +71,7 @@ export class TierBenefitController {
    * Update a tier benefit
    */
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateData: Partial<TierBenefit>): Promise<TierBenefit> {
+  async update(@Param('id') id: string, @Body() updateData: UpdateTierBenefitDto): Promise<TierBenefit> {
     return this.tierBenefitService.update(+id, updateData);
   }
 

@@ -1,6 +1,10 @@
 -- This script creates a tier system with three levels: Tiers, TierCategories, and TierBenefits.
 -- Each tier can have multiple categories, and each category can have multiple benefits.
 
+drop table if exists TierBenefits;
+drop table if exists TierCategories;
+drop table if exists Tiers;
+
 -- =============================================
 -- Create Tables for Tier System
 -- =============================================
@@ -43,7 +47,10 @@ CREATE TABLE [dbo].[TierBenefits] (
     [benefitId] VARCHAR(50) NOT NULL,
     [name] NVARCHAR(255) NOT NULL,
     [description] NVARCHAR(MAX) NULL,
+    [valueType] NVARCHAR(255) NULL,
     [value] NVARCHAR(255) NULL,
+    [valueLabel] NVARCHAR(255) NULL,
+    [unit] NVARCHAR(255) NULL,
     [showcase] BIT NOT NULL DEFAULT 0,
     [order] INT NOT NULL DEFAULT 1,
     [active] BIT NOT NULL DEFAULT 1,
@@ -78,3 +85,5 @@ CREATE NONCLUSTERED INDEX [IX_TierBenefits_benefitId] ON [dbo].[TierBenefits] ([
 CREATE NONCLUSTERED INDEX [IX_TierBenefits_active] ON [dbo].[TierBenefits] ([active]);
 CREATE NONCLUSTERED INDEX [IX_TierBenefits_showcase] ON [dbo].[TierBenefits] ([showcase]);
 CREATE NONCLUSTERED INDEX [IX_TierBenefits_order] ON [dbo].[TierBenefits] ([order]);
+CREATE NONCLUSTERED INDEX [IX_TierBenefits_valueType] ON [dbo].[TierBenefits] ([valueType]);
+CREATE NONCLUSTERED INDEX [IX_TierBenefits_unit] ON [dbo].[TierBenefits] ([unit]);
