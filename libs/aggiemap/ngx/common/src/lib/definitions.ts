@@ -94,7 +94,7 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
     OAL_PRINTERS: {
       id: 'oal-printers',
       layerId: 'oal-printers-layer',
-      name: 'OAL Printers',
+      name: 'AggiePrint Printers',
       url: 'https://api.aggiemap.tamu.edu/proxy/https://isf2.apogee.tamu.edu/maps/data/tamuprinters.json',
       popupComponent: Popups.MarkdownWDirectionsPopupComponent
     }
