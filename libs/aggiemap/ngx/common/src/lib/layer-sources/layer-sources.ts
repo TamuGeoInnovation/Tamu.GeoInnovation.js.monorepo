@@ -317,7 +317,7 @@ export const ThreeDLayers: Array<LayerSource> = [
     url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/SketchupCampus_2082019/SceneServer',
     listMode: 'show',
     visible: true,
-    popupComponent: Popups.BasePopupComponent,
+    // popupComponent: Popups.BasePopupComponent,
     native: {
       outFields: ['*'],
       definitionExpression: "WhereFrom = 'arch'",
