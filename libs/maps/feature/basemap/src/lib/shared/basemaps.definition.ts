@@ -34,5 +34,5 @@ export const NearmapCSBasemap: BaseMapProperties = {
   ],
   id: 'nearmap_cs_basemap',
   title: 'Nearmap Satellite',
-  thumbnailUrl: 'https://aggiemap.tamu.edu/images/basemap_thumbnails/nearmap_imagery.png' // Replace with actual thumbnail URL
+  thumbnailUrl: 'https://aggiemap.tamu.edu/images/basemap_thumbnails/nearmap_imagery.png'
 };
