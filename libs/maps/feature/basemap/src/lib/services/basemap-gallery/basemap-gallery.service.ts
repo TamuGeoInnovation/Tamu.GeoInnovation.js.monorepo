@@ -52,12 +52,12 @@ export class BasemapGalleryService {
             source: new LocalBasemapsSource({
               basemaps: [
                 instancedAggiemapBasemap,
-                nearmapCSBasemap,
                 Basemap.fromId('topo-vector'),
                 Basemap.fromId('streets-relief-vector'),
                 Basemap.fromId('streets-navigation-vector'),
                 Basemap.fromId('streets-vector'),
-                Basemap.fromId('gray-vector')
+                Basemap.fromId('gray-vector'),
+                nearmapCSBasemap
               ]
             })
           });
