@@ -11,7 +11,7 @@ export const environment = {
 };
 
 export * from './notification-events';
-export const { Connections, Definitions, LayerSources, SearchSources, LegendSources } = factory({
+export const { Connections, Definitions, LayerSources, SearchSources, LegendSources, ThreeDLayers } = factory({
   environment: 'prod',
   layerSources: {
     exclude: ['BIKE_LOCATIONS']
