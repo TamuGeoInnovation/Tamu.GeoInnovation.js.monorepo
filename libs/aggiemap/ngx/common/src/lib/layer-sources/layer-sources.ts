@@ -294,7 +294,7 @@ export function LayerSources(
         ...commonLayerProps,
         renderer: {
           type: 'unique-value',
-          valueExpression: `When($feature.Access == 'Public', 'all',  'restricted')`,
+          valueExpression: `When($feature.Access == 'Campus Member Accessible', 'all',  'restricted')`,
           uniqueValueInfos: [
             {
               value: 'all',
