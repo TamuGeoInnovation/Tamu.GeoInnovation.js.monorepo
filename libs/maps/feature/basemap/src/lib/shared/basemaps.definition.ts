@@ -19,3 +19,20 @@ export const AggiemapBasemap: BaseMapProperties = {
   title: 'Aggieland',
   thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/info/thumbnail'
 };
+
+export const NearmapCSBasemap: BaseMapProperties = {
+  baseLayers: [
+    {
+      type: 'WMSLayer',
+      visible: true,
+      url: `https://api.nearmap.com/wms/v1/places/17f8f9f2-dd4b-43ca-98d9-edf2f28b1361/apikey/ZTk5MTUwZjQtOTcxOC00NWEyLTliOWItYjlmODA1NjRlMmMw`,
+      copyright: 'Nearmap',
+      spatialReference: {
+        wkid: 102100
+      }
+    }
+  ],
+  id: 'nearmap_cs_basemap',
+  title: 'Nearmap Satellite',
+  thumbnailUrl: 'https://aggiemap.tamu.edu/images/basemap_thumbnails/nearmap_imagery.png'
+};

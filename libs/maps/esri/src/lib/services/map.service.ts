@@ -921,7 +921,11 @@ export interface BaseMapProperties extends esri.BasemapProperties {
   baseLayers: [LayerProperties];
 }
 
-interface LayerProperties extends esri.LayerProperties, esri.TileLayerProperties, esri.VectorTileLayerProperties {
+interface LayerProperties
+  extends esri.LayerProperties,
+    esri.TileLayerProperties,
+    esri.VectorTileLayerProperties,
+    esri.WMSLayerProperties {
   type: string;
 }
 
