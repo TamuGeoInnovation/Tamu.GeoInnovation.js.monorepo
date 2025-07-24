@@ -76,7 +76,7 @@ export class TierCategoryAddEditFormComponent implements OnInit, OnDestroy {
 
   public addBenefit(): void {
     const benefitsArray = this.benefitsArray;
-    const newBenefit = this.ats.createBenefitFormGroup(undefined, benefitsArray.length);
+    const newBenefit = this.ats.createBenefitFormGroup(this.category, undefined, benefitsArray.length);
 
     benefitsArray.push(newBenefit);
   }

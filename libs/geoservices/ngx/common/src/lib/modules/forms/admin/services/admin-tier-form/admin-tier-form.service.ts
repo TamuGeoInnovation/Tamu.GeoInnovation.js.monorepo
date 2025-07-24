@@ -50,7 +50,8 @@ export class AdminTierFormService {
   public createCategoryFormGroup(categoryData?: Partial<TierCategory>, atIndex?: number): FormGroup {
     const defaultCategoryName = categoryData?.name ?? 'New Category' ?? null;
     const defaultCategoryId =
-      categoryData?.categoryId ?? `${defaultCategoryName.toLowerCase().split(' ').join('-')}-${Date.now()}` ?? null;
+      categoryData?.categoryId ??
+      this.generateProductId([this.form.get('name')?.value ?? 'tier', defaultCategoryName, Date.now().toString()]);
 
     const categoryGroup = this.fb.group({
       id: [{ value: categoryData?.id || null, disabled: true }],
@@ -67,16 +68,23 @@ export class AdminTierFormService {
       const benefitsArray = categoryGroup.get('benefits') as FormArray;
 
       categoryData.benefits.forEach((benefit, index) => {
-        benefitsArray.insert(index, this.createBenefitFormGroup({ ...benefit, order: index }));
+        benefitsArray.insert(index, this.createBenefitFormGroup(categoryGroup, { ...benefit, order: index }));
       });
     }
 
     return categoryGroup;
   }
 
-  public createBenefitFormGroup(benefitData?: Partial<TierBenefit>, atIndex?: number): FormGroup {
+  public createBenefitFormGroup(categoryData?: FormGroup, benefitData?: Partial<TierBenefit>, atIndex?: number): FormGroup {
     const defaultBenefitName = benefitData?.name ?? 'New Benefit' ?? null;
-    const defaultBenefitId = (benefitData?.benefitId || `${defaultBenefitName.toLowerCase().split(' ').join('-')}`) ?? null;
+    const defaultBenefitId =
+      benefitData?.benefitId ??
+      this.generateProductId([
+        this.form.get('name')?.value ?? 'tier',
+        categoryData?.get('name')?.value ?? 'category',
+        defaultBenefitName,
+        Date.now().toString()
+      ]);
 
     return this.fb.group({
       id: [{ value: benefitData?.id || null, disabled: true }],
