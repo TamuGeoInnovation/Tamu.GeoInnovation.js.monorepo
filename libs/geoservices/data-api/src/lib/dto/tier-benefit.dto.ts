@@ -1,97 +1,113 @@
-import { IsString, IsOptional, IsBoolean, IsNumber, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsNumber, IsNotEmpty, MaxLength, Min } from 'class-validator';
 
 export class CreateTierBenefitDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
-  benefitId: string;
+  public benefitId: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  name: string;
+  public name: string;
 
   @IsOptional()
   @IsString()
-  description?: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  valueType?: string;
+  public description?: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  value?: string;
+  public value?: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  unit?: string;
+  public valueType?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  public valueLabel?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  public unit?: string;
 
   @IsOptional()
   @IsBoolean()
-  showcase?: boolean;
+  public showcase?: boolean;
 
   @IsOptional()
   @IsNumber()
-  order?: number;
+  @Min(0)
+  public order?: number;
 
   @IsOptional()
   @IsBoolean()
-  active?: boolean;
+  public active?: boolean;
 
   @IsOptional()
   @IsNumber()
-  categoryId?: number;
+  public categoryId?: number;
 }
 
 export class UpdateTierBenefitDto {
   @IsOptional()
+  @IsNumber()
+  public id?: number;
+
+  @IsOptional()
   @IsString()
   @MaxLength(50)
-  benefitId?: string;
+  public benefitId?: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  name?: string;
+  public name?: string;
 
   @IsOptional()
   @IsString()
-  description?: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  valueType?: string;
+  public description?: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  value?: string;
+  public value?: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  unit?: string;
+  public valueType?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  public valueLabel?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  public unit?: string;
 
   @IsOptional()
   @IsBoolean()
-  showcase?: boolean;
+  public showcase?: boolean;
 
   @IsOptional()
   @IsNumber()
-  order?: number;
+  @Min(0)
+  public order?: number;
 
   @IsOptional()
   @IsBoolean()
-  active?: boolean;
+  public active?: boolean;
 
   @IsOptional()
   @IsNumber()
-  categoryId?: number;
+  public categoryId?: number;
 }
 
 export class TierBenefitResponseDto {
@@ -99,8 +115,9 @@ export class TierBenefitResponseDto {
   benefitId: string;
   name: string;
   description?: string;
-  valueType?: string;
   value?: string;
+  valueType?: string;
+  valueLabel?: string;
   unit?: string;
   showcase: boolean;
   order: number;

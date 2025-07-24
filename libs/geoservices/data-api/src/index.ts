@@ -25,4 +25,6 @@ export * from './lib/entities/tier.entity';
 export * from './lib/entities/tier-category.entity';
 export * from './lib/entities/tier-benefit.entity';
 
+export * from './lib/dto/tier.dto';
+export * from './lib/dto/tier-category.dto';
 export * from './lib/dto/tier-benefit.dto';

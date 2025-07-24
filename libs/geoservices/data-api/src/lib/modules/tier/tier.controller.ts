@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { TierService } from './tier.service';
 import { Tier } from '../../entities/tier.entity';
+import { CreateTierDto, UpdateTierDto } from '../../dto/tier.dto';
 import { LegacyAuthGuard } from '../../guards/legacy-auth/legacy-auth.guard';
 import { LegacyAdminGuard } from '../../guards/legacy-admin/legacy-admin.guard';
 
@@ -14,8 +15,10 @@ export class TierController {
    * Create a new tier
    */
   @Post()
-  async create(@Body() tierData: Partial<Tier>): Promise<Tier> {
-    return this.tierService.create(tierData);
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  async create(@Body() tierData: CreateTierDto): Promise<Tier> {
+    // Type assertion needed until service layer is updated to handle DTOs properly
+    return this.tierService.create(tierData as Partial<Tier>);
   }
 
   /**
@@ -54,8 +57,10 @@ export class TierController {
    * Update a tier
    */
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateData: Partial<Tier>): Promise<Tier> {
-    return this.tierService.update(+id, updateData);
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  async update(@Param('id') id: string, @Body() updateData: UpdateTierDto): Promise<Tier> {
+    // Type assertion needed until service layer is updated to handle DTOs properly
+    return this.tierService.update(+id, updateData as Partial<Tier>);
   }
 
   /**
