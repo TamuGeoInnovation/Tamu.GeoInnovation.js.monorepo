@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { TierBenefit, TierCategory } from '@tamu-gisc/geoservices/data-api';
@@ -11,12 +11,9 @@ import { AdminTierService } from '../../services/admin-tier/admin-tier.service';
   templateUrl: './tier-category-add-edit-form.component.html',
   styleUrls: ['./tier-category-add-edit-form.component.scss']
 })
-export class TierCategoryAddEditFormComponent implements OnInit {
+export class TierCategoryAddEditFormComponent {
   @Input()
   public category: FormGroup;
-
-  @Input()
-  public formMode: 'create' | 'edit' = 'create';
 
   @Output()
   public categoryDelete: EventEmitter<TierCategory> = new EventEmitter<TierCategory>();
@@ -26,10 +23,6 @@ export class TierCategoryAddEditFormComponent implements OnInit {
     private readonly modalService: ModalService,
     private readonly ats: AdminTierService
   ) {}
-
-  public ngOnInit(): void {
-    console.log('TierCategoryAddEditFormComponent initialized with form mode:', this.formMode);
-  }
 
   public getBenefitsArray(): FormArray {
     return this.category.get('benefits') as FormArray;

@@ -51,7 +51,7 @@
             <tamu-gisc-accordion-header>{{ category.get('name')?.value }}</tamu-gisc-accordion-header>
 
             <tamu-gisc-accordion-content>
-              <tamu-gisc-tier-category-add-edit-form [formMode]="type" [category]="category" (categoryDelete)="deleteCategory(categoryIndex)"></tamu-gisc-tier-category-add-edit-form>
+              <tamu-gisc-tier-category-add-edit-form [category]="category" (categoryDelete)="deleteCategory(categoryIndex)"></tamu-gisc-tier-category-add-edit-form>
             </tamu-gisc-accordion-content>
           </tamu-gisc-accordion>
         </div>
