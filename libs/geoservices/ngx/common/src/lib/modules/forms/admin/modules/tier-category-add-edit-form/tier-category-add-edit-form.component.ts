@@ -5,7 +5,7 @@ import { skip, startWith, Subject, takeUntil, combineLatest } from 'rxjs';
 import { TierBenefit, TierCategory } from '@tamu-gisc/geoservices/data-api';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
-import { AdminTierService } from '../../services/admin-tier/admin-tier.service';
+import { AdminTierFormService } from '../../services/admin-tier-form/admin-tier-form.service';
 
 @Component({
   selector: 'tamu-gisc-tier-category-add-edit-form',
@@ -24,7 +24,7 @@ export class TierCategoryAddEditFormComponent implements OnInit, OnDestroy {
   constructor(
     private readonly fb: FormBuilder,
     private readonly modalService: ModalService,
-    private readonly ats: AdminTierService
+    private readonly ats: AdminTierFormService
   ) {}
 
   public ngOnInit(): void {
@@ -59,7 +59,7 @@ export class TierCategoryAddEditFormComponent implements OnInit, OnDestroy {
           takeUntil(this.destroy$)
         )
         .subscribe(([tierName, categoryName]) => {
-          const generatedId = this.ats.generateProductId(tierName ?? '', categoryName ?? '');
+          const generatedId = this.ats.generateProductId([tierName ?? '', categoryName ?? '']);
           this.category.get('categoryId')?.setValue(generatedId, { emitEvent: false });
         });
     }

@@ -8,7 +8,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminTierService {
+export class AdminTierFormService {
   public form: FormGroup;
 
   constructor(
@@ -203,15 +203,14 @@ export class AdminTierService {
   }
 
   /**
-   * Generates a product ID from two names
-   * @param name1 The first name
-   * @param name2 The second name
-   * @returns A lower-cased, hyphenated concatenation of the two names
+   * Generates a product lower-cased, hyphen-concatenated ID based on an array of strings.
+   *
+   * @param {Array<string>} strings - The array of strings to generate the ID from.
+   * @memberof AdminTierService
    */
-  public generateProductId(name1: string, name2: string): string {
-    const cleanName1 = name1.toLowerCase().trim().replace(/\s+/g, '-');
-    const cleanName2 = name2.toLowerCase().trim().replace(/\s+/g, '-');
+  public generateProductId(strings: Array<string>): string {
+    const cleanedStrings = strings.map((str) => str.toLowerCase().trim().replace(/\s+/g, '-'));
 
-    return `${cleanName1}-${cleanName2}`;
+    return cleanedStrings.join('-');
   }
 }

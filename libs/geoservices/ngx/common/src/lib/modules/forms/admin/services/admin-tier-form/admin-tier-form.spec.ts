@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AdminTierService } from './admin-tier.service';
+import { AdminTierFormService } from './admin-tier-form.service';
 
-describe('AdminTierService', () => {
-  let service: AdminTierService;
+describe('AdminTierFormService', () => {
+  let service: AdminTierFormService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AdminTierService);
+    service = TestBed.inject(AdminTierFormService);
   });
 
   it('should be created', () => {

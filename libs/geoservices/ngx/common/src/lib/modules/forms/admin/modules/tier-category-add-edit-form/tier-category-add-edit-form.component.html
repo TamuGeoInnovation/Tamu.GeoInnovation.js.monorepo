@@ -24,6 +24,10 @@
     <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
   </div>
 
+  <div class="form-collection column">
+    <tamu-gisc-button type="button" look="danger" value="Delete Category" (click)="deleteCategory()"> </tamu-gisc-button>
+  </div>
+
   <div class="form-section pre-1">
     <div class="form-section-toolbar">
       <div class="form-section-title">Benefits</div>
@@ -40,7 +44,7 @@
           <tamu-gisc-accordion-header>{{ benefit.get('name')?.value }}</tamu-gisc-accordion-header>
 
           <tamu-gisc-accordion-content>
-            <tamu-gisc-category-benefit-add-edit-form [benefit]="benefit" (benefitDelete)="removeBenefit(category, benefitIndex)"></tamu-gisc-category-benefit-add-edit-form>
+            <tamu-gisc-category-benefit-add-edit-form [benefit]="benefit" [category]="category" (benefitDelete)="removeBenefit(category, benefitIndex)"></tamu-gisc-category-benefit-add-edit-form>
           </tamu-gisc-accordion-content>
         </tamu-gisc-accordion>
       </div>

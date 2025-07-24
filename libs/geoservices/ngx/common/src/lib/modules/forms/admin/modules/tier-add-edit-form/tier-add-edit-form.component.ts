@@ -10,13 +10,13 @@ import { TiersService } from '@tamu-gisc/geoservices/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
-import { AdminTierService } from '../../services/admin-tier/admin-tier.service';
+import { AdminTierFormService } from '../../services/admin-tier-form/admin-tier-form.service';
 
 @Component({
   selector: 'tamu-gisc-tier-add-edit-form',
   templateUrl: './tier-add-edit-form.component.html',
   styleUrls: ['./tier-add-edit-form.component.scss'],
-  providers: [AdminTierService] // Scoped provider for this component. This enables us to clear the form state when component is destroyed.
+  providers: [AdminTierFormService] // Scoped provider for this component. This enables us to clear the form state when component is destroyed.
 })
 export class TierAddEditFormComponent implements OnInit, OnDestroy {
   @Input()
@@ -34,7 +34,7 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
     private readonly notificationService: NotificationService,
     private readonly modalService: ModalService,
     private readonly ds: DragulaService,
-    private readonly ats: AdminTierService
+    private readonly ats: AdminTierFormService
   ) {
     this.ds.createGroup('CATEGORIES', {
       direction: 'vertical',
