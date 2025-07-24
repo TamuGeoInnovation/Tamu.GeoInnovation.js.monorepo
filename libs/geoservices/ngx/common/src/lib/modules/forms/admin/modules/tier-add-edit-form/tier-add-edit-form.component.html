@@ -1,0 +1,70 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmission()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <ng-container *ngIf="type === 'create'; else editTitle">
+        <div class="form-section-title">Create Tier</div>
+      </ng-container>
+
+      <ng-template #editTitle>
+        <div class="form-section-title">Update Tier</div>
+      </ng-template>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column pad-top">
+        <p>The tier ID is a unique identifier used internally for the tier (e.g., 'lite', 'basic', 'professional', etc.)</p>
+        <tamu-gisc-textbox formControlName="tierId" placeholder="Tier ID" type="text" [floatLabel]="true" [required]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>The display name for the tier that will be shown to users.</p>
+        <tamu-gisc-textbox formControlName="name" placeholder="Tier Name" type="text" [floatLabel]="true" [required]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>Optional description of the tier and its features.</p>
+        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p>Whether this tier is currently active and available for selection.</p>
+        <tamu-gisc-checkbox formControlName="active" label="Active"> </tamu-gisc-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories Section -->
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Categories</div>
+      <div class="form-section-actions">
+        <a (click)="addCategory()">Add Category <span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p>Categories are used to group related features and benefits within a subscription tier. For example, a "Lite" tier might have the categories "Services" and "Support".</p>
+
+      <div formArrayName="categories">
+        <div dragula="CATEGORIES" [(dragulaModel)]="categoriesArray.controls" (dragulaModelChange)="calculateControlArrayOrder()">
+          <tamu-gisc-accordion *ngFor="let category of categoryControls; let categoryIndex = index" [formGroupName]="categoryIndex">
+            <tamu-gisc-accordion-header>{{ category.get('name')?.value }}</tamu-gisc-accordion-header>
+
+            <tamu-gisc-accordion-content>
+              <tamu-gisc-tier-category-add-edit-form [formMode]="type" [category]="category" (categoryDelete)="deleteCategory(categoryIndex)"></tamu-gisc-tier-category-add-edit-form>
+            </tamu-gisc-accordion-content>
+          </tamu-gisc-accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button type="button" look="danger" value="Delete Tier" (click)="deleteEntity()" *ngIf="type === 'edit'"> </tamu-gisc-button>
+        <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'" [disabled]="!form.valid"> </tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</form>

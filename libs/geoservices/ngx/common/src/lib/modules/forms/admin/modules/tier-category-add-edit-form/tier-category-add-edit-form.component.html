@@ -1,0 +1,53 @@
+<div *ngIf="category" [formGroup]="category">
+  <div class="form-collection column">
+    <p>Display order for this category.</p>
+    <tamu-gisc-textbox formControlName="order" placeholder="Order" type="number" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+  </div>
+
+  <div class="form-collection column">
+    <p>The category ID is a unique identifier used internally for the category (e.g., 'features', 'limits', 'support').</p>
+    <tamu-gisc-textbox formControlName="categoryId" placeholder="Category ID" type="text" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+  </div>
+
+  <div class="form-collection column">
+    <p>The display name for the category that will be shown to users.</p>
+    <tamu-gisc-textbox formControlName="name" placeholder="Category Name" type="text" [floatLabel]="true" [required]="true"></tamu-gisc-textbox>
+  </div>
+
+  <div class="form-collection column">
+    <p>Optional description of the category.</p>
+    <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="3" [floatLabel]="true"></tamu-gisc-textbox>
+  </div>
+
+  <div class="form-collection column">
+    <p>Whether this category is currently active.</p>
+    <tamu-gisc-checkbox formControlName="active" label="Active"></tamu-gisc-checkbox>
+  </div>
+
+  <div class="form-collection column">
+    <tamu-gisc-button type="button" look="danger" value="Delete Category" (click)="deleteCategory()" *ngIf="formMode === 'edit'"> </tamu-gisc-button>
+  </div>
+
+  <div class="form-section pre-1">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Benefits</div>
+      <div class="form-section-actions">
+        <a (click)="addBenefit()">Add Benefit<span class="material-icons action">add</span></a>
+      </div>
+    </div>
+
+    <div class="form-section-body" formArrayName="benefits">
+      <p>Benefits are an itemized description of the features included in a subscription tier category. For example, a "Support" category might have "Response Time" benefit with a turn-around time for response to support tickets of 24 hours for "Lite" tiers and 1-hour for "Premium" tiers.</p>
+
+      <div dragula="BENEFITS" [(dragulaModel)]="getBenefitsArray().controls" (dragulaModelChange)="calculateBenefitOrder()">
+        <tamu-gisc-accordion *ngFor="let benefit of benefitControls; let benefitIndex = index" [formGroupName]="benefitIndex" class="trailer-2">
+          <tamu-gisc-accordion-header>{{ benefit.get('name')?.value }}</tamu-gisc-accordion-header>
+
+          <tamu-gisc-accordion-content>
+            <tamu-gisc-category-benefit-add-edit-form [benefit]="benefit"></tamu-gisc-category-benefit-add-edit-form>
+          </tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+      </div>
+    </div>
+  </div>
+</div>

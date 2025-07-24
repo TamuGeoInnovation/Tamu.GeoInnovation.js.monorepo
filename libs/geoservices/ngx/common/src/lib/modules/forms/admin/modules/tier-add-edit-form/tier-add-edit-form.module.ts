@@ -8,9 +8,18 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { TierAddEditFormComponent } from './tier-add-edit-form.component';
+import { TierCategoryAddEditFormModule } from '../tier-category-add-edit-form/tier-category-add-edit-form.module';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule, DragulaModule.forRoot()],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UIFormsModule,
+    UILayoutModule,
+    TierCategoryAddEditFormModule,
+    DragulaModule.forRoot()
+  ],
   declarations: [TierAddEditFormComponent],
   exports: [TierAddEditFormComponent]
 })

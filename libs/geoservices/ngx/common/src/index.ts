@@ -17,4 +17,4 @@ export * from './lib/modules/pricing/interactive-pricing.module';
 export * from './lib/modules/interactive/interactive.module';
 
 // Admin forms
-export * from './lib/modules/forms/admin/tier-add-edit-form/tier-add-edit-form.module';
+export * from './lib/modules/forms/admin/modules/tier-add-edit-form/tier-add-edit-form.module';
