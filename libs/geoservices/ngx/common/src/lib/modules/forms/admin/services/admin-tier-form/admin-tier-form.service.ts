@@ -92,7 +92,7 @@ export class AdminTierFormService {
       active: [benefitData?.active !== undefined ? benefitData.active : true, Validators.required],
       name: [defaultBenefitName, [Validators.required, Validators.maxLength(255)]],
       description: [benefitData?.description || null],
-      valueType: [benefitData?.valueType || 'text', Validators.required],
+      valueType: [benefitData?.valueType || undefined, Validators.required],
       value: [benefitData?.value || null],
       valueLabel: [benefitData?.valueLabel || null],
       unit: [benefitData?.unit || null],
