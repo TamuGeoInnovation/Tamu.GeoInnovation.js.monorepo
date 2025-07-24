@@ -30,9 +30,8 @@ export class CreateTierDto {
 }
 
 export class UpdateTierDto {
-  @IsOptional()
   @IsNumber()
-  public id?: number;
+  public id: number;
 
   @IsOptional()
   @IsString()

@@ -100,18 +100,6 @@ export class TierService {
       throw new Error(`Tier with ID ${id} not found`);
     }
 
-    // If a new category is added, it will not have an auto-generated ID yet.
-    const newCategories = updateData.categories
-      .filter((c) => !c.id)
-      .map((c) => {
-        delete c.id;
-        delete c.updated;
-
-        return this.tierCategoryRepository.create({ ...c });
-      });
-
-    const existingCategoriesFromUpdateData = updateData.categories.filter((c) => c.id);
-
     // Use merge and save to handle updates and new entities
     const updatedTier = this.tierRepository.merge(existingTier, {
       ...updateData,
@@ -119,7 +107,7 @@ export class TierService {
       updated: new Date()
     });
 
-    updatedTier.categories = [...newCategories, ...existingCategoriesFromUpdateData].sort((a, b) => a.order - b.order);
+    updatedTier.categories = updateData.categories;
 
     // Save with cascade operations for categories and benefits
     return this.tierRepository.save(updatedTier);

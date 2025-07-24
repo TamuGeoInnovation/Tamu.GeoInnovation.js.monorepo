@@ -7,9 +7,10 @@ import {
   MaxLength,
   IsArray,
   ValidateNested,
-  Min
+  Min,
+  ValidateIf
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 import { CreateTierBenefitDto, UpdateTierBenefitDto, TierBenefitResponseDto } from './tier-benefit.dto';
 
@@ -46,6 +47,9 @@ export class CreateTierCategoryDto {
 
 export class UpdateTierCategoryDto {
   @IsOptional()
+  @Transform((params) => {
+    return params.value !== null ? params.value : undefined;
+  })
   @IsNumber()
   public id?: number;
 

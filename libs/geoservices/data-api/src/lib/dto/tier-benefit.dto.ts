@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsString, IsOptional, IsBoolean, IsNumber, IsNotEmpty, MaxLength, Min } from 'class-validator';
 
 export class CreateTierBenefitDto {
@@ -55,6 +56,9 @@ export class CreateTierBenefitDto {
 
 export class UpdateTierBenefitDto {
   @IsOptional()
+  @Transform((params) => {
+    return params.value !== null ? params.value : undefined;
+  })
   @IsNumber()
   public id?: number;
 
