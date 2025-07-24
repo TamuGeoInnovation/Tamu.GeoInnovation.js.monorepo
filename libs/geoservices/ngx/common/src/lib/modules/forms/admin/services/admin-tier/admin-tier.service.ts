@@ -43,8 +43,6 @@ export class AdminTierService {
         entity.categories.forEach((category, index) => {
           categoriesArray.insert(index, this.createCategoryFormGroup({ ...category, order: index }));
         });
-
-        console.log(categoriesArray);
       }
     }
   }
@@ -56,7 +54,7 @@ export class AdminTierService {
 
     const categoryGroup = this.fb.group({
       id: [{ value: categoryData?.id || null, disabled: true }],
-      categoryId: [{ value: defaultCategoryId, disabled: false }, [Validators.required, Validators.maxLength(50)]],
+      categoryId: [{ value: defaultCategoryId, disabled: true }, [Validators.required, Validators.maxLength(50)]],
       name: [defaultCategoryName, [Validators.required, Validators.maxLength(255)]],
       description: [categoryData?.description || null],
       order: [{ value: categoryData?.order ?? atIndex ?? 0, disabled: true }, [Validators.required, Validators.min(0)]],
@@ -82,8 +80,8 @@ export class AdminTierService {
 
     return this.fb.group({
       id: [{ value: benefitData?.id || null, disabled: true }],
+      benefitId: [{ value: defaultBenefitId, disabled: true }, [Validators.required, Validators.maxLength(50)]],
       active: [benefitData?.active !== undefined ? benefitData.active : true, Validators.required],
-      benefitId: [{ value: defaultBenefitId, disabled: false }, [Validators.required, Validators.maxLength(50)]],
       name: [defaultBenefitName, [Validators.required, Validators.maxLength(255)]],
       description: [benefitData?.description || null],
       valueType: [benefitData?.valueType || 'text', Validators.required],
@@ -202,5 +200,18 @@ export class AdminTierService {
     controlArray.forEach((control, index) => {
       control.get('order')?.setValue(index);
     });
+  }
+
+  /**
+   * Generates a product ID from two names
+   * @param name1 The first name
+   * @param name2 The second name
+   * @returns A lower-cased, hyphenated concatenation of the two names
+   */
+  public generateProductId(name1: string, name2: string): string {
+    const cleanName1 = name1.toLowerCase().trim().replace(/\s+/g, '-');
+    const cleanName2 = name2.toLowerCase().trim().replace(/\s+/g, '-');
+
+    return `${cleanName1}-${cleanName2}`;
   }
 }
