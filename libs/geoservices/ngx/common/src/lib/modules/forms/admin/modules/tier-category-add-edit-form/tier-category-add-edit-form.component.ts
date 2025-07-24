@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { skip, startWith, Subject, takeUntil, combineLatest } from 'rxjs';
 
-import { TierBenefit, TierCategory } from '@tamu-gisc/geoservices/data-api';
+import { TierCategory } from '@tamu-gisc/geoservices/data-api';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { AdminTierFormService } from '../../services/admin-tier-form/admin-tier-form.service';
@@ -65,20 +65,20 @@ export class TierCategoryAddEditFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getBenefitsArray(): FormArray {
-    return this.category.get('benefits') as FormArray;
-  }
-
-  public addBenefit(): void {
-    const benefitsArray = this.getBenefitsArray();
-    const newBenefit = this._createBenefitFormGroup(undefined, benefitsArray.length);
-
-    benefitsArray.push(newBenefit);
+  public get benefitsArray(): FormArray {
+    return this.ats.getCategoryBenefitsArray(this.category);
   }
 
   // Getter for typed category controls
   public get benefitControls(): FormGroup[] {
-    return this.getBenefitsArray().controls as FormGroup[];
+    return this.benefitsArray.controls as FormGroup[];
+  }
+
+  public addBenefit(): void {
+    const benefitsArray = this.benefitsArray;
+    const newBenefit = this.ats.createBenefitFormGroup(undefined, benefitsArray.length);
+
+    benefitsArray.push(newBenefit);
   }
 
   public deleteCategory(): void {
@@ -112,29 +112,10 @@ export class TierCategoryAddEditFormComponent implements OnInit, OnDestroy {
   }
 
   public calculateBenefitOrder(): void {
-    this.ats.calculateControlArrayOrder(this.getBenefitsArray().controls);
+    this.ats.calculateControlArrayOrder(this.benefitsArray.controls);
   }
 
   public removeBenefit(category: FormGroup, benefitIndex: number): void {
     this.ats.removeBenefit(category, benefitIndex);
-  }
-
-  private _createBenefitFormGroup(benefitData?: Partial<TierBenefit>, atIndex?: number): FormGroup {
-    const defaultBenefitName = benefitData?.name ?? 'New Benefit' ?? null;
-    const defaultBenefitId = (benefitData?.benefitId || `${defaultBenefitName.toLowerCase().split(' ').join('-')}`) ?? null;
-
-    return this.fb.group({
-      id: [{ value: benefitData?.id || null, disabled: true }],
-      benefitId: [{ value: defaultBenefitId, disabled: false }, [Validators.required, Validators.maxLength(50)]],
-      name: [defaultBenefitName, [Validators.required, Validators.maxLength(255)]],
-      description: [benefitData?.description || null],
-      value: [benefitData?.value || null, [Validators.maxLength(255)]],
-      valueType: [benefitData?.valueType || null, [Validators.maxLength(255)]],
-      valueLabel: [benefitData?.valueLabel || null, [Validators.maxLength(255)]],
-      unit: [benefitData?.unit || null, [Validators.maxLength(255)]],
-      showcase: [benefitData?.showcase !== undefined ? benefitData.showcase : false, Validators.required],
-      order: [{ value: benefitData?.order ?? atIndex ?? 0, disabled: true }, [Validators.required, Validators.min(0)]],
-      active: [benefitData?.active !== undefined ? benefitData.active : true, Validators.required]
-    });
   }
 }

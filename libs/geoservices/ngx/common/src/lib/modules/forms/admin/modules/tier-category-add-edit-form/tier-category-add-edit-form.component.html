@@ -39,7 +39,7 @@
     <div class="form-section-body" formArrayName="benefits">
       <p>Benefits are an itemized description of the features included in a subscription tier category. For example, a "Support" category might have "Response Time" benefit with a turn-around time for response to support tickets of 24 hours for "Lite" tiers and 1-hour for "Premium" tiers.</p>
 
-      <div dragula="BENEFITS" [(dragulaModel)]="getBenefitsArray().controls" (dragulaModelChange)="calculateBenefitOrder()">
+      <div dragula="BENEFITS" [(dragulaModel)]="benefitsArray.controls" (dragulaModelChange)="calculateBenefitOrder()">
         <tamu-gisc-accordion *ngFor="let benefit of benefitControls; let benefitIndex = index" [formGroupName]="benefitIndex" class="trailer-2">
           <tamu-gisc-accordion-header>{{ benefit.get('name')?.value }}</tamu-gisc-accordion-header>
 

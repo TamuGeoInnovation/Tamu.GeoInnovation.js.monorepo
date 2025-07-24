@@ -143,41 +143,11 @@ export class AdminTierFormService {
     this.categoriesArray.push(this.createCategoryFormGroup(undefined, this.categoriesArray.length));
   }
 
-  public removeCategory(index: number): void {
+  public deleteCategory(index: number): void {
     const categories = this.categoriesArray;
     categories.removeAt(index);
 
     this.calculateControlArrayOrder(categories.controls);
-  }
-
-  public deleteCategory(index: number): void {
-    const categoryName = this.getCategoryFormGroup(index).get('name')?.value || 'this category';
-
-    this.ms
-      .open<Record<string, never>, boolean>({
-        title: 'Delete Category',
-        subTitle: `Are you sure you want to delete "${categoryName}"?`,
-        body: 'This action will remove the category and all its benefits. Changes will be applied upon saving the tier',
-        actions: {
-          buttons: [
-            {
-              label: 'No, keep it',
-              value: false,
-              style: 'secondary'
-            },
-            {
-              label: 'Yes, delete it',
-              value: true,
-              style: 'danger'
-            }
-          ]
-        }
-      })
-      .subscribe((confirmed: boolean) => {
-        if (confirmed) {
-          this.removeCategory(index);
-        }
-      });
   }
 
   public getCategoryFormGroup(index: number): FormGroup {
@@ -185,8 +155,16 @@ export class AdminTierFormService {
   }
 
   // Benefit management methods
-  public getBenefitsArray(categoryIndex: number): FormArray {
-    return this.getCategoryFormGroup(categoryIndex).get('benefits') as FormArray;
+  public getCategoryBenefitsArray(categoryControl: FormGroup): FormArray;
+  public getCategoryBenefitsArray(categoryIndex: number): FormArray;
+  public getCategoryBenefitsArray(categoryOrIndex: FormGroup | number): FormArray {
+    if (categoryOrIndex instanceof FormGroup) {
+      return categoryOrIndex.get('benefits') as FormArray;
+    }
+
+    // Assumed categoryOrIndex is a number at this point
+
+    return this.getCategoryFormGroup(categoryOrIndex).get('benefits') as FormArray;
   }
 
   public removeBenefit(category: AbstractControl | FormGroup, benefitIndex: number): void {

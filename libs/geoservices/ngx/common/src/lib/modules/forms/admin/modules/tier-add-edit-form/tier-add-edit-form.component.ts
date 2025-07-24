@@ -108,10 +108,6 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
     this.ats.addCategory();
   }
 
-  public removeCategory(index: number): void {
-    this.ats.removeCategory(index);
-  }
-
   public deleteCategory(index: number): void {
     this.ats.deleteCategory(index);
   }
