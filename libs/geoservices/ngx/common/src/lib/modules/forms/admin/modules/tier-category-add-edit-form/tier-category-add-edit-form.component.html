@@ -44,7 +44,7 @@
           <tamu-gisc-accordion-header>{{ benefit.get('name')?.value }}</tamu-gisc-accordion-header>
 
           <tamu-gisc-accordion-content>
-            <tamu-gisc-category-benefit-add-edit-form [benefit]="benefit"></tamu-gisc-category-benefit-add-edit-form>
+            <tamu-gisc-category-benefit-add-edit-form [benefit]="benefit" (benefitDelete)="removeBenefit(category, benefitIndex)"></tamu-gisc-category-benefit-add-edit-form>
           </tamu-gisc-accordion-content>
         </tamu-gisc-accordion>
       </div>

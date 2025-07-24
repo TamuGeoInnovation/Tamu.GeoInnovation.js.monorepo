@@ -146,7 +146,10 @@ export class AdminTierService {
   }
 
   public removeCategory(index: number): void {
-    this.categoriesArray.removeAt(index);
+    const categories = this.categoriesArray;
+    categories.removeAt(index);
+
+    this.calculateControlArrayOrder(categories.controls);
   }
 
   public deleteCategory(index: number): void {
@@ -191,10 +194,8 @@ export class AdminTierService {
   public removeBenefit(category: AbstractControl | FormGroup, benefitIndex: number): void {
     const benefitsArray = category.get('benefits') as FormArray;
     benefitsArray.removeAt(benefitIndex);
-  }
 
-  public getBenefitFormGroup(categoryIndex: number, benefitIndex: number): FormGroup {
-    return this.getBenefitsArray(categoryIndex).at(benefitIndex) as FormGroup;
+    this.calculateControlArrayOrder(benefitsArray.controls);
   }
 
   public calculateControlArrayOrder(controlArray: Array<AbstractControl | FormControl>): void {
