@@ -100,28 +100,17 @@ export class TierService {
       throw new Error(`Tier with ID ${id} not found`);
     }
 
-    // If categories are provided in update data, filter existing categories to match
-    if (updateData.categories) {
-      // Get IDs of categories that should remain
-      const newCategoryIds = updateData.categories.filter((cat) => cat.id).map((cat) => cat.id);
+    // If a new category is added, it will not have an auto-generated ID yet.
+    const newCategories = updateData.categories
+      .filter((c) => !c.id)
+      .map((c) => {
+        delete c.id;
+        delete c.updated;
 
-      // Filter existing categories to only include those in the update data
-      existingTier.categories = existingTier.categories.filter((existingCat) => newCategoryIds.includes(existingCat.id));
+        return this.tierCategoryRepository.create({ ...c });
+      });
 
-      // Filter benefits for each existing category
-      for (const existingCategory of existingTier.categories) {
-        const updatedCategory = updateData.categories.find((c) => c.id === existingCategory.id);
-        if (updatedCategory && updatedCategory.benefits) {
-          // Get IDs of benefits that should remain
-          const newBenefitIds = updatedCategory.benefits.filter((benefit) => benefit.id).map((benefit) => benefit.id);
-
-          // Filter existing benefits to only include those in the update data
-          existingCategory.benefits = existingCategory.benefits.filter((existingBenefit) =>
-            newBenefitIds.includes(existingBenefit.id)
-          );
-        }
-      }
-    }
+    const existingCategoriesFromUpdateData = updateData.categories.filter((c) => c.id);
 
     // Use merge and save to handle updates and new entities
     const updatedTier = this.tierRepository.merge(existingTier, {
@@ -129,6 +118,8 @@ export class TierService {
       id: id, // Ensure we preserve the ID
       updated: new Date()
     });
+
+    updatedTier.categories = [...newCategories, ...existingCategoriesFromUpdateData].sort((a, b) => a.order - b.order);
 
     // Save with cascade operations for categories and benefits
     return this.tierRepository.save(updatedTier);
