@@ -46,7 +46,7 @@ export class TierService {
   public async findAll(): Promise<Tier[]> {
     return this.tierRepository.find({
       relations: ['categories', 'categories.benefits'],
-      order: { added: 'DESC' }
+      order: { cost: 'ASC', updated: 'DESC' }
     });
   }
 
@@ -57,7 +57,7 @@ export class TierService {
     return this.tierRepository.find({
       where: { active: true },
       relations: ['categories', 'categories.benefits'],
-      order: { added: 'DESC' }
+      order: { cost: 'ASC' }
     });
   }
 

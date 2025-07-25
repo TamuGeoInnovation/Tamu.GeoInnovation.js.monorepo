@@ -21,6 +21,8 @@ export class AdminTierFormService {
       tierId: [null, [Validators.required, Validators.maxLength(50)]],
       name: [null, [Validators.required, Validators.maxLength(255)]],
       description: [null],
+      cost: [0.0, [Validators.required, Validators.min(0)]],
+      interval: [undefined, [Validators.required, Validators.maxLength(50)]],
       active: [true, Validators.required],
       categories: this.fb.array([])
     });
@@ -33,6 +35,8 @@ export class AdminTierFormService {
         tierId: entity.tierId,
         name: entity.name,
         description: entity.description,
+        cost: entity.cost,
+        interval: entity.interval,
         active: entity.active
       });
 

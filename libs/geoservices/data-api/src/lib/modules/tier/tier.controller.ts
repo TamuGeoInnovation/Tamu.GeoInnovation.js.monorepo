@@ -7,7 +7,6 @@ import { LegacyAuthGuard } from '../../guards/legacy-auth/legacy-auth.guard';
 import { LegacyAdminGuard } from '../../guards/legacy-admin/legacy-admin.guard';
 
 @Controller('tier')
-@UseGuards(LegacyAuthGuard, LegacyAdminGuard)
 export class TierController {
   constructor(private readonly tierService: TierService) {}
 
@@ -15,6 +14,7 @@ export class TierController {
    * Create a new tier
    */
   @Post()
+  @UseGuards(LegacyAuthGuard, LegacyAdminGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async create(@Body() tierData: CreateTierDto): Promise<Tier> {
     // Type assertion needed until service layer is updated to handle DTOs properly
@@ -25,11 +25,13 @@ export class TierController {
    * Get all tiers
    */
   @Get()
+  @UseGuards(LegacyAuthGuard, LegacyAdminGuard)
   async findAll(): Promise<Tier[]> {
     return this.tierService.findAll();
   }
 
   @Post('clone')
+  @UseGuards(LegacyAuthGuard, LegacyAdminGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   public copy(@Body() cloneData: CloneTierDto) {
     return this.tierService.copyTiers(cloneData.tierIds);
@@ -63,6 +65,7 @@ export class TierController {
    * Update a tier
    */
   @Put(':id')
+  @UseGuards(LegacyAuthGuard, LegacyAdminGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async update(@Param('id') id: string, @Body() updateData: UpdateTierDto): Promise<Tier> {
     // Type assertion needed until service layer is updated to handle DTOs properly
@@ -73,6 +76,7 @@ export class TierController {
    * Delete a tier
    */
   @Delete(':id')
+  @UseGuards(LegacyAuthGuard, LegacyAdminGuard)
   async remove(@Param('id') id: string): Promise<void> {
     return this.tierService.remove(+id);
   }
@@ -81,6 +85,7 @@ export class TierController {
    * Deactivate a tier
    */
   @Post(':id/deactivate')
+  @UseGuards(LegacyAuthGuard, LegacyAdminGuard)
   async deactivate(@Param('id') id: string): Promise<Tier> {
     return this.tierService.deactivate(+id);
   }
@@ -89,6 +94,7 @@ export class TierController {
    * Activate a tier
    */
   @Post(':id/activate')
+  @UseGuards(LegacyAuthGuard, LegacyAdminGuard)
   async activate(@Param('id') id: string): Promise<Tier> {
     return this.tierService.activate(+id);
   }

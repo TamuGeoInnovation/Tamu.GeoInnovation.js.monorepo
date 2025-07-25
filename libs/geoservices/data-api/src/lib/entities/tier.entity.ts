@@ -17,6 +17,12 @@ export class Tier extends BaseDatestampedEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   description: string;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  cost: number;
+
+  @Column({ type: 'varchar', length: 50, nullable: false })
+  interval: string;
+
   @Column({ type: 'bit', nullable: false, default: true })
   active: boolean;
 

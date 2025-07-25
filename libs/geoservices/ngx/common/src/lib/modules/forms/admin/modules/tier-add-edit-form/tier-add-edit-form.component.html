@@ -26,6 +26,13 @@
         <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" [rows]="5" [floatLabel]="true"> </tamu-gisc-textbox>
       </div>
 
+      <p>Pricing Information</p>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="cost" placeholder="Cost (USD)" type="text" [floatLabel]="true" [required]="true" [type]="'number'"> </tamu-gisc-textbox>
+        <tamu-gisc-select formControlName="interval" [data]="subscriptionIntervals" displayTemplate="label" valueTemplate="value" placeholder="Select billing interval" [floatLabel]="true" [required]="true"></tamu-gisc-select>
+      </div>
+
       <div class="form-collection column">
         <p>Whether this tier is currently active and available for selection.</p>
         <tamu-gisc-checkbox formControlName="active" label="Active"> </tamu-gisc-checkbox>

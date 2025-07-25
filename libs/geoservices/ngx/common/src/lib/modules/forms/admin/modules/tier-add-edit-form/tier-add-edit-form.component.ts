@@ -25,6 +25,11 @@ export class TierAddEditFormComponent implements OnInit, OnDestroy {
   @Input()
   public entityId?: number;
 
+  public subscriptionIntervals = [
+    { label: 'Monthly', value: 'monthly' },
+    { label: 'Yearly', value: 'yearly' }
+  ];
+
   public entity$: Observable<Tier | undefined>;
   public form: FormGroup = this.ats.form;
 

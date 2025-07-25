@@ -1,5 +1,16 @@
-import { IsString, IsOptional, IsBoolean, IsNotEmpty, MaxLength, IsArray, ValidateNested, IsNumber } from 'class-validator';
-import { Type } from 'class-transformer';
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsNotEmpty,
+  MaxLength,
+  IsArray,
+  ValidateNested,
+  IsNumber,
+  Min,
+  Matches
+} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 
 import { CreateTierCategoryDto, UpdateTierCategoryDto, TierCategoryResponseDto } from './tier-category.dto';
 
@@ -21,6 +32,17 @@ export class CreateTierDto {
   @IsOptional()
   @IsBoolean()
   public active?: boolean;
+
+  @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
+  @Min(0)
+  public cost?: number;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^(daily|weekly|monthly|yearly)$/, { message: 'Invalid billing interval' })
+  public interval?: string;
 
   @IsOptional()
   @IsArray()
@@ -50,6 +72,17 @@ export class UpdateTierDto {
   @IsOptional()
   @IsBoolean()
   active?: boolean;
+
+  @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
+  @Min(0)
+  public cost?: number;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^(daily|weekly|monthly|yearly)$/, { message: 'Invalid billing interval' })
+  public interval?: string;
 
   @IsOptional()
   @IsArray()
