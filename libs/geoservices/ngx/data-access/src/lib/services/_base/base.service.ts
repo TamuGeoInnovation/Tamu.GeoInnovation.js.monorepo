@@ -33,6 +33,16 @@ export abstract class BaseService<T> {
     });
   }
 
+  public clone(tierIds: Array<string | number>) {
+    return this.httpClient.post<T>(
+      `${this.resource}/clone`,
+      { tierIds },
+      {
+        withCredentials: true
+      }
+    );
+  }
+
   public update(id: number, updatedEntity: Partial<T>) {
     return this.httpClient.put<T>(`${this.resource}/${id}`, updatedEntity, {
       withCredentials: true

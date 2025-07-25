@@ -47,6 +47,10 @@ export class TiersListComponent extends BaseListComponent<Tier> implements OnIni
     super.promptDeleteModal('Tier', 'This action cannot be undone.', 'Tiers');
   }
 
+  public override promptCloneModal(): void {
+    super.promptCloneModal('Tier', 'This will create a copy of the selected tier(s).', 'Tiers');
+  }
+
   public isSelected(tierId: number | undefined): Observable<boolean> {
     if (!tierId) return of(false);
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -132,5 +132,91 @@ export class TierService {
    */
   public async activate(id: number): Promise<Tier> {
     return this.update(id, { active: true });
+  }
+
+  public async copyTiers(tierIds: string[]) {
+    const existingQueries = tierIds.map((id) => this.findOne(+id));
+
+    const existingTiers = await Promise.allSettled(existingQueries).then((res) => {
+      return res
+        .map((result) => {
+          if (result.status === 'fulfilled') {
+            return { ...result.value, id: undefined }; // Remove ID for cloned entities
+          }
+          return null;
+        })
+        .filter((tier) => tier !== null);
+    });
+
+    if (existingTiers.length === 0) {
+      throw new Error('No valid tiers found to clone');
+    }
+
+    // Create cloned tiers
+    const clonedTiers = existingTiers.map((tier) => {
+      const sanitized = this._sanitizeTier(tier);
+
+      return sanitized;
+    });
+
+    try {
+      return this.tierRepository.save(clonedTiers);
+    } catch (error) {
+      throw new InternalServerErrorException(`Failed to copy tiers: ${error.message}`);
+    }
+  }
+
+  private _sanitizeTier(tier: Partial<Tier>): Partial<Tier> {
+    // Clone entity
+    const sanitizedTier = JSON.parse(JSON.stringify(tier));
+
+    // Remove entity properties that should not be cloned such as primary keys or timestamps
+    delete sanitizedTier.id;
+    delete sanitizedTier.added;
+    delete sanitizedTier.updated;
+
+    sanitizedTier.name = `${tier.name} Copy`; // Modify name to indicate it's a clone
+    sanitizedTier.tierId = this.generateEntityId([sanitizedTier.name]);
+
+    // Ensure all nested entities are also sanitized
+    if (sanitizedTier.categories) {
+      sanitizedTier.categories = sanitizedTier.categories.map((originalCategory) => {
+        const sanitizedCategory = { ...originalCategory };
+
+        delete sanitizedCategory.id;
+        delete sanitizedCategory.added;
+        delete sanitizedCategory.updated;
+
+        sanitizedCategory.categoryId = this.generateEntityId([sanitizedTier.name, sanitizedCategory.name]);
+
+        if (sanitizedCategory.benefits) {
+          sanitizedCategory.benefits = sanitizedCategory.benefits.map((originalBenefit) => {
+            const sanitizedBenefit = { ...originalBenefit };
+
+            delete sanitizedBenefit.id;
+            delete sanitizedBenefit.added;
+            delete sanitizedBenefit.updated;
+
+            sanitizedBenefit.benefitId = this.generateEntityId([
+              sanitizedTier.name,
+              sanitizedCategory.name,
+              sanitizedBenefit.name
+            ]);
+
+            return sanitizedBenefit;
+          });
+        }
+
+        return sanitizedCategory;
+      });
+    }
+
+    return sanitizedTier;
+  }
+
+  private generateEntityId(strings: Array<string>): string {
+    const cleanedStrings = strings.map((str) => str.toLowerCase().trim().replace(/\s+/g, '-'));
+
+    return cleanedStrings.join('-');
   }
 }

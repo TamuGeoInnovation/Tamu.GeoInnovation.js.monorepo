@@ -212,15 +212,15 @@ export abstract class BaseListComponent<T extends IdIdentity> implements IBaseLi
 
           // Clone logic would need to be implemented based on requirements
           // This is a placeholder
-          console.log(`Cloning ${result.identities.length} ${normalizedEntityName.toLowerCase()}`);
+          this.entityService.clone(result.identities).subscribe(() => {
+            this.notificationService.toast({
+              message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} cloned`,
+              id: 'entity-clone-success',
+              title: `${normalizedEntityName} Cloned`
+            });
 
-          this.notificationService.toast({
-            message: `${result.identities.length} ${normalizedEntityName.toLowerCase()} cloned`,
-            id: 'entity-clone-success',
-            title: `${normalizedEntityName} Cloned`
+            this.$signal.next(true);
           });
-
-          this.$signal.next(true);
         } else {
           console.log('Clone canceled');
         }

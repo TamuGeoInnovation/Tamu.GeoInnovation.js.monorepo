@@ -58,6 +58,12 @@ export class UpdateTierDto {
   categories?: UpdateTierCategoryDto[];
 }
 
+export class CloneTierDto {
+  @IsArray()
+  @IsNotEmpty({ each: true })
+  public tierIds: string[];
+}
+
 export class TierResponseDto {
   id: number;
   tierId: string;

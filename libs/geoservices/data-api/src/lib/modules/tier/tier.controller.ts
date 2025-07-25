@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UsePipes, V
 
 import { TierService } from './tier.service';
 import { Tier } from '../../entities/tier.entity';
-import { CreateTierDto, UpdateTierDto } from '../../dto/tier.dto';
+import { CreateTierDto, UpdateTierDto, CloneTierDto } from '../../dto/tier.dto';
 import { LegacyAuthGuard } from '../../guards/legacy-auth/legacy-auth.guard';
 import { LegacyAdminGuard } from '../../guards/legacy-admin/legacy-admin.guard';
 
@@ -27,6 +27,12 @@ export class TierController {
   @Get()
   async findAll(): Promise<Tier[]> {
     return this.tierService.findAll();
+  }
+
+  @Post('clone')
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  public copy(@Body() cloneData: CloneTierDto) {
+    return this.tierService.copyTiers(cloneData.tierIds);
   }
 
   /**
