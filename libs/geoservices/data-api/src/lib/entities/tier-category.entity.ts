@@ -9,7 +9,7 @@ export class TierCategory extends BaseDatestampedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 255, nullable: false })
   categoryId: string;
 
   @Column({ type: 'nvarchar', length: 255, nullable: false })

@@ -7,8 +7,7 @@ import {
   MaxLength,
   IsArray,
   ValidateNested,
-  Min,
-  ValidateIf
+  Min
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
@@ -17,7 +16,7 @@ import { CreateTierBenefitDto, UpdateTierBenefitDto, TierBenefitResponseDto } fr
 export class CreateTierCategoryDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(255)
   public categoryId: string;
 
   @IsString()
@@ -55,7 +54,7 @@ export class UpdateTierCategoryDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(50)
+  @MaxLength(255)
   public categoryId?: string;
 
   @IsOptional()

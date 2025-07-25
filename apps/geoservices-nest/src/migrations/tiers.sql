@@ -12,7 +12,7 @@ drop table if exists Tiers;
 -- 1. Create Tiers table (Parent table)
 CREATE TABLE [dbo].[Tiers] (
     [id] INT IDENTITY(1,1) NOT NULL,
-    [tierId] VARCHAR(50) NOT NULL,
+    [tierId] VARCHAR(255) NOT NULL,
     [name] NVARCHAR(255) NOT NULL,
     [description] NVARCHAR(MAX) NULL,
     [active] BIT NOT NULL DEFAULT 1,
@@ -26,7 +26,7 @@ CREATE TABLE [dbo].[Tiers] (
 -- 2. Create TierCategories table (Child of Tiers)
 CREATE TABLE [dbo].[TierCategories] (
     [id] INT IDENTITY(1,1) NOT NULL,
-    [categoryId] VARCHAR(50) NOT NULL,
+    [categoryId] VARCHAR(255) NOT NULL,
     [name] NVARCHAR(255) NOT NULL,
     [description] NVARCHAR(MAX) NULL,
     [order] INT NOT NULL DEFAULT 1,
@@ -44,7 +44,7 @@ CREATE TABLE [dbo].[TierCategories] (
 -- 3. Create TierBenefits table (Child of TierCategories)
 CREATE TABLE [dbo].[TierBenefits] (
     [id] INT IDENTITY(1,1) NOT NULL,
-    [benefitId] VARCHAR(50) NOT NULL,
+    [benefitId] VARCHAR(255) NOT NULL,
     [name] NVARCHAR(255) NOT NULL,
     [description] NVARCHAR(MAX) NULL,
     [valueType] NVARCHAR(255) NULL,

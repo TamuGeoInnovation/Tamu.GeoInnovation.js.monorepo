@@ -4,7 +4,7 @@ import { IsString, IsOptional, IsBoolean, IsNumber, IsNotEmpty, MaxLength, Min }
 export class CreateTierBenefitDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(255)
   public benefitId: string;
 
   @IsString()
@@ -64,7 +64,7 @@ export class UpdateTierBenefitDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(50)
+  @MaxLength(255)
   public benefitId?: string;
 
   @IsOptional()

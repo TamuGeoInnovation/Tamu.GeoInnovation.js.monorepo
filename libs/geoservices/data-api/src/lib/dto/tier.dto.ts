@@ -6,7 +6,7 @@ import { CreateTierCategoryDto, UpdateTierCategoryDto, TierCategoryResponseDto }
 export class CreateTierDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(255)
   public tierId: string;
 
   @IsString()
@@ -35,7 +35,7 @@ export class UpdateTierDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(50)
+  @MaxLength(255)
   public tierId?: string;
 
   @IsOptional()
