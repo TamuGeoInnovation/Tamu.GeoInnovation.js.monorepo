@@ -31,13 +31,6 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       url: `${Connections.poiUrl}/1`,
       popupComponent: Popups.BonfirePopupComponent
     },
-    RESTROOMS: {
-      id: 'restrooms',
-      layerId: 'restrooms-layer',
-      name: 'Restrooms',
-      url: `${Connections.inforUrl}/1`,
-      popupComponent: Popups.RestroomPopupComponent
-    },
     LACTATION_ROOMS: {
       id: 'lactation-rooms',
       layerId: 'lactation-rooms-layer',
@@ -114,7 +107,6 @@ export interface IComposedIDefinitions {
   CONSTRUCTION: IDefinition;
   POINTS_OF_INTEREST: IDefinition;
   BONFIRE: IDefinition;
-  RESTROOMS: IDefinition;
   LACTATION_ROOMS: IDefinition;
   SURFACE_LOTS: IDefinition;
   VISITOR_PARKING: IDefinition;

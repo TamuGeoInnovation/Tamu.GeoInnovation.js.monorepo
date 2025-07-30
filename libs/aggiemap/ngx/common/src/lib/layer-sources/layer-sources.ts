@@ -109,18 +109,6 @@ export function LayerSources(
     },
     {
       type: 'feature',
-      id: definitions.RESTROOMS.layerId,
-      title: definitions.RESTROOMS.name,
-      url: definitions.RESTROOMS.url,
-      popupComponent: definitions.RESTROOMS.popupComponent,
-      listMode: 'show',
-      visible: false,
-      native: {
-        ...commonLayerProps
-      }
-    },
-    {
-      type: 'feature',
       id: definitions.LACTATION_ROOMS.layerId,
       title: definitions.LACTATION_ROOMS.name,
       url: definitions.LACTATION_ROOMS.url,

@@ -71,13 +71,6 @@ export const Definitions = {
     url: `${Connections.inforUrl}/0`,
     popupComponent: Popups.PoiPopupComponent
   },
-  RESTROOMS: {
-    id: 'restrooms',
-    layerId: 'restrooms-layer',
-    name: 'Restrooms',
-    url: `${Connections.inforUrl}/1`,
-    popupComponent: Popups.RestroomPopupComponent
-  },
   LACTATION_ROOMS: {
     id: 'lactation-rooms',
     layerId: 'lactation-rooms-layer',
@@ -215,18 +208,6 @@ export const LayerSources: LayerSource[] = [
         title: Definitions.POINTS_OF_INTEREST.name,
         url: Definitions.POINTS_OF_INTEREST.url,
         popupComponent: Definitions.POINTS_OF_INTEREST.popupComponent,
-        listMode: 'show',
-        visible: false,
-        native: {
-          ...commonLayerProps
-        }
-      },
-      {
-        type: 'feature',
-        id: Definitions.RESTROOMS.layerId,
-        title: Definitions.RESTROOMS.name,
-        url: Definitions.RESTROOMS.url,
-        popupComponent: Definitions.RESTROOMS.popupComponent,
         listMode: 'show',
         visible: false,
         native: {

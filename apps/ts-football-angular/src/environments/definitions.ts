@@ -42,13 +42,6 @@ export const Definitions = {
     url: `https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/AgMap_Statues/FeatureServer/0`,
     popupComponent: Popups.PoiPopupComponent
   },
-  RESTROOMS: {
-    id: 'restrooms',
-    layerId: 'restrooms-layer',
-    name: 'Restrooms',
-    url: `${Connections.inforUrl}/1`,
-    popupComponent: Popups.RestroomPopupComponent
-  },
   SURFACE_LOTS: {
     id: 'surface-lots',
     layerId: 'surface-lots-layer',
@@ -343,18 +336,6 @@ export const LayerSources: LayerSource[] = [
           height: '30.2px'
         }
       }
-    }
-  },
-  {
-    type: 'feature',
-    id: Definitions.RESTROOMS.layerId,
-    title: Definitions.RESTROOMS.name,
-    url: Definitions.RESTROOMS.url,
-    popupComponent: Definitions.RESTROOMS.popupComponent,
-    listMode: 'show',
-    visible: false,
-    native: {
-      outFields: ['*']
     }
   },
   {
