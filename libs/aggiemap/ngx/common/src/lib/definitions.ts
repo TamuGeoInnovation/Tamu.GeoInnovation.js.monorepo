@@ -62,7 +62,7 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
     ACESSIBLE_ENTRANCES: {
       id: 'accessible-entrances',
       layerId: 'accessible-entrances-layer',
-      name: 'Accessible Entrances',
+      name: 'Accessible Building Entrances',
       url: `${Connections.accessibleUrl}`,
       popupComponent: Popups.AccessiblePopupComponent
     },
