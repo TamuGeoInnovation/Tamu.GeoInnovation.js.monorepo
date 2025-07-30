@@ -5,7 +5,6 @@ import { Observable, Subject } from 'rxjs';
 import { Angulartics2 } from 'angulartics2';
 
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
-import { LegendItem } from '@tamu-gisc/common/types';
 
 import { LegendService } from '../../services/legend.service';
 
@@ -18,12 +17,6 @@ import esri = __esri;
 })
 export class LegendComponent implements OnInit, OnDestroy {
   /**
-   * Describes the order to display static LegendSources. Defaults to `top`.
-   */
-  @Input()
-  public staticElementsPosition: 'top' | 'bottom' = 'top';
-
-  /**
    * Certain layers may have duplicate icon/label entries as a result of their unique value renderer definitions.
    *
    * This flag will de-duplicate the legend entries based on the layer title.
@@ -35,7 +28,6 @@ export class LegendComponent implements OnInit, OnDestroy {
   public respectDefinitionExpression = false;
 
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
-  public staticLegend: Array<LegendItem>;
 
   public responsive: ResponsiveSnapshot;
 
@@ -51,15 +43,8 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.legend = this.legendService.legend();
-    this.staticLegend = this.legendService.staticLegendItems;
 
     this.responsive = this.responsiveService.snapshot;
-
-    // Since this component can be used stand-alone as part of an applications routing, the same static element
-    // positioning can be set via the route data.
-    if (this.route.snapshot.data && this.route.snapshot.data.staticElementsPosition) {
-      this.staticElementsPosition = this.route.snapshot.data.staticElementsPosition;
-    }
   }
 
   public ngOnDestroy() {

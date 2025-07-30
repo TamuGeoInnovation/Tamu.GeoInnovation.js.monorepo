@@ -6,25 +6,17 @@ import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
-import { LegendItem } from '@tamu-gisc/common/types';
 
 @Injectable()
 export class LegendService {
   private _legendItems: ReplaySubject<Array<esri.ActiveLayerInfo>> = new ReplaySubject(1);
   public legendItems: Observable<Array<esri.ActiveLayerInfo>> = this._legendItems.asObservable();
 
-  /**
-   * Static legend items derived form the application environments
-   */
-  public staticLegendItems: Array<LegendItem>;
-
   constructor(
     private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService,
     private env: EnvironmentService
-  ) {
-    this.staticLegendItems = this.env.value('LegendSources', true);
-  }
+  ) {}
 
   public legend() {
     return combineLatest([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).pipe(

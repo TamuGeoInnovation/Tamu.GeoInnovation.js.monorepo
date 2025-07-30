@@ -16,4 +16,4 @@ const sources = factory({
   environment: 'prod'
 });
 
-export const { Definitions, Connections, LegendSources, SearchSources, ThreeDLayers, LayerSources } = sources;
+export const { Definitions, Connections, SearchSources, ThreeDLayers, LayerSources } = sources;

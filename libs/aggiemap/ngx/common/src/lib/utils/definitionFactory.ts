@@ -4,7 +4,6 @@ import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { Connections } from '../connections';
 import { Definitions, IComposedIDefinitions } from '../definitions';
 import { LayerSources, ThreeDLayers } from '../layer-sources/layer-sources';
-import { LegendSources } from '../legend-sources';
 import { ComposedSearchSourcesKeyMap, SearchSources } from '../search-sources/search-sources';
 
 export function factory(options?: IFactoryOptions): Definitions {
@@ -20,7 +19,6 @@ export function factory(options?: IFactoryOptions): Definitions {
     Connections: c,
     Definitions: d,
     LayerSources: l,
-    LegendSources: LegendSources,
     SearchSources: s,
     ThreeDLayers
   };
@@ -45,7 +43,6 @@ export interface Definitions {
   Connections: Record<string, string>;
   Definitions: IComposedIDefinitions;
   LayerSources: Array<LayerSource>;
-  LegendSources: Array<LegendItem>;
   SearchSources: Array<SearchSource>;
   ThreeDLayers: Array<LayerSource>;
 }

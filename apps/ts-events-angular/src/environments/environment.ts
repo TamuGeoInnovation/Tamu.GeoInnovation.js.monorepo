@@ -20,4 +20,4 @@ export const environment = {
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
 
 export * from './definitions';
-export const { Definitions, Connections, LegendSources, SearchSources, ThreeDLayers, LayerSources } = sources;
+export const { Definitions, Connections, SearchSources, ThreeDLayers, LayerSources } = sources;
