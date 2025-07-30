@@ -281,12 +281,12 @@ export function LayerSources(
     },
     {
       type: 'geojson',
-      id: definitions.OAL_PRINTERS.layerId,
-      title: definitions.OAL_PRINTERS.name,
-      url: definitions.OAL_PRINTERS.url,
+      id: definitions.AGGIEPRINT_LOCATIONS.layerId,
+      title: definitions.AGGIEPRINT_LOCATIONS.name,
+      url: definitions.AGGIEPRINT_LOCATIONS.url,
       listMode: 'show',
       visible: false,
-      popupComponent: definitions.OAL_PRINTERS.popupComponent,
+      popupComponent: definitions.AGGIEPRINT_LOCATIONS.popupComponent,
       popupData: {
         description: `<strong>Access</strong>: {attributes.Access}\n<strong>Building</strong>: {attributes.BuildingName} ({attributes.BuildingNumber})\n<strong>Printer Type</strong>: {attributes.PrinterType}\n<strong>Details</strong>: {attributes.PrinterDetails}`
       },
