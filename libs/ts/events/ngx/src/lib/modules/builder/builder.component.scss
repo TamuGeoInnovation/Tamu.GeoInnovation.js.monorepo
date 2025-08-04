@@ -1,10 +1,23 @@
 @import 'libs/sass/mixins';
 
+::ng-deep {
+  body {
+    display: block;
+    height: 100%;
+  }
+
+  tamu-gisc-aggiemap-app-root {
+    display: inherit;
+    height: inherit;
+  }
+}
+
 :host {
+  display: block;
   background: #500000;
   color: #eeeeee;
   padding: 2rem 0;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  @include flex(1);
+  height: 100%;
 }

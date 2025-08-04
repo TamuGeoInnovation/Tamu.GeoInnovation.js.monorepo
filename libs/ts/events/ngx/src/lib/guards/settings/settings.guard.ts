@@ -30,7 +30,6 @@ export class SettingsGuard implements CanActivate {
 
     if (!appSettings && queryParamsKeySize === 0) {
       // return this.router.parseUrl('/builder');
-
       return true;
     }
 

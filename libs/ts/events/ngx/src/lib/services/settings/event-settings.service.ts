@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, Params } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -6,8 +7,8 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import {
   EventAccommodationOption,
-  EventConfiguration,
   EventSettings,
+  ISpecialEventRoot,
   ResolvedEventSettings,
   SpecialEventOptions
 } from '../../interfaces/special-event.interface';
@@ -17,8 +18,8 @@ import { EventDefinitions } from '../../definitions/all.definitions';
   providedIn: 'root'
 })
 export class EventSettingsService {
-  private _settingsPrimaryKey = 'ts-events-settings';
-  private _settingsSecondaryKey = this.env.value('SpecialEventConfiguration', true).id;
+  private _settingsPrimaryKey: string;
+  private _settingsSecondaryKey: string;
 
   public get queryParamsFromSettings() {
     const settings = this.settings();
@@ -60,7 +61,18 @@ export class EventSettingsService {
     return this.eventOptions().length > 0;
   }
 
-  constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
+  public set initializeSettingsStore(key: string) {
+    this._settingsPrimaryKey = 'ts-events-settings';
+
+    // Initialize the settings store with an empty object if it does not exist
+    this._settingsSecondaryKey = key ? key : this.at.snapshot.queryParamMap.get('eventId') || '_';
+  }
+
+  constructor(
+    private readonly at: ActivatedRoute,
+    private readonly env: EnvironmentService,
+    private readonly store: LocalStoreService
+  ) {}
 
   public settings(): EventSettings;
   public settings(asObservable: true): Observable<EventSettings>;
@@ -91,16 +103,20 @@ export class EventSettingsService {
     }
   }
 
-  public eventConfiguration(): EventConfiguration;
-  public eventConfiguration(asObservable: true): Observable<EventConfiguration>;
-  public eventConfiguration(asObservable: false): EventConfiguration;
-  public eventConfiguration(asObservable?: boolean): EventConfiguration | Observable<EventConfiguration> {
-    const config: EventConfiguration = this.env.value('SpecialEventConfiguration', true);
+  public eventConfiguration(): ISpecialEventRoot;
+  public eventConfiguration(asObservable: true): Observable<ISpecialEventRoot>;
+  public eventConfiguration(asObservable: false): ISpecialEventRoot;
+  public eventConfiguration(asObservable?: boolean): ISpecialEventRoot | Observable<ISpecialEventRoot> {
+    const config = this.getEventDefinitionById(this._settingsSecondaryKey);
 
-    if (asObservable) {
-      return of(config);
+    if (!config) {
+      throw new Error(`Event configuration for ID '${this._settingsSecondaryKey}' not found.`);
     } else {
-      return config;
+      if (asObservable) {
+        return of(config);
+      } else {
+        return config;
+      }
     }
   }
 
@@ -256,7 +272,7 @@ export class EventSettingsService {
    * Validates the event ID against the EventDefinitions.
    *
    * @param {string} eventId A string that represents the event configuration Id
-   * @return {*}  {boolean} Returns true if the eventId is valid, false otherwise.
+   * @return {Boolean} Returns true if the eventId is valid, false otherwise.
    */
   public validateEventId(eventId: string): boolean {
     // Implement your logic to validate the event ID
@@ -264,7 +280,74 @@ export class EventSettingsService {
       return false;
     }
 
+    const eventIndex = EventDefinitions.findIndex((event) => event?.configuration?.id === eventId);
+
     // Check if the eventId exists in the EventDefinitions
-    return EventDefinitions.findIndex((event) => event?.configuration?.id === eventId) !== -1;
+    return eventIndex > -1;
+  }
+
+  /**
+   * Returns the event definition by its ID.
+   * If the eventId is not valid, it returns null.
+   * If the eventId is valid, it returns the corresponding EventDefinition object.
+   *
+   * @param {string} eventId A string that represents the event configuration Id
+   * @return {EventDefinition | null} Returns the EventDefinition object if found, otherwise null.
+   */
+  public getEventDefinitionById(eventId: string): ISpecialEventRoot | null {
+    if (!eventId || eventId.length === 0) {
+      return null;
+    }
+
+    const eventIndex = EventDefinitions.findIndex((event) => event?.configuration?.id === eventId);
+
+    // Check if the eventId exists in the EventDefinitions
+    if (eventIndex > -1) {
+      return EventDefinitions[eventIndex];
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Checks if the eventId query parameter is present in the route snapshot.
+   *
+   * If the eventId is present, it validates the eventId against the EventDefinitions.
+   *
+   * If the eventId is not present or if the validation fails, it returns false.
+   *
+   * @param {ActivatedRouteSnapshot} [snapshot] Uses router state by default, but can optionally be provided a specific snapshot.
+   */
+  public validateEventQueryParams(snapshot?: ActivatedRouteSnapshot, initializeState?: boolean): boolean {
+    const paramKey = 'eventId';
+    const params = snapshot ? snapshot.params : this.at.snapshot.params;
+    const paramsId = params[paramKey];
+
+    if (this.routeHasParams(params)) {
+      const validId = this.validateEventId(paramsId);
+
+      if (validId) {
+        if (initializeState) {
+          this.initializeSettingsStore = paramsId;
+        }
+        return true;
+      } else {
+        console.warn(`Event ID '${paramsId}' is not valid.`);
+        return false;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Simple utility function to check if the key eventId is in a Params dictionary
+   */
+  public routeHasParams(params: Params): boolean {
+    if (params['eventId']) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

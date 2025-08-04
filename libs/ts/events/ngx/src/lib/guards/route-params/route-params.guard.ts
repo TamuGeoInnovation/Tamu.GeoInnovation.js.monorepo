@@ -5,7 +5,6 @@ import {
   CanActivate,
   CanActivateChild,
   CanLoad,
-  Params,
   Route,
   Router,
   RouterStateSnapshot,
@@ -32,8 +31,6 @@ export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild 
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     // Test to make sure the the application URL includes the eventId parameter
 
-    console.log('canActivate', route);
-
     return this._performChecks(route);
   }
 
@@ -46,6 +43,7 @@ export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild 
     console.log('canLoad', route, segments);
     return this._performChecks(this.ar.snapshot);
   }
+
   public canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -56,29 +54,11 @@ export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild 
     return this._performChecks(childRoute);
   }
 
-  private _routeHasParams(params: Params): boolean {
-    if (params['eventId']) {
-      return true;
-    } else {
-      // If the eventId parameter is not present, redirect to the map page
-      return false;
-    }
-  }
-
-  private _routeHasValidEvent(id: string): boolean {
-    // Implement your logic to check if the event ID is valid
-    return this.es.validateEventId(id);
-  }
-
   private _performChecks(ps: ActivatedRouteSnapshot): boolean | UrlTree {
-    const paramKey = 'eventId';
-    const params = ps.params;
-    const paramsId = params[paramKey];
+    const validEventIdFromParams = this.es.validateEventQueryParams(ps, true);
 
-    if (this._routeHasParams(params)) {
-      if (this._routeHasValidEvent(paramsId)) {
-        return true;
-      }
+    if (validEventIdFromParams) {
+      return true;
     }
 
     // It's possible that as the application makes its way through the route tree, it will run into
@@ -105,7 +85,7 @@ export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild 
   }
 
   private _findNearestParentWithParams(ps: ActivatedRouteSnapshot): ActivatedRouteSnapshot | null {
-    if (this._routeHasParams(ps.params)) {
+    if (this.es.routeHasParams(ps.params)) {
       return ps;
     } else if (ps.parent) {
       return this._findNearestParentWithParams(ps.parent);

@@ -19,7 +19,7 @@ export class SidebarReferenceComponent implements OnInit {
   public hasSettings: boolean;
   public settings: EventSettings;
   public mergedSettings: ResolvedEventSettings;
-  public configuration: EventConfiguration;
+  public configuration: EventConfiguration | null;
 
   constructor(
     private readonly helper: AltSearchHelper,
@@ -29,7 +29,7 @@ export class SidebarReferenceComponent implements OnInit {
 
   public ngOnInit(): void {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
-    this.configuration = this.eventSettingsService.eventConfiguration();
+    this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
   }

@@ -9,11 +9,11 @@ import { EventConfiguration } from '../../interfaces/special-event.interface';
   styleUrls: ['./builder.component.scss']
 })
 export class BuilderComponent implements OnInit {
-  public config: EventConfiguration;
+  public config: EventConfiguration | null;
 
   constructor(private readonly settings: EventSettingsService) {}
 
   public ngOnInit(): void {
-    this.config = this.settings.eventConfiguration();
+    this.config = this.settings.eventConfiguration()?.configuration;
   }
 }

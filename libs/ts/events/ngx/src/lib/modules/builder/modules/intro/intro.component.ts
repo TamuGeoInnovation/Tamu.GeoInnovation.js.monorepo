@@ -12,7 +12,7 @@ import { EventConfiguration } from '../../../../interfaces/special-event.interfa
   styleUrls: ['./intro.component.scss']
 })
 export class IntroComponent implements OnInit {
-  public settings: EventConfiguration;
+  public settings: EventConfiguration | null;
 
   constructor(
     private readonly router: Router,
@@ -21,7 +21,7 @@ export class IntroComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.settings = this.es.eventConfiguration();
+    this.settings = this.es.eventConfiguration()?.configuration;
   }
 
   public next() {

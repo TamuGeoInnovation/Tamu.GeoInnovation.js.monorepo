@@ -73,7 +73,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.hasSettings = this.eventsSettingsService.hasSettings;
     this.hasOptions = this.eventsSettingsService.hasOptions;
-    const configuration = this.eventsSettingsService.eventConfiguration();
+    const root = this.eventsSettingsService.eventConfiguration();
 
     // If the current event has options but none are set, redirect to the builder
     if (this.hasOptions === true && this.hasSettings === false) {
@@ -121,7 +121,7 @@ export class MapComponent implements OnInit, OnDestroy {
           properties: {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
-            center: configuration?.mapCenter !== undefined ? configuration.mapCenter : [-96.34442, 30.60665],
+            center: root?.configuration?.mapCenter !== null ? root?.configuration?.mapCenter : [-96.34442, 30.60665],
             spatialReference: {
               wkid: 102100
             },
@@ -129,7 +129,7 @@ export class MapComponent implements OnInit, OnDestroy {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
               maxScale: 0 // maxZoom is the max you can zoom INTO the ground
             },
-            zoom: configuration?.zoom !== undefined ? configuration.zoom : 16,
+            zoom: root?.configuration?.zoom !== undefined ? root.configuration.zoom : 16,
             ui: {
               components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
             },

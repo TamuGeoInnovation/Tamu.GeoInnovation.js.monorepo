@@ -58,7 +58,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }), PipesModule],
+  imports: [CommonModule, RouterModule.forChild(routes), PipesModule],
   declarations: [BuilderComponent],
   exports: [RouterModule]
 })
