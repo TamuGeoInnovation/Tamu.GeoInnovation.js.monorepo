@@ -297,7 +297,7 @@ export function LayerSources(
           uniqueValueInfos: [
             {
               value: 'all',
-              label: 'Public Access Printers',
+              label: 'Campus Member Accessible',
               symbol: {
                 type: 'picture-marker',
                 url: '/assets/images/icons/services/printer-all-access.png',
