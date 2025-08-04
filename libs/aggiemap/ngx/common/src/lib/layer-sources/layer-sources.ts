@@ -279,7 +279,7 @@ export function LayerSources(
       }
     },
     {
-      type: 'geojson',
+      type: 'feature',
       id: definitions.AGGIEPRINT_LOCATIONS.layerId,
       title: definitions.AGGIEPRINT_LOCATIONS.name,
       url: definitions.AGGIEPRINT_LOCATIONS.url,

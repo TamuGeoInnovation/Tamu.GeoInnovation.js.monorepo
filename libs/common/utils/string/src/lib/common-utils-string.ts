@@ -38,7 +38,7 @@ export class TemplateRenderer {
       });
     } else if (this.template && this.lookup) {
       return this.template.replace(/\{.*?\}/g, (match: string) => {
-        const resolved = getPropertyValue<string>(this.lookup, match.replace('{', '').replace('}', ''));
+        const resolved = getPropertyValue<string>(this.lookup, match.replace('{', '').replace('}', '')).toString();
         // Remove template braces before setting value from lookup object.
 
         if (this.options?.nullishReplacement !== undefined && (resolved === undefined || resolved === null)) {
