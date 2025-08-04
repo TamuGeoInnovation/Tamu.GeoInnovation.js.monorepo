@@ -1,5 +1,4 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import { IComposedIDefinitions } from '../definitions';
 import { IComposedConnections } from '../connections';

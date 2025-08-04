@@ -95,7 +95,7 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       id: 'aggieprint-locations',
       layerId: 'aggieprint-locations-layer',
       name: 'AggiePrint Locations',
-      url: 'https://api.aggiemap.tamu.edu/proxy/https://isf2.apogee.tamu.edu/maps/data/tamuprinters.json',
+      url: 'https://tamu.maps.arcgis.com/sharing/rest/content/items/8d11771176c54ffc92bed3516d333d8d/data',
       popupComponent: Popups.MarkdownWDirectionsPopupComponent
     }
   };
