@@ -1,5 +1,5 @@
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
-import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
+import { LayerSource } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { GAMEDAY_LAYERS, SHOWDOWN_LAYERS } from '@tamu-gisc/ts/football/ngx';
 
