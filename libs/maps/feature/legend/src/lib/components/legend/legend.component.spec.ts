@@ -20,7 +20,7 @@ describe('LegendComponent', () => {
         LegendComponent,
         {
           provide: env,
-          useValue: { SearchSources: [], LayerSources: [], LegendSources: [] }
+          useValue: { SearchSources: [], LayerSources: [] }
         }
       ],
       imports: [

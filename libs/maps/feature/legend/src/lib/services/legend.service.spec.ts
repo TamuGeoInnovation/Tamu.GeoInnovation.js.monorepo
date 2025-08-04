@@ -15,7 +15,7 @@ describe('LegendService', () => {
         LegendService,
         {
           provide: env,
-          useValue: { SearchSources: [], LayerSources: [], LegendSources: [] }
+          useValue: { SearchSources: [], LayerSources: [] }
         }
       ],
       imports: [

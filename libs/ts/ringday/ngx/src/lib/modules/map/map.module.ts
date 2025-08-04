@@ -99,7 +99,7 @@ const routes: Routes = [
             component: MobileSidebarComponent,
             children: [
               { path: '', component: MainMobileSidebarComponent },
-              { path: 'legend', component: LegendComponent, data: { staticElementsPosition: 'bottom' } },
+              { path: 'legend', component: LegendComponent },
               { path: 'layers', component: LayerListComponent },
               { path: 'basemap', component: BasemapGalleryComponent }
             ]

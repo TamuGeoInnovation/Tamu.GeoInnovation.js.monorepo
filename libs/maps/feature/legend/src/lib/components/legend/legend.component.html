@@ -3,18 +3,7 @@
   <p>Legend</p>
 </div>
 
-<div class="sidebar-component-content-container" [ngClass]="{'reverse': staticElementsPosition === 'bottom'}">
-  <!-- Show static legend items at the top -->
-
-  <div *ngIf="staticLegend !== undefined">
-    <div class="legend-info" *ngFor="let staticItem of staticLegend">
-      <div class="image-container">
-        <img [src]="staticItem.src" [alt]="staticItem.title" />
-      </div>
-      <div>{{staticItem.title}}</div>
-    </div>
-  </div>
-
+<div class="sidebar-component-content-container">
   <!-- Followed by dynamic legend items -->
   <tamu-gisc-legend-collection *ngFor="let group of legend | async" [group]="group" [layer]="group.layer" [deduplicate]="deduplicate" [respectDefinitionExpression]="respectDefinitionExpression"></tamu-gisc-legend-collection>
 </div>

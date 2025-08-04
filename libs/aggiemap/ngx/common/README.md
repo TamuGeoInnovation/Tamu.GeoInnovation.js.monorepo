@@ -17,7 +17,7 @@ export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
 ```js
 const sources = factory();
 
-export const { Definitions, Connections, LegendSources, SearchSources, ThreeDLayers, LayerSources } = sources;
+export const { Definitions, Connections, SearchSources, ThreeDLayers, LayerSources } = sources;
 ```
 
 `factory()` returns an object with the following properties:
@@ -25,7 +25,6 @@ export const { Definitions, Connections, LegendSources, SearchSources, ThreeDLay
 - `Connections` - An array of connection definitions that are used to connect to various data sources.
 - `Definitions` - Centralized key-value map of definitions used as a namespace referenced in layer, legend, and search sources.
 - `LayerSources` - An array of hot layer sources, added to the map on initialization.
-- `LegendSources` - An array of static legend sources to be displayed in the legend component.
 - `SearchSources` - An array of search sources used in places such as omnisearch, url search, routing, etc.
 - `ThreeDLayers` - An array of sources that are applied when the 3D view is active.
 

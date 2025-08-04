@@ -13,4 +13,4 @@ export const environment = {
 
 export * from './definitions';
 
-export const { Definitions, Connections, LegendSources, SearchSources, ThreeDLayers, LayerSources } = sources;
+export const { Definitions, Connections, SearchSources, ThreeDLayers, LayerSources } = sources;
