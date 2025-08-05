@@ -8,7 +8,11 @@ import {
   ReportBadRouteComponent,
   AggiemapFormsModule
 } from '@tamu-gisc/aggiemap/ngx/ui/shared';
-import { AggiemapSidebarModule, SidebarTripPlannerComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
+import {
+  AggiemapSidebarModule,
+  SidebarSettingsComponent,
+  SidebarTripPlannerComponent
+} from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
   AggiemapNgxUiMobileModule,
   OmnisearchComponent,
@@ -44,6 +48,7 @@ import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
 import { MapComponent } from './map.component';
 import { MoveInOutSidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
+import { BasemapGalleryComponent } from '@tamu-gisc/maps/feature/basemap';
 
 const routes: Routes = [
   {
@@ -62,7 +67,8 @@ const routes: Routes = [
         children: [
           { path: '', component: SidebarReferenceComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
-          { path: 'trip/options', component: TripPlannerOptionsComponent }
+          { path: 'trip/options', component: TripPlannerOptionsComponent },
+          { path: 'settings', component: SidebarSettingsComponent }
         ]
       },
       {
@@ -94,7 +100,8 @@ const routes: Routes = [
             children: [
               { path: '', component: MainMobileSidebarComponent },
               { path: 'legend', component: LegendComponent },
-              { path: 'layers', component: LayerListComponent }
+              { path: 'layers', component: LayerListComponent },
+              { path: 'basemap', component: BasemapGalleryComponent }
             ]
           }
         ]

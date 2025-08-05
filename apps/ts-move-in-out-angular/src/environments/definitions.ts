@@ -836,20 +836,34 @@ export const SearchSources: SearchSource[] = [
 export const MoveInOutDates: MoveDates = {
   in: [
     {
-      day: 15,
-      month: 8
+      day: 19,
+      month: 8,
+      year: 2025
     },
     {
-      day: 16,
-      month: 8
+      day: 20,
+      month: 8,
+      year: 2025
     },
     {
-      day: 17,
-      month: 8
+      day: 21,
+      month: 8,
+      year: 2025
     },
     {
-      day: 18,
-      month: 8
+      day: 22,
+      month: 8,
+      year: 2025
+    },
+    {
+      day: 23,
+      month: 8,
+      year: 2025
+    },
+    {
+      day: 24,
+      month: 8,
+      year: 2025
     }
   ],
   out: []
