@@ -13,6 +13,7 @@ import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { MoveinOutService } from './services/move-in-out/move-in-out.service';
 import { MoveInOutSettingsService } from './services/move-in-out-settings/move-in-out-settings.service';
@@ -23,7 +24,7 @@ import esri = __esri;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [MoveinOutService, EsriMapService, LayerListService, LegendService, TripPlannerService]
+  providers: [MoveinOutService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
