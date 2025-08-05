@@ -1,8 +1,8 @@
 export {
-  SoftballLayerSources as ColdLayerSources,
-  SoftballOptions as SpecialEventOptions,
-  SoftballConfiguration as SpecialEventConfiguration,
-  SOFTBALL_LAYERS as SpecialEventLayerReferences
+  SummerCommencementColdLayerSources as ColdLayerSources,
+  SummerCommencementOptions as SpecialEventOptions,
+  SummerCommencementConfiguration as SpecialEventConfiguration,
+  SUMMER_COMMENCEMENT_LAYERS as SpecialEventLayerReferences
 } from '@tamu-gisc/ts/events/ngx';
 
 export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
