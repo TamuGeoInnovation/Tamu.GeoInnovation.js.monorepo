@@ -1,5 +1,4 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import { IComposedIDefinitions } from '../definitions';
 import { IComposedConnections } from '../connections';
@@ -271,6 +270,47 @@ export function LayerSources(
               symbol: {
                 type: 'picture-marker',
                 url: '/assets/images/icons/Dining_closed.png',
+                width: '24px',
+                height: '32px'
+              }
+            }
+          ]
+        } as unknown as esri.UniqueValueRenderer
+      }
+    },
+    {
+      type: 'feature',
+      id: definitions.AGGIEPRINT_LOCATIONS.layerId,
+      title: definitions.AGGIEPRINT_LOCATIONS.name,
+      url: definitions.AGGIEPRINT_LOCATIONS.url,
+      listMode: 'show',
+      visible: false,
+      popupComponent: definitions.AGGIEPRINT_LOCATIONS.popupComponent,
+      popupData: {
+        description: `<strong>Access</strong>: {attributes.Access}\n<strong>Building</strong>: {attributes.BuildingName} ({attributes.BuildingNumber})\n<strong>Printer Type</strong>: {attributes.PrinterType}\n<strong>Details</strong>: {attributes.PrinterDetails}`
+      },
+      native: {
+        ...commonLayerProps,
+        renderer: {
+          type: 'unique-value',
+          valueExpression: `When($feature.Access == 'Campus Member Accessible', 'all',  'restricted')`,
+          uniqueValueInfos: [
+            {
+              value: 'all',
+              label: 'Campus Member Accessible',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/services/printer-all-access.png',
+                width: '24px',
+                height: '32px'
+              }
+            },
+            {
+              value: 'restricted',
+              label: 'Restricted Access Printers',
+              symbol: {
+                type: 'picture-marker',
+                url: '/assets/images/icons/services/printer-restricted.png',
                 width: '24px',
                 height: '32px'
               }

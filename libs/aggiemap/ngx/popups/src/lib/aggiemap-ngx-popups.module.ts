@@ -20,6 +20,8 @@ import { RestroomPopupComponent } from './components/restroom/restroom.component
 import { PoiPopupComponent } from './components/poi/poi.component';
 import { BonfirePopupComponent } from './components/bonfire/bonfire.component';
 import { DiningPopupComponent } from './components/dining/dining.component';
+import { MarkdownPopupComponent } from './components/markdown-popup/markdown-popup.component';
+import { MarkdownWDirectionsPopupComponent } from './components/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
 const PopsArr = [
   BasePopupComponent,
@@ -33,7 +35,9 @@ const PopsArr = [
   RestroomPopupComponent,
   PoiPopupComponent,
   BonfirePopupComponent,
-  DiningPopupComponent
+  DiningPopupComponent,
+  MarkdownPopupComponent,
+  MarkdownWDirectionsPopupComponent
 ];
 
 const PopsObj = {
@@ -48,7 +52,9 @@ const PopsObj = {
   RestroomPopupComponent,
   PoiPopupComponent,
   BonfirePopupComponent,
-  DiningPopupComponent
+  DiningPopupComponent,
+  MarkdownPopupComponent,
+  MarkdownWDirectionsPopupComponent
 };
 
 @NgModule({

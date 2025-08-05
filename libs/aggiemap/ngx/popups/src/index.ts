@@ -12,3 +12,5 @@ export * from './lib/components/parking-lot/parking-lot.component';
 export * from './lib/components/poi/poi.component';
 export * from './lib/components/restroom/restroom.component';
 export * from './lib/components/dining/dining.component';
+export * from './lib/components/markdown-popup/markdown-popup.component';
+export * from './lib/components/markdown-w-directions-popup/markdown-w-directions-popup.component';

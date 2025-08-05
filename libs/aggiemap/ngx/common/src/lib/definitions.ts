@@ -90,6 +90,13 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       name: 'Dining Locations',
       url: `${Connections.diningLocationsUrl}`,
       popupComponent: Popups.DiningPopupComponent
+    },
+    AGGIEPRINT_LOCATIONS: {
+      id: 'aggieprint-locations',
+      layerId: 'aggieprint-locations-layer',
+      name: 'AggiePrint Locations',
+      url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/TAMUPrinters/FeatureServer/0',
+      popupComponent: Popups.MarkdownWDirectionsPopupComponent
     }
   };
 }
@@ -116,4 +123,5 @@ export interface IComposedIDefinitions {
   BIKE_RACKS: IDefinition;
   BIKE_LOCATIONS: IDefinition;
   DINING_LOCATIONS: IDefinition;
+  AGGIEPRINT_LOCATIONS: IDefinition;
 }
