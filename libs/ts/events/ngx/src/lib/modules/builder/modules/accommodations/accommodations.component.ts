@@ -32,6 +32,8 @@ export class AccommodationsComponent implements OnInit {
     if (!this._eventOptions$.value || (this._eventOptions$.value as Array<unknown>).length === 0) {
       console.log('No special event options available. Directing to map.');
 
+      // ESLint says not all code paths return a value, but this is intentionally to prevent further execution
+      // else it would throw an error.
       return this.router.navigate(['map']);
     }
 
@@ -44,7 +46,9 @@ export class AccommodationsComponent implements OnInit {
         } else {
           const firstAccommodation = Object.values(options)[0];
 
-          return this.router.navigate(['builder/accommodations', firstAccommodation.value]);
+          return this.router.navigate([firstAccommodation.value], {
+            relativeTo: this.route
+          });
         }
       }),
       shareReplay(1)

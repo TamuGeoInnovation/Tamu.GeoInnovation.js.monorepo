@@ -94,7 +94,7 @@ export class EventSettingsService {
   public eventOptions(asObservable: true): Observable<SpecialEventOptions>;
   public eventOptions(asObservable: false): SpecialEventOptions;
   public eventOptions(asObservable?: boolean): SpecialEventOptions | Observable<SpecialEventOptions> {
-    const options: SpecialEventOptions = this.env.value('SpecialEventOptions', true);
+    const options: SpecialEventOptions = this.eventConfiguration().options || [];
 
     if (asObservable) {
       return of(options);

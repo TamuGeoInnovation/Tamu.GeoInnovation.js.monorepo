@@ -1,24 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { EventConfiguration } from '../../../../interfaces/special-event.interface';
+import { BuilderModuleBaseComponent } from '../builder-module-base/builder-module-base.component';
 
 @Component({
   selector: 'tamu-gisc-intro',
   templateUrl: './intro.component.html',
-  styleUrls: ['./intro.component.scss']
+  styleUrls: ['./intro.component.scss', '../builder-module-base/builder-module-base.component.scss']
 })
-export class IntroComponent implements OnInit {
+export class IntroComponent extends BuilderModuleBaseComponent implements OnInit {
   public settings: EventConfiguration | null;
 
   constructor(
     private readonly router: Router,
+    private readonly rt: ActivatedRoute,
     private readonly anl: Angulartics2,
     private readonly es: EventSettingsService
-  ) {}
+  ) {
+    super();
+  }
 
   public ngOnInit(): void {
     this.settings = this.es.eventConfiguration()?.configuration;
@@ -36,6 +40,8 @@ export class IntroComponent implements OnInit {
       }
     });
 
-    this.router.navigate(['builder/date']);
+    this.router.navigate(['../accommodations'], {
+      relativeTo: this.rt.parent
+    });
   }
 }
