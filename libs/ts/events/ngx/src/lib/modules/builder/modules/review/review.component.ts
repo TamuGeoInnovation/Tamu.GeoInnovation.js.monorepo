@@ -10,7 +10,7 @@ import { EventSettings, ResolvedEventSettings, SpecialEventOptions } from '../..
 @Component({
   selector: 'tamu-gisc-review',
   templateUrl: './review.component.html',
-  styleUrls: ['./review.component.scss']
+  styleUrls: ['./review.component.scss', '../builder-module-base/builder-module-base.component.scss']
 })
 export class ReviewComponent implements OnInit {
   public eventOptions: BehaviorSubject<SpecialEventOptions>;

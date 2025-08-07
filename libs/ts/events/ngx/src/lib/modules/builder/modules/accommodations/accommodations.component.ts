@@ -10,7 +10,7 @@ import { SpecialEventOption, SpecialEventOptions } from '../../../../interfaces/
 @Component({
   selector: 'tamu-gisc-accommodations',
   templateUrl: './accommodations.component.html',
-  styleUrls: ['./accommodations.component.scss']
+  styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss']
 })
 export class AccommodationsComponent implements OnInit {
   public savedOptionValue: Observable<string | boolean | number | null>;
@@ -34,7 +34,7 @@ export class AccommodationsComponent implements OnInit {
 
       // ESLint says not all code paths return a value, but this is intentionally to prevent further execution
       // else it would throw an error.
-      return this.router.navigate(['map']);
+      return this.router.navigate(['map'], { relativeTo: this.route.parent?.parent?.parent });
     }
 
     // Test if the route has an accommodation. If it does not, redirect to the first available accommodation.
