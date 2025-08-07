@@ -1,11 +1,22 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { BIG_EVENT_LAYERS, BIG_EVENT_MAP_TYPE_OPTIONS } from '../interfaces/big-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+
+export enum BIG_EVENT_LAYERS {
+  ROAD_CLOSURES = 'big-event-road-closures',
+  PARKING_LOTS = 'big-event-parking-lots',
+  TRAFFIC = 'big-event-traffic'
+}
+
+export enum BIG_EVENT_MAP_TYPE_OPTIONS {
+  PRE_KICKOFF = 'To Kickoff',
+  LEAVE_KICKOFF = 'Leave Kickoff',
+  TOOL_RETURN = 'Tool Dropoff'
+}
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Big_Event/MapServer';
 
@@ -249,3 +260,10 @@ export const BigEventOptions: SpecialEventOptions = [
     }
   }
 ];
+
+export const BigEventTs: ISpecialEventRoot = {
+  configuration: BigEventConfiguration,
+  options: BigEventOptions,
+  sources: BigEventColdLayerSources,
+  references: BIG_EVENT_LAYERS
+};

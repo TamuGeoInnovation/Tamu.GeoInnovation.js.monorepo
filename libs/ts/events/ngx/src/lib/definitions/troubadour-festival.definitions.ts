@@ -2,8 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
-import { TROUBADOUR_LAYERS } from '../interfaces/troubadour-festival.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+
+export enum TROUBADOUR_LAYERS {
+  PARKING = 'troubadour-parking'
+}
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Troubadour_Festival/MapServer';
 
@@ -47,3 +50,10 @@ export const TroubadourConfiguration: EventConfiguration = {
 };
 
 export const TroubadourOptions: SpecialEventOptions = [];
+
+export const TroubadourTs: ISpecialEventRoot = {
+  configuration: TroubadourConfiguration,
+  options: TroubadourOptions,
+  sources: TroubadourColdLayerSources,
+  references: TROUBADOUR_LAYERS
+};

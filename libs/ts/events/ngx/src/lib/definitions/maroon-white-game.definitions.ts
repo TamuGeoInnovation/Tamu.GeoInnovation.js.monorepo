@@ -1,8 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
-import { MAROON_WHITE_GAME_LAYERS } from '../interfaces/maroon-white-game.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+
+export enum MAROON_WHITE_GAME_LAYERS {
+  PARKING_LOTS = 'maroon-white-game-parking-lots'
+}
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Maroon_White_Game/MapServer';
 
@@ -46,3 +49,10 @@ export const MaroonWhiteGameConfiguration: EventConfiguration = {
 };
 
 export const MaroonWhiteGameOptions: SpecialEventOptions = [];
+
+export const MaroonWhiteTs: ISpecialEventRoot = {
+  configuration: MaroonWhiteGameConfiguration,
+  options: MaroonWhiteGameOptions,
+  sources: MaroonWhiteGameColdLayerSources,
+  references: MAROON_WHITE_GAME_LAYERS
+};

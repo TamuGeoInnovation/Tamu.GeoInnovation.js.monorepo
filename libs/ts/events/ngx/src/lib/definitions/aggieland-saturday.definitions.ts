@@ -1,10 +1,17 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { AGGIELAND_SATURDAY_LAYERS } from '../interfaces/aggieland-saturday.interface';
+import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
 import esri = __esri;
+
+export enum AGGIELAND_SATURDAY_LAYERS {
+  PARKING = 'aggieland-saturday-parking',
+  BUS_ROUTES = 'aggieland-saturday-bus-routes',
+  BUS_STOPS = 'aggieland-saturday-bus-stops',
+  SPECIAL_POIS = 'aggieland-saturday-special-pois'
+}
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AggielandSaturday/MapServer';
 
@@ -212,3 +219,10 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     }
   }
 ];
+
+export const AggielandSaturdayEventTs: ISpecialEventRoot = {
+  configuration: null,
+  options: null,
+  sources: AggielandSaturdayEventColdLayerSources,
+  references: AGGIELAND_SATURDAY_LAYERS
+};

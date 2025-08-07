@@ -1,10 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { MUSTER_LAYERS } from '../interfaces/muster.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+
+export enum MUSTER_LAYERS {
+  AREAS = 'muster-parking',
+  TRAFFIC_FLOW = 'muster-bus-routes'
+}
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Muster/MapServer';
 
@@ -98,3 +102,10 @@ export const MusterConfiguration: EventConfiguration = {
 };
 
 export const MusterOptions: SpecialEventOptions = [];
+
+export const MusterTs: ISpecialEventRoot = {
+  configuration: MusterConfiguration,
+  options: MusterOptions,
+  sources: MusterEventColdLayerSources,
+  references: MUSTER_LAYERS
+};

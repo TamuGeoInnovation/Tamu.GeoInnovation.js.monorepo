@@ -201,3 +201,10 @@ export interface ResolvedEventSettings {
     } | null;
   };
 }
+
+export interface ISpecialEventRoot {
+  configuration: EventConfiguration | null;
+  options: SpecialEventOptions | null;
+  references: Record<string, string> | null;
+  sources: Array<LayerSource> | null;
+}

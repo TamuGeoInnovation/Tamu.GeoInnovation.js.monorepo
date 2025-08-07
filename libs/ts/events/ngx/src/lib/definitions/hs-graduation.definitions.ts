@@ -2,9 +2,14 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { HS_GRADUATION_LAYERS } from '../interfaces/hs-graduation.interface';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 import { commonSymbols } from './common.definitions';
+
+export enum HS_GRADUATION_LAYERS {
+  ROUTES = 'hs-graduation-routes',
+  PARKING_LOTS = 'hs-graduation-parking-lots',
+  TRAFFIC_ADVISORIES = 'hs-graduation-traffic-advisories'
+}
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/HS_Graduation/MapServer';
 
@@ -185,3 +190,10 @@ export const HsGraduationOptions: SpecialEventOptions = [
     }
   }
 ];
+
+export const HsGraduationTs: ISpecialEventRoot = {
+  configuration: HsGraduationConfiguration,
+  sources: HsGraduationColdLayerSources,
+  options: HsGraduationOptions,
+  references: HS_GRADUATION_LAYERS
+};

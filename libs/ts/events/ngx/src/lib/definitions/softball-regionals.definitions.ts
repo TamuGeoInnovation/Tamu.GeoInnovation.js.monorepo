@@ -1,10 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
-import { SOFTBALL_LAYERS } from '../interfaces/softball-regionals.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+
+export enum SOFTBALL_LAYERS {
+  SOFTBALL_ROUTES = 'softball-routes',
+  SOFTBALL_LOCATIONS = 'softball-locations'
+}
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Softball_Regionals/MapServer';
 
@@ -100,3 +104,10 @@ export const SoftballConfiguration: EventConfiguration = {
 };
 
 export const SoftballOptions: SpecialEventOptions = [];
+
+export const SoftballRegionalsTs: ISpecialEventRoot = {
+  configuration: SoftballConfiguration,
+  sources: SoftballLayerSources,
+  options: SoftballOptions,
+  references: SOFTBALL_LAYERS
+};

@@ -1,8 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
-import { FAMILY_WEEKEND_LAYERS } from '../interfaces/family-weekend.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+
+export enum FAMILY_WEEKEND_LAYERS {
+  PARKING_LOTS = 'family-weekend-parking-lots',
+  VISITOR_PARKING = 'family-weekend-visitor-parking'
+}
 
 import esri = __esri;
 
@@ -180,3 +184,10 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
     }
   }
 ];
+
+export const FamilyWeekendTs: ISpecialEventRoot = {
+  configuration: FamilyWeekendConfiguration,
+  options: FamilyWeekendOptions,
+  sources: FamilyWeekendColdLayerSources,
+  references: FAMILY_WEEKEND_LAYERS
+};
