@@ -35,7 +35,7 @@ export class ButtonComponent {
    * Sets the visual style of the button.
    */
   @Input()
-  public look: 'default' | 'secondary' | 'success' | 'danger' | 'warning';
+  public look: 'default' | 'secondary' | 'tertiary' | 'success' | 'danger' | 'warning';
 
   /**
    * Event emitted on inner button trigger.
@@ -75,6 +75,11 @@ export class ButtonComponent {
   @HostBinding('class.secondary')
   private get _styleSecondary() {
     return this.look === 'secondary';
+  }
+
+  @HostBinding('class.tertiary')
+  private get _styleTertiary() {
+    return this.look === 'tertiary';
   }
 
   @HostBinding('class.success')

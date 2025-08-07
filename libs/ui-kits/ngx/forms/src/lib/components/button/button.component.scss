@@ -41,6 +41,17 @@ $accentColor: #424242;
     }
   }
 
+  &.tertiary {
+    border: 1pt solid #eeeeee;
+    color: #eeeeee;
+    background: none;
+
+    &:hover {
+      background: #eeeeee;
+      color: #500000;
+    }
+  }
+
   &.danger {
     border: 1.5pt solid $dangerColor;
     background: none;
