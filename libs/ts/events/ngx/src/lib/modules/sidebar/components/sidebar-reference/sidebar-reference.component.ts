@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AltSearchHelper, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
@@ -22,6 +23,8 @@ export class SidebarReferenceComponent implements OnInit {
   public configuration: EventConfiguration | null;
 
   constructor(
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
     private readonly helper: AltSearchHelper,
     private readonly mapService: EsriMapService,
     private readonly eventSettingsService: EventSettingsService
@@ -43,6 +46,12 @@ export class SidebarReferenceComponent implements OnInit {
         shouldShowPopup: true,
         popupComponent: (res as SearchSelection<esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
       });
+    });
+  }
+
+  public navigateSettingsReview(): void {
+    this.router.navigate(['builder/review'], {
+      relativeTo: this.route.parent?.parent?.parent?.parent
     });
   }
 }

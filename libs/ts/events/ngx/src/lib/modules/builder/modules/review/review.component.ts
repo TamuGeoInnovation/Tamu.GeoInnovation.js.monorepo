@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
@@ -19,9 +19,10 @@ export class ReviewComponent implements OnInit {
   public settingsValid = false;
 
   constructor(
-    private router: Router,
-    private eventSettingsService: EventSettingsService,
-    private angulartics: Angulartics2
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly eventSettingsService: EventSettingsService,
+    private readonly angulartics: Angulartics2
   ) {}
 
   public ngOnInit() {
@@ -31,22 +32,36 @@ export class ReviewComponent implements OnInit {
     this.settingsValid = this.eventSettingsService.accommodationsValid();
   }
 
-  public next = (route: string, params?: { ret: string }) => {
+  public goToAccommodationSelection(optionKey: string) {
     this.angulartics.eventTrack.next({
       action: 'navigate',
       properties: {
         category: 'builder',
         gstCustom: {
           origin: 'review',
-          dest: route
+          dest: `accommodations/${optionKey}`
         }
       }
     });
 
-    if (route && params) {
-      this.router.navigate([`${route}`], { queryParams: { ...params } });
-    } else if (route && !params) {
-      this.router.navigate([`${route}`]);
-    }
-  };
+    this.router.navigate(['accommodations', optionKey], {
+      relativeTo: this.route.parent?.parent,
+      queryParams: { ret: 'review' }
+    });
+  }
+
+  public navigateToMap() {
+    this.angulartics.eventTrack.next({
+      action: 'navigate',
+      properties: {
+        category: 'builder',
+        gstCustom: {
+          origin: 'review',
+          dest: 'map'
+        }
+      }
+    });
+
+    this.router.navigate(['map'], { relativeTo: this.route.parent?.parent?.parent });
+  }
 }

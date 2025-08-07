@@ -106,18 +106,19 @@ export class AccommodationsComponent implements OnInit {
       const hasRet = this.route.snapshot.queryParams['ret'];
 
       if (hasRet !== undefined) {
-        return this.router.navigate([`builder/${hasRet}`]);
+        return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
       } else {
         if (this.nextAccommodation$) {
           return this.nextAccommodation$.pipe(take(1)).subscribe((res) => {
             if (res === null || res === undefined) {
-              return this.router.navigate(['builder/review']);
+              return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
             }
 
+            // TODO: Validate this works when the even has multiple accommodations
             return this.router.navigate(['builder/accommodations', res?.value]);
           });
         } else {
-          return this.router.navigate(['builder/review']);
+          return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
         }
       }
     } else {

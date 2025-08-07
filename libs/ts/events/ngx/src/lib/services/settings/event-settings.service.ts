@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { LayerSource } from '@tamu-gisc/common/types';
 
 import {
   EventAccommodationOption,
@@ -120,16 +121,41 @@ export class EventSettingsService {
     }
   }
 
-  public eventLayerReferences(): Array<string>;
-  public eventLayerReferences(asObservable: true): Observable<Array<string>>;
-  public eventLayerReferences(asObservable: false): Array<string>;
-  public eventLayerReferences(asObservable?: boolean): Array<string> | Observable<Array<string>> {
-    const references: Array<string> = this.env.value('SpecialEventLayerReferences', true);
+  public eventLayerReferences(): Record<string, string>;
+  public eventLayerReferences(asObservable: true): Observable<Record<string, string>>;
+  public eventLayerReferences(asObservable: false): Record<string, string>;
+  public eventLayerReferences(asObservable?: boolean): Record<string, string> | Observable<Record<string, string>> {
+    const config = this.getEventDefinitionById(this._settingsSecondaryKey);
 
-    if (asObservable) {
-      return of(references);
+    if (config && config.references !== null) {
+      const references = config.references;
+
+      if (asObservable) {
+        return of(references);
+      } else {
+        return references;
+      }
     } else {
-      return references;
+      throw new Error(`Event layer references for event ID '${this._settingsSecondaryKey}' not found.`);
+    }
+  }
+
+  public eventLayerSources(): Array<LayerSource>;
+  public eventLayerSources(asObservable: true): Observable<Array<LayerSource>>;
+  public eventLayerSources(asObservable: false): Array<LayerSource>;
+  public eventLayerSources(asObservable?: boolean): Array<LayerSource> | Observable<Array<LayerSource>> {
+    const config = this.getEventDefinitionById(this._settingsSecondaryKey);
+
+    if (config && config.sources !== null) {
+      const sources = config.sources;
+
+      if (asObservable) {
+        return of(sources);
+      } else {
+        return sources;
+      }
+    } else {
+      throw new Error(`Event layer sources for event ID '${this._settingsSecondaryKey}' not found.`);
     }
   }
 

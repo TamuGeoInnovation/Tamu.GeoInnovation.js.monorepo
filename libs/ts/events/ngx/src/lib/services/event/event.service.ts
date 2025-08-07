@@ -64,7 +64,7 @@ export class EventService {
                     const settingValue = this.settings[option.value];
 
                     if (settingValue !== undefined) {
-                      let value: string | number | boolean;
+                      let value: string | number | boolean | null;
 
                       // If the layer has conversion options, convert the setting value to the appropriate value.
                       if (layer.conversions) {
@@ -128,7 +128,7 @@ export class EventService {
    * Throws error if no referenced source found (invalid or non-existing).
    */
   public getLayerSourceCopy(reference: string): LayerSource {
-    const sources: Array<LayerSource> = this.env.value('ColdLayerSources', false);
+    const sources: Array<LayerSource> = this.eventSettingsService.eventLayerSources();
     const root = sources.find((s) => s.id == reference);
 
     const popupComponent = root?.popupComponent;

@@ -10,12 +10,12 @@
         <div>
           <p *ngIf="option.value.option === null">Not Set</p>
           <p *ngIf="option.value.option !== null">{{ option.value.option.label }}</p>
-          <a [routerLink]="['/builder/accommodations', option.key]" [queryParams]="{ret: 'review'}">Change</a>
+          <a (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
         </div>
       </div>
 
       <ng-container *ngIf="settingsValid; else infoTemplate">
-        <tamu-gisc-button value="Take Me To My Map" (go)="next('map')"></tamu-gisc-button>
+        <tamu-gisc-button value="Take Me To My Map" (go)="navigateToMap()" [look]="'tertiary'"></tamu-gisc-button>
       </ng-container>
 
       <ng-template #infoTemplate>
