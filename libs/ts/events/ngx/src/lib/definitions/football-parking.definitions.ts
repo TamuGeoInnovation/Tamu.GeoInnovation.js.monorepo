@@ -251,6 +251,10 @@ export const FootballParkingOptions: SpecialEventOptions = [
               expression: "Notes IN ('Loading Zone', 'Road Closed')"
             },
             {
+              input: TransportTypes.RV,
+              expression: "Notes NOT IN ('Cashier', 'Disabled', 'GPresale')"
+            },
+            {
               input: TransportTypes.BIKE,
               propOverrides: {
                 visible: false,
