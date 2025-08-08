@@ -14,10 +14,12 @@ import { SpecialEventOption, SpecialEventOptions } from '../../../../interfaces/
 })
 export class AccommodationsComponent implements OnInit {
   public savedOptionValue: Observable<string | boolean | number | null>;
-  private _eventOptions$: BehaviorSubject<SpecialEventOptions>;
-  private _accommodationIndex$: Observable<number>;
+
   public accommodation$: Observable<SpecialEventOption>;
   public nextAccommodation$: Observable<SpecialEventOption | null>;
+
+  private _eventOptions$: BehaviorSubject<SpecialEventOptions>;
+  private _accommodationIndex$: Observable<number>;
 
   constructor(
     private readonly router: Router,
@@ -102,9 +104,9 @@ export class AccommodationsComponent implements OnInit {
         }
       });
 
-      const hasRet = this.route.snapshot.queryParams['ret'];
+      const hasRet = this.route.snapshot.queryParams['ret'] ?? false;
 
-      if (hasRet !== undefined) {
+      if (hasRet) {
         return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
       } else {
         if (this.nextAccommodation$) {
