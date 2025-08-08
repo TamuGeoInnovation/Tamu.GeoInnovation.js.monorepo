@@ -43,18 +43,14 @@ const routes: Routes = [
           },
           { path: '', redirectTo: 'intro', pathMatch: 'full' }
         ]
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'builder/intro'
       }
     ]
   }
-  // {
-  //   path: '',
-  //   pathMatch: 'full',
-
-  // },
-  // {
-  //   path: '**',
-  //   redirectTo: ':eventId/map'
-  // }
 ];
 
 @NgModule({
