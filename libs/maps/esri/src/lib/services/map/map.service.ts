@@ -15,7 +15,8 @@ import {
 import { LayerSource, IRemoteLayerService, GroupLayerSourceProperties } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { EsriModuleProviderService } from './module-provider.service';
+import { EsriModuleProviderService } from '../module-provider/module-provider.service';
+import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 
 import esri = __esri;
 
@@ -50,7 +51,8 @@ export class EsriMapService {
     private route: ActivatedRoute,
     private searchService: SearchService,
     private environment: EnvironmentService,
-    private http: HttpClient
+    private http: HttpClient,
+    private layerSourcesService: LayerSourcesService
   ) {}
 
   public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {
@@ -649,8 +651,8 @@ export class EsriMapService {
    * the current application route contains 'layers' query params.
    */
   public filterLayerSources(sources?: LayerSource[], filters?: { params?: boolean }): Array<LayerSource> {
-    // Get the layer sources from the environment
-    let ret: Array<LayerSource> = sources || this.environment.value('LayerSources');
+    // Get the layer sources from the layer sources service, with overrides applied
+    let ret: Array<LayerSource> = sources || this.layerSourcesService.getLayerSourcesWithOverrides();
 
     if (!ret || ret.length === 0) {
       // If no layer sources are defined, return an empty array

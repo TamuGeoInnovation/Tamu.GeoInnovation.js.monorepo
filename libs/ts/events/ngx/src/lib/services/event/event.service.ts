@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { delay } from 'rxjs';
 
-import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -27,8 +27,18 @@ export class EventService {
     private readonly env: EnvironmentService,
     private readonly moduleProvider: EsriModuleProviderService,
     private readonly mapService: EsriMapService,
-    private readonly eventSettingsService: EventSettingsService
+    private readonly eventSettingsService: EventSettingsService,
+    private readonly lss: LayerSourcesService
   ) {
+    // Patch default layer overrides
+    const eventConfiguration = this.eventSettingsService.eventConfiguration()?.configuration || undefined;
+
+    if (eventConfiguration && eventConfiguration.defaultLayerOverrides) {
+      Object.entries(eventConfiguration.defaultLayerOverrides).forEach(([layerId, override]) => {
+        this.lss.setLayerOverrides(layerId, override);
+      });
+    }
+
     this.eventOptions = this.eventSettingsService.eventOptions();
     this.settings = this.eventSettingsService.settings();
     this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences()).map(

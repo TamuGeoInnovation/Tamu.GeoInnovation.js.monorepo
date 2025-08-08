@@ -5,7 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 
-import { EsriMapModule } from '../maps-esri.module';
+import { EsriMapModule } from '../../maps-esri.module';
 import { EsriMapService } from './map.service';
 
 describe('EsriMapService', () => {
@@ -15,7 +15,7 @@ describe('EsriMapService', () => {
         EsriMapService,
         {
           provide: env,
-          useValue: { SearchSources: [] }
+          useValue: { SearchSources: [], LayerSources: [] }
         }
       ],
       imports: [EsriMapModule, RouterTestingModule, SearchModule, EnvironmentModule, HttpClientTestingModule]
