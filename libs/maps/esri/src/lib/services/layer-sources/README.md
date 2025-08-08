@@ -95,12 +95,8 @@ this.layerSourcesService.overrides$.subscribe((overrides) => {
 ## Types
 
 ```typescript
-export interface LayerSourceOverride {
-  [key: string]: unknown;
-}
-
 export interface LayerSourceOverrides {
-  [layerId: string]: LayerSourceOverride;
+  [layerId: string]: Array<LayerSource>;
 }
 ```
 
