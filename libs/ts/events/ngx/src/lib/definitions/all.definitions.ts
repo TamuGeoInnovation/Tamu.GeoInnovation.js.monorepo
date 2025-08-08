@@ -2,7 +2,6 @@ import { FourHRoundupTs } from './4h-roundup.definitions';
 import { AggielandSaturdayEventTs } from './aggieland-saturday.definitions';
 import { BigEventTs } from './big-event.definitions';
 import { FamilyWeekendTs } from './family-weekend.definitions';
-import { FootballParkingEvent } from './football-parking.definitions';
 import { GraduationEventTs } from './graduation.definitions';
 import { HsGraduationTs } from './hs-graduation.definitions';
 import { MaroonWhiteTs } from './maroon-white-game.definitions';
@@ -17,7 +16,6 @@ export const EventDefinitions = [
   AggielandSaturdayEventTs,
   BigEventTs,
   FamilyWeekendTs,
-  FootballParkingEvent,
   GraduationEventTs,
   HsGraduationTs,
   MaroonWhiteTs,
