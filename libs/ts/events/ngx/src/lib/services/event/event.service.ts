@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { delay } from 'rxjs';
 
-import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -27,8 +27,18 @@ export class EventService {
     private readonly env: EnvironmentService,
     private readonly moduleProvider: EsriModuleProviderService,
     private readonly mapService: EsriMapService,
-    private readonly eventSettingsService: EventSettingsService
+    private readonly eventSettingsService: EventSettingsService,
+    private readonly lss: LayerSourcesService
   ) {
+    // Patch default layer overrides
+    const eventConfiguration = this.eventSettingsService.eventConfiguration()?.configuration || undefined;
+
+    if (eventConfiguration && eventConfiguration.defaultLayerOverrides) {
+      Object.entries(eventConfiguration.defaultLayerOverrides).forEach(([layerId, override]) => {
+        this.lss.setLayerOverrides(layerId, override);
+      });
+    }
+
     this.eventOptions = this.eventSettingsService.eventOptions();
     this.settings = this.eventSettingsService.settings();
     this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences()).map(
@@ -64,7 +74,7 @@ export class EventService {
                     const settingValue = this.settings[option.value];
 
                     if (settingValue !== undefined) {
-                      let value: string | number | boolean;
+                      let value: string | number | boolean | null;
 
                       // If the layer has conversion options, convert the setting value to the appropriate value.
                       if (layer.conversions) {
@@ -128,7 +138,7 @@ export class EventService {
    * Throws error if no referenced source found (invalid or non-existing).
    */
   public getLayerSourceCopy(reference: string): LayerSource {
-    const sources: Array<LayerSource> = this.env.value('ColdLayerSources', false);
+    const sources: Array<LayerSource> = this.eventSettingsService.eventLayerSources();
     const root = sources.find((s) => s.id == reference);
 
     const popupComponent = root?.popupComponent;

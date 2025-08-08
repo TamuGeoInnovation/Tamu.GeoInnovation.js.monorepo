@@ -1,4 +1,5 @@
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
+
 import { IComposedConnections } from './connections';
 
 export function Definitions(Connections: IComposedConnections): IComposedIDefinitions {

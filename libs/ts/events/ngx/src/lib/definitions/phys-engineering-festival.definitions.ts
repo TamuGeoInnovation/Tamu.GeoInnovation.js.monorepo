@@ -1,9 +1,13 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS } from '../interfaces/physics-engineering-festival.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+
+export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
+  FESTIVAL_AREAS = 'phys-eng-festival-areas',
+  PEDESTRIAN_PATH = 'phys-eng-festival-pedestrian-path'
+}
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Physics_Fest/MapServer';
 
@@ -78,3 +82,10 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
 };
 
 export const PhysicsAndEngineeringFestivalOptions: SpecialEventOptions = [];
+
+export const PhysicsAndEngineeringFestivalTs = {
+  configuration: PhysicsAndEngineeringFestivalConfiguration,
+  options: PhysicsAndEngineeringFestivalOptions,
+  sources: PhysEngFestivalColdLayerSources,
+  references: PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS
+};

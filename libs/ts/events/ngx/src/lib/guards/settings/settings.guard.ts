@@ -14,8 +14,8 @@ import { EventSettings } from '../../interfaces/special-event.interface';
 })
 export class SettingsGuard implements CanActivate {
   constructor(
-    private readonly ess: EventSettingsService,
     private readonly router: Router,
+    private readonly ess: EventSettingsService,
     private readonly ns: NotificationService,
     private readonly anl: Angulartics2
   ) {}
@@ -29,8 +29,6 @@ export class SettingsGuard implements CanActivate {
     const queryParamsKeySize = Object.keys(queryParams).length;
 
     if (!appSettings && queryParamsKeySize === 0) {
-      // return this.router.parseUrl('/builder');
-
       return true;
     }
 

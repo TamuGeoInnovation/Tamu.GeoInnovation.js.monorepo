@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AltSearchHelper, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
@@ -19,9 +20,11 @@ export class SidebarReferenceComponent implements OnInit {
   public hasSettings: boolean;
   public settings: EventSettings;
   public mergedSettings: ResolvedEventSettings;
-  public configuration: EventConfiguration;
+  public configuration: EventConfiguration | null;
 
   constructor(
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
     private readonly helper: AltSearchHelper,
     private readonly mapService: EsriMapService,
     private readonly eventSettingsService: EventSettingsService
@@ -29,7 +32,7 @@ export class SidebarReferenceComponent implements OnInit {
 
   public ngOnInit(): void {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
-    this.configuration = this.eventSettingsService.eventConfiguration();
+    this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
   }
@@ -43,6 +46,12 @@ export class SidebarReferenceComponent implements OnInit {
         shouldShowPopup: true,
         popupComponent: (res as SearchSelection<esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
       });
+    });
+  }
+
+  public navigateSettingsReview(): void {
+    this.router.navigate(['builder/review'], {
+      relativeTo: this.route.parent?.parent?.parent?.parent
     });
   }
 }

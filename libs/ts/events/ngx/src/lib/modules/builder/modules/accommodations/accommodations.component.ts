@@ -10,7 +10,7 @@ import { SpecialEventOption, SpecialEventOptions } from '../../../../interfaces/
 @Component({
   selector: 'tamu-gisc-accommodations',
   templateUrl: './accommodations.component.html',
-  styleUrls: ['./accommodations.component.scss']
+  styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss']
 })
 export class AccommodationsComponent implements OnInit {
   public savedOptionValue: Observable<string | boolean | number | null>;
@@ -32,7 +32,8 @@ export class AccommodationsComponent implements OnInit {
     if (!this._eventOptions$.value || (this._eventOptions$.value as Array<unknown>).length === 0) {
       console.log('No special event options available. Directing to map.');
 
-      return this.router.navigate(['map']);
+      this.router.navigate(['map'], { relativeTo: this.route.parent?.parent?.parent });
+      return;
     }
 
     // Test if the route has an accommodation. If it does not, redirect to the first available accommodation.
@@ -44,7 +45,9 @@ export class AccommodationsComponent implements OnInit {
         } else {
           const firstAccommodation = Object.values(options)[0];
 
-          return this.router.navigate(['builder/accommodations', firstAccommodation.value]);
+          return this.router.navigate([firstAccommodation.value], {
+            relativeTo: this.route
+          });
         }
       }),
       shareReplay(1)
@@ -102,18 +105,19 @@ export class AccommodationsComponent implements OnInit {
       const hasRet = this.route.snapshot.queryParams['ret'];
 
       if (hasRet !== undefined) {
-        return this.router.navigate([`builder/${hasRet}`]);
+        return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
       } else {
         if (this.nextAccommodation$) {
           return this.nextAccommodation$.pipe(take(1)).subscribe((res) => {
             if (res === null || res === undefined) {
-              return this.router.navigate(['builder/review']);
+              return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
             }
 
+            // TODO: Validate this works when the event has multiple accommodations
             return this.router.navigate(['builder/accommodations', res?.value]);
           });
         } else {
-          return this.router.navigate(['builder/review']);
+          return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
         }
       }
     } else {

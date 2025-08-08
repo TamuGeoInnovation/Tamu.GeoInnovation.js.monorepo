@@ -2,8 +2,13 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { FOUR_H_ROUNDUP_LAYERS } from '../interfaces/4h-roundup.interface';
+
 import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+
+export enum FOUR_H_ROUNDUP_LAYERS {
+  FOUR_H_ROUNDUP_PARKING = 'four-h-roundup-parking',
+  FOUR_H_ROUNDUP_LOCATIONS = 'four-h-roundup-locations'
+}
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/4H_Roundup/MapServer';
 
@@ -69,3 +74,10 @@ export const FourHRoundupConfiguration: EventConfiguration = {
 };
 
 export const FourHRoundupOptions: SpecialEventOptions = [];
+
+export const FourHRoundupTs = {
+  configuration: FourHRoundupConfiguration,
+  options: FourHRoundupOptions,
+  sources: FourHColdLayerSources,
+  references: FOUR_H_ROUNDUP_LAYERS
+};

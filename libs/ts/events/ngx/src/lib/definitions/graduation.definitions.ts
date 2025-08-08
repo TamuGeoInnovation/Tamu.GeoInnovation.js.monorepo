@@ -2,10 +2,18 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { GRADUATION_LAYERS } from '../interfaces/graduation.interface';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+
+export enum GRADUATION_LAYERS {
+  GRADUATION_LINE_PAINT = 'graduation-line-paint',
+  GRADUATION_CONSTRUCTION = 'graduation-construction',
+  GRADUATION_EVENT_PARKING_LOTS_A = 'graduation-event-parking-lots-a',
+  GRADUATION_EVENT_PARKING_LOTS_B = 'graduation-event-parking-lots-b',
+  GRADUATION_TRAFFIC_FLOW = 'graduation-traffic-flow',
+  GRADUATION_ROAD_CLOSURES = 'graduation-road-closed'
+}
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/GraduationMuster/MapServer';
 
@@ -426,3 +434,10 @@ export const GraduationOptions: SpecialEventOptions = [
     }
   }
 ];
+
+export const GraduationEventTs: ISpecialEventRoot = {
+  configuration: GraduationConfiguration,
+  options: GraduationOptions,
+  sources: GraduationColdLayerSources,
+  references: GRADUATION_LAYERS
+};

@@ -51,6 +51,24 @@ export interface EventConfiguration {
   mapCenter?: Array<number>;
 
   zoom?: number;
+
+  /**
+   * Events can have exceptions for default map layers. This property allows for the ability to
+   * define a set of default layer overrides that apply to a specific event.
+   *
+   * For example, a layer with id 'construction_zone-layer' can be set to not be visible by default:
+   *
+   * ```
+   *  {
+   *   "construction_zone-layer": {
+   *     "listMode": 'hide',
+   *     "native": {
+   *       "visible": false
+   *     }
+   * }
+   * ```
+   */
+  defaultLayerOverrides?: Record<string, Partial<LayerSource>>;
 }
 
 /**
@@ -200,4 +218,11 @@ export interface ResolvedEventSettings {
       label: string;
     } | null;
   };
+}
+
+export interface ISpecialEventRoot {
+  configuration: EventConfiguration | null;
+  options: SpecialEventOptions | null;
+  references: Record<string, string> | null;
+  sources: Array<LayerSource> | null;
 }

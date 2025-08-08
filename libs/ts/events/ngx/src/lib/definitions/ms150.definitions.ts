@@ -1,8 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { MS150_LAYERS } from '../interfaces/ms150.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+
+export enum MS150_LAYERS {
+  PARKING_LOTS = 'ms150-parking-lots',
+  ROUTE = 'ms150-route'
+}
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/MS150/MapServer';
 
@@ -77,3 +81,10 @@ export const MS150Configuration: EventConfiguration = {
 };
 
 export const MS150Options: SpecialEventOptions = [];
+
+export const MS150Ts = {
+  configuration: MS150Configuration,
+  options: MS150Options,
+  sources: MS150ColdLayerSources,
+  references: MS150_LAYERS
+};

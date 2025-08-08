@@ -1,10 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { SUMMER_COMMENCEMENT_LAYERS } from '../interfaces/summer-graduation.interface';
 import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 import esri = __esri;
+
+export enum SUMMER_COMMENCEMENT_LAYERS {
+  PARKING_LOTS = 'summer-commencement-parking-lots',
+  TRAFFIC_FLOW = 'summer-commencement-traffic-flow'
+}
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Summer_Commencement/MapServer';
 
