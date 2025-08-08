@@ -29,8 +29,6 @@ export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild 
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    // Test to make sure the the application URL includes the eventId parameter
-
     return this._performChecks(route);
   }
 
@@ -38,9 +36,6 @@ export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild 
     route: Route,
     segments: UrlSegment[]
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    // Test to make sure the the application URL includes the eventId parameter
-
-    console.log('canLoad', route, segments);
     return this._performChecks(this.ar.snapshot);
   }
 
@@ -48,9 +43,6 @@ export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild 
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    // Test to make sure the the application URL includes the eventId parameter
-    console.log('canActivateChild', childRoute, state);
-
     return this._performChecks(childRoute);
   }
 
@@ -75,8 +67,6 @@ export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild 
         .join('/');
 
       const tree: UrlTree = this.router.parseUrl(`/${pathFromRoot}/${ps.routeConfig?.path || ''}`);
-
-      console.log('RouteParamsGuard: Redirecting to nearest parent with params', tree);
 
       return tree;
     }

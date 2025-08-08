@@ -32,9 +32,8 @@ export class AccommodationsComponent implements OnInit {
     if (!this._eventOptions$.value || (this._eventOptions$.value as Array<unknown>).length === 0) {
       console.log('No special event options available. Directing to map.');
 
-      // ESLint says not all code paths return a value, but this is intentionally to prevent further execution
-      // else it would throw an error.
-      return this.router.navigate(['map'], { relativeTo: this.route.parent?.parent?.parent });
+      this.router.navigate(['map'], { relativeTo: this.route.parent?.parent?.parent });
+      return;
     }
 
     // Test if the route has an accommodation. If it does not, redirect to the first available accommodation.
@@ -114,7 +113,7 @@ export class AccommodationsComponent implements OnInit {
               return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
             }
 
-            // TODO: Validate this works when the even has multiple accommodations
+            // TODO: Validate this works when the event has multiple accommodations
             return this.router.navigate(['builder/accommodations', res?.value]);
           });
         } else {
