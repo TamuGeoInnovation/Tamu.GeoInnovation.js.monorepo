@@ -201,7 +201,12 @@ export const FootballParkingConfiguration: EventConfiguration = {
   introductionText: 'Get the best transportation and parking information for game days.',
   eventDates: [],
   mapCenter: [-96.34344, 30.61011],
-  zoom: 16
+  zoom: 16,
+  defaultLayerOverrides: {
+    'construction_zone-layer': {
+      visible: false
+    }
+  }
 };
 
 enum TransportTypes {
