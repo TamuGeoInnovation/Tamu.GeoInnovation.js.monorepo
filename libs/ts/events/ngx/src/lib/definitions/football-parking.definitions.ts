@@ -81,6 +81,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
+      visible: false,
       minScale: 0
     }
   },
@@ -318,17 +319,6 @@ export const FootballParkingOptions: SpecialEventOptions = [
               propOverrides: {
                 visible: false,
                 listMode: 'hide'
-              }
-            }
-          ]
-        },
-        {
-          layerId: FOOTBALL_PARKING_LAYERS.TS_BIKE_RACKS,
-          conversions: [
-            {
-              input: TransportTypes.BIKE,
-              propOverrides: {
-                native: { visible: true, listMode: 'show' }
               }
             }
           ]
