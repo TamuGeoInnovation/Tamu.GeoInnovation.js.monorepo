@@ -10,6 +10,7 @@ import { MusterTs } from './muster.definitions';
 import { PhysicsAndEngineeringFestivalTs } from './phys-engineering-festival.definitions';
 import { SoftballRegionalsTs } from './softball-regionals.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
+import { FootballParkingEvent } from './football-parking.definitions';
 
 export const EventDefinitions = [
   FourHRoundupTs,
@@ -23,5 +24,6 @@ export const EventDefinitions = [
   MusterTs,
   PhysicsAndEngineeringFestivalTs,
   SoftballRegionalsTs,
-  TroubadourTs
+  TroubadourTs,
+  FootballParkingEvent
 ];
