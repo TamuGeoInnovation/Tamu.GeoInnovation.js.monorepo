@@ -39,7 +39,7 @@ const FootballParkingEventDefinitions = {
   FP_GAMEDAY_SHUTTLE: {
     id: FOOTBALL_PARKING_LAYERS.FP_GAMEDAY_SHUTTLE,
     layerId: 7,
-    name: 'Game Day Shuttle',
+    name: 'Downtown Bryan Shuttle Stop',
     url: `${eventUrl}/7`
   },
   TS_BIKE_RACKS: {
