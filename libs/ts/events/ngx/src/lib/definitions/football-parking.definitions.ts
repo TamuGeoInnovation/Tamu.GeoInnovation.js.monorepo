@@ -121,7 +121,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.RouteName',
-      description: 'attributes.Description'
+      description: 'attributes.Notes_1'
     },
     native: {
       outFields: ['*']
