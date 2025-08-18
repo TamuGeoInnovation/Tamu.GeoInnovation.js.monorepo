@@ -11,11 +11,14 @@ export enum FOOTBALL_PARKING_LAYERS {
   TS_BIKE_LANES = 'ts-bike-lanes',
   TS_CITY_BIKE_LANES_ROUTES = 'ts-city-bike-lanes-routes',
   TS_BIKE_DISMOUNT_ZONES = 'ts-bike-dismount-zones',
-  TS_BIKE_RACKS = 'ts-bike-racks'
+  TS_BIKE_RACKS = 'ts-bike-racks',
+  TS_SHUTTLE_ROUTES = 'ts-shuttle-routes',
+  TS_SHUTTLE_STOPS = 'ts-shuttle-stops'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer';
 const bikeLayersUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
+const shuttleLayersUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer';
 
 const FootballParkingEventDefinitions = {
   FP_POIS: {
@@ -65,6 +68,18 @@ const FootballParkingEventDefinitions = {
     layerId: 10,
     name: 'Bike Dismount Zones',
     url: `${bikeLayersUrl}/5`
+  },
+  TS_SHUTTLE_STOPS: {
+    id: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS,
+    layerId: 11,
+    name: 'Shuttle Stops',
+    url: `${shuttleLayersUrl}/0`
+  },
+  TS_SHUTTLE_ROUTES: {
+    id: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES,
+    layerId: 12,
+    name: 'Shuttle Routes',
+    url: `${shuttleLayersUrl}/1`
   }
 };
 
@@ -190,6 +205,37 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       visible: false,
       listMode: 'hide'
     }
+  },
+  {
+    type: 'feature',
+    id: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES.id,
+    title: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES.name,
+    url: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.RouteName} ({attributes.RouteNum})'
+    },
+    native: {
+      outFields: ['*'],
+      visible: false,
+      listMode: 'hide'
+    }
+  },
+  {
+    type: 'feature',
+    id: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS.id,
+    title: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS.name,
+    url: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.StopName}',
+      description: 'For route: {attributes.RouteName}'
+    },
+    native: {
+      outFields: ['*'],
+      visible: false,
+      listMode: 'hide'
+    }
   }
 ];
 
@@ -237,11 +283,6 @@ export const FootballParkingOptions: SpecialEventOptions = [
         value: TransportTypes.PERSONAL_VEHICLE,
         label: 'Personal Vehicle'
       },
-      // TODO: No data layers for this option
-      // {
-      //   value: TransportTypes.RIDE_SHARE,
-      //   label: 'Ride Share'
-      // },
       {
         value: TransportTypes.BIKE,
         label: 'Bike'
@@ -355,6 +396,28 @@ export const FootballParkingOptions: SpecialEventOptions = [
           conversions: [
             {
               input: TransportTypes.BIKE,
+              propOverrides: {
+                native: { visible: true, listMode: 'show' }
+              }
+            }
+          ]
+        },
+        {
+          layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES,
+          conversions: [
+            {
+              input: TransportTypes.SHUTTLE,
+              propOverrides: {
+                native: { visible: true, listMode: 'show' }
+              }
+            }
+          ]
+        },
+        {
+          layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS,
+          conversions: [
+            {
+              input: TransportTypes.SHUTTLE,
               propOverrides: {
                 native: { visible: true, listMode: 'show' }
               }

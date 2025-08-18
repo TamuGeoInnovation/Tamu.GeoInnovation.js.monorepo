@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { delay } from 'rxjs';
 
+import deepmerge from 'deepmerge';
+
 import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -85,7 +87,7 @@ export class EventService {
                         // If propOverrides are provided, assign them to the source layer.
                         // This enables the ability to, for example, show/hide layers based on accommodation selections.
                         if (correspondingOption && correspondingOption.propOverrides) {
-                          Object.assign(source, correspondingOption.propOverrides);
+                          source = deepmerge(source, correspondingOption.propOverrides) as any;
                         }
 
                         if (correspondingOption && correspondingOption.expression) {
