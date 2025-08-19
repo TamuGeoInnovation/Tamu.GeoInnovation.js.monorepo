@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { getPathFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
+import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
 
 @Component({
   selector: 'tamu-gisc-mobile-sidebar',
@@ -15,7 +15,7 @@ export class MobileSidebarComponent {
    */
   public close() {
     // Get the parent route.
-    const parent = getPathFromRouteSnapshot(this.route.snapshot).slice(0, -1);
+    const parent = getUrlSegmentsFromRouteSnapshot(this.route.snapshot).slice(0, -1);
 
     // Absolute navigation to the parent.
     this.router.navigate(parent);

@@ -1,6 +1,6 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 
-import { getPathFromRouteSnapshot, makeUrlParams, routeSubstitute } from '..';
+import { getPathFromRouteSnapshot, getUrlSegmentsFromRouteSnapshot, makeUrlParams, routeSubstitute } from '..';
 
 describe('getPathFromRouteSnapshot', () => {
   it('should work', () => {
@@ -34,5 +34,29 @@ describe('routeSubstitute', () => {
   it('should replace the documentation example', () => {
     expect(routeSubstitute(['map', 'd', 'trip'], 'd', 'm')).toEqual(['map', 'm', 'trip']);
     expect(routeSubstitute(['map', 'm', 'trip'], 'd', 'm')).toEqual(['map', 'm', 'trip']);
+  });
+});
+
+describe('getUrlSegmentsFromRouteSnapshot', () => {
+  it('should extract actual URL segments', () => {
+    expect(
+      getUrlSegmentsFromRouteSnapshot({
+        pathFromRoot: [
+          { url: [] },
+          { url: [{ path: 'events' }] },
+          { url: [{ path: 'my-event-id' }] },
+          { url: [{ path: 'map' }] },
+          { url: [{ path: 'd' }] }
+        ]
+      } as unknown as ActivatedRouteSnapshot)
+    ).toEqual(['events', 'my-event-id', 'map', 'd']);
+  });
+
+  it('should handle empty URL segments', () => {
+    expect(
+      getUrlSegmentsFromRouteSnapshot({
+        pathFromRoot: [{ url: [] }, { url: [{ path: 'map' }] }, { url: [{ path: 'd' }] }]
+      } as unknown as ActivatedRouteSnapshot)
+    ).toEqual(['map', 'd']);
   });
 });

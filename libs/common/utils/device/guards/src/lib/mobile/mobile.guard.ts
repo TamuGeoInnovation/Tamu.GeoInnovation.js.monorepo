@@ -3,7 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, CanActivateChild, Router } from '@
 import { Observable } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
-import { getPathFromRouteSnapshot, routeSubstitute } from '@tamu-gisc/common/utils/routing';
+import { getUrlSegmentsFromRouteSnapshot, routeSubstitute } from '@tamu-gisc/common/utils/routing';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class MobileGuard implements CanActivate, CanActivateChild {
 
   public canActivate(next: ActivatedRouteSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     if (!this.rp.snapshot.isMobile) {
-      const snapshotPath = getPathFromRouteSnapshot(next);
+      const snapshotPath = getUrlSegmentsFromRouteSnapshot(next);
       const pathSegments = routeSubstitute(snapshotPath, 'm', 'd');
       this.router.navigate(pathSegments, { queryParams: next.queryParams });
     }
