@@ -2,7 +2,7 @@
   <div [ngSwitch]="group.children">
     <!-- If there are no children in the current group, then iterate through them and list them out -->
     <div *ngSwitchCase="0">
-      <tamu-gisc-legend-element *ngFor="let element of group.legendElements" [element]="element" [layer]="group.layer" [groupTitle]="group.title" [deduplicateChildren]="deduplicate" [respectDefinitionExpression]="respectDefinitionExpression"></tamu-gisc-legend-element>
+      <tamu-gisc-legend-element *ngFor="let element of group.legendElements; trackBy: trackByLegendElement" [element]="element" [layer]="group.layer" [groupTitle]="group.title" [deduplicateChildren]="deduplicate" [respectDefinitionExpression]="respectDefinitionExpression"></tamu-gisc-legend-element>
     </div>
 
     <!-- If the current group has more children, render another collection group. This represents nested layers/groups. -->
