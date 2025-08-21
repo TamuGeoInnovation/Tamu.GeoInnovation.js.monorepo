@@ -4,17 +4,17 @@ import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdow
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum FOOTBALL_PARKING_LAYERS {
+  FP_POIS = 'football-pois',
   FP_PARKING_LOTS = 'football-parking-lots',
   FP_STREET_GRASS_AREAS = 'football-street-grass-areas',
-  FP_POIS = 'football-pois',
+  TS_BIKE_DISMOUNT_ZONES = 'ts-bike-dismount-zones',
   TS_BIKE_LANES = 'ts-bike-lanes',
   TS_CITY_BIKE_LANES_ROUTES = 'ts-city-bike-lanes-routes',
-  TS_BIKE_DISMOUNT_ZONES = 'ts-bike-dismount-zones',
   TS_BIKE_RACKS = 'ts-bike-racks',
-  TS_SHUTTLE_ROUTES_ON = 'ts-shuttle-routes-on',
   TS_SHUTTLE_STOPS_ON = 'ts-shuttle-stops-on',
-  TS_SHUTTLE_ROUTES_OFF = 'ts-shuttle-routes-off',
   TS_SHUTTLE_STOPS_OFF = 'ts-shuttle-stops-off',
+  TS_SHUTTLE_ROUTES_ON = 'ts-shuttle-routes-on',
+  TS_SHUTTLE_ROUTES_OFF = 'ts-shuttle-routes-off',
   FP_GAMEDAY_SHUTTLE = 'football-gameday-shuttle'
 }
 
