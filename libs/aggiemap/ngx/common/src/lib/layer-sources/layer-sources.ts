@@ -54,8 +54,8 @@ export function LayerSources(
       url: definitions.CONSTRUCTION.url,
       popupComponent: definitions.CONSTRUCTION.popupComponent,
       listMode: 'show',
-      visible: true,
-      essential: true,
+      visible: false,
+      essential: false,
       layerIndex: 2,
       native: {
         ...commonLayerProps,
