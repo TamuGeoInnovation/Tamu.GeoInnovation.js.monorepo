@@ -101,10 +101,6 @@ export class EventService {
                         if (correspondingOption && correspondingOption.output) {
                           value = correspondingOption.output;
                         } else {
-                          console.log(
-                            `No conversion found for setting value '${settingValue}' on layer '${source.id}'. Not applying definition expression.`
-                          );
-
                           return source;
                         }
                       } else {
