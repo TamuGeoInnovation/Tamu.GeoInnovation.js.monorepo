@@ -9,7 +9,9 @@ describe('LegendElementComponent', () => {
   let fixture: ComponentFixture<LegendElementComponent>;
 
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('EsriModuleProviderService', ['require']);
+    const spy = {
+      require: jest.fn()
+    };
 
     await TestBed.configureTestingModule({
       declarations: [LegendElementComponent],
