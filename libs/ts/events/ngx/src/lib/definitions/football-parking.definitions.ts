@@ -6,16 +6,16 @@ import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../i
 export enum FOOTBALL_PARKING_LAYERS {
   FP_PARKING_LOTS = 'football-parking-lots',
   FP_STREET_GRASS_AREAS = 'football-street-grass-areas',
-  FP_GAMEDAY_SHUTTLE = 'football-gameday-shuttle',
   FP_POIS = 'football-pois',
   TS_BIKE_LANES = 'ts-bike-lanes',
   TS_CITY_BIKE_LANES_ROUTES = 'ts-city-bike-lanes-routes',
   TS_BIKE_DISMOUNT_ZONES = 'ts-bike-dismount-zones',
   TS_BIKE_RACKS = 'ts-bike-racks',
   TS_SHUTTLE_ROUTES_ON = 'ts-shuttle-routes-on',
-  TS_SHUTTLE_ROUTES_OFF = 'ts-shuttle-routes-off',
   TS_SHUTTLE_STOPS_ON = 'ts-shuttle-stops-on',
-  TS_SHUTTLE_STOPS_OFF = 'ts-shuttle-stops-off'
+  TS_SHUTTLE_ROUTES_OFF = 'ts-shuttle-routes-off',
+  TS_SHUTTLE_STOPS_OFF = 'ts-shuttle-stops-off',
+  FP_GAMEDAY_SHUTTLE = 'football-gameday-shuttle'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer';

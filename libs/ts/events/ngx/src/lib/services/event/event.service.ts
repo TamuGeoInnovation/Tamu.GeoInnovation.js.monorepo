@@ -43,9 +43,9 @@ export class EventService {
 
     this.eventOptions = this.eventSettingsService.eventOptions();
     this.settings = this.eventSettingsService.settings();
-    this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences()).map(
-      ([, value]) => value
-    );
+    this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences())
+      .map(([, value]) => value)
+      .reverse();
 
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
