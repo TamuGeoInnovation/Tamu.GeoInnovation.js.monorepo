@@ -39,7 +39,7 @@ import esri = __esri;
   styleUrls: ['./legend-element.component.scss']
 })
 export class LegendElementComponent implements OnInit {
-  constructor(private moduleProvider: EsriModuleProviderService) {}
+  constructor(private readonly moduleProvider: EsriModuleProviderService) {}
 
   @Input()
   public element: ILegendElement;
@@ -111,7 +111,7 @@ export class LegendElementComponent implements OnInit {
         } catch (error) {
           console.warn('Failed to evaluate definition expression using ArcGIS API, falling back to simple parsing:', error);
           // Fall back to the original simple parsing approach
-          return this.fallbackToSimpleParsing(operableLayer, renderer, info);
+          return this._fallbackToSimpleParsing(operableLayer, renderer, info);
         }
       }),
       filter((infoOrNull) => {
@@ -142,7 +142,7 @@ export class LegendElementComponent implements OnInit {
     // Test each legend info by performing a query to see if it would return any features
     try {
       // Construct the where clause for this specific legend value
-      const legendWhereClause = this.buildLegendWhereClause(renderer, operableFields, info);
+      const legendWhereClause = this._buildLegendWhereClause(renderer, operableFields, info);
 
       // Combine the legend where clause with the layer's definition expression
       const combinedWhere = layer.definitionExpression
@@ -178,7 +178,7 @@ export class LegendElementComponent implements OnInit {
   /**
    * Builds a where clause for a specific legend value based on the renderer configuration
    */
-  private buildLegendWhereClause(renderer: esri.UniqueValueRenderer, operableFields: string[], info: unknown): string {
+  private _buildLegendWhereClause(renderer: esri.UniqueValueRenderer, operableFields: string[], info: unknown): string {
     const infoValue = (info as { value: string }).value;
 
     if (!infoValue) {
@@ -224,7 +224,7 @@ export class LegendElementComponent implements OnInit {
   /**
    * Fallback to the original simple parsing approach if the API-based method fails
    */
-  private fallbackToSimpleParsing(operableLayer: esri.FeatureLayer, renderer: esri.UniqueValueRenderer, info: LegendInfo) {
+  private _fallbackToSimpleParsing(operableLayer: esri.FeatureLayer, renderer: esri.UniqueValueRenderer, info: LegendInfo) {
     // Determine how many fields are expected in the renderer value string.
     // This is necessary because the renderer value string can be a concatenation of multiple fields.
     const operableFields = [renderer.field, renderer.field2, renderer.field3].filter((f) => f !== null);
