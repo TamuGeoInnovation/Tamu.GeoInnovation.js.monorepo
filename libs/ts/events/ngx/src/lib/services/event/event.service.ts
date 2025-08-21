@@ -87,7 +87,7 @@ export class EventService {
                         // If propOverrides are provided, assign them to the source layer.
                         // This enables the ability to, for example, show/hide layers based on accommodation selections.
                         if (correspondingOption && correspondingOption.propOverrides) {
-                          source = deepmerge(source, correspondingOption.propOverrides) as any;
+                          source = deepmerge(source, correspondingOption.propOverrides) as LayerSource;
                         }
 
                         if (correspondingOption && correspondingOption.expression) {
