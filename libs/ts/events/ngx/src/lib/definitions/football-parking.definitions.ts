@@ -12,8 +12,10 @@ export enum FOOTBALL_PARKING_LAYERS {
   TS_CITY_BIKE_LANES_ROUTES = 'ts-city-bike-lanes-routes',
   TS_BIKE_DISMOUNT_ZONES = 'ts-bike-dismount-zones',
   TS_BIKE_RACKS = 'ts-bike-racks',
-  TS_SHUTTLE_ROUTES = 'ts-shuttle-routes',
-  TS_SHUTTLE_STOPS = 'ts-shuttle-stops'
+  TS_SHUTTLE_ROUTES_ON = 'ts-shuttle-routes-on',
+  TS_SHUTTLE_ROUTES_OFF = 'ts-shuttle-routes-off',
+  TS_SHUTTLE_STOPS_ON = 'ts-shuttle-stops-on',
+  TS_SHUTTLE_STOPS_OFF = 'ts-shuttle-stops-off'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer';
@@ -23,62 +25,74 @@ const shuttleLayersUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Ftbl_Game
 const FootballParkingEventDefinitions = {
   FP_POIS: {
     id: FOOTBALL_PARKING_LAYERS.FP_POIS,
-    layerId: 2,
+    layerId: FOOTBALL_PARKING_LAYERS.FP_POIS,
     name: 'Gameday Points of Interest',
     url: `${eventUrl}/2`
   },
   FP_PARKING_LOTS: {
     id: FOOTBALL_PARKING_LAYERS.FP_PARKING_LOTS,
-    layerId: 5,
+    layerId: FOOTBALL_PARKING_LAYERS.FP_PARKING_LOTS,
     name: 'Football Parking Lots',
     url: `${eventUrl}/5`
   },
   FP_STREET_GRASS_AREAS: {
     id: FOOTBALL_PARKING_LAYERS.FP_STREET_GRASS_AREAS,
-    layerId: 6,
+    layerId: FOOTBALL_PARKING_LAYERS.FP_STREET_GRASS_AREAS,
     name: 'Street/Grass Areas',
     url: `${eventUrl}/6`
   },
   FP_GAMEDAY_SHUTTLE: {
     id: FOOTBALL_PARKING_LAYERS.FP_GAMEDAY_SHUTTLE,
-    layerId: 7,
+    layerId: FOOTBALL_PARKING_LAYERS.FP_GAMEDAY_SHUTTLE,
     name: 'Downtown Bryan Shuttle Stop',
     url: `${eventUrl}/7`
   },
   TS_BIKE_RACKS: {
     id: FOOTBALL_PARKING_LAYERS.TS_BIKE_RACKS,
-    layerId: 8,
+    layerId: FOOTBALL_PARKING_LAYERS.TS_BIKE_RACKS,
     name: 'Bike Racks',
     url: `${bikeLayersUrl}/0`
   },
   TS_BIKE_LANES: {
     id: FOOTBALL_PARKING_LAYERS.TS_BIKE_LANES,
-    layerId: 9,
+    layerId: FOOTBALL_PARKING_LAYERS.TS_BIKE_LANES,
     name: 'Bike Lanes',
     url: `${bikeLayersUrl}/2`
   },
   TS_CITY_BIKE_LANES_ROUTES: {
     id: FOOTBALL_PARKING_LAYERS.TS_CITY_BIKE_LANES_ROUTES,
-    layerId: 9,
+    layerId: FOOTBALL_PARKING_LAYERS.TS_CITY_BIKE_LANES_ROUTES,
     name: 'City Bike Lanes and Routes',
     url: `${bikeLayersUrl}/3`
   },
   TS_BIKE_DISMOUNT_ZONES: {
     id: FOOTBALL_PARKING_LAYERS.TS_BIKE_DISMOUNT_ZONES,
-    layerId: 10,
+    layerId: FOOTBALL_PARKING_LAYERS.TS_BIKE_DISMOUNT_ZONES,
     name: 'Bike Dismount Zones',
     url: `${bikeLayersUrl}/5`
   },
-  TS_SHUTTLE_STOPS: {
-    id: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS,
-    layerId: 11,
-    name: 'Shuttle Stops',
+  TS_SHUTTLE_STOPS_ON: {
+    id: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS_ON,
+    layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS_ON,
+    name: 'On-Campus Shuttle Stops',
     url: `${shuttleLayersUrl}/0`
   },
-  TS_SHUTTLE_ROUTES: {
-    id: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES,
-    layerId: 12,
-    name: 'Shuttle Routes',
+  TS_SHUTTLE_STOPS_OFF: {
+    id: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS_OFF,
+    layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS_OFF,
+    name: 'Off-Campus Shuttle Stops',
+    url: `${shuttleLayersUrl}/0`
+  },
+  TS_SHUTTLE_ROUTES_ON: {
+    id: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES_ON,
+    layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES_ON,
+    name: 'On-Campus Shuttle Routes',
+    url: `${shuttleLayersUrl}/1`
+  },
+  TS_SHUTTLE_ROUTES_OFF: {
+    id: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES_OFF,
+    layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES_OFF,
+    name: 'Off-Campus Shuttle Routes',
     url: `${shuttleLayersUrl}/1`
   }
 };
@@ -208,24 +222,41 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES.id,
-    title: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES.name,
-    url: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES.url,
+    id: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES_ON.id,
+    title: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES_ON.name,
+    url: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES_ON.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.RouteName} ({attributes.RouteNum})'
     },
     native: {
       outFields: ['*'],
+      definitionExpression: "Campus = 'On'",
       visible: false,
       listMode: 'hide'
     }
   },
   {
     type: 'feature',
-    id: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS.id,
-    title: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS.name,
-    url: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS.url,
+    id: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES_OFF.id,
+    title: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES_OFF.name,
+    url: FootballParkingEventDefinitions.TS_SHUTTLE_ROUTES_OFF.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.RouteName} ({attributes.RouteNum})'
+    },
+    native: {
+      outFields: ['*'],
+      definitionExpression: "Campus = 'Off'",
+      visible: false,
+      listMode: 'hide'
+    }
+  },
+  {
+    type: 'feature',
+    id: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS_ON.id,
+    title: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS_ON.name,
+    url: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS_ON.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.StopName}',
@@ -233,6 +264,24 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
+      definitionExpression: "Campus = 'On'",
+      visible: false,
+      listMode: 'hide'
+    }
+  },
+  {
+    type: 'feature',
+    id: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS_OFF.id,
+    title: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS_OFF.name,
+    url: FootballParkingEventDefinitions.TS_SHUTTLE_STOPS_OFF.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.StopName}',
+      description: 'For route: {attributes.RouteName}'
+    },
+    native: {
+      outFields: ['*'],
+      definitionExpression: "Campus = 'Off'",
       visible: false,
       listMode: 'hide'
     }
@@ -403,7 +452,7 @@ export const FootballParkingOptions: SpecialEventOptions = [
           ]
         },
         {
-          layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES,
+          layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES_ON,
           conversions: [
             {
               input: TransportTypes.SHUTTLE,
@@ -414,7 +463,29 @@ export const FootballParkingOptions: SpecialEventOptions = [
           ]
         },
         {
-          layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS,
+          layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_ROUTES_OFF,
+          conversions: [
+            {
+              input: TransportTypes.SHUTTLE,
+              propOverrides: {
+                native: { visible: true, listMode: 'show' }
+              }
+            }
+          ]
+        },
+        {
+          layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS_ON,
+          conversions: [
+            {
+              input: TransportTypes.SHUTTLE,
+              propOverrides: {
+                native: { visible: true, listMode: 'show' }
+              }
+            }
+          ]
+        },
+        {
+          layerId: FOOTBALL_PARKING_LAYERS.TS_SHUTTLE_STOPS_OFF,
           conversions: [
             {
               input: TransportTypes.SHUTTLE,
