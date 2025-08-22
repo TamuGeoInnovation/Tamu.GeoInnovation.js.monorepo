@@ -146,7 +146,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
               weight: 'bold'
             }
           },
-          minScale: 0,
+          minScale: 9500,
           maxScale: 0,
           where: "TwelfthMan IS NOT NULL AND TRIM(TwelfthMan) <> ''"
         },
@@ -170,7 +170,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
               weight: 'bold'
             }
           },
-          minScale: 0,
+          minScale: 9500,
           maxScale: 0,
           where: "(TwelfthMan IS NULL OR TRIM(TwelfthMan) = '') AND Type IS NOT NULL AND Type LIKE '%$%' AND Type <> 'AVP'"
         },
@@ -191,7 +191,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
               weight: 'bold'
             }
           },
-          minScale: 0,
+          minScale: 9500,
           maxScale: 0,
           where: "(TwelfthMan IS NULL OR TRIM(TwelfthMan) = '') AND (Type IS NULL OR Type NOT LIKE '%$%' OR Type = 'AVP')"
         }
