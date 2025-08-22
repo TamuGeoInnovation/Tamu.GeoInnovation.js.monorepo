@@ -125,7 +125,77 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       description: 'attributes.Note'
     },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      labelingInfo: [
+        {
+          // TwelfthMan lots (treat blank or single space as empty; anything else shows second line)
+          labelExpressionInfo: {
+            expression: '$feature.Name + TextFormatting.NewLine + $feature.TwelfthMan'
+          },
+          labelPlacement: 'always-horizontal',
+          useCodedValues: true,
+          symbol: {
+            type: 'text',
+            color: [255, 255, 255, 255],
+            haloColor: [0, 0, 0, 255],
+            haloSize: 1,
+            font: {
+              family: 'Arial',
+              size: 10,
+              style: 'normal',
+              weight: 'bold'
+            }
+          },
+          minScale: 0,
+          maxScale: 0,
+          where: "TwelfthMan IS NOT NULL AND TRIM(TwelfthMan) <> ''"
+        },
+        {
+          // Non-TwelfthMan lots with a price embedded in Type (e.g. "Public $30")
+          labelExpressionInfo: {
+            expression:
+              "var t=$feature.Type; var p=''; if(t!=null && t!='' && Find('$', t)>-1){ var i=Find('$', t); var seg=Mid(t,i,10); var sp=Find(' ', seg); if(sp>-1){ seg=Left(seg, sp);} var last=Right(seg,1); if(last=='-' || last==':' || last==',' ){ seg=Left(seg, Length(seg)-1);} p=seg; } $feature.Name + IIf(p=='','', ' - '+p);"
+          },
+          labelPlacement: 'always-horizontal',
+          useCodedValues: true,
+          symbol: {
+            type: 'text',
+            color: [255, 255, 255, 255],
+            haloColor: [0, 0, 0, 255],
+            haloSize: 1,
+            font: {
+              family: 'Arial',
+              size: 10,
+              style: 'normal',
+              weight: 'bold'
+            }
+          },
+          minScale: 0,
+          maxScale: 0,
+          where: "(TwelfthMan IS NULL OR TRIM(TwelfthMan) = '') AND Type IS NOT NULL AND Type LIKE '%$%' AND Type <> 'AVP'"
+        },
+        {
+          // Fallback: non-priced, non-TwelfthMan
+          labelExpression: '[Name]',
+          labelPlacement: 'always-horizontal',
+          useCodedValues: true,
+          symbol: {
+            type: 'text',
+            color: [255, 255, 255, 255],
+            haloColor: [0, 0, 0, 255],
+            haloSize: 1,
+            font: {
+              family: 'Arial',
+              size: 10,
+              style: 'normal',
+              weight: 'bold'
+            }
+          },
+          minScale: 0,
+          maxScale: 0,
+          where: "(TwelfthMan IS NULL OR TRIM(TwelfthMan) = '') AND (Type IS NULL OR Type NOT LIKE '%$%' OR Type = 'AVP')"
+        }
+      ]
     }
   },
   {
