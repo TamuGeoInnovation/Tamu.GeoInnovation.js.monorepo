@@ -11,6 +11,20 @@ export function getPathFromRouteSnapshot(snapshot: ActivatedRouteSnapshot): stri
     .filter((segment) => segment);
 }
 
+/**
+ * Returns a string segment array representing the actual URL segments from the app root.
+ * This resolves parameter values (e.g., ':eventId' becomes 'my-event-id').
+ */
+export function getUrlSegmentsFromRouteSnapshot(snapshot: ActivatedRouteSnapshot): string[] {
+  return snapshot.pathFromRoot
+    .map((route) => {
+      // Use the actual URL segments instead of route configuration paths
+      return route.url.length > 0 ? route.url.map((segment) => segment.path) : [];
+    })
+    .filter((segments) => segments.length > 0)
+    .flat();
+}
+
 export function makeUrlParams(params: object, encode: boolean, prefix?: string): string {
   if (!params) {
     throw new Error('Could not make URL params because no params were provided.');

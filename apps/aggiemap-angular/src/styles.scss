@@ -657,13 +657,19 @@ body.mapping {
   }
 }
 
+.overlay-zone.bottom.right {
+  right: 0.95rem !important;
+  bottom: 5rem !important;
+}
+
 .esri-component.esri-track.esri-widget--button.esri-widget {
   margin-left: 0;
   border-radius: 99rem;
-  padding: 1rem;
+  padding: 1.25rem;
+  margin-top: 0.5rem;
 
   span {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
 }
 
