@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export interface EventConfiguration {
   /**
@@ -69,6 +70,13 @@ export interface EventConfiguration {
    * ```
    */
   defaultLayerOverrides?: Record<string, Partial<LayerSource>>;
+
+  /**
+   * Toast notification configuration for the event. If provided, a toast notification will be
+   * displayed when the event is active. This uses the same properties as NotificationProperties
+   * from the notification service.
+   */
+  toast?: NotificationProperties;
 }
 
 /**
