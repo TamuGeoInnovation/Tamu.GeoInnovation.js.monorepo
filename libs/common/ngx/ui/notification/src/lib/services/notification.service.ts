@@ -315,7 +315,8 @@ export interface NotificationProperties {
   message: string;
 
   /**
-   * Describes whether the notification has been acknowledged by the user.
+   * Determines whether the notification requires acknowledgement by the user.
+   *
    * If false, it will be prompted every time unless it is a preset call.
    */
   acknowledge?: boolean;
