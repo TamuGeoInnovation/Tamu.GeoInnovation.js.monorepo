@@ -364,16 +364,7 @@ export const FootballParkingConfiguration: EventConfiguration = {
   applicationName: 'Gameday Transportation Map',
   shortApplicationName: 'Gameday Map',
   introductionText: 'Get the best transportation and parking information for game days.',
-  eventDates: [
-    '2025-08-30',
-    '2025-09-06',
-    '2025-09-20',
-    '2025-10-04',
-    '2025-10-18',
-    '2025-11-01',
-    '2025-11-15',
-    '2025-11-29'
-  ],
+  eventDates: ['2025-08-30'],
   mapCenter: [-96.34344, 30.61011],
   zoom: 16,
   defaultLayerOverrides: {
@@ -385,7 +376,7 @@ export const FootballParkingConfiguration: EventConfiguration = {
     id: 'gameday-parking-notification',
     title: 'Gameday Transportation Map Available',
     message:
-      'Planning to attend the game? Use our Gameday Transportation Map to find the best parking and transportation options for game day!',
+      'Attending the game? Click me to open the Gameday Transportation Map to get the best parking and transportation options for game day!',
     imgUrl: './assets/images/icons/sports/Football.png',
     imgAltText: 'Football Icon',
     acknowledge: true,
