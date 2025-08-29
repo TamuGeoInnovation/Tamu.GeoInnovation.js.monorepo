@@ -42,6 +42,13 @@ export class LegendComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
+    // Read route data to set input properties
+    const routeData = this.route.snapshot.data;
+    if (routeData) {
+      this.deduplicate = routeData['deduplicate'] ?? this.deduplicate;
+      this.respectDefinitionExpression = routeData['respectDefinitionExpression'] ?? this.respectDefinitionExpression;
+    }
+
     this.legend = this.legendService.legend();
 
     this.responsive = this.responsiveService.snapshot;
