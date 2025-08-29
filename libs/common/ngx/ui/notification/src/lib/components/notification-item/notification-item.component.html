@@ -10,7 +10,7 @@
       <div class="title">{{ notification.title }}</div>
       <div class="description" [innerHTML]="notification.message">This is a test <i class="material-icons">directions</i></div>
       <div class="acknowledgment-actions" *ngIf="notification.acknowledge">
-        <a href="#" class="dont-show-again" (click)="acknowledge(); $event.preventDefault();" title="Don't show this notification again"> Don't show again </a>
+        <a href="#" class="dont-show-again" (click)="acknowledge(); $event.preventDefault(); $event.stopPropagation();" title="Don't show this notification again">[ Don't show again ]</a>
       </div>
     </div>
   </div>
