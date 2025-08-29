@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
-import { Notification, NotificationService } from '../../services/notification.service';
+import { NotificationService } from '../../services/notification.service';
+import { Notification } from '../../helpers/notification.helper';
 
 @Component({
   selector: 'tamu-gisc-notification-container',
@@ -30,6 +31,15 @@ export class NotificationContainerComponent implements OnInit {
    */
   public close(event: Notification): void {
     this.service.remove(event);
+  }
+
+  /**
+   * Invoke notification service method to acknowledge the emitted Notification object
+   *
+   * @param event Notification object
+   */
+  public acknowledge(event: Notification): void {
+    this.service.acknowledge(event);
   }
 
   public action(event: Notification): void {

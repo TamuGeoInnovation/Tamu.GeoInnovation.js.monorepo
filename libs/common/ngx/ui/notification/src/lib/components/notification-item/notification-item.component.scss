@@ -60,6 +60,29 @@
   color: #616161;
 }
 
+.acknowledgment-actions {
+  margin-top: 0.5rem;
+  
+  .dont-show-again {
+    font-size: 0.75rem;
+    color: #888;
+    text-decoration: none;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #500000;
+      border-bottom-color: #500000;
+    }
+
+    &:focus {
+      outline: 1px solid #500000;
+      outline-offset: 2px;
+    }
+  }
+}
+
 .image {
   margin-right: 1rem;
 
