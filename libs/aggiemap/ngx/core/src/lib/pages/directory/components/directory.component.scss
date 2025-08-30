@@ -1,8 +1,10 @@
 .datatable-container {
+  --border-color: #eeeeee;
+
   margin: 2rem 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   overflow: hidden;
+  border: 1pt solid var(--border-color);
 
   ngx-datatable {
     width: 100%;
@@ -22,7 +24,7 @@
 
       .datatable-body {
         .datatable-row-wrapper {
-          border-bottom: 1px solid #dee2e6;
+          border-bottom: 1px solid var(--border-color);
 
           &:hover {
             background-color: #f8f9fa;
@@ -30,14 +32,15 @@
         }
 
         .datatable-body-cell {
-          padding: 8px;
-          font-size: 14px;
+          font-size: 0.9rem;
+          padding: 0.5rem 1rem;
         }
       }
 
       .datatable-footer {
         background-color: #f8f9fa;
-        border-top: 1px solid #dee2e6;
+        padding: 0 1rem;
+        border-top: 1px solid var(--border-color);
 
         .page-count {
           color: #6c757d;

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { TableColumn } from '@swimlane/ngx-datatable';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -13,8 +14,8 @@ export class DirectoryComponent implements OnInit {
   public loadingIndicator = true;
 
   // Define the columns for the datatable
-  public columns = [
-    { name: 'Name', prop: 'BldgName', canAutoResize: true },
+  public columns: TableColumn[] = [
+    { name: 'Name', prop: 'BldgName', canAutoResize: true, width: 350 },
     { name: 'Number', prop: 'Bldg', canAutoResize: true },
     { name: 'Abbreviation', prop: 'BldgAbbr', canAutoResize: true }
   ];
