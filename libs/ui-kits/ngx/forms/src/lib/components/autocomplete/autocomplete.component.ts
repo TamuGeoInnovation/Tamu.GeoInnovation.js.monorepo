@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ContentChild, TemplateRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+import { AutocompleteOptionTemplateDirective } from './autocomplete-option-template.directive';
 
 @Component({
   selector: 'tamu-gisc-autocomplete',
@@ -9,6 +10,19 @@ import { Observable, of } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AutocompleteComponent<T = unknown> {
+  /**
+   * Usage:
+   * <tamu-gisc-autocomplete [control]="ctrl" [options]="items" (optionSelected)="onSelect($event)">
+   *   <ng-template tamuGiscAutocompleteOption let-item>
+   *     <div class="my-custom-item">{{ item.name }} — {{ item.id }}</div>
+   *   </ng-template>
+   * </tamu-gisc-autocomplete>
+   * If no template is provided the component will fall back to `displayWith(item)`.
+   */
+  /** Optional user-provided template for rendering each option */
+  @ContentChild(AutocompleteOptionTemplateDirective, { read: TemplateRef, static: false })
+  public optionTemplate: TemplateRef<{ $implicit: T }> | null = null;
+
   /** Form control to bind the input value */
   @Input()
   public control: FormControl;

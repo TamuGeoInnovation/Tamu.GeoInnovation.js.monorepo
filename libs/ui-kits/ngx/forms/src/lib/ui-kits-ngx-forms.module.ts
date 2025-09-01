@@ -22,6 +22,8 @@ import { SelectListComponent } from './components/select-list/select-list.compon
 import { TurnstileChallengeComponent } from './components/turnstile-challenge/turnstile-challenge.component';
 import { AutocompleteComponent } from './components/autocomplete/autocomplete.component';
 
+import { AutocompleteOptionTemplateDirective } from './components/autocomplete/autocomplete-option-template.directive';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -40,6 +42,7 @@ import { AutocompleteComponent } from './components/autocomplete/autocomplete.co
     AbstractValueAccessorFormComponent,
     ButtonComponent,
     AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
     FileComponent,
     RadioGroupComponent,
     RangeComponent,
@@ -54,6 +57,7 @@ import { AutocompleteComponent } from './components/autocomplete/autocomplete.co
     DateTimePickerComponent,
     TextboxComponent,
     AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
     ButtonComponent,
     FileComponent,
     RadioGroupComponent,
