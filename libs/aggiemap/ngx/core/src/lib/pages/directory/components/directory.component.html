@@ -9,17 +9,23 @@
       <h1 class="long-border">Texas A&amp;M Building Directory</h1>
     </div>
 
-    <div class="trailer-2">
-      <p>This is a list of all buildings in our database that have both a name and a building number.</p>
-    </div>
-
     <form [formGroup]="form">
       <tamu-gisc-textbox formControlName="search" [placeholder]="'Type to filter buildings...'" [floatLabel]="true"></tamu-gisc-textbox>
     </form>
 
     <!-- Swimlane Datatable -->
     <div class="datatable-container">
-      <ngx-datatable class="bootstrap" [rows]="_rows$ | async" [columns]="columns" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40" [loadingIndicator]="loadingIndicator" [scrollbarV]="true" [scrollbarH]="true" [sorts]="[{ prop: 'BldgName', dir: 'asc' }]" [columnMode]="'force'"> </ngx-datatable>
+      <ngx-datatable class="bootstrap" [rows]="_rows$ | async" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40" [loadingIndicator]="loadingIndicator" [scrollbarV]="true" [scrollbarH]="true" [sorts]="[{ prop: 'BldgName', dir: 'asc' }]" [columnMode]="'force'">
+        <ngx-datatable-column name="Name" prop="BldgName" [width]="350">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <a [routerLink]="['/']" [queryParams]="{ bldg: row.Bldg }" target="_blank" rel="noopener">{{ row.BldgName }}</a>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Number" prop="Bldg"></ngx-datatable-column>
+
+        <ngx-datatable-column name="Abbreviation" prop="BldgAbbr"></ngx-datatable-column>
+      </ngx-datatable>
     </div>
   </div>
 </div>

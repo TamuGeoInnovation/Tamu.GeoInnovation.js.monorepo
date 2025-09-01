@@ -1,14 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import {
   combineLatest,
+  concatMap,
   debounceTime,
   distinctUntilChanged,
+  map,
   Observable,
   of,
   shareReplay,
   startWith,
   switchMap,
-  tap
+  tap,
+  toArray
 } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -40,9 +43,19 @@ export class DirectoryComponent implements OnInit {
   constructor(private readonly http: HttpClient, private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
-    this._data$ = this.http
-      .get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory-1756502603044.json')
-      .pipe(shareReplay(1));
+    this._data$ = this.http.get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory-1756502603044.json').pipe(
+      concatMap((data) => data),
+      map((buildingEntry) => {
+        // If the building abbreviation is a number, set it to an empty string (per requirements)
+        if (!isNaN(Number(buildingEntry.BldgAbbr))) {
+          buildingEntry.BldgAbbr = '';
+        }
+
+        return buildingEntry;
+      }),
+      toArray(),
+      shareReplay(1)
+    );
 
     this.form = this.fb.group({
       search: [null]
