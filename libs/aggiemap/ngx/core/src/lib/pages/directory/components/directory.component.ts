@@ -1,7 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { TableColumn } from '@swimlane/ngx-datatable';
-import { Observable } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  of,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+
+import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-directory',
@@ -9,10 +21,12 @@ import { Observable } from 'rxjs';
   styleUrls: ['./directory.component.scss']
 })
 export class DirectoryComponent implements OnInit {
-  public data: Observable<Array<BuildingDirectoryEntry>>;
-  public rows: BuildingDirectoryEntry[] = [];
-  public loadingIndicator = true;
+  public form: FormGroup;
 
+  @ViewChild(DatatableComponent)
+  public table: DatatableComponent;
+
+  public _rows$: Observable<Array<BuildingDirectoryEntry>>;
   // Define the columns for the datatable
   public columns: TableColumn[] = [
     { name: 'Name', prop: 'BldgName', canAutoResize: true, width: 350 },
@@ -20,22 +34,40 @@ export class DirectoryComponent implements OnInit {
     { name: 'Abbreviation', prop: 'BldgAbbr', canAutoResize: true }
   ];
 
-  constructor(private readonly http: HttpClient) {}
+  public loadingIndicator = true;
+  private _data$: Observable<Array<BuildingDirectoryEntry>>;
+
+  constructor(private readonly http: HttpClient, private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
-    this.data = this.http.get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory-1756502603044.json');
+    this._data$ = this.http
+      .get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory-1756502603044.json')
+      .pipe(shareReplay(1));
 
-    // Load data into rows array for the datatable
-    this.data.subscribe({
-      next: (buildings) => {
-        this.rows = buildings;
-        this.loadingIndicator = false;
-      },
-      error: (error) => {
-        console.error('DirectoryComponent: Error loading data:', error);
-        this.loadingIndicator = false;
-      }
+    this.form = this.fb.group({
+      search: [null]
     });
+
+    this._rows$ = combineLatest([
+      this._data$,
+      (this.form.get('search') as FormControl).valueChanges.pipe(startWith(null), debounceTime(300), distinctUntilChanged())
+    ]).pipe(
+      tap(() => {
+        this.loadingIndicator = true;
+      }),
+      switchMap(([data, search]) => {
+        if (search) {
+          const filtered = data.filter((building) => building.BldgName.toLowerCase().includes(search.toLowerCase()));
+          return of(filtered);
+        } else {
+          return of(data);
+        }
+      }),
+      tap(() => {
+        this.loadingIndicator = false;
+        this.table.offset = 0;
+      })
+    );
   }
 }
 

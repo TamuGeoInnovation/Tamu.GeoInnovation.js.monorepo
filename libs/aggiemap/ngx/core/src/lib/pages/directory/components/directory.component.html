@@ -13,9 +13,13 @@
       <p>This is a list of all buildings in our database that have both a name and a building number.</p>
     </div>
 
+    <form [formGroup]="form">
+      <tamu-gisc-textbox formControlName="search" [placeholder]="'Type to filter buildings...'" [floatLabel]="true"></tamu-gisc-textbox>
+    </form>
+
     <!-- Swimlane Datatable -->
     <div class="datatable-container">
-      <ngx-datatable class="bootstrap" [rows]="rows" [columns]="columns" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40" [loadingIndicator]="loadingIndicator" [scrollbarV]="true" [scrollbarH]="true" [sorts]="[{ prop: 'BldgName', dir: 'asc' }]" [columnMode]="'force'"> </ngx-datatable>
+      <ngx-datatable class="bootstrap" [rows]="_rows$ | async" [columns]="columns" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40" [loadingIndicator]="loadingIndicator" [scrollbarV]="true" [scrollbarH]="true" [sorts]="[{ prop: 'BldgName', dir: 'asc' }]" [columnMode]="'force'"> </ngx-datatable>
     </div>
   </div>
 </div>
