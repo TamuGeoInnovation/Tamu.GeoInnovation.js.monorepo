@@ -86,7 +86,9 @@ export class DirectoryComponent implements OnInit {
       }),
       tap(() => {
         this.loadingIndicator = false;
-        this.table.offset = 0;
+        if (this.table) {
+          this.table.offset = 0;
+        }
       })
     );
   }

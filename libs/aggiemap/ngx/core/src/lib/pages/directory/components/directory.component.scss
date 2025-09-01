@@ -1,6 +1,6 @@
 .datatable-container {
   --border-color: #eeeeee;
-  --datable-contrast-background: #f8f9fa;
+  --datatable-contrast-background: #f8f9fa;
 
   margin: 2rem 0;
   border-radius: 4px;
@@ -13,7 +13,7 @@
 
     ::ng-deep {
       .datatable-header {
-        background-color: var(--datable-contrast-background);
+        background-color: var(--datatable-contrast-background);
         border-bottom: 1px solid #dee2e6;
 
         .datatable-header-cell {
@@ -43,7 +43,7 @@
       }
 
       .datatable-footer {
-        background-color: var(--datable-contrast-background);
+        background-color: var(--datatable-contrast-background);
         padding: 0 1rem;
         border-top: 1px solid var(--border-color);
 
