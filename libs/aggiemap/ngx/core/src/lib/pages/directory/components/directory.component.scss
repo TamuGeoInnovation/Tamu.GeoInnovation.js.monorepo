@@ -30,6 +30,12 @@
           }
         }
 
+        datatable-selection {
+          .empty-row {
+            padding: 0.5rem 1rem;
+          }
+        }
+
         .datatable-body-cell {
           font-size: 0.9rem;
           padding: 0.5rem 1rem;
