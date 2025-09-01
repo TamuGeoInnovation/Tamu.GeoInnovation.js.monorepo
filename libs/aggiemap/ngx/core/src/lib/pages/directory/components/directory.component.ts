@@ -43,7 +43,7 @@ export class DirectoryComponent implements OnInit {
   constructor(private readonly http: HttpClient, private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
-    this._data$ = this.http.get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory-1756502603044.json').pipe(
+    this._data$ = this.http.get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory.json').pipe(
       concatMap((data) => data),
       map((buildingEntry) => {
         // If the building abbreviation is a number, set it to an empty string (per requirements)
@@ -70,7 +70,15 @@ export class DirectoryComponent implements OnInit {
       }),
       switchMap(([data, search]) => {
         if (search) {
-          const filtered = data.filter((building) => building.BldgName.toLowerCase().includes(search.toLowerCase()));
+          const filtered = data.filter((building) => {
+            const searchLower = search.toLowerCase();
+
+            return (
+              building.BldgName.toLowerCase().includes(searchLower) ||
+              building.BldgAbbr.toLowerCase().includes(searchLower) ||
+              String(building.Bldg).toLowerCase().includes(searchLower) // Bldg is sometimes a number in the data set
+            );
+          });
           return of(filtered);
         } else {
           return of(data);
