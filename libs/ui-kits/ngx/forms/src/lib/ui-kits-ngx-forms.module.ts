@@ -20,6 +20,7 @@ import { RadioGroupComponent } from './components/radio-group/radio-group.compon
 import { SlideToggleComponent } from './components/slide-toggle/slide-toggle.component';
 import { SelectListComponent } from './components/select-list/select-list.component';
 import { TurnstileChallengeComponent } from './components/turnstile-challenge/turnstile-challenge.component';
+import { AutocompleteComponent } from './components/autocomplete/autocomplete.component';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { TurnstileChallengeComponent } from './components/turnstile-challenge/tu
     TextboxComponent,
     AbstractValueAccessorFormComponent,
     ButtonComponent,
+    AutocompleteComponent,
     FileComponent,
     RadioGroupComponent,
     RangeComponent,
@@ -51,6 +53,7 @@ import { TurnstileChallengeComponent } from './components/turnstile-challenge/tu
     CheckboxGroupComponent,
     DateTimePickerComponent,
     TextboxComponent,
+    AutocompleteComponent,
     ButtonComponent,
     FileComponent,
     RadioGroupComponent,

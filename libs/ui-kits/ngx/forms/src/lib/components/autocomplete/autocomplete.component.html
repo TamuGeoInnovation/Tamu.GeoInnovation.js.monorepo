@@ -1,0 +1,9 @@
+<div class="autocomplete-container">
+  <tamu-gisc-textbox [formControl]="control" class="tamu-autocomplete-input" type="text" placeholder="Search" [floatLabel]="true"></tamu-gisc-textbox>
+
+  <div class="autocomplete-results" *ngIf="control?.value">
+    <ng-container *ngIf="(getOptions() | async) as opts">
+      <div *ngFor="let opt of opts" class="autocomplete-item" (click)="onSelect(opt)">{{ displayWith(opt) }}</div>
+    </ng-container>
+  </div>
+</div>

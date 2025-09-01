@@ -31,14 +31,14 @@ export class DiscoverComponent implements OnInit {
       name: eventDef.configuration?.name || '',
       eventDates: eventDef.configuration?.eventDates || [],
       displayName: eventDef.configuration?.name || eventDef.configuration?.id || ''
-    })).filter(event => event.id && event.name);
+    })).filter((event) => event.id && event.name);
   }
 
   public ngOnInit(): void {
     // Set up autocomplete filtering
     this.filteredEvents = this.searchControl.valueChanges.pipe(
       startWith(''),
-      map(value => this._filterEvents(value || ''))
+      map((value) => this._filterEvents(value || ''))
     );
 
     // Calculate upcoming events
@@ -51,19 +51,18 @@ export class DiscoverComponent implements OnInit {
     }
 
     const filterValue = value.toLowerCase();
-    return this.allEvents.filter(event =>
-      event.name.toLowerCase().includes(filterValue) ||
-      event.id.toLowerCase().includes(filterValue)
+    return this.allEvents.filter(
+      (event) => event.name.toLowerCase().includes(filterValue) || event.id.toLowerCase().includes(filterValue)
     );
   }
 
   private getUpcomingEvents(): EventSummary[] {
     const now = new Date().getTime();
-    
+
     return this.allEvents
-      .filter(event => {
+      .filter((event) => {
         // Check if any event date is upcoming or happening now
-        return event.eventDates.some(date => {
+        return event.eventDates.some((date) => {
           const eventTime = this.parseEventDate(date);
           return eventTime >= now;
         });
@@ -88,16 +87,23 @@ export class DiscoverComponent implements OnInit {
   }
 
   private getEarliestUpcomingDate(dates: Array<string | Date | number>, now: number): number {
-    const upcomingDates = dates
-      .map(date => this.parseEventDate(date))
-      .filter(time => time >= now);
-    
+    const upcomingDates = dates.map((date) => this.parseEventDate(date)).filter((time) => time >= now);
+
     return upcomingDates.length > 0 ? Math.min(...upcomingDates) : Number.MAX_SAFE_INTEGER;
   }
 
-  public onEventSelect(event: EventSummary): void {
+  public onEventSelect(event: unknown): void {
+    const e = event as EventSummary;
     // Navigate to event details or handle selection
-    console.log('Selected event:', event);
+    console.log('Selected event:', e);
+  }
+
+  public displayEventOption(e: unknown): string {
+    const maybe = e as EventSummary;
+    if (!maybe) {
+      return '';
+    }
+    return maybe.name || maybe.id || '';
   }
 
   public formatEventDate(date: string | Date | number): string {
@@ -110,7 +116,7 @@ export class DiscoverComponent implements OnInit {
       return 'No dates available';
     }
 
-    const parsedDates = dates.map(date => this.parseEventDate(date)).sort();
+    const parsedDates = dates.map((date) => this.parseEventDate(date)).sort();
     const startDate = new Date(parsedDates[0]);
     const endDate = new Date(parsedDates[parsedDates.length - 1]);
 
