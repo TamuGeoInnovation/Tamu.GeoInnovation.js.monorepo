@@ -184,6 +184,7 @@
     "ui-kits-ngx-forms": "libs/ui-kits/ngx/forms",
     "ui-kits-ngx-interactions-clipboard": "libs/ui-kits/ngx/interactions/clipboard",
     "ui-kits-ngx-interactions-draggable": "libs/ui-kits/ngx/interactions/draggable",
+    "ui-kits-ngx-interactions-keyboard": "libs/ui-kits/ngx/interactions/keyboard",
     "ui-kits-ngx-interactions-scroll-to": "libs/ui-kits/ngx/interactions/scroll-to",
     "ui-kits-ngx-layout": "libs/ui-kits/ngx/layout",
     "ui-kits-ngx-layout-code": "libs/ui-kits/ngx/layout/code",

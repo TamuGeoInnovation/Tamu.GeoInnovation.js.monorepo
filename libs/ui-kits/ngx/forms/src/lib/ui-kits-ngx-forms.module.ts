@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIKeyboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 import { AbstractValueAccessorFormComponent } from './models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 
@@ -31,7 +32,8 @@ import { AutocompleteOptionTemplateDirective } from './components/autocomplete/a
     ReactiveFormsModule,
     UILayoutModule,
     DlDateTimePickerDateModule,
-    DlDateTimePickerModule
+    DlDateTimePickerModule,
+    UIKeyboardModule
   ],
   declarations: [
     SelectComponent,

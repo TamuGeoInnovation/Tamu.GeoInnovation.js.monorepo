@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 import { EventDefinitions, ISpecialEventRoot } from '@tamu-gisc/ts/events/ngx';
+import { Router } from '@angular/router';
 
 interface EventSummary {
   id: string;
@@ -24,7 +25,7 @@ export class DiscoverComponent implements OnInit {
 
   private allEvents: EventSummary[] = [];
 
-  constructor() {
+  constructor(private readonly rt: Router) {
     // Transform event definitions into searchable format
     this.allEvents = EventDefinitions.map((eventDef: ISpecialEventRoot) => ({
       id: eventDef.configuration?.id || '',
@@ -94,8 +95,8 @@ export class DiscoverComponent implements OnInit {
 
   public onEventSelect(event: unknown): void {
     const e = event as EventSummary;
-    // Navigate to event details or handle selection
-    console.log('Selected event:', e);
+    // Navigate to events intro page
+    this.rt.navigate([`/events`, e.id]);
   }
 
   public displayEventOption(e: unknown): string {

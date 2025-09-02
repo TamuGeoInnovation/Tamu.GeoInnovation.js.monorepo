@@ -9,8 +9,7 @@
   border-radius: 5pt;
   border: 1.5pt solid transparent;
   padding: 0 1rem;
-
-  // box-shadow: 3px 3px 3px 0px rgba(65, 101, 123, 0.15);
+  box-sizing: border-box;
 
   &:focus,
   &:focus-within {
@@ -50,7 +49,7 @@ label {
   position: absolute;
   color: #757575;
   left: 1rem;
-  top: 0.4rem;
+  top: 0.55rem;
   pointer-events: none;
   z-index: 1;
   will-change: transform;

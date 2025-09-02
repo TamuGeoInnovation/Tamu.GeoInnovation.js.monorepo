@@ -1,5 +1,4 @@
 .discover-container {
-  max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -17,7 +16,6 @@
 
 .search-input-container {
   position: relative;
-  max-width: 600px;
 }
 
 .search-input {
@@ -169,13 +167,13 @@
   .discover-container {
     padding: 1rem;
   }
-  
+
   .event-card-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .event-card-content {
     font-size: 0.8rem;
   }
