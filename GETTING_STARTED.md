@@ -3,7 +3,6 @@
 ## Table of Contents
 
 - [Devcontainers: What and why?](#devcontainers-what-and-why)
-- [System Prerequisites](#system-prerequisites)
 - [Path 1: Windows Setup with Devcontainers (Recommended)](#path-1-windows-setup-with-devcontainers-recommended)
   - [1. Install WSL2](#1-install-wsl2)
   - [2. Install Docker Desktop](#2-install-docker-desktop)
@@ -37,15 +36,15 @@
 
 Devcontainers are the **_strongly recommended_** setup method for this project because they provide a consistent, isolated development environment that matches the production and CI setups. This ensures that all developers have the same tools and dependencies, reducing "works on my machine" issues. Additionally, devcontainers simplify the setup process by handling the installation of Node.js, TypeScript, and other tools automatically.
 
-# System Prerequisites
-
-- **Enable virtualization in BIOS/UEFI**  
-  Without this, WSL2 and Docker Desktop will not run on Windows.
-  - [How to enable virtualization on Windows](https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-c5578302-6e43-4b4b-a449-8ced115f58e1)
-
 ---
 
 # Path 1: Windows Setup with Devcontainers (Recommended)
+
+## Prerequisites
+
+- **Enable virtualization in BIOS/UEFI**  
+  Without this, WSL2 and Docker Desktop will not run on Windows.
+- [How to enable virtualization on Windows](https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-c5578302-6e43-4b4b-a449-8ced115f58e1)
 
 ## 1. Install WSL2
 
