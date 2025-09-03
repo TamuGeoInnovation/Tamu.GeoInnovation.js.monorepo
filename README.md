@@ -16,8 +16,6 @@ All applications are "served" locally with a simple command with the pattern:
 npx nx run [project-name]:serve
 ```
 
-`npx nx run [project-name]:serve`
-
 The project name is exactly the name of the directory. For example, the command to run Aggiemap locally is:
 
 `npx nx run aggiemap-angular:serve`

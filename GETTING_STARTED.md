@@ -179,14 +179,6 @@ Canonical locations to check for the version:
 Install and use the exact CI version with nvm (example uses the value currently in `build.yml`).
 
 ```powershell
-# from the repo root
-nvm install
-nvm use
-```
-
-Or explicitly:
-
-```powershell
 nvm install 20.18.1
 nvm use 20.18.1
 ```
@@ -203,8 +195,8 @@ What to expect: matching version numbers. If the workflow is updated later, re-r
 Fallback: if you want the latest Node 20.x series instead of the exact patch version, you can use:
 
 ```powershell
-# nvm install 20
-# nvm use 20
+nvm install 20
+nvm use 20
 ```
 
 **Troubleshooting:** Run `nvm use <version>` if mismatch.
