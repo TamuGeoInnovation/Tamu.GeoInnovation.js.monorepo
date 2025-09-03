@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+- [About Devcontainers](#why-devcontainers)
 - [System Prerequisites](#system-prerequisites)
 - [Path 1: Windows Setup with Devcontainers (Recommended)](#path-1-windows-setup-with-devcontainers-recommended)
   - [1. Install WSL2](#1-install-wsl2)
@@ -22,7 +23,7 @@
   - [3. Install Node.js via nvm](#3-install-nodejs-via-nvm-1)
   - [4. Setup SSH Keys for GitHub](#4-setup-ssh-keys-for-github-1)
   - [5. Clone Repository and Install Dependencies](#5-clone-repository-and-install-dependencies-1)
-- [Path 4: macOS/Linux Setup with Devcontainers](#path-4-macoslinux-setup-with-devcontainers)
+- [Path 4: macOS/Linux Setup with Devcontainers (Recommended)](#path-4-macoslinux-setup-with-devcontainers)
   - [1. Install Docker](#1-install-docker)
   - [2. Install Visual Studio Code](#2-install-visual-studio-code-1)
   - [3. Install Git](#3-install-git-1)
@@ -31,6 +32,10 @@
 - [Final Step (All Paths): Run the Project](#final-step-all-paths-run-the-project)
 
 ---
+
+# Devcontainers: What and why?
+
+Devcontainers are the **strongly recommended** setup method for this project because they provide a consistent, isolated development environment that matches the production and CI setups. This ensures that all developers have the same tools and dependencies, reducing "works on my machine" issues. Additionally, devcontainers simplify the setup process by handling the installation of Node.js, TypeScript, and other tools automatically.
 
 # System Prerequisites
 
