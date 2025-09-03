@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-- [About Devcontainers](#why-devcontainers)
+- [Devcontainers: What and why?](#devcontainers-what-and-why)
 - [System Prerequisites](#system-prerequisites)
 - [Path 1: Windows Setup with Devcontainers (Recommended)](#path-1-windows-setup-with-devcontainers-recommended)
   - [1. Install WSL2](#1-install-wsl2)
@@ -35,7 +35,7 @@
 
 # Devcontainers: What and why?
 
-Devcontainers are the **strongly recommended** setup method for this project because they provide a consistent, isolated development environment that matches the production and CI setups. This ensures that all developers have the same tools and dependencies, reducing "works on my machine" issues. Additionally, devcontainers simplify the setup process by handling the installation of Node.js, TypeScript, and other tools automatically.
+Devcontainers are the **_strongly recommended_** setup method for this project because they provide a consistent, isolated development environment that matches the production and CI setups. This ensures that all developers have the same tools and dependencies, reducing "works on my machine" issues. Additionally, devcontainers simplify the setup process by handling the installation of Node.js, TypeScript, and other tools automatically.
 
 # System Prerequisites
 
