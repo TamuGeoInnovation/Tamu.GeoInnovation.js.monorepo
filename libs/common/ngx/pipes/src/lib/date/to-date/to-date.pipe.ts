@@ -20,9 +20,13 @@ export class ToDatePipe implements PipeTransform {
       return null;
     }
 
-    const dates = Array.isArray(dateOrDates) ? dateOrDates : [dateOrDates];
-    const result = dates.map((date) => this.convertToDate(date));
-    return result.length === 1 ? result[0] : result;
+    // If input is an array, always return an array (even if it has one element)
+    if (Array.isArray(dateOrDates)) {
+      return dateOrDates.map((date) => this.convertToDate(date));
+    }
+
+    // If input is a single value, return a single Date (or null)
+    return this.convertToDate(dateOrDates);
   }
 
   private convertToDate(value: string | number | Date): Date | null {

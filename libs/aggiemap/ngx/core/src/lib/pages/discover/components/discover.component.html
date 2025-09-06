@@ -19,6 +19,7 @@
             <ng-template tamuGiscAutocompleteOption [tamuGiscAutocompleteOptionOf]="filteredEvents | async" let-event>
               <div class="flex flex-column">
                 <span class="event-name">{{ event.name }}</span>
+                <span class="event-dates">{{ event.eventDates | toDate | nearestDate | date : 'fullDate' }}</span>
               </div>
             </ng-template>
           </tamu-gisc-autocomplete>

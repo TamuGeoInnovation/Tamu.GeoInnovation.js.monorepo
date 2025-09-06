@@ -68,4 +68,11 @@ describe('NearestDatePipe', () => {
     const result = pipe.transform([pastDate, futureDate]);
     expect(result).toBe(pastDate); // First in array
   });
+
+  it('should ignore nulls in the dates array', () => {
+    const pastDate = new Date(2025, 8, 1); // Sep 1, 2025
+    const futureDate = new Date(2025, 8, 9); // Sep 9, 2025
+    const result = pipe.transform([null, pastDate, null, futureDate]);
+    expect(result).toBe(futureDate);
+  });
 });
