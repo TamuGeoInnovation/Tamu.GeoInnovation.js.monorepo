@@ -23,7 +23,7 @@ import { SelectListComponent } from './components/select-list/select-list.compon
 import { TurnstileChallengeComponent } from './components/turnstile-challenge/turnstile-challenge.component';
 import { AutocompleteComponent } from './components/autocomplete/autocomplete.component';
 
-import { AutocompleteOptionTemplateDirective } from './components/autocomplete/autocomplete-option-template.directive';
+import { AutocompleteOptionTemplateDirective } from './components/autocomplete/directives/autocomplete-option-template.directive';
 
 @NgModule({
   imports: [

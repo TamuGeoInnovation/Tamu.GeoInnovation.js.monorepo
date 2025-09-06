@@ -12,7 +12,7 @@ import {
 import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { AutocompleteOptionTemplateDirective } from './autocomplete-option-template.directive';
+import { AutocompleteOptionTemplateDirective } from './directives/autocomplete-option-template.directive';
 
 @Component({
   selector: 'tamu-gisc-autocomplete',

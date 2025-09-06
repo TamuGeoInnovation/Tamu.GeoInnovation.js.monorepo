@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { debounceTime, map, startWith } from 'rxjs/operators';
+import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 
 import { EventDefinitions, EventConfiguration } from '@tamu-gisc/ts/events/ngx';
 import { Router } from '@angular/router';
@@ -32,7 +32,8 @@ export class DiscoverComponent implements OnInit {
     this.filteredEvents = this.searchControl.valueChanges.pipe(
       startWith(''),
       map((value) => this._filterEvents(value || '')),
-      debounceTime(250)
+      debounceTime(250),
+      shareReplay(1)
     );
 
     // Calculate upcoming events

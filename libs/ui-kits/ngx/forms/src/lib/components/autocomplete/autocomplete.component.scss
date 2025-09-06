@@ -16,7 +16,8 @@
   overflow: auto;
 }
 
-.autocomplete-item {
+.autocomplete-item,
+.no-results {
   padding: 0.5rem;
   cursor: pointer;
 }

@@ -1,8 +1,10 @@
 <div class="autocomplete-container" #acContainer (focusout)="onContainerBlur($event, acContainer)" (focusin)="onContainerFocus($event, acContainer)">
-  <tamu-gisc-textbox [formControl]="control" class="tamu-autocomplete-input" type="text" [placeholder]="placeholder" [floatLabel]="true" aria-autocomplete="list" aria-haspopup="listbox" [attr.aria-expanded]="!!control?.value" aria-controls="autocomplete-results" (keydown)="onInputKeydown($event)"></tamu-gisc-textbox>
+  <tamu-gisc-textbox [formControl]="control" class="tamu-autocomplete-input" type="text" [placeholder]="placeholder" [floatLabel]="true" aria-autocomplete="list" aria-haspopup="listbox" [attr.aria-expanded]="!!control.value" aria-controls="autocomplete-results" (keydown)="onInputKeydown($event)"></tamu-gisc-textbox>
 
   <div id="autocomplete-results" class="autocomplete-results" *ngIf="showResults" role="listbox" keyboardNavigation=".autocomplete-item" (keydown)="onResultsKeydown($event)">
-    <ng-container *ngIf="(getOptions() | async) as opts">
+    <ng-container *ngIf="(getOptions() | async) as opts;">
+      <div *ngIf="opts.length === 0" class="no-results" role="option" aria-disabled="true">No results found.</div>
+
       <div *ngFor="let opt of opts" class="autocomplete-item" (click)="onSelect(opt)" role="option" [attr.aria-selected]="false">
         <ng-container *ngIf="optionTemplate; else defaultOption">
           <ng-container *ngTemplateOutlet="optionTemplate; context: { $implicit: opt }"></ng-container>
