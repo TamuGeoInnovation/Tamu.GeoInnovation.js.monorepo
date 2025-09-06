@@ -85,6 +85,11 @@ export class KeyboardNavigationDirective implements AfterViewInit {
 
   @HostListener('keydown', ['$event'])
   public onKeydown(event: KeyboardEvent) {
+    // If event is already prevented, don't handle it
+    if (event.defaultPrevented) {
+      return;
+    }
+
     // Refresh options each keydown in case list changed
     this.refreshOptions();
 
@@ -120,6 +125,11 @@ export class KeyboardNavigationDirective implements AfterViewInit {
    */
   @HostListener('document:keydown', ['$event'])
   public onDocumentKeydown(event: KeyboardEvent) {
+    // If event is already prevented, don't handle it
+    if (event.defaultPrevented) {
+      return;
+    }
+
     // If host contains the active element, host keydown will handle it.
     const active = document.activeElement as HTMLElement | null;
     if (!active) {
