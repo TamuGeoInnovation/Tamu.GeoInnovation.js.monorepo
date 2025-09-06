@@ -1,17 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { debounceTime, map, startWith } from 'rxjs/operators';
 
-import { EventDefinitions, ISpecialEventRoot } from '@tamu-gisc/ts/events/ngx';
+import { EventDefinitions, EventConfiguration } from '@tamu-gisc/ts/events/ngx';
 import { Router } from '@angular/router';
-
-interface EventSummary {
-  id: string;
-  name: string;
-  eventDates: Array<string | Date | number>;
-  displayName: string;
-}
 
 @Component({
   selector: 'tamu-gisc-aggiemap-discover',
@@ -20,33 +13,33 @@ interface EventSummary {
 })
 export class DiscoverComponent implements OnInit {
   public searchControl = new FormControl();
-  public filteredEvents: Observable<EventSummary[]>;
-  public upcomingEvents: EventSummary[] = [];
+  public filteredEvents: Observable<EventConfiguration[]>;
+  public upcomingEvents: EventConfiguration[];
 
-  private allEvents: EventSummary[] = [];
+  private allEvents: EventConfiguration[];
 
-  constructor(private readonly rt: Router) {
-    // Transform event definitions into searchable format
-    this.allEvents = EventDefinitions.map((eventDef: ISpecialEventRoot) => ({
-      id: eventDef.configuration?.id || '',
-      name: eventDef.configuration?.name || '',
-      eventDates: eventDef.configuration?.eventDates || [],
-      displayName: eventDef.configuration?.name || eventDef.configuration?.id || ''
-    })).filter((event) => event.id && event.name);
-  }
+  constructor(private readonly rt: Router) {}
 
   public ngOnInit(): void {
+    // Transform event definitions into searchable format
+    this.allEvents = EventDefinitions.map((c) => c.configuration).filter(
+      (event: EventConfiguration | null): event is EventConfiguration => {
+        return event !== null && !!event?.id && !!event?.name;
+      }
+    );
+
     // Set up autocomplete filtering
     this.filteredEvents = this.searchControl.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filterEvents(value || ''))
+      map((value) => this._filterEvents(value || '')),
+      debounceTime(250)
     );
 
     // Calculate upcoming events
     this.upcomingEvents = this.getUpcomingEvents();
   }
 
-  private _filterEvents(value: string): EventSummary[] {
+  private _filterEvents(value: string): EventConfiguration[] {
     if (!value) {
       return this.allEvents.slice(0, 10); // Show first 10 when no search
     }
@@ -57,7 +50,7 @@ export class DiscoverComponent implements OnInit {
     );
   }
 
-  private getUpcomingEvents(): EventSummary[] {
+  private getUpcomingEvents(): EventConfiguration[] {
     const now = new Date().getTime();
 
     return this.allEvents
@@ -94,13 +87,13 @@ export class DiscoverComponent implements OnInit {
   }
 
   public onEventSelect(event: unknown): void {
-    const e = event as EventSummary;
+    const e = event as EventConfiguration;
     // Navigate to events intro page
     this.rt.navigate([`/events`, e.id]);
   }
 
   public displayEventOption(e: unknown): string {
-    const maybe = e as EventSummary;
+    const maybe = e as EventConfiguration;
     if (!maybe) {
       return '';
     }

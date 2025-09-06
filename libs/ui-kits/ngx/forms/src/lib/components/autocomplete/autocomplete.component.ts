@@ -20,18 +20,36 @@ import { AutocompleteOptionTemplateDirective } from './autocomplete-option-templ
   styleUrls: ['./autocomplete.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AutocompleteComponent<T = unknown> implements OnInit, OnDestroy {
+export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   /**
    * Controls whether results are visible. Kept separate so the selected text can remain in the input while closing the list.
    */
   public showResults = false;
 
-  private subs: Subscription = new Subscription();
-  private suppressShow = false;
+  private _suppressShow = false;
+  private _subs$: Subscription = new Subscription();
 
   /** If true, focusing the input will show the results even when the input is empty. */
   @Input()
   public showOnFocus = false;
+
+  /**
+   * Form control to bind the input value
+   */
+  @Input()
+  public control: FormControl;
+
+  /**
+   * Options can be provided as an array or observable of items
+   */
+  @Input()
+  public options: Array<T> | Observable<Array<T>> = [];
+
+  @Input()
+  public placeholder = 'Start typing to search...';
+
+  @Output()
+  public optionSelected = new EventEmitter<T>();
 
   /**
    * Optional user-provided template for rendering each option
@@ -49,21 +67,6 @@ export class AutocompleteComponent<T = unknown> implements OnInit, OnDestroy {
    */
   @ContentChild(AutocompleteOptionTemplateDirective, { read: TemplateRef, static: false })
   public optionTemplate: TemplateRef<{ $implicit: T }> | null = null;
-
-  /**
-   * Form control to bind the input value
-   */
-  @Input()
-  public control: FormControl;
-
-  /**
-   * Options can be provided as an array or observable of items
-   */
-  @Input()
-  public options: Array<T> | Observable<Array<T>> = [];
-
-  @Output()
-  public optionSelected = new EventEmitter<T>();
 
   /**
    * Map function to render option label (optional)
@@ -86,7 +89,7 @@ export class AutocompleteComponent<T = unknown> implements OnInit, OnDestroy {
     // the normal show-results toggle that runs on valueChanges.
     try {
       if (this.control) {
-        this.suppressShow = true;
+        this._suppressShow = true;
         this.control.setValue(this.displayWith(option));
       }
     } catch (e) {
@@ -123,9 +126,9 @@ export class AutocompleteComponent<T = unknown> implements OnInit, OnDestroy {
   public ngOnInit(): void {
     if (this.control && this.control.valueChanges) {
       const sub = this.control.valueChanges.subscribe((v) => {
-        if (this.suppressShow) {
+        if (this._suppressShow) {
           // skip one event triggered by programmatic selection
-          this.suppressShow = false;
+          this._suppressShow = false;
           return;
         }
 
@@ -133,12 +136,12 @@ export class AutocompleteComponent<T = unknown> implements OnInit, OnDestroy {
         this.showResults = !!v;
       });
 
-      this.subs.add(sub);
+      this._subs$.add(sub);
     }
   }
 
   public ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this._subs$.unsubscribe();
   }
 
   public onContainerBlur(event: FocusEvent, container: HTMLElement) {

@@ -5,21 +5,20 @@
       <p><a href="javascript:void(0)">Discover</a></p>
     </div>
 
-    <div class="leader-1 trailer-2">
-      <h1 class="long-border">Discover Events</h1>
-      <p>Search and discover upcoming Texas A&amp;M University events.</p>
+    <div class="leader-1 trailer-1">
+      <h1 class="long-border">Discover Maps</h1>
+      <p>Discover Texas A&amp;M University maps for transportation, events, and more!</p>
     </div>
 
     <div class="discover-container">
       <!-- Search Section -->
       <div class="search-section">
-        <h2>Search Events</h2>
+        <h2>Search Maps</h2>
         <div class="search-input-container">
-          <tamu-gisc-autocomplete [control]="searchControl" [options]="filteredEvents" (optionSelected)="onEventSelect($event)" [showOnFocus]="true">
+          <tamu-gisc-autocomplete [control]="searchControl" [options]="filteredEvents" (optionSelected)="onEventSelect($event)" [showOnFocus]="false" [placeholder]="'Search for maps by name or keyword'">
             <ng-template tamuGiscAutocompleteOption let-event>
               <div class="flex flex-column">
                 <span class="event-name">{{ event.name }}</span>
-                <span class="event-id"> (ID: {{ event.id }})</span>
               </div>
             </ng-template>
           </tamu-gisc-autocomplete>

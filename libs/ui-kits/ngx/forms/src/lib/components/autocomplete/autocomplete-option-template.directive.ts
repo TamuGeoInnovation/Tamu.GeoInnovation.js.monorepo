@@ -8,6 +8,6 @@ import { Directive, TemplateRef } from '@angular/core';
  * </ng-template>
  */
 @Directive({ selector: '[tamuGiscAutocompleteOption]' })
-export class AutocompleteOptionTemplateDirective<T = unknown> {
+export class AutocompleteOptionTemplateDirective<T> {
   constructor(public templateRef: TemplateRef<T>) {}
 }
