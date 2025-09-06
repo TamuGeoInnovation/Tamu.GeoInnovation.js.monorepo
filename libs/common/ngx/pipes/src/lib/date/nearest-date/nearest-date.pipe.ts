@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'nearestDate'
 })
 export class NearestDatePipe implements PipeTransform {
-  public transform(dates: Array<Date>): Date {
+  public transform(dates: Array<Date | null>): Date | null {
     if (dates === undefined || dates === null || dates.length === 0) {
       return null;
     }

@@ -1,19 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { GroupByPipe } from './collections/group-by.pipe';
-import { OrderByPipe } from './collections/order-by.pipe';
-import { ExistsPipe } from './collections/exists.pipe';
+import { LookupPipe } from './object/lookup/lookup.pipe';
 
-import { MarkdownParsePipe } from './parsing/markdown-parse.pipe';
-import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
+import { GroupByPipe } from './collections/group-by/group-by.pipe';
+import { OrderByPipe } from './collections/order-by/order-by.pipe';
+import { ExistsPipe } from './collections/exists/exists.pipe';
+import { ToArrayPipe } from './collections/to-array/to-array.pipe';
+
+import { DateRangePipe } from './date/date-range/date-range.pipe';
+import { NearestDatePipe } from './date/nearest-date/nearest-date.pipe';
+import { ToDatePipe } from './date/to-date/to-date.pipe';
 
 import { TimeUntilPipe } from './transformation/time-until.pipe';
 import { PhoneNumberFormatPipe } from './transformation/phone-number-format.pipe';
 
-import { LookupPipe } from './object/lookup/lookup.pipe';
-import { DateRangePipe } from './date/date-range/date-range.pipe';
-import { NearestDatePipe } from './date/nearest-date/nearest-date.pipe';
+import { MarkdownParsePipe } from './parsing/markdown-parse.pipe';
+
+import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
 
 @NgModule({
   imports: [CommonModule],
@@ -27,7 +31,9 @@ import { NearestDatePipe } from './date/nearest-date/nearest-date.pipe';
     ExistsPipe,
     LookupPipe,
     DateRangePipe,
-    NearestDatePipe
+    NearestDatePipe,
+    ToDatePipe,
+    ToArrayPipe
   ],
   exports: [
     GroupByPipe,
@@ -39,7 +45,9 @@ import { NearestDatePipe } from './date/nearest-date/nearest-date.pipe';
     ExistsPipe,
     LookupPipe,
     DateRangePipe,
-    NearestDatePipe
+    NearestDatePipe,
+    ToDatePipe,
+    ToArrayPipe
   ]
 })
 export class PipesModule {}
