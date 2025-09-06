@@ -1,0 +1,27 @@
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'nearestDate'
+})
+export class NearestDatePipe implements PipeTransform {
+  public transform(dates: Array<Date>): Date {
+    if (dates === undefined || dates === null || dates.length === 0) {
+      return null;
+    }
+
+    const now = new Date();
+
+    let nearestDate: Date = null;
+    let smallestDiff: number = Number.MAX_SAFE_INTEGER;
+
+    for (const date of dates) {
+      const diff = Math.abs(date.getTime() - now.getTime());
+      if (diff < smallestDiff) {
+        smallestDiff = diff;
+        nearestDate = date;
+      }
+    }
+
+    return nearestDate;
+  }
+}

@@ -13,6 +13,7 @@ import { PhoneNumberFormatPipe } from './transformation/phone-number-format.pipe
 
 import { LookupPipe } from './object/lookup/lookup.pipe';
 import { DateRangePipe } from './date/date-range/date-range.pipe';
+import { NearestDatePipe } from './date/nearest-date/nearest-date.pipe';
 
 @NgModule({
   imports: [CommonModule],
@@ -25,7 +26,8 @@ import { DateRangePipe } from './date/date-range/date-range.pipe';
     PhoneNumberFormatPipe,
     ExistsPipe,
     LookupPipe,
-    DateRangePipe
+    DateRangePipe,
+    NearestDatePipe
   ],
   exports: [
     GroupByPipe,
@@ -36,7 +38,8 @@ import { DateRangePipe } from './date/date-range/date-range.pipe';
     PhoneNumberFormatPipe,
     ExistsPipe,
     LookupPipe,
-    DateRangePipe
+    DateRangePipe,
+    NearestDatePipe
   ]
 })
 export class PipesModule {}
