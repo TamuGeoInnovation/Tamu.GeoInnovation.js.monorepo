@@ -54,20 +54,20 @@ export interface NotificationProperties {
   action?: NotificationAction;
 }
 
-export interface EmittedNotification {
+interface NotificationAction {
+  type: string;
+  value: string;
+}
+
+export interface PlatformNotification {
   /**
    * The notification properties.
    */
-  notification: NotificationProperties;
+  properties: NotificationProperties;
 
   /**
    * Whether the notification was explicitly acknowledged by the user clicking "Don't show again"
    * or just dismissed/timed out.
    */
   acknowledged: boolean;
-}
-
-interface NotificationAction {
-  type: string;
-  value: string;
 }

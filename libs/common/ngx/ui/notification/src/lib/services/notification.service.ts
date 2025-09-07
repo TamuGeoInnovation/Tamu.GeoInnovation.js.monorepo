@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EmittedNotification, NotificationProperties } from '../interfaces/notification.interface';
+import { PlatformNotification, NotificationProperties } from '../interfaces/notification.interface';
 import { Notification } from '../helpers/notification.helper';
 
 export const notificationStorage = new InjectionToken<string>('StorageKey');
@@ -13,10 +13,18 @@ export const notificationStorage = new InjectionToken<string>('StorageKey');
 export class NotificationService {
   private _store: Notification[];
   private _localStorageSettings: StorageConfig;
-  private _events: NotificationProperties[];
+  private _events: PlatformNotification[];
 
   public readonly notifications: Observable<Notification[]>;
   private _notifications: BehaviorSubject<Notification[]>;
+
+  /**
+   * The current generation of notification settings. This is used to determine if stored notifications
+   * need to be migrated to a new format.
+   */
+  private _settingsGeneration = 3;
+  private _defaultPrimaryStoreKey = 'app-notifications';
+  private _defaultSecondaryStoreKey = 'notifications';
 
   constructor(
     private store: LocalStoreService,
@@ -24,59 +32,53 @@ export class NotificationService {
     @Optional() @Inject(notificationStorage) private storageKey: string
   ) {
     this._localStorageSettings = {
-      primaryKey: undefined,
-      subKey: 'data'
+      primaryKey: undefined
     };
 
     if (this.storageKey) {
       this._localStorageSettings.primaryKey = this.storageKey;
     } else {
-      this._localStorageSettings.primaryKey = 'app-notifications';
+      this._localStorageSettings.primaryKey = this._defaultPrimaryStoreKey;
     }
 
     this._notifications = new BehaviorSubject([]);
     this.notifications = this._notifications.asObservable();
 
     if (this.environment.value('NotificationEvents')) {
-      this._events = this.environment.value('NotificationEvents');
+      const eventProperties: NotificationProperties[] = this.environment.value('NotificationEvents');
+
+      // As of this version, all applications are still defining events as NotificationProperties[]
+      // To avoid breaking changes, we will keep this as is for now.
+      // In the future, we may want to enforce a standard and convert older formats here.
+      this._events = eventProperties.map((e: NotificationProperties) => {
+        return {
+          acknowledged: false,
+          properties: e
+        };
+      });
     }
 
-    const notificationsInLocalStorage: LocalStorageObject = this.store.getStorage({
+    const notificationsInLocalStorage: PlatformNotificationStore = this.store.getStorage({
       primaryKey: this._localStorageSettings.primaryKey
     });
 
-    // If no notifications in local storage, store the full list in the client local storage.
-    // This is kept to keep track of what notifications to show at any given time.
-    if (!notificationsInLocalStorage || !notificationsInLocalStorage.data) {
-      const initialEmittedNotifications: EmittedNotification[] =
-        this._events?.map((event) => ({
-          notification: {
-            ...event,
-            timeGenerated: event.timeGenerated || Date.now()
-          },
-          acknowledged: false
-        })) || [];
+    //
+    // Migrate notification store if necessary
+    //
+    const migratedStored = this.migrate(notificationsInLocalStorage);
 
-      this.store.setStorageObjectKeyValue({
-        primaryKey: this._localStorageSettings.primaryKey,
-        subKey: this._localStorageSettings.subKey,
-        value: initialEmittedNotifications
-      });
-    } else {
-      // If there are notification in local storage, update the list in the client side
-      this.store.setStorageObjectKeyValue({
-        primaryKey: this._localStorageSettings.primaryKey,
-        subKey: this._localStorageSettings.subKey,
-        value: this.diffNotifications([...notificationsInLocalStorage.data], this._events as NotificationProperties[])
-      });
-    }
+    // If there are notification in local storage, update the list in the client side
+    this.store.setStorage<PlatformNotificationStore>({
+      primaryKey: this._localStorageSettings.primaryKey,
+      value: migratedStored
+    });
+
+    const stored = this.store.getStorage<PlatformNotificationStore>({
+      primaryKey: this._localStorageSettings.primaryKey
+    });
 
     // Store any active notifications. The service will take care of dispatching these to the notification module
-    this._store = this.getActiveNotifications(
-      this.store.getStorage({
-        primaryKey: this._localStorageSettings.primaryKey
-      })
-    ).map((property) => {
+    this._store = this.getActiveNotifications([...stored.notifications, ...this._events]).map((property) => {
       return new Notification(property);
     });
 
@@ -84,159 +86,19 @@ export class NotificationService {
     this._notifications.next([...this._store]);
   }
 
-  /**
-   * Migrates old format NotificationProperties[] to new EmittedNotification[] format.
-   * This handles backward compatibility for existing client storage.
-   *
-   * @param oldData Array that might contain old format data
-   * @returns EmittedNotification array in new format
-   */
-  private migrateStorageFormat(oldData: (NotificationProperties | EmittedNotification)[]): EmittedNotification[] {
-    if (!oldData || oldData.length === 0) {
-      return [];
+  private migrate(storeData: PlatformNotificationStore): PlatformNotificationStore {
+    const _default = { version: this._settingsGeneration, notifications: [] };
+
+    if (!storeData) {
+      return _default;
     }
 
-    // Check if the first item has the new format (has 'notification' and 'acknowledged' properties)
-    const firstItem = oldData[0];
-    const isNewFormat =
-      firstItem && typeof firstItem === 'object' && 'notification' in firstItem && 'acknowledged' in firstItem;
-
-    if (isNewFormat) {
-      // Data is already in new format
-      return oldData as EmittedNotification[];
+    if (storeData['version'] === undefined || storeData['version'] < this._settingsGeneration) {
+      // Data is in old format, just reset the local store.
+      return _default;
     }
 
-    // Data is in old format, migrate it
-    console.log('Migrating notification storage from old format to new format');
-    return (oldData as NotificationProperties[]).map((item: NotificationProperties) => ({
-      notification: {
-        ...item,
-        timeGenerated: item.timeGenerated || Date.now()
-      },
-      acknowledged: item.acknowledge === true
-    }));
-  }
-
-  /**
-   * Diffs latest and stored (client-side) notification objects and returns a new array of EmittedNotification
-   * objects which are different (resetting any acknowledgement) or have not been found based on the latest
-   * Notification events.
-   *
-   * @param stored Array from local storage that may be in old or new format
-   * @param latest Latest NotificationProperties object array
-   * @returns Diffed EmittedNotification array
-   */
-  private diffNotifications(
-    stored: (NotificationProperties | EmittedNotification)[],
-    latest: NotificationProperties[]
-  ): EmittedNotification[] {
-    // First, ensure stored data is in the correct format
-    const migratedStored = this.migrateStorageFormat(stored);
-
-    // Process latest notifications and merge with stored
-    const processedLatest = latest.map((n) => {
-      const existsInStored = migratedStored.find((ne) => {
-        return n.id === ne.notification.id;
-      });
-      // Return early if the current latest does not exist in stored by id
-      if (!existsInStored) {
-        return {
-          notification: {
-            ...n,
-            timeGenerated: n.timeGenerated || Date.now()
-          },
-          acknowledged: false
-        };
-      }
-
-      // We'd rather keep the one stored in the store because it will already have the `acknowledged` key value set.
-      // This prevents the same popup
-      // appearing every time the user refreshes the application page.
-      //
-      // If a popup has already been acknowledged before, and there are no changes with the `latest` object,
-      // then do not show the popup again.
-      const preferredPass = this.diffObject(existsInStored.notification, n);
-
-      if (preferredPass) {
-        return existsInStored;
-      } else {
-        return {
-          notification: {
-            ...n,
-            timeGenerated: n.timeGenerated || Date.now()
-          },
-          acknowledged: false
-        };
-      }
-    });
-
-    // Find acknowledged notifications that are not in the latest list (e.g., toast notifications)
-    // and preserve them so they don't get lost
-    const acknowledgedNotInLatest = migratedStored.filter((stored) => {
-      const isAcknowledged = stored.acknowledged;
-      const notInLatest = !latest.some((latest) => latest.id === stored.notification.id);
-      return isAcknowledged && notInLatest;
-    });
-
-    // Combine processed latest notifications with preserved acknowledged notifications
-    return [...processedLatest, ...acknowledgedNotInLatest];
-  }
-
-  /**
-   * Diffs latest and stored (client-side) notification objects and returns a new array of EmittedNotification
-   * objects which are different (resetting any acknowledgement) or have not been found based on the latest
-   * Notification events.
-   *
-   * @param stored EmittedNotification object array from local storage (may be in old format)
-  /**
-   * Diffs two objects by key values. Able to diff recursively.
-   *
-   * Diffs by providing preferred and fallback object where the preferred object is tested against the fallback by key
-   * size and values.
-   *
-   * If all conditions against the preferred object pass, the test will pass.
-   *
-   * If any one condition against the preferred object does not pass, the whole test will fail.
-   */
-  private diffObject(preferred: object, fallback: object): boolean {
-    const keyLengthIsSame = Object.keys(fallback).length === Object.keys(preferred).length;
-    // Return false if he current latest key length is different than the stored
-    if (!keyLengthIsSame) {
-      return false;
-    }
-
-    const keyValuesAreSame = Object.keys(preferred).every((k) => {
-      const sameType = fallback[k] !== undefined && typeof fallback[k] === typeof preferred[k];
-      // Check key value type is the same on both. Return false if not
-      if (!sameType) {
-        return false;
-      }
-
-      if (fallback[k] instanceof Array) {
-        // If the current key value has type of Array, check each items value
-        return fallback[k].every((value, index) => {
-          return value === preferred[k][index];
-        });
-      } else if (fallback[k].constructor.name === 'Object' && preferred[k].constructor.name === 'Object') {
-        // If the current key value is of type Object, diff that object.
-        return this.diffObject(preferred[k], fallback[k]);
-      } else {
-        // Do not treat a notification object different if the only changed property is the acknowledge key
-        if (k === 'acknowledge') {
-          return true;
-        }
-
-        // If the current key value is of any other type than Array, check value only.
-        return fallback[k] !== undefined && fallback[k] === preferred[k];
-      }
-    });
-
-    // If any part of the latest notification object is different than the stored one, replace with latest
-    if (!keyValuesAreSame) {
-      return false;
-    }
-
-    return true;
+    return storeData;
   }
 
   /**
@@ -244,31 +106,47 @@ export class NotificationService {
    *
    * @param notifications LocalStorageObject with data that may be in old or new format
    */
-  private getActiveNotifications(notifications: LocalStorageObject): NotificationProperties[] {
-    if (!notifications.data) {
-      return [];
-    }
-
-    // Migrate data to new format if necessary
-    const migratedData = this.migrateStorageFormat(notifications.data);
-    const flattened = migratedData.flat();
-
-    if (flattened.length === 0) {
+  private getActiveNotifications(notifications: PlatformNotification[]): NotificationProperties[] {
+    if (!notifications) {
       return [];
     }
 
     // For notifications with a range, return those for which the current date is active and not acknowledged.
-    const rangeActive: NotificationProperties[] = flattened
-      .filter((e: EmittedNotification) => {
+    const rangeActive: NotificationProperties[] = notifications
+      .filter((e: PlatformNotification) => {
         return (
-          !e.acknowledged &&
-          e.notification.range &&
-          e.notification.range.length === 2 &&
-          Date.now() >= e.notification.range[0] &&
-          Date.now() <= e.notification.range[1]
+          e.properties.range &&
+          e.properties.range.length === 2 &&
+          Date.now() >= e.properties.range[0] &&
+          Date.now() <= e.properties.range[1]
         );
       })
-      .map((e: EmittedNotification) => e.notification);
+      .filter((e: PlatformNotification) => {
+        // If the notification requires acknowledgment and has been acknowledged, filter it out
+        if (e.properties.acknowledge && e.acknowledged) {
+          return false;
+        }
+
+        return true;
+      })
+      .filter((e: PlatformNotification) => {
+        // At this point we have filtered out any notifications that are out of range or acknowledged
+        // Since the original `notifications` array may contain duplicates (because it's a spread of app notifications + stored notifications), we need to check if this notification (which is assumed to be in range and unacknowledged) has duplicates that have been acknowledged
+        //
+        // If any duplicate has been acknowledged, we filter this one out
+        // If no duplicates or none have been acknowledged, we keep it
+        const matches = notifications.filter((n) => n.properties.id === e.properties.id);
+
+        if (matches.length > 0) {
+          // Only return the current notification if none of the matches have been acknowledged.
+          // If at least one has been acknowledged, then we filter this one out.
+          return matches.some((m) => m.acknowledged) === false;
+        }
+
+        // If no match found, include it in the active list.
+        return true;
+      })
+      .map((e: PlatformNotification) => e.properties);
 
     return [...rangeActive];
   }
@@ -301,20 +179,18 @@ export class NotificationService {
    */
   private isNotificationAcknowledged(notificationId: string): boolean {
     try {
-      const currentLocalStorage: LocalStorageObject = this.store.getStorage<LocalStorageObject>({
-        primaryKey: this._localStorageSettings.primaryKey
+      const currentLocalStorage: PlatformNotification[] = this.store.getStorageObjectKeyValue<PlatformNotification[]>({
+        primaryKey: this._localStorageSettings.primaryKey,
+        subKey: this._defaultSecondaryStoreKey
       });
 
-      if (!currentLocalStorage.data) {
+      if (!currentLocalStorage) {
         return false;
       }
 
-      // Use the migration logic to ensure we can handle both old and new formats
-      const migratedData = this.migrateStorageFormat(currentLocalStorage.data);
-
       // Check if any notification with this ID has been acknowledged
-      const isAcknowledged = migratedData.some(
-        (item: EmittedNotification) => item.notification.id === notificationId && item.acknowledged === true
+      const isAcknowledged = currentLocalStorage.some(
+        (item: PlatformNotification) => item.properties.id === notificationId && item.acknowledged === true
       );
 
       return isAcknowledged;
@@ -361,8 +237,8 @@ export class NotificationService {
     this.remove(notification);
 
     // Create EmittedNotification to store in local storage
-    const emittedNotification: EmittedNotification = {
-      notification: {
+    const emittedNotification: PlatformNotification = {
+      properties: {
         id: notification.id,
         title: notification.title,
         message: notification.message,
@@ -378,19 +254,19 @@ export class NotificationService {
     };
 
     // Get current local storage data and migrate if necessary
-    const currentLocalStorage: LocalStorageObject = this.store.getStorage<LocalStorageObject>({
+    const currentLocalStorage = this.store.getStorage<PlatformNotificationStore>({
       primaryKey: this._localStorageSettings.primaryKey
     });
 
-    let local: EmittedNotification[] = this.migrateStorageFormat(currentLocalStorage.data || []);
+    let local: PlatformNotification[] = currentLocalStorage ? currentLocalStorage.notifications : [];
 
     // Check if the notification already exists in local storage
-    const existingNotificationIndex = local.findIndex((n: EmittedNotification) => n.notification.id === notification.id);
+    const existingNotificationIndex = local.findIndex((n: PlatformNotification) => n.properties.id === notification.id);
 
     if (existingNotificationIndex >= 0) {
       // Update existing notification to mark it as acknowledged
-      local = local.map((n: EmittedNotification) => {
-        if (n.notification.id === notification.id) {
+      local = local.map((n: PlatformNotification) => {
+        if (n.properties.id === notification.id) {
           return { ...n, acknowledged: true };
         }
         return n;
@@ -403,7 +279,7 @@ export class NotificationService {
     // Update the local client notifications list
     this.store.setStorageObjectKeyValue({
       primaryKey: this._localStorageSettings.primaryKey,
-      subKey: this._localStorageSettings.subKey,
+      subKey: this._defaultSecondaryStoreKey,
       value: local
     });
   }
@@ -416,13 +292,13 @@ export class NotificationService {
    */
   public preset(id: string): void {
     // Attempt to find notification event by ID from the latest EVENTS object
-    const match: NotificationProperties = this._events.find((n) => n.id === id);
+    const match: PlatformNotification = this._events.find((n) => n.properties.id === id);
 
     // If the referenced event by id was found, append it to the store and give the updated value to the subject
     if (match) {
       const obj = Object.assign({}, match);
 
-      const notification = new Notification(obj);
+      const notification = new Notification(obj.properties);
 
       this._store = [...this._store, notification];
       this._notifications.next([...this._store]);
@@ -432,6 +308,7 @@ export class NotificationService {
   }
 }
 
-interface LocalStorageObject {
-  data: (NotificationProperties | EmittedNotification)[];
+interface PlatformNotificationStore {
+  version: number;
+  notifications: PlatformNotification[];
 }
