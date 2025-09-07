@@ -29,6 +29,9 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   private _suppressShow = false;
   private _subs$: Subscription = new Subscription();
 
+  @Input()
+  public autofocus = false;
+
   /** If true, focusing the input will show the results even when the input is empty. */
   @Input()
   public showOnFocus = false;
@@ -111,15 +114,10 @@ export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   }
 
   public onInputKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      // Only allow selection if there are options and the input has meaningful content
-      const value = this.control?.value?.trim();
-      if (!value) {
-        // Prevent selection if input is empty or only whitespace
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
     }
   }
 

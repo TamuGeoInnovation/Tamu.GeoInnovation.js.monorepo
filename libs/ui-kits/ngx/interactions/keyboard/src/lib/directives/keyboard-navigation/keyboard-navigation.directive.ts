@@ -182,13 +182,9 @@ export class KeyboardNavigationDirective implements AfterViewInit {
         }
         break;
       case 'Enter':
-      case ' ': // space
-        event.preventDefault();
-        // If nothing active, activate first then select
-        if (this.activeIndex < 0 && this.options.length > 0) {
-          this.setActive(0);
-        }
-        this.selectActive();
+      case ' ':
+        // space
+        // Do nothing - let input handle it
         break;
       case 'Escape':
         this.closeList();

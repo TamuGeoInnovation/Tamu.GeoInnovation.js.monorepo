@@ -13,7 +13,7 @@ export class ToDatePipe implements PipeTransform {
    * @param dateOrDates A single date input (string, number, or Date) or an array of such inputs.
    * @returns A Date object, an array of Date objects, or null if the input is invalid or empty.
    */
-  public transform(date: string | number): Date | null;
+  public transform(date: string | number | Date): Date | null;
   public transform(dates: Array<string | number | Date>): Array<Date | null>;
   public transform(dateOrDates: string | number | Date | Array<string | number | Date>): Date | Array<Date | null> | null {
     if (!dateOrDates) {
