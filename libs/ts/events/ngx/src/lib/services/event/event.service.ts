@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { delay } from 'rxjs';
 
+import deepmerge from 'deepmerge';
+
 import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -41,9 +43,9 @@ export class EventService {
 
     this.eventOptions = this.eventSettingsService.eventOptions();
     this.settings = this.eventSettingsService.settings();
-    this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences()).map(
-      ([, value]) => value
-    );
+    this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences())
+      .map(([, value]) => value)
+      .reverse();
 
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
@@ -85,7 +87,7 @@ export class EventService {
                         // If propOverrides are provided, assign them to the source layer.
                         // This enables the ability to, for example, show/hide layers based on accommodation selections.
                         if (correspondingOption && correspondingOption.propOverrides) {
-                          Object.assign(source, correspondingOption.propOverrides);
+                          source = deepmerge(source, correspondingOption.propOverrides) as LayerSource;
                         }
 
                         if (correspondingOption && correspondingOption.expression) {
@@ -99,10 +101,6 @@ export class EventService {
                         if (correspondingOption && correspondingOption.output) {
                           value = correspondingOption.output;
                         } else {
-                          console.log(
-                            `No conversion found for setting value '${settingValue}' on layer '${source.id}'. Not applying definition expression.`
-                          );
-
                           return source;
                         }
                       } else {

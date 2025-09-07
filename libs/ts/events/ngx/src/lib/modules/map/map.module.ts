@@ -99,7 +99,7 @@ const routes: Routes = [
             component: MobileSidebarComponent,
             children: [
               { path: '', component: MainMobileSidebarComponent },
-              { path: 'legend', component: LegendComponent },
+              { path: 'legend', component: LegendComponent, data: { deduplicate: true, respectDefinitionExpression: true } },
               { path: 'layers', component: LayerListComponent },
               { path: 'basemap', component: BasemapGalleryComponent }
             ]

@@ -18,3 +18,4 @@ export * from './lib/definitions/hs-graduation.definitions';
 export * from './lib/definitions/4h-roundup.definitions';
 export * from './lib/definitions/softball-regionals.definitions';
 export * from './lib/definitions/summer-graduation.definitions';
+export * from './lib/definitions/football-parking.definitions';

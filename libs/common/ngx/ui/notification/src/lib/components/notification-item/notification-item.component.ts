@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding 
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 
-import { Notification } from '../../services/notification.service';
+import { Notification } from '../../helpers/notification.helper';
 
 @Component({
   selector: 'tamu-gisc-notification-item',
@@ -39,9 +39,13 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
     return this.position;
   }
 
-  // Output event that triggers the notification container to call the
+  // Output event that triggers the notification container to call the notification service remove method
   @Output()
   public closeNotification: EventEmitter<Notification> = new EventEmitter();
+
+  // Output event that triggers the notification container to call the notification service acknowledge method
+  @Output()
+  public acknowledgeNotification: EventEmitter<Notification> = new EventEmitter();
 
   /**
    * Event fired when a notification item registered action is triggered.
@@ -84,6 +88,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
 
   /**
    * Animates notification out of the view and calls the notification service to remove it from the active notifications
+   * This method is used for dismissing/timing out notifications (not acknowledging them)
    */
   public close(): void {
     clearInterval(this.timer.fn);
@@ -95,6 +100,23 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
     // The parent component communicates with the notification service to remove it.
     setTimeout(() => {
       this.closeNotification.emit(this.notification);
+    }, 500);
+  }
+
+  /**
+   * Acknowledges the notification, marking it so it won't be shown again.
+   * This method is called when the user clicks "Don't show again".
+   */
+  public acknowledge(): void {
+    clearInterval(this.timer.fn);
+
+    // Set animation trigger variable
+    this.animateStatus = false;
+
+    // Emit an acknowledgeNotification event after the notification node is out of the view.
+    // The parent component communicates with the notification service to acknowledge it.
+    setTimeout(() => {
+      this.acknowledgeNotification.emit(this.notification);
     }, 500);
   }
 
