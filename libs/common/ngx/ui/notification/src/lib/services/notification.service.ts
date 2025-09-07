@@ -130,15 +130,20 @@ export class NotificationService {
         return true;
       })
       .filter((e: PlatformNotification) => {
-        // If the notification exists in the latest EVENTS object, diff it to see if anything has changed
+        // At this point we have filtered out any notifications that are out of range or acknowledged
+        // Since the original `notifications` array may contain duplicates (because it's a spread of app notifications + stored notifications), we need to check if this notification (which is assumed to be in range and unacknowledged) has duplicates that have been acknowledged
+        //
+        // If any duplicate has been acknowledged, we filter this one out
+        // If no duplicates or none have been acknowledged, we keep it
         const matches = notifications.filter((n) => n.properties.id === e.properties.id);
 
         if (matches.length > 0) {
-          // If the object is the same, do not include it in the active list
+          // Only return the current notification if none of the matches have been acknowledged.
+          // If at least one has been acknowledged, then we filter this one out.
           return matches.some((m) => m.acknowledged) === false;
         }
 
-        // If no match found, include it in the active list (it may be an old notification no longer defined in EVENTS)
+        // If no match found, include it in the active list.
         return true;
       })
       .map((e: PlatformNotification) => e.properties);
