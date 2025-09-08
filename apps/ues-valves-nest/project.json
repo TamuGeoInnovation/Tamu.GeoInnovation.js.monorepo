@@ -5,7 +5,7 @@
   "prefix": "ues-valves-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/ues-valves-nest",
@@ -47,7 +47,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "ues-valves-nest:build",
         "port": 7777

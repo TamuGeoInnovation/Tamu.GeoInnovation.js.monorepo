@@ -5,7 +5,7 @@
   "prefix": "oidc-admin-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "configurations": {
         "production": {
           "fileReplacements": [
@@ -48,7 +48,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "oidc-admin-nest:build",
         "port": 7771

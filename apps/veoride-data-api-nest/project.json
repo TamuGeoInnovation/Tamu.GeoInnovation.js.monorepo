@@ -5,7 +5,7 @@
   "prefix": "veoride-data-api-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/veoride-data-api-nest",
@@ -47,7 +47,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "veoride-data-api-nest:build"
       }

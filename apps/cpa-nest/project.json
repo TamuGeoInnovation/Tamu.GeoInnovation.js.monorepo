@@ -5,7 +5,7 @@
   "prefix": "cpa-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "options": {
         "outputPath": "dist/apps/cpa-nest",
         "main": "apps/cpa-nest/src/main.ts",
@@ -47,7 +47,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "cpa-nest:build",
         "port": 7777

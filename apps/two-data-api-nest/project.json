@@ -5,7 +5,7 @@
   "sourceRoot": "apps/two-data-api-nest/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "configurations": {
         "production": {
           "fileReplacements": [
@@ -45,7 +45,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "two-data-api-nest:build"
       },
