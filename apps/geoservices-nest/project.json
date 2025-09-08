@@ -48,7 +48,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/geoservices-nest"],
       "options": {
-        "jestConfig": "apps/geoservices-nest/jest.config.js",
+        "jestConfig": "apps/geoservices-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

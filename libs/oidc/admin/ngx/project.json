@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/oidc/admin/ngx"],
       "options": {
-        "jestConfig": "libs/oidc/admin/ngx/jest.config.js",
+        "jestConfig": "libs/oidc/admin/ngx/jest.config.ts",
         "passWithNoTests": true
       }
     },

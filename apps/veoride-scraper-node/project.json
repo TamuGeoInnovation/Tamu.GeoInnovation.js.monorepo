@@ -62,7 +62,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/veoride-scraper-node"],
       "options": {
-        "jestConfig": "apps/veoride-scraper-node/jest.config.js",
+        "jestConfig": "apps/veoride-scraper-node/jest.config.ts",
         "passWithNoTests": true
       }
     }

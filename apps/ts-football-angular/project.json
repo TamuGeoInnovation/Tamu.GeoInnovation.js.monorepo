@@ -87,7 +87,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/ts-football-angular"],
       "options": {
-        "jestConfig": "apps/ts-football-angular/jest.config.js",
+        "jestConfig": "apps/ts-football-angular/jest.config.ts",
         "passWithNoTests": true
       }
     }

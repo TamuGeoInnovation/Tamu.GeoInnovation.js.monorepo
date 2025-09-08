@@ -7,7 +7,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/accessibility/jest.config.js",
+        "jestConfig": "libs/maps/feature/accessibility/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/maps/feature/accessibility"]

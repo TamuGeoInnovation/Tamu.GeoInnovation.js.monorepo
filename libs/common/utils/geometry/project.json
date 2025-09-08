@@ -6,7 +6,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/common/utils/geometry/jest.config.js",
+        "jestConfig": "libs/common/utils/geometry/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/utils/geometry"]

@@ -117,7 +117,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/oidc-admin-angular/jest.config.js",
+        "jestConfig": "apps/oidc-admin-angular/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/oidc-admin-angular"]

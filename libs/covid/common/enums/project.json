@@ -12,7 +12,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/covid/common/enums/jest.config.js",
+        "jestConfig": "libs/covid/common/enums/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/covid/common/enums"]

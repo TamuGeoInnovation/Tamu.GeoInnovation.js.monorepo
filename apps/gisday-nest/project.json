@@ -85,7 +85,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/gisday-nest"],
       "options": {
-        "jestConfig": "apps/gisday-nest/jest.config.js",
+        "jestConfig": "apps/gisday-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

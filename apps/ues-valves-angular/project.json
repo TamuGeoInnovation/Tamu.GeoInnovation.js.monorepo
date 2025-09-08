@@ -114,7 +114,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/ues-valves-angular"],
       "options": {
-        "jestConfig": "apps/ues-valves-angular/jest.config.js",
+        "jestConfig": "apps/ues-valves-angular/jest.config.ts",
         "passWithNoTests": true
       }
     },

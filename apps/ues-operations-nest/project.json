@@ -70,7 +70,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/ues-operations-nest"],
       "options": {
-        "jestConfig": "apps/ues-operations-nest/jest.config.js",
+        "jestConfig": "apps/ues-operations-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

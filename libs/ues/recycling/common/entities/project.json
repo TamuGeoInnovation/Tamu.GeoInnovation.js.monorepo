@@ -13,7 +13,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/ues/recycling/common/entities"],
       "options": {
-        "jestConfig": "libs/ues/recycling/common/entities/jest.config.js",
+        "jestConfig": "libs/ues/recycling/common/entities/jest.config.ts",
         "passWithNoTests": true
       }
     }

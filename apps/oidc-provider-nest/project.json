@@ -72,7 +72,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/oidc-provider-nest/jest.config.js",
+        "jestConfig": "apps/oidc-provider-nest/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/oidc-provider-nest"]

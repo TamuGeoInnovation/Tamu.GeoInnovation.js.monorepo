@@ -132,7 +132,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/gisday-angular/jest.config.js",
+        "jestConfig": "apps/gisday-angular/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/gisday-angular"]

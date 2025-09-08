@@ -61,7 +61,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/covid-data-api-nest/jest.config.js",
+        "jestConfig": "apps/covid-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/covid-data-api-nest"]

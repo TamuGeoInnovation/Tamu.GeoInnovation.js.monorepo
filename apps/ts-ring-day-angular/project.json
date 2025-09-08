@@ -87,7 +87,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/ts-ring-day-angular"],
       "options": {
-        "jestConfig": "apps/ts-ring-day-angular/jest.config.js",
+        "jestConfig": "apps/ts-ring-day-angular/jest.config.ts",
         "passWithNoTests": true
       }
     }

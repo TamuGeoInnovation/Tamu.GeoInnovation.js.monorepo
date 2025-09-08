@@ -63,7 +63,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/cpa-nest"],
       "options": {
-        "jestConfig": "apps/cpa-nest/jest.config.js",
+        "jestConfig": "apps/cpa-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

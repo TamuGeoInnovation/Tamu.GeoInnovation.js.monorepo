@@ -87,7 +87,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/ts-move-in-out-angular"],
       "options": {
-        "jestConfig": "apps/ts-move-in-out-angular/jest.config.js",
+        "jestConfig": "apps/ts-move-in-out-angular/jest.config.ts",
         "passWithNoTests": true
       }
     }

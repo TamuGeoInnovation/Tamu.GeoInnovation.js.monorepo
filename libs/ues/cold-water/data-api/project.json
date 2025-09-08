@@ -13,7 +13,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/ues/cold-water/data-api"],
       "options": {
-        "jestConfig": "libs/ues/cold-water/data-api/jest.config.js",
+        "jestConfig": "libs/ues/cold-water/data-api/jest.config.ts",
         "passWithNoTests": true
       }
     }

@@ -70,7 +70,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.js",
+        "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/ues-effluent-data-api-nest"]

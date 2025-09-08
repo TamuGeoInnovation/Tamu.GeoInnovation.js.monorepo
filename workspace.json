@@ -174,6 +174,7 @@
     "ues-recycling-data-api-nest": "apps/ues-recycling-data-api-nest",
     "ues-recycling-ngx": "libs/ues/recycling/ngx",
     "ues-sass": "libs/ues/sass",
+    "ues-assets": "libs/ues/assets",
     "ues-valves-angular": "apps/ues-valves-angular",
     "ues-valves-angular-e2e": "apps/ues-valves-angular-e2e",
     "ues-valves-nest": "apps/ues-valves-nest",

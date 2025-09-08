@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/common/datasets/geographic"],
       "options": {
-        "jestConfig": "libs/common/datasets/geographic/jest.config.js",
+        "jestConfig": "libs/common/datasets/geographic/jest.config.ts",
         "passWithNoTests": true
       }
     }

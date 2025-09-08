@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/aggiemap/ngx/ui/shared"],
       "options": {
-        "jestConfig": "libs/aggiemap/ngx/ui/shared/jest.config.js",
+        "jestConfig": "libs/aggiemap/ngx/ui/shared/jest.config.ts",
         "passWithNoTests": true
       }
     },

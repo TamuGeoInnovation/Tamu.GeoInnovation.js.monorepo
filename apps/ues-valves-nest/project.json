@@ -71,7 +71,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/ues-valves-nest"],
       "options": {
-        "jestConfig": "apps/ues-valves-nest/jest.config.js",
+        "jestConfig": "apps/ues-valves-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

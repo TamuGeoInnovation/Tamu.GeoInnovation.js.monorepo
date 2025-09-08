@@ -7,7 +7,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/esri/jest.config.js",
+        "jestConfig": "libs/maps/esri/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/maps/esri"]

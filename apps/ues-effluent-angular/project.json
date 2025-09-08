@@ -119,7 +119,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/ues-effluent-angular/jest.config.js",
+        "jestConfig": "apps/ues-effluent-angular/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/ues-effluent-angular"]

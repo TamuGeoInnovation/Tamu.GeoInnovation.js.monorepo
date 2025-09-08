@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/geoprocessing/core"],
       "options": {
-        "jestConfig": "libs/geoprocessing/core/jest.config.js",
+        "jestConfig": "libs/geoprocessing/core/jest.config.ts",
         "passWithNoTests": true
       }
     },

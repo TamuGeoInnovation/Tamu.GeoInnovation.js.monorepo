@@ -62,7 +62,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/veoride-data-compiler-node"],
       "options": {
-        "jestConfig": "apps/veoride-data-compiler-node/jest.config.js",
+        "jestConfig": "apps/veoride-data-compiler-node/jest.config.ts",
         "passWithNoTests": true
       }
     }

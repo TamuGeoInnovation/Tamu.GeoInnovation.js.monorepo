@@ -51,7 +51,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/gisday-competitions-nest"],
       "options": {
-        "jestConfig": "apps/gisday-competitions-nest/jest.config.js",
+        "jestConfig": "apps/gisday-competitions-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }
