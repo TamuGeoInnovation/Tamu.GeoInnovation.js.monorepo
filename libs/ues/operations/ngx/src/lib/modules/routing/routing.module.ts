@@ -28,7 +28,7 @@ const hybridRoutes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(hybridRoutes, { initialNavigation: 'enabled', relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(hybridRoutes, { initialNavigation: 'enabledBlocking', relativeLinkResolution: 'legacy' }),
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
@@ -12,13 +12,13 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
   styleUrls: ['./contact-form.component.scss']
 })
 export class ContactFormComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public submissionState: ReplaySubject<string> = new ReplaySubject();
   public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Send message');
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly ns: NotificationService,
     private readonly cs: ContactService,
     private readonly route: ActivatedRoute

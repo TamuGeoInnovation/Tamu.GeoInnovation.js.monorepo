@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, shareReplay, switchMap } from 'rxjs';
 
@@ -14,7 +14,7 @@ import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platfor
 })
 export class ResearchCompetitionReviewComponent implements OnInit {
   public entity$: Observable<Partial<Submission>>;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public reviewOptions = [
     {
@@ -28,7 +28,7 @@ export class ResearchCompetitionReviewComponent implements OnInit {
   ];
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
     private readonly submissionService: UserSubmissionsService,

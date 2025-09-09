@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
@@ -22,7 +22,7 @@ export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingCompone
   public censusYears = CENSUS_YEARS;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly ls: LocalStoreService,

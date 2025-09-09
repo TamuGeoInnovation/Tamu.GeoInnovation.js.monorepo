@@ -1,10 +1,10 @@
 {
-  "root": "apps/geoservices-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/geoservices-nest/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/geoservices-nest",
@@ -15,7 +15,9 @@
           "apps/geoservices-nest/src/Dockerfile",
           "apps/geoservices-nest/src/docker-compose.yml",
           "apps/geoservices-nest/src/.dockerignore"
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {

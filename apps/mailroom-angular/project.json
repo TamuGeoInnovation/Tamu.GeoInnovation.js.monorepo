@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/mailroom-angular",
   "sourceRoot": "apps/mailroom-angular/src",
   "prefix": "tamu-gisc",
   "targets": {

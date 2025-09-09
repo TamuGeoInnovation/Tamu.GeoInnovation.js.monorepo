@@ -39,7 +39,7 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     Angulartics2Module.forRoot(),
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled', relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking', relativeLinkResolution: 'legacy' }),
     HttpClientModule,
     EnvironmentModule,
     NotificationModule,

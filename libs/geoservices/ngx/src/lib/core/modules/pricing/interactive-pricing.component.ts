@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith, take, tap, withLatestFrom } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
   styleUrls: ['./interactive-pricing.component.scss']
 })
 export class InteractivePricingComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public selectedCreditTier: Observable<PricingTier>;
   public selectedCreditTierPoints: Observable<string>;
@@ -94,7 +94,7 @@ export class InteractivePricingComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly route: ActivatedRoute,
     private readonly env: EnvironmentService
   ) {}

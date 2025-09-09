@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ActiveSeasonDto, Event, GisDayAppMetadata, Place, Tag } from '@tamu-gisc/gisday/platform/data-api';
@@ -44,14 +44,14 @@ export class EventViewComponent implements OnInit, OnDestroy {
    * Form group used to delate filter changes as observables that can
    * be passed into the day cards to filter events.
    */
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   constructor(
     private readonly eventService: EventService,
     private readonly tagService: TagService,
     private readonly ss: SeasonService,
     private readonly os: PlaceService,
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly rs: RsvpService,
     private readonly us: UserService,
     private readonly ns: NotificationService,

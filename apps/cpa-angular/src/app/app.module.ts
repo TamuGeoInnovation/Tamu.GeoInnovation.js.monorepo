@@ -59,7 +59,7 @@ const routes: Routes = [
         secureRoutes: [environment.api_url]
       }
     }),
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
+    RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
     AuthRoutingModule,
     EnvironmentModule,
     LocalStoreModule,

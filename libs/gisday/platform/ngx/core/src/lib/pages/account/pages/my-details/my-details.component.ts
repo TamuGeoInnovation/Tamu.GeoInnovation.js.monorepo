@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Observable, Subject, map, shareReplay, startWith, switchMap, take } from 'rxjs';
 
 import { AuthService } from '@auth0/auth0-angular';
@@ -8,7 +8,7 @@ import { OrganizationService, UniversityService, UserService } from '@tamu-gisc/
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GisDayAppMetadata, Organization, ParticipantType, University } from '@tamu-gisc/gisday/platform/data-api';
 
-const infoCompletionValidator: ValidatorFn = (control: FormGroup): { [key: string]: boolean } | null => {
+const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key: string]: boolean } | null => {
   const type = control.get('app_metadata.gisday.attendeeType');
   const education = control.get('user_metadata.education');
   const occupation = control.get('user_metadata.occupation');
@@ -50,7 +50,7 @@ const infoCompletionValidator: ValidatorFn = (control: FormGroup): { [key: strin
   styleUrls: ['./my-details.component.scss']
 })
 export class MyDetailsComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public signedOnEntityIsSocial$: Observable<boolean>;
   public signedOnEntityHasCompletedInfo$: Observable<boolean>;
@@ -63,7 +63,7 @@ export class MyDetailsComponent implements OnInit {
   private _refresh$: Subject<boolean> = new Subject();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private ns: NotificationService,
     private readonly as: AuthService,
     private readonly us: UserService,

@@ -1,11 +1,11 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "prefix": "two-data-api-nest",
   "projectType": "application",
-  "root": "apps/two-data-api-nest",
   "sourceRoot": "apps/two-data-api-nest/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "configurations": {
         "production": {
           "fileReplacements": [
@@ -34,7 +34,9 @@
         "main": "apps/two-data-api-nest/src/main.ts",
         "outputPath": "dist/apps/two-data-api-nest",
         "tsConfig": "apps/two-data-api-nest/tsconfig.app.json",
-        "assets": ["apps/two-data-api-nest/src/assets", "apps/two-data-api-nest/src/package.json"]
+        "assets": ["apps/two-data-api-nest/src/assets", "apps/two-data-api-nest/src/package.json"],
+        "target": "node",
+        "compiler": "tsc"
       },
       "outputs": ["{options.outputPath}"]
     },

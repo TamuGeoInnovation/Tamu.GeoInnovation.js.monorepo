@@ -1,10 +1,10 @@
 {
-  "root": "apps/mailroom-helper-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/mailroom-helper-nest/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/mailroom-helper-nest",
@@ -20,7 +20,9 @@
             "input": "./libs/assets/powershell",
             "output": "./assets/powershell"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {

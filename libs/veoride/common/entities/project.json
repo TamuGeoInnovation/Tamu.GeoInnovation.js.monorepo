@@ -1,5 +1,5 @@
 {
-  "root": "libs/veoride/common/entities",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/veoride/common/entities/src",
   "projectType": "library",
   "targets": {

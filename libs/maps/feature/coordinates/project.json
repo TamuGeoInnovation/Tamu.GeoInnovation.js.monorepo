@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/maps/feature/coordinates",
   "sourceRoot": "libs/maps/feature/coordinates/src",
   "prefix": "tamu-gisc",
   "targets": {

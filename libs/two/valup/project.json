@@ -1,5 +1,5 @@
 {
-  "root": "libs/two/valup",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/two/valup/src",
   "projectType": "library",
   "targets": {

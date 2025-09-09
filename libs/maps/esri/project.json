@@ -1,7 +1,7 @@
 {
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
-  "root": "libs/maps/esri",
   "sourceRoot": "libs/maps/esri/src",
   "targets": {
     "test": {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { RsvpTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -14,7 +14,7 @@ import { formExporter } from '../../admin-add-rsvp-type/admin-add-rsvp-type.comp
   styleUrls: ['./admin-detail-rsvp-type.component.scss']
 })
 export class AdminDetailRsvpTypeComponent extends BaseAdminDetailComponent<RsvpType> implements OnInit {
-  constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private rsvpTypeService: RsvpTypeService) {
+  constructor(private fb1: UntypedFormBuilder, private route1: ActivatedRoute, private rsvpTypeService: RsvpTypeService) {
     super(fb1, route1, rsvpTypeService);
   }
 

@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/mailroom/data-access",
   "sourceRoot": "libs/mailroom/data-access/src",
   "prefix": "tamu-gisc",
   "targets": {

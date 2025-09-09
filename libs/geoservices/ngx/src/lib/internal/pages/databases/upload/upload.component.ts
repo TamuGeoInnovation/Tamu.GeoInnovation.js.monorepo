@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { ReplaySubject } from 'rxjs';
 
@@ -11,7 +11,7 @@ import { DatabaseService } from '@tamu-gisc/geoservices/data-access';
   styleUrls: ['./upload.component.scss']
 })
 export class UploadComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public delimiters = this.db.getTextDelimiterList();
 
@@ -19,7 +19,7 @@ export class UploadComponent implements OnInit {
 
   public file: ReplaySubject<File> = new ReplaySubject(1);
 
-  constructor(private fb: FormBuilder, private db: DatabaseService) {}
+  constructor(private fb: UntypedFormBuilder, private db: DatabaseService) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

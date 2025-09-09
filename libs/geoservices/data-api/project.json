@@ -1,5 +1,5 @@
 {
-  "root": "libs/geoservices/data-api",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/geoservices/data-api/src",
   "projectType": "library",
   "targets": {

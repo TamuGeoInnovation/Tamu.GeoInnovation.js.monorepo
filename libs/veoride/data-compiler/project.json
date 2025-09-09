@@ -1,5 +1,5 @@
 {
-  "root": "libs/veoride/data-compiler",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/veoride/data-compiler/src",
   "projectType": "library",
   "targets": {

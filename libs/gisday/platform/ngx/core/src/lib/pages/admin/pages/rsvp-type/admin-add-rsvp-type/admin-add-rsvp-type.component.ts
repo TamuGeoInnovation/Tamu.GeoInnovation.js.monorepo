@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { RsvpTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { RsvpType } from '@tamu-gisc/gisday/platform/data-api';
@@ -7,9 +7,9 @@ import { RsvpType } from '@tamu-gisc/gisday/platform/data-api';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
 export const formExporter = () => {
-  return new FormGroup({
-    guid: new FormControl(''),
-    type: new FormControl('')
+  return new UntypedFormGroup({
+    guid: new UntypedFormControl(''),
+    type: new UntypedFormControl('')
   });
 };
 

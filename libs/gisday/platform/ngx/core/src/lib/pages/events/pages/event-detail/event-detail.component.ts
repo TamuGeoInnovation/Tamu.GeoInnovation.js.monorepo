@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
   catchError,
@@ -46,7 +46,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   public eventLive$: Observable<boolean>;
   public eventElapsed$: Observable<boolean>;
 
-  public attendanceForm: FormGroup;
+  public attendanceForm: UntypedFormGroup;
   public isCheckinOpen = false;
 
   private _refresh$: Subject<boolean> = new Subject();
@@ -60,7 +60,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     private readonly userRsvpService: RsvpService,
     private readonly ns: NotificationService,
     private readonly us: UserService,
-    private readonly fb: FormBuilder
+    private readonly fb: UntypedFormBuilder
   ) {}
 
   public ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, EMPTY, NEVER, Observable, of, Subject } from 'rxjs';
 import { catchError, filter, map, shareReplay, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
@@ -22,7 +22,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   public formModel: Partial<CompetitionSeason>;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public file: BehaviorSubject<File> = new BehaviorSubject(undefined);
 
@@ -47,7 +47,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   private _trackLocation: TrackLocation;
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly as: AuthService,
     private readonly ns: NotificationService,
     private readonly analytics: Angulartics2,
@@ -94,7 +94,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
       // will be no form controls to ever emit form statusChanges. If that's the case, emit a VALID state for the form statusChanges so the
       // only other thing to check is the image input change.
       this.formValid = combineLatest([
-        (this.form.get('fields') as FormArray).controls.length > 0 ? this.form.statusChanges : of('VALID'),
+        (this.form.get('fields') as UntypedFormArray).controls.length > 0 ? this.form.statusChanges : of('VALID'),
         this.file.pipe(filter((e) => e !== undefined))
       ]).pipe(
         startWith(['INVALID']),

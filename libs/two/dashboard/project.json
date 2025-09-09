@@ -1,5 +1,5 @@
 {
-  "root": "libs/two/dashboard",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/two/dashboard/src",
   "projectType": "library",
   "targets": {

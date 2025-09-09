@@ -1,5 +1,5 @@
 {
-  "root": "libs/gisday/competitions/data-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/gisday/competitions/data-api/src",
   "projectType": "library",
   "targets": {

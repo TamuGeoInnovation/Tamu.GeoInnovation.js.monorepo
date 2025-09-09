@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/ts/movein/ngx",
   "sourceRoot": "libs/ts/movein/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {

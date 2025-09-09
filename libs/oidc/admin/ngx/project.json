@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/oidc/admin/ngx",
   "sourceRoot": "libs/oidc/admin/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {

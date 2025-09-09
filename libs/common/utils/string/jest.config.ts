@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
@@ -6,5 +7,5 @@ module.exports = {
   coverageDirectory: '../../../../coverage/libs/common/utils/string',
   globals: { 'ts-jest': { tsconfig: '<rootDir>/tsconfig.spec.json' } },
   displayName: 'common-utils-string',
-  preset: '../../../../jest.preset.ts'
+  preset: '../../../../jest.preset.js'
 };

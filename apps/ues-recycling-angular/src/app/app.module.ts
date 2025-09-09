@@ -33,7 +33,7 @@ WebFont.load({
           loadChildren: () => import('@tamu-gisc/ues/recycling/ngx').then((m) => m.MapModule)
         }
       ],
-      { initialNavigation: 'enabled' }
+      { initialNavigation: 'enabledBlocking' }
     )
   ],
   providers: [

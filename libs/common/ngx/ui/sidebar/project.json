@@ -1,7 +1,7 @@
 {
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
-  "root": "libs/common/ngx/ui/sidebar",
   "sourceRoot": "libs/common/ngx/ui/sidebar/src",
   "targets": {
     "test": {

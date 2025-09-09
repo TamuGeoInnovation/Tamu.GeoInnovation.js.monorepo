@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/aggiemap/ngx/popups",
   "sourceRoot": "libs/aggiemap/ngx/popups/src",
   "prefix": "tamu-gisc",
   "targets": {

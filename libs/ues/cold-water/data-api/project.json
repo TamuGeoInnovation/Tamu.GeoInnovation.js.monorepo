@@ -1,5 +1,5 @@
 {
-  "root": "libs/ues/cold-water/data-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ues/cold-water/data-api/src",
   "projectType": "library",
   "targets": {

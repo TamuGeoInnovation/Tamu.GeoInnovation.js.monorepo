@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { STATES_TITLECASE } from '@tamu-gisc/common/datasets/geographic';
@@ -12,7 +12,7 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
   styleUrls: ['./geocode-correction-form.component.scss']
 })
 export class GeocodeCorrectionFormComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public states = STATES_TITLECASE;
 
@@ -20,7 +20,7 @@ export class GeocodeCorrectionFormComponent implements OnInit {
   public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Submit correction');
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly ns: NotificationService,
     private readonly cs: ContactService
   ) {}

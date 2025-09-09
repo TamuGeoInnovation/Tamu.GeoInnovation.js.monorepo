@@ -1,11 +1,11 @@
 {
-  "root": "apps/veoride-data-compiler-node",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/veoride-data-compiler-node/src",
   "projectType": "application",
   "prefix": "veoride-data-compiler-node",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/veoride-data-compiler-node",
@@ -19,7 +19,9 @@
             "input": "./libs/assets/powershell",
             "output": "./assets/powershell"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "development": {

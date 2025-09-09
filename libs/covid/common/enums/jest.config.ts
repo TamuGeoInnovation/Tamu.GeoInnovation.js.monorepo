@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'covid-common-enums',
 
   globals: {
@@ -10,5 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/libs/covid/common/enums',
-  preset: '../../../../jest.preset.ts'
+  preset: '../../../../jest.preset.js'
 };

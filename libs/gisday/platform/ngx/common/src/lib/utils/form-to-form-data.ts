@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 /**
  * Takes a standard Angular FormGroup and will return a FormData object useful
@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
  * @param form
  * @returns FormData
  */
-export const formToFormData = (form: FormGroup, stringifyObjects?: boolean) => {
+export const formToFormData = (form: UntypedFormGroup, stringifyObjects?: boolean) => {
   const formValue = form.getRawValue();
   const data: FormData = new FormData();
   const parentFormKeys = Object.keys(formValue);

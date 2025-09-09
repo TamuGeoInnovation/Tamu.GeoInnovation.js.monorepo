@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, pipe, map, switchMap, withLatestFrom } from 'rxjs';
 
@@ -32,7 +32,7 @@ export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessin
   public queryUrl: Observable<string>;
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly ls: LocalStoreService,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs';
@@ -21,33 +21,33 @@ export class ContactComponent implements OnInit {
   private title = 'Contact | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
   public page: StrapiSingleTypes = 'contact';
   public pageContents: Observable<IStrapiPageResponse>;
-  public contactForm: FormGroup;
+  public contactForm: UntypedFormGroup;
   public today: Date = new Date(Date.now());
 
   constructor(
     private titleService: Title,
     private ss: StrapiService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private environment: EnvironmentService
   ) {
     this.contactForm = this.fb.group(
       {
-        application: new FormControl('KissingBug'),
-        firstName: new FormControl('', [Validators.minLength(2)]),
-        lastName: new FormControl('', [Validators.minLength(2)]),
-        email: new FormControl('', [Validators.required, Validators.email]),
-        verifyEmail: new FormControl('', [Validators.email]),
-        message: new FormControl(''),
-        dateOfEncounter: new FormControl(''),
-        timeOfEncounter: new FormControl(''),
-        locationOfEncounter: new FormControl(''),
-        stateOfEncounter: new FormControl(''),
-        associatedWithBite: new FormControl(''),
-        behaviour: new FormControl(''),
-        file1: new FormControl(''),
-        file2: new FormControl(''),
-        hiddenInput: new FormControl(false),
-        isHuman: new FormControl(false)
+        application: new UntypedFormControl('KissingBug'),
+        firstName: new UntypedFormControl('', [Validators.minLength(2)]),
+        lastName: new UntypedFormControl('', [Validators.minLength(2)]),
+        email: new UntypedFormControl('', [Validators.required, Validators.email]),
+        verifyEmail: new UntypedFormControl('', [Validators.email]),
+        message: new UntypedFormControl(''),
+        dateOfEncounter: new UntypedFormControl(''),
+        timeOfEncounter: new UntypedFormControl(''),
+        locationOfEncounter: new UntypedFormControl(''),
+        stateOfEncounter: new UntypedFormControl(''),
+        associatedWithBite: new UntypedFormControl(''),
+        behaviour: new UntypedFormControl(''),
+        file1: new UntypedFormControl(''),
+        file2: new UntypedFormControl(''),
+        hiddenInput: new UntypedFormControl(false),
+        isHuman: new UntypedFormControl(false)
       },
       {
         validators: [confirmedEmailValidator, isTrue]

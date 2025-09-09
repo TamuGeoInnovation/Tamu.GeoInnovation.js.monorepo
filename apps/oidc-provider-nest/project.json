@@ -1,11 +1,11 @@
 {
-  "root": "apps/oidc-provider-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/oidc-provider-nest/src",
   "projectType": "application",
   "prefix": "oidc-provider-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "options": {
         "main": "apps/oidc-provider-nest/src/main.ts",
         "outputPath": "dist/apps/oidc-provider-nest",
@@ -18,7 +18,9 @@
             "input": "./libs/assets/powershell",
             "output": "./assets/powershell"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {

@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/signage-angular",
   "sourceRoot": "apps/signage-angular/src",
   "prefix": "tamu-gisc",
   "targets": {

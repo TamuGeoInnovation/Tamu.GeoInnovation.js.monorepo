@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { filter, map, mergeMap, Observable, switchMap, tap, toArray } from 'rxjs';
@@ -14,7 +14,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   styleUrls: ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public $userRole: Observable<Partial<NewUserRole>>;
 
   public $clients: Observable<Array<Partial<IClientData>>>;
@@ -31,10 +31,10 @@ export class DetailComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.form = new FormGroup({
-      client: new FormControl(''),
-      role: new FormControl(''),
-      user: new FormControl('')
+    this.form = new UntypedFormGroup({
+      client: new UntypedFormControl(''),
+      role: new UntypedFormControl(''),
+      user: new UntypedFormControl('')
     });
 
     this.$clients = this.clientService.getEntities().pipe(

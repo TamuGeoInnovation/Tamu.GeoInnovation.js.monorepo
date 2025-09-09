@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 
 import { ResultsService } from '../../../data-access/results/results.service';
 
@@ -9,11 +9,11 @@ import { ResultsService } from '../../../data-access/results/results.service';
   styleUrls: ['./upload.component.scss']
 })
 export class UploadComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public success = false;
   public error = false;
 
-  constructor(private fb: FormBuilder, private resultsService: ResultsService) {}
+  constructor(private fb: UntypedFormBuilder, private resultsService: ResultsService) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

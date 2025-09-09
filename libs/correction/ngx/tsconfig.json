@@ -10,20 +10,12 @@
       "path": "./tsconfig.spec.json"
     }
   ],
-  // "compilerOptions": {
-  //   "forceConsistentCasingInFileNames": true,
-  //   "strict": true,
-  //   "noImplicitOverride": true,
-  //   "noPropertyAccessFromIndexSignature": true,
-  //   "noImplicitReturns": true,
-  //   "noFallthroughCasesInSwitch": true
-  // },
   "angularCompilerOptions": {
-    // "strictInjectionParameters": true,
-    // "strictInputAccessModifiers": true,
-    // "strictTemplates": true
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "enableResourceInlining": true
+  },
+  "compilerOptions": {
+    "target": "es2020"
   }
 }

@@ -1,16 +1,18 @@
 {
-  "root": "apps/gisday-bridge-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/gisday-bridge-nest/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/gisday-bridge-nest",
         "main": "apps/gisday-bridge-nest/src/main.ts",
         "tsConfig": "apps/gisday-bridge-nest/tsconfig.app.json",
-        "assets": ["apps/gisday-bridge-nest/src/assets"]
+        "assets": ["apps/gisday-bridge-nest/src/assets"],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {

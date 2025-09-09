@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -14,10 +14,10 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 export abstract class BaseAdminDetailComponent<T> implements OnInit {
   public entity: Observable<Partial<T>>;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private activatedRoute: ActivatedRoute,
     private entityService: BaseService<T>
   ) {}

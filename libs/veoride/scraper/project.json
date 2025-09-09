@@ -1,5 +1,5 @@
 {
-  "root": "libs/veoride/scraper",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/veoride/scraper/src",
   "projectType": "library",
   "targets": {

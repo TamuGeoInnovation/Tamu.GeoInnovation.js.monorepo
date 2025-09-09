@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { debounceTime, switchMap } from 'rxjs/operators';
@@ -14,10 +14,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 })
 export class DetailRoleComponent implements OnInit {
   public roleGuid: string;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private route: ActivatedRoute,
     private roleService: RolesService,
     private notificationService: NotificationService

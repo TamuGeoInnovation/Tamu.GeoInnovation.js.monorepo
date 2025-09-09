@@ -1,16 +1,18 @@
 {
-  "root": "apps/two-valup-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/two-valup-nest/src",
   "projectType": "application",
   "prefix": "two-valup-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "options": {
         "outputPath": "dist/apps/two-valup-nest",
         "main": "apps/two-valup-nest/src/main.ts",
         "tsConfig": "apps/two-valup-nest/tsconfig.app.json",
-        "assets": ["apps/two-valup-nest/src/assets", "apps/two-valup-nest/src/package.json"]
+        "assets": ["apps/two-valup-nest/src/assets", "apps/two-valup-nest/src/package.json"],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {

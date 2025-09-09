@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
 
@@ -9,9 +9,9 @@ import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
   styleUrls: ['./preferences.component.scss']
 })
 export class PreferencesComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
-  constructor(private service: AccountPreferencesService, private fb: FormBuilder) {}
+  constructor(private service: AccountPreferencesService, private fb: UntypedFormBuilder) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

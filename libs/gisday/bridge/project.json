@@ -1,5 +1,5 @@
 {
-  "root": "libs/gisday/bridge",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/gisday/bridge/src",
   "projectType": "library",
   "targets": {

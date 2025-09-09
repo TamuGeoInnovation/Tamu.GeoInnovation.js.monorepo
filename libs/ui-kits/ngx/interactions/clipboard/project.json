@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/ui-kits/ngx/interactions/clipboard",
   "sourceRoot": "libs/ui-kits/ngx/interactions/clipboard/src",
   "prefix": "tamu-gisc",
   "targets": {

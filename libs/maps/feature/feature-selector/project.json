@@ -1,7 +1,7 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
-  "root": "libs/maps/feature/feature-selector",
   "sourceRoot": "libs/maps/feature/feature-selector/src",
   "targets": {
     "test": {

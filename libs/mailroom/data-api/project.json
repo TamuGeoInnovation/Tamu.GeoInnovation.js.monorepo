@@ -1,5 +1,5 @@
 {
-  "root": "libs/mailroom/data-api",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/mailroom/data-api/src",
   "projectType": "library",
   "targets": {

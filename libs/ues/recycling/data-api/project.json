@@ -1,5 +1,5 @@
 {
-  "root": "libs/ues/recycling/data-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ues/recycling/data-api/src",
   "projectType": "library",
   "targets": {

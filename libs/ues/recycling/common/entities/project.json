@@ -1,5 +1,5 @@
 {
-  "root": "libs/ues/recycling/common/entities",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ues/recycling/common/entities/src",
   "projectType": "library",
   "targets": {

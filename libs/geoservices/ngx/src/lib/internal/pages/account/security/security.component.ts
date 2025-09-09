@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { AccountSecurityService, ISecretQuestion } from '@tamu-gisc/geoservices/data-access';
@@ -12,10 +12,10 @@ import { AccountSecurityService, ISecretQuestion } from '@tamu-gisc/geoservices/
 export class SecurityComponent implements OnInit {
   public questions: Observable<Array<ISecretQuestion>>;
 
-  public password: FormGroup;
-  public question: FormGroup;
+  public password: UntypedFormGroup;
+  public question: UntypedFormGroup;
 
-  constructor(private service: AccountSecurityService, private fb: FormBuilder) {}
+  constructor(private service: AccountSecurityService, private fb: UntypedFormBuilder) {}
 
   public ngOnInit() {
     this.password = this.fb.group({

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { pluck, shareReplay, map } from 'rxjs/operators';
@@ -16,7 +16,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   providers: [WorkshopService, SnapshotService]
 })
 export class WorkshopBuilderComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public isExisting: Observable<boolean>;
 
@@ -27,7 +27,7 @@ export class WorkshopBuilderComponent implements OnInit {
   public host = `${window.location.origin}`;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private ws: WorkshopService,
     private ss: SnapshotService,
     private scenarioService: ScenarioService,

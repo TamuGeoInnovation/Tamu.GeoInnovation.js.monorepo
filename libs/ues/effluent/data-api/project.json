@@ -1,5 +1,5 @@
 {
-  "root": "libs/ues/effluent/data-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ues/effluent/data-api/src",
   "projectType": "library",
   "targets": {

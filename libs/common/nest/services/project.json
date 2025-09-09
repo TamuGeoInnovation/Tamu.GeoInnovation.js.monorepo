@@ -1,5 +1,5 @@
 {
-  "root": "libs/common/nest/services",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/common/nest/services/src",
   "projectType": "library",
   "targets": {

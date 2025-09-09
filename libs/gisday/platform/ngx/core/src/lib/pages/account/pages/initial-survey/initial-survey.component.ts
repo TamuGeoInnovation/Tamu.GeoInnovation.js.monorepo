@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -13,12 +13,12 @@ import { InitialSurveyQuestion } from '@tamu-gisc/gisday/platform/data-api';
   styleUrls: ['./initial-survey.component.scss']
 })
 export class InitialSurveyComponent implements OnInit, OnDestroy {
-  public dataGroup: FormGroup;
+  public dataGroup: UntypedFormGroup;
   public $tookSurveyAlready: Observable<boolean>;
   public $initalSurveyQuestions: Observable<Array<Partial<IInitialSurveyQuestionResponse>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private fb: FormBuilder, private readonly initialSurveyService: InitialSurveyService) {}
+  constructor(private fb: UntypedFormBuilder, private readonly initialSurveyService: InitialSurveyService) {}
 
   public ngOnInit() {
     this.dataGroup = this.fb.group({});

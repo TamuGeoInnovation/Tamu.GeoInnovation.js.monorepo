@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/gisday/platform/ngx/data-access",
   "sourceRoot": "libs/gisday/platform/ngx/data-access/src",
   "prefix": "tamu-gisc",
   "targets": {

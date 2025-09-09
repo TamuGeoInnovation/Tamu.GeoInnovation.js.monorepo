@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -13,9 +13,9 @@ import { AccountDetailsService, IAccountDetails } from '@tamu-gisc/geoservices/d
 export class DetailsComponent implements OnInit {
   public data: Observable<IAccountDetails>;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
-  constructor(private service: AccountDetailsService, private fb: FormBuilder) {}
+  constructor(private service: AccountDetailsService, private fb: UntypedFormBuilder) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

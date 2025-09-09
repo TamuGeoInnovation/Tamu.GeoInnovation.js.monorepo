@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Observable, map, of, shareReplay, switchMap, take } from 'rxjs';
 
 import {
@@ -21,7 +21,7 @@ export class CorrectionMiscControlsComponent implements OnInit {
   public coordinateOverride: Observable<GeocodePoint>;
   public correctionType: Observable<'Manual Correction' | string>;
   public correctionIsPointClick: Observable<boolean>;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   // These should come from the geoprocessing lib but those changes have not been merged yet.
   public readonly matchGeographyTypes = [
@@ -36,7 +36,7 @@ export class CorrectionMiscControlsComponent implements OnInit {
     { value: 'StreetCentroid', label: 'Street Centroid' }
   ];
 
-  constructor(private readonly cs: CorrectionService, private readonly fb: FormBuilder) {}
+  constructor(private readonly cs: CorrectionService, private readonly fb: UntypedFormBuilder) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

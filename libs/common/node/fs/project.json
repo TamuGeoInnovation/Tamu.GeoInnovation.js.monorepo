@@ -1,5 +1,5 @@
 {
-  "root": "libs/common/node/fs",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/common/node/fs/src",
   "projectType": "library",
   "targets": {

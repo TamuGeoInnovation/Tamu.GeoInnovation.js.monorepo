@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
@@ -12,11 +12,11 @@ import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
   styleUrls: ['./contact.component.scss']
 })
 export class ContactComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public formStatus: BehaviorSubject<string> = new BehaviorSubject('ready');
   public buttonText: Observable<string>;
 
-  constructor(private titleService: Title, private fb: FormBuilder, private contactService: ContactService) {
+  constructor(private titleService: Title, private fb: UntypedFormBuilder, private contactService: ContactService) {
     this.titleService.setTitle('Contact | TxGIS Day');
   }
 

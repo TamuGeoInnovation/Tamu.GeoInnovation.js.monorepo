@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
@@ -10,9 +10,9 @@ import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
   styleUrls: ['./add-role.component.scss']
 })
 export class AddRoleComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private roleService: RolesService,
     private notificationService: NotificationService
   ) {}

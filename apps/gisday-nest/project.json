@@ -1,11 +1,11 @@
 {
-  "root": "apps/gisday-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/gisday-nest/src",
   "projectType": "application",
   "prefix": "gisday-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/gisday-nest",
@@ -20,7 +20,9 @@
             "input": "./libs/assets/",
             "output": "./assets"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {
@@ -50,7 +52,7 @@
       }
     },
     "image-build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           {

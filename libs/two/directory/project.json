@@ -1,5 +1,5 @@
 {
-  "root": "libs/two/directory",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/two/directory/src",
   "projectType": "library",
   "targets": {

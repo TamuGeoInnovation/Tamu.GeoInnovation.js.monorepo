@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   template: ''
 })
 export abstract class BaseAdminAddComponent<T> implements IBaseAdminAddComponent, OnDestroy {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(private entityService: BaseService<T>) {}

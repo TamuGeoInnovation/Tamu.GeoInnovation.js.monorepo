@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { from, fromEventPattern, merge, Observable, Subject } from 'rxjs';
@@ -43,7 +43,7 @@ import esri = __esri;
   providers: [EsriMapService]
 })
 export class ScenarioBuilderComponent implements OnInit, OnDestroy {
-  public builderForm: FormGroup;
+  public builderForm: UntypedFormGroup;
 
   public view: esri.MapView;
   public map: esri.Map;
@@ -117,7 +117,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   private _mapViewRecorded$: Subject<boolean> = new Subject();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private mapService: EsriMapService,
     private mp: EsriModuleProviderService,
     private scenario: ScenarioService,

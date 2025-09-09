@@ -1,5 +1,5 @@
 {
-  "root": "libs/cpa/data-api",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/cpa/data-api/src",
   "projectType": "library",
   "targets": {

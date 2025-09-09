@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
@@ -20,7 +20,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   @Input()
   public type: 'create' | 'edit';
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public entity$: Observable<Partial<Place>>;
   public logoUrl$: Observable<SafeUrl>;
 
@@ -31,7 +31,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   ];
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
     private readonly as: AssetsService,
@@ -69,7 +69,7 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
 
         this.form.patchValue({ ...entity });
 
-        links.forEach((l) => (this.form.get('links') as FormArray).push(l));
+        links.forEach((l) => (this.form.get('links') as UntypedFormArray).push(l));
 
         // If the entity has a season, remove the season control from the form
         this.form.removeControl('season');
@@ -132,11 +132,11 @@ export class PlaceLocationAddEditFormComponent implements OnInit {
   public addOrgLink() {
     const control = this._createOrgLink();
 
-    (this.form.get('links') as FormArray).push(control);
+    (this.form.get('links') as UntypedFormArray).push(control);
   }
 
   public removeOrgLink(index: number) {
-    (this.form.get('links') as FormArray).removeAt(index);
+    (this.form.get('links') as UntypedFormArray).removeAt(index);
   }
 
   private _createOrgLink(values?: Partial<PlaceLink>) {

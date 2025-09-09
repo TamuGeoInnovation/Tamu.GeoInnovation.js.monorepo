@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/ts/football/ngx",
   "sourceRoot": "libs/ts/football/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {

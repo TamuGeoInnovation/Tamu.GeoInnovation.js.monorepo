@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/aggiemap/ngx/common",
   "sourceRoot": "libs/aggiemap/ngx/common/src",
   "prefix": "tamu-gisc",
   "targets": {

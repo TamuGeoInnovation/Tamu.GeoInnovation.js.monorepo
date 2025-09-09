@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { forkJoin, fromEventPattern, Observable, Subject, merge } from 'rxjs';
 import { tap, map, shareReplay, take, switchMap, mapTo, startWith, skip, distinctUntilChanged } from 'rxjs/operators';
 
@@ -19,7 +19,7 @@ import esri = __esri;
   providers: [EsriMapService]
 })
 export class SnapshotBuilderComponent implements OnInit, OnDestroy {
-  public builderForm: FormGroup;
+  public builderForm: UntypedFormGroup;
 
   public isExisting: Observable<boolean>;
 
@@ -56,7 +56,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
   private $view: Observable<MapServiceInstance['view']>;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private mapService: EsriMapService,
     private snapshot: SnapshotService,
     private router: Router,
@@ -189,14 +189,14 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
   public addLayer(url?: object) {
     const props = url && typeof url === 'object' ? { ...url } : { url: '' };
 
-    (this.builderForm.controls.layers as FormArray).push(this.fb.group(props));
+    (this.builderForm.controls.layers as UntypedFormArray).push(this.fb.group(props));
   }
 
   /**
    * Removes a layer form group from the form array at a given index.
    */
   public removeLayer(index: number) {
-    (this.builderForm.controls.layers as FormArray).removeAt(index);
+    (this.builderForm.controls.layers as UntypedFormArray).removeAt(index);
   }
 
   public createSnapshot() {

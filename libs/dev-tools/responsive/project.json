@@ -1,7 +1,7 @@
 {
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
-  "root": "libs/dev-tools/responsive",
   "sourceRoot": "libs/dev-tools/responsive/src",
   "targets": {
     "test": {

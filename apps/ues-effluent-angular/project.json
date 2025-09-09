@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/ues-effluent-angular",
   "sourceRoot": "apps/ues-effluent-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
