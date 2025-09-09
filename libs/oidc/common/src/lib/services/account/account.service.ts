@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-
-import { getConnection } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 import { AccountRepo, RoleRepo, User } from '../../entities/all.entity';
 
 export class StaticAccountService {
-  public static async getUserRoles(accountGuid: string, clientName: string) {
-    return getConnection()
+  public static async getUserRoles(accountGuid: string, clientName: string, dataSource: DataSource) {
+    return dataSource
       .getRepository(User)
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.account', 'account')

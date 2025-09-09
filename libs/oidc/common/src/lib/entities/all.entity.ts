@@ -1,7 +1,6 @@
 import { Req } from '@nestjs/common';
 
 import {
-  getConnection,
   BeforeUpdate,
   BeforeInsert,
   Entity,
@@ -16,7 +15,7 @@ import {
   ManyToMany,
   BaseEntity,
   Repository,
-  EntityRepository
+  DataSource
 } from 'typeorm';
 import { Request } from 'express';
 import { v4 as guid } from 'uuid';
@@ -1099,7 +1098,7 @@ export class CommonRepo<T> extends Repository<T> {
       [key]: value
     };
 
-    return this.createQueryBuilder('entity').where(`entity.${key} = :${key}`, op).getOne();
+    return this.createQueryBuilder('entity').where(`entity.${String(key)} = :${String(key)}`, op).getOne();
   }
 
   public async findByKeyDeep<K extends keyof T>(key: K, value: unknown, includeExludedProps?: boolean, excludedProp?: K) {
@@ -1115,9 +1114,9 @@ export class CommonRepo<T> extends Repository<T> {
       });
     }
     if (includeExludedProps === true) {
-      queryBuilder.addSelect([`entity.${excludedProp}`]);
+      queryBuilder.addSelect([`entity.${String(excludedProp)}`]);
     }
-    return queryBuilder.where(`entity.${key} = :${key}`, op).getOne();
+    return queryBuilder.where(`entity.${String(key)} = :${String(key)}`, op).getOne();
   }
 
   public async findAllByKeyShallow<K extends keyof T>(key: K, value: unknown) {
@@ -1125,7 +1124,7 @@ export class CommonRepo<T> extends Repository<T> {
       [key]: value
     };
 
-    return this.createQueryBuilder('entity').where(`entity.${key} = :${key}`, op).getMany();
+    return this.createQueryBuilder('entity').where(`entity.${String(key)} = :${String(key)}`, op).getMany();
   }
 
   public async findAllByKeyDeep<K extends keyof T>(key: K, value: unknown) {
@@ -1140,7 +1139,7 @@ export class CommonRepo<T> extends Repository<T> {
         queryBuilder.leftJoinAndSelect(`entity.${propName}`, propName);
       });
     }
-    const ret = await queryBuilder.where(`entity.${key} = :${key}`, op).getMany();
+    const ret = await queryBuilder.where(`entity.${String(key)} = :${String(key)}`, op).getMany();
     return ret;
   }
 
@@ -1169,10 +1168,13 @@ export class CommonRepo<T> extends Repository<T> {
   }
 }
 
-@EntityRepository(ClientMetadata)
 export class ClientMetadataRepo extends CommonRepo<ClientMetadata> {
+  constructor(private dataSource: DataSource) {
+    super(ClientMetadata, dataSource.createEntityManager());
+  }
+  
   public getClientMetadata(clientGuid: string) {
-    return getConnection()
+    return this.dataSource
       .getRepository(ClientMetadata)
       .createQueryBuilder('clientmetadata')
       .leftJoinAndSelect('clientmetadata.grantTypes', 'grantTypes')
@@ -1186,25 +1188,43 @@ export class ClientMetadataRepo extends CommonRepo<ClientMetadata> {
   }
 }
 
-@EntityRepository(GrantType)
-export class GrantTypeRepo extends CommonRepo<GrantType> {}
+export class GrantTypeRepo extends CommonRepo<GrantType> {
+  constructor(private dataSource: DataSource) {
+    super(GrantType, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(RedirectUri)
-export class RedirectUriRepo extends CommonRepo<RedirectUri> {}
+export class RedirectUriRepo extends CommonRepo<RedirectUri> {
+  constructor(private dataSource: DataSource) {
+    super(RedirectUri, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(BackchannelLogoutUri)
-export class BackchannelLogoutUriRepo extends CommonRepo<BackchannelLogoutUri> {}
+export class BackchannelLogoutUriRepo extends CommonRepo<BackchannelLogoutUri> {
+  constructor(private dataSource: DataSource) {
+    super(BackchannelLogoutUri, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(ResponseType)
-export class ResponseTypeRepo extends CommonRepo<ResponseType> {}
+export class ResponseTypeRepo extends CommonRepo<ResponseType> {
+  constructor(private dataSource: DataSource) {
+    super(ResponseType, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(TokenEndpointAuthMethod)
-export class TokenEndpointAuthMethodRepo extends CommonRepo<TokenEndpointAuthMethod> {}
+export class TokenEndpointAuthMethodRepo extends CommonRepo<TokenEndpointAuthMethod> {
+  constructor(private dataSource: DataSource) {
+    super(TokenEndpointAuthMethod, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(User)
 export class UserRepo extends CommonRepo<User> {
+  constructor(private dataSource: DataSource) {
+    super(User, dataSource.createEntityManager());
+  }
+  
   public getUserWithPassword(email: string) {
-    return getConnection()
+    return this.dataSource
       .getRepository(User)
       .createQueryBuilder('user')
       .addSelect('user.password')
@@ -1216,7 +1236,7 @@ export class UserRepo extends CommonRepo<User> {
   }
 
   public getUserWithRoles(userGuid: string, clientGuid: string) {
-    return getConnection()
+    return this.dataSource
       .getRepository(User)
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.account', 'account')
@@ -1231,34 +1251,68 @@ export class UserRepo extends CommonRepo<User> {
   }
 }
 
-@EntityRepository(Account)
-export class AccountRepo extends CommonRepo<Account> {}
+export class AccountRepo extends CommonRepo<Account> {
+  constructor(private dataSource: DataSource) {
+    super(Account, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(Role)
-export class RoleRepo extends CommonRepo<Role> {}
+export class RoleRepo extends CommonRepo<Role> {
+  constructor(private dataSource: DataSource) {
+    super(Role, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(Client)
-export class ClientRepo extends CommonRepo<Client> {}
+export class ClientRepo extends CommonRepo<Client> {
+  constructor(private dataSource: DataSource) {
+    super(Client, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(UserRole)
-export class UserRoleRepo extends CommonRepo<UserRole> {}
+export class UserRoleRepo extends CommonRepo<UserRole> {
+  constructor(private dataSource: DataSource) {
+    super(UserRole, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(NewUserRole)
-export class NewUserRoleRepo extends CommonRepo<NewUserRole> {}
-@EntityRepository(UserLogin)
-export class UserLoginRepo extends CommonRepo<UserLogin> {}
+export class NewUserRoleRepo extends CommonRepo<NewUserRole> {
+  constructor(private dataSource: DataSource) {
+    super(NewUserRole, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(SecretQuestion)
-export class SecretQuestionRepo extends CommonRepo<SecretQuestion> {}
+export class UserLoginRepo extends CommonRepo<UserLogin> {
+  constructor(private dataSource: DataSource) {
+    super(UserLogin, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(SecretAnswer)
-export class SecretAnswerRepo extends CommonRepo<SecretAnswer> {}
+export class SecretQuestionRepo extends CommonRepo<SecretQuestion> {
+  constructor(private dataSource: DataSource) {
+    super(SecretQuestion, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(UserPasswordReset)
-export class UserPasswordResetRepo extends CommonRepo<UserPasswordReset> {}
+export class SecretAnswerRepo extends CommonRepo<SecretAnswer> {
+  constructor(private dataSource: DataSource) {
+    super(SecretAnswer, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(UserPasswordHistory)
-export class UserPasswordHistoryRepo extends CommonRepo<UserPasswordHistory> {}
+export class UserPasswordResetRepo extends CommonRepo<UserPasswordReset> {
+  constructor(private dataSource: DataSource) {
+    super(UserPasswordReset, dataSource.createEntityManager());
+  }
+}
 
-@EntityRepository(AccessToken)
-export class AccessTokenRepo extends CommonRepo<AccessToken> {}
+export class UserPasswordHistoryRepo extends CommonRepo<UserPasswordHistory> {
+  constructor(private dataSource: DataSource) {
+    super(UserPasswordHistory, dataSource.createEntityManager());
+  }
+}
+
+export class AccessTokenRepo extends CommonRepo<AccessToken> {
+  constructor(private dataSource: DataSource) {
+    super(AccessToken, dataSource.createEntityManager());
+  }
+}

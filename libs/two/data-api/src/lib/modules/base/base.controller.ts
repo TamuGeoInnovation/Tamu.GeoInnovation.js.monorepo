@@ -40,7 +40,7 @@ export abstract class BaseController<Entity extends BaseEntity> {
   public getMatching(@Param() params) {
     // Default service method options
     let options: FindManyOptions<Entity> = {
-      where: { id: params.id }
+      where: { id: params.id } as any
     };
 
     options = this.overrideOptions(options, this.mappings, this.getMatching);
