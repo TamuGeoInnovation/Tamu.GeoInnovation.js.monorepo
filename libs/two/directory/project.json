@@ -12,7 +12,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/two/directory/jest.config.js",
+        "jestConfig": "libs/two/directory/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/two/directory"]

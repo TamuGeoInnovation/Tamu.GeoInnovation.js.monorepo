@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/common/ngx/auth"],
       "options": {
-        "jestConfig": "libs/common/ngx/auth/jest.config.js",
+        "jestConfig": "libs/common/ngx/auth/jest.config.ts",
         "passWithNoTests": true
       }
     },

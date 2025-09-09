@@ -119,7 +119,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/ues-recycling-angular"],
       "options": {
-        "jestConfig": "apps/ues-recycling-angular/jest.config.js",
+        "jestConfig": "apps/ues-recycling-angular/jest.config.ts",
         "passWithNoTests": true
       }
     },

@@ -13,7 +13,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/oidc/provider"],
       "options": {
-        "jestConfig": "libs/oidc/provider/jest.config.js",
+        "jestConfig": "libs/oidc/provider/jest.config.ts",
         "passWithNoTests": true
       }
     }

@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/common/nest/environment"],
       "options": {
-        "jestConfig": "libs/common/nest/environment/jest.config.js",
+        "jestConfig": "libs/common/nest/environment/jest.config.ts",
         "passWithNoTests": true
       }
     }

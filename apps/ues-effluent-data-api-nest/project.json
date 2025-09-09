@@ -5,7 +5,7 @@
   "prefix": "ues-effluent-data-api-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "options": {
         "outputPath": "dist/apps/ues-effluent-data-api-nest",
         "main": "apps/ues-effluent-data-api-nest/src/main.ts",
@@ -47,7 +47,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "ues-effluent-data-api-nest:build",
         "port": 7777
@@ -70,7 +70,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.js",
+        "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/ues-effluent-data-api-nest"]

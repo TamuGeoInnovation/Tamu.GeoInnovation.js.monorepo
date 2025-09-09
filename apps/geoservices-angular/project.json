@@ -120,7 +120,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/geoservices-angular/jest.config.js",
+        "jestConfig": "apps/geoservices-angular/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/geoservices-angular"]

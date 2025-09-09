@@ -4,7 +4,7 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/mailroom-helper-nest",
@@ -38,7 +38,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "mailroom-helper-nest:build"
       }
@@ -54,7 +54,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/mailroom-helper-nest"],
       "options": {
-        "jestConfig": "apps/mailroom-helper-nest/jest.config.js",
+        "jestConfig": "apps/mailroom-helper-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

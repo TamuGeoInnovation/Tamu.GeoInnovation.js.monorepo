@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/common/nest/auth"],
       "options": {
-        "jestConfig": "libs/common/nest/auth/jest.config.js",
+        "jestConfig": "libs/common/nest/auth/jest.config.ts",
         "passWithNoTests": true
       }
     }

@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/ui-kits/ngx/search"],
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/search/jest.config.js",
+        "jestConfig": "libs/ui-kits/ngx/search/jest.config.ts",
         "passWithNoTests": true
       }
     },

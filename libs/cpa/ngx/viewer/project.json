@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/cpa/ngx/viewer"],
       "options": {
-        "jestConfig": "libs/cpa/ngx/viewer/jest.config.js",
+        "jestConfig": "libs/cpa/ngx/viewer/jest.config.ts",
         "passWithNoTests": true
       }
     },

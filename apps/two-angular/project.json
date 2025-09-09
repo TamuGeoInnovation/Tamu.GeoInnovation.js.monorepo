@@ -115,7 +115,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/two-angular/jest.config.js",
+        "jestConfig": "apps/two-angular/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/two-angular"]

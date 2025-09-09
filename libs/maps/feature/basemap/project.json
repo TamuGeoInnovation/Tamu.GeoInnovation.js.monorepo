@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/maps/feature/basemap"],
       "options": {
-        "jestConfig": "libs/maps/feature/basemap/jest.config.js",
+        "jestConfig": "libs/maps/feature/basemap/jest.config.ts",
         "passWithNoTests": true
       }
     },

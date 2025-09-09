@@ -7,7 +7,11 @@
       "parserOptions": {
         "project": "apps/aggiemap-angular-e2e/tsconfig.*?.json"
       },
-      "rules": {}
+      "rules": {
+        // TODO: ENFORCE THIS IN A FUTURE PR
+        // Cypress test chains can intentionally continue from subject; relax this rule for e2e specs
+        "cypress/unsafe-to-chain-command": "off"
+      }
     },
     {
       "files": ["src/plugins/index.js"],

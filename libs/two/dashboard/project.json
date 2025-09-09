@@ -6,7 +6,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/two/dashboard/jest.config.js",
+        "jestConfig": "libs/two/dashboard/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/two/dashboard"]

@@ -5,7 +5,7 @@
   "prefix": "veoride-data-compiler-node",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/veoride-data-compiler-node",
@@ -47,7 +47,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "veoride-data-compiler-node:build"
       }
@@ -62,7 +62,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/veoride-data-compiler-node"],
       "options": {
-        "jestConfig": "apps/veoride-data-compiler-node/jest.config.js",
+        "jestConfig": "apps/veoride-data-compiler-node/jest.config.ts",
         "passWithNoTests": true
       }
     }

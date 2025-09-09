@@ -12,7 +12,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/covid/data-api/jest.config.js",
+        "jestConfig": "libs/covid/data-api/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/covid/data-api"]

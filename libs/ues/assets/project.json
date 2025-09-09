@@ -1,0 +1,6 @@
+{
+  "projectType": "library",
+  "root": "libs/ues/assets",
+  "targets": {},
+  "tags": ["type:assets", "scope:ues"]
+}

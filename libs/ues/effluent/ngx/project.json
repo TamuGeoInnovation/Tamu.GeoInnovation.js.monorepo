@@ -7,7 +7,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/ues/effluent/ngx/jest.config.js",
+        "jestConfig": "libs/ues/effluent/ngx/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/ues/effluent/ngx"]

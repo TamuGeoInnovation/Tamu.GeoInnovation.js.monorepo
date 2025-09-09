@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/kissingbug/ngx"],
       "options": {
-        "jestConfig": "libs/kissingbug/ngx/jest.config.js",
+        "jestConfig": "libs/kissingbug/ngx/jest.config.ts",
         "passWithNoTests": true
       }
     },

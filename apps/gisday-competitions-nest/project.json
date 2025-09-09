@@ -5,7 +5,7 @@
   "prefix": "gisday-competitions-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/gisday-competitions-nest",
@@ -36,7 +36,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "gisday-competitions-nest:build"
       }
@@ -51,7 +51,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/gisday-competitions-nest"],
       "options": {
-        "jestConfig": "apps/gisday-competitions-nest/jest.config.js",
+        "jestConfig": "apps/gisday-competitions-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

@@ -120,7 +120,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/ues-operations-angular/jest.config.js",
+        "jestConfig": "apps/ues-operations-angular/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/ues-operations-angular"]

@@ -6,7 +6,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "libs/common/utils/database/jest.config.js",
+        "jestConfig": "libs/common/utils/database/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/utils/database"]

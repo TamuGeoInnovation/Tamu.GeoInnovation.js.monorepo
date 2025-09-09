@@ -4,7 +4,7 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/gisday-bridge-nest",
@@ -27,7 +27,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "gisday-bridge-nest:build"
       }
@@ -43,7 +43,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/gisday-bridge-nest"],
       "options": {
-        "jestConfig": "apps/gisday-bridge-nest/jest.config.js",
+        "jestConfig": "apps/gisday-bridge-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

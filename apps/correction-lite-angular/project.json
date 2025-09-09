@@ -87,7 +87,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/correction-lite-angular"],
       "options": {
-        "jestConfig": "apps/correction-lite-angular/jest.config.js",
+        "jestConfig": "apps/correction-lite-angular/jest.config.ts",
         "passWithNoTests": true
       }
     }

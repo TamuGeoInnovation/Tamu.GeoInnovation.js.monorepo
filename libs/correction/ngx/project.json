@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/correction/ngx"],
       "options": {
-        "jestConfig": "libs/correction/ngx/jest.config.js",
+        "jestConfig": "libs/correction/ngx/jest.config.ts",
         "passWithNoTests": true
       }
     },

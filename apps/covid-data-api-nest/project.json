@@ -5,7 +5,7 @@
   "prefix": "covid-data-api-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "options": {
         "outputPath": "dist/apps/covid-data-api-nest",
         "main": "apps/covid-data-api-nest/src/main.ts",
@@ -39,7 +39,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "covid-data-api-nest:build"
       },
@@ -61,7 +61,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/covid-data-api-nest/jest.config.js",
+        "jestConfig": "apps/covid-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/covid-data-api-nest"]

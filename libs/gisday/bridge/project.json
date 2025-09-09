@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/gisday/bridge"],
       "options": {
-        "jestConfig": "libs/gisday/bridge/jest.config.js",
+        "jestConfig": "libs/gisday/bridge/jest.config.ts",
         "passWithNoTests": true
       }
     }

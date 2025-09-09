@@ -128,7 +128,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/aggiemap-angular/jest.config.js",
+        "jestConfig": "apps/aggiemap-angular/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/aggiemap-angular"]

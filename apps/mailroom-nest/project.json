@@ -5,7 +5,7 @@
   "prefix": "mailroom-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/mailroom-nest",
@@ -51,7 +51,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "mailroom-nest:build"
       }
@@ -66,7 +66,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/mailroom-nest"],
       "options": {
-        "jestConfig": "apps/mailroom-nest/jest.config.js",
+        "jestConfig": "apps/mailroom-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

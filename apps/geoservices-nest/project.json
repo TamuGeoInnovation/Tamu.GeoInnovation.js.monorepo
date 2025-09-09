@@ -4,7 +4,7 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/geoservices-nest",
@@ -32,7 +32,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "geoservices-nest:build"
       }
@@ -48,7 +48,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/geoservices-nest"],
       "options": {
-        "jestConfig": "apps/geoservices-nest/jest.config.js",
+        "jestConfig": "apps/geoservices-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

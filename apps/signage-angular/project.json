@@ -115,7 +115,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/signage-angular/jest.config.js",
+        "jestConfig": "apps/signage-angular/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/signage-angular"]

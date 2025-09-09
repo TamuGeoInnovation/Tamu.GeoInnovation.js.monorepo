@@ -5,7 +5,7 @@
   "prefix": "ues-recycling-data-api-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/ues-recycling-data-api-nest",
@@ -47,7 +47,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "ues-recycling-data-api-nest:build",
         "port": 7777
@@ -71,7 +71,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/ues-recycling-data-api-nest"],
       "options": {
-        "jestConfig": "apps/ues-recycling-data-api-nest/jest.config.js",
+        "jestConfig": "apps/ues-recycling-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       }
     }

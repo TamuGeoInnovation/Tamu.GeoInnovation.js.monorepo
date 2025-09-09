@@ -5,7 +5,7 @@
   "prefix": "two-valup-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:build",
+      "executor": "@nrwl/node:webpack",
       "options": {
         "outputPath": "dist/apps/two-valup-nest",
         "main": "apps/two-valup-nest/src/main.ts",
@@ -39,7 +39,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:execute",
+      "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "two-valup-nest:build"
       },
@@ -61,7 +61,7 @@
     "test": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/two-valup-nest/jest.config.js",
+        "jestConfig": "apps/two-valup-nest/jest.config.ts",
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/two-valup-nest"]

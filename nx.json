@@ -9,7 +9,7 @@
   },
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
+      "runner": "nx/tasks-runners/default",
       "options": {
         "cacheableOperations": ["build", "lint", "test", "e2e"],
         "parallel": 1
@@ -46,5 +46,6 @@
     "@nrwl/angular:component": {
       "style": "scss"
     }
-  }
+  },
+  "nxCloudId": "68bf66e05ea3cd1b684d15cb"
 }
