@@ -21,9 +21,14 @@ export class FieldCategoriesService extends BaseService<FieldCategory> {
   }
 
   public async getCategoryWithValues(id: string) {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new Error('Invalid ID parameter');
+    }
+
     return this.repo.find({
       where: {
-        id: id
+        id: numericId
       },
       relations: ['values']
     });
@@ -86,9 +91,14 @@ export class FieldCategoriesService extends BaseService<FieldCategory> {
   }
 
   public async addValueToCategory(categoryId: string, value: string) {
+    const numericCategoryId = parseInt(categoryId, 10);
+    if (isNaN(numericCategoryId)) {
+      throw new Error('Invalid category ID parameter');
+    }
+
     const category = await this.repo.findOne({
       where: {
-        id: categoryId
+        id: numericCategoryId
       }
     });
 
@@ -109,7 +119,7 @@ export class FieldCategoriesService extends BaseService<FieldCategory> {
 
     return await this.repo.findOne({
       where: {
-        guid: categoryId
+        id: numericCategoryId
       },
       relations: ['values']
     });

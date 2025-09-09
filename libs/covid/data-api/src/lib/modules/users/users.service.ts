@@ -82,7 +82,7 @@ export class UsersService extends BaseService<User> {
       };
     }
 
-    let user = await this.repo.findOne({ email: email });
+    let user = await this.repo.findOne({ where: { email: email } });
 
     if (!user) {
       user = this.repo.create({ email: email });

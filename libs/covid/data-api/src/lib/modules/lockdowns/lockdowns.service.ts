@@ -50,7 +50,7 @@ export class LockdownsService extends BaseService<Lockdown> {
 
     const existingLockdown = await this.repo.findOne({
       where: {
-        claim: claim.guid
+        claim: { guid: claim.guid }
       }
     });
 
@@ -200,7 +200,7 @@ export class LockdownsService extends BaseService<Lockdown> {
     const deferredLatestInfoForLockdowns = lockdowns.map((lock) => {
       return this.lockdownInfoRepo.findOne({
         where: {
-          lock: lock
+          lockdown: { guid: lock.guid }
         },
         order: {
           created: 'DESC'
