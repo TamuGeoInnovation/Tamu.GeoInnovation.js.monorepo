@@ -31,7 +31,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
   public async insertUserCheckin(eventGuid: string, accountGuid: string) {
     const existing = await this.checkInRepo.findOne({
       where: {
-        event: eventGuid,
+        event: { guid: eventGuid },
         accountGuid: accountGuid
       }
     });
@@ -61,7 +61,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
   public async getUserCheckinForEvent(eventGuid: string, userGuid: string) {
     const checkin = await this.checkInRepo.findOne({
       where: {
-        event: eventGuid,
+        event: { guid: eventGuid },
         accountGuid: userGuid
       }
     });

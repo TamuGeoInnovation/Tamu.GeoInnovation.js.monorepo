@@ -21,7 +21,9 @@ export class FormService extends BaseService<CompetitionForm> {
     return this.competitionSeasonRepo.findOne({
       relations: ['form'],
       where: {
-        season: seasonGuid
+        season: {
+          guid: seasonGuid
+        }
       }
     });
   }
@@ -73,7 +75,9 @@ export class FormService extends BaseService<CompetitionForm> {
   public async updateForm(formGuid: string, form: Partial<CompetitionForm>, season?: Partial<CompetitionSeason>) {
     const competitionSeason = await this.competitionSeasonRepo.findOne({
       where: {
-        form: formGuid
+        form: {
+          guid: formGuid
+        }
       },
       relations: ['form']
     });

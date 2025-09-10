@@ -28,7 +28,7 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
     try {
       return this.eb.find({
         where: {
-          season: seasonGuid
+          season: { guid: seasonGuid }
         },
         order: {
           name: 'ASC'
@@ -45,7 +45,7 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
     try {
       return this.eb.find({
         where: {
-          season: season.guid
+          season: { guid: season.guid }
         },
         order: {
           name: 'ASC'

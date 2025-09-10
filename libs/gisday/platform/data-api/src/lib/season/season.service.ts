@@ -441,10 +441,13 @@ export class SeasonService extends BaseProvider<Season> {
   }
 
   public override async deleteEntity(guidOrOptions?: LookupOneOptions<Season>) {
+    const where =
+      typeof guidOrOptions === 'string'
+        ? { guid: guidOrOptions }
+        : (guidOrOptions as { where?: { guid?: string } })?.where ?? undefined;
+
     const existing = await this.seasonRepo.findOne({
-      where: {
-        guid: guidOrOptions
-      },
+      where,
       loadRelationIds: {
         relations: ['speakers', 'organizations', 'sponsors', 'places', 'tags', 'events']
       }
@@ -487,11 +490,21 @@ export class SeasonService extends BaseProvider<Season> {
           // Get the actual speakers, sponso  r, and tag entities since the `remove` method requires the actual entity
           //
 
-          const speakers = await this.seasonRepo.manager.findByIds(Speaker, existing.speakers);
-          const organizations = await this.seasonRepo.manager.findByIds(Organization, existing.organizations);
-          const sponsors = await this.seasonRepo.manager.findByIds(Sponsor, existing.sponsors);
-          const tags = await this.seasonRepo.manager.findByIds(Tag, existing.tags);
-          const evemts = await this.seasonRepo.manager.findByIds(Event, existing.events);
+          const speakers = await this.seasonRepo.manager.find(Speaker, {
+            where: { guid: In(existing.speakers as unknown as string[]) }
+          });
+          const organizations = await this.seasonRepo.manager.find(Organization, {
+            where: { guid: In(existing.organizations as unknown as string[]) }
+          });
+          const sponsors = await this.seasonRepo.manager.find(Sponsor, {
+            where: { guid: In(existing.sponsors as unknown as string[]) }
+          });
+          const tags = await this.seasonRepo.manager.find(Tag, {
+            where: { guid: In(existing.tags as unknown as string[]) }
+          });
+          const events = await this.seasonRepo.manager.find(Event, {
+            where: { guid: In(existing.events as unknown as string[]) }
+          });
 
           await manager.remove(speakerImages);
           await manager.remove(organizationImages);
@@ -501,7 +514,7 @@ export class SeasonService extends BaseProvider<Season> {
           await manager.remove(organizations);
           await manager.remove(sponsors);
           await manager.remove(tags);
-          await manager.remove(evemts);
+          await manager.remove(events);
 
           const result = await manager.remove(existing);
 

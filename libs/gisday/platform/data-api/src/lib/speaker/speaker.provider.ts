@@ -132,7 +132,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     return this.speakerRepo.find({
       where: {
         isOrganizer: true,
-        season: seasonGuid
+        season: { guid: seasonGuid }
       },
       relations: ['organization', 'university', 'images'],
       order: {
@@ -151,7 +151,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     return this.speakerRepo.find({
       where: {
         isOrganizer: true,
-        season: season.guid
+        season: { guid: season.guid }
       },
       relations: ['organization', 'university', 'images'],
       order: {
@@ -302,9 +302,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
       const existingOrganizations = await this.orgRepo.find({
         where: {
-          name: {
-            $in: uniqueOrganizations
-          }
+          name: In(uniqueOrganizations)
         }
       });
 
@@ -344,9 +342,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
       const existingUniversities = await this.universityRepo.find({
         where: {
-          name: {
-            $in: uniqueUniversities
-          }
+          name: In(uniqueUniversities.map((u) => u.name))
         }
       });
 
@@ -368,9 +364,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
       const existingSpeakers = await this.speakerRepo.find({
         where: {
-          email: {
-            $in: speakers.map((s) => s.SpeakerEmail)
-          }
+          email: In(speakers.map((s) => s.SpeakerEmail))
         }
       });
 

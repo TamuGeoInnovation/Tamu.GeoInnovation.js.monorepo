@@ -2,7 +2,7 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
-import { Tag } from '../entities/all.entity';
+import { Tag, Season } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 
@@ -89,7 +89,13 @@ export class TagProvider extends BaseProvider<Tag> {
   }
 
   public async createTag(tag: Partial<Tag>) {
-    const existing = await this.tagRepo.findOne({ where: { ...tag } });
+    const qb = this.tagRepo.createQueryBuilder('tag');
+    qb.where('tag.name = :name', { name: tag.name });
+
+    if (tag.season && (tag.season as Season).guid) {
+      qb.leftJoin('tag.season', 'season').andWhere('season.guid = :guid', { guid: (tag.season as Season).guid });
+    }
+    const existing = await qb.getOne();
 
     if (existing === undefined) {
       const newTag = this.tagRepo.create(tag);

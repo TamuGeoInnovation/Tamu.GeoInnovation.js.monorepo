@@ -13,7 +13,9 @@ export class SeasonService extends BaseService<CompetitionSeason> {
 
   public async getSeasonStatistics(guid: string) {
     const existing = await this.seasonRepo.findOne({
-      guid: guid
+      where: {
+        guid: guid
+      }
     });
 
     if (!existing) {

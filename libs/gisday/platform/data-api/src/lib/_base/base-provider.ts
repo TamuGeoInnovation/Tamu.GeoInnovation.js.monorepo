@@ -2,7 +2,7 @@ import { InternalServerErrorException, NotFoundException, UnprocessableEntityExc
 
 import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
 
-export abstract class BaseProvider<T> {
+export abstract class BaseProvider<T extends { guid: string }> {
   constructor(private readonly repo: Repository<T>) {}
 
   public async findOne(guidOrOptions?: LookupOneOptions<T>) {
@@ -123,5 +123,5 @@ export abstract class BaseProvider<T> {
   }
 }
 
-export type LookupOneOptions<U> = string | FindOneOptions<U>;
-export type LookupManyOptions<U> = string | FindManyOptions<U>;
+export type LookupOneOptions<U extends { guid: string }> = string | FindOneOptions<U>;
+export type LookupManyOptions<U extends { guid: string }> = string | FindManyOptions<U>;
