@@ -12,10 +12,10 @@
 
     <div class="discover-container">
       <!-- Search Section -->
-      <div class="search-section">
+      <div class="search-section trailer-3">
         <h2>Search Maps</h2>
         <div class="search-input-container">
-          <tamu-gisc-autocomplete [control]="searchControl" [options]="filteredApplications" (optionSelected)="onApplicationSelect($event)" [showOnFocus]="false" [placeholder]="'Search for maps by name, id, or keyword'" [autofocus]="true">
+          <tamu-gisc-autocomplete [control]="searchControl" [options]="filteredApplications" (optionSelected)="onApplicationSelect($event)" [showOnFocus]="false" [placeholder]="'Search for maps by name, id, or keywords'" [autofocus]="true">
             <ng-template tamuGiscAutocompleteOption [tamuGiscAutocompleteOptionOf]="filteredApplications | async" let-app>
               <div class="flex flex-column">
                 <span class="app-name">{{ app.name }}</span>
@@ -29,9 +29,9 @@
       </div>
 
       <!-- Upcoming Events Section -->
-      <div class="upcoming-events-section trailer-2">
+      <div class="upcoming-events-section trailer-3">
         <h2>Upcoming Events</h2>
-        <p class="section-description">Top 3 most recent upcoming events</p>
+        <p class="section-description">Top 3 upcoming events.</p>
 
         <div class="events-list" *ngIf="upcomingEvents.length > 0; else noUpcomingEvents">
           <div class="event-card" *ngFor="let event of upcomingEvents; let i = index" (click)="onApplicationSelect(getApplicationFromEvent(event))">

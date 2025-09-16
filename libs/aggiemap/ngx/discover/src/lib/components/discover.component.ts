@@ -38,8 +38,8 @@ export class DiscoverComponent implements OnInit {
     // Set up autocomplete filtering
     this.filteredApplications = this.searchControl.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filterApplications(value || '')),
       debounceTime(250),
+      map((value) => this._filterApplications(value || '')),
       shareReplay(1)
     );
 
