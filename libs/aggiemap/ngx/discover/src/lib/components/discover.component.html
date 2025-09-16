@@ -50,6 +50,24 @@
           </div>
         </ng-template>
       </div>
+
+      <!-- Experimental Applications Section -->
+      <div class="experimental-applications-section">
+        <h2>Experimental Applications</h2>
+        <p class="section-description">Explore experimental maps and applications</p>
+
+        <div class="applications-list">
+          <div class="application-card" *ngFor="let app of externalApplications" (click)="onExternalSelect(app)">
+            <div class="application-card-header">
+              <h3 class="application-title">{{ app.name }}</h3>
+            </div>
+            <div class="application-card-content">
+              <div class="application-description" *ngIf="app.description">{{ app.description }}</div>
+              <div class="application-keywords" *ngIf="app.keywords && app.keywords.length > 0"><strong>Keywords:</strong> {{ app.keywords.join(', ') }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

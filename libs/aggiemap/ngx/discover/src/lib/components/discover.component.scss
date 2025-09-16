@@ -176,3 +176,65 @@
   background: #f8f8f8;
   border-radius: 8px;
 }
+
+.experimental-applications-section {
+  h2 {
+    color: #500000;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+}
+
+.applications-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.application-card {
+  background: white;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    border-color: #500000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.application-card-header {
+  margin-bottom: 1rem;
+}
+
+.application-title {
+  margin: 0;
+  color: #333;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.application-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+}
+
+.application-description,
+.application-keywords {
+  font-size: 0.875rem;
+  color: #666;
+
+  strong {
+    color: #333;
+  }
+}

@@ -6,6 +6,9 @@ import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 import { EventConfiguration, EventDiscoverApplications } from '@tamu-gisc/ts/events/ngx';
 import { Router } from '@angular/router';
 
+import { ExternalDiscoverApplications } from '../interfaces/external-discover-applications';
+import { ExternalDiscoverApplication } from '../interfaces/discover-application.interface';
+
 @Component({
   selector: 'tamu-gisc-aggiemap-discover',
   templateUrl: './discover.component.html',
@@ -15,6 +18,7 @@ export class DiscoverComponent implements OnInit {
   public searchControl = new FormControl();
   public filteredEvents: Observable<EventConfiguration[]>;
   public upcomingEvents: EventConfiguration[];
+  public externalApplications: ExternalDiscoverApplication[] = ExternalDiscoverApplications;
 
   private allEvents: EventConfiguration[];
 
@@ -89,6 +93,10 @@ export class DiscoverComponent implements OnInit {
     const e = event as EventConfiguration;
     // Navigate to events intro page
     this.rt.navigate([`/events`, e.id]);
+  }
+
+  public onExternalSelect(app: ExternalDiscoverApplication): void {
+    window.open(app.location, '_blank');
   }
 
   public displayEventOption(e: unknown): string {
