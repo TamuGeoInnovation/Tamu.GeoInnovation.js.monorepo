@@ -1,3 +1,5 @@
+import { InternalDiscoverApplication } from '@tamu-gisc/aggiemap/ngx/discover';
+
 import { FourHRoundupTs } from './4h-roundup.definitions';
 import { AggielandSaturdayEventTs } from './aggieland-saturday.definitions';
 import { BigEventTs } from './big-event.definitions';
@@ -28,16 +30,14 @@ export const EventDefinitions = [
   FootballParkingEvent
 ];
 
-export const EventDiscoverApplications = EventDefinitions.reduce(
-  (acc: { [key: string]: { type: 'event'; description: string } }, eventDef) => {
-    if (eventDef.configuration) {
-      acc[eventDef.configuration.id] = {
-        type: 'event',
-        description:
-          eventDef.configuration.introductionText || eventDef.configuration.applicationName || eventDef.configuration.name
-      };
-    }
-    return acc;
-  },
-  {}
-);
+export const EventDiscoverApplications: InternalDiscoverApplication[] = EventDefinitions.filter(
+  (event): event is typeof event & { configuration: NonNullable<typeof event.configuration> } => event.configuration !== null
+).map((event) => ({
+  id: event.configuration.id,
+  source: 'internal' as const,
+  type: 'event' as const,
+  name: event.configuration.name,
+  description:
+    event.configuration.introductionText || `Transportation and parking information for ${event.configuration.name}.`,
+  configuration: event.configuration
+}));

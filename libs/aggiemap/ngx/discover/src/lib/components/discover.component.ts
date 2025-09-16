@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 
-import { EventDefinitions, EventConfiguration } from '@tamu-gisc/ts/events/ngx';
+import { EventConfiguration, EventDiscoverApplications } from '@tamu-gisc/ts/events/ngx';
 import { Router } from '@angular/router';
 
 @Component({
@@ -22,11 +22,9 @@ export class DiscoverComponent implements OnInit {
 
   public ngOnInit(): void {
     // Transform event definitions into searchable format
-    this.allEvents = EventDefinitions.map((c) => c.configuration).filter(
-      (event: EventConfiguration | null): event is EventConfiguration => {
-        return event !== null && !!event?.id && !!event?.name;
-      }
-    );
+    this.allEvents = EventDiscoverApplications.map((e) => e.configuration).filter((e: EventConfiguration) => {
+      return e !== null && !!e?.id && !!e?.name;
+    });
 
     // Set up autocomplete filtering
     this.filteredEvents = this.searchControl.valueChanges.pipe(
