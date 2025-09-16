@@ -1,4 +1,4 @@
-import { ExternalDiscoverApplication } from './discover-application.interface';
+import { ExternalDiscoverApplication } from '../interfaces/discover-application.interface';
 
 export const ExternalDiscoverApplications: ExternalDiscoverApplication[] = [
   // 3D Applications

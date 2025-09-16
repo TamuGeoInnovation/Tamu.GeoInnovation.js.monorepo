@@ -6,8 +6,12 @@ import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 import { EventConfiguration, EventDiscoverApplications } from '@tamu-gisc/ts/events/ngx';
 import { Router } from '@angular/router';
 
-import { ExternalDiscoverApplications } from '../interfaces/external-discover-applications';
-import { ExternalDiscoverApplication } from '../interfaces/discover-application.interface';
+import {
+  DiscoverApplication,
+  ExternalDiscoverApplication,
+  InternalDiscoverApplication
+} from '../interfaces/discover-application.interface';
+import { ExternalDiscoverApplications } from '../definitions/external-discover-applications';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-discover',
@@ -16,8 +20,9 @@ import { ExternalDiscoverApplication } from '../interfaces/discover-application.
 })
 export class DiscoverComponent implements OnInit {
   public searchControl = new FormControl();
-  public filteredEvents: Observable<EventConfiguration[]>;
+  public filteredApplications: Observable<DiscoverApplication[]>;
   public upcomingEvents: EventConfiguration[];
+  public allApplications: DiscoverApplication[] = [...ExternalDiscoverApplications, ...EventDiscoverApplications];
   public externalApplications: ExternalDiscoverApplication[] = ExternalDiscoverApplications;
 
   private allEvents: EventConfiguration[];
@@ -31,9 +36,9 @@ export class DiscoverComponent implements OnInit {
     });
 
     // Set up autocomplete filtering
-    this.filteredEvents = this.searchControl.valueChanges.pipe(
+    this.filteredApplications = this.searchControl.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filterEvents(value || '')),
+      map((value) => this._filterApplications(value || '')),
       debounceTime(250),
       shareReplay(1)
     );
@@ -42,15 +47,21 @@ export class DiscoverComponent implements OnInit {
     this.upcomingEvents = this.getUpcomingEvents();
   }
 
-  private _filterEvents(value: string): EventConfiguration[] {
+  private _filterApplications(value: string): DiscoverApplication[] {
     if (!value) {
-      return this.allEvents.slice(0, 10); // Show first 10 when no search
+      return this.allApplications.slice(0, 10); // Show first 10 when no search
     }
 
     const filterValue = value.toLowerCase();
-    return this.allEvents.filter(
-      (event) => event.name.toLowerCase().includes(filterValue) || event.id.toLowerCase().includes(filterValue)
-    );
+
+    return this.allApplications.filter((app) => {
+      const nameMatch = app.name.toLowerCase().includes(filterValue);
+      const idMatch = app.id.toLowerCase().includes(filterValue);
+      const keywordsMatch = app.keywords
+        ? app.keywords.some((keyword) => keyword.toLowerCase().includes(filterValue))
+        : false;
+      return nameMatch || idMatch || keywordsMatch;
+    });
   }
 
   private getUpcomingEvents(): EventConfiguration[] {
@@ -89,22 +100,20 @@ export class DiscoverComponent implements OnInit {
     return upcomingDates.length > 0 ? Math.min(...upcomingDates) : Number.MAX_SAFE_INTEGER;
   }
 
-  public onEventSelect(event: unknown): void {
-    const e = event as EventConfiguration;
-    // Navigate to events intro page
-    this.rt.navigate([`/events`, e.id]);
-  }
+  public onApplicationSelect(app: DiscoverApplication | undefined): void {
+    if (!app) return;
 
-  public onExternalSelect(app: ExternalDiscoverApplication): void {
-    window.open(app.location, '_blank');
-  }
-
-  public displayEventOption(e: unknown): string {
-    const maybe = e as EventConfiguration;
-    if (!maybe) {
-      return '';
+    if (app.source === 'external') {
+      window.open((app as ExternalDiscoverApplication).location, '_blank');
+    } else if (app.source === 'internal') {
+      const config = (app as InternalDiscoverApplication).configuration;
+      // Navigate to events intro page
+      this.rt.navigate([`/events`, config.id]);
     }
-    return maybe.name || maybe.id || '';
+  }
+
+  public displayApplicationOption(app: DiscoverApplication): string {
+    return app.name || app.id || '';
   }
 
   public formatEventDate(date: string | Date | number): string {
@@ -126,5 +135,11 @@ export class DiscoverComponent implements OnInit {
     }
 
     return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+  }
+
+  public getApplicationFromEvent(event: EventConfiguration): DiscoverApplication | undefined {
+    return this.allApplications.find(
+      (app) => app.source === 'internal' && (app as InternalDiscoverApplication).configuration === event
+    );
   }
 }

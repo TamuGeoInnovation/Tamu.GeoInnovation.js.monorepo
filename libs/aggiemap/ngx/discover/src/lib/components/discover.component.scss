@@ -8,7 +8,7 @@
 }
 
 .search-section {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 
   h2 {
     color: #500000;
@@ -88,7 +88,6 @@
 
 .section-description {
   color: #666;
-  margin-bottom: 1.5rem;
   font-style: italic;
 }
 
@@ -98,11 +97,12 @@
   gap: 1rem;
 }
 
-.event-card {
+.event-card,
+.application-card {
   background: white;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1rem 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -118,13 +118,36 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
+}
+
+.application-card-header {
+  margin-bottom: 0.75rem;
+}
+
+.event-card-content,
+.application-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+}
+
+.event-title,
+.application-title {
+  margin: 0;
+  color: #333;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .event-rank {
@@ -139,23 +162,6 @@
   font-weight: 600;
   font-size: 0.875rem;
   flex-shrink: 0;
-}
-
-.event-title {
-  margin: 0;
-  color: #333;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.event-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  @media (max-width: 768px) {
-    font-size: 0.8rem;
-  }
 }
 
 .event-dates,
@@ -192,45 +198,7 @@
   gap: 1rem;
 }
 
-.application-card {
-  background: white;
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
-  padding: 1.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-  &:hover {
-    border-color: #500000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-  }
-}
-
-.application-card-header {
-  margin-bottom: 1rem;
-}
-
-.application-title {
-  margin: 0;
-  color: #333;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.application-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  @media (max-width: 768px) {
-    font-size: 0.8rem;
-  }
-}
-
-.application-description,
-.application-keywords {
+.application-description {
   font-size: 0.875rem;
   color: #666;
 
