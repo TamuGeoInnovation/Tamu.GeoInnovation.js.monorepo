@@ -13,8 +13,9 @@ import { PhysicsAndEngineeringFestivalTs } from './phys-engineering-festival.def
 import { SoftballRegionalsTs } from './softball-regionals.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
+import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 
-export const EventDefinitions = [
+export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
   AggielandSaturdayEventTs,
   BigEventTs,
@@ -33,11 +34,13 @@ export const EventDefinitions = [
 export const EventDiscoverApplications: InternalDiscoverApplication[] = EventDefinitions.filter(
   (event): event is typeof event & { configuration: NonNullable<typeof event.configuration> } => event.configuration !== null
 ).map((event) => ({
-  id: event.configuration.id,
+  id: event.discover?.id || event.configuration.id,
   source: 'internal' as const,
   type: 'event' as const,
-  name: event.configuration.name,
+  name: event.discover?.name || event.configuration.name,
   description:
-    event.configuration.introductionText || `Transportation and parking information for ${event.configuration.name}.`,
+    event.discover?.description ||
+    event.configuration.introductionText ||
+    `Transportation and parking information for ${event.configuration.name}.`,
   configuration: event.configuration
 }));
