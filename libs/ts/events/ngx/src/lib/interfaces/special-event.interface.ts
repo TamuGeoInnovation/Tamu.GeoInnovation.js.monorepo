@@ -1,5 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
+import { InternalDiscoverApplication } from '@tamu-gisc/aggiemap/ngx/discover';
 
 export interface EventConfiguration {
   /**
@@ -233,4 +234,9 @@ export interface ISpecialEventRoot {
   options: SpecialEventOptions | null;
   references: Record<string, string> | null;
   sources: Array<LayerSource> | null;
+
+  /**
+   * If the event should be discoverable in the Discover application, this property should be set to an object that conforms to the InternalDiscoverApplication interface, omitting the 'configuration' property.
+   */
+  discover?: Omit<InternalDiscoverApplication, 'configuration'> | null;
 }

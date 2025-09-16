@@ -86,5 +86,13 @@ export const MS150Ts = {
   configuration: MS150Configuration,
   options: MS150Options,
   sources: MS150ColdLayerSources,
-  references: MS150_LAYERS
+  references: MS150_LAYERS,
+  discover: {
+    id: MS150Configuration.id,
+    name: MS150Configuration.name,
+    description: 'Transportation and parking information for Bike MS 150.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['bike', 'ms150', 'cycling', 'parking', 'transportation']
+  }
 };

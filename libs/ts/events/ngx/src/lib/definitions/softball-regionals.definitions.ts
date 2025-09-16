@@ -109,5 +109,13 @@ export const SoftballRegionalsTs: ISpecialEventRoot = {
   configuration: SoftballConfiguration,
   sources: SoftballLayerSources,
   options: SoftballOptions,
-  references: SOFTBALL_LAYERS
+  references: SOFTBALL_LAYERS,
+  discover: {
+    id: SoftballConfiguration.id,
+    name: SoftballConfiguration.name,
+    description: 'Transportation and parking information for Softball Regionals.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['softball', 'regionals', 'parking', 'transportation']
+  }
 };

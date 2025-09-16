@@ -79,5 +79,13 @@ export const FourHRoundupTs = {
   configuration: FourHRoundupConfiguration,
   options: FourHRoundupOptions,
   sources: FourHColdLayerSources,
-  references: FOUR_H_ROUNDUP_LAYERS
+  references: FOUR_H_ROUNDUP_LAYERS,
+  discover: {
+    id: FourHRoundupConfiguration.id,
+    name: FourHRoundupConfiguration.name,
+    description: 'Transportation and parking information for 4-H Roundup.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['4h', 'roundup', 'parking', 'transportation']
+  }
 };

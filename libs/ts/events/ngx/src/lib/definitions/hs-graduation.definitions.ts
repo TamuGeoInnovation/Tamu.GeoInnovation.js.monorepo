@@ -195,5 +195,13 @@ export const HsGraduationTs: ISpecialEventRoot = {
   configuration: HsGraduationConfiguration,
   sources: HsGraduationColdLayerSources,
   options: HsGraduationOptions,
-  references: HS_GRADUATION_LAYERS
+  references: HS_GRADUATION_LAYERS,
+  discover: {
+    id: HsGraduationConfiguration.id,
+    name: HsGraduationConfiguration.name,
+    description: 'Transportation and parking information for high school graduation ceremonies.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['high school', 'graduation', 'parking', 'transportation']
+  }
 };

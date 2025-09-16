@@ -224,5 +224,13 @@ export const AggielandSaturdayEventTs: ISpecialEventRoot = {
   configuration: null,
   options: null,
   sources: AggielandSaturdayEventColdLayerSources,
-  references: AGGIELAND_SATURDAY_LAYERS
+  references: AGGIELAND_SATURDAY_LAYERS,
+  discover: {
+    id: 'aggieland-saturday',
+    name: 'Aggieland Saturday',
+    description: 'Transportation and parking information for Aggieland Saturday.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['aggieland', 'saturday', 'parking', 'bus', 'transportation']
+  }
 };

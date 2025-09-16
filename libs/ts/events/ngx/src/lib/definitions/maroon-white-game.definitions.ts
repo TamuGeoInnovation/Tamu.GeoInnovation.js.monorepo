@@ -54,5 +54,13 @@ export const MaroonWhiteTs: ISpecialEventRoot = {
   configuration: MaroonWhiteGameConfiguration,
   options: MaroonWhiteGameOptions,
   sources: MaroonWhiteGameColdLayerSources,
-  references: MAROON_WHITE_GAME_LAYERS
+  references: MAROON_WHITE_GAME_LAYERS,
+  discover: {
+    id: MaroonWhiteGameConfiguration.id,
+    name: MaroonWhiteGameConfiguration.name,
+    description: 'Transportation and parking information for the Maroon & White Game.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['maroon', 'white', 'game', 'parking', 'transportation']
+  }
 };

@@ -587,5 +587,13 @@ export const FootballParkingEvent: ISpecialEventRoot = {
   configuration: FootballParkingConfiguration,
   options: FootballParkingOptions,
   sources: FootballParkingColdLayerSources,
-  references: FOOTBALL_PARKING_LAYERS
+  references: FOOTBALL_PARKING_LAYERS,
+  discover: {
+    id: FootballParkingConfiguration.id,
+    name: FootballParkingConfiguration.name,
+    description: 'Transportation and parking information for football game days.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['football', 'gameday', 'parking', 'shuttles', 'transportation', 'bike']
+  }
 };

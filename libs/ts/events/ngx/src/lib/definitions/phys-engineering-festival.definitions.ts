@@ -87,5 +87,13 @@ export const PhysicsAndEngineeringFestivalTs = {
   configuration: PhysicsAndEngineeringFestivalConfiguration,
   options: PhysicsAndEngineeringFestivalOptions,
   sources: PhysEngFestivalColdLayerSources,
-  references: PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS
+  references: PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS,
+  discover: {
+    id: PhysicsAndEngineeringFestivalConfiguration.id,
+    name: PhysicsAndEngineeringFestivalConfiguration.name,
+    description: 'Transportation and parking information for Physics and Engineering Festival.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['physics', 'engineering', 'festival', 'parking', 'transportation']
+  }
 };
