@@ -22,6 +22,7 @@
                   <span class="app-name">{{ app.name }}</span>
                   <span class="chip chip-internal" *ngIf="app.source === 'internal'">Event</span>
                   <span class="chip chip-external" *ngIf="app.source === 'external'">Experimental</span>
+                  <span class="chip chip-label" *ngFor="let label of app.labels">{{ label | uppercase}}</span>
                 </div>
                 <span class="application-description" *ngIf="app.description">{{ app.description }}</span>
               </div>
