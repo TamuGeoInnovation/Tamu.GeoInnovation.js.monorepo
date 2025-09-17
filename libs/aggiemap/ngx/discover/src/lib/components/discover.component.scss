@@ -204,3 +204,32 @@
     color: #333;
   }
 }
+
+.title {
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chip-internal {
+  background-color: #1e88e5; /* md-bg-blue-500 */
+  color: white;
+}
+
+.chip-external {
+  background-color: #f57c00; /* md-bg-orange-500 */
+  color: white;
+}
+
+.chip-label {
+  background-color: #e0e0e0; /* md-bg-gray-300 */
+  color: black;
+}

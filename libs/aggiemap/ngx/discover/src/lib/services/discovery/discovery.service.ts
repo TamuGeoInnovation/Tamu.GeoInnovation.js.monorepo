@@ -23,7 +23,8 @@ export class DiscoveryService {
       type: 'event' as const,
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
-      configuration: event.configuration
+      configuration: event.configuration,
+      keywords: event.discover?.keywords || []
     }));
   }
 
@@ -32,6 +33,6 @@ export class DiscoveryService {
   }
 
   public getAllDiscoverApplications(): DiscoverApplication[] {
-    return [...this.getExternalDiscoverApplications(), ...this.getInternalDiscoverApplications()];
+    return [...this.getInternalDiscoverApplications(), ...this.getExternalDiscoverApplications()];
   }
 }

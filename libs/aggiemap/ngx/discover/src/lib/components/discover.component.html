@@ -18,10 +18,12 @@
           <tamu-gisc-autocomplete [control]="searchControl" [options]="filteredApplications" (optionSelected)="onApplicationSelect($event)" [showOnFocus]="false" [placeholder]="'Search for maps by name, id, or keywords'" [autofocus]="true">
             <ng-template tamuGiscAutocompleteOption [tamuGiscAutocompleteOptionOf]="filteredApplications | async" let-app>
               <div class="flex flex-column">
-                <span class="app-name">{{ app.name }}</span>
-                <span class="app-type" *ngIf="app.source === 'internal'">Event</span>
-                <span class="app-type" *ngIf="app.source === 'external'">Experimental</span>
-                <span class="app-description" *ngIf="app.description">{{ app.description }}</span>
+                <div class="flex flex-row align-center title">
+                  <span class="app-name">{{ app.name }}</span>
+                  <span class="chip chip-internal" *ngIf="app.source === 'internal'">Event</span>
+                  <span class="chip chip-external" *ngIf="app.source === 'external'">Experimental</span>
+                </div>
+                <span class="application-description" *ngIf="app.description">{{ app.description }}</span>
               </div>
             </ng-template>
           </tamu-gisc-autocomplete>
