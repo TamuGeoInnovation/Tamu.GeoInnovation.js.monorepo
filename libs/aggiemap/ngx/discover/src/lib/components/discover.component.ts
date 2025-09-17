@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 
-import { EventConfiguration, EventDiscoverApplications } from '@tamu-gisc/ts/events/ngx';
+import { EventConfiguration } from '@tamu-gisc/ts/events/ngx';
 import { Router } from '@angular/router';
 
 import {
@@ -11,7 +11,7 @@ import {
   ExternalDiscoverApplication,
   InternalDiscoverApplication
 } from '../interfaces/discover-application.interface';
-import { ExternalDiscoverApplications } from '../definitions/external-discover-applications';
+import { DiscoveryService } from '../services/discovery/discovery.service';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-discover',
@@ -19,21 +19,28 @@ import { ExternalDiscoverApplications } from '../definitions/external-discover-a
   styleUrls: ['./discover.component.scss']
 })
 export class DiscoverComponent implements OnInit {
+  public externalApplications: ExternalDiscoverApplication[];
+  private eventDiscoverApplications: InternalDiscoverApplication[];
+  public allApplications: DiscoverApplication[];
+  private allEvents: EventConfiguration[];
+  public upcomingEvents: EventConfiguration[];
+
   public searchControl = new FormControl();
   public filteredApplications: Observable<DiscoverApplication[]>;
-  public upcomingEvents: EventConfiguration[];
-  public allApplications: DiscoverApplication[] = [...ExternalDiscoverApplications, ...EventDiscoverApplications];
-  public externalApplications: ExternalDiscoverApplication[] = ExternalDiscoverApplications;
 
-  private allEvents: EventConfiguration[];
-
-  constructor(private readonly rt: Router) {}
+  constructor(private readonly rt: Router, private readonly discoveryService: DiscoveryService) {}
 
   public ngOnInit(): void {
+    this.eventDiscoverApplications = this.discoveryService.getInternalDiscoverApplications();
+    this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
+    this.allApplications = this.discoveryService.getAllDiscoverApplications();
+
     // Transform event definitions into searchable format
-    this.allEvents = EventDiscoverApplications.map((e) => e.configuration).filter((e: EventConfiguration) => {
-      return e !== null && !!e?.id && !!e?.name;
-    });
+    this.allEvents = this.eventDiscoverApplications
+      .map((e) => e.configuration)
+      .filter((e: EventConfiguration) => {
+        return e !== null && !!e?.id && !!e?.name;
+      });
 
     // Set up autocomplete filtering
     this.filteredApplications = this.searchControl.valueChanges.pipe(
