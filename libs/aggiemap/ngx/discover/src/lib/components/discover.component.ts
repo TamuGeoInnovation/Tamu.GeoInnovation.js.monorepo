@@ -12,6 +12,7 @@ import {
   InternalDiscoverApplication
 } from '../interfaces/discover-application.interface';
 import { DiscoveryService } from '../services/discovery/discovery.service';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-discover',
@@ -27,10 +28,16 @@ export class DiscoverComponent implements OnInit {
 
   public searchControl = new FormControl();
   public filteredApplications: Observable<DiscoverApplication[]>;
+  public isDev: Observable<boolean>;
 
-  constructor(private readonly rt: Router, private readonly discoveryService: DiscoveryService) {}
+  constructor(
+    private readonly rt: Router,
+    private readonly discoveryService: DiscoveryService,
+    private readonly dev: TestingService
+  ) {}
 
   public ngOnInit(): void {
+    this.isDev = this.dev.get('isTesting');
     this.eventDiscoverApplications = this.discoveryService.getInternalDiscoverApplications();
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
     this.allApplications = this.discoveryService.getAllDiscoverApplications();

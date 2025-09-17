@@ -56,9 +56,11 @@
       </div>
 
       <!-- Experimental Applications Section -->
-      <div class="experimental-applications-section">
+      <div class="experimental-applications-section" *ngIf="(isDev | async) === true">
         <h2>Experimental Applications</h2>
         <p class="section-description">Explore experimental maps and applications</p>
+
+        <div class="info-block trailer-1">This section is only visible in development mode.</div>
 
         <div class="applications-list">
           <div class="application-card" *ngFor="let app of externalApplications" (click)="onApplicationSelect(app)">
