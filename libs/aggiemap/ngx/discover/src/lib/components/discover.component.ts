@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 
 import { EventConfiguration } from '@tamu-gisc/ts/events/ngx';
@@ -50,10 +50,9 @@ export class DiscoverComponent implements OnInit {
       });
 
     // Set up autocomplete filtering
-    this.filteredApplications = this.searchControl.valueChanges.pipe(
-      startWith(''),
+    this.filteredApplications = combineLatest([this.searchControl.valueChanges.pipe(startWith('')), this.isDev]).pipe(
       debounceTime(100),
-      map((value) => this._filterApplications(value || '')),
+      map(([value, isDev]) => this._filterApplications(value || '', isDev)),
       shareReplay(1)
     );
 
@@ -61,14 +60,22 @@ export class DiscoverComponent implements OnInit {
     this.upcomingEvents = this.getUpcomingEvents();
   }
 
-  private _filterApplications(value: string): DiscoverApplication[] {
+  private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
+    let filtered;
+
+    if (isDev) {
+      filtered = this.allApplications;
+    } else {
+      filtered = this.allApplications.filter((app) => app.type !== 'experiment');
+    }
+
     if (!value) {
-      return this.allApplications.slice(0, 10); // Show first 10 when no search
+      return filtered.slice(0, 10); // Show first 10 when no search
     }
 
     const filterValue = value.toLowerCase();
 
-    return this.allApplications.filter((app) => {
+    return filtered.filter((app) => {
       const nameMatch = app.name.toLowerCase().includes(filterValue);
       const idMatch = app.id.toLowerCase().includes(filterValue);
       const keywordsMatch = app.keywords
