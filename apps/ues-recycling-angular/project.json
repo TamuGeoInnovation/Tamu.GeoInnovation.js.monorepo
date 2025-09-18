@@ -98,7 +98,8 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "ues-recycling-angular:build"
+        "browserTarget": "ues-recycling-angular:build",
+        "host": "0.0.0.0"
       },
       "configurations": {
         "production": {

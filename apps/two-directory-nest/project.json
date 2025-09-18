@@ -41,7 +41,8 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "two-directory-nest:build"
+        "buildTarget": "two-directory-nest:build",
+        "host": "0.0.0.0"
       },
       "configurations": {
         "production": {

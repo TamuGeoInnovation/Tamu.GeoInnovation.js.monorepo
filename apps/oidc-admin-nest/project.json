@@ -51,7 +51,8 @@
       "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "oidc-admin-nest:build",
-        "port": 7771
+        "port": 7771,
+        "host": "0.0.0.0"
       },
       "configurations": {
         "production": {

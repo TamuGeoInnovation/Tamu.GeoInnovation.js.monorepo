@@ -63,7 +63,8 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "gisday-nest:build"
+        "buildTarget": "gisday-nest:build",
+        "host": "0.0.0.0"
       },
       "configurations": {
         "production": {

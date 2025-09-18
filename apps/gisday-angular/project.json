@@ -112,7 +112,8 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "gisday-angular:build"
+        "browserTarget": "gisday-angular:build",
+        "host": "0.0.0.0"
       },
       "configurations": {
         "production": {

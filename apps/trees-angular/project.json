@@ -99,7 +99,8 @@
         }
       },
       "options": {
-        "browserTarget": "trees-angular:build"
+        "browserTarget": "trees-angular:build",
+        "host": "0.0.0.0"
       }
     },
     "test": {

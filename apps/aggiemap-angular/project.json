@@ -122,7 +122,8 @@
         }
       },
       "options": {
-        "browserTarget": "aggiemap-angular:build"
+        "browserTarget": "aggiemap-angular:build",
+        "host": "0.0.0.0"
       }
     },
     "test": {
