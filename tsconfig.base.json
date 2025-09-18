@@ -20,6 +20,7 @@
     "paths": {
       "@tamu-gisc/aggiemap/ngx/common": ["libs/aggiemap/ngx/common/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/core": ["libs/aggiemap/ngx/core/src/index.ts"],
+      "@tamu-gisc/aggiemap/ngx/discover": ["libs/aggiemap/ngx/discover/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/popups": ["libs/aggiemap/ngx/popups/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/ui/desktop": ["libs/aggiemap/ngx/ui/desktop/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/ui/mobile": ["libs/aggiemap/ngx/ui/mobile/src/index.ts"],

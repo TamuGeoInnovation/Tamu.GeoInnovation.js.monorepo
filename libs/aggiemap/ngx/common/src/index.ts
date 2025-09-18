@@ -20,5 +20,3 @@ export * from './lib/selection-symbols';
 export * from './lib/polygons';
 
 export * from './lib/utils/definitionFactory';
-
-export * from './lib/interfaces/discover-application.interface';

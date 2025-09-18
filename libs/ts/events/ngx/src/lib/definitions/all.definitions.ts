@@ -27,3 +27,17 @@ export const EventDefinitions = [
   TroubadourTs,
   FootballParkingEvent
 ];
+
+export const EventDiscoverApplications = EventDefinitions.reduce(
+  (acc: { [key: string]: { type: 'event'; description: string } }, eventDef) => {
+    if (eventDef.configuration) {
+      acc[eventDef.configuration.id] = {
+        type: 'event',
+        description:
+          eventDef.configuration.introductionText || eventDef.configuration.applicationName || eventDef.configuration.name
+      };
+    }
+    return acc;
+  },
+  {}
+);
