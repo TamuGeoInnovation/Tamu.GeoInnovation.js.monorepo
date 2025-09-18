@@ -38,7 +38,8 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "gisday-competitions-nest:build"
+        "buildTarget": "gisday-competitions-nest:build",
+        "host": "0.0.0.0"
       }
     },
     "lint": {

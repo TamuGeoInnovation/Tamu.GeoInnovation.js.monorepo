@@ -11,8 +11,9 @@ import { PhysicsAndEngineeringFestivalTs } from './phys-engineering-festival.def
 import { SoftballRegionalsTs } from './softball-regionals.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
+import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 
-export const EventDefinitions = [
+export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
   AggielandSaturdayEventTs,
   BigEventTs,

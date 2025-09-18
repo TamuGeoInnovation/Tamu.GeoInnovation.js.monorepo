@@ -189,5 +189,13 @@ export const FamilyWeekendTs: ISpecialEventRoot = {
   configuration: FamilyWeekendConfiguration,
   options: FamilyWeekendOptions,
   sources: FamilyWeekendColdLayerSources,
-  references: FAMILY_WEEKEND_LAYERS
+  references: FAMILY_WEEKEND_LAYERS,
+  discover: {
+    id: FamilyWeekendConfiguration.id,
+    name: FamilyWeekendConfiguration.name,
+    description: 'Transportation and parking information for Family Weekend.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['family', 'weekend', 'parking', 'shuttles', 'transportation']
+  }
 };

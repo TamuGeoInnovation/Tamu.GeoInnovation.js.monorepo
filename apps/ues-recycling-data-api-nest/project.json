@@ -50,7 +50,8 @@
       "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "ues-recycling-data-api-nest:build",
-        "port": 7777
+        "port": 7777,
+        "host": "0.0.0.0"
       },
       "configurations": {
         "production": {

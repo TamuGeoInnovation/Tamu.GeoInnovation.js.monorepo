@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/aggiemap/ngx/discover",
+  "sourceRoot": "libs/aggiemap/ngx/discover/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/aggiemap/ngx/discover"],
+      "options": {
+        "jestConfig": "libs/aggiemap/ngx/discover/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/aggiemap/ngx/discover/src/**/*.ts", "libs/aggiemap/ngx/discover/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

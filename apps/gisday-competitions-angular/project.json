@@ -106,7 +106,8 @@
         }
       },
       "options": {
-        "browserTarget": "gisday-competitions-angular:build"
+        "browserTarget": "gisday-competitions-angular:build",
+        "host": "0.0.0.0"
       }
     },
     "test": {

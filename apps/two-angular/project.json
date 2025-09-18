@@ -109,7 +109,8 @@
         }
       },
       "options": {
-        "browserTarget": "two-angular:build"
+        "browserTarget": "two-angular:build",
+        "host": "0.0.0.0"
       }
     },
     "test": {

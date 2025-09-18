@@ -55,5 +55,13 @@ export const TroubadourTs: ISpecialEventRoot = {
   configuration: TroubadourConfiguration,
   options: TroubadourOptions,
   sources: TroubadourColdLayerSources,
-  references: TROUBADOUR_LAYERS
+  references: TROUBADOUR_LAYERS,
+  discover: {
+    id: TroubadourConfiguration.id,
+    name: TroubadourConfiguration.name,
+    description: 'Transportation and parking information for Troubadour Festival.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['troubadour', 'festival', 'parking', 'transportation']
+  }
 };

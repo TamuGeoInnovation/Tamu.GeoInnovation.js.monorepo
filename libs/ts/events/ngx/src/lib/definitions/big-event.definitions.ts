@@ -265,5 +265,13 @@ export const BigEventTs: ISpecialEventRoot = {
   configuration: BigEventConfiguration,
   options: BigEventOptions,
   sources: BigEventColdLayerSources,
-  references: BIG_EVENT_LAYERS
+  references: BIG_EVENT_LAYERS,
+  discover: {
+    id: BigEventConfiguration.id,
+    name: BigEventConfiguration.name,
+    description: 'Transportation and parking information for Big Event.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['big event', 'parking', 'transportation']
+  }
 };

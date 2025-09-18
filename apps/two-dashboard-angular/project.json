@@ -88,7 +88,8 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
         "browserTarget": "two-dashboard-angular:build",
-        "port": 0
+        "port": 0,
+        "host": "0.0.0.0"
       },
       "configurations": {
         "production": {

@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIKeyboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
 import { AbstractValueAccessorFormComponent } from './models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 
@@ -20,6 +21,9 @@ import { RadioGroupComponent } from './components/radio-group/radio-group.compon
 import { SlideToggleComponent } from './components/slide-toggle/slide-toggle.component';
 import { SelectListComponent } from './components/select-list/select-list.component';
 import { TurnstileChallengeComponent } from './components/turnstile-challenge/turnstile-challenge.component';
+import { AutocompleteComponent } from './components/autocomplete/autocomplete.component';
+
+import { AutocompleteOptionTemplateDirective } from './components/autocomplete/directives/autocomplete-option-template.directive';
 
 @NgModule({
   imports: [
@@ -28,7 +32,8 @@ import { TurnstileChallengeComponent } from './components/turnstile-challenge/tu
     ReactiveFormsModule,
     UILayoutModule,
     DlDateTimePickerDateModule,
-    DlDateTimePickerModule
+    DlDateTimePickerModule,
+    UIKeyboardModule
   ],
   declarations: [
     SelectComponent,
@@ -38,6 +43,8 @@ import { TurnstileChallengeComponent } from './components/turnstile-challenge/tu
     TextboxComponent,
     AbstractValueAccessorFormComponent,
     ButtonComponent,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
     FileComponent,
     RadioGroupComponent,
     RangeComponent,
@@ -51,6 +58,8 @@ import { TurnstileChallengeComponent } from './components/turnstile-challenge/tu
     CheckboxGroupComponent,
     DateTimePickerComponent,
     TextboxComponent,
+    AutocompleteComponent,
+    AutocompleteOptionTemplateDirective,
     ButtonComponent,
     FileComponent,
     RadioGroupComponent,

@@ -21,7 +21,8 @@
         "nrwl.angular-console@17.15.0",
         "esbenp.prettier-vscode",
         "eamodio.gitlens",
-        "GitHub.copilot"
+        "GitHub.copilot",
+        "firsttris.vscode-jest-runner"
       ]
     }
   },

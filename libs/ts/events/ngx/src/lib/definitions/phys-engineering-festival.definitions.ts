@@ -2,7 +2,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
   FESTIVAL_AREAS = 'phys-eng-festival-areas',
@@ -83,9 +83,17 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
 
 export const PhysicsAndEngineeringFestivalOptions: SpecialEventOptions = [];
 
-export const PhysicsAndEngineeringFestivalTs = {
+export const PhysicsAndEngineeringFestivalTs: ISpecialEventRoot = {
   configuration: PhysicsAndEngineeringFestivalConfiguration,
   options: PhysicsAndEngineeringFestivalOptions,
   sources: PhysEngFestivalColdLayerSources,
-  references: PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS
+  references: PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS,
+  discover: {
+    id: PhysicsAndEngineeringFestivalConfiguration.id,
+    name: PhysicsAndEngineeringFestivalConfiguration.name,
+    description: 'Transportation and parking information for Physics and Engineering Festival.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['physics', 'engineering', 'festival', 'parking', 'transportation']
+  }
 };

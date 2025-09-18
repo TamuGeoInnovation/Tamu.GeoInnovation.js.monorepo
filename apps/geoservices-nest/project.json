@@ -34,7 +34,8 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "geoservices-nest:build"
+        "buildTarget": "geoservices-nest:build",
+        "host": "0.0.0.0"
       }
     },
     "lint": {

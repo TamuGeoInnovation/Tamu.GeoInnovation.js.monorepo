@@ -20,6 +20,7 @@
     "paths": {
       "@tamu-gisc/aggiemap/ngx/common": ["libs/aggiemap/ngx/common/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/core": ["libs/aggiemap/ngx/core/src/index.ts"],
+      "@tamu-gisc/aggiemap/ngx/discover": ["libs/aggiemap/ngx/discover/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/popups": ["libs/aggiemap/ngx/popups/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/ui/desktop": ["libs/aggiemap/ngx/ui/desktop/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/ui/mobile": ["libs/aggiemap/ngx/ui/mobile/src/index.ts"],
@@ -135,6 +136,7 @@
       "@tamu-gisc/ui-kits/ngx/forms": ["libs/ui-kits/ngx/forms/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["libs/ui-kits/ngx/interactions/clipboard/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/draggable": ["libs/ui-kits/ngx/interactions/draggable/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/interactions/keyboard": ["libs/ui-kits/ngx/interactions/keyboard/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/scroll-to": ["libs/ui-kits/ngx/interactions/scroll-to/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout": ["libs/ui-kits/ngx/layout/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout/code": ["libs/ui-kits/ngx/layout/code/src/index.ts"],

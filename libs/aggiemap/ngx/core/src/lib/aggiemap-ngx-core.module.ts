@@ -11,6 +11,10 @@ const hybridRoutes: Routes = [
   { path: 'about', loadChildren: () => import('./pages/about/about.module').then((m) => m.AboutModule) },
   { path: 'changelog', loadChildren: () => import('./pages/changelog/changelog.module').then((m) => m.ChangelogModule) },
   { path: 'directory', loadChildren: () => import('./pages/directory/directory.module').then((m) => m.DirectoryModule) },
+  {
+    path: 'discover',
+    loadChildren: () => import('@tamu-gisc/aggiemap/ngx/discover').then((m) => m.DiscoverModule)
+  },
   { path: 'feedback', loadChildren: () => import('./pages/feedback/feedback.module').then((m) => m.FeedbackModule) },
   { path: 'privacy', loadChildren: () => import('./pages/privacy/privacy.module').then((m) => m.PrivacyModule) },
   {

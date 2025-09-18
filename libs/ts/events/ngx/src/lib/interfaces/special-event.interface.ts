@@ -233,4 +233,30 @@ export interface ISpecialEventRoot {
   options: SpecialEventOptions | null;
   references: Record<string, string> | null;
   sources: Array<LayerSource> | null;
+
+  /**
+   * If the event should be discoverable in the Discover application, this property should be set to an object that conforms to the EventDiscoverMetadata interface.
+   */
+  discover?: EventDiscoverMetadata | null;
+}
+
+/**
+ * Metadata used to represent an event in the Discover application.
+ *
+ * This has significant overlap with the EventConfiguration interface. This is sadly kept separate because of Nx library boundaries creates a circular dependency otherwise.
+ */
+export interface EventDiscoverMetadata {
+  id: string;
+  name: string;
+  description: string;
+  thumbnail?: string;
+  keywords?: string[];
+  /**
+   * Optional labels to display on the application card (e.g., "New", "Beta", etc.)
+   *
+   * These will generally be used as chips or badges and are intended to be used to supplement the `type` field.
+   */
+  labels?: string[];
+  source: 'internal';
+  type: 'event';
 }

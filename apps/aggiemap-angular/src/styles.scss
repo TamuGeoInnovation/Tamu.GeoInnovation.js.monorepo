@@ -1124,6 +1124,26 @@ button[type='submit'] {
   }
 }
 
+.info-block {
+  background: #fffde7;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1pt solid #fdd835;
+  border-radius: 5pt;
+  font-size: 0.9rem;
+
+  .info-block__body,
+  .info-block__header {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-block__header {
+    font-weight: 600;
+  }
+}
+
 //  ==========================================================================
 //   MEDIA QUERIES MEDIUM
 //  ==========================================================================
@@ -1164,7 +1184,7 @@ button[type='submit'] {
 @media only screen and (max-width: 768px) {
   .container12,
   .container16 {
-    width: 87% !important;
+    width: 90% !important;
   }
 
   .column1,

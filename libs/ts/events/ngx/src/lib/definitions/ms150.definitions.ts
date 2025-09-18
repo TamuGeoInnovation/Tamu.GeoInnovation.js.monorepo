@@ -1,7 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum MS150_LAYERS {
   PARKING_LOTS = 'ms150-parking-lots',
@@ -82,9 +82,17 @@ export const MS150Configuration: EventConfiguration = {
 
 export const MS150Options: SpecialEventOptions = [];
 
-export const MS150Ts = {
+export const MS150Ts: ISpecialEventRoot = {
   configuration: MS150Configuration,
   options: MS150Options,
   sources: MS150ColdLayerSources,
-  references: MS150_LAYERS
+  references: MS150_LAYERS,
+  discover: {
+    id: MS150Configuration.id,
+    name: MS150Configuration.name,
+    description: 'Transportation and parking information for Bike MS 150.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['bike', 'ms150', 'cycling', 'parking', 'transportation']
+  }
 };

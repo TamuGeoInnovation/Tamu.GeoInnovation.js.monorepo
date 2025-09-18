@@ -107,5 +107,13 @@ export const MusterTs: ISpecialEventRoot = {
   configuration: MusterConfiguration,
   options: MusterOptions,
   sources: MusterEventColdLayerSources,
-  references: MUSTER_LAYERS
+  references: MUSTER_LAYERS,
+  discover: {
+    id: MusterConfiguration.id,
+    name: MusterConfiguration.name,
+    description: 'Transportation and parking information for Muster.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['muster', 'parking', 'transportation']
+  }
 };

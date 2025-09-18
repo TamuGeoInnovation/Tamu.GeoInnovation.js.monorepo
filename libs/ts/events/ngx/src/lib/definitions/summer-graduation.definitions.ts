@@ -129,3 +129,18 @@ enum SummerCommencementAttendanceDateChoices {
 }
 
 export const SummerCommencementOptions: SpecialEventOptions = [];
+
+export const SummerCommencementTs = {
+  configuration: SummerCommencementConfiguration,
+  options: SummerCommencementOptions,
+  sources: SummerCommencementColdLayerSources,
+  references: SUMMER_COMMENCEMENT_LAYERS,
+  discover: {
+    id: SummerCommencementConfiguration.id,
+    name: SummerCommencementConfiguration.name,
+    description: 'Transportation and parking information for summer commencement ceremony.',
+    source: 'internal',
+    type: 'event',
+    keywords: ['summer', 'commencement', 'graduation', 'parking', 'transportation']
+  }
+};

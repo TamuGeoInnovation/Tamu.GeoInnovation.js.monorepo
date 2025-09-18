@@ -41,7 +41,8 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "covid-data-api-nest:build"
+        "buildTarget": "covid-data-api-nest:build",
+        "host": "0.0.0.0"
       },
       "configurations": {
         "production": {

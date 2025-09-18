@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, forwardRef, ChangeDetectionStrategy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
@@ -16,7 +16,9 @@ import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TextboxComponent extends AbstractValueAccessorFormComponent<string> {
+export class TextboxComponent extends AbstractValueAccessorFormComponent<string> implements AfterViewInit {
+  @ViewChild('inputElement', { static: false }) inputElement: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
+
   /**
    * Use the host `formControlName` directive as the input form name used to identify input fields and label ownership.
    *
@@ -56,4 +58,15 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
    */
   @Input()
   public floatLabel = false;
+
+  @Input()
+  public autofocus = false;
+
+  ngAfterViewInit(): void {
+    if (this.autofocus && this.inputElement) {
+      setTimeout(() => {
+        this.inputElement.nativeElement.focus();
+      }, 0);
+    }
+  }
 }
