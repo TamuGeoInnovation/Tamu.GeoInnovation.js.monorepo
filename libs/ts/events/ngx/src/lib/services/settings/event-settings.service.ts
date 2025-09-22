@@ -226,28 +226,38 @@ export class EventSettingsService {
         const value = settings[option.value];
 
         if (value !== undefined) {
-          merged[option.value] = {
-            shortDescription: option.shortDescription,
-            option: {
-              value: value,
-              label: (option.choices.find((o) => o.value === value) as EventAccommodationOption).label
+          return [
+            ...merged,
+            {
+              key: option.value,
+              shortDescription: option.shortDescription,
+              option: {
+                value: value,
+                label: (option.choices.find((o) => o.value === value) as EventAccommodationOption).label
+              }
             }
-          };
+          ];
         } else {
-          merged[option.value] = {
-            shortDescription: option.shortDescription,
-            option: null
-          };
+          return [
+            ...merged,
+            {
+              key: option.value,
+              shortDescription: option.shortDescription,
+              option: null
+            }
+          ];
         }
       } else {
-        merged[option.value] = {
-          shortDescription: option.shortDescription,
-          option: null
-        };
+        return [
+          ...merged,
+          {
+            key: option.value,
+            shortDescription: option.shortDescription,
+            option: null
+          }
+        ];
       }
-
-      return merged;
-    }, {} as ResolvedEventSettings);
+    }, [] as ResolvedEventSettings);
   }
 
   public accommodationsValid() {

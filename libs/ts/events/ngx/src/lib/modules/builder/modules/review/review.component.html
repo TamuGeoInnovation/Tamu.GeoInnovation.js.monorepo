@@ -5,11 +5,11 @@
     <div class="column6 flex flex-column" id="settings-table">
       <div class="setting-item"></div>
 
-      <div class="setting-item" *ngFor="let option of mergedSettings | keyvalue">
-        <div>{{option.value.shortDescription}}</div>
+      <div class="setting-item" *ngFor="let option of mergedSettings">
+        <div>{{option.shortDescription}}</div>
         <div>
-          <p *ngIf="option.value.option === null">Not Set</p>
-          <p *ngIf="option.value.option !== null">{{ option.value.option.label }}</p>
+          <p *ngIf="option.option === null">Not Set</p>
+          <p *ngIf="option.option !== null">{{ option.option.label }}</p>
           <a (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
         </div>
       </div>

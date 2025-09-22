@@ -218,15 +218,16 @@ export interface EventAccommodationOption {
    */
 }
 
-export interface ResolvedEventSettings {
-  [key: SpecialEventOption['value']]: {
-    shortDescription: string;
-    option: {
-      value: string | boolean | number | null;
-      label: string;
-    } | null;
-  };
+export interface ResolvedEventSetting {
+  key: string;
+  shortDescription: string;
+  option: {
+    value: string | boolean | number | null;
+    label: string;
+  } | null;
 }
+
+export type ResolvedEventSettings = Array<ResolvedEventSetting>;
 
 export interface ISpecialEventRoot {
   configuration: EventConfiguration | null;
