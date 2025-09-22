@@ -4,12 +4,12 @@ import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdow
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum RING_DAY_LAYERS {
-  RD_AREAS = 'ring-day-areas',
+  RD_POIS = 'ring-day-pois',
   RD_ROUTES = 'ring-day-routes',
-  RD_POIS = 'ring-day-pois'
+  RD_AREAS = 'ring-day-areas'
 }
 
-const eventUrl = 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Ring_Day_2_view/FeatureServer';
+const eventUrl = 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/ArcGIS/rest/services/Ring_Day_1_view/FeatureServer';
 
 const RingDayEventDefinitions = {
   RD_AREAS: {
@@ -90,8 +90,8 @@ export const RingDayConfiguration: EventConfiguration = {
   shortApplicationName: 'Ring Day Map',
   introductionText: 'Get the best transportation and logistics information for Ring Day.',
   eventDates: ['2025-10-16', '2025-10-17', '2025-10-18'],
-  mapCenter: [-96.34344, 30.61011],
-  zoom: 16,
+  mapCenter: [-96.33616, 30.60958],
+  zoom: 17,
   defaultLayerOverrides: {
     'construction_zone-layer': {
       visible: false
@@ -154,12 +154,16 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           layerId: RING_DAY_LAYERS.RD_AREAS,
           conversions: [
             {
+              input: EventDay.DAY1,
+              expression: "Day1 = 'Yes'"
+            },
+            {
               input: EventDay.DAY2,
-              expression: 'Day2 = 1'
+              expression: "Day2 = 'Yes'"
             },
             {
               input: EventDay.DAY3,
-              expression: 'Day3 = 1'
+              expression: "Day3 = 'Yes'"
             }
           ]
         },
@@ -167,12 +171,16 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           layerId: RING_DAY_LAYERS.RD_ROUTES,
           conversions: [
             {
-              input: EventDay.DAY2,
-              expression: 'Day2 = 1'
+              input: EventDay.DAY1,
+              expression: "Day1 = 'Yes'"
             },
             {
               input: EventDay.DAY2,
-              expression: 'Day3 = 1'
+              expression: "Day2 = 'Yes'"
+            },
+            {
+              input: EventDay.DAY3,
+              expression: "Day3 = 'Yes'"
             }
           ]
         },
@@ -180,12 +188,16 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           layerId: RING_DAY_LAYERS.RD_POIS,
           conversions: [
             {
+              input: EventDay.DAY1,
+              expression: "Day1 = 'Yes'"
+            },
+            {
               input: EventDay.DAY2,
-              expression: 'Day2 = 1'
+              expression: "Day2 = 'Yes'"
             },
             {
               input: EventDay.DAY3,
-              expression: 'Day3 = 1'
+              expression: "Day3 = 'Yes'"
             }
           ]
         }
@@ -218,7 +230,7 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
             },
             {
               input: AccessibilityOptions.ACCESSIBLE,
-              expression: '1=1' // Show all areas including ADA
+              expression: "Type LIKE '%ADA%'"
             }
           ]
         }
