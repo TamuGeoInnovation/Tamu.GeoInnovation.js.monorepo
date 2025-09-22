@@ -1,7 +1,12 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  EventConfiguration,
+  ISpecialEventRoot,
+  ConversionDeconflictingStrategy,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum RING_DAY_LAYERS {
   RD_POIS = 'ring-day-pois',
@@ -41,7 +46,7 @@ export const RingDayColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
-      description: 'attributes.description'
+      description: 'attributes.Notes'
     },
     visible: true,
     listMode: 'show',

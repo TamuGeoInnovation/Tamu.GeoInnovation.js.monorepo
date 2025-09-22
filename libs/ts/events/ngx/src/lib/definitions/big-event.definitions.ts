@@ -255,8 +255,7 @@ export const BigEventOptions: SpecialEventOptions = [
             }
           ]
         }
-      ],
-      deconflictingStrategy: 'append-or'
+      ]
     }
   }
 ];

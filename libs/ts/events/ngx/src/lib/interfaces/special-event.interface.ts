@@ -158,17 +158,14 @@ export interface SpecialEventOption {
        */
       conversions?: Array<ISpecialEventOptionEffectsConversion>;
     }>;
-
-    /**
-     * If a layer is affected by multiple effects, this property determines how the effects are applied.
-     *
-     * - `replace` will replace the current definition expression with the new one.
-     * - `ignore` will ignore the new definition expression.
-     * - `append-and` will append the new definition expression with an `AND` operator.
-     * - `append-or` will append the new definition expression with an `OR` operator.
-     */
-    deconflictingStrategy?: 'replace' | 'ignore' | 'append-and' | 'append-or';
   };
+}
+
+export enum ConversionDeconflictingStrategy {
+  REPLACE = 'replace',
+  IGNORE = 'ignore',
+  APPEND_AND = 'append-and',
+  APPEND_OR = 'append-or'
 }
 
 interface ISpecialEventOptionEffectsConversion {
@@ -195,6 +192,16 @@ interface ISpecialEventOptionEffectsConversion {
    * This enables the ability to, for example, show/hide layers based on accommodation selections.
    */
   propOverrides?: Partial<Omit<LayerSource, 'type' | 'id' | 'title' | 'url'>>;
+
+  /**
+   * If a layer is affected by multiple effects, this property determines how the effects are applied.
+   *
+   * - `replace` will replace the current definition expression with the new one.
+   * - `ignore` will ignore the new definition expression.
+   * - `append-and` will append the new definition expression with an `AND` operator.
+   * - `append-or` will append the new definition expression with an `OR` operator.
+   */
+  deconflictingStrategy?: ConversionDeconflictingStrategy;
 }
 
 /**

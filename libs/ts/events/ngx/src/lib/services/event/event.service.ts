@@ -8,7 +8,11 @@ import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventSettings, SpecialEventOptions } from '../../interfaces/special-event.interface';
+import {
+  EventSettings,
+  ConversionDeconflictingStrategy,
+  SpecialEventOptions
+} from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../settings/event-settings.service';
 
 import esri = __esri;
@@ -93,10 +97,27 @@ export class EventService {
                         if (correspondingOption && correspondingOption.expression) {
                           value = correspondingOption.expression;
 
-                          // If there's already a definition expression, combine them with AND
+                          // If there's already a definition expression set, use the deconflicting strategy to determine how to apply the new expression.
+                          // If there's no deconflicting strategy, default to 'append-and'
+
                           const existingExpression = (source as esri.FeatureLayer).definitionExpression;
+
                           if (existingExpression) {
-                            (source as esri.FeatureLayer).definitionExpression = `(${existingExpression}) AND (${value})`;
+                            const deconflictingStrategy =
+                              correspondingOption.deconflictingStrategy || ConversionDeconflictingStrategy.APPEND_AND;
+
+                            if (deconflictingStrategy === ConversionDeconflictingStrategy.APPEND_AND) {
+                              (source as esri.FeatureLayer).definitionExpression = `(${existingExpression}) AND (${value})`;
+                            } else if (deconflictingStrategy === ConversionDeconflictingStrategy.APPEND_OR) {
+                              (source as esri.FeatureLayer).definitionExpression = `(${existingExpression}) OR (${value})`;
+                            } else if (deconflictingStrategy === ConversionDeconflictingStrategy.REPLACE) {
+                              (source as esri.FeatureLayer).definitionExpression = value;
+                            } else {
+                              // Ignore
+                              console.warn(
+                                `EventService.drawEvent: Ignoring new definition expression for layer ${source.id} using 'ignore' deconflicting strategy.`
+                              );
+                            }
                           } else {
                             (source as esri.FeatureLayer).definitionExpression = value;
                           }
