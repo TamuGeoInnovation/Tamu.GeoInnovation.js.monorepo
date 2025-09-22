@@ -1,12 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import {
-  EventConfiguration,
-  ISpecialEventRoot,
-  ConversionDeconflictingStrategy,
-  SpecialEventOptions
-} from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum RING_DAY_LAYERS {
   RD_POIS = 'ring-day-pois',
@@ -208,40 +203,40 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
         }
       ]
     }
-  },
-  {
-    value: RingDayOptions.ACCESSIBILITY,
-    label: 'Accessible Accommodations',
-    description: 'Will you require accessibility accommodations to view relevant accessible routes and options?',
-    shortDescription: 'Accessible Accommodations',
-    choices: [
-      {
-        value: AccessibilityOptions.ACCESSIBLE,
-        label: 'Yes'
-      },
-      {
-        value: AccessibilityOptions.STANDARD,
-        label: 'No'
-      }
-    ],
-    effects: {
-      layers: [
-        {
-          layerId: RING_DAY_LAYERS.RD_AREAS,
-          conversions: [
-            {
-              input: AccessibilityOptions.STANDARD,
-              expression: "Type NOT LIKE '%ADA%'"
-            },
-            {
-              input: AccessibilityOptions.ACCESSIBLE,
-              expression: "Type LIKE '%ADA%'"
-            }
-          ]
-        }
-      ]
-    }
   }
+  // {
+  //   value: RingDayOptions.ACCESSIBILITY,
+  //   label: 'Accessible Accommodations',
+  //   description: 'Will you require accessibility accommodations to view relevant accessible routes and options?',
+  //   shortDescription: 'Accessible Accommodations',
+  //   choices: [
+  //     {
+  //       value: AccessibilityOptions.ACCESSIBLE,
+  //       label: 'Yes'
+  //     },
+  //     {
+  //       value: AccessibilityOptions.STANDARD,
+  //       label: 'No'
+  //     }
+  //   ],
+  //   effects: {
+  //     layers: [
+  //       {
+  //         layerId: RING_DAY_LAYERS.RD_AREAS,
+  //         conversions: [
+  //           {
+  //             input: AccessibilityOptions.STANDARD,
+  //             expression: "Type NOT LIKE '%ADA%'"
+  //           },
+  //           {
+  //             input: AccessibilityOptions.ACCESSIBLE,
+  //             expression: "Type LIKE '%ADA%'"
+  //           }
+  //         ]
+  //       }
+  //     ]
+  //   }
+  // }
 ];
 
 export const RingDayEvent: ISpecialEventRoot = {
