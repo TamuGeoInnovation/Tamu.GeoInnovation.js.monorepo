@@ -155,15 +155,15 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           conversions: [
             {
               input: EventDay.DAY1,
-              expression: "Day1 = 'Yes'"
+              expression: 'Day1 = 1'
             },
             {
               input: EventDay.DAY2,
-              expression: "Day2 = 'Yes'"
+              expression: 'Day2 = 1'
             },
             {
               input: EventDay.DAY3,
-              expression: "Day3 = 'Yes'"
+              expression: 'Day3 = 1'
             }
           ]
         },
@@ -172,15 +172,15 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           conversions: [
             {
               input: EventDay.DAY1,
-              expression: "Day1 = 'Yes'"
+              expression: 'Day1 = 1'
             },
             {
               input: EventDay.DAY2,
-              expression: "Day2 = 'Yes'"
+              expression: 'Day2 = 1'
             },
             {
               input: EventDay.DAY3,
-              expression: "Day3 = 'Yes'"
+              expression: 'Day3 = 1'
             }
           ]
         },
@@ -189,15 +189,15 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           conversions: [
             {
               input: EventDay.DAY1,
-              expression: "Day1 = 'Yes'"
+              expression: 'Day1 = 1'
             },
             {
               input: EventDay.DAY2,
-              expression: "Day2 = 'Yes'"
+              expression: 'Day2 = 1'
             },
             {
               input: EventDay.DAY3,
-              expression: "Day3 = 'Yes'"
+              expression: 'Day3 = 1'
             }
           ]
         }
@@ -212,7 +212,7 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
   //   choices: [
   //     {
   //       value: AccessibilityOptions.ACCESSIBLE,
-  //       label: 'Yes'
+  //       label: 1
   //     },
   //     {
   //       value: AccessibilityOptions.STANDARD,
