@@ -61,60 +61,6 @@
               "maximumError": "10kb"
             }
           ]
-        },
-        "development": {
-          "fileReplacements": [
-            {
-              "replace": "apps/kissingbug-angular/src/environments/environment.ts",
-              "with": "apps/kissingbug-angular/src/environments/environment.dev.ts"
-            }
-          ],
-          "optimization": true,
-          "outputHashing": "all",
-          "sourceMap": false,
-          "namedChunks": false,
-          "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "2mb",
-              "maximumError": "5mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "6kb",
-              "maximumError": "10kb"
-            }
-          ]
-        },
-        "staging": {
-          "fileReplacements": [
-            {
-              "replace": "apps/kissingbug-angular/src/environments/environment.ts",
-              "with": "apps/kissingbug-angular/src/environments/environment.staging.ts"
-            }
-          ],
-          "optimization": true,
-          "outputHashing": "all",
-          "sourceMap": false,
-          "namedChunks": false,
-          "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "2mb",
-              "maximumError": "5mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "6kb",
-              "maximumError": "10kb"
-            }
-          ]
         }
       },
       "defaultConfiguration": ""

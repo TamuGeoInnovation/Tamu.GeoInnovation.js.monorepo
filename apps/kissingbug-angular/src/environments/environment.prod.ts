@@ -1,5 +1,4 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-export * from './secrets';
 
 export const environment = {
   production: true

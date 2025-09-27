@@ -3,7 +3,6 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { LayerSource } from '@tamu-gisc/common/types';
-export * from './secrets';
 
 export const environment = {
   production: false
