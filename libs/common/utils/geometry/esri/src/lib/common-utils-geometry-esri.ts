@@ -2,7 +2,8 @@ import { Point } from '@tamu-gisc/common/types';
 
 import { loadModules } from 'esri-loader';
 import { default as tCentroid } from '@turf/centroid';
-import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf/helpers';
+import { polygon as tPolygon, point as tPointFn } from '@turf/helpers';
+import type { Feature as tFeature, Point as tPoint } from 'geojson';
 
 import esri = __esri;
 
