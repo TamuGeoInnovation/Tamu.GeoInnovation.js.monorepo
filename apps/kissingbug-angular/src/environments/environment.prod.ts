@@ -4,8 +4,10 @@ export const environment = {
   production: true
 };
 
-export const api_url = 'https://kissingbug.geoservices.tamu.edu/api';
-export const email_server_url = 'https://mailroom.gsvcs.lan/api/';
+export { metadata } from '@tamu-gisc/common/ngx/environment';
+
+export const api_url = '___API_URL___';
+export const email_server_url = '___EMAIL_SERVER_URL___';
 
 export const SearchSources = [];
 export const LayerSources: LayerSource[] = [];
