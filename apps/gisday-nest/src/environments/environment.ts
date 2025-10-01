@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   port: process.env.PORT || 3333,
-  globalPrefix: process.env?.GLOBAL_PREFIX || '',
+  globalPrefix: process.env?.GLOBAL_PREFIX || '/',
   origins: process.env?.ORIGINS?.split(',') || [],
   logging: process.env?.LOGGING === 'true' ? true : false,
   auth0_audience: process?.env?.AUTH0_AUDIENCE,
