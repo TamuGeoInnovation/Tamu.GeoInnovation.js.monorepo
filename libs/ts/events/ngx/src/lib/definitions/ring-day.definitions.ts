@@ -9,7 +9,7 @@ export enum RING_DAY_LAYERS {
   RD_AREAS = 'ring-day-areas'
 }
 
-const eventUrl = 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/ArcGIS/rest/services/Ring_Day_1_view/FeatureServer';
+const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Ring_Day/MapServer';
 
 const RingDayEventDefinitions = {
   RD_AREAS: {
