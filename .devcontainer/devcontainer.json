@@ -22,7 +22,8 @@
         "esbenp.prettier-vscode",
         "eamodio.gitlens",
         "GitHub.copilot",
-        "firsttris.vscode-jest-runner"
+        "firsttris.vscode-jest-runner",
+        "github.vscode-github-actions"
       ]
     }
   },
