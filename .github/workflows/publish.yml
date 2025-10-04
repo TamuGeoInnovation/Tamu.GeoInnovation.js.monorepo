@@ -28,7 +28,6 @@ jobs:
   build-and-push:
     needs: list-publishable
     runs-on: ubuntu-latest
-    environment: publish
     permissions:
       contents: read
       packages: write
