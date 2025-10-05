@@ -34,7 +34,8 @@ const routes: Routes = [
           },
           {
             path: '',
-            redirectTo: 'designer'
+            redirectTo: 'designer',
+            pathMatch: 'full'
           }
         ]
       },
@@ -94,7 +95,8 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'seasons'
+        redirectTo: 'seasons',
+        pathMatch: 'full'
       }
     ]
   }
