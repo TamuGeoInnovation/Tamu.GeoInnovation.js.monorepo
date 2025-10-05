@@ -78,6 +78,10 @@ const routes: Routes = [
         loadChildren: () => import('./curb-cuts/curb-cuts.module').then((m) => m.CurbCutsModule)
       },
       {
+        path: 'art',
+        loadChildren: () => import('./art/art.module').then((m) => m.ArtModule)
+      },
+      {
         path: '',
         loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
       }

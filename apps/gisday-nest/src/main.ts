@@ -56,7 +56,7 @@ async function bootstrap() {
 
   const port = environment.port;
   await app.listen(port, () => {
-    console.log('Listening at http://localhost:' + port + '/' + globalPrefix);
+    console.log('Listening at http://localhost:' + port + globalPrefix);
   });
 }
 

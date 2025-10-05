@@ -1929,7 +1929,7 @@ article .row {
     img {
       display: block;
       height: 75px;
-      width: 175px;
+      width: 100%;
       margin: 0 auto;
       object-fit: contain;
       object-position: center center;
@@ -1947,6 +1947,10 @@ article .row {
 
     & > p:last-child {
       font-weight: 600;
+    }
+
+    &.medium {
+      width: 17rem;
     }
 
     &.large {
