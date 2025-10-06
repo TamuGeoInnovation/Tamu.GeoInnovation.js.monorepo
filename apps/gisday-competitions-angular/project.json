@@ -116,7 +116,7 @@
         "jestConfig": "apps/gisday-competitions-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/gisday-competitions-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

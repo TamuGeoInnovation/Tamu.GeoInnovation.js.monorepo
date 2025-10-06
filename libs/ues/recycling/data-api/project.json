@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ues/recycling/data-api"],
+      "outputs": ["{workspaceRoot}/coverage/libs/ues/recycling/data-api"],
       "options": {
         "jestConfig": "libs/ues/recycling/data-api/jest.config.ts",
         "passWithNoTests": true

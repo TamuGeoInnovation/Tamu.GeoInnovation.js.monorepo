@@ -15,7 +15,7 @@
         "jestConfig": "libs/two/directory/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/two/directory"]
+      "outputs": ["{workspaceRoot}/coverage/libs/two/directory"]
     }
   },
   "tags": []

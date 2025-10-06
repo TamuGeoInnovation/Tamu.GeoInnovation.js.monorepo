@@ -123,7 +123,7 @@
         "jestConfig": "apps/ues-effluent-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/ues-effluent-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-effluent-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

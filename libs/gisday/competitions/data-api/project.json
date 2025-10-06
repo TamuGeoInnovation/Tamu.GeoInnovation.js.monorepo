@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/gisday/competitions/data-api"],
+      "outputs": ["{workspaceRoot}/coverage/libs/gisday/competitions/data-api"],
       "options": {
         "jestConfig": "libs/gisday/competitions/data-api/jest.config.ts",
         "passWithNoTests": true

@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/aggiemap/ngx/core"],
+      "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/core"],
       "options": {
         "jestConfig": "libs/aggiemap/ngx/core/jest.config.ts",
         "passWithNoTests": true

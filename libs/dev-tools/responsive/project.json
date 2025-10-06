@@ -10,7 +10,7 @@
         "jestConfig": "libs/dev-tools/responsive/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/dev-tools/responsive"]
+      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/responsive"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

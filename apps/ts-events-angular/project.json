@@ -88,7 +88,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/ts-events-angular"],
+      "outputs": ["{workspaceRoot}/coverage/apps/ts-events-angular"],
       "options": {
         "jestConfig": "apps/ts-events-angular/jest.config.ts",
         "passWithNoTests": true

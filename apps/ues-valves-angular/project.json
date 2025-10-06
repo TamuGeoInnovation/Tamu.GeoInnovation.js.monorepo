@@ -113,7 +113,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/ues-valves-angular"],
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-valves-angular"],
       "options": {
         "jestConfig": "apps/ues-valves-angular/jest.config.ts",
         "passWithNoTests": true

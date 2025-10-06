@@ -10,7 +10,7 @@
         "jestConfig": "libs/maps/mapbox/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/maps/mapbox"]
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/mapbox"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

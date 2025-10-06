@@ -1,12 +1,11 @@
 {
   "projectType": "library",
-  "root": "libs/ui-kits/ngx/interactions/keyboard",
   "sourceRoot": "libs/ui-kits/ngx/interactions/keyboard/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ui-kits/ngx/interactions/keyboard"],
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/keyboard"],
       "options": {
         "jestConfig": "libs/ui-kits/ngx/interactions/keyboard/jest.config.js",
         "passWithNoTests": true

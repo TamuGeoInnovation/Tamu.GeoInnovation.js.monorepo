@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/aggiemap/ngx/popups"],
+      "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/popups"],
       "options": {
         "jestConfig": "libs/aggiemap/ngx/popups/jest.config.ts",
         "passWithNoTests": true

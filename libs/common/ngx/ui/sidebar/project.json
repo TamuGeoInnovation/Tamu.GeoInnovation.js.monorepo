@@ -10,7 +10,7 @@
         "jestConfig": "libs/common/ngx/ui/sidebar/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/common/ngx/ui/sidebar"]
+      "outputs": ["{workspaceRoot}/coverage/libs/common/ngx/ui/sidebar"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

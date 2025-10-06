@@ -124,7 +124,7 @@
         "jestConfig": "apps/geoservices-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/geoservices-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

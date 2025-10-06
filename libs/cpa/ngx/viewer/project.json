@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/cpa/ngx/viewer"],
+      "outputs": ["{workspaceRoot}/coverage/libs/cpa/ngx/viewer"],
       "options": {
         "jestConfig": "libs/cpa/ngx/viewer/jest.config.ts",
         "passWithNoTests": true

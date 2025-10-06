@@ -132,7 +132,7 @@
         "jestConfig": "apps/aggiemap-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/aggiemap-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/aggiemap-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

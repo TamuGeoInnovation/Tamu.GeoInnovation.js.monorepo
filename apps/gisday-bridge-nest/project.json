@@ -44,7 +44,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/gisday-bridge-nest"],
+      "outputs": ["{workspaceRoot}/coverage/apps/gisday-bridge-nest"],
       "options": {
         "jestConfig": "apps/gisday-bridge-nest/jest.config.ts",
         "passWithNoTests": true

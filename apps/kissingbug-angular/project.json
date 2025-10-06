@@ -139,7 +139,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/kissingbug-angular"],
+      "outputs": ["{workspaceRoot}/coverage/apps/kissingbug-angular"],
       "options": {
         "jestConfig": "apps/kissingbug-angular/jest.config.ts",
         "passWithNoTests": true

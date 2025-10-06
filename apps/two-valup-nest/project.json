@@ -67,7 +67,7 @@
         "jestConfig": "apps/two-valup-nest/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/two-valup-nest"]
+      "outputs": ["{workspaceRoot}/coverage/apps/two-valup-nest"]
     }
   },
   "tags": ["assets"]

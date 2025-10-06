@@ -88,7 +88,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/ts-football-angular"],
+      "outputs": ["{workspaceRoot}/coverage/apps/ts-football-angular"],
       "options": {
         "jestConfig": "apps/ts-football-angular/jest.config.ts",
         "passWithNoTests": true

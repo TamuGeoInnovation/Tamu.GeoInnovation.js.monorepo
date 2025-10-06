@@ -55,7 +55,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/mailroom-helper-nest"],
+      "outputs": ["{workspaceRoot}/coverage/apps/mailroom-helper-nest"],
       "options": {
         "jestConfig": "apps/mailroom-helper-nest/jest.config.ts",
         "passWithNoTests": true

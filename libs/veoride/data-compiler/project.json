@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/veoride/data-compiler"],
+      "outputs": ["{workspaceRoot}/coverage/libs/veoride/data-compiler"],
       "options": {
         "jestConfig": "libs/veoride/data-compiler/jest.config.ts",
         "passWithNoTests": true

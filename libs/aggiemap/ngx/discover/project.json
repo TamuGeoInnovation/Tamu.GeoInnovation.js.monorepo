@@ -1,12 +1,11 @@
 {
   "projectType": "library",
-  "root": "libs/aggiemap/ngx/discover",
   "sourceRoot": "libs/aggiemap/ngx/discover/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/aggiemap/ngx/discover"],
+      "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/discover"],
       "options": {
         "jestConfig": "libs/aggiemap/ngx/discover/jest.config.js",
         "passWithNoTests": true

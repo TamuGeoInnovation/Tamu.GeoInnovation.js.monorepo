@@ -119,7 +119,7 @@
         "jestConfig": "apps/cpa-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/cpa-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/cpa-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

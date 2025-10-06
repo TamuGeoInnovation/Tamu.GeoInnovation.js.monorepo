@@ -67,7 +67,7 @@
         "jestConfig": "apps/two-directory-nest/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/two-directory-nest"]
+      "outputs": ["{workspaceRoot}/coverage/apps/two-directory-nest"]
     }
   },
   "tags": ["assets"]

@@ -124,7 +124,7 @@
         "jestConfig": "apps/ues-operations-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/ues-operations-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

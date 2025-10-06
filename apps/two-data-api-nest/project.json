@@ -67,7 +67,7 @@
         "jestConfig": "apps/two-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/two-data-api-nest"]
+      "outputs": ["{workspaceRoot}/coverage/apps/two-data-api-nest"]
     }
   },
   "tags": ["assets"]

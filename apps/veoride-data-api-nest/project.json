@@ -63,7 +63,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/veoride-data-api-nest"],
+      "outputs": ["{workspaceRoot}/coverage/apps/veoride-data-api-nest"],
       "options": {
         "jestConfig": "apps/veoride-data-api-nest/jest.config.ts",
         "passWithNoTests": true

@@ -77,7 +77,7 @@
         "jestConfig": "apps/oidc-admin-nest/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/oidc-admin-nest"]
+      "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-nest"]
     }
   },
   "tags": ["assets"]

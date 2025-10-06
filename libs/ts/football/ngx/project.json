@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ts/football/ngx"],
+      "outputs": ["{workspaceRoot}/coverage/libs/ts/football/ngx"],
       "options": {
         "jestConfig": "libs/ts/football/ngx/jest.config.ts",
         "passWithNoTests": true

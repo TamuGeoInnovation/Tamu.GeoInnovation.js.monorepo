@@ -12,7 +12,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/geoservices/data-api"],
+      "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-api"],
       "options": {
         "jestConfig": "libs/geoservices/data-api/jest.config.ts",
         "passWithNoTests": true

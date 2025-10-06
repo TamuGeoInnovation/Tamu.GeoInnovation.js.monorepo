@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/geoservices/ngx"],
+      "outputs": ["{workspaceRoot}/coverage/libs/geoservices/ngx"],
       "options": {
         "jestConfig": "libs/geoservices/ngx/jest.config.ts",
         "passWithNoTests": true

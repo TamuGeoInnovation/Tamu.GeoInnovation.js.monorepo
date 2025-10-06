@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/gisday/platform/ngx/core"],
+      "outputs": ["{workspaceRoot}/coverage/libs/gisday/platform/ngx/core"],
       "options": {
         "jestConfig": "libs/gisday/platform/ngx/core/jest.config.ts",
         "passWithNoTests": true

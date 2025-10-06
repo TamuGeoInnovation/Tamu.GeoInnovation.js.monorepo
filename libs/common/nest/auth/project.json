@@ -12,7 +12,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/common/nest/auth"],
+      "outputs": ["{workspaceRoot}/coverage/libs/common/nest/auth"],
       "options": {
         "jestConfig": "libs/common/nest/auth/jest.config.ts",
         "passWithNoTests": true

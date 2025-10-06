@@ -10,7 +10,7 @@
         "jestConfig": "libs/maps/feature/forms/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/maps/feature/forms"]
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/forms"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

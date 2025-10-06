@@ -136,7 +136,7 @@
         "jestConfig": "apps/gisday-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/gisday-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

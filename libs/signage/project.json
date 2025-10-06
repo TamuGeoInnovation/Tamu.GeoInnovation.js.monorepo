@@ -10,7 +10,7 @@
         "jestConfig": "libs/signage/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/signage"]
+      "outputs": ["{workspaceRoot}/coverage/libs/signage"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

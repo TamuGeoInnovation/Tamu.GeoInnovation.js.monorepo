@@ -119,7 +119,7 @@
         "jestConfig": "apps/two-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/two-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/two-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

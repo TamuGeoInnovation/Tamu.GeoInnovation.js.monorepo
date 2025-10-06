@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/covid/ngx"],
+      "outputs": ["{workspaceRoot}/coverage/libs/covid/ngx"],
       "options": {
         "jestConfig": "libs/covid/ngx/jest.config.ts",
         "passWithNoTests": true

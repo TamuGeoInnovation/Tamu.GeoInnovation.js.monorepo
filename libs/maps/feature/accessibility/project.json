@@ -10,7 +10,7 @@
         "jestConfig": "libs/maps/feature/accessibility/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/maps/feature/accessibility"]
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/accessibility"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

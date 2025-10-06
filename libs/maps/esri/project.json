@@ -10,7 +10,7 @@
         "jestConfig": "libs/maps/esri/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/maps/esri"]
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/esri"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

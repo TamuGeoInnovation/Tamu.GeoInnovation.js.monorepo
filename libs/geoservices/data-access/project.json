@@ -10,7 +10,7 @@
         "jestConfig": "libs/geoservices/data-access/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/geoservices/data-access"]
+      "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-access"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

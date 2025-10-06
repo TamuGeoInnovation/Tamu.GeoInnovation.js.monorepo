@@ -119,7 +119,7 @@
         "jestConfig": "apps/signage-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/signage-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/signage-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

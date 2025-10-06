@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/oidc/ngx"],
+      "outputs": ["{workspaceRoot}/coverage/libs/oidc/ngx"],
       "options": {
         "jestConfig": "libs/oidc/ngx/jest.config.ts",
         "passWithNoTests": true

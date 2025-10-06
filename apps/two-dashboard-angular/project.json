@@ -112,7 +112,7 @@
         "jestConfig": "apps/two-dashboard-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/two-dashboard-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/two-dashboard-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

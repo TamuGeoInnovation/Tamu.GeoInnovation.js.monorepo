@@ -10,7 +10,7 @@
         "jestConfig": "libs/ues/effluent/ngx/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/ues/effluent/ngx"]
+      "outputs": ["{workspaceRoot}/coverage/libs/ues/effluent/ngx"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

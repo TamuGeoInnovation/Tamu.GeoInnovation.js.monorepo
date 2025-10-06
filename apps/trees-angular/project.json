@@ -109,7 +109,7 @@
         "jestConfig": "apps/trees-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/trees-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/trees-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/correction/ngx"],
+      "outputs": ["{workspaceRoot}/coverage/libs/correction/ngx"],
       "options": {
         "jestConfig": "libs/correction/ngx/jest.config.ts",
         "passWithNoTests": true

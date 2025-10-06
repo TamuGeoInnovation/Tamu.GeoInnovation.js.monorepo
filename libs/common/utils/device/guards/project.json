@@ -10,7 +10,7 @@
         "jestConfig": "libs/common/utils/device/guards/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/common/utils/device/guards"]
+      "outputs": ["{workspaceRoot}/coverage/libs/common/utils/device/guards"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

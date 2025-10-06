@@ -15,7 +15,7 @@
         "jestConfig": "libs/two/data-api/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/two/data-api"]
+      "outputs": ["{workspaceRoot}/coverage/libs/two/data-api"]
     }
   },
   "tags": []

@@ -67,7 +67,7 @@
         "jestConfig": "apps/covid-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/covid-data-api-nest"]
+      "outputs": ["{workspaceRoot}/coverage/apps/covid-data-api-nest"]
     }
   },
   "tags": ["assets"]

@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ts/movein/ngx"],
+      "outputs": ["{workspaceRoot}/coverage/libs/ts/movein/ngx"],
       "options": {
         "jestConfig": "libs/ts/movein/ngx/jest.config.ts",
         "passWithNoTests": true

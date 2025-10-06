@@ -121,7 +121,7 @@
         "jestConfig": "apps/oidc-admin-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/oidc-admin-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

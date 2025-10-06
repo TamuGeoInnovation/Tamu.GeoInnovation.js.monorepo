@@ -6,7 +6,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/maps/feature/perspective"],
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/perspective"],
       "options": {
         "jestConfig": "libs/maps/feature/perspective/jest.config.ts",
         "passWithNoTests": true

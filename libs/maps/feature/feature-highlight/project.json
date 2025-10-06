@@ -10,7 +10,7 @@
         "jestConfig": "libs/maps/feature/feature-highlight/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/maps/feature/feature-highlight"]
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/feature-highlight"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

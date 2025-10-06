@@ -93,7 +93,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/mailroom-angular"],
+      "outputs": ["{workspaceRoot}/coverage/apps/mailroom-angular"],
       "options": {
         "jestConfig": "apps/mailroom-angular/jest.config.ts",
         "passWithNoTests": true

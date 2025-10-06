@@ -76,7 +76,7 @@
         "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/ues-effluent-data-api-nest"]
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-effluent-data-api-nest"]
     }
   },
   "tags": ["assets"]
