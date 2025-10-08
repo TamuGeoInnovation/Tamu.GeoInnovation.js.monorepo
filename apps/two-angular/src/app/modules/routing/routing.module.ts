@@ -24,10 +24,9 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule,
     RouterModule.forRoot(routes, {
-      initialNavigation: 'enabledBlocking',
-      useHash: environment.environment.production,
-      relativeLinkResolution: 'legacy'
-    }),
+    initialNavigation: 'enabledBlocking',
+    useHash: environment.environment.production
+}),
     EnvironmentModule
   ],
   providers: [

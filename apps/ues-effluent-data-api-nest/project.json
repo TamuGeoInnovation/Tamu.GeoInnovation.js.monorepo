@@ -79,5 +79,6 @@
       "outputs": ["{workspaceRoot}/coverage/apps/ues-effluent-data-api-nest"]
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "ues-effluent-data-api-nest"
 }

@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ts-events-angular"]
+  "implicitDependencies": ["ts-events-angular"],
+  "name": "ts-events-angular-e2e"
 }

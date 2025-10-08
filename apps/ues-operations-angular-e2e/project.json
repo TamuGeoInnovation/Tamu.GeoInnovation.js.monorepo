@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ues-operations-angular"]
+  "implicitDependencies": ["ues-operations-angular"],
+  "name": "ues-operations-angular-e2e"
 }

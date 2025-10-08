@@ -122,5 +122,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  "implicitDependencies": ["assets", "sass"],
+  "name": "two-dashboard-angular"
 }

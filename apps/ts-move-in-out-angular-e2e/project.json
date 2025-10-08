@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ts-move-in-out-angular"]
+  "implicitDependencies": ["ts-move-in-out-angular"],
+  "name": "ts-move-in-out-angular-e2e"
 }

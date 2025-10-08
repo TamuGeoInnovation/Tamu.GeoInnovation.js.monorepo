@@ -56,5 +56,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "geoservices-nest"
 }

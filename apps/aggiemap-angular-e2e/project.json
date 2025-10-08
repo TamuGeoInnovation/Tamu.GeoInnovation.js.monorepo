@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["aggiemap-angular"]
+  "implicitDependencies": ["aggiemap-angular"],
+  "name": "aggiemap-angular-e2e"
 }

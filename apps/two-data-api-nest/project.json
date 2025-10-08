@@ -70,5 +70,6 @@
       "outputs": ["{workspaceRoot}/coverage/apps/two-data-api-nest"]
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "two-data-api-nest"
 }

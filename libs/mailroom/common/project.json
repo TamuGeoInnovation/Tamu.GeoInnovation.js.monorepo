@@ -18,5 +18,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "mailroom-common"
 }

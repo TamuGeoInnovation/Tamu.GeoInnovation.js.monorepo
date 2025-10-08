@@ -131,5 +131,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  "implicitDependencies": ["assets", "sass"],
+  "name": "oidc-admin-angular"
 }

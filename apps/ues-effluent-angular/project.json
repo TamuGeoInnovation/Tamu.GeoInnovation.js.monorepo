@@ -133,5 +133,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"]
+  "implicitDependencies": ["assets", "sass", "ues-sass"],
+  "name": "ues-effluent-angular"
 }

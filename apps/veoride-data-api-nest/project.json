@@ -70,5 +70,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "veoride-data-api-nest"
 }

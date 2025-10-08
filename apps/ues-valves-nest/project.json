@@ -79,5 +79,6 @@
       }
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "ues-valves-nest"
 }

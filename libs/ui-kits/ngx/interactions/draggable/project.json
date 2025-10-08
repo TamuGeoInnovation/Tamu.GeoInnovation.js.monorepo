@@ -22,5 +22,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "ui-kits-ngx-interactions-draggable"
 }

@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["correction-lite-angular"]
+  "implicitDependencies": ["correction-lite-angular"],
+  "name": "correction-lite-angular-e2e"
 }

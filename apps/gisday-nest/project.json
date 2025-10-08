@@ -93,5 +93,6 @@
       }
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "gisday-nest"
 }

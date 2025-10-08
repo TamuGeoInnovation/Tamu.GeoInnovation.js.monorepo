@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["two-dashboard-angular"]
+  "implicitDependencies": ["two-dashboard-angular"],
+  "name": "two-dashboard-angular-e2e"
 }

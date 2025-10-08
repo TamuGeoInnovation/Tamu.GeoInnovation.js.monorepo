@@ -134,5 +134,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  "implicitDependencies": ["assets", "sass"],
+  "name": "geoservices-angular"
 }

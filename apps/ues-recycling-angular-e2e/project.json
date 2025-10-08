@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ues-recycling-angular"]
+  "implicitDependencies": ["ues-recycling-angular"],
+  "name": "ues-recycling-angular-e2e"
 }

@@ -146,5 +146,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "gisday-sass"]
+  "implicitDependencies": ["assets", "sass", "gisday-sass"],
+  "name": "gisday-angular"
 }

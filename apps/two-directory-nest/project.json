@@ -70,5 +70,6 @@
       "outputs": ["{workspaceRoot}/coverage/apps/two-directory-nest"]
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "two-directory-nest"
 }

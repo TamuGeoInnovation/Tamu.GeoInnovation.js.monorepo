@@ -70,5 +70,6 @@
       "outputs": ["{workspaceRoot}/coverage/apps/covid-data-api-nest"]
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "covid-data-api-nest"
 }

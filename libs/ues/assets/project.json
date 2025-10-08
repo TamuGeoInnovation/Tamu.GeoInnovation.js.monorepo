@@ -2,5 +2,6 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "targets": {},
-  "tags": ["type:assets", "scope:ues"]
+  "tags": ["type:assets", "scope:ues"],
+  "name": "ues-assets"
 }

@@ -18,5 +18,6 @@
       "outputs": ["{workspaceRoot}/coverage/libs/oidc/client"]
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "oidc-client"
 }

@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["gisday-competitions-angular"]
+  "implicitDependencies": ["gisday-competitions-angular"],
+  "name": "gisday-competitions-angular-e2e"
 }

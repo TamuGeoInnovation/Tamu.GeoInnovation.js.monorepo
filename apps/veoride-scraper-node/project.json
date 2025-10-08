@@ -70,5 +70,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "veoride-scraper-node"
 }

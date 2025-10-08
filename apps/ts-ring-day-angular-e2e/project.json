@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ts-ring-day-angular"]
+  "implicitDependencies": ["ts-ring-day-angular"],
+  "name": "ts-ring-day-angular-e2e"
 }

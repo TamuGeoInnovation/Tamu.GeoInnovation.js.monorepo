@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["geoservices-angular"]
+  "implicitDependencies": ["geoservices-angular"],
+  "name": "geoservices-angular-e2e"
 }

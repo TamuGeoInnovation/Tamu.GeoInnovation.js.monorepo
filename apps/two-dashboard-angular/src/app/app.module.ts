@@ -37,7 +37,7 @@ export function getHighlightLanguages() {
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
     BrowserAnimationsModule,
     EnvironmentModule,
     LocalStoreModule

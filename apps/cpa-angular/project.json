@@ -129,5 +129,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "cpa-sass"]
+  "implicitDependencies": ["assets", "sass", "cpa-sass"],
+  "name": "cpa-angular"
 }

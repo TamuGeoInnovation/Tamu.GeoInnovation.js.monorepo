@@ -70,5 +70,6 @@
       "outputs": ["{workspaceRoot}/coverage/apps/two-valup-nest"]
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "two-valup-nest"
 }

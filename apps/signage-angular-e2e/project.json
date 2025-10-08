@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["signage-angular"]
+  "implicitDependencies": ["signage-angular"],
+  "name": "signage-angular-e2e"
 }

@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["two-angular"]
+  "implicitDependencies": ["two-angular"],
+  "name": "two-angular-e2e"
 }

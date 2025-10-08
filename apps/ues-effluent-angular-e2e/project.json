@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ues-effluent-angular"]
+  "implicitDependencies": ["ues-effluent-angular"],
+  "name": "ues-effluent-angular-e2e"
 }

@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["mailroom-angular"]
+  "implicitDependencies": ["mailroom-angular"],
+  "name": "mailroom-angular-e2e"
 }

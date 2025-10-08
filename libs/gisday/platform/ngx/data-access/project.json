@@ -23,5 +23,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "gisday-platform-ngx-data-access"
 }

@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ues-valves-angular"]
+  "implicitDependencies": ["ues-valves-angular"],
+  "name": "ues-valves-angular-e2e"
 }

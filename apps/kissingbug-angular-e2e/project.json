@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["kissingbug-angular"]
+  "implicitDependencies": ["kissingbug-angular"],
+  "name": "kissingbug-angular-e2e"
 }

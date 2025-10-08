@@ -24,7 +24,7 @@ WebFont.load({
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking', relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
     HttpClientModule,
     EnvironmentModule
   ],

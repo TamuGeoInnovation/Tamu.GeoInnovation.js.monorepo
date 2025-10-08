@@ -134,5 +134,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"]
+  "implicitDependencies": ["assets", "sass", "ues-sass"],
+  "name": "ues-operations-angular"
 }

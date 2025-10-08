@@ -153,5 +153,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["kissingbug-sass"]
+  "implicitDependencies": ["kissingbug-sass"],
+  "name": "kissingbug-angular"
 }

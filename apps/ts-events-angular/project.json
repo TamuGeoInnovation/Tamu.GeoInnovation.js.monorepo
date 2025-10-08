@@ -95,5 +95,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "ts-events-angular"
 }

@@ -72,5 +72,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets"]
+  "implicitDependencies": ["assets"],
+  "name": "cpa-nest"
 }

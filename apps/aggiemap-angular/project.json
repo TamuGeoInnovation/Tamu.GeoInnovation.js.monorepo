@@ -142,5 +142,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  "implicitDependencies": ["assets", "sass"],
+  "name": "aggiemap-angular"
 }

@@ -100,5 +100,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "mailroom-angular"
 }

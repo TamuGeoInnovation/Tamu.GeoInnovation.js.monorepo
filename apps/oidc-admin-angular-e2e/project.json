@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["oidc-admin-angular"]
+  "implicitDependencies": ["oidc-admin-angular"],
+  "name": "oidc-admin-angular-e2e"
 }

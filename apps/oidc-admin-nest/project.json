@@ -80,5 +80,6 @@
       "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-nest"]
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "oidc-admin-nest"
 }

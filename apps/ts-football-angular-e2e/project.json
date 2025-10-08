@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["ts-football-angular"]
+  "implicitDependencies": ["ts-football-angular"],
+  "name": "ts-football-angular-e2e"
 }

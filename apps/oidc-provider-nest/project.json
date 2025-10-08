@@ -81,5 +81,6 @@
       "outputs": ["{workspaceRoot}/coverage/apps/oidc-provider-nest"]
     }
   },
-  "tags": ["assets"]
+  "tags": ["assets"],
+  "name": "oidc-provider-nest"
 }

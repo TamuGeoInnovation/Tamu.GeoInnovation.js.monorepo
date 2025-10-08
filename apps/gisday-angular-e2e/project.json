@@ -25,5 +25,6 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["gisday-angular"]
+  "implicitDependencies": ["gisday-angular"],
+  "name": "gisday-angular-e2e"
 }

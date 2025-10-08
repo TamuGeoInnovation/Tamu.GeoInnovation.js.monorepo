@@ -20,5 +20,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "name": "gisday-platform-ngx-core"
 }
