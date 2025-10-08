@@ -18,7 +18,6 @@
  * BROWSER POLYFILLS
  */
 
-import 'core-js/es/array';
 
 /**
  * By default, zone.js will patch all possible macroTask and DomEvents

@@ -23,7 +23,7 @@ export function centroidFromGeometry(feature: FeatureUnion): Point {
   } else if (('x' in feature && 'y' in feature) || ('latitude' in feature && 'longitude' in feature)) {
     return pointFromPointGeometry(feature);
   } else if ('paths' in feature) {
-    return pointFromPolylineGeometry(feature);
+    return pointFromPolylineGeometry(feature as esri.Polyline);
   } else {
     throw new Error('Could not get centroid from search geometry because type could not be identified.');
   }
