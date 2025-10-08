@@ -66,7 +66,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       return this.userSubmissionRepo.find({
         where: {
           accountGuid: userGuid,
-          season: season,
+          season: { guid: season.guid },
           submissionType: type
         }
       });

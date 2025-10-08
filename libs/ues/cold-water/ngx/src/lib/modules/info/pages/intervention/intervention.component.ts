@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, iif, Observable, of, Subject } from 'rxjs';
 import { map, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
@@ -18,7 +18,7 @@ import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold
   providers: [InterventionService]
 })
 export class InterventionComponent implements OnInit, OnDestroy {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public optionValues = {
     Reason: [
       {
@@ -110,7 +110,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     public usr: UserService,

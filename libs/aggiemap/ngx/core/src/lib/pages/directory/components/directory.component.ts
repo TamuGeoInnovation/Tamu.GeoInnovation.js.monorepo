@@ -14,7 +14,7 @@ import {
   toArray
 } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
 
@@ -24,7 +24,7 @@ import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
   styleUrls: ['./directory.component.scss']
 })
 export class DirectoryComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   @ViewChild(DatatableComponent)
   public table: DatatableComponent;
@@ -40,7 +40,7 @@ export class DirectoryComponent implements OnInit {
   public loadingIndicator = true;
   private _data$: Observable<Array<BuildingDirectoryEntry>>;
 
-  constructor(private readonly http: HttpClient, private readonly fb: FormBuilder) {}
+  constructor(private readonly http: HttpClient, private readonly fb: UntypedFormBuilder) {}
 
   public ngOnInit(): void {
     this._data$ = this.http.get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory.json').pipe(
@@ -63,7 +63,7 @@ export class DirectoryComponent implements OnInit {
 
     this._rows$ = combineLatest([
       this._data$,
-      (this.form.get('search') as FormControl).valueChanges.pipe(startWith(null), debounceTime(300), distinctUntilChanged())
+      (this.form.get('search') as UntypedFormControl).valueChanges.pipe(startWith(null), debounceTime(300), distinctUntilChanged())
     ]).pipe(
       tap(() => {
         this.loadingIndicator = true;

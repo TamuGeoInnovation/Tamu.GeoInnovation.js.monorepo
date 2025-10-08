@@ -1,5 +1,5 @@
 {
-  "root": "libs/gisday/bridge",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/gisday/bridge/src",
   "projectType": "library",
   "targets": {
@@ -12,7 +12,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/gisday/bridge"],
+      "outputs": ["{workspaceRoot}/coverage/libs/gisday/bridge"],
       "options": {
         "jestConfig": "libs/gisday/bridge/jest.config.ts",
         "passWithNoTests": true

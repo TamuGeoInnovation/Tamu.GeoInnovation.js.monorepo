@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'veoride-scraper',
 
   globals: {
@@ -9,5 +10,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../coverage/libs/veoride/scraper',
-  preset: '../../../jest.preset.ts'
+  preset: '../../../jest.preset.js'
 };

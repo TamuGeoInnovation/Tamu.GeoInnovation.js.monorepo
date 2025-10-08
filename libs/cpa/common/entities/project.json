@@ -1,5 +1,5 @@
 {
-  "root": "libs/cpa/common/entities",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/cpa/common/entities/src",
   "projectType": "library",
   "targets": {
@@ -15,7 +15,7 @@
         "jestConfig": "libs/cpa/common/entities/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/cpa/common/entities"]
+      "outputs": ["{workspaceRoot}/coverage/libs/cpa/common/entities"]
     }
   },
   "tags": []

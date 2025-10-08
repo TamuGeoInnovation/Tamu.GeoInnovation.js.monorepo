@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/cpa-angular",
   "sourceRoot": "apps/cpa-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
@@ -119,7 +119,7 @@
         "jestConfig": "apps/cpa-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/cpa-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/cpa-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
@@ -19,10 +19,10 @@ export class ClassAddEditFormComponent implements OnInit {
   public entity$: Observable<Partial<Class>>;
   public activeSeasons$: Observable<Partial<Season>>;
   public students$: Observable<Array<Partial<UserClass>>>;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
     private readonly cs: ClassService,

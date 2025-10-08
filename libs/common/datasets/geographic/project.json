@@ -1,5 +1,5 @@
 {
-  "root": "libs/common/datasets/geographic",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/common/datasets/geographic/src",
   "projectType": "library",
   "targets": {
@@ -12,7 +12,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/common/datasets/geographic"],
+      "outputs": ["{workspaceRoot}/coverage/libs/common/datasets/geographic"],
       "options": {
         "jestConfig": "libs/common/datasets/geographic/jest.config.ts",
         "passWithNoTests": true

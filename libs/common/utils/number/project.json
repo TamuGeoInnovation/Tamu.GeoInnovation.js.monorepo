@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/common/utils/number",
   "sourceRoot": "libs/common/utils/number/src",
   "targets": {
     "test": {
@@ -9,7 +9,7 @@
         "jestConfig": "libs/common/utils/number/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/common/utils/number"]
+      "outputs": ["{workspaceRoot}/coverage/libs/common/utils/number"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

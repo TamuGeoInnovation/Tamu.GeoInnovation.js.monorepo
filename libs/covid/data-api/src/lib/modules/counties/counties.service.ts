@@ -26,7 +26,7 @@ export class CountiesService extends BaseService<County> {
   public searchCountiesForState(statefips: number, keyword: string) {
     return this.repo.find({
       where: {
-        stateFips: statefips,
+        stateFips: { stateFips: statefips },
         name: Like(`%${keyword}%`)
       }
     });
@@ -37,9 +37,11 @@ export class CountiesService extends BaseService<County> {
       throw new Error('Invalid input parameter.');
     }
 
+    const numericStateFips = typeof stateFips === 'string' ? parseInt(stateFips, 10) : stateFips;
+    
     return this.repo.find({
       where: {
-        stateFips
+        stateFips: { stateFips: numericStateFips }
       }
     });
   }

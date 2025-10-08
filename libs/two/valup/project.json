@@ -1,5 +1,5 @@
 {
-  "root": "libs/two/valup",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/two/valup/src",
   "projectType": "library",
   "targets": {
@@ -15,7 +15,7 @@
         "jestConfig": "libs/two/valup/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/two/valup"]
+      "outputs": ["{workspaceRoot}/coverage/libs/two/valup"]
     }
   },
   "tags": []

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { DeepPartial } from 'typeorm';
 import { Observable } from 'rxjs';
 import { pluck, shareReplay } from 'rxjs/operators';
@@ -20,7 +20,7 @@ import esri = __esri;
 })
 export class ExportComponent implements OnInit {
   private zip: JSZip;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public view: esri.MapView;
   public map: esri.Map;
@@ -48,7 +48,7 @@ export class ExportComponent implements OnInit {
   };
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private mapService: EsriMapService,
     private mp: EsriModuleProviderService,
     private response: ResponseService,

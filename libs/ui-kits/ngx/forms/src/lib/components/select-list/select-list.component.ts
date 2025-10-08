@@ -9,7 +9,7 @@ import {
   SimpleChanges,
   TemplateRef
 } from '@angular/core';
-import { FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
 
 @Component({
@@ -64,7 +64,7 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   @Output()
   public selected: T;
 
-  public form: FormGroup = this.fb.group({
+  public form: UntypedFormGroup = this.fb.group({
     search: ['']
   });
 
@@ -72,7 +72,7 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   private _displayList$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public displayList$: Observable<boolean> = this._displayList$.asObservable();
 
-  constructor(private readonly fb: FormBuilder, private readonly renderer: Renderer2) {}
+  constructor(private readonly fb: UntypedFormBuilder, private readonly renderer: Renderer2) {}
 
   public ngOnInit(): void {
     this.initializeOptions(this.options);

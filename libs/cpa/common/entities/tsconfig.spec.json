@@ -5,5 +5,5 @@
     "types": ["jest", "arcgis-js-api"]
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "jest.config.ts"]
 }

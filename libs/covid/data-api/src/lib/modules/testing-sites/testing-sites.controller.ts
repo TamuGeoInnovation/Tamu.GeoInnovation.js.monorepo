@@ -15,9 +15,8 @@ export class TestingSitesController extends BaseController<TestingSite> {
 
   @Get('')
   public async getValidated() {
-    return await this.service.repo.find({
-      where: { validated: true }
-    });
+    // TODO: Add validated field to TestingSite entity or implement proper validation logic
+    return await this.service.repo.find();
   }
 
   @Get('details/:siteGuid')

@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/ues-valves-angular",
   "sourceRoot": "apps/ues-valves-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
@@ -113,7 +113,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/ues-valves-angular"],
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-valves-angular"],
       "options": {
         "jestConfig": "apps/ues-valves-angular/jest.config.ts",
         "passWithNoTests": true

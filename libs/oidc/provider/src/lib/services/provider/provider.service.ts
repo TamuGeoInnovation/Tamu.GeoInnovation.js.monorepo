@@ -1,5 +1,7 @@
 import { readFileSync, writeFile } from 'fs';
 import { Injectable } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 import { JWK } from 'node-jose';
 import { Configuration, JWKS, Provider, ResourceServer } from 'oidc-provider';
@@ -22,7 +24,8 @@ export class OidcProviderService {
   constructor(
     private readonly accountService: AccountService,
     private readonly userRoleService: UserRoleService,
-    private readonly env: EnvironmentService
+    private readonly env: EnvironmentService,
+    @InjectDataSource() private dataSource: DataSource
   ) {
     this.getJWKSFromFile().then((jwks) => {
       this.generateProviderConfiguration(jwks).then((providerConfig) => {
@@ -68,7 +71,7 @@ export class OidcProviderService {
     const userRoleService = this.userRoleService;
 
     const baseProviderConfig: Configuration = {
-      adapter: OidcAdapter,
+      adapter: (name) => new OidcAdapter(name, this.dataSource),
       claims: {
         address: ['address'],
         email: ['email', 'email_verified'],

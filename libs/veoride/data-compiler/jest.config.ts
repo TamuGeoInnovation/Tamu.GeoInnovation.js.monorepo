@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'veoride-data-compiler',
 
   globals: {
@@ -9,5 +10,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../coverage/libs/veoride/data-compiler',
-  preset: '../../../jest.preset.ts'
+  preset: '../../../jest.preset.js'
 };

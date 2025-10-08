@@ -1,12 +1,12 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/ues/recycling/ngx",
   "sourceRoot": "libs/ues/recycling/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ues/recycling/ngx"],
+      "outputs": ["{workspaceRoot}/coverage/libs/ues/recycling/ngx"],
       "options": {
         "jestConfig": "libs/ues/recycling/ngx/jest.config.ts",
         "passWithNoTests": true

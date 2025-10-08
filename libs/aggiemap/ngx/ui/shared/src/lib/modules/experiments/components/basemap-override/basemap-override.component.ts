@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
 
 import { SettingsInitializationConfig, SettingsService } from '@tamu-gisc/common/ngx/settings';
@@ -10,7 +10,7 @@ import { SettingsInitializationConfig, SettingsService } from '@tamu-gisc/common
   styleUrls: ['./basemap-override.component.scss']
 })
 export class BasemapOverrideComponent implements OnInit, OnDestroy {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   private settingsConfig: SettingsInitializationConfig = {
     storage: {
@@ -26,7 +26,7 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
 
   private $destroy: Subject<boolean> = new Subject();
 
-  constructor(private readonly ss: SettingsService, private readonly fb: FormBuilder) {}
+  constructor(private readonly ss: SettingsService, private readonly fb: UntypedFormBuilder) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

@@ -16,14 +16,15 @@ export class EmailService {
   public getEmail(id: string) {
     return this.emailRepo.findOne({
       where: {
-        id
+        id: parseInt(id, 10)
       },
       relations: ['attachments']
     });
   }
 
   public async deleteEmail(id: string) {
-    const email = await this.emailRepo.findOne(id, {
+    const email = await this.emailRepo.findOne({
+      where: {},
       relations: ['attachments']
     });
 

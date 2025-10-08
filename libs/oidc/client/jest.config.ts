@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'oidc-client',
 
   globals: {
@@ -10,5 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../coverage/libs/oidc/client',
-  preset: '../../../jest.preset.ts'
+  preset: '../../../jest.preset.js'
 };

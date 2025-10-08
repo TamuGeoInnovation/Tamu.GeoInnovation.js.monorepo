@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/ues-effluent-angular",
   "sourceRoot": "apps/ues-effluent-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
@@ -123,7 +123,7 @@
         "jestConfig": "apps/ues-effluent-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/ues-effluent-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-effluent-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

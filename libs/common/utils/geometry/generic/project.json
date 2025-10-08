@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/common/utils/geometry/generic",
   "sourceRoot": "libs/common/utils/geometry/generic/src",
   "targets": {
     "test": {
@@ -9,7 +9,7 @@
         "jestConfig": "libs/common/utils/geometry/generic/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/common/utils/geometry/generic"]
+      "outputs": ["{workspaceRoot}/coverage/libs/common/utils/geometry/generic"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

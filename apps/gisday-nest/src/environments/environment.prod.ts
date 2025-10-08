@@ -23,5 +23,5 @@ export const ormConfig = {
   synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true' ? true : false,
   dropSchema: process.env.TYPEORM_DROP_SCHEMA === 'true' ? true : false,
   logging: process.env.TYPEORM_LOGGING === 'true' ? true : false,
-  extra: process.env.TYPEORM_EXTRA
+  extra: process.env.TYPEORM_EXTRA && process.env.TYPEORM_EXTRA !== '' ? JSON.parse(process.env.TYPEORM_EXTRA) : {}
 };

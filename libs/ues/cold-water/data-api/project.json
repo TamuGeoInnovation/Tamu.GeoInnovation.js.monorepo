@@ -1,5 +1,5 @@
 {
-  "root": "libs/ues/cold-water/data-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ues/cold-water/data-api/src",
   "projectType": "library",
   "targets": {
@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ues/cold-water/data-api"],
+      "outputs": ["{workspaceRoot}/coverage/libs/ues/cold-water/data-api"],
       "options": {
         "jestConfig": "libs/ues/cold-water/data-api/jest.config.ts",
         "passWithNoTests": true

@@ -1,5 +1,5 @@
 {
-  "root": "apps/ues-recycling-angular-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/ues-recycling-angular-e2e/src",
   "projectType": "application",
   "targets": {

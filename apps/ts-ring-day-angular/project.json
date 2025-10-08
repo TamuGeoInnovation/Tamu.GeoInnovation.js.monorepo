@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/ts-ring-day-angular",
   "sourceRoot": "apps/ts-ring-day-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
@@ -88,7 +88,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/ts-ring-day-angular"],
+      "outputs": ["{workspaceRoot}/coverage/apps/ts-ring-day-angular"],
       "options": {
         "jestConfig": "apps/ts-ring-day-angular/jest.config.ts",
         "passWithNoTests": true

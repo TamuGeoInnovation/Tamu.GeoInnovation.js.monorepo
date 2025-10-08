@@ -1,7 +1,7 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "application",
-  "root": "apps/aggiemap-angular",
   "sourceRoot": "apps/aggiemap-angular/src",
   "targets": {
     "build": {
@@ -132,7 +132,7 @@
         "jestConfig": "apps/aggiemap-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/aggiemap-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/aggiemap-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

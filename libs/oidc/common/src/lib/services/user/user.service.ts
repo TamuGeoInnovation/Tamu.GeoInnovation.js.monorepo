@@ -1,4 +1,5 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 
 import { hash, compare } from 'bcrypt';
 import * as deepmerge from 'deepmerge';
@@ -428,7 +429,7 @@ export class UserService {
     const isUsed = await this.isNewPasswordUsed(newPassword, user);
     if (isUsed === false) {
       this.updateUserPassword(newPassword, user);
-      this.passwordResetRepo.delete(resetRequest);
+      this.passwordResetRepo.delete({ guid: resetRequest.guid });
       return true;
     } else {
       // used password

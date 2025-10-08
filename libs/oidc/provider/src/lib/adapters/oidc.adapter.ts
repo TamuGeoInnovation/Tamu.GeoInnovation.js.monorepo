@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { getConnection, Connection, FindConditions } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 import {
   AccessToken,
@@ -27,7 +27,7 @@ import {
  */
 export class OidcAdapter {
   public name: string;
-  public connection: Connection;
+  public dataSource: DataSource;
   public repository: TypeORMEntities;
   public repositories: { [table: string]: TypeORMEntities } = {
     Session,
@@ -55,14 +55,14 @@ export class OidcAdapter {
   /**
    * Creates an instance of OidcAdapter.
    */
-  constructor(name: string) {
+  constructor(name: string, dataSource: DataSource) {
     this.name = name;
-    this.connection = getConnection();
+    this.dataSource = dataSource;
     this.repository = this.repositories[name];
   }
 
   public async upsert(id: KindOfId, data: OIDCUpsertPayload, expiresIn: number) {
-    const repo = this.connection.getRepository(this.repository);
+    const repo = this.dataSource.getRepository(this.repository);
 
     if (repo) {
       if (this.name === 'Session') {
@@ -85,8 +85,8 @@ export class OidcAdapter {
   }
 
   public async find(id: string) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
-    const found: IRequiredEntityAttrs = (await repo.findOne(id)) as IRequiredEntityAttrs;
+    const repo = this.dataSource.getRepository<IRequiredEntityAttrs>(this.repository);
+    const found: IRequiredEntityAttrs = (await repo.findOne({ where: { id } })) as IRequiredEntityAttrs;
 
     if (!found) {
       return undefined;
@@ -99,10 +99,10 @@ export class OidcAdapter {
   }
 
   public async findByUserCode(userCode: KindOfId) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
+    const repo = this.dataSource.getRepository<IRequiredEntityAttrs>(this.repository);
     const found = await repo.findOne({
       where: {
-        userCode
+        userCode: String(userCode)
       }
     });
 
@@ -117,10 +117,10 @@ export class OidcAdapter {
   }
 
   public async findByUid(uid: KindOfId) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
+    const repo = this.dataSource.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne({
       where: {
-        uid: uid
+        uid: String(uid)
       }
     });
 
@@ -135,18 +135,15 @@ export class OidcAdapter {
   }
 
   public async consume(id: KindOfId) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
-    const findCond: FindConditions<IRequiredEntityAttrs> = {
-      id: `${id}`
-    };
+    const repo = this.dataSource.getRepository<IRequiredEntityAttrs>(this.repository);
 
-    await repo.update(findCond, {
+    await repo.update({ id: `${id}` }, {
       consumedAt: new Date().toISOString()
     });
   }
 
   public async destroy(id: KindOfId) {
-    const repo = this.connection.getRepository(this.repository);
+    const repo = this.dataSource.getRepository(this.repository);
 
     await repo
       .delete({
@@ -158,7 +155,7 @@ export class OidcAdapter {
   }
 
   public async revokeByGrantId(grantId: KindOfId) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
+    const repo = this.dataSource.getRepository<IRequiredEntityAttrs>(this.repository);
 
     await repo.delete({
       grantId: `${grantId}`

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 
 import { from, Observable, of, forkJoin, combineLatest } from 'rxjs';
 import { switchMap, filter, toArray, shareReplay, startWith, mergeMap, reduce, tap } from 'rxjs/operators';
@@ -20,7 +20,7 @@ import { DataService } from './services/data/data.service';
   styleUrls: ['./data-viewer.component.scss']
 })
 export class DataViewerComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public formChanges;
 
   public sites: Observable<Sites[]>;
@@ -78,7 +78,7 @@ export class DataViewerComponent implements OnInit {
     private d: DataGroupsService,
     private f: FieldsService,
     private dd: DataService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {}
 
   public ngOnInit() {

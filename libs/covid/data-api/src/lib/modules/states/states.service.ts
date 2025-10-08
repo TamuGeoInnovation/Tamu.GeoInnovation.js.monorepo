@@ -13,22 +13,29 @@ export class StatesService extends BaseService<State> {
   }
 
   public search(keyword: string) {
+    const searchCriteria: any[] = [
+      {
+        name: Like(`%${keyword}%`)
+      },
+      {
+        abbreviation: Like(`%${keyword}%`)
+      }
+    ];
+
+    // Only search by stateFips if keyword is numeric
+    const numericKeyword = parseInt(keyword, 10);
+    if (!isNaN(numericKeyword)) {
+      searchCriteria.push({
+        stateFips: numericKeyword
+      });
+    }
+
     return this.repo.find({
-      where: [
-        {
-          name: Like(`%${keyword}%`)
-        },
-        {
-          abbreviation: Like(`%${keyword}%`)
-        },
-        {
-          stateFips: keyword
-        }
-      ]
+      where: searchCriteria
     });
   }
 
   public getStateByFips(fips: number) {
-    return this.repo.findOne({ stateFips: fips });
+    return this.repo.findOne({ where: { stateFips: fips } });
   }
 }

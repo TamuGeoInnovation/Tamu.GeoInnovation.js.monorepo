@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
 
@@ -17,10 +17,10 @@ export class UniversityAddEditFormComponent implements OnInit {
   public type: 'create' | 'edit';
 
   public entity$: Observable<Partial<University>>;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
     private readonly us: UniversityService,

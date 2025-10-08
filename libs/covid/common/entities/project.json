@@ -1,5 +1,5 @@
 {
-  "root": "libs/covid/common/entities",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/covid/common/entities/src",
   "projectType": "library",
   "targets": {
@@ -15,7 +15,7 @@
         "jestConfig": "libs/covid/common/entities/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/covid/common/entities"]
+      "outputs": ["{workspaceRoot}/coverage/libs/covid/common/entities"]
     }
   },
   "tags": []

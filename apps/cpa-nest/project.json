@@ -1,11 +1,11 @@
 {
-  "root": "apps/cpa-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/cpa-nest/src",
   "projectType": "application",
   "prefix": "cpa-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "options": {
         "outputPath": "dist/apps/cpa-nest",
         "main": "apps/cpa-nest/src/main.ts",
@@ -18,7 +18,9 @@
             "input": "./libs/assets/powershell",
             "output": "./assets/powershell"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {
@@ -62,7 +64,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/cpa-nest"],
+      "outputs": ["{workspaceRoot}/coverage/apps/cpa-nest"],
       "options": {
         "jestConfig": "apps/cpa-nest/jest.config.ts",
         "passWithNoTests": true

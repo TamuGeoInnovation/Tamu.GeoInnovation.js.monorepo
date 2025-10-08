@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/oidc-admin-angular",
   "sourceRoot": "apps/oidc-admin-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
@@ -121,7 +121,7 @@
         "jestConfig": "apps/oidc-admin-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/oidc-admin-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

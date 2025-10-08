@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/geoservices-angular",
   "sourceRoot": "apps/geoservices-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
@@ -124,7 +124,7 @@
         "jestConfig": "apps/geoservices-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/geoservices-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

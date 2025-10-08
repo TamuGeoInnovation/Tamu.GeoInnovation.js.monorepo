@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'ues-recycling-data-api-nest',
 
   globals: {
@@ -10,5 +11,5 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/ues-recycling-data-api-nest',
   testEnvironment: 'node',
-  preset: '../../jest.preset.ts'
+  preset: '../../jest.preset.js'
 };

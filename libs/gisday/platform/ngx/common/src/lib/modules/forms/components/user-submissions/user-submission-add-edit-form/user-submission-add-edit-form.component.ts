@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { filter, map, Observable, startWith, Subject, switchMap, take } from 'rxjs';
 
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
@@ -16,7 +16,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   @Input()
   public type: 'create' | 'edit';
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public presentationStudentTypeOptions = [
     {
@@ -47,7 +47,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
     private readonly submissionTypeService: SubmissionTypeService,
@@ -223,7 +223,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   }
 
   private _getParticipantsControl() {
-    return this.form.get('participants') as FormArray;
+    return this.form.get('participants') as UntypedFormArray;
   }
 }
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import {
   debounceTime,
@@ -30,7 +30,7 @@ export class ListComponent implements OnInit, OnDestroy {
   public valves: Observable<Array<MappedValve>>;
   public valvesStats: Observable<IValveStats>;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public searchTerm: Observable<string>;
   public where: Observable<IWhere>;
 
@@ -40,7 +40,7 @@ export class ListComponent implements OnInit, OnDestroy {
   public filterClosed: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public dcwToggled: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private valveService: ColdWaterValvesService, private fb: FormBuilder) {}
+  constructor(private valveService: ColdWaterValvesService, private fb: UntypedFormBuilder) {}
 
   public ngOnInit(): void {
     this.valveService.restoreMapExtent();

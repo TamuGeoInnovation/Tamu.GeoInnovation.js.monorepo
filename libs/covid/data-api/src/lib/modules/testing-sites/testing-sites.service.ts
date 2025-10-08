@@ -470,9 +470,11 @@ export class TestingSitesService extends BaseService<TestingSite> {
       };
     }
 
+    const numericCountyFips = typeof countyFips === 'string' ? parseInt(countyFips, 10) : countyFips;
+
     const latestClaim = await this.countyClaimRepo.findOne({
       where: {
-        county: countyFips
+        county: { countyFips: numericCountyFips }
       },
       order: {
         created: 'DESC'
@@ -508,7 +510,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
 
     const info = await this.testingSiteInfoRepo.findOne({
       where: {
-        testingSite: siteGuid
+        testingSite: { guid: siteGuid }
       },
       order: {
         created: 'DESC'

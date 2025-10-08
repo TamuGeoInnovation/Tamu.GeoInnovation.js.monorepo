@@ -12,19 +12,8 @@
     {
       "path": "./tsconfig.editor.json"
     }
-  ]
-  // TODO: Enable these when we can enable strict templates repo-wide
-  // "compilerOptions": {
-  //   "forceConsistentCasingInFileNames": true,
-  //   "strict": true,
-  //   "noImplicitOverride": true,
-  //   "noPropertyAccessFromIndexSignature": true,
-  //   "noImplicitReturns": true,
-  //   "noFallthroughCasesInSwitch": true
-  // },
-  // "angularCompilerOptions": {
-  //   "strictInjectionParameters": true,
-  //   "strictInputAccessModifiers": true,
-  //   "strictTemplates": true
-  // }
+  ],
+  "compilerOptions": {
+    "target": "es2020"
+  }
 }

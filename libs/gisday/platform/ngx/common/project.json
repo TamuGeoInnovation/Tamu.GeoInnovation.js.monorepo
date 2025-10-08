@@ -1,12 +1,12 @@
 {
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/gisday/platform/ngx/common",
   "sourceRoot": "libs/gisday/platform/ngx/common/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/gisday/platform/ngx/common"],
+      "outputs": ["{workspaceRoot}/coverage/libs/gisday/platform/ngx/common"],
       "options": {
         "jestConfig": "libs/gisday/platform/ngx/common/jest.config.ts",
         "passWithNoTests": true

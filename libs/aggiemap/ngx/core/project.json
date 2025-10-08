@@ -1,12 +1,12 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/aggiemap/ngx/core",
   "sourceRoot": "libs/aggiemap/ngx/core/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/aggiemap/ngx/core"],
+      "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/core"],
       "options": {
         "jestConfig": "libs/aggiemap/ngx/core/jest.config.ts",
         "passWithNoTests": true

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import {
   combineLatest,
   Observable,
@@ -46,7 +46,7 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
    * Stores and relays pagination events from the paginator component.
    */
   private _paginationState$: ReplaySubject<PaginationEvent> = new ReplaySubject(1);
-  public filtersForm: FormGroup;
+  public filtersForm: UntypedFormGroup;
   private _loadingData$: ReplaySubject<boolean> = new ReplaySubject(1);
   public loadingData = this._loadingData$.asObservable().pipe(debounceTime(500));
 
@@ -165,7 +165,7 @@ export class CorrectionDataTableComponent implements OnInit, OnDestroy {
     private readonly cs: CorrectionService,
     private readonly ns: NotificationService,
     private readonly modal: ModalService,
-    private readonly fb: FormBuilder
+    private readonly fb: UntypedFormBuilder
   ) {}
 
   public ngOnInit(): void {

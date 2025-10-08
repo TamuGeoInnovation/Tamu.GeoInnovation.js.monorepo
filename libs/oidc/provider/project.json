@@ -1,5 +1,5 @@
 {
-  "root": "libs/oidc/provider",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/oidc/provider/src",
   "projectType": "library",
   "targets": {
@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/oidc/provider"],
+      "outputs": ["{workspaceRoot}/coverage/libs/oidc/provider"],
       "options": {
         "jestConfig": "libs/oidc/provider/jest.config.ts",
         "passWithNoTests": true

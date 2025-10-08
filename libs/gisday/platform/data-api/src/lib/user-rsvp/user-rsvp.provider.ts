@@ -19,7 +19,9 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
   public async getUserRsvpForEvent(accountGuid: string, eventGuid: string) {
     const existing = await this.userRsvpRepo.findOne({
       where: {
-        event: eventGuid,
+        event: {
+          guid: eventGuid
+        },
         accountGuid: accountGuid
       }
     });
@@ -73,7 +75,9 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
   public async deleteRsvpForUser(eventGuid: string, accountGuid: string) {
     const rsvp = await this.userRsvpRepo.findOne({
       where: {
-        event: eventGuid,
+        event: {
+          guid: eventGuid
+        },
         accountGuid: accountGuid
       }
     });

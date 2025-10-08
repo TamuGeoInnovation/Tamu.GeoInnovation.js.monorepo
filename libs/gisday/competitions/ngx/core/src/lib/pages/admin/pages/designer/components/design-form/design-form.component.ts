@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
@@ -20,10 +20,10 @@ export class DesignFormComponent implements OnInit {
 
   public currentSeasonForm$: Observable<CompetitionSeason>;
   public urlFields$: Observable<Array<Field>>;
-  public loadSchemaForm: FormGroup;
-  public formModel: FormGroup;
+  public loadSchemaForm: UntypedFormGroup;
+  public formModel: UntypedFormGroup;
 
-  constructor(private readonly fb: FormBuilder, private readonly http: HttpClient, private readonly fs: FormService) {}
+  constructor(private readonly fb: UntypedFormBuilder, private readonly http: HttpClient, private readonly fs: FormService) {}
 
   public ngOnInit(): void {
     this.loadSchemaForm = this.fb.group({
@@ -88,7 +88,7 @@ export class DesignFormComponent implements OnInit {
                 type: [type]
               });
 
-              (arr.get('fields') as FormArray).push(groupControl);
+              (arr.get('fields') as UntypedFormArray).push(groupControl);
 
               return arr;
             },

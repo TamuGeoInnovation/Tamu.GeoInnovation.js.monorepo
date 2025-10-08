@@ -203,5 +203,6 @@
     "veoride-data-compiler-node": "apps/veoride-data-compiler-node",
     "veoride-scraper": "libs/veoride/scraper",
     "veoride-scraper-node": "apps/veoride-scraper-node"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

@@ -1,12 +1,12 @@
 {
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/correction/ngx",
   "sourceRoot": "libs/correction/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/correction/ngx"],
+      "outputs": ["{workspaceRoot}/coverage/libs/correction/ngx"],
       "options": {
         "jestConfig": "libs/correction/ngx/jest.config.ts",
         "passWithNoTests": true

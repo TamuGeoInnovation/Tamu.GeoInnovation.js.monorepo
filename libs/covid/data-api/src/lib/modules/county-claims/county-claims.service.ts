@@ -334,9 +334,11 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       throw new Error('Invalid county fips');
     }
 
+    const numericCountyFips = typeof countyFips === 'string' ? parseInt(countyFips, 10) : countyFips;
+
     let findOptions = {
       where: {
-        county: countyFips
+        county: { countyFips: numericCountyFips }
       }
     };
 
@@ -370,9 +372,11 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
 
     const adjustedCount = count ? (typeof count !== 'number' ? parseInt(count, 10) : count) : 5;
 
+    const numericStateFips = typeof stateFips === 'string' ? parseInt(stateFips, 10) : stateFips;
+
     const countiesForState = await this.countyRepo.find({
       where: {
-        stateFips: stateFips
+        stateFips: { stateFips: numericStateFips }
       },
       relations: ['stateFips']
     });

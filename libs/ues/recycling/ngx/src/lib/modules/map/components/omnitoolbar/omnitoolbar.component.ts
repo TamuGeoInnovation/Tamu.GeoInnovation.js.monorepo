@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, map, shareReplay } from 'rxjs/operators';
 
@@ -34,7 +34,7 @@ export class OmnitoolbarComponent<T extends esri.Graphic> implements OnInit, OnD
   @Output()
   public clearSuggestion: EventEmitter<T> = new EventEmitter();
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public selectedLocation: Observable<RecyclingLocationMetadata>;
   public name: Observable<string>;
   public number: Observable<string>;
@@ -42,7 +42,7 @@ export class OmnitoolbarComponent<T extends esri.Graphic> implements OnInit, OnD
 
   private $destroy: Subject<boolean>;
 
-  constructor(private recyclingService: RecyclingService, private fb: FormBuilder) {}
+  constructor(private recyclingService: RecyclingService, private fb: UntypedFormBuilder) {}
 
   public ngOnInit(): void {
     this.selectedLocation = this.recyclingService.selectedLocationMeta;

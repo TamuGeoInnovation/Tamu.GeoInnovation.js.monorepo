@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'veoride-common-entities',
 
   globals: {
@@ -9,5 +10,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/libs/veoride/common/entities',
-  preset: '../../../../jest.preset.ts'
+  preset: '../../../../jest.preset.js'
 };

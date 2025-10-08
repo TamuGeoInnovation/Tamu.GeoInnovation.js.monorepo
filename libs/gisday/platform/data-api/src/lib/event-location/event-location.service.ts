@@ -71,7 +71,11 @@ export class EventLocationService extends BaseProvider<EventLocation> {
         throw new UnprocessableEntityException('Season not found');
       }
 
-      const existingEntities = await this.esRepo.findByIds(existingEntityGuids);
+      const existingEntities = await this.esRepo.find({
+        where: {
+          guid: In(existingEntityGuids)
+        }
+      });
 
       if (!existingEntities || existingEntities.length === 0) {
         throw new UnprocessableEntityException('No existing entities found');

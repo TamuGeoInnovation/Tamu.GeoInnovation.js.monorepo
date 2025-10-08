@@ -1,7 +1,7 @@
 {
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
-  "root": "libs/dev-tools/responsive",
   "sourceRoot": "libs/dev-tools/responsive/src",
   "targets": {
     "test": {
@@ -10,7 +10,7 @@
         "jestConfig": "libs/dev-tools/responsive/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/dev-tools/responsive"]
+      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/responsive"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

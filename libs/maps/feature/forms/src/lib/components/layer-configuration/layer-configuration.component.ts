@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Optional, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck, take } from 'rxjs/operators';
 
@@ -52,7 +52,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
    * Used to override server-side definitions or set them if not declared.
    */
   @Input()
-  public set configOptions(options: ILayerConfiguration | FormGroup) {
+  public set configOptions(options: ILayerConfiguration | UntypedFormGroup) {
     this.config = new LayerConfiguration(this.fb, options);
   }
 
@@ -82,7 +82,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
 
   constructor(
     private http: HttpClient,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Optional() private ms: EsriMapService,
     private mp: EsriModuleProviderService
   ) {}
@@ -191,12 +191,12 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
 }
 
 export class LayerConfiguration {
-  public form: FormGroup;
-  public info: FormGroup;
+  public form: UntypedFormGroup;
+  public info: UntypedFormGroup;
 
-  constructor(public fb: FormBuilder, args: ILayerConfiguration | FormGroup) {
+  constructor(public fb: UntypedFormBuilder, args: ILayerConfiguration | UntypedFormGroup) {
     if (args !== undefined) {
-      if (args instanceof FormGroup) {
+      if (args instanceof UntypedFormGroup) {
         this.form = args;
 
         // Check if the info property exists in the form.
@@ -314,7 +314,7 @@ export class LayerConfiguration {
    */
   public updateFormValues(config: ILayerConfiguration) {
     if (this.form) {
-      const controls = (this.form.controls.info as FormGroup).controls;
+      const controls = (this.form.controls.info as UntypedFormGroup).controls;
       const update = (props, cls) => {
         Object.keys(props).forEach((key) => {
           // If the config property exists as a name of a control
@@ -322,10 +322,10 @@ export class LayerConfiguration {
             // If the property key value is an object, it will be an object in the control as well.
             // Call self function again to target those.
             if (props[key] instanceof Object) {
-              update(props[key], (cls[key] as FormGroup).controls);
+              update(props[key], (cls[key] as UntypedFormGroup).controls);
             } else {
-              if ((cls[key] as FormControl).value === undefined || (cls[key] as FormControl).value === '') {
-                (cls[key] as FormControl).setValue(props[key]);
+              if ((cls[key] as UntypedFormControl).value === undefined || (cls[key] as UntypedFormControl).value === '') {
+                (cls[key] as UntypedFormControl).setValue(props[key]);
               }
             }
           }

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
@@ -40,7 +40,7 @@ export class EventAddEditFormComponent implements OnInit {
   @Input()
   public type: 'create' | 'edit';
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public entity$: Observable<Partial<Event>>;
   public tags$: Observable<Array<Partial<Tag>>>;
@@ -124,7 +124,7 @@ export class EventAddEditFormComponent implements OnInit {
   ];
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
     private readonly seasonService: SeasonService,

@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/gisday-angular",
   "sourceRoot": "apps/gisday-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
@@ -99,7 +99,7 @@
       "defaultConfiguration": ""
     },
     "image-build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           {
@@ -136,7 +136,7 @@
         "jestConfig": "apps/gisday-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/gisday-angular"]
+      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

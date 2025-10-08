@@ -17,7 +17,7 @@ export class BaseController<T extends BaseEntity> {
     return this.s.getOne({
       where: {
         guid: params.id
-      }
+      } as any
     });
   }
 
@@ -31,7 +31,7 @@ export class BaseController<T extends BaseEntity> {
   @Patch(':id')
   public update(@Param() params, @Body() body: DeepPartial<T>) {
     if (params && body) {
-      return this.s.updateOne({ where: { guid: params.id } }, body);
+      return this.s.updateOne({ where: { guid: params.id } as any }, body);
     } else {
       throw new Error('Input parameter missing');
     }
@@ -40,7 +40,7 @@ export class BaseController<T extends BaseEntity> {
   @Delete(':id')
   public delete(@Param() params) {
     if (params) {
-      return this.s.deleteOne({ where: { guid: params.id } });
+      return this.s.deleteOne({ where: { guid: params.id } as any });
     } else {
       throw new Error('Input parameter missing');
     }

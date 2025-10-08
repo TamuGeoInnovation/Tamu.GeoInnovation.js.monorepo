@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/gisday-competitions-angular-e2e",
   "sourceRoot": "apps/gisday-competitions-angular-e2e/src",
   "targets": {
     "e2e": {

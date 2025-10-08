@@ -54,7 +54,7 @@ const routes: Routes = [
     BrowserModule,
     HttpClientModule,
     RouterModule.forRoot(routes, {
-      initialNavigation: 'enabled',
+      initialNavigation: 'enabledBlocking',
       anchorScrolling: 'enabled',
       scrollOffset: [0, 64]
     }),

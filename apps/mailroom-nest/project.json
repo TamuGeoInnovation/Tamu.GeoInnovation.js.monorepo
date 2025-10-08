@@ -1,11 +1,11 @@
 {
-  "root": "apps/mailroom-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/mailroom-nest/src",
   "projectType": "application",
   "prefix": "mailroom-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/mailroom-nest",
@@ -21,7 +21,9 @@
             "input": "./libs/assets/",
             "output": "./assets"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {
@@ -65,7 +67,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/mailroom-nest"],
+      "outputs": ["{workspaceRoot}/coverage/apps/mailroom-nest"],
       "options": {
         "jestConfig": "apps/mailroom-nest/jest.config.ts",
         "passWithNoTests": true

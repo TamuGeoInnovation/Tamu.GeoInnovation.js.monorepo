@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, withLatestFrom, map, switchMap } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
   public states = STATES_TITLECASE;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly ls: LocalStoreService,
@@ -33,7 +33,7 @@ export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessing
     super(fb, rt, ar, ls, as, en);
   }
 
-  public buildForm(): FormGroup {
+  public buildForm(): UntypedFormGroup {
     return this.fb.group({
       lat: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
       lon: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],

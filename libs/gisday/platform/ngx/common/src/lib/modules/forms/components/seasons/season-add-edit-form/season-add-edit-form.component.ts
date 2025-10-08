@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
 
@@ -17,10 +17,10 @@ export class SeasonAddEditFormComponent implements OnInit {
   public type: 'create' | 'edit';
 
   public entity$: Observable<Partial<Season>>;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private at: ActivatedRoute,
     private ss: SeasonService,
     private rt: Router,
@@ -68,7 +68,7 @@ export class SeasonAddEditFormComponent implements OnInit {
       date: day ? new Date(day.date) : new Date()
     };
 
-    const arrayGroup = this.form.get('days') as FormArray;
+    const arrayGroup = this.form.get('days') as UntypedFormArray;
 
     arrayGroup.push(this.fb.control(d));
 
@@ -79,7 +79,7 @@ export class SeasonAddEditFormComponent implements OnInit {
    * Remove a day, by index, from the days form array.
    */
   public deleteDay(index: number) {
-    const arrayGroup = this.form.get('days') as FormArray;
+    const arrayGroup = this.form.get('days') as UntypedFormArray;
 
     arrayGroup.removeAt(index);
 
@@ -90,7 +90,7 @@ export class SeasonAddEditFormComponent implements OnInit {
    * Update the value of an existing day, by index, in the days form array.
    */
   public patchModifiedDay(index: number, day: Partial<SeasonDay>) {
-    const control = (this.form.get('days') as FormArray).controls[index] as FormControl;
+    const control = (this.form.get('days') as UntypedFormArray).controls[index] as UntypedFormControl;
 
     control.patchValue(day);
 

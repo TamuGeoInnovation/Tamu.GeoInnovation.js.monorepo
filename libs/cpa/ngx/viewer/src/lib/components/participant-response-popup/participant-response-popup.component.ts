@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
 import { debounceTime, tap } from 'rxjs/operators';
@@ -11,9 +11,9 @@ import { ViewerService } from '../../services/viewer.service';
   styleUrls: ['./participant-response-popup.component.scss']
 })
 export class ParticipantResponsePopupComponent extends BasePopupComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
-  constructor(private readonly vs: ViewerService, private readonly fb: FormBuilder) {
+  constructor(private readonly vs: ViewerService, private readonly fb: UntypedFormBuilder) {
     super();
   }
 

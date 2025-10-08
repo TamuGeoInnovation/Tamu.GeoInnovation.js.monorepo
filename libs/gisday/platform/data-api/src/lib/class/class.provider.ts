@@ -23,7 +23,7 @@ export class ClassProvider extends BaseProvider<Class> {
   public getClassesForSeason(seasonGuid: string) {
     return this.classRepo.find({
       where: {
-        season: seasonGuid
+        season: { guid: seasonGuid }
       },
       order: {
         title: 'ASC'

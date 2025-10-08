@@ -1,5 +1,5 @@
 {
-  "root": "libs/geoprocessing/v5",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/geoprocessing/v5/src",
   "projectType": "library",
   "targets": {
@@ -12,7 +12,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/geoprocessing/v5"],
+      "outputs": ["{workspaceRoot}/coverage/libs/geoprocessing/v5"],
       "options": {
         "jestConfig": "libs/geoprocessing/v5/jest.config.ts",
         "passWithNoTests": true

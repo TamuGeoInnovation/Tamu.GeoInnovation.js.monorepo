@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -11,13 +11,13 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
   styleUrls: ['./submit-bug-form.component.scss']
 })
 export class SubmitBugFormComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public submissionState: ReplaySubject<string> = new ReplaySubject();
   public submissionStateText: BehaviorSubject<string> = new BehaviorSubject('Submit bug report');
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly ns: NotificationService,
     private readonly cs: ContactService
   ) {}

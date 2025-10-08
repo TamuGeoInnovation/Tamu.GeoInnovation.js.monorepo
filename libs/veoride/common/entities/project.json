@@ -1,5 +1,5 @@
 {
-  "root": "libs/veoride/common/entities",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/veoride/common/entities/src",
   "projectType": "library",
   "targets": {
@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/veoride/common/entities"],
+      "outputs": ["{workspaceRoot}/coverage/libs/veoride/common/entities"],
       "options": {
         "jestConfig": "libs/veoride/common/entities/jest.config.ts",
         "passWithNoTests": true

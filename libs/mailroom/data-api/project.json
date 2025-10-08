@@ -1,5 +1,5 @@
 {
-  "root": "libs/mailroom/data-api",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/mailroom/data-api/src",
   "projectType": "library",
   "targets": {
@@ -12,7 +12,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/mailroom/data-api"],
+      "outputs": ["{workspaceRoot}/coverage/libs/mailroom/data-api"],
       "options": {
         "jestConfig": "libs/mailroom/data-api/jest.config.ts",
         "passWithNoTests": true

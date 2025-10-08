@@ -1,7 +1,7 @@
 {
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
-  "root": "libs/dev-tools/application-testing",
   "sourceRoot": "libs/dev-tools/application-testing/src",
   "targets": {
     "test": {
@@ -10,7 +10,7 @@
         "jestConfig": "libs/dev-tools/application-testing/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/dev-tools/application-testing"]
+      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/application-testing"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

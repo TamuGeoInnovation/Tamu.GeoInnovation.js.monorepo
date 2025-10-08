@@ -1,11 +1,11 @@
 {
-  "root": "apps/ues-valves-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/ues-valves-nest/src",
   "projectType": "application",
   "prefix": "ues-valves-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/ues-valves-nest",
@@ -19,7 +19,9 @@
             "input": "./libs/assets/powershell",
             "output": "./assets/powershell"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {
@@ -70,7 +72,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/ues-valves-nest"],
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-valves-nest"],
       "options": {
         "jestConfig": "apps/ues-valves-nest/jest.config.ts",
         "passWithNoTests": true

@@ -1,12 +1,12 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/maps/feature/perspective",
   "sourceRoot": "libs/maps/feature/perspective/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/maps/feature/perspective"],
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/perspective"],
       "options": {
         "jestConfig": "libs/maps/feature/perspective/jest.config.ts",
         "passWithNoTests": true

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, filter, map, merge, shareReplay, switchMap, take } from 'rxjs';
@@ -22,7 +22,7 @@ export class SponsorAddEditFormComponent implements OnInit {
   public entity$: Observable<Partial<Sponsor>>;
   public activeSeasons$: Observable<Partial<Season>>;
   public logoUrl$: Observable<SafeUrl>;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public sponsorshipLevelsDict = [
     {
@@ -44,7 +44,7 @@ export class SponsorAddEditFormComponent implements OnInit {
   ];
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly at: ActivatedRoute,
     private readonly rt: Router,
     private readonly as: AssetsService,

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, distinctUntilChanged, filter, map, merge, of, race, shareReplay, switchMap, take } from 'rxjs';
 
@@ -30,10 +30,10 @@ export class SpeakerAddEditFormComponent implements OnInit {
   public organizations$: Observable<Array<Partial<Organization>>>;
   public speakerPhotoUrl$: Observable<SafeUrl>;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   constructor(
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     private readonly rt: Router,
     private readonly at: ActivatedRoute,
     private readonly ss: SpeakerService,

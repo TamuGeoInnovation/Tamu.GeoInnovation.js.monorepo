@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subject, forkJoin, interval, Observable, ReplaySubject, from, combineLatest } from 'rxjs';
 import {
   takeUntil,
@@ -41,7 +41,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   public snapshotHistory = this.vs.snapshotHistory;
 
   public participantGuid = this.vs.participantGuid;
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   /**
    * Stores the results of the features emitted by the draw component.
@@ -64,7 +64,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private rs: ResponseService,
     private mp: EsriModuleProviderService,
     private vs: ViewerService

@@ -177,7 +177,9 @@ export class ClientMetadataService {
   // GrantType functions
   public async findGrantTypeEntities(_grants: string[]) {
     return this.grantTypeRepo.find({
-      type: In(_grants)
+      where: {
+        type: In(_grants)
+      }
     });
   }
 
@@ -275,7 +277,9 @@ export class ClientMetadataService {
   // ResponseType functions
   public async findResponseTypeEntities(_responseTypes: string[]) {
     return this.responseTypeRepo.find({
-      type: In(_responseTypes)
+      where: {
+        type: In(_responseTypes)
+      }
     });
   }
 
@@ -315,7 +319,7 @@ export class ClientMetadataService {
   public async updateResponseType(_responseType: Partial<ResponseType>) {
     const responseType = await this.responseTypeRepo.findOne({
       where: {
-        guid: _responseType
+        guid: _responseType.guid
       }
     });
 

@@ -1,5 +1,5 @@
 {
-  "root": "libs/oidc/admin/data-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/oidc/admin/data-api/src",
   "projectType": "library",
   "targets": {
@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/oidc/admin/data-api"],
+      "outputs": ["{workspaceRoot}/coverage/libs/oidc/admin/data-api"],
       "options": {
         "jestConfig": "libs/oidc/admin/data-api/jest.config.ts",
         "passWithNoTests": true

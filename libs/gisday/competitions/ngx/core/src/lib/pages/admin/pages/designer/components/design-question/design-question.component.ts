@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'tamu-gisc-design-question',
@@ -11,7 +11,7 @@ export class DesignQuestionComponent {
    * Field attributes
    */
   @Input()
-  public control: FormGroup;
+  public control: UntypedFormGroup;
 
   /**
    * Question input type (text, select, checkbox, etc)

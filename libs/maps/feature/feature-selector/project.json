@@ -1,7 +1,7 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
-  "root": "libs/maps/feature/feature-selector",
   "sourceRoot": "libs/maps/feature/feature-selector/src",
   "targets": {
     "test": {
@@ -10,7 +10,7 @@
         "jestConfig": "libs/maps/feature/feature-selector/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/maps/feature/feature-selector"]
+      "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/feature-selector"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

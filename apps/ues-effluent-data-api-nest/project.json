@@ -1,11 +1,11 @@
 {
-  "root": "apps/ues-effluent-data-api-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/ues-effluent-data-api-nest/src",
   "projectType": "application",
   "prefix": "ues-effluent-data-api-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "options": {
         "outputPath": "dist/apps/ues-effluent-data-api-nest",
         "main": "apps/ues-effluent-data-api-nest/src/main.ts",
@@ -18,7 +18,9 @@
             "input": "./libs/assets/powershell",
             "output": "./assets/powershell"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "configurations": {
         "production": {
@@ -74,7 +76,7 @@
         "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/ues-effluent-data-api-nest"]
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-effluent-data-api-nest"]
     }
   },
   "tags": ["assets"]

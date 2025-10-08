@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -15,7 +15,7 @@ import { formExporter } from '../../admin-add-submission-types/admin-add-submiss
 })
 export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType> implements OnInit {
   constructor(
-    private fb1: FormBuilder,
+    private fb1: UntypedFormBuilder,
     private route1: ActivatedRoute,
     private submissionTypeService: SubmissionTypeService
   ) {

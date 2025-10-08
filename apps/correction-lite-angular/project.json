@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/correction-lite-angular",
   "sourceRoot": "apps/correction-lite-angular/src",
   "prefix": "tamu-gisc",
   "targets": {
@@ -88,7 +88,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/correction-lite-angular"],
+      "outputs": ["{workspaceRoot}/coverage/apps/correction-lite-angular"],
       "options": {
         "jestConfig": "apps/correction-lite-angular/jest.config.ts",
         "passWithNoTests": true

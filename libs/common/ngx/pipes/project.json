@@ -1,7 +1,7 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
-  "root": "libs/common/ngx/pipes",
   "sourceRoot": "libs/common/ngx/pipes/src",
   "targets": {
     "test": {
@@ -10,7 +10,7 @@
         "jestConfig": "libs/common/ngx/pipes/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/libs/common/ngx/pipes"]
+      "outputs": ["{workspaceRoot}/coverage/libs/common/ngx/pipes"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

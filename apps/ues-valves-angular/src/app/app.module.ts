@@ -32,7 +32,7 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
+    RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
     Angulartics2Module.forRoot(),
     HttpClientModule,
     NotificationModule

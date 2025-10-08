@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -10,7 +10,7 @@ import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal
   styleUrls: ['./entity-delete-modal.component.scss']
 })
 export class EntityDeleteModalComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public matchingConfirmationCount$: Observable<boolean>;
 
   public get entityType(): string {
@@ -31,7 +31,7 @@ export class EntityDeleteModalComponent implements OnInit {
   constructor(
     @Inject(MODAL_DATA) public readonly data: EntityDeleteData,
     private readonly modalRef: ModalRefService,
-    private readonly fb: FormBuilder
+    private readonly fb: UntypedFormBuilder
   ) {}
 
   public ngOnInit(): void {

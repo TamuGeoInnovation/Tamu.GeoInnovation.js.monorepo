@@ -1,11 +1,11 @@
 {
-  "root": "apps/oidc-admin-nest",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/oidc-admin-nest/src",
   "projectType": "application",
   "prefix": "oidc-admin-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nrwl/webpack:webpack",
       "configurations": {
         "production": {
           "fileReplacements": [
@@ -43,7 +43,9 @@
             "input": "./libs/assets/powershell",
             "output": "./assets/powershell"
           }
-        ]
+        ],
+        "target": "node",
+        "compiler": "tsc"
       },
       "outputs": ["{options.outputPath}"]
     },
@@ -75,7 +77,7 @@
         "jestConfig": "apps/oidc-admin-nest/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["coverage/apps/oidc-admin-nest"]
+      "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-nest"]
     }
   },
   "tags": ["assets"]

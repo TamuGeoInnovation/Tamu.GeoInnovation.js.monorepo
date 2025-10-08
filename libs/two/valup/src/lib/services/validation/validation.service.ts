@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { getConnection } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 import { validateOrReject, ValidationError } from 'class-validator';
 import * as papa from 'papaparse';
@@ -11,6 +12,8 @@ import { WeatherfluxExpanded, EntryFailure } from '@tamu-gisc/two/common';
 export class IrgasonValidationService {
   public currentSiteCode: string;
   public numOfFailures = 0;
+
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   public validateAndUpload(path: string) {
     const pathTokens = path.split('\\');
@@ -36,7 +39,7 @@ export class IrgasonValidationService {
 
         validateOrReject(weatherFlux)
           .then(() => {
-            getConnection()
+            this.dataSource
               .getRepository(WeatherfluxExpanded)
               .insert(weatherFlux)
               .then(() => {
@@ -75,7 +78,7 @@ export class IrgasonValidationService {
 
               const failure: EntryFailure = new EntryFailure(errData);
 
-              getConnection()
+              this.dataSource
                 .getRepository(EntryFailure)
                 .insert(failure)
                 .catch((typeormErr) => {

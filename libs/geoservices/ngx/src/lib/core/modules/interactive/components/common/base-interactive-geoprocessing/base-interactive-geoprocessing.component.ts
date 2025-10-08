@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { style, transition, trigger, animate } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import {
   merge,
   Observable,
@@ -40,7 +40,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   ]
 })
 export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamType> implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public result: Observable<ResultType>;
 
   /**
@@ -75,7 +75,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
   private _cacheResult: ReplaySubject<ResultType> = new ReplaySubject(1);
 
   constructor(
-    private readonly formBuilder: FormBuilder,
+    private readonly formBuilder: UntypedFormBuilder,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly localStore: LocalStoreService,
@@ -308,7 +308,7 @@ export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamTyp
     });
   }
 
-  public abstract buildForm(): FormGroup;
+  public abstract buildForm(): UntypedFormGroup;
 
   public abstract getQuery(): (source: unknown) => Observable<ResultType>;
 

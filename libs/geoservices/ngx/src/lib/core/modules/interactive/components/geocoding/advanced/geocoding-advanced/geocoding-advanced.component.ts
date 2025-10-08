@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -33,7 +33,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
-    private fbb: FormBuilder,
+    private fbb: UntypedFormBuilder,
     private readonly rtt: Router,
     private readonly arr: ActivatedRoute,
     private readonly lss: LocalStoreService,
@@ -141,7 +141,7 @@ export class GeocodingAdvancedComponent extends GeocodingBasicComponent implemen
   }
 
   private _setRefsValue(value: boolean) {
-    const form = this.form.get('refs') as FormGroup;
+    const form = this.form.get('refs') as UntypedFormGroup;
     const booleanControls = Object.entries(form.controls).filter(([, control]) => {
       return typeof control.value === 'boolean';
     });

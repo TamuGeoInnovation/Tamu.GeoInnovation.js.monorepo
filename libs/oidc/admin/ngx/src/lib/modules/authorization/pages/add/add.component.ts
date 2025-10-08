@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { map, mergeMap, Observable, toArray } from 'rxjs';
 
@@ -13,7 +13,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   styleUrls: ['./add.component.scss']
 })
 export class AddComponent implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public $clients: Observable<Array<Partial<IClientData>>>;
   public $roles: Observable<Array<Partial<Role>>>;
@@ -28,10 +28,10 @@ export class AddComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.form = new FormGroup({
-      client: new FormControl(''),
-      role: new FormControl(''),
-      user: new FormControl('')
+    this.form = new UntypedFormGroup({
+      client: new UntypedFormControl(''),
+      role: new UntypedFormControl(''),
+      user: new UntypedFormControl('')
     });
 
     this.$clients = this.clientService.getEntities().pipe(
