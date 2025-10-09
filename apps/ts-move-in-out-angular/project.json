@@ -1,4 +1,5 @@
 {
+  "name": "ts-move-in-out-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/ts-move-in-out-angular/src",
@@ -81,13 +82,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/ts-move-in-out-angular/src/**/*.ts", "apps/ts-move-in-out-angular/src/**/*.html"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ts-move-in-out-angular"],
       "options": {
         "jestConfig": "apps/ts-move-in-out-angular/jest.config.ts",
@@ -95,6 +96,5 @@
       }
     }
   },
-  "tags": [],
-  "name": "ts-move-in-out-angular"
+  "tags": []
 }

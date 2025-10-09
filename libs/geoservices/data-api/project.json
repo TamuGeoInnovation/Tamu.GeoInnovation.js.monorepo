@@ -1,17 +1,18 @@
 {
+  "name": "geoservices-data-api",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/geoservices/data-api/src",
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/geoservices/data-api/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-api"],
       "options": {
         "jestConfig": "libs/geoservices/data-api/jest.config.ts",
@@ -19,6 +20,5 @@
       }
     }
   },
-  "tags": [],
-  "name": "geoservices-data-api"
+  "tags": []
 }

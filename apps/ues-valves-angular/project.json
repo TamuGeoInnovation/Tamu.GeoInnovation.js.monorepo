@@ -1,4 +1,5 @@
 {
+  "name": "ues-valves-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/ues-valves-angular/src",
@@ -112,7 +113,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ues-valves-angular"],
       "options": {
         "jestConfig": "apps/ues-valves-angular/jest.config.ts",
@@ -120,13 +121,12 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/ues-valves-angular/src/**/*.ts", "apps/ues-valves-angular/src/**/*.html"]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"],
-  "name": "ues-valves-angular"
+  "implicitDependencies": ["assets", "sass", "ues-sass"]
 }

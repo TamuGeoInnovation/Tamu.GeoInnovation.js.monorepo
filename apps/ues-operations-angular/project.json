@@ -1,4 +1,5 @@
 {
+  "name": "ues-operations-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/ues-operations-angular/src",
@@ -119,7 +120,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/ues-operations-angular/jest.config.ts",
         "passWithNoTests": true
@@ -127,13 +128,12 @@
       "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/ues-operations-angular/src/**/*.ts", "apps/ues-operations-angular/src/**/*.html"]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"],
-  "name": "ues-operations-angular"
+  "implicitDependencies": ["assets", "sass", "ues-sass"]
 }

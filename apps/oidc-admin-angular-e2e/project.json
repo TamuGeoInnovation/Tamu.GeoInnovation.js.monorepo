@@ -1,10 +1,11 @@
 {
+  "name": "oidc-admin-angular-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/oidc-admin-angular-e2e/src",
   "projectType": "application",
   "targets": {
     "e2e": {
-      "executor": "@nrwl/cypress:cypress",
+      "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/oidc-admin-angular-e2e/cypress.json",
         "tsConfig": "apps/oidc-admin-angular-e2e/tsconfig.e2e.json",
@@ -17,7 +18,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/oidc-admin-angular-e2e/**/*.{js,ts}"]
@@ -25,6 +26,5 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["oidc-admin-angular"],
-  "name": "oidc-admin-angular-e2e"
+  "implicitDependencies": ["oidc-admin-angular"]
 }

@@ -1,10 +1,11 @@
 {
+  "name": "correction-lite-angular-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/correction-lite-angular-e2e/src",
   "projectType": "application",
   "targets": {
     "e2e": {
-      "executor": "@nrwl/cypress:cypress",
+      "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/correction-lite-angular-e2e/cypress.json",
         "devServerTarget": "correction-lite-angular:serve:development",
@@ -17,7 +18,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/correction-lite-angular-e2e/**/*.{js,ts}"]
@@ -25,6 +26,5 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["correction-lite-angular"],
-  "name": "correction-lite-angular-e2e"
+  "implicitDependencies": ["correction-lite-angular"]
 }

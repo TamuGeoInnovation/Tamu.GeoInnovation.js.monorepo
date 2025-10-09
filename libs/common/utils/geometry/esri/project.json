@@ -1,10 +1,11 @@
 {
+  "name": "common-utils-geometry-esri",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/common/utils/geometry/esri/src",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/common/utils/geometry/esri/jest.config.ts",
         "passWithNoTests": true
@@ -12,12 +13,11 @@
       "outputs": ["{workspaceRoot}/coverage/libs/common/utils/geometry/esri"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/common/utils/geometry/esri/src/**/*.ts", "libs/common/utils/geometry/esri/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "common-utils-geometry-esri"
+  "tags": []
 }

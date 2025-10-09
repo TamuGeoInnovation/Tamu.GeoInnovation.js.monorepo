@@ -1,4 +1,5 @@
 {
+  "name": "aggiemap-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "application",
@@ -127,7 +128,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/aggiemap-angular/jest.config.ts",
         "passWithNoTests": true
@@ -135,13 +136,12 @@
       "outputs": ["{workspaceRoot}/coverage/apps/aggiemap-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/aggiemap-angular/src/**/*.ts", "apps/aggiemap-angular/src/**/*.html"]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"],
-  "name": "aggiemap-angular"
+  "implicitDependencies": ["assets", "sass"]
 }

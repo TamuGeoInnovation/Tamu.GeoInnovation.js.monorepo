@@ -1,4 +1,5 @@
 {
+  "name": "oidc-admin-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/oidc-admin-angular/src",
@@ -116,7 +117,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/oidc-admin-angular/jest.config.ts",
         "passWithNoTests": true
@@ -124,13 +125,12 @@
       "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/oidc-admin-angular/src/**/*.ts", "apps/oidc-admin-angular/src/**/*.html"]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"],
-  "name": "oidc-admin-angular"
+  "implicitDependencies": ["assets", "sass"]
 }

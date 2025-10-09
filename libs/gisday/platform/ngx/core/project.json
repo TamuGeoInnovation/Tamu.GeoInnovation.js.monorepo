@@ -1,11 +1,12 @@
 {
+  "name": "gisday-platform-ngx-core",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/gisday/platform/ngx/core/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/gisday/platform/ngx/core"],
       "options": {
         "jestConfig": "libs/gisday/platform/ngx/core/jest.config.ts",
@@ -13,13 +14,12 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/gisday/platform/ngx/core/src/**/*.ts", "libs/gisday/platform/ngx/core/src/**/*.html"],
         "force": true
       }
     }
   },
-  "tags": [],
-  "name": "gisday-platform-ngx-core"
+  "tags": []
 }

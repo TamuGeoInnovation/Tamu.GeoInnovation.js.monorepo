@@ -1,16 +1,17 @@
 {
+  "name": "ues-common-nest",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ues/common/nest/src",
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/ues/common/nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/ues/common/nest"],
       "options": {
         "jestConfig": "libs/ues/common/nest/jest.config.ts",
@@ -18,6 +19,5 @@
       }
     }
   },
-  "tags": [],
-  "name": "ues-common-nest"
+  "tags": []
 }

@@ -1,11 +1,12 @@
 {
+  "name": "common-ngx-ui-notification",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/common/ngx/ui/notification/src",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/common/ngx/ui/notification/jest.config.ts",
         "passWithNoTests": true
@@ -13,12 +14,11 @@
       "outputs": ["{workspaceRoot}/coverage/libs/common/ngx/ui/notification"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/common/ngx/ui/notification/src/**/*.ts", "libs/common/ngx/ui/notification/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "common-ngx-ui-notification"
+  "tags": []
 }

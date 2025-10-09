@@ -1,11 +1,12 @@
 {
+  "name": "aggiemap-ngx-ui-mobile",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/aggiemap/ngx/ui/mobile/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/ui/mobile"],
       "options": {
         "jestConfig": "libs/aggiemap/ngx/ui/mobile/jest.config.ts",
@@ -13,12 +14,11 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/aggiemap/ngx/ui/mobile/src/**/*.ts", "libs/aggiemap/ngx/ui/mobile/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "aggiemap-ngx-ui-mobile"
+  "tags": []
 }

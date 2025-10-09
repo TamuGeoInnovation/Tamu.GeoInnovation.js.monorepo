@@ -1,17 +1,18 @@
 {
+  "name": "geoprocessing-v4",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/geoprocessing/v4/src",
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/geoprocessing/v4/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/geoprocessing/v4"],
       "options": {
         "jestConfig": "libs/geoprocessing/v4/jest.config.ts",
@@ -19,7 +20,7 @@
       }
     },
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/geoprocessing/v4",
@@ -30,6 +31,5 @@
       }
     }
   },
-  "tags": [],
-  "name": "geoprocessing-v4"
+  "tags": []
 }

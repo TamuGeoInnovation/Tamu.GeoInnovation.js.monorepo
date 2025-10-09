@@ -1,11 +1,12 @@
 {
+  "name": "maps-feature-perspective",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/perspective/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/perspective"],
       "options": {
         "jestConfig": "libs/maps/feature/perspective/jest.config.ts",
@@ -13,12 +14,11 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/maps/feature/perspective/src/**/*.ts", "libs/maps/feature/perspective/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "maps-feature-perspective"
+  "tags": []
 }

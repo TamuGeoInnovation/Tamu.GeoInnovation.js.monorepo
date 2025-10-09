@@ -1,11 +1,12 @@
 {
+  "name": "aggiemap-ngx-popups",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/aggiemap/ngx/popups/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/popups"],
       "options": {
         "jestConfig": "libs/aggiemap/ngx/popups/jest.config.ts",
@@ -13,12 +14,11 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/aggiemap/ngx/popups/src/**/*.ts", "libs/aggiemap/ngx/popups/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "aggiemap-ngx-popups"
+  "tags": []
 }

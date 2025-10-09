@@ -1,11 +1,12 @@
 {
+  "name": "ues-effluent-data-api-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/ues-effluent-data-api-nest/src",
   "projectType": "application",
   "prefix": "ues-effluent-data-api-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "options": {
         "outputPath": "dist/apps/ues-effluent-data-api-nest",
         "main": "apps/ues-effluent-data-api-nest/src/main.ts",
@@ -49,7 +50,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "ues-effluent-data-api-nest:build",
         "port": 7777,
@@ -65,13 +66,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/ues-effluent-data-api-nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.ts",
         "passWithNoTests": true
@@ -79,6 +80,5 @@
       "outputs": ["{workspaceRoot}/coverage/apps/ues-effluent-data-api-nest"]
     }
   },
-  "tags": ["assets"],
-  "name": "ues-effluent-data-api-nest"
+  "tags": ["assets"]
 }

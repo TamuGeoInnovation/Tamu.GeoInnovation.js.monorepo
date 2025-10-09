@@ -1,4 +1,5 @@
 {
+  "name": "ts-football-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/ts-football-angular/src",
@@ -81,13 +82,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/ts-football-angular/src/**/*.ts", "apps/ts-football-angular/src/**/*.html"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ts-football-angular"],
       "options": {
         "jestConfig": "apps/ts-football-angular/jest.config.ts",
@@ -95,6 +96,5 @@
       }
     }
   },
-  "tags": [],
-  "name": "ts-football-angular"
+  "tags": []
 }

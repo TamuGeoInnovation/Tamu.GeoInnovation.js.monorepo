@@ -1,11 +1,12 @@
 {
+  "name": "geoservices-ngx",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/geoservices/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/geoservices/ngx"],
       "options": {
         "jestConfig": "libs/geoservices/ngx/jest.config.ts",
@@ -13,12 +14,11 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/geoservices/ngx/src/**/*.ts", "libs/geoservices/ngx/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "geoservices-ngx"
+  "tags": []
 }

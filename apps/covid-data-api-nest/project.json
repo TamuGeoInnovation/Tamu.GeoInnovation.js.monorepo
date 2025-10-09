@@ -1,11 +1,12 @@
 {
+  "name": "covid-data-api-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/covid-data-api-nest/src",
   "projectType": "application",
   "prefix": "covid-data-api-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "options": {
         "outputPath": "dist/apps/covid-data-api-nest",
         "main": "apps/covid-data-api-nest/src/main.ts",
@@ -41,7 +42,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "covid-data-api-nest:build",
         "host": "0.0.0.0"
@@ -56,13 +57,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/covid-data-api-nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/covid-data-api-nest/jest.config.ts",
         "passWithNoTests": true
@@ -70,6 +71,5 @@
       "outputs": ["{workspaceRoot}/coverage/apps/covid-data-api-nest"]
     }
   },
-  "tags": ["assets"],
-  "name": "covid-data-api-nest"
+  "tags": ["assets"]
 }

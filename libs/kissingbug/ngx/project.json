@@ -1,11 +1,12 @@
 {
+  "name": "kissingbug-ngx",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/kissingbug/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/kissingbug/ngx"],
       "options": {
         "jestConfig": "libs/kissingbug/ngx/jest.config.ts",
@@ -13,12 +14,11 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/kissingbug/ngx/src/**/*.ts", "libs/kissingbug/ngx/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "kissingbug-ngx"
+  "tags": []
 }

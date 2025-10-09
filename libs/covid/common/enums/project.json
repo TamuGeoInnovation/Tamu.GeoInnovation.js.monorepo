@@ -1,16 +1,17 @@
 {
+  "name": "covid-common-enums",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/covid/common/enums/src",
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/covid/common/enums/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/covid/common/enums/jest.config.ts",
         "passWithNoTests": true
@@ -18,6 +19,5 @@
       "outputs": ["{workspaceRoot}/coverage/libs/covid/common/enums"]
     }
   },
-  "tags": [],
-  "name": "covid-common-enums"
+  "tags": []
 }

@@ -1,11 +1,12 @@
 {
+  "name": "maps-feature-forms",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/forms/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/maps/feature/forms/jest.config.ts",
         "passWithNoTests": true
@@ -13,12 +14,11 @@
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/forms"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/maps/feature/forms/src/**/*.ts", "libs/maps/feature/forms/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "maps-feature-forms"
+  "tags": []
 }

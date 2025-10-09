@@ -1,11 +1,12 @@
 {
+  "name": "ues-effluent-ngx",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/ues/effluent/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/ues/effluent/ngx/jest.config.ts",
         "passWithNoTests": true
@@ -13,12 +14,11 @@
       "outputs": ["{workspaceRoot}/coverage/libs/ues/effluent/ngx"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/ues/effluent/ngx/src/**/*.ts", "libs/ues/effluent/ngx/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "ues-effluent-ngx"
+  "tags": []
 }

@@ -1,17 +1,18 @@
 {
+  "name": "gisday-platform-data-api",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/gisday/platform/data-api/src",
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/gisday/platform/data-api/**/*.ts"],
         "force": true
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/gisday/platform/data-api"],
       "options": {
         "jestConfig": "libs/gisday/platform/data-api/jest.config.ts",
@@ -19,6 +20,5 @@
       }
     }
   },
-  "tags": [],
-  "name": "gisday-platform-data-api"
+  "tags": []
 }

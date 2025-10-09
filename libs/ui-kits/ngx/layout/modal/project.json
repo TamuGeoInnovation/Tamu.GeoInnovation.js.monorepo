@@ -1,11 +1,12 @@
 {
+  "name": "ui-kits-ngx-layout-modal",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/layout/modal/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/layout/modal"],
       "options": {
         "jestConfig": "libs/ui-kits/ngx/layout/modal/jest.config.ts",
@@ -13,12 +14,11 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/ui-kits/ngx/layout/modal/src/**/*.ts", "libs/ui-kits/ngx/layout/modal/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "ui-kits-ngx-layout-modal"
+  "tags": []
 }

@@ -1,11 +1,12 @@
 {
+  "name": "oidc-admin-ngx",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/oidc/admin/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/oidc/admin/ngx"],
       "options": {
         "jestConfig": "libs/oidc/admin/ngx/jest.config.ts",
@@ -13,12 +14,11 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/oidc/admin/ngx/src/**/*.ts", "libs/oidc/admin/ngx/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "oidc-admin-ngx"
+  "tags": []
 }

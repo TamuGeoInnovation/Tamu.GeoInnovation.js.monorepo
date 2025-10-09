@@ -1,4 +1,5 @@
 {
+  "name": "ues-recycling-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/ues-recycling-angular/src",
@@ -117,7 +118,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ues-recycling-angular"],
       "options": {
         "jestConfig": "apps/ues-recycling-angular/jest.config.ts",
@@ -125,13 +126,12 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/ues-recycling-angular/src/**/*.ts", "apps/ues-recycling-angular/src/**/*.html"]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"],
-  "name": "ues-recycling-angular"
+  "implicitDependencies": ["assets", "sass", "ues-sass"]
 }

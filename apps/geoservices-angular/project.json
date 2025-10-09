@@ -1,4 +1,5 @@
 {
+  "name": "geoservices-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/geoservices-angular/src",
@@ -119,7 +120,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/geoservices-angular/jest.config.ts",
         "passWithNoTests": true
@@ -127,13 +128,12 @@
       "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/geoservices-angular/src/**/*.ts", "apps/geoservices-angular/src/**/*.html"]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"],
-  "name": "geoservices-angular"
+  "implicitDependencies": ["assets", "sass"]
 }

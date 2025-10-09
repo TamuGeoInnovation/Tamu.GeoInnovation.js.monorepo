@@ -1,11 +1,12 @@
 {
+  "name": "maps-feature-feature-highlight",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/feature-highlight/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/maps/feature/feature-highlight/jest.config.ts",
         "passWithNoTests": true
@@ -13,7 +14,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/feature-highlight"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": [
           "libs/maps/feature/feature-highlight/src/**/*.ts",
@@ -22,6 +23,5 @@
       }
     }
   },
-  "tags": [],
-  "name": "maps-feature-feature-highlight"
+  "tags": []
 }

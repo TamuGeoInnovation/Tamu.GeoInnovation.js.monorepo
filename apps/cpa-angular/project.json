@@ -1,4 +1,5 @@
 {
+  "name": "cpa-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/cpa-angular/src",
@@ -114,7 +115,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/cpa-angular/jest.config.ts",
         "passWithNoTests": true
@@ -122,13 +123,12 @@
       "outputs": ["{workspaceRoot}/coverage/apps/cpa-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/cpa-angular/src/**/*.ts", "apps/cpa-angular/src/**/*.html"]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "cpa-sass"],
-  "name": "cpa-angular"
+  "implicitDependencies": ["assets", "sass", "cpa-sass"]
 }

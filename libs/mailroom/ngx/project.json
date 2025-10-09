@@ -1,11 +1,12 @@
 {
+  "name": "mailroom-ngx",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/mailroom/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/mailroom/ngx"],
       "options": {
         "jestConfig": "libs/mailroom/ngx/jest.config.ts",
@@ -13,12 +14,11 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/mailroom/ngx/src/**/*.ts", "libs/mailroom/ngx/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "mailroom-ngx"
+  "tags": []
 }

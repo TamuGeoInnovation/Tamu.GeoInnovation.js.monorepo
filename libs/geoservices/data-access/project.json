@@ -1,11 +1,12 @@
 {
+  "name": "geoservices-data-access",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/geoservices/data-access/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/geoservices/data-access/jest.config.ts",
         "passWithNoTests": true
@@ -13,12 +14,11 @@
       "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-access"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/geoservices/data-access/src/**/*.ts", "libs/geoservices/data-access/src/**/*.html"]
       }
     }
   },
-  "tags": [],
-  "name": "geoservices-data-access"
+  "tags": []
 }
