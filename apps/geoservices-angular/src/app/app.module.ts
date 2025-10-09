@@ -52,11 +52,10 @@ export function getHighlightLanguages() {
     BrowserModule,
     Angulartics2Module.forRoot(),
     RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'enabled',
-      relativeLinkResolution: 'corrected',
-      anchorScrolling: 'enabled',
-      scrollOffset: [0, 64]
-    }),
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled',
+    scrollOffset: [0, 64]
+}),
     BrowserAnimationsModule,
     HighlightPlusModule,
     EnvironmentModule,

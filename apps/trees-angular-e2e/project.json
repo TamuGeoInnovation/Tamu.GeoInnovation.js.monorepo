@@ -1,10 +1,11 @@
 {
+  "name": "trees-angular-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/trees-angular-e2e/src",
   "targets": {
     "e2e": {
-      "executor": "@nrwl/cypress:cypress",
+      "executor": "@nx/cypress:cypress",
       "configurations": {
         "production": {
           "devServerTarget": "trees-angular:serve:production"
@@ -17,7 +18,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/trees-angular-e2e/**/*.{js,ts}"]

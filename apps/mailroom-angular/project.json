@@ -1,4 +1,5 @@
 {
+  "name": "mailroom-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/mailroom-angular/src",
@@ -86,13 +87,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/mailroom-angular/src/**/*.ts", "apps/mailroom-angular/src/**/*.html"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/mailroom-angular"],
       "options": {
         "jestConfig": "apps/mailroom-angular/jest.config.ts",

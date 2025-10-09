@@ -1,16 +1,17 @@
 {
+  "name": "veoride-data-compiler",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/veoride/data-compiler/src",
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/veoride/data-compiler/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/veoride/data-compiler"],
       "options": {
         "jestConfig": "libs/veoride/data-compiler/jest.config.ts",

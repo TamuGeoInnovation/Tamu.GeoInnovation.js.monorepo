@@ -1,4 +1,5 @@
 {
+  "name": "kissingbug-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/kissingbug-angular/src",
@@ -138,7 +139,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/kissingbug-angular"],
       "options": {
         "jestConfig": "apps/kissingbug-angular/jest.config.ts",
@@ -146,7 +147,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/kissingbug-angular/src/**/*.ts", "apps/kissingbug-angular/src/**/*.html"]
       }

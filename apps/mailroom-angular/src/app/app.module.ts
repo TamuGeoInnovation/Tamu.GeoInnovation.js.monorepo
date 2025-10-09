@@ -31,7 +31,7 @@ const routes: Routes = [
     Angulartics2Module.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
     EnvironmentModule,
     NotificationModule,
     HttpClientModule

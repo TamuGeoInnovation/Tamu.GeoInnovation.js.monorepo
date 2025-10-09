@@ -1,11 +1,12 @@
 {
+  "name": "maps-feature-popup",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/popup/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/maps/feature/popup/jest.config.ts",
         "passWithNoTests": true
@@ -13,7 +14,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/popup"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/maps/feature/popup/src/**/*.ts", "libs/maps/feature/popup/src/**/*.html"]
       }

@@ -1,11 +1,12 @@
 {
+  "name": "maps-feature-coordinates",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/coordinates/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/maps/feature/coordinates/jest.config.ts",
         "passWithNoTests": true
@@ -13,7 +14,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/coordinates"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/maps/feature/coordinates/src/**/*.ts", "libs/maps/feature/coordinates/src/**/*.html"]
       }

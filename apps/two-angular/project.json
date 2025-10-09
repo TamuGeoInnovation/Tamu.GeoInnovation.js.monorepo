@@ -1,4 +1,5 @@
 {
+  "name": "two-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "application",
@@ -114,7 +115,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/two-angular/jest.config.ts",
         "passWithNoTests": true
@@ -122,7 +123,7 @@
       "outputs": ["{workspaceRoot}/coverage/apps/two-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/two-angular/src/**/*.ts", "apps/two-angular/src/**/*.html"]
       }

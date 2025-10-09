@@ -1,11 +1,12 @@
 {
+  "name": "ues-valves-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/ues-valves-nest/src",
   "projectType": "application",
   "prefix": "ues-valves-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/ues-valves-nest",
@@ -49,7 +50,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "ues-valves-nest:build",
         "port": 7777,
@@ -65,13 +66,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/ues-valves-nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ues-valves-nest"],
       "options": {
         "jestConfig": "apps/ues-valves-nest/jest.config.ts",

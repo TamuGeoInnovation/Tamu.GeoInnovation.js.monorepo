@@ -1,4 +1,5 @@
 {
+  "name": "two-dashboard-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/two-dashboard-angular/src",
@@ -107,7 +108,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/two-dashboard-angular/jest.config.ts",
         "passWithNoTests": true
@@ -115,7 +116,7 @@
       "outputs": ["{workspaceRoot}/coverage/apps/two-dashboard-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/two-dashboard-angular/src/**/*.ts", "apps/two-dashboard-angular/src/**/*.html"]
       }

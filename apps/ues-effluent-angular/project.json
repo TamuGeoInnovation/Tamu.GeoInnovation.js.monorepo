@@ -1,4 +1,5 @@
 {
+  "name": "ues-effluent-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/ues-effluent-angular/src",
@@ -118,7 +119,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/ues-effluent-angular/jest.config.ts",
         "passWithNoTests": true
@@ -126,7 +127,7 @@
       "outputs": ["{workspaceRoot}/coverage/apps/ues-effluent-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/ues-effluent-angular/src/**/*.ts", "apps/ues-effluent-angular/src/**/*.html"]
       }

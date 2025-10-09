@@ -1,11 +1,12 @@
 {
+  "name": "common-ngx-router",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/common/ngx/router/src",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/common/ngx/router/jest.config.ts",
         "passWithNoTests": true
@@ -13,7 +14,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/common/ngx/router"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/common/ngx/router/src/**/*.ts", "libs/common/ngx/router/src/**/*.html"]
       }

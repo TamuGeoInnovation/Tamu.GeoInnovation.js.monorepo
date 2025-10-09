@@ -1,10 +1,11 @@
 {
+  "name": "gisday-bridge-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/gisday-bridge-nest/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/gisday-bridge-nest",
@@ -29,21 +30,21 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "gisday-bridge-nest:build",
         "host": "0.0.0.0"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/gisday-bridge-nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/gisday-bridge-nest"],
       "options": {
         "jestConfig": "apps/gisday-bridge-nest/jest.config.ts",

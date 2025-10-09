@@ -32,7 +32,7 @@ const hybridRoutes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(hybridRoutes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(hybridRoutes, {})],
   declarations: [],
   exports: [RouterModule]
 })

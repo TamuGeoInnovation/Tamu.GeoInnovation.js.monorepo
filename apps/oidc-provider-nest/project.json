@@ -1,11 +1,12 @@
 {
+  "name": "oidc-provider-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/oidc-provider-nest/src",
   "projectType": "application",
   "prefix": "oidc-provider-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "options": {
         "main": "apps/oidc-provider-nest/src/main.ts",
         "outputPath": "dist/apps/oidc-provider-nest",
@@ -51,7 +52,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "oidc-provider-nest:build",
         "port": 7777,
@@ -67,13 +68,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/oidc-provider-nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/oidc-provider-nest/jest.config.ts",
         "passWithNoTests": true

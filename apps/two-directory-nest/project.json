@@ -1,11 +1,12 @@
 {
+  "name": "two-directory-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/two-directory-nest/src",
   "projectType": "application",
   "prefix": "two-directory-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "options": {
         "outputPath": "dist/apps/two-directory-nest",
         "main": "apps/two-directory-nest/src/main.ts",
@@ -41,7 +42,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "two-directory-nest:build",
         "host": "0.0.0.0"
@@ -56,13 +57,13 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/two-directory-nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/two-directory-nest/jest.config.ts",
         "passWithNoTests": true

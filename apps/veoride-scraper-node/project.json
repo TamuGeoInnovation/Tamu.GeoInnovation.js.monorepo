@@ -1,11 +1,12 @@
 {
+  "name": "veoride-scraper-node",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/veoride-scraper-node/src",
   "projectType": "application",
   "prefix": "veoride-scraper-node",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/veoride-scraper-node",
@@ -49,20 +50,20 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "veoride-scraper-node:build",
         "host": "0.0.0.0"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/veoride-scraper-node/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/veoride-scraper-node"],
       "options": {
         "jestConfig": "apps/veoride-scraper-node/jest.config.ts",

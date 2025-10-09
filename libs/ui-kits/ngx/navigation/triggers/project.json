@@ -1,11 +1,12 @@
 {
+  "name": "ui-kits-ngx-navigation-triggers",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/navigation/triggers/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/ui-kits/ngx/navigation/triggers/jest.config.ts",
         "passWithNoTests": true
@@ -13,7 +14,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/triggers"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": [
           "libs/ui-kits/ngx/navigation/triggers/src/**/*.ts",

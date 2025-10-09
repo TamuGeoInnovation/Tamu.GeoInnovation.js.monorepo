@@ -1,5 +1,4 @@
-const nxPreset = require('@nrwl/jest/preset').default;
-const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const nxPreset = require('@nx/jest/preset').default;
 const { compilerOptions } = require('./tsconfig.base.json');
 
 module.exports = {
@@ -8,12 +7,22 @@ module.exports = {
   transform: {
     '^.+\\.(ts|js|html)$': 'ts-jest'
   },
-  resolver: '@nrwl/jest/plugins/resolver',
+  resolver: '@nx/jest/plugins/resolver',
   moduleFileExtensions: ['ts', 'js', 'html'],
   collectCoverage: true,
   coverageReporters: ['html', 'lcov', 'text'],
   repoters: ['default', 'jest-junit'],
-  verbose: true
+  verbose: true,
+  /* TODO: Update to latest Jest snapshotFormat
+   * By default Nx has kept the older style of Jest Snapshot formats
+   * to prevent breaking of any existing tests with snapshots.
+   * It's recommend you update to the latest format.
+   * You can do this by removing snapshotFormat property
+   * and running tests with --update-snapshot flag.
+   * Example: "nx affected --targets=test --update-snapshot"
+   * More info: https://jestjs.io/docs/upgrading-to-jest29#snapshot-format
+   */
+  snapshotFormat: { escapeString: true, printBasicPrototype: true }
 };
 
 if (process.env.IDE) {
@@ -34,7 +43,17 @@ if (process.env.IDE) {
       diagnostics: {
         ignoreCodes: [151001]
       }
-    }
+    },
+    /* TODO: Update to latest Jest snapshotFormat
+     * By default Nx has kept the older style of Jest Snapshot formats
+     * to prevent breaking of any existing tests with snapshots.
+     * It's recommend you update to the latest format.
+     * You can do this by removing snapshotFormat property
+     * and running tests with --update-snapshot flag.
+     * Example: "nx affected --targets=test --update-snapshot"
+     * More info: https://jestjs.io/docs/upgrading-to-jest29#snapshot-format
+     */
+    snapshotFormat: { escapeString: true, printBasicPrototype: true }
   };
 
   module.exports.setupFilesAfterEnv = [`${path}/src/test-setup.ts`];

@@ -1,11 +1,12 @@
 {
+  "name": "common-ngx-auth",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/common/ngx/auth/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/common/ngx/auth"],
       "options": {
         "jestConfig": "libs/common/ngx/auth/jest.config.ts",
@@ -13,7 +14,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/common/ngx/auth/src/**/*.ts", "libs/common/ngx/auth/src/**/*.html"]
       }

@@ -1,4 +1,5 @@
 {
+  "name": "trees-angular",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "application",
@@ -104,7 +105,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/trees-angular/jest.config.ts",
         "passWithNoTests": true
@@ -112,7 +113,7 @@
       "outputs": ["{workspaceRoot}/coverage/apps/trees-angular"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/trees-angular/src/**/*.ts", "apps/trees-angular/src/**/*.html"]
       }

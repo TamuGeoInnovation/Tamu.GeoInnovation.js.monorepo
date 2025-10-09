@@ -1,11 +1,12 @@
 {
+  "name": "ues-common-ngx",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/ues/common/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/ues/common/ngx/jest.config.ts",
         "passWithNoTests": true
@@ -13,7 +14,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/ues/common/ngx"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/ues/common/ngx/src/**/*.ts", "libs/ues/common/ngx/src/**/*.html"]
       }

@@ -1,10 +1,11 @@
 {
+  "name": "common-utils-ui",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/common/utils/ui/src",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/common/utils/ui/jest.config.ts",
         "passWithNoTests": true
@@ -12,7 +13,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/common/utils/ui"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/common/utils/ui/src/**/*.ts", "libs/common/utils/ui/src/**/*.html"]
       }

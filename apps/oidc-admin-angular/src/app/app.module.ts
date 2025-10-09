@@ -78,7 +78,7 @@ export function getHighlightLanguages() {
       }
     }),
     BrowserModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
     BrowserAnimationsModule,
     EnvironmentModule,
     LocalStoreModule,

@@ -1,11 +1,12 @@
 {
+  "name": "ues-recycling-ngx",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/ues/recycling/ngx/src",
   "prefix": "tamu-gisc",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/ues/recycling/ngx"],
       "options": {
         "jestConfig": "libs/ues/recycling/ngx/jest.config.ts",
@@ -13,7 +14,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/ues/recycling/ngx/src/**/*.ts", "libs/ues/recycling/ngx/src/**/*.html"]
       }

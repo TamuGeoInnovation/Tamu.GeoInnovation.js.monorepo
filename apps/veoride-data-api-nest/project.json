@@ -1,11 +1,12 @@
 {
+  "name": "veoride-data-api-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/veoride-data-api-nest/src",
   "projectType": "application",
   "prefix": "veoride-data-api-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/veoride-data-api-nest",
@@ -49,20 +50,20 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "veoride-data-api-nest:build",
         "host": "0.0.0.0"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/veoride-data-api-nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/veoride-data-api-nest"],
       "options": {
         "jestConfig": "apps/veoride-data-api-nest/jest.config.ts",

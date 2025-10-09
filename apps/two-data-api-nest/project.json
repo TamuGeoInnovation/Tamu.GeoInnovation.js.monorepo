@@ -1,11 +1,12 @@
 {
+  "name": "two-data-api-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "prefix": "two-data-api-nest",
   "projectType": "application",
   "sourceRoot": "apps/two-data-api-nest/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "configurations": {
         "production": {
           "fileReplacements": [
@@ -41,13 +42,13 @@
       "outputs": ["{options.outputPath}"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/two-data-api-nest/**/*.ts"]
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "two-data-api-nest:build",
         "host": "0.0.0.0"
@@ -62,7 +63,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "apps/two-data-api-nest/jest.config.ts",
         "passWithNoTests": true

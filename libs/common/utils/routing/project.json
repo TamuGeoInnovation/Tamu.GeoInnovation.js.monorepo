@@ -1,10 +1,11 @@
 {
+  "name": "common-utils-routing",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/common/utils/routing/src",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/common/utils/routing/jest.config.ts",
         "passWithNoTests": true
@@ -12,7 +13,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/common/utils/routing"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/common/utils/routing/src/**/*.ts", "libs/common/utils/routing/src/**/*.html"]
       }

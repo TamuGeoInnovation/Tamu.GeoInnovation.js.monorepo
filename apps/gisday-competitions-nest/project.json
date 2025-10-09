@@ -1,11 +1,12 @@
 {
+  "name": "gisday-competitions-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/gisday-competitions-nest/src",
   "projectType": "application",
   "prefix": "gisday-competitions-nest",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/gisday-competitions-nest",
@@ -38,20 +39,20 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "gisday-competitions-nest:build",
         "host": "0.0.0.0"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["apps/gisday-competitions-nest/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-nest"],
       "options": {
         "jestConfig": "apps/gisday-competitions-nest/jest.config.ts",

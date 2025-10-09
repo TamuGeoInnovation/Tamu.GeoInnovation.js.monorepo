@@ -1,11 +1,12 @@
 {
+  "name": "maps-feature-legend",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/legend/src",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "options": {
         "jestConfig": "libs/maps/feature/legend/jest.config.ts",
         "passWithNoTests": true
@@ -13,7 +14,7 @@
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/legend"]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/maps/feature/legend/src/**/*.ts", "libs/maps/feature/legend/src/**/*.html"]
       }
