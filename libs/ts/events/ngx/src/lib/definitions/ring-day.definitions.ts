@@ -97,7 +97,7 @@ export const RingDayConfiguration: EventConfiguration = {
   introductionText: 'Get the best transportation and logistics information for Ring Day.',
   eventDates: [RingDayDates.DAY1, RingDayDates.DAY2, RingDayDates.DAY3],
   mapCenter: [-96.33616, 30.60958],
-  zoom: 17,
+  zoom: 16,
   defaultLayerOverrides: {
     'construction_zone-layer': {
       visible: false
