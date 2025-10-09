@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 import { Observable, catchError, map, of, pipe } from 'rxjs';
 
 import { AuthService } from '@auth0/auth0-angular';
@@ -20,7 +20,7 @@ import { ROLES_CLAIM } from '../../tokens/claims.token';
 @Injectable({
   providedIn: 'root'
 })
-export class RoleGuard implements CanActivate {
+export class RoleGuard  {
   constructor(@Inject(ROLES_CLAIM) private readonly claim, private readonly as: AuthService, private readonly rt: Router) {}
 
   /**

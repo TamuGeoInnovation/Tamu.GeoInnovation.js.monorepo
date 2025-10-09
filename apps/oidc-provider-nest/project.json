@@ -52,7 +52,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nx/node:node",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "oidc-provider-nest:build",
         "port": 7777,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, UrlTree, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ import { LegacyAuthService } from '../services/auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class LegacyAuthGuard implements CanActivate {
+export class LegacyAuthGuard  {
   constructor(private auth: LegacyAuthService, private router: Router) {}
 
   public canActivate(

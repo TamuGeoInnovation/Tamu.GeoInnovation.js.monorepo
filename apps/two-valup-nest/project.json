@@ -42,7 +42,7 @@
       "outputs": ["{options.outputPath}"]
     },
     "serve": {
-      "executor": "@nx/node:node",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "two-valup-nest:build",
         "host": "0.0.0.0"
