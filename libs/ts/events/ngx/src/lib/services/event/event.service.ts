@@ -8,7 +8,11 @@ import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventSettings, SpecialEventOptions } from '../../interfaces/special-event.interface';
+import {
+  EventSettings,
+  ConversionDeconflictingStrategy,
+  SpecialEventOptions
+} from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../settings/event-settings.service';
 
 import esri = __esri;
@@ -76,7 +80,7 @@ export class EventService {
                     const settingValue = this.settings[option.value];
 
                     if (settingValue !== undefined) {
-                      let value: string | number | boolean | null;
+                      let value: string | number | boolean | null = null;
 
                       // If the layer has conversion options, convert the setting value to the appropriate value.
                       if (layer.conversions) {
@@ -93,23 +97,45 @@ export class EventService {
                         if (correspondingOption && correspondingOption.expression) {
                           value = correspondingOption.expression;
 
-                          (source as esri.FeatureLayer).definitionExpression = value;
+                          // If there's already a definition expression set, use the deconflicting strategy to determine how to apply the new expression.
+                          // If there's no deconflicting strategy, default to 'append-and'
 
-                          return source;
+                          const existingExpression = (source as esri.FeatureLayer).definitionExpression;
+
+                          if (existingExpression) {
+                            const deconflictingStrategy =
+                              correspondingOption.deconflictingStrategy || ConversionDeconflictingStrategy.APPEND_AND;
+
+                            if (deconflictingStrategy === ConversionDeconflictingStrategy.APPEND_AND) {
+                              (source as esri.FeatureLayer).definitionExpression = `(${existingExpression}) AND (${value})`;
+                            } else if (deconflictingStrategy === ConversionDeconflictingStrategy.APPEND_OR) {
+                              (source as esri.FeatureLayer).definitionExpression = `(${existingExpression}) OR (${value})`;
+                            } else if (deconflictingStrategy === ConversionDeconflictingStrategy.REPLACE) {
+                              (source as esri.FeatureLayer).definitionExpression = value;
+                            } else {
+                              // Ignore
+                              console.warn(
+                                `EventService.drawEvent: Ignoring new definition expression for layer ${source.id} using 'ignore' deconflicting strategy.`
+                              );
+                            }
+                          } else {
+                            (source as esri.FeatureLayer).definitionExpression = value;
+                          }
                         }
 
                         if (correspondingOption && correspondingOption.output) {
                           value = correspondingOption.output;
-                        } else {
-                          return source;
                         }
                       } else {
                         value = settingValue;
                       }
 
-                      (source as esri.FeatureLayer).definitionExpression = `${layer.field} = ${
-                        typeof value === 'string' ? `'${value}'` : value
-                      }`;
+                      // Only set definition expression if we have a value and it's not already set by expression above
+                      if (value !== null && !(source as esri.FeatureLayer).definitionExpression) {
+                        (source as esri.FeatureLayer).definitionExpression = `${layer.field} = ${
+                          typeof value === 'string' ? `'${value}'` : value
+                        }`;
+                      }
                     }
                   }
                 }

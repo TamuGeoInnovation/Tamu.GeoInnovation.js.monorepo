@@ -11,6 +11,7 @@ import { PhysicsAndEngineeringFestivalTs } from './phys-engineering-festival.def
 import { SoftballRegionalsTs } from './softball-regionals.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
+import { RingDayEvent } from './ring-day.definitions';
 import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
@@ -26,5 +27,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   PhysicsAndEngineeringFestivalTs,
   SoftballRegionalsTs,
   TroubadourTs,
-  FootballParkingEvent
+  FootballParkingEvent,
+  RingDayEvent
 ];

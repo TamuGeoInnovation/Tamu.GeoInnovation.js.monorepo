@@ -28,6 +28,7 @@ jobs:
   build-and-push:
     needs: list-publishable
     runs-on: ubuntu-latest
+    if: ${{ needs.list-publishable.outputs.matrix != '[]' }}
     permissions:
       contents: read
       packages: write

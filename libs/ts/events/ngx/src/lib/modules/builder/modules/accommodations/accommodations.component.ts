@@ -115,8 +115,8 @@ export class AccommodationsComponent implements OnInit {
               return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
             }
 
-            // TODO: Validate this works when the event has multiple accommodations
-            return this.router.navigate(['builder/accommodations', res?.value]);
+            // Navigate to the next accommodation in the builder flow
+            return this.router.navigate(['accommodations', res?.value], { relativeTo: this.route.parent?.parent });
           });
         } else {
           return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
