@@ -13,6 +13,7 @@ export class SponsorsTamuComponent implements OnInit {
   public changeRank(rank: string) {
     this.clearAllOtherPlaques();
     this.setPlaqueVisibleStatus(rank);
+    this.scrollToSponsorOpportunities();
   }
 
   public clearAllOtherPlaques() {
@@ -35,6 +36,13 @@ export class SponsorsTamuComponent implements OnInit {
 
     if (content) {
       content.classList.add('visible');
+    }
+  }
+
+  public scrollToSponsorOpportunities() {
+    const element = document.getElementById('sponsor-opportunities');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   }
 }
