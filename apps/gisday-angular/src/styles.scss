@@ -244,6 +244,7 @@ a {
   margin-right: 0.5rem;
   font-weight: 600;
   cursor: pointer;
+  text-transform: capitalize;
 
   @include transition(color 0.3s, background 0.3s);
 
