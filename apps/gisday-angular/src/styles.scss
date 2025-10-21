@@ -151,8 +151,11 @@ h6 {
   }
 }
 
-ul {
+ul,
+ol {
+  list-style-position: inside;
   margin-bottom: 1rem;
+  padding-left: 1.25rem;
 
   &.no-list {
     list-style: none;
@@ -190,8 +193,6 @@ ul {
       }
     }
   }
-
-  padding-left: 1.25rem;
 
   ul {
     margin-bottom: 0;
