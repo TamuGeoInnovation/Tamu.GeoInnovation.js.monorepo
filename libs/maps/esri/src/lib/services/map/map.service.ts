@@ -689,16 +689,16 @@ export class EsriMapService {
    *
    */
   public selectFeaturesFromUrl() {
-    const list = this.getFeatureListFromURL();
+    const featureRequests = this.getFeatureListFromURL();
 
     // Simple check to ensure the url contains feature reference list.
-    if (list.length > 0) {
+    if (featureRequests.length > 0) {
       // Submit request to the search service for all key values (feature references).
       this.searchService
         .search<esri.Graphic>({
           returnObservable: true,
-          sources: Array(list.length).fill('building'),
-          values: list
+          sources: featureRequests.map((req) => req.searchSource),
+          values: featureRequests.map((req) => req.value)
         })
         .subscribe((res) => {
           // Process every search result and filter out those containing at least one feature
@@ -733,27 +733,44 @@ export class EsriMapService {
   }
 
   /**
-   * Gets a list of features from url params.
+   * Gets a list of features from url params by checking all layer sources that have
+   * urlQueryParams defined.
+   * 
+   * Returns an array of objects containing the search source identifier and the feature value
+   * to search for.
    */
-  public getFeatureListFromURL(): string[] {
-    // Dictionary of expected URL parameters that include a list of feature references
-    const buildingParameterDictionary = ['bldg', 'Bldg', 'BldgAbbrv', 'bldgabbrv'];
+  public getFeatureListFromURL(): Array<{ searchSource: string; value: string }> {
+    const featureRequests: Array<{ searchSource: string; value: string }> = [];
 
     // Parse the current URL into a URL tree
     const tree = this.router.parseUrl(this.router.url);
 
-    // Check for matching dictionary keys in the parsed url tree
-    const keyExists = buildingParameterDictionary.find((key) => key in tree.queryParams);
+    // Get all layer sources that have urlQueryParams and searchSource defined
+    const searchableLayerSources = this.layerSourcesService
+      .getLayerSourcesWithOverrides()
+      .filter((source) => source.urlQueryParams && source.urlQueryParams.length > 0 && source.searchSource);
 
-    // If there is a matching key in the dictionary and the current url tree,
-    // then proceed submit queries to the search sources for matches.
-    if (keyExists && tree.queryParams[keyExists].trim().length > 0) {
-      const rawParamList = tree.queryParams[keyExists].split(',');
-      // Filter out duplicate values
-      return rawParamList.filter((value, index, array) => array.indexOf(value) === index);
-    } else {
-      return [];
-    }
+    // For each searchable layer source, check if any of its query params exist in the URL
+    searchableLayerSources.forEach((layerSource) => {
+      const matchingParam = layerSource.urlQueryParams.find((param) => param in tree.queryParams);
+
+      if (matchingParam && tree.queryParams[matchingParam].trim().length > 0) {
+        // Split by comma to support multiple values
+        const rawParamList = tree.queryParams[matchingParam].split(',');
+        
+        // Filter out duplicate values and create feature requests
+        const uniqueValues = rawParamList.filter((value, index, array) => array.indexOf(value) === index);
+        
+        uniqueValues.forEach((value) => {
+          featureRequests.push({
+            searchSource: layerSource.searchSource,
+            value: value
+          });
+        });
+      }
+    });
+
+    return featureRequests;
   }
 
   /**

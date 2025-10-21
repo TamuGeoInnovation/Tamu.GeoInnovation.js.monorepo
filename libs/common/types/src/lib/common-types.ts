@@ -376,6 +376,30 @@ export type LayerSource = LayerSourceType & {
    * protected resources.
    */
   auth?: LayerSourceAuthInfo;
+
+  /**
+   * Optional list of URL query parameter names that should be checked for feature selection.
+   * 
+   * When the application loads, it will check the URL for these query parameters and attempt
+   * to load and highlight features from this layer source that match the parameter values.
+   * 
+   * For example, a buildings layer might have `urlQueryParams: ['bldg', 'Bldg', 'BldgAbbrv']`
+   * and a parking lots layer might have `urlQueryParams: ['LotName', 'FAC_CODE']`.
+   * 
+   * This enables deep linking to specific features by their attributes.
+   */
+  urlQueryParams?: string[];
+
+  /**
+   * Optional reference to the search source identifier that should be used when performing
+   * feature searches for this layer source.
+   * 
+   * This links the layer source to a search source, enabling the map service to query
+   * features when URL parameters match the `urlQueryParams` values.
+   * 
+   * If not provided, the layer source will not be searchable from URL parameters.
+   */
+  searchSource?: string;
 };
 
 interface LayerSourceAuthInfo {
