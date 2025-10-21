@@ -378,14 +378,30 @@ export type LayerSource = LayerSourceType & {
   auth?: LayerSourceAuthInfo;
 
   /**
-   * Optional feature attribute name to use when generating deep links to features from this layer.
-   * 
-   * For example, if a building layer has `linkAttribute: 'Number'`, a popup link might generate
-   * a URL like `https://yourapp.com/?bldg=0468.1` where `0468.1` is the value of the `Number` attribute.
-   * 
+   * Optional configuration for generating hard links to features from this layer.
+   *
+   * For example, to generate URLs like `https://yourapp.com/?bldg=0468.1`:
+   * ```typescript
+   * linkAttribute: {
+   *   param: 'bldg',           // Query parameter key in the URL
+   *   attribute: 'Number'      // Feature attribute containing the value (e.g., BuildingNumber)
+   * }
+   * ```
+   *
    * This is used for link generation purposes only, not for search functionality.
    */
-  linkAttribute?: string;
+  linkAttribute?: {
+    /**
+     * The URL query parameter key (e.g., 'bldg' for ?bldg=0468.1)
+     */
+    param: string;
+
+    /**
+     * The feature attribute name to use for the query parameter value
+     * (e.g., 'BuildingNumber' to get the value from feature.attributes.BuildingNumber)
+     */
+    attribute: string;
+  };
 };
 
 interface LayerSourceAuthInfo {

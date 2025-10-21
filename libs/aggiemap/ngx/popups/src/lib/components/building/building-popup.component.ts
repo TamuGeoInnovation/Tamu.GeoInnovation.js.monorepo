@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
@@ -19,9 +20,10 @@ export class BuildingPopupComponent extends BaseDirectionsComponent implements O
     private rt: ActivatedRoute,
     private ps: TripPlannerService,
     private anl: Angulartics2,
-    private ms: EsriMapService
+    private ms: EsriMapService,
+    private env: EnvironmentService
   ) {
-    super(rtr, rt, ps, anl, ms);
+    super(rtr, rt, ps, anl, ms, env);
   }
 
   public ngOnInit() {

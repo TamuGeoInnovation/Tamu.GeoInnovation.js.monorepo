@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
@@ -19,8 +20,9 @@ export class AccessiblePopupComponent extends BaseDirectionsComponent {
     private rt: ActivatedRoute,
     private ps: TripPlannerService,
     private anl: Angulartics2,
-    private mp: EsriMapService
+    private mp: EsriMapService,
+    private env: EnvironmentService
   ) {
-    super(rtr, rt, ps, anl, mp);
+    super(rtr, rt, ps, anl, mp, env);
   }
 }

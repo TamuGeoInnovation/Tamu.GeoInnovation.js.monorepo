@@ -31,6 +31,10 @@ export function LayerSources(
       visible: true,
       essential: true,
       layerIndex: 1,
+      linkAttribute: {
+        param: 'bldg',
+        attribute: 'Number'
+      },
       native: {
         ...commonLayerProps,
         legendEnabled: false,

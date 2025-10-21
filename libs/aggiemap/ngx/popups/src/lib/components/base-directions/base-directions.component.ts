@@ -8,6 +8,7 @@ import { v4 as guid } from 'uuid';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { BasePopupComponent } from '../base/base.popup.component';
 
@@ -43,20 +44,55 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
     private route: ActivatedRoute,
     private plannerService: TripPlannerService,
     private analytics: Angulartics2,
-    private mapService: EsriMapService
+    private mapService: EsriMapService,
+    private environment: EnvironmentService
   ) {
     super();
   }
 
   public ngOnInit(): void {
     this.url = window.location.origin;
-    this.shareUrl = `${this.url}/?bldg=${this.data.attributes.Number}`;
+
+    // Generate share URL from layer source linkAttribute configuration
+    this.shareUrl = this.generateShareUrl();
 
     // Set a listener for stop changes.
     // This is used to determine the length of stops, allowing to reliably set the last endpoint.
     this.plannerService.Stops.pipe(takeUntil(this._destroy$)).subscribe((stops) => {
       this._stops = stops;
     });
+  }
+
+  /**
+   * Generates a shareable URL for the current feature based on the layer's linkAttribute configuration.
+   * If no linkAttribute is configured, returns the base URL without query parameters.
+   */
+  private generateShareUrl(): string {
+    const baseUrl = window.location.origin;
+
+    // Find the layer source that matches the current graphic's layer
+    const layer = this.data.layer;
+    if (!layer) {
+      return baseUrl;
+    }
+
+    // Get the layer source configuration from the environment
+    const envLayerSources = this.environment.value('LayerSources') || [];
+    const layerSource = envLayerSources.find((src) => src.id === layer.id);
+
+    if (!layerSource || !layerSource.linkAttribute) {
+      return baseUrl;
+    }
+
+    // Extract param and attribute from linkAttribute
+    const { param, attribute } = layerSource.linkAttribute;
+    const attributeValue = this.data.attributes[attribute];
+
+    if (!attributeValue) {
+      return baseUrl;
+    }
+
+    return `${baseUrl}/?${param}=${attributeValue}`;
   }
 
   public ngOnDestroy(): void {

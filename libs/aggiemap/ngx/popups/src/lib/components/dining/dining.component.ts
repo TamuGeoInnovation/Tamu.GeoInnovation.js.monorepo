@@ -5,6 +5,7 @@ import { combineLatestWith, concatMap, map, Observable, of, reduce, shareReplay,
 
 import { Angulartics2 } from 'angulartics2';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
@@ -29,9 +30,10 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
     private ps: TripPlannerService,
     private anl: Angulartics2,
     private ms: EsriMapService,
-    private readonly http: HttpClient
+    private readonly http: HttpClient,
+    private env: EnvironmentService
   ) {
-    super(rtr, rt, ps, anl, ms);
+    super(rtr, rt, ps, anl, ms, env);
   }
 
   public ngOnInit() {

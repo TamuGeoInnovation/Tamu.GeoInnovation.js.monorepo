@@ -8,6 +8,7 @@ import { InitDetail } from 'lightgallery/lg-events';
 import lightGallery from 'lightgallery';
 import { LightGallery } from 'lightgallery/lightgallery';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
@@ -79,9 +80,10 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     private rt: ActivatedRoute,
     private ps: TripPlannerService,
     private anl: Angulartics2,
-    private mp: EsriMapService
+    private mp: EsriMapService,
+    private env: EnvironmentService
   ) {
-    super(rtr, rt, ps, anl, mp);
+    super(rtr, rt, ps, anl, mp, env);
   }
 
   public ngOnInit(): void {
