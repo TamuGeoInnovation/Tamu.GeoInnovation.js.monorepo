@@ -733,7 +733,7 @@ export class EsriMapService {
   }
 
   /**
-   * Gets a list of features from url params by checking all layer sources that have
+   * Gets a list of features from url params by checking all search sources that have
    * urlQueryParams defined.
    * 
    * Returns an array of objects containing the search source identifier and the feature value
@@ -745,26 +745,33 @@ export class EsriMapService {
     // Parse the current URL into a URL tree
     const tree = this.router.parseUrl(this.router.url);
 
-    // Get all layer sources that have urlQueryParams and searchSource defined
-    const searchableLayerSources = this.layerSourcesService
-      .getLayerSourcesWithOverrides()
-      .filter((source) => source.urlQueryParams && source.urlQueryParams.length > 0 && source.searchSource);
+    // Get all search sources from the environment
+    const searchSources = this.environment.value('SearchSources') || [];
 
-    // For each searchable layer source, check if any of its query params exist in the URL
-    searchableLayerSources.forEach((layerSource) => {
-      const matchingParam = layerSource.urlQueryParams.find((param) => param in tree.queryParams);
+    // Filter search sources that have urlQueryParams defined
+    const searchableSearchSources = searchSources.filter(
+      (source) => source.urlQueryParams && source.urlQueryParams.length > 0
+    );
 
-      if (matchingParam && tree.queryParams[matchingParam].trim().length > 0) {
+    // For each searchable search source, check if any of its query params exist in the URL
+    searchableSearchSources.forEach((searchSource) => {
+      // Find the first matching query param (order matters for priority)
+      const matchingConfig = searchSource.urlQueryParams.find((config) => config.queryParam in tree.queryParams);
+
+      if (matchingConfig && tree.queryParams[matchingConfig.queryParam].trim().length > 0) {
         // Split by comma to support multiple values
-        const rawParamList = tree.queryParams[matchingParam].split(',');
+        const rawParamList = tree.queryParams[matchingConfig.queryParam].split(',');
         
         // Filter out duplicate values and create feature requests
         const uniqueValues = rawParamList.filter((value, index, array) => array.indexOf(value) === index);
         
         uniqueValues.forEach((value) => {
+          // Apply format function if provided
+          const formattedValue = matchingConfig.format ? matchingConfig.format(value) : value;
+          
           featureRequests.push({
-            searchSource: layerSource.searchSource,
-            value: value
+            searchSource: searchSource.source,
+            value: String(formattedValue)
           });
         });
       }

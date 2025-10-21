@@ -532,6 +532,42 @@ export interface SearchSource {
    * to sort search results.
    */
   scoringKeys?: string[];
+
+  /**
+   * Optional array of URL query parameter configurations for automatic feature loading from URL.
+   * 
+   * When the application loads, the map service checks all search sources for matching URL parameters
+   * and automatically searches for and highlights the corresponding features.
+   * 
+   * Array order determines priority - if multiple query params match, the first one in the array is used.
+   * 
+   * Example:
+   * ```typescript
+   * urlQueryParams: [
+   *   { queryParam: 'bldg', attribute: 'Number' },
+   *   { queryParam: 'BldgAbbr' },  // attribute defaults to 'BldgAbbr'
+   *   { queryParam: 'lot', attribute: 'LotName', format: (value) => value.toUpperCase() }
+   * ]
+   * ```
+   */
+  urlQueryParams?: Array<{
+    /**
+     * The URL query parameter name to match (e.g., 'bldg', 'LotName', 'FAC_CODE')
+     */
+    queryParam: string;
+
+    /**
+     * Optional feature attribute name to search against.
+     * If not provided, defaults to the same value as `queryParam`.
+     */
+    attribute?: string;
+
+    /**
+     * Optional callback function to transform the URL parameter value before searching.
+     * Useful for type conversion or formatting (e.g., converting strings to numbers, case conversion).
+     */
+    format?: (value: string) => string | number;
+  }>;
 }
 
 /**
