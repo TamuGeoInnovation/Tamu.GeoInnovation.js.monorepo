@@ -11,7 +11,7 @@ jobs:
   list-publishable:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.set-matrix.outputs.matrix || '[]' }}
     steps:
       - name: 'Download artifacts'
         uses: actions/download-artifact@v4
