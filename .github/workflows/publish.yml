@@ -21,8 +21,10 @@ jobs:
         id: check-apps
         run: |
           if [ -d "./apps" ]; then
+            echo "✅ Apps directory found - proceeding with image build matrix generation"
             echo "exists=true" >> $GITHUB_OUTPUT
           else
+            echo "⚠️  Apps directory not found - skipping image builds"
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
       - name: 'Set matrix'
