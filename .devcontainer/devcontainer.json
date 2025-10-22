@@ -27,10 +27,11 @@
       ]
     }
   },
-
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": false
+    },
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installOhMyZsh": true,
       "installOhMyZshConfig": true
@@ -39,17 +40,11 @@
       "plugins": "zsh-autosuggestions", // Space separated list of ZSH plugin names that will be added to .zshrc
       "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions.git" // Space separated list of Oh-My-ZSH custom plugin Git URLs that will be cloned
     }
-  }
-
+  },
+  // Install Python build dependencies for node-gyp
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3-setuptools && npm ci"
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
-
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "yarn install",
-
-  // Configure tool-specific properties.
-  // "customizations": {},
-
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   // "remoteUser": "root"
 }

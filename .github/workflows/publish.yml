@@ -11,14 +11,25 @@ jobs:
   list-publishable:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.set-matrix.outputs.matrix || '[]' }}
     steps:
       - name: 'Download artifacts'
         uses: actions/download-artifact@v4
         with:
           name: ${{ github.sha }}
+      - name: 'Check for produced artifacts'
+        id: check-apps
+        run: |
+          if [ -d "./apps" ]; then
+            echo "✅ Apps directory found - proceeding with image build matrix generation"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  Apps directory not found - skipping image builds"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
       - name: 'Set matrix'
         id: set-matrix
+        if: steps.check-apps.outputs.exists == 'true'
         # Run script to generate matrix by getting a list of all directories that have a dockerfile as json array in the /artifact directory
         run: |
           cd ./apps
