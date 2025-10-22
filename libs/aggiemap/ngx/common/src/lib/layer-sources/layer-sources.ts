@@ -131,6 +131,10 @@ export function LayerSources(
       listMode: 'hide',
       visible: true,
       layerIndex: 1,
+      linkAttribute: {
+        param: 'LotName',
+        attribute: 'Name'
+      },
       native: {
         ...commonLayerProps,
         legendEnabled: false,
