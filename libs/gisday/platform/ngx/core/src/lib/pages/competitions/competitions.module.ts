@@ -82,6 +82,10 @@ const routes: Routes = [
         loadChildren: () => import('./art/art.module').then((m) => m.ArtModule)
       },
       {
+        path: 'aggie-map',
+        loadChildren: () => import('./aggie-map/aggie-map.module').then((m) => m.AggieMapModule)
+      },
+      {
         path: '',
         loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
       }
