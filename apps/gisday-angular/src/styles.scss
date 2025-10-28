@@ -287,6 +287,18 @@ a {
     }
   }
 
+  &.tertiary {
+    border: 1.5pt solid $gisday-gray-primary;
+    background: none;
+    color: $gisday-gray-primary;
+
+    &:hover {
+      color: $gisday-black;
+      background: darken($gisday-gray-primary, 10%);
+      border-color: darken($gisday-gray-primary, 10%);
+    }
+  }
+
   &.disabled {
     color: #424242;
     background: #dcdcdc;

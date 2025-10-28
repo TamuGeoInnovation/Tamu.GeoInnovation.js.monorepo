@@ -31,15 +31,29 @@
       </div>
     </div> -->
 
-    <div class="large-partition bg-md-grey-50 flex flex-row-reverse justify-center align-center wrap trailer-1">
-      <div class="column5">
+    <div class="large-partition bg-md-grey-50 flex flex-row-reverse justify-center align-center wrap trailer-1 radial-vignette">
+      <div class="bg" style="background-image: url(/assets/images/graphics/pattern_background-01.png)"></div>
+
+      <div class="column5" style="z-index: 1">
         <img class="medium" src="/assets/images/graphics/graphic-vgi-competition.svg" />
       </div>
 
-      <div class="column6 clr-md-grey-900">
-        <h2 class="trailer-1">VGI Competitions</h2>
+      <div class="column6 clr-md-grey-100" style="z-index: 1">
+        <h2 class="trailer-1 clr-md-grey-100">VGI Competitions</h2>
         <p>Each year, TxGIS Day hosts a Volunteered Geographic Information (VGI) data collection competition to engage students, faculty, staff, and other GIS Day participants to get out there and collect some data that is meaningful to the mission of TxGIS Day. The competition has prizes, and allows participants to have an impact on our campus and surrounding community.</p>
-        <a class="button snug secondary leader-1" [routerLink]="['/competitions/vgi']">Explore Competitions</a>
+        <a class="button snug tertiary leader-1" [routerLink]="['/competitions/vgi']">Explore Competitions</a>
+      </div>
+    </div>
+
+    <div class="large-partition bg-md-grey-50 flex flex-row justify-center align-center wrap trailer-1">
+      <div class="column5">
+        <img class="large" src="/assets/images/graphics/gis_day_icon_color.svg" />
+      </div>
+
+      <div class="column6 clr-md-grey-900">
+        <h2 class="trailer-1">Aggie Map Design Competition</h2>
+        <p>Improve any and all aspects of the Aggie Map experience. Submit better cartography, symbology, color choices, alternative designs for visually impaired users, better screen positioning of elements, or better user flows.</p>
+        <a class="button snug secondary leader-1" [routerLink]="['/competitions/aggie-map']">See Details</a>
       </div>
     </div>
 
@@ -64,18 +78,6 @@
         <h2 class="trailer-1">Presentation Competition</h2>
         <p>Show off your individual or group, GIS or Remote Sensing work to be judged by the audience and experts of the field for an opportunity to win prizes courtesy of our sponsors.</p>
         <a class="button snug secondary leader-1" [routerLink]="['/competitions/presentation']">See Details</a>
-      </div>
-    </div>
-
-    <div class="large-partition bg-md-grey-50 flex flex-row justify-center align-center wrap trailer-1">
-      <div class="column5">
-        <img class="medium" src="/assets/images/graphics/graphic-vgi-competition.svg" />
-      </div>
-
-      <div class="column6 clr-md-grey-900">
-        <h2 class="trailer-1">Aggie Map Design Competition</h2>
-        <p>Improve any and all aspects of the Aggie Map experience. Submit better cartography, symbology, color choices, alternative designs for visually impaired users, better screen positioning of elements, or better user flows.</p>
-        <a class="button snug secondary leader-1" [routerLink]="['/competitions/aggie-map']">See Details</a>
       </div>
     </div>
   </div>
