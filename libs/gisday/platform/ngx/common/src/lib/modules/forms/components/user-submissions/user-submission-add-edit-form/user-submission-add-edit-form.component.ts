@@ -40,6 +40,25 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
     }
   ];
 
+  public submissionTypeOptions = [
+    {
+      type: 'presentation',
+      label: 'Presentation'
+    },
+    {
+      type: 'paper',
+      label: 'Paper'
+    },
+    {
+      type: 'poster',
+      label: 'Poster'
+    },
+    {
+      type: 'cartography',
+      label: 'Cartography'
+    }
+  ];
+
   public entity$: Observable<Partial<Submission>>;
   public submissionTypes$: Observable<Array<Partial<SubmissionType>>>;
   public selectedPresentationFormat$: Observable<string>;
@@ -140,7 +159,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         next: () => {
           this.ns.toast({
             id: 'submission-delete-success',
-            title: 'Research Submission Deleted Successfully',
+            title: 'Student Competition Submission Deleted Successfully',
             message: 'Your submission has been deleted.'
           });
 
@@ -167,7 +186,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       next: () => {
         this.ns.toast({
           id: 'submission-create-success',
-          title: 'Research Submitted Successfully',
+          title: 'Student Competition Submission Successful',
           message:
             'Thank you for your submission! The TxGIS Day team will review your submission - you can check the status on your dashboard.'
         });
@@ -198,7 +217,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         next: () => {
           this.ns.toast({
             id: 'submission-update-success',
-            title: 'Research Submission Updated Successfully',
+            title: 'Student Competition Submission Updated Successfully',
             message: 'Your submission has been updated.'
           });
 

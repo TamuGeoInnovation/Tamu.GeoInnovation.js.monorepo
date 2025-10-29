@@ -1,16 +1,16 @@
 <div class="form">
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-name">Research Presentations</div>
+      <div class="form-section-name">Student Competitions</div>
 
       <div class="form-section-actions">
-        <a routerLink="add">Submit research <span class="material-icons action">add</span></a>
+        <a routerLink="add">New submission <span class="material-icons action">add</span></a>
       </div>
     </div>
 
     <div class="form-section-body">
       <div>
-        <p class="trailer-1">Submit your research for presentation in <a routerLink="/competitions/presentation" target="_blank">TX GIS Day's yearly competitions</a>, open to all undergraduate and graduate students!</p>
+        <p class="trailer-1">Submit your work for <a routerLink="/competitions" target="_blank">TX GIS Day's yearly student competitions</a>, open to all undergraduate and graduate students!</p>
       </div>
 
       <table class="floating-table" *ngIf="(presentationSubmissions$ | async)?.length > 0; else noPosters">
@@ -18,11 +18,13 @@
           <col class="title-col" />
           <col />
           <col />
+          <col />
         </colgroup>
 
         <thead>
           <tr>
             <th>Title</th>
+            <th>Type</th>
             <th>Format</th>
             <th>Status</th>
           </tr>
@@ -31,6 +33,7 @@
         <tbody>
           <tr class="selectable" [routerLink]="['edit', sub.guid]" *ngFor="let sub of (presentationSubmissions$ | async)">
             <td class="title" [title]="sub?.title">{{sub?.title}}</td>
+            <td>{{sub?.submissionType | titlecase}}</td>
             <td>{{sub?.format | titlecase}}</td>
             <td class="status" [ngClass]="{'clr-md-amber-800': (sub | submissionReviewStatus) === SubmissionReviewStatus.InReview, 'clr-md-green-600': (sub | submissionReviewStatus) === SubmissionReviewStatus.Accepted, 'clr-md-red-500': (sub | submissionReviewStatus) === SubmissionReviewStatus.Rejected}">{{sub | submissionReviewStatus}}</td>
           </tr>
@@ -38,7 +41,7 @@
       </table>
 
       <ng-template #noPosters>
-        <p class="leader-1">You currently have no entries for this seasons' research presentation competition.</p>
+        <p class="leader-1">You currently have no entries for this season's student competitions.</p>
       </ng-template>
     </div>
   </div>

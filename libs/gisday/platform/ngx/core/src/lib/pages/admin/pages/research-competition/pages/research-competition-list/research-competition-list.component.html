@@ -1,7 +1,7 @@
 <div class="form">
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-name">Research Competition Submissions</div>
+      <div class="form-section-name">Student Competition Submissions</div>
       <div class="form-section-actions">
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="(selectedSeason$ | async)?.guid" (changed)="setSeason($event)"></tamu-gisc-select>
       </div>
@@ -16,12 +16,14 @@
             <col />
             <col />
             <col />
+            <col />
           </colgroup>
 
           <thead>
             <tr>
               <th><tamu-gisc-checkbox label="" (changed)="toggleAllRows(entities)" [checked]="(selectedRows$ | async)?.length === entities.length "></tamu-gisc-checkbox></th>
               <th>Name</th>
+              <th>Type</th>
               <th>Format</th>
               <th>Classification</th>
               <th class="status">Status</th>
@@ -32,6 +34,7 @@
             <tr class="selectable" [routerLink]="['review', entity.guid]" *ngFor="let entity of entities">
               <td (click)="$event.stopPropagation()"><tamu-gisc-checkbox label="" (changed)="toggleRow(entity?.guid)" [checked]="(selectedRows$ | async) | exists: entity?.guid"></tamu-gisc-checkbox></td>
               <td class="title" [title]="entity.title">{{entity.title}}</td>
+              <td>{{entity.submissionType | titlecase}}</td>
               <td>{{entity.format | titlecase}}</td>
               <td>{{entity.classificationType | titlecase}}</td>
               <td class="status" [ngClass]="{'clr-md-amber-800': (entity | submissionReviewStatus) === SubmissionReviewStatus.InReview, 'clr-md-green-600': (entity | submissionReviewStatus) === SubmissionReviewStatus.Accepted, 'clr-md-red-500': (entity | submissionReviewStatus) === SubmissionReviewStatus.Rejected}">{{entity | submissionReviewStatus}}</td>
@@ -51,7 +54,7 @@
       </ng-container>
 
       <ng-template #noEntities>
-        <p>There are no research competition submissions for the selected season.</p>
+        <p>There are no student competition submissions for the selected season.</p>
       </ng-template>
     </div>
   </div>
