@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { filter, map, Observable, startWith, Subject, switchMap, take } from 'rxjs';
+import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -105,7 +105,13 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
-        switchMap((guid) => this.userSubmissionService.getEntity(guid))
+        switchMap((guid) => this.userSubmissionService.getEntity(guid)),
+        shareReplay(1),
+        tap((entity) => {
+          if (entity.reviewed) {
+            this.form.disable();
+          }
+        })
       );
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
