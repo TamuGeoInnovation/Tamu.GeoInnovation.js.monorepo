@@ -13,6 +13,8 @@ import { TroubadourTs } from './troubadour-festival.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
 import { RingDayEvent } from './ring-day.definitions';
 import { ISpecialEventRoot } from '../interfaces/special-event.interface';
+import { MensBasketball_Ts } from './mens-basketball.definitions';
+import { WomensBasketball_Ts } from './womens-basketball.definitions';
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
@@ -22,11 +24,13 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   GraduationEventTs,
   HsGraduationTs,
   MaroonWhiteTs,
+  MensBasketball_Ts,
   MS150Ts,
   MusterTs,
   PhysicsAndEngineeringFestivalTs,
   SoftballRegionalsTs,
   TroubadourTs,
   FootballParkingEvent,
-  RingDayEvent
+  RingDayEvent,
+  WomensBasketball_Ts
 ];
