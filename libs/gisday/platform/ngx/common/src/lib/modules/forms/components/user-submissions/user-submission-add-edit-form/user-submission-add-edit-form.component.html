@@ -57,7 +57,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="entity$ | async as submission">
+  <ng-container *ngIf="entity$ | async as submission; else createButtons">
     <div class="form-section" *ngIf="submission.reviewed === false">
       <div class="form-section-body">
         <div class="form-collection row">
@@ -67,4 +67,14 @@
       </div>
     </div>
   </ng-container>
+
+  <ng-template #createButtons>
+    <div class="form-section">
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <tamu-gisc-button type="submit" value="Submit"></tamu-gisc-button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </form>
