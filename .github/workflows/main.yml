@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  packages: write
 
 # Optional but nice: one active run per branch/PR
 concurrency:
