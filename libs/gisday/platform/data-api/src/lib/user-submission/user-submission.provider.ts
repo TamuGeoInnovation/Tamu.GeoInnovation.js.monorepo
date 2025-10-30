@@ -146,7 +146,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     try {
-      return this.userSubmissionRepo.update(submissionGuid, existingSubmission).then((updated) => {
+      return this.userSubmissionRepo.update(submissionGuid, submission).then((updated) => {
         if (shouldEmail) {
           const participantEmails = existingSubmission.participants.map((p) => p.email);
           const primaryParticipant = participantEmails.splice(0, 1);
