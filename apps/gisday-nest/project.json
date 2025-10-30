@@ -23,7 +23,10 @@
           }
         ],
         "target": "node",
-        "compiler": "tsc"
+        "compiler": "tsc",
+        "sourceMap": true,
+        "devtool": "source-map",
+        "webpackConfig": "apps/gisday-nest/webpack.config.js"
       },
       "configurations": {
         "production": {

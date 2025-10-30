@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { filter, map, Observable, startWith, Subject, switchMap, take } from 'rxjs';
+import { filter, map, Observable, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs';
 
 import { Submission, SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -37,6 +37,25 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
     {
       format: 'group',
       label: 'Group'
+    }
+  ];
+
+  public submissionTypeOptions = [
+    {
+      type: 'presentation',
+      label: 'Presentation'
+    },
+    {
+      type: 'paper',
+      label: 'Paper'
+    },
+    {
+      type: 'poster',
+      label: 'Poster'
+    },
+    {
+      type: 'cartography',
+      label: 'Cartography'
     }
   ];
 
@@ -86,7 +105,13 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       this.entity$ = this.at.params.pipe(
         map((params) => params.guid),
         filter((guid) => guid !== undefined),
-        switchMap((guid) => this.userSubmissionService.getEntity(guid))
+        switchMap((guid) => this.userSubmissionService.getEntity(guid)),
+        shareReplay(1),
+        tap((entity) => {
+          if (entity.reviewed) {
+            this.form.disable();
+          }
+        })
       );
 
       this.entity$.pipe(take(1)).subscribe((entity) => {
@@ -140,7 +165,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         next: () => {
           this.ns.toast({
             id: 'submission-delete-success',
-            title: 'Research Submission Deleted Successfully',
+            title: 'Student Competition Submission Deleted Successfully',
             message: 'Your submission has been deleted.'
           });
 
@@ -167,7 +192,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
       next: () => {
         this.ns.toast({
           id: 'submission-create-success',
-          title: 'Research Submitted Successfully',
+          title: 'Student Competition Submission Successful',
           message:
             'Thank you for your submission! The TxGIS Day team will review your submission - you can check the status on your dashboard.'
         });
@@ -198,7 +223,7 @@ export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
         next: () => {
           this.ns.toast({
             id: 'submission-update-success',
-            title: 'Research Submission Updated Successfully',
+            title: 'Student Competition Submission Updated Successfully',
             message: 'Your submission has been updated.'
           });
 

@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, Logger, NotFoundException, Un
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { SubmissionType, Submission, PRESENTATION_SUBMISSION_TYPE } from '../entities/all.entity';
+import { SubmissionType, Submission } from '../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 import { SeasonService } from '../season/season.service';
 import { ContactService } from '../contact/contact.service';
@@ -50,12 +50,9 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
   }
 
   /**
-   * Retrieves all presentations for the active season for a given user.
+   * Retrieves all submissions for the active season for a given user.
    */
-  public async getUserPresentationsForActiveSeason(
-    userGuid: string,
-    type: PRESENTATION_SUBMISSION_TYPE = PRESENTATION_SUBMISSION_TYPE.PRESENTATION
-  ) {
+  public async getUserPresentationsForActiveSeason(userGuid: string) {
     const season = await this.seasonService.findOneActive();
 
     if (!season) {
@@ -66,8 +63,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       return this.userSubmissionRepo.find({
         where: {
           accountGuid: userGuid,
-          season: { guid: season.guid },
-          submissionType: type
+          season: { guid: season.guid }
         }
       });
     } catch (err) {
@@ -150,7 +146,7 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
     }
 
     try {
-      return this.userSubmissionRepo.update(submissionGuid, existingSubmission).then((updated) => {
+      return this.userSubmissionRepo.update(submissionGuid, submission).then((updated) => {
         if (shouldEmail) {
           const participantEmails = existingSubmission.participants.map((p) => p.email);
           const primaryParticipant = participantEmails.splice(0, 1);

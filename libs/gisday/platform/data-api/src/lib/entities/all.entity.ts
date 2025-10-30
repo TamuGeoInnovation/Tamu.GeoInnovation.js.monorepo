@@ -732,7 +732,7 @@ export class CourseCredit extends GuidIdentity {
 })
 export class SubmissionType extends GuidIdentity {
   @Column({ nullable: false })
-  public type: string;
+  public type: 'presentation' | 'poster' | 'high_school' | string;
 }
 
 @Entity({
@@ -793,8 +793,10 @@ export class UserRsvp extends GuidIdentity {
 }
 
 export enum PRESENTATION_SUBMISSION_TYPE {
+  PRESENTATION = 'presentation',
+  PAPER = 'paper',
   POSTER = 'poster',
-  PRESENTATION = 'presentation'
+  CARTOGRAPHY = 'cartography'
 }
 
 export enum PRESENTATION_FORMAT {
