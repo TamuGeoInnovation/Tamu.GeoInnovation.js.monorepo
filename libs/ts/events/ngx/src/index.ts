@@ -11,6 +11,7 @@ export * from './lib/definitions/big-event.definitions';
 export * from './lib/definitions/phys-engineering-festival.definitions';
 export * from './lib/definitions/family-weekend.definitions';
 export * from './lib/definitions/maroon-white-game.definitions';
+export * from './lib/definitions/mens-basketball.definitions';
 export * from './lib/definitions/muster.definitions';
 export * from './lib/definitions/ms150.definitions';
 export * from './lib/definitions/troubadour-festival.definitions';
