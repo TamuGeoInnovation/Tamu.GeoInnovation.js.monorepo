@@ -346,6 +346,8 @@ export type LayerSource = LayerSourceType & {
          * Describes if the `field` is a flat property or a nested property.
          *
          * Some objects carry key paths with dot (.) delimiters but are not part of a nested object and should be treated as flat properties.
+         *
+         * Example: "GIS.TS.SpEv_Lot_Notes.WBasketballN" as a fully qualified key in the attributes object.
          */
         collapsed?: boolean;
       }

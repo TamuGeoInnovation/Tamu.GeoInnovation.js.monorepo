@@ -2,36 +2,68 @@ name: Quabity Assuance
 
 on:
   push:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+  packages: write
+
+# Optional but nice: one active run per branch/PR
+concurrency:
+  group: qa-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   set-base:
     name: Set Base Reference
     runs-on: ubuntu-latest
+
+    # Run for any push; run for PRs only if they come from a fork
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
+
     outputs:
       base: ${{ steps.set-base.outputs.base }}
+
     steps:
       - name: Set Base Reference
         id: set-base
         run: |
-          if [[ "${{ github.ref_name }}" == "development" || "${{ github.ref_name }}" == "master" ]]; then
+          # Determine the branch name for push or PR
+          BRANCH="${{ github.ref_name }}"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BRANCH="${{ github.head_ref }}"
+          fi
+
+          if [[ "$BRANCH" == "development" || "$BRANCH" == "master" ]]; then
             echo "base=HEAD~1" >> $GITHUB_OUTPUT
           else
+            # For feature branches (including forks), compare against base repo's development
             echo "base=origin/development" >> $GITHUB_OUTPUT
           fi
 
   lint:
     name: Lint
     needs: set-base
+    if: needs.set-base.result == 'success'
     uses: ./.github/workflows/lint.yml
     with:
       base: ${{ needs.set-base.outputs.base }}
+
   build:
     name: Build
     needs: [lint, set-base]
+    if: needs.set-base.result == 'success'
     uses: ./.github/workflows/build.yml
     with:
       base: ${{ needs.set-base.outputs.base }}
+
   publish:
     name: Publish
     needs: [lint, build]
+    # Usually you don't want to publish from fork PRs
+    if: github.event_name == 'push'
     uses: ./.github/workflows/publish.yml
