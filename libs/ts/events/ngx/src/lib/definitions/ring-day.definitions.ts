@@ -142,18 +142,6 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
     shortDescription: 'Event Day',
     choices: [
       {
-        value: EventDay.DAY1,
-        label: 'October 16, 2025'
-      },
-      {
-        value: EventDay.DAY2,
-        label: 'October 17, 2025'
-      },
-      {
-        value: EventDay.DAY3,
-        label: 'October 18, 2025'
-      },
-      {
         value: EventDay.DAY4,
         label: 'November 6, 2025'
             },
