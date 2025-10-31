@@ -104,7 +104,7 @@ export const MensBasketball_Configuration: EventConfiguration = {
   name: "Men's Basketball Parking",
   applicationName: "Men's Basketball Parking Map",
   shortApplicationName: "Men's Basketball Parking Map",
-  eventDates: ['2025-04-27'],
+  eventDates: ['2025-11-03', '2025-11-06','2025-11-14','2025-11-18','2025-11-21','2025-11-25'],
   zoom: 16,
   mapCenter: [-96.3434, 30.61017]
 };

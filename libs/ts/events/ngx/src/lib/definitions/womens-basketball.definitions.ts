@@ -130,7 +130,7 @@ export const WomensBasketball_Configuration: EventConfiguration = {
   name: "Women's Basketball Parking",
   applicationName: "Women's Basketball Parking Map",
   shortApplicationName: "Women's Basketball Parking Map",
-  eventDates: ['2025-04-27'],
+  eventDates: ['2025-11-05', '2025-11-13','2025-12-03','2025-12-14','2025-12-21','2026-01-1'],
   zoom: 16,
   mapCenter: [-96.3434, 30.61017]
 };
