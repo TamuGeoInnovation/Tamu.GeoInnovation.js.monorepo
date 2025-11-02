@@ -4,5 +4,5 @@ jobs:
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |
-          npx nx affected:lint --base=$(baseSha) --head=$(HEAD_SHA) --exclude=$(EXCLUDED_PROJECTS)
-        displayName: 'Lint '
+          npx nx affected:lint --configuration=production --base=$(baseSha)  --exclude=$(EXCLUDED_PROJECTS) --parallel=2
+        displayName: 'Lint Affected'
