@@ -146,7 +146,7 @@ export const WomensBasketball_Configuration: EventConfiguration = {
     '2026-02-26'
   ],
   zoom: 16,
-  mapCenter: [-96.3434, 30.61017]
+  mapCenter: [-96.34467, 30.60585]
 };
 
 export const WomensBasketball_Options: SpecialEventOptions = [];
