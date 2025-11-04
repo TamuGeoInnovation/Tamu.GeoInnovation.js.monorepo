@@ -16,7 +16,7 @@ export const WomensBasketball_Definitions = {
   VISITOR_KIOSK: {
     id: WOMENS_BASKETBALL_LAYERS.VISITOR_KIOSK,
     layerId: WOMENS_BASKETBALL_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase a Visitor Permit Here',
+    name: 'Purchase Hourly Visitor Parking',
     url: `${eventUrl}/0`
   },
   ACCESSIBLE_PARKING: {
@@ -48,7 +48,7 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
-      description: 'Purchase visitor parking permits here'
+      description: 'Purchase your hourly parking permit here.'
     },
     visible: true,
     listMode: 'show',
