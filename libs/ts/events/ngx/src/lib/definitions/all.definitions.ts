@@ -1,6 +1,6 @@
 import { FourHRoundupTs } from './4h-roundup.definitions';
 import { AggielandSaturdayEventTs } from './aggieland-saturday.definitions';
-import { BigEventTs } from './big-event.definitions';
+import { BIG_EVENT_MAP_TYPE_OPTIONS, BigEventTs } from './big-event.definitions';
 import { FamilyWeekendTs } from './family-weekend.definitions';
 import { GraduationEventTs } from './graduation.definitions';
 import { HsGraduationTs } from './hs-graduation.definitions';
@@ -15,6 +15,7 @@ import { RingDayEvent } from './ring-day.definitions';
 import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
+import { GisDayTs } from './gis-day-map.definitions';
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
@@ -32,5 +33,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   TroubadourTs,
   FootballParkingEvent,
   RingDayEvent,
-  WomensBasketball_Ts
+  WomensBasketball_Ts,
+  GisDayTs
 ];
