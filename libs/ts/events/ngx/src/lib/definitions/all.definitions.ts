@@ -1,6 +1,6 @@
 import { FourHRoundupTs } from './4h-roundup.definitions';
 import { AggielandSaturdayEventTs } from './aggieland-saturday.definitions';
-import { BigEventTs, BigEventTs } from './big-event.definitions';
+import { BigEventTs, } from './big-event.definitions';
 import { FamilyWeekendTs } from './family-weekend.definitions';
 import { GraduationEventTs } from './graduation.definitions';
 import { HsGraduationTs } from './hs-graduation.definitions';
