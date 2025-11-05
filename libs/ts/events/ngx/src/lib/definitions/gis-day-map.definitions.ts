@@ -25,8 +25,8 @@ export const GisDayLayerSources: LayerSource[] = [
     url: MSC_RUDDER_URL,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Name',           // change to your field
-      description: 'attributes.Description' // change to your field
+      name: 'attributes.Name',         
+      description: 'attributes.Description' 
     },
     visible: true,
     listMode: 'show',
@@ -68,7 +68,6 @@ export const GisDayLayerSources: LayerSource[] = [
   }
 ];
 
-// 3) Same event wrapper as before
 export const GisDayConfiguration: EventConfiguration = {
   id: 'gis-day',
   name: 'GIS Day',
