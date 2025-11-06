@@ -10,9 +10,8 @@ export enum RING_DAY_LAYERS {
 }
 
 enum RingDayDates {
-  DAY1 = '2025-10-16',
-  DAY2 = '2025-10-17',
-  DAY3 = '2025-10-18'
+  DAY1 = '2025-11-06',
+  DAY2 = '2025-11-07'
 }
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Ring_Day/MapServer';
@@ -95,7 +94,7 @@ export const RingDayConfiguration: EventConfiguration = {
   applicationName: 'Ring Day Transportation Map',
   shortApplicationName: 'Ring Day Map',
   introductionText: 'Get the best transportation and logistics information for Ring Day.',
-  eventDates: [RingDayDates.DAY1, RingDayDates.DAY2, RingDayDates.DAY3],
+  eventDates: [RingDayDates.DAY1, RingDayDates.DAY2],
   mapCenter: [-96.33616, 30.60958],
   zoom: 16,
   defaultLayerOverrides: {
@@ -125,8 +124,7 @@ enum RingDayOptions {
 
 enum EventDay {
   DAY1 = 'day1',
-  DAY2 = 'day2',
-  DAY3 = 'day3'
+  DAY2 = 'day2'
 }
 
 export const RingDaySpecialEventOptions: SpecialEventOptions = [
@@ -138,15 +136,11 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
     choices: [
       {
         value: EventDay.DAY1,
-        label: 'October 16, 2025'
+        label: 'November 6, 2025'
       },
       {
         value: EventDay.DAY2,
-        label: 'October 17, 2025'
-      },
-      {
-        value: EventDay.DAY3,
-        label: 'October 18, 2025'
+        label: 'November 7, 2025'
       }
     ],
     effects: {
@@ -161,10 +155,6 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
             {
               input: EventDay.DAY2,
               expression: `StartDate <= date'${RingDayDates.DAY2}' AND EndDate >= date'${RingDayDates.DAY2}'`
-            },
-            {
-              input: EventDay.DAY3,
-              expression: `StartDate <= date'${RingDayDates.DAY3}' AND EndDate >= date'${RingDayDates.DAY3}'`
             }
           ]
         },
@@ -178,10 +168,6 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
             {
               input: EventDay.DAY2,
               expression: `Start_Date <= date'${RingDayDates.DAY2}' AND End_Date >= date'${RingDayDates.DAY2}'`
-            },
-            {
-              input: EventDay.DAY3,
-              expression: `Start_Date <= date'${RingDayDates.DAY3}' AND End_Date >= date'${RingDayDates.DAY3}'`
             }
           ]
         },
@@ -195,10 +181,6 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
             {
               input: EventDay.DAY2,
               expression: `Start_Date <= date'${RingDayDates.DAY2}' AND End_Date >= date'${RingDayDates.DAY2}'`
-            },
-            {
-              input: EventDay.DAY3,
-              expression: `Start_Date <= date'${RingDayDates.DAY3}' AND End_Date >= date'${RingDayDates.DAY3}'`
             }
           ]
         }

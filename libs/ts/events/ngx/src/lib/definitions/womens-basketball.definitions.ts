@@ -16,14 +16,14 @@ export const WomensBasketball_Definitions = {
   VISITOR_KIOSK: {
     id: WOMENS_BASKETBALL_LAYERS.VISITOR_KIOSK,
     layerId: WOMENS_BASKETBALL_LAYERS.VISITOR_KIOSK,
-    name: 'Purchase a Visitor Permit Here',
+    name: 'Purchase Hourly Visitor Parking',
     url: `${eventUrl}/0`
   },
   ACCESSIBLE_PARKING: {
     id: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
     layerId: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
     name: 'Accessible Parking Spaces',
-    url: `${eventUrl}/1`
+    url: `${eventUrl}/4`
   },
   PARKING: {
     id: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
@@ -48,7 +48,7 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
-      description: 'Purchase visitor parking permits here'
+      description: 'Purchase your hourly parking permit here.'
     },
     visible: true,
     listMode: 'show',
@@ -130,9 +130,23 @@ export const WomensBasketball_Configuration: EventConfiguration = {
   name: "Women's Basketball Parking",
   applicationName: "Women's Basketball Parking Map",
   shortApplicationName: "Women's Basketball Parking Map",
-  eventDates: ['2025-11-05', '2025-11-13','2025-12-03','2025-12-14','2025-12-21','2026-01-1', '2026-01-11','2026-01-22','2026-02-02','2026-02-08','2026-02-15','2026-02-22','2026-02-26'],
+  eventDates: [
+    '2025-11-05',
+    '2025-11-13',
+    '2025-12-03',
+    '2025-12-14',
+    '2025-12-21',
+    '2026-01-1',
+    '2026-01-11',
+    '2026-01-22',
+    '2026-02-02',
+    '2026-02-08',
+    '2026-02-15',
+    '2026-02-22',
+    '2026-02-26'
+  ],
   zoom: 16,
-  mapCenter: [-96.3434, 30.61017]
+  mapCenter: [-96.34467, 30.60585]
 };
 
 export const WomensBasketball_Options: SpecialEventOptions = [];
