@@ -104,9 +104,28 @@ export const MensBasketball_Configuration: EventConfiguration = {
   name: "Men's Basketball Parking",
   applicationName: "Men's Basketball Parking Map",
   shortApplicationName: "Men's Basketball Parking Map",
-  eventDates: ['2025-11-03', '2025-11-06','2025-11-14','2025-11-18','2025-11-21','2025-11-25','2025-12-14','2025-12-21','2025-12-29','2026-01-03','2026-01-10','2026-01-21','2026-01-24','2026-02-07','2026-02-11','2026-02-18','2026-02-28','2026-03-03'],
+  eventDates: [
+    '2025-11-03',
+    '2025-11-06',
+    '2025-11-14',
+    '2025-11-18',
+    '2025-11-21',
+    '2025-11-25',
+    '2025-12-14',
+    '2025-12-21',
+    '2025-12-29',
+    '2026-01-03',
+    '2026-01-10',
+    '2026-01-21',
+    '2026-01-24',
+    '2026-02-07',
+    '2026-02-11',
+    '2026-02-18',
+    '2026-02-28',
+    '2026-03-03'
+  ],
   zoom: 16,
-  mapCenter: [-96.3434, 30.61017]
+  mapCenter: [-96.34467, 30.60585]
 };
 
 export const MensBasketball_Options: SpecialEventOptions = [];
