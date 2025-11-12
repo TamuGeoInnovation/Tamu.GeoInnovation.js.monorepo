@@ -25,8 +25,8 @@ export const GisDayLayerSources: LayerSource[] = [
     url: MSC_RUDDER_URL,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Name',         
-      description: 'attributes.Description' 
+      name: 'attributes.Name',
+      description: 'attributes.Description'
     },
     visible: true,
     listMode: 'show',
@@ -75,8 +75,8 @@ export const GisDayConfiguration: EventConfiguration = {
   shortApplicationName: 'GIS Day',
   introductionText: 'Building and parking locations for GIS Day.',
   eventDates: ['2025-11-17', '2025-11-18', '2025-11-19', '2025-11-20', '2025-11-21'],
-  mapCenter: [-96.3417, 30.6122],
-  zoom: 18
+  mapCenter: [-96.3379, 30.61286],
+  zoom: 16
 };
 
 export const GisDayOptions: SpecialEventOptions = [];
