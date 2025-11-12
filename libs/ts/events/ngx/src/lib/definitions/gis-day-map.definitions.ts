@@ -26,7 +26,7 @@ export const GisDayLayerSources: LayerSource[] = [
     url: MSC_RUDDER_URL,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: 'attributes.Name',
+      name: 'attributes.BldgName',
       description: 'attributes.Description'
     },
     visible: true,
@@ -42,8 +42,8 @@ export const GisDayLayerSources: LayerSource[] = [
     url: GARAGES_URL,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: 'attributes.Name',
-      description: 'attributes.Description'
+      name: 'attributes.BldgName',
+      description: 'attributes.ParkingInfo',
     },
     visible: true,
     listMode: 'show',
@@ -58,7 +58,7 @@ export const GisDayLayerSources: LayerSource[] = [
     url: CSG_URL,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: 'attributes.Name',
+      name: 'attributes.LotName',
       description: 'attributes.Description'
     },
     visible: true,
