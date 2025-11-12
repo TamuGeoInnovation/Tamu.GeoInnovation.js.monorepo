@@ -1,5 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum GIS_DAY_LAYERS {
@@ -23,7 +24,7 @@ export const GisDayLayerSources: LayerSource[] = [
     id: GIS_DAY_LAYERS.MSC_RUDDER,
     title: 'MSC & Rudder Buildings',
     url: MSC_RUDDER_URL,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.Name',
       description: 'attributes.Description'
@@ -39,7 +40,7 @@ export const GisDayLayerSources: LayerSource[] = [
     id: GIS_DAY_LAYERS.GARAGES,
     title: 'GIS Day Parking Garages',
     url: GARAGES_URL,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.Name',
       description: 'attributes.Description'
@@ -55,7 +56,7 @@ export const GisDayLayerSources: LayerSource[] = [
     id: GIS_DAY_LAYERS.CSG,
     title: 'Gene Stallings Parking Garage',
     url: CSG_URL,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.Name',
       description: 'attributes.Description'
