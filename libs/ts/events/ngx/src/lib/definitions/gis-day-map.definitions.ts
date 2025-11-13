@@ -27,7 +27,7 @@ export const GisDayLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.BldgName',
-      description: 'attributes.Description'
+      description: 'attributes.EventInfo'
     },
     visible: true,
     listMode: 'show',
