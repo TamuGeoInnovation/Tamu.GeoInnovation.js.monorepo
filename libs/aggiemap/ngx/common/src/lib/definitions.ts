@@ -95,7 +95,7 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
     AGGIEPRINT_LOCATIONS: {
       id: 'aggieprint-locations',
       layerId: 'aggieprint-locations-layer',
-      name: 'Aggieprint Locations',
+      name: 'AggiePrint Locations',
       url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/TAMUPrinters/FeatureServer/0',
       popupComponent: Popups.MarkdownWDirectionsPopupComponent
     },
