@@ -78,7 +78,7 @@ export class SubmissionController {
     if (files) {
       const entityFiles = files.map((file) => {
         const _file: DeepPartial<SubmissionMedia> = {
-          blob: Buffer.from(file.buffer),
+          blob: file.buffer,
           mimeType: file.mimetype,
           fieldName: file.fieldname
         };
