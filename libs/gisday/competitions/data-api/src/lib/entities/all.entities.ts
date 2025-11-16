@@ -190,9 +190,11 @@ export interface ICompetitionSeasonFormQuestion {
   title: string;
   instructions: string;
   enabled: boolean;
+  isDiscriminator?: boolean;
   options?: Array<{
     name: string;
     value: string | number | boolean;
+    points?: number;
   }>;
   type: string;
 }

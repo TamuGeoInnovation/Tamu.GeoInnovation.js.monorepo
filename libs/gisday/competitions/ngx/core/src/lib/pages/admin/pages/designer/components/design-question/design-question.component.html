@@ -3,7 +3,7 @@
     <p>{{control.get('title').value}} <span *ngIf="control.get('enabled').value === false">(Disabled)</span></p>
   </tamu-gisc-accordion-header>
 
-  <tamu-gisc-accordion-content>
+  <tamu-gisc-accordion-content (submit)="emitRemove()">
     <form [formGroup]="control">
       <div class="question-control">
         <p class="question-control-header">Question Availability</p>
@@ -40,6 +40,13 @@
       </div>
 
       <div class="question-control" *ngIf="control.get('type').value === 'select'">
+        <p class="question-control-header">Point Discriminator</p>
+        <p>Enable this to use this question's option values as the point discriminator for leaderboard scoring. Only one question per form should be marked as the discriminator.</p>
+
+        <tamu-gisc-checkbox formControlName="isDiscriminator" label="Use this question as the point discriminator"></tamu-gisc-checkbox>
+      </div>
+
+      <div class="question-control" *ngIf="control.get('type').value === 'select'">
         <p class="question-control-header">Dropdown Options</p>
 
         <div [ngSwitch]="control.get('options').value.length > 0">
@@ -51,13 +58,17 @@
                 <div class="floating-row">
                   <div class="column">Label</div>
                   <div class="column">Value</div>
+                  <div class="column">Points</div>
                 </div>
               </div>
 
-              <div class="floating-table-body">
-                <div class="floating-row" *ngFor="let opt of control.get('options').value">
-                  <div>{{opt.name}}</div>
-                  <div>{{opt.value}}</div>
+              <div class="floating-table-body" formArrayName="options">
+                <div class="floating-row" *ngFor="let optControl of control.get('options')['controls']; let i = index">
+                  <div>{{optControl.value.name}}</div>
+                  <div>{{optControl.value.value}}</div>
+                  <div>
+                    <input type="number" min="0" step="1" [value]="optControl.value.points || 1" (input)="updateOptionPoints(i, $any($event.target).value)" style="width: 80px" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -68,5 +79,7 @@
         </div>
       </div>
     </form>
+
+    <!-- <tamu-gisc-button [type]="'submit'" [look]="'danger'" value="Remove Question"></tamu-gisc-button> -->
   </tamu-gisc-accordion-content>
 </tamu-gisc-accordion>

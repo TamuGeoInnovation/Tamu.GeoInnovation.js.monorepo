@@ -54,6 +54,12 @@ export class FormService extends BaseService<CompetitionForm> {
     });
 
     if (!existingCompSeason) {
+      // Validate that exactly one question is marked as discriminator
+      const discriminatorCount = form.model?.filter((q) => q.isDiscriminator === true).length || 0;
+      if (discriminatorCount !== 1) {
+        throw new BadRequestException('Form must have exactly one discriminator question');
+      }
+
       try {
         const _form = this.formRepo.create({ ...form });
 
@@ -84,6 +90,12 @@ export class FormService extends BaseService<CompetitionForm> {
 
     if (!competitionSeason) {
       throw new BadRequestException('No form found for provided guid.');
+    }
+
+    // Validate that exactly one question is marked as discriminator
+    const discriminatorCount = form.model?.filter((q) => q.isDiscriminator === true).length || 0;
+    if (discriminatorCount !== 1) {
+      throw new BadRequestException('Form must have exactly one discriminator question');
     }
 
     try {

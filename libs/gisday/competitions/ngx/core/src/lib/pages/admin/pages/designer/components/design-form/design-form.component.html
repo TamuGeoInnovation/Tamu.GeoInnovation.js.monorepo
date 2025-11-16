@@ -7,7 +7,7 @@
   </div>
 </form>
 
-<ng-container *ngIf="formModel !== undefined">
+<ng-container *ngIf="(formModel.get('fields').value.length > 0)">
   <form [formGroup]="formModel" (submit)="saveForm()">
     <div class="form-section">
       <div class="form-section-toolbar">
