@@ -318,6 +318,22 @@ export function LayerSources(
           ]
         } as unknown as esri.UniqueValueRenderer
       }
+    },
+    {
+      type: 'feature',
+      id: definitions.FAMILY_FRIENDLY_BATHROOMS.layerId,
+      title: definitions.FAMILY_FRIENDLY_BATHROOMS.name,
+      url: definitions.FAMILY_FRIENDLY_BATHROOMS.url,
+      popupComponent: definitions.FAMILY_FRIENDLY_BATHROOMS.popupComponent,
+      listMode: 'show',
+      visible: false,
+      popupData: {
+        description:
+          '<strong>Building</strong>: {attributes.Name}\n' + '<strong>Bathroom Location(s)</strong>: {attributes.Notes}'
+      },
+      native: {
+        ...commonLayerProps
+      }
     }
   ];
 

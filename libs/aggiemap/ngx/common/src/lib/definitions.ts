@@ -98,6 +98,13 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       name: 'AggiePrint Locations',
       url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/TAMUPrinters/FeatureServer/0',
       popupComponent: Popups.MarkdownWDirectionsPopupComponent
+    },
+    FAMILY_FRIENDLY_BATHROOMS: {
+      id: 'family-friendly-bathrooms-locations',
+      layerId: 'family-friendly-bathrooms-locations-layer',
+      name: 'Family Friendly Bathroom Locations',
+      url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer/1',
+      popupComponent: Popups.MarkdownWDirectionsPopupComponent
     }
   };
 }
@@ -125,4 +132,5 @@ export interface IComposedIDefinitions {
   BIKE_LOCATIONS: IDefinition;
   DINING_LOCATIONS: IDefinition;
   AGGIEPRINT_LOCATIONS: IDefinition;
+  FAMILY_FRIENDLY_BATHROOMS: IDefinition;
 }
