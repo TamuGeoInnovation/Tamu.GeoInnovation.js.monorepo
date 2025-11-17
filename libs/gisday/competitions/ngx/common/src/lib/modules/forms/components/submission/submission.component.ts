@@ -25,8 +25,19 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   public form: UntypedFormGroup;
 
   public file: BehaviorSubject<File> = new BehaviorSubject(undefined);
+  public file2: BehaviorSubject<File> = new BehaviorSubject(undefined);
 
   public fileUrl: Observable<string> = this.file.pipe(
+    switchMap((f) => {
+      if (f !== undefined) {
+        return of(URL.createObjectURL(f));
+      } else {
+        of(undefined);
+      }
+    })
+  );
+
+  public fileUrl2: Observable<string> = this.file2.pipe(
     switchMap((f) => {
       if (f !== undefined) {
         return of(URL.createObjectURL(f));
@@ -112,11 +123,15 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
     this._destroy$.complete();
   }
 
-  public onPhotoTaken(e) {
+  public onPhotoTaken(e, fileNumber: 1 | 2 = 1) {
     const fileList: FileList = e.target.files;
     for (let i = 0; i < fileList.length; i++) {
       if (fileList[i].type.match(/^image\//)) {
-        this.file.next(fileList[i]);
+        if (fileNumber === 1) {
+          this.file.next(fileList[i]);
+        } else {
+          this.file2.next(fileList[i]);
+        }
         break;
       }
     }
@@ -125,10 +140,10 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   public submitResponse() {
     return (
       // combineLatest([this.as.user$])
-      combineLatest([this.file.pipe(take(1)), this.as.user$])
+      combineLatest([this.file.pipe(take(1)), this.file2.pipe(take(1)), this.as.user$])
         .pipe(
           // switchMap(([file, user]) => {
-          switchMap(([file, user]) => {
+          switchMap(([file, file2, user]) => {
             // if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
             if (this.form.valid && this.submissionStatus.getValue() !== 1 && this.formModel?.allowSubmissions === true) {
               // FormData gets sent as multi-part form in request.
@@ -155,6 +170,9 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
               data.append('value', JSON.stringify(value));
               data.append('season', this.formModel.season.guid);
               data.append('head1', file);
+              if (file2 !== undefined) {
+                data.append('head2', file2);
+              }
 
               return this.ss.postSubmission(data).pipe(
                 switchMap((event) => {

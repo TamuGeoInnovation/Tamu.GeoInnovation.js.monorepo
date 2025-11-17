@@ -23,11 +23,20 @@ export class DesignFormComponent implements OnInit {
   public loadSchemaForm: UntypedFormGroup;
   public formModel: UntypedFormGroup;
 
-  constructor(private readonly fb: UntypedFormBuilder, private readonly http: HttpClient, private readonly fs: FormService) {}
+  constructor(
+    private readonly fb: UntypedFormBuilder,
+    private readonly http: HttpClient,
+    private readonly fs: FormService
+  ) {}
 
   public ngOnInit(): void {
     this.loadSchemaForm = this.fb.group({
       source: ''
+    });
+
+    this.formModel = this.fb.group({
+      fields: this.fb.array([]),
+      allowSubmissions: [false]
     });
 
     this.currentSeasonForm$ = this.fs.getFormForActiveSeason().pipe(
@@ -55,6 +64,10 @@ export class DesignFormComponent implements OnInit {
         this.updated.next(res.form.model);
       }
     });
+
+    this.formModel.valueChanges.pipe(startWith(this.formModel.getRawValue())).subscribe((changes) => {
+      this.updated.next(changes.fields);
+    });
   }
 
   public getSchema() {
@@ -65,47 +78,47 @@ export class DesignFormComponent implements OnInit {
     this.urlFields$
       .pipe(
         map((fields) => {
-          return fields.reduce(
-            (arr, field) => {
-              // Create an array of controls for the question options from the domain coded values, if any.
-              const options =
-                field.domain && field.domain.codedValues !== null
-                  ? this.fb.array(
-                      field.domain.codedValues.map((cv) => {
-                        return this.fb.control({ name: cv.name, value: cv.code });
-                      })
-                    )
-                  : this.fb.array([]);
+          return fields.reduce((arr, field) => {
+            // Create an array of controls for the question options from the domain coded values, if any.
+            const options =
+              field.domain && field.domain.codedValues !== null
+                ? this.fb.array(
+                    field.domain.codedValues.map((cv) => {
+                      return this.fb.control({ name: cv.name, value: cv.code, points: cv.points || 1 });
+                    })
+                  )
+                : this.fb.array([]);
 
-              const type = options.length === 0 ? 'text' : 'select';
+            const type = options.length === 0 ? 'text' : 'select';
 
-              const groupControl = this.fb.group({
-                attribute: [field.name],
-                title: [`${field.alias}`],
-                instructions: [''],
-                enabled: [true],
-                options: options,
-                type: [type]
-              });
+            const groupControl = this.fb.group({
+              attribute: [field.name],
+              title: [`${field.alias}`],
+              instructions: [''],
+              enabled: [true],
+              isDiscriminator: [false],
+              options: options,
+              type: [type]
+            });
 
-              (arr.get('fields') as UntypedFormArray).push(groupControl);
-
-              return arr;
-            },
-            this.fb.group({
-              fields: this.fb.array([]),
-              allowSubmissions: [false]
-            })
-          );
+            return [...arr, groupControl];
+          }, []);
         })
       )
-      .subscribe((res) => {
-        this.formModel = res;
-
-        this.formModel.valueChanges.pipe(startWith(this.formModel.getRawValue())).subscribe((changes) => {
-          this.updated.next(changes.fields);
+      .subscribe((controls) => {
+        const fieldsArray = this.formModel.get('fields') as UntypedFormArray;
+        fieldsArray.clear();
+        controls.forEach((control) => {
+          fieldsArray.push(control);
         });
       });
+  }
+
+  public removeQuestion(index: number) {
+    const fieldsArray = this.formModel.get('fields') as UntypedFormArray;
+    fieldsArray.removeAt(index);
+
+    this.updated.next(this.formModel.getRawValue().fields);
   }
 
   public saveForm(): void {
@@ -142,5 +155,9 @@ interface IEsriRestLayerSchema {
 }
 
 export interface Field extends esri.Field {
-  domain: esri.CodedValueDomain;
+  domain: CodedValueDomainWithPoints;
+}
+
+export interface CodedValueDomainWithPoints extends esri.CodedValueDomain {
+  codedValues: Array<esri.CodedValue & { points?: number }>;
 }
