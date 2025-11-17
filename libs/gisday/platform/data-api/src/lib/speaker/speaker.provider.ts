@@ -53,7 +53,15 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: guid
       },
-      relations: ['organization', 'university', 'images']
+      relations: ['organization', 'university', 'images', 'events', 'events.day'],
+      order: {
+        events: {
+          day: {
+            date: 'ASC'
+          },
+          startTime: 'ASC'
+        }
+      }
     });
   }
 
