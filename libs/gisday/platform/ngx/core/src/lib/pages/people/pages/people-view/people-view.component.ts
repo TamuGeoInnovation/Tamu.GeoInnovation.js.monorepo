@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, shareReplay, map } from 'rxjs';
 
 import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
@@ -16,6 +16,17 @@ export class PeopleViewComponent implements OnInit {
   constructor(private speakerService: SpeakerService) {}
 
   public ngOnInit() {
-    this.people$ = this.speakerService.getParticipatingPresenters().pipe(shareReplay(1));
+    this.people$ = this.speakerService.getParticipatingPresenters().pipe(
+      map((speakers) =>
+        speakers.sort((a, b) => {
+          const firstNameCompare = (a.firstName || '').localeCompare(b.firstName || '');
+          if (firstNameCompare !== 0) {
+            return firstNameCompare;
+          }
+          return (a.lastName || '').localeCompare(b.lastName || '');
+        })
+      ),
+      shareReplay(1)
+    );
   }
 }
