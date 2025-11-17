@@ -97,7 +97,13 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: In(eventGuids)
       },
-      relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university']
+      relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university'],
+      order: {
+        speakers: {
+          firstName: 1,
+          lastName: 1
+        }
+      }
     });
 
     // Extract ALL speakers from ALL events
