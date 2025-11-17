@@ -9,7 +9,7 @@
     <div class="name">
       <div [ngSwitch]="linkable">
         <p *ngSwitchCase="false">{{speaker.firstName}} {{speaker.lastName}}</p>
-        <a *ngSwitchDefault href="/presenters/details/{{speaker.guid}}"> {{speaker.firstName}} {{speaker.lastName}} </a>
+        <a *ngSwitchDefault [routerLink]="['/presenters', 'details', speaker.guid]"> {{speaker.firstName}} {{speaker.lastName}} </a>
       </div>
     </div>
 
