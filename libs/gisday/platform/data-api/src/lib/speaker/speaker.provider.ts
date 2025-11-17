@@ -53,7 +53,15 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: guid
       },
-      relations: ['organization', 'university', 'images']
+      relations: ['organization', 'university', 'images', 'events', 'events.day'],
+      order: {
+        events: {
+          day: {
+            date: 'ASC'
+          },
+          startTime: 'ASC'
+        }
+      }
     });
   }
 
@@ -89,7 +97,13 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       where: {
         guid: In(eventGuids)
       },
-      relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university']
+      relations: ['speakers', 'speakers.images', 'speakers.organization', 'speakers.university'],
+      order: {
+        speakers: {
+          firstName: 1,
+          lastName: 1
+        }
+      }
     });
 
     // Extract ALL speakers from ALL events

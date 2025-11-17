@@ -1,0 +1,55 @@
+@import 'libs/gisday/sass/variables';
+
+.presenter-details-item {
+  .image-container {
+    position: sticky;
+    top: 1rem;
+    align-self: flex-start;
+
+    @media (max-width: 767px) {
+      position: static;
+    }
+  }
+}
+
+.events-section {
+  .events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .event-item {
+    padding: 1rem;
+    border-left: 3pt solid $gisday-blue;
+    background: rgba($gisday-blue, 0.02);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba($gisday-blue, 0.05);
+      border-left-width: 4px;
+    }
+  }
+
+  .event-time {
+    font-size: 0.875rem;
+    color: $gisday-blue-support;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+  }
+
+  .event-name {
+    margin: 0;
+
+    a {
+      color: $gisday-blue;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        color: $gisday-blue-secondary;
+        text-decoration: underline;
+      }
+    }
+  }
+}

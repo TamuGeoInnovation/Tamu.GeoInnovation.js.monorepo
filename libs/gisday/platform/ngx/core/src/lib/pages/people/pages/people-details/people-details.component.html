@@ -18,6 +18,17 @@
         <ng-template #noDescription>
           <p>There is no description for this presenter yet. Please check back at a later time.</p>
         </ng-template>
+
+        <div *ngIf="person.events && person.events.length > 0" class="events-section leader-2">
+          <div class="border-divider trailer-2"></div>
+          <h3 class="trailer-1">Presenting At</h3>
+          <div class="events-list">
+            <div *ngFor="let event of person.events" class="event-item">
+              <div class="event-time">{{event?.day?.date | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ event?.day?.date| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</div>
+              <div class="event-name"><a [routerLink]="['/sessions', 'details', event.guid]">{{ event.name }}</a></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -594,6 +594,12 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: true })
   public accountGuid: string;
 
+  @JoinTable({
+    name: 'event_speakers'
+  })
+  @ManyToMany(() => Event, (event) => event.speakers)
+  public events: Event[];
+
   @ManyToOne(() => Season, (season) => season.speakers, { nullable: true })
   public season: Season;
 
