@@ -1,0 +1,45 @@
+.submission-review-container {
+  height: 100%;
+  padding: 1rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-unverified {
+  background-color: #ffeaa7;
+  color: #2d3436;
+}
+
+.status-verified {
+  background-color: #55efc4;
+  color: #00b894;
+}
+
+.status-discarded {
+  background-color: #fab1a0;
+  color: #d63031;
+}
+
+::ng-deep .ngx-datatable.material {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .datatable-header {
+    background-color: #f5f5f5;
+    font-weight: 600;
+  }
+
+  .datatable-body-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f9f9f9;
+    }
+  }
+}
