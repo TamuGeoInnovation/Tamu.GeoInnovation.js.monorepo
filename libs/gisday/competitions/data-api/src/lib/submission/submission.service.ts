@@ -2,15 +2,20 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, getRepository, Repository } from 'typeorm';
 
+import { Season } from '@tamu-gisc/gisday/platform/data-api';
+
 import { BaseService } from '../_base/base.service';
-import { CompetitionSubmission, CompetitionSubmissionValidationStatus, SubmissionMedia } from '../entities/all.entities';
-import { ValidateSubmissionDto } from '../dtos/dtos';
+import { CompetitionSeason, CompetitionSubmission, CompetitionSubmissionValidationStatus, SubmissionMedia } from '../entities/all.entities';
+import { GetUserSubmissionsDto, GetAdminSubmissionsDto, ValidateSubmissionDto, SubmissionReviewDto } from '../dtos/dtos';
+import { VALIDATION_STATUS } from '../enums/competitions.enums';
 
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
   constructor(
     @InjectRepository(CompetitionSubmission) private submissionRepo: Repository<CompetitionSubmission>,
-    @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>
+    @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>,
+    @InjectRepository(CompetitionSeason) private compSeasonRepo: Repository<CompetitionSeason>,
+    @InjectRepository(Season) private seasonRepo: Repository<Season>
   ) {
     super(submissionRepo);
   }
@@ -102,5 +107,128 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     } else {
       throw new NotFoundException();
     }
+  }
+
+  public async getUserSubmissions(dto: GetUserSubmissionsDto): Promise<SubmissionReviewDto[]> {
+    // Get the season to fetch
+    let season: Season;
+    if (dto.seasonGuid) {
+      season = await this.seasonRepo.findOne({ where: { guid: dto.seasonGuid } });
+    } else {
+      season = await this.seasonRepo.findOne({ where: { active: true } });
+    }
+
+    if (!season) {
+      throw new NotFoundException('Season not found');
+    }
+
+    // Get competition season with form
+    const compSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: season.guid } },
+      relations: ['form']
+    });
+
+    if (!compSeason) {
+      throw new NotFoundException('Competition season not found');
+    }
+
+    // Get all user submissions for the season
+    const submissions = await this.submissionRepo.find({
+      where: {
+        userGuid: dto.userGuid,
+        season: { guid: compSeason.guid }
+      },
+      relations: ['location', 'validationStatus', 'blobs']
+    });
+
+    return this.mapSubmissionsToReviewDto(submissions, compSeason);
+  }
+
+  public async getAdminSubmissions(dto: GetAdminSubmissionsDto): Promise<SubmissionReviewDto[]> {
+    // Get the season to fetch
+    let season: Season;
+    if (dto.seasonGuid) {
+      season = await this.seasonRepo.findOne({ where: { guid: dto.seasonGuid } });
+    } else {
+      season = await this.seasonRepo.findOne({ where: { active: true } });
+    }
+
+    if (!season) {
+      throw new NotFoundException('Season not found');
+    }
+
+    // Get competition season with form
+    const compSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: season.guid } },
+      relations: ['form']
+    });
+
+    if (!compSeason) {
+      throw new NotFoundException('Competition season not found');
+    }
+
+    // Get all submissions for the season
+    const submissions = await this.submissionRepo.find({
+      where: {
+        season: { guid: compSeason.guid }
+      },
+      relations: ['location', 'validationStatus', 'blobs']
+    });
+
+    return this.mapSubmissionsToReviewDto(submissions, compSeason);
+  }
+
+  public async getSubmissionImages(submissionGuid: string): Promise<SubmissionMedia[]> {
+    const submission = await this.submissionRepo.findOne({
+      where: { guid: submissionGuid },
+      relations: ['blobs']
+    });
+
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
+    }
+
+    return submission.blobs || [];
+  }
+
+  private mapSubmissionsToReviewDto(submissions: CompetitionSubmission[], compSeason: CompetitionSeason): SubmissionReviewDto[] {
+    const discriminatorQuestion = compSeason.form?.model?.find((q) => q.isDiscriminator === true);
+
+    return submissions.map((submission) => {
+      let questionValue = '';
+      let pointValue = 1;
+
+      if (discriminatorQuestion && submission.value) {
+        const submissionValue = submission.value;
+        const discriminatorAttribute = discriminatorQuestion.attribute;
+        const submittedValue = submissionValue[discriminatorAttribute];
+
+        // Find matching option to get title-cased value and points
+        if (submittedValue !== undefined && discriminatorQuestion.options) {
+          const matchingOption = discriminatorQuestion.options.find((opt) => opt.value === submittedValue);
+          if (matchingOption) {
+            questionValue = this.toTitleCase(matchingOption.name);
+            pointValue = matchingOption.points || 1;
+          }
+        }
+      }
+
+      return {
+        guid: submission.guid,
+        created: submission.created,
+        questionValue,
+        pointValue,
+        validationStatus: submission.validationStatus?.status || VALIDATION_STATUS.unverified,
+        location: {
+          latitude: submission.location?.latitude || 0,
+          longitude: submission.location?.longitude || 0
+        },
+        imageGuids: submission.blobs?.map((blob) => blob.guid) || []
+      };
+    });
+  }
+
+  private toTitleCase(str: string): string {
+    return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
   }
 }

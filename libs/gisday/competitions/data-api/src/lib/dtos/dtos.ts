@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
 import { VALIDATION_STATUS } from '../enums/competitions.enums';
 
@@ -6,6 +6,20 @@ export class GetSubmissionDto {
   @IsNotEmpty()
   public guid: string;
 }
+
+export class GetUserSubmissionsDto {
+  @IsNotEmpty()
+  public userGuid: string;
+
+  @IsOptional()
+  public seasonGuid?: string;
+}
+
+export class GetAdminSubmissionsDto {
+  @IsOptional()
+  public seasonGuid?: string;
+}
+
 export class GetSeasonStatisticsDto {
   @IsNotEmpty()
   public guid: string;
@@ -37,4 +51,18 @@ export class ValidateSubmissionDto {
 
   @IsEnum(VALIDATION_STATUS)
   public status: VALIDATION_STATUS;
+}
+
+export interface SubmissionReviewDto {
+  guid: string;
+  created: Date;
+  questionValue: string;
+  pointValue: number;
+  validationStatus: string;
+  resolvedIdentity?: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  imageGuids: string[];
 }

@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Res,
   UploadedFiles,
   UseInterceptors
@@ -95,5 +96,20 @@ export class SubmissionController {
   @Post('validate')
   public async validateSubmission(@Body() body: ValidateSubmissionDto) {
     return this.service.validateSubmission(body);
+  }
+
+  @Get('user/:userGuid')
+  public async getUserSubmissions(@Param('userGuid') userGuid: string, @Query('seasonGuid') seasonGuid?: string) {
+    return this.service.getUserSubmissions({ userGuid, seasonGuid });
+  }
+
+  @Get('admin')
+  public async getAdminSubmissions(@Query('seasonGuid') seasonGuid?: string) {
+    return this.service.getAdminSubmissions({ seasonGuid });
+  }
+
+  @Get(':guid/images')
+  public async getSubmissionImages(@Param() params: GetSubmissionDto) {
+    return this.service.getSubmissionImages(params.guid);
   }
 }

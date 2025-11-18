@@ -9,6 +9,7 @@ import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { CompetitionSeason, CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
+import { VALIDATION_STATUS } from '../enums/competitions.enums';
 
 interface LeaderboardCache {
   data: Array<{ identity: string; guid: string; points: number }>;
@@ -104,17 +105,26 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     // Find the discriminator question
     const discriminatorQuestion = competitionSeason.form?.model?.find((q) => q.isDiscriminator === true);
 
-    // Fetch all submissions for this season
+    // Fetch all submissions for this season, excluding discarded ones
     const submissions = await this.submissionRepo.find({
       where: {
         season: { guid: competitionSeason.guid }
-      }
+      },
+      relations: ['validationStatus']
     });
+
+    // Filter out discarded submissions
+    const validSubmissions = submissions.filter(
+      (submission) =>
+        !submission.validationStatus ||
+        submission.validationStatus.status === VALIDATION_STATUS.unverified ||
+        submission.validationStatus.status === VALIDATION_STATUS.verified
+    );
 
     // Calculate points per user
     const userPointsMap = new Map<string, number>();
 
-    for (const submission of submissions) {
+    for (const submission of validSubmissions) {
       const userGuid = submission.userGuid;
       let points = 1; // Default points
 
@@ -153,7 +163,9 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     return leaderboard;
   }
 
-  private async resolveIdentities(leaderboardData: Array<{ identity: string; guid: string; points: number }>): Promise<any> {
+  private async resolveIdentities(
+    leaderboardData: Array<{ identity: string; guid: string; points: number }>
+  ): Promise<Array<{ identity: string; guid: string; points: number }>> {
     const allResolvedUsers = from(leaderboardData).pipe(
       concatMap((sub) => {
         return from(this.ms.getUserMetadata(sub.guid, undefined, true)).pipe(
