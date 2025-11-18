@@ -372,9 +372,6 @@ export class Event extends GuidIdentity {
   public season: Season;
 
   @ManyToMany(() => Speaker, { nullable: true })
-  @JoinTable({
-    name: 'event_speakers'
-  })
   public speakers?: Speaker[];
 
   @ManyToMany(() => Tag, { nullable: true })
