@@ -66,3 +66,10 @@ export interface SubmissionReviewDto {
   };
   imageGuids: string[];
 }
+
+export interface SubmissionMediaDto {
+  guid: string;
+  blob: Blob;
+  mimeType?: string;
+  fieldName?: string;
+}

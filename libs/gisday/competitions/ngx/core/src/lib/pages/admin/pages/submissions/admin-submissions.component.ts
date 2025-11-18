@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api';
+import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DomSanitizer } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
-import { ModalRef } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -13,7 +13,7 @@ import { SubmissionDetailModalComponent } from './submission-detail-modal.compon
 describe('SubmissionDetailModalComponent', () => {
   let component: SubmissionDetailModalComponent;
   let fixture: ComponentFixture<SubmissionDetailModalComponent>;
-  let mockModalRef: jest.Mocked<ModalRef>;
+  let mockModalRef: jest.Mocked<ModalRefService>;
   let mockSubmissionService: jest.Mocked<SubmissionService>;
   let mockSettingsService: jest.Mocked<SettingsService>;
   let mockEnvService: jest.Mocked<EnvironmentService>;
@@ -31,15 +31,14 @@ describe('SubmissionDetailModalComponent', () => {
       imageGuids: []
     };
 
+    const mockData = {
+      submission: mockSubmission,
+      isAdmin: false
+    };
+
     mockModalRef = {
-      config: {
-        data: {
-          submission: mockSubmission,
-          isAdmin: false
-        }
-      },
       close: jest.fn()
-    } as unknown as jest.Mocked<ModalRef>;
+    } as unknown as jest.Mocked<ModalRefService>;
 
     mockSubmissionService = {
       getSubmissionImages: jest.fn().mockReturnValue(of([]))
@@ -53,7 +52,8 @@ describe('SubmissionDetailModalComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [SubmissionDetailModalComponent],
       providers: [
-        { provide: ModalRef, useValue: mockModalRef },
+        { provide: MODAL_DATA, useValue: mockData },
+        { provide: ModalRefService, useValue: mockModalRef },
         { provide: SubmissionService, useValue: mockSubmissionService },
         { provide: SettingsService, useValue: mockSettingsService },
         { provide: EnvironmentService, useValue: mockEnvService },

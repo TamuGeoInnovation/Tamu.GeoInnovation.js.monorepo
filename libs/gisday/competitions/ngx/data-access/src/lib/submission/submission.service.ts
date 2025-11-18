@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
-import { CompetitionSubmission, ValidateSubmissionDto, SubmissionReviewDto, SubmissionMedia } from '@tamu-gisc/gisday/competitions/data-api';
+import { ICompetitionSubmission, ValidateSubmissionDto, SubmissionReviewDto, SubmissionMediaDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -43,7 +43,7 @@ export class SubmissionService {
   }
 
   public getSubmissionDetails(submissionGuid: string) {
-    return this.http.get<CompetitionSubmission>(`${this.resource}/${submissionGuid}`);
+    return this.http.get<ICompetitionSubmission>(`${this.resource}/${submissionGuid}`);
   }
 
   public getImage(submissionGuid) {
@@ -65,6 +65,6 @@ export class SubmissionService {
   }
 
   public getSubmissionImages(submissionGuid: string) {
-    return this.http.get<SubmissionMedia[]>(`${this.resource}/${submissionGuid}/images`);
+    return this.http.get<SubmissionMediaDto[]>(`${this.resource}/${submissionGuid}/images`);
   }
 }

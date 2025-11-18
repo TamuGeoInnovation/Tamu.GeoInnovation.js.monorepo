@@ -73,6 +73,7 @@
       "@tamu-gisc/geoservices/ngx": ["libs/geoservices/ngx/src/index.ts"],
       "@tamu-gisc/gisday/bridge": ["libs/gisday/bridge/src/index.ts"],
       "@tamu-gisc/gisday/competitions/data-api": ["libs/gisday/competitions/data-api/src/index.ts"],
+      "@tamu-gisc/gisday/competitions/data-api/types": ["libs/gisday/competitions/data-api/src/types.ts"],
       "@tamu-gisc/gisday/competitions/ngx/common": ["libs/gisday/competitions/ngx/common/src/index.ts"],
       "@tamu-gisc/gisday/competitions/ngx/core": ["libs/gisday/competitions/ngx/core/src/index.ts"],
       "@tamu-gisc/gisday/competitions/ngx/data-access": ["libs/gisday/competitions/ngx/data-access/src/index.ts"],

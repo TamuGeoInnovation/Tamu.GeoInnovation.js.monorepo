@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api';
+import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { SubmissionDetailModalComponent } from '../submission-detail-modal/submission-detail-modal.component';
@@ -27,8 +27,10 @@ export class SubmissionReviewListComponent implements OnInit {
 
   public onRowClick(event: { row: SubmissionReviewDto }) {
     this.modalService.open(SubmissionDetailModalComponent, {
-      submission: event.row,
-      isAdmin: this.isAdmin
+      data: {
+        submission: event.row,
+        isAdmin: this.isAdmin
+      }
     });
   }
 }

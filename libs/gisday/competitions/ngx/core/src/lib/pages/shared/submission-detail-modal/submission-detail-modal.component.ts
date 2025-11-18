@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
-import { SubmissionReviewDto, SubmissionMedia, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api';
-import { ModalRef } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { SubmissionReviewDto, SubmissionMediaDto, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api/types';
+import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -22,21 +22,22 @@ export class SubmissionDetailModalComponent implements OnInit {
   public VALIDATION_STATUS = VALIDATION_STATUS;
 
   constructor(
-    private readonly modalRef: ModalRef,
+    @Inject(MODAL_DATA) private readonly data: SubmissionDetailModalData,
+    private readonly modalRef: ModalRefService,
     private readonly submissionService: SubmissionService,
     private readonly sanitizer: DomSanitizer,
     private readonly settings: SettingsService,
     private readonly env: EnvironmentService,
     private readonly ns: NotificationService
   ) {
-    this.submission = this.modalRef.config.data.submission;
-    this.isAdmin = this.modalRef.config.data.isAdmin;
+    this.submission = this.data.submission;
+    this.isAdmin = this.data.isAdmin;
   }
 
   public ngOnInit(): void {
     // Load images for the submission
     this.images$ = this.submissionService.getSubmissionImages(this.submission.guid).pipe(
-      map((images: SubmissionMedia[]) => {
+      map((images: SubmissionMediaDto[]) => {
         return images.map((img) => ({
           guid: img.guid,
           url: this.createImageUrl(img.blob)
@@ -51,13 +52,13 @@ export class SubmissionDetailModalComponent implements OnInit {
       .pipe(
         map((settings) => settings?.guid),
         switchMap((userGuid) => {
-          if (!userGuid) {
+          if (!userGuid || typeof userGuid !== 'string') {
             throw new Error('User GUID not found');
           }
           return this.submissionService.validateSubmission({
             guid: this.submission.guid,
             status,
-            userGuid
+            userGuid: userGuid as string
           });
         }),
         tap(() => {
@@ -93,4 +94,9 @@ export class SubmissionDetailModalComponent implements OnInit {
     }
     return '';
   }
+}
+
+export interface SubmissionDetailModalData {
+  submission: SubmissionReviewDto;
+  isAdmin: boolean;
 }

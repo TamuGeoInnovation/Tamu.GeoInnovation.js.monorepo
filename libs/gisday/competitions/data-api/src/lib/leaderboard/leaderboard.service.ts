@@ -180,6 +180,6 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
       toArray()
     );
 
-    return allResolvedUsers;
+    return allResolvedUsers.toPromise();
   }
 }

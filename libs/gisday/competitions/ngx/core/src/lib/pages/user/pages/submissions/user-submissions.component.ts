@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api';
+import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -27,10 +27,10 @@ export class UserSubmissionsComponent implements OnInit {
       .pipe(
         switchMap((settings) => {
           const userGuid = settings?.guid;
-          if (!userGuid) {
+          if (!userGuid || typeof userGuid !== 'string') {
             throw new Error('User GUID not found');
           }
-          return this.submissionService.getUserSubmissions(userGuid);
+          return this.submissionService.getUserSubmissions(userGuid as string);
         })
       );
   }

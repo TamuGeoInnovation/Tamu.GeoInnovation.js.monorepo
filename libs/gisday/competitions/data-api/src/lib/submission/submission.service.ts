@@ -6,7 +6,7 @@ import { Season } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
 import { CompetitionSeason, CompetitionSubmission, CompetitionSubmissionValidationStatus, SubmissionMedia } from '../entities/all.entities';
-import { GetUserSubmissionsDto, GetAdminSubmissionsDto, ValidateSubmissionDto, SubmissionReviewDto } from '../dtos/dtos';
+import { GetUserSubmissionsDto, GetAdminSubmissionsDto, ValidateSubmissionDto, SubmissionReviewDto, SubmissionMediaDto } from '../dtos/dtos';
 import { VALIDATION_STATUS } from '../enums/competitions.enums';
 
 @Injectable()
@@ -178,7 +178,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     return this.mapSubmissionsToReviewDto(submissions, compSeason);
   }
 
-  public async getSubmissionImages(submissionGuid: string): Promise<SubmissionMedia[]> {
+  public async getSubmissionImages(submissionGuid: string): Promise<SubmissionMediaDto[]> {
     const submission = await this.submissionRepo.findOne({
       where: { guid: submissionGuid },
       relations: ['blobs']
@@ -188,7 +188,13 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       throw new NotFoundException('Submission not found');
     }
 
-    return submission.blobs || [];
+    // Map entity to DTO to avoid entity references in frontend
+    return submission.blobs?.map((blob) => ({
+      guid: blob.guid,
+      blob: blob.blob,
+      mimeType: blob.mimeType,
+      fieldName: blob.fieldName
+    })) || [];
   }
 
   private mapSubmissionsToReviewDto(submissions: CompetitionSubmission[], compSeason: CompetitionSeason): SubmissionReviewDto[] {
