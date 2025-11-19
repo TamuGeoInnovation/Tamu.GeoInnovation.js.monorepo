@@ -26,6 +26,20 @@ import { Multer } from 'multer';
 @Controller('competitions/submissions')
 export class SubmissionController {
   constructor(private service: SubmissionService, private formService: FormService) {}
+  @Get('user/:userGuid')
+  public async getUserSubmissions(@Param('userGuid') userGuid: string, @Query('seasonGuid') seasonGuid?: string) {
+    return this.service.getUserSubmissions({ userGuid, seasonGuid });
+  }
+
+  @Get('admin')
+  public async getAdminSubmissions(@Query('seasonGuid') seasonGuid?: string) {
+    return this.service.getAdminSubmissions({ seasonGuid });
+  }
+
+  @Get(':guid/images')
+  public async getSubmissionImages(@Param() params: GetSubmissionDto) {
+    return this.service.getSubmissionImages(params.guid);
+  }
 
   @Get(':guid/image')
   public async getSubmissionImage(@Param() param, @Res() res) {
@@ -96,20 +110,5 @@ export class SubmissionController {
   @Post('validate')
   public async validateSubmission(@Body() body: ValidateSubmissionDto) {
     return this.service.validateSubmission(body);
-  }
-
-  @Get('user/:userGuid')
-  public async getUserSubmissions(@Param('userGuid') userGuid: string, @Query('seasonGuid') seasonGuid?: string) {
-    return this.service.getUserSubmissions({ userGuid, seasonGuid });
-  }
-
-  @Get('admin')
-  public async getAdminSubmissions(@Query('seasonGuid') seasonGuid?: string) {
-    return this.service.getAdminSubmissions({ seasonGuid });
-  }
-
-  @Get(':guid/images')
-  public async getSubmissionImages(@Param() params: GetSubmissionDto) {
-    return this.service.getSubmissionImages(params.guid);
   }
 }

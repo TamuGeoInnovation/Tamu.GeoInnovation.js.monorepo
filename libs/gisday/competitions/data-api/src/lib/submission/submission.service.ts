@@ -5,8 +5,19 @@ import { DeepPartial, getRepository, Repository } from 'typeorm';
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseService } from '../_base/base.service';
-import { CompetitionSeason, CompetitionSubmission, CompetitionSubmissionValidationStatus, SubmissionMedia } from '../entities/all.entities';
-import { GetUserSubmissionsDto, GetAdminSubmissionsDto, ValidateSubmissionDto, SubmissionReviewDto, SubmissionMediaDto } from '../dtos/dtos';
+import {
+  CompetitionSeason,
+  CompetitionSubmission,
+  CompetitionSubmissionValidationStatus,
+  SubmissionMedia
+} from '../entities/all.entities';
+import {
+  GetUserSubmissionsDto,
+  GetAdminSubmissionsDto,
+  ValidateSubmissionDto,
+  SubmissionReviewDto,
+  SubmissionMediaDto
+} from '../dtos/dtos';
 import { VALIDATION_STATUS } from '../enums/competitions.enums';
 
 @Injectable()
@@ -154,7 +165,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     }
 
     if (!season) {
-      throw new NotFoundException('Season not found');
+      // Return empty array instead of throwing error when no season is found
+      return [];
     }
 
     // Get competition season with form
@@ -164,7 +176,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     });
 
     if (!compSeason) {
-      throw new NotFoundException('Competition season not found');
+      // Return empty array if competition season doesn't exist
+      return [];
     }
 
     // Get all submissions for the season
@@ -189,15 +202,20 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     }
 
     // Map entity to DTO to avoid entity references in frontend
-    return submission.blobs?.map((blob) => ({
-      guid: blob.guid,
-      blob: blob.blob,
-      mimeType: blob.mimeType,
-      fieldName: blob.fieldName
-    })) || [];
+    return (
+      submission.blobs?.map((blob) => ({
+        guid: blob.guid,
+        blob: blob.blob,
+        mimeType: blob.mimeType,
+        fieldName: blob.fieldName
+      })) || []
+    );
   }
 
-  private mapSubmissionsToReviewDto(submissions: CompetitionSubmission[], compSeason: CompetitionSeason): SubmissionReviewDto[] {
+  private mapSubmissionsToReviewDto(
+    submissions: CompetitionSubmission[],
+    compSeason: CompetitionSeason
+  ): SubmissionReviewDto[] {
     const discriminatorQuestion = compSeason.form?.model?.find((q) => q.isDiscriminator === true);
 
     return submissions.map((submission) => {

@@ -5,7 +5,7 @@ import { filter, map, pluck, shareReplay, startWith, switchMap, take, takeUntil,
 import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { CompetitionForm, CompetitionSubmission, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api';
+import { CompetitionForm, ICompetitionSubmission, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
@@ -22,7 +22,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
   public form: Observable<DeepPartial<CompetitionForm>>;
 
   private _$submissionGuid: ReplaySubject<string> = new ReplaySubject();
-  public submissionDetails: Observable<CompetitionSubmission>;
+  public submissionDetails: Observable<ICompetitionSubmission>;
   public submissionStatus: Observable<string>;
   public submissionImage: Observable<SafeUrl>;
 
@@ -77,7 +77,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
       )
     ).pipe(
       pluck('validationStatus'),
-      map((status: CompetitionSubmission['validationStatus']) => {
+      map((status: ICompetitionSubmission['validationStatus']) => {
         if (!status) {
           return null;
         }

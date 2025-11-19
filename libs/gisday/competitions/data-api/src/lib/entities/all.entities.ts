@@ -147,10 +147,15 @@ export class SubmissionMedia extends GISDayCompetitionBaseEntity implements ISub
 }
 
 export interface ICompetitionSubmission {
+  guid: string;
+  updated: Date;
+  created: Date;
   userGuid: string;
   value: string;
+  location: SubmissionLocation;
   season: ICompetitionSeason;
   blobs?: ISubmissionMedia[];
+  validationStatus: CompetitionSubmissionValidationStatus;
 }
 
 export interface ICompetitionSubmissionValidationStatus extends CompetitionSubmissionValidationStatus {

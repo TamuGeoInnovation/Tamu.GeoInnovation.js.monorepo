@@ -40,7 +40,7 @@ export class SubmissionDetailModalComponent implements OnInit {
       map((images: SubmissionMediaDto[]) => {
         return images.map((img) => ({
           guid: img.guid,
-          url: this.createImageUrl(img.blob)
+          url: this.createImageUrl(img.blob, img.mimeType)
         }));
       })
     );
@@ -86,11 +86,44 @@ export class SubmissionDetailModalComponent implements OnInit {
     this.modalRef.close();
   }
 
-  private createImageUrl(blob: Blob): SafeUrl {
-    if (blob) {
-      const urlCreator = window.URL || window.webkitURL;
-      const imageUrl = urlCreator.createObjectURL(blob);
-      return this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+  private createImageUrl(
+    blobData: Blob | ArrayBuffer | number[] | { type: string; data: number[] },
+    mimeType?: string
+  ): SafeUrl {
+    if (blobData) {
+      try {
+        // Convert the blob data to a proper Blob
+        let blob: Blob;
+
+        if (blobData instanceof Blob) {
+          blob = blobData;
+        } else if (blobData instanceof ArrayBuffer) {
+          blob = new Blob([blobData], { type: mimeType || 'image/jpeg' });
+        } else if (Array.isArray(blobData)) {
+          // If it's an array of bytes
+          const uint8Array = new Uint8Array(blobData);
+          blob = new Blob([uint8Array], { type: mimeType || 'image/jpeg' });
+        } else if (
+          typeof blobData === 'object' &&
+          'type' in blobData &&
+          blobData.type === 'Buffer' &&
+          'data' in blobData &&
+          Array.isArray(blobData.data)
+        ) {
+          // If it's a Buffer serialized as JSON from Node.js
+          const uint8Array = new Uint8Array(blobData.data);
+          blob = new Blob([uint8Array], { type: mimeType || 'image/jpeg' });
+        } else {
+          console.error('Unsupported blob data type:', typeof blobData, blobData);
+          return '';
+        }
+
+        const imageUrl = window.URL.createObjectURL(blob);
+        return this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+      } catch (err) {
+        console.error('Error creating image URL:', err);
+        return '';
+      }
     }
     return '';
   }

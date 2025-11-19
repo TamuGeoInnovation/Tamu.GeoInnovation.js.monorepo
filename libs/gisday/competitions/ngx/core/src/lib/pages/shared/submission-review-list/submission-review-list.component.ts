@@ -6,6 +6,14 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 import { SubmissionDetailModalComponent } from '../submission-detail-modal/submission-detail-modal.component';
 
+interface SwimlaneNgxDatatableActivateEvent {
+  type: 'click' | 'dblclick' | 'keydown' | 'contextmenu' | 'mouseenter' | 'mouseleave';
+  event: MouseEvent | KeyboardEvent;
+  row: SubmissionReviewDto;
+  column?: any;
+  cellElement?: HTMLElement;
+}
+
 @Component({
   selector: 'tamu-gisc-submission-review-list',
   templateUrl: './submission-review-list.component.html',
@@ -25,7 +33,11 @@ export class SubmissionReviewListComponent implements OnInit {
     });
   }
 
-  public onRowClick(event: { row: SubmissionReviewDto }) {
+  public onRowClick(event: SwimlaneNgxDatatableActivateEvent) {
+    if (event.type !== 'click') {
+      return;
+    }
+
     this.modalService.open(SubmissionDetailModalComponent, {
       data: {
         submission: event.row,
