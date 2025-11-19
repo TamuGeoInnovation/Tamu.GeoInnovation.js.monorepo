@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 
 import { SubmissionReviewDto, SubmissionMediaDto, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -9,6 +9,9 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+
+import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-submission-detail-modal',
@@ -20,6 +23,7 @@ export class SubmissionDetailModalComponent implements OnInit {
   public isAdmin = false;
   public images$: Observable<Array<{ guid: string; url: SafeUrl }>>;
   public VALIDATION_STATUS = VALIDATION_STATUS;
+  public mapConfig: MapConfig;
 
   constructor(
     @Inject(MODAL_DATA) private readonly data: SubmissionDetailModalData,
@@ -28,7 +32,8 @@ export class SubmissionDetailModalComponent implements OnInit {
     private readonly sanitizer: DomSanitizer,
     private readonly settings: SettingsService,
     private readonly env: EnvironmentService,
-    private readonly ns: NotificationService
+    private readonly ns: NotificationService,
+    private readonly mapService: EsriMapService
   ) {
     this.submission = this.data.submission;
     this.isAdmin = this.data.isAdmin;
@@ -44,6 +49,49 @@ export class SubmissionDetailModalComponent implements OnInit {
         }));
       })
     );
+
+    // Configure map centered on submission location
+    this.mapConfig = {
+      basemap: {
+        basemap: 'streets-navigation-vector'
+      },
+      view: {
+        mode: '2d',
+        properties: {
+          center: [this.submission.location.longitude, this.submission.location.latitude],
+          zoom: 18
+        }
+      }
+    };
+
+    // Add marker for submission location after map loads
+    this.mapService.store.pipe(take(1)).subscribe((instances) => {
+      if (instances.view && instances.view.type === '2d') {
+        this.addSubmissionMarker(instances.view as esri.MapView);
+      }
+    });
+  }
+
+  private addSubmissionMarker(view: esri.MapView): void {
+    const graphic = {
+      geometry: {
+        type: 'point',
+        longitude: this.submission.location.longitude,
+        latitude: this.submission.location.latitude
+      },
+      symbol: {
+        type: 'simple-marker',
+        style: 'circle',
+        color: [226, 119, 40],
+        size: '12px',
+        outline: {
+          color: [255, 255, 255],
+          width: 2
+        }
+      }
+    } as esri.GraphicProperties;
+
+    view.graphics.add(graphic as esri.Graphic);
   }
 
   public setValidationStatus(status: VALIDATION_STATUS): void {

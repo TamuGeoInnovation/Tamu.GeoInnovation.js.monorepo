@@ -31,10 +31,10 @@
     </div>
   </div>
 
-  <div class="map-container" *ngIf="submission.location">
-    <!-- Map will be integrated here using existing competition map component -->
-    <div class="map-placeholder">
-      <p>Map showing location: {{ submission.location.latitude }}, {{ submission.location.longitude }}</p>
+  <div class="map-container" *ngIf="submission.location && mapConfig">
+    <h3>Submission Location</h3>
+    <div class="map-wrapper">
+      <tamu-gisc-esri-map [config]="mapConfig"></tamu-gisc-esri-map>
     </div>
   </div>
 
