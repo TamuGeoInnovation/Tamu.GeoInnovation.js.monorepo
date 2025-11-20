@@ -59,6 +59,7 @@ export interface SubmissionReviewDto {
   questionValue: string;
   pointValue: number;
   validationStatus: string;
+  userGuid?: string;
   resolvedIdentity?: string;
   location: {
     latitude: number;

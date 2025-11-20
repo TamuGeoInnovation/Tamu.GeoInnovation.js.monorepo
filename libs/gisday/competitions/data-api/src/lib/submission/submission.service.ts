@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
+import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { BaseService } from '../_base/base.service';
 import {
@@ -28,7 +29,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     private validationStatusRepo: Repository<CompetitionSubmissionValidationStatus>,
     @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>,
     @InjectRepository(CompetitionSeason) private compSeasonRepo: Repository<CompetitionSeason>,
-    @InjectRepository(Season) private seasonRepo: Repository<Season>
+    @InjectRepository(Season) private seasonRepo: Repository<Season>,
+    private readonly ms: ManagementService
   ) {
     super(submissionRepo);
   }
@@ -187,16 +189,30 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       where: {
         season: { guid: compSeason.guid }
       },
-      relations: ['location', 'validationStatus'],
-      loadRelationIds: {
-        relations: ['blobs']
+      relations: ['location', 'validationStatus', 'blobs'],
+      select: {
+        guid: true,
+        created: true,
+        value: true,
+        userGuid: true,
+        location: {
+          latitude: true,
+          longitude: true
+        },
+        validationStatus: {
+          status: true
+        },
+        blobs: {
+          guid: true
+        }
       },
       order: {
         created: 'DESC'
       }
     });
 
-    return this.mapSubmissionsToReviewDto(submissions, compSeason);
+    const mapped = this.mapSubmissionsToReviewDto(submissions, compSeason);
+    return this.resolveIdentities(mapped);
   }
 
   public async getSubmissionImages(submissionGuid: string): Promise<SubmissionMediaDto[]> {
@@ -251,6 +267,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         questionValue,
         pointValue,
         validationStatus: submission.validationStatus?.status || COMPETITION_VALIDATION_STATUS.unverified,
+        userGuid: submission.userGuid,
         location: {
           latitude: submission.location?.latitude || 0,
           longitude: submission.location?.longitude || 0
@@ -262,5 +279,32 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
   private toTitleCase(str: string): string {
     return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+  }
+
+  private async resolveIdentities(submissions: SubmissionReviewDto[]): Promise<SubmissionReviewDto[]> {
+    // Get distinct user GUIDs
+    const distinctUserGuids = [...new Set(submissions.map((s) => s.userGuid).filter(Boolean))];
+
+    // Resolve all identities in parallel
+    const identityMap = new Map<string, string>();
+    await Promise.all(
+      distinctUserGuids.map(async (userGuid) => {
+        try {
+          const user = await this.ms.getUserMetadata(userGuid, undefined, true);
+          identityMap.set(userGuid, user.user_info.email);
+        } catch (error) {
+          // If resolution fails, use last 4 characters of GUID
+          identityMap.set(userGuid, userGuid.substring(userGuid.length - 4));
+        }
+      })
+    );
+
+    // Map identities to submissions
+    return submissions.map((submission) => ({
+      ...submission,
+      resolvedIdentity: submission.userGuid
+        ? identityMap.get(submission.userGuid) || submission.userGuid.substring(submission.userGuid.length - 4)
+        : undefined
+    }));
   }
 }

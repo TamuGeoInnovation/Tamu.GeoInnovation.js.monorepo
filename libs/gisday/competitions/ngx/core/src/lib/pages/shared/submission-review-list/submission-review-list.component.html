@@ -1,14 +1,16 @@
 <div class="submission-review-container datatable-container">
-  <ngx-datatable class="material" [rows]="submissions" [columnMode]="'flex'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40" [scrollbarV]="true" [virtualization]="true" (activate)="onRowClick($event)">
-    <ngx-datatable-column name="Created" [flexGrow]="1">
+  <ngx-datatable class="material" [rows]="submissions" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [rowHeight]="40" [scrollbarV]="true" [virtualization]="true" [reorderable]="false" (activate)="onRowClick($event)">
+    <ngx-datatable-column name="Created" [width]="200" [resizeable]="true">
       <ng-template let-row="row" ngx-datatable-cell-template> {{ row.created | date: 'short' }} </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column name="Question" prop="questionValue" [flexGrow]="2"> </ngx-datatable-column>
+    <ngx-datatable-column name="User" prop="resolvedIdentity" [width]="200" [resizeable]="true"> </ngx-datatable-column>
 
-    <ngx-datatable-column name="Points" prop="pointValue" [flexGrow]="1"> </ngx-datatable-column>
+    <ngx-datatable-column name="Question" prop="questionValue" [width]="200" [resizeable]="true"> </ngx-datatable-column>
 
-    <ngx-datatable-column name="Status" [flexGrow]="1">
+    <ngx-datatable-column name="Points" prop="pointValue" [width]="100" [resizeable]="true"> </ngx-datatable-column>
+
+    <ngx-datatable-column name="Status" [width]="120" [resizeable]="true">
       <ng-template let-row="row" ngx-datatable-cell-template>
         <span [class]="'status-badge status-' + row.validationStatus"> {{ row.validationStatus }} </span>
       </ng-template>

@@ -10,6 +10,10 @@
           <label>Created:</label>
           <span>{{ submission.created | date: 'short' }}</span>
         </div>
+        <div class="info-row" *ngIf="submission.resolvedIdentity">
+          <label>User:</label>
+          <span>{{ submission.resolvedIdentity }}</span>
+        </div>
         <div class="info-row">
           <label>Question:</label>
           <span>{{ submission.questionValue }}</span>
