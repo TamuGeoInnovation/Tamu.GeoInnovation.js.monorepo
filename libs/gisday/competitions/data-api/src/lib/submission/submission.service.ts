@@ -190,6 +190,9 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       relations: ['location', 'validationStatus'],
       loadRelationIds: {
         relations: ['blobs']
+      },
+      order: {
+        created: 'DESC'
       }
     });
 
