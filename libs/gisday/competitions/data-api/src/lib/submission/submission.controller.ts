@@ -35,16 +35,12 @@ export class SubmissionController {
     return this.service.getUserSubmissions({ userGuid, seasonGuid });
   }
 
-  @Get('admin')
-  public async getAdminSubmissions(@Query('seasonGuid') seasonGuid?: string) {
-    return this.service.getAdminSubmissions({ seasonGuid });
-  }
-
+  
   @Get(':guid/images')
   public async getSubmissionImages(@Param() params: GetSubmissionDto) {
     return this.service.getSubmissionImages(params.guid);
   }
-
+  
   @Get(':guid/image')
   public async getSubmissionImage(@Param() param, @Res() res) {
     const submission = await this.service.getOne({
@@ -53,17 +49,22 @@ export class SubmissionController {
       },
       relations: ['location', 'season', 'blobs']
     });
-
+    
     function bufferToStream(myBuuffer) {
       const tmp = new Duplex();
       tmp.push(myBuuffer);
       tmp.push(null);
       return tmp;
     }
-
+    
     const myReadableStream = bufferToStream(submission.blobs[0].blob);
-
+    
     myReadableStream.pipe(res);
+  }
+  
+  @Get('admin')
+  public async getAdminSubmissions(@Query('seasonGuid') seasonGuid?: string) {
+    return this.service.getAdminSubmissions({ seasonGuid });
   }
 
   @Get(':guid')

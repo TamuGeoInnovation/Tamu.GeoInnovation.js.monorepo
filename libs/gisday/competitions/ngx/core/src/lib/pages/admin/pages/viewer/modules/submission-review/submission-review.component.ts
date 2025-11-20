@@ -5,10 +5,11 @@ import { filter, map, pluck, shareReplay, startWith, switchMap, take, takeUntil,
 import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { CompetitionForm, ICompetitionSubmission, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api';
+import { CompetitionForm, ICompetitionSubmission } from '@tamu-gisc/gisday/competitions/data-api';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import { ViewerService } from '../../services/viewer.service';
 
@@ -20,6 +21,7 @@ import { ViewerService } from '../../services/viewer.service';
 })
 export class SubmissionReviewComponent implements OnInit, OnDestroy {
   public form: Observable<DeepPartial<CompetitionForm>>;
+  public readonly VALIDATION_STATUS = COMPETITION_VALIDATION_STATUS;
 
   private _$submissionGuid: ReplaySubject<string> = new ReplaySubject();
   public submissionDetails: Observable<ICompetitionSubmission>;
@@ -135,7 +137,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
     );
   }
 
-  public updateValidationStatus(status: VALIDATION_STATUS) {
+  public updateValidationStatus(status: COMPETITION_VALIDATION_STATUS) {
     forkJoin([
       this.submissionDetails.pipe(take(1)),
       this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey).pipe(

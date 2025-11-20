@@ -9,7 +9,7 @@ import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { CompetitionSeason, CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
-import { VALIDATION_STATUS } from '../enums/competitions.enums';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 interface LeaderboardCache {
   data: Array<{ identity: string; guid: string; points: number }>;
@@ -117,8 +117,8 @@ export class LeaderboardService extends BaseService<CompetitionSubmission> {
     const validSubmissions = submissions.filter(
       (submission) =>
         !submission.validationStatus ||
-        submission.validationStatus.status === VALIDATION_STATUS.unverified ||
-        submission.validationStatus.status === VALIDATION_STATUS.verified
+        submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.unverified ||
+        submission.validationStatus.status === COMPETITION_VALIDATION_STATUS.verified
     );
 
     // Calculate points per user

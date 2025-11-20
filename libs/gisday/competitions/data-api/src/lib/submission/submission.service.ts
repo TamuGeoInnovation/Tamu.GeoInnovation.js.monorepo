@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, getRepository, Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -18,7 +18,7 @@ import {
   SubmissionReviewDto,
   SubmissionMediaDto
 } from '../dtos/dtos';
-import { VALIDATION_STATUS } from '../enums/competitions.enums';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
@@ -187,7 +187,10 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       where: {
         season: { guid: compSeason.guid }
       },
-      relations: ['location', 'validationStatus', 'blobs']
+      relations: ['location', 'validationStatus'],
+      loadRelationIds: {
+        relations: ['blobs']
+      }
     });
 
     return this.mapSubmissionsToReviewDto(submissions, compSeason);
@@ -244,7 +247,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         created: submission.created,
         questionValue,
         pointValue,
-        validationStatus: submission.validationStatus?.status || VALIDATION_STATUS.unverified,
+        validationStatus: submission.validationStatus?.status || COMPETITION_VALIDATION_STATUS.unverified,
         location: {
           latitude: submission.location?.latitude || 0,
           longitude: submission.location?.longitude || 0

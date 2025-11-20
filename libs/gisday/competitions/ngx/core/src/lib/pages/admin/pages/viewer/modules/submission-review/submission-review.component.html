@@ -27,8 +27,8 @@
     <p>Having reviewed the information above, you can mark this submission as accepted if the submission is accurate or reject it if otherwise.</p>
 
     <div class="submission-status leader-1">
-      <div class="status-option reject" (click)="updateValidationStatus('discarded')" [ngClass]="{selected: (submissionStatus | async) === 'discarded'}">Reject</div>
-      <div class="status-option accept" (click)="updateValidationStatus('verified')" [ngClass]="{selected: (submissionStatus | async) === 'verified'}">Accept</div>
+      <div class="status-option reject" (click)="updateValidationStatus(VALIDATION_STATUS.discarded)" [ngClass]="{ selected: (submissionStatus | async) === VALIDATION_STATUS.discarded }">Reject</div>
+      <div class="status-option accept" (click)="updateValidationStatus(VALIDATION_STATUS.verified)" [ngClass]="{ selected: (submissionStatus | async) === VALIDATION_STATUS.verified }">Accept</div>
     </div>
   </div>
 </ng-template>

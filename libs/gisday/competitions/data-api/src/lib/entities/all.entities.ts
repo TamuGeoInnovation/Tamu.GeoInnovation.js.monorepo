@@ -17,7 +17,7 @@ import { v4 as guid } from 'uuid';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
 
-import { VALIDATION_STATUS } from '../enums/competitions.enums';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 @Entity()
 export class GISDayCompetitionBaseEntity extends BaseEntity {
@@ -96,7 +96,7 @@ export class CompetitionSeason extends GISDayCompetitionBaseEntity implements IC
   name: 'vgi_submission_validation_status'
 })
 export class CompetitionSubmissionValidationStatus extends GISDayCompetitionBaseEntity {
-  @Column({ default: VALIDATION_STATUS.unverified })
+  @Column({ default: COMPETITION_VALIDATION_STATUS.unverified })
   public status: string;
 
   @Column()
@@ -159,7 +159,7 @@ export interface ICompetitionSubmission {
 }
 
 export interface ICompetitionSubmissionValidationStatus extends CompetitionSubmissionValidationStatus {
-  status: VALIDATION_STATUS;
+  status: COMPETITION_VALIDATION_STATUS;
   validatedBy: string;
 }
 

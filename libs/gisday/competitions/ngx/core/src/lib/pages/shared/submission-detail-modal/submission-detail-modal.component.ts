@@ -3,11 +3,12 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 
-import { SubmissionReviewDto, SubmissionMediaDto, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api/types';
+import { SubmissionReviewDto, SubmissionMediaDto } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 import esri = __esri;
 
@@ -20,7 +21,7 @@ export class SubmissionDetailModalComponent implements OnInit {
   public submission: SubmissionReviewDto;
   public isAdmin = false;
   public images$: Observable<Array<{ guid: string; url: SafeUrl }>>;
-  public VALIDATION_STATUS = VALIDATION_STATUS;
+  public VALIDATION_STATUS = COMPETITION_VALIDATION_STATUS;
   public mapConfig: MapConfig;
 
   constructor(
@@ -90,7 +91,7 @@ export class SubmissionDetailModalComponent implements OnInit {
     view.graphics.add(graphic as esri.Graphic);
   }
 
-  public setValidationStatus(status: VALIDATION_STATUS): void {
+  public setValidationStatus(status: COMPETITION_VALIDATION_STATUS): void {
     this.submissionService
       .validateSubmission({
         guid: this.submission.guid,

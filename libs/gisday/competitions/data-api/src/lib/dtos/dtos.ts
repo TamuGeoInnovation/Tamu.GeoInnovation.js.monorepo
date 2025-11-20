@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
-import { VALIDATION_STATUS } from '../enums/competitions.enums';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 export class GetSubmissionDto {
   @IsNotEmpty()
@@ -46,8 +46,8 @@ export class ValidateSubmissionDto {
   @IsNotEmpty()
   public guid: string;
 
-  @IsEnum(VALIDATION_STATUS)
-  public status: VALIDATION_STATUS;
+  @IsEnum(COMPETITION_VALIDATION_STATUS)
+  public status: COMPETITION_VALIDATION_STATUS;
 
   // userGuid is set server-side from JWT
   public userGuid?: string;

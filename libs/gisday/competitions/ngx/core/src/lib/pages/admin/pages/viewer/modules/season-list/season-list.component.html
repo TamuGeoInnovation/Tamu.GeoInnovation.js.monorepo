@@ -11,7 +11,7 @@
     </div>
     <div class="floating-table-body">
       <div class="floating-row" *ngFor="let season of seasons | async">
-        <div>{{season.year}}</div>
+        <div>{{season?.season.year}}</div>
         <a [routerLink]="['./review']" [queryParams]="{season: season.guid}">Load <span class="material-icons medium">chevron_right</span></a>
       </div>
     </div>
