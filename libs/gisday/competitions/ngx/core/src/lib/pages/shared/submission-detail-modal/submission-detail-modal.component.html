@@ -1,8 +1,5 @@
 <div class="modal-header">
   <h2>Submission Details</h2>
-  <button class="close-button" (click)="close()">
-    <span class="material-icons">close</span>
-  </button>
 </div>
 
 <div class="modal-content">
@@ -21,9 +18,7 @@
     </div>
     <div class="info-row">
       <label>Status:</label>
-      <span [class]="'status-badge status-' + submission.validationStatus">
-        {{ submission.validationStatus }}
-      </span>
+      <span [class]="'status-badge status-' + submission.validationStatus"> {{ submission.validationStatus }} </span>
     </div>
     <div class="info-row">
       <label>Location:</label>
@@ -41,38 +36,21 @@
   <div class="images-container" *ngIf="images$ | async as images">
     <h3>Submission Images</h3>
     <div class="image-gallery">
-      <img
-        *ngFor="let image of images"
-        [src]="image.url"
-        alt="Submission image"
-        class="submission-image"
-      />
+      <img *ngFor="let image of images" [src]="image.url" alt="Submission image" class="submission-image" />
     </div>
   </div>
 </div>
 
 <div class="modal-footer" *ngIf="isAdmin">
-  <button
-    class="btn btn-success"
-    (click)="setValidationStatus(VALIDATION_STATUS.verified)"
-    [disabled]="submission.validationStatus === VALIDATION_STATUS.verified"
-  >
+  <button class="btn btn-success" (click)="setValidationStatus(VALIDATION_STATUS.verified)" [disabled]="submission.validationStatus === VALIDATION_STATUS.verified">
     <span class="material-icons">check_circle</span>
     Verify
   </button>
-  <button
-    class="btn btn-warning"
-    (click)="setValidationStatus(VALIDATION_STATUS.unverified)"
-    [disabled]="submission.validationStatus === VALIDATION_STATUS.unverified"
-  >
+  <button class="btn btn-warning" (click)="setValidationStatus(VALIDATION_STATUS.unverified)" [disabled]="submission.validationStatus === VALIDATION_STATUS.unverified">
     <span class="material-icons">help</span>
     Unverify
   </button>
-  <button
-    class="btn btn-danger"
-    (click)="setValidationStatus(VALIDATION_STATUS.discarded)"
-    [disabled]="submission.validationStatus === VALIDATION_STATUS.discarded"
-  >
+  <button class="btn btn-danger" (click)="setValidationStatus(VALIDATION_STATUS.discarded)" [disabled]="submission.validationStatus === VALIDATION_STATUS.discarded">
     <span class="material-icons">delete</span>
     Discard
   </button>

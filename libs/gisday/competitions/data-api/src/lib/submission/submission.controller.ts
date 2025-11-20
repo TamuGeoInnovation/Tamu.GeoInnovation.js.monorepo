@@ -6,13 +6,17 @@ import {
   Param,
   Post,
   Query,
+  Req,
   Res,
   UploadedFiles,
+  UseGuards,
   UseInterceptors
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 import { Duplex } from 'stream';
+
+import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
@@ -74,6 +78,13 @@ export class SubmissionController {
     });
   }
 
+  @Permissions(['update:competitions'])
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Post('validate')
+  public async validateSubmission(@Body() body: ValidateSubmissionDto, @Req() req) {
+    return this.service.validateSubmission({ ...body, userGuid: req.user.sub });
+  }
+
   @Post('')
   @UseInterceptors(AnyFilesInterceptor())
   public async insert(@Body() body, @UploadedFiles() files?: Array<Express.Multer.File>) {
@@ -105,10 +116,5 @@ export class SubmissionController {
     } else {
       return this.service.createOne(sub);
     }
-  }
-
-  @Post('validate')
-  public async validateSubmission(@Body() body: ValidateSubmissionDto) {
-    return this.service.validateSubmission(body);
   }
 }

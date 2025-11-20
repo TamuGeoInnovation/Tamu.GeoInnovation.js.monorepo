@@ -46,11 +46,11 @@ export class ValidateSubmissionDto {
   @IsNotEmpty()
   public guid: string;
 
-  @IsNotEmpty()
-  public userGuid: string;
-
   @IsEnum(VALIDATION_STATUS)
   public status: VALIDATION_STATUS;
+
+  // userGuid is set server-side from JWT
+  public userGuid?: string;
 }
 
 export interface SubmissionReviewDto {

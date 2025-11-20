@@ -1,13 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 
 import { SubmissionReviewDto, SubmissionMediaDto, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api/types';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
-import { SettingsService } from '@tamu-gisc/common/ngx/settings';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 
@@ -30,8 +28,6 @@ export class SubmissionDetailModalComponent implements OnInit {
     private readonly modalRef: ModalRefService,
     private readonly submissionService: SubmissionService,
     private readonly sanitizer: DomSanitizer,
-    private readonly settings: SettingsService,
-    private readonly env: EnvironmentService,
     private readonly ns: NotificationService,
     private readonly mapService: EsriMapService
   ) {
@@ -95,20 +91,12 @@ export class SubmissionDetailModalComponent implements OnInit {
   }
 
   public setValidationStatus(status: VALIDATION_STATUS): void {
-    this.settings
-      .getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey)
+    this.submissionService
+      .validateSubmission({
+        guid: this.submission.guid,
+        status
+      })
       .pipe(
-        map((settings) => settings?.guid),
-        switchMap((userGuid) => {
-          if (!userGuid || typeof userGuid !== 'string') {
-            throw new Error('User GUID not found');
-          }
-          return this.submissionService.validateSubmission({
-            guid: this.submission.guid,
-            status,
-            userGuid: userGuid as string
-          });
-        }),
         tap(() => {
           this.submission.validationStatus = status;
           this.ns.toast({

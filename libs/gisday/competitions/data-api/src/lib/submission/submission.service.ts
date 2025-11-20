@@ -24,6 +24,8 @@ import { VALIDATION_STATUS } from '../enums/competitions.enums';
 export class SubmissionService extends BaseService<CompetitionSubmission> {
   constructor(
     @InjectRepository(CompetitionSubmission) private submissionRepo: Repository<CompetitionSubmission>,
+    @InjectRepository(CompetitionSubmissionValidationStatus)
+    private validationStatusRepo: Repository<CompetitionSubmissionValidationStatus>,
     @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>,
     @InjectRepository(CompetitionSeason) private compSeasonRepo: Repository<CompetitionSeason>,
     @InjectRepository(Season) private seasonRepo: Repository<Season>
@@ -101,7 +103,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
         return submission.save();
       } else {
-        const validationStatus = getRepository(CompetitionSubmissionValidationStatus).create({
+        const validationStatus = this.validationStatusRepo.create({
           status: dto.status,
           verifiedBy: dto.userGuid
         });

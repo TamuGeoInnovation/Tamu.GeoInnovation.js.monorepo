@@ -10,7 +10,7 @@ interface SwimlaneNgxDatatableActivateEvent {
   type: 'click' | 'dblclick' | 'keydown' | 'contextmenu' | 'mouseenter' | 'mouseleave';
   event: MouseEvent | KeyboardEvent;
   row: SubmissionReviewDto;
-  column?: any;
+  column?: unknown;
   cellElement?: HTMLElement;
 }
 
