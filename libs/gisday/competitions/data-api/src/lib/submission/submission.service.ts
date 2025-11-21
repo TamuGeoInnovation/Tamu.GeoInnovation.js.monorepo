@@ -203,7 +203,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
           status: true
         },
         blobs: {
-          guid: true
+          guid: true,
+          sha256: true
         }
       },
       order: {
@@ -231,7 +232,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
         guid: blob.guid,
         blob: blob.blob,
         mimeType: blob.mimeType,
-        fieldName: blob.fieldName
+        fieldName: blob.fieldName,
+        sha256: blob.sha256
       })) || []
     );
   }
@@ -272,7 +274,8 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
           latitude: submission.location?.latitude || 0,
           longitude: submission.location?.longitude || 0
         },
-        imageGuids: submission.blobs?.map((blob) => blob.guid) || []
+        imageGuids: submission.blobs?.map((blob) => blob.guid) || [],
+        sha256Hashes: submission.blobs?.map((blob) => blob.sha256).filter(Boolean) || []
       };
     });
   }

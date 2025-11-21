@@ -87,3 +87,20 @@
     background-position: -200% 0;
   }
 }
+
+.sha256-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.sha256-hash {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  word-break: break-all;
+  display: block;
+  color: $gisday-black;
+}

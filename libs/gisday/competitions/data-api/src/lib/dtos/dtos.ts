@@ -66,6 +66,7 @@ export interface SubmissionReviewDto {
     longitude: number;
   };
   imageGuids: string[];
+  sha256Hashes: string[];
 }
 
 export interface SubmissionMediaDto {
@@ -73,4 +74,5 @@ export interface SubmissionMediaDto {
   blob: Blob;
   mimeType?: string;
   fieldName?: string;
+  sha256?: string;
 }

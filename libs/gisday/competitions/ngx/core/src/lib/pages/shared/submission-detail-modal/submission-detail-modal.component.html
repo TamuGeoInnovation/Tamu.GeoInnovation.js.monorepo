@@ -30,6 +30,12 @@
           <label>Location:</label>
           <span>{{ submission.location.latitude }}, {{ submission.location.longitude }}</span>
         </div>
+        <div class="info-row" *ngIf="submission.sha256Hashes && submission.sha256Hashes.length > 0">
+          <label>SHA256 Hash{{ submission.sha256Hashes.length > 1 ? 'es' : '' }}:</label>
+          <div class="sha256-list">
+            <span *ngFor="let hash of submission.sha256Hashes" class="sha256-hash">{{ hash }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>

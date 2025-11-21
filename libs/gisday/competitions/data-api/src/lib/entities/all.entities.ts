@@ -144,6 +144,9 @@ export class SubmissionMedia extends GISDayCompetitionBaseEntity implements ISub
 
   @Column({ type: 'nvarchar', nullable: true })
   public fieldName?: string;
+
+  @Column({ type: 'char', length: 64, nullable: true })
+  public sha256?: string;
 }
 
 export interface ICompetitionSubmission {
@@ -168,6 +171,7 @@ export interface ISubmissionMedia {
   blob: File;
   mimeType?: string;
   fieldName?: string;
+  sha256?: string;
 }
 export interface ICompetitionSubmissionLocation {
   latitude: number;
