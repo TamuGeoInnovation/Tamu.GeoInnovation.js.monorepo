@@ -332,7 +332,8 @@ export function LayerSources(
           '<strong>Building</strong>: {attributes.Name}\n' + '<strong>Bathroom Location(s)</strong>: {attributes.Notes}'
       },
       native: {
-        ...commonLayerProps
+        ...commonLayerProps,
+        definitionExpression: "showOnAggieMap = 'Y'"
       }
     }
   ];
