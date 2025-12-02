@@ -329,7 +329,7 @@ export function LayerSources(
       visible: false,
       popupData: {
         description:
-          '<strong>Building</strong>: {attributes.Name}\n' + '<strong>Bathroom Location(s)</strong>: {attributes.Notes}'
+          '<strong>Building</strong>: {attributes.Name}\n' + '<strong>Restroom Location(s)</strong>: {attributes.Notes}'
       },
       native: {
         ...commonLayerProps,
