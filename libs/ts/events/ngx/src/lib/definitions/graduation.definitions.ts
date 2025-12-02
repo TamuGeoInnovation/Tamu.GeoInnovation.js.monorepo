@@ -7,12 +7,9 @@ import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../i
 import esri = __esri;
 
 export enum GRADUATION_LAYERS {
-  GRADUATION_LINE_PAINT = 'graduation-line-paint',
-  GRADUATION_CONSTRUCTION = 'graduation-construction',
   GRADUATION_EVENT_PARKING_LOTS_A = 'graduation-event-parking-lots-a',
   GRADUATION_EVENT_PARKING_LOTS_B = 'graduation-event-parking-lots-b',
-  GRADUATION_TRAFFIC_FLOW = 'graduation-traffic-flow',
-  GRADUATION_ROAD_CLOSURES = 'graduation-road-closed'
+  GRADUATION_TRAFFIC_FLOW = 'graduation-traffic-flow'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/GraduationMuster/MapServer';
@@ -23,18 +20,6 @@ const GraduationEventDefinitions = {
     layerId: GRADUATION_LAYERS.GRADUATION_TRAFFIC_FLOW,
     name: 'Graduation Traffic Flow',
     url: `${eventUrl}/1`
-  },
-  GRADUATION_LINE_PAINT: {
-    id: GRADUATION_LAYERS.GRADUATION_LINE_PAINT,
-    layerId: GRADUATION_LAYERS.GRADUATION_LINE_PAINT,
-    name: 'Graduation Line Paint',
-    url: `${eventUrl}/2`
-  },
-  GRADUATION_CONSTRUCTION: {
-    id: GRADUATION_LAYERS.GRADUATION_CONSTRUCTION,
-    layerId: GRADUATION_LAYERS.GRADUATION_CONSTRUCTION,
-    name: 'Graduation Construction',
-    url: `${eventUrl}/3`
   },
   GRADUATION_EVENT_PARKING_LOTS_A: {
     id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_A,
@@ -47,12 +32,6 @@ const GraduationEventDefinitions = {
     layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_B,
     name: 'Graduation Event Parking Lots',
     url: `${eventUrl}/5`
-  },
-  GRADUATION_ROAD_CLOSURES: {
-    id: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
-    layerId: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
-    name: 'Graduation Road Closures',
-    url: `${eventUrl}/7`
   }
 };
 
@@ -115,13 +94,11 @@ export const GraduationColdLayerSources: LayerSource[] = [
           useCodedValues: true,
           allowOverrun: true,
           symbol: {
-            type: 'text', // autocasts as new TextSymbol()
+            type: 'text',
             color: 'red',
             haloColor: 'white',
             haloSize: 1,
-            angle: 0,
             font: {
-              // autocast as new Font()
               family: 'Arial Unicode MS',
               size: 12,
               weight: 'bold'
@@ -131,38 +108,8 @@ export const GraduationColdLayerSources: LayerSource[] = [
       ]
     }
   },
-  {
-    type: 'feature',
-    id: GraduationEventDefinitions.GRADUATION_LINE_PAINT.id,
-    title: GraduationEventDefinitions.GRADUATION_LINE_PAINT.name,
-    url: GraduationEventDefinitions.GRADUATION_LINE_PAINT.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: 'attributes.LotName',
-      description: 'attributes.Note'
-    },
-    visible: false,
-    native: {
-      listMode: 'hide',
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: GraduationEventDefinitions.GRADUATION_CONSTRUCTION.id,
-    title: GraduationEventDefinitions.GRADUATION_CONSTRUCTION.name,
-    url: GraduationEventDefinitions.GRADUATION_CONSTRUCTION.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: 'attributes.LotName',
-      description: 'attributes.Note'
-    },
-    visible: false,
-    listMode: 'hide',
-    native: {
-      outFields: ['*']
-    }
-  },
+
+  // Event Parking Lots A
   {
     type: 'feature',
     id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_A.id,
@@ -194,13 +141,12 @@ export const GraduationColdLayerSources: LayerSource[] = [
           useCodedValues: true,
           allowOverrun: true,
           symbol: {
-            type: 'text', // autocasts as new TextSymbol()
+            type: 'text',
             color: 'red',
             haloColor: 'white',
             haloSize: 1,
             angle: 0,
             font: {
-              // autocast as new Font()
               family: 'Arial Unicode MS',
               size: 12,
               weight: 'bold'
@@ -216,13 +162,12 @@ export const GraduationColdLayerSources: LayerSource[] = [
           where: "GIS.TS.ParkingLots.Name NOT LIKE '97'",
           useCodedValues: true,
           symbol: {
-            type: 'text', // autocasts as new TextSymbol()
+            type: 'text',
             color: 'black',
             haloColor: 'white',
             haloSize: 1,
             angle: 0,
             font: {
-              // autocast as new Font()
               family: 'Arial Unicode MS',
               size: 10,
               weight: 'bold'
@@ -232,6 +177,8 @@ export const GraduationColdLayerSources: LayerSource[] = [
       ]
     }
   },
+
+  // Event Parking Lots B
   {
     type: 'feature',
     id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS_B.id,
@@ -263,13 +210,12 @@ export const GraduationColdLayerSources: LayerSource[] = [
           useCodedValues: true,
           allowOverrun: true,
           symbol: {
-            type: 'text', // autocasts as new TextSymbol()
+            type: 'text',
             color: 'red',
             haloColor: 'white',
             haloSize: 1,
             angle: 0,
             font: {
-              // autocast as new Font()
               family: 'Arial Unicode MS',
               size: 12,
               weight: 'bold'
@@ -285,55 +231,14 @@ export const GraduationColdLayerSources: LayerSource[] = [
           where: "GIS.TS.ParkingLots.Name NOT LIKE '97'",
           useCodedValues: true,
           symbol: {
-            type: 'text', // autocasts as new TextSymbol()
+            type: 'text',
             color: 'black',
             haloColor: 'white',
             haloSize: 1,
             angle: 0,
             font: {
-              // autocast as new Font()
               family: 'Arial Unicode MS',
               size: 10,
-              weight: 'bold'
-            }
-          }
-        }
-      ]
-    }
-  },
-  {
-    type: 'feature',
-    id: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.id,
-    title: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.name,
-    url: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: 'attributes.A_Name',
-      description: 'attributes.SP_SH_Notes'
-    },
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*'],
-      labelingInfo: [
-        {
-          labelExpressionInfo: {
-            expression: '$feature.SP_SH_Notes'
-          },
-          minScale: 0,
-          maxScale: 0,
-          useCodedValues: true,
-          allowOverrun: true,
-          symbol: {
-            type: 'text', // autocasts as new TextSymbol()
-            color: 'red',
-            haloColor: 'white',
-            haloSize: 1,
-            angle: 0,
-            font: {
-              // autocast as new Font()
-              family: 'Arial Unicode MS',
-              size: 12,
               weight: 'bold'
             }
           }
@@ -349,16 +254,14 @@ export const GraduationConfiguration: EventConfiguration = {
   applicationName: 'Graduation Transportation Map',
   shortApplicationName: 'Graduation Map',
   introductionText: 'Get the best transportation and parking information for the commencement and commissioning ceremonies.',
-  eventDates: ['2025-05-08', '2025-05-09', '2025-05-10'],
+  eventDates: ['2025-12-17', '2025-12-18'],
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };
 
 enum GraduationAttendanceDateChoices {
-  DayOne = '2025-05-08T05:00:00.000Z', // May 8, 12AM UTC
-  DayTwo = '2025-05-09T05:00:00.000Z', // May 9, 12AM UTC
-  DayThree = '2025-05-10T05:00:00.000Z', // May 10, 12AM UTC
-  Conclusion = '2025-05-11T05:00:00.000Z' // May 11, 12AM UTC
+  DayOne = '2025-12-17T05:00:00.000Z',
+  DayTwo = '2025-12-18T05:00:00.000Z'
 }
 
 export const GraduationOptions: SpecialEventOptions = [
@@ -371,15 +274,11 @@ export const GraduationOptions: SpecialEventOptions = [
     choices: [
       {
         value: GraduationAttendanceDateChoices.DayOne,
-        label: 'Thursday, May 8th'
+        label: 'Wednesday, December 17th'
       },
       {
         value: GraduationAttendanceDateChoices.DayTwo,
-        label: 'Friday, May 9th'
-      },
-      {
-        value: GraduationAttendanceDateChoices.DayThree,
-        label: 'Saturday, May 10th'
+        label: 'Thursday, December 18th'
       }
     ],
     effects: {
@@ -387,47 +286,15 @@ export const GraduationOptions: SpecialEventOptions = [
         {
           layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_A,
           conversions: [
-            {
-              input: GraduationAttendanceDateChoices.DayOne,
-              propOverrides: {
-                visible: true
-              }
-            },
-            {
-              input: GraduationAttendanceDateChoices.DayTwo,
-              propOverrides: {
-                visible: false
-              }
-            },
-            {
-              input: GraduationAttendanceDateChoices.DayThree,
-              propOverrides: {
-                visible: false
-              }
-            }
+            { input: GraduationAttendanceDateChoices.DayOne, propOverrides: { visible: true } },
+            { input: GraduationAttendanceDateChoices.DayTwo, propOverrides: { visible: false } }
           ]
         },
         {
           layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS_B,
           conversions: [
-            {
-              input: GraduationAttendanceDateChoices.DayOne,
-              propOverrides: {
-                visible: false
-              }
-            },
-            {
-              input: GraduationAttendanceDateChoices.DayTwo,
-              propOverrides: {
-                visible: true
-              }
-            },
-            {
-              input: GraduationAttendanceDateChoices.DayThree,
-              propOverrides: {
-                visible: true
-              }
-            }
+            { input: GraduationAttendanceDateChoices.DayOne, propOverrides: { visible: false } },
+            { input: GraduationAttendanceDateChoices.DayTwo, propOverrides: { visible: true } }
           ]
         }
       ]
