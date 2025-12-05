@@ -344,11 +344,11 @@ export const GraduationColdLayerSources: LayerSource[] = [
 ];
 
 export const GraduationConfiguration: EventConfiguration = {
-  id: 'graduation-2025',
-  name: 'Graduation',
-  applicationName: 'Graduation Transportation Map',
-  shortApplicationName: 'Graduation Map',
-  introductionText: 'Get the best transportation and parking information for the commencement and commissioning ceremonies.',
+  id: 'graduation-spring',
+  name: 'Commencement Ceremony',
+  applicationName: 'Commencement Transportation Map',
+  shortApplicationName: 'Commencement Map',
+  introductionText: 'Get the best transportation and parking information for the spring commencement ceremony.',
   eventDates: ['2025-05-08', '2025-05-09', '2025-05-10'],
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
@@ -435,7 +435,7 @@ export const GraduationOptions: SpecialEventOptions = [
   }
 ];
 
-export const GraduationEventTs: ISpecialEventRoot = {
+export const GraduationSpringEventTs: ISpecialEventRoot = {
   configuration: GraduationConfiguration,
   options: GraduationOptions,
   sources: GraduationColdLayerSources,

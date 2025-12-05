@@ -5,7 +5,7 @@ export * from './lib/interfaces/special-event.interface';
 
 export * from './lib/definitions/all.definitions';
 
-export * from './lib/definitions/graduation.definitions';
+export * from './lib/definitions/graduation-spring.definitions';
 export * from './lib/definitions/aggieland-saturday.definitions';
 export * from './lib/definitions/big-event.definitions';
 export * from './lib/definitions/phys-engineering-festival.definitions';
@@ -18,7 +18,7 @@ export * from './lib/definitions/troubadour-festival.definitions';
 export * from './lib/definitions/hs-graduation.definitions';
 export * from './lib/definitions/4h-roundup.definitions';
 export * from './lib/definitions/softball-regionals.definitions';
-export * from './lib/definitions/summer-graduation.definitions';
+export * from './lib/definitions/graduation-summer.definitions';
 export * from './lib/definitions/football-parking.definitions';
 export * from './lib/definitions/ring-day.definitions';
 export * from './lib/definitions/womens-basketball.definitions';

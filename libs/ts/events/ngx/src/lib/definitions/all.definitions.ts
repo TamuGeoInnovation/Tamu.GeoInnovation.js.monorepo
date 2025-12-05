@@ -2,7 +2,9 @@ import { FourHRoundupTs } from './4h-roundup.definitions';
 import { AggielandSaturdayEventTs } from './aggieland-saturday.definitions';
 import { BigEventTs } from './big-event.definitions';
 import { FamilyWeekendTs } from './family-weekend.definitions';
-import { GraduationEventTs } from './graduation.definitions';
+import { GraduationSpringEventTs } from './graduation-spring.definitions';
+import { GraduationFallEventTs } from './graduation-fall.definitions';
+import { SummerCommencementTs } from './graduation-summer.definitions';
 import { HsGraduationTs } from './hs-graduation.definitions';
 import { MaroonWhiteTs } from './maroon-white-game.definitions';
 import { MS150Ts } from './ms150.definitions';
@@ -22,7 +24,9 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   AggielandSaturdayEventTs,
   BigEventTs,
   FamilyWeekendTs,
-  GraduationEventTs,
+  GraduationFallEventTs,
+  GraduationSpringEventTs,
+  SummerCommencementTs,
   HsGraduationTs,
   MaroonWhiteTs,
   MensBasketball_Ts,
