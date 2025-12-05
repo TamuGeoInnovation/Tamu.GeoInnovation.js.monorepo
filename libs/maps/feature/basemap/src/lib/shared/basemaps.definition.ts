@@ -33,6 +33,6 @@ export const NearmapCSBasemap: BaseMapProperties = {
     }
   ],
   id: 'nearmap_cs_basemap',
-  title: 'Nearmap Satellite',
+  title: 'Aerial Imagery',
   thumbnailUrl: 'https://aggiemap.tamu.edu/images/basemap_thumbnails/nearmap_imagery.png'
 };
