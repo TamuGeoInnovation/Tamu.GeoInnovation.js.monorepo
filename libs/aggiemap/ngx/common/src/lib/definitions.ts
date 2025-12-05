@@ -102,7 +102,7 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
     FAMILY_FRIENDLY_BATHROOMS: {
       id: 'family-friendly-bathrooms-locations',
       layerId: 'family-friendly-bathrooms-locations-layer',
-      name: 'Family Friendly Bathroom Locations',
+      name: 'Family Friendly Restroom Locations',
       url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer/1',
       popupComponent: Popups.MarkdownWDirectionsPopupComponent
     }
