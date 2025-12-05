@@ -364,7 +364,7 @@ export const FootballParkingConfiguration: EventConfiguration = {
   applicationName: 'Gameday Transportation Map',
   shortApplicationName: 'Gameday Map',
   introductionText: 'Get the best transportation and parking information for game days.',
-  eventDates: ['2025-08-30', '2025-09-06', '2025-09-27', '2025-10-04', '2025-10-11', '2025-11-15', '2025-11-22'],
+  eventDates: ['2025-08-30', '2025-09-06', '2025-09-27', '2025-10-04', '2025-10-11', '2025-11-15', '2025-11-22','2025-12-20'],
   mapCenter: [-96.34344, 30.61011],
   zoom: 16,
   defaultLayerOverrides: {
