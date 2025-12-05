@@ -273,7 +273,7 @@ export const GraduationConfiguration: EventConfiguration = {
   name: 'Commencement Ceremony',
   applicationName: 'Commencement Transportation Map',
   shortApplicationName: 'Commencement Map',
-  introductionText: 'Get the best transportation and parking information for the fall commencement ceremony.',
+  introductionText: 'Get the best transportation and parking information for the fall commencement ceremonies.',
   eventDates: ['2025-12-17', '2025-12-18'],
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
@@ -294,7 +294,7 @@ export const GraduationOptions: SpecialEventOptions = [
     choices: [
       {
         value: GraduationAttendanceDateChoices.DayOne,
-         label: 'Wednesday, December 17th'
+        label: 'Wednesday, December 17th'
       },
       {
         value: GraduationAttendanceDateChoices.DayTwo,

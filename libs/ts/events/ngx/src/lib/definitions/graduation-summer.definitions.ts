@@ -118,7 +118,7 @@ export const SummerCommencementConfiguration: EventConfiguration = {
   name: 'Commencement Ceremony',
   applicationName: 'Commencement Transportation Map',
   shortApplicationName: 'Commencement Map',
-  introductionText: 'Get the best transportation and parking information for the summer commencement ceremony.',
+  introductionText: 'Get the best transportation and parking information for the summer commencement ceremonies.',
   eventDates: ['2025-08-09'],
   mapCenter: [-96.34458, 30.60629],
   zoom: 17
