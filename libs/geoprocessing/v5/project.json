@@ -27,7 +27,8 @@
         "tsConfig": "libs/geoprocessing/v5/tsconfig.lib.json",
         "packageJson": "libs/geoprocessing/v5/package.json",
         "main": "libs/geoprocessing/v5/src/index.ts",
-        "assets": ["libs/geoprocessing/v5/*.md"]
+        "assets": ["libs/geoprocessing/v5/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     }
   },

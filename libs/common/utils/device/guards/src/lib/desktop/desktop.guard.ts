@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, CanActivateChild, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
@@ -8,7 +8,7 @@ import { getUrlSegmentsFromRouteSnapshot, routeSubstitute } from '@tamu-gisc/com
 @Injectable({
   providedIn: 'root'
 })
-export class DesktopGuard implements CanActivate, CanActivateChild {
+export class DesktopGuard  {
   constructor(private rp: ResponsiveService, private router: Router) {}
 
   public canActivate(next: ActivatedRouteSnapshot): Observable<boolean> | Promise<boolean> | boolean {

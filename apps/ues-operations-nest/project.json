@@ -50,7 +50,7 @@
       }
     },
     "serve": {
-      "executor": "@nx/node:node",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "ues-operations-nest:build",
         "host": "0.0.0.0"

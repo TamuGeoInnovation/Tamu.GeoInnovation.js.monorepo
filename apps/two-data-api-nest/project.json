@@ -48,7 +48,7 @@
       }
     },
     "serve": {
-      "executor": "@nx/node:node",
+      "executor": "@nx/js:node",
       "options": {
         "buildTarget": "two-data-api-nest:build",
         "host": "0.0.0.0"

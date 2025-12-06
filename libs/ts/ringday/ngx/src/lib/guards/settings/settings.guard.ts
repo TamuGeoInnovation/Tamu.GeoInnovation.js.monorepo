@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 import { delay, Observable, of } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
@@ -12,7 +12,7 @@ import { RingDaySettingsService } from '../../modules/map/services/settings/ring
 @Injectable({
   providedIn: 'root'
 })
-export class SettingsGuard implements CanActivate {
+export class SettingsGuard  {
   constructor(
     private readonly mioSettings: RingDaySettingsService,
     private readonly router: Router,
