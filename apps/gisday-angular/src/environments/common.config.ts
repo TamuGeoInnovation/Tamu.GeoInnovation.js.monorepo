@@ -4,15 +4,15 @@ import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 export { metadata } from '@tamu-gisc/common/ngx/environment';
 
-export const api_url = '___ANGULAR_API_URL___';
+export const api_url = 'http://localhost:3333';
 
 export const auth0 = {
-  domain: '___ANGULAR_AUTH0_DOMAIN___',
-  client_id: '___ANGULAR_AUTH0_CLIENT_ID___',
+  domain: 'geoservices-dev.us.auth0.com',
+  client_id: 'Ge5KZRlXSGuzjI4Eo8odMgoFOoTAYqn1',
   redirect_uri: window.location.origin + '/callback',
-  audience: '___ANGULAR_AUTH0_AUDIENCE___',
-  roles_claim: '___ANGULAR_AUTH0_ROLES_CLAIM___',
-  urls: ['___ANGULAR_AUTH0_URLS___']
+  audience: 'gisday.dev.api',
+  roles_claim: 'geoservices.dev/roles',
+  urls: ['http://localhost']
 };
 
 export const NotificationEvents: NotificationProperties[] = [

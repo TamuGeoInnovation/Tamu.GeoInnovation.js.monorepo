@@ -1,19 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, ReplaySubject, Observable, combineLatest } from 'rxjs';
+import { shareReplay, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService, BaseMapProperties } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-import { AggiemapBasemap, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
+import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -65,6 +65,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly ar: ActivatedRoute,
     private readonly store: LocalStoreService,
     private readonly eventsSettingsService: EventSettingsService,
+    private readonly basemapGalleryService: BasemapGalleryService,
     private readonly eventService: EventService // While not called, needs to be injected to initialize event layers  loading
   ) {}
 
@@ -93,7 +94,7 @@ export class MapComponent implements OnInit, OnDestroy {
       subKey: 'settings'
     });
 
-    const basemapIdFromUrl = this.ar.snapshot.queryParams['basemap'];
+    const basemapIdFromUrl: string = this.ar.snapshot.queryParams['basemap'];
 
     // Determine basemap to use
     //
@@ -101,55 +102,51 @@ export class MapComponent implements OnInit, OnDestroy {
     // 2. If a basemap is provided in the settings, use that.
     // 3. If the basemap provided in settings is the default Aggiemap basemap, resolve the Aggiemap basemap from the id
     // 4. If no basemap is provided in the URL or settings, use the default 'topo-vector' basemap.
-    const basemap: MapConfig['basemap'] = {
-      basemap: basemapIdFromUrl
-        ? basemapIdFromUrl
-        : settings && settings.basemap
-        ? settings.basemap && settings.basemap !== 'aggie_basemap'
-          ? settings.basemap
-          : AggiemapBasemap
-        : 'topo-vector'
-    };
+    const basemap: Observable<esri.Basemap> = this.basemapGalleryService
+      .resolveBasemapFromId([basemapIdFromUrl, settings?.basemap])
+      .pipe(shareReplay(1));
 
-    this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
-      this.isMobile = value;
+    combineLatest([this.responsiveService.isMobile, basemap])
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(([isMobile, basemap]) => {
+        this.isMobile = isMobile;
 
-      this.config.next({
-        basemap,
-        view: {
-          mode: '2d',
-          properties: {
-            // container: this.mapViewEl.nativeElement,
-            map: undefined, // Reference to the map object created before the scene
-            center: root?.configuration?.mapCenter !== null ? root?.configuration?.mapCenter : [-96.34442, 30.60665],
-            spatialReference: {
-              wkid: 102100
-            },
-            constraints: {
-              minScale: 100000, // minZoom is the max you can zoom OUT into space
-              maxScale: 0 // maxZoom is the max you can zoom INTO the ground
-            },
-            zoom: root?.configuration?.zoom !== undefined ? root.configuration.zoom : 16,
-            ui: {
-              components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
-            },
-            popup: {
-              dockOptions: {
-                buttonEnabled: false,
-                breakpoint: false,
-                position: 'bottom-right'
+        this.config.next({
+          basemap: { basemap: basemap as unknown as BaseMapProperties },
+          view: {
+            mode: '2d',
+            properties: {
+              // container: this.mapViewEl.nativeElement,
+              map: undefined, // Reference to the map object created before the scene
+              center: root?.configuration?.mapCenter !== null ? root?.configuration?.mapCenter : [-96.34442, 30.60665],
+              spatialReference: {
+                wkid: 102100
+              },
+              constraints: {
+                minScale: 100000, // minZoom is the max you can zoom OUT into space
+                maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+              },
+              zoom: root?.configuration?.zoom !== undefined ? root.configuration.zoom : 16,
+              ui: {
+                components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
+              },
+              popup: {
+                dockOptions: {
+                  buttonEnabled: false,
+                  breakpoint: false,
+                  position: 'bottom-right'
+                }
+              },
+              highlightOptions: {
+                haloOpacity: 0,
+                fillOpacity: 0
               }
-            },
-            highlightOptions: {
-              haloOpacity: 0,
-              fillOpacity: 0
             }
           }
-        }
-      });
+        });
 
-      this.threeDLayers = this.env.value('ThreeDLayers', true);
-    });
+        this.threeDLayers = this.env.value('ThreeDLayers', true);
+      });
 
     // Set loader phrases and display a random one.
     const phrases = [

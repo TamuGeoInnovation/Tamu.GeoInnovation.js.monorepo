@@ -98,7 +98,7 @@ export class EsriMapService {
    * @param {esri.BasemapConstructor} Basemap
    */
   private async next(
-    Properties: MapProperties,
+    Properties: MapProperties | esri.Basemap,
     ViewProps: ViewProperties,
     Map: esri.MapConstructor,
     MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
@@ -203,6 +203,10 @@ export class EsriMapService {
   ): esri.MapProperties {
     if (!mapProperties) {
       throw new Error(`No map properties were provided.`);
+    }
+
+    if (mapProperties instanceof esri.Basemap) {
+      return { basemap: mapProperties };
     }
 
     // Make new immutable object from passed in parameters.
@@ -891,7 +895,7 @@ export class EsriMapService {
 }
 
 export interface MapConfig {
-  basemap: MapProperties;
+  basemap: MapProperties | esri.Basemap;
   view: ViewProperties;
 }
 
