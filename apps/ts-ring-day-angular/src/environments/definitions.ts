@@ -28,7 +28,7 @@ export const Definitions = {
   CONSTRUCTION: {
     id: 'construction_zone',
     layerId: 'construction_zone-layer',
-    name: 'Construction Zone',
+    name: 'Construction Zones',
     url: `${Connections.constructionUrl}`,
     popupComponent: Popups.ConstructionPopupComponent
   },
