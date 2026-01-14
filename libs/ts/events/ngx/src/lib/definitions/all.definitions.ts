@@ -18,7 +18,7 @@ import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
-
+import { StudentSelectableTs } from './student-selectable.definitions';
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
   AggielandSaturdayEventTs,
@@ -38,5 +38,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   FootballParkingEvent,
   RingDayEvent,
   WomensBasketball_Ts,
-  GisDayTs
+  GisDayTs,
+  StudentSelectableTs
 ];
