@@ -4,7 +4,7 @@ import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdow
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
-// import esri = __esri
+import esri = __esri
 
 export enum VENDOR_PARKING_LAYERS {
   CONSTRUCTION = 'Construction',
@@ -68,38 +68,38 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       outFields: ['*'],
-      // renderer: {
-      //   type: 'unique-value',
-      //   field: 'GIS.TS.Lot_Use.Vendor_Lot',
-      //   field2: 'GIS.TS.ParkingLots.LotType',
-      //   fieldDelimiter: ',',
-      //   uniqueValueInfos: [
-      //             {
-      //               value: '1,Surface',
-      //               label: 'Vender Permit and Vendor+ Permit Authorized',
-      //               symbol: {
-      //                 type: 'simple-fill',
-      //                 color: 'rgb(90, 0, 0)'
-      //               } as unknown as esri.SimpleFillSymbolProperties
-      //             },
-      //             {
-      //               value: '1,Street',
-      //               label: 'Vender Permit and Vendor+ Permit Authorized',
-      //               symbol: {
-      //                 type: 'simple-fill',
-      //                 color: 'rgb(90, 0, 0)'
-      //               } as unknown as esri.SimpleFillSymbolProperties
-      //             },
-      //             {
-      //               value: '1,Garage Visitor',
-      //               label: 'Vender Permit and Vendor+ Permit Authorized',
-      //               symbol: {
-      //                 type: 'simple-fill',
-      //                 color: 'rgb(90, 0, 0)'
-      //               } as unknown as esri.SimpleFillSymbolProperties
-      //             },
-      //           ]
-      // }
+      renderer: {
+        type: 'unique-value',
+        field: 'GIS.TS.Lot_Use.Vendor_Lot',
+        field2: 'GIS.TS.ParkingLots.LotType',
+        fieldDelimiter: ',',
+        uniqueValueInfos: [
+                  {
+                    value: '1,Surface',
+                    label: 'Surface Vender Permit and Vendor+ Permit Authorized',
+                    symbol: {
+                      type: 'simple-fill',
+                      color: 'rgb(90, 0, 0)'
+                    } as unknown as esri.SimpleFillSymbolProperties
+                  },
+                  {
+                    value: '1,Street',
+                    label: 'Street Vender Permit and Vendor+ Permit Authorized',
+                    symbol: {
+                      type: 'simple-fill',
+                      color: 'rgb(90, 0, 0)'
+                    } as unknown as esri.SimpleFillSymbolProperties
+                  },
+                  {
+                    value: '1,Garage Visitor',
+                    label: 'Garage Vender Permit and Vendor+ Permit Authorized',
+                    symbol: {
+                      type: 'simple-fill',
+                      color: 'rgb(90, 0, 0)'
+                    } as unknown as esri.SimpleFillSymbolProperties
+                  },
+                ]
+      }
     },
   }
 ];
