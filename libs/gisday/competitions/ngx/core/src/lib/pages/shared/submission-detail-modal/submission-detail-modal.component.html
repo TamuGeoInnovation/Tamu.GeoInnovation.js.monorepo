@@ -1,0 +1,94 @@
+<div class="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Submission Details</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <div class="info-row">
+          <label>Created:</label>
+          <span>{{ submission.created | date: 'short' }}</span>
+        </div>
+        <div class="info-row" *ngIf="submission.resolvedIdentity">
+          <label>User:</label>
+          <span>{{ submission.resolvedIdentity }}</span>
+        </div>
+        <div class="info-row">
+          <label>Question:</label>
+          <span>{{ submission.questionValue }}</span>
+        </div>
+        <div class="info-row">
+          <label>Points:</label>
+          <span>{{ submission.pointValue }}</span>
+        </div>
+        <div class="info-row">
+          <label>Status:</label>
+          <span [class]="'status-badge status-' + submission.validationStatus"> {{ submission.validationStatus }} </span>
+        </div>
+        <div class="info-row">
+          <label>Location:</label>
+          <span>{{ submission.location.latitude }}, {{ submission.location.longitude }}</span>
+        </div>
+        <div class="info-row" *ngIf="submission.sha256Hashes && submission.sha256Hashes.length > 0">
+          <label>SHA256 Hash{{ submission.sha256Hashes.length > 1 ? 'es' : '' }}:</label>
+          <div class="sha256-list">
+            <span *ngFor="let hash of submission.sha256Hashes" class="sha256-hash">{{ hash }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section" *ngIf="submission.location && mapConfig">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Submission Location</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <div class="map-wrapper">
+          <tamu-gisc-esri-map [config]="mapConfig"></tamu-gisc-esri-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-title">Submission Images</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <div class="image-gallery">
+          <ng-container *ngIf="images$ | async as images; else loadingImages">
+            <a *ngFor="let image of images" [href]="image.url" target="_blank" rel="noopener noreferrer">
+              <img [src]="image.url" alt="Submission image" class="submission-image" loading="lazy" />
+            </a>
+          </ng-container>
+          <ng-template #loadingImages>
+            <div class="image-placeholder"></div>
+            <div class="image-placeholder"></div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section leader-2" *ngIf="isAdmin">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-button [look]="'danger'" (click)="setValidationStatus(VALIDATION_STATUS.discarded)" [disabled]="submission.validationStatus === VALIDATION_STATUS.discarded" value="Discard">
+          <span class="material-icons">delete</span>
+        </tamu-gisc-button>
+        <tamu-gisc-button [look]="'warning'" (click)="setValidationStatus(VALIDATION_STATUS.unverified)" [disabled]="submission.validationStatus === VALIDATION_STATUS.unverified" value="Unverify">
+          <span class="material-icons">help</span>
+        </tamu-gisc-button>
+        <tamu-gisc-button [look]="'success'" (click)="setValidationStatus(VALIDATION_STATUS.verified)" [disabled]="submission.validationStatus === VALIDATION_STATUS.verified" value="Verify">
+          <span class="material-icons">check_circle</span>
+        </tamu-gisc-button>
+      </div>
+    </div>
+  </div>
+</div>
