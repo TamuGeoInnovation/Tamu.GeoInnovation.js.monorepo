@@ -3,6 +3,7 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 import { factory } from '@tamu-gisc/aggiemap/ngx/common';
+export { metadata } from '@tamu-gisc/common/ngx/environment';
 
 export const environment = {
   production: false
