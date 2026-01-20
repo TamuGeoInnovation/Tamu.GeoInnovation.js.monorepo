@@ -1,0 +1,26 @@
+{
+  "name": "gisday-common",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/gisday/common/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/gisday/common",
+        "main": "libs/gisday/common/src/index.ts",
+        "tsConfig": "libs/gisday/common/tsconfig.lib.json",
+        "assets": ["libs/gisday/common/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/gisday/common/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}
