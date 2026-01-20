@@ -23,3 +23,4 @@ export * from './lib/definitions/football-parking.definitions';
 export * from './lib/definitions/ring-day.definitions';
 export * from './lib/definitions/womens-basketball.definitions';
 export * from './lib/definitions/vendor-parking.definitions';
+export * from './lib/definitions/timed-parking.definitions';

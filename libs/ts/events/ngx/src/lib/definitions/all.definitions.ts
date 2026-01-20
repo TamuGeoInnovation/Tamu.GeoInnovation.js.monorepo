@@ -20,6 +20,7 @@ import { WomensBasketball_Ts } from './womens-basketball.definitions';
 import { MoveOut } from './move-out.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
 import { ContractorParkingTs } from './contractor-parking.definitions';
+import { TimedParking_Ts } from './timed-parking.definitions';
 
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
@@ -43,5 +44,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   WomensBasketball_Ts,
   GisDayTs,
   MoveOut,
-  ContractorParkingTs
+  ContractorParkingTs,
+  TimedParking_Ts
 ];
