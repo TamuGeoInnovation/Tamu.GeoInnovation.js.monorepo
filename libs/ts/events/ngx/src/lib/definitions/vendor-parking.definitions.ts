@@ -131,4 +131,3 @@ export const VendorParking_Ts: ISpecialEventRoot = {
     keywords: ['vendor', 'parking', 'transportation']
   }
 };
-
