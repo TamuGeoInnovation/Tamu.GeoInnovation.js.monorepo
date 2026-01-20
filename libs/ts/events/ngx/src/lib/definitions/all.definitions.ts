@@ -21,6 +21,7 @@ import { MoveOut } from './move-out.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
 import { ContractorParkingTs } from './contractor-parking.definitions';
 import { TimedParking_Ts } from './timed-parking.definitions';
+import { VendorParking_Ts } from './vendor-parking.definitions';
 
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
@@ -45,5 +46,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   GisDayTs,
   MoveOut,
   ContractorParkingTs,
-  TimedParking_Ts
+  TimedParking_Ts,
+  VendorParking_Ts
 ];
