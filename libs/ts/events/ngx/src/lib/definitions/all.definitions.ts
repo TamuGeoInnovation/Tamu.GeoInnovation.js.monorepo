@@ -42,6 +42,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   RingDayEvent,
   WomensBasketball_Ts,
   GisDayTs,
-  MoveOut
+  MoveOut,
   ContractorParkingTs
 ];
