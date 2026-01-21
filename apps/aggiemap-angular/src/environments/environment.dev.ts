@@ -4,6 +4,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 import { factory } from '@tamu-gisc/aggiemap/ngx/common';
+export { metadata } from '@tamu-gisc/common/ngx/environment';
 
 export const environment = {
   production: true
