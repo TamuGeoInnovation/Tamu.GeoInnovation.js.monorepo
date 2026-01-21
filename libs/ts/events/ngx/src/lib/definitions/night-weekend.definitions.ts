@@ -3,7 +3,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum NIGHT_WEEKEND_LAYERS {
-  NIGHT_PRIVILEGES = 'Night Privileges 5:00pm - 6:00am',
+  NIGHT_PRIVILEGES = 'Night Privileges 5:00pm - 6:00am'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
