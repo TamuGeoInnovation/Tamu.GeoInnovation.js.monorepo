@@ -4,7 +4,7 @@ import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../i
 
 export enum RETIREE_PARKING_LAYERS {
   LOT_SPECIFIC = 'Lot Specific Permit Required',
-  RETIREE_AUTHORIZED = 'Retiree Permit Authorized',
+  RETIREE_AUTHORIZED = 'Retiree Permit Authorized'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
