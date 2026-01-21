@@ -2,7 +2,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
-
 export enum MOVE_IN_LAYERS {
   CONSTRUCTION = 'Construction',
   NO_PARKING = 'No Parking Areas',
@@ -10,7 +9,6 @@ export enum MOVE_IN_LAYERS {
   MOVE_IN_LOTS = 'Move-In Lots',
   MOVE_IN_POI = 'Move-In Points of Interest'
 }
-
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer';
 
@@ -33,13 +31,13 @@ export const MoveInDefinitions = {
     name: 'Street Parking',
     url: `${eventUrl}/5`
   },
-    MOVE_IN_LOTS: {
+  MOVE_IN_LOTS: {
     id: MOVE_IN_LAYERS.MOVE_IN_LOTS,
     layerId: MOVE_IN_LAYERS.MOVE_IN_LOTS,
     name: 'Move-In Lots',
     url: `${eventUrl}/6`
   },
-    MOVE_IN_POI: {
+  MOVE_IN_POI: {
     id: MOVE_IN_LAYERS.MOVE_IN_POI,
     layerId: MOVE_IN_LAYERS.MOVE_IN_POI,
     name: 'Move-In Points of Interest',
@@ -81,7 +79,7 @@ export const MoveInColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
-    {
+  {
     type: 'feature',
     id: MoveInDefinitions.MOVE_IN_LOTS.id,
     title: MoveInDefinitions.MOVE_IN_LOTS.name,
@@ -92,7 +90,7 @@ export const MoveInColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
-    {
+  {
     type: 'feature',
     id: MoveInDefinitions.MOVE_IN_POI.id,
     title: MoveInDefinitions.MOVE_IN_POI.name,
@@ -102,7 +100,7 @@ export const MoveInColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  },
+  }
 ];
 
 export const MoveInConfiguration: EventConfiguration = {
@@ -117,7 +115,6 @@ export const MoveInConfiguration: EventConfiguration = {
 };
 
 export const MoveInOptions: SpecialEventOptions = [];
-
 
 export const MoveInTs: ISpecialEventRoot = {
   configuration: MoveInConfiguration,
