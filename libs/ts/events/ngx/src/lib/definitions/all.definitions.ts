@@ -18,7 +18,7 @@ import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
-import { BreakSummerTs } from './break_summer.definitions';
+import { BreakSummerParkingTs } from './break-summer.definitions';
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
@@ -40,5 +40,5 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   RingDayEvent,
   WomensBasketball_Ts,
   GisDayTs,
-  BreakSummerTs
+  BreakSummerParkingTs
 ];
