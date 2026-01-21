@@ -3,7 +3,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum MOTORIST_ASSISTANCE_LAYERS {
-  SERVICE_AREA = 'Service Area',
+  SERVICE_AREA = 'Service Area'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MotoristAssistance/MapServer';
