@@ -6,7 +6,7 @@ export enum ACCESSIBLE_PARKING_LAYERS {
   CONSTRUCTION = 'Construction',
   ACCESSIBLE_PARKING = 'Accessible Parking',
   ACCESSIBLE_SPACES_IN_AREA = 'Accessible Spaces in this area',
-  ACCESSIBLE_PARKING_SPACE = 'Accessible Parking Space',
+  ACCESSIBLE_PARKING_SPACE = 'Accessible Parking Space'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/DisabledTimedMotorcycle/MapServer';
