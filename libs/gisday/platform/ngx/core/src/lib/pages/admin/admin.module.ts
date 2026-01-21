@@ -33,6 +33,10 @@ const routes: Routes = [
             loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.MapModule)
           },
           {
+            path: 'submissions',
+            loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.AdminSubmissionsModule)
+          },
+          {
             path: '',
             redirectTo: 'designer',
             pathMatch: 'full'

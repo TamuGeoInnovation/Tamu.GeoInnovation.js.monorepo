@@ -17,8 +17,15 @@ import { RingDayEvent } from './ring-day.definitions';
 import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
+import { MoveOut } from './move-out.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
+import { ContractorParkingTs } from './contractor-parking.definitions';
+import { TimedParking_Ts } from './timed-parking.definitions';
+import { VendorParking_Ts } from './vendor-parking.definitions';
+import { MoveInTs } from './move-in.definitions';
+import { NightWeekendTs } from './night-weekend.definitions';
 import { StudentSelectableTs } from './student-selectable.definitions';
+
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
@@ -40,5 +47,11 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   RingDayEvent,
   WomensBasketball_Ts,
   GisDayTs,
+  MoveOut,
+  ContractorParkingTs,
+  TimedParking_Ts,
+  VendorParking_Ts,
+  MoveInTs,
+  NightWeekendTs,
   StudentSelectableTs
 ];
