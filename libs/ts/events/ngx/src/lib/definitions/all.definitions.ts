@@ -20,7 +20,6 @@ import { WomensBasketball_Ts } from './womens-basketball.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
 import { FreshmanSelectableTs } from './freshman-parking.definitions';
 
-
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
   AggielandSaturdayEventTs,

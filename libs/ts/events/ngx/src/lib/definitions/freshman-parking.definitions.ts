@@ -6,7 +6,7 @@ export enum FRESHMAN_SELECTABLE_LAYERS {
   CONSTRUCTION = 'Construction',
   LINE_PAINT = 'Line Paint',
   FRESHMAN_SELECTABLE = 'Freshman Selectable Parking Lots',
-  RNS_SPACES = 'RNS Spaces',
+  RNS_SPACES = 'RNS Spaces'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/PermitSelect/MapServer';
