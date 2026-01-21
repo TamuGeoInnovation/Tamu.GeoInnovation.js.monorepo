@@ -10,7 +10,7 @@ export enum MAINTENANCE_PARKING_LAYERS {
   MAINTENANCE_LOTS = 'Maintenance Parking Lots',
   SERVICE_LOTS = 'Service Parking Lots',
   RNS_SPACES = 'RNS Spaces',
-  CONTRACTOR_LOTS = 'Contractor Parking Lots',
+  CONTRACTOR_LOTS = 'Contractor Parking Lots'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/ServiceMaintenanceContractor/MapServer';
