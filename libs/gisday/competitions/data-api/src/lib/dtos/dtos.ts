@@ -1,11 +1,25 @@
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
-import { VALIDATION_STATUS } from '../enums/competitions.enums';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 export class GetSubmissionDto {
   @IsNotEmpty()
   public guid: string;
 }
+
+export class GetUserSubmissionsDto {
+  @IsNotEmpty()
+  public userGuid: string;
+
+  @IsOptional()
+  public seasonGuid?: string;
+}
+
+export class GetAdminSubmissionsDto {
+  @IsOptional()
+  public seasonGuid?: string;
+}
+
 export class GetSeasonStatisticsDto {
   @IsNotEmpty()
   public guid: string;
@@ -32,9 +46,33 @@ export class ValidateSubmissionDto {
   @IsNotEmpty()
   public guid: string;
 
-  @IsNotEmpty()
-  public userGuid: string;
+  @IsEnum(COMPETITION_VALIDATION_STATUS)
+  public status: COMPETITION_VALIDATION_STATUS;
 
-  @IsEnum(VALIDATION_STATUS)
-  public status: VALIDATION_STATUS;
+  // userGuid is set server-side from JWT
+  public userGuid?: string;
+}
+
+export interface SubmissionReviewDto {
+  guid: string;
+  created: Date;
+  questionValue: string;
+  pointValue: number;
+  validationStatus: string;
+  userGuid?: string;
+  resolvedIdentity?: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  imageGuids: string[];
+  sha256Hashes: string[];
+}
+
+export interface SubmissionMediaDto {
+  guid: string;
+  blob: Blob;
+  mimeType?: string;
+  fieldName?: string;
+  sha256?: string;
 }
