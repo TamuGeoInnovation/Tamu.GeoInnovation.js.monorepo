@@ -23,6 +23,7 @@ import { ContractorParkingTs } from './contractor-parking.definitions';
 import { TimedParking_Ts } from './timed-parking.definitions';
 import { VendorParking_Ts } from './vendor-parking.definitions';
 import { MoveInTs } from './move-in.definitions';
+import { NightWeekendTs } from './night-weekend.definitions';
 
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
@@ -49,5 +50,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   ContractorParkingTs,
   TimedParking_Ts,
   VendorParking_Ts,
-  MoveInTs
+  MoveInTs,
+  NightWeekendTs
 ];
