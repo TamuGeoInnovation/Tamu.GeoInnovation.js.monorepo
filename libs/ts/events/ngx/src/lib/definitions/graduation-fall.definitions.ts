@@ -180,7 +180,7 @@ export const GraduationColdLayerSources: LayerSource[] = [
       labelingInfo: [
         {
           labelExpressionInfo: {
-            expression: '"Lot 97" + TextFormatting.NewLine + "Available After 5PM Friday"'
+            expression: '"Lot 97" + TextFormatting.NewLine + "Available After 5PM"'
           },
           maxScale: 0,
           minScale: 0,
