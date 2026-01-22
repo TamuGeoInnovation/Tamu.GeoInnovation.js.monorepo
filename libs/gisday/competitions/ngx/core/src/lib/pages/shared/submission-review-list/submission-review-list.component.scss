@@ -1,0 +1,102 @@
+@import 'libs/gisday/sass/variables';
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-unverified {
+  background-color: #ffee58;
+  color: $gisday-black;
+}
+
+.status-verified {
+  background-color: #66bb6a;
+  color: $gisday-black;
+}
+
+.status-discarded {
+  background-color: #ff5252;
+  color: $gisday-black;
+}
+
+.datatable-container {
+  --border-color: #eeeeee;
+  --datatable-contrast-background: #f8f9fa;
+
+  margin: 2rem 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1pt solid var(--border-color);
+
+  ngx-datatable {
+    width: 100%;
+    height: 50rem;
+
+    ::ng-deep {
+      .datatable-header {
+        background-color: var(--datatable-contrast-background);
+        border-bottom: 1px solid #dee2e6;
+
+        .datatable-header-cell {
+          padding: 12px 8px;
+        }
+      }
+
+      .datatable-body {
+        .datatable-row-wrapper {
+          border-bottom: 1px solid var(--border-color);
+          cursor: pointer;
+
+          &:hover {
+            background-color: #f8f9fa;
+          }
+        }
+
+        datatable-selection {
+          .empty-row {
+            padding: 0.5rem 1rem;
+          }
+        }
+
+        .datatable-body-cell {
+          font-size: 0.9rem;
+          padding: 0.5rem 1rem;
+        }
+      }
+
+      .datatable-footer {
+        background-color: var(--datatable-contrast-background);
+        padding: 0 1rem;
+        border-top: 1px solid var(--border-color);
+
+        .page-count {
+          color: #424242;
+        }
+
+        datatable-pager {
+          .pager {
+            margin-bottom: 0 !important;
+
+            .pages {
+              color: #9e9e9e;
+              padding: 0 0.25rem;
+
+              a {
+                color: inherit;
+                text-decoration: none;
+              }
+
+              &.active {
+                color: #424242;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
