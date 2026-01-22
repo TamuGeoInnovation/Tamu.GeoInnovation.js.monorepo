@@ -26,6 +26,7 @@ import { MoveInTs } from './move-in.definitions';
 import { NightWeekendTs } from './night-weekend.definitions';
 import { StudentSelectableTs } from './student-selectable.definitions';
 import { FreshmanSelectableTs } from './freshman-parking.definitions';
+import { StaffSelectableTs } from './staff-selectable.definitions';
 
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
@@ -55,5 +56,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   MoveInTs,
   NightWeekendTs,
   StudentSelectableTs,
-  FreshmanSelectableTs
+  FreshmanSelectableTs,
+  StaffSelectableTs
 ];
