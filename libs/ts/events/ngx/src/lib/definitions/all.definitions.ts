@@ -28,6 +28,7 @@ import { StudentSelectableTs } from './student-selectable.definitions';
 import { FreshmanSelectableTs } from './freshman-parking.definitions';
 import { StaffSelectableTs } from './staff-selectable.definitions';
 import { BusinessParkingTs } from './business-parking.definitions';
+import { MotoristAssistanceTs } from './motorist-assistance.definitions';
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
@@ -58,5 +59,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   StudentSelectableTs,
   FreshmanSelectableTs,
   StaffSelectableTs,
-  BusinessParkingTs
+  BusinessParkingTs,
+  MotoristAssistanceTs
 ];
