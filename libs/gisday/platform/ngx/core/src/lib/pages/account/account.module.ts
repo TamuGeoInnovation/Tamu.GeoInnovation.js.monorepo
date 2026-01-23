@@ -30,6 +30,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/my-submissions/my-submissions.module').then((m) => m.MySubmissionsModule)
       },
       {
+        path: 'vgi-submissions',
+        loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.UserSubmissionsModule)
+      },
+      {
         path: 'initial-survey',
         loadChildren: () => import('./pages/initial-survey/initial-survey.module').then((m) => m.InitialSurveyModule)
       }
