@@ -10,8 +10,8 @@ export enum RING_DAY_LAYERS {
 }
 
 enum RingDayDates {
-  DAY1 = '2025-11-06',
-  DAY2 = '2025-11-07'
+  DAY1 = '2026-04-09',
+  DAY2 = '2026-04-10'
 }
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Ring_Day/MapServer';
