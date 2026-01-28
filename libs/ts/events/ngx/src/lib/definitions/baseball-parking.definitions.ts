@@ -46,6 +46,10 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: BaseballParkingEventDefinitions.BASEBALL_EVENT_PARKING_LOTS.name,
     url: BaseballParkingEventDefinitions.BASEBALL_EVENT_PARKING_LOTS.url,
     popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.Name',
+      description: 'attributes.Description'
+    },
     native: {
       outFields: ['*']
     }
@@ -56,6 +60,10 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: BaseballParkingEventDefinitions.BASEBALL_GATES.name,
     url: BaseballParkingEventDefinitions.BASEBALL_GATES.url,
     popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.Gate',
+      description: 'attributes.Description'
+    },
     native: {
       outFields: ['*']
     }
@@ -66,6 +74,10 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: BaseballParkingEventDefinitions.SHUTTLE_ROUTE.name,
     url: BaseballParkingEventDefinitions.SHUTTLE_ROUTE.url,
     popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.RouteName',
+      description: 'attributes.Description'
+    },
     native: {
       outFields: ['*']
     }
