@@ -18,7 +18,7 @@ import { ISpecialEventRoot } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
-import { NscParkingTs } from './nsc-parking-definitions';
+import { NscParkingTs } from './nsc-parking.definitions';
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
