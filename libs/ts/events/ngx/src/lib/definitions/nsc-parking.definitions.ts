@@ -11,8 +11,6 @@ export enum NSC_PARKING_LAYERS {
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
 
-
-
 export const NscParkingDefinitions = {
   NSC_PARKING_LOTS: {
     id: NSC_PARKING_LAYERS.NSC_PARKING_LOTS,
@@ -28,6 +26,7 @@ export const NscParkingColdLayerSources: LayerSource[] = [
     id: NscParkingDefinitions.NSC_PARKING_LOTS.id,
     title: NscParkingDefinitions.NSC_PARKING_LOTS.name,
     url: NscParkingDefinitions.NSC_PARKING_LOTS.url,
+    layerIndex: 999,
     visible: true,
     popupComponent: MarkdownPopupComponent,
     native: {
