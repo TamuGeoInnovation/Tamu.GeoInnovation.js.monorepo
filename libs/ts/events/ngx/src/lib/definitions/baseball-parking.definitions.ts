@@ -1,7 +1,9 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { ɵɵi18nAttributes } from '@angular/core';
 
 export enum BASEBALL_PARKING_LAYERS {
   BASEBALL_SYMBOLS = 'baseball-symbols',
@@ -45,10 +47,16 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     id: BaseballParkingEventDefinitions.BASEBALL_EVENT_PARKING_LOTS.id,
     title: BaseballParkingEventDefinitions.BASEBALL_EVENT_PARKING_LOTS.name,
     url: BaseballParkingEventDefinitions.BASEBALL_EVENT_PARKING_LOTS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: 'attributes.Name',
-      description: 'attributes.Description'
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.SpEv_Lot_Notes.BaseballN',
+        collapsed: true
+      }
     },
     native: {
       outFields: ['*']
@@ -60,10 +68,6 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: BaseballParkingEventDefinitions.BASEBALL_GATES.name,
     url: BaseballParkingEventDefinitions.BASEBALL_GATES.url,
     popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.Gate',
-      description: 'attributes.Description'
-    },
     native: {
       outFields: ['*']
     }
@@ -74,10 +78,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: BaseballParkingEventDefinitions.SHUTTLE_ROUTE.name,
     url: BaseballParkingEventDefinitions.SHUTTLE_ROUTE.url,
     popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.RouteName',
-      description: 'attributes.Description'
-    },
+
     native: {
       outFields: ['*']
     }
@@ -87,7 +88,14 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     id: BaseballParkingEventDefinitions.BASEBALL_SYMBOLS.id,
     title: BaseballParkingEventDefinitions.BASEBALL_SYMBOLS.name,
     url: BaseballParkingEventDefinitions.BASEBALL_SYMBOLS.url,
-    popupComponent: MarkdownPopupComponent,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: '{attributes.Type}',
+      description: {
+        field: 'test',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
