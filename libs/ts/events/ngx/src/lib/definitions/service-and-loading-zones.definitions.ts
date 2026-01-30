@@ -3,14 +3,14 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum SERVICE_LOADING_LAYERS {
-  CONSTRUCTION = 'Construction',
-  MAINTENANCE_SPACES = 'Maintenance Parking Spaces',
-  SERVICE_SPACES = 'Service Parking Spaces',
-  LINE_PAINT = 'Line Paint',
-  MAINTENANCE_LOTS = 'Maintenance Parking Lots',
-  SERVICE_LOTS = 'Service Parking Lots',
-  RNS_SPACES = 'RNS Spaces',
-  CONTRACTOR_LOTS = 'Contractor Parking Lots'
+  CONSTRUCTION = 'construction',
+  MAINTENANCE_SPACES = 'maintenance-parking-spaces',
+  SERVICE_SPACES = 'service-parking-spaces',
+  LINE_PAINT = 'line-paint',
+  MAINTENANCE_LOTS = 'maintenance-parking-lots',
+  SERVICE_LOTS = 'service-parking-lots',
+  RNS_SPACES = 'rns-spaces',
+  CONTRACTOR_LOTS = 'contractor-parking-lots'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/ServiceMaintenanceContractor/MapServer';
