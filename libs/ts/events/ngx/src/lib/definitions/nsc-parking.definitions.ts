@@ -1,24 +1,19 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { MarkdownPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 
-import esri = __esri;
+//import esri = __esri;
 
 export enum NSC_PARKING_LAYERS {
-  CONSTRUCTION = 'Construction',
   NSC_PARKING_LOTS = 'NSC Parking Lots'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
 
+
+
 export const NscParkingDefinitions = {
-  CONSTRUCTION: {
-    id: NSC_PARKING_LAYERS.CONSTRUCTION,
-    layerId: NSC_PARKING_LAYERS.CONSTRUCTION,
-    name: 'Construction',
-    url: `${eventUrl}/0`
-  },
   NSC_PARKING_LOTS: {
     id: NSC_PARKING_LAYERS.NSC_PARKING_LOTS,
     layerId: NSC_PARKING_LAYERS.NSC_PARKING_LOTS,
@@ -30,41 +25,13 @@ export const NscParkingDefinitions = {
 export const NscParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: NscParkingDefinitions.CONSTRUCTION.id,
-    title: NscParkingDefinitions.CONSTRUCTION.name,
-    url: NscParkingDefinitions.CONSTRUCTION.url,
-    popupComponent: MarkdownPopupComponent,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-
-  {
-    type: 'feature',
     id: NscParkingDefinitions.NSC_PARKING_LOTS.id,
     title: NscParkingDefinitions.NSC_PARKING_LOTS.name,
     url: NscParkingDefinitions.NSC_PARKING_LOTS.url,
-    popupComponent: MarkdownPopupComponent,
     visible: true,
-    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'GIS.TS.Lot_Use.NSCm',
-        uniqueValueInfos: [
-          {
-            value: '1',
-            label: 'NSC Permit Authorized',
-            symbol: {
-              type: 'simple-fill',
-              color: 'rgb(90, 0, 0)'
-            } as unknown as esri.SimpleFillSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   }
 ];
@@ -74,10 +41,10 @@ export const NscParkingConfiguration: EventConfiguration = {
   name: 'New Student Conference Parking',
   applicationName: 'New Student Conference Parking Map',
   shortApplicationName: 'NSC Parking Map',
-  introductionText: 'Parking map for New Student Conference.',
+  introductionText: 'Parking map for New Student Conference (NSC) permits.',
+  mapCenter: [-96.34731, 30.60543],
   eventDates: [],
-  mapCenter: [-96.33771, 30.62143],
-  zoom: 17
+  zoom: 16
 };
 
 export const NscParkingOptions: SpecialEventOptions = [];
@@ -90,9 +57,9 @@ export const NscParkingTs: ISpecialEventRoot = {
   discover: {
     id: NscParkingConfiguration.id,
     name: NscParkingConfiguration.name,
-    description: 'Parking information for New Student Conference.',
+    description: 'Parking lot information for New Student Conference (NSC) permits.',
     source: 'internal',
     type: 'event',
-    keywords: ['nsc', 'new student conference', 'parking', 'transportation']
+    keywords: ['nsc', 'new student conference', 'parking', 'permit']
   }
 };
