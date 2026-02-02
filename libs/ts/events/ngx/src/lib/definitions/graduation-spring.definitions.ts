@@ -355,10 +355,10 @@ export const GraduationConfiguration: EventConfiguration = {
 };
 
 enum GraduationAttendanceDateChoices {
-  DayOne = '2026-05-07T05:00:00.000Z', // May 8, 12AM UTC
-  DayTwo = '2026-05-08T05:00:00.000Z', // May 9, 12AM UTC
-  DayThree = '2026-05-09T05:00:00.000Z', // May 10, 12AM UTC
-  Conclusion = '2026-05-10T05:00:00.000Z' // May 11, 12AM UTC
+  DayOne = '2026-05-07T05:00:00.000Z', // May 7, 12AM UTC
+  DayTwo = '2026-05-08T05:00:00.000Z', // May 8, 12AM UTC
+  DayThree = '2026-05-09T05:00:00.000Z', // May 9, 12AM UTC
+  Conclusion = '2026-05-10T05:00:00.000Z' // May 10, 12AM UTC
 }
 
 export const GraduationOptions: SpecialEventOptions = [
