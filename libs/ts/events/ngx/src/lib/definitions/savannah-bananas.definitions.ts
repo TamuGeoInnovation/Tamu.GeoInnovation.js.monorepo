@@ -31,13 +31,13 @@ export const SavannahBananasParkingDefinitions = {
 const BananaPalette = {
   bananaBright: [252, 227, 0, 0.62],
   bananaGold: [255, 196, 0, 0.62],
-  bananaCream: [255, 244, 180, 0.60],
+  bananaCream: [255, 244, 180, 0.6],
   peelGreen: [108, 190, 69, 0.62],
   limeGreen: [168, 220, 60, 0.62],
   tailgaterOrange: [255, 140, 0, 0.62],
   navy: [20, 35, 90, 0.55],
   closureRed: [230, 0, 0, 0.75],
-  outlineDark: [0, 0, 0, 0.60]
+  outlineDark: [0, 0, 0, 0.6]
 };
 
 const BananasParkingLotsRenderer = {
@@ -125,7 +125,7 @@ const BananasParkingLotsRenderer = {
 } as unknown;
 
 export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
-  ({
+  {
     type: 'feature',
     id: SavannahBananasParkingDefinitions.PEDESTRIAN_PATH.id,
     title: SavannahBananasParkingDefinitions.PEDESTRIAN_PATH.name,
@@ -143,9 +143,8 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  } as unknown as LayerSource),
-
-  ({
+  } as unknown as LayerSource,
+  {
     type: 'feature',
     id: SavannahBananasParkingDefinitions.PARKING_LOTS.id,
     title: SavannahBananasParkingDefinitions.PARKING_LOTS.name,
@@ -164,7 +163,7 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       renderer: BananasParkingLotsRenderer
     }
-  } as unknown as LayerSource)
+  } as unknown as LayerSource
 ];
 
 export const SavannahBananasParkingConfiguration: EventConfiguration = {
