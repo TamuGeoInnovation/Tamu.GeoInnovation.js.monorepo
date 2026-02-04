@@ -3,7 +3,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
-import { ɵɵi18nAttributes } from '@angular/core';
 
 export enum BASEBALL_PARKING_LAYERS {
   BASEBALL_SYMBOLS = 'baseball-symbols',
@@ -90,11 +89,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     url: BaseballParkingEventDefinitions.BASEBALL_SYMBOLS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: '{attributes.Type}',
-      description: {
-        field: 'test',
-        collapsed: true
-      }
+      name: '{attributes.Type}'
     },
     native: {
       outFields: ['*']
