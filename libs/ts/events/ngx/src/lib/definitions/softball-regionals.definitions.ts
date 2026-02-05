@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -105,7 +109,8 @@ export const SoftballConfiguration: EventConfiguration = {
 
 export const SoftballOptions: SpecialEventOptions = [];
 
-export const SoftballRegionalsTs: ISpecialEventRoot = {
+export const SoftballRegionalsTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: SoftballConfiguration,
   sources: SoftballLayerSources,
   options: SoftballOptions,

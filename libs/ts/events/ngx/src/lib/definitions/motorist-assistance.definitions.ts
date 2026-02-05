@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum MOTORIST_ASSISTANCE_LAYERS {
   SERVICE_AREA = 'Service Area'
@@ -43,17 +47,18 @@ export const MotoristAssistanceConfiguration: EventConfiguration = {
 
 export const MotoristAssistanceOptions: SpecialEventOptions = [];
 
-export const MotoristAssistanceTs: ISpecialEventRoot = {
+export const MotoristAssistanceTs: AggiemapCustomMapConfiguration = {
   configuration: MotoristAssistanceConfiguration,
   options: MotoristAssistanceOptions,
   sources: MotoristAssistanceColdLayerSources,
   references: MOTORIST_ASSISTANCE_LAYERS,
+  type: 'general-map',
   discover: {
     id: MotoristAssistanceConfiguration.id,
     name: MotoristAssistanceConfiguration.name,
     description: 'Motorist assistance service area coverage.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['motorist', 'assistance', 'service area']
   }
 };

@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -345,9 +349,9 @@ export const GraduationColdLayerSources: LayerSource[] = [
 
 export const GraduationConfiguration: EventConfiguration = {
   id: 'graduation-spring',
-  name: 'Commencement Ceremony',
-  applicationName: 'Commencement Transportation Map',
-  shortApplicationName: 'Commencement Map',
+  name: 'Spring Commencement Ceremony',
+  applicationName: 'Spring Commencement Transportation Map',
+  shortApplicationName: 'Spring Commencement Map',
   introductionText: 'Get the best transportation and parking information for the spring commencement ceremonies.',
   eventDates: ['2026-05-07', '2026-05-08', '2026-05-09'],
   mapCenter: [-96.34458, 30.60629],
@@ -435,7 +439,8 @@ export const GraduationOptions: SpecialEventOptions = [
   }
 ];
 
-export const GraduationSpringEventTs: ISpecialEventRoot = {
+export const GraduationSpringEventTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: GraduationConfiguration,
   options: GraduationOptions,
   sources: GraduationColdLayerSources,
@@ -443,7 +448,7 @@ export const GraduationSpringEventTs: ISpecialEventRoot = {
   discover: {
     id: GraduationConfiguration.id,
     name: GraduationConfiguration.name,
-    description: 'Transportation and parking information for graduation ceremonies.',
+    description: 'Transportation and parking information for spring graduation ceremonies.',
     source: 'internal',
     type: 'event',
     keywords: ['graduation', 'commencement', 'parking', 'transportation']

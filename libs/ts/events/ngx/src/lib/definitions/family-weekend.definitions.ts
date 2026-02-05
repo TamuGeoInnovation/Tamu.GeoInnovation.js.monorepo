@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum FAMILY_WEEKEND_LAYERS {
   PARKING_LOTS = 'family-weekend-parking-lots',
@@ -185,11 +189,12 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
   }
 ];
 
-export const FamilyWeekendTs: ISpecialEventRoot = {
+export const FamilyWeekendTs: AggiemapCustomMapConfiguration = {
   configuration: FamilyWeekendConfiguration,
   options: FamilyWeekendOptions,
   sources: FamilyWeekendColdLayerSources,
   references: FAMILY_WEEKEND_LAYERS,
+  type: 'special-event',
   discover: {
     id: FamilyWeekendConfiguration.id,
     name: FamilyWeekendConfiguration.name,

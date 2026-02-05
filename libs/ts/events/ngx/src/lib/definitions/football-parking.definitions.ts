@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum FOOTBALL_PARKING_LAYERS {
   FP_POIS = 'football-pois',
@@ -364,7 +368,16 @@ export const FootballParkingConfiguration: EventConfiguration = {
   applicationName: 'Gameday Transportation Map',
   shortApplicationName: 'Gameday Map',
   introductionText: 'Get the best transportation and parking information for game days.',
-  eventDates: ['2025-08-30', '2025-09-06', '2025-09-27', '2025-10-04', '2025-10-11', '2025-11-15', '2025-11-22','2025-12-20'],
+  eventDates: [
+    '2025-08-30',
+    '2025-09-06',
+    '2025-09-27',
+    '2025-10-04',
+    '2025-10-11',
+    '2025-11-15',
+    '2025-11-22',
+    '2025-12-20'
+  ],
   mapCenter: [-96.34344, 30.61011],
   zoom: 16,
   defaultLayerOverrides: {
@@ -583,11 +596,12 @@ export const FootballParkingOptions: SpecialEventOptions = [
   }
 ];
 
-export const FootballParkingEvent: ISpecialEventRoot = {
+export const FootballParkingEvent: AggiemapCustomMapConfiguration = {
   configuration: FootballParkingConfiguration,
   options: FootballParkingOptions,
   sources: FootballParkingColdLayerSources,
   references: FOOTBALL_PARKING_LAYERS,
+  type: 'special-event',
   discover: {
     id: FootballParkingConfiguration.id,
     name: FootballParkingConfiguration.name,

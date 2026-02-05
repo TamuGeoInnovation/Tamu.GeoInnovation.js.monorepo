@@ -236,24 +236,32 @@ export interface ResolvedEventSetting {
 
 export type ResolvedEventSettings = Array<ResolvedEventSetting>;
 
-export interface ISpecialEventRoot {
+export interface IMapConfigurationBase {
   configuration: EventConfiguration | null;
   options: SpecialEventOptions | null;
   references: Record<string, string> | null;
   sources: Array<LayerSource> | null;
 
   /**
-   * If the event should be discoverable in the Discover application, this property should be set to an object that conforms to the EventDiscoverMetadata interface.
+   * If the map should be discoverable in the Discover application, this property should be set to an object that conforms to the DiscoverMetadata interface.
    */
-  discover?: EventDiscoverMetadata | null;
+  discover?: DiscoverMetadata | null;
 }
 
+export interface ISpecialEventRoot extends IMapConfigurationBase {
+  type: 'special-event';
+}
+
+export interface IGeneralMapRoot extends IMapConfigurationBase {
+  type: 'general-map';
+}
+
+export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot;
+
 /**
- * Metadata used to represent an event in the Discover application.
- *
- * This has significant overlap with the EventConfiguration interface. This is sadly kept separate because of Nx library boundaries creates a circular dependency otherwise.
+ * Metadata used to represent a map in the Discover application.
  */
-export interface EventDiscoverMetadata {
+export interface DiscoverMetadata {
   id: string;
   name: string;
   description: string;
@@ -266,5 +274,5 @@ export interface EventDiscoverMetadata {
    */
   labels?: string[];
   source: 'internal';
-  type: 'event';
+  type: 'event' | 'parking';
 }

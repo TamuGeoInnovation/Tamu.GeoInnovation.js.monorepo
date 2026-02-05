@@ -2,9 +2,13 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
-import esri = __esri
+import esri = __esri;
 
 export enum VENDOR_PARKING_LAYERS {
   CONSTRUCTION = 'Construction',
@@ -27,7 +31,7 @@ export const VendorParkingDefinitions = {
     name: 'Marked Business Spaces',
     url: `${eventUrl}/2`
   },
-    VENDOR_PARKING_LOTS: {
+  VENDOR_PARKING_LOTS: {
     id: VENDOR_PARKING_LAYERS.VENDOR_PARKING_LOTS,
     layerId: VENDOR_PARKING_LAYERS.VENDOR_PARKING_LOTS,
     name: 'Vendor Parking Lots',
@@ -56,7 +60,7 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       outFields: ['*']
-    },
+    }
   },
 
   {
@@ -74,33 +78,33 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
         field2: 'GIS.TS.ParkingLots.LotType',
         fieldDelimiter: ',',
         uniqueValueInfos: [
-                  {
-                    value: '1,Surface',
-                    label: 'Surface Vender Permit and Vendor+ Permit Authorized',
-                    symbol: {
-                      type: 'simple-fill',
-                      color: 'rgb(90, 0, 0)'
-                    } as unknown as esri.SimpleFillSymbolProperties
-                  },
-                  {
-                    value: '1,Street',
-                    label: 'Street Vender Permit and Vendor+ Permit Authorized',
-                    symbol: {
-                      type: 'simple-fill',
-                      color: 'rgb(90, 0, 0)'
-                    } as unknown as esri.SimpleFillSymbolProperties
-                  },
-                  {
-                    value: '1,Garage Visitor',
-                    label: 'Garage Vender Permit and Vendor+ Permit Authorized',
-                    symbol: {
-                      type: 'simple-fill',
-                      color: 'rgb(90, 0, 0)'
-                    } as unknown as esri.SimpleFillSymbolProperties
-                  },
-                ]
+          {
+            value: '1,Surface',
+            label: 'Surface Vender Permit and Vendor+ Permit Authorized',
+            symbol: {
+              type: 'simple-fill',
+              color: 'rgb(90, 0, 0)'
+            } as unknown as esri.SimpleFillSymbolProperties
+          },
+          {
+            value: '1,Street',
+            label: 'Street Vender Permit and Vendor+ Permit Authorized',
+            symbol: {
+              type: 'simple-fill',
+              color: 'rgb(90, 0, 0)'
+            } as unknown as esri.SimpleFillSymbolProperties
+          },
+          {
+            value: '1,Garage Visitor',
+            label: 'Garage Vender Permit and Vendor+ Permit Authorized',
+            symbol: {
+              type: 'simple-fill',
+              color: 'rgb(90, 0, 0)'
+            } as unknown as esri.SimpleFillSymbolProperties
+          }
+        ]
       }
-    },
+    }
   }
 ];
 
@@ -117,17 +121,18 @@ export const VendorParkingConfiguration: EventConfiguration = {
 
 export const VendorParkingOptions: SpecialEventOptions = [];
 
-export const VendorParking_Ts: ISpecialEventRoot = {
+export const VendorParking_Ts: AggiemapCustomMapConfiguration = {
   configuration: VendorParkingConfiguration,
   options: VendorParkingOptions,
   sources: VendorParkingColdLayerSources,
   references: VENDOR_PARKING_LAYERS,
+  type: 'general-map',
   discover: {
     id: VendorParkingConfiguration.id,
     name: VendorParkingConfiguration.name,
     description: 'Parking information for vendors.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['vendor', 'parking', 'transportation']
   }
 };

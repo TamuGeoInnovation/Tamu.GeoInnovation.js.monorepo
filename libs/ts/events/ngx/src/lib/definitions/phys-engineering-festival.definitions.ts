@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
   FESTIVAL_AREAS = 'phys-eng-festival-areas',
@@ -83,7 +87,8 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
 
 export const PhysicsAndEngineeringFestivalOptions: SpecialEventOptions = [];
 
-export const PhysicsAndEngineeringFestivalTs: ISpecialEventRoot = {
+export const PhysicsAndEngineeringFestivalTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: PhysicsAndEngineeringFestivalConfiguration,
   options: PhysicsAndEngineeringFestivalOptions,
   sources: PhysEngFestivalColdLayerSources,

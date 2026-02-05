@@ -20,7 +20,7 @@
               <div class="flex flex-column">
                 <div class="flex flex-row align-center title">
                   <span class="app-name">{{ app.name }}</span>
-                  <span class="chip chip-internal" *ngIf="app.source === 'internal'">Event</span>
+                  <span class="chip chip-internal" *ngIf="app.source === 'internal'">{{app.type | uppercase}}</span>
                   <span class="chip chip-external" *ngIf="app.source === 'external'">Experimental</span>
                   <span class="chip chip-label" *ngFor="let label of app.labels">{{ label | uppercase}}</span>
                 </div>
@@ -53,6 +53,18 @@
             <p>No upcoming events found at this time.</p>
           </div>
         </ng-template>
+      </div>
+
+      <!-- Parking Maps Section -->
+      <div class="parking-maps-section trailer-3" *ngIf="parkingApplications.length > 0">
+        <h2>Parking Maps</h2>
+        <p class="section-description">Ordered list of parking maps.</p>
+
+        <ol class="parking-links">
+          <li class="parking-link-item" *ngFor="let app of parkingApplications">
+            <a class="parking-link" [routerLink]="['/parking', app.id]" target="_blank" rel="noopener">{{ app.name }}</a>
+          </li>
+        </ol>
       </div>
 
       <!-- Experimental Applications Section -->

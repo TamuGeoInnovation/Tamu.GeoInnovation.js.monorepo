@@ -1,7 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
-
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum CONTRACTOR_PARKING_LAYERS {
   CONSTRUCTION = 'construction',
@@ -46,7 +49,7 @@ export const ContractorParkingColdLayerSources: LayerSource[] = [
     visible: true,
     native: {
       listMode: 'show',
-      outFields: ['*'],
+      outFields: ['*']
     }
   }
 ];
@@ -63,17 +66,18 @@ export const ContractorParkingConfiguration: EventConfiguration = {
 
 export const ContractorParkingOptions: SpecialEventOptions = [];
 
-export const ContractorParkingTs: ISpecialEventRoot = {
+export const ContractorParkingTs: AggiemapCustomMapConfiguration = {
   configuration: ContractorParkingConfiguration,
   options: ContractorParkingOptions,
   sources: ContractorParkingColdLayerSources,
   references: CONTRACTOR_PARKING_LAYERS,
+  type: 'general-map',
   discover: {
     id: ContractorParkingConfiguration.id,
     name: ContractorParkingConfiguration.name,
     description: 'Parking areas designated for contractors.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['contractor', 'parking', 'transportation']
   }
 };

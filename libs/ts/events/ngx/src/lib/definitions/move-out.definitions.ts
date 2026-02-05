@@ -1,14 +1,16 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
-
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum MOVE_OUT_LAYERS {
   CONSTRUCTION = 'Construction',
   NO_PARKING = 'No Parking Areas',
-  STREET_PARKING = 'Move-Out Allowed Street Parking',
+  STREET_PARKING = 'Move-Out Allowed Street Parking'
 }
-
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer';
 
@@ -66,7 +68,7 @@ export const MoveOutColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*']
     }
-  },
+  }
 ];
 
 export const MoveOutConfiguration: EventConfiguration = {
@@ -81,12 +83,12 @@ export const MoveOutConfiguration: EventConfiguration = {
 
 export const MoveOutOptions: SpecialEventOptions = [];
 
-
-export const MoveOut: ISpecialEventRoot = {
+export const MoveOut: AggiemapCustomMapConfiguration = {
   configuration: MoveOutConfiguration,
   options: MoveOutOptions,
   sources: MoveOutColdLayerSources,
   references: MOVE_OUT_LAYERS,
+  type: 'special-event',
   discover: {
     id: MoveOutConfiguration.id,
     name: MoveOutConfiguration.name,

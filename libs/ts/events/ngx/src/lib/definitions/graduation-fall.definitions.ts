@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -270,9 +274,9 @@ export const GraduationColdLayerSources: LayerSource[] = [
 
 export const GraduationConfiguration: EventConfiguration = {
   id: 'graduation-fall',
-  name: 'Commencement Ceremony',
-  applicationName: 'Commencement Transportation Map',
-  shortApplicationName: 'Commencement Map',
+  name: 'Fall Commencement Ceremony',
+  applicationName: 'Fall Commencement Transportation Map',
+  shortApplicationName: 'Fall Commencement Map',
   introductionText: 'Get the best transportation and parking information for the fall commencement ceremonies.',
   eventDates: ['2025-12-17', '2025-12-18'],
   mapCenter: [-96.34458, 30.60629],
@@ -325,7 +329,8 @@ export const GraduationOptions: SpecialEventOptions = [
   }
 ];
 
-export const GraduationFallEventTs: ISpecialEventRoot = {
+export const GraduationFallEventTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: GraduationConfiguration,
   options: GraduationOptions,
   sources: GraduationColdLayerSources,
@@ -333,7 +338,7 @@ export const GraduationFallEventTs: ISpecialEventRoot = {
   discover: {
     id: GraduationConfiguration.id,
     name: GraduationConfiguration.name,
-    description: 'Transportation and parking information for graduation ceremonies.',
+    description: 'Transportation and parking information for fall graduation ceremonies.',
     source: 'internal',
     type: 'event',
     keywords: ['graduation', 'commencement', 'parking', 'transportation']

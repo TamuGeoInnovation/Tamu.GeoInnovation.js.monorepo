@@ -3,7 +3,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum FOUR_H_ROUNDUP_LAYERS {
   FOUR_H_ROUNDUP_PARKING = 'four-h-roundup-parking',
@@ -75,11 +79,12 @@ export const FourHRoundupConfiguration: EventConfiguration = {
 
 export const FourHRoundupOptions: SpecialEventOptions = [];
 
-export const FourHRoundupTs: ISpecialEventRoot = {
+export const FourHRoundupTs: AggiemapCustomMapConfiguration = {
   configuration: FourHRoundupConfiguration,
   options: FourHRoundupOptions,
   sources: FourHColdLayerSources,
   references: FOUR_H_ROUNDUP_LAYERS,
+  type: 'special-event',
   discover: {
     id: FourHRoundupConfiguration.id,
     name: FourHRoundupConfiguration.name,

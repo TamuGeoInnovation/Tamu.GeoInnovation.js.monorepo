@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum MAROON_WHITE_GAME_LAYERS {
   PARKING_LOTS = 'maroon-white-game-parking-lots'
@@ -50,7 +54,8 @@ export const MaroonWhiteGameConfiguration: EventConfiguration = {
 
 export const MaroonWhiteGameOptions: SpecialEventOptions = [];
 
-export const MaroonWhiteTs: ISpecialEventRoot = {
+export const MaroonWhiteTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: MaroonWhiteGameConfiguration,
   options: MaroonWhiteGameOptions,
   sources: MaroonWhiteGameColdLayerSources,

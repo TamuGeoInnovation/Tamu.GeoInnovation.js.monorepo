@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum MOVE_IN_LAYERS {
   CONSTRUCTION = 'Construction',
@@ -116,11 +120,12 @@ export const MoveInConfiguration: EventConfiguration = {
 
 export const MoveInOptions: SpecialEventOptions = [];
 
-export const MoveInTs: ISpecialEventRoot = {
+export const MoveInTs: AggiemapCustomMapConfiguration = {
   configuration: MoveInConfiguration,
   options: MoveInOptions,
   sources: MoveInColdLayerSources,
   references: MOVE_IN_LAYERS,
+  type: 'special-event',
   discover: {
     id: MoveInConfiguration.id,
     name: MoveInConfiguration.name,

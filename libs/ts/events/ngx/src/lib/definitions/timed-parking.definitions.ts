@@ -1,7 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum TIMED_PARKING_LAYERS {
   TIMED_PARKING_AREA = 'Timed Parking in this area',
@@ -49,7 +52,7 @@ export const TimedParkingColdLayerSources: LayerSource[] = [
       listMode: 'show',
       outFields: ['*']
     }
-  },
+  }
 ];
 
 export const TimedParkingConfiguration: EventConfiguration = {
@@ -61,19 +64,20 @@ export const TimedParkingConfiguration: EventConfiguration = {
   mapCenter: [-96.33771, 30.62143]
 };
 
-export const TimedParkingOptions: SpecialEventOptions = []
+export const TimedParkingOptions: SpecialEventOptions = [];
 
-export const TimedParking_Ts: ISpecialEventRoot = {
+export const TimedParking_Ts: AggiemapCustomMapConfiguration = {
   configuration: TimedParkingConfiguration,
   options: TimedParkingOptions,
   sources: TimedParkingColdLayerSources,
   references: TIMED_PARKING_LAYERS,
+  type: 'general-map',
   discover: {
     id: TimedParkingConfiguration.id,
     name: TimedParkingConfiguration.name,
     description: 'Areas with timed parking on campus.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['timed', 'parking', 'transportation', '30 minute', '30 min']
   }
 };

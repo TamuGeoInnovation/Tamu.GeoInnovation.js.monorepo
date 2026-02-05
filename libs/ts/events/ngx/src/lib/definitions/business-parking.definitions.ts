@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum BUSINESS_PARKING_LAYERS {
   LOT_SPECIFIC = 'Lot Specific Permit Required',
@@ -106,17 +110,18 @@ export const BusinessParkingConfiguration: EventConfiguration = {
 
 export const BusinessParkingOptions: SpecialEventOptions = [];
 
-export const BusinessParkingTs: ISpecialEventRoot = {
+export const BusinessParkingTs: AggiemapCustomMapConfiguration = {
   configuration: BusinessParkingConfiguration,
   options: BusinessParkingOptions,
   sources: BusinessParkingColdLayerSources,
   references: BUSINESS_PARKING_LAYERS,
+  type: 'general-map',
   discover: {
     id: BusinessParkingConfiguration.id,
     name: BusinessParkingConfiguration.name,
     description: 'Parking lot information for University Business permits.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['business', 'university business', 'ub', 'ub+', 'parking', 'permit']
   }
 };

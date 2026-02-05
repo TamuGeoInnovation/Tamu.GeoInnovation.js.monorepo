@@ -238,6 +238,7 @@ export const AggielandSaturdayEventTs: ISpecialEventRoot = {
   options: AggielandSaturdayOptions,
   sources: AggielandSaturdayEventColdLayerSources,
   references: AGGIELAND_SATURDAY_LAYERS,
+  type: 'special-event',
   discover: {
     id: AggielandSaturdayConfiguration.id,
     name: AggielandSaturdayConfiguration.name,

@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 import { commonSymbols } from './common.definitions';
 
 export enum HS_GRADUATION_LAYERS {
@@ -191,7 +195,8 @@ export const HsGraduationOptions: SpecialEventOptions = [
   }
 ];
 
-export const HsGraduationTs: ISpecialEventRoot = {
+export const HsGraduationTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: HsGraduationConfiguration,
   sources: HsGraduationColdLayerSources,
   options: HsGraduationOptions,

@@ -14,7 +14,7 @@ import { SoftballRegionalsTs } from './softball-regionals.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
 import { RingDayEvent } from './ring-day.definitions';
-import { ISpecialEventRoot } from '../interfaces/special-event.interface';
+import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
 import { MoveOut } from './move-out.definitions';
@@ -37,7 +37,7 @@ import { MaintenanceParkingTs } from './maintenance-parking.definitions';
 import { BaseballParkingTs } from './baseball-parking.definitions';
 import { SavannahBananasParkingTs } from './savannah-bananas.definitions';
 
-export const EventDefinitions: Array<ISpecialEventRoot> = [
+export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
   AggielandSaturdayEventTs,
   BigEventTs,

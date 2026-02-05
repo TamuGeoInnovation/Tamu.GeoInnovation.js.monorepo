@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum WOMENS_BASKETBALL_LAYERS {
   VISITOR_KIOSK = 'womens-basketball-visitor-kiosk',
@@ -151,7 +155,8 @@ export const WomensBasketball_Configuration: EventConfiguration = {
 
 export const WomensBasketball_Options: SpecialEventOptions = [];
 
-export const WomensBasketball_Ts: ISpecialEventRoot = {
+export const WomensBasketball_Ts: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: WomensBasketball_Configuration,
   options: WomensBasketball_Options,
   sources: WomensBasketball_ColdLayerSources,

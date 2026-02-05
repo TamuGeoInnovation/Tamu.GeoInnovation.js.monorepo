@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -115,9 +119,9 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
 
 export const SummerCommencementConfiguration: EventConfiguration = {
   id: 'graduation-summer',
-  name: 'Commencement Ceremony',
-  applicationName: 'Commencement Transportation Map',
-  shortApplicationName: 'Commencement Map',
+  name: 'Summer Commencement Ceremony',
+  applicationName: 'Summer Commencement Transportation Map',
+  shortApplicationName: 'Summer Commencement Map',
   introductionText: 'Get the best transportation and parking information for the summer commencement ceremonies.',
   eventDates: ['2025-08-09'],
   mapCenter: [-96.34458, 30.60629],
@@ -130,7 +134,8 @@ enum SummerCommencementAttendanceDateChoices {
 
 export const SummerCommencementOptions: SpecialEventOptions = [];
 
-export const SummerCommencementTs: ISpecialEventRoot = {
+export const SummerCommencementTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: SummerCommencementConfiguration,
   options: SummerCommencementOptions,
   sources: SummerCommencementColdLayerSources,
@@ -138,7 +143,7 @@ export const SummerCommencementTs: ISpecialEventRoot = {
   discover: {
     id: SummerCommencementConfiguration.id,
     name: SummerCommencementConfiguration.name,
-    description: 'Transportation and parking information for summer commencement ceremony.',
+    description: 'Transportation and parking information for summer graduation ceremonies.',
     source: 'internal',
     type: 'event',
     keywords: ['summer', 'commencement', 'graduation', 'parking', 'transportation']

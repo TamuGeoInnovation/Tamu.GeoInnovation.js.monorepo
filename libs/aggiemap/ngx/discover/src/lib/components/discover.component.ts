@@ -25,6 +25,7 @@ export class DiscoverComponent implements OnInit {
   public allApplications: DiscoverApplication[];
   private allEvents: EventConfiguration[];
   public upcomingEvents: EventConfiguration[];
+  public parkingApplications: InternalDiscoverApplication[];
 
   public searchControl = new FormControl();
   public filteredApplications: Observable<DiscoverApplication[]>;
@@ -58,6 +59,15 @@ export class DiscoverComponent implements OnInit {
 
     // Calculate upcoming events
     this.upcomingEvents = this.getUpcomingEvents();
+
+    // Build ordered parking list
+    this.parkingApplications = this.getParkingApplications();
+  }
+
+  private getParkingApplications(): InternalDiscoverApplication[] {
+    return this.eventDiscoverApplications
+      .filter((app) => app.type === 'parking')
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
@@ -129,7 +139,8 @@ export class DiscoverComponent implements OnInit {
     } else if (app.source === 'internal') {
       const config = (app as InternalDiscoverApplication).configuration;
       // Navigate to events intro page
-      this.rt.navigate([`/events`, config.id]);
+      const routeSegment = app.type === 'event' ? 'events' : app.type;
+      this.rt.navigate([`/${routeSegment}`, config.id]);
     }
   }
 
