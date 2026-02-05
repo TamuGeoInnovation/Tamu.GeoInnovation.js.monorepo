@@ -1,16 +1,36 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, getRepository, Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
+
+import { Season } from '@tamu-gisc/gisday/platform/data-api';
+import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { BaseService } from '../_base/base.service';
-import { CompetitionSubmission, CompetitionSubmissionValidationStatus, SubmissionMedia } from '../entities/all.entities';
-import { ValidateSubmissionDto } from '../dtos/dtos';
+import {
+  CompetitionSeason,
+  CompetitionSubmission,
+  CompetitionSubmissionValidationStatus,
+  SubmissionMedia
+} from '../entities/all.entities';
+import {
+  GetUserSubmissionsDto,
+  GetAdminSubmissionsDto,
+  ValidateSubmissionDto,
+  SubmissionReviewDto,
+  SubmissionMediaDto
+} from '../dtos/dtos';
+import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
   constructor(
     @InjectRepository(CompetitionSubmission) private submissionRepo: Repository<CompetitionSubmission>,
-    @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>
+    @InjectRepository(CompetitionSubmissionValidationStatus)
+    private validationStatusRepo: Repository<CompetitionSubmissionValidationStatus>,
+    @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>,
+    @InjectRepository(CompetitionSeason) private compSeasonRepo: Repository<CompetitionSeason>,
+    @InjectRepository(Season) private seasonRepo: Repository<Season>,
+    private readonly ms: ManagementService
   ) {
     super(submissionRepo);
   }
@@ -85,7 +105,7 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
 
         return submission.save();
       } else {
-        const validationStatus = getRepository(CompetitionSubmissionValidationStatus).create({
+        const validationStatus = this.validationStatusRepo.create({
           status: dto.status,
           verifiedBy: dto.userGuid
         });
@@ -102,5 +122,192 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     } else {
       throw new NotFoundException();
     }
+  }
+
+  public async getUserSubmissions(dto: GetUserSubmissionsDto): Promise<SubmissionReviewDto[]> {
+    // Get the season to fetch
+    let season: Season;
+    if (dto.seasonGuid) {
+      season = await this.seasonRepo.findOne({ where: { guid: dto.seasonGuid } });
+    } else {
+      season = await this.seasonRepo.findOne({ where: { active: true } });
+    }
+
+    if (!season) {
+      throw new NotFoundException('Season not found');
+    }
+
+    // Get competition season with form
+    const compSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: season.guid } },
+      relations: ['form']
+    });
+
+    if (!compSeason) {
+      throw new NotFoundException('Competition season not found');
+    }
+
+    // Get all user submissions for the season
+    const submissions = await this.submissionRepo.find({
+      where: {
+        userGuid: dto.userGuid,
+        season: { guid: compSeason.guid }
+      },
+      relations: ['location', 'validationStatus', 'blobs']
+    });
+
+    return this.mapSubmissionsToReviewDto(submissions, compSeason);
+  }
+
+  public async getAdminSubmissions(dto: GetAdminSubmissionsDto): Promise<SubmissionReviewDto[]> {
+    // Get the season to fetch
+    let season: Season;
+    if (dto.seasonGuid) {
+      season = await this.seasonRepo.findOne({ where: { guid: dto.seasonGuid } });
+    } else {
+      season = await this.seasonRepo.findOne({ where: { active: true } });
+    }
+
+    if (!season) {
+      // Return empty array instead of throwing error when no season is found
+      return [];
+    }
+
+    // Get competition season with form
+    const compSeason = await this.compSeasonRepo.findOne({
+      where: { season: { guid: season.guid } },
+      relations: ['form']
+    });
+
+    if (!compSeason) {
+      // Return empty array if competition season doesn't exist
+      return [];
+    }
+
+    // Get all submissions for the season
+    const submissions = await this.submissionRepo.find({
+      where: {
+        season: { guid: compSeason.guid }
+      },
+      relations: ['location', 'validationStatus', 'blobs'],
+      select: {
+        guid: true,
+        created: true,
+        value: true,
+        userGuid: true,
+        location: {
+          latitude: true,
+          longitude: true
+        },
+        validationStatus: {
+          status: true
+        },
+        blobs: {
+          guid: true,
+          sha256: true
+        }
+      },
+      order: {
+        created: 'DESC'
+      }
+    });
+
+    const mapped = this.mapSubmissionsToReviewDto(submissions, compSeason);
+    return this.resolveIdentities(mapped);
+  }
+
+  public async getSubmissionImages(submissionGuid: string): Promise<SubmissionMediaDto[]> {
+    const submission = await this.submissionRepo.findOne({
+      where: { guid: submissionGuid },
+      relations: ['blobs']
+    });
+
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
+    }
+
+    // Map entity to DTO to avoid entity references in frontend
+    return (
+      submission.blobs?.map((blob) => ({
+        guid: blob.guid,
+        blob: blob.blob,
+        mimeType: blob.mimeType,
+        fieldName: blob.fieldName,
+        sha256: blob.sha256
+      })) || []
+    );
+  }
+
+  private mapSubmissionsToReviewDto(
+    submissions: CompetitionSubmission[],
+    compSeason: CompetitionSeason
+  ): SubmissionReviewDto[] {
+    const discriminatorQuestion = compSeason.form?.model?.find((q) => q.isDiscriminator === true);
+
+    return submissions.map((submission) => {
+      let questionValue = '';
+      let pointValue = 1;
+
+      if (discriminatorQuestion && submission.value) {
+        const submissionValue = submission.value;
+        const discriminatorAttribute = discriminatorQuestion.attribute;
+        const submittedValue = submissionValue[discriminatorAttribute];
+
+        // Find matching option to get title-cased value and points
+        if (submittedValue !== undefined && discriminatorQuestion.options) {
+          const matchingOption = discriminatorQuestion.options.find((opt) => opt.value === submittedValue);
+          if (matchingOption) {
+            questionValue = this.toTitleCase(matchingOption.name);
+            pointValue = matchingOption.points || 1;
+          }
+        }
+      }
+
+      return {
+        guid: submission.guid,
+        created: submission.created,
+        questionValue,
+        pointValue,
+        validationStatus: submission.validationStatus?.status || COMPETITION_VALIDATION_STATUS.unverified,
+        userGuid: submission.userGuid,
+        location: {
+          latitude: submission.location?.latitude || 0,
+          longitude: submission.location?.longitude || 0
+        },
+        imageGuids: submission.blobs?.map((blob) => blob.guid) || [],
+        sha256Hashes: submission.blobs?.map((blob) => blob.sha256).filter(Boolean) || []
+      };
+    });
+  }
+
+  private toTitleCase(str: string): string {
+    return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+  }
+
+  private async resolveIdentities(submissions: SubmissionReviewDto[]): Promise<SubmissionReviewDto[]> {
+    // Get distinct user GUIDs
+    const distinctUserGuids = [...new Set(submissions.map((s) => s.userGuid).filter(Boolean))];
+
+    // Resolve all identities in parallel
+    const identityMap = new Map<string, string>();
+    await Promise.all(
+      distinctUserGuids.map(async (userGuid) => {
+        try {
+          const user = await this.ms.getUserMetadata(userGuid, undefined, true);
+          identityMap.set(userGuid, user.user_info.email);
+        } catch (error) {
+          // If resolution fails, use last 4 characters of GUID
+          identityMap.set(userGuid, userGuid.substring(userGuid.length - 4));
+        }
+      })
+    );
+
+    // Map identities to submissions
+    return submissions.map((submission) => ({
+      ...submission,
+      resolvedIdentity: submission.userGuid
+        ? identityMap.get(submission.userGuid) || submission.userGuid.substring(submission.userGuid.length - 4)
+        : undefined
+    }));
   }
 }
