@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -325,7 +329,8 @@ export const GraduationOptions: SpecialEventOptions = [
   }
 ];
 
-export const GraduationFallEventTs: ISpecialEventRoot = {
+export const GraduationFallEventTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: GraduationConfiguration,
   options: GraduationOptions,
   sources: GraduationColdLayerSources,

@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -103,7 +107,8 @@ export const MusterConfiguration: EventConfiguration = {
 
 export const MusterOptions: SpecialEventOptions = [];
 
-export const MusterTs: ISpecialEventRoot = {
+export const MusterTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: MusterConfiguration,
   options: MusterOptions,
   sources: MusterEventColdLayerSources,

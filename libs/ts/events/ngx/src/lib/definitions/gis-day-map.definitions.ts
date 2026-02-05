@@ -1,7 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum GIS_DAY_LAYERS {
   MSC_RUDDER = 'gis-day-msc-rudder',
@@ -43,7 +46,7 @@ export const GisDayLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'attributes.BldgName',
-      description: 'attributes.ParkingInfo',
+      description: 'attributes.ParkingInfo'
     },
     visible: true,
     listMode: 'show',
@@ -82,11 +85,12 @@ export const GisDayConfiguration: EventConfiguration = {
 
 export const GisDayOptions: SpecialEventOptions = [];
 
-export const GisDayTs: ISpecialEventRoot = {
+export const GisDayTs: AggiemapCustomMapConfiguration = {
   configuration: GisDayConfiguration,
   options: GisDayOptions,
   sources: GisDayLayerSources,
   references: GIS_DAY_LAYERS,
+  type: 'special-event',
   discover: {
     id: GisDayConfiguration.id,
     name: GisDayConfiguration.name,

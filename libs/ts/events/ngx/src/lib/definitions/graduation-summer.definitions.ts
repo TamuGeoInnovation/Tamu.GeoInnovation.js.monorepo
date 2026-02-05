@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -130,7 +134,8 @@ enum SummerCommencementAttendanceDateChoices {
 
 export const SummerCommencementOptions: SpecialEventOptions = [];
 
-export const SummerCommencementTs: ISpecialEventRoot = {
+export const SummerCommencementTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: SummerCommencementConfiguration,
   options: SummerCommencementOptions,
   sources: SummerCommencementColdLayerSources,

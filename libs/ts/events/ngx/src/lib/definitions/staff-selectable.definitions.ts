@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum STAFF_SELECTABLE_LAYERS {
   CONSTRUCTION = 'Construction',
@@ -97,17 +101,18 @@ export const StaffSelectableConfiguration: EventConfiguration = {
 
 export const StaffSelectableOptions: SpecialEventOptions = [];
 
-export const StaffSelectableTs: ISpecialEventRoot = {
+export const StaffSelectableTs: AggiemapCustomMapConfiguration = {
   configuration: StaffSelectableConfiguration,
   options: StaffSelectableOptions,
   sources: StaffSelectableColdLayerSources,
   references: STAFF_SELECTABLE_LAYERS,
+  type: 'general-map',
   discover: {
     id: StaffSelectableConfiguration.id,
     name: StaffSelectableConfiguration.name,
     description: 'Selectable parking information for staff.',
     source: 'internal',
-    type: 'event',
+    type: 'general',
     keywords: ['permit select', 'staff', 'selectable', 'parking', 'rns']
   }
 };

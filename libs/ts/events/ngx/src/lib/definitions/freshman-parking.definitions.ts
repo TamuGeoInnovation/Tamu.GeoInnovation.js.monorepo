@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum FRESHMAN_SELECTABLE_LAYERS {
   CONSTRUCTION = 'Construction',
@@ -97,17 +101,18 @@ export const FreshmanSelectableConfiguration: EventConfiguration = {
 
 export const FreshmanSelectableOptions: SpecialEventOptions = [];
 
-export const FreshmanSelectableTs: ISpecialEventRoot = {
+export const FreshmanSelectableTs: AggiemapCustomMapConfiguration = {
   configuration: FreshmanSelectableConfiguration,
   options: FreshmanSelectableOptions,
   sources: FreshmanSelectableColdLayerSources,
   references: FRESHMAN_SELECTABLE_LAYERS,
+  type: 'general-map',
   discover: {
     id: FreshmanSelectableConfiguration.id,
     name: FreshmanSelectableConfiguration.name,
     description: 'Selectable parking information for freshmen.',
     source: 'internal',
-    type: 'event',
+    type: 'general',
     keywords: ['permit select', 'freshman', 'selectable', 'parking', 'rns']
   }
 };

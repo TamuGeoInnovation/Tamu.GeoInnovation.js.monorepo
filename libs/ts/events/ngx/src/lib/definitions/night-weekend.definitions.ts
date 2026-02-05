@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum NIGHT_WEEKEND_LAYERS {
   NIGHT_PRIVILEGES = 'Night Privileges 5:00pm - 6:00am'
@@ -43,17 +47,18 @@ export const NightWeekendConfiguration: EventConfiguration = {
 
 export const NightWeekendOptions: SpecialEventOptions = [];
 
-export const NightWeekendTs: ISpecialEventRoot = {
+export const NightWeekendTs: AggiemapCustomMapConfiguration = {
   configuration: NightWeekendConfiguration,
   options: NightWeekendOptions,
   sources: NightWeekendColdLayerSources,
   references: NIGHT_WEEKEND_LAYERS,
+  type: 'general-map',
   discover: {
     id: NightWeekendConfiguration.id,
     name: NightWeekendConfiguration.name,
     description: 'Parking lot information for Night Privileges (5:00pm - 6:00am) and weekend parking.',
     source: 'internal',
-    type: 'event',
+    type: 'general',
     keywords: ['night', 'weekend', 'parking', 'permit']
   }
 };
