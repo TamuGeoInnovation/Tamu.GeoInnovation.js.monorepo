@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -179,11 +183,12 @@ export const SavannahBananasParkingConfiguration: EventConfiguration = {
 
 export const SavannahBananasParkingOptions: SpecialEventOptions = [];
 
-export const SavannahBananasParkingTs: ISpecialEventRoot = {
+export const SavannahBananasParkingTs: AggiemapCustomMapConfiguration = {
   configuration: SavannahBananasParkingConfiguration,
   options: SavannahBananasParkingOptions,
   sources: SavannahBananasParkingColdLayerSources,
   references: SAVANNAH_BANANAS_PARKING_LAYERS,
+  type: 'special-event',
   discover: {
     id: SavannahBananasParkingConfiguration.id,
     name: SavannahBananasParkingConfiguration.name,

@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum MEDIA_PARKING_LAYERS {
   MEDIA_PARKING_LOTS = 'media-parking-lots',
@@ -62,17 +66,18 @@ export const MediaParkingConfiguration: EventConfiguration = {
 
 export const MediaParkingOptions: SpecialEventOptions = [];
 
-export const MediaParkingTs: ISpecialEventRoot = {
+export const MediaParkingTs: AggiemapCustomMapConfiguration = {
   configuration: MediaParkingConfiguration,
   options: MediaParkingOptions,
   sources: MediaParkingColdLayerSources,
   references: MEDIA_PARKING_LAYERS,
+  type: 'general-map',
   discover: {
     id: MediaParkingConfiguration.id,
     name: MediaParkingConfiguration.name,
     description: 'Parking lot information for media permits.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['media', 'parking', 'permit']
   }
 };

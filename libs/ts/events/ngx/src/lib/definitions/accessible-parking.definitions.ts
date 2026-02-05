@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum ACCESSIBLE_PARKING_LAYERS {
   CONSTRUCTION = 'Construction',
@@ -93,17 +97,18 @@ export const AccessibleParkingConfiguration: EventConfiguration = {
 
 export const AccessibleParkingOptions: SpecialEventOptions = [];
 
-export const AccessibleParkingTs: ISpecialEventRoot = {
+export const AccessibleParkingTs: AggiemapCustomMapConfiguration = {
   configuration: AccessibleParkingConfiguration,
   options: AccessibleParkingOptions,
   sources: AccessibleParkingColdLayerSources,
   references: ACCESSIBLE_PARKING_LAYERS,
+  type: 'general-map',
   discover: {
     id: AccessibleParkingConfiguration.id,
     name: AccessibleParkingConfiguration.name,
     description: 'Accessible parking areas and spaces (including construction overlays).',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['accessible', 'disability', 'parking', 'handicap']
   }
 };

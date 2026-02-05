@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum BASEBALL_PARKING_LAYERS {
   BASEBALL_SYMBOLS = 'baseball-symbols',
@@ -158,11 +162,12 @@ export const BaseballParkingConfiguration: EventConfiguration = {
 
 export const BaseballParkingOptions: SpecialEventOptions = [];
 
-export const BaseballParkingTs: ISpecialEventRoot = {
+export const BaseballParkingTs: AggiemapCustomMapConfiguration = {
   configuration: BaseballParkingConfiguration,
   options: BaseballParkingOptions,
   sources: BaseballParkingColdLayerSources,
   references: BASEBALL_PARKING_LAYERS,
+  type: 'special-event',
   discover: {
     id: BaseballParkingConfiguration.id,
     name: BaseballParkingConfiguration.name,

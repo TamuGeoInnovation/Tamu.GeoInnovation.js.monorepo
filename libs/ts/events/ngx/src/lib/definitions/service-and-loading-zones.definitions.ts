@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum SERVICE_LOADING_LAYERS {
   CONSTRUCTION = 'construction',
@@ -169,17 +173,18 @@ export const ServiceLoadingConfiguration: EventConfiguration = {
 
 export const ServiceLoadingOptions: SpecialEventOptions = [];
 
-export const ServiceLoadingTs: ISpecialEventRoot = {
+export const ServiceLoadingTs: AggiemapCustomMapConfiguration = {
   configuration: ServiceLoadingConfiguration,
   options: ServiceLoadingOptions,
   sources: ServiceLoadingColdLayerSources,
   references: SERVICE_LOADING_LAYERS,
+  type: 'general-map',
   discover: {
     id: ServiceLoadingConfiguration.id,
     name: ServiceLoadingConfiguration.name,
     description: 'Service, maintenance, and contractor parking lots and spaces, including construction and RNS overlays.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['service', 'loading', 'maintenance', 'contractor', 'parking']
   }
 };

@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum RETIREE_PARKING_LAYERS {
   LOT_SPECIFIC = 'Lot Specific Permit Required',
@@ -79,17 +83,18 @@ export const RetireeParkingConfiguration: EventConfiguration = {
 
 export const RetireeParkingOptions: SpecialEventOptions = [];
 
-export const RetireeParkingTs: ISpecialEventRoot = {
+export const RetireeParkingTs: AggiemapCustomMapConfiguration = {
   configuration: RetireeParkingConfiguration,
   options: RetireeParkingOptions,
   sources: RetireeParkingColdLayerSources,
   references: RETIREE_PARKING_LAYERS,
+  type: 'general-map',
   discover: {
     id: RetireeParkingConfiguration.id,
     name: RetireeParkingConfiguration.name,
     description: 'Parking lot information for Retiree permits.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['retiree', 'parking', 'permit']
   }
 };
