@@ -119,9 +119,9 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
 
 export const SummerCommencementConfiguration: EventConfiguration = {
   id: 'graduation-summer',
-  name: 'Commencement Ceremony',
-  applicationName: 'Commencement Transportation Map',
-  shortApplicationName: 'Commencement Map',
+  name: 'Summer Commencement Ceremony',
+  applicationName: 'Summer Commencement Transportation Map',
+  shortApplicationName: 'Summer Commencement Map',
   introductionText: 'Get the best transportation and parking information for the summer commencement ceremonies.',
   eventDates: ['2025-08-09'],
   mapCenter: [-96.34458, 30.60629],
@@ -143,7 +143,7 @@ export const SummerCommencementTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: SummerCommencementConfiguration.id,
     name: SummerCommencementConfiguration.name,
-    description: 'Transportation and parking information for summer commencement ceremony.',
+    description: 'Transportation and parking information for summer graduation ceremonies.',
     source: 'internal',
     type: 'event',
     keywords: ['summer', 'commencement', 'graduation', 'parking', 'transportation']
