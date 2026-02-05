@@ -112,7 +112,7 @@ export const FreshmanSelectableTs: AggiemapCustomMapConfiguration = {
     name: FreshmanSelectableConfiguration.name,
     description: 'Selectable parking information for freshmen.',
     source: 'internal',
-    type: 'general',
+    type: 'parking',
     keywords: ['permit select', 'freshman', 'selectable', 'parking', 'rns']
   }
 };

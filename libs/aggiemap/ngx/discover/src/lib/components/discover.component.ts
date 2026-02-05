@@ -129,7 +129,8 @@ export class DiscoverComponent implements OnInit {
     } else if (app.source === 'internal') {
       const config = (app as InternalDiscoverApplication).configuration;
       // Navigate to events intro page
-      this.rt.navigate([`/events`, config.id]);
+      const routeSegment = app.type === 'event' ? 'events' : app.type;
+      this.rt.navigate([`/${routeSegment}`, config.id]);
     }
   }
 

@@ -58,7 +58,7 @@ export const MotoristAssistanceTs: AggiemapCustomMapConfiguration = {
     name: MotoristAssistanceConfiguration.name,
     description: 'Motorist assistance service area coverage.',
     source: 'internal',
-    type: 'general',
+    type: 'parking',
     keywords: ['motorist', 'assistance', 'service area']
   }
 };

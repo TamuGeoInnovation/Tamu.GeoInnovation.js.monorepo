@@ -77,7 +77,7 @@ export const TimedParking_Ts: AggiemapCustomMapConfiguration = {
     name: TimedParkingConfiguration.name,
     description: 'Areas with timed parking on campus.',
     source: 'internal',
-    type: 'general',
+    type: 'parking',
     keywords: ['timed', 'parking', 'transportation', '30 minute', '30 min']
   }
 };

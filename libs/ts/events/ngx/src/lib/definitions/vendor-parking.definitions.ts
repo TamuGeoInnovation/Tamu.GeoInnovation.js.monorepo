@@ -132,7 +132,7 @@ export const VendorParking_Ts: AggiemapCustomMapConfiguration = {
     name: VendorParkingConfiguration.name,
     description: 'Parking information for vendors.',
     source: 'internal',
-    type: 'general',
+    type: 'parking',
     keywords: ['vendor', 'parking', 'transportation']
   }
 };

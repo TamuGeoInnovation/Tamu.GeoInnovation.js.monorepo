@@ -77,7 +77,7 @@ export const ContractorParkingTs: AggiemapCustomMapConfiguration = {
     name: ContractorParkingConfiguration.name,
     description: 'Parking areas designated for contractors.',
     source: 'internal',
-    type: 'general',
+    type: 'parking',
     keywords: ['contractor', 'parking', 'transportation']
   }
 };

@@ -274,5 +274,5 @@ export interface DiscoverMetadata {
    */
   labels?: string[];
   source: 'internal';
-  type: 'event' | 'general';
+  type: 'event' | 'parking';
 }
