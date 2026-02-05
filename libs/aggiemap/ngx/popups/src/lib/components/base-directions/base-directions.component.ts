@@ -48,12 +48,23 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
     super();
   }
 
+  protected _makeShareUrl(): string {
+    const origin = window.location.origin;
+    const attributes = this.data.attributes;
+    
+    return attributes.Number 
+      ? origin + '/?bldg=' + attributes.Number
+      : attributes.LotName
+        ? origin + '/?lot=' + attributes.Name
+        : attributes.Name
+          ? origin + '/?poi=' + attributes.Name
+          : origin;
+  }
+
   public ngOnInit(): void {
     this.url = window.location.origin;
-    this.shareUrl = `${this.url}/?bldg=${this.data.attributes.Number}`;
+    this.shareUrl = this._makeShareUrl();
 
-    // Set a listener for stop changes.
-    // This is used to determine the length of stops, allowing to reliably set the last endpoint.
     this.plannerService.Stops.pipe(takeUntil(this._destroy$)).subscribe((stops) => {
       this._stops = stops;
     });
