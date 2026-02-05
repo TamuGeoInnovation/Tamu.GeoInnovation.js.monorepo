@@ -20,11 +20,12 @@ export class DiscoveryService {
     ).map((event) => ({
       id: event.discover?.id || event.configuration.id,
       source: 'internal' as const,
-      type: 'event' as const,
+      type: event.discover?.type || 'event',
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
       configuration: event.configuration,
-      keywords: event.discover?.keywords || []
+      keywords: event.discover?.keywords || [],
+      labels: event.discover?.labels || []
     }));
   }
 

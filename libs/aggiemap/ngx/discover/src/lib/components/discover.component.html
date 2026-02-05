@@ -20,7 +20,7 @@
               <div class="flex flex-column">
                 <div class="flex flex-row align-center title">
                   <span class="app-name">{{ app.name }}</span>
-                  <span class="chip chip-internal" *ngIf="app.source === 'internal'">Event</span>
+                  <span class="chip chip-internal" *ngIf="app.source === 'internal'">{{app.type | uppercase}}</span>
                   <span class="chip chip-external" *ngIf="app.source === 'external'">Experimental</span>
                   <span class="chip chip-label" *ngFor="let label of app.labels">{{ label | uppercase}}</span>
                 </div>
