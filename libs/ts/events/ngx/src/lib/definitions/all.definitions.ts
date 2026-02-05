@@ -34,6 +34,7 @@ import { AccessibleParkingTs } from './accessible-parking.definitions';
 import { ServiceLoadingTs } from './service-and-loading-zones.definitions';
 import { RetireeParkingTs } from './retiree-parking.definitions';
 import { MaintenanceParkingTs } from './maintenance-parking.definitions';
+import { BaseballParkingTs } from './baseball-parking.definitions';
 
 export const EventDefinitions: Array<ISpecialEventRoot> = [
   FourHRoundupTs,
@@ -70,5 +71,6 @@ export const EventDefinitions: Array<ISpecialEventRoot> = [
   AccessibleParkingTs,
   ServiceLoadingTs,
   RetireeParkingTs,
-  MaintenanceParkingTs
+  MaintenanceParkingTs,
+  BaseballParkingTs
 ];
