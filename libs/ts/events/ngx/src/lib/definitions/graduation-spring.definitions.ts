@@ -349,16 +349,16 @@ export const GraduationConfiguration: EventConfiguration = {
   applicationName: 'Commencement Transportation Map',
   shortApplicationName: 'Commencement Map',
   introductionText: 'Get the best transportation and parking information for the spring commencement ceremonies.',
-  eventDates: ['2025-05-08', '2025-05-09', '2025-05-10'],
+  eventDates: ['2026-05-07', '2026-05-08', '2026-05-09'],
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };
 
 enum GraduationAttendanceDateChoices {
-  DayOne = '2025-05-08T05:00:00.000Z', // May 8, 12AM UTC
-  DayTwo = '2025-05-09T05:00:00.000Z', // May 9, 12AM UTC
-  DayThree = '2025-05-10T05:00:00.000Z', // May 10, 12AM UTC
-  Conclusion = '2025-05-11T05:00:00.000Z' // May 11, 12AM UTC
+  DayOne = '2026-05-07T05:00:00.000Z', // May 7, 12AM UTC
+  DayTwo = '2026-05-08T05:00:00.000Z', // May 8, 12AM UTC
+  DayThree = '2026-05-09T05:00:00.000Z', // May 9, 12AM UTC
+  Conclusion = '2026-05-10T05:00:00.000Z' // May 10, 12AM UTC
 }
 
 export const GraduationOptions: SpecialEventOptions = [
@@ -371,15 +371,15 @@ export const GraduationOptions: SpecialEventOptions = [
     choices: [
       {
         value: GraduationAttendanceDateChoices.DayOne,
-        label: 'Thursday, May 8th'
+        label: 'Thursday, May 7th'
       },
       {
         value: GraduationAttendanceDateChoices.DayTwo,
-        label: 'Friday, May 9th'
+        label: 'Friday, May 8th'
       },
       {
         value: GraduationAttendanceDateChoices.DayThree,
-        label: 'Saturday, May 10th'
+        label: 'Saturday, May 9th'
       }
     ],
     effects: {

@@ -97,7 +97,7 @@ export const MusterConfiguration: EventConfiguration = {
   name: 'Muster',
   applicationName: 'Muster Parking Map',
   shortApplicationName: 'Muster Map',
-  eventDates: ['2025-04-21'],
+  eventDates: ['2026-04-21'],
   zoom: 16
 };
 

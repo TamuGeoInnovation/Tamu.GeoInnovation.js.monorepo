@@ -82,21 +82,21 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
 ];
 
 export const FamilyWeekendConfiguration: EventConfiguration = {
-  id: 'family-weekend-2025',
+  id: 'family-weekend-2026',
   name: 'Family Weekend',
   applicationName: 'Family Weekend Transportation Map',
   shortApplicationName: 'Family Weekend Map',
   introductionText: 'Get the best parking information for',
-  eventDates: ['2025-04-04', '2025-04-05', '2025-04-06'],
+  eventDates: ['2026-04-10', '2026-04-11', '2026-04-12'],
   mapCenter: [-96.3405, 30.61114],
   zoom: 16
 };
 
 enum FamilyWeekendAttendanceDateChoices {
-  DayOne = '2025-04-04T05:00:00.000Z', //  Apr 4, 12AM UTC
-  DayTwo = '2025-04-05T05:00:00.000Z', // Apr5, 12AM UTC
-  DayThree = '2025-04-06T05:00:00.000Z', // Apr 6, 12AM UTC
-  Conclusion = '2025-04-07T05:00:00.000Z' // Apr 7, 12AM UTC
+  DayOne = '2026-04-10T05:00:00.000Z', //  Apr 10, 12AM UTC
+  DayTwo = '2026-04-11T05:00:00.000Z', // Apr 11, 12AM UTC
+  DayThree = '2026-04-12T05:00:00.000Z', // Apr 12, 12AM UTC
+  Conclusion = '2026-04-13T05:00:00.000Z' // Apr 13, 12AM UTC
 }
 
 export const FamilyWeekendOptions: SpecialEventOptions = [
@@ -109,15 +109,15 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
     choices: [
       {
         value: FamilyWeekendAttendanceDateChoices.DayOne,
-        label: 'Friday, April 4th'
+        label: 'Friday, April 10th'
       },
       {
         value: FamilyWeekendAttendanceDateChoices.DayTwo,
-        label: 'Saturday, April 5th'
+        label: 'Saturday, April 11th'
       },
       {
         value: FamilyWeekendAttendanceDateChoices.DayThree,
-        label: 'Sunday, April 6th'
+        label: 'Sunday, April 12th'
       }
     ],
     effects: {
