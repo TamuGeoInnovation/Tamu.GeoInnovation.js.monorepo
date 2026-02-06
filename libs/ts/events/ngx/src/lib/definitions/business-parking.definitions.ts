@@ -3,6 +3,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum BUSINESS_PARKING_LAYERS {
+  UB_2_HOUR_SPACES = 'University Business Spaces 2 Hour Time Limit',
   LOT_SPECIFIC = 'Lot Specific Permit Required',
   UB_AND_UB_PLUS = 'UB Permit and UB+ Permit Authorized',
   UB_PLUS_ONLY = 'Only UB+ Permit Authorized'
@@ -10,7 +11,55 @@ export enum BUSINESS_PARKING_LAYERS {
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
 
+type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
+type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
+
+const ubAndUbPlusRenderer: FeatureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    color: [90, 0, 0, 255],
+    outline: {
+      type: 'simple-line',
+      color: [0, 0, 0, 0],
+      width: 0
+    }
+  }
+};
+
+const ubPlusOnlyRenderer: FeatureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    color: [232, 190, 255, 255],
+    outline: {
+      type: 'simple-line',
+      color: [0, 0, 0, 0],
+      width: 0
+    }
+  }
+};
+
+const lotSpecificRenderer: FeatureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    color: [204, 204, 204, 255],
+    outline: {
+      type: 'simple-line',
+      color: [0, 0, 0, 0],
+      width: 0
+    }
+  }
+};
+
 export const BusinessParkingDefinitions = {
+    UB_2_HOUR_SPACES: {
+    id: BUSINESS_PARKING_LAYERS.UB_2_HOUR_SPACES,
+    layerId: BUSINESS_PARKING_LAYERS.UB_2_HOUR_SPACES,
+    name: 'University Business Spaces 2 Hour Time Limit',
+    url: `${eventUrl}/2`
+  },
   LOT_SPECIFIC: {
     id: BUSINESS_PARKING_LAYERS.LOT_SPECIFIC,
     layerId: BUSINESS_PARKING_LAYERS.LOT_SPECIFIC,
@@ -32,6 +81,18 @@ export const BusinessParkingDefinitions = {
 };
 
 export const BusinessParkingColdLayerSources: LayerSource[] = [
+    {
+    type: 'feature',
+    id: BusinessParkingDefinitions.UB_2_HOUR_SPACES.id,
+    title: BusinessParkingDefinitions.UB_2_HOUR_SPACES.name,
+    url: BusinessParkingDefinitions.UB_2_HOUR_SPACES.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*'],
+      definitionExpression: `Spc_Type = 'UB'`
+    }
+  },
   {
     type: 'feature',
     id: BusinessParkingDefinitions.UB_AND_UB_PLUS.id,
@@ -40,17 +101,11 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: '*',
-      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          color: [90, 0, 0, 255],
-          outline: null
-        }
-      }
-    } as any
+      outFields: ['*'],
+      definitionExpression:
+        `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`,
+      renderer: ubAndUbPlusRenderer
+    }
   },
   {
     type: 'feature',
@@ -60,17 +115,11 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: '*',
-      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          color: [232, 190, 255, 255],
-          outline: null
-        }
-      }
-    } as any
+      outFields: ['*'],
+      definitionExpression:
+        `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`,
+      renderer: ubPlusOnlyRenderer
+    }
   },
   {
     type: 'feature',
@@ -80,17 +129,11 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: '*',
-      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" <> 1 OR "GIS.TS.Lot_Use.UB_Lot" IS NULL OR "GIS.TS.ParkingLots.LotType" NOT IN ('Street', 'Surface', 'Surface Visitor', 'Garage', 'Garage Visitor') OR "GIS.TS.ParkingLots.LotType" IS NULL`,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          color: [204, 204, 204, 255],
-          outline: null
-        }
-      }
-    } as any
+      outFields: ['*'],
+      definitionExpression:
+        `"GIS.TS.Lot_Use.UB_Lot" <> 1 OR "GIS.TS.Lot_Use.UB_Lot" IS NULL OR "GIS.TS.ParkingLots.LotType" NOT IN ('Street', 'Surface', 'Surface Visitor', 'Garage', 'Garage Visitor') OR "GIS.TS.ParkingLots.LotType" IS NULL`,
+      renderer: lotSpecificRenderer
+    }
   }
 ];
 
@@ -117,6 +160,6 @@ export const BusinessParkingTs: ISpecialEventRoot = {
     description: 'Parking lot information for University Business permits.',
     source: 'internal',
     type: 'event',
-    keywords: ['business', 'university business', 'ub', 'ub+', 'parking', 'permit']
+    keywords: ['business', 'university business', 'ub', 'ub+', 'parking', 'permit', '2 hour']
   }
 };
