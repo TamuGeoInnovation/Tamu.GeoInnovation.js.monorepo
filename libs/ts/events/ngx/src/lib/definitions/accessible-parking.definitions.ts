@@ -4,7 +4,6 @@ import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../i
 
 export enum ACCESSIBLE_PARKING_LAYERS {
   CONSTRUCTION = 'Construction',
-  ACCESSIBLE_PARKING = 'Accessible Parking',
   ACCESSIBLE_SPACES_IN_AREA = 'Accessible Spaces in this area',
   ACCESSIBLE_PARKING_SPACE = 'Accessible Parking Space'
 }
@@ -17,12 +16,6 @@ export const AccessibleParkingDefinitions = {
     layerId: ACCESSIBLE_PARKING_LAYERS.CONSTRUCTION,
     name: 'Construction',
     url: `${eventUrl}/0`
-  },
-  ACCESSIBLE_PARKING: {
-    id: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_PARKING,
-    layerId: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_PARKING,
-    name: 'Accessible Parking',
-    url: `${eventUrl}/7`
   },
   ACCESSIBLE_SPACES_IN_AREA: {
     id: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_SPACES_IN_AREA,
@@ -50,13 +43,13 @@ export const AccessibleParkingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
-  {
-    type: 'group',
-    id: AccessibleParkingDefinitions.ACCESSIBLE_PARKING.id,
-    title: AccessibleParkingDefinitions.ACCESSIBLE_PARKING.name,
-    visible: true,
-    listMode: 'show'
-  },
+
+  /**
+   * NOTE:
+   * MapServer layer 7 is a GROUP layer ("Accessible Parking") with no geometry.
+   * Do not include it, otherwise AggieMap will show a toggleable layer.
+   */
+
   {
     type: 'feature',
     id: AccessibleParkingDefinitions.ACCESSIBLE_SPACES_IN_AREA.id,
