@@ -62,32 +62,32 @@ export const StaffSelectableColdLayerSources: LayerSource[] = [
     }
   },
   {
-  type: 'feature',
-  id: StaffSelectableDefinitions.STAFF_SELECTABLE.id,
-  title: StaffSelectableDefinitions.STAFF_SELECTABLE.name,
-  url: StaffSelectableDefinitions.STAFF_SELECTABLE.url,
-  visible: true,
-  listMode: 'show',
-  native: {
-    outFields: ['*'],
-    definitionExpression: 'GIS.TS.Lot_Use.StaffSele_Lot = 1',
-    renderer: {
-      type: 'simple',
-      label: 'Staff Selectable Lots',
-      symbol: {
-        type: 'simple-fill',
-        style: 'solid',
-        color: [255, 255, 0, 255],
-        outline: {
-          type: 'simple-line',
+    type: 'feature',
+    id: StaffSelectableDefinitions.STAFF_SELECTABLE.id,
+    title: StaffSelectableDefinitions.STAFF_SELECTABLE.name,
+    url: StaffSelectableDefinitions.STAFF_SELECTABLE.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*'],
+      definitionExpression: 'GIS.TS.Lot_Use.StaffSele_Lot = 1',
+      renderer: {
+        type: 'simple',
+        label: 'Staff Selectable Lots',
+        symbol: {
+          type: 'simple-fill',
           style: 'solid',
-          color: [0, 0, 0, 0],
-          width: 0
+          color: [255, 255, 0, 255],
+          outline: {
+            type: 'simple-line',
+            style: 'solid',
+            color: [0, 0, 0, 0],
+            width: 0
+          }
         }
       }
     }
-  }
-},
+  },
   {
     type: 'feature',
     id: StaffSelectableDefinitions.RNS_SPACES.id,
