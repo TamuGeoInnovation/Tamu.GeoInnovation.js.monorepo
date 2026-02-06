@@ -84,10 +84,6 @@ export const BusinessParkingDefinitions = {
 };
 
 export const BusinessParkingColdLayerSources: LayerSource[] = [
-  /**
-   * University Business Spaces (2-hour) - points
-   * Keep this first in the legend if you want, but it will still draw above polygons if needed.
-   */
   {
     type: 'feature',
     id: BusinessParkingDefinitions.UB_2_HOUR_SPACES.id,
@@ -99,8 +95,6 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     popupData: {
       name: '{attributes.LotName}',
       description: {
-        // Show a couple helpful identifiers if present.
-        // Markdown popup will render the string; missing fields just show blank.
         field: 'Spc_ID_Num',
         collapsed: true
       }
@@ -108,13 +102,8 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `Spc_Type = 'UB'`
-      // Keep the service's Picture Symbol renderer
     }
   },
-
-  /**
-   * UB / UB+ polygons
-   */
   {
     type: 'feature',
     id: BusinessParkingDefinitions.UB_AND_UB_PLUS.id,
@@ -129,7 +118,6 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
         collapsed: true
       },
       description: {
-        // Notes field exists in this service; used to show additional lot info if populated.
         field: 'GIS.TS.Lot_Notes.UBN',
         collapsed: true
       }
