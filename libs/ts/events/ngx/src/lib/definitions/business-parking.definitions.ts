@@ -1,5 +1,8 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
+
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum BUSINESS_PARKING_LAYERS {
@@ -54,7 +57,7 @@ const lotSpecificRenderer: FeatureRenderer = {
 };
 
 export const BusinessParkingDefinitions = {
-    UB_2_HOUR_SPACES: {
+  UB_2_HOUR_SPACES: {
     id: BUSINESS_PARKING_LAYERS.UB_2_HOUR_SPACES,
     layerId: BUSINESS_PARKING_LAYERS.UB_2_HOUR_SPACES,
     name: 'University Business Spaces 2 Hour Time Limit',
@@ -81,18 +84,37 @@ export const BusinessParkingDefinitions = {
 };
 
 export const BusinessParkingColdLayerSources: LayerSource[] = [
-    {
+  /**
+   * University Business Spaces (2-hour) - points
+   * Keep this first in the legend if you want, but it will still draw above polygons if needed.
+   */
+  {
     type: 'feature',
     id: BusinessParkingDefinitions.UB_2_HOUR_SPACES.id,
     title: BusinessParkingDefinitions.UB_2_HOUR_SPACES.name,
     url: BusinessParkingDefinitions.UB_2_HOUR_SPACES.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: '{attributes.LotName}',
+      description: {
+        // Show a couple helpful identifiers if present.
+        // Markdown popup will render the string; missing fields just show blank.
+        field: 'Spc_ID_Num',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*'],
       definitionExpression: `Spc_Type = 'UB'`
+      // Keep the service's Picture Symbol renderer
     }
   },
+
+  /**
+   * UB / UB+ polygons
+   */
   {
     type: 'feature',
     id: BusinessParkingDefinitions.UB_AND_UB_PLUS.id,
@@ -100,10 +122,21 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     url: BusinessParkingDefinitions.UB_AND_UB_PLUS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        // Notes field exists in this service; used to show additional lot info if populated.
+        field: 'GIS.TS.Lot_Notes.UBN',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*'],
-      definitionExpression:
-        `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`,
+      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`,
       renderer: ubAndUbPlusRenderer
     }
   },
@@ -114,10 +147,20 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     url: BusinessParkingDefinitions.UB_PLUS_ONLY.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.UBN',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*'],
-      definitionExpression:
-        `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`,
+      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`,
       renderer: ubPlusOnlyRenderer
     }
   },
@@ -128,10 +171,20 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     url: BusinessParkingDefinitions.LOT_SPECIFIC.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.UBN',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*'],
-      definitionExpression:
-        `"GIS.TS.Lot_Use.UB_Lot" <> 1 OR "GIS.TS.Lot_Use.UB_Lot" IS NULL OR "GIS.TS.ParkingLots.LotType" NOT IN ('Street', 'Surface', 'Surface Visitor', 'Garage', 'Garage Visitor') OR "GIS.TS.ParkingLots.LotType" IS NULL`,
+      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" <> 1 OR "GIS.TS.Lot_Use.UB_Lot" IS NULL OR "GIS.TS.ParkingLots.LotType" NOT IN ('Street', 'Surface', 'Surface Visitor', 'Garage', 'Garage Visitor') OR "GIS.TS.ParkingLots.LotType" IS NULL`,
       renderer: lotSpecificRenderer
     }
   }
