@@ -1,5 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum SERVICE_LOADING_LAYERS {
@@ -53,6 +55,49 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
     url: ServiceLoadingDefinitions.CONSTRUCTION.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'Name',
+        collapsed: true
+      },
+      description: {
+        field: 'Description',
+        collapsed: true
+      },
+      notes: {
+        field: 'Notes',
+        collapsed: true
+      },
+      status: {
+        field: 'Status',
+        collapsed: true
+      },
+      startDate: {
+        field: 'StartDate',
+        collapsed: true
+      },
+      endDate: {
+        field: 'EndDate',
+        collapsed: true
+      },
+      link: {
+        field: 'Link',
+        collapsed: true
+      },
+      contactName: {
+        field: 'ContactName',
+        collapsed: true
+      },
+      contactInfo: {
+        field: 'ContactInfo',
+        collapsed: true
+      },
+      lastUpdate: {
+        field: 'LastUpdate',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -64,6 +109,18 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
     url: ServiceLoadingDefinitions.SERVICE_SPACES.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      // If layer 2 does not include the joined ParkingLots fields, swap to its actual display field.
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.ServiceN',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -75,6 +132,17 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
     url: ServiceLoadingDefinitions.SERVICE_LOTS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.ServiceN',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -86,6 +154,33 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
     url: ServiceLoadingDefinitions.LINE_PAINT.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'Use_',
+        collapsed: true
+      },
+      description: {
+        field: 'Location',
+        collapsed: true
+      },
+      parkingUse: {
+        field: 'PKG_Use',
+        collapsed: true
+      },
+      streetUse: {
+        field: 'Street_Use',
+        collapsed: true
+      },
+      width: {
+        field: 'Width',
+        collapsed: true
+      },
+      color: {
+        field: 'Color',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -97,6 +192,18 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
     url: ServiceLoadingDefinitions.RNS_SPACES.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      // If layer 6 does not include the joined ParkingLots fields, swap to its actual display field.
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.ServiceN',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
