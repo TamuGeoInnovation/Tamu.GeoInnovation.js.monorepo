@@ -1,6 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
@@ -11,8 +10,7 @@ export enum BUSINESS_PARKING_LAYERS {
   UB_AND_UB_PLUS = 'UB Permit and UB+ Permit Authorized',
   UB_PLUS_ONLY = 'Only UB+ Permit Authorized'
 }
-
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/BusinessParking/MapServer';
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
@@ -61,25 +59,25 @@ export const BusinessParkingDefinitions = {
     id: BUSINESS_PARKING_LAYERS.UB_2_HOUR_SPACES,
     layerId: BUSINESS_PARKING_LAYERS.UB_2_HOUR_SPACES,
     name: 'University Business Spaces 2 Hour Time Limit',
-    url: `${eventUrl}/2`
-  },
-  LOT_SPECIFIC: {
-    id: BUSINESS_PARKING_LAYERS.LOT_SPECIFIC,
-    layerId: BUSINESS_PARKING_LAYERS.LOT_SPECIFIC,
-    name: 'Lot Specific Permit Required',
-    url: `${eventUrl}/8`
+    url: `${eventUrl}/0`
   },
   UB_AND_UB_PLUS: {
     id: BUSINESS_PARKING_LAYERS.UB_AND_UB_PLUS,
     layerId: BUSINESS_PARKING_LAYERS.UB_AND_UB_PLUS,
     name: 'UB Permit and UB+ Permit Authorized',
-    url: `${eventUrl}/8`
+    url: `${eventUrl}/1`
   },
   UB_PLUS_ONLY: {
     id: BUSINESS_PARKING_LAYERS.UB_PLUS_ONLY,
     layerId: BUSINESS_PARKING_LAYERS.UB_PLUS_ONLY,
     name: 'Only UB+ Permit Authorized',
-    url: `${eventUrl}/8`
+    url: `${eventUrl}/1`
+  },
+  LOT_SPECIFIC: {
+    id: BUSINESS_PARKING_LAYERS.LOT_SPECIFIC,
+    layerId: BUSINESS_PARKING_LAYERS.LOT_SPECIFIC,
+    name: 'Lot Specific Permit Required',
+    url: `${eventUrl}/1`
   }
 };
 
@@ -114,7 +112,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'GIS.TS.ParkingLots.Name',
         collapsed: true
       },
       description: {
@@ -138,7 +136,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'GIS.TS.ParkingLots.Name',
         collapsed: true
       },
       description: {
@@ -162,7 +160,7 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'GIS.TS.ParkingLots.Name',
         collapsed: true
       },
       description: {
