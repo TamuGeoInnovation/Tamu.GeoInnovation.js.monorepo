@@ -20,10 +20,10 @@ const vendorParkingRenderer: FeatureRenderer = {
   field: 'GIS.TS.Lot_Use.Vendor_Lot',
   field2: 'GIS.TS.ParkingLots.LotType',
   fieldDelimiter: ',',
-  defaultLabel: 'Lot Specific Permit Required',
+  defaultLabel: ' ', // definitely need a better solution for this but this is to prevent the default symbol from showing in the legend
   defaultSymbol: {
-    type: null, // just made all these null to hide the Lot Specific Permit
-    color: null,
+    type: 'simple-fill',
+    color: [0, 0, 0, 0],
     outline: null
   } as unknown as esri.SymbolProperties,
   uniqueValueInfos: [
@@ -74,7 +74,8 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
           id: 0,
           title: 'Vendor Parking Lots',
           visible: true,
-          popupEnabled: false
+          popupEnabled: false,
+          labelsVisible: false
         } as unknown as esri.SublayerProperties
       ]
     } as unknown as esri.MapImageLayerProperties
