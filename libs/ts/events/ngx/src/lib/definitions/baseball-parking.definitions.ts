@@ -8,10 +8,12 @@ import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../i
 export enum BASEBALL_PARKING_LAYERS {
   EVENT_SYMBOLS = 'baseball-event-symbols',
   ACCESSIBLE_SYMBOLS = 'baseball-accessible-symbols',
-  GATES = 'baseball-gates',
+
+  ACCESSIBLE_LOTS = 'baseball-accessible-lots',
   ACCESSIBLE_SHUTTLES = 'baseball-accessible-shuttles',
+
   EVENT_LOTS = 'baseball-event-lots',
-  ACCESSIBLE_LOTS = 'baseball-accessible-lots'
+  GATE_ROAD_CLOSURE = 'baseball-gate-road-closure'
 }
 
 enum BaseballMapMode {
@@ -19,7 +21,7 @@ enum BaseballMapMode {
   ACCESSIBLE = 'accessible'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BaseballParking/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/BaseballParking/MapServer';
 
 export const BaseballParkingColdLayerSources: LayerSource[] = [
   {
@@ -28,11 +30,15 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     title: 'Baseball Symbols',
     url: `${eventUrl}/0`,
     popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: '{attributes.Type}'
+    },
     native: {
       outFields: ['*'],
-      definitionExpression: `Type <> 'Accessible Shuttle Stop'`
+      definitionExpression: `Event = 'Baseball' AND Type <> 'Accessible Shuttle Stop'`
     }
   },
+
   {
     type: 'feature',
     id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SYMBOLS,
@@ -40,22 +46,26 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     url: `${eventUrl}/0`,
     visible: false,
     popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: '{attributes.Type}'
+    },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: `Event = 'Baseball'`
     }
   },
 
   {
     type: 'feature',
-    id: BASEBALL_PARKING_LAYERS.GATES,
-    title: 'Baseball Gates',
+    id: BASEBALL_PARKING_LAYERS.GATE_ROAD_CLOSURE,
+    title: 'Gate/Road Closure',
     url: `${eventUrl}/2`,
     popupComponent: MarkdownPopupComponent,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: `Baseball = 1`
     }
   },
-
   {
     type: 'feature',
     id: BASEBALL_PARKING_LAYERS.EVENT_LOTS,
@@ -73,19 +83,8 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
       }
     },
     native: {
-      outFields: ['*']
-    }
-  },
-
-  {
-    type: 'feature',
-    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SHUTTLES,
-    title: 'Accessible Shuttle',
-    url: `${eventUrl}/1`,
-
-    popupComponent: MarkdownPopupComponent,
-    native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: `GIS.TS.SPEV_Lot_Use.Baseball IN ('AnyValid','SeasonPass')`
     }
   },
 
@@ -106,6 +105,18 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
         collapsed: true
       }
     },
+    native: {
+      outFields: ['*'],
+      definitionExpression: `GIS.TS.SPEV_Lot_Use.Baseball = 'Permit'`
+    }
+  },
+  {
+    type: 'feature',
+    id: BASEBALL_PARKING_LAYERS.ACCESSIBLE_SHUTTLES,
+    title: 'Accessible Shuttle',
+    url: `${eventUrl}/1`,
+    visible: false,
+    popupComponent: MarkdownPopupComponent,
     native: {
       outFields: ['*']
     }
@@ -165,7 +176,7 @@ export const BaseballParkingOptions: SpecialEventOptions = [
     label: 'Choose Your Map',
     shortDescription: 'Map Type',
     description:
-      'The Event Map shows standard event parking only. The Accessible Map focuses on accessible parking and shuttle options.',
+      'The Event Map shows event parking lots, symbols, and road closures (no accessibility layers). The Accessibility Map shows accessible parking lots, the accessible shuttle route, and all symbols.',
     choices: [
       { value: BaseballMapMode.EVENT, label: 'Baseball Event Map' },
       { value: BaseballMapMode.ACCESSIBLE, label: 'Accessible Baseball Map' }
@@ -186,11 +197,19 @@ export const BaseballParkingOptions: SpecialEventOptions = [
             { input: BaseballMapMode.ACCESSIBLE, propOverrides: { visible: true } }
           ]
         },
+
+        {
+          layerId: BASEBALL_PARKING_LAYERS.GATE_ROAD_CLOSURE,
+          conversions: [
+            { input: BaseballMapMode.EVENT, propOverrides: { visible: true } },
+            { input: BaseballMapMode.ACCESSIBLE, propOverrides: { visible: true } }
+          ]
+        },
         {
           layerId: BASEBALL_PARKING_LAYERS.EVENT_LOTS,
           conversions: [
             { input: BaseballMapMode.EVENT, propOverrides: { visible: true } },
-            { input: BaseballMapMode.ACCESSIBLE, propOverrides: { visible: false } }
+            { input: BaseballMapMode.ACCESSIBLE, propOverrides: { visible: true } }
           ]
         },
         {
@@ -220,9 +239,9 @@ export const BaseballParkingTs: ISpecialEventRoot = {
   discover: {
     id: 'baseball-parking',
     name: 'Baseball Parking',
-    description: 'Baseball event parking with an accessibility-focused map option.',
+    description: 'Baseball event parking with optional accessibility-focused view.',
     source: 'internal',
     type: 'event',
-    keywords: ['baseball', 'parking', 'accessible', 'shuttle']
+    keywords: ['baseball', 'parking', 'accessible', 'shuttle', 'closure']
   }
 };
