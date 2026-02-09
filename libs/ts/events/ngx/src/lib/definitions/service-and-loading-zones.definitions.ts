@@ -5,103 +5,42 @@ import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdow
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum SERVICE_LOADING_LAYERS {
-  CONSTRUCTION = 'construction',
   SERVICE_SPACES = 'service-parking-spaces',
-  LINE_PAINT = 'line-paint',
-  SERVICE_LOTS = 'service-parking-lots',
-  RNS_SPACES = 'rns-spaces'
+  SERVICE_LOTS = 'service-parking-lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/ServiceMaintenanceContractor/MapServer';
+/**
+ * New authoritative service:
+ * https://gis.it.tamu.edu/arcgis/rest/services/TS/Loading_Zones/MapServer
+ *
+ * Layers:
+ * 0 - Service Parking Spaces (points) (minScale: 24000)
+ * 1 - Service Parking Lots (polygons) (minScale: 24000)
+ *
+ * Notes for popup from column: ServiceN (on polygon layer join table)
+ */
+const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Loading_Zones/MapServer';
 
 export const ServiceLoadingDefinitions = {
-  CONSTRUCTION: {
-    id: SERVICE_LOADING_LAYERS.CONSTRUCTION,
-    layerId: SERVICE_LOADING_LAYERS.CONSTRUCTION,
-    name: 'Construction',
-    url: `${eventUrl}/0`
-  },
   SERVICE_SPACES: {
     id: SERVICE_LOADING_LAYERS.SERVICE_SPACES,
     layerId: SERVICE_LOADING_LAYERS.SERVICE_SPACES,
     name: 'Service Parking Spaces',
-    url: `${eventUrl}/2`
-  },
-  LINE_PAINT: {
-    id: SERVICE_LOADING_LAYERS.LINE_PAINT,
-    layerId: SERVICE_LOADING_LAYERS.LINE_PAINT,
-    name: 'Line Paint',
-    url: `${eventUrl}/3`
+    url: `${eventUrl}/0`
   },
   SERVICE_LOTS: {
     id: SERVICE_LOADING_LAYERS.SERVICE_LOTS,
     layerId: SERVICE_LOADING_LAYERS.SERVICE_LOTS,
     name: 'Service Parking Lots',
-    url: `${eventUrl}/5`
-  },
-  RNS_SPACES: {
-    id: SERVICE_LOADING_LAYERS.RNS_SPACES,
-    layerId: SERVICE_LOADING_LAYERS.RNS_SPACES,
-    name: 'RNS Spaces',
-    url: `${eventUrl}/6`
+    url: `${eventUrl}/1`
   }
 };
 
 export const ServiceLoadingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: ServiceLoadingDefinitions.CONSTRUCTION.id,
-    title: ServiceLoadingDefinitions.CONSTRUCTION.name,
-    url: ServiceLoadingDefinitions.CONSTRUCTION.url,
-    visible: true,
-    listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'Name',
-        collapsed: true
-      },
-      description: {
-        field: 'Description',
-        collapsed: true
-      },
-      notes: {
-        field: 'Notes',
-        collapsed: true
-      },
-      status: {
-        field: 'Status',
-        collapsed: true
-      },
-      startDate: {
-        field: 'StartDate',
-        collapsed: true
-      },
-      endDate: {
-        field: 'EndDate',
-        collapsed: true
-      },
-      link: {
-        field: 'Link',
-        collapsed: true
-      },
-      contactName: {
-        field: 'ContactName',
-        collapsed: true
-      },
-      contactInfo: {
-        field: 'ContactInfo',
-        collapsed: true
-      },
-      lastUpdate: {
-        field: 'LastUpdate',
-        collapsed: true
-      }
-    },
-    native: {
-      outFields: ['*']
-    }
-  },
+  /**
+   * Service Parking Spaces (points)
+   * Display field: LotName
+   */
   {
     type: 'feature',
     id: ServiceLoadingDefinitions.SERVICE_SPACES.id,
@@ -111,13 +50,21 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      // If layer 2 does not include the joined ParkingLots fields, swap to its actual display field.
-      name: {
-        field: 'GIS.TS.ParkingLots.Name',
+      name: '{attributes.LotName}',
+      description: {
+        field: 'Spc_Type',
         collapsed: true
       },
-      description: {
-        field: 'GIS.TS.Lot_Notes.ServiceN',
+      spaceId: {
+        field: 'Spc_ID_Num',
+        collapsed: true
+      },
+      rns: {
+        field: 'RNS_Num',
+        collapsed: true
+      },
+      garageLevel: {
+        field: 'Garage_Lvl',
         collapsed: true
       }
     },
@@ -125,6 +72,11 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
+
+  /**
+   * Service Parking Lots (polygons)
+   * Notes requested from column: ServiceN
+   */
   {
     type: 'feature',
     id: ServiceLoadingDefinitions.SERVICE_LOTS.id,
@@ -145,67 +97,7 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: ServiceLoadingDefinitions.LINE_PAINT.id,
-    title: ServiceLoadingDefinitions.LINE_PAINT.name,
-    url: ServiceLoadingDefinitions.LINE_PAINT.url,
-    visible: true,
-    listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'Use_',
-        collapsed: true
-      },
-      description: {
-        field: 'Location',
-        collapsed: true
-      },
-      parkingUse: {
-        field: 'PKG_Use',
-        collapsed: true
-      },
-      streetUse: {
-        field: 'Street_Use',
-        collapsed: true
-      },
-      width: {
-        field: 'Width',
-        collapsed: true
-      },
-      color: {
-        field: 'Color',
-        collapsed: true
-      }
-    },
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: ServiceLoadingDefinitions.RNS_SPACES.id,
-    title: ServiceLoadingDefinitions.RNS_SPACES.name,
-    url: ServiceLoadingDefinitions.RNS_SPACES.url,
-    visible: true,
-    listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      // If layer 6 does not include the joined ParkingLots fields, swap to its actual display field.
-      name: {
-        field: 'GIS.TS.ParkingLots.Name',
-        collapsed: true
-      },
-      description: {
-        field: 'GIS.TS.Lot_Notes.ServiceN',
-        collapsed: true
-      }
-    },
-    native: {
-      outFields: ['*']
+      // Intentionally do not override renderer/labels; service provides authoritative symbology + lot labels.
     }
   }
 ];
@@ -230,9 +122,9 @@ export const ServiceLoadingTs: ISpecialEventRoot = {
   discover: {
     id: ServiceLoadingConfiguration.id,
     name: ServiceLoadingConfiguration.name,
-    description: 'Service and loading zone parking layers, including construction and RNS overlays.',
+    description: 'Service and loading zone parking layers.',
     source: 'internal',
     type: 'event',
-    keywords: ['service', 'loading', 'parking']
+    keywords: ['service', 'loading', 'loading zone', 'parking']
   }
 };
