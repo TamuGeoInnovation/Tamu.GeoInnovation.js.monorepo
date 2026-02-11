@@ -3,7 +3,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 export enum STUDENT_SELECTABLE_LAYERS {
-  CONSTRUCTION = 'Construction',
   LINE_PAINT = 'Line Paint',
   STUDENT_SELECTABLE = 'Student Selectable Parking Lots',
   RNS_SPACES = 'RNS Spaces'
@@ -12,12 +11,6 @@ export enum STUDENT_SELECTABLE_LAYERS {
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/PermitSelect/MapServer';
 
 export const StudentSelectableDefinitions = {
-  CONSTRUCTION: {
-    id: STUDENT_SELECTABLE_LAYERS.CONSTRUCTION,
-    layerId: STUDENT_SELECTABLE_LAYERS.CONSTRUCTION,
-    name: 'Construction',
-    url: `${eventUrl}/0`
-  },
   LINE_PAINT: {
     id: STUDENT_SELECTABLE_LAYERS.LINE_PAINT,
     layerId: STUDENT_SELECTABLE_LAYERS.LINE_PAINT,
@@ -39,17 +32,6 @@ export const StudentSelectableDefinitions = {
 };
 
 export const StudentSelectableColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: StudentSelectableDefinitions.CONSTRUCTION.id,
-    title: StudentSelectableDefinitions.CONSTRUCTION.name,
-    url: StudentSelectableDefinitions.CONSTRUCTION.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
   {
     type: 'feature',
     id: StudentSelectableDefinitions.LINE_PAINT.id,
