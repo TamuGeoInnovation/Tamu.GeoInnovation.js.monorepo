@@ -38,10 +38,34 @@ export const NightWeekendColdLayerSources: LayerSource[] = [
       }
     },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // labels are being buried under features so they are being manually drawn
+      labelsVisible: true,
+      labelingInfo: [
+        {
+          labelPlacement: 'always-horizontal',
+          labelExpressionInfo: {
+            expression: `$feature["GIS.TS.ParkingLots.Name"]`
+          },
+          minScale: 15000,
+          maxScale: 0,
+          symbol: {
+            type: 'text',
+            color: [0, 0, 0, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1,
+            font: {
+              family: 'Open Sans',
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
     }
   }
 ];
+
 
 export const NightWeekendConfiguration: EventConfiguration = {
   id: 'night-weekend',
