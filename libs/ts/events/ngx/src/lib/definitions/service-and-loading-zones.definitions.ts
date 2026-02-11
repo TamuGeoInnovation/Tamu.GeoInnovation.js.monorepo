@@ -8,17 +8,6 @@ export enum SERVICE_LOADING_LAYERS {
   SERVICE_SPACES = 'service-parking-spaces',
   SERVICE_LOTS = 'service-parking-lots'
 }
-
-/**
- * New authoritative service:
- * https://gis.it.tamu.edu/arcgis/rest/services/TS/Loading_Zones/MapServer
- *
- * Layers:
- * 0 - Service Parking Spaces (points) (minScale: 24000)
- * 1 - Service Parking Lots (polygons) (minScale: 24000)
- *
- * Notes for popup from column: ServiceN (on polygon layer join table)
- */
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Loading_Zones/MapServer';
 
 export const ServiceLoadingDefinitions = {
@@ -37,10 +26,6 @@ export const ServiceLoadingDefinitions = {
 };
 
 export const ServiceLoadingColdLayerSources: LayerSource[] = [
-  /**
-   * Service Parking Spaces (points)
-   * Display field: LotName
-   */
   {
     type: 'feature',
     id: ServiceLoadingDefinitions.SERVICE_SPACES.id,
@@ -72,11 +57,6 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
-
-  /**
-   * Service Parking Lots (polygons)
-   * Notes requested from column: ServiceN
-   */
   {
     type: 'feature',
     id: ServiceLoadingDefinitions.SERVICE_LOTS.id,
@@ -97,7 +77,6 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*']
-      // Intentionally do not override renderer/labels; service provides authoritative symbology + lot labels.
     }
   }
 ];
