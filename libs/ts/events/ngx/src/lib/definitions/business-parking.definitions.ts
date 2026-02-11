@@ -6,7 +6,6 @@ import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../i
 
 export enum BUSINESS_PARKING_LAYERS {
   UB_2_HOUR_SPACES = 'University Business Spaces 2 Hour Time Limit',
-  LOT_SPECIFIC = 'Lot Specific Permit Required',
   UB_AND_UB_PLUS = 'UB Permit and UB+ Permit Authorized',
   UB_PLUS_ONLY = 'Only UB+ Permit Authorized'
 }
@@ -41,19 +40,6 @@ const ubPlusOnlyRenderer: FeatureRenderer = {
   }
 };
 
-const lotSpecificRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [204, 204, 204, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
-
 export const BusinessParkingDefinitions = {
   UB_2_HOUR_SPACES: {
     id: BUSINESS_PARKING_LAYERS.UB_2_HOUR_SPACES,
@@ -73,12 +59,6 @@ export const BusinessParkingDefinitions = {
     name: 'Only UB+ Permit Authorized',
     url: `${eventUrl}/1`
   },
-  LOT_SPECIFIC: {
-    id: BUSINESS_PARKING_LAYERS.LOT_SPECIFIC,
-    layerId: BUSINESS_PARKING_LAYERS.LOT_SPECIFIC,
-    name: 'Lot Specific Permit Required',
-    url: `${eventUrl}/1`
-  }
 };
 
 export const BusinessParkingColdLayerSources: LayerSource[] = [
@@ -150,30 +130,6 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
       renderer: ubPlusOnlyRenderer
     }
   },
-  {
-    type: 'feature',
-    id: BusinessParkingDefinitions.LOT_SPECIFIC.id,
-    title: BusinessParkingDefinitions.LOT_SPECIFIC.name,
-    url: BusinessParkingDefinitions.LOT_SPECIFIC.url,
-    visible: true,
-    listMode: 'show',
-    popupComponent: MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: {
-        field: 'GIS.TS.ParkingLots.Name',
-        collapsed: true
-      },
-      description: {
-        field: 'GIS.TS.Lot_Notes.UBN',
-        collapsed: true
-      }
-    },
-    native: {
-      outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" <> 1 OR "GIS.TS.Lot_Use.UB_Lot" IS NULL OR "GIS.TS.ParkingLots.LotType" NOT IN ('Street', 'Surface', 'Surface Visitor', 'Garage', 'Garage Visitor') OR "GIS.TS.ParkingLots.LotType" IS NULL`,
-      renderer: lotSpecificRenderer
-    }
-  }
 ];
 
 export const BusinessParkingConfiguration: EventConfiguration = {
