@@ -13,21 +13,6 @@ export enum GRADUATION_LAYERS {
   GRADUATION_EVENT_PARKING_LOTS = 'graduation-event-parking-lots',
   GRADUATION_ROAD_CLOSURES = 'graduation-road-closed'
 }
-
-/**
- * New authoritative service:
- * TS/GraduationParking (MapServer)
- *
- * Layers:
- * 0 - Graduation Traffic Flow (polylines)
- * 1 - Graduation Event Parking Lots (polygons)
- * 2 - Road Closed (polygons)
- *
- * NOTE:
- * The older Spring config had two separate parking lot layers (A/B) for day switching.
- * The new service exposes a single Graduation Event Parking Lots layer, so we simplify
- * to one lots layer and keep the date selector (currently informational / future-proof).
- */
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/GraduationParking/MapServer';
 
 const GraduationEventDefinitions = {
@@ -52,10 +37,6 @@ const GraduationEventDefinitions = {
 };
 
 export const GraduationColdLayerSources: LayerSource[] = [
-  /**
-   * Traffic flow
-   * Keep server-side renderer + labeling to match authoritative symbology.
-   */
   {
     type: 'feature',
     id: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.id,
@@ -72,11 +53,6 @@ export const GraduationColdLayerSources: LayerSource[] = [
       outFields: ['*']
     }
   },
-
-  /**
-   * Event parking lots
-   * Notes requested from column: GraduationN
-   */
   {
     type: 'feature',
     id: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.id,
@@ -97,14 +73,8 @@ export const GraduationColdLayerSources: LayerSource[] = [
     listMode: 'show',
     native: {
       outFields: ['*']
-      // Intentionally do not override renderer/labels: service already provides correct symbology + lot labels.
     }
   },
-
-  /**
-   * Road closures
-   * Keep server-side renderer + labeling.
-   */
   {
     type: 'feature',
     id: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.id,
@@ -155,7 +125,6 @@ export const GraduationOptions: SpecialEventOptions = [
     effects: {
       layers: [
         {
-          // With the new single lots layer, all choices simply keep it visible.
           layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
           conversions: [
             { input: GraduationAttendanceDateChoices.DayOne, propOverrides: { visible: true } },
