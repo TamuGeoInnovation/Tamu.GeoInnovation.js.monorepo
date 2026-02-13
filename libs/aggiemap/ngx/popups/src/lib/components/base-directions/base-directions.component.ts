@@ -52,13 +52,24 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
     const origin = window.location.origin;
     const attributes = this.data.attributes;
     
-    return attributes.Number 
-      ? origin + '/?bldg=' + attributes.Number
-      : attributes.LotName
-        ? origin + '/?lot=' + attributes.Name
-        : attributes.Name
-          ? origin + '/?poi=' + attributes.Name
-          : origin;
+    // Determine feature type and appropriate URL parameter based on attributes
+    // Buildings have a Number attribute
+    if (attributes.Number) {
+      return `${origin}/?bldg=${attributes.Number}`;
+    }
+    
+    // Parking lots have a LotName attribute
+    if (attributes.LotName) {
+      return `${origin}/?lot=${attributes.LotName}`;
+    }
+    
+    // Points of interest have a name attribute (lowercase)
+    if (attributes.name) {
+      return `${origin}/?poi=${attributes.name}`;
+    }
+    
+    // Fallback to origin if feature type can't be determined
+    return origin;
   }
 
   public ngOnInit(): void {

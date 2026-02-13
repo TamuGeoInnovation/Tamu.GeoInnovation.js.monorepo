@@ -60,7 +60,9 @@ export function SearchSources(
       featuresLocation: 'features',
       displayTemplate: '{attributes.BldgName} ({attributes.Number})',
       popupComponent: Popups.BuildingPopupComponent,
-      searchActive: false
+      searchActive: false,
+      urlQueryParam: 'bldg',
+      urlQueryParamAliases: ['Bldg', 'BldgAbbrv', 'bldgabbrv']
     },
     UNIVERSITY_DEPARTMENTS: {
       source: 'university-departments',
@@ -216,7 +218,9 @@ export function SearchSources(
       featuresLocation: 'features',
       displayTemplate: '{attributes.LotName}',
       popupComponent: Popups.ParkingLotPopupComponent,
-      searchActive: true
+      searchActive: true,
+      urlQueryParam: 'lot',
+      urlQueryParamAliases: ['Lot']
     },
     POINTS_OF_INTEREST: {
       source: 'points-of-interest',
@@ -234,7 +238,9 @@ export function SearchSources(
       featuresLocation: 'features',
       displayTemplate: '{attributes.name}',
       popupComponent: Popups.PoiPopupComponent,
-      searchActive: true
+      searchActive: true,
+      urlQueryParam: 'poi',
+      urlQueryParamAliases: ['POI']
     },
     BIKE_RACKS: {
       source: 'bike-racks',

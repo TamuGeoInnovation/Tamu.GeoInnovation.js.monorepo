@@ -727,29 +727,37 @@ export class EsriMapService {
   }
 
   /**
-   * Gets a list of features from url params.
+   * Gets a list of features from url params by matching against search source URL parameter configurations.
    */
   public getFeatureListFromURL(): { dataset: string; identifiersList: string[] } | null {
-    interface ParamConfig {
-      aliases: string[];
-      dataset: string;
-    }
-
-    const configurations: ParamConfig[] = [
-      { aliases: ['bldg', 'Bldg', 'BldgAbbrv', 'bldgabbrv'], dataset: 'building' },
-      { aliases: ['lot', 'Lot'], dataset: 'parking' },
-      { aliases: ['poi', 'POI'], dataset: 'poi' }
-    ];
-
     const parsedRoute = this.router.parseUrl(this.router.url);
     const queryParameters = parsedRoute.queryParams;
-
-    for (const config of configurations) {
-      const matchedAlias = config.aliases.find((alias) => queryParameters[alias]);
-
-      if (matchedAlias) {
-        const parameterValue = queryParameters[matchedAlias];
-
+    
+    // Get search sources from environment
+    const searchSources = this.environment.value('SearchSources');
+    
+    if (!searchSources || !Array.isArray(searchSources)) {
+      return null;
+    }
+    
+    // Find the first search source that matches any URL parameter
+    for (const searchSource of searchSources) {
+      if (!searchSource.urlQueryParam) {
+        continue;
+      }
+      
+      // Build list of all parameters to check (primary + aliases)
+      const paramsToCheck = [searchSource.urlQueryParam];
+      if (searchSource.urlQueryParamAliases) {
+        paramsToCheck.push(...searchSource.urlQueryParamAliases);
+      }
+      
+      // Check if any of these parameters exist in the URL
+      const matchedParam = paramsToCheck.find(param => queryParameters[param]);
+      
+      if (matchedParam) {
+        const parameterValue = queryParameters[matchedParam];
+        
         if (parameterValue?.trim()) {
           const tokens = parameterValue.split(',');
           const deduplicatedTokens = tokens.reduce((uniqueList, token) => {
@@ -758,15 +766,15 @@ export class EsriMapService {
             }
             return uniqueList;
           }, [] as string[]);
-
+          
           return {
-            dataset: config.dataset,
+            dataset: searchSource.source,
             identifiersList: deduplicatedTokens
           };
         }
       }
     }
-
+    
     return null;
   }
 

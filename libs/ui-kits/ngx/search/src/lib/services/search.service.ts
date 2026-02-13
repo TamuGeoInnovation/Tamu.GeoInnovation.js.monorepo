@@ -532,6 +532,20 @@ export interface SearchSource {
    * to sort search results.
    */
   scoringKeys?: string[];
+
+  /**
+   * Primary URL query parameter name for this search source. Used to generate shareable
+   * feature links and parse incoming URLs for feature auto-selection.
+   * Example: 'bldg' for buildings enables ?bldg=0377 URLs
+   */
+  urlQueryParam?: string;
+
+  /**
+   * Alternative URL query parameter names recognized for this search source.
+   * Used for backward compatibility and convenience.
+   * Example: ['Bldg', 'BldgAbbrv', 'bldgabbrv'] for buildings
+   */
+  urlQueryParamAliases?: string[];
 }
 
 /**
