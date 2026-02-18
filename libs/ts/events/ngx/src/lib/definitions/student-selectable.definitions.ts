@@ -1,5 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -7,64 +8,20 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum STUDENT_SELECTABLE_LAYERS {
-  CONSTRUCTION = 'Construction',
-  LINE_PAINT = 'Line Paint',
-  STUDENT_SELECTABLE = 'Student Selectable Parking Lots',
-  RNS_SPACES = 'RNS Spaces'
+  STUDENT_SELECTABLE = 'Student Selectable Parking Lots'
 }
-
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/PermitSelect/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/StudentSelectableParking/MapServer';
 
 export const StudentSelectableDefinitions = {
-  CONSTRUCTION: {
-    id: STUDENT_SELECTABLE_LAYERS.CONSTRUCTION,
-    layerId: STUDENT_SELECTABLE_LAYERS.CONSTRUCTION,
-    name: 'Construction',
-    url: `${eventUrl}/0`
-  },
-  LINE_PAINT: {
-    id: STUDENT_SELECTABLE_LAYERS.LINE_PAINT,
-    layerId: STUDENT_SELECTABLE_LAYERS.LINE_PAINT,
-    name: 'Line Paint',
-    url: `${eventUrl}/1`
-  },
   STUDENT_SELECTABLE: {
     id: STUDENT_SELECTABLE_LAYERS.STUDENT_SELECTABLE,
     layerId: STUDENT_SELECTABLE_LAYERS.STUDENT_SELECTABLE,
     name: 'Student Selectable Parking Lots',
-    url: `${eventUrl}/2`
-  },
-  RNS_SPACES: {
-    id: STUDENT_SELECTABLE_LAYERS.RNS_SPACES,
-    layerId: STUDENT_SELECTABLE_LAYERS.RNS_SPACES,
-    name: 'RNS Spaces',
-    url: `${eventUrl}/5`
+    url: `${eventUrl}/0`
   }
 };
 
 export const StudentSelectableColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: StudentSelectableDefinitions.CONSTRUCTION.id,
-    title: StudentSelectableDefinitions.CONSTRUCTION.name,
-    url: StudentSelectableDefinitions.CONSTRUCTION.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: StudentSelectableDefinitions.LINE_PAINT.id,
-    title: StudentSelectableDefinitions.LINE_PAINT.name,
-    url: StudentSelectableDefinitions.LINE_PAINT.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
   {
     type: 'feature',
     id: StudentSelectableDefinitions.STUDENT_SELECTABLE.id,
@@ -72,17 +29,17 @@ export const StudentSelectableColdLayerSources: LayerSource[] = [
     url: StudentSelectableDefinitions.STUDENT_SELECTABLE.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: StudentSelectableDefinitions.RNS_SPACES.id,
-    title: StudentSelectableDefinitions.RNS_SPACES.name,
-    url: StudentSelectableDefinitions.RNS_SPACES.url,
-    visible: true,
-    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.StuSeleN',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -113,6 +70,6 @@ export const StudentSelectableTs: AggiemapCustomMapConfiguration = {
     description: 'Selectable parking information for students.',
     source: 'internal',
     type: 'parking',
-    keywords: ['permit select', 'student', 'selectable', 'parking', 'rns']
+    keywords: ['permit select', 'student', 'selectable', 'parking']
   }
 };
