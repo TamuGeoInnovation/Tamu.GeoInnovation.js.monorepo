@@ -1,5 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -7,23 +9,15 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum MEDIA_PARKING_LAYERS {
-  MEDIA_PARKING_LOTS = 'media-parking-lots',
-  CONSTRUCTION = 'construction'
+  MEDIA_PARKING_LOTS = 'media-parking-lots'
 }
-
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MediaParking/MapServer';
 
 export const MediaParkingDefinitions = {
   MEDIA_PARKING_LOTS: {
     id: MEDIA_PARKING_LAYERS.MEDIA_PARKING_LOTS,
     layerId: MEDIA_PARKING_LAYERS.MEDIA_PARKING_LOTS,
     name: 'Media Parking Lots',
-    url: `${eventUrl}/12`
-  },
-  CONSTRUCTION: {
-    id: MEDIA_PARKING_LAYERS.CONSTRUCTION,
-    layerId: MEDIA_PARKING_LAYERS.CONSTRUCTION,
-    name: 'Construction',
     url: `${eventUrl}/0`
   }
 };
@@ -36,17 +30,21 @@ export const MediaParkingColdLayerSources: LayerSource[] = [
     url: MediaParkingDefinitions.MEDIA_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: MediaParkingDefinitions.CONSTRUCTION.id,
-    title: MediaParkingDefinitions.CONSTRUCTION.name,
-    url: MediaParkingDefinitions.CONSTRUCTION.url,
-    visible: true,
-    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.AVPN',
+        collapsed: true
+      },
+      lotType: {
+        field: 'GIS.TS.ParkingLots.LotType',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -57,8 +55,8 @@ export const MediaParkingConfiguration: EventConfiguration = {
   id: 'media-parking',
   name: 'Media Parking',
   applicationName: 'Media Parking Map',
-  shortApplicationName: 'Media Parking Map',
-  introductionText: 'Parking map for media permits.',
+  shortApplicationName: 'Media Parking',
+  introductionText: 'Parking lot information for media permits.',
   eventDates: [],
   mapCenter: [-96.34731, 30.60543],
   zoom: 16

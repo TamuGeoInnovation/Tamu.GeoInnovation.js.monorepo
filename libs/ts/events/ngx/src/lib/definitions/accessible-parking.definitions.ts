@@ -7,71 +7,21 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum ACCESSIBLE_PARKING_LAYERS {
-  CONSTRUCTION = 'Construction',
-  ACCESSIBLE_PARKING = 'Accessible Parking',
-  ACCESSIBLE_SPACES_IN_AREA = 'Accessible Spaces in this area',
   ACCESSIBLE_PARKING_SPACE = 'Accessible Parking Space'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/DisabledTimedMotorcycle/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AccessibleParking/MapServer';
 
 export const AccessibleParkingDefinitions = {
-  CONSTRUCTION: {
-    id: ACCESSIBLE_PARKING_LAYERS.CONSTRUCTION,
-    layerId: ACCESSIBLE_PARKING_LAYERS.CONSTRUCTION,
-    name: 'Construction',
-    url: `${eventUrl}/0`
-  },
-  ACCESSIBLE_PARKING: {
-    id: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_PARKING,
-    layerId: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_PARKING,
-    name: 'Accessible Parking',
-    url: `${eventUrl}/7`
-  },
-  ACCESSIBLE_SPACES_IN_AREA: {
-    id: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_SPACES_IN_AREA,
-    layerId: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_SPACES_IN_AREA,
-    name: 'Accessible Spaces in this area',
-    url: `${eventUrl}/8`
-  },
   ACCESSIBLE_PARKING_SPACE: {
     id: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_PARKING_SPACE,
     layerId: ACCESSIBLE_PARKING_LAYERS.ACCESSIBLE_PARKING_SPACE,
     name: 'Accessible Parking Space',
-    url: `${eventUrl}/9`
+    url: `${eventUrl}/0`
   }
 };
 
 export const AccessibleParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: AccessibleParkingDefinitions.CONSTRUCTION.id,
-    title: AccessibleParkingDefinitions.CONSTRUCTION.name,
-    url: AccessibleParkingDefinitions.CONSTRUCTION.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'group',
-    id: AccessibleParkingDefinitions.ACCESSIBLE_PARKING.id,
-    title: AccessibleParkingDefinitions.ACCESSIBLE_PARKING.name,
-    visible: true,
-    listMode: 'show'
-  },
-  {
-    type: 'feature',
-    id: AccessibleParkingDefinitions.ACCESSIBLE_SPACES_IN_AREA.id,
-    title: AccessibleParkingDefinitions.ACCESSIBLE_SPACES_IN_AREA.name,
-    url: AccessibleParkingDefinitions.ACCESSIBLE_SPACES_IN_AREA.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
   {
     type: 'feature',
     id: AccessibleParkingDefinitions.ACCESSIBLE_PARKING_SPACE.id,
@@ -106,9 +56,9 @@ export const AccessibleParkingTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: AccessibleParkingConfiguration.id,
     name: AccessibleParkingConfiguration.name,
-    description: 'Accessible parking areas and spaces (including construction overlays).',
+    description: 'Accessible parking spaces.',
     source: 'internal',
     type: 'parking',
-    keywords: ['accessible', 'disability', 'parking', 'handicap']
+    keywords: ['accessible', 'parking', 'handicap', 'ada']
   }
 };
