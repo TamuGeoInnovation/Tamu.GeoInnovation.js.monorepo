@@ -122,6 +122,12 @@ export class DiscoverComponent implements OnInit {
     if (date instanceof Date) {
       return date.getTime();
     }
+    // Treat date-only strings as local dates to avoid UTC day-shift issues.
+    const dateOnlyMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (dateOnlyMatch) {
+      const [, year, month, day] = dateOnlyMatch;
+      return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+    }
     return new Date(date).getTime();
   }
 
