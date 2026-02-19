@@ -1,70 +1,66 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions, AggiemapCustomMapConfiguration } from '../interfaces/special-event.interface';
+
 
 import esri = __esri;
 
 export enum MUSTER_LAYERS {
-  AREAS = 'muster-parking',
-  TRAFFIC_FLOW = 'muster-bus-routes'
+  PARKING = 'muster-parking',
+  TRAFFIC_FLOW = 'muster-traffic-flow',
+  ROAD_CLOSED = 'muster-road-closed'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Muster/MapServer';
 
 export const MusterEventDefinitions = {
-  EVENT_AREAS: {
-    id: MUSTER_LAYERS.AREAS,
-    layerId: MUSTER_LAYERS.AREAS,
-    name: 'Muster Event Parking',
-    url: `${eventUrl}/0`
-  },
   TRAFFIC_FLOW: {
     id: MUSTER_LAYERS.TRAFFIC_FLOW,
     layerId: MUSTER_LAYERS.TRAFFIC_FLOW,
-    name: 'Traffic Flow',
+    name: 'Muster Traffic Flow',
+    url: `${eventUrl}/0`
+  },
+  PARKING: {
+    id: MUSTER_LAYERS.PARKING,
+    layerId: MUSTER_LAYERS.PARKING,
+    name: 'Muster Parking',
     url: `${eventUrl}/1`
+  },
+  ROAD_CLOSED: {
+    id: MUSTER_LAYERS.ROAD_CLOSED,
+    layerId: MUSTER_LAYERS.ROAD_CLOSED,
+    name: 'Road Closed',
+    url: `${eventUrl}/2`
   }
 };
 
 export const MusterEventColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: MusterEventDefinitions.EVENT_AREAS.id,
-    title: MusterEventDefinitions.EVENT_AREAS.name,
-    url: MusterEventDefinitions.EVENT_AREAS.url,
+    id: MusterEventDefinitions.TRAFFIC_FLOW.id,
+    title: MusterEventDefinitions.TRAFFIC_FLOW.name,
+    url: MusterEventDefinitions.TRAFFIC_FLOW.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.name}',
-      description: `{attributes.description}`
+      name: 'attributes.Event',
+      description: 'attributes.STF_Notes'
     },
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
-    }
-  },
-
-  {
-    type: 'feature',
-    id: MusterEventDefinitions.TRAFFIC_FLOW.id,
-    title: MusterEventDefinitions.TRAFFIC_FLOW.name,
-    url: MusterEventDefinitions.TRAFFIC_FLOW.url,
-    visible: true,
-    native: {
-      listMode: 'show',
       outFields: ['*'],
       renderer: {
         type: 'unique-value',
-        field: 'edited',
+        field: 'Type',
         uniqueValueInfos: [
           {
-            value: 'Fast Route',
-            label: 'Fast Route',
+            value: 'Green',
+            label: 'Recommended Routes',
             symbol: {
               type: 'simple-line',
               color: 'rgb(56, 168, 0)',
-              width: 2,
+              width: 3,
               marker: {
                 style: 'arrow',
                 color: 'rgb(56, 168, 0)',
@@ -73,7 +69,7 @@ export const MusterEventColdLayerSources: LayerSource[] = [
             } as unknown as esri.SimpleLineSymbolProperties
           },
           {
-            value: 'Expect Delays',
+            value: 'Red',
             label: 'Expect Delays',
             symbol: {
               type: 'simple-line',
@@ -87,7 +83,97 @@ export const MusterEventColdLayerSources: LayerSource[] = [
             } as unknown as esri.SimpleLineSymbolProperties
           }
         ]
+      },
+      labelingInfo: [
+        {
+          labelExpressionInfo: {
+            expression: '$feature.STF_Notes'
+          },
+          minScale: 0,
+          maxScale: 0,
+          useCodedValues: true,
+          allowOverrun: true,
+          symbol: {
+            type: 'text',
+            color: 'red',
+            haloColor: 'white',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              family: 'Arial Unicode MS',
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    type: 'feature',
+    id: MusterEventDefinitions.PARKING.id,
+    title: MusterEventDefinitions.PARKING.name,
+    url: MusterEventDefinitions.PARKING.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.SpEv_Lot_Notes.MusterN',
+        collapsed: true
       }
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: MusterEventDefinitions.ROAD_CLOSED.id,
+    title: MusterEventDefinitions.ROAD_CLOSED.name,
+    url: MusterEventDefinitions.ROAD_CLOSED.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'A_Name',
+        collapsed: true
+      },
+      description: {
+        field: 'SP_SH_Notes',
+        collapsed: true
+      }
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*'],
+      labelingInfo: [
+        {
+          labelExpressionInfo: {
+            expression: '$feature.SP_SH_Notes'
+          },
+          minScale: 0,
+          maxScale: 0,
+          useCodedValues: true,
+          allowOverrun: true,
+          symbol: {
+            type: 'text',
+            color: 'white',
+            haloColor: 'black',
+            haloSize: 1,
+            angle: 0,
+            font: {
+              family: 'Arial Unicode MS',
+              size: 10,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
     }
   }
 ];
@@ -97,13 +183,16 @@ export const MusterConfiguration: EventConfiguration = {
   name: 'Muster',
   applicationName: 'Muster Parking Map',
   shortApplicationName: 'Muster Map',
-  eventDates: ['2025-04-21'],
+  eventDates: ['2026-04-21'],
+  mapCenter: [-96.34724, 30.60550],
   zoom: 16
 };
 
 export const MusterOptions: SpecialEventOptions = [];
 
-export const MusterTs: ISpecialEventRoot = {
+
+export const MusterTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: MusterConfiguration,
   options: MusterOptions,
   sources: MusterEventColdLayerSources,
@@ -117,3 +206,4 @@ export const MusterTs: ISpecialEventRoot = {
     keywords: ['muster', 'parking', 'transportation']
   }
 };
+

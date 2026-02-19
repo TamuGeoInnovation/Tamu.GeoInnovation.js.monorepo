@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
   FESTIVAL_AREAS = 'phys-eng-festival-areas',
@@ -76,14 +80,15 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
   applicationName: 'Physics and Engineering Festival Transportation Map',
   shortApplicationName: 'Physics and Engineering Festival Map',
   introductionText: 'Get the best parking information for the',
-  eventDates: ['2025-04-05'],
+  eventDates: ['2026-03-28'],
   mapCenter: [-96.33771, 30.62143],
   zoom: 17
 };
 
 export const PhysicsAndEngineeringFestivalOptions: SpecialEventOptions = [];
 
-export const PhysicsAndEngineeringFestivalTs: ISpecialEventRoot = {
+export const PhysicsAndEngineeringFestivalTs: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: PhysicsAndEngineeringFestivalConfiguration,
   options: PhysicsAndEngineeringFestivalOptions,
   sources: PhysEngFestivalColdLayerSources,

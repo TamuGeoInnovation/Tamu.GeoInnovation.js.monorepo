@@ -7,9 +7,9 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import {
+  AggiemapCustomMapConfiguration,
   EventAccommodationOption,
   EventSettings,
-  ISpecialEventRoot,
   ResolvedEventSettings,
   SpecialEventOptions
 } from '../../interfaces/special-event.interface';
@@ -104,10 +104,12 @@ export class EventSettingsService {
     }
   }
 
-  public eventConfiguration(): ISpecialEventRoot;
-  public eventConfiguration(asObservable: true): Observable<ISpecialEventRoot>;
-  public eventConfiguration(asObservable: false): ISpecialEventRoot;
-  public eventConfiguration(asObservable?: boolean): ISpecialEventRoot | Observable<ISpecialEventRoot> {
+  public eventConfiguration(): AggiemapCustomMapConfiguration;
+  public eventConfiguration(asObservable: true): Observable<AggiemapCustomMapConfiguration>;
+  public eventConfiguration(asObservable: false): AggiemapCustomMapConfiguration;
+  public eventConfiguration(
+    asObservable?: boolean
+  ): AggiemapCustomMapConfiguration | Observable<AggiemapCustomMapConfiguration> {
     const config = this.getEventDefinitionById(this._settingsSecondaryKey);
 
     if (!config) {
@@ -330,7 +332,7 @@ export class EventSettingsService {
    * @param {string} eventId A string that represents the event configuration Id
    * @return {EventDefinition | null} Returns the EventDefinition object if found, otherwise null.
    */
-  public getEventDefinitionById(eventId: string): ISpecialEventRoot | null {
+  public getEventDefinitionById(eventId: string): AggiemapCustomMapConfiguration | null {
     if (!eventId || eventId.length === 0) {
       return null;
     }

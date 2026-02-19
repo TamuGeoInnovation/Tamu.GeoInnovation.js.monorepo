@@ -1,16 +1,16 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { ISpecialEventRoot } from '../interfaces/special-event.interface';
+import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
 import esri = __esri;
 
 export enum AGGIELAND_SATURDAY_LAYERS {
-  PARKING = 'aggieland-saturday-parking',
-  BUS_ROUTES = 'aggieland-saturday-bus-routes',
   BUS_STOPS = 'aggieland-saturday-bus-stops',
-  SPECIAL_POIS = 'aggieland-saturday-special-pois'
+  BUS_ROUTES = 'aggieland-saturday-bus-routes',
+  SPECIAL_POIS = 'aggieland-saturday-special-pois',
+  PARKING = 'aggieland-saturday-parking'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AggielandSaturday/MapServer';
@@ -31,13 +31,13 @@ export const AggielandSaturdayEventDefinitions = {
   EVENT_SPECIAL_POIS: {
     id: AGGIELAND_SATURDAY_LAYERS.SPECIAL_POIS,
     layerId: AGGIELAND_SATURDAY_LAYERS.SPECIAL_POIS,
-    name: 'Points of Interest @ Aggieland Saturday',
+    name: 'Special Points of Interest',
     url: `${eventUrl}/2`
   },
   EVENT_PARKING: {
     id: AGGIELAND_SATURDAY_LAYERS.PARKING,
     layerId: AGGIELAND_SATURDAY_LAYERS.PARKING,
-    name: 'Parking',
+    name: 'Aggieland Saturday Parking',
     url: `${eventUrl}/3`
   }
 };
@@ -51,7 +51,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Event} Parking',
-      description: `Type: {attributes.Type}\nLot Name: {attributes.name}`
+      description: 'Type: {attributes.Type}\nLot Name: {attributes.name}'
     },
     visible: true,
     listMode: 'show',
@@ -67,7 +67,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: 'Aggieland Saturday Bus Stop ({attributes.StopType})',
-      description: `Stop Name: {attributes.StopName}\nRoute Number: {attributes.Route}`
+      description: 'Stop Name: {attributes.StopName}\nRoute Number: {attributes.Route}'
     },
     visible: true,
     listMode: 'show',
@@ -107,8 +107,8 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     title: AggielandSaturdayEventDefinitions.EVENT_BUS_ROUTES.name,
     url: AggielandSaturdayEventDefinitions.EVENT_BUS_ROUTES.url,
     visible: true,
+    listMode: 'show',
     native: {
-      listMode: 'show',
       outFields: ['*'],
       renderer: {
         type: 'unique-value',
@@ -153,8 +153,8 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     url: AggielandSaturdayEventDefinitions.EVENT_SPECIAL_POIS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: `Aggieland Saturday Points of Interest`,
-      description: `Type: {attributes.Type}`
+      name: 'Aggieland Saturday Points of Interest',
+      description: 'Type: {attributes.Type}'
     },
     visible: true,
     listMode: 'show',
@@ -220,14 +220,28 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
   }
 ];
 
+export const AggielandSaturdayConfiguration: EventConfiguration = {
+  id: 'aggieland-saturday',
+  name: 'Aggieland Saturday',
+  applicationName: 'Aggieland Saturday Transportation Map',
+  shortApplicationName: 'Aggieland Saturday',
+  introductionText: 'Transportation, parking, and bus route information for Aggieland Saturday.',
+  eventDates: ['2026-02-28'],
+  mapCenter: [-96.339, 30.611],
+  zoom: 15
+};
+
+export const AggielandSaturdayOptions: SpecialEventOptions = [];
+
 export const AggielandSaturdayEventTs: ISpecialEventRoot = {
-  configuration: null,
-  options: null,
+  configuration: AggielandSaturdayConfiguration,
+  options: AggielandSaturdayOptions,
   sources: AggielandSaturdayEventColdLayerSources,
   references: AGGIELAND_SATURDAY_LAYERS,
+  type: 'special-event',
   discover: {
-    id: 'aggieland-saturday',
-    name: 'Aggieland Saturday',
+    id: AggielandSaturdayConfiguration.id,
+    name: AggielandSaturdayConfiguration.name,
     description: 'Transportation and parking information for Aggieland Saturday.',
     source: 'internal',
     type: 'event',
