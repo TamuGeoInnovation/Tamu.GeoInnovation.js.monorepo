@@ -5,19 +5,20 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
 export enum NIGHT_WEEKEND_LAYERS {
   NIGHT_PRIVILEGES = 'Night Privileges 5:00pm - 6:00am'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/NightWeekendParking/MapServer';
 
 export const NightWeekendDefinitions = {
   NIGHT_PRIVILEGES: {
     id: NIGHT_WEEKEND_LAYERS.NIGHT_PRIVILEGES,
     layerId: NIGHT_WEEKEND_LAYERS.NIGHT_PRIVILEGES,
     name: 'Night Privileges 5:00pm - 6:00am',
-    url: `${eventUrl}/6`
+    url: `${eventUrl}/0`
   }
 };
 
@@ -29,8 +30,42 @@ export const NightWeekendColdLayerSources: LayerSource[] = [
     url: NightWeekendDefinitions.NIGHT_PRIVILEGES.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.NandWN',
+        collapsed: true
+      }
+    },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // labels are being buried under features so they are being manually drawn
+      labelsVisible: true,
+      labelingInfo: [
+        {
+          labelPlacement: 'always-horizontal',
+          labelExpressionInfo: {
+            expression: `$feature["GIS.TS.ParkingLots.Name"]`
+          },
+          minScale: 15000,
+          maxScale: 0,
+          symbol: {
+            type: 'text',
+            color: [0, 0, 0, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1,
+            font: {
+              family: 'Open Sans',
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        }
+      ]
     }
   }
 ];
