@@ -1,5 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -7,81 +9,28 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum MAINTENANCE_PARKING_LAYERS {
-  CONSTRUCTION = 'construction',
   MAINTENANCE_SPACES = 'maintenance-parking-spaces',
-  SERVICE_SPACES = 'service-parking-spaces',
-  LINE_PAINT = 'line-paint',
-  MAINTENANCE_LOTS = 'maintenance-parking-lots',
-  SERVICE_LOTS = 'service-parking-lots',
-  RNS_SPACES = 'rns-spaces',
-  CONTRACTOR_LOTS = 'contractor-parking-lots'
+  MAINTENANCE_LOTS = 'maintenance-parking-lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/ServiceMaintenanceContractor/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MaintenanceParking/MapServer';
 
 export const MaintenanceParkingDefinitions = {
-  CONSTRUCTION: {
-    id: MAINTENANCE_PARKING_LAYERS.CONSTRUCTION,
-    layerId: MAINTENANCE_PARKING_LAYERS.CONSTRUCTION,
-    name: 'Construction',
-    url: `${eventUrl}/0`
-  },
   MAINTENANCE_SPACES: {
     id: MAINTENANCE_PARKING_LAYERS.MAINTENANCE_SPACES,
     layerId: MAINTENANCE_PARKING_LAYERS.MAINTENANCE_SPACES,
     name: 'Maintenance Parking Spaces',
-    url: `${eventUrl}/1`
-  },
-  SERVICE_SPACES: {
-    id: MAINTENANCE_PARKING_LAYERS.SERVICE_SPACES,
-    layerId: MAINTENANCE_PARKING_LAYERS.SERVICE_SPACES,
-    name: 'Service Parking Spaces',
-    url: `${eventUrl}/2`
-  },
-  LINE_PAINT: {
-    id: MAINTENANCE_PARKING_LAYERS.LINE_PAINT,
-    layerId: MAINTENANCE_PARKING_LAYERS.LINE_PAINT,
-    name: 'Line Paint',
-    url: `${eventUrl}/3`
+    url: `${eventUrl}/0`
   },
   MAINTENANCE_LOTS: {
     id: MAINTENANCE_PARKING_LAYERS.MAINTENANCE_LOTS,
     layerId: MAINTENANCE_PARKING_LAYERS.MAINTENANCE_LOTS,
     name: 'Maintenance Parking Lots',
-    url: `${eventUrl}/4`
-  },
-  SERVICE_LOTS: {
-    id: MAINTENANCE_PARKING_LAYERS.SERVICE_LOTS,
-    layerId: MAINTENANCE_PARKING_LAYERS.SERVICE_LOTS,
-    name: 'Service Parking Lots',
-    url: `${eventUrl}/5`
-  },
-  RNS_SPACES: {
-    id: MAINTENANCE_PARKING_LAYERS.RNS_SPACES,
-    layerId: MAINTENANCE_PARKING_LAYERS.RNS_SPACES,
-    name: 'RNS Spaces',
-    url: `${eventUrl}/6`
-  },
-  CONTRACTOR_LOTS: {
-    id: MAINTENANCE_PARKING_LAYERS.CONTRACTOR_LOTS,
-    layerId: MAINTENANCE_PARKING_LAYERS.CONTRACTOR_LOTS,
-    name: 'Contractor Parking Lots',
-    url: `${eventUrl}/7`
+    url: `${eventUrl}/1`
   }
 };
 
 export const MaintenanceParkingColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: MaintenanceParkingDefinitions.CONSTRUCTION.id,
-    title: MaintenanceParkingDefinitions.CONSTRUCTION.name,
-    url: MaintenanceParkingDefinitions.CONSTRUCTION.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
   {
     type: 'feature',
     id: MaintenanceParkingDefinitions.MAINTENANCE_SPACES.id,
@@ -89,28 +38,30 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
     url: MaintenanceParkingDefinitions.MAINTENANCE_SPACES.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: MaintenanceParkingDefinitions.SERVICE_SPACES.id,
-    title: MaintenanceParkingDefinitions.SERVICE_SPACES.name,
-    url: MaintenanceParkingDefinitions.SERVICE_SPACES.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: MaintenanceParkingDefinitions.LINE_PAINT.id,
-    title: MaintenanceParkingDefinitions.LINE_PAINT.name,
-    url: MaintenanceParkingDefinitions.LINE_PAINT.url,
-    visible: true,
-    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.LotName}',
+      description: {
+        field: 'Spc_Type',
+        collapsed: true
+      },
+      spaceId: {
+        field: 'Spc_ID_Num',
+        collapsed: true
+      },
+      rns: {
+        field: 'RNS_Num',
+        collapsed: true
+      },
+      garageLevel: {
+        field: 'Garage_Lvl',
+        collapsed: true
+      },
+      note: {
+        field: 'Anno_Type',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -122,39 +73,21 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
     url: MaintenanceParkingDefinitions.MAINTENANCE_LOTS.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: MaintenanceParkingDefinitions.SERVICE_LOTS.id,
-    title: MaintenanceParkingDefinitions.SERVICE_LOTS.name,
-    url: MaintenanceParkingDefinitions.SERVICE_LOTS.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: MaintenanceParkingDefinitions.RNS_SPACES.id,
-    title: MaintenanceParkingDefinitions.RNS_SPACES.name,
-    url: MaintenanceParkingDefinitions.RNS_SPACES.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: MaintenanceParkingDefinitions.CONTRACTOR_LOTS.id,
-    title: MaintenanceParkingDefinitions.CONTRACTOR_LOTS.name,
-    url: MaintenanceParkingDefinitions.CONTRACTOR_LOTS.url,
-    visible: true,
-    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.MainteN',
+        collapsed: true
+      },
+      lotType: {
+        field: 'GIS.TS.ParkingLots.LotType',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -182,9 +115,9 @@ export const MaintenanceParkingTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: MaintenanceParkingConfiguration.id,
     name: MaintenanceParkingConfiguration.name,
-    description: 'Maintenance parking lots and spaces, including construction, service, contractor, and RNS overlays.',
+    description: 'Maintenance parking lots and spaces.',
     source: 'internal',
     type: 'parking',
-    keywords: ['maintenance', 'parking', 'service', 'contractor']
+    keywords: ['maintenance', 'parking']
   }
 };

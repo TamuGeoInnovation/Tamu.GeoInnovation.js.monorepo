@@ -1,5 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -7,64 +8,21 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum STAFF_SELECTABLE_LAYERS {
-  CONSTRUCTION = 'Construction',
-  LINE_PAINT = 'Line Paint',
-  STAFF_SELECTABLE = 'Staff Selectable Parking Lots',
-  RNS_SPACES = 'RNS Spaces'
+  STAFF_SELECTABLE = 'Staff Selectable Parking Lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/PermitSelect/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/StaffSelectableParking/MapServer';
 
 export const StaffSelectableDefinitions = {
-  CONSTRUCTION: {
-    id: STAFF_SELECTABLE_LAYERS.CONSTRUCTION,
-    layerId: STAFF_SELECTABLE_LAYERS.CONSTRUCTION,
-    name: 'Construction',
-    url: `${eventUrl}/0`
-  },
-  LINE_PAINT: {
-    id: STAFF_SELECTABLE_LAYERS.LINE_PAINT,
-    layerId: STAFF_SELECTABLE_LAYERS.LINE_PAINT,
-    name: 'Line Paint',
-    url: `${eventUrl}/1`
-  },
   STAFF_SELECTABLE: {
     id: STAFF_SELECTABLE_LAYERS.STAFF_SELECTABLE,
     layerId: STAFF_SELECTABLE_LAYERS.STAFF_SELECTABLE,
     name: 'Staff Selectable Parking Lots',
-    url: `${eventUrl}/4`
-  },
-  RNS_SPACES: {
-    id: STAFF_SELECTABLE_LAYERS.RNS_SPACES,
-    layerId: STAFF_SELECTABLE_LAYERS.RNS_SPACES,
-    name: 'RNS Spaces',
-    url: `${eventUrl}/5`
+    url: `${eventUrl}/0`
   }
 };
 
 export const StaffSelectableColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: StaffSelectableDefinitions.CONSTRUCTION.id,
-    title: StaffSelectableDefinitions.CONSTRUCTION.name,
-    url: StaffSelectableDefinitions.CONSTRUCTION.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: StaffSelectableDefinitions.LINE_PAINT.id,
-    title: StaffSelectableDefinitions.LINE_PAINT.name,
-    url: StaffSelectableDefinitions.LINE_PAINT.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
   {
     type: 'feature',
     id: StaffSelectableDefinitions.STAFF_SELECTABLE.id,
@@ -72,17 +30,17 @@ export const StaffSelectableColdLayerSources: LayerSource[] = [
     url: StaffSelectableDefinitions.STAFF_SELECTABLE.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: StaffSelectableDefinitions.RNS_SPACES.id,
-    title: StaffSelectableDefinitions.RNS_SPACES.name,
-    url: StaffSelectableDefinitions.RNS_SPACES.url,
-    visible: true,
-    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.StuSeleN',
+        collapsed: true
+      }
+    },
     native: {
       outFields: ['*']
     }
@@ -113,6 +71,6 @@ export const StaffSelectableTs: AggiemapCustomMapConfiguration = {
     description: 'Selectable parking information for staff.',
     source: 'internal',
     type: 'parking',
-    keywords: ['permit select', 'staff', 'selectable', 'parking', 'rns']
+    keywords: ['permit select', 'staff', 'selectable', 'parking']
   }
 };

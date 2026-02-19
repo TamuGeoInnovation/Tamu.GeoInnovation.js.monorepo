@@ -56,15 +56,22 @@
       </div>
 
       <!-- Parking Maps Section -->
-      <div class="parking-maps-section trailer-3" *ngIf="parkingApplications.length > 0">
+      <div class="parking-maps-section trailer-3" *ngIf="parkingColumns[0].length + parkingColumns[1].length > 0">
         <h2>Parking Maps</h2>
-        <p class="section-description">Ordered list of parking maps.</p>
+        <p class="section-description">Browse available parking maps for Texas A&M University campus.</p>
 
-        <ol class="parking-links">
-          <li class="parking-link-item" *ngFor="let app of parkingApplications">
-            <a class="parking-link" [routerLink]="['/parking', app.id]" target="_blank" rel="noopener">{{ app.name }}</a>
-          </li>
-        </ol>
+        <div class="parking-columns">
+          <ol class="parking-links">
+            <li class="parking-link-item" *ngFor="let app of parkingColumns[0]">
+              <a class="parking-link" [routerLink]="['/parking', app.id]" target="_blank" rel="noopener">{{ app.name }}</a>
+            </li>
+          </ol>
+          <ol class="parking-links" *ngIf="parkingColumns[1].length > 0" [attr.start]="parkingColumnStart">
+            <li class="parking-link-item" *ngFor="let app of parkingColumns[1]">
+              <a class="parking-link" [routerLink]="['/parking', app.id]" target="_blank" rel="noopener">{{ app.name }}</a>
+            </li>
+          </ol>
+        </div>
       </div>
 
       <!-- Experimental Applications Section -->

@@ -25,7 +25,8 @@ export class DiscoverComponent implements OnInit {
   public allApplications: DiscoverApplication[];
   private allEvents: EventConfiguration[];
   public upcomingEvents: EventConfiguration[];
-  public parkingApplications: InternalDiscoverApplication[];
+  public parkingColumns: InternalDiscoverApplication[][] = [[], []];
+  public parkingColumnStart = 1;
 
   public searchControl = new FormControl();
   public filteredApplications: Observable<DiscoverApplication[]>;
@@ -60,14 +61,21 @@ export class DiscoverComponent implements OnInit {
     // Calculate upcoming events
     this.upcomingEvents = this.getUpcomingEvents();
 
-    // Build ordered parking list
-    this.parkingApplications = this.getParkingApplications();
+    // Build ordered parking list and split into two columns
+    const parkingApplications = this.getParkingApplications();
+    this.parkingColumns = this.buildParkingColumns(parkingApplications);
+    this.parkingColumnStart = this.parkingColumns[0].length + 1;
   }
 
   private getParkingApplications(): InternalDiscoverApplication[] {
     return this.eventDiscoverApplications
       .filter((app) => app.type === 'parking')
       .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  private buildParkingColumns(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[][] {
+    const midpoint = Math.ceil(apps.length / 2);
+    return [apps.slice(0, midpoint), apps.slice(midpoint)];
   }
 
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
@@ -121,6 +129,12 @@ export class DiscoverComponent implements OnInit {
     }
     if (date instanceof Date) {
       return date.getTime();
+    }
+    // Treat date-only strings as local dates to avoid UTC day-shift issues.
+    const dateOnlyMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (dateOnlyMatch) {
+      const [, year, month, day] = dateOnlyMatch;
+      return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
     }
     return new Date(date).getTime();
   }
