@@ -36,7 +36,7 @@ import { RetireeParkingTs } from './retiree-parking.definitions';
 import { MaintenanceParkingTs } from './maintenance-parking.definitions';
 import { BaseballParkingTs } from './baseball-parking.definitions';
 import { SavannahBananasParkingTs } from './savannah-bananas.definitions';
-import { VisitorParkingTs } from './visitor-parking.definitions';
+import { AVPParkingTs } from './avp-parking.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -76,5 +76,5 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   MaintenanceParkingTs,
   BaseballParkingTs,
   SavannahBananasParkingTs,
-  VisitorParkingTs
+  AVPParkingTs
 ];
