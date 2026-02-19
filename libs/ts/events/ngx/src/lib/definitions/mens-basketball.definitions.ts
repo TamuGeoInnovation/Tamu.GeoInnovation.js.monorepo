@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum MENS_BASKETBALL_LAYERS {
   LINE_PAINT = 'mens-basketball-line-paint',
@@ -130,7 +134,8 @@ export const MensBasketball_Configuration: EventConfiguration = {
 
 export const MensBasketball_Options: SpecialEventOptions = [];
 
-export const MensBasketball_Ts: ISpecialEventRoot = {
+export const MensBasketball_Ts: AggiemapCustomMapConfiguration = {
+  type: 'special-event',
   configuration: MensBasketball_Configuration,
   options: MensBasketball_Options,
   sources: MensBasketball_ColdLayerSources,

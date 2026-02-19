@@ -2,7 +2,11 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -198,7 +202,7 @@ export const BigEventConfiguration: EventConfiguration = {
   name: 'Big Event',
   applicationName: 'Big Event Transportation Map',
   shortApplicationName: 'Big Event Map',
-  eventDates: ['2025-03-22']
+  eventDates: ['2026-03-21']
 };
 
 export const BigEventOptions: SpecialEventOptions = [
@@ -260,11 +264,12 @@ export const BigEventOptions: SpecialEventOptions = [
   }
 ];
 
-export const BigEventTs: ISpecialEventRoot = {
+export const BigEventTs: AggiemapCustomMapConfiguration = {
   configuration: BigEventConfiguration,
   options: BigEventOptions,
   sources: BigEventColdLayerSources,
   references: BIG_EVENT_LAYERS,
+  type: 'special-event',
   discover: {
     id: BigEventConfiguration.id,
     name: BigEventConfiguration.name,

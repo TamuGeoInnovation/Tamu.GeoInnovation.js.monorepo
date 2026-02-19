@@ -20,7 +20,7 @@
               <div class="flex flex-column">
                 <div class="flex flex-row align-center title">
                   <span class="app-name">{{ app.name }}</span>
-                  <span class="chip chip-internal" *ngIf="app.source === 'internal'">Event</span>
+                  <span class="chip chip-internal" *ngIf="app.source === 'internal'">{{app.type | uppercase}}</span>
                   <span class="chip chip-external" *ngIf="app.source === 'external'">Experimental</span>
                   <span class="chip chip-label" *ngFor="let label of app.labels">{{ label | uppercase}}</span>
                 </div>
@@ -53,6 +53,25 @@
             <p>No upcoming events found at this time.</p>
           </div>
         </ng-template>
+      </div>
+
+      <!-- Parking Maps Section -->
+      <div class="parking-maps-section trailer-3" *ngIf="parkingColumns[0].length + parkingColumns[1].length > 0">
+        <h2>Parking Maps</h2>
+        <p class="section-description">Browse available parking maps for Texas A&M University campus.</p>
+
+        <div class="parking-columns">
+          <ol class="parking-links">
+            <li class="parking-link-item" *ngFor="let app of parkingColumns[0]">
+              <a class="parking-link" [routerLink]="['/parking', app.id]" target="_blank" rel="noopener">{{ app.name }}</a>
+            </li>
+          </ol>
+          <ol class="parking-links" *ngIf="parkingColumns[1].length > 0" [attr.start]="parkingColumnStart">
+            <li class="parking-link-item" *ngFor="let app of parkingColumns[1]">
+              <a class="parking-link" [routerLink]="['/parking', app.id]" target="_blank" rel="noopener">{{ app.name }}</a>
+            </li>
+          </ol>
+        </div>
       </div>
 
       <!-- Experimental Applications Section -->

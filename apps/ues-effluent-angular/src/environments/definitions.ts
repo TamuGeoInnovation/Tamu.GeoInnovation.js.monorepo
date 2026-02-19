@@ -197,7 +197,7 @@ export const LayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: 'construction-layer',
-    title: 'Construction Zone',
+    title: 'Construction Zones',
     url: `${Connections.constructionUrl}`,
     category: 'Infrastructure',
     listMode: 'show',

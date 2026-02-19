@@ -190,6 +190,48 @@
   gap: 1rem;
 }
 
+.parking-maps-section {
+  h2 {
+    color: #500000;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+}
+
+.parking-links {
+  margin: 0;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.parking-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.parking-link-item {
+  margin: 0;
+}
+
+.parking-link {
+  color: #500000;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+}
+
 .application-description {
   font-size: 0.875rem;
   color: #666;

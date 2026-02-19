@@ -1,7 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum MS150_LAYERS {
   PARKING_LOTS = 'ms150-parking-lots',
@@ -75,18 +79,19 @@ export const MS150Configuration: EventConfiguration = {
   name: 'Bike MS 150',
   applicationName: 'Bike MS 150 Parking Map',
   shortApplicationName: 'Bike MS 150 Map',
-  eventDates: ['2025-04-27'],
+  eventDates: ['2026-04-26'],
   zoom: 16,
   mapCenter: [-96.3434, 30.61017]
 };
 
 export const MS150Options: SpecialEventOptions = [];
 
-export const MS150Ts: ISpecialEventRoot = {
+export const MS150Ts: AggiemapCustomMapConfiguration = {
   configuration: MS150Configuration,
   options: MS150Options,
   sources: MS150ColdLayerSources,
   references: MS150_LAYERS,
+  type: 'special-event',
   discover: {
     id: MS150Configuration.id,
     name: MS150Configuration.name,
