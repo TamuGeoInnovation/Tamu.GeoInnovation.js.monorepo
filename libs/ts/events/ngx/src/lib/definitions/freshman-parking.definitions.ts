@@ -1,5 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -7,84 +9,102 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum FRESHMAN_SELECTABLE_LAYERS {
-  CONSTRUCTION = 'Construction',
-  LINE_PAINT = 'Line Paint',
-  FRESHMAN_SELECTABLE = 'Freshman Selectable Parking Lots',
-  RNS_SPACES = 'RNS Spaces'
+  RESIDENT_STUDENT_PRIORITY = 'Resident Student Priority',
+  FRESHMAN_STUDENT_SELECTABLE = 'Freshman Student Selectable'
 }
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/FreshmanSelectableParking/MapServer';
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/PermitSelect/MapServer';
+type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
+type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
+
+const residentStudentPriorityRenderer: FeatureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    color: [255, 0, 0, 255],
+    outline: {
+      type: 'simple-line',
+      color: [0, 0, 0, 0],
+      width: 0
+    }
+  }
+};
+
+const freshmanSelectableRenderer: FeatureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    color: [0, 92, 230, 255],
+    outline: {
+      type: 'simple-line',
+      color: [0, 0, 0, 0],
+      width: 0
+    }
+  }
+};
 
 export const FreshmanSelectableDefinitions = {
-  CONSTRUCTION: {
-    id: FRESHMAN_SELECTABLE_LAYERS.CONSTRUCTION,
-    layerId: FRESHMAN_SELECTABLE_LAYERS.CONSTRUCTION,
-    name: 'Construction',
+  RESIDENT_STUDENT_PRIORITY: {
+    id: FRESHMAN_SELECTABLE_LAYERS.RESIDENT_STUDENT_PRIORITY,
+    layerId: FRESHMAN_SELECTABLE_LAYERS.RESIDENT_STUDENT_PRIORITY,
+    name: 'Resident Student Priority',
     url: `${eventUrl}/0`
   },
-  LINE_PAINT: {
-    id: FRESHMAN_SELECTABLE_LAYERS.LINE_PAINT,
-    layerId: FRESHMAN_SELECTABLE_LAYERS.LINE_PAINT,
-    name: 'Line Paint',
-    url: `${eventUrl}/1`
-  },
-  FRESHMAN_SELECTABLE: {
-    id: FRESHMAN_SELECTABLE_LAYERS.FRESHMAN_SELECTABLE,
-    layerId: FRESHMAN_SELECTABLE_LAYERS.FRESHMAN_SELECTABLE,
-    name: 'Freshman Selectable Parking Lots',
-    url: `${eventUrl}/3`
-  },
-  RNS_SPACES: {
-    id: FRESHMAN_SELECTABLE_LAYERS.RNS_SPACES,
-    layerId: FRESHMAN_SELECTABLE_LAYERS.RNS_SPACES,
-    name: 'RNS Spaces',
-    url: `${eventUrl}/5`
+  FRESHMAN_STUDENT_SELECTABLE: {
+    id: FRESHMAN_SELECTABLE_LAYERS.FRESHMAN_STUDENT_SELECTABLE,
+    layerId: FRESHMAN_SELECTABLE_LAYERS.FRESHMAN_STUDENT_SELECTABLE,
+    name: 'Freshman Student Selectable',
+    url: `${eventUrl}/0`
   }
 };
 
 export const FreshmanSelectableColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: FreshmanSelectableDefinitions.CONSTRUCTION.id,
-    title: FreshmanSelectableDefinitions.CONSTRUCTION.name,
-    url: FreshmanSelectableDefinitions.CONSTRUCTION.url,
+    id: FreshmanSelectableDefinitions.RESIDENT_STUDENT_PRIORITY.id,
+    title: FreshmanSelectableDefinitions.RESIDENT_STUDENT_PRIORITY.name,
+    url: FreshmanSelectableDefinitions.RESIDENT_STUDENT_PRIORITY.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.StuSeleN',
+        collapsed: true
+      }
+    },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: `"GIS.TS.Lot_Use.Resident_Lot" = 1 AND "GIS.TS.Lot_Use.FreshmanSele_Lot" = 1`,
+      renderer: residentStudentPriorityRenderer
     }
   },
   {
     type: 'feature',
-    id: FreshmanSelectableDefinitions.LINE_PAINT.id,
-    title: FreshmanSelectableDefinitions.LINE_PAINT.name,
-    url: FreshmanSelectableDefinitions.LINE_PAINT.url,
+    id: FreshmanSelectableDefinitions.FRESHMAN_STUDENT_SELECTABLE.id,
+    title: FreshmanSelectableDefinitions.FRESHMAN_STUDENT_SELECTABLE.name,
+    url: FreshmanSelectableDefinitions.FRESHMAN_STUDENT_SELECTABLE.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.Name',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.StuSeleN',
+        collapsed: true
+      }
+    },
     native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: FreshmanSelectableDefinitions.FRESHMAN_SELECTABLE.id,
-    title: FreshmanSelectableDefinitions.FRESHMAN_SELECTABLE.name,
-    url: FreshmanSelectableDefinitions.FRESHMAN_SELECTABLE.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: FreshmanSelectableDefinitions.RNS_SPACES.id,
-    title: FreshmanSelectableDefinitions.RNS_SPACES.name,
-    url: FreshmanSelectableDefinitions.RNS_SPACES.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: `"GIS.TS.Lot_Use.Resident_Lot" = 0 AND "GIS.TS.Lot_Use.FreshmanSele_Lot" = 1`,
+      renderer: freshmanSelectableRenderer
     }
   }
 ];
@@ -113,6 +133,6 @@ export const FreshmanSelectableTs: AggiemapCustomMapConfiguration = {
     description: 'Selectable parking information for freshmen.',
     source: 'internal',
     type: 'parking',
-    keywords: ['permit select', 'freshman', 'selectable', 'parking', 'rns']
+    keywords: ['permit select', 'freshman', 'selectable', 'parking', 'resident', 'priority']
   }
 };

@@ -1,29 +1,57 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-
+import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
-  AggiemapCustomMapConfiguration,
   EventConfiguration,
+  AggiemapCustomMapConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
 export enum CONTRACTOR_PARKING_LAYERS {
-  CONSTRUCTION = 'construction',
-  CONTRACTOR_PARKING = 'contractor-parking'
+  CONTRACTOR_AND_CONTRACTOR_PLUS = 'Contractor Permit and Contractor+ Permit Authorized',
+  CONTRACTOR_PLUS_ONLY = 'Only Contractor+ Permit Authorized'
 }
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/ContractorParking/MapServer';
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/ServiceMaintenanceContractor/MapServer';
+type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
+type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 
-export const ContractorParkingEventDefinitions = {
-  CONTRACTOR_PARKING: {
-    id: CONTRACTOR_PARKING_LAYERS.CONTRACTOR_PARKING,
-    layerId: CONTRACTOR_PARKING_LAYERS.CONTRACTOR_PARKING,
-    name: 'Contractor Parking Lots',
-    url: `${eventUrl}/7`
+const contractorAndContractorPlusRenderer: FeatureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    color: [90, 0, 0, 255],
+    outline: {
+      type: 'simple-line',
+      color: [0, 0, 0, 0],
+      width: 0
+    }
+  }
+};
+
+const contractorPlusOnlyRenderer: FeatureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    color: [232, 190, 255, 255],
+    outline: {
+      type: 'simple-line',
+      color: [0, 0, 0, 0],
+      width: 0
+    }
+  }
+};
+
+export const ContractorParkingDefinitions = {
+  CONTRACTOR_AND_CONTRACTOR_PLUS: {
+    id: CONTRACTOR_PARKING_LAYERS.CONTRACTOR_AND_CONTRACTOR_PLUS,
+    layerId: CONTRACTOR_PARKING_LAYERS.CONTRACTOR_AND_CONTRACTOR_PLUS,
+    name: 'Contractor Permit and Contractor+ Permit Authorized',
+    url: `${eventUrl}/0`
   },
-  CONSTRUCTION: {
-    id: CONTRACTOR_PARKING_LAYERS.CONSTRUCTION,
-    layerId: CONTRACTOR_PARKING_LAYERS.CONSTRUCTION,
-    name: 'Construction',
+  CONTRACTOR_PLUS_ONLY: {
+    id: CONTRACTOR_PARKING_LAYERS.CONTRACTOR_PLUS_ONLY,
+    layerId: CONTRACTOR_PARKING_LAYERS.CONTRACTOR_PLUS_ONLY,
+    name: 'Only Contractor+ Permit Authorized',
     url: `${eventUrl}/0`
   }
 };
@@ -31,25 +59,50 @@ export const ContractorParkingEventDefinitions = {
 export const ContractorParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: ContractorParkingEventDefinitions.CONTRACTOR_PARKING.id,
-    title: ContractorParkingEventDefinitions.CONTRACTOR_PARKING.name,
-    url: ContractorParkingEventDefinitions.CONTRACTOR_PARKING.url,
+    id: ContractorParkingDefinitions.CONTRACTOR_AND_CONTRACTOR_PLUS.id,
+    title: ContractorParkingDefinitions.CONTRACTOR_AND_CONTRACTOR_PLUS.name,
+    url: ContractorParkingDefinitions.CONTRACTOR_AND_CONTRACTOR_PLUS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.ContractorN',
+        collapsed: true
+      }
+    },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: `"GIS.TS.Lot_Use.Construct_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface')`,
+      renderer: contractorAndContractorPlusRenderer
     }
   },
-
   {
     type: 'feature',
-    id: ContractorParkingEventDefinitions.CONSTRUCTION.id,
-    title: ContractorParkingEventDefinitions.CONSTRUCTION.name,
-    url: ContractorParkingEventDefinitions.CONSTRUCTION.url,
+    id: ContractorParkingDefinitions.CONTRACTOR_PLUS_ONLY.id,
+    title: ContractorParkingDefinitions.CONTRACTOR_PLUS_ONLY.name,
+    url: ContractorParkingDefinitions.CONTRACTOR_PLUS_ONLY.url,
     visible: true,
+    listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.Lot_Notes.ContractorN',
+        collapsed: true
+      }
+    },
     native: {
-      listMode: 'show',
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: `"GIS.TS.Lot_Use.Construct_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage Visitor')`,
+      renderer: contractorPlusOnlyRenderer
     }
   }
 ];
@@ -58,9 +111,9 @@ export const ContractorParkingConfiguration: EventConfiguration = {
   id: 'contractor-parking',
   name: 'Contractor Parking',
   applicationName: 'Contractor Parking Map',
-  shortApplicationName: 'Contractor Parking Map',
+  shortApplicationName: 'Contractor Parking',
+  mapCenter: [-96.34731, 30.60543],
   eventDates: [],
-  mapCenter: [-96.34467, 30.60585],
   zoom: 16
 };
 
@@ -75,9 +128,9 @@ export const ContractorParkingTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: ContractorParkingConfiguration.id,
     name: ContractorParkingConfiguration.name,
-    description: 'Parking areas designated for contractors.',
+    description: 'Parking lot information for Contractor and Contractor+ permits.',
     source: 'internal',
     type: 'parking',
-    keywords: ['contractor', 'parking', 'transportation']
+    keywords: ['contractor', 'contractor+', 'parking', 'permit']
   }
 };
