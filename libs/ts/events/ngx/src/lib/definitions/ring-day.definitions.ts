@@ -154,11 +154,11 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           conversions: [
             {
               input: EventDay.DAY1,
-              expression: `StartDate <= date'${RingDayDates.DAY1}' AND EndDate >= date'${RingDayDates.DAY1}'`
+              expression: '1=1'
             },
             {
               input: EventDay.DAY2,
-              expression: `StartDate <= date'${RingDayDates.DAY2}' AND EndDate >= date'${RingDayDates.DAY2}'`
+              expression: '1=1'
             }
           ]
         },
@@ -167,11 +167,11 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           conversions: [
             {
               input: EventDay.DAY1,
-              expression: `Start_Date <= date'${RingDayDates.DAY1}' AND End_Date >= date'${RingDayDates.DAY1}'`
+              expression: '1=1'
             },
             {
               input: EventDay.DAY2,
-              expression: `Start_Date <= date'${RingDayDates.DAY2}' AND End_Date >= date'${RingDayDates.DAY2}'`
+              expression: '1=1'
             }
           ]
         },
@@ -180,11 +180,11 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
           conversions: [
             {
               input: EventDay.DAY1,
-              expression: `Start_Date <= date'${RingDayDates.DAY1}' AND End_Date >= date'${RingDayDates.DAY1}'`
+              expression: '1=1'
             },
             {
               input: EventDay.DAY2,
-              expression: `Start_Date <= date'${RingDayDates.DAY2}' AND End_Date >= date'${RingDayDates.DAY2}'`
+              expression: '1=1'
             }
           ]
         }
