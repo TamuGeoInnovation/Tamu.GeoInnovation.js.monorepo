@@ -29,18 +29,24 @@ export class IntroComponent extends BuilderModuleBaseComponent implements OnInit
   }
 
   public next() {
+    const builderStartStep = this.settings?.builderStartStep ?? 'accommodations';
+
+    if (builderStartStep === 'review') {
+      this.es.ensureDefaultOptionSettings();
+    }
+
     this.anl.eventTrack.next({
       action: 'navigate',
       properties: {
         category: 'builder',
         gstCustom: {
           origin: 'intro',
-          dest: 'date'
+          dest: builderStartStep
         }
       }
     });
 
-    this.router.navigate(['../accommodations'], {
+    this.router.navigate([`../${builderStartStep}`], {
       relativeTo: this.rt.parent
     });
   }

@@ -181,6 +181,34 @@ export class EventSettingsService {
     return confirm;
   }
 
+  /**
+   * Ensures every option has a value by assigning the first choice as default when missing.
+   */
+  public ensureDefaultOptionSettings() {
+    const options = this.eventOptions();
+    const existingSettings = this.settings() || {};
+    let changed = false;
+
+    const merged = options.reduce((acc, option) => {
+      if (acc[option.value] === undefined && option.choices.length > 0) {
+        acc[option.value] = option.choices[0].value;
+        changed = true;
+      }
+
+      return acc;
+    }, { ...existingSettings } as EventSettings);
+
+    if (changed) {
+      this.store.setStorageObjectKeyValue({
+        primaryKey: this._settingsPrimaryKey,
+        subKey: this._settingsSecondaryKey,
+        value: merged
+      });
+    }
+
+    return merged;
+  }
+
   public getSavedAccommodation(accommodationKey: string) {
     const settings = this.settings();
 

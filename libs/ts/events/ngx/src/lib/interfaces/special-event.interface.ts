@@ -77,6 +77,14 @@ export interface EventConfiguration {
    * from the notification service.
    */
   toast?: NotificationProperties;
+
+  /**
+   * Determines which builder step should open after intro.
+   *
+   * - `accommodations`: standard flow
+   * - `review`: skip intermediate accommodations pages and go directly to review
+   */
+  builderStartStep?: 'accommodations' | 'review';
 }
 
 /**
