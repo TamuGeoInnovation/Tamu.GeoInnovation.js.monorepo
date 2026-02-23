@@ -2,8 +2,82 @@
   <ng-container *ngIf="accommodation$ | async as accommodation">
     <p class="center-text component-instructions">{{accommodation.description}}</p>
 
-    <div class="options-container">
-      <div *ngFor="let option of accommodation.choices" (click)="saveOption(accommodation.value, option.value)" (keyup.space)="saveOption(accommodation.value, option.value)" (keyup.enter)="saveOption(accommodation.value, option.value)" class="button tertiary" [ngClass]="{'active': (savedOptionValue | async) === option.value}" tabindex="0">{{option.label}}</div>
+    <div *ngIf="accommodation.uiType === 'date-card-grid'; else nonDateOptions" class="date-card-container">
+      <div
+        *ngFor="let option of accommodation.choices"
+        class="date-card"
+        (click)="saveOption(accommodation.value, option.value)"
+        (keyup.space)="saveOption(accommodation.value, option.value)"
+        (keyup.enter)="saveOption(accommodation.value, option.value)"
+        tabindex="0"
+      >
+        <div class="date">
+          <p class="name">{{option.secondaryLabel || (option.value | date : 'EEEE')}}</p>
+          <p class="month">{{option.label}}</p>
+        </div>
+
+        <div class="action" [ngClass]="{'active': (savedOptionValue | async) === option.value}">
+          <p class="material-icons" *ngIf="(savedOptionValue | async) !== option.value">arrow_forward</p>
+          <p class="material-icons active" *ngIf="(savedOptionValue | async) === option.value">check</p>
+        </div>
+      </div>
     </div>
+
+    <ng-template #nonDateOptions>
+      <div *ngIf="accommodation.uiType === 'grouped-card-grid'; else nonGroupedOptions">
+        <div class="zone-container" *ngFor="let group of getChoiceGroups(accommodation.choices)">
+          <h3>{{group.label}}</h3>
+
+          <div class="hall-item-container">
+            <div
+              *ngFor="let option of group.choices"
+              (click)="saveOption(accommodation.value, option.value)"
+              (keyup.space)="saveOption(accommodation.value, option.value)"
+              (keyup.enter)="saveOption(accommodation.value, option.value)"
+              tabindex="0"
+            >
+              <div class="name">{{option.label}}</div>
+
+              <div class="action" [ngClass]="{'active': (savedOptionValue | async) === option.value}">
+                <p class="material-icons" *ngIf="(savedOptionValue | async) !== option.value">arrow_forward</p>
+                <p class="material-icons" *ngIf="(savedOptionValue | async) === option.value">check</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #nonGroupedOptions>
+        <div *ngIf="accommodation.uiType === 'binary'; else defaultOptions" class="options-container binary-options">
+          <div
+            *ngFor="let option of accommodation.choices"
+            (click)="saveOption(accommodation.value, option.value)"
+            (keyup.space)="saveOption(accommodation.value, option.value)"
+            (keyup.enter)="saveOption(accommodation.value, option.value)"
+            class="button tertiary"
+            [ngClass]="{'active': (savedOptionValue | async) === option.value}"
+            tabindex="0"
+          >
+            {{option.label}}
+          </div>
+        </div>
+
+        <ng-template #defaultOptions>
+          <div class="options-container">
+            <div
+              *ngFor="let option of accommodation.choices"
+              (click)="saveOption(accommodation.value, option.value)"
+              (keyup.space)="saveOption(accommodation.value, option.value)"
+              (keyup.enter)="saveOption(accommodation.value, option.value)"
+              class="button tertiary"
+              [ngClass]="{'active': (savedOptionValue | async) === option.value}"
+              tabindex="0"
+            >
+              {{option.label}}
+            </div>
+          </div>
+        </ng-template>
+      </ng-template>
+    </ng-template>
   </ng-container>
 </div>

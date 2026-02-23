@@ -5,7 +5,12 @@ import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switc
 import { Angulartics2 } from 'angulartics2';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
-import { SpecialEventOption, SpecialEventOptions } from '../../../../interfaces/special-event.interface';
+import { EventAccommodationOption, SpecialEventOption, SpecialEventOptions } from '../../../../interfaces/special-event.interface';
+
+interface AccommodationChoiceGroup {
+  label: string;
+  choices: Array<EventAccommodationOption>;
+}
 
 @Component({
   selector: 'tamu-gisc-accommodations',
@@ -126,4 +131,23 @@ export class AccommodationsComponent implements OnInit {
       throw new Error('Error saving accommodation selection.');
     }
   };
+
+  public getChoiceGroups(choices: Array<EventAccommodationOption>): Array<AccommodationChoiceGroup> {
+    const grouped = choices.reduce((acc, choice) => {
+      const key = choice.group || 'Options';
+
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+
+      acc[key].push(choice);
+
+      return acc;
+    }, {} as Record<string, Array<EventAccommodationOption>>);
+
+    return Object.entries(grouped).map(([label, groupChoices]) => ({
+      label,
+      choices: groupChoices
+    }));
+  }
 }

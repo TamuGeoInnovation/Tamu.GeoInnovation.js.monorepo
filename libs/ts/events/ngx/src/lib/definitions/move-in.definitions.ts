@@ -4,6 +4,7 @@ import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdow
 
 import {
   AggiemapCustomMapConfiguration,
+  ConversionDeconflictingStrategy,
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
@@ -11,33 +12,67 @@ import {
 export enum MOVE_IN_LAYERS {
   MOVE_IN_POI = 'Move-In Points of Interest',
   MOVE_IN_STREETS = 'Move-In Streets',
-  MOVE_IN_LOTS = 'Move-In Lots'
+  MOVE_IN_LOTS = 'Move-In Lots',
+  RESIDENCE_HALL = 'Residence Hall'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/FallMoveInParking/MapServer';
+const moveInServiceUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/FallMoveInParking/MapServer';
+const basemapServiceUrl = 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer';
+
+const lotUseField = '"GIS.TS.SPEV_Lot_Use.Fall_MoveIn"';
 
 export const MoveInDefinitions = {
+  RESIDENCE_HALL: {
+    id: MOVE_IN_LAYERS.RESIDENCE_HALL,
+    layerId: MOVE_IN_LAYERS.RESIDENCE_HALL,
+    name: 'Residence Hall',
+    url: `${basemapServiceUrl}/1`
+  },
   MOVE_IN_POI: {
     id: MOVE_IN_LAYERS.MOVE_IN_POI,
     layerId: MOVE_IN_LAYERS.MOVE_IN_POI,
     name: 'Move-In Points of Interest',
-    url: `${eventUrl}/0`
+    url: `${moveInServiceUrl}/0`
   },
   MOVE_IN_STREETS: {
     id: MOVE_IN_LAYERS.MOVE_IN_STREETS,
     layerId: MOVE_IN_LAYERS.MOVE_IN_STREETS,
     name: 'Move-In Streets',
-    url: `${eventUrl}/1`
+    url: `${moveInServiceUrl}/1`
   },
   MOVE_IN_LOTS: {
     id: MOVE_IN_LAYERS.MOVE_IN_LOTS,
     layerId: MOVE_IN_LAYERS.MOVE_IN_LOTS,
     name: 'Move-In Lots',
-    url: `${eventUrl}/2`
+    url: `${moveInServiceUrl}/2`
   }
 };
 
 export const MoveInColdLayerSources: LayerSource[] = [
+  {
+    type: 'feature',
+    id: MoveInDefinitions.RESIDENCE_HALL.id,
+    title: MoveInDefinitions.RESIDENCE_HALL.name,
+    url: MoveInDefinitions.RESIDENCE_HALL.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*'],
+      definitionExpression: '1=0',
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [24, 255, 255, 0.75],
+          outline: {
+            color: [24, 255, 255, 1],
+            width: '3px'
+          }
+        }
+      }
+    }
+  },
   {
     type: 'feature',
     id: MoveInDefinitions.MOVE_IN_STREETS.id,
@@ -62,9 +97,6 @@ export const MoveInColdLayerSources: LayerSource[] = [
         field: 'GIS.TS.ParkingLots.Name',
         collapsed: true
       },
-      /**
-       * Notes requested from column: MoveInN
-       */
       description: {
         field: 'GIS.TS.SpEv_Lot_Notes.MoveInN',
         collapsed: true
@@ -98,77 +130,103 @@ export const MoveInColdLayerSources: LayerSource[] = [
 export const MoveInConfiguration: EventConfiguration = {
   id: 'move-in',
   name: 'Move In',
-  applicationName: 'Move In Transportation Map',
+  applicationName: 'Move-In Parking Maps',
+  shortApplicationName: 'Move-In Map',
   introductionText:
-    'Get the best transportation and parking information for Move In Day. Use the builder to choose which map layers you want before opening the map.',
-  shortApplicationName: 'Move In Map',
+    'Plan ahead and make your move-in day a seamless and frustration-free experience! Answer a few short questions and get the best parking information.',
+  reviewText:
+    "Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations on your move-in day.",
   mapCenter: [-96.34358, 30.61035],
   eventDates: [],
   zoom: 16,
-  builderStartStep: 'review'
+  builderStartStep: 'accommodations'
 };
 
 enum MoveInBuilderOptions {
-  LOTS = 'move-in-lots',
-  STREETS = 'move-in-streets',
-  POINTS_OF_INTEREST = 'move-in-poi',
-  LOTS_FILTER = 'move-in-lots-filter',
-  STREETS_FILTER = 'move-in-streets-filter',
-  POI_FILTER = 'move-in-poi-filter'
+  MOVE_IN_DATE = 'move-in-date',
+  RESIDENCE_HALL = 'move-in-residence-hall',
+  ACCESSIBLE_PARKING = 'move-in-accessible-parking'
 }
 
-enum MoveInOptionChoices {
-  SHOW = 'show',
-  HIDE = 'hide'
+enum MoveInDateChoices {
+  AUG_19_2026 = '2026-08-19',
+  AUG_20_2026 = '2026-08-20',
+  AUG_21_2026 = '2026-08-21',
+  AUG_22_2026 = '2026-08-22',
+  AUG_23_2026 = '2026-08-23',
+  AUG_24_2026 = '2026-08-24'
 }
 
-enum MoveInStreetFilterChoices {
-  ALL = 'all-street-types',
-  DISABLED_ONLY = 'street-disabled',
-  DROP_OFF_AUG_15_18 = 'street-drop-off-aug-15-18',
-  DROP_OFF_WEEKENDS = 'street-drop-off-weekends',
-  NO_MOVE_IN_PARKING = 'street-no-move-in-parking'
+enum MoveInHallChoices {
+  CLEMENTS = 'hall-clements',
+  DAVIS_GARY = 'hall-davis-gary',
+  FOWLER = 'hall-fowler',
+  HAAS = 'hall-haas',
+  HOBBY = 'hall-hobby',
+  HUGHES = 'hall-hughes',
+  HULLABALOO = 'hall-hullabaloo',
+  KEATHLEY = 'hall-keathley',
+  LECHNER = 'hall-lechner',
+  LEGGETT = 'hall-leggett',
+  MCFADDEN = 'hall-mcfadden',
+  MOSES = 'hall-moses',
+  NEELEY = 'hall-neeley',
+  SCHUHMACHER = 'hall-schuhmacher',
+  WALTON = 'hall-walton',
+  APPELT = 'hall-appelt',
+  ASTON = 'hall-aston',
+  DUNN = 'hall-dunn',
+  EPPRIGHT = 'hall-eppright',
+  HART = 'hall-hart',
+  KRUEGER = 'hall-krueger',
+  MOSHER = 'hall-mosher',
+  RUDDER = 'hall-rudder',
+  UNDERWOOD = 'hall-underwood',
+  WELLS = 'hall-wells',
+  WHITE_CREEK = 'hall-white-creek'
 }
 
-enum MoveInLotFilterChoices {
-  ALL = 'all-lot-types',
-  WEEKEND_FREE = 'lot-weekend-free',
-  WEEKEND_ONE_HOUR = 'lot-weekend-one-hour',
-  ONE_HOUR_LOT_PERMIT_AFTER_ONE_HOUR = 'lot-one-hour-permit-after-one-hour',
-  FREE_AUG_19_23 = 'lot-free-aug-19-23',
-  ONE_HOUR_DROP_OFF_AUG_19_24 = 'lot-one-hour-drop-off-aug-19-24',
-  DISABLED_ONLY = 'lot-disabled',
-  LOT_122 = 'lot-122',
-  FREE_AUG_19_24 = 'lot-free-aug-19-24',
-  PAID_VISITOR = 'lot-paid-visitor',
-  NO_MOVE_IN_PARKING = 'lot-no-move-in-parking',
-  FREE_AUG_22_23 = 'lot-free-aug-22-23'
+enum MoveInAccessibleChoices {
+  YES = 'yes',
+  NO = 'no'
 }
 
-enum MoveInPoiFilterChoices {
-  ALL = 'all-poi-types',
-  DINING = 'poi-dining',
-  RECYCLE = 'poi-recycle',
-  NO_PARKING = 'poi-no-parking',
-  INFO = 'poi-info',
-  ENGRAVING = 'poi-engraving',
-  CHECK_IN = 'poi-check-in'
-}
+const lotsForAug19To21 = `${lotUseField} IN ('30a', 'SSG', '40bcd', '122', 'Free', 'Paid', 'NoParking')`;
+const lotsForAug22 = `${lotUseField} IN ('30a', 'SSG', '40bcd', '122', 'Free', 'Paid', 'NoParking', 'NSG')`;
+const lotsForAug23 = `${lotUseField} IN ('WeekendFree', 'WeekendOneHr', '30a', 'SSG', '40bcd', '122', 'Free', 'Paid', 'NoParking', 'NSG')`;
+const lotsForAug24 = `${lotUseField} IN ('WeekendFree', 'WeekendOneHr', '40bcd', '122', 'Free', 'Paid', 'NoParking')`;
 
 export const MoveInOptions: SpecialEventOptions = [
   {
-    value: MoveInBuilderOptions.LOTS,
-    label: 'Move-In Lots',
-    shortDescription: 'Move-In Lots',
-    description: 'Show or hide Move-In Lots on the map.',
+    value: MoveInBuilderOptions.MOVE_IN_DATE,
+    label: 'Move-In Date',
+    shortDescription: 'Move-In Date',
+    description: 'Select your move-in day.',
+    uiType: 'date-card-grid',
     choices: [
       {
-        value: MoveInOptionChoices.SHOW,
-        label: 'Show'
+        value: MoveInDateChoices.AUG_19_2026,
+        label: 'August 19, 2026'
       },
       {
-        value: MoveInOptionChoices.HIDE,
-        label: 'Hide'
+        value: MoveInDateChoices.AUG_20_2026,
+        label: 'August 20, 2026'
+      },
+      {
+        value: MoveInDateChoices.AUG_21_2026,
+        label: 'August 21, 2026'
+      },
+      {
+        value: MoveInDateChoices.AUG_22_2026,
+        label: 'August 22, 2026'
+      },
+      {
+        value: MoveInDateChoices.AUG_23_2026,
+        label: 'August 23, 2026'
+      },
+      {
+        value: MoveInDateChoices.AUG_24_2026,
+        label: 'August 24, 2026'
       }
     ],
     effects: {
@@ -177,53 +235,57 @@ export const MoveInOptions: SpecialEventOptions = [
           layerId: MOVE_IN_LAYERS.MOVE_IN_LOTS,
           conversions: [
             {
-              input: MoveInOptionChoices.SHOW,
-              propOverrides: {
-                visible: true
-              }
+              input: MoveInDateChoices.AUG_19_2026,
+              expression: lotsForAug19To21
             },
             {
-              input: MoveInOptionChoices.HIDE,
-              propOverrides: {
-                visible: false
-              }
+              input: MoveInDateChoices.AUG_20_2026,
+              expression: lotsForAug19To21
+            },
+            {
+              input: MoveInDateChoices.AUG_21_2026,
+              expression: lotsForAug19To21
+            },
+            {
+              input: MoveInDateChoices.AUG_22_2026,
+              expression: lotsForAug22
+            },
+            {
+              input: MoveInDateChoices.AUG_23_2026,
+              expression: lotsForAug23
+            },
+            {
+              input: MoveInDateChoices.AUG_24_2026,
+              expression: lotsForAug24
             }
           ]
-        }
-      ]
-    }
-  },
-  {
-    value: MoveInBuilderOptions.STREETS,
-    label: 'Move-In Streets',
-    shortDescription: 'Move-In Streets',
-    description: 'Show or hide Move-In Streets on the map.',
-    choices: [
-      {
-        value: MoveInOptionChoices.SHOW,
-        label: 'Show'
-      },
-      {
-        value: MoveInOptionChoices.HIDE,
-        label: 'Hide'
-      }
-    ],
-    effects: {
-      layers: [
+        },
         {
           layerId: MOVE_IN_LAYERS.MOVE_IN_STREETS,
           conversions: [
             {
-              input: MoveInOptionChoices.SHOW,
-              propOverrides: {
-                visible: true
-              }
+              input: MoveInDateChoices.AUG_19_2026,
+              expression: "Type IN ('LZAllWeek', 'NoParking')"
             },
             {
-              input: MoveInOptionChoices.HIDE,
-              propOverrides: {
-                visible: false
-              }
+              input: MoveInDateChoices.AUG_20_2026,
+              expression: "Type IN ('LZAllWeek', 'NoParking')"
+            },
+            {
+              input: MoveInDateChoices.AUG_21_2026,
+              expression: "Type IN ('LZAllWeek', 'NoParking')"
+            },
+            {
+              input: MoveInDateChoices.AUG_22_2026,
+              expression: "Type IN ('LZSundayOnly', 'NoParking')"
+            },
+            {
+              input: MoveInDateChoices.AUG_23_2026,
+              expression: "Type IN ('LZSundayOnly', 'NoParking')"
+            },
+            {
+              input: MoveInDateChoices.AUG_24_2026,
+              expression: "Type IN ('LZSundayOnly', 'NoParking')"
             }
           ]
         }
@@ -231,36 +293,251 @@ export const MoveInOptions: SpecialEventOptions = [
     }
   },
   {
-    value: MoveInBuilderOptions.POINTS_OF_INTEREST,
-    label: 'Points of Interest',
-    shortDescription: 'Points of Interest',
-    description: 'Show or hide Move-In points of interest on the map.',
+    value: MoveInBuilderOptions.RESIDENCE_HALL,
+    label: 'Residence Hall',
+    shortDescription: 'Residence Hall',
+    description: 'Select your residence hall.',
+    uiType: 'grouped-card-grid',
     choices: [
       {
-        value: MoveInOptionChoices.SHOW,
-        label: 'Show'
+        value: MoveInHallChoices.CLEMENTS,
+        label: 'Clements Hall',
+        group: 'North Side'
       },
       {
-        value: MoveInOptionChoices.HIDE,
-        label: 'Hide'
+        value: MoveInHallChoices.DAVIS_GARY,
+        label: 'Davis-Gary Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.FOWLER,
+        label: 'Fowler Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.HAAS,
+        label: 'Haas Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.HOBBY,
+        label: 'Hobby Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.HUGHES,
+        label: 'Hughes Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.HULLABALOO,
+        label: 'Hullabaloo Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.KEATHLEY,
+        label: 'Keathley Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.LECHNER,
+        label: 'Lechner Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.LEGGETT,
+        label: 'Legett Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.MCFADDEN,
+        label: 'McFadden Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.MOSES,
+        label: 'Moses Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.NEELEY,
+        label: 'Neeley Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.SCHUHMACHER,
+        label: 'Schuhmacher Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.WALTON,
+        label: 'Walton Hall',
+        group: 'North Side'
+      },
+      {
+        value: MoveInHallChoices.APPELT,
+        label: 'Appelt Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.ASTON,
+        label: 'Aston Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.DUNN,
+        label: 'Dunn Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.EPPRIGHT,
+        label: 'Eppright Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.HART,
+        label: 'Hart Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.KRUEGER,
+        label: 'Krueger Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.MOSHER,
+        label: 'Mosher Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.RUDDER,
+        label: 'Rudder Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.UNDERWOOD,
+        label: 'Underwood Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.WELLS,
+        label: 'Wells Hall',
+        group: 'South Side'
+      },
+      {
+        value: MoveInHallChoices.WHITE_CREEK,
+        label: 'White Creek Apartments',
+        group: 'White Creek'
       }
     ],
     effects: {
       layers: [
         {
-          layerId: MOVE_IN_LAYERS.MOVE_IN_POI,
+          layerId: MOVE_IN_LAYERS.RESIDENCE_HALL,
           conversions: [
             {
-              input: MoveInOptionChoices.SHOW,
-              propOverrides: {
-                visible: true
-              }
+              input: MoveInHallChoices.CLEMENTS,
+              expression: "Bldg_Number IN ('0548')"
             },
             {
-              input: MoveInOptionChoices.HIDE,
-              propOverrides: {
-                visible: false
-              }
+              input: MoveInHallChoices.DAVIS_GARY,
+              expression: "Bldg_Number IN ('0415')"
+            },
+            {
+              input: MoveInHallChoices.FOWLER,
+              expression: "Bldg_Number IN ('0427')"
+            },
+            {
+              input: MoveInHallChoices.HAAS,
+              expression: "Bldg_Number IN ('0549')"
+            },
+            {
+              input: MoveInHallChoices.HOBBY,
+              expression: "Bldg_Number IN ('0653')"
+            },
+            {
+              input: MoveInHallChoices.HUGHES,
+              expression: "Bldg_Number IN ('0426')"
+            },
+            {
+              input: MoveInHallChoices.HULLABALOO,
+              expression: "Bldg_Number IN ('1416')"
+            },
+            {
+              input: MoveInHallChoices.KEATHLEY,
+              expression: "Bldg_Number IN ('0428')"
+            },
+            {
+              input: MoveInHallChoices.LECHNER,
+              expression: "Bldg_Number IN ('0294')"
+            },
+            {
+              input: MoveInHallChoices.LEGGETT,
+              expression: "Bldg_Number IN ('0419')"
+            },
+            {
+              input: MoveInHallChoices.MCFADDEN,
+              expression: "Bldg_Number IN ('0550')"
+            },
+            {
+              input: MoveInHallChoices.MOSES,
+              expression: "Bldg_Number IN ('0412')"
+            },
+            {
+              input: MoveInHallChoices.NEELEY,
+              expression: "Bldg_Number IN ('0652')"
+            },
+            {
+              input: MoveInHallChoices.SCHUHMACHER,
+              expression: "Bldg_Number IN ('0430')"
+            },
+            {
+              input: MoveInHallChoices.WALTON,
+              expression: "Bldg_Number IN ('0422')"
+            },
+            {
+              input: MoveInHallChoices.APPELT,
+              expression: "Bldg_Number IN ('0293')"
+            },
+            {
+              input: MoveInHallChoices.ASTON,
+              expression: "Bldg_Number IN ('0447')"
+            },
+            {
+              input: MoveInHallChoices.DUNN,
+              expression: "Bldg_Number IN ('0442')"
+            },
+            {
+              input: MoveInHallChoices.EPPRIGHT,
+              expression: "Bldg_Number IN ('0292')"
+            },
+            {
+              input: MoveInHallChoices.HART,
+              expression: "Bldg_Number IN ('0417')"
+            },
+            {
+              input: MoveInHallChoices.KRUEGER,
+              expression: "Bldg_Number IN ('0441')"
+            },
+            {
+              input: MoveInHallChoices.MOSHER,
+              expression: "Bldg_Number IN ('0433')"
+            },
+            {
+              input: MoveInHallChoices.RUDDER,
+              expression: "Bldg_Number IN ('0291')"
+            },
+            {
+              input: MoveInHallChoices.UNDERWOOD,
+              expression: "Bldg_Number IN ('0394')"
+            },
+            {
+              input: MoveInHallChoices.WELLS,
+              expression: "Bldg_Number IN ('0290')"
+            },
+            {
+              input: MoveInHallChoices.WHITE_CREEK,
+              expression: "Bldg_Number IN ('1590', '1591', '1592')"
             }
           ]
         }
@@ -268,115 +545,19 @@ export const MoveInOptions: SpecialEventOptions = [
     }
   },
   {
-    value: MoveInBuilderOptions.STREETS_FILTER,
-    label: 'Move-In Streets Filter',
-    shortDescription: 'Streets Filter',
-    description: 'Filter Move-In Streets to only show specific parking/restriction categories.',
+    value: MoveInBuilderOptions.ACCESSIBLE_PARKING,
+    label: 'Require Accessible Parking',
+    shortDescription: 'Require Accessible Parking',
+    description: 'Will you or a relative require accessible parking accommodations?',
+    uiType: 'binary',
     choices: [
       {
-        value: MoveInStreetFilterChoices.ALL,
-        label: 'All Street Categories'
+        value: MoveInAccessibleChoices.YES,
+        label: 'Yes'
       },
       {
-        value: MoveInStreetFilterChoices.DISABLED_ONLY,
-        label: '1-Hour Disabled ONLY Parking'
-      },
-      {
-        value: MoveInStreetFilterChoices.DROP_OFF_AUG_15_18,
-        label: '1-Hour Drop Off Zone, Aug 15-18, Space Limited'
-      },
-      {
-        value: MoveInStreetFilterChoices.DROP_OFF_WEEKENDS,
-        label: '1-Hour Drop Off Zone, Weekends ONLY'
-      },
-      {
-        value: MoveInStreetFilterChoices.NO_MOVE_IN_PARKING,
-        label: 'No Move-In Parking. Lot Specific Permit Required'
-      }
-    ],
-    effects: {
-      layers: [
-        {
-          layerId: MOVE_IN_LAYERS.MOVE_IN_STREETS,
-          conversions: [
-            {
-              input: MoveInStreetFilterChoices.ALL,
-              expression: '1=1'
-            },
-            {
-              input: MoveInStreetFilterChoices.DISABLED_ONLY,
-              expression: "Type = 'Disabled'"
-            },
-            {
-              input: MoveInStreetFilterChoices.DROP_OFF_AUG_15_18,
-              expression: "Type = 'LZAllWeek'"
-            },
-            {
-              input: MoveInStreetFilterChoices.DROP_OFF_WEEKENDS,
-              expression: "Type = 'LZSundayOnly'"
-            },
-            {
-              input: MoveInStreetFilterChoices.NO_MOVE_IN_PARKING,
-              expression: "Type = 'NoParking'"
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    value: MoveInBuilderOptions.LOTS_FILTER,
-    label: 'Move-In Lots Filter',
-    shortDescription: 'Lots Filter',
-    description: 'Filter Move-In Lots to only show specific parking/restriction categories.',
-    choices: [
-      {
-        value: MoveInLotFilterChoices.ALL,
-        label: 'All Lot Categories'
-      },
-      {
-        value: MoveInLotFilterChoices.WEEKEND_FREE,
-        label: 'Aug 23-24 WEEKEND ONLY Free Parking'
-      },
-      {
-        value: MoveInLotFilterChoices.WEEKEND_ONE_HOUR,
-        label: '1-Hour Unloading, Weekends ONLY'
-      },
-      {
-        value: MoveInLotFilterChoices.ONE_HOUR_LOT_PERMIT_AFTER_ONE_HOUR,
-        label: '1-Hour Unloading. Lot Permit Required after 1 Hr'
-      },
-      {
-        value: MoveInLotFilterChoices.FREE_AUG_19_23,
-        label: 'Free Parking Aug 19-23; NO Overnight without Permit.'
-      },
-      {
-        value: MoveInLotFilterChoices.ONE_HOUR_DROP_OFF_AUG_19_24,
-        label: 'Aug 19-24 - 1 Hr drop-off; Lot permit required after 1 hour.'
-      },
-      {
-        value: MoveInLotFilterChoices.DISABLED_ONLY,
-        label: 'Disabled Parking, One Hour ONLY'
-      },
-      {
-        value: MoveInLotFilterChoices.LOT_122,
-        label: 'Lot 122 - Free Parking Aug 19-24; NO overnight without Lot 122 permit.'
-      },
-      {
-        value: MoveInLotFilterChoices.FREE_AUG_19_24,
-        label: 'Free Parking Aug 19-24'
-      },
-      {
-        value: MoveInLotFilterChoices.PAID_VISITOR,
-        label: 'Paid Visitor Parking'
-      },
-      {
-        value: MoveInLotFilterChoices.NO_MOVE_IN_PARKING,
-        label: 'No Move-In Parking. Lot Specific Permit Required'
-      },
-      {
-        value: MoveInLotFilterChoices.FREE_AUG_22_23,
-        label: 'Free Parking Aug 22-23; NO Overnight without Permit.'
+        value: MoveInAccessibleChoices.NO,
+        label: 'No'
       }
     ],
     effects: {
@@ -385,125 +566,29 @@ export const MoveInOptions: SpecialEventOptions = [
           layerId: MOVE_IN_LAYERS.MOVE_IN_LOTS,
           conversions: [
             {
-              input: MoveInLotFilterChoices.ALL,
-              expression: '1=1'
+              input: MoveInAccessibleChoices.YES,
+              expression: `${lotUseField} = 'Disabled'`,
+              deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_OR
             },
             {
-              input: MoveInLotFilterChoices.WEEKEND_FREE,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = 'WeekendFree'"
-            },
-            {
-              input: MoveInLotFilterChoices.WEEKEND_ONE_HOUR,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = 'WeekendOneHr'"
-            },
-            {
-              input: MoveInLotFilterChoices.ONE_HOUR_LOT_PERMIT_AFTER_ONE_HOUR,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = '30a'"
-            },
-            {
-              input: MoveInLotFilterChoices.FREE_AUG_19_23,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = 'SSG'"
-            },
-            {
-              input: MoveInLotFilterChoices.ONE_HOUR_DROP_OFF_AUG_19_24,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = '40bcd'"
-            },
-            {
-              input: MoveInLotFilterChoices.DISABLED_ONLY,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = 'Disabled'"
-            },
-            {
-              input: MoveInLotFilterChoices.LOT_122,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = '122'"
-            },
-            {
-              input: MoveInLotFilterChoices.FREE_AUG_19_24,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = 'Free'"
-            },
-            {
-              input: MoveInLotFilterChoices.PAID_VISITOR,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = 'Paid'"
-            },
-            {
-              input: MoveInLotFilterChoices.NO_MOVE_IN_PARKING,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = 'NoParking'"
-            },
-            {
-              input: MoveInLotFilterChoices.FREE_AUG_22_23,
-              expression: "\"GIS.TS.SPEV_Lot_Use.Fall_MoveIn\" = 'NSG'"
+              input: MoveInAccessibleChoices.NO,
+              expression: '1=0',
+              deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_OR
             }
           ]
-        }
-      ]
-    }
-  },
-  {
-    value: MoveInBuilderOptions.POI_FILTER,
-    label: 'Points of Interest Filter',
-    shortDescription: 'Points of Interest Filter',
-    description: 'Filter Points of Interest to only show specific categories.',
-    choices: [
-      {
-        value: MoveInPoiFilterChoices.ALL,
-        label: 'All POI Categories'
-      },
-      {
-        value: MoveInPoiFilterChoices.DINING,
-        label: 'Dining Areas'
-      },
-      {
-        value: MoveInPoiFilterChoices.RECYCLE,
-        label: 'CardBoard Recycling Locations'
-      },
-      {
-        value: MoveInPoiFilterChoices.NO_PARKING,
-        label: 'No Parking'
-      },
-      {
-        value: MoveInPoiFilterChoices.INFO,
-        label: 'Info'
-      },
-      {
-        value: MoveInPoiFilterChoices.ENGRAVING,
-        label: 'Engraving Location'
-      },
-      {
-        value: MoveInPoiFilterChoices.CHECK_IN,
-        label: 'Check In Location'
-      }
-    ],
-    effects: {
-      layers: [
+        },
         {
-          layerId: MOVE_IN_LAYERS.MOVE_IN_POI,
+          layerId: MOVE_IN_LAYERS.MOVE_IN_STREETS,
           conversions: [
             {
-              input: MoveInPoiFilterChoices.ALL,
-              expression: '1=1'
+              input: MoveInAccessibleChoices.YES,
+              expression: "Type = 'Disabled'",
+              deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_OR
             },
             {
-              input: MoveInPoiFilterChoices.DINING,
-              expression: "Type = 'Dining'"
-            },
-            {
-              input: MoveInPoiFilterChoices.RECYCLE,
-              expression: "Type = 'Recycle'"
-            },
-            {
-              input: MoveInPoiFilterChoices.NO_PARKING,
-              expression: "Type = 'NoParking'"
-            },
-            {
-              input: MoveInPoiFilterChoices.INFO,
-              expression: "Type = 'Info'"
-            },
-            {
-              input: MoveInPoiFilterChoices.ENGRAVING,
-              expression: "Type = 'Bike'"
-            },
-            {
-              input: MoveInPoiFilterChoices.CHECK_IN,
-              expression: "Type = 'Keys'"
+              input: MoveInAccessibleChoices.NO,
+              expression: '1=0',
+              deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_OR
             }
           ]
         }

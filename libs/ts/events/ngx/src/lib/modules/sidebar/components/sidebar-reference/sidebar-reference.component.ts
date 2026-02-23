@@ -21,6 +21,7 @@ export class SidebarReferenceComponent implements OnInit {
   public settings: EventSettings;
   public mergedSettings: ResolvedEventSettings;
   public configuration: EventConfiguration | null;
+  public moveInSummary: string | null = null;
 
   constructor(
     private readonly router: Router,
@@ -35,6 +36,18 @@ export class SidebarReferenceComponent implements OnInit {
     this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
+
+    if (this.configuration?.id === 'move-in') {
+      const selectedDate = this.mergedSettings.find((s) => s.key === 'move-in-date')?.option?.label;
+      const selectedHall = this.mergedSettings.find((s) => s.key === 'move-in-residence-hall')?.option?.label;
+      const selectedAccessible = this.mergedSettings.find((s) => s.key === 'move-in-accessible-parking')?.option?.label;
+
+      if (selectedDate && selectedHall) {
+        this.moveInSummary = `${selectedDate} @ ${selectedHall}${
+          selectedAccessible === 'Yes' ? ' with accessible parking accommodations.' : '.'
+        }`;
+      }
+    }
   }
 
   public onSearchResult(result: SearchSelection<unknown>): void {

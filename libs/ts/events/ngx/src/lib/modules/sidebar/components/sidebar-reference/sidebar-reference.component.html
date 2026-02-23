@@ -8,7 +8,9 @@
   <div class="sidebar-component-content-container">
     <p>Make coordination easy! The following link can be shared with friends and family to load your configured map.</p>
 
-    <ul>
+    <p *ngIf="moveInSummary"><strong>{{ moveInSummary }}</strong></p>
+
+    <ul *ngIf="!moveInSummary">
       <li *ngFor="let pair of mergedSettings | keyvalue"><strong>{{ pair.value.shortDescription }}: {{ pair.value.option?.label }}</strong></li>
     </ul>
 

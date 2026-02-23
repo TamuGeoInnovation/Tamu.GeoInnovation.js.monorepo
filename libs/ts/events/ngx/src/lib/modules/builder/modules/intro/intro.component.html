@@ -1,9 +1,9 @@
-<p class="center-text">
+<p class="center-text intro-text">
   <ng-container *ngIf="settings?.introductionText !== undefined; else noIntroText">{{settings?.introductionText}}</ng-container>
 
   <ng-template #noIntroText> Get the best transportation and parking information for {{settings?.name}} </ng-template>
 </p>
 
-<div class="trailer-1 leader-2 flex flex-row justify-center">
-  <a class="button tertiary uppercase no-decor" (click)="next()" (keyup.space)="next()" (keyup.enter)="next()">Get Started</a>
+<div class="trailer-1 leader-2 flex flex-row justify-center intro-action">
+  <a class="button tertiary uppercase no-decor cta-button" (click)="next()" (keyup.space)="next()" (keyup.enter)="next()">Get Started</a>
 </div>

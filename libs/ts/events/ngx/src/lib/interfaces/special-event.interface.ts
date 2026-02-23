@@ -85,6 +85,11 @@ export interface EventConfiguration {
    * - `review`: skip intermediate accommodations pages and go directly to review
    */
   builderStartStep?: 'accommodations' | 'review';
+
+  /**
+   * Text to display on the review step.
+   */
+  reviewText?: string;
 }
 
 /**
@@ -120,6 +125,11 @@ export interface SpecialEventOption {
    * Short description of the option. This is used to provide a brief description to the user in summary views.
    */
   shortDescription: string;
+
+  /**
+   * Optional display layout used by the builder accommodations step.
+   */
+  uiType?: 'default' | 'date-card-grid' | 'grouped-card-grid' | 'binary';
 
   choices: Array<EventAccommodationOption>;
 
@@ -227,6 +237,16 @@ export interface EventAccommodationOption {
    * The label of the option. This is used to display the option to the user.
    */
   label: string;
+
+  /**
+   * Optional secondary label for specialized UI layouts.
+   */
+  secondaryLabel?: string;
+
+  /**
+   * Optional group name for grouped card layouts.
+   */
+  group?: string;
 
   /**
    * Operations to apply to layers based on the selected option value.
