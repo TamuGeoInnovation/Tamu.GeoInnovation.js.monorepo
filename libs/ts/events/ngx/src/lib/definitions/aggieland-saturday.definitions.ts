@@ -165,16 +165,6 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
         field: 'Type',
         uniqueValueInfos: [
           {
-            value: 'Pay Parking',
-            label: 'Paid Parking',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/transportation/Paid-Parking.png',
-              width: '24px',
-              height: '32px'
-            } as unknown as esri.PictureMarkerSymbolProperties
-          },
-          {
             value: 'Dining',
             label: 'Dining',
             symbol: {
