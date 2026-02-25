@@ -51,7 +51,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Event} Parking',
-      description: 'Type: {attributes.Type}\nLot Name: {attributes.name}'
+      description: 'Type: {attributes.Type}\nLot Name: {attributes.name}\nNotes: {attributes.Notes}'
     },
     visible: true,
     listMode: 'show',
