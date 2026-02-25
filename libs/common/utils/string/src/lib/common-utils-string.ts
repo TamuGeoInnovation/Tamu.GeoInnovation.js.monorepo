@@ -38,18 +38,25 @@ export class TemplateRenderer {
       });
     } else if (this.template && this.lookup) {
       return this.template.replace(/\{.*?\}/g, (match: string) => {
-        const resolved = getPropertyValue<string>(this.lookup, match.replace('{', '').replace('}', '')).toString();
         // Remove template braces before setting value from lookup object.
+        const resolved = getPropertyValue<unknown>(this.lookup, match.replace('{', '').replace('}', ''));
 
-        if (this.options?.nullishReplacement !== undefined && (resolved === undefined || resolved === null)) {
+        if (resolved === undefined || resolved === null) {
+          // Keep placeholder when no nullish replacement is provided.
+          if (this.options?.nullishReplacement === undefined) {
+            return match;
+          }
+
           return this.options.nullishReplacement;
         }
 
+        const resolvedString = `${resolved}`;
+
         if (this.options?.trim) {
-          return resolved.trim();
+          return resolvedString.trim();
         }
 
-        return resolved;
+        return resolvedString;
       });
     }
   }

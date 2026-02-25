@@ -61,6 +61,14 @@ export class PopupService {
       if (graphicLayer.popupData) {
         resolved = Object.entries(graphicLayer.popupData).reduce((acc, [key, dotNotationPathOrDefinition]) => {
           if (acc[key] === undefined) {
+            const lookup = {
+              ...topGraphic,
+              attributes: {
+                ...topGraphic.attributes,
+                ...acc
+              }
+            };
+
             // If dotNotationPathOrDefinition is a string, resolve the value
             // If it is an object, assume it is a definition object, and the path to resolve is the `key` sub-path.
 
@@ -69,14 +77,14 @@ export class PopupService {
               if (dotNotationPathOrDefinition.includes('{') && dotNotationPathOrDefinition.includes('}')) {
                 acc[key] = new TemplateRenderer({
                   template: dotNotationPathOrDefinition,
-                  lookup: topGraphic,
+                  lookup,
                   options: {
                     nullishReplacement: '',
                     trim: true
                   }
                 }).render();
               } else {
-                acc[key] = getPropertyValue(topGraphic, dotNotationPathOrDefinition);
+                acc[key] = getPropertyValue(lookup, dotNotationPathOrDefinition);
               }
             } else {
               acc[key] = getPropertyValue(

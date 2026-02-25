@@ -71,4 +71,38 @@ describe('TemplateRenderer', () => {
 
     expect(value).toBe('Mary had one white lamb and one green lamb.');
   });
+
+  it('should preserve unresolved template placeholders by default', () => {
+    options = {
+      lookup: {
+        value: 'lamb'
+      },
+      template: 'Mary had a little {value} named {name}.'
+    };
+
+    renderer = new TemplateRenderer(options);
+
+    const value = renderer.render();
+
+    expect(value).toBe('Mary had a little lamb named {name}.');
+  });
+
+  it('should apply nullishReplacement for unresolved placeholders', () => {
+    options = {
+      lookup: {
+        value: 'lamb'
+      },
+      template: 'Mary had a little {value} named {name}.',
+      options: {
+        nullishReplacement: '',
+        trim: true
+      }
+    };
+
+    renderer = new TemplateRenderer(options);
+
+    const value = renderer.render();
+
+    expect(value).toBe('Mary had a little lamb named .');
+  });
 });
