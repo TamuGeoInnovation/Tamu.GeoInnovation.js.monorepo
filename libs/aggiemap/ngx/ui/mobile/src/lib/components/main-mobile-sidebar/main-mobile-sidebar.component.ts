@@ -40,7 +40,7 @@ export class MainMobileSidebarComponent {
     {
       name: 'Building Directory',
       type: 'router-path',
-      path: '../../../../../directory'
+      path: '/directory'
     },
     {
       name: 'Feedback',
@@ -51,12 +51,12 @@ export class MainMobileSidebarComponent {
     {
       name: 'Discover',
       type: 'router-path',
-      path: '../../../../../discover'
+      path: '/discover'
     },
     {
       name: 'About',
       type: 'router-path',
-      path: '../../../../../about'
+      path: '/about'
     },
     {
       name: 'Site Policies',
@@ -73,7 +73,7 @@ export class MainMobileSidebarComponent {
     {
       name: 'Privacy & Security',
       type: 'router-path',
-      path: '../../../../../privacy'
+      path: '/privacy'
     },
     {
       name: 'Changelog',
