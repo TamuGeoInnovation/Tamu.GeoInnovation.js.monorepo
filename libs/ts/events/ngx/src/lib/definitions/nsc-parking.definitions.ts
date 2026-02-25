@@ -82,6 +82,7 @@ export const NscParkingTs: ISpecialEventRoot = {
   options: NscParkingOptions,
   sources: NscParkingColdLayerSources,
   references: NSC_PARKING_LAYERS,
+  type: 'special-event',
   discover: {
     id: NscParkingConfiguration.id,
     name: NscParkingConfiguration.name,
