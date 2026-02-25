@@ -182,22 +182,22 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
 
       name: '{attributes.lotName}',
       description:
-        `**Lot Name:** {attributes.lotName}\n` +
-        `**Total Number of Parking:** {attributes.total}\n\n` +
-        `**Number of Loading:** {attributes.loading}\n` +
-        `**Number of Regular:** {attributes.regular}\n` +
-        `**Number of Reserved:** {attributes.reserved}\n` +
-        `**Number of Others:** {attributes.other}\n` +
-        `**Number of Disabled:** {attributes.accessible}\n` +
-        `**Number of Motorcycle:** {attributes.motorcycle}\n` +
-        `**Number of Timed:** {attributes.timed}\n` +
-        `**Number of Service:** {attributes.service}\n` +
-        `**Number of U.B.:** {attributes.ub}\n` +
-        `**Number of Visitor:** {attributes.visitor}\n` +
-        `**Number of Visitor(H/C):** {attributes.visitorHc}\n` +
-        `**Number of RV:** {attributes.rv}\n\n` +
+        `Lot Name: {attributes.lotName}\n` +
+        `Total Number of Parking: {attributes.total}\n\n` +
+        `Number of Loading: {attributes.loading}\n` +
+        `Number of Reg (Regular): {attributes.regular}\n` +
+        `Number of RNS (Reserved): {attributes.reserved}\n` +
+        `Number of Other: {attributes.other}\n` +
+        `Number of H/C (Accessible): {attributes.accessible}\n` +
+        `Number of M/C (Motorcycle): {attributes.motorcycle}\n` +
+        `Number of Timed: {attributes.timed}\n` +
+        `Number of Serv (Service): {attributes.service}\n` +
+        `Number of UB: {attributes.ub}\n` +
+        `Number of Visitor: {attributes.visitor}\n` +
+        `Number of Visitor H/C: {attributes.visitorHc}\n` +
+        `Number of RV: {attributes.rv}\n\n` +
         `---\n\n` +
-        `**Notes:** {attributes.notes}`
+        `Lot Notes: {attributes.notes}`
     },
 
     native: {
