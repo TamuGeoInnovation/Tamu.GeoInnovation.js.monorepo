@@ -121,7 +121,9 @@ export const BreakSummerParkingTs: ISpecialEventRoot = {
   configuration: BreakSummerConfiguration,
   options: BreakSummerOptions,
   sources: BreakSummerColdLayerSources,
+  type: 'special-event',
   references: BREAK_SUMMER_LAYERS,
+  
   discover: {
     id: BreakSummerConfiguration.id,
     name: BreakSummerConfiguration.name,
