@@ -1,8 +1,11 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions, AggiemapCustomMapConfiguration } from '../interfaces/special-event.interface';
-
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 import esri = __esri;
 
@@ -184,12 +187,11 @@ export const MusterConfiguration: EventConfiguration = {
   applicationName: 'Muster Parking Map',
   shortApplicationName: 'Muster Map',
   eventDates: ['2026-04-21'],
-  mapCenter: [-96.34724, 30.60550],
+  mapCenter: [-96.34724, 30.6055],
   zoom: 16
 };
 
 export const MusterOptions: SpecialEventOptions = [];
-
 
 export const MusterTs: AggiemapCustomMapConfiguration = {
   type: 'special-event',
@@ -206,4 +208,3 @@ export const MusterTs: AggiemapCustomMapConfiguration = {
     keywords: ['muster', 'parking', 'transportation']
   }
 };
-

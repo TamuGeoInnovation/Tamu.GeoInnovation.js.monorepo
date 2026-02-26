@@ -1,9 +1,13 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum BREAK_SUMMER_LAYERS {
-  BREAK_SUMMER_PARKING = 'Break-Summer Parking Lots',
+  BREAK_SUMMER_PARKING = 'Break-Summer Parking Lots'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
@@ -43,17 +47,18 @@ export const BreakSummerConfiguration: EventConfiguration = {
 
 export const BreakSummerOptions: SpecialEventOptions = [];
 
-export const BreakSummerTs: ISpecialEventRoot = {
+export const BreakSummerTs: AggiemapCustomMapConfiguration = {
   configuration: BreakSummerConfiguration,
   options: BreakSummerOptions,
   sources: BreakSummerColdLayerSources,
   references: BREAK_SUMMER_LAYERS,
+  type: 'general-map',
   discover: {
     id: BreakSummerConfiguration.id,
     name: BreakSummerConfiguration.name,
     description: 'Parking lot authorization information for Break and Summer.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['break', 'summer', 'parking', 'permit']
   }
 };
