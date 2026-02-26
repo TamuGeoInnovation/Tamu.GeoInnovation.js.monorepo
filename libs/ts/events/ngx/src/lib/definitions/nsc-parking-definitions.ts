@@ -1,10 +1,14 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 export enum NSC_PARKING_LAYERS {
   LOT_SPECIFIC = 'Lot Specific Permit Required',
-  NSC_AUTHORIZED = 'NSC Permit Authorized',
+  NSC_AUTHORIZED = 'NSC Permit Authorized'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
@@ -79,17 +83,18 @@ export const NscParkingConfiguration: EventConfiguration = {
 
 export const NscParkingOptions: SpecialEventOptions = [];
 
-export const NscParkingTs: ISpecialEventRoot = {
+export const NscParkingTs: AggiemapCustomMapConfiguration = {
   configuration: NscParkingConfiguration,
   options: NscParkingOptions,
   sources: NscParkingColdLayerSources,
   references: NSC_PARKING_LAYERS,
+  type: 'general-map',
   discover: {
     id: NscParkingConfiguration.id,
     name: NscParkingConfiguration.name,
     description: 'Parking lot information for New Student Conference (NSC) permits.',
     source: 'internal',
-    type: 'event',
+    type: 'parking',
     keywords: ['new student conference', 'nsc', 'parking', 'permit']
   }
 };
