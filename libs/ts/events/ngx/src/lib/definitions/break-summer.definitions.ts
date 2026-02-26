@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
 import esri = __esri;
@@ -117,13 +121,13 @@ export const BreakSummerConfiguration: EventConfiguration = {
 
 export const BreakSummerOptions: SpecialEventOptions = [];
 
-export const BreakSummerParkingTs: ISpecialEventRoot = {
+export const BreakSummerParkingTs: AggiemapCustomMapConfiguration = {
   configuration: BreakSummerConfiguration,
   options: BreakSummerOptions,
   sources: BreakSummerColdLayerSources,
   type: 'special-event',
   references: BREAK_SUMMER_LAYERS,
-  
+
   discover: {
     id: BreakSummerConfiguration.id,
     name: BreakSummerConfiguration.name,

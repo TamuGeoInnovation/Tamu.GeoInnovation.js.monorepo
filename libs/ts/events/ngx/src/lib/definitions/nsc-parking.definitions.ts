@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 import { MarkdownPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import esri = __esri;
@@ -77,7 +81,7 @@ export const NscParkingConfiguration: EventConfiguration = {
 
 export const NscParkingOptions: SpecialEventOptions = [];
 
-export const NscParkingTs: ISpecialEventRoot = {
+export const NscParkingTs: AggiemapCustomMapConfiguration = {
   configuration: NscParkingConfiguration,
   options: NscParkingOptions,
   sources: NscParkingColdLayerSources,
