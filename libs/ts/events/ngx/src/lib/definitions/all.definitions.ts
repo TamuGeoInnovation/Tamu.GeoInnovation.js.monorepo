@@ -19,25 +19,7 @@ import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
 import { MoveOut } from './move-out.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
-import { ContractorParkingTs } from './contractor-parking.definitions';
-import { TimedParking_Ts } from './timed-parking.definitions';
-import { VendorParking_Ts } from './vendor-parking.definitions';
-import { MoveInTs } from './move-in.definitions';
-import { NightWeekendTs } from './night-weekend.definitions';
-import { StudentSelectableTs } from './student-selectable.definitions';
-import { FreshmanSelectableTs } from './freshman-parking.definitions';
-import { StaffSelectableTs } from './staff-selectable.definitions';
-import { BusinessParkingTs } from './business-parking.definitions';
-import { MotoristAssistanceTs } from './motorist-assistance.definitions';
-import { MediaParkingTs } from './media-parking.definitions';
-import { AccessibleParkingTs } from './accessible-parking.definitions';
-import { ServiceLoadingTs } from './service-and-loading-zones.definitions';
-import { RetireeParkingTs } from './retiree-parking.definitions';
-import { MaintenanceParkingTs } from './maintenance-parking.definitions';
-import { BaseballParkingTs } from './baseball-parking.definitions';
-import { SavannahBananasParkingTs } from './savannah-bananas.definitions';
-import { VisitorParkingTs } from './visitor-parking.definitions';
-import { MotorcycleParkingTs } from './motorcycle-parking.definitions';   
+import { NscParkingTs } from './nsc-parking.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -59,24 +41,5 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   RingDayEvent,
   WomensBasketball_Ts,
   GisDayTs,
-  MoveOut,
-  ContractorParkingTs,
-  TimedParking_Ts,
-  VendorParking_Ts,
-  MoveInTs,
-  NightWeekendTs,
-  StudentSelectableTs,
-  FreshmanSelectableTs,
-  StaffSelectableTs,
-  BusinessParkingTs,
-  MotoristAssistanceTs,
-  MediaParkingTs,
-  AccessibleParkingTs,
-  ServiceLoadingTs,
-  RetireeParkingTs,
-  MaintenanceParkingTs,
-  BaseballParkingTs,
-  SavannahBananasParkingTs,
-  VisitorParkingTs,
-  MotorcycleParkingTs
+  NscParkingTs
 ];
