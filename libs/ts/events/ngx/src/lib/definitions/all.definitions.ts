@@ -19,6 +19,7 @@ import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
 import { MoveOut } from './move-out.definitions';
 import { GisDayTs } from './gis-day-map.definitions';
+import { NscParkingTs } from './nsc-parking.definitions';
 import { BreakSummerParkingTs } from './break-summer.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
@@ -41,5 +42,6 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   RingDayEvent,
   WomensBasketball_Ts,
   GisDayTs,
+  NscParkingTs,
   BreakSummerParkingTs
 ];
