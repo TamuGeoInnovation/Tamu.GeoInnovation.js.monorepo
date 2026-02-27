@@ -305,40 +305,12 @@ export class EsriMapService {
     }
 
     if (source.type === 'feature') {
-      return this.moduleProvider.require(['FeatureLayer']).then(async ([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
+      return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
-        const layerProps = props as esri.FeatureLayerProperties;
-        // Some ArcGIS services intermittently respond with "Layer not found" for valid sublayer URLs.
-        // Retry a few times and alternate slash/no-slash URL forms for MapServer sublayers.
-        if (!layerProps.url) {
-          return new FeatureLayer(layerProps);
-        }
-
-        const candidateUrls = this.getArcGisLayerUrlCandidates(layerProps.url);
-        const maxAttempts = 6;
-
-        let firstError: unknown;
-
-        for (let i = 0; i < maxAttempts; i++) {
-          const url = candidateUrls[i % candidateUrls.length];
-          const candidateLayer = new FeatureLayer({ ...layerProps, url });
-
-          try {
-            await candidateLayer.load();
-            return candidateLayer;
-          } catch (error) {
-            if (!firstError) {
-              firstError = error;
-            }
-
-            // Small pause helps bypass transient backend routing/cache misses.
-            await this.wait(120);
-          }
-        }
-
-        throw firstError;
+        // Create and return new feature layer
+        return new FeatureLayer(props as esri.FeatureLayerProperties);
       });
     } else if (source.type === 'map-image') {
       return this.moduleProvider.require(['MapImageLayer']).then(([ImageLayer]: [esri.MapImageLayerConstructor]) => {
@@ -427,36 +399,6 @@ export class EsriMapService {
         return this.resolveLayerFromJsonp(source, { f: 'pjson' });
       }
     }
-  }
-
-  /**
-   * Returns candidate ArcGIS layer endpoint URLs for MapServer sublayers by toggling
-   * the trailing slash on the terminal numeric layer segment.
-   *
-   * Example:
-   * - .../MapServer/2 => [.../MapServer/2, .../MapServer/2/]
-   */
-  private getArcGisLayerUrlCandidates(url: string): string[] {
-    const matched = url.match(/^(.*\/MapServer\/\d+)(\/?)(\?.*)?$/i);
-
-    if (!matched) {
-      return [url];
-    }
-
-    const base = matched[1];
-    const slash = matched[2];
-    const query = matched[3] || '';
-
-    const original = url;
-    const alternate = `${base}${slash === '/' ? '' : '/'}${query}`;
-
-    return original === alternate ? [original] : [original, alternate];
-  }
-
-  private wait(ms: number) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
   }
 
   /**

@@ -21,25 +21,25 @@ export const SwimmingParkingDefinitions = {
     id: SWIMMING_PARKING_LAYERS.VISITOR_KIOSK,
     layerId: SWIMMING_PARKING_LAYERS.VISITOR_KIOSK,
     name: 'Purchase Hourly Visitor Parking',
-    url: `${eventUrl}/0/`
+    url: `${eventUrl}/0`
   },
   ACCESSIBLE_PARKING: {
     id: SWIMMING_PARKING_LAYERS.ACCESSIBLE_PARKING,
     layerId: SWIMMING_PARKING_LAYERS.ACCESSIBLE_PARKING,
     name: 'Accessible Parking Spaces',
-    url: `${eventUrl}/1/`
+    url: `${eventUrl}/1`
   },
   PARKING: {
     id: SWIMMING_PARKING_LAYERS.PARKING_LOTS,
     layerId: SWIMMING_PARKING_LAYERS.PARKING_LOTS,
     name: 'Swimming Event Parking Lots',
-    url: `${eventUrl}/2/`
+    url: `${eventUrl}/2`
   },
   SAFETY_FIRST: {
     id: SWIMMING_PARKING_LAYERS.SAFETY_FIRST,
     layerId: SWIMMING_PARKING_LAYERS.SAFETY_FIRST,
     name: 'Safety First',
-    url: `${eventUrl}/3/`
+    url: `${eventUrl}/3`
   }
 };
 
