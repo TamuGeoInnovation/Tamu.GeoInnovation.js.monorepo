@@ -7,7 +7,11 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 export enum SOCCER_PARKING_LAYERS {
+  VISITOR_KIOSK = 'soccer-parking-visitor-kiosk',
+  PARKING_LOTS = 'soccer-parking-lots',
   ACCESSIBLE_PARKING = 'soccer-parking-accessible-parking',
   SAFETY_FIRST = 'soccer-parking-safety-first'
 }
@@ -15,6 +19,18 @@ export enum SOCCER_PARKING_LAYERS {
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SoccerParking/MapServer';
 
 export const SoccerParkingDefinitions = {
+  VISITOR_KIOSK: {
+    id: SOCCER_PARKING_LAYERS.VISITOR_KIOSK,
+    layerId: SOCCER_PARKING_LAYERS.VISITOR_KIOSK,
+    name: 'Purchase Hourly Visitor Parking',
+    url: `${eventUrl}/0`
+  },
+  PARKING: {
+    id: SOCCER_PARKING_LAYERS.PARKING_LOTS,
+    layerId: SOCCER_PARKING_LAYERS.PARKING_LOTS,
+    name: 'Soccer Event Parking Lots',
+    url: `${eventUrl}/2`
+  },
   ACCESSIBLE_PARKING: {
     id: SOCCER_PARKING_LAYERS.ACCESSIBLE_PARKING,
     layerId: SOCCER_PARKING_LAYERS.ACCESSIBLE_PARKING,
@@ -31,31 +47,146 @@ export const SoccerParkingDefinitions = {
 
 export const SoccerParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'feature',
-    id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
-    title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
-    url: SoccerParkingDefinitions.ACCESSIBLE_PARKING.url,
+    type: 'map-image',
+    id: SoccerParkingDefinitions.VISITOR_KIOSK.id,
+    title: SoccerParkingDefinitions.VISITOR_KIOSK.name,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.Type}',
-      description: '**Event:** {attributes.Event}'
+      name: 'Visitor Permit Kiosk',
+      description: 'Purchase your hourly parking permit here.'
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 12,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 0,
+          title: SoccerParkingDefinitions.VISITOR_KIOSK.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'simple',
+            label: 'Purchase Hourly Visitor Parking',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/transportation/Paid-Parking.png',
+              width: 22,
+              height: 22
+            } as unknown as esri.SymbolProperties
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
+  },
+  {
+    type: 'map-image',
+    id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
+    title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
+    url: eventUrl,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.Type}',
+      description: '{attributes.Event}'
+    },
+    visible: true,
+    listMode: 'show',
+    layerIndex: 11,
+    native: {
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 1,
+          title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'simple',
+            label: 'Accessible Parking Spaces',
+            symbol: {
+              type: 'simple-marker',
+              style: 'circle',
+              size: 10,
+              color: [38, 89, 150, 255],
+              outline: {
+                type: 'simple-line',
+                color: [255, 255, 255, 255],
+                width: 1
+              }
+            } as unknown as esri.SymbolProperties
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
+  },
+  {
+    type: 'map-image',
+    id: SoccerParkingDefinitions.PARKING.id,
+    title: SoccerParkingDefinitions.PARKING.name,
+    url: eventUrl,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: {
+        field: 'GIS.TS.ParkingLots.LotName',
+        collapsed: true
+      },
+      description: {
+        field: 'GIS.TS.SpEv_Lot_Notes.SoccerN',
+        collapsed: true
+      }
+    },
+    visible: true,
+    listMode: 'show',
+    layerIndex: 10,
+    native: {
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 2,
+          title: SoccerParkingDefinitions.PARKING.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'unique-value',
+            field: 'GIS.TS.SPEV_Lot_Use.Soccer',
+            defaultLabel: 'Reserved Parking - Permit Required',
+            defaultSymbol: {
+              type: 'simple-fill',
+              color: [241, 184, 96, 255],
+              outline: null
+            } as unknown as esri.SymbolProperties,
+            uniqueValueInfos: [
+              {
+                value: 'AnyValidRec',
+                label: 'Rec Center Patrons Only',
+                symbol: {
+                  type: 'simple-fill',
+                  color: [27, 72, 94, 255],
+                  outline: null
+                } as unknown as esri.SymbolProperties
+              },
+              {
+                value: 'EventParking',
+                label: 'Event Parking',
+                symbol: {
+                  type: 'simple-fill',
+                  color: [123, 35, 42, 255],
+                  outline: null
+                } as unknown as esri.SymbolProperties
+              }
+            ]
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'feature',
     id: SoccerParkingDefinitions.SAFETY_FIRST.id,
     title: SoccerParkingDefinitions.SAFETY_FIRST.name,
     url: SoccerParkingDefinitions.SAFETY_FIRST.url,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'Crosswalk',
-      description: '**Location:** {attributes.Location}'
-    },
     visible: true,
     listMode: 'show',
     native: {
@@ -99,6 +230,6 @@ export const SoccerParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M soccer events.',
     source: 'internal',
     type: 'parking',
-    keywords: ['soccer', 'parking', 'accessible', 'crosswalk']
+    keywords: ['soccer', 'parking', 'visitor', 'accessible', 'crosswalk']
   }
 };

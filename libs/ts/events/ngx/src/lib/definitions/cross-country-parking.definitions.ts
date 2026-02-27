@@ -7,6 +7,8 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 export enum CROSS_COUNTRY_PARKING_LAYERS {
   CROSS_COUNTRY_AREA = 'cross-country-parking-area',
   PARKING_LOTS = 'cross-country-parking-lots'
@@ -31,10 +33,10 @@ export const CrossCountryParkingDefinitions = {
 
 export const CrossCountryParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'feature',
+    type: 'map-image',
     id: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.id,
     title: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.name,
-    url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Name}',
@@ -42,24 +44,38 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 59,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 0,
+          title: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'simple',
+            symbol: {
+              type: 'simple-fill',
+              color: [232, 180, 90, 220],
+              outline: null
+            } as unknown as esri.SymbolProperties
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: CrossCountryParkingDefinitions.PARKING.id,
     title: CrossCountryParkingDefinitions.PARKING.name,
-    url: CrossCountryParkingDefinitions.PARKING.url,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.LotName',
         collapsed: true
       },
-      /**
-       * Notes requested from column: XcounN
-       */
       description: {
         field: 'GIS.TS.SpEv_Lot_Notes.XcounN',
         collapsed: true
@@ -67,9 +83,48 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 60,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 1,
+          title: CrossCountryParkingDefinitions.PARKING.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'unique-value',
+            field: 'GIS.TS.SPEV_Lot_Use.TrackXC',
+            defaultLabel: 'Reserved Parking - Permit Required',
+            defaultSymbol: {
+              type: 'simple-fill',
+              color: [241, 184, 96, 255],
+              outline: null
+            } as unknown as esri.SymbolProperties,
+            uniqueValueInfos: [
+              {
+                value: 'AnyValidRec',
+                label: 'Rec Center Patrons Only',
+                symbol: {
+                  type: 'simple-fill',
+                  color: [27, 72, 94, 255],
+                  outline: null
+                } as unknown as esri.SymbolProperties
+              },
+              {
+                value: 'EventParking',
+                label: 'Event Parking',
+                symbol: {
+                  type: 'simple-fill',
+                  color: [123, 35, 42, 255],
+                  outline: null
+                } as unknown as esri.SymbolProperties
+              }
+            ]
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   }
 ];
 

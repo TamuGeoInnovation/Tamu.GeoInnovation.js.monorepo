@@ -7,6 +7,8 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 export enum INDOOR_TRACK_PARKING_LAYERS {
   VISITOR_KIOSK = 'indoor-track-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'indoor-track-parking-accessible-parking',
@@ -75,20 +77,44 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.name,
-    url: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.url,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Type}',
-      description: '**Event:** {attributes.Event}'
+      description: '{attributes.Event}'
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 61,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 1,
+          title: IndoorTrackParkingDefinitions.ACCESSIBLE_PARKING.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'simple',
+            label: 'Accessible Parking Spaces',
+            symbol: {
+              type: 'simple-marker',
+              style: 'circle',
+              size: 10,
+              color: [38, 89, 150, 255],
+              outline: {
+                type: 'simple-line',
+                color: [255, 255, 255, 255],
+                width: 1
+              }
+            } as unknown as esri.SymbolProperties
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'feature',
@@ -136,11 +162,6 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     id: IndoorTrackParkingDefinitions.SAFETY_FIRST.id,
     title: IndoorTrackParkingDefinitions.SAFETY_FIRST.name,
     url: IndoorTrackParkingDefinitions.SAFETY_FIRST.url,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'Crosswalk',
-      description: '**Location:** {attributes.Location}'
-    },
     visible: true,
     listMode: 'show',
     native: {

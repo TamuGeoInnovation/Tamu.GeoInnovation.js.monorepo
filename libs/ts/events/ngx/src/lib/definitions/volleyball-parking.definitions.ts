@@ -7,6 +7,8 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 export enum VOLLEYBALL_PARKING_LAYERS {
   VISITOR_KIOSK = 'volleyball-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'volleyball-parking-accessible-parking',
@@ -45,10 +47,10 @@ export const VolleyballParkingDefinitions = {
 
 export const VolleyballParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'feature',
+    type: 'map-image',
     id: VolleyballParkingDefinitions.VISITOR_KIOSK.id,
     title: VolleyballParkingDefinitions.VISITOR_KIOSK.name,
-    url: VolleyballParkingDefinitions.VISITOR_KIOSK.url,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
@@ -56,9 +58,28 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 62,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 0,
+          title: VolleyballParkingDefinitions.VISITOR_KIOSK.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'simple',
+            label: 'Purchase Hourly Visitor Parking',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/transportation/Paid-Parking.png',
+              width: 22,
+              height: 22
+            } as unknown as esri.SymbolProperties
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'feature',
@@ -68,7 +89,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Type}',
-      description: '**Event:** {attributes.Event}'
+      description: '{attributes.Event}'
     },
     visible: true,
     listMode: 'show',
@@ -77,10 +98,10 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: VolleyballParkingDefinitions.PARKING.id,
     title: VolleyballParkingDefinitions.PARKING.name,
-    url: VolleyballParkingDefinitions.PARKING.url,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
@@ -94,20 +115,54 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 60,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 2,
+          title: VolleyballParkingDefinitions.PARKING.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'unique-value',
+            field: 'GIS.TS.SPEV_Lot_Use.Volleyball',
+            defaultLabel: 'Reserved Parking - Permit Required',
+            defaultSymbol: {
+              type: 'simple-fill',
+              color: [241, 184, 96, 255],
+              outline: null
+            } as unknown as esri.SymbolProperties,
+            uniqueValueInfos: [
+              {
+                value: 'AnyValidRec',
+                label: 'Rec Center Patrons Only',
+                symbol: {
+                  type: 'simple-fill',
+                  color: [27, 72, 94, 255],
+                  outline: null
+                } as unknown as esri.SymbolProperties
+              },
+              {
+                value: 'EventParking',
+                label: 'Event Parking',
+                symbol: {
+                  type: 'simple-fill',
+                  color: [123, 35, 42, 255],
+                  outline: null
+                } as unknown as esri.SymbolProperties
+              }
+            ]
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'feature',
     id: VolleyballParkingDefinitions.SAFETY_FIRST.id,
     title: VolleyballParkingDefinitions.SAFETY_FIRST.name,
     url: VolleyballParkingDefinitions.SAFETY_FIRST.url,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'Crosswalk',
-      description: '**Location:** {attributes.Location}'
-    },
     visible: true,
     listMode: 'show',
     native: {

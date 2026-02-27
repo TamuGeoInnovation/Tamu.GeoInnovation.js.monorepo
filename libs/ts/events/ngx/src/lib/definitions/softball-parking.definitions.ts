@@ -7,6 +7,8 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 export enum SOFTBALL_PARKING_LAYERS {
   VISITOR_KIOSK = 'softball-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'softball-parking-accessible-parking',
@@ -61,19 +63,44 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: SoftballParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SoftballParkingDefinitions.ACCESSIBLE_PARKING.name,
-    url: SoftballParkingDefinitions.ACCESSIBLE_PARKING.url,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Type}',
+      description: '{attributes.Event}'
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 61,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 1,
+          title: SoftballParkingDefinitions.ACCESSIBLE_PARKING.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'simple',
+            label: 'Accessible Parking Spaces',
+            symbol: {
+              type: 'simple-marker',
+              style: 'circle',
+              size: 10,
+              color: [38, 89, 150, 255],
+              outline: {
+                type: 'simple-line',
+                color: [255, 255, 255, 255],
+                width: 1
+              }
+            } as unknown as esri.SymbolProperties
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'feature',

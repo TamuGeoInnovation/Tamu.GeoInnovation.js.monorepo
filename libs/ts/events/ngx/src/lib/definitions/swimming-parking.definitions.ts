@@ -7,6 +7,8 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 export enum SWIMMING_PARKING_LAYERS {
   VISITOR_KIOSK = 'swimming-parking-visitor-kiosk',
   ACCESSIBLE_PARKING = 'swimming-parking-accessible-parking',
@@ -45,10 +47,10 @@ export const SwimmingParkingDefinitions = {
 
 export const SwimmingParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'feature',
+    type: 'map-image',
     id: SwimmingParkingDefinitions.VISITOR_KIOSK.id,
     title: SwimmingParkingDefinitions.VISITOR_KIOSK.name,
-    url: SwimmingParkingDefinitions.VISITOR_KIOSK.url,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
@@ -56,9 +58,28 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 62,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 0,
+          title: SwimmingParkingDefinitions.VISITOR_KIOSK.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'simple',
+            label: 'Purchase Hourly Visitor Parking',
+            symbol: {
+              type: 'picture-marker',
+              url: '/assets/images/icons/transportation/Paid-Parking.png',
+              width: 22,
+              height: 22
+            } as unknown as esri.SymbolProperties
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'feature',
@@ -68,7 +89,7 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Type}',
-      description: '**Event:** {attributes.Event}'
+      description: '{attributes.Event}'
     },
     visible: true,
     listMode: 'show',
@@ -77,19 +98,16 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: SwimmingParkingDefinitions.PARKING.id,
     title: SwimmingParkingDefinitions.PARKING.name,
-    url: SwimmingParkingDefinitions.PARKING.url,
+    url: eventUrl,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.LotName',
         collapsed: true
       },
-      /**
-       * Notes requested from column: SwimmingN
-       */
       description: {
         field: 'GIS.TS.SpEv_Lot_Notes.SwimmingN',
         collapsed: true
@@ -97,20 +115,54 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 60,
     native: {
-      outFields: ['*']
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 2,
+          title: SwimmingParkingDefinitions.PARKING.name,
+          visible: true,
+          popupEnabled: true,
+          renderer: {
+            type: 'unique-value',
+            field: 'GIS.TS.SPEV_Lot_Use.Swimming',
+            defaultLabel: 'Reserved Parking - Permit Required',
+            defaultSymbol: {
+              type: 'simple-fill',
+              color: [241, 184, 96, 255],
+              outline: null
+            } as unknown as esri.SymbolProperties,
+            uniqueValueInfos: [
+              {
+                value: 'AnyValidRec',
+                label: 'Rec Center Patrons Only',
+                symbol: {
+                  type: 'simple-fill',
+                  color: [27, 72, 94, 255],
+                  outline: null
+                } as unknown as esri.SymbolProperties
+              },
+              {
+                value: 'EventParking',
+                label: 'Event Parking',
+                symbol: {
+                  type: 'simple-fill',
+                  color: [123, 35, 42, 255],
+                  outline: null
+                } as unknown as esri.SymbolProperties
+              }
+            ]
+          } as unknown as esri.RendererProperties
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'feature',
     id: SwimmingParkingDefinitions.SAFETY_FIRST.id,
     title: SwimmingParkingDefinitions.SAFETY_FIRST.name,
     url: SwimmingParkingDefinitions.SAFETY_FIRST.url,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'Crosswalk',
-      description: '**Location:** {attributes.Location}'
-    },
     visible: true,
     listMode: 'show',
     native: {
