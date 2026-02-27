@@ -11,6 +11,14 @@ import { MS150Ts } from './ms150.definitions';
 import { MusterTs } from './muster.definitions';
 import { PhysicsAndEngineeringFestivalTs } from './phys-engineering-festival.definitions';
 import { SoftballRegionalsTs } from './softball-regionals.definitions';
+import { SoftballParkingTs } from './softball-parking.definitions';
+import { SwimmingParkingTs } from './swimming-parking.definitions';
+import { TennisParkingTs } from './tennis-parking.definitions';
+import { IndoorTrackParkingTs } from './indoor-track-parking.definitions';
+import { OutdoorTrackParkingTs } from './outdoor-track-parking.definitions';
+import { CrossCountryParkingTs } from './cross-country-parking.definitions';
+import { SoccerParkingTs } from './soccer-parking.definitions';
+import { VolleyballParkingTs } from './volleyball-parking.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
 import { RingDayEvent } from './ring-day.definitions';
@@ -53,6 +61,14 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   MusterTs,
   PhysicsAndEngineeringFestivalTs,
   SoftballRegionalsTs,
+  SoftballParkingTs,
+  SwimmingParkingTs,
+  TennisParkingTs,
+  IndoorTrackParkingTs,
+  OutdoorTrackParkingTs,
+  CrossCountryParkingTs,
+  SoccerParkingTs,
+  VolleyballParkingTs,
   TroubadourTs,
   FootballParkingEvent,
   RingDayEvent,
