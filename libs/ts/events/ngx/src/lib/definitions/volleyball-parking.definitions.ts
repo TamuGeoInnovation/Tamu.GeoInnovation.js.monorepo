@@ -87,15 +87,9 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     title: VolleyballParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: VolleyballParkingDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.Type}',
-      description: '{attributes.Event}'
-    },
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    layerIndex: 61
   },
   {
     type: 'map-image',
@@ -159,25 +153,24 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     } as unknown as esri.MapImageLayerProperties
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: VolleyballParkingDefinitions.SAFETY_FIRST.id,
     title: VolleyballParkingDefinitions.SAFETY_FIRST.name,
-    url: VolleyballParkingDefinitions.SAFETY_FIRST.url,
+    url: eventUrl,
     visible: true,
     listMode: 'show',
+    layerIndex: 59,
     native: {
-      outFields: ['*'],
-      definitionExpression: "Street_Use = 'X-Walk'",
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-line',
-          color: [214, 170, 81, 255],
-          width: 2,
-          style: 'short-dash'
-        }
-      }
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 3,
+          title: VolleyballParkingDefinitions.SAFETY_FIRST.name,
+          visible: true,
+          popupEnabled: false
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   }
 ];
 

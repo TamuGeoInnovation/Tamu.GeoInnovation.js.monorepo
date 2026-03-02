@@ -82,44 +82,14 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     } as unknown as esri.MapImageLayerProperties
   },
   {
-    type: 'map-image',
+    type: 'feature',
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
-    url: eventUrl,
+    url: SoccerParkingDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.Type}',
-      description: '{attributes.Event}'
-    },
     visible: true,
     listMode: 'show',
     layerIndex: 11,
-    native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 1,
-          title: SoccerParkingDefinitions.ACCESSIBLE_PARKING.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'simple',
-            label: 'Accessible Parking Spaces',
-            symbol: {
-              type: 'simple-marker',
-              style: 'circle',
-              size: 10,
-              color: [38, 89, 150, 255],
-              outline: {
-                type: 'simple-line',
-                color: [255, 255, 255, 255],
-                width: 1
-              }
-            } as unknown as esri.SymbolProperties
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'map-image',
@@ -183,25 +153,24 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     } as unknown as esri.MapImageLayerProperties
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: SoccerParkingDefinitions.SAFETY_FIRST.id,
     title: SoccerParkingDefinitions.SAFETY_FIRST.name,
-    url: SoccerParkingDefinitions.SAFETY_FIRST.url,
+    url: eventUrl,
     visible: true,
     listMode: 'show',
+    layerIndex: 9,
     native: {
-      outFields: ['*'],
-      definitionExpression: "Street_Use = 'X-Walk'",
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-line',
-          color: [214, 170, 81, 255],
-          width: 2,
-          style: 'short-dash'
-        }
-      }
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 3,
+          title: SoccerParkingDefinitions.SAFETY_FIRST.name,
+          visible: true,
+          popupEnabled: false
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   }
 ];
 

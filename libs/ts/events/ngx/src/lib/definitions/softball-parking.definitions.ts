@@ -54,53 +54,23 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
-      description: 'Purchase your hourly parking permit here.'
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 62,
     native: {
       outFields: ['*']
     }
   },
   {
-    type: 'map-image',
+    type: 'feature',
     id: SoftballParkingDefinitions.ACCESSIBLE_PARKING.id,
     title: SoftballParkingDefinitions.ACCESSIBLE_PARKING.name,
-    url: eventUrl,
+    url: SoftballParkingDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.Type}',
-      description: '{attributes.Event}'
-    },
     visible: true,
     listMode: 'show',
     layerIndex: 61,
-    native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 1,
-          title: SoftballParkingDefinitions.ACCESSIBLE_PARKING.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'simple',
-            label: 'Accessible Parking Spaces',
-            symbol: {
-              type: 'simple-marker',
-              style: 'circle',
-              size: 10,
-              color: [38, 89, 150, 255],
-              outline: {
-                type: 'simple-line',
-                color: [255, 255, 255, 255],
-                width: 1
-              }
-            } as unknown as esri.SymbolProperties
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
   },
   {
     type: 'feature',
@@ -120,31 +90,30 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 60,
     native: {
       outFields: ['*']
     }
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: SoftballParkingDefinitions.SAFETY_FIRST.id,
     title: SoftballParkingDefinitions.SAFETY_FIRST.name,
-    url: SoftballParkingDefinitions.SAFETY_FIRST.url,
-    popupComponent: MarkdownPopupComponent,
+    url: eventUrl,
     visible: true,
     listMode: 'show',
+    layerIndex: 59,
     native: {
-      outFields: ['*'],
-      definitionExpression: "Street_Use = 'X-Walk'",
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-line',
-          color: [214, 170, 81, 255],
-          width: 2,
-          style: 'short-dash'
-        }
-      }
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 3,
+          title: SoftballParkingDefinitions.SAFETY_FIRST.name,
+          visible: true,
+          popupEnabled: false
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   }
 ];
 

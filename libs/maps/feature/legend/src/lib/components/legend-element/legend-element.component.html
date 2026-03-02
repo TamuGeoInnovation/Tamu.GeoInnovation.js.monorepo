@@ -5,9 +5,8 @@ of the table -->
   <div class="element-parent-name" *ngIf="element.infos && element.infos.length > 1"><span class="material-icons">expand_more</span> {{ groupTitle }}</div>
 
   <!-- Switch through the different element types. The default is a "not supported" message printout. -->
-  <ng-container [ngSwitch]="element.type">
-    <!-- For SymbolTable element type -->
-    <div *ngSwitchCase="'symbol-table'" class="element-group">
+  <ng-template #symbolTableMarkup>
+    <div class="element-group">
       <div class="legend-info" *ngFor="let info of infos | async">
         <div [ngSwitch]="info.type">
           <!-- Support for infos with nested infos. This case will continue to recursively iterate through n-nested infos until reaching the last node. -->
@@ -31,8 +30,26 @@ of the table -->
         </div>
       </div>
     </div>
+  </ng-template>
+
+  <ng-container [ngSwitch]="element.type">
+    <!-- For SymbolTable element type -->
+    <ng-container *ngSwitchCase="'symbol-table'" [ngTemplateOutlet]="symbolTableMarkup"></ng-container>
 
     <!-- Default printout -->
-    <div *ngSwitchDefault>Unsupported legend element type: {{element.type}}</div>
+    <ng-container *ngSwitchDefault>
+      <ng-container *ngIf="element?.infos?.length; else unknownLegendType" [ngTemplateOutlet]="symbolTableMarkup"></ng-container>
+      <ng-template #unknownLegendType>
+        <div *ngIf="useSportsSafetyFirstFallback(); else unsupportedLegendType" class="element-group">
+          <div class="legend-info">
+            <img class="image-container" [src]="getSportsSafetyFirstLegendSrc()" alt="Layer legend icon" />
+            <div class="label">{{ getSportsSafetyFirstLegendLabel() }}</div>
+          </div>
+        </div>
+        <ng-template #unsupportedLegendType>
+          <div>Unsupported legend element type: {{element.type}}</div>
+        </ng-template>
+      </ng-template>
+    </ng-container>
   </ng-container>
 </div>

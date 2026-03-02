@@ -87,15 +87,9 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     title: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.name,
     url: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.url,
     popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.Type}',
-      description: '{attributes.Event}'
-    },
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    layerIndex: 61
   },
   {
     type: 'map-image',
@@ -159,25 +153,24 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     } as unknown as esri.MapImageLayerProperties
   },
   {
-    type: 'feature',
+    type: 'map-image',
     id: SwimmingParkingDefinitions.SAFETY_FIRST.id,
     title: SwimmingParkingDefinitions.SAFETY_FIRST.name,
-    url: SwimmingParkingDefinitions.SAFETY_FIRST.url,
+    url: eventUrl,
     visible: true,
     listMode: 'show',
+    layerIndex: 59,
     native: {
-      outFields: ['*'],
-      definitionExpression: "Street_Use = 'X-Walk'",
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-line',
-          color: [214, 170, 81, 255],
-          width: 2,
-          style: 'short-dash'
-        }
-      }
-    }
+      listMode: 'hide-children',
+      sublayers: [
+        {
+          id: 3,
+          title: SwimmingParkingDefinitions.SAFETY_FIRST.name,
+          visible: true,
+          popupEnabled: false
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
   }
 ];
 
