@@ -18,6 +18,18 @@
   </div>
 </div>
 
-<tamu-gisc-legend [deduplicate]="true" [respectDefinitionExpression]="true"></tamu-gisc-legend>
+<tamu-gisc-legend
+  [deduplicate]="true"
+  [respectDefinitionExpression]="true"
+  [allowVisibilityToggle]="true"
+  [excludedLayerIds]="[
+    'aggieprint-locations-layer',
+    'accessible-entrances-layer',
+    'visitor-parking-layer',
+    'lactation-rooms-layer',
+    'poi-layer',
+    'construction_zone-layer'
+  ]"
+></tamu-gisc-legend>
 
 <tamu-gisc-layer-list></tamu-gisc-layer-list>

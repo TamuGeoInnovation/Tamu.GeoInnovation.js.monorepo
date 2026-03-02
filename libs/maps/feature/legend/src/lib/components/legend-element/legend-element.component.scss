@@ -4,8 +4,10 @@
   @include flexbox();
   @include flex-direction(row);
   @include align-items(center);
+  cursor: pointer;
   font-weight: 600;
   margin-bottom: 0.9rem;
+  user-select: none;
 
   // Add a left margin to any subsequent info group
   & ~ div {

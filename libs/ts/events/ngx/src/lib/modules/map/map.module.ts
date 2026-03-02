@@ -99,7 +99,23 @@ const routes: Routes = [
             component: MobileSidebarComponent,
             children: [
               { path: '', component: MainMobileSidebarComponent },
-              { path: 'legend', component: LegendComponent, data: { deduplicate: true, respectDefinitionExpression: true } },
+              {
+                path: 'legend',
+                component: LegendComponent,
+                data: {
+                  deduplicate: true,
+                  respectDefinitionExpression: true,
+                  allowVisibilityToggle: true,
+                  excludedLayerIds: [
+                    'aggieprint-locations-layer',
+                    'accessible-entrances-layer',
+                    'visitor-parking-layer',
+                    'lactation-rooms-layer',
+                    'poi-layer',
+                    'construction_zone-layer'
+                  ]
+                }
+              },
               { path: 'layers', component: LayerListComponent },
               { path: 'basemap', component: BasemapGalleryComponent }
             ]

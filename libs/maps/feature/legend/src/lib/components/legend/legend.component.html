@@ -5,5 +5,12 @@
 
 <div class="sidebar-component-content-container">
   <!-- Followed by dynamic legend items -->
-  <tamu-gisc-legend-collection *ngFor="let group of legend | async" [group]="group" [layer]="group.layer" [deduplicate]="deduplicate" [respectDefinitionExpression]="respectDefinitionExpression"></tamu-gisc-legend-collection>
+  <tamu-gisc-legend-collection
+    *ngFor="let group of legend | async"
+    [group]="group"
+    [layer]="group.layer"
+    [deduplicate]="deduplicate"
+    [respectDefinitionExpression]="respectDefinitionExpression"
+    [allowVisibilityToggle]="allowVisibilityToggle"
+  ></tamu-gisc-legend-collection>
 </div>

@@ -27,6 +27,12 @@ export class LegendComponent implements OnInit, OnDestroy {
   @Input()
   public respectDefinitionExpression = false;
 
+  @Input()
+  public allowVisibilityToggle = false;
+
+  @Input()
+  public excludedLayerIds: string[] = [];
+
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
 
   public responsive: ResponsiveSnapshot;
@@ -47,9 +53,14 @@ export class LegendComponent implements OnInit, OnDestroy {
     if (routeData) {
       this.deduplicate = routeData['deduplicate'] ?? this.deduplicate;
       this.respectDefinitionExpression = routeData['respectDefinitionExpression'] ?? this.respectDefinitionExpression;
+      this.allowVisibilityToggle = routeData['allowVisibilityToggle'] ?? this.allowVisibilityToggle;
+      this.excludedLayerIds = routeData['excludedLayerIds'] ?? this.excludedLayerIds;
     }
 
-    this.legend = this.legendService.legend();
+    this.legend = this.legendService.legend({
+      respectLayerVisibility: !this.allowVisibilityToggle,
+      excludedLayerIds: this.excludedLayerIds
+    });
 
     this.responsive = this.responsiveService.snapshot;
   }

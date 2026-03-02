@@ -62,8 +62,26 @@ export class LegendElementComponent implements OnInit {
   public respectDefinitionExpression = false;
 
   public infos: Observable<Array<LegendInfo>>;
+  public expanded = true;
+
+  public get showGroupHeader(): boolean {
+    const infos = this.element?.infos as { length?: number } | undefined;
+
+    return typeof infos?.length === 'number' && infos.length > 1;
+  }
+
+  public toggleExpanded(): void {
+    if (this.showGroupHeader) {
+      this.expanded = !this.expanded;
+    }
+  }
 
   public async ngOnInit(): Promise<void> {
+    if (!this.element?.infos) {
+      this.infos = of([]);
+      return;
+    }
+
     this.infos = iif(
       () => {
         return this.deduplicateChildren;
@@ -231,7 +249,7 @@ export class LegendElementComponent implements OnInit {
 
     // If there are no operable fields, return early
     if (operableFields.length === 0) {
-      return;
+      return of(info);
     }
 
     // Unique value expressions can at most be a concatenation of 3 fields, with exact value matches. This means
