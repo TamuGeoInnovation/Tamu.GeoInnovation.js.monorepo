@@ -21,15 +21,9 @@
 <tamu-gisc-legend
   [deduplicate]="true"
   [respectDefinitionExpression]="true"
-  [allowVisibilityToggle]="true"
-  [excludedLayerIds]="[
-    'aggieprint-locations-layer',
-    'accessible-entrances-layer',
-    'visitor-parking-layer',
-    'lactation-rooms-layer',
-    'poi-layer',
-    'construction_zone-layer'
-  ]"
+  [allowVisibilityToggle]="legendAllowVisibilityToggle"
+  [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary"
+  [excludedLayerIds]="legendExcludedLayerIds"
 ></tamu-gisc-legend>
 
 <tamu-gisc-layer-list></tamu-gisc-layer-list>

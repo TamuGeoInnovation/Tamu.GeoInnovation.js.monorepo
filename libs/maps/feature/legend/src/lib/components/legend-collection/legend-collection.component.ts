@@ -28,10 +28,35 @@ export class LegendCollectionComponent {
   @Input()
   public allowVisibilityToggle = false;
 
+  @Input()
+  public combineChildrenUnderPrimary = false;
+
+  @Input()
+  public hideElementGroupHeaders = false;
+
   public expanded = true;
 
   public get childGroups(): IActiveLayerInfo[] {
-    return this._toArray<IActiveLayerInfo>(this.group?.children);
+    const children = this._toArray<IActiveLayerInfo>(this.group?.children);
+
+    if (!this.combineChildrenUnderPrimary || !this._isPhysicsFestivalGroup(this.group?.layer?.id)) {
+      return children;
+    }
+
+    return children
+      .map((child, index) => ({
+        child,
+        index,
+        priority: this._getPhysicsFestivalChildPriority(child?.title)
+      }))
+      .sort((a, b) => {
+        if (a.priority !== b.priority) {
+          return a.priority - b.priority;
+        }
+
+        return a.index - b.index;
+      })
+      .map(({ child }) => child);
   }
 
   public get legendElements(): esri.LegendElement[] {
@@ -40,6 +65,18 @@ export class LegendCollectionComponent {
 
   public get hasChildren(): boolean {
     return this.childGroups.length > 0;
+  }
+
+  public get childHideElementGroupHeaders(): boolean {
+    if (
+      this.combineChildrenUnderPrimary &&
+      this.hasChildren &&
+      this._isPhysicsFestivalGroup(this.group?.layer?.id)
+    ) {
+      return true;
+    }
+
+    return this.hideElementGroupHeaders;
   }
 
   public toggleExpanded(): void {
@@ -102,6 +139,24 @@ export class LegendCollectionComponent {
     }
 
     return [];
+  }
+
+  private _isPhysicsFestivalGroup(layerId?: string): boolean {
+    return layerId?.startsWith('phys-eng-festival-') ?? false;
+  }
+
+  private _getPhysicsFestivalChildPriority(title?: string): number {
+    const normalizedTitle = title?.toLowerCase() ?? '';
+
+    if (normalizedTitle.includes('drop off') || normalizedTitle.includes('dropoff') || normalizedTitle.includes('pick up')) {
+      return 1;
+    }
+
+    if (normalizedTitle.includes('route') || normalizedTitle.includes('path')) {
+      return 2;
+    }
+
+    return 0;
   }
 }
 

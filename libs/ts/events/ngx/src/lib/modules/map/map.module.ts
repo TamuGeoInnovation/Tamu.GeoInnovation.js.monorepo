@@ -37,7 +37,7 @@ import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
+import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -49,6 +49,7 @@ import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
 import { MapComponent } from './map.component';
 import { MoveInOutSidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
+import { EventLegendComponent } from './components/event-legend/event-legend.component';
 
 const routes: Routes = [
   {
@@ -101,20 +102,7 @@ const routes: Routes = [
               { path: '', component: MainMobileSidebarComponent },
               {
                 path: 'legend',
-                component: LegendComponent,
-                data: {
-                  deduplicate: true,
-                  respectDefinitionExpression: true,
-                  allowVisibilityToggle: true,
-                  excludedLayerIds: [
-                    'aggieprint-locations-layer',
-                    'accessible-entrances-layer',
-                    'visitor-parking-layer',
-                    'lactation-rooms-layer',
-                    'poi-layer',
-                    'construction_zone-layer'
-                  ]
-                }
+                component: EventLegendComponent
               },
               { path: 'layers', component: LayerListComponent },
               { path: 'basemap', component: BasemapGalleryComponent }
@@ -159,6 +147,6 @@ const routes: Routes = [
     UIClipboardModule,
     MoveInOutSidebarModule
   ],
-  declarations: [MapComponent]
+  declarations: [MapComponent, EventLegendComponent]
 })
 export class MapModule {}

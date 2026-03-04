@@ -61,10 +61,17 @@ export class LegendElementComponent implements OnInit {
   @Input()
   public respectDefinitionExpression = false;
 
+  @Input()
+  public hideGroupHeader = false;
+
   public infos: Observable<Array<LegendInfo>>;
   public expanded = true;
 
   public get showGroupHeader(): boolean {
+    if (this.hideGroupHeader) {
+      return false;
+    }
+
     const infos = this.element?.infos as { length?: number } | undefined;
 
     return typeof infos?.length === 'number' && infos.length > 1;

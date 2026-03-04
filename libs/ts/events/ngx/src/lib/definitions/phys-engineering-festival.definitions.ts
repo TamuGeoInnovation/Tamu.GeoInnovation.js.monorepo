@@ -230,18 +230,6 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       },
       {
         type: 'feature',
-        id: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.id,
-        title: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.name,
-        url: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
-        visible: true,
-        listMode: 'show',
-        native: {
-          outFields: ['*']
-        }
-      },
-      {
-        type: 'feature',
         id: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.id,
         title: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.name,
         url: PhysEngFestDefinitions.EASTBOUND_BUS_ROUTE.url,
@@ -259,6 +247,18 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
         visible: true,
         listMode: 'show',
         native: GREEN_ARROW_LINE_NATIVE
+      },
+      {
+        type: 'feature',
+        id: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.id,
+        title: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.name,
+        url: PhysEngFestDefinitions.EASTBOUND_BUS_DROPOFF.url,
+        popupComponent: MarkdownWDirectionsPopupComponent,
+        visible: true,
+        listMode: 'show',
+        native: {
+          outFields: ['*']
+        }
       }
     ],
     native: {
@@ -286,18 +286,6 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
       },
       {
         type: 'feature',
-        id: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.id,
-        title: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.name,
-        url: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
-        visible: true,
-        listMode: 'show',
-        native: {
-          outFields: ['*']
-        }
-      },
-      {
-        type: 'feature',
         id: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.id,
         title: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.name,
         url: PhysEngFestDefinitions.WESTBOUND_BUS_ROUTE.url,
@@ -315,6 +303,18 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
         visible: true,
         listMode: 'show',
         native: GREEN_ARROW_LINE_NATIVE
+      },
+      {
+        type: 'feature',
+        id: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.id,
+        title: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.name,
+        url: PhysEngFestDefinitions.WESTBOUND_BUS_DROPOFF.url,
+        popupComponent: MarkdownWDirectionsPopupComponent,
+        visible: true,
+        listMode: 'show',
+        native: {
+          outFields: ['*']
+        }
       }
     ],
     native: {

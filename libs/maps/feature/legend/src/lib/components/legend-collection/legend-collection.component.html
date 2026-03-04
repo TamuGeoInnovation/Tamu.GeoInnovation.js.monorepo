@@ -20,6 +20,7 @@
       [groupTitle]="group.title"
       [deduplicateChildren]="deduplicate"
       [respectDefinitionExpression]="respectDefinitionExpression"
+      [hideGroupHeader]="hideElementGroupHeaders"
     ></tamu-gisc-legend-element>
 
     <tamu-gisc-legend-collection
@@ -29,6 +30,8 @@
       [deduplicate]="deduplicate"
       [respectDefinitionExpression]="respectDefinitionExpression"
       [allowVisibilityToggle]="allowVisibilityToggle"
+      [combineChildrenUnderPrimary]="combineChildrenUnderPrimary"
+      [hideElementGroupHeaders]="childHideElementGroupHeaders"
     ></tamu-gisc-legend-collection>
   </div>
 </div>
