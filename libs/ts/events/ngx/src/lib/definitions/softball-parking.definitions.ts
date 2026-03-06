@@ -102,7 +102,7 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
     url: eventUrl,
     visible: true,
     listMode: 'show',
-    layerIndex: 59,
+    layerIndex: 0,
     native: {
       listMode: 'hide-children',
       sublayers: [

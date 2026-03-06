@@ -11,7 +11,7 @@ of the table -->
         <div [ngSwitch]="info.type">
           <!-- Support for infos with nested infos. This case will continue to recursively iterate through n-nested infos until reaching the last node. -->
           <div *ngSwitchCase="'symbol-table'">
-            <tamu-gisc-legend-element *ngFor="let subInfo of info?.infos" [element]="subInfo" [groupTitle]="info.title"></tamu-gisc-legend-element>
+            <tamu-gisc-legend-element *ngFor="let subInfo of info?.infos" [element]="subInfo" [layer]="layer" [groupTitle]="info.title"></tamu-gisc-legend-element>
           </div>
 
           <!-- This case will be reached of every info node and will terminate either with an info.preview or info.src -->
@@ -23,8 +23,8 @@ of the table -->
           </div>
         </div>
 
-        <!-- Apply the legend item from the parent group or child -->
-        <div [ngSwitch]="element.infos?.length">
+        <!-- Apply labels only to leaf infos. Nested symbol-table nodes render labels in child components. -->
+        <div *ngIf="info.type !== 'symbol-table'" [ngSwitch]="element.infos?.length">
           <div *ngSwitchCase="1" class="group-title">{{groupTitle}}</div>
           <div *ngSwitchDefault class="label">{{info?.label}}</div>
         </div>
