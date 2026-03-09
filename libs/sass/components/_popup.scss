@@ -68,6 +68,7 @@
 
 swiper-container {
   --swiper-navigation-size: 33px;
+  height: 300px;
 
   .swiper-button-prev,
   .swiper-button-next {
@@ -79,14 +80,13 @@ swiper-container {
 swiper-slide {
   a {
     display: block;
-    height: 25rem;
+    height: 100%;
     width: 100%;
 
     img {
-      object-fit: cover;
+      object-fit: contain;
       height: 100%;
       width: 100%;
-      object-position: center;
     }
   }
 }
