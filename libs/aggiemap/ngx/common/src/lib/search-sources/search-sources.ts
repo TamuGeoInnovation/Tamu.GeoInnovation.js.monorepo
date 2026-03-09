@@ -209,10 +209,10 @@ export function SearchSources(
       queryParams: {
         ...commonQueryParams,
         where: {
-          keys: ['LotName'],
-          operators: ['LIKE'],
-          wildcards: ['includes'],
-          transformations: ['UPPER']
+          keys: ['LotName', 'Name'],
+          operators: ['LIKE', 'LIKE'],
+          wildcards: ['includes', 'includes'],
+          transformations: ['UPPER', 'UPPER']
         }
       },
       featuresLocation: 'features',
@@ -229,10 +229,10 @@ export function SearchSources(
       queryParams: {
         ...commonQueryParams,
         where: {
-          keys: ['name'],
-          operators: ['LIKE'],
-          wildcards: ['includes'],
-          transformations: ['UPPER']
+          keys: ['name', 'OBJECTID'],
+          operators: ['LIKE', '='],
+          wildcards: ['includes', null],
+          transformations: ['UPPER', null]
         }
       },
       featuresLocation: 'features',

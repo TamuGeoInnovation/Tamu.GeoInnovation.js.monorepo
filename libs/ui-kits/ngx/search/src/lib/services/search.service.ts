@@ -269,6 +269,10 @@ export class SearchService {
     this._store.next(new SearchResult({}));
   }
 
+  public getSource(id: string): SearchSource | undefined {
+    return this._sources?.find((s) => s.source === id);
+  }
+
   /**
    * Generates a URL query params string from the supplied search properties and values,
    * as well as a valid search source.
