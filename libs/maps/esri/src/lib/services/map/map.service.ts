@@ -720,7 +720,8 @@ export class EsriMapService {
         if (validGraphics.length) {
           this.selectFeatures({
             graphics: validGraphics,
-            shouldShowPopup: validGraphics.length === 1
+            shouldShowPopup: validGraphics.length === 1,
+            popupComponent: extractionResult.popupComponent
           });
         }
       });
@@ -729,7 +730,7 @@ export class EsriMapService {
   /**
    * Gets a list of features from url params by matching against search source URL parameter configurations.
    */
-  public getFeatureListFromURL(): { dataset: string; identifiersList: string[] } | null {
+  public getFeatureListFromURL(): { dataset: string; identifiersList: string[]; popupComponent?: Type<Component> } | null {
     const parsedRoute = this.router.parseUrl(this.router.url);
     const queryParameters = parsedRoute.queryParams;
     
@@ -769,7 +770,8 @@ export class EsriMapService {
           
           return {
             dataset: searchSource.source,
-            identifiersList: deduplicatedTokens
+            identifiersList: deduplicatedTokens,
+            popupComponent: searchSource.popupComponent
           };
         }
       }
