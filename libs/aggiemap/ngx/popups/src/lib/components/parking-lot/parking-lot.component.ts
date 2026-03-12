@@ -24,6 +24,10 @@ export class ParkingLotPopupComponent extends BaseDirectionsComponent {
     super(rtr, rt, ps, anl, mp);
   }
 
+  protected override _getShareUrlFragment(): string | null {
+    return this._buildShareUrlFragment('parking-lot', this.data.attributes.Name);
+  }
+
   public startDirections() {
     super.startDirections(`Lot ${this.data.attributes.Name}`);
   }

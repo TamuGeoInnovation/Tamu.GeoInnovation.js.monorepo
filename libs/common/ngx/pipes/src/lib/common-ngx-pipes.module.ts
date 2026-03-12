@@ -19,6 +19,8 @@ import { MarkdownParsePipe } from './parsing/markdown-parse.pipe';
 
 import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
 
+import { TrimPipe } from './string/trim.pipe';
+
 @NgModule({
   imports: [CommonModule],
   declarations: [
@@ -33,7 +35,8 @@ import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
     DateRangePipe,
     NearestDatePipe,
     ToDatePipe,
-    ToArrayPipe
+    ToArrayPipe,
+    TrimPipe
   ],
   exports: [
     GroupByPipe,
@@ -47,7 +50,8 @@ import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
     DateRangePipe,
     NearestDatePipe,
     ToDatePipe,
-    ToArrayPipe
+    ToArrayPipe,
+    TrimPipe
   ]
 })
 export class PipesModule {}
