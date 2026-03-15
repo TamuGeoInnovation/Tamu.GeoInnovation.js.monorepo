@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bull';
 
 import {
   GisdayCompetitionsDataApiModule,
@@ -25,7 +26,16 @@ const entities = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forRoot({ ...dbConfig, entities }), GisdayCompetitionsDataApiModule],
+  imports: [
+    TypeOrmModule.forRoot({ ...dbConfig, entities }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT, 10) || 6379
+      }
+    }),
+    GisdayCompetitionsDataApiModule
+  ],
   controllers: [AppController],
   providers: [AppService]
 })
