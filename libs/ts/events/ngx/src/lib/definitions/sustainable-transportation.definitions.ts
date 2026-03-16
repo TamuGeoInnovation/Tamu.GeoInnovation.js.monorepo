@@ -1,0 +1,186 @@
+import { LayerSource } from '@tamu-gisc/common/types';
+
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
+
+export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
+  EV_CHARGERS = 'sustainable-transportation-ev-chargers',
+  BIKE_RACKS = 'sustainable-transportation-bike-racks',
+  BIKE_RACK_AREAS = 'sustainable-transportation-bike-rack-areas',
+  BIKE_FIX_STATIONS = 'sustainable-transportation-bike-fix-stations',
+  BIKE_LANES = 'sustainable-transportation-bike-lanes',
+  CITY_BIKE_LANES_ROUTES = 'sustainable-transportation-city-bike-lanes-routes',
+  BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
+}
+
+const evLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/EVChargeStations/MapServer';
+const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
+
+export const SustainableTransportationDefinitions = {
+  EV_CHARGERS: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
+    name: 'EV Charge Stations (Main + RELLIS)',
+    url: `${evLayersUrl}/0`
+  },
+  BIKE_RACKS: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
+    name: 'Bike Racks',
+    url: `${bikeLayersUrl}/0`
+  },
+  BIKE_FIX_STATIONS: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
+    name: 'Bike Fix Stations',
+    url: `${bikeLayersUrl}/1`
+  },
+  BIKE_LANES: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_LANES,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_LANES,
+    name: 'Bike Lanes',
+    url: `${bikeLayersUrl}/2`
+  },
+  CITY_BIKE_LANES_ROUTES: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.CITY_BIKE_LANES_ROUTES,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.CITY_BIKE_LANES_ROUTES,
+    name: 'City Bike Lanes and Routes',
+    url: `${bikeLayersUrl}/3`
+  },
+  BIKE_RACK_AREAS: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACK_AREAS,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACK_AREAS,
+    name: 'Bike Rack Areas',
+    url: `${bikeLayersUrl}/4`
+  },
+  BIKE_DISMOUNT_ZONES: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_DISMOUNT_ZONES,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_DISMOUNT_ZONES,
+    name: 'Bike Dismount Zones',
+    url: `${bikeLayersUrl}/5`
+  }
+};
+
+export const SustainableTransportationColdLayerSources: LayerSource[] = [
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.EV_CHARGERS.id,
+    title: SustainableTransportationDefinitions.EV_CHARGERS.name,
+    url: SustainableTransportationDefinitions.EV_CHARGERS.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.BIKE_RACK_AREAS.id,
+    title: SustainableTransportationDefinitions.BIKE_RACK_AREAS.name,
+    url: SustainableTransportationDefinitions.BIKE_RACK_AREAS.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.BIKE_RACKS.id,
+    title: SustainableTransportationDefinitions.BIKE_RACKS.name,
+    url: SustainableTransportationDefinitions.BIKE_RACKS.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.id,
+    title: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.name,
+    url: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.BIKE_LANES.id,
+    title: SustainableTransportationDefinitions.BIKE_LANES.name,
+    url: SustainableTransportationDefinitions.BIKE_LANES.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.CITY_BIKE_LANES_ROUTES.id,
+    title: SustainableTransportationDefinitions.CITY_BIKE_LANES_ROUTES.name,
+    url: SustainableTransportationDefinitions.CITY_BIKE_LANES_ROUTES.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.BIKE_DISMOUNT_ZONES.id,
+    title: SustainableTransportationDefinitions.BIKE_DISMOUNT_ZONES.name,
+    url: SustainableTransportationDefinitions.BIKE_DISMOUNT_ZONES.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  }
+];
+
+export const SustainableTransportationConfiguration: EventConfiguration = {
+  id: 'sustainable-transportation',
+  name: 'Sustainable Transportation',
+  applicationName: 'Sustainable Transportation Map',
+  shortApplicationName: 'Sustainable Transportation',
+  introductionText:
+    'Explore bike amenities and EV charge stations across Main Campus and the RELLIS Campus in one map.',
+  mapCenter: [-96.4005, 30.6193],
+  eventDates: [],
+  zoom: 11
+};
+
+export const SustainableTransportationOptions: SpecialEventOptions = [];
+
+export const SustainableTransportationTs: AggiemapCustomMapConfiguration = {
+  configuration: SustainableTransportationConfiguration,
+  options: SustainableTransportationOptions,
+  sources: SustainableTransportationColdLayerSources,
+  references: SUSTAINABLE_TRANSPORTATION_LAYERS,
+  type: 'general-map',
+  discover: {
+    id: SustainableTransportationConfiguration.id,
+    name: SustainableTransportationConfiguration.name,
+    description: 'Bike amenities and EV charging locations for Main Campus and the RELLIS Campus.',
+    source: 'internal',
+    type: 'parking',
+    keywords: [
+      'sustainable transportation',
+      'bike',
+      'bike racks',
+      'bike fix stations',
+      'bike lanes',
+      'dismount zones',
+      'ev',
+      'ev chargers',
+      'electric vehicle',
+      'rellis'
+    ]
+  }
+};
