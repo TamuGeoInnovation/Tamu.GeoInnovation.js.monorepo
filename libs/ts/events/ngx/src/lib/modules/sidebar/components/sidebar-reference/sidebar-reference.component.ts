@@ -16,20 +16,6 @@ import esri = __esri;
   styleUrls: ['./sidebar-reference.component.scss']
 })
 export class SidebarReferenceComponent implements OnInit {
-  private readonly _physicsEventId = 'phys-eng-fest';
-
-  private readonly _physicsExcludedLayerIds = [
-    'aggieprint-locations-layer',
-    'accessible-entrances-layer',
-    'visitor-parking-layer',
-    'lactation-rooms-layer',
-    'poi-layer',
-    'construction_zone-layer',
-    'dining-locations-layer',
-    'family-friendly-bathrooms-locations-layer',
-    'emergency-phones-layer'
-  ];
-
   public shareUrl: string;
   public hasSettings: boolean;
   public settings: EventSettings;
@@ -54,12 +40,6 @@ export class SidebarReferenceComponent implements OnInit {
     this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
-
-    const isPhysicsMap = this.configuration?.id === this._physicsEventId;
-
-    this.legendAllowVisibilityToggle = isPhysicsMap;
-    this.legendCombineChildrenUnderPrimary = isPhysicsMap;
-    this.legendExcludedLayerIds = isPhysicsMap ? this._physicsExcludedLayerIds : [];
   }
 
   public onSearchResult(result: SearchSelection<unknown>): void {
