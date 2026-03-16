@@ -36,6 +36,15 @@ export class LegendCollectionComponent {
 
   public expanded = true;
 
+  private readonly _sportsSafetyFirstLayerIds = new Set([
+    'softball-parking-safety-first',
+    'swimming-parking-safety-first',
+    'soccer-parking-safety-first',
+    'volleyball-parking-safety-first',
+    'indoor-track-parking-safety-first',
+    'outdoor-track-parking-safety-first'
+  ]);
+
   public get childGroups(): IActiveLayerInfo[] {
     const children = this._toArray<IActiveLayerInfo>(this.group?.children);
 
@@ -152,15 +161,6 @@ export class LegendCollectionComponent {
   private _isPhysicsFestivalGroup(layerId?: string): boolean {
     return layerId?.startsWith('phys-eng-festival-') ?? false;
   }
-
-  private readonly _sportsSafetyFirstLayerIds = new Set([
-    'softball-parking-safety-first',
-    'swimming-parking-safety-first',
-    'soccer-parking-safety-first',
-    'volleyball-parking-safety-first',
-    'indoor-track-parking-safety-first',
-    'outdoor-track-parking-safety-first'
-  ]);
 
   public get showGroupTitle(): boolean {
     return this.hasChildren && !this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id);
