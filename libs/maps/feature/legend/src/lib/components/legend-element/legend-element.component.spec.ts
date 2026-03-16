@@ -28,4 +28,12 @@ describe('LegendElementComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should use the safety first warning label for sports safety layers', () => {
+    component.layer = {
+      id: 'softball-parking-safety-first'
+    } as __esri.Layer;
+
+    expect(component.getSportsSafetyFirstLegendLabel()).toBe('Please use marked crosswalks. No mid-street crossing.');
+  });
 });

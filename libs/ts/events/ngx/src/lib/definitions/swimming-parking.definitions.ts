@@ -47,10 +47,10 @@ export const SwimmingParkingDefinitions = {
 
 export const SwimmingParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'map-image',
+    type: 'feature',
     id: SwimmingParkingDefinitions.VISITOR_KIOSK.id,
     title: SwimmingParkingDefinitions.VISITOR_KIOSK.name,
-    url: eventUrl,
+    url: SwimmingParkingDefinitions.VISITOR_KIOSK.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
@@ -60,27 +60,19 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 62,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 0,
-          title: SwimmingParkingDefinitions.VISITOR_KIOSK.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'simple',
-            label: 'Purchase Hourly Visitor Parking',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/transportation/Paid-Parking.png',
-              width: 22,
-              height: 22
-            } as unknown as esri.SymbolProperties
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        label: 'Purchase Hourly Visitor Parking',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/images/icons/transportation/Paid-Parking.png',
+          width: 22,
+          height: 22
+        } as unknown as esri.SymbolProperties
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: SwimmingParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -90,12 +82,12 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     layerIndex: 61
-  },
+  } as unknown as LayerSource,
   {
-    type: 'map-image',
+    type: 'feature',
     id: SwimmingParkingDefinitions.PARKING.id,
     title: SwimmingParkingDefinitions.PARKING.name,
-    url: eventUrl,
+    url: SwimmingParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
@@ -111,47 +103,39 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 60,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 2,
-          title: SwimmingParkingDefinitions.PARKING.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'unique-value',
-            field: 'GIS.TS.SPEV_Lot_Use.Swimming',
-            defaultLabel: 'Reserved Parking - Permit Required',
-            defaultSymbol: {
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'GIS.TS.SPEV_Lot_Use.Swimming',
+        defaultLabel: 'Reserved Parking - Permit Required',
+        defaultSymbol: {
+          type: 'simple-fill',
+          color: [241, 184, 96, 255],
+          outline: null
+        } as unknown as esri.SymbolProperties,
+        uniqueValueInfos: [
+          {
+            value: 'AnyValidRec',
+            label: 'Rec Center Patrons Only',
+            symbol: {
               type: 'simple-fill',
-              color: [241, 184, 96, 255],
+              color: [27, 72, 94, 255],
               outline: null
-            } as unknown as esri.SymbolProperties,
-            uniqueValueInfos: [
-              {
-                value: 'AnyValidRec',
-                label: 'Rec Center Patrons Only',
-                symbol: {
-                  type: 'simple-fill',
-                  color: [27, 72, 94, 255],
-                  outline: null
-                } as unknown as esri.SymbolProperties
-              },
-              {
-                value: 'EventParking',
-                label: 'Event Parking',
-                symbol: {
-                  type: 'simple-fill',
-                  color: [123, 35, 42, 255],
-                  outline: null
-                } as unknown as esri.SymbolProperties
-              }
-            ]
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+            } as unknown as esri.SymbolProperties
+          },
+          {
+            value: 'Hourly',
+            label: 'Hourly Paid Parking',
+            symbol: {
+              type: 'simple-fill',
+              color: [123, 35, 42, 255],
+              outline: null
+            } as unknown as esri.SymbolProperties
+          }
+        ]
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'map-image',
     id: SwimmingParkingDefinitions.SAFETY_FIRST.id,

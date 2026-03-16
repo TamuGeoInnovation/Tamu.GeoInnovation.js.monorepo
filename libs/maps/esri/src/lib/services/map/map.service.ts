@@ -278,9 +278,9 @@ export class EsriMapService {
   public async loadLayers(sources: LayerSource[]) {
     await this.registerIdentityAuthInfos(sources);
 
-    sources.forEach((source) => {
-      this.findLayerOrCreateFromSource(source);
-    });
+    for (const source of sources) {
+      await this.findLayerOrCreateFromSource(source);
+    }
   }
 
   public async generateLayer(source: LayerSource | AutocastableLayer): Promise<esri.Layer | Array<esri.Layer>> {

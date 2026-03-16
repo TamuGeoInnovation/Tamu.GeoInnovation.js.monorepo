@@ -53,6 +53,8 @@ export class LegendElementComponent implements OnInit {
   private readonly sportsSafetyFirstLegendSrc =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAPElEQVQ4jWNhoDJgGTVwcIfhfwrNYkQx8P/vNspMY62isZcZoTZQzUBqAZaRHYaM1DaQKoCFOsYwjGQDAaloCFLg0b/eAAAAAElFTkSuQmCC';
 
+  private readonly sportsSafetyFirstLegendLabel = 'Please use marked crosswalks. No mid-street crossing.';
+
   @Input()
   public element: ILegendElement;
 
@@ -146,7 +148,7 @@ export class LegendElementComponent implements OnInit {
   }
 
   public getSportsSafetyFirstLegendLabel(): string {
-    return this.groupTitle || 'Safety First';
+    return this.sportsSafetyFirstLegendLabel;
   }
 
   /**

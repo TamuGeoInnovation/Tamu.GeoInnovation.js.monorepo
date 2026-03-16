@@ -11,8 +11,8 @@ import esri = __esri;
 
 export enum SOCCER_PARKING_LAYERS {
   VISITOR_KIOSK = 'soccer-parking-visitor-kiosk',
-  PARKING_LOTS = 'soccer-parking-lots',
   ACCESSIBLE_PARKING = 'soccer-parking-accessible-parking',
+  PARKING_LOTS = 'soccer-parking-lots',
   SAFETY_FIRST = 'soccer-parking-safety-first'
 }
 
@@ -47,10 +47,10 @@ export const SoccerParkingDefinitions = {
 
 export const SoccerParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'map-image',
+    type: 'feature',
     id: SoccerParkingDefinitions.VISITOR_KIOSK.id,
     title: SoccerParkingDefinitions.VISITOR_KIOSK.name,
-    url: eventUrl,
+    url: SoccerParkingDefinitions.VISITOR_KIOSK.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
@@ -60,27 +60,19 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 12,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 0,
-          title: SoccerParkingDefinitions.VISITOR_KIOSK.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'simple',
-            label: 'Purchase Hourly Visitor Parking',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/transportation/Paid-Parking.png',
-              width: 22,
-              height: 22
-            } as unknown as esri.SymbolProperties
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        label: 'Purchase Hourly Visitor Parking',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/images/icons/transportation/Paid-Parking.png',
+          width: 22,
+          height: 22
+        } as unknown as esri.SymbolProperties
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: SoccerParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -90,12 +82,15 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     layerIndex: 11,
-  },
+    native: {
+      outFields: ['*']
+    }
+  } as unknown as LayerSource,
   {
-    type: 'map-image',
+    type: 'feature',
     id: SoccerParkingDefinitions.PARKING.id,
     title: SoccerParkingDefinitions.PARKING.name,
-    url: eventUrl,
+    url: SoccerParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
@@ -111,47 +106,39 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 10,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 2,
-          title: SoccerParkingDefinitions.PARKING.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'unique-value',
-            field: 'GIS.TS.SPEV_Lot_Use.Soccer',
-            defaultLabel: 'Reserved Parking - Permit Required',
-            defaultSymbol: {
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'GIS.TS.SPEV_Lot_Use.Soccer',
+        defaultLabel: 'Reserved Parking - Permit Required',
+        defaultSymbol: {
+          type: 'simple-fill',
+          color: [241, 184, 96, 255],
+          outline: null
+        } as unknown as esri.SymbolProperties,
+        uniqueValueInfos: [
+          {
+            value: 'AnyValidRec',
+            label: 'Rec Center Patrons Only',
+            symbol: {
               type: 'simple-fill',
-              color: [241, 184, 96, 255],
+              color: [27, 72, 94, 255],
               outline: null
-            } as unknown as esri.SymbolProperties,
-            uniqueValueInfos: [
-              {
-                value: 'AnyValidRec',
-                label: 'Rec Center Patrons Only',
-                symbol: {
-                  type: 'simple-fill',
-                  color: [27, 72, 94, 255],
-                  outline: null
-                } as unknown as esri.SymbolProperties
-              },
-              {
-                value: 'EventParking',
-                label: 'Event Parking',
-                symbol: {
-                  type: 'simple-fill',
-                  color: [123, 35, 42, 255],
-                  outline: null
-                } as unknown as esri.SymbolProperties
-              }
-            ]
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+            } as unknown as esri.SymbolProperties
+          },
+          {
+            value: 'EventParking',
+            label: 'Event Parking',
+            symbol: {
+              type: 'simple-fill',
+              color: [123, 35, 42, 255],
+              outline: null
+            } as unknown as esri.SymbolProperties
+          }
+        ]
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'map-image',
     id: SoccerParkingDefinitions.SAFETY_FIRST.id,
@@ -187,12 +174,19 @@ export const SoccerParkingConfiguration: EventConfiguration = {
 
 export const SoccerParkingOptions: SpecialEventOptions = [];
 
+const SoccerParkingLayerReferences: Record<string, string> = {
+  VISITOR_KIOSK: SOCCER_PARKING_LAYERS.VISITOR_KIOSK,
+  ACCESSIBLE_PARKING: SOCCER_PARKING_LAYERS.ACCESSIBLE_PARKING,
+  PARKING_LOTS: SOCCER_PARKING_LAYERS.PARKING_LOTS,
+  SAFETY_FIRST: SOCCER_PARKING_LAYERS.SAFETY_FIRST
+};
+
 export const SoccerParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: SoccerParkingConfiguration,
   options: SoccerParkingOptions,
   sources: SoccerParkingColdLayerSources,
-  references: SOCCER_PARKING_LAYERS,
+  references: SoccerParkingLayerReferences,
   discover: {
     id: SoccerParkingConfiguration.id,
     name: SoccerParkingConfiguration.name,

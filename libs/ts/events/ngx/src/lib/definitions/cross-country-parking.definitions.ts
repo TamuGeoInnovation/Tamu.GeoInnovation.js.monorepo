@@ -9,6 +9,9 @@ import {
 
 import esri = __esri;
 
+type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
+type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
+
 export enum CROSS_COUNTRY_PARKING_LAYERS {
   CROSS_COUNTRY_AREA = 'cross-country-parking-area',
   PARKING_LOTS = 'cross-country-parking-lots'
@@ -31,12 +34,43 @@ export const CrossCountryParkingDefinitions = {
   }
 };
 
+const crossCountryAreaRenderer: FeatureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-line',
+    color: [137, 112, 68, 255],
+    width: 1.5
+  }
+};
+
+const crossCountryParkingRenderer: FeatureRenderer = {
+  type: 'unique-value',
+  field: 'GIS.TS.SPEV_Lot_Use.TrackXC',
+  defaultLabel: 'Reserved Parking - Permit Required',
+  defaultSymbol: {
+    type: 'simple-fill',
+    color: [241, 184, 96, 255],
+    outline: null
+  } as unknown as esri.SymbolProperties,
+  uniqueValueInfos: [
+    {
+      value: 'EventParking',
+      label: 'Event Parking',
+      symbol: {
+        type: 'simple-fill',
+        color: [123, 35, 42, 255],
+        outline: null
+      } as unknown as esri.SymbolProperties
+    }
+  ]
+};
+
 export const CrossCountryParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'map-image',
+    type: 'feature',
     id: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.id,
     title: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.name,
-    url: eventUrl,
+    url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Name}',
@@ -46,30 +80,15 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 59,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 0,
-          title: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'simple',
-            symbol: {
-              type: 'simple-fill',
-              color: [232, 180, 90, 220],
-              outline: null
-            } as unknown as esri.SymbolProperties
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
+      outFields: ['*'],
+      renderer: crossCountryAreaRenderer
+    } as unknown as FeatureNative
   },
   {
-    type: 'map-image',
+    type: 'feature',
     id: CrossCountryParkingDefinitions.PARKING.id,
     title: CrossCountryParkingDefinitions.PARKING.name,
-    url: eventUrl,
+    url: CrossCountryParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
@@ -85,46 +104,10 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 60,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 1,
-          title: CrossCountryParkingDefinitions.PARKING.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'unique-value',
-            field: 'GIS.TS.SPEV_Lot_Use.TrackXC',
-            defaultLabel: 'Reserved Parking - Permit Required',
-            defaultSymbol: {
-              type: 'simple-fill',
-              color: [241, 184, 96, 255],
-              outline: null
-            } as unknown as esri.SymbolProperties,
-            uniqueValueInfos: [
-              {
-                value: 'AnyValidRec',
-                label: 'Rec Center Patrons Only',
-                symbol: {
-                  type: 'simple-fill',
-                  color: [27, 72, 94, 255],
-                  outline: null
-                } as unknown as esri.SymbolProperties
-              },
-              {
-                value: 'EventParking',
-                label: 'Event Parking',
-                symbol: {
-                  type: 'simple-fill',
-                  color: [123, 35, 42, 255],
-                  outline: null
-                } as unknown as esri.SymbolProperties
-              }
-            ]
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
+      definitionExpression: `GIS.TS.SPEV_Lot_Use.TrackXC = 'EventParking'`,
+      outFields: ['*'],
+      renderer: crossCountryParkingRenderer
+    } as unknown as FeatureNative
   }
 ];
 
@@ -136,7 +119,7 @@ export const CrossCountryParkingConfiguration: EventConfiguration = {
   introductionText: 'Parking and transportation information for Texas A&M cross country events.',
   eventDates: [],
   zoom: 16,
-  mapCenter: [-96.34454, 30.60338]
+  mapCenter: [-96.36925, 30.61689]
 };
 
 export const CrossCountryParkingOptions: SpecialEventOptions = [];

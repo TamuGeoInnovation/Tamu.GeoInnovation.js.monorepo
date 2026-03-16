@@ -47,10 +47,10 @@ export const VolleyballParkingDefinitions = {
 
 export const VolleyballParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'map-image',
+    type: 'feature',
     id: VolleyballParkingDefinitions.VISITOR_KIOSK.id,
     title: VolleyballParkingDefinitions.VISITOR_KIOSK.name,
-    url: eventUrl,
+    url: VolleyballParkingDefinitions.VISITOR_KIOSK.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Visitor Permit Kiosk',
@@ -60,27 +60,19 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 62,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 0,
-          title: VolleyballParkingDefinitions.VISITOR_KIOSK.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'simple',
-            label: 'Purchase Hourly Visitor Parking',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/transportation/Paid-Parking.png',
-              width: 22,
-              height: 22
-            } as unknown as esri.SymbolProperties
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        label: 'Purchase Hourly Visitor Parking',
+        symbol: {
+          type: 'picture-marker',
+          url: '/assets/images/icons/transportation/Paid-Parking.png',
+          width: 22,
+          height: 22
+        } as unknown as esri.SymbolProperties
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: VolleyballParkingDefinitions.ACCESSIBLE_PARKING.id,
@@ -89,13 +81,16 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
-    layerIndex: 61
-  },
+    layerIndex: 61,
+    native: {
+      outFields: ['*']
+    }
+  } as unknown as LayerSource,
   {
-    type: 'map-image',
+    type: 'feature',
     id: VolleyballParkingDefinitions.PARKING.id,
     title: VolleyballParkingDefinitions.PARKING.name,
-    url: eventUrl,
+    url: VolleyballParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
@@ -111,47 +106,39 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 60,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 2,
-          title: VolleyballParkingDefinitions.PARKING.name,
-          visible: true,
-          popupEnabled: true,
-          renderer: {
-            type: 'unique-value',
-            field: 'GIS.TS.SPEV_Lot_Use.Volleyball',
-            defaultLabel: 'Reserved Parking - Permit Required',
-            defaultSymbol: {
+      outFields: ['*'],
+      renderer: {
+        type: 'unique-value',
+        field: 'GIS.TS.SPEV_Lot_Use.Volleyball',
+        defaultLabel: 'Reserved Parking - Permit Required',
+        defaultSymbol: {
+          type: 'simple-fill',
+          color: [241, 184, 96, 255],
+          outline: null
+        } as unknown as esri.SymbolProperties,
+        uniqueValueInfos: [
+          {
+            value: 'AnyValidRec',
+            label: 'Rec Center Patrons Only',
+            symbol: {
               type: 'simple-fill',
-              color: [241, 184, 96, 255],
+              color: [27, 72, 94, 255],
               outline: null
-            } as unknown as esri.SymbolProperties,
-            uniqueValueInfos: [
-              {
-                value: 'AnyValidRec',
-                label: 'Rec Center Patrons Only',
-                symbol: {
-                  type: 'simple-fill',
-                  color: [27, 72, 94, 255],
-                  outline: null
-                } as unknown as esri.SymbolProperties
-              },
-              {
-                value: 'EventParking',
-                label: 'Event Parking',
-                symbol: {
-                  type: 'simple-fill',
-                  color: [123, 35, 42, 255],
-                  outline: null
-                } as unknown as esri.SymbolProperties
-              }
-            ]
-          } as unknown as esri.RendererProperties
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+            } as unknown as esri.SymbolProperties
+          },
+          {
+            value: 'EventParking',
+            label: 'Event Parking',
+            symbol: {
+              type: 'simple-fill',
+              color: [123, 35, 42, 255],
+              outline: null
+            } as unknown as esri.SymbolProperties
+          }
+        ]
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'map-image',
     id: VolleyballParkingDefinitions.SAFETY_FIRST.id,
@@ -187,12 +174,19 @@ export const VolleyballParkingConfiguration: EventConfiguration = {
 
 export const VolleyballParkingOptions: SpecialEventOptions = [];
 
+const VolleyballParkingLayerReferences: Record<string, string> = {
+  VISITOR_KIOSK: VOLLEYBALL_PARKING_LAYERS.VISITOR_KIOSK,
+  ACCESSIBLE_PARKING: VOLLEYBALL_PARKING_LAYERS.ACCESSIBLE_PARKING,
+  PARKING_LOTS: VOLLEYBALL_PARKING_LAYERS.PARKING_LOTS,
+  SAFETY_FIRST: VOLLEYBALL_PARKING_LAYERS.SAFETY_FIRST
+};
+
 export const VolleyballParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   configuration: VolleyballParkingConfiguration,
   options: VolleyballParkingOptions,
   sources: VolleyballParkingColdLayerSources,
-  references: VOLLEYBALL_PARKING_LAYERS,
+  references: VolleyballParkingLayerReferences,
   discover: {
     id: VolleyballParkingConfiguration.id,
     name: VolleyballParkingConfiguration.name,
