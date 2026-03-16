@@ -1,5 +1,7 @@
 <div class="container12">
-  <p class="trailer-2 center-text component-instructions">Please review that your selections are correct. In doing so, you will receive the best transportation and parking information to assist with traffic and to avoid parking citations.</p>
+  <p class="trailer-2 center-text component-instructions">
+    {{configuration?.reviewText || "Please review that your selections are correct. In doing so, you will receive the best transportation and parking information to assist with traffic and to avoid parking citations."}}
+  </p>
 
   <div class="flex flex-row justify-center">
     <div class="column6 flex flex-column" id="settings-table">

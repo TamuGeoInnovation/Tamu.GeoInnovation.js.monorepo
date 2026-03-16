@@ -5,7 +5,12 @@ import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { Angulartics2 } from 'angulartics2';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
-import { EventSettings, ResolvedEventSettings, SpecialEventOptions } from '../../../../interfaces/special-event.interface';
+import {
+  EventConfiguration,
+  EventSettings,
+  ResolvedEventSettings,
+  SpecialEventOptions
+} from '../../../../interfaces/special-event.interface';
 
 @Component({
   selector: 'tamu-gisc-review',
@@ -17,6 +22,7 @@ export class ReviewComponent implements OnInit {
   public settings: Observable<EventSettings>;
   public mergedSettings: ResolvedEventSettings;
   public settingsValid = false;
+  public configuration: EventConfiguration | null;
 
   constructor(
     private readonly router: Router,
@@ -30,6 +36,7 @@ export class ReviewComponent implements OnInit {
     this.settings = this.eventSettingsService.settings(true).pipe(shareReplay(1));
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
     this.settingsValid = this.eventSettingsService.accommodationsValid();
+    this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
   }
 
   public goToAccommodationSelection(optionKey: string) {

@@ -17,3 +17,164 @@
   text-transform: none;
   letter-spacing: initial;
 }
+
+.binary-options {
+  .button {
+    width: 100%;
+    max-width: 42rem;
+  }
+}
+
+.date-card-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-pack: distribute;
+  justify-content: space-around;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.date-card {
+  border: 1px solid rgba(238, 238, 238, 0.75);
+  padding: 1.5rem 1rem;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 29%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.name,
+.month {
+  line-height: 0.5;
+}
+
+.name {
+  font-family: 'Oswald', 'sans-serif';
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  padding-bottom: 1rem;
+}
+
+.month {
+  padding-bottom: 0;
+}
+
+.zone-container {
+  margin-bottom: 1rem;
+
+  h3 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    text-transform: none;
+    font-weight: 500;
+  }
+}
+
+.hall-item-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+
+  & > div {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border: 1px solid #eeeeee;
+    padding: 1.25rem 1rem;
+    margin-bottom: 1.5rem;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 30%;
+    cursor: pointer;
+  }
+
+  .name {
+    font-family: inherit;
+    text-transform: none;
+    font-size: 1.1rem;
+    letter-spacing: 0;
+    line-height: normal;
+    padding-bottom: 0;
+  }
+}
+
+.action {
+  border-radius: 99rem;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #eeeeee;
+  color: #eeeeee;
+
+  &.active {
+    background: #eeeeee;
+    color: #500000;
+  }
+
+  p {
+    padding: 0.5rem;
+    line-height: 1;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .date-card {
+    width: 45%;
+  }
+
+  .hall-item-container {
+    & > div {
+      width: 45%;
+    }
+  }
+}
+
+@media only screen and (max-width: 560px) {
+  .date-card {
+    width: 100%;
+  }
+
+  .hall-item-container {
+    & > div {
+      width: 100%;
+    }
+  }
+}
