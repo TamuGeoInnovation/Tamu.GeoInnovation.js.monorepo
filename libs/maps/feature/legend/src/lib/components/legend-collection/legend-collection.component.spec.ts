@@ -53,4 +53,28 @@ describe('LegendCollectionComponent', () => {
     expect(component.isLayerVisible).toBe(false);
     expect(component.isExpanded).toBe(false);
   });
+
+  it('hides duplicate sports safety-first child groups when parent legend elements already exist', () => {
+    component.group = {
+      title: 'Safety First',
+      children: [{ title: 'Safety First Child' }],
+      legendElements: [{ infos: [{ label: 'Please use marked crosswalks. No mid-street crossing.', value: 'safety-first' }] }],
+      layer: { id: 'volleyball-parking-safety-first' }
+    } as unknown as __esri.ActiveLayerInfo;
+
+    expect(component.visibleChildGroups).toEqual([]);
+    expect(component.hasChildren).toBe(false);
+  });
+
+  it('keeps sports safety-first child groups when the parent has no legend elements', () => {
+    component.group = {
+      title: 'Safety First',
+      children: [{ title: 'Safety First Child' }],
+      legendElements: [],
+      layer: { id: 'volleyball-parking-safety-first' }
+    } as unknown as __esri.ActiveLayerInfo;
+
+    expect(component.visibleChildGroups).toHaveLength(1);
+    expect(component.hasChildren).toBe(true);
+  });
 });

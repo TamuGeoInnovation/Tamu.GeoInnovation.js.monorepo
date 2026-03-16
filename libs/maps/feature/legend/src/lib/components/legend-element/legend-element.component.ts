@@ -165,7 +165,10 @@ export class LegendElementComponent implements OnInit {
   }
 
   public useSportsSafetyFirstFallback(): boolean {
-    return this.sportsSafetyFirstLayerIds.has(this.layer?.id) && (this.element?.infos?.length ?? 0) === 0;
+    return (
+      this.sportsSafetyFirstLayerIds.has(this.layer?.id) ||
+      this.sportsSafetyFirstLayerIds.has((this.layer as unknown as esri.Sublayer)?.layer?.id)
+    );
   }
 
   public getSportsSafetyFirstLegendSrc(): string {

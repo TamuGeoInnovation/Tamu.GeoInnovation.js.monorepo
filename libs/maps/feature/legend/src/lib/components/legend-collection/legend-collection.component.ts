@@ -63,8 +63,16 @@ export class LegendCollectionComponent {
     return this._toArray<esri.LegendElement>(this.group?.legendElements);
   }
 
+  public get visibleChildGroups(): IActiveLayerInfo[] {
+    if (this._shouldHideSportsSafetyFirstChildGroups()) {
+      return [];
+    }
+
+    return this.childGroups;
+  }
+
   public get hasChildren(): boolean {
-    return this.childGroups.length > 0;
+    return this.visibleChildGroups.length > 0;
   }
 
   public get childHideElementGroupHeaders(): boolean {
@@ -143,6 +151,23 @@ export class LegendCollectionComponent {
 
   private _isPhysicsFestivalGroup(layerId?: string): boolean {
     return layerId?.startsWith('phys-eng-festival-') ?? false;
+  }
+
+  private readonly _sportsSafetyFirstLayerIds = new Set([
+    'softball-parking-safety-first',
+    'swimming-parking-safety-first',
+    'soccer-parking-safety-first',
+    'volleyball-parking-safety-first',
+    'indoor-track-parking-safety-first',
+    'outdoor-track-parking-safety-first'
+  ]);
+
+  public get showGroupTitle(): boolean {
+    return this.hasChildren && !this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id);
+  }
+
+  private _shouldHideSportsSafetyFirstChildGroups(): boolean {
+    return this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id) && this.legendElements.length > 0 && this.childGroups.length > 0;
   }
 
   private _getPhysicsFestivalChildPriority(title?: string): number {
