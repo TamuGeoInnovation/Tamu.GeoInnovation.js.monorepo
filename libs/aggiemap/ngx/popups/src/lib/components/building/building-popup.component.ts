@@ -28,6 +28,10 @@ export class BuildingPopupComponent extends BaseDirectionsComponent implements O
     super.ngOnInit();
   }
 
+  protected override _getShareUrlFragment(): string | null {
+    return this._buildShareUrlFragment('building-exact', this.data.attributes.Number);
+  }
+
   public startDirections() {
     super.startDirections(
       `${this.data.attributes.Number}|${

@@ -276,11 +276,11 @@ export interface IMapConfigurationBase {
   discover?: DiscoverMetadata | null;
 }
 
-export interface ISpecialEventRoot extends IMapConfigurationBase {
+interface ISpecialEventRoot extends IMapConfigurationBase {
   type: 'special-event';
 }
 
-export interface IGeneralMapRoot extends IMapConfigurationBase {
+interface IGeneralMapRoot extends IMapConfigurationBase {
   type: 'general-map';
 }
 

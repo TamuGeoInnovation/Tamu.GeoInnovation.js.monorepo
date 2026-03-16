@@ -11,9 +11,9 @@ import {
 import esri = __esri;
 
 export enum BIG_EVENT_LAYERS {
+  TRAFFIC = 'big-event-traffic',
   ROAD_CLOSURES = 'big-event-road-closures',
   PARKING_LOTS = 'big-event-parking-lots',
-  TRAFFIC = 'big-event-traffic'
 }
 
 export enum BIG_EVENT_MAP_TYPE_OPTIONS {
@@ -202,7 +202,9 @@ export const BigEventConfiguration: EventConfiguration = {
   name: 'Big Event',
   applicationName: 'Big Event Transportation Map',
   shortApplicationName: 'Big Event Map',
-  eventDates: ['2026-03-21']
+  eventDates: ['2026-03-21'],
+  mapCenter: [-96.3463, 30.6059],
+  zoom: 17
 };
 
 export const BigEventOptions: SpecialEventOptions = [

@@ -20,6 +20,12 @@
   </div>
 </div>
 
-<tamu-gisc-legend [deduplicate]="true" [respectDefinitionExpression]="true"></tamu-gisc-legend>
+<tamu-gisc-legend
+  [deduplicate]="true"
+  [respectDefinitionExpression]="true"
+  [allowVisibilityToggle]="legendAllowVisibilityToggle"
+  [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary"
+  [excludedLayerIds]="legendExcludedLayerIds"
+></tamu-gisc-legend>
 
 <tamu-gisc-layer-list></tamu-gisc-layer-list>

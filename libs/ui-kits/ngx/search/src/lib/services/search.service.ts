@@ -269,6 +269,10 @@ export class SearchService {
     this._store.next(new SearchResult({}));
   }
 
+  public getSource(id: string): SearchSource | undefined {
+    return this._sources?.find((s) => s.source === id);
+  }
+
   /**
    * Generates a URL query params string from the supplied search properties and values,
    * as well as a valid search source.
@@ -532,6 +536,20 @@ export interface SearchSource {
    * to sort search results.
    */
   scoringKeys?: string[];
+
+  /**
+   * Primary URL query parameter name for this search source. Used to generate shareable
+   * feature links and parse incoming URLs for feature auto-selection.
+   * Example: 'bldg' for buildings enables ?bldg=0377 URLs
+   */
+  urlQueryParam?: string;
+
+  /**
+   * Alternative URL query parameter names recognized for this search source.
+   * Used for backward compatibility and convenience.
+   * Example: ['Bldg', 'BldgAbbrv', 'bldgabbrv'] for buildings
+   */
+  urlQueryParamAliases?: string[];
 }
 
 /**

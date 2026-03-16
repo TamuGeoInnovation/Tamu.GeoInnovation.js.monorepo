@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { EventConfiguration, ISpecialEventRoot, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
@@ -51,7 +55,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Event} Parking',
-      description: 'Type: {attributes.Type}\nLot Name: {attributes.name}'
+      description: 'Type: {attributes.Type}\nLot Name: {attributes.name}\nNotes: {attributes.Notes}'
     },
     visible: true,
     listMode: 'show',
@@ -165,16 +169,6 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
         field: 'Type',
         uniqueValueInfos: [
           {
-            value: 'Pay Parking',
-            label: 'Paid Parking',
-            symbol: {
-              type: 'picture-marker',
-              url: '/assets/images/icons/transportation/Paid-Parking.png',
-              width: '24px',
-              height: '32px'
-            } as unknown as esri.PictureMarkerSymbolProperties
-          },
-          {
             value: 'Dining',
             label: 'Dining',
             symbol: {
@@ -233,7 +227,7 @@ export const AggielandSaturdayConfiguration: EventConfiguration = {
 
 export const AggielandSaturdayOptions: SpecialEventOptions = [];
 
-export const AggielandSaturdayEventTs: ISpecialEventRoot = {
+export const AggielandSaturdayEventTs: AggiemapCustomMapConfiguration = {
   configuration: AggielandSaturdayConfiguration,
   options: AggielandSaturdayOptions,
   sources: AggielandSaturdayEventColdLayerSources,
