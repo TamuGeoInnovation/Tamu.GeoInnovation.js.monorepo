@@ -1,4 +1,4 @@
-import { TemplateRenderer, TemplateRendererOptions } from './common-utils-string';
+import { hasTemplateExpression, TemplateRenderer, TemplateRendererOptions } from './common-utils-string';
 
 describe('TemplateRenderer', () => {
   let options: TemplateRendererOptions;
@@ -104,5 +104,11 @@ describe('TemplateRenderer', () => {
     const value = renderer.render();
 
     expect(value).toBe('Mary had a little lamb named .');
+  });
+
+  it('should identify template expressions', () => {
+    expect(hasTemplateExpression('Mary had a little {value}.')).toBe(true);
+    expect(hasTemplateExpression('Mary had a little lamb.')).toBe(false);
+    expect(hasTemplateExpression(undefined)).toBe(false);
   });
 });

@@ -10,7 +10,6 @@ export enum TS_MAIN_PARKING_LAYERS {
   CAMPUS_STOPS = 'Campus Stops',
   CONSTRUCTION = 'Construction',
   VISITOR_KIOSKS = 'Visitor Kiosks',
-  LINE_PAINT = 'Line Paint',
   PARKING_LOTS = 'Parking Lots'
 }
 
@@ -40,12 +39,6 @@ export const TsMainParkingDefinitions = {
     layerId: TS_MAIN_PARKING_LAYERS.VISITOR_KIOSKS,
     name: 'Visitor Kiosks',
     url: `${eventUrl}/4`
-  },
-  LINE_PAINT: {
-    id: TS_MAIN_PARKING_LAYERS.LINE_PAINT,
-    layerId: TS_MAIN_PARKING_LAYERS.LINE_PAINT,
-    name: 'Line Paint',
-    url: `${eventUrl}/5`
   },
   PARKING_LOTS: {
     id: TS_MAIN_PARKING_LAYERS.PARKING_LOTS,
@@ -142,18 +135,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
 
   {
     type: 'feature',
-    id: TsMainParkingDefinitions.LINE_PAINT.id,
-    title: TsMainParkingDefinitions.LINE_PAINT.name,
-    url: TsMainParkingDefinitions.LINE_PAINT.url,
-    visible: true,
-    listMode: 'show',
-    native: {
-      outFields: ['*']
-    } as unknown as FeatureNative
-  },
-
-  {
-    type: 'feature',
     id: TsMainParkingDefinitions.PARKING_LOTS.id,
     title: TsMainParkingDefinitions.PARKING_LOTS.name,
     url: TsMainParkingDefinitions.PARKING_LOTS.url,
@@ -161,6 +142,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
 
     popupComponent: MarkdownPopupComponent,
+    popupDataResolutionStrategy: 'cumulative',
     popupData: {
       lotName: { field: 'GIS.TS.ParkingLots.Name', collapsed: true },
 

@@ -354,6 +354,16 @@ export type LayerSource = LayerSourceType & {
   >;
 
   /**
+   * Controls how popupData entries are resolved.
+   *
+   * `independent` resolves each entry only against the feature's original attributes.
+   * `cumulative` also allows later entries to reference popupData values resolved earlier in the same object.
+   *
+   * Defaults to `independent`.
+   */
+  popupDataResolutionStrategy?: 'independent' | 'cumulative';
+
+  /**
    * Legend items that are shown disabled in the legend as the layer visibility is on/off
    *
    * @deprecated Legend items are now rendered through the legend view model
