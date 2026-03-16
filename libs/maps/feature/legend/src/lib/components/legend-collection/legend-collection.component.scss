@@ -5,3 +5,26 @@
   @include flex-direction(column);
   font-size: 0.875rem;
 }
+
+.collection-group-title {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  user-select: none;
+
+  .material-icons {
+    font-size: 1.1rem;
+    margin-right: 0.25rem;
+  }
+}
+
+.collection-group-title-text {
+  flex: 1;
+}
+
+.collection-group-content {
+  margin-left: 0.5rem;
+}

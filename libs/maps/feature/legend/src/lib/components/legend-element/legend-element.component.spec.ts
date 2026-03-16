@@ -28,4 +28,16 @@ describe('LegendElementComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('toggles expanded state when legend element is grouped', () => {
+    component.element = {
+      infos: [{ label: 'A', value: 'A' }, { label: 'B', value: 'B' }]
+    } as unknown as __esri.LegendElement;
+
+    expect(component.showGroupHeader).toBe(true);
+    expect(component.expanded).toBe(true);
+
+    component.toggleExpanded();
+    expect(component.expanded).toBe(false);
+  });
 });

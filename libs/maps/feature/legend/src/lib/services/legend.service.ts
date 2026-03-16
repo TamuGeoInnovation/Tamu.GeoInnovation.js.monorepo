@@ -18,11 +18,15 @@ export class LegendService {
     private env: EnvironmentService
   ) {}
 
-  public legend() {
+  public legend(options?: LegendOptions) {
+    const respectLayerVisibility = options?.respectLayerVisibility ?? true;
+    const excludedLayerIds = new Set(options?.excludedLayerIds ?? []);
+
     return combineLatest([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).pipe(
       switchMap(([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
         const model = new LegendViewModel({
-          view: instances.view
+          view: instances.view,
+          respectLayerVisibility
         });
 
         // Create add/remove watch handlers for the activeLayerInfos property of the view model.
@@ -41,12 +45,20 @@ export class LegendService {
         return fromEventPattern(add, remove).pipe(
           startWith({ target: model.activeLayerInfos }),
           map((event: IActiveLayerInfosChangeEvent) => {
-            return event.target.filter((l) => l.layer.listMode !== 'hide').toArray();
+            return event.target
+              .filter((l) => l.layer.listMode !== 'hide')
+              .filter((l) => !excludedLayerIds.has(l.layer.id))
+              .toArray();
           })
         );
       })
     );
   }
+}
+
+interface LegendOptions {
+  respectLayerVisibility?: boolean;
+  excludedLayerIds?: string[];
 }
 
 export interface IActiveLayerInfosChangeEvent {
