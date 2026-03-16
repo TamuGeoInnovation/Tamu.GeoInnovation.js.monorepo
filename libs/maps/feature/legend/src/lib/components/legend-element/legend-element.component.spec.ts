@@ -29,11 +29,15 @@ describe('LegendElementComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should use the safety first warning label for sports safety layers', () => {
-    component.layer = {
-      id: 'softball-parking-safety-first'
-    } as __esri.Layer;
+  it('toggles expanded state when legend element is grouped', () => {
+    component.element = {
+      infos: [{ label: 'A', value: 'A' }, { label: 'B', value: 'B' }]
+    } as unknown as __esri.LegendElement;
 
-    expect(component.getSportsSafetyFirstLegendLabel()).toBe('Please use marked crosswalks. No mid-street crossing.');
+    expect(component.showGroupHeader).toBe(true);
+    expect(component.expanded).toBe(true);
+
+    component.toggleExpanded();
+    expect(component.expanded).toBe(false);
   });
 });

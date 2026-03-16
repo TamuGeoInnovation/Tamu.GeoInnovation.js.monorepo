@@ -25,6 +25,84 @@ export class LegendCollectionComponent {
   @Input()
   public respectDefinitionExpression = false;
 
+  @Input()
+  public allowVisibilityToggle = false;
+
+  @Input()
+  public combineChildrenUnderPrimary = false;
+
+  @Input()
+  public hideElementGroupHeaders = false;
+
+  public expanded = true;
+
+  public get childGroups(): IActiveLayerInfo[] {
+    const children = this._toArray<IActiveLayerInfo>(this.group?.children);
+
+    if (!this.combineChildrenUnderPrimary || !this._isPhysicsFestivalGroup(this.group?.layer?.id)) {
+      return children;
+    }
+
+    return children
+      .map((child, index) => ({
+        child,
+        index,
+        priority: this._getPhysicsFestivalChildPriority(child?.title)
+      }))
+      .sort((a, b) => {
+        if (a.priority !== b.priority) {
+          return a.priority - b.priority;
+        }
+
+        return a.index - b.index;
+      })
+      .map(({ child }) => child);
+  }
+
+  public get legendElements(): esri.LegendElement[] {
+    return this._toArray<esri.LegendElement>(this.group?.legendElements);
+  }
+
+  public get hasChildren(): boolean {
+    return this.childGroups.length > 0;
+  }
+
+  public get childHideElementGroupHeaders(): boolean {
+    if (
+      this.combineChildrenUnderPrimary &&
+      this.hasChildren &&
+      this._isPhysicsFestivalGroup(this.group?.layer?.id)
+    ) {
+      return true;
+    }
+
+    return this.hideElementGroupHeaders;
+  }
+
+  public toggleExpanded(): void {
+    if (!this.hasChildren) {
+      return;
+    }
+
+    if (this.allowVisibilityToggle && this.group?.layer) {
+      this.group.layer.visible = !this.isLayerVisible;
+    } else {
+      this.expanded = !this.expanded;
+    }
+  }
+
+  public get isLayerVisible(): boolean {
+    return this.group?.layer?.visible ?? true;
+  }
+
+  public get isExpanded(): boolean {
+    if (this.allowVisibilityToggle && this.hasChildren) {
+      return this.isLayerVisible;
+    }
+
+    return this.expanded;
+  }
+
   /**
    * Function used to track legend elements in the ngFor loop to prevent unnecessary re-renders.
    *
@@ -35,6 +113,50 @@ export class LegendCollectionComponent {
     const identifier = el?.infos ? el.infos?.map((i) => `${i.label}-${i.value}`).join(',') : null;
 
     return identifier;
+  }
+
+  public trackByLegendGroup(index: number, group: IActiveLayerInfo): string {
+    return `${group?.layer?.id || 'layer'}-${group?.title || index}`;
+  }
+
+  private _toArray<T>(collection: unknown): T[] {
+    if (!collection) {
+      return [];
+    }
+
+    if (Array.isArray(collection)) {
+      return collection as T[];
+    }
+
+    const collectionAsObject = collection as { toArray?: () => T[]; length?: number; getItemAt?: (index: number) => T };
+
+    if (typeof collectionAsObject.toArray === 'function') {
+      return collectionAsObject.toArray();
+    }
+
+    if (typeof collectionAsObject.length === 'number' && typeof collectionAsObject.getItemAt === 'function') {
+      return Array.from({ length: collectionAsObject.length }, (_, index) => collectionAsObject.getItemAt(index));
+    }
+
+    return [];
+  }
+
+  private _isPhysicsFestivalGroup(layerId?: string): boolean {
+    return layerId?.startsWith('phys-eng-festival-') ?? false;
+  }
+
+  private _getPhysicsFestivalChildPriority(title?: string): number {
+    const normalizedTitle = title?.toLowerCase() ?? '';
+
+    if (normalizedTitle.includes('drop off') || normalizedTitle.includes('dropoff') || normalizedTitle.includes('pick up')) {
+      return 1;
+    }
+
+    if (normalizedTitle.includes('route') || normalizedTitle.includes('path')) {
+      return 2;
+    }
+
+    return 0;
   }
 }
 
