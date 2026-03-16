@@ -2,11 +2,16 @@ import { Component, Injectable, Type } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
+import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
+import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
 import esri = __esri;
+
+type PopupDataDefinition = NonNullable<LayerSource['popupData']>;
+type PopupDataResolutionStrategy = NonNullable<LayerSource['popupDataResolutionStrategy']>;
+type PopupDataEntry = PopupDataDefinition[string];
 
 @Injectable({ providedIn: 'root' })
 export class PopupService {
@@ -59,36 +64,11 @@ export class PopupService {
       let resolved;
 
       if (graphicLayer.popupData) {
-        resolved = Object.entries(graphicLayer.popupData).reduce((acc, [key, dotNotationPathOrDefinition]) => {
-          if (acc[key] === undefined) {
-            // If dotNotationPathOrDefinition is a string, resolve the value
-            // If it is an object, assume it is a definition object, and the path to resolve is the `key` sub-path.
-
-            if (typeof dotNotationPathOrDefinition === 'string') {
-              // Handle the case where the content is a template vs just a notation path. Templates contain at least a single bracket pair.
-              if (dotNotationPathOrDefinition.includes('{') && dotNotationPathOrDefinition.includes('}')) {
-                acc[key] = new TemplateRenderer({
-                  template: dotNotationPathOrDefinition,
-                  lookup: topGraphic,
-                  options: {
-                    nullishReplacement: '',
-                    trim: true
-                  }
-                }).render();
-              } else {
-                acc[key] = getPropertyValue(topGraphic, dotNotationPathOrDefinition);
-              }
-            } else {
-              acc[key] = getPropertyValue(
-                topGraphic.attributes,
-                dotNotationPathOrDefinition['field'],
-                dotNotationPathOrDefinition['collapsed']
-              );
-            }
-          }
-
-          return acc;
-        }, {});
+        resolved = this.resolvePopupData(
+          topGraphic,
+          graphicLayer.popupData,
+          graphicLayer.popupDataResolutionStrategy ?? 'independent'
+        );
       }
 
       if (resolved) {
@@ -117,9 +97,73 @@ export class PopupService {
   public enablePopups() {
     this._suppressed.next(false);
   }
+
+  private resolvePopupData(
+    graphic: esri.Graphic,
+    popupData: PopupDataDefinition,
+    strategy: PopupDataResolutionStrategy
+  ): Record<string, unknown> {
+    return Object.entries(popupData).reduce<Record<string, unknown>>((acc, [key, definition]) => {
+      if (acc[key] !== undefined) {
+        return acc;
+      }
+
+      acc[key] = this.resolvePopupDataEntry(graphic, definition, acc, strategy);
+
+      return acc;
+    }, {});
+  }
+
+  private resolvePopupDataEntry(
+    graphic: esri.Graphic,
+    definition: PopupDataEntry,
+    resolvedEntries: Record<string, unknown>,
+    strategy: PopupDataResolutionStrategy
+  ): unknown {
+    if (typeof definition !== 'string') {
+      return getPropertyValue(graphic.attributes, definition.field, definition.collapsed);
+    }
+
+    const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);
+
+    if (hasTemplateExpression(definition)) {
+      return new TemplateRenderer({
+        template: definition,
+        lookup,
+        options:
+          strategy === 'cumulative'
+            ? {
+                nullishReplacement: '',
+                trim: true
+              }
+            : undefined
+      }).render();
+    }
+
+    return getPropertyValue(lookup, definition);
+  }
+
+  private getPopupDataLookup(
+    graphic: esri.Graphic,
+    resolvedEntries: Record<string, unknown>,
+    strategy: PopupDataResolutionStrategy
+  ) {
+    if (strategy === 'cumulative') {
+      return {
+        ...graphic,
+        attributes: {
+          ...(graphic.attributes || {}),
+          ...resolvedEntries
+        }
+      };
+    }
+
+    return graphic;
+  }
 }
 
 interface ILayerWithPopupComponent extends esri.Layer {
   popupComponent: Type<Component>;
-  popupData?: Record<string, unknown>;
+  popupData?: PopupDataDefinition;
+  popupDataResolutionStrategy?: PopupDataResolutionStrategy;
 }

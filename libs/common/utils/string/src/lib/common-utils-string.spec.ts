@@ -1,4 +1,4 @@
-import { TemplateRenderer, TemplateRendererOptions } from './common-utils-string';
+import { hasTemplateExpression, TemplateRenderer, TemplateRendererOptions } from './common-utils-string';
 
 describe('TemplateRenderer', () => {
   let options: TemplateRendererOptions;
@@ -70,5 +70,45 @@ describe('TemplateRenderer', () => {
     const value = renderer.render();
 
     expect(value).toBe('Mary had one white lamb and one green lamb.');
+  });
+
+  it('should preserve unresolved template placeholders by default', () => {
+    options = {
+      lookup: {
+        value: 'lamb'
+      },
+      template: 'Mary had a little {value} named {name}.'
+    };
+
+    renderer = new TemplateRenderer(options);
+
+    const value = renderer.render();
+
+    expect(value).toBe('Mary had a little lamb named {name}.');
+  });
+
+  it('should apply nullishReplacement for unresolved placeholders', () => {
+    options = {
+      lookup: {
+        value: 'lamb'
+      },
+      template: 'Mary had a little {value} named {name}.',
+      options: {
+        nullishReplacement: '',
+        trim: true
+      }
+    };
+
+    renderer = new TemplateRenderer(options);
+
+    const value = renderer.render();
+
+    expect(value).toBe('Mary had a little lamb named .');
+  });
+
+  it('should identify template expressions', () => {
+    expect(hasTemplateExpression('Mary had a little {value}.')).toBe(true);
+    expect(hasTemplateExpression('Mary had a little lamb.')).toBe(false);
+    expect(hasTemplateExpression(undefined)).toBe(false);
   });
 });

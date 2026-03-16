@@ -1,5 +1,8 @@
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
+const TEMPLATE_EXPRESSION_PATTERN = /\{.*?\}/;
+const TEMPLATE_EXPRESSION_GLOBAL_PATTERN = /\{.*?\}/g;
+
 /**
  * Rendering class able to accept a single string and replace values between and including double curly
  * braces {{ }} with provided value.
@@ -32,27 +35,42 @@ export class TemplateRenderer {
    */
   public render(): string {
     if (this.template && this.replacement) {
-      return this.template.replace(/\{.*?\}/g, () => {
+      return this.template.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, () => {
         // Replace captured block with the provided replacement string.
         return this.replacement;
       });
     } else if (this.template && this.lookup) {
-      return this.template.replace(/\{.*?\}/g, (match: string) => {
-        const resolved = getPropertyValue<string>(this.lookup, match.replace('{', '').replace('}', '')).toString();
+      return this.template.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, (match: string) => {
         // Remove template braces before setting value from lookup object.
+        const resolved = getPropertyValue<unknown>(this.lookup, match.replace('{', '').replace('}', ''));
 
-        if (this.options?.nullishReplacement !== undefined && (resolved === undefined || resolved === null)) {
+        if (resolved === undefined || resolved === null) {
+          // Keep placeholder when no nullish replacement is provided.
+          if (this.options?.nullishReplacement === undefined) {
+            return match;
+          }
+
           return this.options.nullishReplacement;
         }
 
+        const resolvedString = `${resolved}`;
+
         if (this.options?.trim) {
-          return resolved.trim();
+          return resolvedString.trim();
         }
 
-        return resolved;
+        return resolvedString;
       });
     }
   }
+}
+
+export function hasTemplateExpression(template?: string): boolean {
+  if (!template) {
+    return false;
+  }
+
+  return TEMPLATE_EXPRESSION_PATTERN.test(template);
 }
 
 /**
