@@ -49,11 +49,6 @@ of the table -->
         </div>
       </div>
     </div>
-  </ng-template>
-
-  <ng-container [ngSwitch]="element.type">
-    <!-- For SymbolTable element type -->
-    <ng-container *ngSwitchCase="'symbol-table'" [ngTemplateOutlet]="symbolTableMarkup"></ng-container>
 
     <!-- Default printout -->
     <div *ngSwitchDefault>Unsupported legend element type: {{ element?.type }}</div>

@@ -103,6 +103,8 @@ export class LegendElementComponent implements OnInit {
       return;
     }
 
+    const operableInfos = (this.element.infos ?? []) as Array<LegendInfo>;
+
     this.infos = iif(
       () => {
         return this.deduplicateChildren;
@@ -114,7 +116,7 @@ export class LegendElementComponent implements OnInit {
       ),
       from(operableInfos)
     ).pipe(
-      concatMap((info) => {
+      concatMap((info: LegendInfo) => {
         // If we are not respecting definition expressions, return the current legend info as-is
         if (this.respectDefinitionExpression === false || this.layer === undefined) {
           return of(info);
