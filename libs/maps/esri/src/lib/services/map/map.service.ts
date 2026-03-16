@@ -278,9 +278,9 @@ export class EsriMapService {
   public async loadLayers(sources: LayerSource[]) {
     await this.registerIdentityAuthInfos(sources);
 
-    sources.forEach((source) => {
-      this.findLayerOrCreateFromSource(source);
-    });
+    for (const source of sources) {
+      await this.findLayerOrCreateFromSource(source);
+    }
   }
 
   public async generateLayer(source: LayerSource | AutocastableLayer): Promise<esri.Layer | Array<esri.Layer>> {
@@ -441,13 +441,13 @@ export class EsriMapService {
       return this.generateLayer(source).then((layerOrLayers) => {
         if (layerOrLayers instanceof Array) {
           // Add layer to map
-          (<esri.Map>this._modules.map).addMany(layerOrLayers, source.layerIndex ? source.layerIndex : undefined);
+          (<esri.Map>this._modules.map).addMany(layerOrLayers, source.layerIndex ?? undefined);
 
           // Return layer in case further manipulation is needed.
           return layerOrLayers;
         } else {
           // Add layer to map
-          (<esri.Map>this._modules.map).add(layerOrLayers, source.layerIndex ? source.layerIndex : undefined);
+          (<esri.Map>this._modules.map).add(layerOrLayers, source.layerIndex ?? undefined);
 
           // Return layer in case further manipulation is needed.
           return layerOrLayers;

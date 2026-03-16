@@ -41,6 +41,20 @@ import esri = __esri;
 export class LegendElementComponent implements OnInit {
   constructor(private readonly moduleProvider: EsriModuleProviderService) {}
 
+  private readonly sportsSafetyFirstLayerIds = new Set([
+    'softball-parking-safety-first',
+    'swimming-parking-safety-first',
+    'soccer-parking-safety-first',
+    'volleyball-parking-safety-first',
+    'indoor-track-parking-safety-first',
+    'outdoor-track-parking-safety-first'
+  ]);
+
+  private readonly sportsSafetyFirstLegendSrc =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAPElEQVQ4jWNhoDJgGTVwcIfhfwrNYkQx8P/vNspMY62isZcZoTZQzUBqAZaRHYaM1DaQKoCFOsYwjGQDAaloCFLg0b/eAAAAAElFTkSuQmCC';
+
+  private readonly sportsSafetyFirstLegendLabel = 'Please use marked crosswalks. No mid-street crossing.';
+
   @Input()
   public element: ILegendElement;
 
@@ -89,18 +103,20 @@ export class LegendElementComponent implements OnInit {
       return;
     }
 
+    const operableInfos = (this.element.infos ?? []) as Array<LegendInfo>;
+
     this.infos = iif(
       () => {
         return this.deduplicateChildren;
       },
       from(
-        this.element.infos.filter((info, index, self) => {
+        operableInfos.filter((info, index, self) => {
           return index === self.findIndex((t) => t.label === info.label);
         }) as Array<LegendInfo>
       ),
-      from(this.element.infos as Array<LegendInfo>)
+      from(operableInfos)
     ).pipe(
-      concatMap((info) => {
+      concatMap((info: LegendInfo) => {
         // If we are not respecting definition expressions, return the current legend info as-is
         if (this.respectDefinitionExpression === false || this.layer === undefined) {
           return of(info);
@@ -139,13 +155,25 @@ export class LegendElementComponent implements OnInit {
           return this._fallbackToSimpleParsing(operableLayer, renderer, info);
         }
       }),
-      filter((infoOrNull) => {
+      filter((infoOrNull): infoOrNull is LegendInfo => {
         return infoOrNull !== null;
       }),
       toArray(),
       distinctUntilChanged(),
       shareReplay(1)
     );
+  }
+
+  public useSportsSafetyFirstFallback(): boolean {
+    return this.sportsSafetyFirstLayerIds.has(this.layer?.id) && (this.element?.infos?.length ?? 0) === 0;
+  }
+
+  public getSportsSafetyFirstLegendSrc(): string {
+    return this.sportsSafetyFirstLegendSrc;
+  }
+
+  public getSportsSafetyFirstLegendLabel(): string {
+    return this.sportsSafetyFirstLegendLabel;
   }
 
   /**
@@ -156,7 +184,7 @@ export class LegendElementComponent implements OnInit {
     layer: esri.FeatureLayer,
     renderer: esri.UniqueValueRenderer,
     info: LegendInfo
-  ): Observable<LegendInfo> {
+  ): Observable<LegendInfo | null> {
     // Get the fields used in the renderer
     const operableFields = [renderer.field, renderer.field2, renderer.field3].filter((f) => f !== null && f !== undefined);
 
@@ -249,7 +277,11 @@ export class LegendElementComponent implements OnInit {
   /**
    * Fallback to the original simple parsing approach if the API-based method fails
    */
-  private _fallbackToSimpleParsing(operableLayer: esri.FeatureLayer, renderer: esri.UniqueValueRenderer, info: LegendInfo) {
+  private _fallbackToSimpleParsing(
+    operableLayer: esri.FeatureLayer,
+    renderer: esri.UniqueValueRenderer,
+    info: LegendInfo
+  ): Observable<LegendInfo | null> {
     // Determine how many fields are expected in the renderer value string.
     // This is necessary because the renderer value string can be a concatenation of multiple fields.
     const operableFields = [renderer.field, renderer.field2, renderer.field3].filter((f) => f !== null);
