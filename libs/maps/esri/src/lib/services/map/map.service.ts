@@ -689,71 +689,95 @@ export class EsriMapService {
    *
    */
   public selectFeaturesFromUrl() {
-    const list = this.getFeatureListFromURL();
+    const extractionResult = this.getFeatureListFromURL();
 
-    // Simple check to ensure the url contains feature reference list.
-    if (list.length > 0) {
-      // Submit request to the search service for all key values (feature references).
-      this.searchService
-        .search<esri.Graphic>({
-          returnObservable: true,
-          sources: Array(list.length).fill('building'),
-          values: list
-        })
-        .subscribe((res) => {
-          // Process every search result and filter out those containing at least one feature
-          // and return it as the match.
-
-          const features: esri.Graphic[] = res.results
-            .filter((result) => result.features.length > 0)
-            .map((result) => result.features[0])
-            .map((feature) => {
-              const ft = { ...feature };
-
-              (<{ type: unknown }>ft.geometry).type = getGeometryType(feature.geometry);
-
-              return ft as esri.Graphic;
-            });
-
-          // If the matched feature count is greater than 0, proceed to select them.
-          if (features.length > 0) {
-            if (features.length === 1) {
-              this.selectFeatures({
-                graphics: features,
-                shouldShowPopup: true
-              });
-            } else {
-              this.selectFeatures({
-                graphics: features
-              });
-            }
-          }
-        });
+    if (!extractionResult?.identifiersList?.length) {
+      return;
     }
+
+    const repeatedDataset = extractionResult.identifiersList.reduce((acc, _) => {
+      acc.push(extractionResult.dataset);
+      return acc;
+    }, [] as string[]);
+
+    this.searchService
+      .search<esri.Graphic>({
+        returnObservable: true,
+        sources: repeatedDataset,
+        values: extractionResult.identifiersList
+      })
+      .subscribe((queryResults) => {
+        const validGraphics = queryResults.results.reduce((collection, resultItem) => {
+          if (resultItem.features?.length) {
+            const primaryGraphic = resultItem.features[0];
+            const clonedGraphic = { ...primaryGraphic };
+            (<{ type: unknown }>clonedGraphic.geometry).type = getGeometryType(primaryGraphic.geometry);
+            collection.push(clonedGraphic as esri.Graphic);
+          }
+          return collection;
+        }, [] as esri.Graphic[]);
+
+        if (validGraphics.length) {
+          this.selectFeatures({
+            graphics: validGraphics,
+            shouldShowPopup: validGraphics.length === 1,
+            popupComponent: extractionResult.popupComponent
+          });
+        }
+      });
   }
 
   /**
-   * Gets a list of features from url params.
+   * Gets a list of features from url params by matching against search source URL parameter configurations.
    */
-  public getFeatureListFromURL(): string[] {
-    // Dictionary of expected URL parameters that include a list of feature references
-    const buildingParameterDictionary = ['bldg', 'Bldg', 'BldgAbbrv', 'bldgabbrv'];
-
-    // Parse the current URL into a URL tree
-    const tree = this.router.parseUrl(this.router.url);
-
-    // Check for matching dictionary keys in the parsed url tree
-    const keyExists = buildingParameterDictionary.find((key) => key in tree.queryParams);
-
-    // If there is a matching key in the dictionary and the current url tree,
-    // then proceed submit queries to the search sources for matches.
-    if (keyExists && tree.queryParams[keyExists].trim().length > 0) {
-      const rawParamList = tree.queryParams[keyExists].split(',');
-      // Filter out duplicate values
-      return rawParamList.filter((value, index, array) => array.indexOf(value) === index);
-    } else {
-      return [];
+  public getFeatureListFromURL(): { dataset: string; identifiersList: string[]; popupComponent?: Type<Component> } | null {
+    const parsedRoute = this.router.parseUrl(this.router.url);
+    const queryParameters = parsedRoute.queryParams;
+    
+    // Get search sources from environment
+    const searchSources = this.environment.value('SearchSources');
+    
+    if (!searchSources || !Array.isArray(searchSources)) {
+      return null;
     }
+    
+    // Find the first search source that matches any URL parameter
+    for (const searchSource of searchSources) {
+      if (!searchSource.urlQueryParam) {
+        continue;
+      }
+      
+      // Build list of all parameters to check (primary + aliases)
+      const paramsToCheck = [searchSource.urlQueryParam];
+      if (searchSource.urlQueryParamAliases) {
+        paramsToCheck.push(...searchSource.urlQueryParamAliases);
+      }
+      
+      // Check if any of these parameters exist in the URL
+      const matchedParam = paramsToCheck.find(param => queryParameters[param]);
+      
+      if (matchedParam) {
+        const parameterValue = queryParameters[matchedParam];
+        
+        if (parameterValue?.trim()) {
+          const tokens = parameterValue.split(',');
+          const deduplicatedTokens = tokens.reduce((uniqueList, token) => {
+            if (!uniqueList.includes(token)) {
+              uniqueList.push(token);
+            }
+            return uniqueList;
+          }, [] as string[]);
+          
+          return {
+            dataset: searchSource.source,
+            identifiersList: deduplicatedTokens,
+            popupComponent: searchSource.popupComponent
+          };
+        }
+      }
+    }
+    
+    return null;
   }
 
   /**

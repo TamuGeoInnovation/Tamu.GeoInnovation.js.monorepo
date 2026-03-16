@@ -85,6 +85,10 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
     }
   }
 
+  protected override _getShareUrlFragment(): string | null {
+    return this._buildShareUrlFragment('points-of-interest', this.data.attributes.OBJECTID);
+  }
+
   public startDirections() {
     super.startDirections(`${this.data.attributes.Name}`);
   }

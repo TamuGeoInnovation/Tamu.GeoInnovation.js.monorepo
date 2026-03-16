@@ -64,7 +64,25 @@ const breakSummerRenderer: FeatureRenderer = {
 };
 
 export const BreakSummerColdLayerSources: LayerSource[] = [
-    {
+  {
+    type: 'map-image',
+    id: BREAK_SUMMER_LAYERS.BREAK_SUMMER_DRAW,
+    title: 'Break-Summer Parking Lots',
+    url: eventUrl,
+    visible: true,
+    listMode: 'hide',
+    native: {
+      sublayers: [
+        {
+          id: 0,
+          title: 'Break-Summer Parking Lots',
+          visible: true,
+          popupEnabled: false
+        } as unknown as esri.SublayerProperties
+      ]
+    } as unknown as esri.MapImageLayerProperties
+  },
+  {
     type: 'feature',
     id: BreakSummerDefinitions.BREAK_SUMMER_LOTS.id,
     title: BreakSummerDefinitions.BREAK_SUMMER_LOTS.name,
@@ -88,25 +106,7 @@ export const BreakSummerColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       renderer: breakSummerRenderer
     } as unknown as FeatureNative
-  },
-  {
-    type: 'map-image',
-    id: BREAK_SUMMER_LAYERS.BREAK_SUMMER_DRAW,
-    title: 'Break-Summer Parking Lots',
-    url: eventUrl,
-    visible: true,
-    listMode: 'hide',
-    native: {
-      sublayers: [
-        {
-          id: 0,
-          title: 'Break-Summer Parking Lots',
-          visible: true,
-          popupEnabled: false
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+  }
 ];
 
 export const BreakSummerConfiguration: EventConfiguration = {
