@@ -38,6 +38,7 @@ export class SidebarReferenceComponent implements OnInit {
   public legendAllowVisibilityToggle = false;
   public legendCombineChildrenUnderPrimary = false;
   public legendExcludedLayerIds: string[] = [];
+  public showResolvedSettingNotes = false;
 
   constructor(
     private readonly router: Router,
@@ -50,6 +51,7 @@ export class SidebarReferenceComponent implements OnInit {
   public ngOnInit(): void {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
     this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
+    this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
 

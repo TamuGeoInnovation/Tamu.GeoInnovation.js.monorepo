@@ -54,6 +54,13 @@ export interface EventConfiguration {
   zoom?: number;
 
   /**
+   * Enables rendering resolved selection notes in shared UI surfaces like the map sidebar.
+   *
+   * Defaults to `false` when omitted so existing events are unaffected.
+   */
+  enableResolvedSettingNotes?: boolean;
+
+  /**
    * Events can have exceptions for default map layers. This property allows for the ability to
    * define a set of default layer overrides that apply to a specific event.
    *
@@ -249,7 +256,7 @@ export interface EventAccommodationOption {
   group?: string;
 
   /**
-   * Optional note to surface anywhere the resolved selection is displayed.
+   * Optional note that can be surfaced by events that opt into resolved setting notes.
    */
   note?: string;
 }
