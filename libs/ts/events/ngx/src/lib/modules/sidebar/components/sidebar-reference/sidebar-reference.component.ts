@@ -38,6 +38,7 @@ export class SidebarReferenceComponent implements OnInit {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
     this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
     this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
+    this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
   }
