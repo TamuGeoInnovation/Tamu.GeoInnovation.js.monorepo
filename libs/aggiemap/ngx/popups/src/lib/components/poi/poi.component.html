@@ -1,16 +1,17 @@
-<div class="popup-section">
-  <swiper-container #swiperRef init="false">
-    <swiper-slide *ngFor="let media of medias" [attr.data-src]="media">
-      <a [href]="media" target="_blank">
-        <img [src]="media" />
-      </a>
-    </swiper-slide>
-  </swiper-container>
-</div>
+<swiper-container #swiperRef init="false">
+  <swiper-slide *ngFor="let media of medias" [attr.data-src]="media">
+    <a [href]="media" target="_blank">
+      <img [src]="media" />
+    </a>
+  </swiper-slide>
+</swiper-container>
+
+<div class="popup-section"></div>
 
 <div class="popup-section">
   <div [innerHTML]="data?.attributes?.description | markdownParse" class="trailer-2"></div>
 
+  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+
   <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
 </div>
-

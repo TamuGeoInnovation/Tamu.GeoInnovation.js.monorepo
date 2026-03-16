@@ -39,7 +39,8 @@ import { SavannahBananasParkingTs } from './savannah-bananas.definitions';
 import { VisitorParkingTs } from './visitor-parking.definitions';
 import { MotorcycleParkingTs } from './motorcycle-parking.definitions';
 import { AVPParkingTs } from './avp-parking.definitions';
-import { TsMainParkingTs } from './main-parking.definitions';
+import { NscParkingTs } from './nsc-parking.definitions';
+import { BreakSummerParkingTs } from './break-summer.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -82,5 +83,6 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   VisitorParkingTs,
   MotorcycleParkingTs,
   AVPParkingTs,
-  TsMainParkingTs
+  NscParkingTs,
+  BreakSummerParkingTs
 ];

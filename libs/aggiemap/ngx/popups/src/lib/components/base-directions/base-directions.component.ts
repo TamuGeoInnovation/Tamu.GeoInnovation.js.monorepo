@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { v4 as guid } from 'uuid';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
+import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { BasePopupComponent } from '../base/base.popup.component';
 
@@ -34,6 +35,8 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
    */
   public shareUrl: string;
 
+  private _searchService = inject(SearchService);
+
   private _stops: TripPoint[];
 
   private _destroy$: Subject<boolean> = new Subject();
@@ -48,12 +51,36 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
     super();
   }
 
+  protected _makeShareUrl(): string {
+    const origin = window.location.origin;
+    const fragment = this._getShareUrlFragment();
+    return fragment ? `${origin}/${fragment}` : origin;
+  }
+
+  /**
+   * Returns the URL query fragment (e.g. `?bldg=1234`) used to deep-link to this feature.
+   * Subclasses should override this to supply the appropriate parameter for their layer.
+   */
+  protected _getShareUrlFragment(): string | null {
+    return null;
+  }
+
+  /**
+   * Looks up the registered search source by ID and composes a URL query fragment
+   * using its configured `urlQueryParam` and the provided attribute value.
+   *
+   * Subclasses call this from `_getShareUrlFragment()` so that changing a source's
+   * `urlQueryParam` in the search source config is automatically reflected here.
+   */
+  protected _buildShareUrlFragment(sourceId: string, value: string | number): string | null {
+    const param = this._searchService.getSource(sourceId)?.urlQueryParam;
+    return param ? `?${param}=${value}` : null;
+  }
+
   public ngOnInit(): void {
     this.url = window.location.origin;
-    this.shareUrl = `${this.url}/?bldg=${this.data.attributes.Number}`;
+    this.shareUrl = this._makeShareUrl();
 
-    // Set a listener for stop changes.
-    // This is used to determine the length of stops, allowing to reliably set the last endpoint.
     this.plannerService.Stops.pipe(takeUntil(this._destroy$)).subscribe((stops) => {
       this._stops = stops;
     });
