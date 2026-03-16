@@ -24,6 +24,18 @@ export enum BIG_EVENT_MAP_TYPE_OPTIONS {
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Big_Event/MapServer';
 
+const BIG_EVENT_LAYER_INDICES = {
+  PARKING_LOTS: 48,
+  ROAD_CLOSURES: 49,
+  TRAFFIC: 50
+} as const;
+
+const BIG_EVENT_ROAD_CLOSURE_EXPRESSIONS = {
+  PRE_KICKOFF: `Notes LIKE '%To Kickoff%'`,
+  LEAVE_KICKOFF: `Notes LIKE '%Leaving Kickoff%'`,
+  HIDE: '1 = 0'
+} as const;
+
 export const BigEventDefinitions = {
   TRAFFIC: {
     id: BIG_EVENT_LAYERS.TRAFFIC,
@@ -58,6 +70,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
     // },
     visible: true,
     listMode: 'show',
+    layerIndex: BIG_EVENT_LAYER_INDICES.TRAFFIC,
     native: {
       outFields: ['*'],
       renderer: {
@@ -174,11 +187,24 @@ export const BigEventColdLayerSources: LayerSource[] = [
     url: BigEventDefinitions.ROAD_CLOSURES.url,
     popupComponent: MarkdownPopupComponent,
     visible: true,
+    listMode: 'show',
+    layerIndex: BIG_EVENT_LAYER_INDICES.ROAD_CLOSURES,
     native: {
-      listMode: 'show',
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'diagonal-cross',
+          color: [230, 0, 0, 1],
+          outline: {
+            color: [230, 0, 0, 1],
+            width: 1
+          }
+        } as unknown as esri.SimpleFillSymbolProperties
+      }
     }
-  },
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: BigEventDefinitions.PARKING_LOTS.id,
@@ -191,6 +217,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
     // },
     visible: true,
     listMode: 'show',
+    layerIndex: BIG_EVENT_LAYER_INDICES.PARKING_LOTS,
     native: {
       outFields: ['*']
     }
@@ -220,10 +247,11 @@ export const BigEventOptions: SpecialEventOptions = [
       },
       {
         label: 'Leaving Kickoff',
-        value: BIG_EVENT_MAP_TYPE_OPTIONS.LEAVE_KICKOFF
+        value: BIG_EVENT_MAP_TYPE_OPTIONS.LEAVE_KICKOFF,
+        note: 'No entry to Reed lots during tool distribution'
       },
       {
-        label: 'Tool Return',
+        label: 'Tool Bring-Back',
         value: BIG_EVENT_MAP_TYPE_OPTIONS.TOOL_RETURN
       }
     ],
@@ -249,15 +277,18 @@ export const BigEventOptions: SpecialEventOptions = [
         },
         {
           layerId: BIG_EVENT_LAYERS.ROAD_CLOSURES,
-          field: 'OBJECTID',
           conversions: [
             {
               input: BIG_EVENT_MAP_TYPE_OPTIONS.PRE_KICKOFF,
-              output: 81
+              expression: BIG_EVENT_ROAD_CLOSURE_EXPRESSIONS.PRE_KICKOFF
+            },
+            {
+              input: BIG_EVENT_MAP_TYPE_OPTIONS.LEAVE_KICKOFF,
+              expression: BIG_EVENT_ROAD_CLOSURE_EXPRESSIONS.LEAVE_KICKOFF
             },
             {
               input: BIG_EVENT_MAP_TYPE_OPTIONS.TOOL_RETURN,
-              output: 999 // Some bogus value that will always return no results, to hide layer when this input is selected
+              expression: BIG_EVENT_ROAD_CLOSURE_EXPRESSIONS.HIDE
             }
           ]
         }

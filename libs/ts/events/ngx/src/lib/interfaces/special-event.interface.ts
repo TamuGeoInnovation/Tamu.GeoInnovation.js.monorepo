@@ -249,8 +249,9 @@ export interface EventAccommodationOption {
   group?: string;
 
   /**
-   * Operations to apply to layers based on the selected option value.
+   * Optional note to surface anywhere the resolved selection is displayed.
    */
+  note?: string;
 }
 
 export interface ResolvedEventSetting {
@@ -259,6 +260,7 @@ export interface ResolvedEventSetting {
   option: {
     value: string | boolean | number | null;
     label: string;
+    note?: string;
   } | null;
 }
 

@@ -8,7 +8,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 
 import {
   AggiemapCustomMapConfiguration,
-  EventAccommodationOption,
   EventSettings,
   ResolvedEventSettings,
   SpecialEventOptions
@@ -256,15 +255,20 @@ export class EventSettingsService {
         const value = settings[option.value];
 
         if (value !== undefined) {
+          const selectedChoice = option.choices.find((o) => o.value === value);
+
           return [
             ...merged,
             {
               key: option.value,
               shortDescription: option.shortDescription,
-              option: {
-                value: value,
-                label: (option.choices.find((o) => o.value === value) as EventAccommodationOption).label
-              }
+              option: selectedChoice
+                ? {
+                    value: value,
+                    label: selectedChoice.label,
+                    note: selectedChoice.note
+                  }
+                : null
             }
           ];
         } else {

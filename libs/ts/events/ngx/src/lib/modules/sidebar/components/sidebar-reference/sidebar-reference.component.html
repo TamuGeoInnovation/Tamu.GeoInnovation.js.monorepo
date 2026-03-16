@@ -8,10 +8,11 @@
   <div class="sidebar-component-content-container">
     <p>Make coordination easy! The following link can be shared with friends and family to load your configured map.</p>
 
-    <p *ngIf="moveInSummary"><strong>{{ moveInSummary }}</strong></p>
-
-    <ul *ngIf="!moveInSummary">
-      <li *ngFor="let pair of mergedSettings | keyvalue"><strong>{{ pair.value.shortDescription }}: {{ pair.value.option?.label }}</strong></li>
+    <ul class="settings-list">
+      <li *ngFor="let pair of mergedSettings | keyvalue">
+        <strong>{{ pair.value.shortDescription }}: {{ pair.value.option?.label }}</strong>
+        <p *ngIf="pair.value.option?.note" class="setting-note">{{ pair.value.option?.note }}</p>
+      </li>
     </ul>
 
     <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
