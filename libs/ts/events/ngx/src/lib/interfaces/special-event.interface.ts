@@ -61,6 +61,27 @@ export interface EventConfiguration {
   enableResolvedSettingNotes?: boolean;
 
   /**
+   * Allows legend entries to expose visibility toggles when supported by the consuming UI.
+   *
+   * Defaults to `false` when omitted.
+   */
+  legendAllowVisibilityToggle?: boolean;
+
+  /**
+   * Groups child legend items under their primary parent label when supported by the consuming UI.
+   *
+   * Defaults to `false` when omitted.
+   */
+  legendCombineChildrenUnderPrimary?: boolean;
+
+  /**
+   * Omits specific layer ids from the legend when supported by the consuming UI.
+   *
+   * Defaults to an empty array when omitted.
+   */
+  legendExcludedLayerIds?: Array<string>;
+
+  /**
    * Events can have exceptions for default map layers. This property allows for the ability to
    * define a set of default layer overrides that apply to a specific event.
    *
