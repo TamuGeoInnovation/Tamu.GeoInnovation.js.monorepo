@@ -1,0 +1,8 @@
+* [33mac12ab48[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32msoftball-parking[m[33m)[m Fixed popup issues
+* [33mf1b21dbe[m Fixed safety first issue
+* [33mc75b4d18[m Most maps functional except Safety First
+* [33m515a89e4[m Working through visibility + popup issues
+* [33m9db96c75[m Reverted map.services.ts and fixed swimming parking lot visibility
+* [33m2026558d[m WIP need to pull recent changes
+* [33m06e76f79[m[33m ([m[1;31morigin/development[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mverify-popups[m[33m, [m[1;32mparking-lot-popup-fix[m[33m, [m[1;32mnsc-and-summer-fix[m[33m)[m feat(aggiemap-angular): Add AVP Parking Map (#610)
+* [33ma8e92cc9[m fix(aggiemap-angular): Make Vendor parking map features visible + updated map service (#611)

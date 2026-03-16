@@ -54,6 +54,34 @@ export interface EventConfiguration {
   zoom?: number;
 
   /**
+   * Enables rendering resolved selection notes in shared UI surfaces like the map sidebar.
+   *
+   * Defaults to `false` when omitted so existing events are unaffected.
+   */
+  enableResolvedSettingNotes?: boolean;
+
+  /**
+   * Allows legend entries to expose visibility toggles when supported by the consuming UI.
+   *
+   * Defaults to `false` when omitted.
+   */
+  legendAllowVisibilityToggle?: boolean;
+
+  /**
+   * Groups child legend items under their primary parent label when supported by the consuming UI.
+   *
+   * Defaults to `false` when omitted.
+   */
+  legendCombineChildrenUnderPrimary?: boolean;
+
+  /**
+   * Omits specific layer ids from the legend when supported by the consuming UI.
+   *
+   * Defaults to an empty array when omitted.
+   */
+  legendExcludedLayerIds?: Array<string>;
+
+  /**
    * Events can have exceptions for default map layers. This property allows for the ability to
    * define a set of default layer overrides that apply to a specific event.
    *
@@ -249,8 +277,9 @@ export interface EventAccommodationOption {
   group?: string;
 
   /**
-   * Operations to apply to layers based on the selected option value.
+   * Optional note that can be surfaced by events that opt into resolved setting notes.
    */
+  note?: string;
 }
 
 export interface ResolvedEventSetting {
@@ -259,6 +288,7 @@ export interface ResolvedEventSetting {
   option: {
     value: string | boolean | number | null;
     label: string;
+    note?: string;
   } | null;
 }
 
