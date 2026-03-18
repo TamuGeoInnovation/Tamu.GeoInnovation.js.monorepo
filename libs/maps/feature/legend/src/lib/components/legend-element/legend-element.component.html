@@ -11,7 +11,7 @@ of the table -->
     (keydown.enter)="toggleExpanded()"
     (keydown.space)="toggleExpanded(); $event.preventDefault()"
   >
-    <span class="material-icons">{{ expanded ? 'expand_more' : 'chevron_right' }}</span> {{ groupTitle }}
+    <span class="material-icons">{{ expanded ? 'expand_more' : 'chevron_right' }}</span> {{ displayGroupTitle }}
   </div>
 
   <!-- Safety First layers always use the hardcoded fallback regardless of element type -->
@@ -54,10 +54,10 @@ of the table -->
           </div>
 
           <!-- Apply the legend item from the parent group or child -->
-          <div [ngSwitch]="element.infos?.length">
-            <div *ngSwitchCase="1" class="group-title">{{ groupTitle }}</div>
-            <div *ngSwitchDefault class="label">{{ info?.label }}</div>
-          </div>
+          <div *ngIf="useGroupTitleLabel; else legendInfoLabel" class="group-title">{{ displayGroupTitle }}</div>
+          <ng-template #legendInfoLabel>
+            <div class="label">{{ info?.label }}</div>
+          </ng-template>
         </div>
       </div>
 
