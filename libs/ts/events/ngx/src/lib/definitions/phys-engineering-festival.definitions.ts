@@ -213,7 +213,7 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
     type: 'group',
     id: PhysEngFestDefinitions.EASTBOUND_UNIVERSITY_GROUP.id,
     title: PhysEngFestDefinitions.EASTBOUND_UNIVERSITY_GROUP.name,
-    visible: true,
+    visible: false,
     listMode: 'show',
     sources: [
       {
@@ -269,7 +269,7 @@ export const PhysEngFestivalColdLayerSources: LayerSource[] = [
     type: 'group',
     id: PhysEngFestDefinitions.WESTBOUND_UNIVERSITY_GROUP.id,
     title: PhysEngFestDefinitions.WESTBOUND_UNIVERSITY_GROUP.name,
-    visible: true,
+    visible: false,
     listMode: 'show',
     sources: [
       {
@@ -331,7 +331,38 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
   introductionText: 'Get the best parking information for the Physics and Engineering Festival.',
   eventDates: ['2026-03-28'],
   mapCenter: [-96.33771, 30.62143],
-  zoom: 17
+  zoom: 17,
+  legendAllowVisibilityToggle: true,
+  legendCombineChildrenUnderPrimary: true,
+  legendExcludedLayerIds: [
+    'aggieprint-locations-layer',
+    'accessible-entrances-layer',
+    'visitor-parking-layer',
+    'lactation-rooms-layer',
+    'poi-layer',
+    'construction_zone-layer',
+    'dining-locations-layer',
+    'family-friendly-bathrooms-locations-layer',
+    'emergency-phones-layer'
+  ],
+  defaultLayerOverrides: {
+    'aggieprint-locations-layer': { listMode: 'hide' },
+    'accessible-entrances-layer': { listMode: 'hide' },
+    'visitor-parking-layer': { listMode: 'hide' },
+    'lactation-rooms-layer': { listMode: 'hide' },
+    'poi-layer': { listMode: 'hide' },
+    'construction_zone-layer': { listMode: 'hide' },
+    'dining-locations-layer': { listMode: 'hide' },
+    'family-friendly-bathrooms-locations-layer': { listMode: 'hide' },
+    'emergency-phones-layer': { listMode: 'hide' },
+    'bonfire-layer': { listMode: 'hide' },
+    'surface-lots-layer': { listMode: 'hide' },
+    'bike-locations-layer': { listMode: 'hide' },
+    'sustainable-transportation-group-layer': {
+      listMode: 'hide',
+      native: { listMode: 'hide' }
+    }
+  }
 };
 
 export const PhysicsAndEngineeringFestivalOptions: SpecialEventOptions = [];
