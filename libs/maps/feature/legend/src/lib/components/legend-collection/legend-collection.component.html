@@ -1,7 +1,7 @@
 <div class="legend-collection">
   <div
     class="collection-group-title"
-    *ngIf="hasChildren"
+    *ngIf="showGroupTitle"
     tabindex="0"
     role="button"
     (click)="toggleExpanded()"
@@ -24,7 +24,7 @@
     ></tamu-gisc-legend-element>
 
     <tamu-gisc-legend-collection
-      *ngFor="let childGroup of childGroups; trackBy: trackByLegendGroup"
+      *ngFor="let childGroup of visibleChildGroups; trackBy: trackByLegendGroup"
       [group]="childGroup"
       [layer]="childGroup.layer"
       [deduplicate]="deduplicate"
