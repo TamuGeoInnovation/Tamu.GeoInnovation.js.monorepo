@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { json } from 'express';
 
 import * as dotenv from 'dotenv';
@@ -53,6 +54,7 @@ async function bootstrap() {
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
   app.use(json({ limit: '50mb' }));
+  app.useGlobalPipes(new ValidationPipe());
 
   const port = environment.port;
   await app.listen(port, () => {

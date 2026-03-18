@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bull';
 
 import {
   GISDAY_ENTITIES,
@@ -84,7 +85,13 @@ import { GISDAY_COMPETITIONS_ENTITIES, GisdayCompetitionsDataApiModule } from '@
     PlaceModule,
     AssetsModule,
     ContactModule,
-    GisdayCompetitionsDataApiModule
+    GisdayCompetitionsDataApiModule,
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT, 10) || 6379
+      }
+    })
   ],
   controllers: [],
   providers: [AppService]
