@@ -110,12 +110,6 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
       renderer: {
         type: 'unique-value',
         field: 'GIS.TS.SPEV_Lot_Use.Soccer',
-        defaultLabel: 'Reserved Parking - Permit Required',
-        defaultSymbol: {
-          type: 'simple-fill',
-          color: [241, 184, 96, 255],
-          outline: null
-        } as unknown as esri.SymbolProperties,
         uniqueValueInfos: [
           {
             value: 'AnyValidRec',

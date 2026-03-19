@@ -110,7 +110,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
       renderer: {
         type: 'unique-value',
         field: 'GIS.TS.SPEV_Lot_Use.Volleyball',
-        defaultLabel: 'Reserved Parking - Permit Required',
+        defaultLabel: 'Accessible Parking Only',
         defaultSymbol: {
           type: 'simple-fill',
           color: [241, 184, 96, 255],
