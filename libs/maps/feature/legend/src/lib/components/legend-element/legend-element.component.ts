@@ -87,6 +87,9 @@ export class LegendElementComponent implements OnInit {
   @Input()
   public hideGroupHeader = false;
 
+  @Input()
+  public useBikeRackLegendTransform: boolean | undefined = undefined;
+
   public infos: Observable<Array<LegendInfo>>;
   public expanded = true;
 
@@ -95,7 +98,7 @@ export class LegendElementComponent implements OnInit {
       return false;
     }
 
-    if (this.shouldUseCustomBikeRackLegend) {
+    if (this.shouldApplyBikeRackLegendTransform) {
       return false;
     }
 
@@ -105,7 +108,7 @@ export class LegendElementComponent implements OnInit {
   }
 
   public get useGroupTitleLabel(): boolean {
-    return !this.shouldUseCustomBikeRackLegend && this.element?.infos?.length === 1;
+    return !this.shouldApplyBikeRackLegendTransform && this.element?.infos?.length === 1;
   }
 
   public get displayGroupTitle(): string {
@@ -125,7 +128,7 @@ export class LegendElementComponent implements OnInit {
     }
 
     const operableInfos = (this.element.infos ?? []) as Array<LegendInfo>;
-    const displayInfos = this.shouldUseCustomBikeRackLegend ? this._getBikeRackLegendInfos(operableInfos) : operableInfos;
+    const displayInfos = this.shouldApplyBikeRackLegendTransform ? this._getBikeRackLegendInfos(operableInfos) : operableInfos;
 
     this.infos = iif(
       () => {
@@ -348,6 +351,12 @@ export class LegendElementComponent implements OnInit {
     } else {
       return of(null);
     }
+  }
+
+  private get shouldApplyBikeRackLegendTransform(): boolean {
+    return this.useBikeRackLegendTransform === undefined
+      ? this.shouldUseCustomBikeRackLegend
+      : this.useBikeRackLegendTransform && this.shouldUseCustomBikeRackLegend;
   }
 
   private get shouldUseCustomBikeRackLegend(): boolean {
