@@ -230,6 +230,19 @@ export const BigEventConfiguration: EventConfiguration = {
   applicationName: 'Big Event Transportation Map',
   shortApplicationName: 'Big Event Map',
   eventDates: ['2026-03-21'],
+  toast: {
+    id: 'big-event-notification-2026',
+    title: 'Big Event Transportation Map Available',
+    message:
+      'Heading to Big Event? Click me to open the Big Event Transportation Map for parking, road closure, and traffic flow information.',
+    imgUrl: './assets/images/icons/transportation/Parking.png',
+    imgAltText: 'Big Event Parking Icon',
+    acknowledge: true,
+    action: {
+      type: 'internal',
+      value: '/events/big-event'
+    }
+  },
   mapCenter: [-96.3463, 30.6059],
   zoom: 17,
   enableResolvedSettingNotes: true
