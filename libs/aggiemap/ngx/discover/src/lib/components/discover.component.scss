@@ -174,38 +174,44 @@
   margin-top: 2rem;
 }
 
-:host ::ng-deep tamu-gisc-tabs.discover-tabs {
-  display: block;
-  width: 100%;
-}
-
-:host ::ng-deep tamu-gisc-tabs.discover-tabs .tabs {
+.discover-tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
   border-bottom: 1px solid #e1e1e1;
 }
 
-:host ::ng-deep tamu-gisc-tabs.discover-tabs .tab {
+.discover-tab {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: 4px solid transparent;
   padding: 0.1rem 1rem;
   cursor: pointer;
   color: #500000;
   text-align: center;
-  border-bottom: 4px solid transparent;
   font-size: 1.05rem;
   font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
 }
 
-:host ::ng-deep tamu-gisc-tabs.discover-tabs .tab p {
+.discover-tab span {
+  display: block;
   margin: 0;
 }
 
-:host ::ng-deep tamu-gisc-tabs.discover-tabs .tab.active {
+.discover-tab.active {
   border-bottom-color: #500000;
 }
 
-:host ::ng-deep tamu-gisc-tabs.discover-tabs .content {
-  padding-top: 1.0rem;
+.discover-tab:focus-visible {
+  outline: 2px solid #500000;
+  outline-offset: 2px;
+}
+
+.discover-tab-panel {
+  padding-top: 1rem;
 }
 
 .map-columns {
@@ -286,16 +292,17 @@
     gap: 0.5rem;
   }
 
-  :host ::ng-deep tamu-gisc-tabs.discover-tabs .tabs {
+  .discover-tabs {
     display: flex;
     gap: 0.5rem;
     overflow-x: auto;
     padding-bottom: 0.25rem;
   }
 
-  :host ::ng-deep tamu-gisc-tabs.discover-tabs .tab {
+  .discover-tab {
     min-width: 10rem;
     padding: 0.75rem 1rem;
+    flex: 0 0 auto;
   }
 
   .map-columns,
