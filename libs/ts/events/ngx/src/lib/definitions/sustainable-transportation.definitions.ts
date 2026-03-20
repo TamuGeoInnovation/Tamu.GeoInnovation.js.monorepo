@@ -151,9 +151,9 @@ export const SustainableTransportationConfiguration: EventConfiguration = {
   shortApplicationName: 'Sustainable Transportation',
   introductionText:
     'Explore bike amenities and EV charge stations across Main Campus and the RELLIS Campus in one map.',
-  mapCenter: [-96.4005, 30.6193],
+  mapCenter: [-96.34643, 30.61313],
   eventDates: [],
-  zoom: 11
+  zoom: 15
 };
 
 export const SustainableTransportationOptions: SpecialEventOptions = [];
