@@ -6,12 +6,14 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 import { SettingsGuard } from './guards/settings/settings.guard';
 import { BuilderComponent } from './modules/builder/builder.component';
+import { BuilderAccessGuard } from './guards/builder-access/builder-access.guard';
+import { EventEntryGuard } from './guards/event-entry/event-entry.guard';
 import { RouteParamsGuard } from './guards/route-params/route-params.guard';
 
 const routes: Routes = [
   {
     path: ':eventId',
-    canActivate: [RouteParamsGuard],
+    canActivate: [RouteParamsGuard, EventEntryGuard],
     children: [
       {
         path: 'map',
@@ -21,7 +23,7 @@ const routes: Routes = [
       {
         path: 'builder',
         component: BuilderComponent,
-        canActivate: [SettingsGuard],
+        canActivate: [BuilderAccessGuard, SettingsGuard],
         children: [
           {
             path: 'intro',
