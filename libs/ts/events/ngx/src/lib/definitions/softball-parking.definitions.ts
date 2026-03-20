@@ -142,6 +142,7 @@ export const SoftballParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M softball events.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['softball', 'parking', 'visitor', 'accessible', 'crosswalk']
   }
 };

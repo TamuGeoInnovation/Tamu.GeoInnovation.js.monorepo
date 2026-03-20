@@ -193,6 +193,7 @@ export const VolleyballParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M volleyball events.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['volleyball', 'parking', 'visitor', 'accessible', 'crosswalk']
   }
 };

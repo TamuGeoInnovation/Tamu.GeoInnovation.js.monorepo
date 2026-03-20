@@ -7,12 +7,21 @@
   }
 }
 
-.search-section {
+.search-section,
+.upcoming-events-section,
+.tab-section,
+.experimental-applications-section {
   h2 {
     color: #500000;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     font-size: 1.5rem;
     font-weight: 600;
+  }
+}
+
+.search-section {
+  h2 {
+    margin-bottom: 1.5rem;
   }
 }
 
@@ -75,15 +84,6 @@
   }
 }
 
-.upcoming-events-section {
-  h2 {
-    color: #500000;
-    margin-bottom: 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-}
-
 .section-description {
   color: #666;
   font-style: italic;
@@ -117,10 +117,6 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 0.75rem;
-
-  @media (max-width: 768px) {
-    gap: 0.5rem;
-  }
 }
 
 .application-card-header {
@@ -156,8 +152,7 @@
   flex-shrink: 0;
 }
 
-.event-dates,
-.event-id {
+.event-dates {
   font-size: 0.875rem;
   color: #666;
 
@@ -166,7 +161,7 @@
   }
 }
 
-.no-events-message {
+.empty-state {
   text-align: center;
   padding: 2rem;
   color: #666;
@@ -175,31 +170,51 @@
   border-radius: 8px;
 }
 
-.experimental-applications-section {
-  h2 {
-    color: #500000;
-    margin-bottom: 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
+.discover-tabs-section {
+  margin-top: 2rem;
 }
 
-.applications-list {
+:host ::ng-deep tamu-gisc-tabs.discover-tabs {
+  display: block;
+  width: 100%;
+}
+
+:host ::ng-deep tamu-gisc-tabs.discover-tabs .tabs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+  border-bottom: 1px solid #e1e1e1;
 }
 
-.parking-maps-section {
-  h2 {
-    color: #500000;
-    margin-bottom: 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
+:host ::ng-deep tamu-gisc-tabs.discover-tabs .tab {
+  padding: 0.1rem 1rem;
+  cursor: pointer;
+  color: #500000;
+  text-align: center;
+  border-bottom: 4px solid transparent;
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
-.parking-links {
+:host ::ng-deep tamu-gisc-tabs.discover-tabs .tab p {
+  margin: 0;
+}
+
+:host ::ng-deep tamu-gisc-tabs.discover-tabs .tab.active {
+  border-bottom-color: #500000;
+}
+
+:host ::ng-deep tamu-gisc-tabs.discover-tabs .content {
+  padding-top: 1.0rem;
+}
+
+.map-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 2rem;
+}
+
+.map-links {
   margin: 0;
   padding-left: 1.5rem;
   display: flex;
@@ -207,21 +222,11 @@
   gap: 0.5rem;
 }
 
-.parking-columns {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem 2rem;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.parking-link-item {
+.map-link-item {
   margin: 0;
 }
 
-.parking-link {
+.map-link {
   color: #500000;
   text-decoration: none;
   font-weight: 600;
@@ -230,6 +235,12 @@
   &:focus {
     text-decoration: underline;
   }
+}
+
+.applications-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
 }
 
 .application-description {
@@ -256,16 +267,39 @@
 }
 
 .chip-internal {
-  background-color: #1e88e5; /* md-bg-blue-500 */
+  background-color: #1e88e5;
   color: white;
 }
 
 .chip-external {
-  background-color: #f57c00; /* md-bg-orange-500 */
+  background-color: #f57c00;
   color: white;
 }
 
 .chip-label {
-  background-color: #e0e0e0; /* md-bg-gray-300 */
+  background-color: #e0e0e0;
   color: black;
+}
+
+@media (max-width: 768px) {
+  .event-card-header {
+    gap: 0.5rem;
+  }
+
+  :host ::ng-deep tamu-gisc-tabs.discover-tabs .tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  :host ::ng-deep tamu-gisc-tabs.discover-tabs .tab {
+    min-width: 10rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .map-columns,
+  .applications-list {
+    grid-template-columns: 1fr;
+  }
 }

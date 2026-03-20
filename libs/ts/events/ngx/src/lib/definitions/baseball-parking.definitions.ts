@@ -247,6 +247,7 @@ export const BaseballParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Baseball event parking with optional accessibility-focused view.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['baseball', 'parking', 'accessible', 'shuttle', 'closure']
   }
 };

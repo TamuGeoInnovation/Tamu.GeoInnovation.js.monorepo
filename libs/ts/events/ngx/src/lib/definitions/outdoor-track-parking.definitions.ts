@@ -145,6 +145,7 @@ export const OutdoorTrackParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M outdoor track events.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['outdoor track', 'parking', 'visitor', 'accessible', 'crosswalk']
   }
 };

@@ -177,6 +177,7 @@ export const SwimmingParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M swimming events.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['swimming', 'parking', 'visitor', 'accessible', 'crosswalk']
   }
 };

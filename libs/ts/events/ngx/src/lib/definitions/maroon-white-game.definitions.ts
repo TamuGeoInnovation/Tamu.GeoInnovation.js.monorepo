@@ -66,6 +66,7 @@ export const MaroonWhiteTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for the Maroon & White Game.',
     source: 'internal',
     type: 'event',
+    mapType: 'athletics',
     keywords: ['maroon', 'white', 'game', 'parking', 'transportation']
   }
 };

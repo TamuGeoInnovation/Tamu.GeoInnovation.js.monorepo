@@ -608,6 +608,7 @@ export const FootballParkingEvent: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for football game days.',
     source: 'internal',
     type: 'event',
+    mapType: 'athletics',
     keywords: ['football', 'gameday', 'parking', 'shuttles', 'transportation', 'bike']
   }
 };

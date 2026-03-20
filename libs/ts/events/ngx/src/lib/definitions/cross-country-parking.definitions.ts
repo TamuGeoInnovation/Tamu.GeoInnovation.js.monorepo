@@ -130,6 +130,7 @@ export const CrossCountryParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M cross country events.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['cross country', 'parking']
   }
 };

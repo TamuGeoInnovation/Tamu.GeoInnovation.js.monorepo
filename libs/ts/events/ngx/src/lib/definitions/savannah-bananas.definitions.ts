@@ -195,6 +195,7 @@ export const SavannahBananasParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for Savannah Bananas vs Texas Tailgaters at Kyle Field.',
     source: 'internal',
     type: 'event',
+    mapType: 'athletics',
     keywords: ['savannah bananas', 'texas tailgaters', 'kyle field', 'parking', 'transportation']
   }
 };
