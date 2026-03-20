@@ -330,6 +330,19 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
   shortApplicationName: 'Physics and Engineering Festival Map',
   introductionText: 'Get the best parking information for the Physics and Engineering Festival.',
   eventDates: ['2026-03-28'],
+  toast: {
+    id: 'phys-eng-fest-notification-2026',
+    title: 'Physics and Engineering Festival Map Available',
+    message:
+      'Visiting the Physics and Engineering Festival? Click me to open the transportation map for parking, bus drop-off, and pedestrian route information.',
+    imgUrl: './assets/images/icons/transportation/Parking.png',
+    imgAltText: 'Physics and Engineering Festival Parking Icon',
+    acknowledge: true,
+    action: {
+      type: 'internal',
+      value: '/events/phys-eng-fest'
+    }
+  },
   mapCenter: [-96.33771, 30.62143],
   zoom: 17,
   legendAllowVisibilityToggle: true,

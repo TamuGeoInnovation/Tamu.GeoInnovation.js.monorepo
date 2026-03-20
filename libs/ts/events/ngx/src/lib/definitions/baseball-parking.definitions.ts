@@ -170,6 +170,19 @@ export const BaseballParkingConfiguration: EventConfiguration = {
     '2026-05-15',
     '2026-05-16'
   ],
+  toast: {
+    id: 'baseball-parking-notification-2026',
+    title: 'Baseball Parking Map Available',
+    message:
+      'Heading to Olsen Field? Click me to open the Baseball Parking Map for parking, shuttle, and road closure information.',
+    imgUrl: './assets/images/icons/sports/Baseball.png',
+    imgAltText: 'Baseball Icon',
+    acknowledge: true,
+    action: {
+      type: 'internal',
+      value: '/events/baseball-parking'
+    }
+  },
   mapCenter: [-96.34509, 30.60416],
   zoom: 17
 };
