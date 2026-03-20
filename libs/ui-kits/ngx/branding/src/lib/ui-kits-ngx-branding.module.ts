@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
@@ -9,7 +10,7 @@ import { PageLoaderComponent } from './components/page-loader/page-loader.compon
 import { LockupComponent } from './components/lockup/lockup.component';
 
 @NgModule({
-  imports: [CommonModule, TestingModule],
+  imports: [CommonModule, RouterModule, TestingModule],
   declarations: [TamuBlockBrandingComponent, ReveilleConsoleLogComponent, PageLoaderComponent, LockupComponent],
   exports: [TamuBlockBrandingComponent, ReveilleConsoleLogComponent, PageLoaderComponent, LockupComponent]
 })

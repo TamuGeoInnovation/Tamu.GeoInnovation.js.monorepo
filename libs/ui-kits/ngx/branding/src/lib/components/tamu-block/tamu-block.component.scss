@@ -2,7 +2,27 @@
   display: block;
 }
 
+.brand-home-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &:visited {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(80, 0, 0, 0.35);
+    outline-offset: 2px;
+  }
+}
+
 img {
+  display: block;
   padding: 0.5rem 2.5rem 1rem 2.5rem;
   margin-bottom: 0.25rem;
   box-sizing: border-box;

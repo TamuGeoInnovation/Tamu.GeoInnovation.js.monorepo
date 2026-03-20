@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { TamuBlockBrandingComponent } from './tamu-block.component';
 
@@ -8,6 +9,7 @@ describe('TamuBlockComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule.withRoutes([])],
       declarations: [TamuBlockBrandingComponent]
     }).compileComponents();
   }));
@@ -20,5 +22,12 @@ describe('TamuBlockComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render a home link around the tamu block image', () => {
+    const link = fixture.nativeElement.querySelector('a.brand-home-link');
+
+    expect(link).toBeTruthy();
+    expect(link.querySelector('img')).toBeTruthy();
   });
 });
