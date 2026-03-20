@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 import { DiscoverComponent } from './components/discover.component';
@@ -22,6 +23,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     UIFormsModule,
+    UILayoutModule,
     RouterModule.forChild(routes),
     AggiemapNgxSharedUiStructuralModule,
     PipesModule

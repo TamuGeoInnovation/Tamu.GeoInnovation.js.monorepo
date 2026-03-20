@@ -187,6 +187,7 @@ export const SoccerParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M soccer events.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['soccer', 'parking', 'visitor', 'accessible', 'crosswalk']
   }
 };

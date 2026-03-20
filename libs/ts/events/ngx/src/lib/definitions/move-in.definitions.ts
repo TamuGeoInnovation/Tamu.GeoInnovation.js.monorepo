@@ -609,6 +609,7 @@ export const MoveInTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for Fall Move In.',
     source: 'internal',
     type: 'parking',
+    mapType: 'campus',
     keywords: ['move in', 'fall move in', 'parking', 'transportation']
   }
 };

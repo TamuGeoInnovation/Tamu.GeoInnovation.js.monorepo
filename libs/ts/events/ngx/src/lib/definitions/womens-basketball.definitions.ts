@@ -167,6 +167,7 @@ export const WomensBasketball_Ts: AggiemapCustomMapConfiguration = {
     description: "Transportation and parking information for Women's Basketball events.",
     source: 'internal',
     type: 'event',
+    mapType: 'athletics',
     keywords: ['bike', 'womens-basketball', 'cycling', 'parking', 'transportation']
   }
 };

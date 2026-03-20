@@ -1,4 +1,4 @@
-import { EventConfiguration } from '@tamu-gisc/ts/events/ngx';
+import { DiscoverMapType, EventConfiguration } from '@tamu-gisc/ts/events/ngx';
 
 interface BaseDiscoverApplication {
   id: string;
@@ -23,6 +23,7 @@ export interface ExternalDiscoverApplication extends BaseDiscoverApplication {
 export interface InternalDiscoverApplication extends BaseDiscoverApplication {
   source: 'internal';
   type: 'event' | 'parking';
+  mapType: DiscoverMapType;
   configuration: EventConfiguration;
 }
 

@@ -317,6 +317,11 @@ interface IGeneralMapRoot extends IMapConfigurationBase {
 export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot;
 
 /**
+ * High-level discover grouping used by the tabbed Discover page UI.
+ */
+export type DiscoverMapType = 'parking' | 'campus' | 'athletics';
+
+/**
  * Metadata used to represent a map in the Discover application.
  */
 export interface DiscoverMetadata {
@@ -333,4 +338,10 @@ export interface DiscoverMetadata {
   labels?: string[];
   source: 'internal';
   type: 'event' | 'parking';
+  /**
+   * Optional tab grouping override for the Discover page.
+   *
+   * When omitted, consuming UIs can derive a sensible default from `type`.
+   */
+  mapType?: DiscoverMapType;
 }

@@ -75,6 +75,7 @@ export const TennisParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M tennis events.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['tennis', 'parking']
   }
 };

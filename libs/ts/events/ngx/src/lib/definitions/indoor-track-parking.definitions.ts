@@ -194,6 +194,7 @@ export const IndoorTrackParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking and transportation information for Texas A&M indoor track events.',
     source: 'internal',
     type: 'parking',
+    mapType: 'athletics',
     keywords: ['indoor track', 'parking', 'visitor', 'accessible', 'crosswalk', 'team bus']
   }
 };

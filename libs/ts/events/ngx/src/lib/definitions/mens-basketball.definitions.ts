@@ -146,6 +146,7 @@ export const MensBasketball_Ts: AggiemapCustomMapConfiguration = {
     description: "Transportation and parking information for Men's Basketball events.",
     source: 'internal',
     type: 'event',
+    mapType: 'athletics',
     keywords: ['bike', 'mens-basketball', 'cycling', 'parking', 'transportation']
   }
 };

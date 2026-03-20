@@ -1,10 +1,10 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 
-import { EventConfiguration } from '@tamu-gisc/ts/events/ngx';
-import { Router } from '@angular/router';
+import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
 
 import {
   DiscoverApplication,
@@ -23,10 +23,17 @@ export class DiscoverComponent implements OnInit {
   public externalApplications: ExternalDiscoverApplication[];
   private eventDiscoverApplications: InternalDiscoverApplication[];
   public allApplications: DiscoverApplication[];
-  private allEvents: EventConfiguration[];
-  public upcomingEvents: EventConfiguration[];
+
+  public upcomingApplications: InternalDiscoverApplication[] = [];
+
   public parkingColumns: InternalDiscoverApplication[][] = [[], []];
   public parkingColumnStart = 1;
+
+  public campusColumns: InternalDiscoverApplication[][] = [[], []];
+  public campusColumnStart = 1;
+
+  public athleticColumns: InternalDiscoverApplication[][] = [[], []];
+  public athleticColumnStart = 1;
 
   public searchControl = new FormControl();
   public filteredApplications: Observable<DiscoverApplication[]>;
@@ -44,38 +51,67 @@ export class DiscoverComponent implements OnInit {
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
     this.allApplications = this.discoveryService.getAllDiscoverApplications();
 
-    // Transform event definitions into searchable format
-    this.allEvents = this.eventDiscoverApplications
-      .map((e) => e.configuration)
-      .filter((e: EventConfiguration) => {
-        return e !== null && !!e?.id && !!e?.name;
-      });
-
-    // Set up autocomplete filtering
     this.filteredApplications = combineLatest([this.searchControl.valueChanges.pipe(startWith('')), this.isDev]).pipe(
       debounceTime(100),
       map(([value, isDev]) => this._filterApplications(value || '', isDev)),
       shareReplay(1)
     );
 
-    // Calculate upcoming events
-    this.upcomingEvents = this.getUpcomingEvents();
+    this.upcomingApplications = this.getUpcomingApplications();
 
-    // Build ordered parking list and split into two columns
-    const parkingApplications = this.getParkingApplications();
-    this.parkingColumns = this.buildParkingColumns(parkingApplications);
-    this.parkingColumnStart = this.parkingColumns[0].length + 1;
+    const parkingApplications = this.getApplicationsByMapType('parking');
+    this.parkingColumns = this.buildApplicationColumns(parkingApplications);
+    this.parkingColumnStart = this.getSecondColumnStart(this.parkingColumns);
+
+    const campusApplications = this.getApplicationsByMapType('campus');
+    this.campusColumns = this.buildApplicationColumns(campusApplications);
+    this.campusColumnStart = this.getSecondColumnStart(this.campusColumns);
+
+    const athleticApplications = this.getApplicationsByMapType('athletics');
+    this.athleticColumns = this.buildApplicationColumns(athleticApplications);
+    this.athleticColumnStart = this.getSecondColumnStart(this.athleticColumns);
   }
 
-  private getParkingApplications(): InternalDiscoverApplication[] {
-    return this.eventDiscoverApplications
-      .filter((app) => app.type === 'parking')
-      .sort((a, b) => a.name.localeCompare(b.name));
+  private getApplicationsByMapType(mapType: DiscoverMapType): InternalDiscoverApplication[] {
+    const applications = this.eventDiscoverApplications.filter((app) => app.mapType === mapType);
+
+    if (mapType === 'parking') {
+      return applications.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return this.sortEventApplications(applications);
   }
 
-  private buildParkingColumns(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[][] {
+  private getUpcomingApplications(): InternalDiscoverApplication[] {
+    const now = Date.now();
+
+    return this.sortEventApplications(this.eventDiscoverApplications)
+      .filter((app) => this.getEarliestUpcomingDate(app.configuration.eventDates, now) !== Number.POSITIVE_INFINITY)
+      .slice(0, 3);
+  }
+
+  private buildApplicationColumns(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[][] {
     const midpoint = Math.ceil(apps.length / 2);
     return [apps.slice(0, midpoint), apps.slice(midpoint)];
+  }
+
+  private getSecondColumnStart(columns: InternalDiscoverApplication[][]): number {
+    return columns[0].length + 1;
+  }
+
+  private sortEventApplications(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[] {
+    const now = Date.now();
+
+    return [...apps].sort((a, b) => {
+      const aNextDate = this.getEarliestUpcomingDate(a.configuration.eventDates, now);
+      const bNextDate = this.getEarliestUpcomingDate(b.configuration.eventDates, now);
+
+      if (aNextDate === bNextDate) {
+        return a.name.localeCompare(b.name);
+      }
+
+      return aNextDate - bNextDate;
+    });
   }
 
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
@@ -103,46 +139,30 @@ export class DiscoverComponent implements OnInit {
     });
   }
 
-  private getUpcomingEvents(): EventConfiguration[] {
-    const now = new Date().getTime();
-
-    return this.allEvents
-      .filter((event) => {
-        // Check if any event date is upcoming or happening now
-        return event.eventDates.some((date) => {
-          const eventTime = this.parseEventDate(date);
-          return eventTime >= now;
-        });
-      })
-      .sort((a, b) => {
-        // Sort by earliest upcoming date
-        const aEarliest = this.getEarliestUpcomingDate(a.eventDates, now);
-        const bEarliest = this.getEarliestUpcomingDate(b.eventDates, now);
-        return aEarliest - bEarliest;
-      })
-      .slice(0, 3); // Top 3
-  }
-
   private parseEventDate(date: string | Date | number): number {
     if (typeof date === 'number') {
       return date;
     }
+
     if (date instanceof Date) {
       return date.getTime();
     }
-    // Treat date-only strings as local dates to avoid UTC day-shift issues.
+
     const dateOnlyMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (dateOnlyMatch) {
       const [, year, month, day] = dateOnlyMatch;
       return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
     }
+
     return new Date(date).getTime();
   }
 
   private getEarliestUpcomingDate(dates: Array<string | Date | number>, now: number): number {
-    const upcomingDates = dates.map((date) => this.parseEventDate(date)).filter((time) => time >= now);
+    const upcomingDates = dates
+      .map((date) => this.parseEventDate(date))
+      .filter((time) => Number.isFinite(time) && time >= now);
 
-    return upcomingDates.length > 0 ? Math.min(...upcomingDates) : Number.MAX_SAFE_INTEGER;
+    return upcomingDates.length > 0 ? Math.min(...upcomingDates) : Number.POSITIVE_INFINITY;
   }
 
   public onApplicationSelect(app: DiscoverApplication | undefined): void {
@@ -152,19 +172,14 @@ export class DiscoverComponent implements OnInit {
       window.open((app as ExternalDiscoverApplication).location, '_blank');
     } else if (app.source === 'internal') {
       const config = (app as InternalDiscoverApplication).configuration;
-      // Navigate to events intro page
       const routeSegment = app.type === 'event' ? 'events' : app.type;
       this.rt.navigate([`/${routeSegment}`, config.id]);
     }
   }
 
-  public displayApplicationOption(app: DiscoverApplication): string {
-    return app.name || app.id || '';
-  }
-
-  public formatEventDate(date: string | Date | number): string {
-    const dateObj = new Date(this.parseEventDate(date));
-    return dateObj.toLocaleDateString();
+  public getApplicationRoute(app: InternalDiscoverApplication): string[] {
+    const routeSegment = app.type === 'event' ? 'events' : app.type;
+    return [`/${routeSegment}`, app.id];
   }
 
   public getEventDateRange(dates: Array<string | Date | number>): string {
@@ -172,7 +187,7 @@ export class DiscoverComponent implements OnInit {
       return 'No dates available';
     }
 
-    const parsedDates = dates.map((date) => this.parseEventDate(date)).sort();
+    const parsedDates = dates.map((date) => this.parseEventDate(date)).sort((a, b) => a - b);
     const startDate = new Date(parsedDates[0]);
     const endDate = new Date(parsedDates[parsedDates.length - 1]);
 
@@ -181,11 +196,5 @@ export class DiscoverComponent implements OnInit {
     }
 
     return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
-  }
-
-  public getApplicationFromEvent(event: EventConfiguration): DiscoverApplication | undefined {
-    return this.allApplications.find(
-      (app) => app.source === 'internal' && (app as InternalDiscoverApplication).configuration === event
-    );
   }
 }
