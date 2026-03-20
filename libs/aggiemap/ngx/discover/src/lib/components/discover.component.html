@@ -54,88 +54,115 @@
       </div>
 
       <div class="discover-tabs-section trailer-3">
-        <tamu-gisc-tabs class="discover-tabs">
-          <tamu-gisc-tab label="Parking Maps">
-            <div class="tab-section">
-              <h2>Parking Maps</h2>
-              <p class="section-description">Browse available parking maps for Texas A&amp;M University campus.</p>
+        <div class="discover-tabs" role="tablist" aria-label="Discover map categories">
+          <button
+            *ngFor="let tab of discoverTabs"
+            type="button"
+            class="discover-tab"
+            role="tab"
+            [class.active]="activeTab === tab.id"
+            [attr.id]="'discover-tab-' + tab.id"
+            [attr.aria-controls]="'discover-panel-' + tab.id"
+            [attr.aria-selected]="activeTab === tab.id"
+            [attr.tabindex]="activeTab === tab.id ? 0 : -1"
+            (click)="setActiveTab(tab.id)"
+          >
+            <span>{{ tab.label }}</span>
+          </button>
+        </div>
 
-              <div class="map-columns" *ngIf="parkingColumns[0].length + parkingColumns[1].length > 0; else noParkingMaps">
-                <ol class="map-links">
-                  <li class="map-link-item" *ngFor="let app of parkingColumns[0]">
-                    <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
-                  </li>
-                </ol>
+        <div
+          *ngIf="activeTab === 'parking'"
+          class="tab-section discover-tab-panel"
+          role="tabpanel"
+          id="discover-panel-parking"
+          aria-labelledby="discover-tab-parking"
+        >
+          <h2>Parking Maps</h2>
+          <p class="section-description">Browse available parking maps for Texas A&amp;M University campus.</p>
 
-                <ol class="map-links" *ngIf="parkingColumns[1].length > 0" [attr.start]="parkingColumnStart">
-                  <li class="map-link-item" *ngFor="let app of parkingColumns[1]">
-                    <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
-                  </li>
-                </ol>
-              </div>
+          <div class="map-columns" *ngIf="parkingColumns[0].length + parkingColumns[1].length > 0; else noParkingMaps">
+            <ol class="map-links">
+              <li class="map-link-item" *ngFor="let app of parkingColumns[0]">
+                <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              </li>
+            </ol>
 
-              <ng-template #noParkingMaps>
-                <div class="empty-state">
-                  <p>No parking maps are available right now.</p>
-                </div>
-              </ng-template>
+            <ol class="map-links" *ngIf="parkingColumns[1].length > 0" [attr.start]="parkingColumnStart">
+              <li class="map-link-item" *ngFor="let app of parkingColumns[1]">
+                <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              </li>
+            </ol>
+          </div>
+
+          <ng-template #noParkingMaps>
+            <div class="empty-state">
+              <p>No parking maps are available right now.</p>
             </div>
-          </tamu-gisc-tab>
+          </ng-template>
+        </div>
 
-          <tamu-gisc-tab label="Campus Events">
-            <div class="tab-section">
-              <h2>Campus Events</h2>
-              <p class="section-description">Browse campus event maps for transportation, parking, and special events.</p>
+        <div
+          *ngIf="activeTab === 'campus'"
+          class="tab-section discover-tab-panel"
+          role="tabpanel"
+          id="discover-panel-campus"
+          aria-labelledby="discover-tab-campus"
+        >
+          <h2>Campus Events</h2>
+          <p class="section-description">Browse campus event maps for transportation, parking, and special events.</p>
 
-              <div class="map-columns" *ngIf="campusColumns[0].length + campusColumns[1].length > 0; else noCampusEvents">
-                <ol class="map-links">
-                  <li class="map-link-item" *ngFor="let app of campusColumns[0]">
-                    <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
-                  </li>
-                </ol>
+          <div class="map-columns" *ngIf="campusColumns[0].length + campusColumns[1].length > 0; else noCampusEvents">
+            <ol class="map-links">
+              <li class="map-link-item" *ngFor="let app of campusColumns[0]">
+                <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              </li>
+            </ol>
 
-                <ol class="map-links" *ngIf="campusColumns[1].length > 0" [attr.start]="campusColumnStart">
-                  <li class="map-link-item" *ngFor="let app of campusColumns[1]">
-                    <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
-                  </li>
-                </ol>
-              </div>
+            <ol class="map-links" *ngIf="campusColumns[1].length > 0" [attr.start]="campusColumnStart">
+              <li class="map-link-item" *ngFor="let app of campusColumns[1]">
+                <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              </li>
+            </ol>
+          </div>
 
-              <ng-template #noCampusEvents>
-                <div class="empty-state">
-                  <p>No campus event maps are available right now.</p>
-                </div>
-              </ng-template>
+          <ng-template #noCampusEvents>
+            <div class="empty-state">
+              <p>No campus event maps are available right now.</p>
             </div>
-          </tamu-gisc-tab>
+          </ng-template>
+        </div>
 
-          <tamu-gisc-tab label="Athletic Events">
-            <div class="tab-section">
-              <h2>Athletic Events</h2>
-              <p class="section-description">Browse athletic event maps for game day parking and transportation information.</p>
+        <div
+          *ngIf="activeTab === 'athletics'"
+          class="tab-section discover-tab-panel"
+          role="tabpanel"
+          id="discover-panel-athletics"
+          aria-labelledby="discover-tab-athletics"
+        >
+          <h2>Athletic Events</h2>
+          <p class="section-description">Browse athletic event maps for game day parking and transportation information.</p>
 
-              <div class="map-columns" *ngIf="athleticColumns[0].length + athleticColumns[1].length > 0; else noAthleticEvents">
-                <ol class="map-links">
-                  <li class="map-link-item" *ngFor="let app of athleticColumns[0]">
-                    <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
-                  </li>
-                </ol>
+          <div class="map-columns" *ngIf="athleticColumns[0].length + athleticColumns[1].length > 0; else noAthleticEvents">
+            <ol class="map-links">
+              <li class="map-link-item" *ngFor="let app of athleticColumns[0]">
+                <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              </li>
+            </ol>
 
-                <ol class="map-links" *ngIf="athleticColumns[1].length > 0" [attr.start]="athleticColumnStart">
-                  <li class="map-link-item" *ngFor="let app of athleticColumns[1]">
-                    <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
-                  </li>
-                </ol>
-              </div>
+            <ol class="map-links" *ngIf="athleticColumns[1].length > 0" [attr.start]="athleticColumnStart">
+              <li class="map-link-item" *ngFor="let app of athleticColumns[1]">
+                <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              </li>
+            </ol>
+          </div>
 
-              <ng-template #noAthleticEvents>
-                <div class="empty-state">
-                  <p>No athletic event maps are available right now.</p>
-                </div>
-              </ng-template>
+          <ng-template #noAthleticEvents>
+            <div class="empty-state">
+              <p>No athletic event maps are available right now.</p>
             </div>
-          </tamu-gisc-tab>
-        </tamu-gisc-tabs>
+          </ng-template>
+        </div>
       </div>
 
       <div class="experimental-applications-section" *ngIf="(isDev | async) === true">

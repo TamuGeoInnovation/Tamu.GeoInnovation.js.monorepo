@@ -14,12 +14,25 @@ import {
 import { DiscoveryService } from '../services/discovery/discovery.service';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
+interface DiscoverTab {
+  id: DiscoverMapType;
+  label: string;
+}
+
 @Component({
   selector: 'tamu-gisc-aggiemap-discover',
   templateUrl: './discover.component.html',
   styleUrls: ['./discover.component.scss']
 })
 export class DiscoverComponent implements OnInit {
+  public readonly discoverTabs: ReadonlyArray<DiscoverTab> = [
+    { id: 'parking', label: 'Parking Maps' },
+    { id: 'campus', label: 'Campus Events' },
+    { id: 'athletics', label: 'Athletic Events' }
+  ];
+
+  public activeTab: DiscoverMapType = 'parking';
+
   public externalApplications: ExternalDiscoverApplication[];
   private eventDiscoverApplications: InternalDiscoverApplication[];
   public allApplications: DiscoverApplication[];
@@ -124,7 +137,7 @@ export class DiscoverComponent implements OnInit {
     }
 
     if (!value) {
-      return filtered.slice(0, 10); // Show first 10 when no search
+      return filtered.slice(0, 10);
     }
 
     const filterValue = value.toLowerCase();
@@ -180,6 +193,10 @@ export class DiscoverComponent implements OnInit {
   public getApplicationRoute(app: InternalDiscoverApplication): string[] {
     const routeSegment = app.type === 'event' ? 'events' : app.type;
     return [`/${routeSegment}`, app.id];
+  }
+
+  public setActiveTab(tab: DiscoverMapType): void {
+    this.activeTab = tab;
   }
 
   public getEventDateRange(dates: Array<string | Date | number>): string {
