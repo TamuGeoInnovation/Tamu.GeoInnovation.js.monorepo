@@ -36,6 +36,9 @@ export class LegendComponent implements OnInit, OnDestroy {
   @Input()
   public combineChildrenUnderPrimary = false;
 
+  @Input()
+  public useBikeRackLegendTransform: boolean | undefined = undefined;
+
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
 
   public responsive: ResponsiveSnapshot;
@@ -60,6 +63,8 @@ export class LegendComponent implements OnInit, OnDestroy {
       this.excludedLayerIds = routeData['excludedLayerIds'] ?? this.excludedLayerIds;
       this.combineChildrenUnderPrimary =
         routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
+      this.useBikeRackLegendTransform =
+        routeData['useBikeRackLegendTransform'] ?? this.useBikeRackLegendTransform;
     }
 
     this.legend = this.legendService.legend({

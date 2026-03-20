@@ -55,6 +55,15 @@ export class LegendElementComponent implements OnInit {
 
   private readonly sportsSafetyFirstLegendLabel = 'Please use marked crosswalks. No mid-street crossing.';
 
+  private readonly collapsedLegendLayerIds = new Set([
+    'bike-racks-layer',
+    'bike-racks-map-layer',
+    'sustainable-transportation-bike-racks',
+    'ts-bike-racks'
+  ]);
+
+  private readonly collapsedLegendLayerUrls = ['/TS/TS_Bicycles/MapServer/3', '/TS/BikeMap/MapServer/0'];
+
   @Input()
   public element: ILegendElement;
 
@@ -78,6 +87,9 @@ export class LegendElementComponent implements OnInit {
   @Input()
   public hideGroupHeader = false;
 
+  @Input()
+  public useBikeRackLegendTransform: boolean | undefined = undefined;
+
   public infos: Observable<Array<LegendInfo>>;
   public expanded = true;
 
@@ -86,9 +98,21 @@ export class LegendElementComponent implements OnInit {
       return false;
     }
 
+    if (this.shouldApplyBikeRackLegendTransform) {
+      return false;
+    }
+
     const infos = this.element?.infos as { length?: number } | undefined;
 
     return typeof infos?.length === 'number' && infos.length > 1;
+  }
+
+  public get useGroupTitleLabel(): boolean {
+    return !this.shouldApplyBikeRackLegendTransform && this.element?.infos?.length === 1;
+  }
+
+  public get displayGroupTitle(): string {
+    return this.groupTitle;
   }
 
   public toggleExpanded(): void {
@@ -104,17 +128,18 @@ export class LegendElementComponent implements OnInit {
     }
 
     const operableInfos = (this.element.infos ?? []) as Array<LegendInfo>;
+    const displayInfos = this.shouldApplyBikeRackLegendTransform ? this._getBikeRackLegendInfos(operableInfos) : operableInfos;
 
     this.infos = iif(
       () => {
         return this.deduplicateChildren;
       },
       from(
-        operableInfos.filter((info, index, self) => {
+        displayInfos.filter((info, index, self) => {
           return index === self.findIndex((t) => t.label === info.label);
         }) as Array<LegendInfo>
       ),
-      from(operableInfos)
+      from(displayInfos)
     ).pipe(
       concatMap((info: LegendInfo) => {
         // If we are not respecting definition expressions, return the current legend info as-is
@@ -326,6 +351,140 @@ export class LegendElementComponent implements OnInit {
     } else {
       return of(null);
     }
+  }
+
+  private get shouldApplyBikeRackLegendTransform(): boolean {
+    return this.useBikeRackLegendTransform === undefined
+      ? this.shouldUseCustomBikeRackLegend
+      : this.useBikeRackLegendTransform && this.shouldUseCustomBikeRackLegend;
+  }
+
+  private get shouldUseCustomBikeRackLegend(): boolean {
+    const layerCandidates = [this.layer, (this.layer as unknown as esri.Sublayer)?.layer].filter((candidate) => {
+      return candidate !== null && candidate !== undefined;
+    }) as Array<{ id?: string; url?: string }>;
+
+    return layerCandidates.some((candidate) => {
+      const url = candidate.url ?? '';
+
+      return (
+        this.collapsedLegendLayerIds.has(candidate.id ?? '') ||
+        this.collapsedLegendLayerUrls.some((collapsedUrl) => url.includes(collapsedUrl))
+      );
+    });
+  }
+
+  private _getBikeRackLegendInfos(infos: Array<LegendInfo>): Array<LegendInfo> {
+    const flattenedInfos = this._flattenLegendInfos(infos);
+
+    if (flattenedInfos.length <= 1) {
+      return flattenedInfos;
+    }
+
+    const hubCorralInfo = flattenedInfos.find((info) => this._matchesLegendInfoLabel(info, 'Hub Corral'));
+    const sharedMobilityInfo = flattenedInfos.find((info) => this._matchesLegendInfoLabel(info, 'Shared Mobility Racks'));
+    const regularBikeRackInfos = flattenedInfos.filter((info) => !this._isBikeRackSpecialLegendLabel(info));
+
+    const displayInfos: Array<LegendInfo> = [];
+
+    if (hubCorralInfo) {
+      displayInfos.push(hubCorralInfo);
+    }
+
+    if (sharedMobilityInfo) {
+      displayInfos.push(sharedMobilityInfo);
+    }
+
+    if (regularBikeRackInfos.length > 0) {
+      const representativeInfo = this._getRepresentativeLegendInfo(regularBikeRackInfos);
+
+      displayInfos.push({
+        ...(representativeInfo as unknown as Record<string, unknown>),
+        label: 'Bike Racks'
+      } as LegendInfo);
+    }
+
+    return displayInfos.length > 0 ? displayInfos : flattenedInfos;
+  }
+
+  private _flattenLegendInfos(infos: Array<LegendInfo>): Array<LegendInfo> {
+    return infos.reduce<Array<LegendInfo>>((acc, info) => {
+      const nestedInfos = this._toLegendInfoArray((info as { infos?: unknown }).infos);
+
+      if ((info as { type?: string }).type === 'symbol-table' && nestedInfos.length > 0) {
+        return acc.concat(this._flattenLegendInfos(nestedInfos));
+      }
+
+      return acc.concat(info);
+    }, []);
+  }
+
+  private _toLegendInfoArray(infos: unknown): Array<LegendInfo> {
+    if (!infos) {
+      return [];
+    }
+
+    if (Array.isArray(infos)) {
+      return infos as Array<LegendInfo>;
+    }
+
+    const collection = infos as { toArray?: () => Array<LegendInfo>; length?: number; getItemAt?: (index: number) => LegendInfo };
+
+    if (typeof collection.toArray === 'function') {
+      return collection.toArray();
+    }
+
+    if (typeof collection.length === 'number' && typeof collection.getItemAt === 'function') {
+      return Array.from({ length: collection.length }, (_, index) => collection.getItemAt(index));
+    }
+
+    return [];
+  }
+
+  private _matchesLegendInfoLabel(info: LegendInfo, label: string): boolean {
+    return ((info as { label?: string }).label ?? '').trim().toLowerCase() === label.toLowerCase();
+  }
+
+  private _isBikeRackSpecialLegendLabel(info: LegendInfo): boolean {
+    return this._matchesLegendInfoLabel(info, 'Hub Corral') || this._matchesLegendInfoLabel(info, 'Shared Mobility Racks');
+  }
+
+  private _getRepresentativeLegendInfo(infos: Array<LegendInfo>): LegendInfo {
+    const counts = new Map<string, { count: number; firstIndex: number }>();
+
+    infos.forEach((info, index) => {
+      const key = this._getLegendInfoSymbolKey(info);
+      const existing = counts.get(key);
+
+      counts.set(key, {
+        count: (existing?.count ?? 0) + 1,
+        firstIndex: existing?.firstIndex ?? index
+      });
+    });
+
+    const representativeKey = Array.from(counts.entries()).sort((a, b) => {
+      if (a[1].count !== b[1].count) {
+        return b[1].count - a[1].count;
+      }
+
+      return a[1].firstIndex - b[1].firstIndex;
+    })[0]?.[0];
+
+    return infos.find((info) => this._getLegendInfoSymbolKey(info) === representativeKey) ?? infos[0];
+  }
+
+  private _getLegendInfoSymbolKey(info: LegendInfo): string {
+    const legendInfo = info as { src?: string; preview?: unknown; label?: string };
+
+    if (legendInfo.src) {
+      return `src:${legendInfo.src}`;
+    }
+
+    if (legendInfo.preview) {
+      return `preview:${String(legendInfo.preview)}`;
+    }
+
+    return `label:${legendInfo.label ?? ''}`;
   }
 }
 
