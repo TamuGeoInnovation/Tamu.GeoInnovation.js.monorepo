@@ -97,7 +97,7 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   RetireeParkingTs,
   MaintenanceParkingTs,
   BaseballParkingTs,
-  SavannahBananasParkingTs,
+  //SavannahBananasParkingTs, // put back when map is ready
   VisitorParkingTs,
   MotorcycleParkingTs,
   AVPParkingTs,
