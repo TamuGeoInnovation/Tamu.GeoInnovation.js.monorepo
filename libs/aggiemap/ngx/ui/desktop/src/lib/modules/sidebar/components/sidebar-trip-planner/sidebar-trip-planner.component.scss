@@ -1,0 +1,19 @@
+.maintenance-message {
+  padding: 1rem;
+  margin: 0;
+  font-size: 0.875rem;
+  color: #424242;
+}
+
+.back-link {
+  display: inline-block;
+  padding: 0 1rem 1rem;
+  font-size: 0.875rem;
+  color: #500000;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
