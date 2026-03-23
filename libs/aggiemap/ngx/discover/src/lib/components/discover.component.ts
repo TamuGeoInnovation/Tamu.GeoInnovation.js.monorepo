@@ -113,18 +113,7 @@ export class DiscoverComponent implements OnInit {
   }
 
   private sortEventApplications(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[] {
-    const now = Date.now();
-
-    return [...apps].sort((a, b) => {
-      const aNextDate = this.getEarliestUpcomingDate(a.configuration.eventDates, now);
-      const bNextDate = this.getEarliestUpcomingDate(b.configuration.eventDates, now);
-
-      if (aNextDate === bNextDate) {
-        return a.name.localeCompare(b.name);
-      }
-
-      return aNextDate - bNextDate;
-    });
+    return apps.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
