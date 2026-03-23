@@ -15,7 +15,7 @@ export enum SAVANNAH_BANANAS_PARKING_LAYERS {
   PARKING_LOTS = 'savannah-bananas-parking-lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Maroon_White_Game/MapServer';
+const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Maroon_White_Game/MapServer'; // replace with actual event URL when available
 
 export const SavannahBananasParkingDefinitions = {
   PEDESTRIAN_PATH: {
