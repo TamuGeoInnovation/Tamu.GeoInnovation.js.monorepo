@@ -43,13 +43,13 @@ const routes: Routes = [
             path: 'review',
             loadChildren: () => import('./modules/builder/modules/review/review.module').then((m) => m.ReviewModule)
           },
-          { path: '', redirectTo: 'intro', pathMatch: 'full' }
+          { path: '', redirectTo: 'accommodations', pathMatch: 'full' }
         ]
       },
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'builder/intro'
+        redirectTo: 'builder/accommodations'
       }
     ]
   }

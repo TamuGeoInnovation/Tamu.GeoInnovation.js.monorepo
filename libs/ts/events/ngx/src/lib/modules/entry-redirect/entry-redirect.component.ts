@@ -18,7 +18,7 @@ export class EntryRedirectComponent implements OnInit {
     this.eventSettingsService.validateEventQueryParams(this.route.snapshot, true);
 
     // Maps without configurable options should open directly to the map instead of showing an intro-only builder.
-    const targetCommands = this.eventSettingsService.hasOptions ? ['builder', 'intro'] : ['map'];
+    const targetCommands = this.eventSettingsService.hasOptions ? ['builder', 'accommodations'] : ['map'];
 
     this.router.navigate(targetCommands, {
       relativeTo: this.route.parent ?? this.route,
