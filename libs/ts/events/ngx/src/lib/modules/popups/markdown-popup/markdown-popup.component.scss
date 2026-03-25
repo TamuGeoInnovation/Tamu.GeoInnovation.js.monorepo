@@ -1,2 +1,19 @@
 @import 'libs/sass/mixins';
 @import 'libs/sass/components/popup';
+
+.popup-markdown {
+  white-space: pre-line;
+  margin-bottom: 0;
+}
+
+.popup-markdown + .popup-markdown {
+  margin-top: 0.35rem;
+}
+
+:host ::ng-deep .popup-markdown > :first-child {
+  margin-top: 0;
+}
+
+:host ::ng-deep .popup-markdown > :last-child {
+  margin-bottom: 0;
+}

@@ -3,7 +3,8 @@
 </div>
 
 <div class="popup-section">
-  <p class="trailer-1" *ngIf="isContentLengthZero === false" [innerHTML]="data.attributes?.description"></p>
+  <p class="trailer-1" *ngIf="hasDescription" [innerHTML]="data.attributes?.description"></p>
+  <div class="popup-markdown trailer-1" *ngIf="additionalContent" [innerHTML]="additionalContent | markdownParse"></div>
 
   <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
 </div>

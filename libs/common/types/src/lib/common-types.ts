@@ -351,6 +351,14 @@ export type LayerSource = LayerSourceType & {
          */
         collapsed?: boolean;
       }
+    | {
+        /**
+         * Literal popup content value.
+         *
+         * Useful for config-defined text or markdown content that should not be treated as an attribute lookup.
+         */
+        value: string;
+      }
   >;
 
   /**

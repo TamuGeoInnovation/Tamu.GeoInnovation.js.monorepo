@@ -139,11 +139,27 @@ export class PopupService {
     resolvedEntries: Record<string, unknown>,
     strategy: PopupDataResolutionStrategy
   ): unknown {
+    const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);
+
     if (typeof definition !== 'string') {
+      if ('value' in definition) {
+        return hasTemplateExpression(definition.value)
+          ? new TemplateRenderer({
+              template: definition.value,
+              lookup,
+              options:
+                strategy === 'cumulative'
+                  ? {
+                      nullishReplacement: '',
+                      trim: true
+                    }
+                  : undefined
+            }).render()
+          : definition.value;
+      }
+
       return getPropertyValue(graphic.attributes, definition.field, definition.collapsed);
     }
-
-    const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);
 
     if (hasTemplateExpression(definition)) {
       return new TemplateRenderer({
