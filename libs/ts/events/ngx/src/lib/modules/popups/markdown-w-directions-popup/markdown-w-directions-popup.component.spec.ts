@@ -2,18 +2,27 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Angulartics2 } from 'angulartics2';
 import { BehaviorSubject } from 'rxjs';
+
+import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 
 jest.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
   BasePopupComponent: class BasePopupComponent {
     public data: unknown;
   },
   BaseDirectionsComponent: class BaseDirectionsComponent {
-    public data: any;
+    public data!: __esri.Graphic;
 
-    public ngOnInit(): void {}
+    public ngOnInit(): void {
+      return;
+    }
 
-    public startDirections(): void {}
+    public startDirections(): void {
+      return;
+    }
   }
 }));
 
@@ -33,10 +42,6 @@ jest.mock('@tamu-gisc/ui-kits/ngx/search', () => ({
   SearchService: class SearchService {}
 }));
 
-const { Angulartics2 } = require('angulartics2');
-const { EsriMapService } = require('@tamu-gisc/maps/esri');
-const { TripPlannerService } = require('@tamu-gisc/maps/feature/trip-planner');
-const { SearchService } = require('@tamu-gisc/ui-kits/ngx/search');
 
 import { MarkdownWDirectionsPopupComponent } from './markdown-w-directions-popup.component';
 
