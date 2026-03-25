@@ -1,5 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
+import { CampusStopsPopupComponent } from '../modules/popups/campus-stops-popup/campus-stops-popup.component';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
@@ -104,8 +105,10 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.CAMPUS_STOPS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: CampusStopsPopupComponent,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      popupEnabled: true
     } as unknown as FeatureNative
   },
 
