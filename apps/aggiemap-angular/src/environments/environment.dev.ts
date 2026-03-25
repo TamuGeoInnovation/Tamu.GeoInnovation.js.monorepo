@@ -14,7 +14,7 @@ export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
 export * from './notification-events';
 
 const sources = factory({
-  environment: 'prod'
+  environment: 'dev'
 });
 
 export const { Definitions, Connections, SearchSources, ThreeDLayers, LayerSources } = sources;
