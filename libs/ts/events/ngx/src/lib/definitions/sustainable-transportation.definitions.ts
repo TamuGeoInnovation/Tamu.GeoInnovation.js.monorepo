@@ -7,69 +7,88 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
-  EV_CHARGERS = 'sustainable-transportation-ev-chargers',
+  EV_CHARGERS_MAIN = 'sustainable-transportation-ev-chargers-main',
+  EV_CHARGERS_RELLIS = 'sustainable-transportation-ev-chargers-rellis',
+  HUB_CORRALS = 'sustainable-transportation-hub-corrals',
+  SHARED_MOBILITY_RACKS = 'sustainable-transportation-shared-mobility-racks',
   BIKE_RACKS = 'sustainable-transportation-bike-racks',
-  BIKE_RACK_AREAS = 'sustainable-transportation-bike-rack-areas',
   BIKE_FIX_STATIONS = 'sustainable-transportation-bike-fix-stations',
   BIKE_LANES = 'sustainable-transportation-bike-lanes',
   CITY_BIKE_LANES_ROUTES = 'sustainable-transportation-city-bike-lanes-routes',
   BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
 }
 
-const evLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/EVChargeStations/MapServer';
-const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
+// These hosted view services mirror the secured Portal source layers while remaining queryable by the public app.
+const evMainLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/EV_Charge_Stations_MC_view/FeatureServer';
+const evRellisLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/EV_Charge_Stations_Rellis/FeatureServer';
+const rackLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer';
+const fixStationLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Fix_Stations_view/FeatureServer';
+const bikeLaneLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Bike_Lanes_view/FeatureServer';
+const dismountZoneLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Dismount_Zones_view/FeatureServer';
 
 export const SustainableTransportationDefinitions = {
-  EV_CHARGERS: {
-    id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
-    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
-    name: 'EV Charge Stations (Main + RELLIS)',
-    url: `${evLayersUrl}/0`
+  EV_CHARGERS_MAIN: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS_MAIN,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS_MAIN,
+    name: 'EV Charge Stations (Main Campus)',
+    url: `${evMainLayersUrl}/0`
+  },
+  EV_CHARGERS_RELLIS: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS_RELLIS,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS_RELLIS,
+    name: 'EV Charge Stations (RELLIS)',
+    url: `${evRellisLayersUrl}/0`
+  },
+  HUB_CORRALS: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
+    name: 'Hub Corral',
+    url: `${rackLayersUrl}/0`
+  },
+  SHARED_MOBILITY_RACKS: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.SHARED_MOBILITY_RACKS,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.SHARED_MOBILITY_RACKS,
+    name: 'Shared Mobility Racks',
+    url: `${rackLayersUrl}/1`
   },
   BIKE_RACKS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
     name: 'Bike Racks',
-    url: `${bikeLayersUrl}/0`
+    url: `${rackLayersUrl}/2`
   },
   BIKE_FIX_STATIONS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
     name: 'Bike Fix Stations',
-    url: `${bikeLayersUrl}/1`
+    url: `${fixStationLayersUrl}/0`
   },
   BIKE_LANES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_LANES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_LANES,
     name: 'Bike Lanes',
-    url: `${bikeLayersUrl}/2`
+    url: `${bikeLaneLayersUrl}/2`
   },
   CITY_BIKE_LANES_ROUTES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.CITY_BIKE_LANES_ROUTES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.CITY_BIKE_LANES_ROUTES,
     name: 'City Bike Lanes and Routes',
-    url: `${bikeLayersUrl}/3`
-  },
-  BIKE_RACK_AREAS: {
-    id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACK_AREAS,
-    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACK_AREAS,
-    name: 'Bike Rack Areas',
-    url: `${bikeLayersUrl}/4`
+    url: `${bikeLaneLayersUrl}/1`
   },
   BIKE_DISMOUNT_ZONES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_DISMOUNT_ZONES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_DISMOUNT_ZONES,
     name: 'Bike Dismount Zones',
-    url: `${bikeLayersUrl}/5`
+    url: `${dismountZoneLayersUrl}/0`
   }
 };
 
 export const SustainableTransportationColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: SustainableTransportationDefinitions.EV_CHARGERS.id,
-    title: SustainableTransportationDefinitions.EV_CHARGERS.name,
-    url: SustainableTransportationDefinitions.EV_CHARGERS.url,
+    id: SustainableTransportationDefinitions.EV_CHARGERS_MAIN.id,
+    title: SustainableTransportationDefinitions.EV_CHARGERS_MAIN.name,
+    url: SustainableTransportationDefinitions.EV_CHARGERS_MAIN.url,
     visible: true,
     listMode: 'show',
     native: {
@@ -78,9 +97,31 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: SustainableTransportationDefinitions.BIKE_RACK_AREAS.id,
-    title: SustainableTransportationDefinitions.BIKE_RACK_AREAS.name,
-    url: SustainableTransportationDefinitions.BIKE_RACK_AREAS.url,
+    id: SustainableTransportationDefinitions.EV_CHARGERS_RELLIS.id,
+    title: SustainableTransportationDefinitions.EV_CHARGERS_RELLIS.name,
+    url: SustainableTransportationDefinitions.EV_CHARGERS_RELLIS.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.HUB_CORRALS.id,
+    title: SustainableTransportationDefinitions.HUB_CORRALS.name,
+    url: SustainableTransportationDefinitions.HUB_CORRALS.url,
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.SHARED_MOBILITY_RACKS.id,
+    title: SustainableTransportationDefinitions.SHARED_MOBILITY_RACKS.name,
+    url: SustainableTransportationDefinitions.SHARED_MOBILITY_RACKS.url,
     visible: true,
     listMode: 'show',
     native: {
@@ -173,6 +214,8 @@ export const SustainableTransportationTs: AggiemapCustomMapConfiguration = {
     keywords: [
       'sustainable transportation',
       'bike',
+      'hub corral',
+      'shared mobility',
       'bike racks',
       'bike fix stations',
       'bike lanes',
