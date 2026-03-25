@@ -98,9 +98,17 @@ export class DiscoverComponent implements OnInit {
   private getUpcomingApplications(): InternalDiscoverApplication[] {
     const now = Date.now();
 
-    return this.sortEventApplications(this.eventDiscoverApplications)
-      .filter((app) => this.getEarliestUpcomingDate(app.configuration.eventDates, now) !== Number.POSITIVE_INFINITY)
-      .slice(0, 3);
+    return this.eventDiscoverApplications
+      .map((app) => ({
+        app,
+        earliestUpcomingDate: this.getEarliestUpcomingDate(app.configuration.eventDates, now)
+      }))
+      .filter(({ earliestUpcomingDate }) => earliestUpcomingDate !== Number.POSITIVE_INFINITY)
+      .sort(
+        (a, b) => a.earliestUpcomingDate - b.earliestUpcomingDate || a.app.name.localeCompare(b.app.name)
+      )
+      .slice(0, 3)
+      .map(({ app }) => app);
   }
 
   private buildApplicationColumns(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[][] {
