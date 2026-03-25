@@ -378,7 +378,18 @@ export class LegendElementComponent implements OnInit {
     const flattenedInfos = this._flattenLegendInfos(infos);
 
     if (flattenedInfos.length <= 1) {
-      return flattenedInfos;
+      const fallbackLabel = this.groupTitle?.trim() || 'Bike Racks';
+
+      return flattenedInfos.map((info) => {
+        if (this._hasLegendInfoLabel(info)) {
+          return info;
+        }
+
+        return {
+          ...(info as unknown as Record<string, unknown>),
+          label: fallbackLabel
+        } as LegendInfo;
+      });
     }
 
     const hubCorralInfo = flattenedInfos.find((info) => this._matchesLegendInfoLabel(info, 'Hub Corral'));
@@ -443,6 +454,10 @@ export class LegendElementComponent implements OnInit {
 
   private _matchesLegendInfoLabel(info: LegendInfo, label: string): boolean {
     return ((info as { label?: string }).label ?? '').trim().toLowerCase() === label.toLowerCase();
+  }
+
+  private _hasLegendInfoLabel(info: LegendInfo): boolean {
+    return ((info as { label?: string }).label ?? '').trim().length > 0;
   }
 
   private _isBikeRackSpecialLegendLabel(info: LegendInfo): boolean {

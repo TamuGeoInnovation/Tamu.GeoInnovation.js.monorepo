@@ -18,6 +18,9 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
 }
 
+// Temporary bridge until the original TS server/editor workflow is restored.
+// When that server is ready again, swap these URLs and the layer-id mapping in `SustainableTransportationDefinitions`
+// back to the restored source services.
 // These hosted view services mirror the secured Portal source layers while remaining queryable by the public app.
 const evMainLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/EV_Charge_Stations_MC_view/FeatureServer';
 const evRellisLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/EV_Charge_Stations_Rellis/FeatureServer';
@@ -84,6 +87,7 @@ export const SustainableTransportationDefinitions = {
 };
 
 export const SustainableTransportationColdLayerSources: LayerSource[] = [
+  // Keep this source list aligned with the temporary URL/layer mapping above until the original services are restored.
   {
     type: 'feature',
     id: SustainableTransportationDefinitions.EV_CHARGERS_MAIN.id,
