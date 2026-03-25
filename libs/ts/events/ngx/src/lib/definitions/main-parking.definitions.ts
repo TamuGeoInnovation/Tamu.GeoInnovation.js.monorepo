@@ -190,7 +190,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
       renderer: tsMainParkingLotsRenderer,
       popupEnabled: true
     } as unknown as FeatureNative
-  }
+  },
 ];
 
 export const TsMainParkingConfiguration: EventConfiguration = {
