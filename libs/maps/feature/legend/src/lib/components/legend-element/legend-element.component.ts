@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import {
   catchError,
   concatMap,
@@ -14,8 +13,6 @@ import {
   shareReplay,
   toArray
 } from 'rxjs';
-
-import esri = __esri;
 
 /**
  * Legend Element Component
@@ -39,7 +36,7 @@ import esri = __esri;
   styleUrls: ['./legend-element.component.scss']
 })
 export class LegendElementComponent implements OnInit {
-  constructor(private readonly moduleProvider: EsriModuleProviderService) {}
+  constructor() {}
 
   private readonly sportsSafetyFirstLayerIds = new Set([
     'softball-parking-safety-first',
@@ -147,14 +144,14 @@ export class LegendElementComponent implements OnInit {
           return of(info);
         }
 
-        const operableLayer = this.layer as esri.FeatureLayer;
+        const operableLayer = this.layer as __esri.FeatureLayer;
 
         // If operable layer has no definition expression, return the current legend info as-is
         if (operableLayer.definitionExpression === null || operableLayer.definitionExpression === undefined) {
           return of(info);
         }
 
-        const renderer = operableLayer.renderer as esri.UniqueValueRenderer;
+        const renderer = operableLayer.renderer as __esri.UniqueValueRenderer;
 
         if (renderer.type !== 'unique-value') {
           return of(info);
@@ -192,7 +189,7 @@ export class LegendElementComponent implements OnInit {
   public useSportsSafetyFirstFallback(): boolean {
     return (
       this.sportsSafetyFirstLayerIds.has(this.layer?.id) ||
-      this.sportsSafetyFirstLayerIds.has((this.layer as unknown as esri.Sublayer)?.layer?.id)
+      this.sportsSafetyFirstLayerIds.has((this.layer as unknown as __esri.Sublayer)?.layer?.id)
     );
   }
 
@@ -209,8 +206,8 @@ export class LegendElementComponent implements OnInit {
    * given the current definition expression. This handles complex T-SQL expressions properly.
    */
   private _filterLegendInfosWithQuery(
-    layer: esri.FeatureLayer,
-    renderer: esri.UniqueValueRenderer,
+    layer: __esri.FeatureLayer,
+    renderer: __esri.UniqueValueRenderer,
     info: LegendInfo
   ): Observable<LegendInfo | null> {
     // Get the fields used in the renderer
@@ -259,7 +256,7 @@ export class LegendElementComponent implements OnInit {
   /**
    * Builds a where clause for a specific legend value based on the renderer configuration
    */
-  private _buildLegendWhereClause(renderer: esri.UniqueValueRenderer, operableFields: string[], info: unknown): string {
+  private _buildLegendWhereClause(renderer: __esri.UniqueValueRenderer, operableFields: string[], info: unknown): string {
     const infoValue = (info as { value: string }).value;
 
     if (!infoValue) {
@@ -306,8 +303,8 @@ export class LegendElementComponent implements OnInit {
    * Fallback to the original simple parsing approach if the API-based method fails
    */
   private _fallbackToSimpleParsing(
-    operableLayer: esri.FeatureLayer,
-    renderer: esri.UniqueValueRenderer,
+    operableLayer: __esri.FeatureLayer,
+    renderer: __esri.UniqueValueRenderer,
     info: LegendInfo
   ): Observable<LegendInfo | null> {
     // Determine how many fields are expected in the renderer value string.
@@ -360,7 +357,7 @@ export class LegendElementComponent implements OnInit {
   }
 
   private get shouldUseCustomBikeRackLegend(): boolean {
-    const layerCandidates = [this.layer, (this.layer as unknown as esri.Sublayer)?.layer].filter((candidate) => {
+    const layerCandidates = [this.layer, (this.layer as unknown as __esri.Sublayer)?.layer].filter((candidate) => {
       return candidate !== null && candidate !== undefined;
     }) as Array<{ id?: string; url?: string }>;
 
@@ -492,11 +489,11 @@ export class LegendElementComponent implements OnInit {
 // P.S For whoever looks at this in the future and wonders what the heck is going on with
 // LegendInfo and ILegendElement? I don't know. It's late, and I'm too tired to worry/care about it.
 // It works. Good luck :|
-type ILegendElement = esri.LegendElement;
-type ILayer = esri.Layer;
+type ILegendElement = __esri.LegendElement;
+type ILayer = __esri.Layer;
 type LegendInfo =
-  | esri.SymbolTableElementType
-  | esri.ColorRampStop
-  | esri.OpacityRampStop
-  | esri.SizeRampStop
-  | esri.HeatmapRampStop;
+  | __esri.SymbolTableElementType
+  | __esri.ColorRampStop
+  | __esri.OpacityRampStop
+  | __esri.SizeRampStop
+  | __esri.HeatmapRampStop;

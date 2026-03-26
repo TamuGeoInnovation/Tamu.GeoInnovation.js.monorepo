@@ -8,8 +8,6 @@ import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/resp
 
 import { LegendService } from '../../services/legend.service';
 
-import esri = __esri;
-
 @Component({
   selector: 'tamu-gisc-legend',
   templateUrl: './legend.component.html',
@@ -39,7 +37,7 @@ export class LegendComponent implements OnInit, OnDestroy {
   @Input()
   public useBikeRackLegendTransform: boolean | undefined = undefined;
 
-  public legend: Observable<Array<esri.ActiveLayerInfo>>;
+  public legend: Observable<Array<__esri.ActiveLayerInfo>>;
 
   public responsive: ResponsiveSnapshot;
 
