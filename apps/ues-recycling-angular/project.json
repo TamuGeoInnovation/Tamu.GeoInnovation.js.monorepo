@@ -25,9 +25,16 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
-        "styles": ["apps/ues-recycling-angular/src/styles.scss"],
+        "styles": [
+          "apps/ues-recycling-angular/src/styles.scss"
+        ],
         "scripts": [],
         "vendorChunk": true,
         "extractLicenses": false,
@@ -119,7 +126,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/ues-recycling-angular"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/ues-recycling-angular"
+      ],
       "options": {
         "jestConfig": "apps/ues-recycling-angular/jest.config.ts",
         "passWithNoTests": true
@@ -128,10 +137,17 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/ues-recycling-angular/src/**/*.ts", "apps/ues-recycling-angular/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/ues-recycling-angular/src/**/*.ts",
+          "apps/ues-recycling-angular/src/**/*.html"
+        ]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"]
+  "implicitDependencies": [
+    "assets",
+    "sass",
+    "ues-sass"
+  ]
 }

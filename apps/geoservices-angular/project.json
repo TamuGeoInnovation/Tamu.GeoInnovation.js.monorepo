@@ -25,9 +25,16 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
-        "styles": ["apps/geoservices-angular/src/styles.scss"],
+        "styles": [
+          "apps/geoservices-angular/src/styles.scss"
+        ],
         "scripts": [],
         "vendorChunk": true,
         "extractLicenses": false,
@@ -94,7 +101,9 @@
           ]
         }
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": ""
     },
     "serve": {
@@ -125,15 +134,23 @@
         "jestConfig": "apps/geoservices-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"]
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/geoservices-angular"
+      ]
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/geoservices-angular/src/**/*.ts", "apps/geoservices-angular/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/geoservices-angular/src/**/*.ts",
+          "apps/geoservices-angular/src/**/*.html"
+        ]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  "implicitDependencies": [
+    "assets",
+    "sass"
+  ]
 }

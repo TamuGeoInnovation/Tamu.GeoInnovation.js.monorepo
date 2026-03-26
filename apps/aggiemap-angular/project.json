@@ -94,10 +94,17 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
         "scripts": [],
-        "styles": ["apps/aggiemap-angular/src/styles.scss"],
+        "styles": [
+          "apps/aggiemap-angular/src/styles.scss"
+        ],
         "aot": false,
         "vendorChunk": true,
         "extractLicenses": false,
@@ -106,7 +113,9 @@
         "optimization": false,
         "namedChunks": true
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": ""
     },
     "extract-i18n": {
@@ -147,16 +156,23 @@
         "jestConfig": "apps/aggiemap-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["{workspaceRoot}/coverage/apps/aggiemap-angular"]
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/aggiemap-angular"
+      ]
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/aggiemap-angular/src/**/*.ts", "apps/aggiemap-angular/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/aggiemap-angular/src/**/*.ts",
+          "apps/aggiemap-angular/src/**/*.html"
+        ]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  "implicitDependencies": [
+    "assets",
+    "sass"
+  ]
 }
-

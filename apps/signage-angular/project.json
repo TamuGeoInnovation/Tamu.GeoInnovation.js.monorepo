@@ -21,9 +21,16 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
-        "styles": ["apps/signage-angular/src/styles.scss"],
+        "styles": [
+          "apps/signage-angular/src/styles.scss"
+        ],
         "scripts": [],
         "vendorChunk": true,
         "extractLicenses": false,
@@ -90,7 +97,9 @@
           ]
         }
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": ""
     },
     "serve": {
@@ -120,15 +129,23 @@
         "jestConfig": "apps/signage-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["{workspaceRoot}/coverage/apps/signage-angular"]
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/signage-angular"
+      ]
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/signage-angular/src/**/*.ts", "apps/signage-angular/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/signage-angular/src/**/*.ts",
+          "apps/signage-angular/src/**/*.html"
+        ]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  "implicitDependencies": [
+    "assets",
+    "sass"
+  ]
 }

@@ -7,7 +7,9 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/correction-lite-angular",
         "index": "apps/correction-lite-angular/src/index.html",
@@ -22,9 +24,16 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
-        "styles": ["apps/correction-lite-angular/src/styles.scss"],
+        "styles": [
+          "apps/correction-lite-angular/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -84,12 +93,17 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/correction-lite-angular/src/**/*.ts", "apps/correction-lite-angular/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/correction-lite-angular/src/**/*.ts",
+          "apps/correction-lite-angular/src/**/*.html"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/correction-lite-angular"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/correction-lite-angular"
+      ],
       "options": {
         "jestConfig": "apps/correction-lite-angular/jest.config.ts",
         "passWithNoTests": true

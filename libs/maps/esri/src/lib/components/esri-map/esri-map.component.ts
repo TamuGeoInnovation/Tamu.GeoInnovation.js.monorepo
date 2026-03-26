@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { take } from 'rxjs/operators';
 
+import esriConfig from '@arcgis/core/config';
 import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map/map.service';
 
 @Component({
@@ -18,7 +19,9 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   @ViewChild('container', { static: true })
   private container: ElementRef;
 
-  constructor(private mapService: EsriMapService) {}
+  constructor(private mapService: EsriMapService) {
+    esriConfig.assetsPath = '/assets/arcgis';
+  }
 
   public ngOnInit() {
     if (this.config && this.config.view && this.config.view.properties) {
