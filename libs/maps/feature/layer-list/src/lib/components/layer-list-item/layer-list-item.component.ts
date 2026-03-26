@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-layer-list-item',
@@ -27,4 +26,4 @@ export class LayerListItemComponent {
 }
 
 // Browser doesn't like direct esri types for inputs.
-type IListItem = esri.ListItem;
+type IListItem = __esri.ListItem;
