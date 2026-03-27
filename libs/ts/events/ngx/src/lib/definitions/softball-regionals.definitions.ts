@@ -98,7 +98,7 @@ export const SoftballLayerSources: LayerSource[] = [
 
 export const SoftballConfiguration: EventConfiguration = {
   id: 'softball-regionals-2025',
-  name: 'Softball Regionals',
+  name: 'Softball Regionals Map',
   applicationName: 'Softball Regionals Event Map',
   shortApplicationName: 'Softball Regionals Map',
   introductionText: 'Get the best transportation and parking information for Softball Regionals.',

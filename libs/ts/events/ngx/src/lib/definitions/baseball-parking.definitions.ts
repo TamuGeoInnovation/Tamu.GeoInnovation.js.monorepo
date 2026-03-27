@@ -256,7 +256,7 @@ export const BaseballParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   discover: {
     id: 'baseball-parking',
-    name: 'Baseball Parking',
+    name: 'Baseball Map',
     description: 'Baseball event parking with optional accessibility-focused view.',
     source: 'internal',
     type: 'parking',

@@ -52,7 +52,7 @@ export const TennisParkingColdLayerSources: LayerSource[] = [
 
 export const TennisParkingConfiguration: EventConfiguration = {
   id: 'tennis-parking',
-  name: 'Tennis Parking',
+  name: 'Tennis Map',
   applicationName: 'Tennis Parking Map',
   shortApplicationName: 'Tennis Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M tennis events.',

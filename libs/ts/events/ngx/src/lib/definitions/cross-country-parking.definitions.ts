@@ -107,7 +107,7 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
 
 export const CrossCountryParkingConfiguration: EventConfiguration = {
   id: 'cross-country-parking',
-  name: 'Cross Country Parking',
+  name: 'Cross Country Map',
   applicationName: 'Cross Country Parking Map',
   shortApplicationName: 'Cross Country Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M cross country events.',

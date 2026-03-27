@@ -154,7 +154,7 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
 
 export const SwimmingParkingConfiguration: EventConfiguration = {
   id: 'swimming-parking',
-  name: 'Swimming Parking',
+  name: 'Swimming Map',
   applicationName: 'Swimming Parking Map',
   shortApplicationName: 'Swimming Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M swimming events.',

@@ -119,7 +119,7 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
 
 export const SoftballParkingConfiguration: EventConfiguration = {
   id: 'softball-parking',
-  name: 'Softball Parking',
+  name: 'Softball Map',
   applicationName: 'Softball Parking Map',
   shortApplicationName: 'Softball Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M softball games.',
