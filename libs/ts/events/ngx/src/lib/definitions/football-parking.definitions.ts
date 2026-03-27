@@ -364,7 +364,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
 
 export const FootballParkingConfiguration: EventConfiguration = {
   id: 'gameday-parking',
-  name: 'Gameday Transportation',
+  name: 'Football',
   applicationName: 'Gameday Transportation Map',
   shortApplicationName: 'Gameday Map',
   introductionText: 'Get the best transportation and parking information for game days.',

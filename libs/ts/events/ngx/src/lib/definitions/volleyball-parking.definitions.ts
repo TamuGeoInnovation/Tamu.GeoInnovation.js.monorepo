@@ -163,7 +163,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
 
 export const VolleyballParkingConfiguration: EventConfiguration = {
   id: 'volleyball-parking',
-  name: 'Volleyball Parking',
+  name: 'Volleyball Map',
   applicationName: 'Volleyball Parking Map',
   shortApplicationName: 'Volleyball Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M volleyball events.',
