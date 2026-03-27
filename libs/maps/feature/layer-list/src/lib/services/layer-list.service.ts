@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
-import { from, fromEventPattern, combineLatest } from 'rxjs';
+import { fromEventPattern } from 'rxjs';
 import { switchMap, startWith, map } from 'rxjs/operators';
 
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import LayerListViewModel from '@arcgis/core/widgets/LayerList/LayerListViewModel';
 
-import esri = __esri;
+import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 @Injectable()
 export class LayerListService {
-  private _model: esri.LayerListViewModel;
+  private _model: __esri.LayerListViewModel;
 
-  constructor(private moduleProvider: EsriModuleProviderService, private mapService: EsriMapService) {}
+  constructor(private mapService: EsriMapService) {}
 
   public layers() {
-    return combineLatest([from(this.moduleProvider.require(['LayerListViewModel'])), this.mapService.store]).pipe(
-      switchMap(([[LayerListViewModel], instance]: [[esri.LayerListViewModelConstructor], MapServiceInstance]) => {
+    return this.mapService.store.pipe(
+      switchMap((instance: MapServiceInstance) => {
         this._model = new LayerListViewModel({
           view: instance.view
         });
 
-        let handle: esri.Handle;
+        let handle: __esri.Handle;
 
         const add = (handler) => {
           handle = this._model.operationalItems.watch('length', handler);

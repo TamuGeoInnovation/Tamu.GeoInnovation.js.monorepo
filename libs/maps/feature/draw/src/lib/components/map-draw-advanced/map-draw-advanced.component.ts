@@ -59,12 +59,8 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
   /**
    * Color class container necessary for color format conversion (hex to rgb, for example).
    */
-  private _color: typeof Color;
-
   public ngOnInit(): void {
     super.ngOnInit();
-
-    this._color = Color;
   }
 
   public setColor(c: string) {
@@ -112,8 +108,8 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
   }
 
   private getColor(color: string): IGeneratedColor {
-    const fill = new this._color(color);
-    const border = new this._color(color);
+    const fill = new Color(color);
+    const border = new Color(color);
     fill.a = 0.4;
     border.a = 0.8;
 
