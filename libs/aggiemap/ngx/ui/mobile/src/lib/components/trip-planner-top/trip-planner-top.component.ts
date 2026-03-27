@@ -9,7 +9,6 @@ import { DragService, UIDragState } from '@tamu-gisc/ui-kits/ngx/interactions/dr
 
 import { offCanvasSlideUpFromTop } from '../../animations/elements';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-trip-planner-top',
@@ -123,7 +122,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
   private $immediateClickHandler() {
     return pipe(
       switchMap((view: MapServiceInstance['view']) => {
-        let handle: esri.Handle;
+        let handle: __esri.Handle;
 
         const addHandler = (handler) => {
           handle = view.on('immediate-click', handler);
@@ -133,7 +132,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
           handle.remove();
         };
 
-        return fromEventPattern<esri.ViewImmediateClickEvent>(addHandler, removeHandler);
+        return fromEventPattern<__esri.ViewImmediateClickEvent>(addHandler, removeHandler);
       })
     );
   }

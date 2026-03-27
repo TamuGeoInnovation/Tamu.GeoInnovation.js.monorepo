@@ -7,7 +7,6 @@ import {
 } from '../interfaces/special-event.interface';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
-import esri = __esri;
 
 export enum BREAK_SUMMER_LAYERS {
   BREAK_SUMMER_DRAW = 'break-summer-parking-lots-draw',
@@ -40,7 +39,7 @@ const breakSummerRenderer: FeatureRenderer = {
         type: 'simple-fill',
         color: [190, 232, 255, 0.85],
         outline: null
-      } as unknown as esri.SymbolProperties
+      } as unknown as __esri.SymbolProperties
     },
     {
       value: '1,0',
@@ -49,7 +48,7 @@ const breakSummerRenderer: FeatureRenderer = {
         type: 'simple-fill',
         color: [90, 0, 0, 0.9],
         outline: null
-      } as unknown as esri.SymbolProperties
+      } as unknown as __esri.SymbolProperties
     },
     {
       value: '0,1',
@@ -58,7 +57,7 @@ const breakSummerRenderer: FeatureRenderer = {
         type: 'simple-fill',
         color: [255, 211, 127, 0.9],
         outline: null
-      } as unknown as esri.SymbolProperties
+      } as unknown as __esri.SymbolProperties
     }
   ]
 };
@@ -78,9 +77,9 @@ export const BreakSummerColdLayerSources: LayerSource[] = [
           title: 'Break-Summer Parking Lots',
           visible: true,
           popupEnabled: false
-        } as unknown as esri.SublayerProperties
+        } as unknown as __esri.SublayerProperties
       ]
-    } as unknown as esri.MapImageLayerProperties
+    } as unknown as __esri.MapImageLayerProperties
   },
   {
     type: 'feature',

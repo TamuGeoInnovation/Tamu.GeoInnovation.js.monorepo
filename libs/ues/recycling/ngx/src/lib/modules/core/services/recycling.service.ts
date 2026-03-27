@@ -8,13 +8,12 @@ import { Result } from '@tamu-gisc/ues/recycling/common/entities';
 
 import { ResultsService } from '../../data-access/results/results.service';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecyclingService {
-  public selectedLocationGraphic: BehaviorSubject<esri.Graphic> = new BehaviorSubject(undefined);
+  public selectedLocationGraphic: BehaviorSubject<__esri.Graphic> = new BehaviorSubject(undefined);
   public selectedLocationMeta: Observable<RecyclingLocationMetadata>;
   public selectedLocationResults: Observable<Result[]>;
   public selectedLocationRecyclingStats: Observable<RecyclingResultsStatistics>;
@@ -160,7 +159,7 @@ export class RecyclingService {
     this.selectedLocationGraphic.next(undefined);
   }
 
-  public setLocation(location: esri.Graphic) {
+  public setLocation(location: __esri.Graphic) {
     this.selectedLocationGraphic.next(location);
   }
 }

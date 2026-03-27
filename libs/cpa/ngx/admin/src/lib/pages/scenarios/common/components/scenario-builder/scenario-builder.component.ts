@@ -34,7 +34,6 @@ import {
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-scenario-builder',
@@ -45,11 +44,11 @@ import esri = __esri;
 export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public builderForm: UntypedFormGroup;
 
-  public view: esri.MapView;
-  public map: esri.Map;
-  public graphicPreview: esri.GraphicsLayer;
-  public snapshotResponsePreview: esri.GraphicsLayer;
-  public scenarioResponsePreview: esri.GraphicsLayer;
+  public view: __esri.MapView;
+  public map: __esri.Map;
+  public graphicPreview: __esri.GraphicsLayer;
+  public snapshotResponsePreview: __esri.GraphicsLayer;
+  public scenarioResponsePreview: __esri.GraphicsLayer;
   public scenarioSnapshots: { [key: string]: ISnapshotPartial } = {};
 
   public selectedWorkshop: string;
@@ -78,10 +77,10 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public workshopSnapshots: Observable<ISnapshotPartial[]>;
 
   private _modules: {
-    graphic: esri.GraphicConstructor;
-    graphicsLayer: esri.GraphicsLayerConstructor;
-    featureLayer: esri.FeatureLayerConstructor;
-    groupLayer: esri.GroupLayerConstructor;
+    graphic: __esri.GraphicConstructor;
+    graphicsLayer: __esri.GraphicsLayerConstructor;
+    featureLayer: __esri.FeatureLayerConstructor;
+    groupLayer: __esri.GroupLayerConstructor;
   };
 
   private $destroy: Subject<boolean> = new Subject();
@@ -103,7 +102,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
    * The snapshot map extent. Is not null when the returned snapshot from server has an
    * extent defined.
    */
-  public mapExtent$: Observable<null | esri.ExtentProperties>;
+  public mapExtent$: Observable<null | __esri.ExtentProperties>;
 
   /**
    * Listens on the map view extent for changes and emits when the user updates the preview map extent.
@@ -161,7 +160,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       this.mapService.store.pipe(
         take(1),
         switchMap(({ view }) => {
-          let handle: esri.Handle;
+          let handle: __esri.Handle;
 
           const add = (handler) => {
             handle = view.watch('extent', handler);
@@ -172,7 +171,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
           };
 
           return fromEventPattern(add, remove).pipe(
-            map<[esri.Extent, esri.Extent], esri.ExtentProperties>(([newExtent]) => {
+            map<[__esri.Extent, __esri.Extent], __esri.ExtentProperties>(([newExtent]) => {
               return newExtent.toJSON();
             }),
             skip(1) // The initial extent patching from snapshot will emit once. Do not emit this.
@@ -192,10 +191,10 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     // it makes sense to ensure they are available before we continue any additional setup
     from(this.mp.require(['Graphic', 'GraphicsLayer', 'FeatureLayer', 'GroupLayer'])).subscribe(
       ([graphic, graphicsLayer, featureLayer, groupLayer]: [
-        esri.GraphicConstructor,
-        esri.GraphicsLayerConstructor,
-        esri.FeatureLayerConstructor,
-        esri.GroupLayerConstructor
+        __esri.GraphicConstructor,
+        __esri.GraphicsLayerConstructor,
+        __esri.FeatureLayerConstructor,
+        __esri.GroupLayerConstructor
       ]) => {
         this._modules = {
           graphic: graphic,
@@ -245,7 +244,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
                 // Instantiate the preview layers
                 this.mapService.store.pipe(take(1), delay(100)).subscribe((instance) => {
-                  this.view = instance.view as esri.MapView;
+                  this.view = instance.view as __esri.MapView;
                   this.map = instance.map;
                   this.graphicPreview = new this._modules.graphicsLayer();
                   this.snapshotResponsePreview = new this._modules.graphicsLayer();
@@ -265,7 +264,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
                     if (s.mapCenter !== undefined) {
                       // Change default zoom and center to values in snapshot response.
                       if (s.extent !== null) {
-                        this.view.extent = s.extent as esri.Extent;
+                        this.view.extent = s.extent as __esri.Extent;
                       } else if (s.mapCenter !== null && s.zoom !== null) {
                         this.view.goTo({
                           center: s.mapCenter.split(',').map((c) => parseFloat(c)),

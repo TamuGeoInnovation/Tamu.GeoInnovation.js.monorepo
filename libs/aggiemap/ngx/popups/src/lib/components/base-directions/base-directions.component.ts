@@ -12,7 +12,6 @@ import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { BasePopupComponent } from '../base/base.popup.component';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-base-directions',
@@ -23,7 +22,7 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
   /**
    * Data set by the parent popup component.
    */
-  public data: esri.Graphic;
+  public data: __esri.Graphic;
 
   /**
    * Current href string, used in UI

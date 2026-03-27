@@ -5,7 +5,6 @@ import { tiers } from './tier-dictionary';
 
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
-import esri = __esri;
 
 export const Connections = {
   basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
@@ -37,7 +36,7 @@ const commonLayerProps = {
   outFields: ['*'],
   minScale: 100000,
   maxScale: 0,
-  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as __esri.FeatureLayerElevationInfo,
   popupEnabled: false
 };
 

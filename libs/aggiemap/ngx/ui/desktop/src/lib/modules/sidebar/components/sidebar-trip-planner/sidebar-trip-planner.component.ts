@@ -6,7 +6,6 @@ import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-plan
 
 import { SearchSelection, SearchEvent } from '@tamu-gisc/ui-kits/ngx/search';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-sidebar-trip-planner',
@@ -26,7 +25,7 @@ export class SidebarTripPlannerComponent {
   /**
    * Call the planner service to add a result as a trip point to the service stop store
    */
-  public setSearchResultAsTripStop(result: SearchSelection<esri.Graphic>) {
+  public setSearchResultAsTripStop(result: SearchSelection<__esri.Graphic>) {
     const tPoint = TripPoint.from(result);
 
     this.plannerService.setStops([tPoint]);

@@ -7,14 +7,13 @@ import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 
 import { RecyclingService, RecyclingLocationMetadata } from '../../../core/services/recycling.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-omnitoolbar',
   templateUrl: './omnitoolbar.component.html',
   styleUrls: ['./omnitoolbar.component.scss']
 })
-export class OmnitoolbarComponent<T extends esri.Graphic> implements OnInit, OnDestroy {
+export class OmnitoolbarComponent<T extends __esri.Graphic> implements OnInit, OnDestroy {
   @Input()
   public source: Array<T>;
 

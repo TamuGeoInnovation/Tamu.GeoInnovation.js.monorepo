@@ -11,7 +11,6 @@ import { MoveInSettings } from '../../../../interfaces/move-in-out.interface';
 import { BOUNDARIES } from '../../../../dictionaries/move-in-out.dictionary';
 import { MoveInOutSettingsService } from '../move-in-out-settings/move-in-out-settings.service';
 
-import esri = __esri;
 
 const LayerReferences = {
   residence: 'residence-layer',
@@ -33,8 +32,8 @@ const LayerReferences = {
 export class MoveinOutService {
   public settings: MoveInSettings;
 
-  private _map: esri.Map;
-  private _view: esri.MapView;
+  private _map: __esri.Map;
+  private _view: __esri.MapView;
 
   constructor(
     private readonly env: EnvironmentService,
@@ -44,7 +43,7 @@ export class MoveinOutService {
   ) {
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
-      this._view = instanced.view as esri.MapView;
+      this._view = instanced.view as __esri.MapView;
       this.init();
     });
   }
@@ -72,7 +71,7 @@ export class MoveinOutService {
       await this.mapService.loadLayers([source as LayerSource]);
 
       setTimeout(() => {
-        const layer = this.mapService.findLayerById((source as LayerSource)?.id) as esri.FeatureLayer;
+        const layer = this.mapService.findLayerById((source as LayerSource)?.id) as __esri.FeatureLayer;
 
         if (layer) {
           layer.queryFeatures().then((result) => {
@@ -253,10 +252,10 @@ export class MoveinOutService {
           } else {
             return acc;
           }
-        }, [] as esri.CollectionProperties<esri.GraphicProperties>);
+        }, [] as __esri.CollectionProperties<__esri.GraphicProperties>);
 
         // We are adding the parking lots layer from client-side graphics.
-        const typeField = { name: 'type', type: 'string' } as esri.FieldProperties;
+        const typeField = { name: 'type', type: 'string' } as __esri.FieldProperties;
 
         if (source.native) {
           if (source.url) {
@@ -341,7 +340,7 @@ export class MoveinOutService {
    *
    * @returns Attribute value list
    */
-  private getAttributeList(features: esri.Graphic[], attribute: string): string[] {
+  private getAttributeList(features: __esri.Graphic[], attribute: string): string[] {
     return features.map((f) => f.attributes[attribute]);
   }
 
@@ -349,7 +348,7 @@ export class MoveinOutService {
    * Executes task with provided options.
    *
    * @param {string} url URL used to instantiate the Esri QueryTask class
-   * @param {esri.QueryProperties} query At minimum, requires `where` property
+   * @param {__esri.QueryProperties} query At minimum, requires `where` property
    * @param {*} [intersect] If true, the query will run with a `intersects` geometry context utilizing boundaries based on builder settings
    * This will return only features within the provided polygon paths.
    * @param {boolean} [returnFeatureLayer] If provided and `true`, will return a FeatureLayer from the result of the task
@@ -357,31 +356,31 @@ export class MoveinOutService {
    */
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: false,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<esri.FeatureSet>;
+    featureLayerProperties?: __esri.FeatureLayerProperties
+  ): Promise<__esri.FeatureSet>;
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: true,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<esri.FeatureLayer>;
+    featureLayerProperties?: __esri.FeatureLayerProperties
+  ): Promise<__esri.FeatureLayer>;
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: boolean,
-    featureLayerProperties?: esri.FeatureLayerProperties
+    featureLayerProperties?: __esri.FeatureLayerProperties
   ): Promise<unknown> {
     const [QueryTask, Query, FeatureLayer, SpatialReference, Polygon]: [
-      esri.QueryTaskConstructor,
-      esri.QueryConstructor,
-      esri.FeatureLayerConstructor,
-      esri.SpatialReferenceConstructor,
-      esri.PolygonConstructor
+      __esri.QueryTaskConstructor,
+      __esri.QueryConstructor,
+      __esri.FeatureLayerConstructor,
+      __esri.SpatialReferenceConstructor,
+      __esri.PolygonConstructor
     ] = await this.moduleProvider.require(['QueryTask', 'Query', 'FeatureLayer', 'SpatialReference', 'Polygon']);
 
     const task = new QueryTask({
@@ -397,7 +396,7 @@ export class MoveinOutService {
     Object.assign(q, query);
 
     if (intersect) {
-      let polygon: esri.PolygonProperties;
+      let polygon: __esri.PolygonProperties;
 
       if (typeof intersect === 'boolean') {
         const existingBoundary = BOUNDARIES.find((b) => b.name == this.settings.residence.zone);

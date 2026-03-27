@@ -4,9 +4,9 @@ import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'r
 
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriModuleProviderService, MapServiceInstance, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, EsriMapService } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
+import Polygon from '@arcgis/core/geometry/Polygon';
 
 @Component({
   selector: 'tamu-gisc-map-viewfinder',
@@ -63,7 +63,6 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
-    private mp: EsriModuleProviderService,
     private mapService: EsriMapService,
     private environment: EnvironmentService
   ) {}
@@ -83,7 +82,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
     this.$mapView
       .pipe(
         switchMap((view) => {
-          let handle: esri.Handle;
+          let handle: __esri.Handle;
 
           const add = (handler) => {
             handle = view.on('key-up', handler);
@@ -93,7 +92,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
             handle.remove();
           };
 
-          return fromEventPattern<esri.ViewKeyUpEvent>(add, remove).pipe(withLatestFrom(this.$mapView));
+          return fromEventPattern<__esri.ViewKeyUpEvent>(add, remove).pipe(withLatestFrom(this.$mapView));
         }),
         takeUntil(this._$destroy)
       )
@@ -146,14 +145,12 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
                 return [coord.longitude, coord.latitude];
               });
 
-            // Use module provider to get polygon class object
-            this.mp.require(['Polygon']).then(([Polygon]: [esri.PolygonConstructor]) => {
-              // Create a polygon that will be used to query the feature layer to get intersecting features
-              const polygon = new Polygon({
-                rings: [mapCoords]
-              });
+            // Create a polygon that will be used to query the feature layer to get intersecting features
+            const polygon = new Polygon({
+              rings: [mapCoords]
+            });
 
-              this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer) => {
+            this.mapService.findLayerOrCreateFromSource(source).then((layer: __esri.FeatureLayer) => {
                 layer
                   .queryFeatures({
                     geometry: polygon,
@@ -170,7 +167,6 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
                     });
                   });
               });
-            });
           }, 0);
         }
 
@@ -194,7 +190,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
     this.$mapView
       .pipe(
         switchMap((view) => {
-          let handle: esri.Handle;
+          let handle: __esri.Handle;
 
           const addHandler = (handler) => {
             handle = view.on('click', handler);
@@ -204,7 +200,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
             handle.remove();
           };
 
-          return fromEventPattern<esri.ViewClickEvent>(addHandler, removeHandler);
+          return fromEventPattern<__esri.ViewClickEvent>(addHandler, removeHandler);
         }),
         mapTo(false),
         takeUntil(this._$destroy)
@@ -220,5 +216,5 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
 
 interface IViewfinderResult {
   display: string;
-  graphic: esri.Graphic;
+  graphic: __esri.Graphic;
 }

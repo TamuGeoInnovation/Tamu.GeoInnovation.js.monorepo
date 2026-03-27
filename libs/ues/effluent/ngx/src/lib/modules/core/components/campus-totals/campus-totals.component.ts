@@ -9,7 +9,6 @@ import { ResultsService } from '../../../data-access/results/results.service';
 import { EffluentZonesService } from '../../services/effluent-zones.service';
 import { SamplingBuildingsService } from '../../services/sampling-buildings.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-campus-totals',
@@ -17,7 +16,7 @@ import esri = __esri;
   styleUrls: ['./campus-totals.component.scss']
 })
 export class CampusTotalsComponent implements OnInit {
-  public zones: Observable<Array<esri.Graphic>>;
+  public zones: Observable<Array<__esri.Graphic>>;
   public buildings: Observable<Array<IEffluentTierMetadata>>;
 
   public zonesSampleAverage: Observable<IAverageResponse>;

@@ -1,6 +1,5 @@
 // Contains classes that are integral to the operation of the trip planner service.
 
-import esri = __esri;
 
 import { SearchResultBreadcrumbSummary, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search';
 import { isCoordinatePair, parseCoordinates } from '@tamu-gisc/common/utils/geometry/generic';
@@ -51,13 +50,13 @@ export class TripResult {
   }
 
   public stopsToArray(): number[][] {
-    if (this.params.stops && (<esri.Collection>this.params.stops).length > 0) {
-      return (<esri.Collection>this.params.stops).toArray().map((f) => {
+    if (this.params.stops && (<__esri.Collection>this.params.stops).length > 0) {
+      return (<__esri.Collection>this.params.stops).toArray().map((f) => {
         if (f.geometry) {
           // Return a concatenated pipe separated string of latitude and longitude coordinates for reporting
           return [
-            (<esri.Point>f.geometry).latitude ? (<esri.Point>f.geometry).latitude : 0,
-            (<esri.Point>f.geometry).longitude ? (<esri.Point>f.geometry).longitude : 0
+            (<__esri.Point>f.geometry).latitude ? (<__esri.Point>f.geometry).latitude : 0,
+            (<__esri.Point>f.geometry).longitude ? (<__esri.Point>f.geometry).longitude : 0
           ];
         }
       });
@@ -101,7 +100,7 @@ export class TripPoint {
     this.originParameters = props.originParameters || undefined;
   }
 
-  public static from<T extends esri.Graphic>(input: SearchSelection<T>): TripPoint {
+  public static from<T extends __esri.Graphic>(input: SearchSelection<T>): TripPoint {
     const isString = typeof input.selection === 'string';
 
     const attr = { ...(input.selection.attributes as object) } as TripPointAttributes;
@@ -114,7 +113,7 @@ export class TripPoint {
       originGeometry:
         !isString && input.selection && input.selection.geometry
           ? {
-              raw: Object.assign({}, input.selection.geometry as esri.Geometry)
+              raw: Object.assign({}, input.selection.geometry as __esri.Geometry)
             }
           : (input.selection as TripPointGeometry).latitude && (input.selection as TripPointGeometry).longitude
           ? {
@@ -317,13 +316,13 @@ export class TripPoint {
   /**
    * Generates esri graphic properties utilizing the trip point normalized attributes and origin geometry.
    */
-  public toEsriGraphic(): esri.Graphic {
+  public toEsriGraphic(): __esri.Graphic {
     const attributes = this.attributes ? { ...this.attributes } : { ...this.originAttributes };
-    const geometry: Partial<esri.Geometry> = { ...this.originGeometry.raw };
+    const geometry: Partial<__esri.Geometry> = { ...this.originGeometry.raw };
 
     (geometry as unknown as { type: string }).type = getGeometryType(geometry);
 
-    return <esri.Graphic>{
+    return <__esri.Graphic>{
       geometry: geometry,
       attributes: attributes
     };
@@ -426,7 +425,7 @@ export interface TripPointGeometry {
    * For origin events that derive location from attributes (feature query results)
    * where preserving the result geometry (typically polygon) is desired, for additional processing for example.
    */
-  raw?: esri.Geometry;
+  raw?: __esri.Geometry;
 }
 
 export interface TripPointOriginTransformationsParams {

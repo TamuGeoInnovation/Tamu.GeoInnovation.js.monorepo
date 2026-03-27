@@ -3,7 +3,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum TS_MAIN_PARKING_LAYERS {
   ROUTE_STOP_START_POINTS = 'Route Stop/Start Points',
@@ -62,7 +61,7 @@ const tsMainParkingLotsRenderer: FeatureRenderer = {
       color: [110, 110, 110, 255],
       width: 1
     }
-  } as unknown as esri.SymbolProperties,
+  } as unknown as __esri.SymbolProperties,
   uniqueValueInfos: [
     {
       value: 'Garage Visitor',
@@ -71,7 +70,7 @@ const tsMainParkingLotsRenderer: FeatureRenderer = {
         type: 'simple-fill',
         color: [0, 92, 230, 255],
         outline: null
-      } as unknown as esri.SymbolProperties
+      } as unknown as __esri.SymbolProperties
     },
     {
       value: 'Surface Visitor',
@@ -80,7 +79,7 @@ const tsMainParkingLotsRenderer: FeatureRenderer = {
         type: 'simple-fill',
         color: [0, 92, 230, 255],
         outline: null
-      } as unknown as esri.SymbolProperties
+      } as unknown as __esri.SymbolProperties
     }
   ]
 };

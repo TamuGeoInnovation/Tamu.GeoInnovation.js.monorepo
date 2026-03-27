@@ -5,13 +5,12 @@ import { IComposedIDefinitions } from '../definitions';
 import { IComposedConnections } from '../connections';
 import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 
-import esri = __esri;
 
 export const commonLayerProps = {
   outFields: ['*'],
   minScale: 100000,
   maxScale: 0,
-  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as __esri.FeatureLayerElevationInfo,
   popupEnabled: false
 };
 
@@ -408,7 +407,7 @@ export function LayerSources(
               }
             }
           ]
-        } as unknown as esri.UniqueValueRenderer
+        } as unknown as __esri.UniqueValueRenderer
       }
     },
     {
@@ -449,7 +448,7 @@ export function LayerSources(
               }
             }
           ]
-        } as unknown as esri.UniqueValueRenderer
+        } as unknown as __esri.UniqueValueRenderer
       }
     },
     {

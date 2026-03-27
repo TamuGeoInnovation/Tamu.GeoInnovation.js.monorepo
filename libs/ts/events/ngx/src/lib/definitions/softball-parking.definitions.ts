@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum SOFTBALL_PARKING_LAYERS {
   VISITOR_KIOSK = 'softball-parking-visitor-kiosk',
@@ -111,9 +110,9 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
           title: SoftballParkingDefinitions.SAFETY_FIRST.name,
           visible: true,
           popupEnabled: false
-        } as unknown as esri.SublayerProperties
+        } as unknown as __esri.SublayerProperties
       ]
-    } as unknown as esri.MapImageLayerProperties
+    } as unknown as __esri.MapImageLayerProperties
   }
 ];
 

@@ -8,7 +8,6 @@ import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlig
 
 import { EffluentService } from '../../../core/services/effluent.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-sidebar-relationships',
@@ -64,7 +63,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   }
 
   public async highlightSubSample(subSample: string) {
-    const layer = this.mapService.findLayerById(`sampling-zone-${subSample.split('-')[0]}`) as esri.FeatureLayer;
+    const layer = this.mapService.findLayerById(`sampling-zone-${subSample.split('-')[0]}`) as __esri.FeatureLayer;
 
     const r = await layer.queryFeatures({
       returnGeometry: true,

@@ -11,7 +11,6 @@ import { IResponseDto, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-export',
@@ -22,9 +21,9 @@ export class ExportComponent implements OnInit {
   private zip: JSZip;
   public form: UntypedFormGroup;
 
-  public view: esri.MapView;
-  public map: esri.Map;
-  public graphicPreview: esri.GraphicsLayer;
+  public view: __esri.MapView;
+  public map: __esri.Map;
+  public graphicPreview: __esri.GraphicsLayer;
 
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public snapshots: Observable<DeepPartial<Snapshot>[]>;
@@ -43,8 +42,8 @@ export class ExportComponent implements OnInit {
   };
 
   private _modules: {
-    graphic: esri.GraphicConstructor;
-    graphicsLayer: esri.GraphicsLayerConstructor;
+    graphic: __esri.GraphicConstructor;
+    graphicsLayer: __esri.GraphicsLayerConstructor;
   };
 
   constructor(
@@ -68,7 +67,7 @@ export class ExportComponent implements OnInit {
     this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
 
     this.mapService.store.subscribe((instance) => {
-      this.view = instance.view as esri.MapView;
+      this.view = instance.view as __esri.MapView;
       this.map = instance.map;
     });
 
@@ -102,7 +101,7 @@ export class ExportComponent implements OnInit {
 
         this.mp
           .require(['Graphic', 'GraphicsLayer'])
-          .then(([g, gl]: [esri.GraphicConstructor, esri.GraphicsLayerConstructor]) => {
+          .then(([g, gl]: [__esri.GraphicConstructor, __esri.GraphicsLayerConstructor]) => {
             this._modules = {
               graphic: g,
               graphicsLayer: gl
@@ -184,7 +183,7 @@ export class ExportComponent implements OnInit {
     });
   }
 
-  private geometryArrayToEsriJson(geometries: esri.Graphic[], geometry: IEsriGeometryPortalJSONType) {
+  private geometryArrayToEsriJson(geometries: __esri.Graphic[], geometry: IEsriGeometryPortalJSONType) {
     const featureSet: IEsriFeatureSetPortalJSON = {
       spatialReference: {
         latestWkid: 3857,
@@ -234,7 +233,7 @@ export class ExportComponent implements OnInit {
 
   private flattenResponsesGraphics(responses: Array<IResponseDto>) {
     const flattenedShapesCollection = responses.reduce((accumulated, current) => {
-      const shapes = (current.shapes as Array<esri.Graphic>).map((g) => {
+      const shapes = (current.shapes as Array<__esri.Graphic>).map((g) => {
         return this._modules.graphic.fromJSON(g);
       });
 
@@ -258,7 +257,7 @@ export interface IEsriFeatureSetPortalJSON {
     latestWkid: number;
   };
   fields: [] | IEsriFieldPortalJSON[];
-  features: (string | object)[] | esri.Graphic[];
+  features: (string | object)[] | __esri.Graphic[];
 }
 
 export type IEsriGeometryPortalJSONType = 'esriGeometryPoint' | 'esriGeometryPolyline' | 'esriGeometryPolygon';

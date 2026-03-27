@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum MUSTER_LAYERS {
   PARKING = 'muster-parking',
@@ -69,7 +68,7 @@ export const MusterEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'Red',
@@ -83,7 +82,7 @@ export const MusterEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           }
         ]
       },

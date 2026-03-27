@@ -12,7 +12,6 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { MoveinOutService } from '../../map/services/move-in-out/move-in-out.service';
 import { MoveInOutSettingsService } from '../../map/services/move-in-out-settings/move-in-out-settings.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-move-in-out-parking-space',
@@ -26,7 +25,7 @@ export class MoveInOutParkingSpacePopupComponent extends BaseDirectionsComponent
   public lotName: string;
   public lotParkingType: keyof ParkingLotTypes;
   public lotOrBuildingSource: Observable<'lot' | 'garage' | 'other'>;
-  public lotOrBuilding: Observable<esri.Graphic>;
+  public lotOrBuilding: Observable<__esri.Graphic>;
   public selectedMoveInDate: Observable<Date | undefined>;
 
   constructor(

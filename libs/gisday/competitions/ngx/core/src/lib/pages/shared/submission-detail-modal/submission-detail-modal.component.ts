@@ -10,7 +10,6 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-submission-detail-modal',
@@ -64,12 +63,12 @@ export class SubmissionDetailModalComponent implements OnInit {
     // Add marker for submission location after map loads
     this.mapService.store.pipe(take(1)).subscribe((instances) => {
       if (instances.view && instances.view.type === '2d') {
-        this.addSubmissionMarker(instances.view as esri.MapView);
+        this.addSubmissionMarker(instances.view as __esri.MapView);
       }
     });
   }
 
-  private addSubmissionMarker(view: esri.MapView): void {
+  private addSubmissionMarker(view: __esri.MapView): void {
     const graphic = {
       geometry: {
         type: 'point',
@@ -86,9 +85,9 @@ export class SubmissionDetailModalComponent implements OnInit {
           width: 2
         }
       }
-    } as esri.GraphicProperties;
+    } as __esri.GraphicProperties;
 
-    view.graphics.add(graphic as esri.Graphic);
+    view.graphics.add(graphic as __esri.Graphic);
   }
 
   public setValidationStatus(status: COMPETITION_VALIDATION_STATUS): void {

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-base-popup-component',
@@ -10,5 +9,5 @@ export class BasePopupComponent {
   /**
    * Data set by the parent popup component.
    */
-  public data: esri.Graphic;
+  public data: __esri.Graphic;
 }

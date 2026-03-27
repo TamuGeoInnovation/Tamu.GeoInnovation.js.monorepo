@@ -23,7 +23,6 @@ import { ResponseService } from '@tamu-gisc/cpa/ngx/data-access';
 
 import { ViewerService } from '../../services/viewer.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-participant',
@@ -168,7 +167,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this._$destroy.complete();
   }
 
-  public async handleDrawSelection(e: Array<esri.Graphic>) {
+  public async handleDrawSelection(e: Array<__esri.Graphic>) {
     // Test if all drawn features have geometry
     const allHaveGeometry = e.every((g) => g.geometry !== undefined);
 
@@ -197,7 +196,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
       this.form.reset();
     } else {
-      this.mp.require(['Graphic', 'Symbol', 'Geometry']).then(([Graphic]: [esri.GraphicConstructor]) => {
+      this.mp.require(['Graphic', 'Symbol', 'Geometry']).then(([Graphic]: [__esri.GraphicConstructor]) => {
         this.drawComponent.reset();
 
         // Create an auto-castable graphic.
@@ -222,7 +221,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(([snapshot, responses, participantGuid]) => {
-        const parsed = (this.form.controls.drawn.value as Array<esri.Graphic>).map((graphic) => {
+        const parsed = (this.form.controls.drawn.value as Array<__esri.Graphic>).map((graphic) => {
           return graphic.toJSON();
         });
 
@@ -279,7 +278,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 }
 
 interface IParticipantSubmission extends Omit<IResponseRequestDto, 'shapes'> {
-  shapes: esri.Graphic[];
+  shapes: __esri.Graphic[];
 }
 
 enum SAVE_STATUS {

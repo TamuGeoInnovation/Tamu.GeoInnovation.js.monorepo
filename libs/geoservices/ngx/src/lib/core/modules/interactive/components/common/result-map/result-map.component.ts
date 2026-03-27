@@ -3,7 +3,6 @@ import { take } from 'rxjs';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-result-map',
@@ -29,7 +28,7 @@ export class ResultMapComponent implements OnInit {
 
   public ngOnInit(): void {
     const [first] = this.points;
-    const center = [(first as esri.Point)?.longitude, (first as esri.Point)?.latitude];
+    const center = [(first as __esri.Point)?.longitude, (first as __esri.Point)?.latitude];
 
     this.baseConfig = {
       basemap: {
@@ -52,7 +51,7 @@ export class ResultMapComponent implements OnInit {
             type: 'point',
             latitude: p.latitude,
             longitude: p.longitude
-          } as esri.PointProperties,
+          } as __esri.PointProperties,
           symbol: {
             type: 'simple-marker',
             color: [255, 0, 0],
@@ -61,7 +60,7 @@ export class ResultMapComponent implements OnInit {
               color: [255, 255, 255],
               width: 2
             }
-          } as esri.SimpleMarkerSymbolProperties
+          } as __esri.SimpleMarkerSymbolProperties
         };
       });
 

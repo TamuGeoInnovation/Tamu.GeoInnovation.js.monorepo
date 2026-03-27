@@ -8,13 +8,12 @@ import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { ResultsService } from '../../data-access/results/results.service';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
 })
 export class SamplingLocationsService {
-  private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
+  private modules: Observable<[__esri.QueryConstructor, __esri.QueryTaskConstructor]>;
 
   private sampleLocationsResourceUrl: string;
 
@@ -26,11 +25,11 @@ export class SamplingLocationsService {
     this.sampleLocationsResourceUrl = this.env.value('effluentSampleLocationsUrl');
 
     this.modules = from(this.moduleProvider.require(['Query', 'QueryTask'])).pipe(shareReplay(1)) as Observable<
-      [esri.QueryConstructor, esri.QueryTaskConstructor]
+      [__esri.QueryConstructor, __esri.QueryTaskConstructor]
     >;
   }
 
-  public getSamplingLocationsForTier(geometry?: esri.Geometry, tier?: number | string): Observable<Array<esri.Graphic>> {
+  public getSamplingLocationsForTier(geometry?: __esri.Geometry, tier?: number | string): Observable<Array<__esri.Graphic>> {
     return this.modules.pipe(
       switchMap(([Query, QueryTask]) => {
         if (geometry === undefined && tier === undefined) {
