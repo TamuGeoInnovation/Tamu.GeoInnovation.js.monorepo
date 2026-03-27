@@ -8,42 +8,42 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum FAMILY_WEEKEND_LAYERS {
-  PARKING_LOTS = 'family-weekend-parking-lots',
-  VISITOR_PARKING = 'family-weekend-visitor-parking'
+  FRIDAY_PARKING_LOTS = 'family-weekend-friday-parking-lots',
+  SATURDAY_PARKING_LOTS = 'family-weekend-saturday-parking-lots',
+  SUNDAY_PARKING_LOTS = 'family-weekend-sunday-parking-lots'
 }
 
-import esri = __esri;
-
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Family_Weekend/MapServer';
-const visitorParkingUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
+const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Family_Weekend/MapServer';
 
 export const FamilyWeekendDefinitions = {
-  PARKING_LOTS: {
-    id: FAMILY_WEEKEND_LAYERS.PARKING_LOTS,
-    layerId: FAMILY_WEEKEND_LAYERS.PARKING_LOTS,
-    name: 'Family Weekend Parking Lots',
+  FRIDAY_PARKING_LOTS: {
+    id: FAMILY_WEEKEND_LAYERS.FRIDAY_PARKING_LOTS,
+    layerId: FAMILY_WEEKEND_LAYERS.FRIDAY_PARKING_LOTS,
+    name: 'Friday Parking Lots',
     url: `${eventUrl}/0`
   },
-  VISITOR_PARKING: {
-    id: FAMILY_WEEKEND_LAYERS.VISITOR_PARKING,
-    layerId: FAMILY_WEEKEND_LAYERS.VISITOR_PARKING,
-    name: 'Family Weekend Visitor Parking',
-    url: `${visitorParkingUrl}/10`
+  SATURDAY_PARKING_LOTS: {
+    id: FAMILY_WEEKEND_LAYERS.SATURDAY_PARKING_LOTS,
+    layerId: FAMILY_WEEKEND_LAYERS.SATURDAY_PARKING_LOTS,
+    name: 'Saturday Parking Lots',
+    url: `${eventUrl}/1`
+  },
+  SUNDAY_PARKING_LOTS: {
+    id: FAMILY_WEEKEND_LAYERS.SUNDAY_PARKING_LOTS,
+    layerId: FAMILY_WEEKEND_LAYERS.SUNDAY_PARKING_LOTS,
+    name: 'Sunday Parking Lots',
+    url: `${eventUrl}/2`
   }
 };
 
 export const FamilyWeekendColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: FamilyWeekendDefinitions.PARKING_LOTS.id,
-    title: FamilyWeekendDefinitions.PARKING_LOTS.name,
-    url: FamilyWeekendDefinitions.PARKING_LOTS.url,
+    id: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.id,
+    title: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.name,
+    url: FamilyWeekendDefinitions.FRIDAY_PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
-    popupData: {
-      name: 'attributes.Type',
-      description: 'attributes.description'
-    },
-    visible: true,
+    visible: false,
     listMode: 'show',
     native: {
       outFields: ['*']
@@ -51,36 +51,26 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: FamilyWeekendDefinitions.VISITOR_PARKING.id,
-    title: FamilyWeekendDefinitions.VISITOR_PARKING.name,
-    url: FamilyWeekendDefinitions.VISITOR_PARKING.url,
+    id: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.id,
+    title: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.name,
+    url: FamilyWeekendDefinitions.SATURDAY_PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
-    // popupData: {
-    //   name: 'GIS.TS.ParkingLots.LotName',
-    //   description: '{GIS.TS.Lot_Notes.VisitorN}'
-    // },
-    visible: true,
+    visible: false,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'GIS.TS.Lot_Use.Visitor_Lot',
-        uniqueValueInfos: [
-          {
-            value: 1,
-            symbol: {
-              type: 'simple-fill',
-              color: [0, 77, 168, 0.75],
-              outline: {
-                color: [0, 77, 168, 1],
-                width: 1
-              }
-            } as unknown as esri.SimpleFillSymbolProperties,
-            label: 'Visitor Parking'
-          }
-        ]
-      }
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.id,
+    title: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.name,
+    url: FamilyWeekendDefinitions.SUNDAY_PARKING_LOTS.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    visible: false,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
     }
   }
 ];
@@ -99,8 +89,7 @@ export const FamilyWeekendConfiguration: EventConfiguration = {
 enum FamilyWeekendAttendanceDateChoices {
   DayOne = '2026-04-10T05:00:00.000Z', //  Apr 10, 12AM UTC
   DayTwo = '2026-04-11T05:00:00.000Z', // Apr 11, 12AM UTC
-  DayThree = '2026-04-12T05:00:00.000Z', // Apr 12, 12AM UTC
-  Conclusion = '2026-04-13T05:00:00.000Z' // Apr 13, 12AM UTC
+  DayThree = '2026-04-12T05:00:00.000Z' // Apr 12, 12AM UTC
 }
 
 export const FamilyWeekendOptions: SpecialEventOptions = [
@@ -127,60 +116,53 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
     effects: {
       layers: [
         {
-          layerId: FAMILY_WEEKEND_LAYERS.PARKING_LOTS,
+          layerId: FAMILY_WEEKEND_LAYERS.FRIDAY_PARKING_LOTS,
           conversions: [
             {
               input: FamilyWeekendAttendanceDateChoices.DayOne,
-              expression: `StartDate < date'${new Date(
-                FamilyWeekendAttendanceDateChoices.DayTwo
-              ).toLocaleDateString()} ${new Date(
-                FamilyWeekendAttendanceDateChoices.DayTwo
-              ).toLocaleTimeString()}' AND EndDate > date'${new Date(
-                FamilyWeekendAttendanceDateChoices.DayOne
-              ).toLocaleDateString()} ${new Date(
-                FamilyWeekendAttendanceDateChoices.DayOne
-              ).toLocaleTimeString()}' OR (StartDate IS NULL AND EndDate IS NULL)`
+              propOverrides: { visible: true }
             },
             {
               input: FamilyWeekendAttendanceDateChoices.DayTwo,
-              expression: `StartDate < date'${new Date(
-                FamilyWeekendAttendanceDateChoices.DayThree
-              ).toLocaleDateString()} ${new Date(
-                FamilyWeekendAttendanceDateChoices.DayThree
-              ).toLocaleTimeString()}' AND EndDate > date'${new Date(
-                FamilyWeekendAttendanceDateChoices.DayTwo
-              ).toLocaleDateString()} ${new Date(
-                FamilyWeekendAttendanceDateChoices.DayTwo
-              ).toLocaleTimeString()}' OR (StartDate IS NULL AND EndDate IS NULL)`
+              propOverrides: { visible: false }
             },
             {
               input: FamilyWeekendAttendanceDateChoices.DayThree,
-              expression: `StartDate < date'${new Date(
-                FamilyWeekendAttendanceDateChoices.Conclusion
-              ).toLocaleDateString()} ${new Date(
-                FamilyWeekendAttendanceDateChoices.Conclusion
-              ).toLocaleTimeString()}' AND EndDate > date'${new Date(
-                FamilyWeekendAttendanceDateChoices.DayThree
-              ).toLocaleDateString()} ${new Date(
-                FamilyWeekendAttendanceDateChoices.DayThree
-              ).toLocaleTimeString()}' OR (StartDate IS NULL AND EndDate IS NULL)`
+              propOverrides: { visible: false }
             }
           ]
         },
         {
-          layerId: FAMILY_WEEKEND_LAYERS.VISITOR_PARKING,
+          layerId: FAMILY_WEEKEND_LAYERS.SATURDAY_PARKING_LOTS,
           conversions: [
             {
               input: FamilyWeekendAttendanceDateChoices.DayOne,
-              expression: '0=1'
+              propOverrides: { visible: false }
             },
             {
               input: FamilyWeekendAttendanceDateChoices.DayTwo,
-              expression: '0=1'
+              propOverrides: { visible: true }
             },
             {
               input: FamilyWeekendAttendanceDateChoices.DayThree,
-              expression: 'GIS.TS.Lot_Use.Visitor_Lot = 1'
+              propOverrides: { visible: false }
+            }
+          ]
+        },
+        {
+          layerId: FAMILY_WEEKEND_LAYERS.SUNDAY_PARKING_LOTS,
+          conversions: [
+            {
+              input: FamilyWeekendAttendanceDateChoices.DayOne,
+              propOverrides: { visible: false }
+            },
+            {
+              input: FamilyWeekendAttendanceDateChoices.DayTwo,
+              propOverrides: { visible: false }
+            },
+            {
+              input: FamilyWeekendAttendanceDateChoices.DayThree,
+              propOverrides: { visible: true }
             }
           ]
         }
