@@ -23,6 +23,8 @@ export function LayerSources(
 ): Array<LayerSource> {
   const bikeMapUrl = connections.tsMainUrl.replace('/TS_Main/MapServer', '/BikeMap/MapServer');
   const evChargeStationsUrl = connections.tsMainUrl.replace('/TS_Main/MapServer', '/EVChargeStations/MapServer');
+  // If sustainable transportation is re-implemented against a different server/service set later,
+  // update this shared source list alongside `libs/ts/events/ngx/src/lib/definitions/sustainable-transportation.definitions.ts`.
   const sustainableTransportationSources: Array<LayerSource> = [
     {
       type: 'feature',
@@ -39,22 +41,6 @@ export function LayerSources(
           '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
           '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
           '<strong>Notes</strong>: {attributes.EVCS_Notes}'
-      },
-      native: {
-        ...commonLayerProps
-      }
-    },
-    {
-      type: 'feature',
-      id: 'bike-rack-areas-layer',
-      title: 'Bike Rack Areas',
-      url: `${bikeMapUrl}/4`,
-      listMode: 'show',
-      visible: true,
-      popupComponent: Popups.MarkdownPopupComponent,
-      popupData: {
-        name: '{attributes.Type}',
-        description: '<strong>Total Capacity</strong>: {attributes.Total_Capacity}'
       },
       native: {
         ...commonLayerProps

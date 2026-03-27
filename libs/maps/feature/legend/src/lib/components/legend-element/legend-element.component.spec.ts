@@ -144,6 +144,25 @@ describe('LegendElementComponent', () => {
     ]);
   });
 
+  it('adds a fallback Bike Racks label for single unlabeled bike rack legend entries', async () => {
+    component.groupTitle = 'Bike Racks';
+    component.layer = {
+      id: 'bike-racks-map-layer',
+      url: 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/0'
+    } as unknown as __esri.Layer;
+    component.element = {
+      infos: [{ src: 'blue-icon', value: 'coat' }]
+    } as unknown as __esri.LegendElement;
+
+    await component.ngOnInit();
+
+    const infos = await firstValueFrom(component.infos);
+
+    expect(component.useGroupTitleLabel).toBe(false);
+    expect(infos).toHaveLength(1);
+    expect((infos[0] as { label?: string }).label).toBe('Bike Racks');
+  });
+
   it('uses the group title label for non-bike single-entry legend elements', async () => {
     component.groupTitle = 'Baseball Symbols';
     component.layer = {
