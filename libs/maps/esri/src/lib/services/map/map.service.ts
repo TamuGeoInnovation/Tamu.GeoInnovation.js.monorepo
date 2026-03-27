@@ -4,6 +4,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
+import EsriMap from '@arcgis/core/Map';
+import MapView from '@arcgis/core/views/MapView';
+import SceneView from '@arcgis/core/views/SceneView';
+import TileLayer from '@arcgis/core/layers/TileLayer';
+import Basemap from '@arcgis/core/Basemap';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
+import SceneLayer from '@arcgis/core/layers/SceneLayer';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
+import CSVLayer from '@arcgis/core/layers/CSVLayer';
+import GroupLayer from '@arcgis/core/layers/GroupLayer';
+import Layer from '@arcgis/core/layers/Layer';
+import IdentityManager from '@arcgis/core/identity/IdentityManager';
+import OAuthInfo from '@arcgis/core/identity/OAuthInfo';
+import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import {
   AutocastableLayer,
@@ -15,10 +32,7 @@ import {
 import { LayerSource, IRemoteLayerService, GroupLayerSourceProperties } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { EsriModuleProviderService } from '../module-provider/module-provider.service';
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
-
-import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
 export class EsriMapService {
@@ -46,7 +60,6 @@ export class EsriMapService {
   public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(filter((s) => s !== undefined));
 
   constructor(
-    private moduleProvider: EsriModuleProviderService,
     private router: Router,
     private route: ActivatedRoute,
     private searchService: SearchService,
@@ -58,32 +71,10 @@ export class EsriMapService {
   public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {
     // If properties specifies 2d mode, load 2d map view.
     if (viewProperties.mode === '2d') {
-      this.moduleProvider
-        .require(['Map', 'MapView', 'TileLayer', 'Basemap'])
-        .then(
-          ([Map, MapView, TileLayer, Basemap]: [
-            esri.MapConstructor,
-            esri.MapViewConstructor,
-            esri.TileLayerConstructor,
-            esri.BasemapConstructor
-          ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, Basemap);
-          }
-        );
+      this.next(mapProperties, viewProperties, MapView);
     } else if (viewProperties.mode === '3d') {
       // If properties specifies 3d mode, load 3d scene view.
-      this.moduleProvider
-        .require(['Map', 'SceneView', 'TileLayer', 'Basemap'])
-        .then(
-          ([Map, MapView, TileLayer, Basemap]: [
-            esri.MapConstructor,
-            esri.SceneViewConstructor,
-            esri.TileLayerConstructor,
-            esri.BasemapConstructor
-          ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, Basemap);
-          }
-        );
+      this.next(mapProperties, viewProperties, SceneView);
     }
   }
 
@@ -91,27 +82,21 @@ export class EsriMapService {
    * Bootstrapping function that continues the map creation after the 2d vs 3d determination is made.
    *
    * @param {MapProperties} Properties
-   * @param {MapViewProperties} ViewProperties
-   * @param {esri.MapConstructor} Map
-   * @param {esri.MapViewConstructor} MapView MapView or SceneView depending on mode
-   * @param {esri.TileLayerConstructor} TileLayer
-   * @param {esri.BasemapConstructor} Basemap
+   * @param {ViewProperties} ViewProperties
+   * @param {typeof MapView | typeof SceneView} ViewConstructor MapView or SceneView depending on mode
    */
   private async next(
     Properties: MapProperties,
     ViewProps: ViewProperties,
-    Map: esri.MapConstructor,
-    MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
-    TileLayer: esri.TileLayerConstructor,
-    Basemap: esri.BasemapConstructor
+    ViewConstructor: typeof MapView | typeof SceneView
   ): Promise<void> {
-    const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
-    this._modules.map = new Map(basemap);
+    const basemap = this.makeBasemap(Properties);
+    this._modules.map = new EsriMap(basemap);
 
     this._mapContainer = ViewProps.properties.container as HTMLDivElement;
 
     const props = this.makeMapView(ViewProps.properties, this._modules.map);
-    this._modules.view = new MapView(props as esri.MapViewProperties & esri.SceneViewProperties);
+    this._modules.view = new ViewConstructor(props as __esri.MapViewProperties & __esri.SceneViewProperties);
 
     // Set the value of the async subject
     this._store.next({
@@ -144,7 +129,7 @@ export class EsriMapService {
    *
    * Internal use only.
    */
-  private makeMapView(viewProperties: esri.MapViewProperties | esri.SceneViewProperties, map: esri.Map) {
+  private makeMapView(viewProperties: __esri.MapViewProperties | __esri.SceneViewProperties, map: EsriMap) {
     // Make a shallow clone of the passed in view properties
     const vProps = Object.assign({}, viewProperties);
 
@@ -156,7 +141,7 @@ export class EsriMapService {
     return vProps;
   }
 
-  public setView(view: esri.SceneView | esri.MapView) {
+  public setView(view: SceneView | MapView) {
     this.destroyViewClickEventHandler();
 
     this._modules.view.container = null;
@@ -173,7 +158,7 @@ export class EsriMapService {
   private registerViewClickEventHandler() {
     // Set up a hit test wrapper that can be subscribed to anywhere in the application.
     this._viewClickHandle = this._modules.view.on('click', (e) => {
-      this._modules.view.hitTest(e).then((res: esri.HitTestResult) => {
+      this._modules.view.hitTest(e).then((res: __esri.HitTestResult) => {
         // Clear the hit test object regardless of router state
         this.clearHitTest();
 
@@ -181,7 +166,10 @@ export class EsriMapService {
         // This is because we don't want to shop popup when trying to click
         // on map to set route which will overlay on top of trip planner controls
         if (!this.router.url.includes('trip')) {
-          this._hitTest.next({ graphics: res.results.map((r) => r.graphic) });
+          const graphics = res.results
+            .filter((r): r is __esri.GraphicHit => r.type === 'graphic')
+            .map((r) => r.graphic);
+          this._hitTest.next({ graphics });
         }
       });
     });
@@ -197,10 +185,8 @@ export class EsriMapService {
    * Makes a basemap using custom basemap options or a simple basemap string id name.
    */
   private makeBasemap(
-    mapProperties,
-    TileLayer: esri.TileLayerConstructor,
-    Basemap: esri.BasemapConstructor
-  ): esri.MapProperties {
+    mapProperties
+  ): __esri.MapProperties {
     if (!mapProperties) {
       throw new Error(`No map properties were provided.`);
     }
@@ -252,7 +238,7 @@ export class EsriMapService {
    * @returns {esri.FeatureSet} Feature set collection containing the features from feature
    * layer that intersect the point
    */
-  public featuresIntersectingPoint(featureLayer: esri.FeatureLayer, point: esri.Point): Promise<esri.FeatureSet> {
+  public featuresIntersectingPoint(featureLayer: FeatureLayer, point: __esri.Point): Promise<__esri.FeatureSet> {
     return new Promise((r, rj) => {
       featureLayer
         .queryFeatures({
@@ -261,7 +247,7 @@ export class EsriMapService {
           outFields: ['*'],
           returnGeometry: true
         })
-        .then((res: esri.FeatureSet) => {
+        .then((res: __esri.FeatureSet) => {
           r(res);
         })
         .catch((err) => {
@@ -283,7 +269,7 @@ export class EsriMapService {
     }
   }
 
-  public async generateLayer(source: LayerSource | AutocastableLayer): Promise<esri.Layer | Array<esri.Layer>> {
+  public async generateLayer(source: LayerSource | AutocastableLayer): Promise<Layer | Array<Layer>> {
     // Object with merged root level properties, native properties, and persistent properties.
     let props;
 
@@ -305,96 +291,75 @@ export class EsriMapService {
     }
 
     if (source.type === 'feature') {
-      return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
-        // Delete the type property as it cannot be set on layer creation.
-        delete props.type;
+      // Delete the type property as it cannot be set on layer creation.
+      delete props.type;
 
-        // Create and return new feature layer
-        return new FeatureLayer(props as esri.FeatureLayerProperties);
-      });
+      // Create and return new feature layer
+      return new FeatureLayer(props as __esri.FeatureLayerProperties);
     } else if (source.type === 'map-image') {
-      return this.moduleProvider.require(['MapImageLayer']).then(([ImageLayer]: [esri.MapImageLayerConstructor]) => {
-        // Delete the type property as it cannot be set on layer creation.
-        delete props.type;
+      // Delete the type property as it cannot be set on layer creation.
+      delete props.type;
 
-        // Create and return new map image layer
-        return new ImageLayer(props as esri.MapImageLayerProperties);
-      });
+      // Create and return new map image layer
+      return new MapImageLayer(props as __esri.MapImageLayerProperties);
     } else if (source.type === 'scene') {
-      return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
-        // Delete the type property as it cannot be set on layer creation.
-        delete props.type;
+      // Delete the type property as it cannot be set on layer creation.
+      delete props.type;
 
-        // Create and return new scene layer
-        return new SceneLayer(props as esri.SceneViewProperties);
-      });
+      // Create and return new scene layer
+      return new SceneLayer(props as __esri.SceneLayerProperties);
     } else if (source.type === 'graphics') {
-      return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
-        // Delete the type property as it cannot be set on layer creation.
-        delete props.type;
+      // Delete the type property as it cannot be set on layer creation.
+      delete props.type;
 
-        // Create and return new graphics layer
-        return new GraphicsLayer(props as esri.GraphicsLayerProperties);
-      });
+      // Create and return new graphics layer
+      return new GraphicsLayer(props as __esri.GraphicsLayerProperties);
     } else if (source.type === 'geojson') {
-      return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
-        // Delete the type property as it cannot be set on layer creation.
-        delete props.type;
+      // Delete the type property as it cannot be set on layer creation.
+      delete props.type;
 
-        // Create and return new geojson layer
-        return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
-      });
+      // Create and return new geojson layer
+      return new GeoJSONLayer(props as __esri.GeoJSONLayerProperties);
     } else if (source.type === 'csv') {
-      return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
-        // Delete the type property as it cannot be set on layer creation.
-        delete props.type;
+      // Delete the type property as it cannot be set on layer creation.
+      delete props.type;
 
-        // Create and return new csv layer
-        return new CSVLayer(props as esri.CSVLayerProperties);
-      });
+      // Create and return new csv layer
+      return new CSVLayer(props as __esri.CSVLayerProperties);
     } else if (source.type === 'group') {
-      return this.moduleProvider.require(['GroupLayer']).then(async ([GroupLayer]: [esri.GroupLayerConstructor]) => {
-        const s: GroupLayerSourceProperties = source;
-        // Delete the type property as it cannot be set on layer creation.
+      const s: GroupLayerSourceProperties = source;
+      // Delete the type property as it cannot be set on layer creation.
+      delete props.type;
+
+      // If sources have been defined in the layer source, cast them into their respective layer types.
+      if (s.sources) {
+        const layerPromises = s.sources.map((ls) => this.generateLayer(ls));
+
+        const layers = await Promise.all(layerPromises);
+
+        // Create and return new group layer
+        return new GroupLayer({ ...props, layers: layers } as __esri.GroupLayerProperties);
+      } else {
+        // Create and return new group layer
+        return new GroupLayer(props as __esri.GroupLayerProperties);
+      }
+    } else if (source.type === 'unknown') {
+      return Layer.fromArcGISServerUrl({
+        url: source.url
+      }).then((l) => {
         delete props.type;
 
-        // If sources have been defined in the layer source, cast them into their respective layer types.
-        if (s.sources) {
-          const layerPromises = s.sources.map((ls) => this.generateLayer(ls));
-
-          const layers = await Promise.all(layerPromises);
-
-          // Create and return new group layer
-          return new GroupLayer({ ...props, layers: layers } as esri.GroupLayerProperties);
-        } else {
-          // Create and return new group layer
-          return new GroupLayer(props as esri.GroupLayerProperties);
-        }
-      });
-    } else if (source.type === 'unknown') {
-      return this.moduleProvider.require(['Layer']).then(async ([L]: [esri.LayerConstructor]) => {
-        return L.fromArcGISServerUrl({
-          url: source.url
-        }).then((l) => {
-          delete props.type;
-
-          return Object.assign(l, props);
-        });
+        return Object.assign(l, props);
       });
     } else if (source.type === 'map-server') {
       if (source.auth) {
         // Identity manager should have AuthInfos registered to it at this point. Query the identity manager
         // to fetch the associated access token to make a raw GET request for the layer's JSON source.
-        return this.moduleProvider
-          .require(['IdentityManager'])
-          .then(([IdentityManager]: [esri.IdentityManager]) => {
-            return IdentityManager.getCredential(
-              source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl
-            );
-          })
-          .then((cred) => {
-            return this.resolveLayerFromJsonp(source, { f: 'pjson', token: cred.token });
-          });
+        return IdentityManager.getCredential(
+          source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl
+        ).then((cred) => {
+          return this.resolveLayerFromJsonp(source, { f: 'pjson', token: cred.token });
+        });
       } else {
         return this.resolveLayerFromJsonp(source, { f: 'pjson' });
       }
@@ -425,8 +390,8 @@ export class EsriMapService {
    *
    * @param {LayerSource} source
    */
-  public findLayerOrCreateFromSource(source: LayerSource): Promise<esri.Layer | Array<esri.Layer>> {
-    const map: esri.Map = this._modules.map;
+  public findLayerOrCreateFromSource(source: LayerSource): Promise<Layer | Array<Layer>> {
+    const map: EsriMap = this._modules.map;
 
     if (this.layerExists(source.id)) {
       return new Promise((r, rj) => {
@@ -441,13 +406,13 @@ export class EsriMapService {
       return this.generateLayer(source).then((layerOrLayers) => {
         if (layerOrLayers instanceof Array) {
           // Add layer to map
-          (<esri.Map>this._modules.map).addMany(layerOrLayers, source.layerIndex ?? undefined);
+          (<EsriMap>this._modules.map).addMany(layerOrLayers, source.layerIndex ?? undefined);
 
           // Return layer in case further manipulation is needed.
           return layerOrLayers;
         } else {
           // Add layer to map
-          (<esri.Map>this._modules.map).add(layerOrLayers, source.layerIndex ?? undefined);
+          (<EsriMap>this._modules.map).add(layerOrLayers, source.layerIndex ?? undefined);
 
           // Return layer in case further manipulation is needed.
           return layerOrLayers;
@@ -456,7 +421,7 @@ export class EsriMapService {
     }
   }
 
-  public async resolveUnloadedLayers(args: IResolveUnloadedLayersProperties): Promise<Array<esri.Layer>> {
+  public async resolveUnloadedLayers(args: IResolveUnloadedLayersProperties): Promise<Array<Layer>> {
     if (args.layers.length === 0) {
       return await [];
     }
@@ -509,51 +474,47 @@ export class EsriMapService {
     });
 
     if (sourcesWithAuthInfo.length > 0) {
-      return this.moduleProvider
-        .require(['IdentityManager', 'OAuthInfo'])
-        .then(([IdentityManager, OAuthInfo]: [esri.IdentityManager, esri.OAuthInfoConstructor]) => {
-          const sourcesNotYetInIdentityManager = sourcesWithAuthInfo.filter((source) => {
-            const identityManagerInfo = IdentityManager.findOAuthInfo(source.auth.info.portalUrl);
+      const sourcesNotYetInIdentityManager = sourcesWithAuthInfo.filter((source) => {
+        const identityManagerInfo = IdentityManager.findOAuthInfo(source.auth.info.portalUrl);
 
-            // We want to filter out the only the OAuthInfos **NOT** already registered in the IdentityService.
-            if (identityManagerInfo !== undefined) {
-              return false;
-            } else {
-              return true;
-            }
-          });
+        // We want to filter out the only the OAuthInfos **NOT** already registered in the IdentityService.
+        if (identityManagerInfo !== undefined) {
+          return false;
+        } else {
+          return true;
+        }
+      });
 
-          // Return early
-          if (sourcesNotYetInIdentityManager.length === 0) {
-            return;
-          }
+      // Return early
+      if (sourcesNotYetInIdentityManager.length === 0) {
+        return;
+      }
 
-          const infos = sourcesNotYetInIdentityManager.map((source) => {
-            return new OAuthInfo(source.auth.info);
-          });
+      const infos = sourcesNotYetInIdentityManager.map((source) => {
+        return new OAuthInfo(source.auth.info);
+      });
 
-          IdentityManager.registerOAuthInfos(infos);
+      IdentityManager.registerOAuthInfos(infos);
 
-          // Some layer sources may  have been marked to resolve credentials immediately, otherwise the layers might prompt
-          // for additional login prompts. Filter out only the layer sources that have that requirement and fetch the credentials
-          // from the server.
-          const sourcesWithImmediateCredentialResolve = sourcesNotYetInIdentityManager.filter(
-            (source) => source.auth.forceCredentialFetch
-          );
+      // Some layer sources may  have been marked to resolve credentials immediately, otherwise the layers might prompt
+      // for additional login prompts. Filter out only the layer sources that have that requirement and fetch the credentials
+      // from the server.
+      const sourcesWithImmediateCredentialResolve = sourcesNotYetInIdentityManager.filter(
+        (source) => source.auth.forceCredentialFetch
+      );
 
-          // Return early
-          if (sourcesWithImmediateCredentialResolve.length === 0) {
-            return;
-          }
+      // Return early
+      if (sourcesWithImmediateCredentialResolve.length === 0) {
+        return;
+      }
 
-          sourcesWithImmediateCredentialResolve.forEach((source) => {
-            const url = source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl;
+      sourcesWithImmediateCredentialResolve.forEach((source) => {
+        const url = source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl;
 
-            IdentityManager.getCredential(url);
-          });
+        IdentityManager.getCredential(url);
+      });
 
-          return;
-        });
+      return;
     } else {
       return;
     }
@@ -569,7 +530,7 @@ export class EsriMapService {
 
       const inverted = parent.resolvedLayer;
 
-      (inverted as unknown as esri.GroupLayerProperties).layers = layers;
+      (inverted as unknown as __esri.GroupLayerProperties).layers = layers;
 
       return inverted;
     }
@@ -582,8 +543,8 @@ export class EsriMapService {
    *
    * @param {string} id Layer id reference
    */
-  public findLayerById(id: string): esri.Layer {
-    const map: esri.Map = this._modules.map;
+  public findLayerById(id: string): Layer {
+    const map: EsriMap = this._modules.map;
     const layer = map.findLayerById(id);
 
     if (!layer) {
@@ -605,7 +566,7 @@ export class EsriMapService {
   }
 
   public removeLayerById(id: string): void {
-    const map: esri.Map = this._modules.map;
+    const map: EsriMap = this._modules.map;
     const layer = map.findLayerById(id);
 
     if (!layer) {
@@ -621,7 +582,7 @@ export class EsriMapService {
    * @param {string} id Unique string id for the layer.
    */
   public layerExists(id: string): boolean {
-    const map: esri.Map = this._modules.map;
+    const map: EsriMap = this._modules.map;
     if (this._modules.map) {
       return map.findLayerById(id) !== undefined;
     } else {
@@ -701,7 +662,7 @@ export class EsriMapService {
     }, [] as string[]);
 
     this.searchService
-      .search<esri.Graphic>({
+      .search<__esri.Graphic>({
         returnObservable: true,
         sources: repeatedDataset,
         values: extractionResult.identifiersList
@@ -712,10 +673,10 @@ export class EsriMapService {
             const primaryGraphic = resultItem.features[0];
             const clonedGraphic = { ...primaryGraphic };
             (<{ type: unknown }>clonedGraphic.geometry).type = getGeometryType(primaryGraphic.geometry);
-            collection.push(clonedGraphic as esri.Graphic);
+            collection.push(clonedGraphic as __esri.Graphic);
           }
           return collection;
-        }, [] as esri.Graphic[]);
+        }, [] as __esri.Graphic[]);
 
         if (validGraphics.length) {
           this.selectFeatures({
@@ -805,7 +766,7 @@ export class EsriMapService {
     if (this.layerExists(source.id)) {
       // If the layer has been added before, graphics will simply be replaced
       this.findLayerOrCreateFromSource(source)
-        .then((layer: esri.GraphicsLayer) => {
+        .then((layer: GraphicsLayer) => {
           layer.removeAll();
           layer.addMany(features);
           return layer;
@@ -828,7 +789,7 @@ export class EsriMapService {
     } else {
       // If the layer has not been added before, instantiate it with the features as a source
       this.findLayerOrCreateFromSource(Object.assign(source, { graphics: features }))
-        .then((layer: esri.GraphicsLayer) => {
+        .then((layer: GraphicsLayer) => {
           if (properties.shouldShowPopup) {
             this._hitTest.next({ graphics: layer.graphics.toArray(), popupComponent: properties.popupComponent });
           }
@@ -857,7 +818,7 @@ export class EsriMapService {
       // Source object
       const layer = Object.assign(source);
 
-      this.findLayerOrCreateFromSource(layer).then((l: esri.GraphicsLayer) => {
+      this.findLayerOrCreateFromSource(layer).then((l: GraphicsLayer) => {
         l.removeAll();
       });
     }
@@ -869,7 +830,7 @@ export class EsriMapService {
    *  Zooms to a collection of graphics at a specified zoom.
    */
   public zoomTo(properties: ZoomProperties) {
-    return (<esri.MapView>this._modules.view).goTo({
+    return (<MapView>this._modules.view).goTo({
       target: properties.graphics,
       zoom: properties.zoom
     });
@@ -881,36 +842,34 @@ export class EsriMapService {
    * Calculates the longest edge of the graphic collection envelope and uses that
    * value to determine a best-fit zoom level.
    */
-  public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
-    return this.moduleProvider.require(['GeometryEngine']).then(([GeometryEngine]: [esri.geometryEngine]) => {
-      const geometries: esri.Geometry[] = graphics.map((graphic) => graphic.geometry);
-      const result = GeometryEngine.union(geometries);
+  public computeZoomLevel(graphics: Array<__esri.Graphic>): Promise<number> {
+    const geometries: __esri.Geometry[] = graphics.map((graphic) => graphic.geometry);
+    const result = geometryEngine.union(geometries);
 
-      if (result.extent) {
-        const xMin = result.extent.xmin;
-        const xMax = result.extent.xmax;
-        const yMin = result.extent.ymin;
-        const yMax = result.extent.ymax;
+    if (result.extent) {
+      const xMin = result.extent.xmin;
+      const xMax = result.extent.xmax;
+      const yMin = result.extent.ymin;
+      const yMax = result.extent.ymax;
 
-        const xDiff = xMax - xMin;
-        const yDiff = yMax - yMin;
+      const xDiff = xMax - xMin;
+      const yDiff = yMax - yMin;
 
-        const maximum = Math.max(xDiff, yDiff);
+      const maximum = Math.max(xDiff, yDiff);
 
-        if (maximum <= 0.0001) {
-          return 20;
-        } else if (maximum > 0.0001 && maximum <= 0.004) {
-          return 19;
-        } else if (maximum > 0.004 && maximum <= 0.01) {
-          return 17;
-        } else {
-          return undefined;
-        }
+      if (maximum <= 0.0001) {
+        return Promise.resolve(20);
+      } else if (maximum > 0.0001 && maximum <= 0.004) {
+        return Promise.resolve(19);
+      } else if (maximum > 0.004 && maximum <= 0.01) {
+        return Promise.resolve(17);
       } else {
-        // Return a default value
-        return 19;
+        return Promise.resolve(undefined);
       }
-    });
+    } else {
+      // Return a default value
+      return Promise.resolve(19);
+    }
   }
 }
 
@@ -919,7 +878,7 @@ export interface MapConfig {
   view: ViewProperties;
 }
 
-interface MapProperties extends esri.MapProperties {
+interface MapProperties extends __esri.MapProperties {
   basemap:
     | BaseMapProperties
     | (
@@ -943,15 +902,15 @@ interface MapProperties extends esri.MapProperties {
       );
 }
 
-export interface BaseMapProperties extends esri.BasemapProperties {
+export interface BaseMapProperties extends __esri.BasemapProperties {
   baseLayers: [LayerProperties];
 }
 
 interface LayerProperties
-  extends esri.LayerProperties,
-    esri.TileLayerProperties,
-    esri.VectorTileLayerProperties,
-    esri.WMSLayerProperties {
+  extends __esri.LayerProperties,
+    __esri.TileLayerProperties,
+    __esri.VectorTileLayerProperties,
+    __esri.WMSLayerProperties {
   type: string;
 }
 
@@ -959,8 +918,8 @@ interface LayerProperties
  * Locally stored esri map and view class instances
  */
 export interface MapServiceInstance {
-  map: esri.Map;
-  view: esri.MapView | esri.SceneView;
+  map: EsriMap;
+  view: MapView | SceneView;
 }
 
 type NullableMapServiceInstance = Partial<MapServiceInstance>;
@@ -974,7 +933,7 @@ interface SelectFeaturesProperties {
   /**
    * Esri graphic feature array
    */
-  graphics: esri.Graphic[];
+  graphics: __esri.Graphic[];
 
   /**
    * If set to true, will open up popup for the first element in the graphics property.
@@ -995,12 +954,12 @@ interface SelectFeaturesProperties {
 }
 
 interface ZoomProperties {
-  graphics: esri.Graphic[];
+  graphics: __esri.Graphic[];
   zoom?: number;
 }
 
 export interface HitTestSnapshot {
-  graphics: esri.Graphic[];
+  graphics: __esri.Graphic[];
 
   /**
    * Cases justifying this property include search result feature selection which default
@@ -1021,7 +980,7 @@ export interface MapViewProperties {
   /**
    * Native ArcGIS JS MapView Properties
    */
-  properties: esri.MapViewProperties;
+  properties: __esri.MapViewProperties;
 }
 
 export interface SceneViewProperties {
@@ -1033,7 +992,7 @@ export interface SceneViewProperties {
   /**
    * Native ArcGIS JS SceneView Properties
    */
-  properties: esri.SceneViewProperties;
+  properties: __esri.SceneViewProperties;
 }
 
 export type ViewProperties = MapViewProperties | SceneViewProperties;

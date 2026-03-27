@@ -4,7 +4,6 @@ import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
 import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-click-coordinates',
@@ -34,7 +33,7 @@ export class ClickCoordinatesComponent implements OnInit {
   private $immediateClickHandler() {
     return pipe(
       switchMap((view: MapServiceInstance['view']) => {
-        let immediateClickHandle: esri.Handle;
+        let immediateClickHandle: __esri.Handle;
 
         const addHandler = (handler) => {
           immediateClickHandle = view.on('immediate-click', handler);
@@ -45,7 +44,7 @@ export class ClickCoordinatesComponent implements OnInit {
         };
 
         return fromEventPattern(addHandler, removeHandler).pipe(
-          map((event: esri.ViewImmediateClickEvent) => {
+          map((event: __esri.ViewImmediateClickEvent) => {
             return {
               latitude: event.mapPoint.latitude.toFixed(5),
               longitude: event.mapPoint.longitude.toFixed(5)

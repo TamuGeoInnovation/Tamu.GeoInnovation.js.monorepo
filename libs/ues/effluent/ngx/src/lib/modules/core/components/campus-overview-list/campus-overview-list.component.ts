@@ -6,7 +6,6 @@ import { IEffluentTierMetadata } from '../../../types/types';
 import { EffluentZonesService } from '../../services/effluent-zones.service';
 import { ResultsService } from '../../../data-access/results/results.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-campus-overview-list',
@@ -14,7 +13,7 @@ import esri = __esri;
   styleUrls: ['./campus-overview-list.component.scss']
 })
 export class CampusOverviewListComponent implements OnInit {
-  public zones: Observable<Array<esri.Graphic>>;
+  public zones: Observable<Array<__esri.Graphic>>;
   public buildings: Observable<Array<IEffluentTierMetadata>>;
 
   constructor(private ez: EffluentZonesService, private rs: ResultsService) {}

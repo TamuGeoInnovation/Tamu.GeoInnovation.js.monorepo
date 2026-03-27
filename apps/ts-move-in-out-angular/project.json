@@ -7,7 +7,9 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/ts-move-in-out-angular",
         "index": "apps/ts-move-in-out-angular/src/index.html",
@@ -22,9 +24,16 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
-        "styles": ["apps/ts-move-in-out-angular/src/styles.scss"],
+        "styles": [
+          "apps/ts-move-in-out-angular/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -84,12 +93,17 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/ts-move-in-out-angular/src/**/*.ts", "apps/ts-move-in-out-angular/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/ts-move-in-out-angular/src/**/*.ts",
+          "apps/ts-move-in-out-angular/src/**/*.html"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/ts-move-in-out-angular"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/ts-move-in-out-angular"
+      ],
       "options": {
         "jestConfig": "apps/ts-move-in-out-angular/jest.config.ts",
         "passWithNoTests": true

@@ -6,7 +6,6 @@ import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/resp
 
 import { LayerListService } from '../../services/layer-list.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-layer-list',
@@ -14,7 +13,7 @@ import esri = __esri;
   styleUrls: ['./layer-list.component.scss']
 })
 export class LayerListComponent implements OnInit {
-  public layers: Observable<Array<esri.ListItem>>;
+  public layers: Observable<Array<__esri.ListItem>>;
 
   public responsive: ResponsiveSnapshot;
 

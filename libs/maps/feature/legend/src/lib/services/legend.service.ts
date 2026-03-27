@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
+import { fromEventPattern, Observable, ReplaySubject } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import LegendViewModel from '@arcgis/core/widgets/Legend/LegendViewModel';
 
-import esri = __esri;
+import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable()
 export class LegendService {
-  private _legendItems: ReplaySubject<Array<esri.ActiveLayerInfo>> = new ReplaySubject(1);
-  public legendItems: Observable<Array<esri.ActiveLayerInfo>> = this._legendItems.asObservable();
+  private _legendItems: ReplaySubject<Array<__esri.ActiveLayerInfo>> = new ReplaySubject(1);
+  public legendItems: Observable<Array<__esri.ActiveLayerInfo>> = this._legendItems.asObservable();
 
   constructor(
-    private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService,
     private env: EnvironmentService
   ) {}
@@ -22,8 +21,8 @@ export class LegendService {
     const respectLayerVisibility = options?.respectLayerVisibility ?? true;
     const excludedLayerIds = new Set(options?.excludedLayerIds ?? []);
 
-    return combineLatest([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).pipe(
-      switchMap(([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
+    return this.mapService.store.pipe(
+      switchMap((instances: MapServiceInstance) => {
         const model = new LegendViewModel({
           view: instances.view,
           respectLayerVisibility
@@ -62,8 +61,8 @@ interface LegendOptions {
 }
 
 export interface IActiveLayerInfosChangeEvent {
-  added: Array<esri.ActiveLayerInfo>;
-  moved: Array<esri.ActiveLayerInfo>;
-  removed: Array<esri.ActiveLayerInfo>;
-  target: esri.LegendViewModel['activeLayerInfos'];
+  added: Array<__esri.ActiveLayerInfo>;
+  moved: Array<__esri.ActiveLayerInfo>;
+  removed: Array<__esri.ActiveLayerInfo>;
+  target: __esri.LegendViewModel['activeLayerInfos'];
 }

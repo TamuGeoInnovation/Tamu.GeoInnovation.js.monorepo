@@ -7,7 +7,6 @@ import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { GameDaySettingsService } from '../../../map/services/settings/game-day-settings.service';
 import { FootballSettings, GAMEDAY_EVENT_NAMES, SHOWDOWN_EVENT } from '../../../../interfaces/football.interface';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-sidebar-reference',
@@ -36,12 +35,12 @@ export class SidebarReferenceComponent implements OnInit {
 
   public onSearchResult(result: SearchSelection<unknown>): void {
     this.helper.handleSearchResultFeatureSelection(result as SearchSelection<object>).subscribe((res) => {
-      const tPoint = TripPoint.from(res as SearchSelection<esri.Graphic>);
+      const tPoint = TripPoint.from(res as SearchSelection<__esri.Graphic>);
 
       this.mapService.selectFeatures({
         graphics: [tPoint.toEsriGraphic()],
         shouldShowPopup: true,
-        popupComponent: (res as SearchSelection<esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
+        popupComponent: (res as SearchSelection<__esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
       });
     });
   }

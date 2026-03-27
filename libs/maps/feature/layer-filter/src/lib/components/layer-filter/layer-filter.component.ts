@@ -14,11 +14,11 @@ import {
   takeUntil
 } from 'rxjs/operators';
 
-import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import FeatureFilter from '@arcgis/core/views/layers/support/FeatureFilter';
+
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { makeWhere } from '@tamu-gisc/common/utils/database';
-
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-layer-filter',
@@ -28,7 +28,6 @@ import esri = __esri;
 export class LayerFilterComponent implements OnInit, OnDestroy {
   constructor(
     private layerList: LayerListService,
-    private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService
   ) {}
   /**
@@ -42,7 +41,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
   public reference: string;
 
   @Input()
-  public filterGeometry: Observable<esri.Graphic>;
+  public filterGeometry: Observable<__esri.Graphic>;
 
   @Input()
   public spatialRelationship: 'intersects' | 'contains' | 'disjoint' = 'intersects';
@@ -57,18 +56,16 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
   public filterCompleted: EventEmitter<string> = new EventEmitter();
 
   @Output()
-  public filterQueryResults: EventEmitter<esri.Graphic[]> = new EventEmitter();
+  public filterQueryResults: EventEmitter<__esri.Graphic[]> = new EventEmitter();
 
   /**
    * Resolved layer from layer list service.
    */
-  public layer: Observable<esri.FeatureLayer>;
+  public layer: Observable<__esri.FeatureLayer>;
 
-  private layerView: Observable<esri.FeatureLayerView>;
+  private layerView: Observable<__esri.FeatureLayerView>;
 
-  private mapView: Observable<esri.View>;
-
-  private featureFilterModule: Observable<esri.FeatureFilterConstructor>;
+  private mapView: Observable<__esri.View>;
 
   /**
    * Field operator definition dictionary.
@@ -107,7 +104,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
   /**
    * Subjects emitting the user-selected select values.
    */
-  public field: Subject<esri.Field> = new Subject();
+  public field: Subject<__esri.Field> = new Subject();
   public operator: Subject<string> = new Subject();
   public value: Subject<string> = new Subject();
 
@@ -139,7 +136,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
               returnDistinctValues: true,
               outFields: [field.name],
               where: '1=1'
-            }) as unknown as Promise<esri.FeatureSet>
+            }) as unknown as Promise<__esri.FeatureSet>
           );
         }),
         pluck('features'),
@@ -168,9 +165,6 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
 
   public ngOnInit() {
-    // Get FeatureFilter class
-    this.featureFilterModule = from(this.moduleProvider.require(['FeatureFilter'])).pipe(pluck('0'));
-
     // Get only the view from the map service store instance.
     this.mapView = this.mapService.store.pipe(pluck('view'));
 
@@ -181,7 +175,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
       map((listItem) => {
         const layerView = listItem.find((l) => l.layer.id === this.reference);
 
-        return layerView.layer as esri.FeatureLayer;
+        return layerView.layer as __esri.FeatureLayer;
       }),
       take(1),
       shareReplay(1)
@@ -190,13 +184,13 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
     // Once the map view and layer are loaded, get the layerview for the feature layer.
     this.layerView = combineLatest([this.mapView, this.layer]).pipe(
       switchMap(([view, layer]) => {
-        return from(view.whenLayerView(layer) as unknown as Promise<esri.FeatureLayerView>);
+        return from(view.whenLayerView(layer) as unknown as Promise<__esri.FeatureLayerView>);
       })
     );
 
-    combineLatest([this.filterExpression, this.featureFilterModule, this.filterGeometry])
+    combineLatest([this.filterExpression, this.filterGeometry])
       .pipe(
-        switchMap(([where, FeatureFilter, graphic]) => {
+        switchMap(([where, graphic]) => {
           return zip([
             of(
               new FeatureFilter({
@@ -220,7 +214,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
                   const query = featureFilter.createQuery();
                   query.outFields = ['*'];
 
-                  return from(layer.queryFeatures(query) as unknown as Promise<esri.FeatureSet>);
+                  return from(layer.queryFeatures(query) as unknown as Promise<__esri.FeatureSet>);
                 })
               ),
               of(false)

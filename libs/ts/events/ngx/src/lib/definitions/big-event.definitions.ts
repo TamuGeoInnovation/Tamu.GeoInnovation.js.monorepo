@@ -8,7 +8,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum BIG_EVENT_LAYERS {
   TRAFFIC = 'big-event-traffic',
@@ -91,7 +90,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'Leave Kickoff,Road Closed',
@@ -100,7 +99,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
               type: 'simple-line',
               color: 'rgb(230, 0, 0)',
               width: 2.5
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'To Kickoff,Expect Delays',
@@ -114,7 +113,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'To Kickoff,Fast Route ',
@@ -128,7 +127,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'To Kickoff,Road Closed',
@@ -137,7 +136,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
               type: 'simple-line',
               color: 'rgb(230, 0, 0)',
               width: 2.5
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'Tool Dropoff,Expect Delays',
@@ -151,7 +150,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'Tool Dropoff,Fastest Route',
@@ -165,7 +164,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'Tool Dropoff,Road Closed',
@@ -174,7 +173,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
               type: 'simple-line',
               color: 'rgb(230, 0, 0)',
               width: 2.5
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           }
         ]
       }
@@ -201,7 +200,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
             color: [230, 0, 0, 1],
             width: 1
           }
-        } as unknown as esri.SimpleFillSymbolProperties
+        } as unknown as __esri.SimpleFillSymbolProperties
       }
     }
   } as unknown as LayerSource,

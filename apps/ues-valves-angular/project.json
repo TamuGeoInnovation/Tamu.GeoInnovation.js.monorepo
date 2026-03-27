@@ -20,9 +20,16 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
-        "styles": ["apps/ues-valves-angular/src/styles.scss"],
+        "styles": [
+          "apps/ues-valves-angular/src/styles.scss"
+        ],
         "scripts": [],
         "vendorChunk": true,
         "extractLicenses": false,
@@ -114,7 +121,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/ues-valves-angular"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/ues-valves-angular"
+      ],
       "options": {
         "jestConfig": "apps/ues-valves-angular/jest.config.ts",
         "passWithNoTests": true
@@ -123,10 +132,17 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/ues-valves-angular/src/**/*.ts", "apps/ues-valves-angular/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/ues-valves-angular/src/**/*.ts",
+          "apps/ues-valves-angular/src/**/*.html"
+        ]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"]
+  "implicitDependencies": [
+    "assets",
+    "sass",
+    "ues-sass"
+  ]
 }

@@ -12,7 +12,6 @@ export enum FAMILY_WEEKEND_LAYERS {
   VISITOR_PARKING = 'family-weekend-visitor-parking'
 }
 
-import esri = __esri;
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Family_Weekend/MapServer';
 const visitorParkingUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer';
@@ -76,7 +75,7 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
                 color: [0, 77, 168, 1],
                 width: 1
               }
-            } as unknown as esri.SimpleFillSymbolProperties,
+            } as unknown as __esri.SimpleFillSymbolProperties,
             label: 'Visitor Parking'
           }
         ]

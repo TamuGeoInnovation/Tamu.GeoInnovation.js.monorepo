@@ -8,7 +8,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum VISITOR_PARKING_LAYERS {
   VISITOR_KIOSKS = 'Visitor Kiosks',
@@ -73,7 +72,7 @@ export const VisitorParkingColdLayerSources: LayerSource[] = [
             symbol: {
               type: 'simple-fill',
               color: 'rgb(0, 77, 168)'
-            } as unknown as esri.SimpleFillSymbolProperties
+            } as unknown as __esri.SimpleFillSymbolProperties
           }
         ]
       }

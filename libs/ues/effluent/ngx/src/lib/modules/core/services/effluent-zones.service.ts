@@ -5,24 +5,23 @@ import { shareReplay, switchMap, map } from 'rxjs/operators';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
 })
 export class EffluentZonesService {
   private zonesResourceUrl: string;
-  private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
+  private modules: Observable<[__esri.QueryConstructor, __esri.QueryTaskConstructor]>;
 
   constructor(private env: EnvironmentService, private moduleProvider: EsriModuleProviderService) {
     this.zonesResourceUrl = this.env.value('effluentZonesUrl');
 
     this.modules = from(this.moduleProvider.require(['Query', 'QueryTask'])).pipe(shareReplay(1)) as Observable<
-      [esri.QueryConstructor, esri.QueryTaskConstructor]
+      [__esri.QueryConstructor, __esri.QueryTaskConstructor]
     >;
   }
 
-  public getZonesForTier(geometry?: esri.Geometry, tier?: number | string): Observable<Array<esri.Graphic>> {
+  public getZonesForTier(geometry?: __esri.Geometry, tier?: number | string): Observable<Array<__esri.Graphic>> {
     return this.modules.pipe(
       switchMap(([Query, QueryTask]) => {
         // Early return if none of the optional parameters are provided.

@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
@@ -54,7 +53,7 @@ const crossCountryParkingRenderer: FeatureRenderer = {
         type: 'simple-fill',
         color: [123, 35, 42, 255],
         outline: null
-      } as unknown as esri.SymbolProperties
+      } as unknown as __esri.SymbolProperties
     }
   ]
 };

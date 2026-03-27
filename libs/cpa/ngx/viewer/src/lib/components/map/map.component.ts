@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -23,15 +22,15 @@ export class MapComponent implements OnInit {
     }
   };
 
-  public map: esri.Map;
-  public view: esri.MapView;
+  public map: __esri.Map;
+  public view: __esri.MapView;
 
   constructor(private mapService: EsriMapService) {}
 
   public ngOnInit() {
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;
-      this.view = instances.view as esri.MapView;
+      this.view = instances.view as __esri.MapView;
     });
   }
 }

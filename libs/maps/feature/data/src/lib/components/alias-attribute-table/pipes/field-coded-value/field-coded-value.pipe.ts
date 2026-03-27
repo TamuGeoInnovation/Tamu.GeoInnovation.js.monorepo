@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import esri = __esri;
 
 /**
  * Accepts a field object and a coded value and returns the named (user-friendly)
@@ -10,7 +9,7 @@ import esri = __esri;
   name: 'fieldCodedValue'
 })
 export class FieldCodedValuePipe implements PipeTransform {
-  public transform(field: esri.Field, codedValue: string | number): string | number {
+  public transform(field: __esri.Field, codedValue: string | number): string | number {
     if (!field || !field.domain) {
       return codedValue;
     }
@@ -21,7 +20,7 @@ export class FieldCodedValuePipe implements PipeTransform {
       return codedValue;
     }
 
-    const namedValue = (field.domain as esri.CodedValueDomain).getName(codedValue);
+    const namedValue = (field.domain as __esri.CodedValueDomain).getName(codedValue);
 
     return namedValue;
   }

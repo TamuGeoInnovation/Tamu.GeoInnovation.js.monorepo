@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum VOLLEYBALL_PARKING_LAYERS {
   VISITOR_KIOSK = 'volleyball-parking-visitor-kiosk',
@@ -69,7 +68,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
           url: '/assets/images/icons/transportation/Paid-Parking.png',
           width: 22,
           height: 22
-        } as unknown as esri.SymbolProperties
+        } as unknown as __esri.SymbolProperties
       }
     }
   } as unknown as LayerSource,
@@ -115,7 +114,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
           type: 'simple-fill',
           color: [241, 184, 96, 255],
           outline: null
-        } as unknown as esri.SymbolProperties,
+        } as unknown as __esri.SymbolProperties,
         uniqueValueInfos: [
           {
             value: 'AnyValidRec',
@@ -124,7 +123,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
               type: 'simple-fill',
               color: [27, 72, 94, 255],
               outline: null
-            } as unknown as esri.SymbolProperties
+            } as unknown as __esri.SymbolProperties
           },
           {
             value: 'EventParking',
@@ -133,7 +132,7 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
               type: 'simple-fill',
               color: [123, 35, 42, 255],
               outline: null
-            } as unknown as esri.SymbolProperties
+            } as unknown as __esri.SymbolProperties
           }
         ]
       }
@@ -155,9 +154,9 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
           title: VolleyballParkingDefinitions.SAFETY_FIRST.name,
           visible: true,
           popupEnabled: false
-        } as unknown as esri.SublayerProperties
+        } as unknown as __esri.SublayerProperties
       ]
-    } as unknown as esri.MapImageLayerProperties
+    } as unknown as __esri.MapImageLayerProperties
   }
 ];
 

@@ -2,7 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 
 import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +23,7 @@ export class FeatureHighlightService implements OnDestroy {
       // Do stuff here if a layer is provided
     } else if (props.features) {
       // Do stuff here if only features are provided
-      const feature = props.features instanceof Array ? props.features[0] : (props.features as esri.Graphic);
+      const feature = props.features instanceof Array ? props.features[0] : (props.features as __esri.Graphic);
 
       if (feature === undefined) {
         console.warn('No highlight features in provided props.');
@@ -38,7 +37,7 @@ export class FeatureHighlightService implements OnDestroy {
         this._store[feature.layer.id].remove();
       }
 
-      const layerView = (await this._ms.view.whenLayerView(feature.layer)) as esri.FeatureLayerView;
+      const layerView = (await this._ms.view.whenLayerView(feature.layer)) as __esri.FeatureLayerView;
 
       this._store[feature.layer.id] = layerView.highlight(props.features);
     }
@@ -62,12 +61,12 @@ export class FeatureHighlightService implements OnDestroy {
 }
 
 export interface HighlightFeatureStore {
-  [layerId: string]: esri.Handle;
+  [layerId: string]: __esri.Handle;
 }
 
 export interface HighlightFeatureOptions {
-  layer?: esri.Layer | string;
-  features?: esri.Graphic | Array<esri.Graphic>;
+  layer?: __esri.Layer | string;
+  features?: __esri.Graphic | Array<__esri.Graphic>;
   options?: {
     /**
      * Clears highlights on any other features, regardless of layer.

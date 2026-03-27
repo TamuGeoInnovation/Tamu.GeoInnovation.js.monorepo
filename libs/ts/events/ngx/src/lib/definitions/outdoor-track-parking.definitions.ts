@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum OUTDOOR_TRACK_PARKING_LAYERS {
   VISITOR_KIOSK = 'outdoor-track-parking-visitor-kiosk',
@@ -114,9 +113,9 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
           title: OutdoorTrackParkingDefinitions.SAFETY_FIRST.name,
           visible: true,
           popupEnabled: false
-        } as unknown as esri.SublayerProperties
+        } as unknown as __esri.SublayerProperties
       ]
-    } as unknown as esri.MapImageLayerProperties
+    } as unknown as __esri.MapImageLayerProperties
   }
 ];
 

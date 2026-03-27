@@ -9,7 +9,6 @@ import { MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc
 import { StrapiService } from '../../data-access/strapi.service';
 import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-kissingbug-map',
@@ -38,8 +37,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   };
 
-  public map: esri.Map;
-  public view: esri.MapView;
+  public map: __esri.Map;
+  public view: __esri.MapView;
 
   public activeBug = '0';
   public activeMonth = 0;
@@ -72,7 +71,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;
-      this.view = instances.view as esri.MapView;
+      this.view = instances.view as __esri.MapView;
 
       this.view.on('mouse-wheel', (evt) => {
         // prevents zooming with the mouse-wheel event
@@ -84,7 +83,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    this.mp.require(['Expand']).then(([Expand]: [esri.ExpandConstructor]) => {
+    this.mp.require(['Expand']).then(([Expand]: [__esri.ExpandConstructor]) => {
       // TODO: Should not use document to query for elements
       const bugSelector = document.getElementById('bug-selector');
 
@@ -128,7 +127,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.mp
       .require(['FeatureLayer', 'Polygon', 'Field'])
       .then(
-        ([FeatureLayer, Polygon, Field]: [esri.FeatureLayerConstructor, esri.PolygonConstructor, esri.FieldConstructor]) => {
+        ([FeatureLayer, Polygon, Field]: [__esri.FeatureLayerConstructor, __esri.PolygonConstructor, __esri.FieldConstructor]) => {
           const template = {
             title: '{NAME} - {FIPS}',
             content: 'Cases: {Count}'
@@ -139,7 +138,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
           forkJoin([countyData, bugData]).subscribe((observer) => {
             // Remove the bug layer so we can update it. Without this section we end up adding multiple layers and it becomes a mess
-            const featureLayer = this.map.findLayerById(this.bugLayerId) as esri.FeatureLayer;
+            const featureLayer = this.map.findLayerById(this.bugLayerId) as __esri.FeatureLayer;
             if (featureLayer) {
               this.map.remove(featureLayer);
             }
@@ -224,7 +223,7 @@ export class MapComponent implements OnInit, AfterViewInit {
                     });
 
                     if (graphics.length > 0) {
-                      const graphic = graphics[0].graphic as esri.Graphic;
+                      const graphic = graphics[0].graphic as __esri.Graphic;
                       if (highlight) {
                         highlight.remove();
                       }
@@ -277,7 +276,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       field: 'Count',
       defaultSymbol: { type: 'simple-fill' },
       classBreakInfos: bins
-    } as unknown as esri.ClassBreaksRenderer;
+    } as unknown as __esri.ClassBreaksRenderer;
 
     return renderer;
   }

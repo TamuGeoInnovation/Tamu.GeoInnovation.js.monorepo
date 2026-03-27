@@ -8,7 +8,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum SAVANNAH_BANANAS_PARKING_LAYERS {
   PEDESTRIAN_PATH = 'savannah-bananas-pedestrian-path',
@@ -53,7 +52,7 @@ const BananasParkingLotsRenderer = {
     style: 'solid',
     color: BananaPalette.bananaCream,
     outline: { color: BananaPalette.outlineDark, width: '1' }
-  } as unknown as esri.SimpleFillSymbolProperties,
+  } as unknown as __esri.SimpleFillSymbolProperties,
   uniqueValueInfos: [
     {
       value: '$10 Parking or Any Valid Texas A&M Permit',
@@ -63,7 +62,7 @@ const BananasParkingLotsRenderer = {
         style: 'solid',
         color: BananaPalette.bananaBright,
         outline: { color: BananaPalette.outlineDark, width: '1' }
-      } as unknown as esri.SimpleFillSymbolProperties
+      } as unknown as __esri.SimpleFillSymbolProperties
     },
     {
       value: '$10 Accessible/Event Parking',
@@ -73,7 +72,7 @@ const BananasParkingLotsRenderer = {
         style: 'solid',
         color: BananaPalette.peelGreen,
         outline: { color: BananaPalette.outlineDark, width: '1' }
-      } as unknown as esri.SimpleFillSymbolProperties
+      } as unknown as __esri.SimpleFillSymbolProperties
     },
     {
       value: '$10 Event Parking',
@@ -83,7 +82,7 @@ const BananasParkingLotsRenderer = {
         style: 'solid',
         color: BananaPalette.bananaGold,
         outline: { color: BananaPalette.outlineDark, width: '1' }
-      } as unknown as esri.SimpleFillSymbolProperties
+      } as unknown as __esri.SimpleFillSymbolProperties
     },
     {
       value: 'Lot Specific Permit Only',
@@ -93,7 +92,7 @@ const BananasParkingLotsRenderer = {
         style: 'solid',
         color: BananaPalette.navy,
         outline: { color: BananaPalette.outlineDark, width: '1' }
-      } as unknown as esri.SimpleFillSymbolProperties
+      } as unknown as __esri.SimpleFillSymbolProperties
     },
     {
       value: 'Reserved/$10 Accessible',
@@ -103,7 +102,7 @@ const BananasParkingLotsRenderer = {
         style: 'solid',
         color: BananaPalette.limeGreen,
         outline: { color: BananaPalette.outlineDark, width: '1' }
-      } as unknown as esri.SimpleFillSymbolProperties
+      } as unknown as __esri.SimpleFillSymbolProperties
     },
     {
       value: 'Reserved',
@@ -113,7 +112,7 @@ const BananasParkingLotsRenderer = {
         style: 'solid',
         color: BananaPalette.tailgaterOrange,
         outline: { color: BananaPalette.outlineDark, width: '1' }
-      } as unknown as esri.SimpleFillSymbolProperties
+      } as unknown as __esri.SimpleFillSymbolProperties
     },
     {
       value: 'Closure',
@@ -123,7 +122,7 @@ const BananasParkingLotsRenderer = {
         style: 'solid',
         color: BananaPalette.closureRed,
         outline: { color: BananaPalette.outlineDark, width: '1' }
-      } as unknown as esri.SimpleFillSymbolProperties
+      } as unknown as __esri.SimpleFillSymbolProperties
     }
   ]
 } as unknown;

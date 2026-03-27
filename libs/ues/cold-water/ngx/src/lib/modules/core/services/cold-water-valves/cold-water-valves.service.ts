@@ -7,16 +7,15 @@ import { UserService } from '@tamu-gisc/ues/common/ngx';
 
 import { IWhere } from '../../../info/pages/list/list.component';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ColdWaterValvesService {
-  public stats: Observable<Array<esri.StatisticDefinition>>;
+  public stats: Observable<Array<__esri.StatisticDefinition>>;
 
   private _selectedValveId: ReplaySubject<number> = new ReplaySubject(1);
-  private _extent: esri.Extent;
+  private _extent: __esri.Extent;
 
   public selectedValve: Observable<MappedValve>;
 
@@ -91,7 +90,7 @@ export class ColdWaterValvesService {
     );
   }
 
-  private processStats(featureSets: Observable<Array<esri.FeatureSet>>): Observable<IValveStats> {
+  private processStats(featureSets: Observable<Array<__esri.FeatureSet>>): Observable<IValveStats> {
     return featureSets.pipe(
       // Break up the results into individual feature sets
       switchMap((results) => from(results)),
@@ -189,10 +188,10 @@ export class ColdWaterValvesService {
     return this.mapService.store.pipe(
       take(1),
       switchMap((instance) => {
-        return from(instance.view.when() as Promise<esri.View>).pipe(switchMap(() => this.mapService.store.pipe(take(1))));
+        return from(instance.view.when() as Promise<__esri.View>).pipe(switchMap(() => this.mapService.store.pipe(take(1))));
       }),
       switchMap((instance) => {
-        const l = instance.map.findLayerById('cold-water-valves-layer') as esri.FeatureLayer;
+        const l = instance.map.findLayerById('cold-water-valves-layer') as __esri.FeatureLayer;
 
         if (!l) {
           console.warn('Could not find feature layer');
@@ -207,7 +206,7 @@ export class ColdWaterValvesService {
 
 type IValvePositionState = null | 'Open' | 'Closed';
 
-export interface IValve extends esri.Graphic {
+export interface IValve extends __esri.Graphic {
   attributes: {
     OBJECTID: number;
     Number: string;

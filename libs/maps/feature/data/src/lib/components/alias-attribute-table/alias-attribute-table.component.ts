@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 
 import { AttributeTableComponent } from '../attribute-table/attribute-table.component';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-alias-attribute-table',
@@ -11,5 +10,5 @@ import esri = __esri;
 })
 export class AliasAttributeTableComponent extends AttributeTableComponent {
   @Input()
-  public fields: Array<esri.Field>;
+  public fields: Array<__esri.Field>;
 }

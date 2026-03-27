@@ -5,7 +5,6 @@ import { EsriMapService, EsriModuleProviderService, MapConfig, MapServiceInstanc
 
 import { CorrectionService } from '../../services/correction/correction.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-correction-lite-map',
@@ -48,7 +47,7 @@ export class CorrectionLiteMapComponent implements OnInit {
     };
 
     forkJoin([from(this.mp.require(['BasemapToggle'])), this.ms.store.pipe(take(1))]).subscribe(
-      ([[BasemapToggle], instances]: [[esri.BasemapToggleConstructor], MapServiceInstance]) => {
+      ([[BasemapToggle], instances]: [[__esri.BasemapToggleConstructor], MapServiceInstance]) => {
         const toggle = new BasemapToggle({
           view: instances.view,
           nextBasemap: 'satellite'
@@ -77,7 +76,7 @@ export class CorrectionLiteMapComponent implements OnInit {
         id: this._correctionPointLayerId,
         title: 'Correction Point',
         listMode: 'hide'
-      })) as esri.GraphicsLayer;
+      })) as __esri.GraphicsLayer;
 
       if (layer.graphics.length > 0) {
         layer.removeAll();
@@ -89,7 +88,7 @@ export class CorrectionLiteMapComponent implements OnInit {
             type: 'point',
             x: parseFloat(cr.NewLongitude),
             y: parseFloat(cr.NewLatitude)
-          } as esri.geometryPoint,
+          } as __esri.geometryPoint,
           symbol: {
             type: 'simple-marker',
             style: 'circle',
@@ -99,8 +98,8 @@ export class CorrectionLiteMapComponent implements OnInit {
               color: '#000000',
               width: 1
             }
-          } as esri.SimpleMarkerSymbolProperties
-        } as unknown as esri.Graphic);
+          } as __esri.SimpleMarkerSymbolProperties
+        } as unknown as __esri.Graphic);
       }
     });
   }
@@ -111,7 +110,7 @@ export class CorrectionLiteMapComponent implements OnInit {
       id: this._focusedFeatureLayerId,
       title: 'Geocoded Original',
       listMode: 'hide'
-    })) as esri.GraphicsLayer;
+    })) as __esri.GraphicsLayer;
 
     if (layer.graphics.length > 0) {
       layer.removeAll();
@@ -122,7 +121,7 @@ export class CorrectionLiteMapComponent implements OnInit {
         type: 'point',
         x: feature['Longitude'],
         y: feature['Latitude']
-      } as esri.geometryPoint,
+      } as __esri.geometryPoint,
       symbol: {
         type: 'simple-marker',
         style: 'circle',
@@ -132,8 +131,8 @@ export class CorrectionLiteMapComponent implements OnInit {
           color: '#000000',
           width: 1
         }
-      } as esri.SimpleMarkerSymbolProperties
-    } as unknown as esri.Graphic);
+      } as __esri.SimpleMarkerSymbolProperties
+    } as unknown as __esri.Graphic);
 
     this.ms.zoomTo({
       graphics: [...layer.graphics],
@@ -142,7 +141,7 @@ export class CorrectionLiteMapComponent implements OnInit {
   }
 
   private async _clearCorrectionPointLayer() {
-    const layer = this.ms.findLayerById(this._correctionPointLayerId) as esri.GraphicsLayer;
+    const layer = this.ms.findLayerById(this._correctionPointLayerId) as __esri.GraphicsLayer;
 
     if (layer) {
       layer.removeAll();

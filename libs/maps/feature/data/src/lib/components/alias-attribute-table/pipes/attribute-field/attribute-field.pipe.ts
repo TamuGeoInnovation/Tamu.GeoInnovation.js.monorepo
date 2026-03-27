@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import esri = __esri;
 
 /**
  * Matches an attribute key (feature attribute) to a field objet and returns it.
@@ -9,7 +8,7 @@ import esri = __esri;
   name: 'attributeField'
 })
 export class AttributeFieldPipe implements PipeTransform {
-  public transform(field: string, fields: Array<esri.Field>): esri.Field {
+  public transform(field: string, fields: Array<__esri.Field>): __esri.Field {
     const match = fields.find((f) => f.name === field);
 
     return match;

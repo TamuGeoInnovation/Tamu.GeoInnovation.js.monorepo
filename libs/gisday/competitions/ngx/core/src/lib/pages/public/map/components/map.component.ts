@@ -5,7 +5,6 @@ import { BehaviorSubject, Observable, forkJoin, map, take } from 'rxjs';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -13,7 +12,7 @@ import esri = __esri;
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+  public filterFeatures: BehaviorSubject<__esri.Graphic[]> = new BehaviorSubject([]);
 
   constructor(private ms: EsriMapService, private env: EnvironmentService, private at: ActivatedRoute) {}
 

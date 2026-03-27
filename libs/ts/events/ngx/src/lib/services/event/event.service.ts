@@ -15,7 +15,6 @@ import {
 } from '../../interfaces/special-event.interface';
 import { EventSettingsService } from '../settings/event-settings.service';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +25,8 @@ export class EventService {
 
   public specialEventLayerReferences: Array<string>;
 
-  private _map: esri.Map;
-  private _view: esri.MapView;
+  private _map: __esri.Map;
+  private _view: __esri.MapView;
 
   constructor(
     private readonly env: EnvironmentService,
@@ -53,7 +52,7 @@ export class EventService {
 
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
-      this._view = instanced.view as esri.MapView;
+      this._view = instanced.view as __esri.MapView;
       this.drawEvent();
     });
   }
@@ -100,18 +99,18 @@ export class EventService {
                           // If there's already a definition expression set, use the deconflicting strategy to determine how to apply the new expression.
                           // If there's no deconflicting strategy, default to 'append-and'
 
-                          const existingExpression = (source as esri.FeatureLayer).definitionExpression;
+                          const existingExpression = (source as __esri.FeatureLayer).definitionExpression;
 
                           if (existingExpression) {
                             const deconflictingStrategy =
                               correspondingOption.deconflictingStrategy || ConversionDeconflictingStrategy.APPEND_AND;
 
                             if (deconflictingStrategy === ConversionDeconflictingStrategy.APPEND_AND) {
-                              (source as esri.FeatureLayer).definitionExpression = `(${existingExpression}) AND (${value})`;
+                              (source as __esri.FeatureLayer).definitionExpression = `(${existingExpression}) AND (${value})`;
                             } else if (deconflictingStrategy === ConversionDeconflictingStrategy.APPEND_OR) {
-                              (source as esri.FeatureLayer).definitionExpression = `(${existingExpression}) OR (${value})`;
+                              (source as __esri.FeatureLayer).definitionExpression = `(${existingExpression}) OR (${value})`;
                             } else if (deconflictingStrategy === ConversionDeconflictingStrategy.REPLACE) {
-                              (source as esri.FeatureLayer).definitionExpression = value;
+                              (source as __esri.FeatureLayer).definitionExpression = value;
                             } else {
                               // Ignore
                               console.warn(
@@ -119,7 +118,7 @@ export class EventService {
                               );
                             }
                           } else {
-                            (source as esri.FeatureLayer).definitionExpression = value;
+                            (source as __esri.FeatureLayer).definitionExpression = value;
                           }
                         }
 
@@ -131,8 +130,8 @@ export class EventService {
                       }
 
                       // Only set definition expression if we have a value and it's not already set by expression above
-                      if (value !== null && !(source as esri.FeatureLayer).definitionExpression) {
-                        (source as esri.FeatureLayer).definitionExpression = `${layer.field} = ${
+                      if (value !== null && !(source as __esri.FeatureLayer).definitionExpression) {
+                        (source as __esri.FeatureLayer).definitionExpression = `${layer.field} = ${
                           typeof value === 'string' ? `'${value}'` : value
                         }`;
                       }
@@ -183,7 +182,7 @@ export class EventService {
    *
    * @returns Attribute value list
    */
-  private getAttributeList(features: esri.Graphic[], attribute: string): string[] {
+  private getAttributeList(features: __esri.Graphic[], attribute: string): string[] {
     return features.map((f) => f.attributes[attribute]);
   }
 
@@ -191,7 +190,7 @@ export class EventService {
    * Executes task with provided options.
    *
    * @param {string} url URL used to instantiate the Esri QueryTask class
-   * @param {esri.QueryProperties} query At minimum, requires `where` property
+   * @param {__esri.QueryProperties} query At minimum, requires `where` property
    * @param {*} [intersect] If true, the query will run with a `intersects` geometry context utilizing boundaries based on builder settings
    * This will return only features within the provided polygon paths.
    * @param {boolean} [returnFeatureLayer] If provided and `true`, will return a FeatureLayer from the result of the task
@@ -199,30 +198,30 @@ export class EventService {
    */
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: false,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<esri.FeatureSet>;
+    featureLayerProperties?: __esri.FeatureLayerProperties
+  ): Promise<__esri.FeatureSet>;
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: true,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<esri.FeatureLayer>;
+    featureLayerProperties?: __esri.FeatureLayerProperties
+  ): Promise<__esri.FeatureLayer>;
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: boolean,
-    featureLayerProperties?: esri.FeatureLayerProperties
+    featureLayerProperties?: __esri.FeatureLayerProperties
   ): Promise<unknown> {
     const [QueryTask, Query, FeatureLayer, SpatialReference]: [
-      esri.QueryTaskConstructor,
-      esri.QueryConstructor,
-      esri.FeatureLayerConstructor,
-      esri.SpatialReferenceConstructor
+      __esri.QueryTaskConstructor,
+      __esri.QueryConstructor,
+      __esri.FeatureLayerConstructor,
+      __esri.SpatialReferenceConstructor
     ] = await this.moduleProvider.require(['QueryTask', 'Query', 'FeatureLayer', 'SpatialReference']);
 
     const task = new QueryTask({

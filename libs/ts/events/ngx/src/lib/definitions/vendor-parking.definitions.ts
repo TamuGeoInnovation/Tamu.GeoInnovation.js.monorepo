@@ -3,7 +3,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum VENDOR_PARKING_LAYERS {
   VENDOR_PARKING_DRAW = 'vendor-parking-lots-draw',
@@ -25,22 +24,22 @@ const vendorParkingRenderer: FeatureRenderer = {
     type: 'simple-fill',
     color: [0, 0, 0, 0],
     outline: null
-  } as unknown as esri.SymbolProperties,
+  } as unknown as __esri.SymbolProperties,
   uniqueValueInfos: [
     {
       value: '1,Street',
       label: 'Vendor Permit and Vendor+ Permit Authorized',
-      symbol: { type: 'simple-fill', color: [90, 0, 0, 255], outline: null } as unknown as esri.SymbolProperties
+      symbol: { type: 'simple-fill', color: [90, 0, 0, 255], outline: null } as unknown as __esri.SymbolProperties
     },
     {
       value: '1,Surface',
       label: 'Vendor Permit and Vendor+ Permit Authorized',
-      symbol: { type: 'simple-fill', color: [90, 0, 0, 255], outline: null } as unknown as esri.SymbolProperties
+      symbol: { type: 'simple-fill', color: [90, 0, 0, 255], outline: null } as unknown as __esri.SymbolProperties
     },
     {
       value: '1,Garage Visitor',
       label: 'Only Vendor+ Permit Authorized',
-      symbol: { type: 'simple-fill', color: [232, 190, 255, 255], outline: null } as unknown as esri.SymbolProperties
+      symbol: { type: 'simple-fill', color: [232, 190, 255, 255], outline: null } as unknown as __esri.SymbolProperties
     }
   ]
 };
@@ -76,9 +75,9 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
           visible: true,
           popupEnabled: false,
           labelsVisible: false
-        } as unknown as esri.SublayerProperties
+        } as unknown as __esri.SublayerProperties
       ]
-    } as unknown as esri.MapImageLayerProperties
+    } as unknown as __esri.MapImageLayerProperties
   },
   {
     type: 'feature',

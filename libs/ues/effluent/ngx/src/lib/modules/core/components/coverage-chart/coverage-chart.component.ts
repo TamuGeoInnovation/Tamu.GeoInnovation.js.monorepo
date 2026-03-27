@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable, combineLatest } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-coverage-chart',
@@ -11,7 +10,7 @@ import esri = __esri;
 })
 export class CoverageChartComponent implements OnInit {
   @Input()
-  public zones: Observable<esri.Graphic | Array<esri.Graphic>>;
+  public zones: Observable<__esri.Graphic | Array<__esri.Graphic>>;
 
   public source: Observable<unknown>;
 

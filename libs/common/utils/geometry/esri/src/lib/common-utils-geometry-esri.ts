@@ -1,10 +1,10 @@
 import { Point } from '@tamu-gisc/common/types';
 
-import { loadModules } from 'esri-loader';
+import EsriPoint from '@arcgis/core/geometry/Point';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils';
 import { default as tCentroid } from '@turf/centroid';
 import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf/helpers';
-
-import esri = __esri;
 
 /**
  * Attempts to determine a singular point (latitude and longitude) utilizing
@@ -23,7 +23,7 @@ export function centroidFromGeometry(feature: FeatureUnion): Point {
   } else if (('x' in feature && 'y' in feature) || ('latitude' in feature && 'longitude' in feature)) {
     return pointFromPointGeometry(feature);
   } else if ('paths' in feature) {
-    return pointFromPolylineGeometry(feature as esri.Polyline);
+    return pointFromPolylineGeometry(feature as __esri.Polyline);
   } else {
     throw new Error('Could not get centroid from search geometry because type could not be identified.');
   }
@@ -34,7 +34,7 @@ export function centroidFromGeometry(feature: FeatureUnion): Point {
  *
  * This is due tot he fact that esri query feature set graphics only contain rings, for polygons.
  */
-export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
+export function centroidFromPolygonGeometry(feature: __esri.Polygon): Point {
   if (feature.centroid && feature.centroid.latitude && feature.centroid.longitude) {
     return {
       latitude: feature.centroid.latitude,
@@ -68,7 +68,7 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
  * @export
  * @param  geometry String representing geometry type.
  */
-export function getGeometryType(geometry: Partial<esri.Geometry>): string {
+export function getGeometryType(geometry: Partial<__esri.Geometry>): string {
   if (geometry) {
     if (('latitude' in geometry && 'longitude' in geometry) || ('y' in geometry && 'x' in geometry)) {
       return 'point';
@@ -86,7 +86,7 @@ export function getGeometryType(geometry: Partial<esri.Geometry>): string {
   }
 }
 
-export function pointFromMultiPointGeometry(feature: esri.Multipoint): Point {
+export function pointFromMultiPointGeometry(feature: __esri.Multipoint): Point {
   if (feature.points && feature.points.length > 0) {
     // Get the first point in the feature
     const p: number[] = feature.points[0];
@@ -100,7 +100,7 @@ export function pointFromMultiPointGeometry(feature: esri.Multipoint): Point {
   }
 }
 
-export function pointFromPointGeometry(feature: esri.Point | Point): Point {
+export function pointFromPointGeometry(feature: __esri.Point | Point): Point {
   if (feature && feature.longitude && feature.latitude) {
     return {
       latitude: feature.latitude,
@@ -116,7 +116,7 @@ export function pointFromPointGeometry(feature: esri.Point | Point): Point {
   }
 }
 
-export function pointFromPolylineGeometry(feature: esri.Polyline): Point {
+export function pointFromPolylineGeometry(feature: __esri.Polyline): Point {
   if (feature && feature.paths) {
     return {
       latitude: feature.extent.center.latitude,
@@ -165,36 +165,18 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
 }
 
 export class CoordinateConverter {
-  private modules: {
-    point: esri.PointConstructor;
-    spatialReference: esri.SpatialReferenceConstructor;
-    webMercatorUtils: esri.webMercatorUtils;
-  } = { point: undefined, spatialReference: undefined, webMercatorUtils: undefined };
-
-  constructor() {
-    loadModules(['esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'])
-      .then(([p, s, u]: [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]) => {
-        this.modules.point = p;
-        this.modules.spatialReference = s;
-        this.modules.webMercatorUtils = u;
-      })
-      .catch(() => {
-        throw new Error('Could not load CoordinateConverter modules.');
-      });
-  }
-
   public webMercatorToGeographic(latitude: number, longitude: number) {
-    return this.modules.webMercatorUtils.webMercatorToGeographic(
-      new this.modules.point({
+    return webMercatorUtils.webMercatorToGeographic(
+      new EsriPoint({
         y: latitude,
         x: longitude,
-        spatialReference: this.modules.spatialReference.WebMercator
+        spatialReference: SpatialReference.WebMercator
       })
-    ) as esri.Point;
+    ) as __esri.Point;
   }
 }
 
-export type FeatureUnion = esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point;
+export type FeatureUnion = __esri.Geometry | __esri.Polygon | __esri.Multipoint | __esri.Point | __esri.Polyline | Point;
 
 export enum PORTAL_LAYER_TYPES {
   GRAPHICS_LAYER = 'Graphics Layer',
@@ -223,7 +205,7 @@ interface IBasePortalLayer {
   maxScale: number;
   type: string;
   supportsDynamicLegends: boolean;
-  resolvedLayer: esri.Layer;
+  resolvedLayer: __esri.Layer;
 }
 
 export interface IPortalFeatureLayer extends IBasePortalLayer {
@@ -273,5 +255,5 @@ export interface IGraphic {
   attributes: {
     [property: string]: string | boolean | number;
   };
-  popupTemplate: esri.PopupTemplate;
+  popupTemplate: __esri.PopupTemplate;
 }

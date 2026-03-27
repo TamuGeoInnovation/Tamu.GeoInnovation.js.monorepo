@@ -12,7 +12,6 @@ import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search'
 
 import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../animations/elements';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-omnisearch',
@@ -105,7 +104,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    *
    * Determination depends on the current url params.
    */
-  public handleResult(selected: SearchSelection<esri.Graphic>) {
+  public handleResult(selected: SearchSelection<__esri.Graphic>) {
     if ('id' in this.route.snapshot.params) {
       // Add stop to the trip planner service
 

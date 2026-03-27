@@ -75,10 +75,17 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
         "scripts": [],
-        "styles": ["apps/gisday-competitions-angular/src/styles.scss"],
+        "styles": [
+          "apps/gisday-competitions-angular/src/styles.scss"
+        ],
         "aot": false,
         "vendorChunk": true,
         "extractLicenses": false,
@@ -87,7 +94,9 @@
         "optimization": false,
         "namedChunks": true
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": ""
     },
     "extract-i18n": {
@@ -117,7 +126,9 @@
         "jestConfig": "apps/gisday-competitions-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-angular"]
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/gisday-competitions-angular"
+      ]
     },
     "lint": {
       "executor": "@nx/linter:eslint",
@@ -130,5 +141,8 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  "implicitDependencies": [
+    "assets",
+    "sass"
+  ]
 }

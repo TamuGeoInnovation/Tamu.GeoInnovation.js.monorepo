@@ -7,7 +7,6 @@ import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { MoveInOutSettingsService } from '../../../map/services/move-in-out-settings/move-in-out-settings.service';
 import { MoveInSettings } from '../../../../interfaces/move-in-out.interface';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-sidebar-reference',
@@ -35,12 +34,12 @@ export class SidebarReferenceComponent implements OnInit {
 
   public onSearchResult(result: SearchSelection<unknown>): void {
     this.helper.handleSearchResultFeatureSelection(result as SearchSelection<object>).subscribe((res) => {
-      const tPoint = TripPoint.from(res as SearchSelection<esri.Graphic>);
+      const tPoint = TripPoint.from(res as SearchSelection<__esri.Graphic>);
 
       this.mapService.selectFeatures({
         graphics: [tPoint.toEsriGraphic()],
         shouldShowPopup: true,
-        popupComponent: (res as SearchSelection<esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
+        popupComponent: (res as SearchSelection<__esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
       });
     });
   }

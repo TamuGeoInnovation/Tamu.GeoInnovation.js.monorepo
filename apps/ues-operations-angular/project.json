@@ -26,9 +26,16 @@
             "glob": "**/*",
             "input": "./libs/assets/",
             "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@arcgis/core/assets",
+            "output": "/assets/arcgis"
           }
         ],
-        "styles": ["apps/ues-operations-angular/src/styles.scss"],
+        "styles": [
+          "apps/ues-operations-angular/src/styles.scss"
+        ],
         "scripts": [],
         "vendorChunk": true,
         "extractLicenses": false,
@@ -95,7 +102,9 @@
           ]
         }
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": ""
     },
     "serve": {
@@ -125,15 +134,24 @@
         "jestConfig": "apps/ues-operations-angular/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-angular"]
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/ues-operations-angular"
+      ]
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/ues-operations-angular/src/**/*.ts", "apps/ues-operations-angular/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/ues-operations-angular/src/**/*.ts",
+          "apps/ues-operations-angular/src/**/*.html"
+        ]
       }
     }
   },
   "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"]
+  "implicitDependencies": [
+    "assets",
+    "sass",
+    "ues-sass"
+  ]
 }

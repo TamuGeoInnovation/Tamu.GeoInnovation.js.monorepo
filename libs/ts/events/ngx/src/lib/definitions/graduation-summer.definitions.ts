@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum SUMMER_COMMENCEMENT_LAYERS {
   PARKING_LOTS = 'summer-commencement-parking-lots',
@@ -57,7 +56,7 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'Slow Route',
@@ -71,7 +70,7 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           }
         ]
       }

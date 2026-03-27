@@ -5,7 +5,6 @@ import { BaseChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { FeatureCollectorService } from '../../services/collector.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-selection-summary',
@@ -27,7 +26,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
   public identifier: string;
 
   @Input()
-  public collection: Observable<esri.Graphic[]>;
+  public collection: Observable<__esri.Graphic[]>;
 
   /**
    * Query for a list of BaseChartComponent subclasses such as LineChartComponent, BarChartComponent,

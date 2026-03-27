@@ -9,7 +9,6 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { BasemapGalleryService } from '../../services/basemap-gallery/basemap-gallery.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-basemap-gallery',
@@ -17,7 +16,7 @@ import esri = __esri;
   styleUrls: ['./basemap-gallery.component.scss']
 })
 export class BasemapGalleryComponent implements OnInit {
-  public gallery: Observable<esri.BasemapGalleryViewModel>;
+  public gallery: Observable<__esri.BasemapGalleryViewModel>;
   public isMobile: Observable<boolean>;
 
   constructor(
@@ -34,7 +33,7 @@ export class BasemapGalleryComponent implements OnInit {
     this.isMobile = this.rs.isMobile;
   }
 
-  public selectBasemap(event: esri.BasemapGalleryItem) {
+  public selectBasemap(event: __esri.BasemapGalleryItem) {
     this.bs.setBasemap(event.basemap);
 
     this.store.setStorageObjectKeyValue({

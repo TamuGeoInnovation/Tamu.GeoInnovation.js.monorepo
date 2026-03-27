@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum SOFTBALL_LAYERS {
   SOFTBALL_ROUTES = 'softball-routes',
@@ -60,7 +59,7 @@ export const SoftballLayerSources: LayerSource[] = [
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           },
           {
             value: 'Expect Delays',
@@ -74,7 +73,7 @@ export const SoftballLayerSources: LayerSource[] = [
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
               }
-            } as unknown as esri.SimpleLineSymbolProperties
+            } as unknown as __esri.SimpleLineSymbolProperties
           }
         ]
       }

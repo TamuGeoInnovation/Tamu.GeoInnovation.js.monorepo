@@ -7,7 +7,6 @@ import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/
 import { CompetitionSeason, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/data-api';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-design-form',
@@ -154,10 +153,10 @@ interface IEsriRestLayerSchema {
   fields: Array<Field>;
 }
 
-export interface Field extends esri.Field {
+export interface Field extends __esri.Field {
   domain: CodedValueDomainWithPoints;
 }
 
-export interface CodedValueDomainWithPoints extends esri.CodedValueDomain {
-  codedValues: Array<esri.CodedValue & { points?: number }>;
+export interface CodedValueDomainWithPoints extends __esri.CodedValueDomain {
+  codedValues: Array<__esri.CodedValue & { points?: number }>;
 }

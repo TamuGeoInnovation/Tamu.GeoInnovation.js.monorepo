@@ -7,7 +7,6 @@ import {
 } from '../interfaces/special-event.interface';
 import { MarkdownPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 
-import esri = __esri;
 
 export enum NSC_PARKING_LAYERS {
   NSC_PARKING_DRAW = 'nsc-parking-lots-draw',
@@ -40,9 +39,9 @@ export const NscParkingColdLayerSources: LayerSource[] = [
           title: 'NSC Parking Lots',
           visible: true,
           popupEnabled: false
-        } as unknown as esri.SublayerProperties
+        } as unknown as __esri.SublayerProperties
       ]
-    } as unknown as esri.MapImageLayerProperties
+    } as unknown as __esri.MapImageLayerProperties
   },
   {
     type: 'feature',

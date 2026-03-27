@@ -2,7 +2,6 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-perspective-toggle',
@@ -12,7 +11,7 @@ import esri = __esri;
 export class PerspectiveToggleComponent implements OnInit {
   public perspective: '2d' | '3d' = '2d';
 
-  private view: esri.SceneView;
+  private view: __esri.SceneView;
 
   @Output()
   public toggledPerspective: EventEmitter<'2d' | '3d'> = new EventEmitter();
@@ -21,7 +20,7 @@ export class PerspectiveToggleComponent implements OnInit {
 
   public ngOnInit(): void {
     this.mapService.store.subscribe((instance) => {
-      this.view = instance.view as esri.SceneView;
+      this.view = instance.view as __esri.SceneView;
     });
   }
 

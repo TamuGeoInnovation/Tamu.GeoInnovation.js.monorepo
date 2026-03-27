@@ -8,7 +8,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
   GENERAL_PARKING_GROUP = 'phys-eng-festival-general-parking-group',
@@ -28,7 +27,7 @@ export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Physics_Fest/MapServer';
 
-type AutoCastSimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
+type AutoCastSimpleLineSymbol = { type: 'simple-line' } & __esri.SimpleLineSymbolProperties;
 
 const GREEN_PATH_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
   type: 'simple-line',

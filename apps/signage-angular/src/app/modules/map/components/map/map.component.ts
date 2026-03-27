@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -9,9 +8,9 @@ import esri = __esri;
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent {
-  public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+  public filterFeatures: BehaviorSubject<__esri.Graphic[]> = new BehaviorSubject([]);
 
-  public spatialFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+  public spatialFeatures: BehaviorSubject<__esri.Graphic[]> = new BehaviorSubject([]);
 
   public config = {
     basemap: {

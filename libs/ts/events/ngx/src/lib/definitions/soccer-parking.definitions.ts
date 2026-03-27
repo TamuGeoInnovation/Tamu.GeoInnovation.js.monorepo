@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum SOCCER_PARKING_LAYERS {
   VISITOR_KIOSK = 'soccer-parking-visitor-kiosk',
@@ -69,7 +68,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
           url: '/assets/images/icons/transportation/Paid-Parking.png',
           width: 22,
           height: 22
-        } as unknown as esri.SymbolProperties
+        } as unknown as __esri.SymbolProperties
       }
     }
   } as unknown as LayerSource,
@@ -118,7 +117,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
               type: 'simple-fill',
               color: [27, 72, 94, 255],
               outline: null
-            } as unknown as esri.SymbolProperties
+            } as unknown as __esri.SymbolProperties
           },
           {
             value: 'EventParking',
@@ -127,7 +126,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
               type: 'simple-fill',
               color: [123, 35, 42, 255],
               outline: null
-            } as unknown as esri.SymbolProperties
+            } as unknown as __esri.SymbolProperties
           }
         ]
       }
@@ -149,9 +148,9 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
           title: SoccerParkingDefinitions.SAFETY_FIRST.name,
           visible: true,
           popupEnabled: false
-        } as unknown as esri.SublayerProperties
+        } as unknown as __esri.SublayerProperties
       ]
-    } as unknown as esri.MapImageLayerProperties
+    } as unknown as __esri.MapImageLayerProperties
   }
 ];
 

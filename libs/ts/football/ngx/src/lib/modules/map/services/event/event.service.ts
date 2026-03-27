@@ -14,7 +14,6 @@ import {
 } from '../../../../interfaces/football.interface';
 import { GameDaySettingsService } from '../settings/game-day-settings.service';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +24,8 @@ export class EventService {
   public gamedayLayerReferences: Array<GAMEDAY_LAYERS>;
   public showdownLayerReferences: Array<SHOWDOWN_LAYERS>;
 
-  private _map: esri.Map;
-  private _view: esri.MapView;
+  private _map: __esri.Map;
+  private _view: __esri.MapView;
 
   constructor(
     private readonly env: EnvironmentService,
@@ -36,7 +35,7 @@ export class EventService {
   ) {
     this.mapService.store.pipe(delay(250)).subscribe((instanced) => {
       this._map = instanced.map;
-      this._view = instanced.view as esri.MapView;
+      this._view = instanced.view as __esri.MapView;
       this.init();
     });
   }
@@ -113,7 +112,7 @@ export class EventService {
    *
    * @returns Attribute value list
    */
-  private getAttributeList(features: esri.Graphic[], attribute: string): string[] {
+  private getAttributeList(features: __esri.Graphic[], attribute: string): string[] {
     return features.map((f) => f.attributes[attribute]);
   }
 
@@ -121,7 +120,7 @@ export class EventService {
    * Executes task with provided options.
    *
    * @param {string} url URL used to instantiate the Esri QueryTask class
-   * @param {esri.QueryProperties} query At minimum, requires `where` property
+   * @param {__esri.QueryProperties} query At minimum, requires `where` property
    * @param {*} [intersect] If true, the query will run with a `intersects` geometry context utilizing boundaries based on builder settings
    * This will return only features within the provided polygon paths.
    * @param {boolean} [returnFeatureLayer] If provided and `true`, will return a FeatureLayer from the result of the task
@@ -129,30 +128,30 @@ export class EventService {
    */
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: false,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<esri.FeatureSet>;
+    featureLayerProperties?: __esri.FeatureLayerProperties
+  ): Promise<__esri.FeatureSet>;
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: true,
-    featureLayerProperties?: esri.FeatureLayerProperties
-  ): Promise<esri.FeatureLayer>;
+    featureLayerProperties?: __esri.FeatureLayerProperties
+  ): Promise<__esri.FeatureLayer>;
   public async runTask(
     url: string,
-    query: esri.QueryProperties,
-    intersect?: boolean | number[][] | esri.Geometry,
+    query: __esri.QueryProperties,
+    intersect?: boolean | number[][] | __esri.Geometry,
     returnFeatureLayer?: boolean,
-    featureLayerProperties?: esri.FeatureLayerProperties
+    featureLayerProperties?: __esri.FeatureLayerProperties
   ): Promise<unknown> {
     const [QueryTask, Query, FeatureLayer, SpatialReference]: [
-      esri.QueryTaskConstructor,
-      esri.QueryConstructor,
-      esri.FeatureLayerConstructor,
-      esri.SpatialReferenceConstructor
+      __esri.QueryTaskConstructor,
+      __esri.QueryConstructor,
+      __esri.FeatureLayerConstructor,
+      __esri.SpatialReferenceConstructor
     ] = await this.moduleProvider.require(['QueryTask', 'Query', 'FeatureLayer', 'SpatialReference']);
 
     const task = new QueryTask({

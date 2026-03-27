@@ -7,8 +7,6 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
-import esri = __esri;
-
 type PopupDataDefinition = NonNullable<LayerSource['popupData']>;
 type PopupDataResolutionStrategy = NonNullable<LayerSource['popupDataResolutionStrategy']>;
 type PopupDataEntry = PopupDataDefinition[string];
@@ -84,7 +82,7 @@ export class PopupService {
     }
   }
 
-  private resolvePopupLayer(graphic: esri.Graphic): ILayerWithPopupComponent | undefined {
+  private resolvePopupLayer(graphic: __esri.Graphic): ILayerWithPopupComponent | undefined {
     const candidates: unknown[] = [
       graphic.layer,
       (graphic as unknown as { sourceLayer?: unknown }).sourceLayer,
@@ -118,7 +116,7 @@ export class PopupService {
   }
 
   private resolvePopupData(
-    graphic: esri.Graphic,
+    graphic: __esri.Graphic,
     popupData: PopupDataDefinition,
     strategy: PopupDataResolutionStrategy
   ): Record<string, unknown> {
@@ -134,7 +132,7 @@ export class PopupService {
   }
 
   private resolvePopupDataEntry(
-    graphic: esri.Graphic,
+    graphic: __esri.Graphic,
     definition: PopupDataEntry,
     resolvedEntries: Record<string, unknown>,
     strategy: PopupDataResolutionStrategy
@@ -163,7 +161,7 @@ export class PopupService {
   }
 
   private getPopupDataLookup(
-    graphic: esri.Graphic,
+    graphic: __esri.Graphic,
     resolvedEntries: Record<string, unknown>,
     strategy: PopupDataResolutionStrategy
   ) {
@@ -181,7 +179,7 @@ export class PopupService {
   }
 }
 
-interface ILayerWithPopupComponent extends esri.Layer {
+interface ILayerWithPopupComponent extends __esri.Layer {
   popupComponent: Type<Component>;
   popupData?: PopupDataDefinition;
   popupDataResolutionStrategy?: PopupDataResolutionStrategy;

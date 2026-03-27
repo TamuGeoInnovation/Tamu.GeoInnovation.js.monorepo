@@ -24,7 +24,6 @@ import { PortalLayerJSON } from '@tamu-gisc/maps/feature/forms';
 
 import { ViewerBasePopupComponent } from '../components/viewer-base-popup/viewer-base-popup.component';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
@@ -56,15 +55,15 @@ export class ViewerService {
 
   public save: Subject<boolean> = new Subject();
 
-  private _map: esri.Map;
-  private _view: esri.MapView;
+  private _map: __esri.Map;
+  private _view: __esri.MapView;
   private _modules: {
-    layer: esri.LayerConstructor;
-    featureLayer: esri.FeatureLayerConstructor;
-    graphicsLayer: esri.GraphicsLayerConstructor;
-    groupLayer: esri.GroupLayerConstructor;
-    graphic: esri.GraphicConstructor;
-    mapImageLayer: esri.MapImageLayerConstructor;
+    layer: __esri.LayerConstructor;
+    featureLayer: __esri.FeatureLayerConstructor;
+    graphicsLayer: __esri.GraphicsLayerConstructor;
+    groupLayer: __esri.GroupLayerConstructor;
+    graphic: __esri.GraphicConstructor;
+    mapImageLayer: __esri.MapImageLayerConstructor;
   };
 
   constructor(
@@ -170,13 +169,13 @@ export class ViewerService {
         TypedSnapshotOrScenario[],
         MapServiceInstance,
         [
-          esri.LayerConstructor,
-          esri.FeatureLayerConstructor,
-          esri.GraphicsLayerConstructor,
-          esri.GroupLayerConstructor,
-          esri.GraphicConstructor,
-          esri.ExtentConstructor,
-          esri.MapImageLayerConstructor
+          __esri.LayerConstructor,
+          __esri.FeatureLayerConstructor,
+          __esri.GraphicsLayerConstructor,
+          __esri.GroupLayerConstructor,
+          __esri.GraphicConstructor,
+          __esri.ExtentConstructor,
+          __esri.MapImageLayerConstructor
         ]
       ]) => {
         this._modules = {
@@ -189,7 +188,7 @@ export class ViewerService {
         };
 
         this._map = instances.map;
-        this._view = instances.view as esri.MapView;
+        this._view = instances.view as __esri.MapView;
 
         // Find any layers associated with the current snapshot and clear them to prepare to add layers from the next snapshot
         const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
@@ -236,7 +235,7 @@ export class ViewerService {
 
     // Create a new subscription to the map service, load up the contexts, and add to map
     combineLatest([this.ms.store, from(this.mp.require(['Extent']))]).subscribe(
-      ([instances, [Extent]]: [MapServiceInstance, [esri.ExtentConstructor]]) => {
+      ([instances, [Extent]]: [MapServiceInstance, [__esri.ExtentConstructor]]) => {
         // Get workshop contexts
         this.workshopContexts.subscribe((contexts) => {
           contexts.forEach(async (val, index) => {
@@ -272,7 +271,7 @@ export class ViewerService {
   private async _generateGroupLayers(
     definitions: Array<DeepPartial<CPALayer>>,
     snapshotOrScenarioTitle: string
-  ): Promise<esri.Layer> {
+  ): Promise<__esri.Layer> {
     const reversedLayers = [...definitions].reverse();
     const idHash = this._generateGroupLayerId(reversedLayers);
 
@@ -283,7 +282,7 @@ export class ViewerService {
             return await firstValueFrom(
               forkJoin([
                 from(this.mp.require(['Layer'])).pipe(
-                  switchMap(([Layer]: [esri.LayerConstructor]) => {
+                  switchMap(([Layer]: [__esri.LayerConstructor]) => {
                     return Layer.fromArcGISServerUrl({
                       url: l.url
                     });
@@ -293,7 +292,7 @@ export class ViewerService {
               ]).pipe(
                 switchMap(([serverLayer, metadata]) => {
                   if (metadata.type === 'Raster Layer') {
-                    const rasterLayer = serverLayer as esri.FeatureLayer;
+                    const rasterLayer = serverLayer as __esri.FeatureLayer;
                     return from(
                       this.ms.findLayerOrCreateFromSource({
                         type: 'map-image',
@@ -341,7 +340,7 @@ export class ViewerService {
               opacity: l.info.drawingInfo.opacity,
               visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
               description: l.info.description
-            } as esri.FeatureLayerProperties);
+            } as __esri.FeatureLayerProperties);
           } else if (l.info.type === 'group') {
             // If l.layers is undefined, it means this layer needs to be loaded from the remote service.
             // instead of making a recursive call.
@@ -380,7 +379,7 @@ export class ViewerService {
                 }
               ],
               description: l.info.description
-            } as esri.MapImageLayerProperties);
+            } as __esri.MapImageLayerProperties);
           } else if (l.info.type === 'graphics') {
             const g = l.graphics.map((gs) => {
               return this._modules.graphic.fromJSON(gs);
@@ -394,7 +393,7 @@ export class ViewerService {
               visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
               description: l.info.description,
               popupComponent: ViewerBasePopupComponent
-            } as esri.GraphicsLayerProperties);
+            } as __esri.GraphicsLayerProperties);
           } else {
             console.warn(`Layer with object structure could not be generated:`, l);
             return undefined;

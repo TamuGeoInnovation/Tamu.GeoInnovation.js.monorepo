@@ -1,4 +1,4 @@
-import esri = __esri;
+
 
 /**
  * Basic representation of a geographic point with longitude (x) and latitude(y) values
@@ -14,65 +14,65 @@ export interface Point {
 // Base Symbol Typings
 //
 interface CIMSymbol {
-  type: 'cim' & esri.CIMSymbolProperties;
+  type: 'cim' & __esri.CIMSymbolProperties;
 }
 
-type SimpleFillSymbol = { type: 'simple-fill' } & esri.SimpleFillSymbolProperties;
+type SimpleFillSymbol = { type: 'simple-fill' } & __esri.SimpleFillSymbolProperties;
 
-type PictureFillSymbol = { type: 'picture-fill' } & esri.PictureFillSymbolProperties;
+type PictureFillSymbol = { type: 'picture-fill' } & __esri.PictureFillSymbolProperties;
 
-type SimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
+type SimpleLineSymbol = { type: 'simple-line' } & __esri.SimpleLineSymbolProperties;
 
-type SimpleMarkerSymbol = { type: 'simple-marker' } & esri.SimpleMarkerSymbolProperties;
+type SimpleMarkerSymbol = { type: 'simple-marker' } & __esri.SimpleMarkerSymbolProperties;
 
-type PictureMarkerSymbol = { type: 'picture-marker' } & esri.PictureMarkerSymbolProperties;
+type PictureMarkerSymbol = { type: 'picture-marker' } & __esri.PictureMarkerSymbolProperties;
 
-type Point3DSymbol = { type: 'point-3d' } & esri.PointSymbol3DProperties;
+type Point3DSymbol = { type: 'point-3d' } & __esri.PointSymbol3DProperties;
 
-type Line3DSymbol = { type: 'line-3d' } & esri.LineSymbol3DProperties;
+type Line3DSymbol = { type: 'line-3d' } & __esri.LineSymbol3DProperties;
 
-type Polygon3DSymbol = { type: 'polygon-3d' } & esri.PolygonSymbol3DProperties;
+type Polygon3DSymbol = { type: 'polygon-3d' } & __esri.PolygonSymbol3DProperties;
 
-type Mesh3DSymbol = { type: 'mesh-3d' } & esri.MeshSymbol3DProperties;
+type Mesh3DSymbol = { type: 'mesh-3d' } & __esri.MeshSymbol3DProperties;
 
-type Label3DSymbol = { type: 'label-3d' } & esri.LabelSymbol3DProperties;
+type Label3DSymbol = { type: 'label-3d' } & __esri.LabelSymbol3DProperties;
 
-type TextSymbol = { type: 'text' } & esri.TextSymbolProperties;
+type TextSymbol = { type: 'text' } & __esri.TextSymbolProperties;
 
-type WebStyleSymbol = { type: 'web-style' } & esri.WebStyleSymbolProperties;
+type WebStyleSymbol = { type: 'web-style' } & __esri.WebStyleSymbolProperties;
 
 //
 // Autocasting Symbol Typings
 //
 interface FillSymbolAutoCastOptions {
-  symbol: (SimpleFillSymbol & esri.SimpleFillSymbolProperties) | (PictureFillSymbol & esri.PictureFillSymbolProperties);
+  symbol: (SimpleFillSymbol & __esri.SimpleFillSymbolProperties) | (PictureFillSymbol & __esri.PictureFillSymbolProperties);
 }
 
 interface LineSymbolAutoCastOptions {
-  symbol: SimpleLineSymbol & esri.SimpleLineSymbolProperties;
+  symbol: SimpleLineSymbol & __esri.SimpleLineSymbolProperties;
 }
 
 interface MarkerSymbolAutoCastOptions {
   symbol:
-    | (SimpleMarkerSymbol & esri.SimpleMarkerSymbolProperties)
-    | (PictureMarkerSymbol & esri.PictureMarkerSymbolProperties);
+    | (SimpleMarkerSymbol & __esri.SimpleMarkerSymbolProperties)
+    | (PictureMarkerSymbol & __esri.PictureMarkerSymbolProperties);
 }
 
 interface Symbol3DAutoCastOptions {
   symbol:
-    | (Point3DSymbol & esri.PointSymbol3DProperties)
-    | (Line3DSymbol & esri.LineSymbol3DProperties)
-    | (Polygon3DSymbol & esri.PolygonSymbol3DProperties)
-    | (Mesh3DSymbol & esri.MeshSymbol3DProperties)
-    | (Label3DSymbol & esri.LabelSymbol3DProperties);
+    | (Point3DSymbol & __esri.PointSymbol3DProperties)
+    | (Line3DSymbol & __esri.LineSymbol3DProperties)
+    | (Polygon3DSymbol & __esri.PolygonSymbol3DProperties)
+    | (Mesh3DSymbol & __esri.MeshSymbol3DProperties)
+    | (Label3DSymbol & __esri.LabelSymbol3DProperties);
 }
 
 interface TextSymbolAutoCastOptions {
-  symbol: TextSymbol & esri.TextSymbolProperties;
+  symbol: TextSymbol & __esri.TextSymbolProperties;
 }
 
 interface WebStyleSymbolAutoCastOptions {
-  symbol: WebStyleSymbol & esri.WebStyleSymbolProperties;
+  symbol: WebStyleSymbol & __esri.WebStyleSymbolProperties;
 }
 
 type AutoCastSymbols =
@@ -92,7 +92,7 @@ type AutoCastSymbols =
  * Auto-castable class break renderer interface inheriting most of the Esri Class Break Renderer properties except some which
  * are overwritten where they support auto-casting.
  */
-type ClassBreakRendererNativeOptions = Omit<esri.ClassBreaksRendererProperties, 'backgroundFillSymbol'> & {
+type ClassBreakRendererNativeOptions = Omit<__esri.ClassBreaksRendererProperties, 'backgroundFillSymbol'> & {
   type: 'class-breaks';
   backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
 };
@@ -101,20 +101,20 @@ type ClassBreakRendererNativeOptions = Omit<esri.ClassBreaksRendererProperties, 
  * Auto-castable dot density renderer interface inheriting most of the Esri Dot Density Renderer properties except some which
  * are overwritten where they support auto-casting.
  */
-type DotDensityRendererNativeOptions = Omit<esri.DotDensityRendererProperties, 'visualVariables'> & {
+type DotDensityRendererNativeOptions = Omit<__esri.DotDensityRendererProperties, 'visualVariables'> & {
   type: 'dot-density';
-  visualVariables?: esri.VisualVariableProperties[];
+  visualVariables?: __esri.VisualVariableProperties[];
 };
 
 /**
  * Auto-castable heatmanp renderer options, inheriting Esri's Heatmap Renderer properties.
  */
-type HeatmapRendererNativeOptions = esri.HeatmapRendererProperties & { type: 'heatmap' };
+type HeatmapRendererNativeOptions = __esri.HeatmapRendererProperties & { type: 'heatmap' };
 /**
  * Auto-castable simple renderer interface inheriting most of the Esri Simple Renderer properties except some which
  * are overwritten where they support auto-casting.
  */
-type SimpleRendererNativeOptions = Omit<esri.SimpleRendererProperties, 'symbol'> & {
+type SimpleRendererNativeOptions = Omit<__esri.SimpleRendererProperties, 'symbol'> & {
   type: 'simple';
 } & AutoCastSymbols;
 
@@ -122,7 +122,7 @@ type SimpleRendererNativeOptions = Omit<esri.SimpleRendererProperties, 'symbol'>
  * Auto-castable unique value interface inheriting most of the Esri Unique Value Renderer properties except some which are overwritten
  * where they support auto-casting.
  */
-type UniqueValueRendererNativeOptions = Omit<esri.UniqueValueRendererProperties, 'backgroundFillSymbol'> & {
+type UniqueValueRendererNativeOptions = Omit<__esri.UniqueValueRendererProperties, 'backgroundFillSymbol'> & {
   type: 'unique-value';
   backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
 };
@@ -152,8 +152,8 @@ export interface IRemoteLayerService {
 export interface FeatureLayerSourceProperties extends IRemoteLayerService {
   type: 'feature';
 
-  native?: Omit<esri.FeatureLayerProperties, 'renderer' | 'labelingInfo'> & {
-    labelingInfo?: ({ symbol?: TextSymbol | Label3DSymbol } & Omit<esri.LabelClassProperties, 'symbol'>)[];
+  native?: Omit<__esri.FeatureLayerProperties, 'renderer' | 'labelingInfo'> & {
+    labelingInfo?: ({ symbol?: TextSymbol | Label3DSymbol } & Omit<__esri.LabelClassProperties, 'symbol'>)[];
     renderer?: RendererAutoCastNativeOptions;
   };
 }
@@ -161,25 +161,25 @@ export interface FeatureLayerSourceProperties extends IRemoteLayerService {
 export interface SceneLayerSourceProperties extends IRemoteLayerService {
   type: 'scene';
 
-  native?: Omit<esri.SceneLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
+  native?: Omit<__esri.SceneLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
 export interface GeoJSONLayerSourceProperties extends IRemoteLayerService {
   type: 'geojson';
 
-  native?: Omit<esri.GeoJSONLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
+  native?: Omit<__esri.GeoJSONLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
 export interface MapImageLayerSourceProperties extends IRemoteLayerService {
   type: 'map-image';
 
-  native?: esri.MapImageLayerProperties;
+  native?: __esri.MapImageLayerProperties;
 }
 
 export interface CSVLayerSourceProperties extends IRemoteLayerService {
   type: 'csv';
 
-  native?: Omit<esri.CSVLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
+  native?: Omit<__esri.CSVLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
 export interface GraphicLayerSourceProperties {
@@ -188,8 +188,8 @@ export interface GraphicLayerSourceProperties {
   /**
    * Graphics used in the creation of the layer
    */
-  graphics?: esri.Graphic[];
-  native?: esri.GraphicsLayerProperties;
+  graphics?: __esri.Graphic[];
+  native?: __esri.GraphicsLayerProperties;
 }
 
 export interface GroupLayerSourceProperties {
@@ -204,7 +204,7 @@ export interface GroupLayerSourceProperties {
   /**
    * Native group layer properties.
    */
-  native?: esri.GroupLayerProperties;
+  native?: __esri.GroupLayerProperties;
 }
 
 interface PortalMapServerLayerSourceProperties {
@@ -222,12 +222,12 @@ interface PortalMapServerLayerSourceProperties {
     /**
      * Default group layer properties appended to all group layers found in the service.
      */
-    defaultGroupLayerProperties?: esri.GroupLayerProperties;
+    defaultGroupLayerProperties?: __esri.GroupLayerProperties;
 
     /**
      * Default feature layer properties appended to all feature layers found in the service.
      */
-    defaultFeatureLayerProperties?: esri.FeatureLayerProperties & { popupComponent?: unknown };
+    defaultFeatureLayerProperties?: __esri.FeatureLayerProperties & { popupComponent?: unknown };
   };
 }
 
@@ -324,7 +324,7 @@ export type LayerSource = LayerSourceType & {
    *
    * If a template is not provided, a popup will not be shown.
    */
-  popupTemplate?: esri.PopupTemplateProperties;
+  popupTemplate?: __esri.PopupTemplateProperties;
 
   popupComponent?: unknown;
 
@@ -394,7 +394,7 @@ interface LayerSourceAuthInfo {
   /**
    * OAuthInfo for the layer source
    */
-  info: esri.OAuthInfoProperties;
+  info: __esri.OAuthInfoProperties;
 
   /**
    * Indicates if the map service will attempt to fetch credentials immediately.

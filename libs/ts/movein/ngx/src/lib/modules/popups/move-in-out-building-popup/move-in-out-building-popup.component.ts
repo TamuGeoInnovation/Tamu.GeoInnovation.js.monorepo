@@ -12,7 +12,6 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { MoveinOutService } from '../../map/services/move-in-out/move-in-out.service';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-move-in-out-building-popup',
@@ -20,7 +19,7 @@ import esri = __esri;
   styleUrls: ['./move-in-out-building-popup.component.scss']
 })
 export class MoveInOutBuildingPopupComponent extends BuildingPopupComponent implements OnInit {
-  public checkInLocation: Observable<esri.FeatureSet>;
+  public checkInLocation: Observable<__esri.FeatureSet>;
   public hasCheckinLocation: Observable<boolean>;
   public checkinRooms: Observable<Array<string>>;
 
@@ -49,7 +48,7 @@ export class MoveInOutBuildingPopupComponent extends BuildingPopupComponent impl
    */
   public getIntersectingCheckinLocation() {
     const layerSource = this.mss.getLayerSourceCopy('move-in-out-checkin-layer') as FeatureLayerSourceProperties;
-    const buildingFootprint = this.data.geometry as esri.Polygon;
+    const buildingFootprint = this.data.geometry as __esri.Polygon;
 
     if (layerSource) {
       this.checkInLocation = from(

@@ -10,7 +10,6 @@ import { SamplingLocationsService } from './sampling-locations.service';
 import { SamplingBuildingsService } from './sampling-buildings.service';
 import { EffluentZonesService } from './effluent-zones.service';
 
-import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
@@ -20,18 +19,18 @@ export class EffluentService {
   public nextTier: Observable<number>;
   public previousTier: Observable<number>;
 
-  public tierOwnedBy: Observable<Array<esri.Graphic>>;
-  public tierOwns: Observable<Array<esri.Graphic>>;
-  public sampleLocationsInZone: Observable<Array<esri.Graphic>>;
-  public sampleBuildings: Observable<Array<esri.Graphic>>;
-  public uncoveredBuildings: Observable<Array<esri.Graphic>>;
+  public tierOwnedBy: Observable<Array<__esri.Graphic>>;
+  public tierOwns: Observable<Array<__esri.Graphic>>;
+  public sampleLocationsInZone: Observable<Array<__esri.Graphic>>;
+  public sampleBuildings: Observable<Array<__esri.Graphic>>;
+  public uncoveredBuildings: Observable<Array<__esri.Graphic>>;
 
   public sample: Observable<number>;
 
-  public affectedBuildings: Observable<Array<esri.Graphic>>;
+  public affectedBuildings: Observable<Array<__esri.Graphic>>;
 
   public hit: Observable<HitTestSnapshot>;
-  public hitGraphic: Observable<esri.Graphic>;
+  public hitGraphic: Observable<__esri.Graphic>;
   public isHitGraphicZone: Observable<boolean>;
 
   constructor(
@@ -214,8 +213,8 @@ export class EffluentService {
     );
   }
 
-  public async getIntersectingNonFocusBuildings(buildings: string[], area: esri.Graphic) {
-    const layer = this.mapService.findLayerById(`buildings-layer`) as esri.FeatureLayer;
+  public async getIntersectingNonFocusBuildings(buildings: string[], area: __esri.Graphic) {
+    const layer = this.mapService.findLayerById(`buildings-layer`) as __esri.FeatureLayer;
 
     const r = await layer.queryFeatures({
       returnGeometry: false,
@@ -227,12 +226,12 @@ export class EffluentService {
     return r;
   }
 
-  public async getBuildings(building: string | string[]): Promise<Array<esri.Graphic>> {
+  public async getBuildings(building: string | string[]): Promise<Array<__esri.Graphic>> {
     if (building === undefined || (building instanceof Array && building.length === 0)) {
       return [];
     }
 
-    const layer = this.mapService.findLayerById(`buildings-layer`) as esri.FeatureLayer;
+    const layer = this.mapService.findLayerById(`buildings-layer`) as __esri.FeatureLayer;
 
     const padStart = (number: string) => (number.length < 4 ? `'${number.padStart(4, '0')}'` : `'${number}'`);
 

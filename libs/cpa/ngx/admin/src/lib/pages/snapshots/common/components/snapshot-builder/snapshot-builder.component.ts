@@ -10,7 +10,6 @@ import { EsriMapService, MapConfig, MapServiceInstance } from '@tamu-gisc/maps/e
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { SnapshotService } from '@tamu-gisc/cpa/ngx/data-access';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-snapshot-builder',
@@ -40,7 +39,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
    * The snapshot map extent. Is not null when the returned snapshot from server has an
    * extent defined.
    */
-  public mapExtent$: Observable<null | esri.ExtentProperties>;
+  public mapExtent$: Observable<null | __esri.ExtentProperties>;
 
   /**
    * Listens on the map view extent for changes and emits when the user updates the preview map extent.
@@ -104,7 +103,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
       this.mapService.store.pipe(
         take(1),
         switchMap(({ view }) => {
-          let handle: esri.Handle;
+          let handle: __esri.Handle;
 
           const add = (handler) => {
             handle = view.watch('extent', handler);
@@ -115,7 +114,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
           };
 
           return fromEventPattern(add, remove).pipe(
-            map<[esri.Extent, esri.Extent], esri.ExtentProperties>(([newExtent]) => {
+            map<[__esri.Extent, __esri.Extent], __esri.ExtentProperties>(([newExtent]) => {
               return newExtent.toJSON();
             }),
             skip(1) // The initial extent patching from snapshot will emit once. Do not emit this.
@@ -145,7 +144,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
 
           // Change default zoom and center to values in snapshot response.
           if (snapshot.extent !== null) {
-            instances.view.extent = snapshot.extent as esri.Extent;
+            instances.view.extent = snapshot.extent as __esri.Extent;
           } else if (snapshot.mapCenter !== null || snapshot.zoom !== null) {
             instances.view.goTo({
               center: snapshot.mapCenter.split(',').map((c) => parseFloat(c)),

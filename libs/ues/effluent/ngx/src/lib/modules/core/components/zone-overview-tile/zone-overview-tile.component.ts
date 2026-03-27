@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
 
-import esri = __esri;
 @Component({
   selector: 'tamu-gisc-zone-overview-tile',
   templateUrl: './zone-overview-tile.component.html',
@@ -41,7 +40,7 @@ export class ZoneOverviewTileComponent implements OnInit {
 
   public async handleZoneHighlight() {
     if (this._toggled.getValue()) {
-      const layer = this.ms.findLayerById('sampling-zone-3') as esri.FeatureLayer;
+      const layer = this.ms.findLayerById('sampling-zone-3') as __esri.FeatureLayer;
 
       if (layer) {
         const featureSet = await layer.queryFeatures({

@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
 
-import esri = __esri;
-
 @Component({
   selector: 'tamu-gisc-legend-collection',
   templateUrl: './legend-collection.component.html',
@@ -71,8 +69,8 @@ export class LegendCollectionComponent {
       .map(({ child }) => child);
   }
 
-  public get legendElements(): esri.LegendElement[] {
-    return this._toArray<esri.LegendElement>(this.group?.legendElements);
+  public get legendElements(): __esri.LegendElement[] {
+    return this._toArray<__esri.LegendElement>(this.group?.legendElements);
   }
 
   public get visibleChildGroups(): IActiveLayerInfo[] {
@@ -129,7 +127,7 @@ export class LegendCollectionComponent {
    * This is particularly important because nested LegendElements perform async network operations
    * on component init.
    */
-  public trackByLegendElement(index: number, el: esri.LegendElement): string {
+  public trackByLegendElement(index: number, el: __esri.LegendElement): string {
     const identifier = el?.infos ? el.infos?.map((i) => `${i.label}-${i.value}`).join(',') : null;
 
     return identifier;
@@ -189,5 +187,5 @@ export class LegendCollectionComponent {
 }
 
 // Browser doesn't like direct esri types for inputs.
-type IActiveLayerInfo = esri.ActiveLayerInfo;
-type ILayer = esri.Layer;
+type IActiveLayerInfo = __esri.ActiveLayerInfo;
+type ILayer = __esri.Layer;

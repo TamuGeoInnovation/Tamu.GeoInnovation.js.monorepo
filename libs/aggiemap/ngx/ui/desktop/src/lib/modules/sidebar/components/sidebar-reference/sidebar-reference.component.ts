@@ -4,14 +4,13 @@ import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-sidebar-reference',
   templateUrl: './sidebar-reference.component.html',
   styleUrls: ['./sidebar-reference.component.scss']
 })
-export class SidebarReferenceComponent<T extends esri.Graphic> {
+export class SidebarReferenceComponent<T extends __esri.Graphic> {
   constructor(private helper: AltSearchHelper, private mapService: EsriMapService) {}
 
   public onSearchResult(result: SearchSelection<T>) {

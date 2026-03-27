@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 
+import Color from '@arcgis/core/Color';
+
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseDrawComponent, ISketchViewModelEvent } from '../base/base.component';
-
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map-draw-advanced',
@@ -59,14 +59,8 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
   /**
    * Color class container necessary for color format conversion (hex to rgb, for example).
    */
-  private _color: esri.ColorConstructor;
-
   public ngOnInit(): void {
     super.ngOnInit();
-
-    this.moduleProvider.require(['Color']).then(([color]: [esri.ColorConstructor]) => {
-      this._color = color;
-    });
   }
 
   public setColor(c: string) {
@@ -114,15 +108,15 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
   }
 
   private getColor(color: string): IGeneratedColor {
-    const fill = new this._color(color);
-    const border = new this._color(color);
+    const fill = new Color(color);
+    const border = new Color(color);
     fill.a = 0.4;
     border.a = 0.8;
 
     return { fill, border };
   }
 
-  private setGraphicSymbol(graphic: esri.Graphic, color: IGeneratedColor) {
+  private setGraphicSymbol(graphic: __esri.Graphic, color: IGeneratedColor) {
     if (graphic.geometry.type === 'polygon') {
       graphic.symbol.color = color.fill;
       (graphic.symbol as ISimpleFillSymbol).outline.color = color.border;
@@ -133,13 +127,13 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
     }
   }
 
-  private setGraphicsSymbol(graphics: esri.Collection<esri.Graphic>, color: IGeneratedColor) {
+  private setGraphicsSymbol(graphics: __esri.Collection<__esri.Graphic>, color: IGeneratedColor) {
     graphics.forEach((graphic) => {
       this.setGraphicSymbol(graphic, color);
     });
   }
 
-  public override onCreate(event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
+  public override onCreate(event: Partial<ISketchViewModelEvent & __esri.SketchViewModelCreateEvent>) {
     if (event.graphic) {
       const g = this.model.layer.graphics.find(
         (g) => (g as unknown as IGraphic).uid === (event.graphic as unknown as IGraphic).uid
@@ -161,15 +155,15 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
  * Necessary polyfill interface because the current version typings do not have an outline
  * definition on a SimpleFillSymbol.
  */
-interface ISimpleFillSymbol extends esri.SimpleFillSymbol {
-  outline: esri.SimpleLineSymbol;
+interface ISimpleFillSymbol extends __esri.SimpleFillSymbol {
+  outline: __esri.SimpleLineSymbol;
 }
 
 interface IGeneratedColor {
-  fill: esri.Color;
-  border: esri.Color;
+  fill: __esri.Color;
+  border: __esri.Color;
 }
 
 interface SymbolConstructor {
-  fromJSON: (json) => esri.Symbol;
+  fromJSON: (json) => __esri.Symbol;
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
+import { from, Subject, ReplaySubject } from 'rxjs';
 import { takeUntil, filter, switchMap, take, map } from 'rxjs/operators';
 
-import { EsriModuleProviderService, EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
-import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 
-import esri = __esri;
+import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 
 @Component({
   template: '',
@@ -76,16 +76,15 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   public redoTool = true;
 
   @Output()
-  public export: EventEmitter<esri.Graphic[] | esri.Graphic> = new EventEmitter();
+  public export: EventEmitter<__esri.Graphic[] | __esri.Graphic> = new EventEmitter();
 
   private _$destroy: Subject<boolean> = new Subject();
   private _$loaded: ReplaySubject<boolean> = new ReplaySubject();
-  private _activeToolWatchHandle: esri.WatchHandle;
-  private _layersAddWatchHandle: esri.WatchHandle;
+  private _activeToolWatchHandle: __esri.WatchHandle;
+  private _layersAddWatchHandle: __esri.WatchHandle;
 
   constructor(
     private mapService: EsriMapService,
-    public moduleProvider: EsriModuleProviderService,
     private selector: FeatureSelectorService
   ) {}
 
@@ -93,9 +92,9 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     this.activeUpdateTool = this.defaultUpdateTool;
 
     if (this.reference !== undefined) {
-      combineLatest([from(this.moduleProvider.require(['SketchViewModel'])), this.mapService.store])
+      this.mapService.store
         .pipe(takeUntil(this._$destroy))
-        .subscribe(([[SketchViewModel], mapInstance]: [[esri.SketchViewModelConstructor], MapServiceInstance]) => {
+        .subscribe((mapInstance: MapServiceInstance) => {
           const l = mapInstance.map.findLayerById(this.reference);
 
           this.model = new SketchViewModel({
@@ -106,7 +105,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
             }
           });
 
-          this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
+          this.model.on('create', (event: Partial<ISketchViewModelEvent & __esri.SketchViewModelCreateEvent>) => {
             if (event.state === 'complete') {
               this.onCreate(event);
             }
@@ -117,7 +116,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
           // - Shape update complete
           // - Shape move stop
           // - Shape reshape stop
-          this.model.on('update', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) => {
+          this.model.on('update', (event: Partial<ISketchViewModelEvent & __esri.SketchViewModelUpdateEvent>) => {
             if (
               event.state === 'complete' ||
               (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
@@ -187,7 +186,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onCreate(event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
+  public onCreate(event: Partial<ISketchViewModelEvent & __esri.SketchViewModelCreateEvent>) {
     // While event is not used in this class, it is used by superclasses and cannot be removed
     // otherwise signatures will not be the same.
     this.emitDrawn(this.model.layer.graphics);
@@ -245,7 +244,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     }
   }
 
-  public emitDrawn(features: esri.Collection<esri.Graphic>) {
+  public emitDrawn(features: __esri.Collection<__esri.Graphic>) {
     if (this.collapseGraphics) {
       const collection = features.toArray();
 
@@ -304,7 +303,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    *
    * Emits a 'create' event.
    */
-  public draw(graphics: esri.Graphic[]) {
+  public draw(graphics: __esri.Graphic[]) {
     this._$loaded.pipe(take(1)).subscribe(() => {
       this.model.layer.addMany(graphics);
       this.model.emit('create', {
@@ -345,12 +344,12 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     });
   }
 
-  private reorder(map: esri.Map) {
+  private reorder(map: __esri.Map) {
     map.reorder(this.model.layer, map.allLayers.length - 1);
   }
 }
 
-export interface ISketchViewModel extends esri.SketchViewModel {
+export interface ISketchViewModel extends __esri.SketchViewModel {
   toggleUpdateTool?: () => unknown;
 }
 

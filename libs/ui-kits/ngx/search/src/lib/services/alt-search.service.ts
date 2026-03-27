@@ -7,7 +7,6 @@ import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 import { SearchService, SearchSource, SearchResult } from '../services/search.service';
 import { SearchSelection } from '../components/search/search.component';
 
-import esri = __esri;
 
 /**
  *
@@ -51,7 +50,7 @@ export class AltSearchHelper {
           stateful: false,
           returnAsPromise: true
         })
-        .then((res: SearchResult<esri.Graphic>) => {
+        .then((res: SearchResult<__esri.Graphic>) => {
           if (res.results && res.results[0].features.length > 0) {
             return new SearchSelection({
               type: 'search',

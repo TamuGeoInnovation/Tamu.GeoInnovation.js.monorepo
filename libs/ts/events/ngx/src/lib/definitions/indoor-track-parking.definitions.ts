@@ -7,7 +7,6 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
 
 export enum INDOOR_TRACK_PARKING_LAYERS {
   VISITOR_KIOSK = 'indoor-track-parking-visitor-kiosk',
@@ -146,9 +145,9 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
           title: IndoorTrackParkingDefinitions.SAFETY_FIRST.name,
           visible: true,
           popupEnabled: false
-        } as unknown as esri.SublayerProperties
+        } as unknown as __esri.SublayerProperties
       ]
-    } as unknown as esri.MapImageLayerProperties
+    } as unknown as __esri.MapImageLayerProperties
   },
   {
     type: 'feature',

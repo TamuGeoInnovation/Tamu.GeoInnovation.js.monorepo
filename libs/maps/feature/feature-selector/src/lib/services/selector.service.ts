@@ -5,21 +5,20 @@ import { switchMap, shareReplay, map } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-import esri = __esri;
 
 @Injectable()
 export class FeatureSelectorService {
   /**
    * Observable that emits the selected map feature.
    */
-  public feature: Observable<esri.Graphic[]>;
+  public feature: Observable<__esri.Graphic[]>;
 
   /**
    * Observable that emits the selected map feature and replays up to the last
    * emitted feature. Useful for late-subscribers that need access to the previous
    * emission.
    */
-  public snapshot: Observable<esri.Graphic[]>;
+  public snapshot: Observable<__esri.Graphic[]>;
 
   constructor(private esriMapService: EsriMapService) {
     this.feature = this.esriMapService.store.pipe(
@@ -28,7 +27,7 @@ export class FeatureSelectorService {
         /**
          * Holds the map view click handler, to dispose of it on service destruction.
          */
-        let handle: esri.Handle;
+        let handle: __esri.Handle;
 
         const create = (handler) => {
           handle = view.on('click', handler);
@@ -40,9 +39,9 @@ export class FeatureSelectorService {
 
         return fromEventPattern(create, remove).pipe(
           switchMap((event: MouseEvent) => {
-            return from(view.hitTest(event) as unknown as Promise<esri.HitTestResult>);
+            return from(view.hitTest(event) as unknown as Promise<__esri.HitTestResult>);
           }),
-          switchMap((hitTestResult: esri.HitTestResult) => {
+          switchMap((hitTestResult: __esri.HitTestResult) => {
             return of(hitTestResult.results.map((v) => v.graphic));
           })
         );
