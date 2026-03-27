@@ -53,7 +53,8 @@ export class AccommodationsComponent implements OnInit {
           const firstAccommodation = Object.values(options)[0];
 
           return this.router.navigate([firstAccommodation.value], {
-            relativeTo: this.route
+            relativeTo: this.route,
+            replaceUrl: true
           });
         }
       }),
