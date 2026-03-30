@@ -163,6 +163,47 @@ describe('LegendElementComponent', () => {
     expect((infos[0] as { label?: string }).label).toBe('Bike Racks');
   });
 
+  it('replaces SEC Grounds Day 1 route legend icons with proportionate SVG previews', async () => {
+    component.groupTitle = 'Day 1 Routes';
+    component.layer = {
+      id: 'sec-grounds-day1-routes',
+      url: 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SEC_Grounds_Conference/MapServer/2'
+    } as unknown as __esri.Layer;
+    component.element = {
+      infos: [{ label: 'Walking Tour Day 1', src: 'default-walking-icon', value: 'walking' }]
+    } as unknown as __esri.LegendElement;
+
+    await component.ngOnInit();
+
+    const infos = await firstValueFrom(component.infos);
+
+    expect((infos[0] as { src?: string }).src).toContain('data:image/svg+xml');
+    expect((infos[0] as { src?: string }).src).not.toBe('default-walking-icon');
+  });
+
+  it('replaces SEC Grounds route legend icons with proportionate SVG previews', async () => {
+    component.groupTitle = 'Day 3 Routes';
+    component.layer = {
+      id: 'sec-grounds-day3-routes',
+      url: 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SEC_Grounds_Conference/MapServer/8'
+    } as unknown as __esri.Layer;
+    component.element = {
+      infos: [
+        { label: 'Bus Tour Route Day 3', src: 'default-bus-icon', value: 'bus' },
+        { label: 'Walking Tour Day 3', src: 'default-walking-icon', value: 'walking' }
+      ]
+    } as unknown as __esri.LegendElement;
+
+    await component.ngOnInit();
+
+    const infos = await firstValueFrom(component.infos);
+
+    expect((infos[0] as { src?: string }).src).toContain('data:image/svg+xml');
+    expect((infos[1] as { src?: string }).src).toContain('data:image/svg+xml');
+    expect((infos[0] as { src?: string }).src).not.toBe('default-bus-icon');
+    expect((infos[1] as { src?: string }).src).not.toBe('default-walking-icon');
+  });
+
   it('uses the group title label for non-bike single-entry legend elements', async () => {
     component.groupTitle = 'Baseball Symbols';
     component.layer = {

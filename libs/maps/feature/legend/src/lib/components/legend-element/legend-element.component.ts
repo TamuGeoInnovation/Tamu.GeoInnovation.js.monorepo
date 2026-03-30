@@ -64,6 +64,18 @@ export class LegendElementComponent implements OnInit {
 
   private readonly collapsedLegendLayerUrls = ['/TS/TS_Bicycles/MapServer/3', '/TS/BikeMap/MapServer/0'];
 
+  private readonly secGroundsRouteLayerIds = new Set([
+    'sec-grounds-day1-routes',
+    'sec-grounds-day2-routes',
+    'sec-grounds-day3-routes'
+  ]);
+
+  private readonly secGroundsRouteLayerUrls = [
+    '/TS/SEC_Grounds_Conference/MapServer/2',
+    '/TS/SEC_Grounds_Conference/MapServer/5',
+    '/TS/SEC_Grounds_Conference/MapServer/8'
+  ];
+
   @Input()
   public element: ILegendElement;
 
@@ -128,7 +140,10 @@ export class LegendElementComponent implements OnInit {
     }
 
     const operableInfos = (this.element.infos ?? []) as Array<LegendInfo>;
-    const displayInfos = this.shouldApplyBikeRackLegendTransform ? this._getBikeRackLegendInfos(operableInfos) : operableInfos;
+    const bikeRackAdjustedInfos = this.shouldApplyBikeRackLegendTransform ? this._getBikeRackLegendInfos(operableInfos) : operableInfos;
+    const displayInfos = this.shouldUseCustomSecGroundsRouteLegend
+      ? this._getSecGroundsRouteLegendInfos(bikeRackAdjustedInfos)
+      : bikeRackAdjustedInfos;
 
     this.infos = iif(
       () => {
@@ -374,6 +389,21 @@ export class LegendElementComponent implements OnInit {
     });
   }
 
+  private get shouldUseCustomSecGroundsRouteLegend(): boolean {
+    const layerCandidates = [this.layer, (this.layer as unknown as esri.Sublayer)?.layer].filter((candidate) => {
+      return candidate !== null && candidate !== undefined;
+    }) as Array<{ id?: string; url?: string }>;
+
+    return layerCandidates.some((candidate) => {
+      const url = candidate.url ?? '';
+
+      return (
+        this.secGroundsRouteLayerIds.has(candidate.id ?? '') ||
+        this.secGroundsRouteLayerUrls.some((routeUrl) => url.includes(routeUrl))
+      );
+    });
+  }
+
   private _getBikeRackLegendInfos(infos: Array<LegendInfo>): Array<LegendInfo> {
     const flattenedInfos = this._flattenLegendInfos(infos);
 
@@ -416,6 +446,56 @@ export class LegendElementComponent implements OnInit {
     }
 
     return displayInfos.length > 0 ? displayInfos : flattenedInfos;
+  }
+
+  private _getSecGroundsRouteLegendInfos(infos: Array<LegendInfo>): Array<LegendInfo> {
+    return infos.map((info) => {
+      const nestedInfos = this._toLegendInfoArray((info as { infos?: unknown }).infos);
+
+      if ((info as { type?: string }).type === 'symbol-table' && nestedInfos.length > 0) {
+        return {
+          ...(info as unknown as Record<string, unknown>),
+          infos: this._getSecGroundsRouteLegendInfos(nestedInfos)
+        } as unknown as LegendInfo;
+      }
+
+      const label = ((info as { label?: string }).label ?? '').trim();
+      const src = this._getSecGroundsRouteLegendSrc(label);
+
+      if (src === undefined) {
+        return info;
+      }
+
+      return {
+        ...(info as unknown as Record<string, unknown>),
+        src,
+        preview: undefined
+      } as unknown as LegendInfo;
+    });
+  }
+
+  private _getSecGroundsRouteLegendSrc(label: string): string | undefined {
+    if (label.startsWith('Bus Tour Route Day ')) {
+      return this._toSvgDataUri(this._getSecGroundsBusRouteLegendSvg());
+    }
+
+    if (label.startsWith('Walking Tour Day ')) {
+      return this._toSvgDataUri(this._getSecGroundsWalkingRouteLegendSvg());
+    }
+
+    return undefined;
+  }
+
+  private _getSecGroundsBusRouteLegendSvg(): string {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="16" viewBox="0 0 48 16" fill="none"><path d="M2 8H46" stroke="#005CE6" stroke-width="3.5" stroke-linecap="round"/><path d="M11 4.5V11.5L17 8L11 4.5Z" fill="#005CE6"/><path d="M22 4.5V11.5L28 8L22 4.5Z" fill="#005CE6"/><path d="M33 4.5V11.5L39 8L33 4.5Z" fill="#005CE6"/></svg>';
+  }
+
+  private _getSecGroundsWalkingRouteLegendSvg(): string {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="16" viewBox="0 0 48 16" fill="none"><path d="M2 8H46" stroke="#38A800" stroke-width="4.6" stroke-linecap="square"/><path d="M2 8H46" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="square"/><path d="M2 8H46" stroke="#38A800" stroke-width="1.4" stroke-linecap="square" stroke-dasharray="4 4"/></svg>';
+  }
+
+  private _toSvgDataUri(svg: string): string {
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
   }
 
   private _flattenLegendInfos(infos: Array<LegendInfo>): Array<LegendInfo> {
