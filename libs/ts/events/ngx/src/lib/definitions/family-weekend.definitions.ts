@@ -46,7 +46,7 @@ const createFamilyWeekendParkingRenderer = (paidParkingColor: number[]): Feature
   uniqueValueInfos: [
     {
       value: 'Event Parking',
-      label: 'Free Parking',
+      label: 'Free Event Parking',
       symbol: familyWeekendEventParkingSymbol
     },
     {
