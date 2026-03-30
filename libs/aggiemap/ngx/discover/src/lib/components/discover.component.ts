@@ -48,6 +48,9 @@ export class DiscoverComponent implements OnInit {
   public athleticColumns: InternalDiscoverApplication[][] = [[], []];
   public athleticColumnStart = 1;
 
+  public allEventsColumns: InternalDiscoverApplication[][] = [[], []];
+  public allEventsColumnStart = 1;
+
   public searchControl = new FormControl();
   public filteredApplications: Observable<DiscoverApplication[]>;
   public isDev: Observable<boolean>;
@@ -77,12 +80,18 @@ export class DiscoverComponent implements OnInit {
     this.parkingColumnStart = this.getSecondColumnStart(this.parkingColumns);
 
     const campusApplications = this.getApplicationsByMapType('campus');
-    this.campusColumns = this.buildApplicationColumns(campusApplications);
+    const upcomingCampus = this.filterUpcomingEvents(campusApplications);
+    this.campusColumns = this.buildApplicationColumns(upcomingCampus);
     this.campusColumnStart = this.getSecondColumnStart(this.campusColumns);
 
     const athleticApplications = this.getApplicationsByMapType('athletics');
-    this.athleticColumns = this.buildApplicationColumns(athleticApplications);
+    const upcomingAthletic = this.filterUpcomingEvents(athleticApplications);
+    this.athleticColumns = this.buildApplicationColumns(upcomingAthletic);
     this.athleticColumnStart = this.getSecondColumnStart(this.athleticColumns);
+
+    const allEvents = this.sortEventApplications([...campusApplications, ...athleticApplications]);
+    this.allEventsColumns = this.buildApplicationColumns(allEvents);
+    this.allEventsColumnStart = this.getSecondColumnStart(this.allEventsColumns);
   }
 
   private getApplicationsByMapType(mapType: DiscoverMapType): InternalDiscoverApplication[] {
@@ -118,6 +127,18 @@ export class DiscoverComponent implements OnInit {
 
   private getSecondColumnStart(columns: InternalDiscoverApplication[][]): number {
     return columns[0].length + 1;
+  }
+
+  private filterUpcomingEvents(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[] {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayMs = today.getTime();
+
+    return apps.filter((app) => {
+      const dates = app.configuration.eventDates;
+      if (!dates || dates.length === 0) return true;
+      return dates.some((date) => this.parseEventDate(date) >= todayMs);
+    });
   }
 
   private sortEventApplications(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[] {
