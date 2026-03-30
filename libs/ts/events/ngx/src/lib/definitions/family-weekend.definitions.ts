@@ -7,6 +7,11 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
+type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
+type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
+
 export enum FAMILY_WEEKEND_LAYERS {
   FRIDAY_PARKING_LOTS = 'family-weekend-friday-parking-lots',
   SATURDAY_PARKING_LOTS = 'family-weekend-saturday-parking-lots',
@@ -14,6 +19,77 @@ export enum FAMILY_WEEKEND_LAYERS {
 }
 
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Family_Weekend/MapServer';
+
+const familyWeekendEventParkingSymbol = {
+  type: 'simple-fill',
+  color: [95, 138, 232, 255],
+  outline: {
+    type: 'simple-line',
+    color: [94, 52, 234, 255],
+    width: 1
+  }
+} as unknown as esri.SymbolProperties;
+
+const familyWeekendReservedLotSymbol = {
+  type: 'simple-fill',
+  color: [242, 160, 97, 255],
+  outline: {
+    type: 'simple-line',
+    color: [230, 124, 0, 255],
+    width: 1
+  }
+} as unknown as esri.SymbolProperties;
+
+const createFamilyWeekendParkingRenderer = (paidParkingColor: number[]): FeatureRenderer => ({
+  type: 'unique-value',
+  field: 'Type',
+  uniqueValueInfos: [
+    {
+      value: 'Event Parking',
+      label: 'Free Event Parking',
+      symbol: familyWeekendEventParkingSymbol
+    },
+    {
+      value: '$10 Event Parking',
+      label: 'Paid Parking',
+      symbol: {
+        type: 'simple-fill',
+        color: paidParkingColor,
+        outline: {
+          type: 'simple-line',
+          color: [68, 137, 112, 255],
+          width: 1
+        }
+      } as unknown as esri.SymbolProperties
+    },
+    {
+      value: 'Paid hourly visitor parking',
+      label: 'Paid Parking',
+      symbol: {
+        type: 'simple-fill',
+        color: paidParkingColor,
+        outline: {
+          type: 'simple-line',
+          color: [68, 137, 112, 255],
+          width: 1
+        }
+      } as unknown as esri.SymbolProperties
+    },
+    {
+      value: 'Lot Specific Permit Only',
+      label: 'Reserved Lot',
+      symbol: familyWeekendReservedLotSymbol
+    },
+    {
+      value: 'Reserved Athletic',
+      label: 'Reserved Lot',
+      symbol: familyWeekendReservedLotSymbol
+    }
+  ]
+});
+
+const saturdayParkingRenderer = createFamilyWeekendParkingRenderer([81, 179, 54, 255]);
+const sundayParkingRenderer = createFamilyWeekendParkingRenderer([79, 179, 53, 255]);
 
 export const FamilyWeekendDefinitions = {
   FRIDAY_PARKING_LOTS: {
@@ -58,8 +134,9 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
     visible: false,
     listMode: 'show',
     native: {
-      outFields: ['*']
-    }
+      outFields: ['*'],
+      renderer: saturdayParkingRenderer
+    } as unknown as FeatureNative
   },
   {
     type: 'feature',
@@ -70,8 +147,9 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
     visible: false,
     listMode: 'show',
     native: {
-      outFields: ['*']
-    }
+      outFields: ['*'],
+      renderer: sundayParkingRenderer
+    } as unknown as FeatureNative
   }
 ];
 
