@@ -117,54 +117,15 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
       layers: [
         {
           layerId: FAMILY_WEEKEND_LAYERS.FRIDAY_PARKING_LOTS,
-          conversions: [
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayOne,
-              propOverrides: { visible: true }
-            },
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayTwo,
-              propOverrides: { visible: false }
-            },
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayThree,
-              propOverrides: { visible: false }
-            }
-          ]
+          conversions: [{ input: FamilyWeekendAttendanceDateChoices.DayOne, propOverrides: { visible: true } }]
         },
         {
           layerId: FAMILY_WEEKEND_LAYERS.SATURDAY_PARKING_LOTS,
-          conversions: [
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayOne,
-              propOverrides: { visible: false }
-            },
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayTwo,
-              propOverrides: { visible: true }
-            },
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayThree,
-              propOverrides: { visible: false }
-            }
-          ]
+          conversions: [{ input: FamilyWeekendAttendanceDateChoices.DayTwo, propOverrides: { visible: true } }]
         },
         {
           layerId: FAMILY_WEEKEND_LAYERS.SUNDAY_PARKING_LOTS,
-          conversions: [
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayOne,
-              propOverrides: { visible: false }
-            },
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayTwo,
-              propOverrides: { visible: false }
-            },
-            {
-              input: FamilyWeekendAttendanceDateChoices.DayThree,
-              propOverrides: { visible: true }
-            }
-          ]
+          conversions: [{ input: FamilyWeekendAttendanceDateChoices.DayThree, propOverrides: { visible: true } }]
         }
       ]
     }
