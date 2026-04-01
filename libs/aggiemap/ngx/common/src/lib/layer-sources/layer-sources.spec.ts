@@ -1,7 +1,16 @@
+import { LayerSource } from '@tamu-gisc/common/types';
 import { IFactoryExcludeOptions } from '../utils/definitionFactory';
 import { LayerSources } from './layer-sources';
 import { IComposedConnections } from '../connections';
 import { IComposedIDefinitions } from '../definitions';
+
+jest.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
+  Popups: {
+    MarkdownPopupComponent: 'MarkdownPopupComponent'
+  }
+}));
+
+type GroupLayerSource = Extract<LayerSource, { type: 'group' }>;
 
 describe('LayerSources', () => {
   let connections: IComposedConnections;
@@ -9,7 +18,9 @@ describe('LayerSources', () => {
   let options: IFactoryExcludeOptions<IComposedIDefinitions>;
 
   beforeEach(() => {
-    connections = {} as IComposedConnections;
+    connections = {
+      tsMainUrl: 'https://example.com/arcgis/rest/services/TS/TS_Main/MapServer'
+    } as IComposedConnections;
     definitions = {
       BUILDINGS: {
         id: 'buildings',
@@ -149,4 +160,31 @@ describe('LayerSources', () => {
       'sustainable-transportation-group-layer'
     ]);
   });
+
+  it('should split shared bike racks into flat sustainable transportation child layers', () => {
+    const result = LayerSources(connections, definitions);
+    const sustainableTransportationGroup = result.find((layer) => layer.id === 'sustainable-transportation-group-layer') as
+      | GroupLayerSource
+      | undefined;
+    const childSources = sustainableTransportationGroup?.sources ?? [];
+    const childTitles = childSources.map((layer) => layer.title);
+    const childIds = childSources.map((layer) => layer.id);
+
+    expect(sustainableTransportationGroup?.type).toBe('group');
+    expect(childTitles).toEqual([
+      'EV Charge Stations (Main + RELLIS)',
+      'Bike Fix Stations',
+      'Bike Lanes',
+      'City Bike Lanes and Routes',
+      'Bike Racks',
+      'Shared Mobility Racks',
+      'Hub Corral',
+      'Bike Dismount Zones'
+    ]);
+    expect(childIds).toEqual(
+      expect.arrayContaining(['bike-racks-map-layer', 'shared-mobility-racks-layer', 'hub-corrals-layer'])
+    );
+    expect(childIds.filter((id) => id === 'bike-racks-map-layer')).toHaveLength(1);
+  });
+
 });

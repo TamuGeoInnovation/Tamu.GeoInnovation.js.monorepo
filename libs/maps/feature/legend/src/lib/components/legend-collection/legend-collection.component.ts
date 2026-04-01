@@ -32,9 +32,6 @@ export class LegendCollectionComponent {
   public combineChildrenUnderPrimary = false;
 
   @Input()
-  public useBikeRackLegendTransform: boolean | undefined = undefined;
-
-  @Input()
   public hideElementGroupHeaders = false;
 
   public expanded = true;
