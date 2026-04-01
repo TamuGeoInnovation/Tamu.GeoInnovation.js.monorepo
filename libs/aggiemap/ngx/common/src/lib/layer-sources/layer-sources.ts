@@ -23,9 +23,6 @@ export function LayerSources(
 ): Array<LayerSource> {
   const bikeMapUrl = connections.tsMainUrl.replace('/TS_Main/MapServer', '/BikeMap/MapServer');
   const evChargeStationsUrl = connections.tsMainUrl.replace('/TS_Main/MapServer', '/EVChargeStations/MapServer');
-  const rackLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer';
-  const rackPopupDescription =
-    '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' + '<strong>Notes</strong>: {attributes.br_notes}';
   const all: Array<LayerSource> = [
     {
       type: 'feature',
@@ -303,13 +300,15 @@ export function LayerSources(
           type: 'feature',
           id: 'bike-racks-map-layer',
           title: 'Bike Racks',
-          url: `${rackLayersUrl}/2`,
+          url: 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer/2',
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
             name: '{attributes.type}',
-            description: rackPopupDescription
+            description:
+              '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
+              '<strong>Notes</strong>: {attributes.br_notes}'
           },
           native: {
             ...commonLayerProps
@@ -319,13 +318,15 @@ export function LayerSources(
           type: 'feature',
           id: 'shared-mobility-racks-layer',
           title: 'Shared Mobility Racks',
-          url: `${rackLayersUrl}/1`,
+          url: 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer/1',
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
             name: 'Shared Mobility Racks',
-            description: rackPopupDescription
+            description:
+              '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
+              '<strong>Notes</strong>: {attributes.br_notes}'
           },
           native: {
             ...commonLayerProps
@@ -335,13 +336,15 @@ export function LayerSources(
           type: 'feature',
           id: 'hub-corrals-layer',
           title: 'Hub Corral',
-          url: `${rackLayersUrl}/0`,
+          url: 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer/0',
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
             name: 'Hub Corral',
-            description: rackPopupDescription
+            description:
+              '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
+              '<strong>Notes</strong>: {attributes.br_notes}'
           },
           native: {
             ...commonLayerProps
