@@ -27,10 +27,7 @@ type AutoCastCimSymbol = { type: 'cim' } & esri.CIMSymbolProperties;
 type AutoCastSymbol = esri.SymbolProperties;
 
 const BUS_ROUTE_COLOR: [number, number, number, number] = [0, 92, 230, 255];
-const WALKING_ROUTE_COLOR: [number, number, number, number] = [56, 168, 0, 255];
-
 const BUS_ROUTE_ARROW_SPACING = 52;
-const WALKING_ROUTE_ARROW_SPACING = 44;
 
 const createRepeatedArrowLineSymbol = (
   color: [number, number, number, number],
@@ -150,7 +147,6 @@ const createOutlinedDashedLineSymbol = (
 });
 
 const BUS_ROUTE_ARROW_SYMBOL = createRepeatedArrowLineSymbol(BUS_ROUTE_COLOR, 3.5, 7, BUS_ROUTE_ARROW_SPACING);
-const WALKING_ROUTE_ARROW_SYMBOL = createRepeatedArrowLineSymbol(WALKING_ROUTE_COLOR, 2.25, 6, WALKING_ROUTE_ARROW_SPACING);
 const DAY1_ROUTE_PATTERN_SYMBOL = createOutlinedDashedLineSymbol([0, 100, 0, 255], 4.6, 3.2, 1.4, [4, 4]);
 
 // Legend swatches for route layers. ArcGIS CIM symbol swatches are generated at a fixed
@@ -430,12 +426,9 @@ export const SecGroundsSpecialEventOptions: SpecialEventOptions = [
   }
 ];
 
-/**
- * Legend swatch overrides for SEC Grounds Conference route layers.
- * Pass this to the `legendSrcOverrides` input on the legend component for any
- * route that uses this map's layers so the legend shows clear line/arrow icons
- * instead of the default ArcGIS CIM symbol swatches.
- */
+
+// Legend swatch overrides for SEC Grounds Conference route layers.
+
 export const SecGroundsLegendSrcOverrides: Record<string, string> = {
   'Bus Tour Route Day ': toSvgDataUri(BUS_ROUTE_LEGEND_SVG),
   'Walking Tour Day ': toSvgDataUri(WALKING_ROUTE_LEGEND_SVG)
