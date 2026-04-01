@@ -35,6 +35,9 @@ export class LegendCollectionComponent {
   public useBikeRackLegendTransform: boolean | undefined = undefined;
 
   @Input()
+  public legendSrcOverrides: Record<string, string> | undefined = undefined;
+
+  @Input()
   public hideElementGroupHeaders = false;
 
   public expanded = true;
