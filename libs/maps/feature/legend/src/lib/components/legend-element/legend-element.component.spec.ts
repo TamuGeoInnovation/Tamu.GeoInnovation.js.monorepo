@@ -163,34 +163,26 @@ describe('LegendElementComponent', () => {
     expect((infos[0] as { label?: string }).label).toBe('Bike Racks');
   });
 
-  it('replaces SEC Grounds Day 1 route legend icons with proportionate SVG previews', async () => {
-    component.groupTitle = 'Day 1 Routes';
-    component.layer = {
-      id: 'sec-grounds-day1-routes',
-      url: 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SEC_Grounds_Conference/MapServer/2'
-    } as unknown as __esri.Layer;
+  it('replaces legend icons whose labels match a legendSrcOverrides prefix', async () => {
+    component.legendSrcOverrides = { 'Custom Route ': 'data:image/svg+xml;custom-icon' };
     component.element = {
-      infos: [{ label: 'Walking Tour Day 1', src: 'default-walking-icon', value: 'walking' }]
+      infos: [{ label: 'Custom Route Day 1', src: 'default-icon', value: 'route' }]
     } as unknown as __esri.LegendElement;
 
     await component.ngOnInit();
 
     const infos = await firstValueFrom(component.infos);
 
-    expect((infos[0] as { src?: string }).src).toContain('data:image/svg+xml');
-    expect((infos[0] as { src?: string }).src).not.toBe('default-walking-icon');
+    expect((infos[0] as { src?: string }).src).toBe('data:image/svg+xml;custom-icon');
+    expect((infos[0] as { src?: string }).src).not.toBe('default-icon');
   });
 
-  it('replaces SEC Grounds route legend icons with proportionate SVG previews', async () => {
-    component.groupTitle = 'Day 3 Routes';
-    component.layer = {
-      id: 'sec-grounds-day3-routes',
-      url: 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SEC_Grounds_Conference/MapServer/8'
-    } as unknown as __esri.Layer;
+  it('replaces only matching legend icons and leaves non-matching ones unchanged', async () => {
+    component.legendSrcOverrides = { 'Bus Route ': 'data:image/svg+xml;bus-icon' };
     component.element = {
       infos: [
-        { label: 'Bus Tour Route Day 3', src: 'default-bus-icon', value: 'bus' },
-        { label: 'Walking Tour Day 3', src: 'default-walking-icon', value: 'walking' }
+        { label: 'Bus Route Day 2', src: 'default-bus-icon', value: 'bus' },
+        { label: 'Walking Tour Day 2', src: 'default-walking-icon', value: 'walking' }
       ]
     } as unknown as __esri.LegendElement;
 
@@ -198,10 +190,29 @@ describe('LegendElementComponent', () => {
 
     const infos = await firstValueFrom(component.infos);
 
-    expect((infos[0] as { src?: string }).src).toContain('data:image/svg+xml');
-    expect((infos[1] as { src?: string }).src).toContain('data:image/svg+xml');
-    expect((infos[0] as { src?: string }).src).not.toBe('default-bus-icon');
-    expect((infos[1] as { src?: string }).src).not.toBe('default-walking-icon');
+    expect((infos[0] as { src?: string }).src).toBe('data:image/svg+xml;bus-icon');
+    expect((infos[1] as { src?: string }).src).toBe('default-walking-icon');
+  });
+
+  it('applies legendSrcOverrides recursively through nested symbol-table infos', async () => {
+    component.legendSrcOverrides = { 'Route ': 'data:image/svg+xml;route-icon' };
+    component.element = {
+      type: 'symbol-table',
+      infos: [
+        {
+          type: 'symbol-table',
+          title: 'Nested Group',
+          infos: [{ label: 'Route Day 1', src: 'default-icon', value: 'route' }]
+        }
+      ]
+    } as unknown as __esri.LegendElement;
+
+    await component.ngOnInit();
+
+    const infos = await firstValueFrom(component.infos);
+    const nestedInfos = (infos[0] as { infos?: Array<{ src?: string }> }).infos;
+
+    expect(nestedInfos[0].src).toBe('data:image/svg+xml;route-icon');
   });
 
   it('uses the group title label for non-bike single-entry legend elements', async () => {
