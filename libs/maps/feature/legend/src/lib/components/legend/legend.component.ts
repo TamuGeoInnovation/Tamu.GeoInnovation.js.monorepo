@@ -39,9 +39,6 @@ export class LegendComponent implements OnInit, OnDestroy {
   @Input()
   public useBikeRackLegendTransform: boolean | undefined = undefined;
 
-  @Input()
-  public legendSrcOverrides: Record<string, string> | undefined = undefined;
-
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
 
   public responsive: ResponsiveSnapshot;
@@ -68,7 +65,6 @@ export class LegendComponent implements OnInit, OnDestroy {
         routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
       this.useBikeRackLegendTransform =
         routeData['useBikeRackLegendTransform'] ?? this.useBikeRackLegendTransform;
-      this.legendSrcOverrides = routeData['legendSrcOverrides'] ?? this.legendSrcOverrides;
     }
 
     this.legend = this.legendService.legend({

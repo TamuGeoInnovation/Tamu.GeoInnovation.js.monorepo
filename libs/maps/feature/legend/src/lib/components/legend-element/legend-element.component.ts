@@ -90,15 +90,6 @@ export class LegendElementComponent implements OnInit {
   @Input()
   public useBikeRackLegendTransform: boolean | undefined = undefined;
 
-  /**
-   * Optional map of legend label prefixes to image src strings (e.g. data URIs).
-   * When provided, any legend info whose label starts with a key will have its
-   * icon replaced with the corresponding src value. This is an opt-in override
-   * for maps that need custom legend swatches without modifying this component.
-   */
-  @Input()
-  public legendSrcOverrides: Record<string, string> | undefined = undefined;
-
   public infos: Observable<Array<LegendInfo>>;
   public expanded = true;
 
@@ -137,8 +128,7 @@ export class LegendElementComponent implements OnInit {
     }
 
     const operableInfos = (this.element.infos ?? []) as Array<LegendInfo>;
-    const bikeRackAdjustedInfos = this.shouldApplyBikeRackLegendTransform ? this._getBikeRackLegendInfos(operableInfos) : operableInfos;
-    const displayInfos = this.legendSrcOverrides ? this._applyLegendSrcOverrides(bikeRackAdjustedInfos, this.legendSrcOverrides) : bikeRackAdjustedInfos;
+    const displayInfos = this.shouldApplyBikeRackLegendTransform ? this._getBikeRackLegendInfos(operableInfos) : operableInfos;
 
     this.infos = iif(
       () => {
@@ -381,37 +371,6 @@ export class LegendElementComponent implements OnInit {
         this.collapsedLegendLayerIds.has(candidate.id ?? '') ||
         this.collapsedLegendLayerUrls.some((collapsedUrl) => url.includes(collapsedUrl))
       );
-    });
-  }
-
-  /**
-   * Replaces legend info icon sources with custom src values based on label prefix matching.
-   * Keys in the overrides map are matched as label prefixes; matching infos get their src
-   * replaced and any preview cleared. Works recursively through nested symbol-table infos.
-   */
-  private _applyLegendSrcOverrides(infos: Array<LegendInfo>, overrides: Record<string, string>): Array<LegendInfo> {
-    return infos.map((info) => {
-      const nestedInfos = this._toLegendInfoArray((info as { infos?: unknown }).infos);
-
-      if ((info as { type?: string }).type === 'symbol-table' && nestedInfos.length > 0) {
-        return {
-          ...(info as unknown as Record<string, unknown>),
-          infos: this._applyLegendSrcOverrides(nestedInfos, overrides)
-        } as unknown as LegendInfo;
-      }
-
-      const label = ((info as { label?: string }).label ?? '').trim();
-      const matchingKey = Object.keys(overrides).find((key) => label.startsWith(key));
-
-      if (matchingKey === undefined) {
-        return info;
-      }
-
-      return {
-        ...(info as unknown as Record<string, unknown>),
-        src: overrides[matchingKey],
-        preview: undefined
-      } as unknown as LegendInfo;
     });
   }
 

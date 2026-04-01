@@ -163,58 +163,6 @@ describe('LegendElementComponent', () => {
     expect((infos[0] as { label?: string }).label).toBe('Bike Racks');
   });
 
-  it('replaces legend icons whose labels match a legendSrcOverrides prefix', async () => {
-    component.legendSrcOverrides = { 'Custom Route ': 'data:image/svg+xml;custom-icon' };
-    component.element = {
-      infos: [{ label: 'Custom Route Day 1', src: 'default-icon', value: 'route' }]
-    } as unknown as __esri.LegendElement;
-
-    await component.ngOnInit();
-
-    const infos = await firstValueFrom(component.infos);
-
-    expect((infos[0] as { src?: string }).src).toBe('data:image/svg+xml;custom-icon');
-    expect((infos[0] as { src?: string }).src).not.toBe('default-icon');
-  });
-
-  it('replaces only matching legend icons and leaves non-matching ones unchanged', async () => {
-    component.legendSrcOverrides = { 'Bus Route ': 'data:image/svg+xml;bus-icon' };
-    component.element = {
-      infos: [
-        { label: 'Bus Route Day 2', src: 'default-bus-icon', value: 'bus' },
-        { label: 'Walking Tour Day 2', src: 'default-walking-icon', value: 'walking' }
-      ]
-    } as unknown as __esri.LegendElement;
-
-    await component.ngOnInit();
-
-    const infos = await firstValueFrom(component.infos);
-
-    expect((infos[0] as { src?: string }).src).toBe('data:image/svg+xml;bus-icon');
-    expect((infos[1] as { src?: string }).src).toBe('default-walking-icon');
-  });
-
-  it('applies legendSrcOverrides recursively through nested symbol-table infos', async () => {
-    component.legendSrcOverrides = { 'Route ': 'data:image/svg+xml;route-icon' };
-    component.element = {
-      type: 'symbol-table',
-      infos: [
-        {
-          type: 'symbol-table',
-          title: 'Nested Group',
-          infos: [{ label: 'Route Day 1', src: 'default-icon', value: 'route' }]
-        }
-      ]
-    } as unknown as __esri.LegendElement;
-
-    await component.ngOnInit();
-
-    const infos = await firstValueFrom(component.infos);
-    const nestedInfos = (infos[0] as { infos?: Array<{ src?: string }> }).infos;
-
-    expect(nestedInfos[0].src).toBe('data:image/svg+xml;route-icon');
-  });
-
   it('uses the group title label for non-bike single-entry legend elements', async () => {
     component.groupTitle = 'Baseball Symbols';
     component.layer = {
