@@ -23,6 +23,9 @@ export function LayerSources(
 ): Array<LayerSource> {
   const bikeMapUrl = connections.tsMainUrl.replace('/TS_Main/MapServer', '/BikeMap/MapServer');
   const evChargeStationsUrl = connections.tsMainUrl.replace('/TS_Main/MapServer', '/EVChargeStations/MapServer');
+  const rackLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer';
+  const rackPopupDescription =
+    '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' + '<strong>Notes</strong>: {attributes.br_notes}';
   // If sustainable transportation is re-implemented against a different server/service set later,
   // update this shared source list alongside `libs/ts/events/ngx/src/lib/definitions/sustainable-transportation.definitions.ts`.
   const sustainableTransportationSources: Array<LayerSource> = [
@@ -98,14 +101,45 @@ export function LayerSources(
       type: 'feature',
       id: 'bike-racks-map-layer',
       title: 'Bike Racks',
-      url: `${bikeMapUrl}/0`,
+      url: `${rackLayersUrl}/2`,
       listMode: 'show',
       visible: true,
       popupComponent: Popups.MarkdownPopupComponent,
       popupData: {
-        name: '{attributes.Type}',
-        description:
-          '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' + '<strong>Notes</strong>: {attributes.BR_Notes}'
+        name: '{attributes.type}',
+        description: rackPopupDescription
+      },
+      native: {
+        ...commonLayerProps
+      }
+    },
+    {
+      type: 'feature',
+      id: 'shared-mobility-racks-layer',
+      title: 'Shared Mobility Racks',
+      url: `${rackLayersUrl}/1`,
+      listMode: 'show',
+      visible: true,
+      popupComponent: Popups.MarkdownPopupComponent,
+      popupData: {
+        name: 'Shared Mobility Racks',
+        description: rackPopupDescription
+      },
+      native: {
+        ...commonLayerProps
+      }
+    },
+    {
+      type: 'feature',
+      id: 'hub-corrals-layer',
+      title: 'Hub Corral',
+      url: `${rackLayersUrl}/0`,
+      listMode: 'show',
+      visible: true,
+      popupComponent: Popups.MarkdownPopupComponent,
+      popupData: {
+        name: 'Hub Corral',
+        description: rackPopupDescription
       },
       native: {
         ...commonLayerProps
