@@ -116,34 +116,6 @@ describe('LegendElementComponent', () => {
     expect((infos[2] as { src?: string }).src).toBe('blue-icon');
   });
 
-  it('can explicitly disable the bike rack legend transform', async () => {
-    component.groupTitle = 'Bike Racks';
-    component.useBikeRackLegendTransform = false;
-    component.layer = {
-      id: 'bike-racks-map-layer',
-      url: 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer/0'
-    } as unknown as __esri.Layer;
-    component.element = {
-      infos: [
-        { label: 'Hub Corral', src: 'red-icon', value: 'hub' },
-        { label: 'Shared Mobility Racks', src: 'teal-icon', value: 'shared' },
-        { label: 'Coat Hanger', src: 'blue-icon', value: 'coat' },
-        { label: 'DP', src: 'blue-icon', value: 'dp' }
-      ]
-    } as unknown as __esri.LegendElement;
-
-    await component.ngOnInit();
-
-    const infos = await firstValueFrom(component.infos);
-
-    expect(infos.map((info) => (info as { label?: string }).label)).toEqual([
-      'Hub Corral',
-      'Shared Mobility Racks',
-      'Coat Hanger',
-      'DP'
-    ]);
-  });
-
   it('adds a fallback Bike Racks label for single unlabeled bike rack legend entries', async () => {
     component.groupTitle = 'Bike Racks';
     component.layer = {

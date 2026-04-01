@@ -87,9 +87,6 @@ export class LegendElementComponent implements OnInit {
   @Input()
   public hideGroupHeader = false;
 
-  @Input()
-  public useBikeRackLegendTransform: boolean | undefined = undefined;
-
   public infos: Observable<Array<LegendInfo>>;
   public expanded = true;
 
@@ -354,9 +351,7 @@ export class LegendElementComponent implements OnInit {
   }
 
   private get shouldApplyBikeRackLegendTransform(): boolean {
-    return this.useBikeRackLegendTransform === undefined
-      ? this.shouldUseCustomBikeRackLegend
-      : this.useBikeRackLegendTransform && this.shouldUseCustomBikeRackLegend;
+    return this.shouldUseCustomBikeRackLegend;
   }
 
   private get shouldUseCustomBikeRackLegend(): boolean {
