@@ -176,6 +176,7 @@ export const IndoorTrackParkingConfiguration: EventConfiguration = {
   shortApplicationName: 'Indoor Track Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M indoor track events.',
   eventDates: [],
+  scheduleUrl: 'https://12thman.com/sports/track-and-field/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]
 };

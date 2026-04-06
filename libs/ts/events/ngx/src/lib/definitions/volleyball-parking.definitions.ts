@@ -168,6 +168,7 @@ export const VolleyballParkingConfiguration: EventConfiguration = {
   shortApplicationName: 'Volleyball Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M volleyball events.',
   eventDates: [],
+  scheduleUrl: 'https://12thman.com/sports/womens-volleyball/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]
 };

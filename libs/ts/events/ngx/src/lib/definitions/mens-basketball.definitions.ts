@@ -128,6 +128,7 @@ export const MensBasketball_Configuration: EventConfiguration = {
     '2026-02-28',
     '2026-03-03'
   ],
+  scheduleUrl: 'https://12thman.com/sports/mens-basketball/schedule',
   zoom: 16,
   mapCenter: [-96.34467, 30.60585]
 };

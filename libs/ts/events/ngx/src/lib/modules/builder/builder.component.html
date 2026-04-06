@@ -3,7 +3,10 @@
     <h1 id="component-title">{{ config?.applicationName }}</h1>
 
     <ng-container *ngIf="config?.eventDates as dates">
-      <h4>{{ dates | dateRange}}</h4>
+      <h4>
+        <a *ngIf="config?.scheduleUrl; else plainDates" [href]="config!.scheduleUrl" target="_blank" rel="noopener noreferrer">Click here for {{ config?.name }} details</a>
+        <ng-template #plainDates>{{ dates | dateRange }}</ng-template>
+      </h4>
     </ng-container>
   </div>
 

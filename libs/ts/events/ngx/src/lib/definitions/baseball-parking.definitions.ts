@@ -129,7 +129,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
 
 export const BaseballParkingConfiguration: EventConfiguration = {
   id: 'baseball-parking',
-  name: 'Baseball Parking',
+  name: 'Baseball',
   applicationName: 'Baseball Parking Map',
   shortApplicationName: 'Baseball Parking',
   introductionText: 'Parking and access information for Texas A&M baseball home games.',
@@ -183,6 +183,7 @@ export const BaseballParkingConfiguration: EventConfiguration = {
       value: '/events/baseball-parking'
     }
   },
+  scheduleUrl: 'https://12thman.com/sports/baseball/schedule',
   mapCenter: [-96.34509, 30.60416],
   zoom: 17
 };

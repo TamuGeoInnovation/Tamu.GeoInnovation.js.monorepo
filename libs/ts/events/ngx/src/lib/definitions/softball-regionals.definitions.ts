@@ -103,6 +103,7 @@ export const SoftballConfiguration: EventConfiguration = {
   shortApplicationName: 'Softball Regionals Map',
   introductionText: 'Get the best transportation and parking information for Softball Regionals.',
   eventDates: [],
+  scheduleUrl: 'https://12thman.com/sports/softball/schedule',
   mapCenter: [-96.34454, 30.60338],
   zoom: 17
 };

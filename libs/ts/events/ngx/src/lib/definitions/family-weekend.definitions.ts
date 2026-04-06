@@ -160,6 +160,7 @@ export const FamilyWeekendConfiguration: EventConfiguration = {
   shortApplicationName: 'Family Weekend Map',
   introductionText: 'Get the best parking information for',
   eventDates: ['2026-04-10', '2026-04-11', '2026-04-12'],
+  scheduleUrl: 'https://familyweekend.tamu.edu/',
   mapCenter: [-96.3405, 30.61114],
   zoom: 16
 };

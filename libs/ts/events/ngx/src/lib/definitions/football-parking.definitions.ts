@@ -378,6 +378,7 @@ export const FootballParkingConfiguration: EventConfiguration = {
     '2025-11-22',
     '2025-12-20'
   ],
+  scheduleUrl: 'https://12thman.com/sports/football/schedule',
   mapCenter: [-96.34344, 30.61011],
   zoom: 16,
   defaultLayerOverrides: {

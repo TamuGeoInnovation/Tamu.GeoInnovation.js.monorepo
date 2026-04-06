@@ -138,6 +138,7 @@ export const MoveInConfiguration: EventConfiguration = {
     "Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations on your move-in day.",
   mapCenter: [-96.34358, 30.61035],
   eventDates: [],
+  scheduleUrl: 'https://reslife.tamu.edu/movein/',
   zoom: 16,
   builderStartStep: 'accommodations'
 };

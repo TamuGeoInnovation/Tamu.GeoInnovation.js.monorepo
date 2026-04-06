@@ -100,6 +100,7 @@ export const RingDayConfiguration: EventConfiguration = {
   shortApplicationName: 'Ring Day Map',
   introductionText: 'Get the best transportation and logistics information for Ring Day.',
   eventDates: [RingDayDates.DAY1, RingDayDates.DAY2, RingDayDates.DAY3],
+  scheduleUrl: 'https://www.aggienetwork.com/ring/ringday/',
   mapCenter: [-96.33616, 30.60958],
   zoom: 16,
   defaultLayerOverrides: {
