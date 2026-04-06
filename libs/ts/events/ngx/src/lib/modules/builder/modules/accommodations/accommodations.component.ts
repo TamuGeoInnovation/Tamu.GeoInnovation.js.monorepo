@@ -18,6 +18,7 @@ interface AccommodationChoiceGroup {
   styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss']
 })
 export class AccommodationsComponent implements OnInit {
+  public config = this.eventSettingsService.eventConfiguration()?.configuration;
   public savedOptionValue: Observable<string | boolean | number | null>;
 
   public accommodation$: Observable<SpecialEventOption>;

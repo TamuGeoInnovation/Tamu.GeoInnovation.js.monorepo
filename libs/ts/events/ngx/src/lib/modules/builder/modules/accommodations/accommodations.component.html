@@ -1,6 +1,9 @@
 <div class="container12">
   <ng-container *ngIf="accommodation$ | async as accommodation">
     <p class="center-text component-instructions">{{accommodation.description}}</p>
+    <p class="center-text component-instructions event-details" *ngIf="config?.scheduleUrl">
+      <a [href]="config!.scheduleUrl" target="_blank" rel="noopener noreferrer">Click here for {{ config?.name }} details</a>
+    </p>
 
     <div *ngIf="accommodation.uiType === 'date-card-grid'; else nonDateOptions" class="date-card-container">
       <div
