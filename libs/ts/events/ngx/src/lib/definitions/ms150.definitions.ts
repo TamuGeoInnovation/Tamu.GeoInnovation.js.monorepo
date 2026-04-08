@@ -8,6 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum MS150_LAYERS {
+  AVP_PARKING = 'ms150-avp-parking',
   PARKING_LOTS = 'ms150-parking-lots',
   ROUTE = 'ms150-route'
 }
@@ -15,21 +16,43 @@ export enum MS150_LAYERS {
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/MS150/MapServer';
 
 export const MS150Definitions = {
+  AVP_PARKING: {
+    id: MS150_LAYERS.AVP_PARKING,
+    layerId: MS150_LAYERS.AVP_PARKING,
+    name: 'Parking for any valid Texas A&M permit',
+    url: `${eventUrl}/0`
+  },
   PARKING: {
     id: MS150_LAYERS.PARKING_LOTS,
     layerId: MS150_LAYERS.PARKING_LOTS,
-    name: 'Bike MS 150 Parking',
-    url: `${eventUrl}/0`
+    name: 'MS150 Parking',
+    url: `${eventUrl}/1`
   },
   ROUTE: {
     id: MS150_LAYERS.ROUTE,
     layerId: MS150_LAYERS.ROUTE,
-    name: 'Bike MS 150 Route',
-    url: `${eventUrl}/1`
+    name: 'MS150 Route',
+    url: `${eventUrl}/2`
   }
 };
 
 export const MS150ColdLayerSources: LayerSource[] = [
+  {
+    type: 'feature',
+    id: MS150Definitions.AVP_PARKING.id,
+    title: MS150Definitions.AVP_PARKING.name,
+    url: MS150Definitions.AVP_PARKING.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.name}',
+      description: `{attributes.description}`
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
   {
     type: 'feature',
     id: MS150Definitions.PARKING.id,
@@ -53,8 +76,8 @@ export const MS150ColdLayerSources: LayerSource[] = [
     title: MS150Definitions.ROUTE.name,
     url: MS150Definitions.ROUTE.url,
     visible: true,
+    listMode: 'show',
     native: {
-      listMode: 'show',
       outFields: ['*'],
       renderer: {
         type: 'simple',
