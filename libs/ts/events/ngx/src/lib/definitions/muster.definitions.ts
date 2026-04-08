@@ -6,35 +6,37 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { commonSymbols } from './common.definitions';
 
 import esri = __esri;
 
 export enum MUSTER_LAYERS {
   PARKING = 'muster-parking',
   TRAFFIC_FLOW = 'muster-traffic-flow',
-  ROAD_CLOSED = 'muster-road-closed'
+  ACCESSIBLE_PARKING = 'muster-accessible-parking'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Muster/MapServer';
+const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Muster/MapServer';
+const accessibleParkingIconUrl = eventUrl + '/1/images/956c1de4ae59fdb677e36c1631af01e3';
 
 export const MusterEventDefinitions = {
   TRAFFIC_FLOW: {
     id: MUSTER_LAYERS.TRAFFIC_FLOW,
     layerId: MUSTER_LAYERS.TRAFFIC_FLOW,
     name: 'Muster Traffic Flow',
-    url: `${eventUrl}/0`
+    url: eventUrl + '/0'
+  },
+  ACCESSIBLE_PARKING: {
+    id: MUSTER_LAYERS.ACCESSIBLE_PARKING,
+    layerId: MUSTER_LAYERS.ACCESSIBLE_PARKING,
+    name: 'Accessible Parking',
+    url: eventUrl + '/1'
   },
   PARKING: {
     id: MUSTER_LAYERS.PARKING,
     layerId: MUSTER_LAYERS.PARKING,
     name: 'Muster Parking',
-    url: `${eventUrl}/1`
-  },
-  ROAD_CLOSED: {
-    id: MUSTER_LAYERS.ROAD_CLOSED,
-    layerId: MUSTER_LAYERS.ROAD_CLOSED,
-    name: 'Road Closed',
-    url: `${eventUrl}/2`
+    url: eventUrl + '/2'
   }
 };
 
@@ -46,72 +48,62 @@ export const MusterEventColdLayerSources: LayerSource[] = [
     url: MusterEventDefinitions.TRAFFIC_FLOW.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Event',
-      description: 'attributes.STF_Notes'
+      name: 'attributes.edited'
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 11,
     native: {
       outFields: ['*'],
       renderer: {
         type: 'unique-value',
-        field: 'Type',
+        field: 'edited',
         uniqueValueInfos: [
           {
-            value: 'Green',
+            value: 'Fast Route',
             label: 'Recommended Routes',
             symbol: {
-              type: 'simple-line',
-              color: 'rgb(56, 168, 0)',
-              width: 3,
-              marker: {
-                style: 'arrow',
-                color: 'rgb(56, 168, 0)',
-                placement: 'end'
-              }
+              ...commonSymbols.GREEN_ARROW,
+              width: 3
             } as unknown as esri.SimpleLineSymbolProperties
           },
           {
-            value: 'Red',
+            value: 'Expect Delays',
             label: 'Expect Delays',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2,
-              marker: {
-                style: 'arrow',
-                color: 'rgb(230, 0, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
+            symbol: commonSymbols.RED_ARROW as unknown as esri.SimpleLineSymbolProperties
           }
         ]
-      },
-      labelingInfo: [
-        {
-          labelExpressionInfo: {
-            expression: '$feature.STF_Notes'
-          },
-          minScale: 0,
-          maxScale: 0,
-          useCodedValues: true,
-          allowOverrun: true,
-          symbol: {
-            type: 'text',
-            color: 'red',
-            haloColor: 'white',
-            haloSize: 1,
-            angle: 0,
-            font: {
-              family: 'Arial Unicode MS',
-              size: 12,
-              weight: 'bold'
-            }
-          }
-        }
-      ]
+      }
     }
-  },
+  } as unknown as LayerSource,
+  {
+    type: 'feature',
+    id: MusterEventDefinitions.ACCESSIBLE_PARKING.id,
+    title: MusterEventDefinitions.ACCESSIBLE_PARKING.name,
+    url: MusterEventDefinitions.ACCESSIBLE_PARKING.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.name',
+      description: 'attributes.description'
+    },
+    visible: true,
+    listMode: 'show',
+    layerIndex: 12,
+    native: {
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        label: MusterEventDefinitions.ACCESSIBLE_PARKING.name,
+        symbol: {
+          type: 'picture-marker',
+          url: accessibleParkingIconUrl,
+          // Image is 700x885 px (portrait). Use proportional dimensions to avoid stretching.
+          width: 22,
+          height: 28
+        } as unknown as esri.SymbolProperties
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: MusterEventDefinitions.PARKING.id,
@@ -119,66 +111,88 @@ export const MusterEventColdLayerSources: LayerSource[] = [
     url: MusterEventDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: {
-        field: 'GIS.TS.ParkingLots.LotName',
-        collapsed: true
-      },
-      description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.MusterN',
-        collapsed: true
-      }
+      name: 'attributes.name',
+      description: 'attributes.description'
     },
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: MusterEventDefinitions.ROAD_CLOSED.id,
-    title: MusterEventDefinitions.ROAD_CLOSED.name,
-    url: MusterEventDefinitions.ROAD_CLOSED.url,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'A_Name',
-        collapsed: true
-      },
-      description: {
-        field: 'SP_SH_Notes',
-        collapsed: true
-      }
-    },
-    visible: true,
-    listMode: 'show',
+    layerIndex: 10,
     native: {
       outFields: ['*'],
-      labelingInfo: [
-        {
-          labelExpressionInfo: {
-            expression: '$feature.SP_SH_Notes'
+      renderer: {
+        type: 'unique-value',
+        field: 'Type',
+        uniqueValueInfos: [
+          {
+            value: 'Open Parking',
+            label: 'Free Event Parking',
+            symbol: {
+              type: 'simple-fill',
+              color: [95, 138, 232, 255],
+              outline: {
+                type: 'simple-line',
+                color: [94, 52, 234, 255],
+                width: 1
+              }
+            } as unknown as esri.SymbolProperties
           },
-          minScale: 0,
-          maxScale: 0,
-          useCodedValues: true,
-          allowOverrun: true,
-          symbol: {
-            type: 'text',
-            color: 'white',
-            haloColor: 'black',
-            haloSize: 1,
-            angle: 0,
-            font: {
-              family: 'Arial Unicode MS',
-              size: 10,
-              weight: 'bold'
-            }
+          {
+            value: 'Pay-By-Hour',
+            label: 'Paid Hourly Parking',
+            symbol: {
+              type: 'simple-fill',
+              color: [81, 179, 54, 255],
+              outline: {
+                type: 'simple-line',
+                color: [68, 137, 112, 255],
+                width: 1
+              }
+            } as unknown as esri.SymbolProperties
+          },
+          {
+            value: 'Reserved - Accessible',
+            label: 'Reserved',
+            symbol: {
+              type: 'simple-fill',
+              color: [242, 160, 97, 255],
+              outline: {
+                type: 'simple-line',
+                color: [230, 124, 0, 255],
+                width: 1
+              }
+            } as unknown as esri.SymbolProperties
+          },
+          {
+            value: 'Reserved',
+            label: 'Reserved',
+            symbol: {
+              type: 'simple-fill',
+              color: [242, 160, 97, 255],
+              outline: {
+                type: 'simple-line',
+                color: [230, 124, 0, 255],
+                width: 1
+              }
+            } as unknown as esri.SymbolProperties
+          },
+          {
+            value: 'Closure',
+            label: 'Road Closed (Pedestrian Zone)',
+            symbol: {
+              type: 'simple-fill',
+              style: 'backward-diagonal',
+              color: [230, 0, 0, 255],
+              outline: {
+                type: 'simple-line',
+                color: [230, 0, 0, 255],
+                width: 1
+              }
+            } as unknown as esri.SymbolProperties
           }
-        }
-      ]
+        ]
+      }
     }
-  }
+  } as unknown as LayerSource
 ];
 
 export const MusterConfiguration: EventConfiguration = {
