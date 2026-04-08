@@ -247,25 +247,69 @@ export function LayerSources(
       listMode: 'show',
       visible: false,
       sources: [
+        // GroupLayer drawing follows child source order, so keep this array bottom-to-top
+        // while preserving layerIndex values for the desired legend order.
         {
           type: 'feature',
-          id: 'ev-charge-stations-layer',
-          title: 'EV Charge Stations (Main + RELLIS)',
-          url: `${evChargeStationsUrl}/0`,
+          id: 'bike-dismount-zones-layer',
+          title: 'Bike Dismount Zones',
+          url: `${bikeMapUrl}/5`,
           listMode: 'show',
           visible: true,
-          layerIndex: 13,
+          layerIndex: 0,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
-            name: '{attributes.EV_ID}',
-            description:
-              '<strong>Network</strong>: {attributes.EV_Network}\n' +
-              '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
-              '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
-              '<strong>Notes</strong>: {attributes.EVCS_Notes}'
+            name: 'Bike Dismount Zone'
           },
           native: {
             ...commonLayerProps
+          }
+        },
+        {
+          type: 'group',
+          id: 'bike-lanes-group-layer',
+          title: 'Bike Lanes',
+          listMode: 'show',
+          visible: true,
+          layerIndex: 8,
+          sources: [
+            {
+              type: 'feature',
+              id: 'city-bike-lanes-routes-layer',
+              title: 'City Bike Lanes and Routes',
+              url: `${bikeMapUrl}/3`,
+              listMode: 'show',
+              visible: true,
+              layerIndex: 7,
+              popupComponent: Popups.MarkdownPopupComponent,
+              popupData: {
+                name: '{attributes.Use_}',
+                description: '<strong>Location</strong>: {attributes.Location}'
+              },
+              native: {
+                ...commonLayerProps
+              }
+            },
+            {
+              type: 'feature',
+              id: 'bike-lanes-layer',
+              title: 'Campus Bike Lanes',
+              url: `${bikeMapUrl}/2`,
+              listMode: 'show',
+              visible: true,
+              layerIndex: 8,
+              popupComponent: Popups.MarkdownPopupComponent,
+              popupData: {
+                name: '{attributes.Use_}',
+                description: '<strong>Location</strong>: {attributes.Location}'
+              },
+              native: {
+                ...commonLayerProps
+              }
+            }
+          ],
+          native: {
+            listMode: 'hide-children'
           }
         },
         {
@@ -280,40 +324,6 @@ export function LayerSources(
           popupData: {
             name: '{attributes.Bike_Sta_Name}',
             description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: 'bike-lanes-layer',
-          title: 'Bike Lanes',
-          url: `${bikeMapUrl}/2`,
-          listMode: 'show',
-          visible: true,
-          layerIndex: 8,
-          popupComponent: Popups.MarkdownPopupComponent,
-          popupData: {
-            name: '{attributes.Use_}',
-            description: '<strong>Location</strong>: {attributes.Location}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: 'city-bike-lanes-routes-layer',
-          title: 'City Bike Lanes and Routes',
-          url: `${bikeMapUrl}/3`,
-          listMode: 'show',
-          visible: true,
-          layerIndex: 7,
-          popupComponent: Popups.MarkdownPopupComponent,
-          popupData: {
-            name: '{attributes.Use_}',
-            description: '<strong>Location</strong>: {attributes.Location}'
           },
           native: {
             ...commonLayerProps
@@ -411,15 +421,20 @@ export function LayerSources(
         },
         {
           type: 'feature',
-          id: 'bike-dismount-zones-layer',
-          title: 'Bike Dismount Zones',
-          url: `${bikeMapUrl}/5`,
+          id: 'ev-charge-stations-layer',
+          title: 'EV Charge Stations (Main + RELLIS)',
+          url: `${evChargeStationsUrl}/0`,
           listMode: 'show',
           visible: true,
-          layerIndex: 0,
+          layerIndex: 13,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
-            name: 'Bike Dismount Zone'
+            name: '{attributes.EV_ID}',
+            description:
+              '<strong>Network</strong>: {attributes.EV_Network}\n' +
+              '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
+              '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
+              '<strong>Notes</strong>: {attributes.EVCS_Notes}'
           },
           native: {
             ...commonLayerProps
