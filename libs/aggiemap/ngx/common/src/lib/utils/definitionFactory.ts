@@ -11,6 +11,11 @@ export function factory(options?: IFactoryOptions): Definitions {
     options?.environment === undefined || options?.environment === 'dev' ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
 
   const c = Connections(gisHost);
+
+  if (options?.environment === undefined || options?.environment === 'dev') {
+    (c as Record<string, string>).routingBaseUrl =
+      'https://gis.dev.tamu.edu/arcgis/rest/services/Routing-test';
+  }
   const d = Definitions(c);
   const l = LayerSources(c, d, options?.layerSources);
   const s = SearchSources(c, d, options?.searchSources);
