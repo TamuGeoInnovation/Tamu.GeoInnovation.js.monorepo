@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -7,8 +8,7 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
-  EV_CHARGERS_MAIN = 'sustainable-transportation-ev-chargers-main',
-  EV_CHARGERS_RELLIS = 'sustainable-transportation-ev-chargers-rellis',
+  EV_CHARGERS = 'sustainable-transportation-ev-chargers',
   HUB_CORRALS = 'sustainable-transportation-hub-corrals',
   SHARED_MOBILITY_RACKS = 'sustainable-transportation-shared-mobility-racks',
   BIKE_RACKS = 'sustainable-transportation-bike-racks',
@@ -18,29 +18,17 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
 }
 
-// Temporary bridge until the original TS server/editor workflow is restored.
-// When that server is ready again, swap these URLs and the layer-id mapping in `SustainableTransportationDefinitions`
-// back to the restored source services.
-// These hosted view services mirror the secured Portal source layers while remaining queryable by the public app.
-const evMainLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/EV_Charge_Stations_MC_view/FeatureServer';
-const evRellisLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/EV_Charge_Stations_Rellis/FeatureServer';
+const evLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/EVChargeStations/MapServer';
+const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
+// Hub Corrals and Shared Mobility Racks are not yet in BikeMap; keeping on hosted service until available.
 const rackLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer';
-const fixStationLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Fix_Stations_view/FeatureServer';
-const bikeLaneLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Bike_Lanes_view/FeatureServer';
-const dismountZoneLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Dismount_Zones_view/FeatureServer';
 
 export const SustainableTransportationDefinitions = {
-  EV_CHARGERS_MAIN: {
-    id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS_MAIN,
-    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS_MAIN,
-    name: 'EV Charge Stations (Main Campus)',
-    url: `${evMainLayersUrl}/0`
-  },
-  EV_CHARGERS_RELLIS: {
-    id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS_RELLIS,
-    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS_RELLIS,
-    name: 'EV Charge Stations (RELLIS)',
-    url: `${evRellisLayersUrl}/0`
+  EV_CHARGERS: {
+    id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
+    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
+    name: 'EV Charge Stations (Main + RELLIS)',
+    url: `${evLayersUrl}/0`
   },
   HUB_CORRALS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
@@ -58,54 +46,51 @@ export const SustainableTransportationDefinitions = {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
     name: 'Bike Racks',
-    url: `${rackLayersUrl}/2`
+    url: `${bikeLayersUrl}/0`
   },
   BIKE_FIX_STATIONS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
     name: 'Bike Fix Stations',
-    url: `${fixStationLayersUrl}/0`
+    url: `${bikeLayersUrl}/1`
   },
   BIKE_LANES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_LANES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_LANES,
     name: 'Bike Lanes',
-    url: `${bikeLaneLayersUrl}/2`
+    url: `${bikeLayersUrl}/2`
   },
   CITY_BIKE_LANES_ROUTES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.CITY_BIKE_LANES_ROUTES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.CITY_BIKE_LANES_ROUTES,
     name: 'City Bike Lanes and Routes',
-    url: `${bikeLaneLayersUrl}/1`
+    url: `${bikeLayersUrl}/3`
   },
   BIKE_DISMOUNT_ZONES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_DISMOUNT_ZONES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_DISMOUNT_ZONES,
     name: 'Bike Dismount Zones',
-    url: `${dismountZoneLayersUrl}/0`
+    url: `${bikeLayersUrl}/4`
   }
 };
 
 export const SustainableTransportationColdLayerSources: LayerSource[] = [
-  // Keep this source list aligned with the temporary URL/layer mapping above until the original services are restored.
   {
     type: 'feature',
-    id: SustainableTransportationDefinitions.EV_CHARGERS_MAIN.id,
-    title: SustainableTransportationDefinitions.EV_CHARGERS_MAIN.name,
-    url: SustainableTransportationDefinitions.EV_CHARGERS_MAIN.url,
+    id: SustainableTransportationDefinitions.EV_CHARGERS.id,
+    title: SustainableTransportationDefinitions.EV_CHARGERS.name,
+    url: SustainableTransportationDefinitions.EV_CHARGERS.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: SustainableTransportationDefinitions.EV_CHARGERS_RELLIS.id,
-    title: SustainableTransportationDefinitions.EV_CHARGERS_RELLIS.name,
-    url: SustainableTransportationDefinitions.EV_CHARGERS_RELLIS.url,
-    visible: true,
-    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.EV_ID}',
+      description:
+        '<strong>Network</strong>: {attributes.EV_Network}\n' +
+        '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
+        '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
+        '<strong>Notes</strong>: {attributes.EVCS_Notes}'
+    },
     native: {
       outFields: ['*']
     }
@@ -117,6 +102,13 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.HUB_CORRALS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'Hub Corral',
+      description:
+        '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
+        '<strong>Notes</strong>: {attributes.br_notes}'
+    },
     native: {
       outFields: ['*']
     }
@@ -128,17 +120,13 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.SHARED_MOBILITY_RACKS.url,
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: SustainableTransportationDefinitions.BIKE_RACKS.id,
-    title: SustainableTransportationDefinitions.BIKE_RACKS.name,
-    url: SustainableTransportationDefinitions.BIKE_RACKS.url,
-    visible: true,
-    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'Shared Mobility Racks',
+      description:
+        '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
+        '<strong>Notes</strong>: {attributes.br_notes}'
+    },
     native: {
       outFields: ['*']
     }
@@ -150,6 +138,29 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.Bike_Sta_Name}',
+      description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
+    },
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.BIKE_RACKS.id,
+    title: SustainableTransportationDefinitions.BIKE_RACKS.name,
+    url: SustainableTransportationDefinitions.BIKE_RACKS.url,
+    visible: true,
+    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.Type}',
+      description:
+        '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' +
+        '<strong>Notes</strong>: {attributes.BR_Notes}'
+    },
     native: {
       outFields: ['*']
     }
@@ -161,6 +172,11 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.BIKE_LANES.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.Use_}',
+      description: '<strong>Location</strong>: {attributes.Location}'
+    },
     native: {
       outFields: ['*']
     }
@@ -172,6 +188,11 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.CITY_BIKE_LANES_ROUTES.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.Type}',
+      description: '<strong>Location</strong>: {attributes.Loc}'
+    },
     native: {
       outFields: ['*']
     }
@@ -183,6 +204,11 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.BIKE_DISMOUNT_ZONES.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.Name}',
+      description: '<strong>Notes</strong>: {attributes.Bike_Notes}'
+    },
     native: {
       outFields: ['*']
     }
