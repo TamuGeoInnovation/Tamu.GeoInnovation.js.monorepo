@@ -292,6 +292,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
+<<<<<<< HEAD
     id: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.id,
     title: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.name,
     url: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.url,
@@ -321,6 +322,8 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
+=======
+>>>>>>> ca7e13e0 (Put bike fix stations back where they should go)
     id: SustainableTransportationDefinitions.BIKE_RACKS.id,
     title: SustainableTransportationDefinitions.BIKE_RACKS.name,
     url: SustainableTransportationDefinitions.BIKE_RACKS.url,
@@ -334,6 +337,22 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Notes</strong>: {attributes.BR_Notes}'
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+    },
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.id,
+    title: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.name,
+    url: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.url,
+    visible: true,
+    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.Bike_Sta_Name}',
+      description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
     },
     native: {
       outFields: ['*']

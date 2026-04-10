@@ -324,6 +324,22 @@ export function LayerSources(
         },
         {
           type: 'feature',
+          id: 'bike-fix-stations-layer',
+          title: 'Bike Fix Stations',
+          url: `${bikeMapUrl}/1`,
+          listMode: 'show',
+          visible: true,
+          popupComponent: Popups.MarkdownPopupComponent,
+          popupData: {
+            name: '{attributes.Bike_Sta_Name}',
+            description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
+          },
+          native: {
+            ...commonLayerProps
+          }
+        },
+        {
+          type: 'feature',
           id: 'bike-racks-map-layer',
           title: 'Bike Racks',
           url: `${bikeMapUrl}/0`,
@@ -339,34 +355,6 @@ export function LayerSources(
           },
           native: {
             ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: 'bike-fix-stations-layer',
-          title: 'Bike Fix Stations',
-          url: `${bikeMapUrl}/1`,
-          listMode: 'show',
-          visible: true,
-          layerIndex: 10,
-          popupComponent: Popups.MarkdownPopupComponent,
-          popupData: {
-            name: '{attributes.Bike_Sta_Name}',
-            description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
-          },
-          native: {
-            ...commonLayerProps,
-            definitionExpression: "Type NOT IN ('Shared Mobility (Hub Corral)', 'Shared Mobility HP')",
-            renderer: {
-              type: 'simple',
-              symbol: {
-                type: 'picture-marker',
-                url: `data:image/png;base64,${BIKE_RACK_SYMBOL_DATA}`,
-                // Original renderer symbol size: 27×20 px
-                width: 30,
-                height: 22.5
-              }
-            }
           }
         },
         {
