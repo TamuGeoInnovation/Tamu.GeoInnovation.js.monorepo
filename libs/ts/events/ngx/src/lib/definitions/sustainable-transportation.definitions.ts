@@ -1,8 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
-import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
-
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -20,6 +18,7 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones'
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -54,20 +53,26 @@ const bikeLaneLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/B
 const dismountZoneLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Dismount_Zones_view/FeatureServer';
 =======
 >>>>>>> 19e58deb (Updated with new source)
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
 const evLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/EVChargeStations/MapServer';
 const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
 // Hub Corrals and Shared Mobility Racks are not yet in BikeMap; keeping on hosted service until available.
 const rackLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
 
 export const SustainableTransportationDefinitions = {
   EV_CHARGERS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
     name: 'EV Charge Stations (Main + RELLIS)',
+<<<<<<< HEAD
 <<<<<<< HEAD
     url: `${evLayersUrl}/0`
 =======
@@ -77,23 +82,27 @@ export const SustainableTransportationDefinitions = {
     url: `${evLayersUrl}/0`
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+=======
+    url: `${evLayersUrl}/0`
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
   },
   HUB_CORRALS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
     name: 'Hub Corral',
-    url: bikeMapRackLayerUrl
+    url: `${rackLayersUrl}/0`
   },
   SHARED_MOBILITY_RACKS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.SHARED_MOBILITY_RACKS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.SHARED_MOBILITY_RACKS,
     name: 'Shared Mobility Racks',
-    url: bikeMapRackLayerUrl
+    url: `${rackLayersUrl}/1`
   },
   BIKE_RACKS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
     name: 'Bike Racks',
+<<<<<<< HEAD
 <<<<<<< HEAD
     url: `${bikeLayersUrl}/0`
 =======
@@ -103,6 +112,9 @@ export const SustainableTransportationDefinitions = {
     url: `${bikeLayersUrl}/0`
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+=======
+    url: `${bikeLayersUrl}/0`
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
   },
   BIKE_FIX_STATIONS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
@@ -139,6 +151,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
     layerIndex: 13,
@@ -154,6 +167,8 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Garage Level</strong>: {attributes.garage_lvl}<br />' +
         '<strong>Notes</strong>: {attributes.evcs_notes}'
 =======
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.EV_ID}',
@@ -164,9 +179,12 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
         '<strong>Notes</strong>: {attributes.EVCS_Notes}'
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     },
     native: {
       outFields: ['*']
@@ -179,6 +197,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.HUB_CORRALS.url,
     visible: true,
     listMode: 'show',
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -195,28 +214,22 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Total Capacity</strong>: {attributes.Total_Capacity}<br />' +
         '<strong>Notes</strong>: {attributes.BR_Notes}'
 =======
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Hub Corral',
       description:
         '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
         '<strong>Notes</strong>: {attributes.br_notes}'
+<<<<<<< HEAD
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     },
     native: {
-      outFields: ['*'],
-      definitionExpression: "Type = 'Shared Mobility (Hub Corral)'",
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: `data:image/png;base64,${HUB_CORRAL_SYMBOL_DATA}`,
-          // Original renderer symbol size: 27×27 px
-          width: 30,
-          height: 30
-        }
-      }
+      outFields: ['*']
     }
   },
   {
@@ -226,6 +239,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.SHARED_MOBILITY_RACKS.url,
     visible: true,
     listMode: 'show',
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -267,37 +281,27 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' +
         '<strong>Notes</strong>: {attributes.BR_Notes}'
 =======
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Shared Mobility Racks',
       description:
         '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
         '<strong>Notes</strong>: {attributes.br_notes}'
->>>>>>> 6efc1291 (Updated with new source)
     },
     native: {
-      outFields: ['*'],
-      definitionExpression: "Type NOT IN ('Shared Mobility (Hub Corral)', 'Shared Mobility HP')",
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'picture-marker',
-          url: `data:image/png;base64,${BIKE_RACK_SYMBOL_DATA}`,
-          // Original renderer symbol size: 27×20 px
-          width: 30,
-          height: 22.5
-        }
-      }
+      outFields: ['*']
     }
   },
   {
     type: 'feature',
-<<<<<<< HEAD
     id: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.id,
     title: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.name,
     url: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.url,
     visible: true,
     listMode: 'show',
+<<<<<<< HEAD
 <<<<<<< HEAD
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -311,6 +315,8 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
       name: '{attributes.bike_sta_name}',
       description: '<strong>Amenities</strong>: {attributes.bike_amenities}'
 =======
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Bike_Sta_Name}',
@@ -322,8 +328,6 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-=======
->>>>>>> ca7e13e0 (Put bike fix stations back where they should go)
     id: SustainableTransportationDefinitions.BIKE_RACKS.id,
     title: SustainableTransportationDefinitions.BIKE_RACKS.name,
     url: SustainableTransportationDefinitions.BIKE_RACKS.url,
@@ -335,6 +339,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
       description:
         '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' +
         '<strong>Notes</strong>: {attributes.BR_Notes}'
+<<<<<<< HEAD
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
     },
@@ -353,6 +358,8 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     popupData: {
       name: '{attributes.Bike_Sta_Name}',
       description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     },
     native: {
       outFields: ['*']
@@ -365,6 +372,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     url: SustainableTransportationDefinitions.BIKE_LANES.url,
     visible: true,
     listMode: 'show',
+<<<<<<< HEAD
 <<<<<<< HEAD
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -379,12 +387,17 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
       description:
         '<strong>Street Type</strong>: {attributes.street_use}<br />' + '<strong>Location</strong>: {attributes.location}'
 =======
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Use_}',
       description: '<strong>Location</strong>: {attributes.Location}'
+<<<<<<< HEAD
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     },
     native: {
       outFields: ['*']
@@ -398,6 +411,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
 <<<<<<< HEAD
+<<<<<<< HEAD
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Type}',
@@ -410,12 +424,17 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
       name: '{attributes.type}',
       description: '<strong>Location</strong>: {attributes.loc}'
 =======
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Type}',
       description: '<strong>Location</strong>: {attributes.Loc}'
+<<<<<<< HEAD
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     },
     native: {
       outFields: ['*']
@@ -429,6 +448,7 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
 <<<<<<< HEAD
+<<<<<<< HEAD
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Name}',
@@ -441,12 +461,17 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
       name: '{attributes.name}',
       description: '<strong>Notes</strong>: {attributes.bike_notes}'
 =======
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: '{attributes.Name}',
       description: '<strong>Notes</strong>: {attributes.Bike_Notes}'
+<<<<<<< HEAD
 >>>>>>> 6efc1291 (Updated with new source)
 >>>>>>> 19e58deb (Updated with new source)
+=======
+>>>>>>> 59a81e65 (Fixed horrific merge conflict + cleaned out temp code)
     },
     native: {
       outFields: ['*']
