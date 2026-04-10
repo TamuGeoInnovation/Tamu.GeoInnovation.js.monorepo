@@ -150,6 +150,11 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    // Service-backed fallback if we want this layer to pull its map symbology and legend entries
+    // directly from the ArcGIS service again, like the simpler event map definitions:
+    // native: {
+    //   outFields: ['*']
+    // }
     native: {
       outFields: ['*'],
       renderer: maroonWhiteEventParkingLotsRenderer
@@ -167,6 +172,11 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
     },
     visible: true,
     listMode: 'show',
+    // Service-backed fallback if we want this layer to pull its map symbology and legend entries
+    // directly from the ArcGIS service again, like the simpler event map definitions:
+    // native: {
+    //   outFields: ['*']
+    // }
     native: {
       outFields: ['*'],
       renderer: maroonWhiteAccessiblePrepaidParkingRenderer
