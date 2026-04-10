@@ -133,22 +133,6 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.id,
-    title: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.name,
-    url: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.url,
-    visible: true,
-    listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.Bike_Sta_Name}',
-      description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
-    },
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
     id: SustainableTransportationDefinitions.BIKE_RACKS.id,
     title: SustainableTransportationDefinitions.BIKE_RACKS.name,
     url: SustainableTransportationDefinitions.BIKE_RACKS.url,
@@ -160,6 +144,22 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
       description:
         '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' +
         '<strong>Notes</strong>: {attributes.BR_Notes}'
+    },
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.id,
+    title: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.name,
+    url: SustainableTransportationDefinitions.BIKE_FIX_STATIONS.url,
+    visible: true,
+    listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: '{attributes.Bike_Sta_Name}',
+      description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
     },
     native: {
       outFields: ['*']

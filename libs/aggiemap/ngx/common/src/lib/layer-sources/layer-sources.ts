@@ -278,6 +278,22 @@ export function LayerSources(
         },
         {
           type: 'feature',
+          id: 'bike-fix-stations-layer',
+          title: 'Bike Fix Stations',
+          url: `${bikeMapUrl}/1`,
+          listMode: 'show',
+          visible: true,
+          popupComponent: Popups.MarkdownPopupComponent,
+          popupData: {
+            name: '{attributes.Bike_Sta_Name}',
+            description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
+          },
+          native: {
+            ...commonLayerProps
+          }
+        },
+        {
+          type: 'feature',
           id: 'bike-racks-map-layer',
           title: 'Bike Racks',
           url: `${bikeMapUrl}/0`,
@@ -289,22 +305,6 @@ export function LayerSources(
             description:
               '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' +
               '<strong>Notes</strong>: {attributes.BR_Notes}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: 'bike-fix-stations-layer',
-          title: 'Bike Fix Stations',
-          url: `${bikeMapUrl}/1`,
-          listMode: 'show',
-          visible: true,
-          popupComponent: Popups.MarkdownPopupComponent,
-          popupData: {
-            name: '{attributes.Bike_Sta_Name}',
-            description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
           },
           native: {
             ...commonLayerProps
