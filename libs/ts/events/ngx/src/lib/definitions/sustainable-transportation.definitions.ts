@@ -1,6 +1,8 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -15,7 +17,7 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_FIX_STATIONS = 'sustainable-transportation-bike-fix-stations',
   BIKE_LANES = 'sustainable-transportation-bike-lanes',
   CITY_BIKE_LANES_ROUTES = 'sustainable-transportation-city-bike-lanes-routes',
-  BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
+  BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones'
 }
 
 const evLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/EVChargeStations/MapServer';
@@ -34,13 +36,13 @@ export const SustainableTransportationDefinitions = {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
     name: 'Hub Corral',
-    url: `${rackLayersUrl}/0`
+    url: bikeMapRackLayerUrl
   },
   SHARED_MOBILITY_RACKS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.SHARED_MOBILITY_RACKS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.SHARED_MOBILITY_RACKS,
     name: 'Shared Mobility Racks',
-    url: `${rackLayersUrl}/1`
+    url: bikeMapRackLayerUrl
   },
   BIKE_RACKS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
@@ -110,7 +112,18 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Notes</strong>: {attributes.br_notes}'
     },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: "Type = 'Shared Mobility (Hub Corral)'",
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: `data:image/png;base64,${HUB_CORRAL_SYMBOL_DATA}`,
+          // Original renderer symbol size: 27×27 px
+          width: 30,
+          height: 30
+        }
+      }
     }
   },
   {
@@ -128,7 +141,18 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Notes</strong>: {attributes.br_notes}'
     },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: "Type = 'Shared Mobility HP'",
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: `data:image/png;base64,${SHARED_MOBILITY_SYMBOL_DATA}`,
+          // Original renderer symbol size: 27×20 px
+          width: 30,
+          height: 22.5
+        }
+      }
     }
   },
   {
@@ -146,7 +170,18 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Notes</strong>: {attributes.BR_Notes}'
     },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: "Type NOT IN ('Shared Mobility (Hub Corral)', 'Shared Mobility HP')",
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'picture-marker',
+          url: `data:image/png;base64,${BIKE_RACK_SYMBOL_DATA}`,
+          // Original renderer symbol size: 27×20 px
+          width: 30,
+          height: 22.5
+        }
+      }
     }
   },
   {
@@ -220,8 +255,7 @@ export const SustainableTransportationConfiguration: EventConfiguration = {
   name: 'Sustainable Transportation',
   applicationName: 'Sustainable Transportation Map',
   shortApplicationName: 'Sustainable Transportation',
-  introductionText:
-    'Explore bike amenities and EV charge stations across Main Campus and the RELLIS Campus in one map.',
+  introductionText: 'Explore bike amenities and EV charge stations across Main Campus and the RELLIS Campus in one map.',
   mapCenter: [-96.34643, 30.61313],
   eventDates: [],
   zoom: 15
