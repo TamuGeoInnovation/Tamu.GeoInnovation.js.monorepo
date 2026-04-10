@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { fromEventPattern, Observable, pipe, Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck, map } from 'rxjs/operators';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
 import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripResult, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService, UIDragState } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
@@ -18,6 +20,7 @@ import esri = __esri;
   animations: [offCanvasSlideUpFromTop]
 })
 export class TripPlannerTopComponent implements OnInit, OnDestroy {
+  public readonly isProd = this.environment.value('env') === 'prod';
   /**
    * Animation trigger.
    *
@@ -50,7 +53,8 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private tripPlanner: TripPlannerService,
     private mapService: EsriMapService,
-    private dragService: DragService
+    private dragService: DragService,
+    private environment: EnvironmentService
   ) {}
 
   // TODO: There are a lot of internal subscriptions in here. Make more reactive.

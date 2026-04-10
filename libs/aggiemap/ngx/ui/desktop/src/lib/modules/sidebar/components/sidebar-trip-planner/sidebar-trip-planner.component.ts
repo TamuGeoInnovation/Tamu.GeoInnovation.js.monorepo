@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
@@ -15,13 +16,18 @@ import esri = __esri;
 })
 export class SidebarTripPlannerComponent {
   public dev = this.testing.get('isTesting');
+  public readonly isProd = this.environment.value('env') === 'prod';
 
   /**
    * Planner service observable reference that contains the planner service stops used to create a trip request.
    */
   public stops: Observable<TripPoint[]> = this.plannerService.Stops;
 
-  constructor(private plannerService: TripPlannerService, private testing: TestingService) {}
+  constructor(
+    private plannerService: TripPlannerService,
+    private testing: TestingService,
+    private environment: EnvironmentService
+  ) {}
 
   /**
    * Call the planner service to add a result as a trip point to the service stop store

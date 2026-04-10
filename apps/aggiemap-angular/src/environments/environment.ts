@@ -9,6 +9,8 @@ export const environment = {
   production: false
 };
 
+export const env = 'local';
+
 export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
 export * from './notification-events';
 
