@@ -254,6 +254,7 @@ export function LayerSources(
           id: 'bike-dismount-zones-layer',
           title: 'Bike Dismount Zones',
           url: `${bikeMapUrl}/4`,
+<<<<<<< HEAD
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
@@ -270,9 +271,32 @@ export function LayerSources(
           id: 'city-bike-lanes-routes-layer',
           title: 'City Bike Lanes and Routes',
           url: `${bikeMapUrl}/3`,
+=======
+>>>>>>> 19e58deb (Updated with new source)
           listMode: 'show',
           visible: true,
           layerIndex: 0,
+          popupComponent: Popups.MarkdownPopupComponent,
+          popupData: {
+<<<<<<< HEAD
+            name: '{attributes.Type}',
+            description: '<strong>Location</strong>: {attributes.Loc}'
+=======
+            name: '{attributes.Name}',
+            description: '<strong>Notes</strong>: {attributes.Bike_Notes}'
+>>>>>>> 19e58deb (Updated with new source)
+          },
+          native: {
+            ...commonLayerProps
+          }
+        },
+        {
+          type: 'feature',
+          id: 'city-bike-lanes-routes-layer',
+          title: 'City Bike Lanes and Routes',
+          url: `${bikeMapUrl}/3`,
+          listMode: 'show',
+          visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
             name: '{attributes.Type}',
@@ -283,64 +307,16 @@ export function LayerSources(
           }
         },
         {
-          type: 'group',
-          id: 'bike-lanes-group-layer',
-          title: 'Bike Lanes',
-          listMode: 'show',
-          visible: true,
-          layerIndex: 8,
-          sources: [
-            {
-              type: 'feature',
-              id: 'city-bike-lanes-routes-layer',
-              title: 'City Bike Lanes and Routes',
-              url: `${bikeMapUrl}/3`,
-              listMode: 'show',
-              visible: true,
-              layerIndex: 7,
-              popupComponent: Popups.MarkdownPopupComponent,
-              popupData: {
-                name: '{attributes.Use_}',
-                description: '<strong>Location</strong>: {attributes.Location}'
-              },
-              native: {
-                ...commonLayerProps
-              }
-            },
-            {
-              type: 'feature',
-              id: 'bike-lanes-layer',
-              title: 'Campus Bike Lanes',
-              url: `${bikeMapUrl}/2`,
-              listMode: 'show',
-              visible: true,
-              layerIndex: 8,
-              popupComponent: Popups.MarkdownPopupComponent,
-              popupData: {
-                name: '{attributes.Use_}',
-                description: '<strong>Location</strong>: {attributes.Location}'
-              },
-              native: {
-                ...commonLayerProps
-              }
-            }
-          ],
-          native: {
-            listMode: 'hide-children'
-          }
-        },
-        {
           type: 'feature',
-          id: 'bike-fix-stations-layer',
-          title: 'Bike Fix Stations',
-          url: `${bikeMapUrl}/1`,
+          id: 'bike-lanes-layer',
+          title: 'Bike Lanes',
+          url: `${bikeMapUrl}/2`,
           listMode: 'show',
           visible: true,
-          layerIndex: 9,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
-            name: '{attributes.Bike_Sta_Name}',
-            description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
+            name: '{attributes.Use_}',
+            description: '<strong>Location</strong>: {attributes.Location}'
           },
           native: {
             ...commonLayerProps
@@ -353,13 +329,30 @@ export function LayerSources(
           url: `${bikeMapUrl}/0`,
           listMode: 'show',
           visible: true,
-          layerIndex: 10,
+          layerIndex: 9,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
             name: '{attributes.Type}',
             description:
               '<strong>Total Capacity</strong>: {attributes.Total_Capacity}\n' +
               '<strong>Notes</strong>: {attributes.BR_Notes}'
+          },
+          native: {
+            ...commonLayerProps
+          }
+        },
+        {
+          type: 'feature',
+          id: 'bike-fix-stations-layer',
+          title: 'Bike Fix Stations',
+          url: `${bikeMapUrl}/1`,
+          listMode: 'show',
+          visible: true,
+          layerIndex: 10,
+          popupComponent: Popups.MarkdownPopupComponent,
+          popupData: {
+            name: '{attributes.Bike_Sta_Name}',
+            description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
           },
           native: {
             ...commonLayerProps,
@@ -441,11 +434,20 @@ export function LayerSources(
           id: 'ev-charge-stations-layer',
           title: 'EV Charge Stations (Main + RELLIS)',
           url: `${evChargeStationsUrl}/0`,
+          id: 'ev-charge-stations-layer',
+          title: 'EV Charge Stations (Main + RELLIS)',
+          url: `${evChargeStationsUrl}/0`,
           listMode: 'show',
           visible: true,
           layerIndex: 13,
           popupComponent: Popups.MarkdownPopupComponent,
           popupData: {
+            name: '{attributes.EV_ID}',
+            description:
+              '<strong>Network</strong>: {attributes.EV_Network}\n' +
+              '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
+              '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
+              '<strong>Notes</strong>: {attributes.EVCS_Notes}'
             name: '{attributes.EV_ID}',
             description:
               '<strong>Network</strong>: {attributes.EV_Network}\n' +
