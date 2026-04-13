@@ -1,10 +1,6 @@
 <div class="container12">
   <div class="flex flex-column justify-center align-center">
     <h1 id="component-title">{{ config?.applicationName }}</h1>
-
-    <ng-container *ngIf="config?.eventDates as dates">
-      <h4>{{ dates | dateRange}}</h4>
-    </ng-container>
   </div>
 
   <router-outlet></router-outlet>

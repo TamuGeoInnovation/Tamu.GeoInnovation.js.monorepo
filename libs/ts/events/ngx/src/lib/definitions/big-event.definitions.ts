@@ -230,6 +230,7 @@ export const BigEventConfiguration: EventConfiguration = {
   applicationName: 'Big Event Transportation Map',
   shortApplicationName: 'Big Event Map',
   eventDates: ['2026-03-21'],
+  scheduleUrl: 'https://bigevent.tamu.edu/',
   toast: {
     id: 'big-event-notification-2026',
     title: 'Big Event Transportation Map Available',

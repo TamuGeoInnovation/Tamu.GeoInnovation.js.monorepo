@@ -149,6 +149,7 @@ export const WomensBasketball_Configuration: EventConfiguration = {
     '2026-02-22',
     '2026-02-26'
   ],
+  scheduleUrl: 'https://12thman.com/sports/womens-basketball/schedule',
   zoom: 16,
   mapCenter: [-96.34467, 30.60585]
 };

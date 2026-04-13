@@ -177,6 +177,7 @@ export const SavannahBananasParkingConfiguration: EventConfiguration = {
   shortApplicationName: 'Savannah Bananas Parking',
   introductionText: 'Parking and transportation info for Savannah Bananas vs Texas Tailgaters at Kyle Field.',
   eventDates: ['2026-05-02'],
+  scheduleUrl: 'https://app.12thman.com/bananaball',
   mapCenter: [-96.34046, 30.60798],
   zoom: 16
 };

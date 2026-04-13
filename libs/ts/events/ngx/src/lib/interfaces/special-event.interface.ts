@@ -49,6 +49,12 @@ export interface EventConfiguration {
    */
   eventDates: Array<string | Date | number>;
 
+  /**
+   * Optional external URL linking to the event's official schedule page.
+   * When provided, the event date display in the builder is rendered as a clickable link.
+   */
+  scheduleUrl?: string;
+
   mapCenter?: Array<number>;
 
   zoom?: number;

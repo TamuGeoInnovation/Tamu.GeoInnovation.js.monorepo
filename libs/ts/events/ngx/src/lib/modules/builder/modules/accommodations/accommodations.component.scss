@@ -12,6 +12,17 @@
   flex-wrap: wrap;
 }
 
+.event-details {
+  margin-top: -0.25rem;
+  margin-bottom: 2rem;
+
+  a {
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+  }
+}
+
 .button {
   margin: 0.75rem;
   text-transform: none;

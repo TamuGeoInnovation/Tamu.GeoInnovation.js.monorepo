@@ -100,6 +100,7 @@ export const GraduationConfiguration: EventConfiguration = {
   shortApplicationName: 'Fall Commencement Map',
   introductionText: 'Get the best transportation and parking information for the fall commencement ceremonies.',
   eventDates: ['2025-12-17', '2025-12-18'],
+  scheduleUrl: 'https://aggie.tamu.edu/graduation',
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };

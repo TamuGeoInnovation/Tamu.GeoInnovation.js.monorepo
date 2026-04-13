@@ -159,6 +159,7 @@ export const SwimmingParkingConfiguration: EventConfiguration = {
   shortApplicationName: 'Swimming Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M swimming events.',
   eventDates: [],
+  scheduleUrl: 'https://12thman.com/sports/swimdive/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]
 };

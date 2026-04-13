@@ -57,6 +57,7 @@ export const TennisParkingConfiguration: EventConfiguration = {
   shortApplicationName: 'Tennis Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M tennis events.',
   eventDates: [],
+  scheduleUrl: 'https://12thman.com/sports/mens-tennis/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]
 };

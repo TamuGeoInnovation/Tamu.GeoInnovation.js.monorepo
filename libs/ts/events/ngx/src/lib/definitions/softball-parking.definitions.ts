@@ -124,6 +124,7 @@ export const SoftballParkingConfiguration: EventConfiguration = {
   shortApplicationName: 'Softball Parking Map',
   introductionText: 'Parking and transportation information for Texas A&M softball games.',
   eventDates: [],
+  scheduleUrl: 'https://12thman.com/sports/softball/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]
 };
