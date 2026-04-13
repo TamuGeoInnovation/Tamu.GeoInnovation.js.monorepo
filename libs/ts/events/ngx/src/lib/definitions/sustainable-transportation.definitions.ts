@@ -9,8 +9,6 @@ import {
 
 export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   EV_CHARGERS = 'sustainable-transportation-ev-chargers',
-  HUB_CORRALS = 'sustainable-transportation-hub-corrals',
-  SHARED_MOBILITY_RACKS = 'sustainable-transportation-shared-mobility-racks',
   BIKE_RACKS = 'sustainable-transportation-bike-racks',
   BIKE_FIX_STATIONS = 'sustainable-transportation-bike-fix-stations',
   BIKE_LANES = 'sustainable-transportation-bike-lanes',
@@ -20,8 +18,6 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
 
 const evLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/EVChargeStations/MapServer';
 const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
-// Hub Corrals and Shared Mobility Racks are not yet in BikeMap; keeping on hosted service until available.
-const rackLayersUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer';
 
 export const SustainableTransportationDefinitions = {
   EV_CHARGERS: {
@@ -29,18 +25,6 @@ export const SustainableTransportationDefinitions = {
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
     name: 'EV Charge Stations (Main + RELLIS)',
     url: `${evLayersUrl}/0`
-  },
-  HUB_CORRALS: {
-    id: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
-    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.HUB_CORRALS,
-    name: 'Hub Corral',
-    url: `${rackLayersUrl}/0`
-  },
-  SHARED_MOBILITY_RACKS: {
-    id: SUSTAINABLE_TRANSPORTATION_LAYERS.SHARED_MOBILITY_RACKS,
-    layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.SHARED_MOBILITY_RACKS,
-    name: 'Shared Mobility Racks',
-    url: `${rackLayersUrl}/1`
   },
   BIKE_RACKS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
@@ -90,42 +74,6 @@ export const SustainableTransportationColdLayerSources: LayerSource[] = [
         '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
         '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
         '<strong>Notes</strong>: {attributes.EVCS_Notes}'
-    },
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: SustainableTransportationDefinitions.HUB_CORRALS.id,
-    title: SustainableTransportationDefinitions.HUB_CORRALS.name,
-    url: SustainableTransportationDefinitions.HUB_CORRALS.url,
-    visible: true,
-    listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'Hub Corral',
-      description:
-        '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
-        '<strong>Notes</strong>: {attributes.br_notes}'
-    },
-    native: {
-      outFields: ['*']
-    }
-  },
-  {
-    type: 'feature',
-    id: SustainableTransportationDefinitions.SHARED_MOBILITY_RACKS.id,
-    title: SustainableTransportationDefinitions.SHARED_MOBILITY_RACKS.name,
-    url: SustainableTransportationDefinitions.SHARED_MOBILITY_RACKS.url,
-    visible: true,
-    listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'Shared Mobility Racks',
-      description:
-        '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
-        '<strong>Notes</strong>: {attributes.br_notes}'
     },
     native: {
       outFields: ['*']

@@ -312,42 +312,6 @@ export function LayerSources(
         },
         {
           type: 'feature',
-          id: 'shared-mobility-racks-layer',
-          title: 'Shared Mobility Racks',
-          url: 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer/1',
-          listMode: 'show',
-          visible: true,
-          popupComponent: Popups.MarkdownPopupComponent,
-          popupData: {
-            name: 'Shared Mobility Racks',
-            description:
-              '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
-              '<strong>Notes</strong>: {attributes.br_notes}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: 'hub-corrals-layer',
-          title: 'Hub Corral',
-          url: 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/Rack_Locations_view/FeatureServer/0',
-          listMode: 'show',
-          visible: true,
-          popupComponent: Popups.MarkdownPopupComponent,
-          popupData: {
-            name: 'Hub Corral',
-            description:
-              '<strong>Total Capacity</strong>: {attributes.total_capacity}\n' +
-              '<strong>Notes</strong>: {attributes.br_notes}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
           id: 'ev-charge-stations-layer',
           title: 'EV Charge Stations (Main + RELLIS)',
           url: `${evChargeStationsUrl}/0`,
