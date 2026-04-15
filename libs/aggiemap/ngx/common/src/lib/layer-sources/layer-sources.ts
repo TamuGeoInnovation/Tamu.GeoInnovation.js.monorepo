@@ -438,10 +438,10 @@ export function LayerSources(
     },
     {
       type: 'feature',
-      id: definitions.FAMILY_FRIENDLY_BATHROOMS.layerId,
-      title: definitions.FAMILY_FRIENDLY_BATHROOMS.name,
-      url: definitions.FAMILY_FRIENDLY_BATHROOMS.url,
-      popupComponent: definitions.FAMILY_FRIENDLY_BATHROOMS.popupComponent,
+      id: definitions.SINGLE_OCCUPANCY_RESTROOMS.layerId,
+      title: definitions.SINGLE_OCCUPANCY_RESTROOMS.name,
+      url: definitions.SINGLE_OCCUPANCY_RESTROOMS.url,
+      popupComponent: definitions.SINGLE_OCCUPANCY_RESTROOMS.popupComponent,
       listMode: 'show',
       visible: false,
       popupData: {
