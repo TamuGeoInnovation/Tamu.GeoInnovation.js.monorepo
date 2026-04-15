@@ -17,7 +17,7 @@ export class EventLegendComponent implements OnInit {
     'poi-layer',
     'construction_zone-layer',
     'dining-locations-layer',
-    'family-friendly-bathrooms-locations-layer',
+    'single-occupancy-restroom-locations-layer',
     'emergency-phones-layer'
   ];
 

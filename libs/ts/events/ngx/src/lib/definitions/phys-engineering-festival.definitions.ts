@@ -355,7 +355,7 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
     'poi-layer',
     'construction_zone-layer',
     'dining-locations-layer',
-    'family-friendly-bathrooms-locations-layer',
+    'single-occupancy-restroom-locations-layer',
     'emergency-phones-layer'
   ],
   defaultLayerOverrides: {
@@ -366,7 +366,7 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
     'poi-layer': { listMode: 'hide' },
     'construction_zone-layer': { listMode: 'hide' },
     'dining-locations-layer': { listMode: 'hide' },
-    'family-friendly-bathrooms-locations-layer': { listMode: 'hide' },
+    'single-occupancy-restroom-locations-layer': { listMode: 'hide' },
     'emergency-phones-layer': { listMode: 'hide' },
     'bonfire-layer': { listMode: 'hide' },
     'surface-lots-layer': { listMode: 'hide' },

@@ -117,12 +117,12 @@ describe('LayerSources', () => {
         url: 'aggieprint-locations-url',
         popupComponent: 'aggieprint-popup'
       },
-      FAMILY_FRIENDLY_BATHROOMS: {
-        id: 'family-friendly-bathrooms',
-        layerId: 'family-friendly-bathrooms',
-        name: 'Family Friendly Bathrooms',
-        url: 'family-friendly-bathrooms-url',
-        popupComponent: 'family-friendly-bathrooms-popup'
+      SINGLE_OCCUPANCY_RESTROOMS: {
+        id: 'single-occupancy-restroom-locations',
+        layerId: 'single-occupancy-restroom-locations',
+        name: 'Single Occupancy Restroom Locations',
+        url: 'single-occupancy-restroom-locations-url',
+        popupComponent: 'single-occupancy-restroom-locations-popup'
       }
     };
     options = { exclude: [] };
