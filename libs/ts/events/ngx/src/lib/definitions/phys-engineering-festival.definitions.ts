@@ -346,25 +346,7 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
   mapCenter: [-96.33771, 30.62143],
   zoom: 17,
   legendAllowVisibilityToggle: true,
-  legendCombineChildrenUnderPrimary: true,
-  defaultLayerOverrides: {
-    'aggieprint-locations-layer': { listMode: 'hide' },
-    'accessible-entrances-layer': { listMode: 'hide' },
-    'visitor-parking-layer': { listMode: 'hide' },
-    'lactation-rooms-layer': { listMode: 'hide' },
-    'poi-layer': { listMode: 'hide' },
-    'construction_zone-layer': { listMode: 'hide' },
-    'dining-locations-layer': { listMode: 'hide' },
-    'single-occupancy-restroom-locations-layer': { listMode: 'hide' },
-    'emergency-phones-layer': { listMode: 'hide' },
-    'bonfire-layer': { listMode: 'hide' },
-    'surface-lots-layer': { listMode: 'hide' },
-    'bike-locations-layer': { listMode: 'hide' },
-    'sustainable-transportation-group-layer': {
-      listMode: 'hide',
-      native: { listMode: 'hide' }
-    }
-  }
+  legendCombineChildrenUnderPrimary: true
 };
 
 export const PhysicsAndEngineeringFestivalOptions: SpecialEventOptions = [];

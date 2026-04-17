@@ -20,7 +20,7 @@ export class LegendService {
 
   public legend(options?: LegendOptions) {
     const excludedLayerIds = new Set(options?.excludedLayerIds ?? []);
-    const showAllLayers = options?.showAllLayers ?? false;
+    const allowedLayerIds = options?.allowedLayerIds ?? [];
 
     return combineLatest([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).pipe(
       switchMap(([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
@@ -48,6 +48,7 @@ export class LegendService {
             return event.target
               .filter((l) => l.layer.listMode !== 'hide')
               .filter((l) => !excludedLayerIds.has(l.layer.id))
+              .filter((l) => allowedLayerIds.length === 0 || allowedLayerIds.includes(l.layer.id))
               .toArray();
           }),
           // Track layers that have ever been visible. Initially-hidden layers (e.g. alternate
@@ -61,7 +62,7 @@ export class LegendService {
               items: esri.ActiveLayerInfo[]
             ) => {
               const allowedIds = new Set(acc.allowedIds);
-              (showAllLayers ? items : items.filter((l) => l.layer.visible)).forEach((l) => allowedIds.add(l.layer.id));
+              items.filter((l) => l.layer.visible).forEach((l) => allowedIds.add(l.layer.id));
               return { allowedIds, result: items.filter((l) => allowedIds.has(l.layer.id)) };
             },
             { allowedIds: new Set<string>(), result: [] as esri.ActiveLayerInfo[] }
@@ -75,7 +76,7 @@ export class LegendService {
 
 interface LegendOptions {
   excludedLayerIds?: string[];
-  showAllLayers?: boolean;
+  allowedLayerIds?: string[];
 }
 
 export interface IActiveLayerInfosChangeEvent {

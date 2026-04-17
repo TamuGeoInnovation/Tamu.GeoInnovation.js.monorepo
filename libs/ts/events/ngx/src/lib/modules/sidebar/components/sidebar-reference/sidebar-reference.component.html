@@ -21,12 +21,12 @@
   </div>
 </div>
 
-<tamu-gisc-layer-list></tamu-gisc-layer-list>
+<tamu-gisc-layer-list [allowedLayerIds]="eventLayerIds"></tamu-gisc-layer-list>
 
 <tamu-gisc-legend
   [deduplicate]="true"
   [respectDefinitionExpression]="true"
   [allowVisibilityToggle]="legendAllowVisibilityToggle"
   [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary"
-  [excludedLayerIds]="legendExcludedLayerIds"
+  [allowedLayerIds]="eventLayerIds"
 ></tamu-gisc-legend>

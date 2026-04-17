@@ -11,7 +11,6 @@ export class EventLegendComponent implements OnInit {
   public respectDefinitionExpression = true;
   public allowVisibilityToggle = true;
   public combineChildrenUnderPrimary = false;
-  public excludedLayerIds: string[] = [];
 
   constructor(private readonly eventSettingsService: EventSettingsService) {}
 
@@ -20,6 +19,5 @@ export class EventLegendComponent implements OnInit {
 
     this.allowVisibilityToggle = config?.legendAllowVisibilityToggle ?? true;
     this.combineChildrenUnderPrimary = config?.legendCombineChildrenUnderPrimary ?? false;
-    this.excludedLayerIds = config?.legendExcludedLayerIds ?? [];
   }
 }

@@ -23,7 +23,7 @@ export class SidebarReferenceComponent implements OnInit {
   public configuration: EventConfiguration | null;
   public legendAllowVisibilityToggle = false;
   public legendCombineChildrenUnderPrimary = false;
-  public legendExcludedLayerIds: string[] = [];
+  public eventLayerIds: string[] = [];
   public showResolvedSettingNotes = false;
 
   constructor(
@@ -40,7 +40,7 @@ export class SidebarReferenceComponent implements OnInit {
     this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
     this.legendAllowVisibilityToggle = this.configuration?.legendAllowVisibilityToggle ?? true;
     this.legendCombineChildrenUnderPrimary = this.configuration?.legendCombineChildrenUnderPrimary ?? false;
-    this.legendExcludedLayerIds = this.configuration?.legendExcludedLayerIds ?? [];
+    this.eventLayerIds = this.eventSettingsService.eventLayerSources().map((s) => s.id);
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
   }

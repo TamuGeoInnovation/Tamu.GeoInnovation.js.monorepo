@@ -165,26 +165,7 @@ export const SavannahBananasParkingConfiguration: EventConfiguration = {
   scheduleUrl: 'https://app.12thman.com/bananaball',
   mapCenter: [-96.34046, 30.60798],
   zoom: 16,
-  legendAllowVisibilityToggle: true,
-  defaultLayerOverrides: {
-    'aggieprint-locations-layer': { listMode: 'hide' },
-    'accessible-entrances-layer': { listMode: 'hide' },
-    'visitor-parking-layer': { listMode: 'hide' },
-    'lactation-rooms-layer': { listMode: 'hide' },
-    'poi-layer': { listMode: 'hide' },
-    'construction_zone-layer': { listMode: 'hide' },
-    'dining-locations-layer': { listMode: 'hide' },
-    'single-occupancy-restroom-locations-layer': { listMode: 'hide' },
-    'emergency-phones-layer': { listMode: 'hide' },
-    'bonfire-layer': { listMode: 'hide' },
-    'surface-lots-layer': { listMode: 'hide' },
-    'bike-locations-layer': { listMode: 'hide' },
-    'sustainable-transportation-group-layer': {
-      listMode: 'hide',
-      native: { listMode: 'hide' }
-    },
-    'three-d-buildings-scene-layer': { listMode: 'hide' }
-  }
+  legendAllowVisibilityToggle: true
 };
 
 export const SavannahBananasParkingOptions: SpecialEventOptions = [];
