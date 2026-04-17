@@ -38,7 +38,7 @@ export class SidebarReferenceComponent implements OnInit {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
     this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
     this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
-    this.legendAllowVisibilityToggle = this.configuration?.legendAllowVisibilityToggle ?? false;
+    this.legendAllowVisibilityToggle = this.configuration?.legendAllowVisibilityToggle ?? true;
     this.legendCombineChildrenUnderPrimary = this.configuration?.legendCombineChildrenUnderPrimary ?? false;
     this.legendExcludedLayerIds = this.configuration?.legendExcludedLayerIds ?? [];
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
