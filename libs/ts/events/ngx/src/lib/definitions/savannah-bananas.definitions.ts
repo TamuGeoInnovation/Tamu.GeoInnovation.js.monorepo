@@ -32,7 +32,7 @@ export const SavannahBananasParkingDefinitions = {
   ACCESSIBLE_PREPAID_PARKING: {
     id: SAVANNAH_BANANAS_PARKING_LAYERS.ACCESSIBLE_PREPAID_PARKING,
     layerId: SAVANNAH_BANANAS_PARKING_LAYERS.ACCESSIBLE_PREPAID_PARKING,
-    name: 'Accessible/Prepaid Parking',
+    name: 'Accessible/Prepaid/AVP Parking',
     url: `${eventUrl}/4`
   },
   EVENT_PARKING: {
