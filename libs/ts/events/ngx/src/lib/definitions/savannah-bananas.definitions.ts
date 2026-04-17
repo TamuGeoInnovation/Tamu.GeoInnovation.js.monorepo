@@ -58,121 +58,99 @@ export const SavannahBananasParkingDefinitions = {
 };
 
 const SavannahBananasLayerReferences: Record<string, string> = {
-  SHUTTLE_GROUP: SAVANNAH_BANANAS_PARKING_LAYERS.SHUTTLE_GROUP,
-  PARKING_GROUP: SAVANNAH_BANANAS_PARKING_LAYERS.PARKING_GROUP
+  SHUTTLE_STOPS: SAVANNAH_BANANAS_PARKING_LAYERS.SHUTTLE_STOPS,
+  SHUTTLE_ROUTES: SAVANNAH_BANANAS_PARKING_LAYERS.SHUTTLE_ROUTES,
+  ACCESSIBLE_PREPAID_PARKING: SAVANNAH_BANANAS_PARKING_LAYERS.ACCESSIBLE_PREPAID_PARKING,
+  EVENT_PARKING: SAVANNAH_BANANAS_PARKING_LAYERS.EVENT_PARKING
 };
 
 export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
   {
-    type: 'group',
-    id: SavannahBananasParkingDefinitions.SHUTTLE_GROUP.id,
-    title: SavannahBananasParkingDefinitions.SHUTTLE_GROUP.name,
+    type: 'feature',
+    id: SavannahBananasParkingDefinitions.EVENT_PARKING.id,
+    title: SavannahBananasParkingDefinitions.EVENT_PARKING.name,
+    url: SavannahBananasParkingDefinitions.EVENT_PARKING.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'name'
+      },
+      description: {
+        field: 'description'
+      }
+    },
     visible: true,
     listMode: 'show',
-    sources: [
-      {
-        type: 'feature',
-        id: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.id,
-        title: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.name,
-        url: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
-        popupData: {
-          name: {
-            field: 'name'
-          },
-          description: {
-            field: 'description'
-          }
-        },
-        visible: true,
-        listMode: 'show',
-        native: {
-          outFields: ['*']
-        }
-      },
-      {
-        type: 'feature',
-        id: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.id,
-        title: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.name,
-        url: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
-        popupDataResolutionStrategy: 'cumulative',
-        popupData: {
-          name: {
-            field: 'StopName'
-          },
-          routeName: {
-            field: 'RouteName'
-          },
-          route: {
-            field: 'Route'
-          },
-          stopNumber: {
-            field: 'StopNum'
-          },
-          description: '<strong>{attributes.routeName}</strong><br>Route {attributes.route}<br>Stop {attributes.stopNumber}'
-        },
-        visible: true,
-        listMode: 'show',
-        native: {
-          outFields: ['*']
-        }
-      }
-    ],
     native: {
-      listMode: 'hide-children'
+      outFields: ['*']
     }
   },
   {
-    type: 'group',
-    id: SavannahBananasParkingDefinitions.PARKING_GROUP.id,
-    title: SavannahBananasParkingDefinitions.PARKING_GROUP.name,
+    type: 'feature',
+    id: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.id,
+    title: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.name,
+    url: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'name'
+      },
+      description: {
+        field: 'description'
+      }
+    },
     visible: true,
     listMode: 'show',
-    sources: [
-      {
-        type: 'feature',
-        id: SavannahBananasParkingDefinitions.EVENT_PARKING.id,
-        title: SavannahBananasParkingDefinitions.EVENT_PARKING.name,
-        url: SavannahBananasParkingDefinitions.EVENT_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
-        popupData: {
-          name: {
-            field: 'name'
-          },
-          description: {
-            field: 'description'
-          }
-        },
-        visible: true,
-        listMode: 'show',
-        native: {
-          outFields: ['*']
-        }
-      },
-      {
-        type: 'feature',
-        id: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.id,
-        title: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.name,
-        url: SavannahBananasParkingDefinitions.ACCESSIBLE_PREPAID_PARKING.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
-        popupData: {
-          name: {
-            field: 'name'
-          },
-          description: {
-            field: 'description'
-          }
-        },
-        visible: true,
-        listMode: 'show',
-        native: {
-          outFields: ['*']
-        }
-      }
-    ],
     native: {
-      listMode: 'hide-children'
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.id,
+    title: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.name,
+    url: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'name'
+      },
+      description: {
+        field: 'description'
+      }
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
+    }
+  },
+  {
+    type: 'feature',
+    id: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.id,
+    title: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.name,
+    url: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupDataResolutionStrategy: 'cumulative',
+    popupData: {
+      name: {
+        field: 'StopName'
+      },
+      routeName: {
+        field: 'RouteName'
+      },
+      route: {
+        field: 'Route'
+      },
+      stopNumber: {
+        field: 'StopNum'
+      },
+      description: '<strong>{attributes.routeName}</strong><br>Route {attributes.route}<br>Stop {attributes.stopNumber}'
+    },
+    visible: true,
+    listMode: 'show',
+    native: {
+      outFields: ['*']
     }
   }
 ];
@@ -188,17 +166,6 @@ export const SavannahBananasParkingConfiguration: EventConfiguration = {
   mapCenter: [-96.34046, 30.60798],
   zoom: 16,
   legendAllowVisibilityToggle: true,
-  legendExcludedLayerIds: [
-    'aggieprint-locations-layer',
-    'accessible-entrances-layer',
-    'visitor-parking-layer',
-    'lactation-rooms-layer',
-    'poi-layer',
-    'construction_zone-layer',
-    'dining-locations-layer',
-    'single-occupancy-restroom-locations-layer',
-    'emergency-phones-layer'
-  ],
   defaultLayerOverrides: {
     'aggieprint-locations-layer': { listMode: 'hide' },
     'accessible-entrances-layer': { listMode: 'hide' },
@@ -215,7 +182,8 @@ export const SavannahBananasParkingConfiguration: EventConfiguration = {
     'sustainable-transportation-group-layer': {
       listMode: 'hide',
       native: { listMode: 'hide' }
-    }
+    },
+    'three-d-buildings-scene-layer': { listMode: 'hide' }
   }
 };
 

@@ -347,17 +347,6 @@ export const PhysicsAndEngineeringFestivalConfiguration: EventConfiguration = {
   zoom: 17,
   legendAllowVisibilityToggle: true,
   legendCombineChildrenUnderPrimary: true,
-  legendExcludedLayerIds: [
-    'aggieprint-locations-layer',
-    'accessible-entrances-layer',
-    'visitor-parking-layer',
-    'lactation-rooms-layer',
-    'poi-layer',
-    'construction_zone-layer',
-    'dining-locations-layer',
-    'single-occupancy-restroom-locations-layer',
-    'emergency-phones-layer'
-  ],
   defaultLayerOverrides: {
     'aggieprint-locations-layer': { listMode: 'hide' },
     'accessible-entrances-layer': { listMode: 'hide' },

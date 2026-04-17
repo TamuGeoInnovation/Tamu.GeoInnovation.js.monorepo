@@ -63,7 +63,8 @@ export class LegendComponent implements OnInit, OnDestroy {
     }
 
     this.legend = this.legendService.legend({
-      excludedLayerIds: this.excludedLayerIds
+      excludedLayerIds: this.excludedLayerIds,
+      showAllLayers: this.allowVisibilityToggle
     });
 
     this.responsive = this.responsiveService.snapshot;
