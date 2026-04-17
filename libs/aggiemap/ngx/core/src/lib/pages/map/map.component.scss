@@ -1,2 +1,46 @@
 @import 'libs/sass/mixins';
 @import 'libs/sass/modules/esri_map';
+
+.map-overlay-ui .overlay-zone.top.left {
+  @include flexbox();
+  @include align-items(flex-start);
+  gap: 0.5rem;
+}
+
+.all-maps-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0 0.85rem;
+  border: 1px solid rgb(50 50 50 / 25%);
+  border-radius: 3px;
+  background: #500000;
+  color: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 30%);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.all-maps-button:hover,
+.all-maps-button:focus {
+  background: #3d0000;
+  color: #fff;
+  text-decoration: none;
+}
+
+.all-maps-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media only screen and (max-width: 768px) {
+  .map-overlay-ui .overlay-zone.top.left {
+    left: 1rem;
+    top: 0.75rem;
+  }
+}

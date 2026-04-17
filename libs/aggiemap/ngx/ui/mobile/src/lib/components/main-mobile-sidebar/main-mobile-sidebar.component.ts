@@ -49,7 +49,7 @@ export class MainMobileSidebarComponent {
       url: './feedback'
     },
     {
-      name: 'Discover',
+      name: 'All Maps',
       type: 'router-path',
       path: '/discover'
     },

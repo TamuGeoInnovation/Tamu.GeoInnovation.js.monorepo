@@ -8,7 +8,7 @@
       <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
       <p><a href="mailto:aggiemap@tamu.edu?subject=Aggiemap%20Feedback" target="_blank" tabindex="0">Feedback</a></p>
       <p><a routerLink="/about" tabindex="0">About</a></p>
-      <p><a routerLink="/discover" tabindex="0">Discover</a></p>
+      <p><a routerLink="/discover" tabindex="0">All Maps</a></p>
       <p><a tabindex="0" (click)="openBetaModal(true)" *ngIf="isDev | async">Beta Branch</a></p>
       <p><a href="https://www.tamu.edu/statements/index.html" tabindex="0">Site Policies</a></p>
       <p><a href="http://itaccessibility.tamu.edu" tabindex="0">Accessibility Policy</a></p>
@@ -26,6 +26,7 @@
   <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
     <div class="map-overlay-ui">
       <div class="overlay-zone top left">
+        <a class="all-maps-button esri-component esri-widget" routerLink="/discover" aria-label="Open All Maps">ALL MAPS</a>
         <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
       </div>
 
