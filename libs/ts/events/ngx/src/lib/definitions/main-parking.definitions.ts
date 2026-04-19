@@ -104,8 +104,17 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.CAMPUS_STOPS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'Stop Name: {attributes.StopName}',
+      description: 'Route Number(s): {attributes.Route}',
+      additionalContent: {
+        value: '[View on the bus route map](https://aggiespirit.ts.tamu.edu/RouteMap)'
+      }
+    },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      popupEnabled: true
     } as unknown as FeatureNative
   },
 
@@ -187,7 +196,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
       renderer: tsMainParkingLotsRenderer,
       popupEnabled: true
     } as unknown as FeatureNative
-  }
+  },
 ];
 
 export const TsMainParkingConfiguration: EventConfiguration = {

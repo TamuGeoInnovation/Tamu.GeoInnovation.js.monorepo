@@ -13,9 +13,13 @@ import {
   ConversionDeconflictingStrategy,
   SpecialEventOptions
 } from '../../interfaces/special-event.interface';
+import { TsMainParkingDefinitions } from '../../definitions/main-parking.definitions';
 import { EventSettingsService } from '../settings/event-settings.service';
 
 import esri = __esri;
+
+const TS_MAIN_PARKING_EVENT_ID = 'ts-main-parking';
+const TS_MAIN_ROUTE_STOP_LABEL_LAYER_ID = 'ts-main-route-stop-labels';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +32,7 @@ export class EventService {
 
   private _map: esri.Map;
   private _view: esri.MapView;
+  private _tsMainRouteStopLabelHandles: esri.WatchHandle[] = [];
 
   constructor(
     private readonly env: EnvironmentService,
@@ -60,6 +65,7 @@ export class EventService {
 
   public async drawEvent() {
     try {
+      this.removeTsMainRouteStopLabelLayer();
       const eventLayers = this.specialEventLayerReferences;
 
       // For each source, iterate through event options and determine if any of the option effect targets apply to the immediate source.
@@ -147,13 +153,134 @@ export class EventService {
         });
 
       if (sources.length > 0) {
-        this.mapService.loadLayers(sources);
+        await this.mapService.loadLayers(sources);
+        await this.addTsMainRouteStopLabelLayer();
       } else {
         throw new Error('drawEvent: No layer sources found.');
       }
     } catch (err) {
       console.error(`Failed to event areas`, err);
     }
+  }
+
+  private clearTsMainRouteStopLabelHandles() {
+    this._tsMainRouteStopLabelHandles.forEach((handle) => handle.remove());
+    this._tsMainRouteStopLabelHandles = [];
+  }
+
+  private removeTsMainRouteStopLabelLayer() {
+    this.clearTsMainRouteStopLabelHandles();
+
+    const existing = this._map?.findLayerById(TS_MAIN_ROUTE_STOP_LABEL_LAYER_ID);
+
+    if (existing) {
+      this._map.remove(existing);
+    }
+  }
+
+  private async addTsMainRouteStopLabelLayer() {
+    const activeEvent = this.eventSettingsService.eventConfiguration()?.configuration?.id;
+
+    if (activeEvent !== TS_MAIN_PARKING_EVENT_ID) {
+      return;
+    }
+
+    const routeStopLayer = this._map?.findLayerById(TsMainParkingDefinitions.ROUTE_STOP_START_POINTS.id) as esri.FeatureLayer;
+
+    if (!routeStopLayer) {
+      return;
+    }
+
+    const [GraphicsLayer, Graphic]: [esri.GraphicsLayerConstructor, esri.GraphicConstructor] = await this.moduleProvider.require([
+      'GraphicsLayer',
+      'Graphic'
+    ]);
+
+    const result = (await this.runTask(TsMainParkingDefinitions.ROUTE_STOP_START_POINTS.url, {
+      where: routeStopLayer.definitionExpression || '1=1',
+      outFields: ['Route'],
+      returnGeometry: true
+    })) as esri.FeatureSet;
+
+    let objectId = 1;
+
+    const graphics = result.features.flatMap((feature) => {
+      const route = feature.attributes?.Route;
+      const geometry = feature.geometry as esri.Multipoint;
+
+      if (!route || !geometry?.points?.length) {
+        return [];
+      }
+
+      return geometry.points.map(
+        ([longitude, latitude]) =>
+          new Graphic({
+            geometry: {
+              type: 'point',
+              longitude,
+              latitude,
+              spatialReference: {
+                wkid: 4326
+              }
+            } as esri.PointProperties,
+            attributes: {
+              OBJECTID: objectId++,
+              Route: route
+            },
+            symbol: {
+              type: 'text',
+              text: String(route),
+              color: [255, 255, 255, 255],
+              haloColor: [255, 255, 255, 255],
+              haloSize: 0.3,
+              font: {
+                family: 'Open Sans',
+                size: 10,
+                weight: 'bold'
+              },
+              horizontalAlignment: 'center',
+              verticalAlignment: 'middle',
+              xoffset: 0,
+              yoffset: 0
+            } as esri.TextSymbolProperties
+          })
+      );
+    });
+
+    if (graphics.length === 0) {
+      return;
+    }
+
+    const labelLayer = new GraphicsLayer({
+      id: TS_MAIN_ROUTE_STOP_LABEL_LAYER_ID,
+      title: 'Route Stop/Start Labels',
+      listMode: 'hide',
+      visible: routeStopLayer.visible,
+      minScale: routeStopLayer.minScale,
+      maxScale: routeStopLayer.maxScale,
+      graphics
+    });
+
+    const routeStopLayerIndex = this._map.layers.indexOf(routeStopLayer);
+    this._map.add(labelLayer, routeStopLayerIndex > -1 ? routeStopLayerIndex + 1 : undefined);
+
+    this._tsMainRouteStopLabelHandles.push(
+      routeStopLayer.watch('visible', (visible) => {
+        labelLayer.visible = visible;
+      })
+    );
+
+    this._tsMainRouteStopLabelHandles.push(
+      routeStopLayer.watch('minScale', (minScale) => {
+        labelLayer.minScale = minScale;
+      })
+    );
+
+    this._tsMainRouteStopLabelHandles.push(
+      routeStopLayer.watch('maxScale', (maxScale) => {
+        labelLayer.maxScale = maxScale;
+      })
+    );
   }
 
   /**

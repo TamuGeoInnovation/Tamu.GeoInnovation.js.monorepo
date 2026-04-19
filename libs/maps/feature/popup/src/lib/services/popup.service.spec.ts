@@ -100,4 +100,39 @@ describe('PopupService', () => {
     expect(result?.data.attributes.total).toBe(200);
     expect(result?.data.attributes.description).toBe('Lot 100: 200');
   });
+
+
+  it('should resolve literal popup data values without treating them as attribute lookups', () => {
+    const snapshot = {
+      graphics: [
+        {
+          attributes: {
+            StopName: 'Beutel',
+            Route: '03, 05, 06, 08'
+          },
+          layer: {
+            id: 'campus-stops',
+            title: 'Campus Stops',
+            popupComponent: TestPopupComponent,
+            popupData: {
+              name: 'Stop Name: {attributes.StopName}',
+              description: 'Route Number(s): {attributes.Route}',
+              additionalContent: {
+                value: '[View on the bus route map](https://aggiespirit.ts.tamu.edu/RouteMap)'
+              }
+            }
+          }
+        }
+      ]
+    } as unknown as HitTestSnapshot;
+
+    const result = service.getComponent(snapshot);
+
+    expect(result?.component).toBe(TestPopupComponent);
+    expect(result?.data.attributes.name).toBe('Stop Name: Beutel');
+    expect(result?.data.attributes.description).toBe('Route Number(s): 03, 05, 06, 08');
+    expect(result?.data.attributes.additionalContent).toBe(
+      '[View on the bus route map](https://aggiespirit.ts.tamu.edu/RouteMap)'
+    );
+  });
 });
