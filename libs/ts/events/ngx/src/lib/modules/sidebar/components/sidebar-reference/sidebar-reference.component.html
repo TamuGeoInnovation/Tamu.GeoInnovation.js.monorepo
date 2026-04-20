@@ -1,5 +1,9 @@
 <tamu-gisc-search [placeholder]="'Find Building or Parking'" [leftActionIcon]="'search'" [rightActionIcon]="'close'" (result)="onSearchResult($event)"></tamu-gisc-search>
 
+<div *ngIf="configuration?.applicationName" class="map-title">
+  <h1>{{ configuration?.applicationName }}</h1>
+</div>
+
 <div *ngIf="hasSettings" class="leader-1">
   <div class="sidebar-component-name">
     <p>Share Map</p>
