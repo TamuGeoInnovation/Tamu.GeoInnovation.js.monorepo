@@ -23,7 +23,7 @@ export class SidebarReferenceComponent implements OnInit {
   public configuration: EventConfiguration | null;
   public legendAllowVisibilityToggle = false;
   public legendCombineChildrenUnderPrimary = false;
-  public legendExcludedLayerIds: string[] = [];
+  public eventLayerIds: string[] = [];
   public showResolvedSettingNotes = false;
 
   constructor(
@@ -38,9 +38,25 @@ export class SidebarReferenceComponent implements OnInit {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
     this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
     this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
-    this.legendAllowVisibilityToggle = this.configuration?.legendAllowVisibilityToggle ?? false;
+    this.legendAllowVisibilityToggle = this.configuration?.legendAllowVisibilityToggle ?? true;
     this.legendCombineChildrenUnderPrimary = this.configuration?.legendCombineChildrenUnderPrimary ?? false;
-    this.legendExcludedLayerIds = this.configuration?.legendExcludedLayerIds ?? [];
+    const settings = this.eventSettingsService.settings();
+    const options = this.eventSettingsService.eventOptions();
+    this.eventLayerIds = this.eventSettingsService
+      .eventLayerSources()
+      .filter((source) => {
+        for (const option of options) {
+          const layerEffect = option.effects.layers?.find((l) => l.layerId === source.id);
+          if (layerEffect?.conversions && settings) {
+            const conversion = layerEffect.conversions.find((c) => c.input === settings[option.value]);
+            if (conversion?.propOverrides?.visible === false) {
+              return false;
+            }
+          }
+        }
+        return true;
+      })
+      .map((s) => s.id);
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventSettingsService.queryParamsFromSettings}`;
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
   }

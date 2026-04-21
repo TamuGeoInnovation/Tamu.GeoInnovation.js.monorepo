@@ -8,8 +8,10 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum SAVANNAH_BANANAS_PARKING_LAYERS {
+  SHUTTLE_GROUP = 'savannah-bananas-shuttle-group',
   SHUTTLE_STOPS = 'savannah-bananas-shuttle-stops',
   SHUTTLE_ROUTES = 'savannah-bananas-shuttle-routes',
+  PARKING_GROUP = 'savannah-bananas-parking-group',
   ACCESSIBLE_PREPAID_PARKING = 'savannah-bananas-accessible-prepaid-parking',
   EVENT_PARKING = 'savannah-bananas-event-parking'
 }
@@ -17,10 +19,16 @@ export enum SAVANNAH_BANANAS_PARKING_LAYERS {
 const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SavannahBananas/MapServer';
 
 export const SavannahBananasParkingDefinitions = {
+  SHUTTLE_GROUP: {
+    id: SAVANNAH_BANANAS_PARKING_LAYERS.SHUTTLE_GROUP,
+    layerId: SAVANNAH_BANANAS_PARKING_LAYERS.SHUTTLE_GROUP,
+    name: 'Event Shuttles',
+    url: `${eventUrl}/0`
+  },
   SHUTTLE_STOPS: {
     id: SAVANNAH_BANANAS_PARKING_LAYERS.SHUTTLE_STOPS,
     layerId: SAVANNAH_BANANAS_PARKING_LAYERS.SHUTTLE_STOPS,
-    name: 'Shuttle Stops',
+    name: 'Campus Shuttle Stops',
     url: `${eventUrl}/1`
   },
   SHUTTLE_ROUTES: {
@@ -28,6 +36,12 @@ export const SavannahBananasParkingDefinitions = {
     layerId: SAVANNAH_BANANAS_PARKING_LAYERS.SHUTTLE_ROUTES,
     name: 'Shuttle Routes',
     url: `${eventUrl}/2`
+  },
+  PARKING_GROUP: {
+    id: SAVANNAH_BANANAS_PARKING_LAYERS.PARKING_GROUP,
+    layerId: SAVANNAH_BANANAS_PARKING_LAYERS.PARKING_GROUP,
+    name: 'Event Parking',
+    url: `${eventUrl}/3`
   },
   ACCESSIBLE_PREPAID_PARKING: {
     id: SAVANNAH_BANANAS_PARKING_LAYERS.ACCESSIBLE_PREPAID_PARKING,
@@ -150,7 +164,8 @@ export const SavannahBananasParkingConfiguration: EventConfiguration = {
   eventDates: ['2026-05-02'],
   scheduleUrl: 'https://app.12thman.com/bananaball',
   mapCenter: [-96.34046, 30.60798],
-  zoom: 16
+  zoom: 16,
+  legendAllowVisibilityToggle: true
 };
 
 export const SavannahBananasParkingOptions: SpecialEventOptions = [];

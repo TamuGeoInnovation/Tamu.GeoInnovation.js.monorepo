@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { map, scan, startWith, switchMap } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -19,18 +19,19 @@ export class LegendService {
   ) {}
 
   public legend(options?: LegendOptions) {
-    const respectLayerVisibility = options?.respectLayerVisibility ?? true;
     const excludedLayerIds = new Set(options?.excludedLayerIds ?? []);
+    const allowedLayerIds = options?.allowedLayerIds ?? [];
 
     return combineLatest([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).pipe(
       switchMap(([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
+        // Use respectLayerVisibility: false so that ESRI never removes a layer from
+        // activeLayerInfos when its visibility changes. This keeps toggled-off layers
+        // in the list so the legend-collection component can collapse (not destroy) them.
         const model = new LegendViewModel({
           view: instances.view,
-          respectLayerVisibility
+          respectLayerVisibility: false
         });
 
-        // Create add/remove watch handlers for the activeLayerInfos property of the view model.
-        // These are used to create a subscribable event stream.
         let handle;
 
         const add = (handler) => {
@@ -41,15 +42,32 @@ export class LegendService {
           handle.remove();
         };
 
-        // For every item, attempt to create a layer
         return fromEventPattern(add, remove).pipe(
           startWith({ target: model.activeLayerInfos }),
           map((event: IActiveLayerInfosChangeEvent) => {
             return event.target
               .filter((l) => l.layer.listMode !== 'hide')
               .filter((l) => !excludedLayerIds.has(l.layer.id))
+              .filter((l) => allowedLayerIds.length === 0 || allowedLayerIds.includes(l.layer.id))
               .toArray();
-          })
+          }),
+          // Track layers that have ever been visible. Initially-hidden layers (e.g. alternate
+          // map-mode layers, base-map layers that are off by default) are never added to the
+          // allowed set and therefore never appear in the legend. Once a layer has been seen
+          // as visible it stays in the legend permanently so that toggling it off collapses
+          // the entry instead of removing it.
+          scan(
+            (
+              acc: { allowedIds: Set<string>; result: esri.ActiveLayerInfo[] },
+              items: esri.ActiveLayerInfo[]
+            ) => {
+              const allowedIds = new Set(acc.allowedIds);
+              items.filter((l) => l.layer.visible).forEach((l) => allowedIds.add(l.layer.id));
+              return { allowedIds, result: items.filter((l) => allowedIds.has(l.layer.id)) };
+            },
+            { allowedIds: new Set<string>(), result: [] as esri.ActiveLayerInfo[] }
+          ),
+          map((acc) => acc.result)
         );
       })
     );
@@ -57,8 +75,8 @@ export class LegendService {
 }
 
 interface LegendOptions {
-  respectLayerVisibility?: boolean;
   excludedLayerIds?: string[];
+  allowedLayerIds?: string[];
 }
 
 export interface IActiveLayerInfosChangeEvent {

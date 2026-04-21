@@ -12,7 +12,7 @@
     <span class="collection-group-title-text">{{ group.title }}</span>
   </div>
 
-  <div class="collection-group-content" *ngIf="!hasChildren || isExpanded">
+  <div class="collection-group-content" *ngIf="isExpanded">
     <tamu-gisc-legend-element
       *ngFor="let element of legendElements; trackBy: trackByLegendElement"
       [element]="element"
@@ -20,7 +20,7 @@
       [groupTitle]="group.title"
       [deduplicateChildren]="deduplicate"
       [respectDefinitionExpression]="respectDefinitionExpression"
-      [hideGroupHeader]="hideElementGroupHeaders"
+      [hideGroupHeader]="hideElementGroupHeaders || hideLeafElementGroupHeaders"
     ></tamu-gisc-legend-element>
 
     <tamu-gisc-legend-collection

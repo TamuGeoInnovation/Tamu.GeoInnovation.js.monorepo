@@ -81,13 +81,6 @@ export interface EventConfiguration {
   legendCombineChildrenUnderPrimary?: boolean;
 
   /**
-   * Omits specific layer ids from the legend when supported by the consuming UI.
-   *
-   * Defaults to an empty array when omitted.
-   */
-  legendExcludedLayerIds?: Array<string>;
-
-  /**
    * Events can have exceptions for default map layers. This property allows for the ability to
    * define a set of default layer overrides that apply to a specific event.
    *

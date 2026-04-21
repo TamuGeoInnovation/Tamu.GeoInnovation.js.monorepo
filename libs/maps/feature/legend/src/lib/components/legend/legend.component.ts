@@ -34,6 +34,9 @@ export class LegendComponent implements OnInit, OnDestroy {
   public excludedLayerIds: string[] = [];
 
   @Input()
+  public allowedLayerIds: string[] = [];
+
+  @Input()
   public combineChildrenUnderPrimary = false;
 
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
@@ -58,13 +61,14 @@ export class LegendComponent implements OnInit, OnDestroy {
       this.respectDefinitionExpression = routeData['respectDefinitionExpression'] ?? this.respectDefinitionExpression;
       this.allowVisibilityToggle = routeData['allowVisibilityToggle'] ?? this.allowVisibilityToggle;
       this.excludedLayerIds = routeData['excludedLayerIds'] ?? this.excludedLayerIds;
+      this.allowedLayerIds = routeData['allowedLayerIds'] ?? this.allowedLayerIds;
       this.combineChildrenUnderPrimary =
         routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
     }
 
     this.legend = this.legendService.legend({
-      respectLayerVisibility: !this.allowVisibilityToggle,
-      excludedLayerIds: this.excludedLayerIds
+      excludedLayerIds: this.excludedLayerIds,
+      allowedLayerIds: this.allowedLayerIds
     });
 
     this.responsive = this.responsiveService.snapshot;

@@ -96,8 +96,17 @@ export class LegendCollectionComponent {
     return this.hideElementGroupHeaders;
   }
 
+  /**
+   * When a leaf collection (no child groups) already displays its own title as a
+   * visibility-toggle header, the legend-element group header would repeat that same
+   * label. Suppress it so each label appears only once.
+   */
+  public get hideLeafElementGroupHeaders(): boolean {
+    return this.showGroupTitle && !this.hasChildren;
+  }
+
   public toggleExpanded(): void {
-    if (!this.hasChildren) {
+    if (!this.hasChildren && !this.allowVisibilityToggle) {
       return;
     }
 
@@ -113,7 +122,7 @@ export class LegendCollectionComponent {
   }
 
   public get isExpanded(): boolean {
-    if (this.allowVisibilityToggle && this.hasChildren) {
+    if (this.allowVisibilityToggle && this.group?.layer) {
       return this.isLayerVisible;
     }
 
@@ -163,7 +172,17 @@ export class LegendCollectionComponent {
   }
 
   public get showGroupTitle(): boolean {
-    return this.hasChildren && !this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id);
+    if (this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id)) {
+      return false;
+    }
+
+    if (this.hasChildren) {
+      return true;
+    }
+
+    // Also show a clickable title for leaf layers when visibility toggling is enabled
+    // and child headers are not suppressed (e.g. Physics Fest combine-under-primary mode)
+    return this.allowVisibilityToggle && !this.hideElementGroupHeaders && !!this.group?.layer;
   }
 
   private _shouldHideSportsSafetyFirstChildGroups(): boolean {
