@@ -22,7 +22,6 @@ export function LayerSources(
   options?: IFactoryExcludeOptions<IComposedIDefinitions>
 ): Array<LayerSource> {
   const bikeMapUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
-  const evChargeStationsUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/EVChargeStations/MapServer';
   const all: Array<LayerSource> = [
     {
       type: 'feature',
@@ -231,8 +230,8 @@ export function LayerSources(
         {
           type: 'feature',
           id: 'bike-dismount-zones-layer',
-          title: 'Bike Dismount Zones',
-          url: `${bikeMapUrl}/4`,
+          title: 'Dismount Zones',
+          url: `${bikeMapUrl}/5`,
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
@@ -248,7 +247,7 @@ export function LayerSources(
           type: 'feature',
           id: 'city-bike-lanes-routes-layer',
           title: 'City Bike Lanes and Routes',
-          url: `${bikeMapUrl}/3`,
+          url: `${bikeMapUrl}/4`,
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
@@ -263,8 +262,8 @@ export function LayerSources(
         {
           type: 'feature',
           id: 'bike-lanes-layer',
-          title: 'Bike Lanes',
-          url: `${bikeMapUrl}/2`,
+          title: 'Campus Bike Lanes',
+          url: `${bikeMapUrl}/3`,
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
@@ -280,7 +279,7 @@ export function LayerSources(
           type: 'feature',
           id: 'bike-fix-stations-layer',
           title: 'Bike Fix Stations',
-          url: `${bikeMapUrl}/1`,
+          url: `${bikeMapUrl}/2`,
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
@@ -296,7 +295,7 @@ export function LayerSources(
           type: 'feature',
           id: 'bike-racks-map-layer',
           title: 'Bike Racks',
-          url: `${bikeMapUrl}/0`,
+          url: `${bikeMapUrl}/1`,
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,
@@ -314,7 +313,7 @@ export function LayerSources(
           type: 'feature',
           id: 'ev-charge-stations-layer',
           title: 'EV Charge Stations (Main + RELLIS)',
-          url: `${evChargeStationsUrl}/0`,
+          url: `${bikeMapUrl}/0`,
           listMode: 'show',
           visible: true,
           popupComponent: Popups.MarkdownPopupComponent,

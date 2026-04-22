@@ -16,7 +16,6 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
 }
 
-const evLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/EVChargeStations/MapServer';
 const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
 
 export const SustainableTransportationDefinitions = {
@@ -24,37 +23,37 @@ export const SustainableTransportationDefinitions = {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
     name: 'EV Charge Stations (Main + RELLIS)',
-    url: `${evLayersUrl}/0`
+    url: `${bikeLayersUrl}/0`
   },
   BIKE_RACKS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_RACKS,
     name: 'Bike Racks',
-    url: `${bikeLayersUrl}/0`
+    url: `${bikeLayersUrl}/1`
   },
   BIKE_FIX_STATIONS: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_FIX_STATIONS,
     name: 'Bike Fix Stations',
-    url: `${bikeLayersUrl}/1`
+    url: `${bikeLayersUrl}/2`
   },
   BIKE_LANES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_LANES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_LANES,
-    name: 'Bike Lanes',
-    url: `${bikeLayersUrl}/2`
+    name: 'Campus Bike Lanes',
+    url: `${bikeLayersUrl}/3`
   },
   CITY_BIKE_LANES_ROUTES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.CITY_BIKE_LANES_ROUTES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.CITY_BIKE_LANES_ROUTES,
     name: 'City Bike Lanes and Routes',
-    url: `${bikeLayersUrl}/3`
+    url: `${bikeLayersUrl}/4`
   },
   BIKE_DISMOUNT_ZONES: {
     id: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_DISMOUNT_ZONES,
     layerId: SUSTAINABLE_TRANSPORTATION_LAYERS.BIKE_DISMOUNT_ZONES,
-    name: 'Bike Dismount Zones',
-    url: `${bikeLayersUrl}/4`
+    name: 'Dismount Zones',
+    url: `${bikeLayersUrl}/5`
   }
 };
 
