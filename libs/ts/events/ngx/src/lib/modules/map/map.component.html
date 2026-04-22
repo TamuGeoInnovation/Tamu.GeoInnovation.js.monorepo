@@ -24,7 +24,10 @@
 <ng-container *ngIf="(config | async) as c">
   <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
     <div class="map-overlay-ui">
-      <div class="overlay-zone top left"></div>
+      <div class="overlay-zone top left">
+        <a class="all-maps-button esri-component esri-widget" routerLink="/discover" aria-label="Open All Maps">ALL MAPS</a>
+        <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
+      </div>
 
       <div class="overlay-zone bottom right">
         <div *ngIf="hasSettings" class="esri-component esri-track esri-widget--button esri-widget" role="button" alt="URL Share" clipboard-copy [text]="shareUrl"><span class="material-icons" (click)="notifyUrlCopy()">share</span></div>
