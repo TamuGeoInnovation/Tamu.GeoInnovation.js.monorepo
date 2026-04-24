@@ -50,6 +50,7 @@ import { AVPParkingTs } from './avp-parking.definitions';
 import { NscParkingTs } from './nsc-parking.definitions';
 import { BreakSummerParkingTs } from './break-summer.definitions';
 import { SustainableTransportationTs } from './sustainable-transportation.definitions';
+import { EvChargersTs } from './ev-chargers.definitions';
 import { TsMainParkingTs } from './main-parking.definitions';
 import { SecGroundsConferenceTs } from './sec-grounds-conference.definitions';
 
@@ -105,6 +106,7 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   NscParkingTs,
   BreakSummerParkingTs,
   SustainableTransportationTs,
+  EvChargersTs,
   TsMainParkingTs,
   SecGroundsConferenceTs
 ];
