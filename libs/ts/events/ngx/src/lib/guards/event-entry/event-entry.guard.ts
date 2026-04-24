@@ -26,7 +26,10 @@ export class EventEntryGuard implements CanActivate {
       return true;
     }
 
-    const targetCommands = this.eventSettingsService.hasOptions ? ['builder', 'accommodations'] : ['map'];
+    const targetCommands =
+      this.eventSettingsService.hasOptions && !this.eventSettingsService.hasFeatureSelectionQueryParams(route.queryParams)
+        ? ['builder', 'accommodations']
+        : ['map'];
 
     return this.router.createUrlTree(['/', ...eventPath, ...targetCommands], {
       queryParams: route.queryParams,
