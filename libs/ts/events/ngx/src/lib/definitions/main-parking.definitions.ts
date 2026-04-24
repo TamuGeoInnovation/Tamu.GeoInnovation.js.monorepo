@@ -10,7 +10,9 @@ export enum TS_MAIN_PARKING_LAYERS {
   CAMPUS_STOPS = 'Campus Stops',
   CONSTRUCTION = 'Construction',
   VISITOR_KIOSKS = 'Visitor Kiosks',
-  PARKING_LOTS = 'Parking Lots'
+  LINE_PAINT = 'Line Paint',
+  PARKING_LOTS = 'Parking Lots',
+  RNS_SPACES = 'RNS Spaces'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer';
@@ -40,11 +42,23 @@ export const TsMainParkingDefinitions = {
     name: 'Visitor Kiosks',
     url: `${eventUrl}/4`
   },
+  LINE_PAINT: {
+    id: TS_MAIN_PARKING_LAYERS.LINE_PAINT,
+    layerId: TS_MAIN_PARKING_LAYERS.LINE_PAINT,
+    name: 'Line Paint',
+    url: `${eventUrl}/5`
+  },
   PARKING_LOTS: {
     id: TS_MAIN_PARKING_LAYERS.PARKING_LOTS,
     layerId: TS_MAIN_PARKING_LAYERS.PARKING_LOTS,
     name: 'Parking Lots',
     url: `${eventUrl}/6`
+  },
+  RNS_SPACES: {
+    id: TS_MAIN_PARKING_LAYERS.RNS_SPACES,
+    layerId: TS_MAIN_PARKING_LAYERS.RNS_SPACES,
+    name: 'RNS Spaces',
+    url: `${eventUrl}/7`
   }
 };
 
@@ -187,6 +201,30 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
       renderer: tsMainParkingLotsRenderer,
       popupEnabled: true
     } as unknown as FeatureNative
+  },
+
+  {
+    type: 'feature',
+    id: TsMainParkingDefinitions.LINE_PAINT.id,
+    title: TsMainParkingDefinitions.LINE_PAINT.name,
+    url: TsMainParkingDefinitions.LINE_PAINT.url,
+    visible: true,
+    listMode: 'hide',
+    native: {
+      outFields: ['*']
+    } as unknown as FeatureNative
+  },
+
+  {
+    type: 'feature',
+    id: TsMainParkingDefinitions.RNS_SPACES.id,
+    title: TsMainParkingDefinitions.RNS_SPACES.name,
+    url: TsMainParkingDefinitions.RNS_SPACES.url,
+    visible: true,
+    listMode: 'hide',
+    native: {
+      outFields: ['*']
+    } as unknown as FeatureNative
   }
 ];
 
@@ -214,6 +252,6 @@ export const TsMainParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Main parking map with lot information.',
     source: 'internal',
     type: 'parking',
-    keywords: ['main', 'parking', 'map', 'lots', 'construction', 'bus', 'kiosk']
+    keywords: ['main', 'parking', 'map', 'lots', 'construction', 'bus', 'kiosk', 'rns', 'line paint']
   }
 };
