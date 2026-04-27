@@ -223,7 +223,125 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'hide',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      labelsVisible: true,
+      labelingInfo: [
+        {
+          where: `Anno_Type = 'Serv' AND Rotation < 180`,
+          labelExpressionInfo: {
+            expression: `
+              return 'SERVICE';
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 42.428047,
+            color: [255, 255, 255, 255],
+            font: {
+              family: 'Arial',
+              size: 10,
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type = 'Serv' AND Rotation >= 180`,
+          labelExpressionInfo: {
+            expression: `
+              return 'SERVICE';
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 311.18826944,
+            color: [255, 255, 255, 255],
+            font: {
+              size: 10,
+              family: 'Arial',
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type = 'M/C' AND Rotation < 180`,
+          labelExpressionInfo: {
+            expression: `
+              return 'Motorcycle';
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 42.35101,
+            color: [255, 255, 255, 255],
+            font: {
+              size: 7,
+              family: 'Arial',
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type = 'M/C' AND Rotation >= 180`,
+          labelExpressionInfo: {
+            expression: `
+              return 'Motorcycle';
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 310.998628,
+            color: [255, 255, 255, 255],
+            font: {
+              size: 7,
+              family: 'Arial',
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C')`,
+          labelExpressionInfo: {
+            expression: `
+              var label = DefaultValue($feature.Anno_Type, '');
+
+              if (label == 'H/C') {
+                return '';
+              }
+
+              return label;
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            color: [255, 255, 255, 255],
+            font: {
+              size: 9,
+              family: 'Arial',
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        }
+      ]
     } as unknown as FeatureNative
   }
 ];
