@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { LayerSource } from '@tamu-gisc/common/types';
+import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -419,5 +420,41 @@ export class EventSettingsService {
     } else {
       return false;
     }
+  }
+
+  /**
+   * Returns true when the provided query params include a supported feature deep-link
+   * such as `?lot=43`, allowing maps to open directly without builder selections.
+   */
+  public hasFeatureSelectionQueryParams(params?: Params): boolean {
+    const queryParams = params ?? this.at.snapshot.queryParams;
+
+    if (!queryParams) {
+      return false;
+    }
+
+    const searchSources = this.env.value('SearchSources') as SearchSource[] | null | undefined;
+
+    if (!Array.isArray(searchSources)) {
+      return false;
+    }
+
+    return searchSources.some((searchSource) => {
+      if (!searchSource.urlQueryParam) {
+        return false;
+      }
+
+      const parameterKeys = [searchSource.urlQueryParam, ...(searchSource.urlQueryParamAliases || [])];
+
+      return parameterKeys.some((key) => {
+        const value = queryParams[key];
+
+        if (Array.isArray(value)) {
+          return value.some((entry) => `${entry}`.trim().length > 0);
+        }
+
+        return value !== undefined && value !== null && `${value}`.trim().length > 0;
+      });
+    });
   }
 }

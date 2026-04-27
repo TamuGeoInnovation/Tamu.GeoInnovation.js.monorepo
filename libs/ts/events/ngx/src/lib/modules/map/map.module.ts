@@ -43,6 +43,7 @@ import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/po
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
+import { MapsFeaturePerspectiveModule } from '@tamu-gisc/maps/feature/perspective';
 import { BasemapGalleryComponent } from '@tamu-gisc/maps/feature/basemap';
 
 import { MoveInOutSidebarModule } from '../sidebar/sidebar.module';
@@ -129,6 +130,7 @@ const routes: Routes = [
     EsriMapModule,
     MapsFeatureCoordinatesModule,
     MapsFeatureAccessibilityModule,
+    MapsFeaturePerspectiveModule,
     SearchModule,
     AggiemapNgxSharedUiStructuralModule,
     AggiemapFormsModule,

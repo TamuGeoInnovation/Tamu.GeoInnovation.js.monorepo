@@ -66,8 +66,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     url: `${eventUrl}/2`,
     popupComponent: MarkdownPopupComponent,
     native: {
-      outFields: ['*'],
-      definitionExpression: `Baseball = 1`
+      outFields: ['*']
     }
   },
   {

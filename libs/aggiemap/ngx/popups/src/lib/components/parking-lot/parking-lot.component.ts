@@ -14,6 +14,20 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   styleUrls: ['../base/base.popup.component.scss']
 })
 export class ParkingLotPopupComponent extends BaseDirectionsComponent {
+  private get lotIdentifier(): string | number | null {
+    const identifiers = [this.data?.attributes?.LotName, this.data?.attributes?.Name];
+
+    const identifier = identifiers.find((value) => {
+      if (typeof value === 'string') {
+        return value.trim().length > 0;
+      }
+
+      return value !== null && value !== undefined;
+    });
+
+    return identifier ?? null;
+  }
+
   constructor(
     private rtr: Router,
     private rt: ActivatedRoute,
@@ -25,10 +39,12 @@ export class ParkingLotPopupComponent extends BaseDirectionsComponent {
   }
 
   protected override _getShareUrlFragment(): string | null {
-    return this._buildShareUrlFragment('parking-lot', this.data.attributes.Name);
+    const identifier = this.lotIdentifier;
+
+    return identifier !== null ? this._buildShareUrlFragment('parking-lot', identifier) : null;
   }
 
   public startDirections() {
-    super.startDirections(`Lot ${this.data.attributes.Name}`);
+    super.startDirections(`Lot ${this.lotIdentifier ?? this.data.attributes.OBJECTID}`);
   }
 }

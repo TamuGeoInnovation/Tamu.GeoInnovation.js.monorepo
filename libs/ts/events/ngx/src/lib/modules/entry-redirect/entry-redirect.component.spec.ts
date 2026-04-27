@@ -7,7 +7,11 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 describe('EntryRedirectComponent', () => {
   let component: EntryRedirectComponent;
   let router: { navigate: jest.Mock };
-  let eventSettingsService: { validateEventQueryParams: jest.Mock; hasOptions: boolean };
+  let eventSettingsService: {
+    validateEventQueryParams: jest.Mock;
+    hasOptions: boolean;
+    hasFeatureSelectionQueryParams: jest.Mock;
+  };
   let route: ActivatedRoute;
 
   beforeEach(() => {
@@ -17,7 +21,8 @@ describe('EntryRedirectComponent', () => {
 
     eventSettingsService = {
       validateEventQueryParams: jest.fn(),
-      hasOptions: false
+      hasOptions: false,
+      hasFeatureSelectionQueryParams: jest.fn().mockReturnValue(false)
     };
 
     route = {
@@ -52,12 +57,28 @@ describe('EntryRedirectComponent', () => {
     });
   });
 
-  it('should keep configurable events on the builder intro route', () => {
+  it('should keep configurable events on the builder accommodations route', () => {
     eventSettingsService.hasOptions = true;
 
     component.ngOnInit();
 
-    expect(router.navigate).toHaveBeenCalledWith(['builder', 'intro'], {
+    expect(router.navigate).toHaveBeenCalledWith(['builder', 'accommodations'], {
+      relativeTo: route.parent,
+      queryParams: route.snapshot.queryParams,
+      fragment: 'legend',
+      replaceUrl: true
+    });
+  });
+
+  it('should open the map when configurable events include a feature deep link', () => {
+    eventSettingsService.hasOptions = true;
+    eventSettingsService.hasFeatureSelectionQueryParams.mockReturnValue(true);
+    route.snapshot.queryParams = { lot: '43' } as unknown as ActivatedRouteSnapshot['queryParams'];
+
+    component.ngOnInit();
+
+    expect(eventSettingsService.hasFeatureSelectionQueryParams).toHaveBeenCalledWith(route.snapshot.queryParams);
+    expect(router.navigate).toHaveBeenCalledWith(['map'], {
       relativeTo: route.parent,
       queryParams: route.snapshot.queryParams,
       fragment: 'legend',
