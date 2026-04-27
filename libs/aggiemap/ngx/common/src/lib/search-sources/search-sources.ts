@@ -222,6 +222,24 @@ export function SearchSources(
       urlQueryParam: 'lot',
       urlQueryParamAliases: ['Lot']
     },
+    POINTS_OF_INTEREST_EXACT: {
+      source: 'points-of-interest-exact',
+      name: 'Points of Interest',
+      url: definitions.POINTS_OF_INTEREST.url,
+      queryParams: {
+        ...commonQueryParams,
+        where: {
+          keys: ['OBJECTID'],
+          operators: ['=']
+        }
+      },
+      featuresLocation: 'features',
+      displayTemplate: '{attributes.name}',
+      popupComponent: Popups.PoiPopupComponent,
+      searchActive: false,
+      urlQueryParam: 'poi',
+      urlQueryParamAliases: ['POI']
+    },
     POINTS_OF_INTEREST: {
       source: 'points-of-interest',
       name: 'Points of Interest',
@@ -229,18 +247,16 @@ export function SearchSources(
       queryParams: {
         ...commonQueryParams,
         where: {
-          keys: ['name', 'OBJECTID'],
-          operators: ['LIKE', '='],
-          wildcards: ['includes', null],
-          transformations: ['UPPER', null]
+          keys: ['name'],
+          operators: ['LIKE'],
+          wildcards: ['includes'],
+          transformations: ['UPPER']
         }
       },
       featuresLocation: 'features',
       displayTemplate: '{attributes.name}',
       popupComponent: Popups.PoiPopupComponent,
-      searchActive: true,
-      urlQueryParam: 'poi',
-      urlQueryParamAliases: ['POI']
+      searchActive: true
     },
     BIKE_RACKS: {
       source: 'bike-racks',
@@ -290,6 +306,7 @@ export type ComposedSearchSourcesKeyMap = {
   ONE_PARKING: SearchSource;
   PARKING_GARAGE: SearchSource;
   PARKING_LOT: SearchSource;
+  POINTS_OF_INTEREST_EXACT: SearchSource;
   POINTS_OF_INTEREST: SearchSource;
   BIKE_RACKS: SearchSource;
 };
