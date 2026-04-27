@@ -23,6 +23,8 @@ describe('DiscoverComponent', () => {
   ];
 
   beforeEach(async () => {
+    window.history.replaceState(window.history.state, '', '/discover');
+
     await TestBed.configureTestingModule({
       imports: [CommonModule, ReactiveFormsModule, RouterTestingModule],
       declarations: [DiscoverComponent],
@@ -50,6 +52,11 @@ describe('DiscoverComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    fixture.destroy();
+    window.history.replaceState(window.history.state, '', '/discover');
+  });
+
   it('renders the parking tab by default and switches the visible panel on click', () => {
     const nativeElement = fixture.nativeElement as HTMLElement;
     const tabButtons = Array.from(nativeElement.querySelectorAll<HTMLButtonElement>('.discover-tab'));
@@ -70,6 +77,29 @@ describe('DiscoverComponent', () => {
     expect(getPanelHeading()).toBe('Campus Events');
     expect(getPanelText()).toContain('Move In');
     expect(getPanelText()).not.toContain('Accessible Parking');
+    expect(window.location.hash).toBe('#discover-tab-campus');
+  });
+
+  it('opens the requested tab from the discover tab hash', () => {
+    fixture.destroy();
+    window.history.replaceState(window.history.state, '', '/discover#discover-tab-athletics');
+
+    fixture = TestBed.createComponent(DiscoverComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.activeTab).toBe('athletics');
+    expect(getPanelHeading()).toBe('Athletic Events');
+    expect(getPanelText()).toContain('Football Parking');
+  });
+
+  it('updates the visible panel when the hash changes after load', () => {
+    window.history.replaceState(window.history.state, '', '/discover#discover-tab-athletics');
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    fixture.detectChanges();
+
+    expect(component.activeTab).toBe('athletics');
+    expect(getPanelHeading()).toBe('Athletic Events');
   });
 
   function getPanelHeading() {

@@ -8,12 +8,17 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 describe('EventEntryGuard', () => {
   let guard: EventEntryGuard;
   let router: Router;
-  let eventSettingsService: { validateEventQueryParams: jest.Mock; hasOptions: boolean };
+  let eventSettingsService: {
+    validateEventQueryParams: jest.Mock;
+    hasOptions: boolean;
+    hasFeatureSelectionQueryParams: jest.Mock;
+  };
 
   beforeEach(() => {
     eventSettingsService = {
       validateEventQueryParams: jest.fn(),
-      hasOptions: false
+      hasOptions: false,
+      hasFeatureSelectionQueryParams: jest.fn().mockReturnValue(false)
     };
 
     TestBed.configureTestingModule({
@@ -44,7 +49,7 @@ describe('EventEntryGuard', () => {
     expect(router.serializeUrl(result)).toBe('/parking/avp-parking/map?foo=bar#legend');
   });
 
-  it('should redirect configurable events to the builder intro', () => {
+  it('should redirect configurable events to the builder accommodations route', () => {
     eventSettingsService.hasOptions = true;
 
     const route = {
@@ -61,7 +66,29 @@ describe('EventEntryGuard', () => {
 
     const result = guard.canActivate(route, state) as UrlTree;
 
-    expect(router.serializeUrl(result)).toBe('/parking/baseball-parking/builder/intro');
+    expect(router.serializeUrl(result)).toBe('/parking/baseball-parking/builder/accommodations');
+  });
+
+  it('should route configurable events with feature deep links directly to the map', () => {
+    eventSettingsService.hasOptions = true;
+    eventSettingsService.hasFeatureSelectionQueryParams.mockReturnValue(true);
+
+    const route = {
+      pathFromRoot: [
+        { url: [] },
+        { url: [new UrlSegment('events', {})] },
+        { url: [new UrlSegment('gameday-parking', {})] }
+      ],
+      queryParams: { lot: '43' },
+      fragment: null
+    } as unknown as ActivatedRouteSnapshot;
+
+    const state = { url: '/events/gameday-parking' } as RouterStateSnapshot;
+
+    const result = guard.canActivate(route, state) as UrlTree;
+
+    expect(eventSettingsService.hasFeatureSelectionQueryParams).toHaveBeenCalledWith(route.queryParams);
+    expect(router.serializeUrl(result)).toBe('/events/gameday-parking/map?lot=43');
   });
 
   it('should allow direct child routes to load normally', () => {

@@ -1,5 +1,5 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
@@ -24,7 +24,7 @@ interface DiscoverTab {
   templateUrl: './discover.component.html',
   styleUrls: ['./discover.component.scss']
 })
-export class DiscoverComponent implements OnInit {
+export class DiscoverComponent implements OnInit, OnDestroy {
   public readonly discoverTabs: ReadonlyArray<DiscoverTab> = [
     { id: 'parking', label: 'Parking Maps' },
     { id: 'campus', label: 'Campus Events' },
@@ -54,6 +54,8 @@ export class DiscoverComponent implements OnInit {
   public searchControl = new FormControl();
   public filteredApplications: Observable<DiscoverApplication[]>;
   public isDev: Observable<boolean>;
+  private readonly validTabIds = new Set(this.discoverTabs.map((tab) => tab.id));
+  private readonly hashChangeHandler = () => this.syncActiveTabWithHash();
 
   constructor(
     private readonly rt: Router,
@@ -92,6 +94,13 @@ export class DiscoverComponent implements OnInit {
     const allEvents = this.sortEventApplications([...campusApplications, ...athleticApplications]);
     this.allEventsColumns = this.buildApplicationColumns(allEvents);
     this.allEventsColumnStart = this.getSecondColumnStart(this.allEventsColumns);
+
+    this.syncActiveTabWithHash();
+    window.addEventListener('hashchange', this.hashChangeHandler);
+  }
+
+  public ngOnDestroy(): void {
+    window.removeEventListener('hashchange', this.hashChangeHandler);
   }
 
   private getApplicationsByMapType(mapType: DiscoverMapType): InternalDiscoverApplication[] {
@@ -215,6 +224,7 @@ export class DiscoverComponent implements OnInit {
 
   public setActiveTab(tab: DiscoverMapType): void {
     this.activeTab = tab;
+    this.updateHash(tab);
   }
 
   public getEventDateRange(dates: Array<string | Date | number>): string {
@@ -231,5 +241,37 @@ export class DiscoverComponent implements OnInit {
     }
 
     return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+  }
+
+  private syncActiveTabWithHash(): void {
+    const tab = this.parseTabFromHash(window.location.hash);
+
+    if (tab) {
+      this.activeTab = tab;
+    }
+  }
+
+  private parseTabFromHash(hash: string): DiscoverMapType | undefined {
+    const normalizedHash = hash.replace(/^#/, '').trim().toLowerCase();
+
+    if (!normalizedHash) {
+      return undefined;
+    }
+
+    const candidate = normalizedHash
+      .replace(/^discover-tab-/, '')
+      .replace(/^discover-panel-/, '') as DiscoverMapType;
+
+    return this.validTabIds.has(candidate) ? candidate : undefined;
+  }
+
+  private updateHash(tab: DiscoverMapType): void {
+    const nextHash = `#discover-tab-${tab}`;
+
+    if (window.location.hash === nextHash) {
+      return;
+    }
+
+    window.history.replaceState(window.history.state, '', `${window.location.pathname}${window.location.search}${nextHash}`);
   }
 }

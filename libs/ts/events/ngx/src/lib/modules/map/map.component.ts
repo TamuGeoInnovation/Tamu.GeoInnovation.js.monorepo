@@ -76,7 +76,11 @@ export class MapComponent implements OnInit, OnDestroy {
     const root = this.eventsSettingsService.eventConfiguration();
 
     // If the current event has options but none are set, redirect to the builder
-    if (this.hasOptions === true && this.hasSettings === false) {
+    if (
+      this.hasOptions === true &&
+      this.hasSettings === false &&
+      !this.eventsSettingsService.hasFeatureSelectionQueryParams(this.ar.snapshot.queryParams)
+    ) {
       this.rt.navigate(['builder'], { relativeTo: this.ar.parent?.parent });
       return;
     }
