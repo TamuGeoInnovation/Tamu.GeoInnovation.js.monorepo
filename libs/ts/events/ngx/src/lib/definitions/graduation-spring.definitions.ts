@@ -7,8 +7,14 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
+import { commonSymbols } from './common.definitions';
+
+import esri = __esri;
+
+type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 
 export enum GRADUATION_LAYERS {
+  GRADUATION_ACCESSIBLE_PARKING = 'graduation-accessible-parking',
   GRADUATION_TRAFFIC_FLOW = 'graduation-traffic-flow',
   GRADUATION_EVENT_PARKING_LOTS = 'graduation-event-parking-lots',
   GRADUATION_ROAD_CLOSURES = 'graduation-road-closed'
@@ -16,27 +22,133 @@ export enum GRADUATION_LAYERS {
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/GraduationParking/MapServer';
 
 const GraduationEventDefinitions = {
+  GRADUATION_ACCESSIBLE_PARKING: {
+    id: GRADUATION_LAYERS.GRADUATION_ACCESSIBLE_PARKING,
+    layerId: GRADUATION_LAYERS.GRADUATION_ACCESSIBLE_PARKING,
+    name: 'Accessible Parking',
+    url: `${eventUrl}/0`
+  },
   GRADUATION_TRAFFIC_FLOW: {
     id: GRADUATION_LAYERS.GRADUATION_TRAFFIC_FLOW,
     layerId: GRADUATION_LAYERS.GRADUATION_TRAFFIC_FLOW,
-    name: 'Graduation Traffic Flow',
-    url: `${eventUrl}/0`
+    name: 'Traffic Flow',
+    url: `${eventUrl}/1`
   },
   GRADUATION_EVENT_PARKING_LOTS: {
     id: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
     layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
-    name: 'Graduation Event Parking Lots',
-    url: `${eventUrl}/1`
+    name: 'Event Parking',
+    url: `${eventUrl}/2`
   },
   GRADUATION_ROAD_CLOSURES: {
     id: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
     layerId: GRADUATION_LAYERS.GRADUATION_ROAD_CLOSURES,
-    name: 'Road Closed',
+    name: 'Road Closures',
     url: `${eventUrl}/2`
   }
 };
 
+const graduationParkingRenderer = {
+  type: 'unique-value',
+  field: 'Type',
+  uniqueValueInfos: [
+    {
+      value: 'Free Public Parking',
+      label: 'Free Public Parking',
+      symbol: {
+        type: 'simple-fill',
+        color: [95, 138, 232, 255],
+        outline: {
+          type: 'simple-line',
+          color: [94, 52, 234, 255],
+          width: 1
+        }
+      } as unknown as esri.SymbolProperties
+    },
+    {
+      value: 'Reserved',
+      label: 'Reserved',
+      symbol: {
+        type: 'simple-fill',
+        color: [242, 160, 97, 255],
+        outline: {
+          type: 'simple-line',
+          color: [230, 124, 0, 255],
+          width: 1
+        }
+      } as unknown as esri.SymbolProperties
+    },
+    {
+      value: 'Reserved - Accessible',
+      label: 'Reserved',
+      symbol: {
+        type: 'simple-fill',
+        color: [242, 160, 97, 255],
+        outline: {
+          type: 'simple-line',
+          color: [230, 124, 0, 255],
+          width: 1
+        }
+      } as unknown as esri.SymbolProperties
+    }
+  ]
+} as unknown as esri.UniqueValueRendererProperties;
+
+const graduationRoadClosureRenderer = {
+  type: 'simple',
+  label: 'Road Closed (Pedestrian Zone)',
+  symbol: {
+    type: 'simple-fill',
+    style: 'backward-diagonal',
+    color: [230, 0, 0, 255],
+    outline: {
+      type: 'simple-line',
+      color: [230, 0, 0, 255],
+      width: 1
+    }
+  }
+} as unknown as esri.SimpleRendererProperties;
+
+const graduationParkingLabelingInfo = [
+  {
+    labelExpressionInfo: {
+      expression: '$feature.name'
+    },
+    maxScale: 0,
+    minScale: 0,
+    useCodedValues: true,
+    symbol: {
+      type: 'text',
+      color: [0, 0, 0, 255],
+      haloColor: [255, 255, 255, 255],
+      haloSize: 1.5,
+      font: {
+        family: 'Open Sans Semibold',
+        size: 10,
+        weight: 'bold'
+      }
+    }
+  }
+] as unknown as esri.LabelClassProperties[];
+
 export const GraduationColdLayerSources: LayerSource[] = [
+  {
+    type: 'feature',
+    id: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.id,
+    title: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.name,
+    url: GraduationEventDefinitions.GRADUATION_ACCESSIBLE_PARKING.url,
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: '{attributes.name}',
+      description: '{attributes.description}'
+    },
+    visible: true,
+    listMode: 'show',
+    layerIndex: 13,
+    native: {
+      outFields: ['*']
+    } as unknown as FeatureNative
+  },
   {
     type: 'feature',
     id: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.id,
@@ -44,14 +156,23 @@ export const GraduationColdLayerSources: LayerSource[] = [
     url: GraduationEventDefinitions.GRADUATION_TRAFFIC_FLOW.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.Event}',
-      description: '{attributes.STF_Notes}'
+      name: 'attributes.name',
+      description: 'attributes.description'
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 12,
     native: {
-      outFields: ['*']
-    }
+      outFields: ['*'],
+      renderer: {
+        type: 'simple',
+        label: 'Traffic Flow',
+        symbol: {
+          ...commonSymbols.GREEN_ARROW,
+          width: 3
+        }
+      } as unknown as esri.SimpleRendererProperties
+    } as unknown as FeatureNative
   },
   {
     type: 'feature',
@@ -60,36 +181,37 @@ export const GraduationColdLayerSources: LayerSource[] = [
     url: GraduationEventDefinitions.GRADUATION_EVENT_PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: {
-        field: 'GIS.TS.ParkingLots.Name',
-        collapsed: true
-      },
-      description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.GraduationN',
-        collapsed: true
-      }
+      name: '{attributes.name}',
+      description: '{attributes.description}'
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 10,
     native: {
-      outFields: ['*']
-    }
+      outFields: ['*'],
+      definitionExpression: `Type <> 'Closure'`,
+      renderer: graduationParkingRenderer,
+      labelingInfo: graduationParkingLabelingInfo
+    } as unknown as FeatureNative
   },
   {
     type: 'feature',
     id: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.id,
     title: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.name,
     url: GraduationEventDefinitions.GRADUATION_ROAD_CLOSURES.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.A_Name}',
-      description: '{attributes.SP_SH_Notes}'
+      name: 'Road Closed',
+      description: '{attributes.description}'
     },
     visible: true,
     listMode: 'show',
+    layerIndex: 11,
     native: {
-      outFields: ['*']
-    }
+      outFields: ['*'],
+      definitionExpression: `Type = 'Closure'`,
+      renderer: graduationRoadClosureRenderer
+    } as unknown as FeatureNative
   }
 ];
 
@@ -99,16 +221,17 @@ export const GraduationConfiguration: EventConfiguration = {
   applicationName: 'Spring Commencement Transportation Map',
   shortApplicationName: 'Spring Commencement Map',
   introductionText: 'Get the best transportation and parking information for the spring commencement ceremonies.',
-  eventDates: ['2026-05-07', '2026-05-08', '2026-05-09'],
+  eventDates: ['2026-05-06', '2026-05-07', '2026-05-08', '2026-05-09'],
   scheduleUrl: 'https://aggie.tamu.edu/graduation',
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };
 
 enum GraduationAttendanceDateChoices {
-  DayOne = '2026-05-07T05:00:00.000Z', // May 7, 12AM UTC
-  DayTwo = '2026-05-08T05:00:00.000Z', // May 8, 12AM UTC
-  DayThree = '2026-05-09T05:00:00.000Z' // May 9, 12AM UTC
+  DayOne = '2026-05-06T05:00:00.000Z', // May 6, 12AM UTC
+  DayTwo = '2026-05-07T05:00:00.000Z', // May 7, 12AM UTC
+  DayThree = '2026-05-08T05:00:00.000Z', // May 8, 12AM UTC
+  DayFour = '2026-05-09T05:00:00.000Z' // May 9, 12AM UTC
 }
 
 export const GraduationOptions: SpecialEventOptions = [
@@ -119,9 +242,10 @@ export const GraduationOptions: SpecialEventOptions = [
     shortDescription: 'Event Day',
     label: 'Event Day',
     choices: [
-      { value: GraduationAttendanceDateChoices.DayOne, label: 'Thursday, May 7th' },
-      { value: GraduationAttendanceDateChoices.DayTwo, label: 'Friday, May 8th' },
-      { value: GraduationAttendanceDateChoices.DayThree, label: 'Saturday, May 9th' }
+      { value: GraduationAttendanceDateChoices.DayOne, label: 'Wednesday, May 6th' },
+      { value: GraduationAttendanceDateChoices.DayTwo, label: 'Thursday, May 7th' },
+      { value: GraduationAttendanceDateChoices.DayThree, label: 'Friday, May 8th' },
+      { value: GraduationAttendanceDateChoices.DayFour, label: 'Saturday, May 9th' }
     ],
     effects: {
       layers: [
@@ -130,7 +254,8 @@ export const GraduationOptions: SpecialEventOptions = [
           conversions: [
             { input: GraduationAttendanceDateChoices.DayOne, propOverrides: { visible: true } },
             { input: GraduationAttendanceDateChoices.DayTwo, propOverrides: { visible: true } },
-            { input: GraduationAttendanceDateChoices.DayThree, propOverrides: { visible: true } }
+            { input: GraduationAttendanceDateChoices.DayThree, propOverrides: { visible: true } },
+            { input: GraduationAttendanceDateChoices.DayFour, propOverrides: { visible: true } }
           ]
         }
       ]
