@@ -10,7 +10,9 @@ export enum TS_MAIN_PARKING_LAYERS {
   CAMPUS_STOPS = 'Campus Stops',
   CONSTRUCTION = 'Construction',
   VISITOR_KIOSKS = 'Visitor Kiosks',
-  PARKING_LOTS = 'Parking Lots'
+  LINE_PAINT = 'Line Paint',
+  PARKING_LOTS = 'Parking Lots',
+  RNS_SPACES = 'RNS Spaces'
 }
 
 const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer';
@@ -40,11 +42,23 @@ export const TsMainParkingDefinitions = {
     name: 'Visitor Kiosks',
     url: `${eventUrl}/4`
   },
+  LINE_PAINT: {
+    id: TS_MAIN_PARKING_LAYERS.LINE_PAINT,
+    layerId: TS_MAIN_PARKING_LAYERS.LINE_PAINT,
+    name: 'Line Paint',
+    url: `${eventUrl}/5`
+  },
   PARKING_LOTS: {
     id: TS_MAIN_PARKING_LAYERS.PARKING_LOTS,
     layerId: TS_MAIN_PARKING_LAYERS.PARKING_LOTS,
     name: 'Parking Lots',
     url: `${eventUrl}/6`
+  },
+  RNS_SPACES: {
+    id: TS_MAIN_PARKING_LAYERS.RNS_SPACES,
+    layerId: TS_MAIN_PARKING_LAYERS.RNS_SPACES,
+    name: 'RNS Spaces',
+    url: `${eventUrl}/7`
   }
 };
 
@@ -187,6 +201,148 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
       renderer: tsMainParkingLotsRenderer,
       popupEnabled: true
     } as unknown as FeatureNative
+  },
+
+  {
+    type: 'feature',
+    id: TsMainParkingDefinitions.LINE_PAINT.id,
+    title: TsMainParkingDefinitions.LINE_PAINT.name,
+    url: TsMainParkingDefinitions.LINE_PAINT.url,
+    visible: true,
+    listMode: 'hide',
+    native: {
+      outFields: ['*']
+    } as unknown as FeatureNative
+  },
+
+  {
+    type: 'feature',
+    id: TsMainParkingDefinitions.RNS_SPACES.id,
+    title: TsMainParkingDefinitions.RNS_SPACES.name,
+    url: TsMainParkingDefinitions.RNS_SPACES.url,
+    visible: true,
+    listMode: 'hide',
+    native: {
+      outFields: ['*'],
+      labelsVisible: true,
+      labelingInfo: [
+        {
+          where: `Anno_Type = 'Serv' AND Rotation < 180`,
+          labelExpressionInfo: {
+            expression: `
+              return 'SERVICE';
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 42.428047,
+            color: [255, 255, 255, 255],
+            font: {
+              family: 'Arial',
+              size: 10,
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type = 'Serv' AND Rotation >= 180`,
+          labelExpressionInfo: {
+            expression: `
+              return 'SERVICE';
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 311.18826944,
+            color: [255, 255, 255, 255],
+            font: {
+              size: 10,
+              family: 'Arial',
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type = 'M/C' AND Rotation < 180`,
+          labelExpressionInfo: {
+            expression: `
+              return 'Motorcycle';
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 42.35101,
+            color: [255, 255, 255, 255],
+            font: {
+              size: 7,
+              family: 'Arial',
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type = 'M/C' AND Rotation >= 180`,
+          labelExpressionInfo: {
+            expression: `
+              return 'Motorcycle';
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 310.998628,
+            color: [255, 255, 255, 255],
+            font: {
+              size: 7,
+              family: 'Arial',
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C')`,
+          labelExpressionInfo: {
+            expression: `
+              var label = DefaultValue($feature.Anno_Type, '');
+
+              if (label == 'H/C') {
+                return '';
+              }
+
+              return label;
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            color: [255, 255, 255, 255],
+            font: {
+              size: 9,
+              family: 'Arial',
+              weight: 'normal'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        }
+      ]
+    } as unknown as FeatureNative
   }
 ];
 
@@ -214,6 +370,6 @@ export const TsMainParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Main parking map with lot information.',
     source: 'internal',
     type: 'parking',
-    keywords: ['main', 'parking', 'map', 'lots', 'construction', 'bus', 'kiosk']
+    keywords: ['main', 'parking', 'map', 'lots', 'construction', 'bus', 'kiosk', 'rns', 'line paint']
   }
 };
