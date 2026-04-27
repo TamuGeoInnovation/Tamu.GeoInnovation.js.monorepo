@@ -24,7 +24,7 @@ export function LayerSources(
   const bikeMapUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
   const bikeMapEvChargeStationsLayerSource: LayerSource = {
     type: 'feature',
-    id: 'ev-charge-stations-layer',
+    id: 'sustainable-transportation-ev-charge-stations-layer',
     title: 'EV Charge Stations (Main + RELLIS)',
     url: `${bikeMapUrl}/0`,
     listMode: 'show',
@@ -238,6 +238,26 @@ export function LayerSources(
             color: '#03C4A6'
           }
         }
+      }
+    },
+    {
+      type: 'feature',
+      id: 'ev-charge-stations-layer',
+      title: 'EV Charge Stations (Main + RELLIS)',
+      url: `${bikeMapUrl}/0`,
+      listMode: 'show',
+      visible: false,
+      popupComponent: Popups.MarkdownPopupComponent,
+      popupData: {
+        name: '{attributes.EV_ID}',
+        description:
+          '<strong>Network</strong>: {attributes.EV_Network}\n' +
+          '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
+          '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
+          '<strong>Notes</strong>: {attributes.EVCS_Notes}'
+      },
+      native: {
+        ...commonLayerProps
       }
     },
     {
