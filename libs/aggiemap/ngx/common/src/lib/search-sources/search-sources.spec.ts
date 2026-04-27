@@ -1,7 +1,16 @@
-import { ComposedSearchSourcesKeyMap, SearchSources } from './search-sources';
 import { IComposedConnections } from '../connections';
 import { IComposedIDefinitions } from '../definitions';
 import { IFactoryExcludeOptions } from '../utils/definitionFactory';
+
+jest.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
+  Popups: {
+    BuildingPopupComponent: 'BuildingPopupComponent',
+    ParkingLotPopupComponent: 'ParkingLotPopupComponent',
+    PoiPopupComponent: 'PoiPopupComponent'
+  }
+}));
+
+import { ComposedSearchSourcesKeyMap, SearchSources } from './search-sources';
 
 describe('SearchSources', () => {
   const connections: IComposedConnections = {
@@ -12,7 +21,9 @@ describe('SearchSources', () => {
     bikeLocationsUrl: 'https://example.com/bike-locations',
     constructionUrl: 'https://example.com/construction',
     inforUrl: 'https://example.com/infor',
-    tsMainUrl: 'https://example.com/ts-main'
+    tsMainUrl: 'https://example.com/ts-main',
+    poiUrl: 'https://example.com/poi-service',
+    diningLocationsUrl: 'https://example.com/dining-locations'
   };
 
   const definitions: IComposedIDefinitions = {
@@ -27,12 +38,6 @@ describe('SearchSources', () => {
       layerId: 'poi-layer',
       name: 'Points of Interest',
       url: 'https://example.com/poi'
-    },
-    RESTROOMS: {
-      id: 'restrooms',
-      layerId: 'restrooms-layer',
-      name: 'Restrooms',
-      url: 'https://example.com/restrooms'
     },
     BUILDINGS: {
       id: 'buildings',
@@ -87,12 +92,36 @@ describe('SearchSources', () => {
       layerId: 'bike-locations-layer',
       name: 'Bike Locations',
       url: 'https://example.com/bike-locations'
+    },
+    BONFIRE: {
+      id: 'bonfire',
+      layerId: 'bonfire-layer',
+      name: 'Bonfire Memorial',
+      url: 'https://example.com/bonfire'
+    },
+    DINING_LOCATIONS: {
+      id: 'dining-locations',
+      layerId: 'dining-locations-layer',
+      name: 'Dining Locations',
+      url: 'https://example.com/dining-locations'
+    },
+    AGGIEPRINT_LOCATIONS: {
+      id: 'aggieprint-locations',
+      layerId: 'aggieprint-locations-layer',
+      name: 'AggiePrint Locations',
+      url: 'https://example.com/aggieprint-locations'
+    },
+    SINGLE_OCCUPANCY_RESTROOMS: {
+      id: 'single-occupancy-restroom-locations',
+      layerId: 'single-occupancy-restroom-locations-layer',
+      name: 'Single Occupancy Restroom Locations',
+      url: 'https://example.com/single-occupancy-restrooms'
     }
   };
 
   it('should return all search sources when no options are provided', () => {
     const result = SearchSources(connections, definitions);
-    expect(result.length).toBe(12); // Ensure the number of search sources matches
+    expect(result.length).toBe(13); // Ensure the number of search sources matches
   });
 
   it('should exclude specified search sources', () => {
@@ -100,7 +129,7 @@ describe('SearchSources', () => {
       exclude: ['BUILDING', 'BIKE_RACKS']
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(10); // Ensure the number of search sources matches after exclusion
+    expect(result.length).toBe(11); // Ensure the number of search sources matches after exclusion
     expect(result.find((source) => source.source === 'building')).toBeUndefined();
     expect(result.find((source) => source.source === 'bike-racks')).toBeUndefined();
   });
@@ -110,7 +139,7 @@ describe('SearchSources', () => {
       exclude: []
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(12); // Ensure the number of search sources matches
+    expect(result.length).toBe(13); // Ensure the number of search sources matches
   });
 
   it('should return an empty array if all search sources are excluded', () => {
@@ -126,6 +155,7 @@ describe('SearchSources', () => {
         'ONE_PARKING',
         'PARKING_GARAGE',
         'PARKING_LOT',
+        'POINTS_OF_INTEREST_EXACT',
         'POINTS_OF_INTEREST',
         'BIKE_RACKS'
       ]
@@ -133,5 +163,28 @@ describe('SearchSources', () => {
 
     const result = SearchSources(connections, definitions, options);
     expect(result.length).toBe(0); // Ensure the number of search sources matches
+  });
+
+  it('should keep text POI search separate from exact-id POI deep links', () => {
+    const result = SearchSources(connections, definitions);
+    const poiSearch = result.find((source) => source.source === 'points-of-interest');
+    const poiExact = result.find((source) => source.source === 'points-of-interest-exact');
+
+    expect(poiSearch?.searchActive).toBe(true);
+    expect(poiSearch?.queryParams?.where).toEqual({
+      keys: ['name'],
+      operators: ['LIKE'],
+      wildcards: ['includes'],
+      transformations: ['UPPER']
+    });
+    expect(poiSearch?.urlQueryParam).toBeUndefined();
+
+    expect(poiExact?.searchActive).toBe(false);
+    expect(poiExact?.queryParams?.where).toEqual({
+      keys: ['OBJECTID'],
+      operators: ['=']
+    });
+    expect(poiExact?.urlQueryParam).toBe('poi');
+    expect(poiExact?.urlQueryParamAliases).toEqual(['POI']);
   });
 });
