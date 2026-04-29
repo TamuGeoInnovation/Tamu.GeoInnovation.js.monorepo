@@ -318,13 +318,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
           where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C')`,
           labelExpressionInfo: {
             expression: `
-              var anno = DefaultValue($feature.Anno_Type, '');
-
-              if (anno == 'H/C') {
-                return '';
-              }
-
-              return DefaultValue(Text($feature.Spc_ID_Num), '');
+              if ($feature.Anno_Type == 'H/C') { return ''; }
+              return Trim($feature.RNS_Num);
             `
           },
           labelPlacement: 'center-center',
