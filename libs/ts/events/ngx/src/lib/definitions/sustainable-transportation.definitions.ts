@@ -1,4 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
+
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
 import {
@@ -16,7 +18,28 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
 }
 
-const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
+const bikeLayersUrl = Connections('gis.it.tamu.edu').bikeMapUrl;
+
+export const SustainableTransportationEvChargersLayerSource: LayerSource = {
+  type: 'feature',
+  id: SUSTAINABLE_TRANSPORTATION_LAYERS.EV_CHARGERS,
+  title: 'EV Charge Stations (Main + RELLIS)',
+  url: `${bikeLayersUrl}/0`,
+  visible: true,
+  listMode: 'show',
+  popupComponent: MarkdownPopupComponent,
+  popupData: {
+    name: '{attributes.EV_ID}',
+    description:
+      '<strong>Network</strong>: {attributes.EV_Network}\n' +
+      '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
+      '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
+      '<strong>Notes</strong>: {attributes.EVCS_Notes}'
+  },
+  native: {
+    outFields: ['*']
+  }
+};
 
 export const SustainableTransportationDefinitions = {
   EV_CHARGERS: {
@@ -58,26 +81,7 @@ export const SustainableTransportationDefinitions = {
 };
 
 export const SustainableTransportationColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: SustainableTransportationDefinitions.EV_CHARGERS.id,
-    title: SustainableTransportationDefinitions.EV_CHARGERS.name,
-    url: SustainableTransportationDefinitions.EV_CHARGERS.url,
-    visible: true,
-    listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.EV_ID}',
-      description:
-        '<strong>Network</strong>: {attributes.EV_Network}\n' +
-        '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
-        '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
-        '<strong>Notes</strong>: {attributes.EVCS_Notes}'
-    },
-    native: {
-      outFields: ['*']
-    }
-  },
+  SustainableTransportationEvChargersLayerSource,
   {
     type: 'feature',
     id: SustainableTransportationDefinitions.BIKE_RACKS.id,

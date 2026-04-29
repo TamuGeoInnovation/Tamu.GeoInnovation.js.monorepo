@@ -1,5 +1,5 @@
-// // Web GIS resource endpoints
-// export * from './lib/connections';
+// Web GIS resource endpoints
+export * from './lib/connections';
 
 // // Dictionary of map layer definitions
 // export * from './lib/definitions';

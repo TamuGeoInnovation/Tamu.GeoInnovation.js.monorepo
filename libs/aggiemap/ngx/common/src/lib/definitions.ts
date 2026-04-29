@@ -105,6 +105,48 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       name: 'Single Occupancy Restroom Locations',
       url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer/1',
       popupComponent: Popups.MarkdownWDirectionsPopupComponent
+    },
+    BIKE_DISMOUNT_ZONES: {
+      id: 'bike-dismount-zones',
+      layerId: 'bike-dismount-zones-layer',
+      name: 'Dismount Zones',
+      url: `${Connections.bikeMapUrl}/5`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    CITY_BIKE_LANES_ROUTES: {
+      id: 'city-bike-lanes-routes',
+      layerId: 'city-bike-lanes-routes-layer',
+      name: 'City Bike Lanes and Routes',
+      url: `${Connections.bikeMapUrl}/4`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    CAMPUS_BIKE_LANES: {
+      id: 'campus-bike-lanes',
+      layerId: 'bike-lanes-layer',
+      name: 'Campus Bike Lanes',
+      url: `${Connections.bikeMapUrl}/3`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    BIKE_FIX_STATIONS: {
+      id: 'bike-fix-stations',
+      layerId: 'bike-fix-stations-layer',
+      name: 'Bike Fix Stations',
+      url: `${Connections.bikeMapUrl}/2`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    BIKE_RACKS_MAP: {
+      id: 'bike-racks-map',
+      layerId: 'bike-racks-map-layer',
+      name: 'Bike Racks',
+      url: `${Connections.bikeMapUrl}/1`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    EV_CHARGE_STATIONS: {
+      id: 'ev-charge-stations',
+      layerId: 'ev-charge-stations-layer',
+      name: 'EV Charge Stations (Main + RELLIS)',
+      url: `${Connections.bikeMapUrl}/0`,
+      popupComponent: Popups.MarkdownPopupComponent
     }
   };
 }
@@ -133,4 +175,10 @@ export interface IComposedIDefinitions {
   DINING_LOCATIONS: IDefinition;
   AGGIEPRINT_LOCATIONS: IDefinition;
   SINGLE_OCCUPANCY_RESTROOMS: IDefinition;
+  BIKE_DISMOUNT_ZONES: IDefinition;
+  CITY_BIKE_LANES_ROUTES: IDefinition;
+  CAMPUS_BIKE_LANES: IDefinition;
+  BIKE_FIX_STATIONS: IDefinition;
+  BIKE_RACKS_MAP: IDefinition;
+  EV_CHARGE_STATIONS: IDefinition;
 }

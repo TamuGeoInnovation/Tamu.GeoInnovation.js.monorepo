@@ -7,6 +7,7 @@ export function Connections(gisHost: string) {
     departmentUrl: `https://${gisHost}/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1`,
     tsMainUrl: `https://${gisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
     bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
+    bikeMapUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer`,
     bikeLocationsUrl: `https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson`,
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
@@ -22,6 +23,7 @@ export interface IComposedConnections {
   departmentUrl: string;
   tsMainUrl: string;
   bikeRacksUrl: string;
+  bikeMapUrl: string;
   bikeLocationsUrl: string;
   poiUrl: string;
   diningLocationsUrl: string;
