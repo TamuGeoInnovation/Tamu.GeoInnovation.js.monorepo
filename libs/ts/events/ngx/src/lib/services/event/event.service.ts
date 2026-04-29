@@ -46,7 +46,7 @@ export class EventService {
     }
 
     this.eventOptions = this.eventSettingsService.eventOptions();
-    this.settings = this.eventSettingsService.settings();
+    this.settings = this.eventSettingsService.settings() || {};
     this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences())
       .map(([, value]) => value)
       .reverse();
@@ -147,7 +147,8 @@ export class EventService {
         });
 
       if (sources.length > 0) {
-        this.mapService.loadLayers(sources);
+        await this.mapService.loadLayers(sources);
+        await this.selectFeatureFromUrl(sources);
       } else {
         throw new Error('drawEvent: No layer sources found.');
       }
@@ -185,6 +186,141 @@ export class EventService {
    */
   private getAttributeList(features: esri.Graphic[], attribute: string): string[] {
     return features.map((f) => f.attributes[attribute]);
+  }
+
+  private async selectFeatureFromUrl(sources: LayerSource[]): Promise<void> {
+    const params = new URLSearchParams(window.location.search);
+    const selectedFeature = params.get('feature');
+    const selectedLot = params.get('lot') || params.get('Lot');
+
+    if (selectedFeature) {
+      await this.selectGenericFeatureFromUrl(sources, selectedFeature);
+      return;
+    }
+
+    if (selectedLot) {
+      await this.selectLotFromUrl(sources, selectedLot);
+    }
+  }
+
+  private async selectGenericFeatureFromUrl(sources: LayerSource[], selectedFeature: string): Promise<void> {
+    const separatorIndex = selectedFeature.indexOf(':');
+
+    if (separatorIndex === -1) {
+      console.warn(`EventService.selectFeatureFromUrl: Invalid feature parameter '${selectedFeature}'.`);
+      return;
+    }
+
+    const layerId = selectedFeature.slice(0, separatorIndex);
+    const objectId = Number(selectedFeature.slice(separatorIndex + 1));
+
+    if (!layerId || Number.isNaN(objectId)) {
+      console.warn(`EventService.selectFeatureFromUrl: Invalid feature parameter '${selectedFeature}'.`);
+      return;
+    }
+
+    const layer = this._map.findLayerById(layerId) as esri.FeatureLayer | undefined;
+    const source = sources.find((candidate) => candidate.id === layerId);
+
+    if (!layer || !source) {
+      console.warn(`EventService.selectFeatureFromUrl: Layer '${layerId}' not found.`);
+      return;
+    }
+
+    await layer.load();
+
+    const result = await layer.queryFeatures({
+      objectIds: [objectId],
+      outFields: ['*'],
+      returnGeometry: true
+    });
+
+    const feature = result.features[0];
+
+    if (!feature) {
+      console.warn(`EventService.selectFeatureFromUrl: Feature '${selectedFeature}' not found.`);
+      return;
+    }
+
+    feature.attributes = {
+      ...feature.attributes,
+      __featureLayerId: layerId,
+      __featureObjectId: objectId
+    };
+
+    this.mapService.selectFeatures({
+      graphics: [feature],
+      shouldShowPopup: true
+    });
+  }
+
+  private async selectLotFromUrl(sources: LayerSource[], selectedLot: string): Promise<void> {
+    const normalizedLot = selectedLot.trim().replace(/^Lot\s+/i, '');
+
+    if (normalizedLot.length === 0) {
+      return;
+    }
+
+    const prioritizedSources = [...sources].sort((a, b) => {
+      return Number(this._isLotLikeLayerSource(b)) - Number(this._isLotLikeLayerSource(a));
+    });
+
+    for (const source of prioritizedSources) {
+      const layer = this._map.findLayerById(source.id) as esri.FeatureLayer | undefined;
+
+      if (!layer) {
+        continue;
+      }
+
+      await layer.load();
+
+      const fields = (layer.fields || []).map((field) => field.name);
+      const matchingField = ['Name', 'LotName', 'name'].find((fieldName) => fields.includes(fieldName));
+
+      if (!matchingField) {
+        continue;
+      }
+
+      const matchValues = Array.from(
+        new Set(
+          [normalizedLot, normalizedLot.replace(/^0+(\d)/, '$1'), normalizedLot.padStart(3, '0')].filter(
+            (value) => value.length > 0
+          )
+        )
+      );
+
+      const where = matchValues
+        .map((value) => `${matchingField} = '${value.replace(/'/g, "''")}'`)
+        .join(' OR ');
+
+      const result = await layer.queryFeatures({
+        where,
+        outFields: ['*'],
+        returnGeometry: true
+      });
+
+      const feature = result.features[0];
+
+      if (feature) {
+        feature.attributes = {
+          ...feature.attributes,
+          __featureLayerId: source.id,
+          __featureObjectId: feature.attributes[layer.objectIdField]
+        };
+
+        this.mapService.selectFeatures({
+          graphics: [feature],
+          shouldShowPopup: true
+        });
+
+        return;
+      }
+    }
+  }
+
+  private _isLotLikeLayerSource(source: LayerSource): boolean {
+    const haystack = `${source.id} ${source.title}`.toLowerCase();
+    return haystack.includes('parking') || haystack.includes('lot');
   }
 
   /**

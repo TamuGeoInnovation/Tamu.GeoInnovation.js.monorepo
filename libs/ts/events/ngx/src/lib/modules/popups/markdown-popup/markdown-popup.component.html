@@ -5,3 +5,7 @@
 <div class="popup-section">
   <p class="trailer-1" *ngIf="data?.attributes?.description" [innerHTML]="data.attributes?.description"></p>
 </div>
+
+<div class="popup-section" *ngIf="shareUrl">
+  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+</div>

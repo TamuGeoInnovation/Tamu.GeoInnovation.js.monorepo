@@ -1,16 +1,34 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
+import { Angulartics2 } from 'angulartics2';
+
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+
+import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 
 @Component({
   selector: 'tamu-gisc-markdown-w-directions-popup',
   templateUrl: './markdown-w-directions-popup.component.html',
   styleUrls: ['./markdown-w-directions-popup.component.scss']
 })
-export class MarkdownWDirectionsPopupComponent extends BaseDirectionsComponent implements OnInit {
+export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent implements OnInit {
   public title: string;
   public isContentTheSame: boolean;
   public isContentLengthZero: boolean;
+
+  constructor(
+    router: Router,
+    route: ActivatedRoute,
+    plannerService: TripPlannerService,
+    analytics: Angulartics2,
+    mapService: EsriMapService,
+    env: EnvironmentService
+  ) {
+    super(router, route, plannerService, analytics, mapService, env);
+  }
 
   public override ngOnInit(): void {
     super.ngOnInit();
