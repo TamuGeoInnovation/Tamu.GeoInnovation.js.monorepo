@@ -1,5 +1,4 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import { IComposedIDefinitions } from '../definitions';
 import { IComposedConnections } from '../connections';
@@ -21,27 +20,6 @@ export function LayerSources(
   definitions: IComposedIDefinitions,
   options?: IFactoryExcludeOptions<IComposedIDefinitions>
 ): Array<LayerSource> {
-  const bikeMapUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
-  const bikeMapEvChargeStationsLayerSource: LayerSource = {
-    type: 'feature',
-    id: 'sustainable-transportation-ev-charge-stations-layer',
-    title: 'EV Charge Stations (Main + RELLIS)',
-    url: `${bikeMapUrl}/0`,
-    listMode: 'show',
-    visible: true,
-    popupComponent: Popups.MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.EV_ID}',
-      description:
-        '<strong>Network</strong>: {attributes.EV_Network}\n' +
-        '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
-        '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
-        '<strong>Notes</strong>: {attributes.EVCS_Notes}'
-    },
-    native: {
-      ...commonLayerProps
-    }
-  };
   const all: Array<LayerSource> = [
     {
       type: 'feature',
@@ -241,26 +219,6 @@ export function LayerSources(
       }
     },
     {
-      type: 'feature',
-      id: 'ev-charge-stations-layer',
-      title: 'EV Charge Stations (Main + RELLIS)',
-      url: `${bikeMapUrl}/0`,
-      listMode: 'show',
-      visible: false,
-      popupComponent: Popups.MarkdownPopupComponent,
-      popupData: {
-        name: '{attributes.EV_ID}',
-        description:
-          '<strong>Network</strong>: {attributes.EV_Network}\n' +
-          '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
-          '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
-          '<strong>Notes</strong>: {attributes.EVCS_Notes}'
-      },
-      native: {
-        ...commonLayerProps
-      }
-    },
-    {
       type: 'group',
       id: 'sustainable-transportation-group-layer',
       title: 'Sustainable Transportation',
@@ -269,12 +227,12 @@ export function LayerSources(
       sources: [
         {
           type: 'feature',
-          id: 'bike-dismount-zones-layer',
-          title: 'Dismount Zones',
-          url: `${bikeMapUrl}/5`,
+          id: definitions.BIKE_DISMOUNT_ZONES.layerId,
+          title: definitions.BIKE_DISMOUNT_ZONES.name,
+          url: definitions.BIKE_DISMOUNT_ZONES.url,
           listMode: 'show',
           visible: true,
-          popupComponent: Popups.MarkdownPopupComponent,
+          popupComponent: definitions.BIKE_DISMOUNT_ZONES.popupComponent,
           popupData: {
             name: '{attributes.Name}',
             description: '<strong>Notes</strong>: {attributes.Bike_Notes}'
@@ -285,12 +243,12 @@ export function LayerSources(
         },
         {
           type: 'feature',
-          id: 'city-bike-lanes-routes-layer',
-          title: 'City Bike Lanes and Routes',
-          url: `${bikeMapUrl}/4`,
+          id: definitions.CITY_BIKE_LANES_ROUTES.layerId,
+          title: definitions.CITY_BIKE_LANES_ROUTES.name,
+          url: definitions.CITY_BIKE_LANES_ROUTES.url,
           listMode: 'show',
           visible: true,
-          popupComponent: Popups.MarkdownPopupComponent,
+          popupComponent: definitions.CITY_BIKE_LANES_ROUTES.popupComponent,
           popupData: {
             name: '{attributes.Type}',
             description: '<strong>Location</strong>: {attributes.Loc}'
@@ -301,12 +259,12 @@ export function LayerSources(
         },
         {
           type: 'feature',
-          id: 'bike-lanes-layer',
-          title: 'Campus Bike Lanes',
-          url: `${bikeMapUrl}/3`,
+          id: definitions.CAMPUS_BIKE_LANES.layerId,
+          title: definitions.CAMPUS_BIKE_LANES.name,
+          url: definitions.CAMPUS_BIKE_LANES.url,
           listMode: 'show',
           visible: true,
-          popupComponent: Popups.MarkdownPopupComponent,
+          popupComponent: definitions.CAMPUS_BIKE_LANES.popupComponent,
           popupData: {
             name: '{attributes.Use_}',
             description: '<strong>Location</strong>: {attributes.Location}'
@@ -317,12 +275,12 @@ export function LayerSources(
         },
         {
           type: 'feature',
-          id: 'bike-fix-stations-layer',
-          title: 'Bike Fix Stations',
-          url: `${bikeMapUrl}/2`,
+          id: definitions.BIKE_FIX_STATIONS.layerId,
+          title: definitions.BIKE_FIX_STATIONS.name,
+          url: definitions.BIKE_FIX_STATIONS.url,
           listMode: 'show',
           visible: true,
-          popupComponent: Popups.MarkdownPopupComponent,
+          popupComponent: definitions.BIKE_FIX_STATIONS.popupComponent,
           popupData: {
             name: '{attributes.Bike_Sta_Name}',
             description: '<strong>Amenities</strong>: {attributes.Bike_Amenities}'
@@ -333,12 +291,12 @@ export function LayerSources(
         },
         {
           type: 'feature',
-          id: 'bike-racks-map-layer',
-          title: 'Bike Racks',
-          url: `${bikeMapUrl}/1`,
+          id: definitions.BIKE_RACKS_MAP.layerId,
+          title: definitions.BIKE_RACKS_MAP.name,
+          url: definitions.BIKE_RACKS_MAP.url,
           listMode: 'show',
           visible: true,
-          popupComponent: Popups.MarkdownPopupComponent,
+          popupComponent: definitions.BIKE_RACKS_MAP.popupComponent,
           popupData: {
             name: '{attributes.Type}',
             description:
@@ -349,7 +307,26 @@ export function LayerSources(
             ...commonLayerProps
           }
         },
-        bikeMapEvChargeStationsLayerSource
+        {
+          type: 'feature',
+          id: definitions.EV_CHARGE_STATIONS.layerId,
+          title: definitions.EV_CHARGE_STATIONS.name,
+          url: definitions.EV_CHARGE_STATIONS.url,
+          listMode: 'show',
+          visible: true,
+          popupComponent: definitions.EV_CHARGE_STATIONS.popupComponent,
+          popupData: {
+            name: '{attributes.EV_ID}',
+            description:
+              '<strong>Network</strong>: {attributes.EV_Network}\n' +
+              '<strong>Charging Level</strong>: {attributes.Ch_Level}\n' +
+              '<strong>Garage Level</strong>: {attributes.Garage_Lvl}\n' +
+              '<strong>Notes</strong>: {attributes.EVCS_Notes}'
+          },
+          native: {
+            ...commonLayerProps
+          }
+        }
       ],
       native: {
         listMode: 'hide-children'
