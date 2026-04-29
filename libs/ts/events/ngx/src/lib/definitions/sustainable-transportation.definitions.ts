@@ -1,4 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
+
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
 import {
@@ -16,7 +18,7 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
 }
 
-const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
+const bikeLayersUrl = Connections('gis.it.tamu.edu').bikeMapUrl;
 
 export const SustainableTransportationEvChargersLayerSource: LayerSource = {
   type: 'feature',

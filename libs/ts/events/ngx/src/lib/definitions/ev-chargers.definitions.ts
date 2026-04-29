@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -11,7 +12,7 @@ export enum EV_CHARGERS_LAYERS {
   EV_CHARGERS = 'ev-chargers'
 }
 
-const bikeLayersUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
+const bikeLayersUrl = Connections('gis.it.tamu.edu').bikeMapUrl;
 
 export const EvChargersDefinitions = {
   EV_CHARGERS: {
