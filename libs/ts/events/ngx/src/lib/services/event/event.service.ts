@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Component, Injectable, Type } from '@angular/core';
 import { delay } from 'rxjs';
 
 import deepmerge from 'deepmerge';
@@ -7,6 +7,8 @@ import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
+import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
 import {
   EventSettings,
@@ -16,6 +18,10 @@ import {
 import { EventSettingsService } from '../settings/event-settings.service';
 
 import esri = __esri;
+
+type PopupDataDefinition = NonNullable<LayerSource['popupData']>;
+type PopupDataResolutionStrategy = NonNullable<LayerSource['popupDataResolutionStrategy']>;
+type PopupDataEntry = PopupDataDefinition[string];
 
 @Injectable({
   providedIn: 'root'
@@ -248,9 +254,12 @@ export class EventService {
       __featureObjectId: objectId
     };
 
+    this.hydrateFeaturePopupData(feature, source);
+
     this.mapService.selectFeatures({
       graphics: [feature],
-      shouldShowPopup: true
+      shouldShowPopup: true,
+      popupComponent: this.getPopupComponent(source)
     });
   }
 
@@ -308,14 +317,105 @@ export class EventService {
           __featureObjectId: feature.attributes[layer.objectIdField]
         };
 
+        this.hydrateFeaturePopupData(feature, source);
+
         this.mapService.selectFeatures({
           graphics: [feature],
-          shouldShowPopup: true
+          shouldShowPopup: true,
+          popupComponent: this.getPopupComponent(source)
         });
 
         return;
       }
     }
+  }
+
+  private getPopupComponent(source: LayerSource): Type<Component> | undefined {
+    return source.popupComponent as Type<Component> | undefined;
+  }
+
+  /**
+   * Resolves any layer-configured popupData onto a queried feature so direct-link selections
+   * render the same sidebar content as a real map click.
+   */
+  private hydrateFeaturePopupData(feature: esri.Graphic, source: LayerSource): void {
+    if (!source.popupData) {
+      return;
+    }
+
+    const resolvedPopupData = this.resolvePopupData(
+      feature,
+      source.popupData,
+      source.popupDataResolutionStrategy ?? 'independent'
+    );
+
+    feature.attributes = {
+      ...feature.attributes,
+      ...resolvedPopupData
+    };
+  }
+
+  private resolvePopupData(
+    graphic: esri.Graphic,
+    popupData: PopupDataDefinition,
+    strategy: PopupDataResolutionStrategy
+  ): Record<string, unknown> {
+    return Object.entries(popupData).reduce<Record<string, unknown>>((acc, [key, definition]) => {
+      if (acc[key] !== undefined) {
+        return acc;
+      }
+
+      acc[key] = this.resolvePopupDataEntry(graphic, definition, acc, strategy);
+
+      return acc;
+    }, {});
+  }
+
+  private resolvePopupDataEntry(
+    graphic: esri.Graphic,
+    definition: PopupDataEntry,
+    resolvedEntries: Record<string, unknown>,
+    strategy: PopupDataResolutionStrategy
+  ): unknown {
+    if (typeof definition !== 'string') {
+      return getPropertyValue(graphic.attributes, definition.field, definition.collapsed);
+    }
+
+    const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);
+
+    if (hasTemplateExpression(definition)) {
+      return new TemplateRenderer({
+        template: definition,
+        lookup,
+        options:
+          strategy === 'cumulative'
+            ? {
+                nullishReplacement: '',
+                trim: true
+              }
+            : undefined
+      }).render();
+    }
+
+    return getPropertyValue(lookup, definition);
+  }
+
+  private getPopupDataLookup(
+    graphic: esri.Graphic,
+    resolvedEntries: Record<string, unknown>,
+    strategy: PopupDataResolutionStrategy
+  ) {
+    if (strategy === 'cumulative') {
+      return {
+        ...graphic,
+        attributes: {
+          ...(graphic.attributes || {}),
+          ...resolvedEntries
+        }
+      };
+    }
+
+    return graphic;
   }
 
   private _isLotLikeLayerSource(source: LayerSource): boolean {
