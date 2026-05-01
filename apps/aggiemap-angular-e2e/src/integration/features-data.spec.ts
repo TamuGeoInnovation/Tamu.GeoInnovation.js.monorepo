@@ -48,7 +48,7 @@ desktopSizes.forEach((size) => {
       cy.checkLink('Graduation Parking App', 'https://aggiemap.tamu.edu/graduation/arrival');
       cy.checkLink('Site Policies', 'https://www.tamu.edu/statements/index.html');
       cy.checkLink('Accessibility Policy', 'http://itaccessibility.tamu.edu');
-      cy.checkLink('Privacy & Security', '/privacy');
+      cy.checkLink('Privacy & Security', 'https://www.tamu.edu/statements/privacy.html');
       cy.checkLink('Changelog', '/changelog');
     });
   });

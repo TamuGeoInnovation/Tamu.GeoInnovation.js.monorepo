@@ -16,7 +16,6 @@ const hybridRoutes: Routes = [
     loadChildren: () => import('@tamu-gisc/aggiemap/ngx/discover').then((m) => m.DiscoverModule)
   },
   { path: 'feedback', loadChildren: () => import('./pages/feedback/feedback.module').then((m) => m.FeedbackModule) },
-  { path: 'privacy', loadChildren: () => import('./pages/privacy/privacy.module').then((m) => m.PrivacyModule) },
   {
     path: 'instructions',
     loadChildren: () => import('./pages/instructions/instructions.module').then((m) => m.InstructionsModule)
