@@ -1,23 +1,41 @@
-import { Injectable } from '@angular/core';
+import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
 import { NotificationService, NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
-import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
+
+interface EventToastConfig {
+  id: string;
+  eventDates: Array<string | Date | number>;
+  toast?: NotificationProperties;
+}
+
+interface EventNotificationEntry {
+  configuration?: EventToastConfig | null;
+}
+
+export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificationEntry[]>('EVENT_NOTIFICATION_DEFINITIONS');
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventNotificationsService {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(
+    private readonly notificationService: NotificationService,
+    @Optional() @Inject(EVENT_NOTIFICATION_DEFINITIONS) private readonly definitions: EventNotificationEntry[] | null
+  ) {}
 
   /**
    * Checks all event definitions for active events and triggers toast notifications
    * for any that have toast configuration and are currently active/upcoming.
    */
   public checkAndTriggerEventNotifications(): void {
+    if (!this.definitions) {
+      return;
+    }
+
     const now = Date.now();
     const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
     const sevenDays = 7 * oneDay;
 
-    EventDefinitions.forEach((eventDefinition) => {
+    this.definitions.forEach((eventDefinition) => {
       const config = eventDefinition.configuration;
 
       // Skip if no configuration or no toast config
