@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -14,7 +15,7 @@ export enum MENS_BASKETBALL_LAYERS {
   PARKING_LOTS = 'mens-basketball-parking-lots'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/BaseMBasketTennisXCountry/MapServer';
+const eventUrl = Connections('gis.it.tamu.edu').mensBasketballUrl;
 
 export const MensBasketball_Definitions = {
   LINE_PAINT: {

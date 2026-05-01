@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -10,7 +11,7 @@ export enum MOTORIST_ASSISTANCE_LAYERS {
   SERVICE_AREA = 'Service Area'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MotoristAssistance/MapServer';
+const eventUrl = Connections('gis.tamu.edu').motoristAssistanceUrl;
 
 export const MotoristAssistanceDefinitions = {
   SERVICE_AREA: {

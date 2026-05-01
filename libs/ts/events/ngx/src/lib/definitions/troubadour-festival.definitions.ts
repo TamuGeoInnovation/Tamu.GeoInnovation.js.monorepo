@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
@@ -12,7 +13,7 @@ export enum TROUBADOUR_LAYERS {
   PARKING = 'troubadour-parking'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Troubadour_Festival/MapServer';
+const eventUrl = Connections('gis.tamu.edu').troubadourFestivalUrl;
 
 const TroubadourFestivalEventDefinitions = {
   TROUBADOUR_PARKING: {

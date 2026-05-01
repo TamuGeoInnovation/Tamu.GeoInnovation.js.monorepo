@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
@@ -15,7 +16,7 @@ export enum VISITOR_PARKING_LAYERS {
   VISITOR_PARKING_LOTS = 'Visitor Parking Lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/VisitorParking/MapServer';
+const eventUrl = Connections('gis.tamu.edu').visitorParkingUrl;
 
 export const VisitorParkingDefinitions = {
   VISITOR_KIOSKS: {

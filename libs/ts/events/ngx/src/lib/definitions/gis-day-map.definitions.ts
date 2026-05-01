@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   AggiemapCustomMapConfiguration,
@@ -12,14 +13,10 @@ export enum GIS_DAY_LAYERS {
   CSG = 'gis-day-csg'
 }
 
-const GARAGES_URL =
-  'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer/0';
-
-const CSG_URL =
-  'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer/1';
-
-const MSC_RUDDER_URL =
-  'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer/2';
+const { gisDayUrl } = Connections('gis.it.tamu.edu');
+const GARAGES_URL = `${gisDayUrl}/0`;
+const CSG_URL = `${gisDayUrl}/1`;
+const MSC_RUDDER_URL = `${gisDayUrl}/2`;
 
 export const GisDayLayerSources: LayerSource[] = [
   {

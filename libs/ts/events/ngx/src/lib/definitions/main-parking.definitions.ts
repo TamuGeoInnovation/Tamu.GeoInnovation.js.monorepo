@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
@@ -15,7 +16,7 @@ export enum TS_MAIN_PARKING_LAYERS {
   RNS_SPACES = 'RNS Spaces'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer';
+const eventUrl = Connections('gis.tamu.edu').tsMainUrl;
 
 export const TsMainParkingDefinitions = {
   ROUTE_STOP_START_POINTS: {

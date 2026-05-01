@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -14,7 +15,7 @@ export enum SOFTBALL_LAYERS {
   SOFTBALL_LOCATIONS = 'softball-locations'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Softball_Regionals/MapServer';
+const eventUrl = Connections('gis.it.tamu.edu').softballRegionalsUrl;
 
 const SoftballEventDefinitions = {
   SOFTBALL_ROUTES: {

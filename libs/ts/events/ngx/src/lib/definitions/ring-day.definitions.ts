@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -19,7 +20,7 @@ enum RingDayDates {
   DAY3 = '2026-04-10'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Ring_Day/MapServer';
+const eventUrl = Connections('gis.it.tamu.edu').ringDayUrl;
 
 const RingDayEventDefinitions = {
   RD_AREAS: {

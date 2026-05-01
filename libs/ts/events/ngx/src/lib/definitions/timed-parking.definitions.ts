@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -11,7 +12,7 @@ export enum TIMED_PARKING_LAYERS {
   TIMED_PARKING_SPACE = 'Timed Parking Space'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TimedParking/MapServer';
+const eventUrl = Connections('gis.tamu.edu').timedParkingUrl;
 
 export const TimedParkingDefinitions = {
   TIMED_PARKING_SPACE: {

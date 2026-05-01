@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
@@ -13,7 +14,7 @@ export enum BUSINESS_PARKING_LAYERS {
   UB_AND_UB_PLUS = 'UB Permit and UB+ Permit Authorized',
   UB_PLUS_ONLY = 'Only UB+ Permit Authorized'
 }
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/BusinessParking/MapServer';
+const eventUrl = Connections('gis.it.tamu.edu').businessParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

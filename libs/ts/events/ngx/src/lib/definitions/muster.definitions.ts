@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -16,7 +17,7 @@ export enum MUSTER_LAYERS {
   ACCESSIBLE_PARKING = 'muster-accessible-parking'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Muster/MapServer';
+const eventUrl = Connections('gis.it.tamu.edu').musterUrl;
 const accessibleParkingIconUrl = eventUrl + '/1/images/956c1de4ae59fdb677e36c1631af01e3';
 
 export const MusterEventDefinitions = {

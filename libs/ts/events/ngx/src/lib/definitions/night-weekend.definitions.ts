@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -11,7 +12,7 @@ export enum NIGHT_WEEKEND_LAYERS {
   NIGHT_PRIVILEGES = 'Night Privileges 5:00pm - 6:00am'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/NightWeekendParking/MapServer';
+const eventUrl = Connections('gis.tamu.edu').nightWeekendParkingUrl;
 
 export const NightWeekendDefinitions = {
   NIGHT_PRIVILEGES: {

@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 
 import {
@@ -11,7 +12,7 @@ export enum AVP_PARKING_LAYERS {
   AVP_PARKING_LOTS = 'AVP-parking-lots'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/AnyValidPermitParking/MapServer';
+const eventUrl = Connections('gis.it.tamu.edu').avpParkingUrl;
 
 export const AVPParkingDefinitions = {
   AVP_PARKING_LOTS: {

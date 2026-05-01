@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -10,7 +11,7 @@ import {
 export enum STUDENT_SELECTABLE_LAYERS {
   STUDENT_SELECTABLE = 'Student Selectable Parking Lots'
 }
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/StudentSelectableParking/MapServer';
+const eventUrl = Connections('gis.tamu.edu').studentParkingUrl;
 
 export const StudentSelectableDefinitions = {
   STUDENT_SELECTABLE: {

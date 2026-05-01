@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -10,7 +11,7 @@ export enum ACCESSIBLE_PARKING_LAYERS {
   ACCESSIBLE_PARKING_SPACE = 'Accessible Parking Space'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AccessibleParking/MapServer';
+const eventUrl = Connections('gis.it.tamu.edu').accessibleParkingUrl;
 
 export const AccessibleParkingDefinitions = {
   ACCESSIBLE_PARKING_SPACE: {

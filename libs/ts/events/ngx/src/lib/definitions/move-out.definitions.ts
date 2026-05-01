@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -13,7 +14,7 @@ export enum MOVE_OUT_LAYERS {
   MOVE_OUT_LOTS = 'Move-Out Lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MoveOutParking/MapServer';
+const eventUrl = Connections('gis.tamu.edu').moveOutParkingUrl;
 
 export const MoveOutDefinitions = {
   NO_PARKING: {

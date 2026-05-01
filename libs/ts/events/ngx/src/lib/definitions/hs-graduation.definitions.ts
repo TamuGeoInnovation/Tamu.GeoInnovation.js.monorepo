@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
@@ -15,7 +16,7 @@ export enum HS_GRADUATION_LAYERS {
   TRAFFIC_ADVISORIES = 'hs-graduation-traffic-advisories'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/HS_Graduation/MapServer';
+const eventUrl = Connections('gis.it.tamu.edu').hsGraduationUrl;
 
 const HsGraduationEventDefinitions = {
   GRADUATION_TRAFFIC_FLOW: {

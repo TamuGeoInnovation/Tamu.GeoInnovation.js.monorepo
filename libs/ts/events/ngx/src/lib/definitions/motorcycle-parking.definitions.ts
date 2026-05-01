@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -11,7 +12,7 @@ export enum MOTORCYCLE_PARKING_LAYERS {
   MOTORCYCLE_PARKING_SPACE = 'motorcycle-parking-space'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MotorcycleParking/MapServer';
+const eventUrl = Connections('gis.tamu.edu').motorcycleParkingUrl;
 
 export const MotorcycleParkingDefinitions = {
   MOTORCYCLE_PARKING_SPACE: {

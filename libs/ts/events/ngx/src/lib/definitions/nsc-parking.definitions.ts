@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -14,7 +15,7 @@ export enum NSC_PARKING_LAYERS {
   NSC_PARKING_LOTS = 'NSC Parking Lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/NewStudentConferenceParking/MapServer';
+const eventUrl = Connections('gis.tamu.edu').nscParkingUrl;
 
 export const NscParkingDefinitions = {
   NSC_PARKING_LOTS: {
