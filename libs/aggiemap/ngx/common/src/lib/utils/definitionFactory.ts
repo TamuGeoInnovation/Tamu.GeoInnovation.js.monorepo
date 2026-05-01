@@ -1,7 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { Connections } from '../connections';
+import { Connections, IComposedConnections } from '../connections';
 import { Definitions, IComposedIDefinitions } from '../definitions';
 import { LayerSources, ThreeDLayers } from '../layer-sources/layer-sources';
 import { ComposedSearchSourcesKeyMap, SearchSources } from '../search-sources/search-sources';
@@ -40,7 +40,7 @@ export interface IFactoryExcludeOptions<T> {
 }
 
 export interface Definitions {
-  Connections: Record<string, string>;
+  Connections: IComposedConnections;
   Definitions: IComposedIDefinitions;
   LayerSources: Array<LayerSource>;
   SearchSources: Array<SearchSource>;

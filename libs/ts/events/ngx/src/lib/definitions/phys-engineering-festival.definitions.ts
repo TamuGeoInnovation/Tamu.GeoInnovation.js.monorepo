@@ -1,4 +1,5 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
@@ -26,7 +27,7 @@ export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
   WESTBOUND_PEDESTRIAN_PATH = 'phys-eng-festival-westbound-pedestrian-path'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Physics_Fest/MapServer';
+const eventUrl = Connections.physicsFestUrl;
 
 type AutoCastSimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
 

@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
@@ -14,7 +15,7 @@ export enum MAROON_WHITE_GAME_LAYERS {
   EVENT_PARKING_LOTS = 'maroon-white-game-event-parking-lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Maroon_White_Game/MapServer';
+const eventUrl = Connections.maroonWhiteGameUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

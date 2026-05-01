@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
@@ -22,7 +23,7 @@ export enum BIG_EVENT_MAP_TYPE_OPTIONS {
   TOOL_RETURN = 'Tool Dropoff'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Big_Event/MapServer';
+const eventUrl = Connections.bigEventUrl;
 
 const BIG_EVENT_LAYER_INDICES = {
   PARKING_LOTS: 48,

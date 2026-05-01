@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -17,7 +18,7 @@ export enum AGGIELAND_SATURDAY_LAYERS {
   PARKING = 'aggieland-saturday-parking'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/AggielandSaturday/MapServer';
+const eventUrl = Connections.aggielandSaturdayUrl;
 
 export const AggielandSaturdayEventDefinitions = {
   EVENT_BUS_STOPS: {

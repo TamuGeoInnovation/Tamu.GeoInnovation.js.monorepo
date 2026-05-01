@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
@@ -12,7 +13,7 @@ export enum FRESHMAN_SELECTABLE_LAYERS {
   RESIDENT_STUDENT_PRIORITY = 'Resident Student Priority',
   FRESHMAN_STUDENT_SELECTABLE = 'Freshman Student Selectable'
 }
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/FreshmanSelectableParking/MapServer';
+const eventUrl = Connections.freshmanParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

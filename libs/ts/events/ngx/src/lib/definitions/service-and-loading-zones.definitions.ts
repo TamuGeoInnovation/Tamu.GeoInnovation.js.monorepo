@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
@@ -12,7 +13,7 @@ export enum SERVICE_LOADING_LAYERS {
   SERVICE_SPACES = 'service-parking-spaces',
   SERVICE_LOTS = 'service-parking-lots'
 }
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Loading_Zones/MapServer';
+const eventUrl = Connections.loadingZonesUrl;
 
 export const ServiceLoadingDefinitions = {
   SERVICE_SPACES: {

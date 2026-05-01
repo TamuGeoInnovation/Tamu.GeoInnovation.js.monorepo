@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
@@ -11,7 +12,7 @@ import {
 export enum MEDIA_PARKING_LAYERS {
   MEDIA_PARKING_LOTS = 'media-parking-lots'
 }
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MediaParking/MapServer';
+const eventUrl = Connections.mediaParkingUrl;
 
 export const MediaParkingDefinitions = {
   MEDIA_PARKING_LOTS: {

@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -14,7 +15,7 @@ export enum BREAK_SUMMER_LAYERS {
   BREAK_SUMMER_LOTS = 'Break-Summer Parking Lots'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SummerBreakParking/MapServer';
+const eventUrl = Connections.breakSummerParkingUrl;
 
 export const BreakSummerDefinitions = {
   BREAK_SUMMER_LOTS: {

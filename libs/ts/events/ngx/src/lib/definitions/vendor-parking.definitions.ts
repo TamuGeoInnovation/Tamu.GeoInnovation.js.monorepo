@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
@@ -10,7 +11,7 @@ export enum VENDOR_PARKING_LAYERS {
   VENDOR_PARKING_LOTS = 'vendor-parking-lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/VendorParking/MapServer';
+const eventUrl = Connections.vendorParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

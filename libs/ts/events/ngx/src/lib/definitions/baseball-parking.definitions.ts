@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
@@ -25,7 +26,7 @@ enum BaseballMapMode {
   ACCESSIBLE = 'accessible'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/BaseballParking/MapServer';
+const eventUrl = Connections.baseballParkingUrl;
 
 export const BaseballParkingColdLayerSources: LayerSource[] = [
   {

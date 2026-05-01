@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -13,7 +14,7 @@ export enum MS150_LAYERS {
   ROUTE = 'ms150-route'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/MS150/MapServer';
+const eventUrl = Connections.ms150Url;
 
 export const MS150Definitions = {
   AVP_PARKING: {

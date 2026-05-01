@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
@@ -16,7 +17,7 @@ export enum SAVANNAH_BANANAS_PARKING_LAYERS {
   EVENT_PARKING = 'savannah-bananas-event-parking'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SavannahBananas/MapServer';
+const eventUrl = Connections.savannahBananasUrl;
 
 export const SavannahBananasParkingDefinitions = {
   SHUTTLE_GROUP: {

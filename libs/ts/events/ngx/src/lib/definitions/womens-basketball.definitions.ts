@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -14,7 +15,7 @@ export enum WOMENS_BASKETBALL_LAYERS {
   SAFETY_FIRST = 'womens-basketball-safety-first'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/TracSocSoftSwimVollWbask/MapServer';
+const eventUrl = Connections.womensBasketballUrl;
 
 export const WomensBasketball_Definitions = {
   VISITOR_KIOSK: {

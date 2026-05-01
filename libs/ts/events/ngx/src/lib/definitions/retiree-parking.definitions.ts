@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import {
   EventConfiguration,
@@ -11,7 +12,7 @@ export enum RETIREE_PARKING_LAYERS {
   RETIREE_PARKING_LOTS = 'Retiree Parking Lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/RetireeParking/MapServer';
+const eventUrl = Connections.retireeParkingUrl;
 
 export const RetireeParkingDefinitions = {
   RETIREE_PARKING_LOTS: {

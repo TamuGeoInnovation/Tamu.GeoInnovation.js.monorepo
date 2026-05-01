@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -16,7 +17,7 @@ export enum OUTDOOR_TRACK_PARKING_LAYERS {
   SAFETY_FIRST = 'outdoor-track-parking-safety-first'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/OutdoorTrackParking/MapServer';
+const eventUrl = Connections.outdoorTrackParkingUrl;
 
 export const OutdoorTrackParkingDefinitions = {
   VISITOR_KIOSK: {

@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
@@ -16,8 +17,7 @@ export enum MOVE_IN_LAYERS {
   RESIDENCE_HALL = 'Residence Hall'
 }
 
-const moveInServiceUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/FallMoveInParking/MapServer';
-const basemapServiceUrl = 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer';
+const { moveInParkingUrl: moveInServiceUrl, basemapUrl: basemapServiceUrl } = Connections;
 
 const lotUseField = '"GIS.TS.SPEV_Lot_Use.Fall_MoveIn"';
 
