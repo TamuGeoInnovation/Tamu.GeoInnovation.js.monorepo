@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
   EventConfiguration,
@@ -10,7 +11,7 @@ export enum CONTRACTOR_PARKING_LAYERS {
   CONTRACTOR_AND_CONTRACTOR_PLUS = 'Contractor Permit and Contractor+ Permit Authorized',
   CONTRACTOR_PLUS_ONLY = 'Only Contractor+ Permit Authorized'
 }
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/ContractorParking/MapServer';
+const eventUrl = Connections.contractorParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

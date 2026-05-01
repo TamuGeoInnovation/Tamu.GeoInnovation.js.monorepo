@@ -6,8 +6,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { Angulartics2Module } from 'angulartics2';
 
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import { AggiemapNgxCoreModule } from '@tamu-gisc/aggiemap/ngx/core';
+import { AggiemapNgxCoreModule, EVENT_NOTIFICATION_DEFINITIONS } from '@tamu-gisc/aggiemap/ngx/core';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
+import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -34,7 +35,8 @@ WebFont.load({
   bootstrap: [AppComponent],
   providers: [
     { provide: env, useValue: environment },
-    { provide: notificationStorage, useValue: 'aggiemap-notifications' }
+    { provide: notificationStorage, useValue: 'aggiemap-notifications' },
+    { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: EventDefinitions }
   ]
 })
 export class AppModule {}

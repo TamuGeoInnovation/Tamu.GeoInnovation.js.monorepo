@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef } from '@angular/core';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -21,9 +21,10 @@ export class SearchMobileComponent extends SearchComponent {
     private anltcs: Angulartics2,
     private nss: NotificationService,
     private ss: SearchService,
-    private env: EnvironmentService
+    private env: EnvironmentService,
+    private elRef: ElementRef
   ) {
-    super(cdr, anltcs, nss, ss, env);
+    super(cdr, anltcs, nss, ss, env, elRef);
   }
 
   public emitLeftActionEvent(): void {

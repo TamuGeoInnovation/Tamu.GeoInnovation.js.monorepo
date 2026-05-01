@@ -18,7 +18,7 @@ export enum SUSTAINABLE_TRANSPORTATION_LAYERS {
   BIKE_DISMOUNT_ZONES = 'sustainable-transportation-bike-dismount-zones',
 }
 
-const bikeLayersUrl = Connections('gis.it.tamu.edu').bikeMapUrl;
+const bikeLayersUrl = Connections.bikeMapUrl;
 
 export const SustainableTransportationEvChargersLayerSource: LayerSource = {
   type: 'feature',

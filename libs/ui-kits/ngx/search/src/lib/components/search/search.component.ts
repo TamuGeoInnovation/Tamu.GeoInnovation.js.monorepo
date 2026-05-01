@@ -8,7 +8,8 @@ import {
   Input,
   OnDestroy,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  HostListener
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -194,7 +195,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     private analytics: Angulartics2,
     private ns: NotificationService,
     private searchService: SearchService,
-    private environment: EnvironmentService
+    private environment: EnvironmentService,
+    protected elementRef: ElementRef
   ) {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
@@ -320,6 +322,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.blur.emit(true);
   }
 
+  @HostListener('document:click', ['$event'])
+  public onDocumentClick(event: MouseEvent): void {
+    if (this.searchResultsActive && !this.elementRef.nativeElement.contains(event.target as Node)) {
+      this.loseFocus();
+      this.cd.markForCheck();
+    }
+  }
+
   /**
    * Event fired on input keyup that then sets the next Subject value. Also displays the search results
    *
@@ -328,7 +338,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   public change(event: KeyboardEvent): void {
     // Some keyboard keys trigger the change event (e.g. tab).
     // Limit the execution of the process chain only if event key code is not in the not allowed list
-    const keysNotAllowed = [9, 18, 16];
+    const keysNotAllowed = [9, 18, 16, 27];
 
     if (!keysNotAllowed.includes(event.which)) {
       const value = (<HTMLInputElement>event.target).value;

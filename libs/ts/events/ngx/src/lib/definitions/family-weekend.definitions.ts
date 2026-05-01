@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import {
@@ -18,7 +19,7 @@ export enum FAMILY_WEEKEND_LAYERS {
   SUNDAY_PARKING_LOTS = 'family-weekend-sunday-parking-lots'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/Family_Weekend/MapServer';
+const eventUrl = Connections.familyWeekendUrl;
 
 const familyWeekendEventParkingSymbol = {
   type: 'simple-fill',

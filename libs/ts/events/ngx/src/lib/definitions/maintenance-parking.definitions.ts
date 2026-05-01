@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
@@ -13,7 +14,7 @@ export enum MAINTENANCE_PARKING_LAYERS {
   MAINTENANCE_LOTS = 'maintenance-parking-lots'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/MaintenanceParking/MapServer';
+const eventUrl = Connections.maintenanceParkingUrl;
 
 export const MaintenanceParkingDefinitions = {
   MAINTENANCE_SPACES: {

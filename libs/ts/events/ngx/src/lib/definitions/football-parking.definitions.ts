@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -22,9 +23,7 @@ export enum FOOTBALL_PARKING_LAYERS {
   FP_GAMEDAY_SHUTTLE = 'football-gameday-shuttle'
 }
 
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer';
-const bikeLayersUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/BikeMap/MapServer';
-const shuttleLayersUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer';
+const { tsFootballUrl: eventUrl, bikeMapUrl: bikeLayersUrl, footballGamedayShuttlesUrl: shuttleLayersUrl } = Connections;
 
 const FootballParkingEventDefinitions = {
   FP_POIS: {

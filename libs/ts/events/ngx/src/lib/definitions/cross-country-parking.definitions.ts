@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -17,7 +18,7 @@ export enum CROSS_COUNTRY_PARKING_LAYERS {
   PARKING_LOTS = 'cross-country-parking-lots'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/CrossCountryParking/MapServer';
+const eventUrl = Connections.crossCountryParkingUrl;
 
 export const CrossCountryParkingDefinitions = {
   CROSS_COUNTRY_AREA: {

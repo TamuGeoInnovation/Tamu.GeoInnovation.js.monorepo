@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
@@ -19,7 +20,7 @@ export enum GRADUATION_LAYERS {
   GRADUATION_EVENT_PARKING_LOTS = 'graduation-event-parking-lots',
   GRADUATION_ROAD_CLOSURES = 'graduation-road-closed'
 }
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/GraduationParking/MapServer';
+const eventUrl = Connections.graduationParkingUrl;
 
 const GraduationEventDefinitions = {
   GRADUATION_ACCESSIBLE_PARKING: {

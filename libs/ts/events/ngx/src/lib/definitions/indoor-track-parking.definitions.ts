@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -18,7 +19,7 @@ export enum INDOOR_TRACK_PARKING_LAYERS {
   TEAM_BUS_PARKING = 'indoor-track-parking-team-bus'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/IndoorTrackParking/MapServer';
+const eventUrl = Connections.indoorTrackParkingUrl;
 
 export const IndoorTrackParkingDefinitions = {
   VISITOR_KIOSK: {

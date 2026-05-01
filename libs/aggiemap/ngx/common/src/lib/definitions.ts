@@ -96,14 +96,14 @@ export function Definitions(Connections: IComposedConnections): IComposedIDefini
       id: 'aggieprint-locations',
       layerId: 'aggieprint-locations-layer',
       name: 'AggiePrint Locations',
-      url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/TAMUPrinters/FeatureServer/0',
+      url: `${Connections.aggiePrintUrl}/0`,
       popupComponent: Popups.MarkdownWDirectionsPopupComponent
     },
     SINGLE_OCCUPANCY_RESTROOMS: {
       id: 'single-occupancy-restroom-locations',
       layerId: 'single-occupancy-restroom-locations-layer',
       name: 'Single Occupancy Restroom Locations',
-      url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer/1',
+      url: `${Connections.inforUrl}/1`,
       popupComponent: Popups.MarkdownWDirectionsPopupComponent
     },
     BIKE_DISMOUNT_ZONES: {

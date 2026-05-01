@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
@@ -14,7 +15,7 @@ export enum FOUR_H_ROUNDUP_LAYERS {
   FOUR_H_ROUNDUP_LOCATIONS = 'four-h-roundup-locations'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/4H_Roundup/MapServer';
+const eventUrl = Connections.fourHRoundupUrl;
 
 const FourHRoundupEventDefinitions = {
   FOUR_H_PARKING: {

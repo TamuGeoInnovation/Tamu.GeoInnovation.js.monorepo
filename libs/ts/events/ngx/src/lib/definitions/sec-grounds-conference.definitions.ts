@@ -1,4 +1,5 @@
 import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
@@ -20,7 +21,7 @@ enum ConferenceDay {
   DAY3 = 'day3'
 }
 
-const eventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/TS/SEC_Grounds_Conference/MapServer';
+const eventUrl = Connections.secGroundsConferenceUrl;
 
 type FeatureLayerNative = NonNullable<FeatureLayerSourceProperties['native']>;
 type AutoCastCimSymbol = { type: 'cim' } & esri.CIMSymbolProperties;
