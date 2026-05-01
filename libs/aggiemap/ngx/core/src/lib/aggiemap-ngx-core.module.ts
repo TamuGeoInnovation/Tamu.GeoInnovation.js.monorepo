@@ -22,6 +22,10 @@ const hybridRoutes: Routes = [
     loadChildren: () => import('./pages/instructions/instructions.module').then((m) => m.InstructionsModule)
   },
   {
+    path: 'requesting-maps',
+    loadChildren: () => import('./pages/requesting-maps/requesting-maps.module').then((m) => m.RequestingMapsModule)
+  },
+  {
     path: 'events',
     loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
   },
