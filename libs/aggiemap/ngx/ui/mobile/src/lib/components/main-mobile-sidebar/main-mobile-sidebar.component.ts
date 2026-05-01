@@ -79,7 +79,7 @@ export class MainMobileSidebarComponent {
     {
       name: 'Changelog',
       type: 'link-external',
-      path: 'https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+project%3Atamugeoinnovation%2F2+is%3Aclosed'
+      path: 'https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed'
     }
   ];
 
