@@ -111,7 +111,10 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
           outFields: ['*']
         }
       }
-    ]
+    ],
+    native: {
+      listMode: 'hide-children'
+    }
   },
   {
     type: 'group',
@@ -120,6 +123,26 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     sources: [
+      {
+        type: 'feature',
+        id: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.id,
+        title: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.name,
+        url: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.url,
+        popupComponent: MarkdownWDirectionsPopupComponent,
+        popupData: {
+          name: {
+            field: 'name'
+          },
+          description: {
+            field: 'description'
+          }
+        },
+        visible: true,
+        listMode: 'show',
+        native: {
+          outFields: ['*']
+        }
+      },
       {
         type: 'feature',
         id: SavannahBananasParkingDefinitions.SHUTTLE_STOPS.id,
@@ -147,28 +170,11 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
         native: {
           outFields: ['*']
         }
-      },
-      {
-        type: 'feature',
-        id: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.id,
-        title: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.name,
-        url: SavannahBananasParkingDefinitions.SHUTTLE_ROUTES.url,
-        popupComponent: MarkdownWDirectionsPopupComponent,
-        popupData: {
-          name: {
-            field: 'name'
-          },
-          description: {
-            field: 'description'
-          }
-        },
-        visible: true,
-        listMode: 'show',
-        native: {
-          outFields: ['*']
-        }
       }
-    ]
+    ],
+    native: {
+      listMode: 'hide-children'
+    }
   }
 ];
 
