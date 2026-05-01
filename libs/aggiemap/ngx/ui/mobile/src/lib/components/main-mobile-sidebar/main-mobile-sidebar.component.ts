@@ -72,8 +72,9 @@ export class MainMobileSidebarComponent {
     },
     {
       name: 'Privacy & Security',
-      type: 'router-path',
-      path: '/privacy'
+      type: 'link-external',
+      path: '',
+      url: 'https://www.tamu.edu/statements/privacy.html'
     },
     {
       name: 'Changelog',
