@@ -15,7 +15,7 @@ export enum SOFTBALL_LAYERS {
   SOFTBALL_LOCATIONS = 'softball-locations'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').softballRegionalsUrl;
+const eventUrl = Connections.softballRegionalsUrl;
 
 const SoftballEventDefinitions = {
   SOFTBALL_ROUTES: {

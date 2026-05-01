@@ -12,7 +12,7 @@ export enum EV_CHARGERS_LAYERS {
   EV_CHARGERS = 'ev-chargers'
 }
 
-const bikeLayersUrl = Connections('gis.it.tamu.edu').bikeMapUrl;
+const bikeLayersUrl = Connections.bikeMapUrl;
 
 export const EvChargersDefinitions = {
   EV_CHARGERS: {

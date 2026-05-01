@@ -26,7 +26,7 @@ enum BaseballMapMode {
   ACCESSIBLE = 'accessible'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').baseballParkingUrl;
+const eventUrl = Connections.baseballParkingUrl;
 
 export const BaseballParkingColdLayerSources: LayerSource[] = [
   {

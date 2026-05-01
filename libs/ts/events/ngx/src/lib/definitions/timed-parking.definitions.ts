@@ -12,7 +12,7 @@ export enum TIMED_PARKING_LAYERS {
   TIMED_PARKING_SPACE = 'Timed Parking Space'
 }
 
-const eventUrl = Connections('gis.tamu.edu').timedParkingUrl;
+const eventUrl = Connections.timedParkingUrl;
 
 export const TimedParkingDefinitions = {
   TIMED_PARKING_SPACE: {

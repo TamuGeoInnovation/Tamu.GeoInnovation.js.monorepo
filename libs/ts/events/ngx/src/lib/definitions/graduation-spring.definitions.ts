@@ -20,7 +20,7 @@ export enum GRADUATION_LAYERS {
   GRADUATION_EVENT_PARKING_LOTS = 'graduation-event-parking-lots',
   GRADUATION_ROAD_CLOSURES = 'graduation-road-closed'
 }
-const eventUrl = Connections('gis.it.tamu.edu').graduationParkingUrl;
+const eventUrl = Connections.graduationParkingUrl;
 
 const GraduationEventDefinitions = {
   GRADUATION_ACCESSIBLE_PARKING: {

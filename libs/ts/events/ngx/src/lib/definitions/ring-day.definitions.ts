@@ -20,7 +20,7 @@ enum RingDayDates {
   DAY3 = '2026-04-10'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').ringDayUrl;
+const eventUrl = Connections.ringDayUrl;
 
 const RingDayEventDefinitions = {
   RD_AREAS: {

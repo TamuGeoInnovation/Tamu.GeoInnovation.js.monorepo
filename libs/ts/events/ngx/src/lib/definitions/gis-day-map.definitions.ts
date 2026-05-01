@@ -13,7 +13,7 @@ export enum GIS_DAY_LAYERS {
   CSG = 'gis-day-csg'
 }
 
-const { gisDayUrl } = Connections('gis.it.tamu.edu');
+const { gisDayUrl } = Connections;
 const GARAGES_URL = `${gisDayUrl}/0`;
 const CSG_URL = `${gisDayUrl}/1`;
 const MSC_RUDDER_URL = `${gisDayUrl}/2`;

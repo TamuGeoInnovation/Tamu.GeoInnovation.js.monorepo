@@ -14,7 +14,7 @@ export enum MOVE_OUT_LAYERS {
   MOVE_OUT_LOTS = 'Move-Out Lots'
 }
 
-const eventUrl = Connections('gis.tamu.edu').moveOutParkingUrl;
+const eventUrl = Connections.moveOutParkingUrl;
 
 export const MoveOutDefinitions = {
   NO_PARKING: {

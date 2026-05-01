@@ -13,7 +13,7 @@ export enum TROUBADOUR_LAYERS {
   PARKING = 'troubadour-parking'
 }
 
-const eventUrl = Connections('gis.tamu.edu').troubadourFestivalUrl;
+const eventUrl = Connections.troubadourFestivalUrl;
 
 const TroubadourFestivalEventDefinitions = {
   TROUBADOUR_PARKING: {

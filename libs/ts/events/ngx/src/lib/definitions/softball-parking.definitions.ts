@@ -17,7 +17,7 @@ export enum SOFTBALL_PARKING_LAYERS {
   SAFETY_FIRST = 'softball-parking-safety-first'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').softballParkingUrl;
+const eventUrl = Connections.softballParkingUrl;
 
 export const SoftballParkingDefinitions = {
   VISITOR_KIOSK: {

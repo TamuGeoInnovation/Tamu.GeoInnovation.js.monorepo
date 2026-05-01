@@ -14,7 +14,7 @@ export enum MAINTENANCE_PARKING_LAYERS {
   MAINTENANCE_LOTS = 'maintenance-parking-lots'
 }
 
-const eventUrl = Connections('gis.tamu.edu').maintenanceParkingUrl;
+const eventUrl = Connections.maintenanceParkingUrl;
 
 export const MaintenanceParkingDefinitions = {
   MAINTENANCE_SPACES: {

@@ -1,4 +1,4 @@
-export function Connections(gisHost: string) {
+function createConnections(gisHost: string): IComposedConnections {
   return {
     basemapUrl: `https://${gisHost}/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer`,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
@@ -67,6 +67,19 @@ export function Connections(gisHost: string) {
   };
 }
 
+function getDefaultGisHost() {
+  const hostname = globalThis.location?.hostname;
+
+  return hostname?.includes('dev') ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+}
+
+export type IConnectionsFactory = ((gisHost: string) => IComposedConnections) & IComposedConnections;
+
+export const Connections: IConnectionsFactory = Object.assign(
+  ((gisHost: string) => createConnections(gisHost)) as IConnectionsFactory,
+  createConnections(getDefaultGisHost())
+);
+
 export interface IComposedConnections {
   basemapUrl: string;
   inforUrl: string;
@@ -77,6 +90,7 @@ export interface IComposedConnections {
   bikeRacksUrl: string;
   bikeMapUrl: string;
   bikeLocationsUrl: string;
+  routingBaseUrl: string;
   poiUrl: string;
   diningLocationsUrl: string;
   aggiePrintUrl: string;

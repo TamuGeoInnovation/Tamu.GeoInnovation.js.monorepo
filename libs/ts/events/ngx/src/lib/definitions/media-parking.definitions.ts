@@ -12,7 +12,7 @@ import {
 export enum MEDIA_PARKING_LAYERS {
   MEDIA_PARKING_LOTS = 'media-parking-lots'
 }
-const eventUrl = Connections('gis.tamu.edu').mediaParkingUrl;
+const eventUrl = Connections.mediaParkingUrl;
 
 export const MediaParkingDefinitions = {
   MEDIA_PARKING_LOTS: {

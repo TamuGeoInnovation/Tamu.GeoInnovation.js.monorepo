@@ -12,7 +12,7 @@ export enum AVP_PARKING_LAYERS {
   AVP_PARKING_LOTS = 'AVP-parking-lots'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').avpParkingUrl;
+const eventUrl = Connections.avpParkingUrl;
 
 export const AVPParkingDefinitions = {
   AVP_PARKING_LOTS: {

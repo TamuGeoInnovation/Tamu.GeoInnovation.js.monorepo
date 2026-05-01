@@ -16,7 +16,7 @@ export enum TS_MAIN_PARKING_LAYERS {
   RNS_SPACES = 'RNS Spaces'
 }
 
-const eventUrl = Connections('gis.tamu.edu').tsMainUrl;
+const eventUrl = Connections.tsMainUrl;
 
 export const TsMainParkingDefinitions = {
   ROUTE_STOP_START_POINTS: {

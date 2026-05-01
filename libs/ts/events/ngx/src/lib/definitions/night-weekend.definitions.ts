@@ -12,7 +12,7 @@ export enum NIGHT_WEEKEND_LAYERS {
   NIGHT_PRIVILEGES = 'Night Privileges 5:00pm - 6:00am'
 }
 
-const eventUrl = Connections('gis.tamu.edu').nightWeekendParkingUrl;
+const eventUrl = Connections.nightWeekendParkingUrl;
 
 export const NightWeekendDefinitions = {
   NIGHT_PRIVILEGES: {

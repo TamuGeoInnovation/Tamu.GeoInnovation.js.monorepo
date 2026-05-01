@@ -15,7 +15,7 @@ export enum MENS_BASKETBALL_LAYERS {
   PARKING_LOTS = 'mens-basketball-parking-lots'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').mensBasketballUrl;
+const eventUrl = Connections.mensBasketballUrl;
 
 export const MensBasketball_Definitions = {
   LINE_PAINT: {

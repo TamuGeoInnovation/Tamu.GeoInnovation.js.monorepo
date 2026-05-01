@@ -11,7 +11,7 @@ export enum ACCESSIBLE_PARKING_LAYERS {
   ACCESSIBLE_PARKING_SPACE = 'Accessible Parking Space'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').accessibleParkingUrl;
+const eventUrl = Connections.accessibleParkingUrl;
 
 export const AccessibleParkingDefinitions = {
   ACCESSIBLE_PARKING_SPACE: {

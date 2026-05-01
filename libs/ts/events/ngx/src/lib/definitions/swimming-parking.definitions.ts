@@ -17,7 +17,7 @@ export enum SWIMMING_PARKING_LAYERS {
   SAFETY_FIRST = 'swimming-parking-safety-first'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').swimmingParkingUrl;
+const eventUrl = Connections.swimmingParkingUrl;
 
 export const SwimmingParkingDefinitions = {
   VISITOR_KIOSK: {

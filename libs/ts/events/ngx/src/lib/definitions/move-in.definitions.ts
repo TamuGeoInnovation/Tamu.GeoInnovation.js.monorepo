@@ -17,7 +17,7 @@ export enum MOVE_IN_LAYERS {
   RESIDENCE_HALL = 'Residence Hall'
 }
 
-const { moveInParkingUrl: moveInServiceUrl, basemapUrl: basemapServiceUrl } = Connections('gis.it.tamu.edu');
+const { moveInParkingUrl: moveInServiceUrl, basemapUrl: basemapServiceUrl } = Connections;
 
 const lotUseField = '"GIS.TS.SPEV_Lot_Use.Fall_MoveIn"';
 

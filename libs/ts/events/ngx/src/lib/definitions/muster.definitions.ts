@@ -17,7 +17,7 @@ export enum MUSTER_LAYERS {
   ACCESSIBLE_PARKING = 'muster-accessible-parking'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').musterUrl;
+const eventUrl = Connections.musterUrl;
 const accessibleParkingIconUrl = eventUrl + '/1/images/956c1de4ae59fdb677e36c1631af01e3';
 
 export const MusterEventDefinitions = {

@@ -19,7 +19,7 @@ export enum FAMILY_WEEKEND_LAYERS {
   SUNDAY_PARKING_LOTS = 'family-weekend-sunday-parking-lots'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').familyWeekendUrl;
+const eventUrl = Connections.familyWeekendUrl;
 
 const familyWeekendEventParkingSymbol = {
   type: 'simple-fill',

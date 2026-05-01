@@ -11,7 +11,7 @@ export enum MOTORIST_ASSISTANCE_LAYERS {
   SERVICE_AREA = 'Service Area'
 }
 
-const eventUrl = Connections('gis.tamu.edu').motoristAssistanceUrl;
+const eventUrl = Connections.motoristAssistanceUrl;
 
 export const MotoristAssistanceDefinitions = {
   SERVICE_AREA: {

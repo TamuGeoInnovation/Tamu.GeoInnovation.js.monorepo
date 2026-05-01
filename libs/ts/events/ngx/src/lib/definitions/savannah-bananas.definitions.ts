@@ -17,7 +17,7 @@ export enum SAVANNAH_BANANAS_PARKING_LAYERS {
   EVENT_PARKING = 'savannah-bananas-event-parking'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').savannahBananasUrl;
+const eventUrl = Connections.savannahBananasUrl;
 
 export const SavannahBananasParkingDefinitions = {
   SHUTTLE_GROUP: {

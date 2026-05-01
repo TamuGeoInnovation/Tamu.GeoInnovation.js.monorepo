@@ -11,7 +11,7 @@ export enum VENDOR_PARKING_LAYERS {
   VENDOR_PARKING_LOTS = 'vendor-parking-lots'
 }
 
-const eventUrl = Connections('gis.tamu.edu').vendorParkingUrl;
+const eventUrl = Connections.vendorParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

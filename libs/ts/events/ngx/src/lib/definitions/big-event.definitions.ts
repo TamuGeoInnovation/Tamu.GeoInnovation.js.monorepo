@@ -23,7 +23,7 @@ export enum BIG_EVENT_MAP_TYPE_OPTIONS {
   TOOL_RETURN = 'Tool Dropoff'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').bigEventUrl;
+const eventUrl = Connections.bigEventUrl;
 
 const BIG_EVENT_LAYER_INDICES = {
   PARKING_LOTS: 48,

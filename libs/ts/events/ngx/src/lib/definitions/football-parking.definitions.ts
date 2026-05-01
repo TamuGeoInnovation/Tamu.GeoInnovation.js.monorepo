@@ -23,7 +23,7 @@ export enum FOOTBALL_PARKING_LAYERS {
   FP_GAMEDAY_SHUTTLE = 'football-gameday-shuttle'
 }
 
-const { tsFootballUrl: eventUrl, bikeMapUrl: bikeLayersUrl, footballGamedayShuttlesUrl: shuttleLayersUrl } = Connections('gis.it.tamu.edu');
+const { tsFootballUrl: eventUrl, bikeMapUrl: bikeLayersUrl, footballGamedayShuttlesUrl: shuttleLayersUrl } = Connections;
 
 const FootballParkingEventDefinitions = {
   FP_POIS: {

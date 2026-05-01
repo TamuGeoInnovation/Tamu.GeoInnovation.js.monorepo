@@ -15,7 +15,7 @@ export enum BREAK_SUMMER_LAYERS {
   BREAK_SUMMER_LOTS = 'Break-Summer Parking Lots'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').breakSummerParkingUrl;
+const eventUrl = Connections.breakSummerParkingUrl;
 
 export const BreakSummerDefinitions = {
   BREAK_SUMMER_LOTS: {

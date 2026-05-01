@@ -12,7 +12,7 @@ export enum MOTORCYCLE_PARKING_LAYERS {
   MOTORCYCLE_PARKING_SPACE = 'motorcycle-parking-space'
 }
 
-const eventUrl = Connections('gis.tamu.edu').motorcycleParkingUrl;
+const eventUrl = Connections.motorcycleParkingUrl;
 
 export const MotorcycleParkingDefinitions = {
   MOTORCYCLE_PARKING_SPACE: {

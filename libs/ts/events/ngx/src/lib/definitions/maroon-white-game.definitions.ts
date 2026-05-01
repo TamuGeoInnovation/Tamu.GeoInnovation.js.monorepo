@@ -15,7 +15,7 @@ export enum MAROON_WHITE_GAME_LAYERS {
   EVENT_PARKING_LOTS = 'maroon-white-game-event-parking-lots'
 }
 
-const eventUrl = Connections('gis.tamu.edu').maroonWhiteGameUrl;
+const eventUrl = Connections.maroonWhiteGameUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

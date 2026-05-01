@@ -13,7 +13,7 @@ export enum FRESHMAN_SELECTABLE_LAYERS {
   RESIDENT_STUDENT_PRIORITY = 'Resident Student Priority',
   FRESHMAN_STUDENT_SELECTABLE = 'Freshman Student Selectable'
 }
-const eventUrl = Connections('gis.it.tamu.edu').freshmanParkingUrl;
+const eventUrl = Connections.freshmanParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

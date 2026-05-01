@@ -15,7 +15,7 @@ export enum NSC_PARKING_LAYERS {
   NSC_PARKING_LOTS = 'NSC Parking Lots'
 }
 
-const eventUrl = Connections('gis.tamu.edu').nscParkingUrl;
+const eventUrl = Connections.nscParkingUrl;
 
 export const NscParkingDefinitions = {
   NSC_PARKING_LOTS: {

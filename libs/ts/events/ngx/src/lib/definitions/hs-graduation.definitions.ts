@@ -16,7 +16,7 @@ export enum HS_GRADUATION_LAYERS {
   TRAFFIC_ADVISORIES = 'hs-graduation-traffic-advisories'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').hsGraduationUrl;
+const eventUrl = Connections.hsGraduationUrl;
 
 const HsGraduationEventDefinitions = {
   GRADUATION_TRAFFIC_FLOW: {

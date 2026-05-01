@@ -17,7 +17,7 @@ export enum OUTDOOR_TRACK_PARKING_LAYERS {
   SAFETY_FIRST = 'outdoor-track-parking-safety-first'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').outdoorTrackParkingUrl;
+const eventUrl = Connections.outdoorTrackParkingUrl;
 
 export const OutdoorTrackParkingDefinitions = {
   VISITOR_KIOSK: {

@@ -18,7 +18,7 @@ export enum AGGIELAND_SATURDAY_LAYERS {
   PARKING = 'aggieland-saturday-parking'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').aggielandSaturdayUrl;
+const eventUrl = Connections.aggielandSaturdayUrl;
 
 export const AggielandSaturdayEventDefinitions = {
   EVENT_BUS_STOPS: {

@@ -12,7 +12,7 @@ export enum STAFF_SELECTABLE_LAYERS {
   STAFF_SELECTABLE = 'Staff Selectable Parking Lots'
 }
 
-const eventUrl = Connections('gis.tamu.edu').staffParkingUrl;
+const eventUrl = Connections.staffParkingUrl;
 
 export const StaffSelectableDefinitions = {
   STAFF_SELECTABLE: {

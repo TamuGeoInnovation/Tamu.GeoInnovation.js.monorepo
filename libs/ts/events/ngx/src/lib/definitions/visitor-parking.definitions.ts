@@ -16,7 +16,7 @@ export enum VISITOR_PARKING_LAYERS {
   VISITOR_PARKING_LOTS = 'Visitor Parking Lots'
 }
 
-const eventUrl = Connections('gis.tamu.edu').visitorParkingUrl;
+const eventUrl = Connections.visitorParkingUrl;
 
 export const VisitorParkingDefinitions = {
   VISITOR_KIOSKS: {

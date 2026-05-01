@@ -14,7 +14,7 @@ export enum MS150_LAYERS {
   ROUTE = 'ms150-route'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').ms150Url;
+const eventUrl = Connections.ms150Url;
 
 export const MS150Definitions = {
   AVP_PARKING: {

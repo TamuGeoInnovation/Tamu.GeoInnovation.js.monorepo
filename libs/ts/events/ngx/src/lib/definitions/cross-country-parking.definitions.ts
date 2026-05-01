@@ -18,7 +18,7 @@ export enum CROSS_COUNTRY_PARKING_LAYERS {
   PARKING_LOTS = 'cross-country-parking-lots'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').crossCountryParkingUrl;
+const eventUrl = Connections.crossCountryParkingUrl;
 
 export const CrossCountryParkingDefinitions = {
   CROSS_COUNTRY_AREA: {

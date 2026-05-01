@@ -13,7 +13,7 @@ export enum SERVICE_LOADING_LAYERS {
   SERVICE_SPACES = 'service-parking-spaces',
   SERVICE_LOTS = 'service-parking-lots'
 }
-const eventUrl = Connections('gis.it.tamu.edu').loadingZonesUrl;
+const eventUrl = Connections.loadingZonesUrl;
 
 export const ServiceLoadingDefinitions = {
   SERVICE_SPACES: {

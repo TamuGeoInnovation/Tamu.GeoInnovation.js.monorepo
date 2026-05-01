@@ -11,7 +11,7 @@ import {
 export enum STUDENT_SELECTABLE_LAYERS {
   STUDENT_SELECTABLE = 'Student Selectable Parking Lots'
 }
-const eventUrl = Connections('gis.tamu.edu').studentParkingUrl;
+const eventUrl = Connections.studentParkingUrl;
 
 export const StudentSelectableDefinitions = {
   STUDENT_SELECTABLE: {

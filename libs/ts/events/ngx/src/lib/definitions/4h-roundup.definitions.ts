@@ -15,7 +15,7 @@ export enum FOUR_H_ROUNDUP_LAYERS {
   FOUR_H_ROUNDUP_LOCATIONS = 'four-h-roundup-locations'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').fourHRoundupUrl;
+const eventUrl = Connections.fourHRoundupUrl;
 
 const FourHRoundupEventDefinitions = {
   FOUR_H_PARKING: {

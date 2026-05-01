@@ -15,7 +15,7 @@ export enum SUMMER_COMMENCEMENT_LAYERS {
   TRAFFIC_FLOW = 'summer-commencement-traffic-flow'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').summerCommencementUrl;
+const eventUrl = Connections.summerCommencementUrl;
 
 const SummerCommencementEventDefinitions = {
   TRAFFIC_FLOW: {

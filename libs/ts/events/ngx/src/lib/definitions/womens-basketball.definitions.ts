@@ -15,7 +15,7 @@ export enum WOMENS_BASKETBALL_LAYERS {
   SAFETY_FIRST = 'womens-basketball-safety-first'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').womensBasketballUrl;
+const eventUrl = Connections.womensBasketballUrl;
 
 export const WomensBasketball_Definitions = {
   VISITOR_KIOSK: {

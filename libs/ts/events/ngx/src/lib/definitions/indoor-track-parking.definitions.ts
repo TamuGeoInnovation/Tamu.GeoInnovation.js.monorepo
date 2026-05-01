@@ -19,7 +19,7 @@ export enum INDOOR_TRACK_PARKING_LAYERS {
   TEAM_BUS_PARKING = 'indoor-track-parking-team-bus'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').indoorTrackParkingUrl;
+const eventUrl = Connections.indoorTrackParkingUrl;
 
 export const IndoorTrackParkingDefinitions = {
   VISITOR_KIOSK: {

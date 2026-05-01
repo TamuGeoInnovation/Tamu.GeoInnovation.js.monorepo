@@ -14,7 +14,7 @@ export enum BUSINESS_PARKING_LAYERS {
   UB_AND_UB_PLUS = 'UB Permit and UB+ Permit Authorized',
   UB_PLUS_ONLY = 'Only UB+ Permit Authorized'
 }
-const eventUrl = Connections('gis.it.tamu.edu').businessParkingUrl;
+const eventUrl = Connections.businessParkingUrl;
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;

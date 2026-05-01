@@ -21,7 +21,7 @@ enum ConferenceDay {
   DAY3 = 'day3'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').secGroundsConferenceUrl;
+const eventUrl = Connections.secGroundsConferenceUrl;
 
 type FeatureLayerNative = NonNullable<FeatureLayerSourceProperties['native']>;
 type AutoCastCimSymbol = { type: 'cim' } & esri.CIMSymbolProperties;

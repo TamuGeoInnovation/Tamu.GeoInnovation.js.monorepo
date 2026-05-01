@@ -27,7 +27,7 @@ export enum PHYSICS_AND_ENGINEERING_FESTIVAL_LAYERS {
   WESTBOUND_PEDESTRIAN_PATH = 'phys-eng-festival-westbound-pedestrian-path'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').physicsFestUrl;
+const eventUrl = Connections.physicsFestUrl;
 
 type AutoCastSimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
 

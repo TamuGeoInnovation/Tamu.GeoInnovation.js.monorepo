@@ -12,7 +12,7 @@ export enum TENNIS_PARKING_LAYERS {
   PARKING_LOTS = 'tennis-parking-lots'
 }
 
-const eventUrl = Connections('gis.it.tamu.edu').tennisParkingUrl;
+const eventUrl = Connections.tennisParkingUrl;
 
 export const TennisParkingDefinitions = {
   PARKING: {
