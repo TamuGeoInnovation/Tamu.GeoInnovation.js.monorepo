@@ -11,45 +11,30 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum FOUR_H_ROUNDUP_LAYERS {
+  FOUR_H_ROUNDUP_LOCATIONS = 'four-h-roundup-locations',
   FOUR_H_ROUNDUP_PARKING = 'four-h-roundup-parking',
-  FOUR_H_ROUNDUP_LOCATIONS = 'four-h-roundup-locations'
 }
 
 const eventUrl = Connections.fourHRoundupUrl;
 
 const FourHRoundupEventDefinitions = {
-  FOUR_H_PARKING: {
-    id: FOUR_H_ROUNDUP_LAYERS.FOUR_H_ROUNDUP_PARKING,
-    layerId: FOUR_H_ROUNDUP_LAYERS.FOUR_H_ROUNDUP_PARKING,
-    name: '4-H Roundup Parking',
-    url: `${eventUrl}/0`
-  },
   FOUR_H_LOCATIONS: {
     id: FOUR_H_ROUNDUP_LAYERS.FOUR_H_ROUNDUP_LOCATIONS,
     layerId: FOUR_H_ROUNDUP_LAYERS.FOUR_H_ROUNDUP_LOCATIONS,
     name: '4-H Roundup Locations',
     url: `${eventUrl}/0`
-  }
+  },
+  FOUR_H_PARKING: {
+    id: FOUR_H_ROUNDUP_LAYERS.FOUR_H_ROUNDUP_PARKING,
+    layerId: FOUR_H_ROUNDUP_LAYERS.FOUR_H_ROUNDUP_PARKING,
+    name: '4-H Roundup Parking',
+    url: `${eventUrl}/1`
+  },
 };
 
 export const FourHColdLayerSources: LayerSource[] = [
   {
-    type: 'feature',
-    id: FourHRoundupEventDefinitions.FOUR_H_PARKING.id,
-    title: FourHRoundupEventDefinitions.FOUR_H_PARKING.name,
-    url: FourHRoundupEventDefinitions.FOUR_H_PARKING.url,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.Type',
-      description: 'attributes.description'
-    },
-    native: {
-      outFields: ['*'],
-      definitionExpression: "Type = 'Event Parking'"
-    }
-  },
-  {
-    type: 'feature',
+        type: 'feature',
     id: FourHRoundupEventDefinitions.FOUR_H_LOCATIONS.id,
     title: FourHRoundupEventDefinitions.FOUR_H_LOCATIONS.name,
     url: FourHRoundupEventDefinitions.FOUR_H_LOCATIONS.url,
@@ -61,19 +46,32 @@ export const FourHColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      definitionExpression: "Type = 'Event Location'"
+      outFields: ['*']
     }
-  }
+  },
+  {
+    type: 'feature',
+    id: FourHRoundupEventDefinitions.FOUR_H_PARKING.id,
+    title: FourHRoundupEventDefinitions.FOUR_H_PARKING.name,
+    url: FourHRoundupEventDefinitions.FOUR_H_PARKING.url,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.Type',
+      description: 'attributes.description'
+    },
+    native: {
+      outFields: ['*']
+    }
+  },
 ];
 
 export const FourHRoundupConfiguration: EventConfiguration = {
-  id: '4h-roundup-2025',
+  id: '4h-roundup-2026',
   name: '4-H Roundup',
   applicationName: '4-H Roundup Event Map',
   shortApplicationName: '4-H Roundup Map',
   introductionText: 'Get the best transportation and parking information for the 4-H Roundup event.',
-  eventDates: ['2025-06-02', '2025-06-03', '2025-06-04', '2025-06-05'],
+  eventDates: ['2026-06-01', '2026-06-02', '2026-06-03', '2026-06-04'],
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };
