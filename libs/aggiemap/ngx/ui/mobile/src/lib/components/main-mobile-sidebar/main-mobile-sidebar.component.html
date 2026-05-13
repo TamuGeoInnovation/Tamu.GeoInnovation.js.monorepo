@@ -1,8 +1,11 @@
 <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
 
 <div class="list-container">
-  <div class="list-item" *ngFor="let item of menu">
-    <p *ngIf="item.path !== ''" [routerLink]="item.path" (click)="reportNavigation(item.name)">{{ item.name }} <span *ngIf="item.type === 'outlet'" class="material-icons">keyboard_arrow_right</span></p>
-    <a *ngIf="item.url" [href]="item.url" [target]="item.type === 'link-internal' ? '_self' : '_blank'" (click)="reportNavigation(item.name)">{{ item.name }} <span *ngIf="item.type === 'outlet'" class="material-icons">keyboard_arrow_right</span></a>
-  </div>
+  <ng-container *ngFor="let item of menu">
+    <div *ngIf="item.type === 'separator'" class="separator" aria-hidden="true"></div>
+    <div class="list-item" *ngIf="item.type !== 'separator'">
+      <p *ngIf="item.path !== ''" [routerLink]="item.path" (click)="reportNavigation(item.name)">{{ item.name }} <span *ngIf="item.type === 'outlet'" class="material-icons">keyboard_arrow_right</span></p>
+      <a *ngIf="item.url" [href]="item.url" [target]="item.type === 'link-internal' ? '_self' : '_blank'" (click)="reportNavigation(item.name)">{{ item.name }} <span *ngIf="item.type === 'outlet'" class="material-icons">keyboard_arrow_right</span></a>
+    </div>
+  </ng-container>
 </div>
