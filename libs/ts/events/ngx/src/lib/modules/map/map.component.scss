@@ -42,6 +42,12 @@
   outline-offset: 2px;
 }
 
+.help .topics .topics-separator {
+  margin: 0.6rem 0;
+  border-top: 1px solid rgb(0 0 0 / 14%);
+  pointer-events: none;
+}
+
 @media only screen and (max-width: 768px) {
   .map-overlay-ui .overlay-zone.top.left {
     left: 1rem;
