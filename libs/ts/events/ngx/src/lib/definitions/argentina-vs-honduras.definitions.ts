@@ -157,7 +157,7 @@ export const ArgentinaVsHondurasConfiguration: EventConfiguration = {
   applicationName: 'Argentina vs. Honduras Transportation Map',
   shortApplicationName: 'Argentina vs. Honduras Map',
   introductionText: 'Get the best transportation and parking information for the Argentina vs. Honduras soccer match.',
-  eventDates: [],
+  eventDates: ['2026-06-06'],
   mapCenter: [-96.34454, 30.60338],
   zoom: 16,
   legendAllowVisibilityToggle: true,
