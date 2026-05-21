@@ -135,6 +135,7 @@ export const BreakSummerParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking lot authorization information for Break and Summer.',
     source: 'internal',
     type: 'event',
+    mapType: 'parking',
     keywords: ['break', 'summer', 'parking', 'permit']
   }
 };
