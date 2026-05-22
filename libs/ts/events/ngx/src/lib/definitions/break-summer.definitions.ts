@@ -117,7 +117,29 @@ export const BreakSummerConfiguration: EventConfiguration = {
   shortApplicationName: 'Break / Summer Map',
   mapCenter: [-96.34731, 30.60543],
   eventDates: [],
-  zoom: 16
+  zoom: 16,
+  sidebarInfo: {
+    sections: [
+      {
+        heading: 'Break Parking',
+        subheading: '(night permits valid all day)',
+        items: [
+          'Sept. 1, 2025 – Labor Day',
+          'Oct. 13 – 14, 2025 – Fall Break',
+          'Nov. 27 – 28, 2025 – Thanksgiving Break',
+          'Dec. 19, 2025 – Jan. 11, 2026',
+          'Jan. 19, 2026 – MLK',
+          'Mar. 9 – 13, 2026 – Spring Break',
+          'May 10 – 25, 2026'
+        ]
+      },
+      {
+        heading: 'Summer Parking',
+        subheading: '(night permits NOT valid during the day)',
+        items: ['May 26, 2026 – Aug. 9, 2026']
+      }
+    ]
+  }
 };
 
 export const BreakSummerOptions: SpecialEventOptions = [];

@@ -117,6 +117,27 @@ export interface EventConfiguration {
    * Text to display on the review step.
    */
   reviewText?: string;
+
+  /**
+   * Optional informational panel rendered in the right-hand sidebar above the layer list and legend.
+   *
+   * Used to surface reference content that lives outside of the map data — for example, the
+   * Break / Summer Parking dates that Transportation Services enforcement relies on.
+   */
+  sidebarInfo?: SidebarInfoPanel;
+}
+
+/**
+ * Static informational content rendered in the right-hand sidebar above Layers and Legend.
+ */
+export interface SidebarInfoPanel {
+  sections: Array<SidebarInfoSection>;
+}
+
+export interface SidebarInfoSection {
+  heading: string;
+  subheading?: string;
+  items?: Array<string>;
 }
 
 /**
