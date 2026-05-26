@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { EsriModuleProviderService, LayerSourcesService } from '@tamu-gisc/maps/esri';
+import { LayerLegendOverride } from '@tamu-gisc/common/types';
 import {
   catchError,
   concatMap,
@@ -39,7 +40,10 @@ import esri = __esri;
   styleUrls: ['./legend-element.component.scss']
 })
 export class LegendElementComponent implements OnInit {
-  constructor(private readonly moduleProvider: EsriModuleProviderService) {}
+  constructor(
+    private readonly moduleProvider: EsriModuleProviderService,
+    private readonly layerSourcesService: LayerSourcesService
+  ) {}
 
   private readonly sportsSafetyFirstLayerIds = new Set([
     'softball-parking-safety-first',
@@ -170,6 +174,152 @@ export class LegendElementComponent implements OnInit {
       distinctUntilChanged(),
       shareReplay(1)
     );
+  }
+
+  /**
+   * Returns the configured legend override for the current layer, if any.
+   *
+   * Resolves against both the layer's own id and (for sublayers) the parent layer's id so the
+   * override applies for either top-level feature layers or sublayers of map-image layers.
+   */
+  public get legendOverride(): LayerLegendOverride | undefined {
+    const candidateIds = [
+      this.layer?.id,
+      (this.layer as unknown as esri.Sublayer)?.layer?.id
+    ].filter((id): id is string => typeof id === 'string');
+
+    for (const id of candidateIds) {
+      const match = this.layerSourcesService?.getLegendOverride?.(id);
+      if (match) {
+        return match;
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * True when the override is active for the supplied info — i.e. it specifies a custom rendering
+   * mode or any sizing/fit hint. When false, the template falls back to existing default rendering.
+   */
+  public hasLegendOverrideForInfo(info: unknown): boolean {
+    const override = this.legendOverride;
+
+    if (!override) {
+      return false;
+    }
+
+    if (override.mode === 'custom-src' && !override.src) {
+      return false;
+    }
+
+    return this.resolveLegendIconSrc(info) !== null;
+  }
+
+  /**
+   * Resolve the icon URL for `info` based on the configured override mode.
+   *
+   * - `custom-src`: returns the explicit override URL.
+   * - `renderer-symbol`: extracts the picture-marker URL from the layer's renderer that matches
+   *   the legend info's value (for unique-value renderers) or the single symbol (for simple renderers).
+   * - `arcgis` (default): returns the info's own `src` or `preview` image URL if available.
+   *
+   * Returns null when no URL can be resolved — the template should then fall through to default rendering.
+   */
+  public resolveLegendIconSrc(info: unknown): string | null {
+    const override = this.legendOverride;
+
+    if (!override) {
+      return null;
+    }
+
+    if (override.mode === 'custom-src') {
+      return override.src ?? null;
+    }
+
+    if (override.mode === 'renderer-symbol') {
+      const fromRenderer = this._extractSymbolUrl(info);
+      if (fromRenderer) {
+        return fromRenderer;
+      }
+    }
+
+    const infoSrc = (info as { src?: string })?.src;
+    if (typeof infoSrc === 'string' && infoSrc.length > 0) {
+      return infoSrc;
+    }
+
+    const previewSrc = this._extractPreviewImageSrc(info);
+    return previewSrc;
+  }
+
+  /**
+   * Builds the `[ngStyle]` payload applied to the override `<img>` element. Honors `width`,
+   * `height`, `fit`, and `preserveAspectRatio`.
+   */
+  public get legendOverrideStyles(): Record<string, string> {
+    const override = this.legendOverride;
+    const styles: Record<string, string> = {};
+
+    if (!override) {
+      return styles;
+    }
+
+    if (typeof override.width === 'number') {
+      styles['width'] = `${override.width}px`;
+    }
+
+    if (typeof override.height === 'number') {
+      styles['height'] = `${override.height}px`;
+    }
+
+    if (override.fit) {
+      styles['object-fit'] = override.fit;
+    } else if (override.preserveAspectRatio) {
+      styles['object-fit'] = 'contain';
+    }
+
+    return styles;
+  }
+
+  private _extractSymbolUrl(info: unknown): string | null {
+    const renderer = (this.layer as esri.FeatureLayer)?.renderer;
+    if (!renderer) {
+      return null;
+    }
+
+    const infoValue = (info as { value?: unknown })?.value;
+
+    if (renderer.type === 'unique-value') {
+      const uniqueRenderer = renderer as esri.UniqueValueRenderer;
+      const match = uniqueRenderer.uniqueValueInfos?.find((u) => `${u.value}` === `${infoValue}`);
+      const url = (match?.symbol as { url?: string })?.url;
+      if (typeof url === 'string' && url.length > 0) {
+        return url;
+      }
+
+      const defaultUrl = (uniqueRenderer.defaultSymbol as { url?: string })?.url;
+      return typeof defaultUrl === 'string' && defaultUrl.length > 0 ? defaultUrl : null;
+    }
+
+    if (renderer.type === 'simple') {
+      const simpleRenderer = renderer as esri.SimpleRenderer;
+      const url = (simpleRenderer.symbol as { url?: string })?.url;
+      return typeof url === 'string' && url.length > 0 ? url : null;
+    }
+
+    return null;
+  }
+
+  private _extractPreviewImageSrc(info: unknown): string | null {
+    const preview = (info as { preview?: Element })?.preview;
+    if (!preview) {
+      return null;
+    }
+
+    const img = preview instanceof HTMLImageElement ? preview : preview.querySelector?.('img');
+    const src = (img as HTMLImageElement | null)?.src;
+    return typeof src === 'string' && src.length > 0 ? src : null;
   }
 
   public useSportsSafetyFirstFallback(): boolean {
