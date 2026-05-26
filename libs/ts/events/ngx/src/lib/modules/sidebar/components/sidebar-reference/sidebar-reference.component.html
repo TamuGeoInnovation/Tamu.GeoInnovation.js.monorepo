@@ -25,6 +25,16 @@
   </div>
 </div>
 
+<div *ngIf="configuration?.sidebarInfo as info" class="leader-1 sidebar-info">
+  <div *ngFor="let section of info.sections" class="sidebar-info-section">
+    <h4 class="sidebar-info-heading">{{ section.heading }}</h4>
+    <p *ngIf="section.subheading" class="sidebar-info-subheading">{{ section.subheading }}</p>
+    <ul *ngIf="section.items?.length" class="sidebar-info-items">
+      <li *ngFor="let item of section.items">{{ item }}</li>
+    </ul>
+  </div>
+</div>
+
 <tamu-gisc-layer-list [allowedLayerIds]="eventLayerIds"></tamu-gisc-layer-list>
 
 <tamu-gisc-legend
