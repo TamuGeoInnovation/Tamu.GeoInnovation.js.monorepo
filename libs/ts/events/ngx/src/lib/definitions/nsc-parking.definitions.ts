@@ -77,12 +77,7 @@ export const NscParkingConfiguration: EventConfiguration = {
   introductionText: 'Parking map for New Student Conference (NSC) permits.',
   mapCenter: [-96.34731, 30.60543],
   eventDates: [],
-  zoom: 16,
-  defaultLayerOverrides: {
-    'surface-lots-layer': {
-      popupComponent: null
-    }
-  }
+  zoom: 16
 };
 
 export const NscParkingOptions: SpecialEventOptions = [];
