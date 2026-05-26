@@ -153,10 +153,10 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
 
 export const ArgentinaVsHondurasConfiguration: EventConfiguration = {
   id: 'argentina-vs-honduras-2026',
-  name: 'Argentina vs. Honduras',
-  applicationName: 'Argentina vs. Honduras Transportation Map',
-  shortApplicationName: 'Argentina vs. Honduras Map',
-  introductionText: 'Get the best transportation and parking information for the Argentina vs. Honduras soccer match.',
+  name: 'Road to 26: Argentina vs. Honduras',
+  applicationName: 'Road to 26: Argentina vs. Honduras Transportation Map',
+  shortApplicationName: 'Road to 26: Argentina vs. Honduras Map',
+  introductionText: 'Get the best transportation and parking information for the Road to 26: Argentina vs. Honduras soccer match.',
   eventDates: ['2026-06-06'],
   mapCenter: [-96.34454, 30.60338],
   zoom: 16,
@@ -175,9 +175,9 @@ export const ArgentinaVsHondurasTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: ArgentinaVsHondurasConfiguration.id,
     name: ArgentinaVsHondurasConfiguration.name,
-    description: 'Transportation and parking information for the Argentina vs. Honduras soccer match.',
+    description: 'Transportation and parking information for the Road to 26: Argentina vs. Honduras soccer match.',
     source: 'internal',
     type: 'event',
-    keywords: ['argentina', 'honduras', 'soccer', 'parking', 'shuttle', 'transportation']
+    keywords: ['road to 26', 'argentina', 'honduras', 'soccer', 'parking', 'shuttle', 'transportation']
   }
 };
