@@ -12,7 +12,7 @@ import {
   getLayerTypeFromPortalJSON,
   IPortalLayer
 } from '@tamu-gisc/common/utils/geometry/esri';
-import { LayerSource, IRemoteLayerService, GroupLayerSourceProperties } from '@tamu-gisc/common/types';
+import { LayerLegendOverride, LayerSource, IRemoteLayerService, GroupLayerSourceProperties } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { EsriModuleProviderService } from '../module-provider/module-provider.service';
@@ -278,6 +278,10 @@ export class EsriMapService {
   public async loadLayers(sources: LayerSource[]) {
     await this.registerIdentityAuthInfos(sources);
 
+    // Index legend overrides from dynamically-loaded sources (e.g. event layers loaded outside
+    // the env-initialized LayerSources list) so the legend component can resolve them by id.
+    this.layerSourcesService.collectLegendOverrides(sources);
+
     for (const source of sources) {
       await this.findLayerOrCreateFromSource(source);
     }
@@ -294,9 +298,20 @@ export class EsriMapService {
       props = { ...source };
     }
 
+    // Capture the legend override before it gets stripped — the same sizing hints are applied
+    // to the on-map picture-marker symbols once the layer loads.
+    const legendOverride = (source as LayerSource).legend;
+
     // Remove the 'native' property from the object since it's not needed in the layer creation.
     if ('native' in props) {
       delete props.native;
+    }
+
+    // Strip the legend override before constructing the esri layer. It's only consumed by the
+    // legend component (via LayerSourcesService.getLegendOverride) and ArcGIS will reject or
+    // misinterpret an unknown `legend` property on the layer constructor.
+    if ('legend' in props) {
+      delete props.legend;
     }
 
     // Delete any additional properties to avoid polluting layer instances
@@ -310,7 +325,9 @@ export class EsriMapService {
         delete props.type;
 
         // Create and return new feature layer
-        return new FeatureLayer(props as esri.FeatureLayerProperties);
+        const layer = new FeatureLayer(props as esri.FeatureLayerProperties);
+        this.applyLegendOverrideToLayerSymbols(layer, legendOverride);
+        return layer;
       });
     } else if (source.type === 'map-image') {
       return this.moduleProvider.require(['MapImageLayer']).then(([ImageLayer]: [esri.MapImageLayerConstructor]) => {
@@ -496,6 +513,71 @@ export class EsriMapService {
     });
 
     return mapped;
+  }
+
+  /**
+   * Applies the `legend` override's sizing hints (`width` / `height`) to the on-map picture-marker
+   * symbols of the supplied layer once it has loaded. This keeps the map icon and the legend
+   * swatch visually consistent — without this, a `legend.width` of 24 would only shrink the legend
+   * swatch while the map would keep the larger service-defined dimensions.
+   *
+   * Only picture-marker symbols are touched; non-image symbols (simple-fill, simple-line, …) are
+   * left alone because they don't have a meaningful width/height in the same sense.
+   */
+  private applyLegendOverrideToLayerSymbols(layer: esri.FeatureLayer, override: LayerLegendOverride | undefined): void {
+    if (!override) {
+      return;
+    }
+
+    const { width, height } = override;
+    if (width === undefined && height === undefined) {
+      return;
+    }
+
+    const applyToSymbol = (symbol: unknown): void => {
+      if (!symbol || (symbol as { type?: string }).type !== 'picture-marker') {
+        return;
+      }
+
+      const target = symbol as { width?: number; height?: number };
+      if (width !== undefined) {
+        target.width = width;
+      }
+      if (height !== undefined) {
+        target.height = height;
+      }
+    };
+
+    const applyToRenderer = (renderer: esri.Renderer | undefined | null): void => {
+      if (!renderer) {
+        return;
+      }
+
+      if (renderer.type === 'simple') {
+        applyToSymbol((renderer as esri.SimpleRenderer).symbol);
+      } else if (renderer.type === 'unique-value') {
+        const unique = renderer as esri.UniqueValueRenderer;
+        unique.uniqueValueInfos?.forEach((info) => applyToSymbol(info.symbol));
+        applyToSymbol(unique.defaultSymbol);
+      } else if (renderer.type === 'class-breaks') {
+        const classBreaks = renderer as esri.ClassBreaksRenderer;
+        classBreaks.classBreakInfos?.forEach((info) => applyToSymbol(info.symbol));
+        applyToSymbol(classBreaks.defaultSymbol);
+      }
+    };
+
+    // The renderer is typically populated by the service after the layer loads. Apply once on
+    // load, and again any time the renderer is reassigned.
+    layer
+      .when()
+      .then(() => {
+        applyToRenderer(layer.renderer);
+      })
+      .catch(() => {
+        /* swallow — the layer may fail to load for unrelated reasons */
+      });
+
+    layer.watch('renderer', (renderer: esri.Renderer) => applyToRenderer(renderer));
   }
 
   /**
