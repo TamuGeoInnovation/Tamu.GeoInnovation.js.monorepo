@@ -302,9 +302,10 @@ export class SearchService {
    * Downstream feature extraction (`r[featuresLocation] ? ... : []`) treats the empty object as a
    * no-results response for that source.
    */
-  private _safeRequest(url: string, sourceLabel: string): Observable<unknown> {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  private _safeRequest(url: string, sourceLabel: string): Observable<Object> {
     return this.http.get(url).pipe(
-      map((response: unknown) => {
+      map((response) => {
         if (response && typeof response === 'object' && (response as { error?: unknown }).error) {
           console.warn(
             `Search source "${sourceLabel}" returned an error envelope:`,
