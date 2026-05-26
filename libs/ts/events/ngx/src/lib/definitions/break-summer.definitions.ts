@@ -118,6 +118,11 @@ export const BreakSummerConfiguration: EventConfiguration = {
   mapCenter: [-96.34731, 30.60543],
   eventDates: [],
   zoom: 16,
+  defaultLayerOverrides: {
+    'surface-lots-layer': {
+      popupComponent: null
+    }
+  },
   sidebarInfo: {
     sections: [
       {

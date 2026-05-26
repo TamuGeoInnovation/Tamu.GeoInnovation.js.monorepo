@@ -58,7 +58,7 @@ export const NscParkingColdLayerSources: LayerSource[] = [
         field: 'GIS.TS.ParkingLots.Name',
         collapsed: true
       },
-      notes: {
+      description: {
         field: 'GIS.TS.Lot_Notes.NewStudentConfN',
         collapsed: true
       }
@@ -77,7 +77,12 @@ export const NscParkingConfiguration: EventConfiguration = {
   introductionText: 'Parking map for New Student Conference (NSC) permits.',
   mapCenter: [-96.34731, 30.60543],
   eventDates: [],
-  zoom: 16
+  zoom: 16,
+  defaultLayerOverrides: {
+    'surface-lots-layer': {
+      popupComponent: null
+    }
+  }
 };
 
 export const NscParkingOptions: SpecialEventOptions = [];
