@@ -388,7 +388,61 @@ export type LayerSource = LayerSourceType & {
    * protected resources.
    */
   auth?: LayerSourceAuthInfo;
+
+  /**
+   * Optional opt-in override that controls how the layer's icons are rendered in the legend.
+   *
+   * Without this property, the legend keeps its existing default behavior (the ArcGIS-generated
+   * preview is used as-is). Set this when the service-provided icon swatch is visually inconsistent
+   * (for example, stretched non-square picture markers) and the layer needs targeted control over
+   * its legend icons.
+   */
+  legend?: LayerLegendOverride;
 };
+
+/**
+ * Per-layer legend icon override applied by the legend component when present on a `LayerSource`.
+ *
+ * Designed as an opt-in escape hatch so existing legends remain unchanged. When provided, the
+ * legend component uses the chosen `mode` to resolve the icon source and applies the supplied
+ * sizing/fit hints to the rendered `<img>`.
+ */
+export interface LayerLegendOverride {
+  /**
+   * Source used to resolve the legend icon for this layer.
+   *
+   * - `'arcgis'` (default): use the ArcGIS-generated legend preview/source unchanged.
+   * - `'renderer-symbol'`: pull the icon URL directly from the layer's renderer (picture-marker
+   *   symbols on simple/unique-value renderers). Falls back to `'arcgis'` when no URL is available.
+   * - `'custom-src'`: use the explicit URL provided in `src`.
+   */
+  mode?: 'arcgis' | 'renderer-symbol' | 'custom-src';
+
+  /**
+   * Explicit image URL or data URI for the legend icon. Required when `mode === 'custom-src'`.
+   */
+  src?: string;
+
+  /**
+   * Preserve the icon's aspect ratio when scaling. Convenience flag equivalent to `fit: 'contain'`.
+   */
+  preserveAspectRatio?: boolean;
+
+  /**
+   * CSS `object-fit` value applied to the rendered icon. Use `'contain'` to avoid stretching.
+   */
+  fit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
+
+  /**
+   * Rendered icon width in pixels.
+   */
+  width?: number;
+
+  /**
+   * Rendered icon height in pixels.
+   */
+  height?: number;
+}
 
 interface LayerSourceAuthInfo {
   /**

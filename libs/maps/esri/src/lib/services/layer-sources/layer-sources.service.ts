@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import deepmerge from 'deepmerge';
 
-import { LayerSource } from '@tamu-gisc/common/types';
+import { LayerLegendOverride, LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 export interface LayerSourceOverrides {
@@ -14,6 +14,7 @@ export interface LayerSourceOverrides {
 export class LayerSourcesService {
   private _layerSources: BehaviorSubject<LayerSource[]> = new BehaviorSubject<LayerSource[]>([]);
   private _overrides: BehaviorSubject<LayerSourceOverrides> = new BehaviorSubject<LayerSourceOverrides>({});
+  private _legendOverrides: Map<string, LayerLegendOverride> = new Map();
 
   public readonly layerSources$: Observable<LayerSource[]> = this._layerSources.asObservable();
   public readonly overrides$: Observable<LayerSourceOverrides> = this._overrides.asObservable();
@@ -28,6 +29,43 @@ export class LayerSourcesService {
   private initializeLayerSources(): void {
     const sources = this.environment.value('LayerSources') || [];
     this._layerSources.next(sources);
+    this.collectLegendOverrides(sources);
+  }
+
+  /**
+   * Walks the provided layer sources (including nested group sources) and indexes any `legend`
+   * overrides so the legend component can look them up by layer id at render time.
+   *
+   * Event-driven sources are not part of the env-initialized list, so callers that load layers
+   * dynamically (for example `EsriMapService.loadLayers`) should call this with the new sources
+   * after they are loaded.
+   */
+  public collectLegendOverrides(sources: LayerSource[] | undefined | null): void {
+    if (!sources || sources.length === 0) {
+      return;
+    }
+
+    for (const source of sources) {
+      if (source?.legend) {
+        this._legendOverrides.set(source.id, source.legend);
+      }
+
+      const childSources = (source as unknown as { sources?: LayerSource[] })?.sources;
+      if (childSources?.length) {
+        this.collectLegendOverrides(childSources);
+      }
+    }
+  }
+
+  /**
+   * Returns the `legend` override registered for a given layer id, if any.
+   */
+  public getLegendOverride(layerId: string | undefined | null): LayerLegendOverride | undefined {
+    if (!layerId) {
+      return undefined;
+    }
+
+    return this._legendOverrides.get(layerId);
   }
 
   /**

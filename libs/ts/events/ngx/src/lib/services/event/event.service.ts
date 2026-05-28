@@ -165,16 +165,33 @@ export class EventService {
     const sources: Array<LayerSource> = this.eventSettingsService.eventLayerSources();
     const root = sources.find((s) => s.id == reference);
 
-    const popupComponent = root?.popupComponent;
-
     if (root) {
       const copied = JSON.parse(JSON.stringify(root));
 
-      copied.popupComponent = popupComponent;
+      // JSON.stringify strips non-serializable values like Angular component class references.
+      // Walk both trees in parallel to restore them on the cloned copy.
+      this._restoreNonSerializableSourceProperties(root, copied);
 
       return copied;
     } else {
       throw new Error(`Layer source reference '${reference}' not found.`);
+    }
+  }
+
+  private _restoreNonSerializableSourceProperties(original: LayerSource, copy: LayerSource): void {
+    if (original.popupComponent) {
+      copy.popupComponent = original.popupComponent;
+    }
+
+    const originalChildren = (original as { sources?: LayerSource[] }).sources;
+    const copyChildren = (copy as { sources?: LayerSource[] }).sources;
+
+    if (originalChildren && copyChildren) {
+      originalChildren.forEach((child, index) => {
+        if (copyChildren[index]) {
+          this._restoreNonSerializableSourceProperties(child, copyChildren[index]);
+        }
+      });
     }
   }
 

@@ -50,8 +50,8 @@ export const AVPParkingColdLayerSources: LayerSource[] = [
 
 export const AVPParkingConfiguration: EventConfiguration = {
   id: 'avp-parking',
-  name: 'AVP Parking',
-  applicationName: 'AVP Parking Map',
+  name: 'Any Valid Permit (AVP) Parking',
+  applicationName: 'Any Valid Permit (AVP) Parking Map',
   shortApplicationName: 'AVP Parking Map',
   introductionText: 'Parking map for AVP permits.',
   eventDates: [],

@@ -32,3 +32,9 @@ a {
   margin-left: 0.25rem;
   color: #757575;
 }
+
+.separator {
+  margin: 0.6rem 0;
+  border-top: 1px solid rgb(0 0 0 / 14%);
+  pointer-events: none;
+}
