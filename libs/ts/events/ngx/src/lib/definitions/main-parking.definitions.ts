@@ -247,7 +247,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
         `Number of Reg (Regular): {attributes.regular}\n` +
         `Number of RNS (Reserved): {attributes.reserved}\n` +
         `Number of Other: {attributes.other}\n` +
-        `Number of H/C (Accessible): {attributes.accessible}\n` +
+        `Number of Accessible: {attributes.accessible}\n` +
         `Number of M/C (Motorcycle): {attributes.motorcycle}\n` +
         `Number of Timed: {attributes.timed}\n` +
         `Number of Serv (Service): {attributes.service}\n` +
@@ -256,7 +256,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
         `Number of Visitor H/C: {attributes.visitorHc}\n` +
         `Number of RV: {attributes.rv}\n\n` +
         `---\n\n` +
-        `Lot Notes: {attributes.notes}`
+        `Notes: {attributes.notes}`
     },
 
     native: {
