@@ -31,16 +31,6 @@ export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
   protected override _getShareUrlFragment(): string | null {
     const layerId = this.data?.attributes?.__featureLayerId || this.data?.layer?.id;
     const objectId = this._getObjectIdValue(this.data);
-    const lotValue = this._getLotValue(this.data);
-
-    if (lotValue !== null) {
-      const params = new URLSearchParams(window.location.search);
-
-      this._clearExistingFeatureParams(params);
-      params.set('lot', lotValue);
-
-      return `?${params.toString()}`;
-    }
 
     if (!layerId || objectId === null || objectId === undefined || objectId === '') {
       return null;
@@ -86,36 +76,5 @@ export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
     }
 
     return null;
-  }
-
-  private _getLotValue(graphic: esri.Graphic): string | null {
-    if (!this._isLotFeature(graphic)) {
-      return null;
-    }
-
-    const attributes = graphic?.attributes || {};
-    const candidates = [attributes['Name'], attributes['LotName'], attributes['name']]
-      .filter((value): value is string | number => value !== undefined && value !== null && `${value}`.trim().length > 0)
-      .map((value) => `${value}`.trim());
-
-    for (const candidate of candidates) {
-      const normalized = candidate.replace(/^Lot\s+/i, '').replace(/^0+(\d)/, '$1');
-
-      if (normalized.length > 0) {
-        return normalized;
-      }
-    }
-
-    return null;
-  }
-
-  private _isLotFeature(graphic: esri.Graphic): boolean {
-    const layerId = graphic?.attributes?.__featureLayerId || graphic?.layer?.id || '';
-    const layerTitle = graphic?.layer?.title || '';
-    const attributes = graphic?.attributes || {};
-    const nameLikeValue = attributes['Name'] || attributes['LotName'] || attributes['name'];
-    const haystack = `${layerId} ${layerTitle}`.toLowerCase();
-
-    return (haystack.includes('parking') || haystack.includes('lot')) && nameLikeValue !== undefined && nameLikeValue !== null;
   }
 }
