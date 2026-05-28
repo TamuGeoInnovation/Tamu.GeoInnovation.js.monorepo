@@ -19,7 +19,8 @@ describe('DiscoverComponent', () => {
   const internalApplications: InternalDiscoverApplication[] = [
     createInternalApplication('accessible-parking', 'Accessible Parking', 'parking', 'parking', '2000-04-12'),
     createInternalApplication('move-in', 'Move In', 'campus', 'event', '2099-03-29'),
-    createInternalApplication('football-parking', 'Football Parking', 'athletics', 'event', '2099-09-05')
+    createInternalApplication('football-parking', 'Football Parking', 'athletics', 'event', '2099-09-05'),
+    createInternalApplication('construction-map', 'Construction Map', 'operations', 'parking', '2000-04-12')
   ];
 
   beforeEach(async () => {
@@ -64,18 +65,19 @@ describe('DiscoverComponent', () => {
     expect(tabButtons.map((button) => button.textContent?.trim())).toEqual([
       'Parking Maps',
       'Campus Events',
-      'Athletic Events'
+      'Athletic Events',
+      'Operations Maps'
     ]);
     expect(component.activeTab).toBe('parking');
     expect(getPanelHeading()).toBe('Parking Maps');
     expect(getPanelText()).toContain('Accessible Parking');
 
-    tabButtons[1].click();
+    tabButtons[3].click();
     fixture.detectChanges();
 
-    expect(component.activeTab).toBe('campus');
-    expect(getPanelHeading()).toBe('Campus Events');
-    expect(getPanelText()).toContain('Move In');
+    expect(component.activeTab).toBe('operations');
+    expect(getPanelHeading()).toBe('Operations Maps');
+    expect(getPanelText()).toContain('Construction Map');
     expect(getPanelText()).not.toContain('Accessible Parking');
     expect(window.location.hash).toBe('#discover-tab-campus');
   });
