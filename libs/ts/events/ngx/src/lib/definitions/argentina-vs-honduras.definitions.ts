@@ -97,7 +97,7 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         listMode: 'show',
         native: {
           outFields: ['*']
-        }
+        },
       }
     ],
     native: {
@@ -126,6 +126,13 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         listMode: 'show',
         native: {
           outFields: ['*']
+        },
+        legend: {
+          mode: 'renderer-symbol',
+          preserveAspectRatio: true,
+          fit: 'contain',
+          width: 24,
+          height: 30
         }
       },
       {
@@ -142,6 +149,13 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         listMode: 'show',
         native: {
           outFields: ['*']
+        },
+        legend: {
+          mode: 'renderer-symbol',
+          preserveAspectRatio: true,
+          fit: 'contain',
+          width: 26,
+          height: 32
         }
       }
     ],
