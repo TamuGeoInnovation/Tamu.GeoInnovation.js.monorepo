@@ -29,23 +29,15 @@
   padding-bottom: 0.25rem;
 }
 
-.sidebar-info {
-  .sidebar-info-section + .sidebar-info-section {
-    margin-top: 0.75rem;
-  }
-
-  .sidebar-info-heading {
-    margin: 0 0 0.1rem;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #500000;
-  }
+.sidebar-info-section {
+  padding: 0.35rem;
+  margin-bottom: 0.5rem;
 
   .sidebar-info-subheading {
-    margin: 0;
+    margin: 0 0 0.25rem;
     font-size: 0.8rem;
     font-style: italic;
-    color: #555;
+    color: #6e6e6e;
   }
 
   .sidebar-info-items {
@@ -54,7 +46,8 @@
     list-style: none;
 
     li {
-      font-size: 0.85rem;
+      color: #323232;
+      font-size: 0.875rem;
       padding: 0.1rem 0;
     }
   }
