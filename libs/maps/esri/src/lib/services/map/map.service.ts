@@ -876,6 +876,12 @@ export class EsriMapService {
     // Source object
     const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id === 'selection-layer'));
 
+    // Resolve the popup component to assign to the selection layer instance. Without this,
+    // a follow-up click on the highlighted graphic would fall back to the source's static
+    // popupComponent (BUILDINGS), producing the wrong popup for non-building selections like
+    // parking lots. The assignment is ephemeral — overwritten on each new selection.
+    const resolvedPopupComponent = properties.popupComponent ?? source.popupComponent;
+
     // Add the symbol and polygon type to each feature
     const features = graphics.map((ft) => {
       const feature = ft;
@@ -888,13 +894,14 @@ export class EsriMapService {
       // If the layer has been added before, graphics will simply be replaced
       this.findLayerOrCreateFromSource(source)
         .then((layer: esri.GraphicsLayer) => {
+          (layer as unknown as { popupComponent?: Type<Component> }).popupComponent = resolvedPopupComponent;
           layer.removeAll();
           layer.addMany(features);
           return layer;
         })
         .then((layer) => {
           if (shouldShowPopup) {
-            this._hitTest.next({ graphics: layer.graphics.toArray(), popupComponent: properties.popupComponent });
+            this._hitTest.next({ graphics: layer.graphics.toArray(), popupComponent: resolvedPopupComponent });
           }
 
           return layer.graphics.toArray();
@@ -911,8 +918,10 @@ export class EsriMapService {
       // If the layer has not been added before, instantiate it with the features as a source
       this.findLayerOrCreateFromSource(Object.assign(source, { graphics: features }))
         .then((layer: esri.GraphicsLayer) => {
+          (layer as unknown as { popupComponent?: Type<Component> }).popupComponent = resolvedPopupComponent;
+
           if (properties.shouldShowPopup) {
-            this._hitTest.next({ graphics: layer.graphics.toArray(), popupComponent: properties.popupComponent });
+            this._hitTest.next({ graphics: layer.graphics.toArray(), popupComponent: resolvedPopupComponent });
           }
 
           return layer.graphics.toArray();
