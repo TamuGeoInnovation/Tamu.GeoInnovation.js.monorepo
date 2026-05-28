@@ -98,13 +98,6 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
         native: {
           outFields: ['*']
         },
-        legend: {
-          mode: 'renderer-symbol',
-          preserveAspectRatio: true,
-          fit: 'contain',
-          width: 24,
-          height: 30
-        }
       }
     ],
     native: {
@@ -161,8 +154,8 @@ export const ArgentinaVsHondurasColdLayerSources: LayerSource[] = [
           mode: 'renderer-symbol',
           preserveAspectRatio: true,
           fit: 'contain',
-          width: 24,
-          height: 30
+          width: 26,
+          height: 32
         }
       }
     ],
