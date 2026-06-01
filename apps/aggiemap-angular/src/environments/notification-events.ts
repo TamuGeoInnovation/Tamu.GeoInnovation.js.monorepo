@@ -26,7 +26,8 @@ export const NotificationEvents: NotificationProperties[] = [
   {
     id: 'ring-day-fall-1',
     title: 'Aggie Ring Day',
-    range: [1728495718000, 1728752400000],
+    // Ring Pick Up / Accessibility day: Thu Oct 8, 2026 (9-3); Ring Days: Fri Oct 9 & Sat Oct 10, 2026 (9-6)
+    range: [1791468000000, 1791673200000],
     acknowledge: false,
     message:
       'Congratulations Ags! Get the best transportation information on your Ring Day with the <a href="https://aggiemap.tamu.edu/ringday/" target="_blank">Ring Day Event Map</a>.',

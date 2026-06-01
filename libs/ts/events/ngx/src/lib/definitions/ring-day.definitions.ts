@@ -15,9 +15,9 @@ export enum RING_DAY_LAYERS {
 }
 
 enum RingDayDates {
-  DAY1 = '2026-04-08',
-  DAY2 = '2026-04-09',
-  DAY3 = '2026-04-10'
+  DAY1 = '2026-10-08',
+  DAY2 = '2026-10-09',
+  DAY3 = '2026-10-10'
 }
 
 const eventUrl = Connections.ringDayUrl;
@@ -144,11 +144,11 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
     choices: [
       {
         value: EventDay.DAY1,
-        label: 'Aggie Ring Pickup (April 8, 2026)'
+        label: 'Aggie Ring Pickup (October 8, 2026)'
       },
       {
         value: EventDay.DAY2,
-        label: 'Aggie Ring Day (April 9-10, 2026)'
+        label: 'Aggie Ring Day (October 9-10, 2026)'
       }
     ],
     effects: {
