@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from 'rxjs';
-import { toArray, concatMap, switchMap } from 'rxjs/operators';
+import { toArray, concatMap, switchMap, catchError, map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -73,7 +73,7 @@ export class SearchService {
       // Render query with appropriate value.
       const query = this._getUrlQueryParams(options, source, index);
 
-      return this.http.get(`${source.url}/${query}`);
+      return this._safeRequest(`${source.url}/${query}`, source.source);
     });
 
     // Create an array of http get observables for those search sources
@@ -113,7 +113,7 @@ export class SearchService {
 
         const query = this._getUrlQueryParams(modifiedOptions, modifiedScoringSource, index);
 
-        return this.http.get(`${source.url}/${query}`);
+        return this._safeRequest(`${source.url}/${query}`, `${source.source} (scoring)`);
       });
 
     if (options.stateful !== false) {
@@ -168,17 +168,21 @@ export class SearchService {
             if (baseIndexes.includes(i)) {
               // This index will correspond to the array location of scoring responses.
               const indexOfScoringResponse = baseIndexes.indexOf(i);
+              const featuresKey = sources[i].featuresLocation;
+
+              // Guard against responses that omit the features array (e.g. ArcGIS error envelopes
+              // returned when a layer has been removed). Without these defaults the spread below
+              // would throw and crash the whole pipeline.
+              const scoringFeatures = (responses.scoring[indexOfScoringResponse] || {})[featuresKey] || [];
+              const baseFeatures = (r || {})[featuresKey] || [];
 
               // This is merging the current base response features, with the
               // features in the scoring response.
-              r[sources[i].featuresLocation] = [
-                ...responses.scoring[indexOfScoringResponse][sources[i].featuresLocation],
-                ...r[sources[i].featuresLocation]
-              ];
+              r[featuresKey] = [...scoringFeatures, ...baseFeatures];
 
               // Remove any duplicates in the list.
               // Determine duplication by simple object stringify equivalence.
-              r[sources[i].featuresLocation] = r[sources[i].featuresLocation].filter((feature, index, arr) => {
+              r[featuresKey] = r[featuresKey].filter((feature, index, arr) => {
                 const findFirstMatchingIndex = arr.findIndex((f) => {
                   return JSON.stringify(f) === JSON.stringify(feature);
                 });
@@ -207,11 +211,15 @@ export class SearchService {
         return of(
           new SearchResult({
             results: result.map((r, index: number) => {
+              // `r` may be an empty object when `_safeRequest` swallowed a transport- or envelope-level
+              // failure for this source. Treat that the same as a result with no features so the rest
+              // of the search response continues to render normally.
+              const featureCollection = r && r[sources[index].featuresLocation];
+
               return <SearchResultItem<T>>{
                 name: sources[index].name,
-                // features: r[sources[index].featuresLocation] ? r[sources[index].featuresLocation] : [],
-                features: r[sources[index].featuresLocation]
-                  ? this.scoreResults(r[sources[index].featuresLocation], sources, index, options.values[index] as string)
+                features: featureCollection
+                  ? this.scoreResults(featureCollection, sources, index, options.values[index] as string)
                   : [],
                 displayTemplate: sources[index].displayTemplate,
                 breadcrumbs: {
@@ -236,8 +244,14 @@ export class SearchService {
           }
         },
         (err) => {
+          // Backstop for any error that slipped past the per-source `_safeRequest` guards. We
+          // intentionally do not re-throw — doing so tears down the active subscription and leaves
+          // consumers without a SearchResult to render, which is how the search UI used to wedge
+          // when a single upstream source went bad. Instead, log the failure and emit an empty
+          // result so the store stays in a usable state.
+          console.error('Search pipeline error:', err);
           this._searching.next(false);
-          throw new Error(err);
+          this._store.next(new SearchResult({}));
         }
       );
 
@@ -271,6 +285,41 @@ export class SearchService {
 
   public getSource(id: string): SearchSource | undefined {
     return this._sources?.find((s) => s.source === id);
+  }
+
+  /**
+   * Performs the HTTP request for a single search source, isolating its failure modes from the
+   * wider search pipeline.
+   *
+   * Two failure shapes are normalized to an empty response object so that `forkJoin` resolves
+   * successfully and the remaining sources still render:
+   *
+   *   1. Transport-level errors (network failure, non-2xx status) — caught via `catchError`.
+   *   2. Application-level errors returned with a 2xx status — most notably ArcGIS REST envelopes
+   *      of the form `{ error: { code, message, details } }`, which are emitted when a referenced
+   *      layer has been deleted or renamed in the SDE.
+   *
+   * Downstream feature extraction (`r[featuresLocation] ? ... : []`) treats the empty object as a
+   * no-results response for that source.
+   */
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  private _safeRequest(url: string, sourceLabel: string): Observable<Object> {
+    return this.http.get(url).pipe(
+      map((response) => {
+        if (response && typeof response === 'object' && (response as { error?: unknown }).error) {
+          console.warn(
+            `Search source "${sourceLabel}" returned an error envelope:`,
+            (response as { error: unknown }).error
+          );
+          return {};
+        }
+        return response;
+      }),
+      catchError((err) => {
+        console.warn(`Search source "${sourceLabel}" request failed:`, err);
+        return of({});
+      })
+    );
   }
 
   /**
