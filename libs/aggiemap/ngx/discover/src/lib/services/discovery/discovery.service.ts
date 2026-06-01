@@ -21,7 +21,7 @@ export class DiscoveryService {
       id: event.discover?.id || event.configuration.id,
       source: 'internal' as const,
       type: event.discover?.type || 'event',
-      mapType: event.discover?.mapType || (event.discover?.type === 'parking' ? 'parking' : 'campus'),
+      mapType: event.discover?.mapType || (event.discover?.type === 'parking' ? 'parking' : event.discover?.type === 'operations' ? 'operations' : 'campus'),
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
       configuration: event.configuration,

@@ -372,7 +372,7 @@ export interface DiscoverMetadata {
    */
   labels?: string[];
   source: 'internal';
-  type: 'event' | 'parking';
+  type: 'event' | 'parking' | 'operations';
   /**
    * Optional tab grouping override for the Discover page.
    *

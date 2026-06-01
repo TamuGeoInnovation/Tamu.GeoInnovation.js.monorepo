@@ -225,7 +225,7 @@ export const ConstructionMapTs: AggiemapCustomMapConfiguration = {
     name: ConstructionMapConfiguration.name,
     description: 'Current and planned campus construction projects.',
     source: 'internal',
-    type: 'parking',
+    type: 'operations',
     mapType: 'operations',
     keywords: ['construction', 'planned', 'current', 'operations', 'projects']
   }
