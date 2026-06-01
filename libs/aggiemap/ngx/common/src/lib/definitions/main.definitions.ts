@@ -118,7 +118,7 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       id: 'visitor-parking',
       layerId: MAIN_MAP_LAYERS.VISITOR_PARKING,
       name: 'Visitor Parking',
-      url: `${connections.inforUrl}/3`,
+      url: `${connections.tsMainUrl}/4`,
       popupComponent: Popups.ParkingKioskPopupComponent
     },
     TRANSPORTATION_PARKING: {
