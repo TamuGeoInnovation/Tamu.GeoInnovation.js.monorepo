@@ -54,6 +54,7 @@ import { EvChargersTs } from './ev-chargers.definitions';
 import { TsMainParkingTs } from './main-parking.definitions';
 import { SecGroundsConferenceTs } from './sec-grounds-conference.definitions';
 import { ArgentinaVsHondurasTs } from './argentina-vs-honduras.definitions';
+import { ConstructionMapTs } from './construction-map.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -110,5 +111,6 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   EvChargersTs,
   TsMainParkingTs,
   SecGroundsConferenceTs,
-  ArgentinaVsHondurasTs
+  ArgentinaVsHondurasTs,
+  ConstructionMapTs
 ];
