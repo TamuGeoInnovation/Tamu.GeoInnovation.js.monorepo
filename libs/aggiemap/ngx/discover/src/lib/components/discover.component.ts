@@ -28,7 +28,8 @@ export class DiscoverComponent implements OnInit, OnDestroy {
   public readonly discoverTabs: ReadonlyArray<DiscoverTab> = [
     { id: 'parking', label: 'Parking Maps' },
     { id: 'campus', label: 'Campus Events' },
-    { id: 'athletics', label: 'Athletic Events' }
+    { id: 'athletics', label: 'Athletic Events' },
+    { id: 'operations', label: 'Operations Maps' }
   ];
 
   public activeTab: DiscoverMapType = 'parking';
@@ -47,6 +48,9 @@ export class DiscoverComponent implements OnInit, OnDestroy {
 
   public athleticColumns: InternalDiscoverApplication[][] = [[], []];
   public athleticColumnStart = 1;
+
+  public operationsColumns: InternalDiscoverApplication[][] = [[], []];
+  public operationsColumnStart = 1;
 
   public allEventsColumns: InternalDiscoverApplication[][] = [[], []];
   public allEventsColumnStart = 1;
@@ -91,6 +95,10 @@ export class DiscoverComponent implements OnInit, OnDestroy {
     this.athleticColumns = this.buildApplicationColumns(upcomingAthletic);
     this.athleticColumnStart = this.getSecondColumnStart(this.athleticColumns);
 
+    const operationsApplications = this.getApplicationsByMapType('operations');
+    this.operationsColumns = this.buildApplicationColumns(operationsApplications);
+    this.operationsColumnStart = this.getSecondColumnStart(this.operationsColumns);
+
     const allEvents = this.sortEventApplications([...campusApplications, ...athleticApplications]);
     this.allEventsColumns = this.buildApplicationColumns(allEvents);
     this.allEventsColumnStart = this.getSecondColumnStart(this.allEventsColumns);
@@ -122,9 +130,7 @@ export class DiscoverComponent implements OnInit, OnDestroy {
         earliestUpcomingDate: this.getEarliestUpcomingDate(app.configuration.eventDates, now)
       }))
       .filter(({ earliestUpcomingDate }) => earliestUpcomingDate !== Number.POSITIVE_INFINITY)
-      .sort(
-        (a, b) => a.earliestUpcomingDate - b.earliestUpcomingDate || a.app.name.localeCompare(b.app.name)
-      )
+      .sort((a, b) => a.earliestUpcomingDate - b.earliestUpcomingDate || a.app.name.localeCompare(b.app.name))
       .slice(0, 3)
       .map(({ app }) => app);
   }

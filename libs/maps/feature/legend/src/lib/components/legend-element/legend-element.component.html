@@ -46,10 +46,20 @@ of the table -->
 
             <!-- This case will be reached of every info node and will terminate either with an info.preview or info.src -->
             <div *ngSwitchDefault>
-              <ng-container [ngSwitch]="$any(info).preview !== undefined">
-                <div *ngSwitchCase="true" class="image-container" [elementInsert]="$any(info).preview"></div>
-                <img *ngSwitchCase="false" class="image-container" [src]="$any(info).src" [ngStyle]="{opacity: $any(info).opacity}" alt="Layer legend icon" />
+              <ng-container *ngIf="hasLegendOverrideForInfo(info); else defaultIconRendering">
+                <img
+                  class="image-container"
+                  [src]="resolveLegendIconSrc(info)"
+                  [ngStyle]="legendOverrideStyles"
+                  alt="Layer legend icon"
+                />
               </ng-container>
+              <ng-template #defaultIconRendering>
+                <ng-container [ngSwitch]="$any(info).preview !== undefined">
+                  <div *ngSwitchCase="true" class="image-container" [elementInsert]="$any(info).preview"></div>
+                  <img *ngSwitchCase="false" class="image-container" [src]="$any(info).src" [ngStyle]="{opacity: $any(info).opacity}" alt="Layer legend icon" />
+                </ng-container>
+              </ng-template>
             </div>
           </div>
 

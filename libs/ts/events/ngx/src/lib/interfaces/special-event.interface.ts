@@ -117,6 +117,42 @@ export interface EventConfiguration {
    * Text to display on the review step.
    */
   reviewText?: string;
+
+  /**
+   * Optional informational panel rendered in the right-hand sidebar above the layer list and legend.
+   *
+   * Used to surface reference content that lives outside of the map data — for example, the
+   * Break / Summer Parking dates that Transportation Services enforcement relies on.
+   */
+  sidebarInfo?: SidebarInfoPanel;
+}
+
+/**
+ * Static informational content rendered in the right-hand sidebar above Layers and Legend.
+ */
+export interface SidebarInfoPanel {
+  sections: Array<SidebarInfoSection>;
+}
+
+export interface SidebarInfoSection {
+  heading: string;
+  subheading?: string;
+  items?: Array<string>;
+
+  /**
+   * Optional per-section style overrides. When omitted, the section inherits the same look
+   * as the Layers and Legend panels (heading from `.sidebar-component-name`, content from
+   * `.sidebar-component-content-container`). Use this to opt-in to event-specific accent
+   * colors or typography from the definition file.
+   */
+  styleOverrides?: SidebarInfoSectionStyleOverrides;
+}
+
+export interface SidebarInfoSectionStyleOverrides {
+  heading?: Record<string, string>;
+  subheading?: Record<string, string>;
+  items?: Record<string, string>;
+  item?: Record<string, string>;
 }
 
 /**
@@ -318,7 +354,7 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
 /**
  * High-level discover grouping used by the tabbed Discover page UI.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics';
+export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations';
 
 /**
  * Metadata used to represent a map in the Discover application.

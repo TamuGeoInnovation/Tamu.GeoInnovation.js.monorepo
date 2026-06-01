@@ -63,7 +63,8 @@ function createConnections(gisHost: string): IComposedConnections {
     volleyballParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/VolleyballParking/MapServer`,
     womensBasketballUrl: `https://${gisHost}/arcgis/rest/services/TS/TracSocSoftSwimVollWbask/MapServer`,
     fourHRoundupUrl: `https://${gisHost}/arcgis/rest/services/TS/4H_Roundup/MapServer`,
-    gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer'
+    gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
+    argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`
   };
 }
 
@@ -145,4 +146,5 @@ export interface IComposedConnections {
   womensBasketballUrl: string;
   fourHRoundupUrl: string;
   gisDayUrl: string;
+  argentinaVsHondurasUrl: string;
 }

@@ -65,6 +65,66 @@ export const TsMainParkingDefinitions = {
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
+
+const ROUTE_STOP_MARKER_SIZE = 22;
+
+const createRouteStopMarkerSvg = (routeNum: string, color: [number, number, number, number]): string => {
+  const [r, g, b] = color;
+  const fill = `rgb(${r},${g},${b})`;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">` +
+    `<circle cx="22" cy="22" r="19" fill="${fill}" stroke="white" stroke-width="2"/>` +
+    `<text x="22" y="22" text-anchor="middle" ` +
+    `fill="white" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="20" dy="0.35em">${routeNum}</text>` +
+    `</svg>`;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+};
+
+const createRouteStopSymbol = (
+  routeNum: string,
+  color: [number, number, number, number]
+): esri.SymbolProperties =>
+  ({
+    type: 'picture-marker',
+    url: createRouteStopMarkerSvg(routeNum, color),
+    width: ROUTE_STOP_MARKER_SIZE,
+    height: ROUTE_STOP_MARKER_SIZE
+  } as unknown as esri.SymbolProperties);
+
+const ROUTE_STOP_COLORS: Array<[string, [number, number, number, number]]> = [
+  ['01', [98, 64, 153, 255]],
+  ['03', [52, 52, 52, 255]],
+  ['04', [82, 189, 160, 255]],
+  ['05', [94, 155, 211, 255]],
+  ['06', [20, 178, 75, 255]],
+  ['07', [220, 20, 60, 255]],
+  ['08', [233, 22, 139, 255]],
+  ['12', [0, 84, 166, 255]],
+  ['15', [40, 144, 58, 255]],
+  ['22', [189, 26, 141, 255]],
+  ['26', [0, 111, 59, 255]],
+  ['27', [0, 174, 239, 255]],
+  ['31', [128, 0, 128, 255]],
+  ['34', [247, 147, 30, 255]],
+  ['35', [96, 56, 19, 255]],
+  ['36', [150, 115, 72, 255]],
+  ['40', [170, 0, 0, 255]],
+  ['41', [85, 255, 0, 255]],
+  ['47', [65, 105, 225, 255]],
+  ['48', [0, 0, 120, 255]]
+];
+
+const tsMainRouteStopPointsRenderer: FeatureRenderer = {
+  type: 'unique-value',
+  field: 'Route',
+  defaultSymbol: createRouteStopSymbol('?', [128, 128, 128, 255]),
+  uniqueValueInfos: ROUTE_STOP_COLORS.map(([value, color]) => ({
+    value,
+    label: value,
+    symbol: createRouteStopSymbol(value, color)
+  }))
+};
+
 const tsMainParkingLotsRenderer: FeatureRenderer = {
   type: 'unique-value',
   field: 'GIS.TS.ParkingLots.LotType',
@@ -109,7 +169,9 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: tsMainRouteStopPointsRenderer,
+      labelsVisible: false
     } as unknown as FeatureNative
   },
   {
@@ -185,7 +247,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
         `Number of Reg (Regular): {attributes.regular}\n` +
         `Number of RNS (Reserved): {attributes.reserved}\n` +
         `Number of Other: {attributes.other}\n` +
-        `Number of H/C (Accessible): {attributes.accessible}\n` +
+        `Number of Accessible: {attributes.accessible}\n` +
         `Number of M/C (Motorcycle): {attributes.motorcycle}\n` +
         `Number of Timed: {attributes.timed}\n` +
         `Number of Serv (Service): {attributes.service}\n` +
@@ -194,7 +256,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
         `Number of Visitor H/C: {attributes.visitorHc}\n` +
         `Number of RV: {attributes.rv}\n\n` +
         `---\n\n` +
-        `Lot Notes: {attributes.notes}`
+        `Notes: {attributes.notes}`
     },
 
     native: {
@@ -222,7 +284,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     title: TsMainParkingDefinitions.RNS_SPACES.name,
     url: TsMainParkingDefinitions.RNS_SPACES.url,
     visible: true,
-    listMode: 'hide',
+    listMode: 'show',
     native: {
       outFields: ['*'],
       labelsVisible: true,
@@ -316,11 +378,120 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
           deconflictionStrategy: 'none'
         },
         {
-          where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C')`,
+          where: `Anno_Type = '2HR Timed' AND Rotation < 180`,
+          labelExpressionInfo: {
+            expression: `return '2 HOUR PARKING';`
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 40,
+            color: [27, 94, 32, 255],
+            font: {
+              size: 6,
+              family: 'Arial',
+              weight: 'bold'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type = '2HR Timed' AND Rotation >= 180`,
+          labelExpressionInfo: {
+            expression: `return '2 HOUR PARKING';`
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 310,
+            color: [27, 94, 32, 255],
+            font: {
+              size: 6,
+              family: 'Arial',
+              weight: 'bold'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type = 'Loading' AND Rotation < 180`,
+          labelExpressionInfo: {
+            expression: `return 'LOADING ZONE';`
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 40,
+            color: [230, 115, 0, 255],
+            font: {
+              size: 10,
+              family: 'Arial',
+              weight: 'bold'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'static'
+        },
+        {
+          where: `Anno_Type = 'Loading' AND Rotation >= 180`,
+          labelExpressionInfo: {
+            expression: `return 'LOADING ZONE';`
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            angle: 310,
+            color: [230, 115, 0, 255],
+            font: {
+              size: 10,
+              family: 'Arial',
+              weight: 'bold'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'static'
+        },
+        {
+          where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C', 'H/C', '2HR Timed', 'Loading')`,
+          labelExpressionInfo: {
+            expression: `
+              if ($feature.DeptSpc_YN != 1) { return ''; }
+              var num = Trim(Text($feature.Spc_ID_Num));
+              if (num == null || num == '' || num == 'null') { return 'DEPT. RESERVED'; }
+              return 'DEPT. RESERVED' + TextFormatting.NewLine + num;
+            `
+          },
+          labelPlacement: 'center-center',
+          symbol: {
+            type: 'text',
+            color: [80, 0, 0, 255],
+            font: {
+              size: 8,
+              family: 'Arial',
+              weight: 'bold'
+            }
+          },
+          minScale: 1200,
+          maxScale: 0,
+          deconflictionStrategy: 'none'
+        },
+        {
+          where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C', '2HR Timed', 'Loading')`,
           labelExpressionInfo: {
             expression: `
               if ($feature.Anno_Type == 'H/C') { return ''; }
-              return Trim($feature.RNS_Num);
+              if ($feature.DeptSpc_YN == 1) { return ''; }
+              var spcId = Trim(Text($feature.Spc_ID_Num));
+              if (spcId != null && spcId != '' && spcId != 'null') { return spcId; }
+              var rvNum = Trim(Text($feature.RV_SpcNum));
+              if (rvNum != null && rvNum != '' && rvNum != 'null') { return rvNum; }
+              return '';
             `
           },
           labelPlacement: 'center-center',
@@ -333,7 +504,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
               weight: 'normal'
             }
           },
-          minScale: 1200,
+          minScale: 400,
           maxScale: 0,
           deconflictionStrategy: 'none'
         }

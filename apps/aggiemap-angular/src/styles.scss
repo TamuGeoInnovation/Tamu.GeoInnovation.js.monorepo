@@ -504,6 +504,30 @@ input[type='email'] {
 //  ==========================================================================
 //   NEW LISTS
 //  ==========================================================================
+
+.numbered-list {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+  counter-reset: numbered-list;
+
+  & > li {
+    counter-increment: numbered-list;
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    column-gap: 0.5rem;
+    align-items: start;
+
+    &::before {
+      content: counter(numbered-list) '.';
+    }
+  }
+
+  & > li + li {
+    margin-top: 0.75rem;
+  }
+}
+
 /*BUTTONS */
 
 .mapButton {

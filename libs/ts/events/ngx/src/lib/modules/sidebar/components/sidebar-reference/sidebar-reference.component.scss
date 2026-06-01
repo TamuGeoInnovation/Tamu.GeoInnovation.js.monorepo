@@ -28,3 +28,27 @@
   margin-right: 1rem;
   padding-bottom: 0.25rem;
 }
+
+.sidebar-info-section {
+  padding: 0.35rem;
+  margin-bottom: 0.5rem;
+
+  .sidebar-info-subheading {
+    margin: 0 0 0.25rem;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #6e6e6e;
+  }
+
+  .sidebar-info-items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      color: #323232;
+      font-size: 0.875rem;
+      padding: 0.1rem 0;
+    }
+  }
+}

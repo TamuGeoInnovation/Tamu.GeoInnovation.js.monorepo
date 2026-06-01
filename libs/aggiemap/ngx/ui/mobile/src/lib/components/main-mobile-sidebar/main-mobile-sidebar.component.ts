@@ -5,7 +5,7 @@ import { v4 as guid } from 'uuid';
 
 interface MenuItem {
   name: string;
-  type: 'link-internal' | 'link-external' | 'router-path' | 'outlet';
+  type: 'link-internal' | 'link-external' | 'router-path' | 'outlet' | 'separator';
   path: string;
   url?: string;
 }
@@ -37,33 +37,40 @@ export class MainMobileSidebarComponent {
       type: 'router-path',
       path: '/map/m/bus'
     },
-    {
-      name: 'Building Directory',
-      type: 'router-path',
-      path: '/directory'
-    },
-    {
-      name: 'Feedback',
-      type: 'link-internal',
-      path: '',
-      url: './feedback'
-    },
+    { name: '', type: 'separator', path: '' },
     {
       name: 'All Maps',
       type: 'router-path',
       path: '/discover'
     },
     {
-      name: 'About',
+      name: 'About Aggie Map',
       type: 'router-path',
       path: '/about'
     },
     {
-      name: 'Site Policies',
-      type: 'link-external',
-      path: '',
-      url: 'https://www.tamu.edu/statements/index.html'
+      name: 'Map Instructions',
+      type: 'router-path',
+      path: '/instructions'
     },
+    {
+      name: 'Building Directory',
+      type: 'router-path',
+      path: '/directory'
+    },
+    { name: '', type: 'separator', path: '' },
+    {
+      name: 'Request Maps & Changes',
+      type: 'router-path',
+      path: '/requesting-maps'
+    },
+    {
+      name: 'Submit Feedback',
+      type: 'link-internal',
+      path: '',
+      url: './feedback'
+    },
+    { name: '', type: 'separator', path: '' },
     {
       name: 'Accessibility Policy',
       type: 'link-external',
@@ -71,15 +78,29 @@ export class MainMobileSidebarComponent {
       url: 'http://itaccessibility.tamu.edu/'
     },
     {
-      name: 'Privacy & Security',
+      name: 'Privacy & Security Policy',
       type: 'link-external',
       path: '',
       url: 'https://www.tamu.edu/statements/privacy.html'
     },
     {
+      name: 'Site Policies',
+      type: 'link-external',
+      path: '',
+      url: 'https://www.tamu.edu/statements/index.html'
+    },
+    { name: '', type: 'separator', path: '' },
+    {
+      name: 'GitHub',
+      type: 'link-external',
+      path: '',
+      url: 'https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo'
+    },
+    {
       name: 'Changelog',
       type: 'link-external',
-      path: 'https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed'
+      path: '',
+      url: 'https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed'
     }
   ];
 
