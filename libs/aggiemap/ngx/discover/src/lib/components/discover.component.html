@@ -163,6 +163,31 @@
             </div>
           </ng-template>
         </div>
+
+        <div *ngIf="activeTab === 'operations'" class="tab-section discover-tab-panel" role="tabpanel" id="discover-panel-operations" aria-labelledby="discover-tab-operations">
+          <h2>Operations Maps</h2>
+          <p class="section-description">Browse operations-focused maps for campus construction and future internal-use overlays.</p>
+
+          <div class="map-columns" *ngIf="operationsColumns[0].length + operationsColumns[1].length > 0; else noOperationsMaps">
+            <ol class="map-links">
+              <li class="map-link-item" *ngFor="let app of operationsColumns[0]">
+                <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              </li>
+            </ol>
+
+            <ol class="map-links" *ngIf="operationsColumns[1].length > 0" [attr.start]="operationsColumnStart">
+              <li class="map-link-item" *ngFor="let app of operationsColumns[1]">
+                <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              </li>
+            </ol>
+          </div>
+
+          <ng-template #noOperationsMaps>
+            <div class="empty-state">
+              <p>No operations maps are available right now.</p>
+            </div>
+          </ng-template>
+        </div>
       </div>
 
       <div class="all-events-section trailer-3" *ngIf="(isDev | async) === true">

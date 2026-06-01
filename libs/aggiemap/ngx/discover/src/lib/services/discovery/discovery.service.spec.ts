@@ -36,4 +36,11 @@ describe('DiscoveryService', () => {
     expect(football?.mapType).toBe('athletics');
     expect(moveIn?.mapType).toBe('campus');
   });
+
+  it('supports explicit discover tab overrides for operations maps', () => {
+    const applications = service.getInternalDiscoverApplications();
+    const constructionMap = applications.find((app) => app.id === 'construction-map');
+
+    expect(constructionMap?.mapType).toBe('operations');
+  });
 });

@@ -354,7 +354,7 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
 /**
  * High-level discover grouping used by the tabbed Discover page UI.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics';
+export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations';
 
 /**
  * Metadata used to represent a map in the Discover application.
