@@ -9,6 +9,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
+import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import {
   EventSettings,
@@ -214,16 +215,18 @@ export class EventService {
   private async selectFeatureFromUrl(sources: LayerSource[]): Promise<void> {
     const params = new URLSearchParams(window.location.search);
     const selectedFeature = params.get('feature');
-    const selectedLot = params.get('lot') || params.get('Lot');
 
+    // The generic `feature=<layerId>:<objectId>` form is unambiguous and takes precedence.
     if (selectedFeature) {
       await this.selectGenericFeatureFromUrl(sources, selectedFeature);
       return;
     }
 
-    if (selectedLot) {
-      await this.selectLotFromUrl(sources, selectedLot);
-    }
+    // Otherwise attempt to resolve a feature using any configured search-source deep link
+    // (e.g. `?lot=43`, `?bldg=AGLS`). The parameter keys and the attribute fields to match
+    // against are read entirely from the search source configuration, so this works for any
+    // layer or data type without code changes.
+    await this.selectFeatureByConfiguredParam(sources, params);
   }
 
   private async selectGenericFeatureFromUrl(sources: LayerSource[], selectedFeature: string): Promise<void> {
@@ -280,18 +283,65 @@ export class EventService {
     });
   }
 
-  private async selectLotFromUrl(sources: LayerSource[], selectedLot: string): Promise<void> {
-    const normalizedLot = selectedLot.trim().replace(/^Lot\s+/i, '');
+  /**
+   * Attempts to select a feature using a human-friendly value supplied via a configured URL query
+   * parameter (e.g. `?lot=43`, `?bldg=AGLS`).
+   *
+   * The recognized parameter keys and the attribute fields to match against are sourced from the
+   * `SearchSource` configuration (`urlQueryParam`/`urlQueryParamAliases` and the where-clause
+   * `keys`), so no layer- or data-type-specific values are hard-coded here.
+   */
+  private async selectFeatureByConfiguredParam(sources: LayerSource[], params: URLSearchParams): Promise<void> {
+    const searchSources = this.env.value('SearchSources') as SearchSource[] | null | undefined;
 
-    if (normalizedLot.length === 0) {
+    if (!Array.isArray(searchSources)) {
       return;
     }
 
-    const prioritizedSources = [...sources].sort((a, b) => {
-      return Number(this._isLotLikeLayerSource(b)) - Number(this._isLotLikeLayerSource(a));
-    });
+    for (const searchSource of searchSources) {
+      if (!searchSource.urlQueryParam) {
+        continue;
+      }
 
-    for (const source of prioritizedSources) {
+      const paramKeys = [searchSource.urlQueryParam, ...(searchSource.urlQueryParamAliases || [])];
+      const rawValue = paramKeys
+        .map((key) => params.get(key))
+        .find((value): value is string => !!value && value.trim().length > 0);
+
+      const matchFields = searchSource.queryParams?.where?.keys || [];
+
+      if (!rawValue || matchFields.length === 0) {
+        continue;
+      }
+
+      const selected = await this.selectFeatureByFieldMatch(sources, rawValue.trim(), matchFields);
+
+      if (selected) {
+        return;
+      }
+    }
+  }
+
+  /**
+   * Queries the provided layer sources for a feature whose value in one of the `candidateFields`
+   * matches `value` (case-insensitive), then selects and shows it.
+   *
+   * Sources are tried in order of the most specific field they expose: the earlier a field appears
+   * in `candidateFields` (highest priority first), the earlier its layer is queried. This replaces
+   * any layer-name heuristics with a configuration-driven ordering that works for any layer.
+   *
+   * @returns `true` if a matching feature was found and selected.
+   */
+  private async selectFeatureByFieldMatch(
+    sources: LayerSource[],
+    value: string,
+    candidateFields: string[]
+  ): Promise<boolean> {
+    const escapedValue = value.replace(/'/g, "''").toUpperCase();
+
+    const candidates: Array<{ source: LayerSource; layer: esri.FeatureLayer; fields: string[]; priority: number }> = [];
+
+    for (const source of sources) {
       const layer = this._map.findLayerById(source.id) as esri.FeatureLayer | undefined;
 
       if (!layer) {
@@ -300,24 +350,22 @@ export class EventService {
 
       await layer.load();
 
-      const fields = (layer.fields || []).map((field) => field.name);
-      const matchingField = ['Name', 'LotName', 'name'].find((fieldName) => fields.includes(fieldName));
+      const layerFields = (layer.fields || []).map((field) => field.name);
+      const matchingFields = candidateFields.filter((fieldName) => layerFields.includes(fieldName));
 
-      if (!matchingField) {
+      if (matchingFields.length === 0) {
         continue;
       }
 
-      const matchValues = Array.from(
-        new Set(
-          [normalizedLot, normalizedLot.replace(/^0+(\d)/, '$1'), normalizedLot.padStart(3, '0')].filter(
-            (value) => value.length > 0
-          )
-        )
-      );
+      const priority = Math.min(...matchingFields.map((fieldName) => candidateFields.indexOf(fieldName)));
 
-      const where = matchValues
-        .map((value) => `${matchingField} = '${value.replace(/'/g, "''")}'`)
-        .join(' OR ');
+      candidates.push({ source, layer, fields: matchingFields, priority });
+    }
+
+    candidates.sort((a, b) => a.priority - b.priority);
+
+    for (const { source, layer, fields } of candidates) {
+      const where = fields.map((field) => `UPPER(${field}) = '${escapedValue}'`).join(' OR ');
 
       const result = await layer.queryFeatures({
         where,
@@ -342,9 +390,11 @@ export class EventService {
           popupComponent: this.getPopupComponent(source)
         });
 
-        return;
+        return true;
       }
     }
+
+    return false;
   }
 
   private getPopupComponent(source: LayerSource): Type<Component> | undefined {
@@ -433,11 +483,6 @@ export class EventService {
     }
 
     return graphic;
-  }
-
-  private _isLotLikeLayerSource(source: LayerSource): boolean {
-    const haystack = `${source.id} ${source.title}`.toLowerCase();
-    return haystack.includes('parking') || haystack.includes('lot');
   }
 
   /**
