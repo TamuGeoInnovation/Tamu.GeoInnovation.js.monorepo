@@ -82,13 +82,26 @@ export class PerspectiveToggleComponent implements OnInit {
       return forkJoin([this.mp.require(['SceneView']), this.ms.store.pipe(take(1))]).pipe(
         map(([[SceneView], instance]: [[esri.SceneViewConstructor], MapServiceInstance]) => {
           if (this.perspectives.threeD === undefined) {
-            this.perspectives.threeD = new SceneView({
+            const view = new SceneView({
               map: instance.map,
               viewpoint: instance.view.viewpoint.clone(),
               container: undefined
             });
 
-            return this.perspectives.threeD;
+            this.perspectives.threeD = view;
+
+            // A SceneView cloned from the 2D viewpoint starts looking straight down, which makes the
+            // newly loaded 3D buildings indistinguishable from the 2D map. Once the view is ready
+            // (after its container is attached in `setView`), tilt the camera so the buildings are
+            // clearly visible from an angle.
+            view.when(() => {
+              view.goTo({ tilt: DEFAULT_3D_TILT }).catch(() => {
+                // `goTo` rejects when the animation is interrupted (e.g. the user toggles back to 2D
+                // mid-transition). This is expected and safe to ignore.
+              });
+            });
+
+            return view;
           } else {
             return this.perspectives.threeD;
           }
@@ -137,3 +150,10 @@ export class PerspectiveToggleComponent implements OnInit {
 }
 
 type PerspectiveType = '2D' | '3D';
+
+/**
+ * Camera tilt (in degrees) applied the first time the 3D perspective is activated. `0` is top-down;
+ * higher values produce a more oblique view that highlights building heights. Because the SceneView
+ * is cached for the lifetime of the component, this angle carries over to subsequent 3D activations.
+ */
+const DEFAULT_3D_TILT = 45;
