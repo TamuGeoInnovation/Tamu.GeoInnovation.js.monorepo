@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Component, Injectable, Type } from '@angular/core';
 import { delay } from 'rxjs';
 
 import deepmerge from 'deepmerge';
@@ -7,6 +7,9 @@ import { EsriMapService, EsriModuleProviderService, LayerSourcesService } from '
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
+import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { hasTemplateExpression, TemplateRenderer } from '@tamu-gisc/common/utils/string';
+import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 import {
   EventSettings,
@@ -16,6 +19,10 @@ import {
 import { EventSettingsService } from '../settings/event-settings.service';
 
 import esri = __esri;
+
+type PopupDataDefinition = NonNullable<LayerSource['popupData']>;
+type PopupDataResolutionStrategy = NonNullable<LayerSource['popupDataResolutionStrategy']>;
+type PopupDataEntry = PopupDataDefinition[string];
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +53,7 @@ export class EventService {
     }
 
     this.eventOptions = this.eventSettingsService.eventOptions();
-    this.settings = this.eventSettingsService.settings();
+    this.settings = this.eventSettingsService.settings() || {};
     this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences())
       .map(([, value]) => value)
       .reverse();
@@ -147,7 +154,8 @@ export class EventService {
         });
 
       if (sources.length > 0) {
-        this.mapService.loadLayers(sources);
+        await this.mapService.loadLayers(sources);
+        await this.selectFeatureFromUrl(sources);
       } else {
         throw new Error('drawEvent: No layer sources found.');
       }
@@ -202,6 +210,279 @@ export class EventService {
    */
   private getAttributeList(features: esri.Graphic[], attribute: string): string[] {
     return features.map((f) => f.attributes[attribute]);
+  }
+
+  private async selectFeatureFromUrl(sources: LayerSource[]): Promise<void> {
+    const params = new URLSearchParams(window.location.search);
+    const selectedFeature = params.get('feature');
+
+    // The generic `feature=<layerId>:<objectId>` form is unambiguous and takes precedence.
+    if (selectedFeature) {
+      await this.selectGenericFeatureFromUrl(sources, selectedFeature);
+      return;
+    }
+
+    // Otherwise attempt to resolve a feature using any configured search-source deep link
+    // (e.g. `?lot=43`, `?bldg=AGLS`). The parameter keys and the attribute fields to match
+    // against are read entirely from the search source configuration, so this works for any
+    // layer or data type without code changes.
+    await this.selectFeatureByConfiguredParam(sources, params);
+  }
+
+  private async selectGenericFeatureFromUrl(sources: LayerSource[], selectedFeature: string): Promise<void> {
+    const separatorIndex = selectedFeature.indexOf(':');
+
+    if (separatorIndex === -1) {
+      console.warn(`EventService.selectFeatureFromUrl: Invalid feature parameter '${selectedFeature}'.`);
+      return;
+    }
+
+    const layerId = selectedFeature.slice(0, separatorIndex);
+    const objectId = Number(selectedFeature.slice(separatorIndex + 1));
+
+    if (!layerId || Number.isNaN(objectId)) {
+      console.warn(`EventService.selectFeatureFromUrl: Invalid feature parameter '${selectedFeature}'.`);
+      return;
+    }
+
+    const layer = this._map.findLayerById(layerId) as esri.FeatureLayer | undefined;
+    const source = sources.find((candidate) => candidate.id === layerId);
+
+    if (!layer || !source) {
+      console.warn(`EventService.selectFeatureFromUrl: Layer '${layerId}' not found.`);
+      return;
+    }
+
+    await layer.load();
+
+    const result = await layer.queryFeatures({
+      objectIds: [objectId],
+      outFields: ['*'],
+      returnGeometry: true
+    });
+
+    const feature = result.features[0];
+
+    if (!feature) {
+      console.warn(`EventService.selectFeatureFromUrl: Feature '${selectedFeature}' not found.`);
+      return;
+    }
+
+    feature.attributes = {
+      ...feature.attributes,
+      __featureLayerId: layerId,
+      __featureObjectId: objectId
+    };
+
+    this.hydrateFeaturePopupData(feature, source);
+
+    this.mapService.selectFeatures({
+      graphics: [feature],
+      shouldShowPopup: true,
+      popupComponent: this.getPopupComponent(source)
+    });
+  }
+
+  /**
+   * Attempts to select a feature using a human-friendly value supplied via a configured URL query
+   * parameter (e.g. `?lot=43`, `?bldg=AGLS`).
+   *
+   * The recognized parameter keys and the attribute fields to match against are sourced from the
+   * `SearchSource` configuration (`urlQueryParam`/`urlQueryParamAliases` and the where-clause
+   * `keys`), so no layer- or data-type-specific values are hard-coded here.
+   */
+  private async selectFeatureByConfiguredParam(sources: LayerSource[], params: URLSearchParams): Promise<void> {
+    const searchSources = this.env.value('SearchSources') as SearchSource[] | null | undefined;
+
+    if (!Array.isArray(searchSources)) {
+      return;
+    }
+
+    for (const searchSource of searchSources) {
+      if (!searchSource.urlQueryParam) {
+        continue;
+      }
+
+      const paramKeys = [searchSource.urlQueryParam, ...(searchSource.urlQueryParamAliases || [])];
+      const rawValue = paramKeys
+        .map((key) => params.get(key))
+        .find((value): value is string => !!value && value.trim().length > 0);
+
+      const matchFields = searchSource.queryParams?.where?.keys || [];
+
+      if (!rawValue || matchFields.length === 0) {
+        continue;
+      }
+
+      const selected = await this.selectFeatureByFieldMatch(sources, rawValue.trim(), matchFields);
+
+      if (selected) {
+        return;
+      }
+    }
+  }
+
+  /**
+   * Queries the provided layer sources for a feature whose value in one of the `candidateFields`
+   * matches `value` (case-insensitive), then selects and shows it.
+   *
+   * Sources are tried in order of the most specific field they expose: the earlier a field appears
+   * in `candidateFields` (highest priority first), the earlier its layer is queried. This replaces
+   * any layer-name heuristics with a configuration-driven ordering that works for any layer.
+   *
+   * @returns `true` if a matching feature was found and selected.
+   */
+  private async selectFeatureByFieldMatch(
+    sources: LayerSource[],
+    value: string,
+    candidateFields: string[]
+  ): Promise<boolean> {
+    const escapedValue = value.replace(/'/g, "''").toUpperCase();
+
+    const candidates: Array<{ source: LayerSource; layer: esri.FeatureLayer; fields: string[]; priority: number }> = [];
+
+    for (const source of sources) {
+      const layer = this._map.findLayerById(source.id) as esri.FeatureLayer | undefined;
+
+      if (!layer) {
+        continue;
+      }
+
+      await layer.load();
+
+      const layerFields = (layer.fields || []).map((field) => field.name);
+      const matchingFields = candidateFields.filter((fieldName) => layerFields.includes(fieldName));
+
+      if (matchingFields.length === 0) {
+        continue;
+      }
+
+      const priority = Math.min(...matchingFields.map((fieldName) => candidateFields.indexOf(fieldName)));
+
+      candidates.push({ source, layer, fields: matchingFields, priority });
+    }
+
+    candidates.sort((a, b) => a.priority - b.priority);
+
+    for (const { source, layer, fields } of candidates) {
+      const where = fields.map((field) => `UPPER(${field}) = '${escapedValue}'`).join(' OR ');
+
+      const result = await layer.queryFeatures({
+        where,
+        outFields: ['*'],
+        returnGeometry: true
+      });
+
+      const feature = result.features[0];
+
+      if (feature) {
+        feature.attributes = {
+          ...feature.attributes,
+          __featureLayerId: source.id,
+          __featureObjectId: feature.attributes[layer.objectIdField]
+        };
+
+        this.hydrateFeaturePopupData(feature, source);
+
+        this.mapService.selectFeatures({
+          graphics: [feature],
+          shouldShowPopup: true,
+          popupComponent: this.getPopupComponent(source)
+        });
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private getPopupComponent(source: LayerSource): Type<Component> | undefined {
+    return source.popupComponent as Type<Component> | undefined;
+  }
+
+  /**
+   * Resolves any layer-configured popupData onto a queried feature so direct-link selections
+   * render the same sidebar content as a real map click.
+   */
+  private hydrateFeaturePopupData(feature: esri.Graphic, source: LayerSource): void {
+    if (!source.popupData) {
+      return;
+    }
+
+    const resolvedPopupData = this.resolvePopupData(
+      feature,
+      source.popupData,
+      source.popupDataResolutionStrategy ?? 'independent'
+    );
+
+    feature.attributes = {
+      ...feature.attributes,
+      ...resolvedPopupData
+    };
+  }
+
+  private resolvePopupData(
+    graphic: esri.Graphic,
+    popupData: PopupDataDefinition,
+    strategy: PopupDataResolutionStrategy
+  ): Record<string, unknown> {
+    return Object.entries(popupData).reduce<Record<string, unknown>>((acc, [key, definition]) => {
+      if (acc[key] !== undefined) {
+        return acc;
+      }
+
+      acc[key] = this.resolvePopupDataEntry(graphic, definition, acc, strategy);
+
+      return acc;
+    }, {});
+  }
+
+  private resolvePopupDataEntry(
+    graphic: esri.Graphic,
+    definition: PopupDataEntry,
+    resolvedEntries: Record<string, unknown>,
+    strategy: PopupDataResolutionStrategy
+  ): unknown {
+    if (typeof definition !== 'string') {
+      return getPropertyValue(graphic.attributes, definition.field, definition.collapsed);
+    }
+
+    const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);
+
+    if (hasTemplateExpression(definition)) {
+      return new TemplateRenderer({
+        template: definition,
+        lookup,
+        options:
+          strategy === 'cumulative'
+            ? {
+                nullishReplacement: '',
+                trim: true
+              }
+            : undefined
+      }).render();
+    }
+
+    return getPropertyValue(lookup, definition);
+  }
+
+  private getPopupDataLookup(
+    graphic: esri.Graphic,
+    resolvedEntries: Record<string, unknown>,
+    strategy: PopupDataResolutionStrategy
+  ) {
+    if (strategy === 'cumulative') {
+      return {
+        ...graphic,
+        attributes: {
+          ...(graphic.attributes || {}),
+          ...resolvedEntries
+        }
+      };
+    }
+
+    return graphic;
   }
 
   /**

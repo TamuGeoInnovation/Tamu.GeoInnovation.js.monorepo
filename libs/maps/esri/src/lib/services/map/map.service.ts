@@ -909,9 +909,11 @@ export class EsriMapService {
   public selectFeatures(properties: SelectFeaturesProperties) {
     const graphics = properties.graphics || [];
     const shouldShowPopup = properties.shouldShowPopup || false;
+    const requestedZoom = properties.zoom;
 
     // Source object
-    const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id === 'selection-layer'));
+    const selectionLayers = this.environment.value('LayerSources') as LayerSource[];
+    const source = Object.assign(selectionLayers.find((src) => src.id === 'selection-layer')) as LayerSource;
 
     // Resolve the popup component to assign to the selection layer instance. Without this,
     // a follow-up click on the highlighted graphic would fall back to the source's static
@@ -930,21 +932,23 @@ export class EsriMapService {
     if (this.layerExists(source.id)) {
       // If the layer has been added before, graphics will simply be replaced
       this.findLayerOrCreateFromSource(source)
-        .then((layer: esri.GraphicsLayer) => {
-          (layer as unknown as { popupComponent?: Type<Component> }).popupComponent = resolvedPopupComponent;
+        .then((layerOrLayers) => {
+          const layer = layerOrLayers as esri.GraphicsLayer;
           layer.removeAll();
           layer.addMany(features);
           return layer;
         })
         .then((layer) => {
           if (shouldShowPopup) {
-            this._hitTest.next({ graphics: layer.graphics.toArray(), popupComponent: resolvedPopupComponent });
+            this._hitTest.next({ graphics: graphics, popupComponent: properties.popupComponent });
           }
 
           return layer.graphics.toArray();
         })
         .then((grfx) => {
-          this.computeZoomLevel(grfx).then((zoom) => {
+          const zoomPromise = requestedZoom !== undefined ? Promise.resolve(requestedZoom) : this.computeZoomLevel(grfx);
+
+          zoomPromise.then((zoom) => {
             this.zoomTo({
               graphics: grfx,
               zoom: zoom
@@ -954,17 +958,18 @@ export class EsriMapService {
     } else {
       // If the layer has not been added before, instantiate it with the features as a source
       this.findLayerOrCreateFromSource(Object.assign(source, { graphics: features }))
-        .then((layer: esri.GraphicsLayer) => {
-          (layer as unknown as { popupComponent?: Type<Component> }).popupComponent = resolvedPopupComponent;
-
+        .then((layerOrLayers) => {
+          const layer = layerOrLayers as esri.GraphicsLayer;
           if (properties.shouldShowPopup) {
-            this._hitTest.next({ graphics: layer.graphics.toArray(), popupComponent: resolvedPopupComponent });
+            this._hitTest.next({ graphics: graphics, popupComponent: properties.popupComponent });
           }
 
           return layer.graphics.toArray();
         })
         .then((grfx) => {
-          this.computeZoomLevel(grfx).then((zoom) => {
+          const zoomPromise = requestedZoom !== undefined ? Promise.resolve(requestedZoom) : this.computeZoomLevel(grfx);
+
+          zoomPromise.then((zoom) => {
             this.zoomTo({
               graphics: grfx,
               zoom: zoom
@@ -997,10 +1002,13 @@ export class EsriMapService {
    *  Zooms to a collection of graphics at a specified zoom.
    */
   public zoomTo(properties: ZoomProperties) {
-    return (<esri.MapView>this._modules.view).goTo({
-      target: properties.graphics,
-      zoom: properties.zoom
-    });
+    const view = <esri.MapView>this._modules.view;
+
+    if (properties.zoom !== undefined) {
+      return view.goTo({ target: properties.graphics, zoom: properties.zoom });
+    }
+
+    return view.goTo(properties.graphics);
   }
 
   /**
@@ -1120,6 +1128,11 @@ interface SelectFeaturesProperties {
    * or conditional rendering.
    */
   popupComponent?: Type<Component>;
+
+  /**
+   * Optional explicit zoom level to use instead of computing one from geometry extent.
+   */
+  zoom?: number;
 }
 
 interface ZoomProperties {
