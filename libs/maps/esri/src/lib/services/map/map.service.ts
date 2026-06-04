@@ -159,11 +159,48 @@ export class EsriMapService {
   public setView(view: esri.SceneView | esri.MapView) {
     this.destroyViewClickEventHandler();
 
-    this._modules.view.container = null;
-    this._modules.view = null;
-    this._modules.view = view;
+    // Carry the current camera/extent across the swap. A reused view otherwise re-attaches with
+    // a stale viewpoint, and disconnecting/reconnecting the map below resets the camera to a
+    // default extent - either way the campus-only basemap (minScale 100000) and the buildings
+    // render nothing and the canvas looks blank.
+    const viewpoint = this._modules.view?.viewpoint?.clone();
 
-    this._modules.view.container = this._mapContainer;
+    // Detach the outgoing view from BOTH the DOM and the shared map.
+    //
+    // Disconnecting the map is essential: a view that is only detached from the DOM stays
+    // subscribed to the shared map's layers, so the now-inactive 2D MapView keeps trying to
+    // build layer views. When the 3D-only SceneLayer (3D Buildings) is added after the swap,
+    // that dead 2D view chokes resolving it ("Cannot read properties of null (objectIdField)"),
+    // throwing an uncaught rejection into Angular and blanking the canvas. Detaching the map
+    // leaves only the active view processing layers.
+    if (this._modules.view) {
+      this._modules.view.container = null;
+      (this._modules.view as { map: esri.Map | null }).map = null;
+    }
+
+    // Reusing a single container element across MapView/SceneView swaps leaves the ArcGIS
+    // view surface in a broken state - the canvas renders blank on the second 2D -> 3D toggle.
+    // Give every view its own pristine child element and discard the previous one so each
+    // attach starts from a clean DOM node.
+    while (this._mapContainer.firstChild) {
+      this._mapContainer.removeChild(this._mapContainer.firstChild);
+    }
+
+    const viewContainer = document.createElement('div');
+    viewContainer.style.height = '100%';
+    viewContainer.style.width = '100%';
+    this._mapContainer.appendChild(viewContainer);
+
+    // Reconnect the incoming view to the shared map (it may have been disconnected on a previous
+    // swap), restore the camera, and attach it to its fresh container.
+    this._modules.view = view;
+    if (this._modules.map) {
+      this._modules.view.map = this._modules.map;
+    }
+    if (viewpoint) {
+      this._modules.view.viewpoint = viewpoint;
+    }
+    this._modules.view.container = viewContainer;
 
     this._store.next({ ...this._store.getValue(), view: this._modules.view });
 
