@@ -22,7 +22,7 @@ export interface ExternalDiscoverApplication extends BaseDiscoverApplication {
 
 export interface InternalDiscoverApplication extends BaseDiscoverApplication {
   source: 'internal';
-  type: 'event' | 'parking';
+  type: 'event' | 'parking' | 'operations';
   mapType: DiscoverMapType;
   configuration: EventConfiguration;
 }
