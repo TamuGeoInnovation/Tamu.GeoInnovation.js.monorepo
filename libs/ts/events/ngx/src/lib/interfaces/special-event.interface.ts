@@ -315,6 +315,26 @@ export interface EventAccommodationOption {
    * Optional note that can be surfaced by events that opt into resolved setting notes.
    */
   note?: string;
+
+  /**
+   * Optional map view applied once the event layers load when this choice is the active selection.
+   *
+   * Use this to recenter the map on a fixed location tied to a builder choice (for example, a session
+   * whose drop-off location differs from other sessions). When provided, it takes precedence over the
+   * configuration-level `mapCenter`/`zoom` and avoids any feature-extent computation, giving precise,
+   * hand-tunable control over the framing.
+   */
+  mapView?: {
+    /**
+     * Map center as `[longitude, latitude]`.
+     */
+    center: [number, number];
+
+    /**
+     * Optional zoom level. When omitted, the current view zoom is preserved.
+     */
+    zoom?: number;
+  };
 }
 
 export interface ResolvedEventSetting {

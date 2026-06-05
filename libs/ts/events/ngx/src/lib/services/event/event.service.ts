@@ -150,12 +150,18 @@ export class EventService {
             }
           }
 
+          // Group layers (e.g. Fish Camp's Arrival/Departure groups) hold their feature layers in a
+          // nested `sources` array. The block above only targets the top-level source, so walk the
+          // children and apply any option effects whose layerId matches a nested feature layer.
+          this.applyEffectsToGroupChildren(source);
+
           return source;
         });
 
       if (sources.length > 0) {
         await this.mapService.loadLayers(sources);
         await this.selectFeatureFromUrl(sources);
+        await this.applySelectedChoiceView();
       } else {
         throw new Error('drawEvent: No layer sources found.');
       }
@@ -163,6 +169,125 @@ export class EventService {
       console.error(`Failed to event areas`, err);
     }
   }
+
+  /**
+   * Recursively applies option effects to a group source's nested feature layers.
+   *
+   * Unlike top-level sources (handled inline in `drawEvent`), group children are not direct effect
+   * targets in the reference list, so their definition expressions must be resolved by walking the
+   * tree. The resolved expression is written to the child's `native.definitionExpression` because
+   * `EsriMapService.generateLayer` spreads `native` last — any expression set elsewhere would be
+   * overridden by it.
+   */
+  private applyEffectsToGroupChildren(source: LayerSource): void {
+    const children = (source as { sources?: LayerSource[] }).sources;
+
+    if (!children || children.length === 0) {
+      return;
+    }
+
+    for (const child of children) {
+      // Handle nested groups before applying effects to the immediate child.
+      this.applyEffectsToGroupChildren(child);
+
+      const optionsTargetingChild = this.eventOptions.filter((o) =>
+        o.effects.layers?.some((layer) => layer.layerId === child.id)
+      );
+
+      for (const option of optionsTargetingChild) {
+        const settingValue = this.settings[option.value];
+
+        if (settingValue === undefined) {
+          continue;
+        }
+
+        for (const layer of option.effects.layers ?? []) {
+          if (layer.layerId !== child.id || !layer.conversions) {
+            continue;
+          }
+
+          const conversion = layer.conversions.find((c) => c.input === settingValue);
+
+          if (!conversion) {
+            continue;
+          }
+
+          if (conversion.propOverrides) {
+            Object.assign(child, deepmerge(child, conversion.propOverrides));
+          }
+
+          if (conversion.expression) {
+            this.setChildDefinitionExpression(child, conversion.expression, conversion.deconflictingStrategy);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Sets a group child's definition expression on its `native` block, honoring any deconflicting
+   * strategy when an expression is already present. A `'1=0'` placeholder is treated as empty.
+   */
+  private setChildDefinitionExpression(
+    child: LayerSource,
+    expression: string,
+    strategy?: ConversionDeconflictingStrategy
+  ): void {
+    const native = ((child as { native?: { definitionExpression?: string } }).native ??= {});
+    const existingRaw = native.definitionExpression;
+    const existing = existingRaw && existingRaw !== '1=0' ? existingRaw : undefined;
+
+    if (!existing) {
+      native.definitionExpression = expression;
+      return;
+    }
+
+    const deconflictingStrategy = strategy || ConversionDeconflictingStrategy.APPEND_AND;
+
+    if (deconflictingStrategy === ConversionDeconflictingStrategy.APPEND_AND) {
+      native.definitionExpression = `(${existing}) AND (${expression})`;
+    } else if (deconflictingStrategy === ConversionDeconflictingStrategy.APPEND_OR) {
+      native.definitionExpression = `(${existing}) OR (${expression})`;
+    } else if (deconflictingStrategy === ConversionDeconflictingStrategy.REPLACE) {
+      native.definitionExpression = expression;
+    }
+    // ConversionDeconflictingStrategy.IGNORE leaves the existing expression untouched.
+  }
+
+  /**
+   * Recenters the map on the active selection's configured `mapView`, if any.
+   *
+   * Applies an explicit `[lon, lat]` center and optional zoom carried by the selected builder choice.
+   * It gives events with fixed, choice-specific locations precise control over framing and takes
+   * precedence over the configuration-level `mapCenter`/`zoom`.
+   */
+  private async applySelectedChoiceView(): Promise<void> {
+    if (!this._view) {
+      return;
+    }
+
+    for (const option of this.eventOptions) {
+      const settingValue = this.settings[option.value];
+
+      if (settingValue === undefined) {
+        continue;
+      }
+
+      const selectedChoice = option.choices?.find((choice) => choice.value === settingValue);
+      const view = selectedChoice?.mapView;
+
+      if (view?.center) {
+        try {
+          await this._view.goTo({ center: view.center, zoom: view.zoom ?? this._view.zoom });
+        } catch (err) {
+          console.error('EventService: Failed to apply selected choice view', err);
+        }
+
+        return;
+      }
+    }
+  }
+
 
   /**
    * Returns a clone layer source of the provided layer source `id` reference.
