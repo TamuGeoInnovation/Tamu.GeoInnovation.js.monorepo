@@ -62,7 +62,30 @@ export function SearchSources(
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: false,
       urlQueryParam: 'bldg',
-      urlQueryParamAliases: ['Bldg', 'BldgAbbrv', 'bldgabbrv']
+      urlQueryParamAliases: ['Bldg']
+    },
+    // Resolves a building from its abbreviation (e.g. `?BldgAbbrv=WCBA`) rather than its number.
+    // Kept separate from BUILDING_EXACT because the registrar's links select by `BldgAbbr`, which
+    // requires its own where clause; folding it into BUILDING_EXACT's aliases would (incorrectly)
+    // query the abbreviation against the `Number` field and return no results.
+    BUILDING_EXACT_ABBR: {
+      source: 'building-exact-abbr',
+      name: 'Building',
+      url: `${connections.basemapUrl}/1`,
+      queryParams: {
+        ...commonQueryParams,
+        where: {
+          keys: ['BldgAbbr'],
+          operators: ['='],
+          transformations: ['UPPER']
+        }
+      },
+      featuresLocation: 'features',
+      displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+      popupComponent: Popups.BuildingPopupComponent,
+      searchActive: false,
+      urlQueryParam: 'BldgAbbrv',
+      urlQueryParamAliases: ['bldgabbrv', 'BldgAbbr', 'bldgabbr']
     },
     UNIVERSITY_DEPARTMENTS: {
       source: 'university-departments',
@@ -298,6 +321,7 @@ export function SearchSources(
 export type ComposedSearchSourcesKeyMap = {
   BUILDING: SearchSource;
   BUILDING_EXACT: SearchSource;
+  BUILDING_EXACT_ABBR: SearchSource;
   UNIVERSITY_DEPARTMENTS: SearchSource;
   UNIVERSITY_DEPARTMENTS_EXACT: SearchSource;
   ALL_PARKING: SearchSource;
