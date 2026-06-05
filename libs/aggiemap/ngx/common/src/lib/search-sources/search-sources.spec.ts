@@ -13,7 +13,9 @@ jest.mock('@tamu-gisc/aggiemap/ngx/popups', () => ({
 import { ComposedSearchSourcesKeyMap, SearchSources } from './search-sources';
 
 describe('SearchSources', () => {
-  const connections: IComposedConnections = {
+  // Only the connection URLs referenced by the search sources under test are mocked; the cast keeps
+  // the partial fixture assignable without enumerating every unrelated connection.
+  const connections = {
     basemapUrl: 'https://example.com/basemap',
     departmentUrl: 'https://example.com/department',
     bikeRacksUrl: 'https://example.com/bike-racks',
@@ -24,9 +26,10 @@ describe('SearchSources', () => {
     tsMainUrl: 'https://example.com/ts-main',
     poiUrl: 'https://example.com/poi-service',
     diningLocationsUrl: 'https://example.com/dining-locations'
-  };
+  } as unknown as IComposedConnections;
 
-  const definitions: IComposedIDefinitions = {
+  // As above: only the definitions referenced by the sources under test are mocked.
+  const definitions = {
     TRANSPORTATION_PARKING: {
       id: 'transportation-parking',
       layerId: 'transportation-parking-layer',
@@ -117,11 +120,11 @@ describe('SearchSources', () => {
       name: 'Single Occupancy Restroom Locations',
       url: 'https://example.com/single-occupancy-restrooms'
     }
-  };
+  } as unknown as IComposedIDefinitions;
 
   it('should return all search sources when no options are provided', () => {
     const result = SearchSources(connections, definitions);
-    expect(result.length).toBe(13); // Ensure the number of search sources matches
+    expect(result.length).toBe(14); // Ensure the number of search sources matches
   });
 
   it('should exclude specified search sources', () => {
@@ -129,7 +132,7 @@ describe('SearchSources', () => {
       exclude: ['BUILDING', 'BIKE_RACKS']
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(11); // Ensure the number of search sources matches after exclusion
+    expect(result.length).toBe(12); // Ensure the number of search sources matches after exclusion
     expect(result.find((source) => source.source === 'building')).toBeUndefined();
     expect(result.find((source) => source.source === 'bike-racks')).toBeUndefined();
   });
@@ -139,7 +142,7 @@ describe('SearchSources', () => {
       exclude: []
     };
     const result = SearchSources(connections, definitions, options);
-    expect(result.length).toBe(13); // Ensure the number of search sources matches
+    expect(result.length).toBe(14); // Ensure the number of search sources matches
   });
 
   it('should return an empty array if all search sources are excluded', () => {
@@ -147,6 +150,7 @@ describe('SearchSources', () => {
       exclude: [
         'BUILDING',
         'BUILDING_EXACT',
+        'BUILDING_EXACT_ABBR',
         'UNIVERSITY_DEPARTMENTS',
         'UNIVERSITY_DEPARTMENTS_EXACT',
         'ALL_PARKING',
@@ -186,5 +190,28 @@ describe('SearchSources', () => {
     });
     expect(poiExact?.urlQueryParam).toBe('poi');
     expect(poiExact?.urlQueryParamAliases).toEqual(['POI']);
+  });
+
+  it('should resolve building deep links by number and by abbreviation against the correct fields', () => {
+    const result = SearchSources(connections, definitions);
+    const bldgExact = result.find((source) => source.source === 'building-exact');
+    const bldgExactAbbr = result.find((source) => source.source === 'building-exact-abbr');
+
+    // `?bldg=1510` style links query the building Number field.
+    expect(bldgExact?.urlQueryParam).toBe('bldg');
+    expect(bldgExact?.urlQueryParamAliases).toEqual(['Bldg']);
+    expect(bldgExact?.queryParams?.where).toEqual({
+      keys: ['Number'],
+      operators: ['=']
+    });
+
+    // `?BldgAbbrv=WCBA` style links (used by the registrar) must query the BldgAbbr field, not Number.
+    expect(bldgExactAbbr?.urlQueryParam).toBe('BldgAbbrv');
+    expect(bldgExactAbbr?.urlQueryParamAliases).toEqual(['bldgabbrv', 'BldgAbbr', 'bldgabbr']);
+    expect(bldgExactAbbr?.queryParams?.where).toEqual({
+      keys: ['BldgAbbr'],
+      operators: ['='],
+      transformations: ['UPPER']
+    });
   });
 });
