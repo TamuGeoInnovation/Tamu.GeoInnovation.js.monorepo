@@ -64,7 +64,11 @@ function createConnections(gisHost: string): IComposedConnections {
     womensBasketballUrl: `https://${gisHost}/arcgis/rest/services/TS/TracSocSoftSwimVollWbask/MapServer`,
     fourHRoundupUrl: `https://${gisHost}/arcgis/rest/services/TS/4H_Roundup/MapServer`,
     gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
-    argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`
+    argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
+    // NOTE: TS/Fish_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
+    // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
+    // deployment loads it correctly; it will 404 on production until the service is published there.
+    fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`
   };
 }
 
@@ -147,4 +151,5 @@ export interface IComposedConnections {
   fourHRoundupUrl: string;
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
+  fishCampUrl: string;
 }
