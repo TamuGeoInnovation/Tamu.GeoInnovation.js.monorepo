@@ -56,6 +56,7 @@ import { SecGroundsConferenceTs } from './sec-grounds-conference.definitions';
 import { ArgentinaVsHondurasTs } from './argentina-vs-honduras.definitions';
 import { ConstructionMapTs } from './construction-map.definitions';
 import { FishCampTs } from './fish-camp.definitions';
+import { FireSchoolTs } from './fire-school.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -114,5 +115,6 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   SecGroundsConferenceTs,
   ArgentinaVsHondurasTs,
   ConstructionMapTs,
-  FishCampTs
+  FishCampTs,
+  FireSchoolTs
 ];
