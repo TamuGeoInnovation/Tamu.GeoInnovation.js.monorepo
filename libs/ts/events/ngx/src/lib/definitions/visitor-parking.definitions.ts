@@ -107,6 +107,7 @@ export const VisitorParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking information for visitors.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'general',
     keywords: ['visitor', 'parking', 'kiosk', 'hourly']
   }
 };

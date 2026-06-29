@@ -1,0 +1,117 @@
+<div class="container12 flex justify-center">
+  <div class="column9">
+    <div class="breadcrumbs leader-2 trailer-1">
+      <p><a routerLink="/">Aggie Map</a></p>
+      <p><a href="javascript:void(0)">All Maps</a></p>
+    </div>
+
+    <div class="leader-1 trailer-3">
+      <h1 class="maps-page-title">All Maps</h1>
+    </div>
+
+    <div class="visit-maps-section trailer-3">
+      <h2>Visit Maps</h2>
+
+      <div class="visit-maps-row">
+        <a class="main-parking-button" [routerLink]="mainParkingRoute">Campus Main Parking</a>
+
+        <a class="visit-maps-tile" routerLink="/all-maps/parking">
+          <span class="visit-maps-icon visit-maps-icon--p">P</span>
+          <span class="visit-maps-label">Parking</span>
+        </a>
+
+        <a class="visit-maps-tile" routerLink="/all-maps/athletics-events">
+          <span class="visit-maps-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="7" width="30" height="21" rx="2" />
+              <rect x="19" y="15" width="10" height="8" rx="1" />
+              <path d="M16 28c2.5 5 13.5 5 16 0" />
+              <path d="M18 30l1.5 7M24 31v8M30 30l-1.5 7" />
+            </svg>
+          </span>
+          <span class="visit-maps-label">Athletics Events</span>
+        </a>
+
+        <a class="visit-maps-tile" routerLink="/all-maps/campus-events">
+          <span class="visit-maps-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 19L24 8l18 11" />
+              <path d="M11 19v17M18 19v17M30 19v17M37 19v17" />
+              <path d="M5 40h38" />
+            </svg>
+          </span>
+          <span class="visit-maps-label">Campus Events</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="search-section trailer-3">
+      <h2>Search Maps</h2>
+      <div class="search-input-container">
+        <tamu-gisc-autocomplete [control]="searchControl" [options]="filteredApplications" (optionSelected)="onApplicationSelect($event)" [showOnFocus]="false" [placeholder]="'Type to search for maps'" [autofocus]="false">
+          <ng-template tamuGiscAutocompleteOption [tamuGiscAutocompleteOptionOf]="filteredApplications | async" let-app>
+            <div class="flex flex-column">
+              <div class="flex flex-row align-center title">
+                <span class="app-name">{{ app.name }}</span>
+                <span class="chip chip-internal" *ngIf="app.source === 'internal'">{{ app.type | uppercase }}</span>
+                <span class="chip chip-external" *ngIf="app.source === 'external'">Experimental</span>
+                <span class="chip chip-label" *ngFor="let label of app.labels">{{ label | uppercase }}</span>
+              </div>
+              <span class="application-description" *ngIf="app.description">{{ app.description }}</span>
+            </div>
+          </ng-template>
+        </tamu-gisc-autocomplete>
+      </div>
+    </div>
+
+    <div class="upcoming-events-section trailer-3">
+      <h2>Upcoming Events</h2>
+
+      <div class="events-list" *ngIf="upcomingApplications.length > 0; else noUpcomingEvents">
+        <div class="event-card" *ngFor="let app of upcomingApplications" (click)="onApplicationSelect(app)">
+          <h3 class="event-title">{{ app.name }}</h3>
+          <div class="event-dates"><strong>Dates:</strong> {{ getEventDateRange(app.configuration.eventDates) }}</div>
+        </div>
+      </div>
+
+      <ng-template #noUpcomingEvents>
+        <div class="empty-state">
+          <p>No upcoming events found at this time.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="all-events-section trailer-3" *ngIf="(isDev | async) === true">
+      <h2>All Events</h2>
+      <p class="section-description">Complete list of all events (development only).</p>
+
+      <div class="map-columns" *ngIf="allEvents.length > 0">
+        <ol class="map-links">
+          <li class="map-link-item" *ngFor="let app of allEvents">
+            <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="experimental-applications-section" *ngIf="(isDev | async) === true">
+      <h2>Experimental Applications</h2>
+      <p class="section-description">Explore experimental maps and applications</p>
+
+      <div class="info-block trailer-1">This section is visible only in development mode. The applications listed here are experimental and are provided as-is, with no assurances regarding stability or functionality.</div>
+
+      <div class="applications-list">
+        <div class="application-card" *ngFor="let app of externalApplications" (click)="onApplicationSelect(app)">
+          <div class="application-card-header">
+            <h3 class="application-title">{{ app.name }}</h3>
+          </div>
+          <div class="application-card-content">
+            <div class="application-description" *ngIf="app.description">{{ app.description }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<tamu-gisc-footer></tamu-gisc-footer>

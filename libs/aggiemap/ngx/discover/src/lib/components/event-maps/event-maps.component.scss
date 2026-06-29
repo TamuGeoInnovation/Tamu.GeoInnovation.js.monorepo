@@ -1,0 +1,73 @@
+@import '../discover-shared';
+
+.event-links {
+  column-count: 3;
+  column-gap: 4rem;
+
+  @media (max-width: 768px) {
+    column-count: 1;
+  }
+}
+
+.event-link-item {
+  break-inside: avoid;
+}
+
+.related-links-box {
+  margin: 3rem 0 0;
+  max-width: 53rem;
+  margin-left: 4rem;
+  border: 1px solid #d1d1d1;
+  border-radius: 12px;
+  padding: 1.25rem 1.75rem;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}
+
+.related-links-superheader {
+  color: #7a5050;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.6rem;
+}
+
+.related-links-divider {
+  border: none;
+  border-top: 2px dotted #d0d0d0;
+  margin: 0 0 1rem;
+}
+
+.related-links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem 2.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.related-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  color: #500000;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+
+  .related-link-label {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  &:hover,
+  &:focus {
+    color: #3d0000;
+  }
+}

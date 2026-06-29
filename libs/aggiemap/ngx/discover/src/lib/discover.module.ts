@@ -8,12 +8,37 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-import { DiscoverComponent } from './components/discover.component';
+import { AllMapsComponent } from './components/all-maps/all-maps.component';
+import { ParkingMapsComponent } from './components/parking-maps/parking-maps.component';
+import { EventMapsComponent } from './components/event-maps/event-maps.component';
+import { MapsPageHeaderComponent } from './components/maps-page-header/maps-page-header.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: DiscoverComponent
+    component: AllMapsComponent
+  },
+  {
+    path: 'parking',
+    component: ParkingMapsComponent
+  },
+  {
+    path: 'campus-events',
+    component: EventMapsComponent,
+    data: {
+      mapType: 'campus',
+      title: 'Campus Events',
+      intro: 'Browse campus event maps for transportation, parking, and special events.'
+    }
+  },
+  {
+    path: 'athletics-events',
+    component: EventMapsComponent,
+    data: {
+      mapType: 'athletics',
+      title: 'Athletics Events',
+      intro: 'Browse athletic event maps for gameday parking and transportation information.'
+    }
   }
 ];
 
@@ -28,7 +53,7 @@ const routes: Routes = [
     AggiemapNgxSharedUiStructuralModule,
     PipesModule
   ],
-  declarations: [DiscoverComponent],
-  exports: [DiscoverComponent]
+  declarations: [AllMapsComponent, ParkingMapsComponent, EventMapsComponent, MapsPageHeaderComponent],
+  exports: [AllMapsComponent]
 })
 export class DiscoverModule {}

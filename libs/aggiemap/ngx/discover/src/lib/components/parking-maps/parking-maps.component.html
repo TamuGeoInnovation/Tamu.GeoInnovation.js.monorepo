@@ -1,0 +1,50 @@
+<div class="container12 flex justify-center">
+  <div class="column9 trailer-5">
+    <tamu-gisc-maps-page-header
+      title="Parking Maps"
+      intro="Browse available parking maps for the Texas A&amp;M University campus, organized by general, business, and permit parking."
+    ></tamu-gisc-maps-page-header>
+
+    <div class="maps-list-section trailer-3">
+      <div class="parking-columns">
+        <div class="parking-column" *ngFor="let column of columns">
+          <h2 class="parking-column-heading">{{ column.heading }}</h2>
+
+          <ul class="map-entry-list" *ngIf="column.applications.length > 0; else noColumnMaps">
+            <li class="map-entry-item" *ngFor="let app of column.applications">
+              <a class="map-entry" [routerLink]="getApplicationRoute(app)">
+                <span class="material-icons-outlined map-entry-icon">auto_awesome</span>
+                <span class="map-entry-label">{{ app.name }}</span>
+              </a>
+            </li>
+          </ul>
+
+          <ng-template #noColumnMaps>
+            <p class="section-description">No maps available.</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODO: Replace placeholder accordion content with real Transportation Services copy. -->
+    <div class="accordion-section">
+      <details class="maps-accordion" *ngFor="let item of [1, 2]">
+        <summary class="maps-accordion-summary">
+          <span class="accordion-heading">
+            <span class="accordion-superheader">Superheader</span>
+            <span class="accordion-title">Accordion Heading</span>
+          </span>
+          <span class="accordion-toggle">
+            <span class="accordion-toggle-label">Expand</span>
+            <span class="accordion-toggle-icon" aria-hidden="true"></span>
+          </span>
+        </summary>
+        <div class="accordion-body">
+          <p>Placeholder accordion content.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<tamu-gisc-footer></tamu-gisc-footer>

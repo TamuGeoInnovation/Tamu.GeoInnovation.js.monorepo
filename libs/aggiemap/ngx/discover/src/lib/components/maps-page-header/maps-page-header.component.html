@@ -1,0 +1,16 @@
+<div class="breadcrumbs leader-2 trailer-1">
+  <p><a routerLink="/">Aggie Map</a></p>
+  <p><a routerLink="/all-maps">All Maps</a></p>
+  <p><a href="javascript:void(0)">{{ title }}</a></p>
+</div>
+
+<div class="dotted-divider trailer-2"></div>
+
+<div class="maps-page-header-row leader-1 trailer-2">
+  <div class="maps-page-header-titles">
+    <h1 class="maps-page-title">{{ title }}</h1>
+    <p class="maps-page-intro" *ngIf="intro">{{ intro }}</p>
+  </div>
+
+  <a *ngIf="showMainParking" class="main-parking-button" [routerLink]="mainParkingRoute">Campus Main Parking</a>
+</div>

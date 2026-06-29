@@ -77,6 +77,7 @@ export const MediaParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking lot information for media permits.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'business',
     keywords: ['media', 'parking', 'permit']
   }
 };

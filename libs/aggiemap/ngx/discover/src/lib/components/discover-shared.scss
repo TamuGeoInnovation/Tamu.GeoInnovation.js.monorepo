@@ -1,17 +1,13 @@
-.discover-container {
-  margin: 0 auto;
-  padding: 2rem 0;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
-}
+// Shared styles for the All Maps landing and its sub-pages. Import into a component stylesheet
+// with `@import '../discover-shared';`.
 
 .search-section,
 .upcoming-events-section,
 .tab-section,
 .all-events-section,
-.experimental-applications-section {
+.experimental-applications-section,
+.visit-maps-section,
+.maps-list-section {
   h2 {
     color: #500000;
     margin-bottom: 0.5rem;
@@ -20,69 +16,12 @@
   }
 }
 
-.search-section {
-  h2 {
-    margin-bottom: 1.5rem;
-  }
+.search-section h2 {
+  margin-bottom: 1.5rem;
 }
 
 .search-input-container {
   position: relative;
-}
-
-.search-input {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid #e1e1e1;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-
-  &:focus {
-    outline: none;
-    border-color: #500000;
-    box-shadow: 0 0 0 3px rgba(80, 0, 0, 0.1);
-  }
-}
-
-.search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid #e1e1e1;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-  .search-result-item {
-    padding: 1rem;
-    border-bottom: 1px solid #f5f5f5;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-      background-color: #f8f8f8;
-    }
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    .event-name {
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 0.25rem;
-    }
-
-    .event-dates {
-      font-size: 0.9;
-    }
-  }
 }
 
 .section-description {
@@ -98,18 +37,17 @@
 
 .event-card,
 .application-card {
-  background: white;
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
+  background: #f4f4f4;
+  border: 1px solid #d1d1d1;
+  border-radius: 12px;
   padding: 1rem 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease;
+  box-shadow: none;
 
   &:hover {
     border-color: #500000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    box-shadow: none;
   }
 }
 
@@ -171,50 +109,6 @@
   border-radius: 8px;
 }
 
-.discover-tabs-section {
-  margin-top: 2rem;
-}
-
-.discover-tabs {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-  border-bottom: 1px solid #e1e1e1;
-}
-
-.discover-tab {
-  appearance: none;
-  background: transparent;
-  border: none;
-  border-bottom: 4px solid transparent;
-  padding: 0.1rem 1rem;
-  cursor: pointer;
-  color: #500000;
-  text-align: center;
-  font-size: 1.05rem;
-  font-weight: 600;
-  font-family: inherit;
-  white-space: nowrap;
-}
-
-.discover-tab span {
-  display: block;
-  margin: 0;
-}
-
-.discover-tab.active {
-  border-bottom-color: #500000;
-}
-
-.discover-tab:focus-visible {
-  outline: 2px solid #500000;
-  outline-offset: 2px;
-}
-
-.discover-tab-panel {
-  padding-top: 1rem;
-}
-
 .map-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -242,6 +136,48 @@
   &:focus {
     text-decoration: underline;
   }
+}
+
+// Bold, icon-prefixed map entry used on the category pages (Parking, Campus Events, Athletics).
+.map-entry-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.map-entry-item {
+  margin: 0;
+  padding: 0;
+}
+
+.map-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.18rem 0;
+  text-decoration: none;
+  color: #111;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+
+  &:hover,
+  &:focus {
+    color: #500000;
+  }
+}
+
+.map-entry-icon {
+  flex: 0 0 1.1rem;
+  width: 1.1rem;
+  text-align: center;
+  color: #500000;
+  font-size: 1.1rem;
+}
+
+.map-entry-label {
+  display: inline-block;
 }
 
 .applications-list {
@@ -291,19 +227,6 @@
 @media (max-width: 768px) {
   .event-card-header {
     gap: 0.5rem;
-  }
-
-  .discover-tabs {
-    display: flex;
-    gap: 0.5rem;
-    overflow-x: auto;
-    padding-bottom: 0.25rem;
-  }
-
-  .discover-tab {
-    min-width: 10rem;
-    padding: 0.75rem 1rem;
-    flex: 0 0 auto;
   }
 
   .map-columns,

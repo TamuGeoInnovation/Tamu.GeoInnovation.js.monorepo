@@ -399,4 +399,16 @@ export interface DiscoverMetadata {
    * When omitted, consuming UIs can derive a sensible default from `type`.
    */
   mapType?: DiscoverMapType;
+
+  /**
+   * Optional sub-category used to group parking maps into named columns (General / Business / Permit)
+   * on the Parking Maps page. Only relevant when `mapType` resolves to `parking`. When omitted, a
+   * parking map falls back to the `general` column.
+   */
+  parkingCategory?: ParkingCategory;
 }
+
+/**
+ * Sub-grouping for parking maps on the Parking Maps page.
+ */
+export type ParkingCategory = 'general' | 'business' | 'permit';

@@ -132,6 +132,7 @@ export const ContractorParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking lot information for Contractor and Contractor+ permits.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'business',
     keywords: ['contractor', 'contractor+', 'parking', 'permit']
   }
 };

@@ -71,6 +71,7 @@ export const StudentSelectableTs: AggiemapCustomMapConfiguration = {
     description: 'Selectable parking information for students.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'permit',
     keywords: ['permit select', 'student', 'selectable', 'parking']
   }
 };

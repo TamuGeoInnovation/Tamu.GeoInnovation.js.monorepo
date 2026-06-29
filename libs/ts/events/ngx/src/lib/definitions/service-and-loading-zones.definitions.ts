@@ -110,6 +110,7 @@ export const ServiceLoadingTs: AggiemapCustomMapConfiguration = {
     description: 'Service and loading zone parking layers.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'business',
     keywords: ['service', 'loading', 'loading zone', 'parking']
   }
 };

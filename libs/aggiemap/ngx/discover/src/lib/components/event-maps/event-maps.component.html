@@ -1,0 +1,37 @@
+<div class="container12 flex justify-center">
+  <div class="column9 trailer-5">
+    <tamu-gisc-maps-page-header [title]="title" [intro]="intro"></tamu-gisc-maps-page-header>
+
+    <div class="maps-list-section trailer-3">
+      <ul class="event-links map-entry-list" *ngIf="applications.length > 0; else noEvents">
+        <li class="event-link-item map-entry-item" *ngFor="let app of applications">
+          <a class="map-entry" [routerLink]="getApplicationRoute(app)">
+            <span class="material-icons-outlined map-entry-icon">auto_awesome</span>
+            <span class="map-entry-label">{{ app.name }}</span>
+          </a>
+        </li>
+      </ul>
+
+      <ng-template #noEvents>
+        <div class="empty-state">
+          <p>No event maps are available right now.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- TODO: Replace placeholder related-link targets with the final Transportation Services list. -->
+    <div class="related-links-box">
+      <p class="related-links-superheader">General Parking</p>
+      <hr class="related-links-divider" />
+
+      <div class="related-links-grid">
+        <a class="related-link" [routerLink]="mainParkingRoute"><span class="related-link-chevron">&raquo;</span><span class="related-link-label">Campus Main Parking</span></a>
+        <a class="related-link" routerLink="/parking/visitor-parking"><span class="related-link-chevron">&raquo;</span><span class="related-link-label">Visitor Parking</span></a>
+        <a class="related-link" routerLink="/parking/accessible-parking"><span class="related-link-chevron">&raquo;</span><span class="related-link-label">Accessible Parking</span></a>
+        <a class="related-link" routerLink="/parking/timed-parking"><span class="related-link-chevron">&raquo;</span><span class="related-link-label">Timed Parking</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<tamu-gisc-footer></tamu-gisc-footer>

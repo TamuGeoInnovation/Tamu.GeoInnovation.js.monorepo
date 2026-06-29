@@ -95,6 +95,7 @@ export const NightWeekendTs: AggiemapCustomMapConfiguration = {
     description: 'Parking lot information for Night Privileges (5:00pm - 6:00am) and weekend parking.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'permit',
     keywords: ['night', 'weekend', 'parking', 'permit']
   }
 };
