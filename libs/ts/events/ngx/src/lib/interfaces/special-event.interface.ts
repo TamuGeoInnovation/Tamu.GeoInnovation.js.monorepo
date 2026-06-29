@@ -125,6 +125,35 @@ export interface EventConfiguration {
    * Break / Summer Parking dates that Transportation Services enforcement relies on.
    */
   sidebarInfo?: SidebarInfoPanel;
+
+  /**
+   * Layer ids that behave as a mutually-exclusive set: turning one on automatically turns the
+   * others in the set off (radio-button behavior). Honored by the EventService once the layers
+   * load and applies to visibility toggles from both the Layers (TOC) list and the legend.
+   *
+   * Defaults to no exclusivity when omitted, so existing events are unaffected.
+   */
+  exclusiveLayerIds?: string[];
+
+  /**
+   * Controls how the sidebar "Layers" (TOC) list orders its entries.
+   *
+   * - `title` (default): alphabetical by layer title.
+   * - `source`: follows the event's reference/source order, matching the legend's draw order so
+   *   the two surfaces agree.
+   *
+   * Defaults to `title` when omitted to preserve existing behavior for other events.
+   */
+  referenceLayerListOrder?: 'title' | 'source';
+
+  /**
+   * Layer ids that should always appear in the legend, even when they start hidden by default.
+   * The legend normally only lists layers that have been visible at least once; use this to keep
+   * an off-by-default layer listed (for example, the "off" half of a mutually-exclusive group).
+   *
+   * Defaults to none when omitted, preserving existing legend behavior for other events.
+   */
+  legendForceShowLayerIds?: string[];
 }
 
 /**

@@ -162,6 +162,7 @@ export class EventService {
         await this.mapService.loadLayers(sources);
         await this.selectFeatureFromUrl(sources);
         await this.applySelectedChoiceView();
+        this.setupExclusiveLayers();
       } else {
         throw new Error('drawEvent: No layer sources found.');
       }
@@ -288,6 +289,41 @@ export class EventService {
     }
   }
 
+  /**
+   * Wires up mutually-exclusive (radio) behavior for the layers listed in the event
+   * configuration's `exclusiveLayerIds`. When any one of them becomes visible, the others in the
+   * set are turned off.
+   *
+   * Turning the others off only re-fires the watcher with `visible === false`, which hits the
+   * no-op branch, so there is no feedback loop. Because both the Layers (TOC) list and the legend
+   * toggle `layer.visible`, this applies regardless of which surface the user toggles from.
+   */
+  private setupExclusiveLayers(): void {
+    const exclusiveLayerIds =
+      this.eventSettingsService.eventConfiguration()?.configuration?.exclusiveLayerIds ?? [];
+
+    if (!this._map || exclusiveLayerIds.length < 2) {
+      return;
+    }
+
+    const layers = exclusiveLayerIds
+      .map((id) => this._map.findLayerById(id))
+      .filter((layer): layer is esri.Layer => Boolean(layer));
+
+    for (const layer of layers) {
+      layer.watch('visible', (isVisible: boolean) => {
+        if (!isVisible) {
+          return;
+        }
+
+        for (const other of layers) {
+          if (other !== layer && other.visible) {
+            other.visible = false;
+          }
+        }
+      });
+    }
+  }
 
   /**
    * Returns a clone layer source of the provided layer source `id` reference.

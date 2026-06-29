@@ -36,6 +36,13 @@ export class LegendComponent implements OnInit, OnDestroy {
   @Input()
   public allowedLayerIds: string[] = [];
 
+  /**
+   * Layer ids that should always appear in the legend even when they start hidden and have never
+   * been toggled on. Defaults to none, preserving the "only show ever-visible layers" behavior.
+   */
+  @Input()
+  public forceShowLayerIds: string[] = [];
+
   @Input()
   public combineChildrenUnderPrimary = false;
 
@@ -62,13 +69,15 @@ export class LegendComponent implements OnInit, OnDestroy {
       this.allowVisibilityToggle = routeData['allowVisibilityToggle'] ?? this.allowVisibilityToggle;
       this.excludedLayerIds = routeData['excludedLayerIds'] ?? this.excludedLayerIds;
       this.allowedLayerIds = routeData['allowedLayerIds'] ?? this.allowedLayerIds;
+      this.forceShowLayerIds = routeData['forceShowLayerIds'] ?? this.forceShowLayerIds;
       this.combineChildrenUnderPrimary =
         routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
     }
 
     this.legend = this.legendService.legend({
       excludedLayerIds: this.excludedLayerIds,
-      allowedLayerIds: this.allowedLayerIds
+      allowedLayerIds: this.allowedLayerIds,
+      forceShowLayerIds: this.forceShowLayerIds
     });
 
     this.responsive = this.responsiveService.snapshot;

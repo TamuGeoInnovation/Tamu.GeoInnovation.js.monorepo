@@ -89,10 +89,13 @@ const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
       },
       {
         value: 'Preferred Walking Route',
+        // Walking routes read as a dashed line (vehicle routes stay solid) to visually
+        // distinguish pedestrian travel; keep the end arrowhead to show direction.
         symbol: {
           type: 'simple-line',
           color: [0, 92, 230, 255],
           width: 3,
+          style: 'dash',
           marker: { style: 'arrow', color: [0, 92, 230, 255], placement: 'end' }
         } as unknown as esri.SimpleLineSymbolProperties
       }
@@ -165,7 +168,8 @@ export const FishCampColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: FISH_CAMP_LAYERS.ARRIVAL_GROUP,
-    title: 'Send Off/Arrival',
+    title: 'Send Off to Camp',
+    // On by default; mutually exclusive with "Bring Back from Camp" (see exclusiveLayerIds).
     visible: true,
     listMode: 'show',
     layerIndex: 61,
@@ -185,8 +189,9 @@ export const FishCampColdLayerSources: LayerSource[] = [
   {
     type: 'group',
     id: FISH_CAMP_LAYERS.DEPARTURE_GROUP,
-    title: 'Bring Back/Departure',
-    visible: true,
+    title: 'Bring Back from Camp',
+    // Off by default; toggling it on turns "Send Off to Camp" off (see exclusiveLayerIds).
+    visible: false,
     listMode: 'show',
     layerIndex: 60,
     sources: buildPhaseChildren(
@@ -219,6 +224,14 @@ export const FishCampConfiguration: EventConfiguration = {
   zoom: 16,
   legendAllowVisibilityToggle: true,
   legendCombineChildrenUnderPrimary: true,
+  // The two phase groups behave as a radio: only one is on at a time.
+  exclusiveLayerIds: [FISH_CAMP_LAYERS.ARRIVAL_GROUP, FISH_CAMP_LAYERS.DEPARTURE_GROUP],
+  // Order the sidebar "Layers" list by source order (Send Off, then Bring Back) so it agrees
+  // with the legend's draw order instead of sorting alphabetically.
+  referenceLayerListOrder: 'source',
+  // "Bring Back from Camp" starts hidden (radio default is Send Off), but it should still be
+  // listed in the legend so users know it exists. Force both groups to always show.
+  legendForceShowLayerIds: [FISH_CAMP_LAYERS.ARRIVAL_GROUP, FISH_CAMP_LAYERS.DEPARTURE_GROUP],
   builderStartStep: 'accommodations'
 };
 
@@ -231,15 +244,13 @@ export const FishCampOptions: SpecialEventOptions = [
     choices: [
       {
         value: FishCampSessionChoices.SESSIONS_A_F,
-        label: 'Sessions A–F',
-        secondaryLabel: 'July 20 – August 8',
+        label: 'Sessions B, C, E, & F',
         // Reed area (Lot 100c / 100e). Tune center/zoom here to adjust framing.
         mapView: { center: [-96.34924, 30.6037], zoom: 17 }
       },
       {
         value: FishCampSessionChoices.SESSION_G,
-        label: 'Session G',
-        secondaryLabel: 'August 7 – 9',
+        label: 'Sessions: A & D',
         // Lot 40. Tune center/zoom here to adjust framing.
         mapView: { center: [-96.33266, 30.61241], zoom: 17 }
       }
