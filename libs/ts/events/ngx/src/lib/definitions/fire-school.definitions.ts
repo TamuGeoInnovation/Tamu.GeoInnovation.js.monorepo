@@ -81,7 +81,8 @@ const NO_PARKING_LEGEND_SWATCH =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMiIgaGVpZ2h0PSIyMiI+PGRlZnM+PHBhdHRlcm4gaWQ9InAiIHdpZHRoPSI1IiBoZWlnaHQ9IjUiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxsaW5lIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSI1IiBzdHJva2U9IiNlNjAwMDAiIHN0cm9rZS13aWR0aD0iMS4yIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB4PSIwLjUiIHk9IjAuNSIgd2lkdGg9IjIxIiBoZWlnaHQ9IjIxIiBmaWxsPSJ1cmwoI3ApIiBzdHJva2U9IiNlNjAwMDAiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==';
 
 export const FireSchoolColdLayerSources: LayerSource[] = [
-  // Draw order: polygons sit at the bottom, the route lines above them, and the alert point on top.
+  // NOTE: this array's order does not determine z-order — map draw order is driven by the order of
+  // `FireSchoolLayerReferences` below (see the comment there).
   {
     type: 'feature',
     id: FIRE_SCHOOL_LAYERS.ZONES,
@@ -172,11 +173,15 @@ export const FireSchoolConfiguration: EventConfiguration = {
 
 export const FireSchoolOptions: SpecialEventOptions = [];
 
+// The order of this reference map drives the map draw order (NOT the order of the sources array
+// above): EventService reverses this list and adds each layer with `map.add()`, so the FIRST entry
+// here is added last and ends up on TOP. Alert sits above everything, Routes just below it, then the
+// polygon layers beneath both.
 const FireSchoolLayerReferences: Record<string, string> = {
-  ZONES: FIRE_SCHOOL_LAYERS.ZONES,
-  NO_PARKING_ZONES: FIRE_SCHOOL_LAYERS.NO_PARKING_ZONES,
+  ALERT: FIRE_SCHOOL_LAYERS.ALERT,
   ROUTES: FIRE_SCHOOL_LAYERS.ROUTES,
-  ALERT: FIRE_SCHOOL_LAYERS.ALERT
+  NO_PARKING_ZONES: FIRE_SCHOOL_LAYERS.NO_PARKING_ZONES,
+  ZONES: FIRE_SCHOOL_LAYERS.ZONES
 };
 
 export const FireSchoolTs: AggiemapCustomMapConfiguration = {
