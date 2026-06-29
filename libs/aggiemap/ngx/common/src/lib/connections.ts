@@ -68,7 +68,11 @@ function createConnections(gisHost: string): IComposedConnections {
     // NOTE: TS/Fish_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
     // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
     // deployment loads it correctly; it will 404 on production until the service is published there.
-    fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`
+    fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`,
+    // NOTE: TS/T_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
+    // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
+    // deployment loads it correctly; it will 404 on production until the service is published there.
+    tCampUrl: `https://${gisHost}/arcgis/rest/services/TS/T_Camp/MapServer`
   };
 }
 
@@ -152,4 +156,5 @@ export interface IComposedConnections {
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;
+  tCampUrl: string;
 }
