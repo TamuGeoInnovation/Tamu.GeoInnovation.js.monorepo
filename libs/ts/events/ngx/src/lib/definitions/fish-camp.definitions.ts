@@ -220,7 +220,7 @@ export const FishCampConfiguration: EventConfiguration = {
   scheduleUrl: 'https://fishcamp.tamu.edu/',
   // Default framing before/without a session selection. Each session choice carries its own
   // `mapView` (see options below), which recenters the map on that session's location after load.
-  mapCenter: [-96.34618, 30.60580],
+  mapCenter: [-96.34349, 30.60813],
   zoom: 16,
   legendAllowVisibilityToggle: true,
   legendCombineChildrenUnderPrimary: true,
@@ -246,13 +246,13 @@ export const FishCampOptions: SpecialEventOptions = [
         value: FishCampSessionChoices.SESSIONS_A_F,
         label: 'Sessions B, C, E, & F',
         // Reed area (Lot 100c / 100e). Tune center/zoom here to adjust framing.
-        mapView: { center: [-96.34924, 30.6037], zoom: 17 }
+        mapView: { center: [-96.34624, 30.60582], zoom: 17 }
       },
       {
         value: FishCampSessionChoices.SESSION_G,
         label: 'Sessions: A & D',
         // Lot 40. Tune center/zoom here to adjust framing.
-        mapView: { center: [-96.33266, 30.61241], zoom: 17 }
+        mapView: { center: [-96.33380, 30.61118], zoom: 17 }
       }
     ],
     effects: {
