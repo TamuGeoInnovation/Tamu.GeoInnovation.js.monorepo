@@ -39,7 +39,7 @@ const routesNative = {
         symbol: {
           type: 'simple-line',
           color: [38, 115, 0, 255],
-          width: 4,
+          width: 2,
           marker: { style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
         }
       },
@@ -49,7 +49,7 @@ const routesNative = {
         symbol: {
           type: 'simple-line',
           color: [0, 112, 255, 255],
-          width: 4,
+          width: 2,
           marker: { style: 'arrow', color: [0, 112, 255, 255], placement: 'end' }
         }
       }
