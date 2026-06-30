@@ -11,54 +11,176 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum MOVE_IN_LAYERS {
-  MOVE_IN_POI = 'Move-In Points of Interest',
-  MOVE_IN_STREETS = 'Move-In Streets',
-  MOVE_IN_LOTS = 'Move-In Lots',
-  RESIDENCE_HALL = 'Residence Hall'
+  RESIDENCE_HALL = 'Residence Hall',
+  // Points of Interest is split into one feature layer per icon Type so each can be toggled
+  // independently (grouped under a single parent in the layer list).
+  POI_GROUP = 'Move-In Points of Interest',
+  POI_KEYS = 'move-in-poi-keys',
+  POI_INFO = 'move-in-poi-info',
+  POI_DINING = 'move-in-poi-dining',
+  POI_RECYCLE = 'move-in-poi-recycle',
+  POI_BIKE = 'move-in-poi-bike',
+  POI_NO_PARKING = 'move-in-poi-no-parking',
+  // Streets are split so the No-Roadside-Parking closures can be toggled off independently of the
+  // drop-off zones (grouped under a single parent in the layer list).
+  STREETS_GROUP = 'Move-In Streets',
+  STREETS_DROPOFF = 'move-in-streets-dropoff',
+  STREETS_CLOSURES = 'move-in-streets-closures',
+  // Lots are split into available parking, accessible parking, and closures so each can be
+  // defaulted and toggled independently (grouped under a single parent in the layer list).
+  LOTS_GROUP = 'Move-In Lots',
+  LOTS_AVAILABLE = 'move-in-lots-available',
+  LOTS_ACCESSIBLE = 'move-in-lots-accessible',
+  LOTS_CLOSURES = 'move-in-lots-closures'
 }
 
-const { moveInParkingUrl: moveInServiceUrl, basemapUrl: basemapServiceUrl } = Connections;
+// NOTE: The Fall Move-In service schema this map depends on (CampusArea, StartDate/EndDate, and the
+// split `Type` values) is currently only published to the dev GIS host. Pin the move-in service to
+// gis-dev so local/dev builds load the new schema instead of the older production one.
+// TODO: revert to `Connections.moveInParkingUrl` once the new schema is published to production.
+const moveInServiceUrl = Connections('gis-dev.it.tamu.edu').moveInParkingUrl;
+const basemapServiceUrl = Connections.basemapUrl;
 
-const lotUseField = '"GIS.TS.SPEV_Lot_Use.Fall_MoveIn"';
+const poiUrl = `${moveInServiceUrl}/0`;
+const streetsUrl = `${moveInServiceUrl}/1`;
+const lotsUrl = `${moveInServiceUrl}/2`;
 
-export const MoveInDefinitions = {
-  RESIDENCE_HALL: {
-    id: MOVE_IN_LAYERS.RESIDENCE_HALL,
-    layerId: MOVE_IN_LAYERS.RESIDENCE_HALL,
-    name: 'Residence Hall',
-    url: `${basemapServiceUrl}/1`
-  },
-  MOVE_IN_POI: {
-    id: MOVE_IN_LAYERS.MOVE_IN_POI,
-    layerId: MOVE_IN_LAYERS.MOVE_IN_POI,
-    name: 'Move-In Points of Interest',
-    url: `${moveInServiceUrl}/0`
-  },
-  MOVE_IN_STREETS: {
-    id: MOVE_IN_LAYERS.MOVE_IN_STREETS,
-    layerId: MOVE_IN_LAYERS.MOVE_IN_STREETS,
-    name: 'Move-In Streets',
-    url: `${moveInServiceUrl}/1`
-  },
-  MOVE_IN_LOTS: {
-    id: MOVE_IN_LAYERS.MOVE_IN_LOTS,
-    layerId: MOVE_IN_LAYERS.MOVE_IN_LOTS,
-    name: 'Move-In Lots',
-    url: `${moveInServiceUrl}/2`
+type CampusArea = 'Northside' | 'Southside' | 'White Creek';
+
+// Builder group headings shown for each residence-hall campus area.
+const AREA_GROUP_LABEL: Record<CampusArea, string> = {
+  Northside: 'North Side',
+  Southside: 'South Side',
+  'White Creek': 'White Creek'
+};
+
+// Per-area framing applied once a hall in that area is selected (Issue 2). Centers are the centroids
+// of each CampusArea's parking footprint on the published service; tune center/zoom here to adjust.
+// Zoom 17 frames a whole area (~900 m) with margin — the tightest level that still fits an area, so
+// the selected (flashed) hall is always on-screen.
+const AREA_VIEW: Record<CampusArea, { center: [number, number]; zoom: number }> = {
+  Northside: { center: [-96.34318, 30.61689], zoom: 17 },
+  Southside: { center: [-96.33614, 30.61445], zoom: 17 },
+  'White Creek': { center: [-96.35424, 30.60824], zoom: 17 }
+};
+
+const markdownPopup = {
+  popupComponent: MarkdownPopupComponent
+};
+
+const poiPopup = {
+  ...markdownPopup,
+  popupData: {
+    name: '{attributes.Type}',
+    description: { field: 'Note' }
   }
 };
+
+const streetPopup = {
+  ...markdownPopup,
+  popupData: {
+    name: { field: 'Name' },
+    description: { field: 'note' }
+  }
+};
+
+const lotPopup = {
+  ...markdownPopup,
+  popupData: {
+    name: { field: 'LotName' },
+    description: { field: 'note' }
+  }
+};
+
+// Several POI icons are pin-shaped (natural 32x40, ~0.8 ratio) but the published renderer forces a
+// few of them into a square (Bike/Keys 25x25, No-Roadside-Parking 20x20), which stretches them.
+// Re-render those at a matching 0.8 ratio (24x30) to remove the distortion. The same hints are
+// applied to both the legend swatch and the on-map symbol by the map service.
+const pinAspectRatioLegend = {
+  mode: 'renderer-symbol' as const,
+  preserveAspectRatio: true,
+  fit: 'contain' as const,
+  width: 24,
+  height: 30
+};
+
+/**
+ * Builds one Points-of-Interest icon layer filtered to a single `Type`. The base `Type` filter
+ * lives on `native.definitionExpression` (not the top level) because these layers are group
+ * children: the EventService merges any area-isolation effect onto the native expression, whereas
+ * `generateLayer` would otherwise let `native` override a top-level expression.
+ *
+ * `fixAspectRatio` opts the layer into the pin de-stretch sizing above.
+ */
+function poiIconLayer(
+  id: MOVE_IN_LAYERS,
+  type: string,
+  title: string,
+  visible: boolean,
+  fixAspectRatio = false
+): LayerSource {
+  return {
+    type: 'feature',
+    id,
+    title,
+    url: poiUrl,
+    visible,
+    listMode: 'show',
+    ...poiPopup,
+    ...(fixAspectRatio ? { legend: pinAspectRatioLegend } : {}),
+    native: {
+      outFields: ['*'],
+      definitionExpression: `Type = '${type}'`
+    }
+  };
+}
+
+/**
+ * Builds one Lots or Streets layer for the provided base `Type` filter. Like the POI icon layers,
+ * the base filter lives on `native.definitionExpression` so the date and area effects can be
+ * appended to it.
+ */
+function filteredLayer(
+  id: MOVE_IN_LAYERS,
+  url: string,
+  popup: typeof lotPopup,
+  definitionExpression: string,
+  title: string,
+  visible: boolean
+): LayerSource {
+  return {
+    type: 'feature',
+    id,
+    title,
+    url,
+    visible,
+    listMode: 'show',
+    ...popup,
+    native: {
+      outFields: ['*'],
+      definitionExpression
+    }
+  };
+}
+
+const lotLayer = (id: MOVE_IN_LAYERS, definitionExpression: string, title: string, visible: boolean): LayerSource =>
+  filteredLayer(id, lotsUrl, lotPopup, definitionExpression, title, visible);
+
+const streetLayer = (id: MOVE_IN_LAYERS, definitionExpression: string, title: string, visible: boolean): LayerSource =>
+  filteredLayer(id, streetsUrl, streetPopup, definitionExpression, title, visible);
 
 export const MoveInColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: MoveInDefinitions.RESIDENCE_HALL.id,
-    title: MoveInDefinitions.RESIDENCE_HALL.name,
-    url: MoveInDefinitions.RESIDENCE_HALL.url,
+    id: MOVE_IN_LAYERS.RESIDENCE_HALL,
+    title: 'Residence Hall',
+    url: `${basemapServiceUrl}/1`,
     visible: true,
     listMode: 'show',
+    // No base definition expression: the selected-hall effect sets it directly. Keeping it off
+    // `native` avoids `generateLayer`'s native-overrides-top-level behavior so the effect applies.
     native: {
       outFields: ['*'],
-      definitionExpression: '1=0',
       renderer: {
         type: 'simple',
         symbol: {
@@ -74,56 +196,47 @@ export const MoveInColdLayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'feature',
-    id: MoveInDefinitions.MOVE_IN_STREETS.id,
-    title: MoveInDefinitions.MOVE_IN_STREETS.name,
-    url: MoveInDefinitions.MOVE_IN_STREETS.url,
+    type: 'group',
+    id: MOVE_IN_LAYERS.POI_GROUP,
+    title: 'Points of Interest',
     visible: true,
     listMode: 'show',
-    native: {
-      outFields: ['*']
-    }
+    // All POI icons are off by default — the user opts into whichever they want. Bike, Keys, and
+    // No-Roadside-Parking are de-stretched (see `pinAspectRatioLegend`).
+    sources: [
+      poiIconLayer(MOVE_IN_LAYERS.POI_KEYS, 'Keys', 'Check-In / Key Pickup', false, true),
+      poiIconLayer(MOVE_IN_LAYERS.POI_INFO, 'Info', 'Information', false),
+      poiIconLayer(MOVE_IN_LAYERS.POI_DINING, 'Dining', 'Dining', false),
+      poiIconLayer(MOVE_IN_LAYERS.POI_RECYCLE, 'Recycle', 'Cardboard Recycling', false),
+      poiIconLayer(MOVE_IN_LAYERS.POI_BIKE, 'Bike', 'Bike Registration', false, true),
+      poiIconLayer(MOVE_IN_LAYERS.POI_NO_PARKING, 'NoParking', 'No Roadside Parking', false, true)
+    ]
   },
   {
-    type: 'feature',
-    id: MoveInDefinitions.MOVE_IN_LOTS.id,
-    title: MoveInDefinitions.MOVE_IN_LOTS.name,
-    url: MoveInDefinitions.MOVE_IN_LOTS.url,
+    type: 'group',
+    id: MOVE_IN_LAYERS.STREETS_GROUP,
+    title: 'Move-In Streets',
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: {
-        field: 'GIS.TS.ParkingLots.Name',
-        collapsed: true
-      },
-      description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.MoveInN',
-        collapsed: true
-      }
-    },
-    native: {
-      outFields: ['*']
-    }
+    sources: [
+      streetLayer(MOVE_IN_LAYERS.STREETS_DROPOFF, `Type IN ('LZAllWeek', 'LZSundayOnly')`, 'Drop-Off Zones', true),
+      // Street closures: off by default (matches the lot closures), still independently toggleable.
+      streetLayer(MOVE_IN_LAYERS.STREETS_CLOSURES, `Type = 'LZNoParking'`, 'No Roadside Parking', false)
+    ]
   },
   {
-    type: 'feature',
-    id: MoveInDefinitions.MOVE_IN_POI.id,
-    title: MoveInDefinitions.MOVE_IN_POI.name,
-    url: MoveInDefinitions.MOVE_IN_POI.url,
+    type: 'group',
+    id: MOVE_IN_LAYERS.LOTS_GROUP,
+    title: 'Parking Lots',
     visible: true,
     listMode: 'show',
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: '{attributes.Type}',
-      description: {
-        field: 'Note',
-        collapsed: true
-      }
-    },
-    native: {
-      outFields: ['*']
-    }
+    sources: [
+      lotLayer(MOVE_IN_LAYERS.LOTS_AVAILABLE, `Type NOT IN ('NoParking', 'Disabled')`, 'Available Lots', true),
+      // Accessible parking: hidden until the accessible-parking step opts in (Issues 5 & 6).
+      lotLayer(MOVE_IN_LAYERS.LOTS_ACCESSIBLE, `Type = 'Disabled'`, 'Accessible Parking', false),
+      // Lot closures: off by default (Issue 3), still independently toggleable.
+      lotLayer(MOVE_IN_LAYERS.LOTS_CLOSURES, `Type = 'NoParking'`, 'Lot Closures', false)
+    ]
   }
 ];
 
@@ -140,7 +253,9 @@ export const MoveInConfiguration: EventConfiguration = {
   eventDates: [],
   scheduleUrl: 'https://reslife.tamu.edu/movein/',
   zoom: 16,
-  builderStartStep: 'accommodations'
+  builderStartStep: 'accommodations',
+  // Flash the selected residence hall once the map loads so users can spot its location (Issue 7).
+  flashLayerId: MOVE_IN_LAYERS.RESIDENCE_HALL
 };
 
 enum MoveInBuilderOptions {
@@ -192,10 +307,100 @@ enum MoveInAccessibleChoices {
   NO = 'no'
 }
 
-const lotsForAug19To21 = `${lotUseField} IN ('30a', 'SSG', '40bcd', '122', 'Free', 'Paid', 'NoParking')`;
-const lotsForAug22 = `${lotUseField} IN ('30a', 'SSG', '40bcd', '122', 'Free', 'Paid', 'NoParking', 'NSG')`;
-const lotsForAug23 = `${lotUseField} IN ('WeekendFree', 'WeekendOneHr', '30a', 'SSG', '40bcd', '122', 'Free', 'Paid', 'NoParking', 'NSG')`;
-const lotsForAug24 = `${lotUseField} IN ('WeekendFree', 'WeekendOneHr', '40bcd', '122', 'Free', 'Paid', 'NoParking')`;
+interface HallDefinition {
+  value: MoveInHallChoices;
+  label: string;
+  area: CampusArea;
+  buildings: string[];
+}
+
+// Single source of truth for residence halls: drives the builder choices, the residence-hall
+// building filter, and the campus-area isolation filter applied to every move-in layer.
+const MOVE_IN_HALLS: HallDefinition[] = [
+  { value: MoveInHallChoices.CLEMENTS, label: 'Clements Hall', area: 'Northside', buildings: ['0548'] },
+  { value: MoveInHallChoices.DAVIS_GARY, label: 'Davis-Gary Hall', area: 'Northside', buildings: ['0415'] },
+  { value: MoveInHallChoices.FOWLER, label: 'Fowler Hall', area: 'Northside', buildings: ['0427'] },
+  { value: MoveInHallChoices.HAAS, label: 'Haas Hall', area: 'Northside', buildings: ['0549'] },
+  { value: MoveInHallChoices.HOBBY, label: 'Hobby Hall', area: 'Northside', buildings: ['0653'] },
+  { value: MoveInHallChoices.HUGHES, label: 'Hughes Hall', area: 'Northside', buildings: ['0426'] },
+  { value: MoveInHallChoices.HULLABALOO, label: 'Hullabaloo Hall', area: 'Northside', buildings: ['1416'] },
+  { value: MoveInHallChoices.KEATHLEY, label: 'Keathley Hall', area: 'Northside', buildings: ['0428'] },
+  { value: MoveInHallChoices.LECHNER, label: 'Lechner Hall', area: 'Northside', buildings: ['0294'] },
+  { value: MoveInHallChoices.LEGGETT, label: 'Legett Hall', area: 'Northside', buildings: ['0419'] },
+  { value: MoveInHallChoices.MCFADDEN, label: 'McFadden Hall', area: 'Northside', buildings: ['0550'] },
+  { value: MoveInHallChoices.MOSES, label: 'Moses Hall', area: 'Northside', buildings: ['0412'] },
+  { value: MoveInHallChoices.NEELEY, label: 'Neeley Hall', area: 'Northside', buildings: ['0652'] },
+  { value: MoveInHallChoices.SCHUHMACHER, label: 'Schuhmacher Hall', area: 'Northside', buildings: ['0430'] },
+  { value: MoveInHallChoices.WALTON, label: 'Walton Hall', area: 'Northside', buildings: ['0422'] },
+  { value: MoveInHallChoices.APPELT, label: 'Appelt Hall', area: 'Southside', buildings: ['0293'] },
+  { value: MoveInHallChoices.ASTON, label: 'Aston Hall', area: 'Southside', buildings: ['0447'] },
+  { value: MoveInHallChoices.DUNN, label: 'Dunn Hall', area: 'Southside', buildings: ['0442'] },
+  { value: MoveInHallChoices.EPPRIGHT, label: 'Eppright Hall', area: 'Southside', buildings: ['0292'] },
+  { value: MoveInHallChoices.HART, label: 'Hart Hall', area: 'Southside', buildings: ['0417'] },
+  { value: MoveInHallChoices.KRUEGER, label: 'Krueger Hall', area: 'Southside', buildings: ['0441'] },
+  { value: MoveInHallChoices.MOSHER, label: 'Mosher Hall', area: 'Southside', buildings: ['0433'] },
+  { value: MoveInHallChoices.RUDDER, label: 'Rudder Hall', area: 'Southside', buildings: ['0291'] },
+  { value: MoveInHallChoices.UNDERWOOD, label: 'Underwood Hall', area: 'Southside', buildings: ['0394'] },
+  { value: MoveInHallChoices.WELLS, label: 'Wells Hall', area: 'Southside', buildings: ['0290'] },
+  {
+    value: MoveInHallChoices.WHITE_CREEK,
+    label: 'White Creek Apartments',
+    area: 'White Creek',
+    buildings: ['1590', '1591', '1592']
+  }
+];
+
+// Layers isolated to the selected hall's campus area (Issue 2). The same area filter is appended to
+// every move-in display layer so only that section of campus is shown.
+const AREA_ISOLATED_LAYER_IDS: MOVE_IN_LAYERS[] = [
+  MOVE_IN_LAYERS.POI_KEYS,
+  MOVE_IN_LAYERS.POI_INFO,
+  MOVE_IN_LAYERS.POI_DINING,
+  MOVE_IN_LAYERS.POI_RECYCLE,
+  MOVE_IN_LAYERS.POI_BIKE,
+  MOVE_IN_LAYERS.POI_NO_PARKING,
+  MOVE_IN_LAYERS.STREETS_DROPOFF,
+  MOVE_IN_LAYERS.STREETS_CLOSURES,
+  MOVE_IN_LAYERS.LOTS_AVAILABLE,
+  MOVE_IN_LAYERS.LOTS_ACCESSIBLE,
+  MOVE_IN_LAYERS.LOTS_CLOSURES
+];
+
+// Layers whose visible features depend on the selected move-in day (Issue 1). POI are intentionally
+// excluded — they are not date-bound and stay on regardless of the selected day.
+const DATE_FILTERED_LAYER_IDS: MOVE_IN_LAYERS[] = [
+  MOVE_IN_LAYERS.STREETS_DROPOFF,
+  MOVE_IN_LAYERS.STREETS_CLOSURES,
+  MOVE_IN_LAYERS.LOTS_AVAILABLE,
+  MOVE_IN_LAYERS.LOTS_ACCESSIBLE,
+  MOVE_IN_LAYERS.LOTS_CLOSURES
+];
+
+// Show a street/lot arrangement when the selected day falls within its [StartDate, EndDate] window.
+// The service stores each window at day granularity, so a date-only comparison is exact.
+const dateConversions = Object.values(MoveInDateChoices).map((date) => ({
+  input: date,
+  expression: `StartDate <= DATE '${date}' AND EndDate >= DATE '${date}'`,
+  deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_AND
+}));
+
+// Append the selected hall's campus area to each layer's existing filter. Campus-wide features tagged
+// with no area (general Free/Paid visitor lots, a few loading zones) carry a NULL CampusArea and are
+// kept visible in every area so those options never vanish during isolation.
+const areaIsolationConversions = MOVE_IN_HALLS.map((hall) => ({
+  input: hall.value,
+  expression: `(CampusArea = '${hall.area}' OR CampusArea IS NULL)`,
+  deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_AND
+}));
+
+// Filter the residence-hall layer to the selected hall's building(s). The basemap building-number
+// field is `Number` (unpadded, present on both the prod and dev GIS hosts); the host-specific
+// `BldgNum`/`Bldg_Number` fields are avoided so this works regardless of which host the basemap
+// resolves to.
+const hallBuildingConversions = MOVE_IN_HALLS.map((hall) => ({
+  input: hall.value,
+  expression: `Number IN (${hall.buildings.map((building) => `'${building}'`).join(', ')})`
+}));
 
 export const MoveInOptions: SpecialEventOptions = [
   {
@@ -205,92 +410,15 @@ export const MoveInOptions: SpecialEventOptions = [
     description: 'Select your move-in day.',
     uiType: 'date-card-grid',
     choices: [
-      {
-        value: MoveInDateChoices.AUG_19_2026,
-        label: 'August 19, 2026'
-      },
-      {
-        value: MoveInDateChoices.AUG_20_2026,
-        label: 'August 20, 2026'
-      },
-      {
-        value: MoveInDateChoices.AUG_21_2026,
-        label: 'August 21, 2026'
-      },
-      {
-        value: MoveInDateChoices.AUG_22_2026,
-        label: 'August 22, 2026'
-      },
-      {
-        value: MoveInDateChoices.AUG_23_2026,
-        label: 'August 23, 2026'
-      },
-      {
-        value: MoveInDateChoices.AUG_24_2026,
-        label: 'August 24, 2026'
-      }
+      { value: MoveInDateChoices.AUG_19_2026, label: 'August 19, 2026' },
+      { value: MoveInDateChoices.AUG_20_2026, label: 'August 20, 2026' },
+      { value: MoveInDateChoices.AUG_21_2026, label: 'August 21, 2026' },
+      { value: MoveInDateChoices.AUG_22_2026, label: 'August 22, 2026' },
+      { value: MoveInDateChoices.AUG_23_2026, label: 'August 23, 2026' },
+      { value: MoveInDateChoices.AUG_24_2026, label: 'August 24, 2026' }
     ],
     effects: {
-      layers: [
-        {
-          layerId: MOVE_IN_LAYERS.MOVE_IN_LOTS,
-          conversions: [
-            {
-              input: MoveInDateChoices.AUG_19_2026,
-              expression: lotsForAug19To21
-            },
-            {
-              input: MoveInDateChoices.AUG_20_2026,
-              expression: lotsForAug19To21
-            },
-            {
-              input: MoveInDateChoices.AUG_21_2026,
-              expression: lotsForAug19To21
-            },
-            {
-              input: MoveInDateChoices.AUG_22_2026,
-              expression: lotsForAug22
-            },
-            {
-              input: MoveInDateChoices.AUG_23_2026,
-              expression: lotsForAug23
-            },
-            {
-              input: MoveInDateChoices.AUG_24_2026,
-              expression: lotsForAug24
-            }
-          ]
-        },
-        {
-          layerId: MOVE_IN_LAYERS.MOVE_IN_STREETS,
-          conversions: [
-            {
-              input: MoveInDateChoices.AUG_19_2026,
-              expression: "Type IN ('LZAllWeek', 'NoParking')"
-            },
-            {
-              input: MoveInDateChoices.AUG_20_2026,
-              expression: "Type IN ('LZAllWeek', 'NoParking')"
-            },
-            {
-              input: MoveInDateChoices.AUG_21_2026,
-              expression: "Type IN ('LZAllWeek', 'NoParking')"
-            },
-            {
-              input: MoveInDateChoices.AUG_22_2026,
-              expression: "Type IN ('LZSundayOnly', 'NoParking')"
-            },
-            {
-              input: MoveInDateChoices.AUG_23_2026,
-              expression: "Type IN ('LZSundayOnly', 'NoParking')"
-            },
-            {
-              input: MoveInDateChoices.AUG_24_2026,
-              expression: "Type IN ('LZSundayOnly', 'NoParking')"
-            }
-          ]
-        }
-      ]
+      layers: DATE_FILTERED_LAYER_IDS.map((layerId) => ({ layerId, conversions: dateConversions }))
     }
   },
   {
@@ -299,249 +427,16 @@ export const MoveInOptions: SpecialEventOptions = [
     shortDescription: 'Residence Hall',
     description: 'Select your residence hall.',
     uiType: 'grouped-card-grid',
-    choices: [
-      {
-        value: MoveInHallChoices.CLEMENTS,
-        label: 'Clements Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.DAVIS_GARY,
-        label: 'Davis-Gary Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.FOWLER,
-        label: 'Fowler Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.HAAS,
-        label: 'Haas Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.HOBBY,
-        label: 'Hobby Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.HUGHES,
-        label: 'Hughes Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.HULLABALOO,
-        label: 'Hullabaloo Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.KEATHLEY,
-        label: 'Keathley Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.LECHNER,
-        label: 'Lechner Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.LEGGETT,
-        label: 'Legett Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.MCFADDEN,
-        label: 'McFadden Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.MOSES,
-        label: 'Moses Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.NEELEY,
-        label: 'Neeley Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.SCHUHMACHER,
-        label: 'Schuhmacher Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.WALTON,
-        label: 'Walton Hall',
-        group: 'North Side'
-      },
-      {
-        value: MoveInHallChoices.APPELT,
-        label: 'Appelt Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.ASTON,
-        label: 'Aston Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.DUNN,
-        label: 'Dunn Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.EPPRIGHT,
-        label: 'Eppright Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.HART,
-        label: 'Hart Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.KRUEGER,
-        label: 'Krueger Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.MOSHER,
-        label: 'Mosher Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.RUDDER,
-        label: 'Rudder Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.UNDERWOOD,
-        label: 'Underwood Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.WELLS,
-        label: 'Wells Hall',
-        group: 'South Side'
-      },
-      {
-        value: MoveInHallChoices.WHITE_CREEK,
-        label: 'White Creek Apartments',
-        group: 'White Creek'
-      }
-    ],
+    choices: MOVE_IN_HALLS.map((hall) => ({
+      value: hall.value,
+      label: hall.label,
+      group: AREA_GROUP_LABEL[hall.area],
+      mapView: AREA_VIEW[hall.area]
+    })),
     effects: {
       layers: [
-        {
-          layerId: MOVE_IN_LAYERS.RESIDENCE_HALL,
-          conversions: [
-            {
-              input: MoveInHallChoices.CLEMENTS,
-              expression: "Bldg_Number IN ('0548')"
-            },
-            {
-              input: MoveInHallChoices.DAVIS_GARY,
-              expression: "Bldg_Number IN ('0415')"
-            },
-            {
-              input: MoveInHallChoices.FOWLER,
-              expression: "Bldg_Number IN ('0427')"
-            },
-            {
-              input: MoveInHallChoices.HAAS,
-              expression: "Bldg_Number IN ('0549')"
-            },
-            {
-              input: MoveInHallChoices.HOBBY,
-              expression: "Bldg_Number IN ('0653')"
-            },
-            {
-              input: MoveInHallChoices.HUGHES,
-              expression: "Bldg_Number IN ('0426')"
-            },
-            {
-              input: MoveInHallChoices.HULLABALOO,
-              expression: "Bldg_Number IN ('1416')"
-            },
-            {
-              input: MoveInHallChoices.KEATHLEY,
-              expression: "Bldg_Number IN ('0428')"
-            },
-            {
-              input: MoveInHallChoices.LECHNER,
-              expression: "Bldg_Number IN ('0294')"
-            },
-            {
-              input: MoveInHallChoices.LEGGETT,
-              expression: "Bldg_Number IN ('0419')"
-            },
-            {
-              input: MoveInHallChoices.MCFADDEN,
-              expression: "Bldg_Number IN ('0550')"
-            },
-            {
-              input: MoveInHallChoices.MOSES,
-              expression: "Bldg_Number IN ('0412')"
-            },
-            {
-              input: MoveInHallChoices.NEELEY,
-              expression: "Bldg_Number IN ('0652')"
-            },
-            {
-              input: MoveInHallChoices.SCHUHMACHER,
-              expression: "Bldg_Number IN ('0430')"
-            },
-            {
-              input: MoveInHallChoices.WALTON,
-              expression: "Bldg_Number IN ('0422')"
-            },
-            {
-              input: MoveInHallChoices.APPELT,
-              expression: "Bldg_Number IN ('0293')"
-            },
-            {
-              input: MoveInHallChoices.ASTON,
-              expression: "Bldg_Number IN ('0447')"
-            },
-            {
-              input: MoveInHallChoices.DUNN,
-              expression: "Bldg_Number IN ('0442')"
-            },
-            {
-              input: MoveInHallChoices.EPPRIGHT,
-              expression: "Bldg_Number IN ('0292')"
-            },
-            {
-              input: MoveInHallChoices.HART,
-              expression: "Bldg_Number IN ('0417')"
-            },
-            {
-              input: MoveInHallChoices.KRUEGER,
-              expression: "Bldg_Number IN ('0441')"
-            },
-            {
-              input: MoveInHallChoices.MOSHER,
-              expression: "Bldg_Number IN ('0433')"
-            },
-            {
-              input: MoveInHallChoices.RUDDER,
-              expression: "Bldg_Number IN ('0291')"
-            },
-            {
-              input: MoveInHallChoices.UNDERWOOD,
-              expression: "Bldg_Number IN ('0394')"
-            },
-            {
-              input: MoveInHallChoices.WELLS,
-              expression: "Bldg_Number IN ('0290')"
-            },
-            {
-              input: MoveInHallChoices.WHITE_CREEK,
-              expression: "Bldg_Number IN ('1590', '1591', '1592')"
-            }
-          ]
-        }
+        { layerId: MOVE_IN_LAYERS.RESIDENCE_HALL, conversions: hallBuildingConversions },
+        ...AREA_ISOLATED_LAYER_IDS.map((layerId) => ({ layerId, conversions: areaIsolationConversions }))
       ]
     }
   },
@@ -552,45 +447,17 @@ export const MoveInOptions: SpecialEventOptions = [
     description: 'Will you or a relative require accessible parking accommodations?',
     uiType: 'binary',
     choices: [
-      {
-        value: MoveInAccessibleChoices.YES,
-        label: 'Yes'
-      },
-      {
-        value: MoveInAccessibleChoices.NO,
-        label: 'No'
-      }
+      { value: MoveInAccessibleChoices.NO, label: 'No, I do not need accessible parking' },
+      { value: MoveInAccessibleChoices.YES, label: 'Yes, I do require accessible parking' }
     ],
     effects: {
       layers: [
         {
-          layerId: MOVE_IN_LAYERS.MOVE_IN_LOTS,
+          // Accessible parking shows only when the user opts in (Issue 6).
+          layerId: MOVE_IN_LAYERS.LOTS_ACCESSIBLE,
           conversions: [
-            {
-              input: MoveInAccessibleChoices.YES,
-              expression: `${lotUseField} = 'Disabled'`,
-              deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_OR
-            },
-            {
-              input: MoveInAccessibleChoices.NO,
-              expression: '1=0',
-              deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_OR
-            }
-          ]
-        },
-        {
-          layerId: MOVE_IN_LAYERS.MOVE_IN_STREETS,
-          conversions: [
-            {
-              input: MoveInAccessibleChoices.YES,
-              expression: "Type = 'Disabled'",
-              deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_OR
-            },
-            {
-              input: MoveInAccessibleChoices.NO,
-              expression: '1=0',
-              deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_OR
-            }
+            { input: MoveInAccessibleChoices.YES, propOverrides: { visible: true } },
+            { input: MoveInAccessibleChoices.NO, propOverrides: { visible: false } }
           ]
         }
       ]
@@ -598,11 +465,21 @@ export const MoveInOptions: SpecialEventOptions = [
   }
 ];
 
+// Top-level layer references in draw order: the first entry renders on top (the EventService draws
+// the reversed list bottom-to-top). Points of Interest sit above the residence hall, which sits
+// above the street and lot polygons.
+const MoveInLayerReferences: Record<string, string> = {
+  POINTS_OF_INTEREST: MOVE_IN_LAYERS.POI_GROUP,
+  RESIDENCE_HALL: MOVE_IN_LAYERS.RESIDENCE_HALL,
+  MOVE_IN_STREETS: MOVE_IN_LAYERS.STREETS_GROUP,
+  PARKING_LOTS: MOVE_IN_LAYERS.LOTS_GROUP
+};
+
 export const MoveInTs: AggiemapCustomMapConfiguration = {
   configuration: MoveInConfiguration,
   options: MoveInOptions,
   sources: MoveInColdLayerSources,
-  references: MOVE_IN_LAYERS,
+  references: MoveInLayerReferences,
   type: 'general-map',
   discover: {
     id: MoveInConfiguration.id,

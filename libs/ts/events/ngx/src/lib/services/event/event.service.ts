@@ -24,6 +24,12 @@ type PopupDataDefinition = NonNullable<LayerSource['popupData']>;
 type PopupDataResolutionStrategy = NonNullable<LayerSource['popupDataResolutionStrategy']>;
 type PopupDataEntry = PopupDataDefinition[string];
 
+/** Number of on/off highlight cycles used to flash a configured focus feature on load. */
+const FOCUS_FLASH_PULSES = 3;
+
+/** Duration, in milliseconds, of each on (and each off) phase of the focus-feature flash. */
+const FOCUS_FLASH_INTERVAL = 450;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -162,6 +168,7 @@ export class EventService {
         await this.mapService.loadLayers(sources);
         await this.selectFeatureFromUrl(sources);
         await this.applySelectedChoiceView();
+        await this.flashFocusFeature();
       } else {
         throw new Error('drawEvent: No layer sources found.');
       }
@@ -288,6 +295,60 @@ export class EventService {
     }
   }
 
+  /**
+   * Briefly flashes the features of the configured `flashLayerId` to draw the user's eye to a focal
+   * feature once the map has loaded and framed (for example, the chosen residence hall).
+   *
+   * The layer's active definition expression is queried so only the currently-shown features flash.
+   * Highlighting by object id persists as features stream into view, so it works even if the layer
+   * view is still updating when the flash starts. Opt-in: a no-op unless `flashLayerId` is set.
+   */
+  private async flashFocusFeature(): Promise<void> {
+    const flashLayerId = this.eventSettingsService.eventConfiguration()?.configuration?.flashLayerId;
+
+    if (!flashLayerId || !this._view || !this._map) {
+      return;
+    }
+
+    const layer = this._map.findLayerById(flashLayerId) as esri.FeatureLayer | undefined;
+
+    if (!layer) {
+      return;
+    }
+
+    try {
+      await layer.load();
+
+      const layerView = (await this._view.whenLayerView(layer)) as esri.FeatureLayerView;
+
+      const { features } = await layer.queryFeatures({
+        where: layer.definitionExpression || '1=1',
+        outFields: [layer.objectIdField],
+        returnGeometry: false
+      });
+
+      if (features.length === 0) {
+        return;
+      }
+
+      const objectIds = features.map((feature) => feature.attributes[layer.objectIdField]);
+
+      // Pulse the highlight on and off a few times, then leave it cleared so the layer's own
+      // styling remains. `highlight` returns a handle whose `remove` clears that highlight.
+      for (let pulse = 0; pulse < FOCUS_FLASH_PULSES; pulse++) {
+        const handle = layerView.highlight(objectIds);
+        await this._sleep(FOCUS_FLASH_INTERVAL);
+        handle.remove();
+        await this._sleep(FOCUS_FLASH_INTERVAL);
+      }
+    } catch (err) {
+      console.error('EventService: Failed to flash focus feature', err);
+    }
+  }
+
+  private _sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   /**
    * Returns a clone layer source of the provided layer source `id` reference.
