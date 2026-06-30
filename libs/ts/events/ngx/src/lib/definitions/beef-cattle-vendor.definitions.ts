@@ -60,7 +60,7 @@ const routesNative = {
 // The published Alert symbol is a 32x40 (0.8 ratio) pin forced into a 25x25 square, which stretches
 // it. Re-render the picture marker at a matching 0.8 ratio (24x30), pulling the image from the
 // service's image endpoint by hash. Overriding the on-map renderer is required to de-stretch the
-// symbol on the map — a `legend` override alone only resizes the legend swatch.
+// symbol on the map, or a `legend` override alone only resizes the legend swatch.
 const alertNative = {
   outFields: ['*'],
   renderer: {
