@@ -296,12 +296,12 @@ export class EventService {
   }
 
   /**
-   * Briefly flashes the features of the configured `flashLayerId` to draw the user's eye to a focal
-   * feature once the map has loaded and framed (for example, the chosen residence hall).
+   * Briefly flashes the configured `flashLayerId` to draw the user's eye to a focal feature once the
+   * map has loaded and framed (for example, the chosen residence hall).
    *
-   * The layer's active definition expression is queried so only the currently-shown features flash.
-   * Highlighting by object id persists as features stream into view, so it works even if the layer
-   * view is still updating when the flash starts. Opt-in: a no-op unless `flashLayerId` is set.
+   * The layer's visibility is blinked a few times, then left in its original state. A highlight glow
+   * is imperceptible against a layer's own solid fill renderer, so toggling visibility gives an
+   * unmistakable flash regardless of styling. Opt-in: a no-op unless `flashLayerId` is set.
    */
   private async flashFocusFeature(): Promise<void> {
     const flashLayerId = this.eventSettingsService.eventConfiguration()?.configuration?.flashLayerId;
@@ -319,28 +319,17 @@ export class EventService {
     try {
       await layer.load();
 
-      const layerView = (await this._view.whenLayerView(layer)) as esri.FeatureLayerView;
+      const originalVisible = layer.visible;
 
-      const { features } = await layer.queryFeatures({
-        where: layer.definitionExpression || '1=1',
-        outFields: [layer.objectIdField],
-        returnGeometry: false
-      });
-
-      if (features.length === 0) {
-        return;
-      }
-
-      const objectIds = features.map((feature) => feature.attributes[layer.objectIdField]);
-
-      // Pulse the highlight on and off a few times, then leave it cleared so the layer's own
-      // styling remains. `highlight` returns a handle whose `remove` clears that highlight.
+      // Blink the layer off/on a few times, then restore its original visibility.
       for (let pulse = 0; pulse < FOCUS_FLASH_PULSES; pulse++) {
-        const handle = layerView.highlight(objectIds);
+        layer.visible = false;
         await this._sleep(FOCUS_FLASH_INTERVAL);
-        handle.remove();
+        layer.visible = true;
         await this._sleep(FOCUS_FLASH_INTERVAL);
       }
+
+      layer.visible = originalVisible;
     } catch (err) {
       console.error('EventService: Failed to flash focus feature', err);
     }
