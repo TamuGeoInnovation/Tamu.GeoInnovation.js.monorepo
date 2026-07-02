@@ -1,0 +1,13 @@
+<!-- Bus stop -->
+<div class="popup-section" *ngIf="data.attributes.type === 'waypoints'">
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.StopName || 'Bus Stop' }}</div>
+  <div class="feature-style-2" tabindex="0"><strong>Served by route(s)</strong>: {{ data.attributes.Route }}</div>
+  <div class="feature-style-2" tabindex="0" *ngIf="data.attributes.StopType === 'Time'">
+    <strong>Timed stop</strong> — buses hold to the schedule here.
+  </div>
+</div>
+
+<!-- Route line -->
+<div class="popup-section" *ngIf="data.attributes.type === 'route'">
+  <div class="feature-style-1" tabindex="0">Route {{ data.attributes.id }}: {{ data.attributes.routeName }}</div>
+</div>

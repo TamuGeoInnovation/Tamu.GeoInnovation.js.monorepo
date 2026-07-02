@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Optional, Type } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
@@ -18,6 +18,14 @@ import { TripModeSwitch } from '../../trip-planner.service';
 import esri = __esri;
 
 const ROUTE_NUMBER_REGEX = /on ([0-9\-A-Za-z]+)$/;
+
+/**
+ * Optional Angular component rendered as the popup when a user clicks a bus stop (or route line) drawn
+ * by the bus map. `BusService` lives in a low-level lib that cannot import the popup component directly
+ * (it would create a circular dependency), so the concrete component is supplied at the application
+ * root via this token. When not provided, bus features simply have no popup.
+ */
+export const BUS_STOP_POPUP_COMPONENT = new InjectionToken<Type<unknown>>('BUS_STOP_POPUP_COMPONENT');
 
 @Injectable({ providedIn: 'root' })
 export class BusService {
@@ -57,7 +65,8 @@ export class BusService {
     private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService,
     private location: Location,
-    private readonly analytics: Angulartics2
+    private readonly analytics: Angulartics2,
+    @Optional() @Inject(BUS_STOP_POPUP_COMPONENT) private busStopPopupComponent: Type<unknown>
   ) {
     from(this.mapService.store).subscribe((mapInstance: MapServiceInstance) => {
       this._map = mapInstance.map;
@@ -659,6 +668,13 @@ export class BusService {
           title: 'Bus Routes',
           listMode: 'hide'
         });
+
+        // Attach the popup component (if the app provided one) so clicking a stop/route graphic on this
+        // layer is resolved to a rendered popup by the popup service (which reads `layer.popupComponent`).
+        if (this.busStopPopupComponent) {
+          (layer as unknown as { popupComponent: Type<unknown> }).popupComponent = this.busStopPopupComponent;
+        }
+
         this._map.add(layer);
         return of(layer);
       })
@@ -723,7 +739,11 @@ export class BusService {
             } as unknown as esri.GeometryProperties,
             attributes: {
               id: short_name,
-              type: 'waypoints'
+              type: 'waypoints',
+              StopName: stop.name,
+              Route: stop.routes,
+              StopType: stop.stopType,
+              StopClass: stop.stopClass
             },
             symbol: new SimpleMarkerSymbol({
               style: stop.timed ? 'square' : 'circle',
@@ -743,7 +763,8 @@ export class BusService {
           }),
           attributes: {
             id: short_name,
-            type: 'route'
+            type: 'route',
+            routeName: route ? route.Name : short_name
           },
           symbol: new SimpleLineSymbol({
             color: color,
@@ -837,7 +858,7 @@ export class BusService {
   private routeStops(short_name: string): Observable<MapStop[]> {
     return this.arcgisQuery(0, {
       where: `Route LIKE '%${this.escapeSql(short_name)}%'`,
-      outFields: 'Route,StopType',
+      outFields: 'StopName,Route,StopType,StopClass',
       returnGeometry: 'true',
       outSR: '4326'
     }).pipe(
@@ -845,20 +866,27 @@ export class BusService {
         const stops: MapStop[] = [];
 
         for (const feature of response.features || []) {
-          const routeTokens = (feature.attributes.Route ?? '')
-            .toString()
-            .split(',')
-            .map((token) => token.trim());
+          const routes = (feature.attributes.Route ?? '').toString().trim();
+          const routeTokens = routes.split(',').map((token) => token.trim());
 
           if (routeTokens.indexOf(short_name) === -1) {
             continue;
           }
 
-          const timed = (feature.attributes.StopType ?? '').toString().trim().toLowerCase() === 'time';
+          const stopType = (feature.attributes.StopType ?? '').toString().trim();
+          const timed = stopType.toLowerCase() === 'time';
           const points = (feature.geometry && feature.geometry.points) || [];
 
           for (const point of points) {
-            stops.push({ longitude: point[0], latitude: point[1], timed: timed });
+            stops.push({
+              longitude: point[0],
+              latitude: point[1],
+              timed: timed,
+              name: (feature.attributes.StopName ?? '').toString().trim(),
+              routes: routes,
+              stopType: stopType,
+              stopClass: (feature.attributes.StopClass ?? '').toString().trim()
+            });
           }
         }
 
@@ -1278,10 +1306,15 @@ interface ArcGISLayerInfo {
 }
 
 /**
- * A bus stop reduced to what the map needs: a WGS84 location and whether it is a timed stop.
+ * A bus stop reduced to what the map needs: a WGS84 location, display attributes, and whether it is a
+ * timed stop.
  */
 interface MapStop {
   longitude: number;
   latitude: number;
   timed: boolean;
+  name: string;
+  routes: string;
+  stopType: string;
+  stopClass: string;
 }
