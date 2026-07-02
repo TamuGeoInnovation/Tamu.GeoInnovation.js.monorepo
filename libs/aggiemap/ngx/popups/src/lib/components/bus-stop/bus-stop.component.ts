@@ -28,6 +28,14 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
    */
   public readonly transportUrl = 'https://transport.tamu.edu/busroutes/?utm_source=aggiemap';
 
+  /**
+   * Router path of the desktop bus map. The share link targets this — rather than the site root —
+   * so an opened `?busstop=` link lands on the bus route-list panel instead of the default map's
+   * Layers panel. The app's base href is `/` and `map` is a route segment, so this resolves on both
+   * localhost and prod; the `DesktopGuard` rewrites `d`→`m` (preserving the query param) for mobile.
+   */
+  private readonly busMapPath = 'map/d/bus';
+
   constructor(
     private rtr: Router,
     private rt: ActivatedRoute,
@@ -46,13 +54,20 @@ export class BusStopPopupComponent extends BaseDirectionsComponent implements On
 
   /**
    * Deep-link fragment for the copy-link, composed from the `bus-stops-exact` search source's
-   * configured `urlQueryParam` (`?busstop=<OBJECTID>`). Returns null when there is no stop OBJECTID
-   * (e.g. the route line), which leaves the share URL as the site origin.
+   * configured `urlQueryParam` (`?busstop=<OBJECTID>`) and prefixed with the bus map path so the
+   * shared link opens on the bus map. Returns null when there is no stop OBJECTID (e.g. the route
+   * line), which leaves the share URL as the site origin.
    */
   protected override _getShareUrlFragment(): string | null {
     const objectId = this.data?.attributes?.OBJECTID;
 
-    return objectId != null ? this._buildShareUrlFragment('bus-stops-exact', objectId) : null;
+    if (objectId == null) {
+      return null;
+    }
+
+    const queryFragment = this._buildShareUrlFragment('bus-stops-exact', objectId);
+
+    return queryFragment ? `${this.busMapPath}${queryFragment}` : null;
   }
 
   /**
