@@ -740,6 +740,7 @@ export class BusService {
             attributes: {
               id: short_name,
               type: 'waypoints',
+              OBJECTID: stop.objectId,
               StopName: stop.name,
               Route: stop.routes,
               StopType: stop.stopType,
@@ -858,7 +859,7 @@ export class BusService {
   private routeStops(short_name: string): Observable<MapStop[]> {
     return this.arcgisQuery(0, {
       where: `Route LIKE '%${this.escapeSql(short_name)}%'`,
-      outFields: 'StopName,Route,StopType,StopClass',
+      outFields: 'OBJECTID,StopName,Route,StopType,StopClass',
       returnGeometry: 'true',
       outSR: '4326'
     }).pipe(
@@ -882,6 +883,7 @@ export class BusService {
               longitude: point[0],
               latitude: point[1],
               timed: timed,
+              objectId: Number(feature.attributes.OBJECTID),
               name: (feature.attributes.StopName ?? '').toString().trim(),
               routes: routes,
               stopType: stopType,
@@ -1313,6 +1315,7 @@ interface MapStop {
   longitude: number;
   latitude: number;
   timed: boolean;
+  objectId: number;
   name: string;
   routes: string;
   stopType: string;

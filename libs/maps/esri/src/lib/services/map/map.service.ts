@@ -849,7 +849,11 @@ export class EsriMapService {
   /**
    * Gets a list of features from url params by matching against search source URL parameter configurations.
    */
-  public getFeatureListFromURL(): { dataset: string; identifiersList: string[]; popupComponent?: Type<Component> } | null {
+  public getFeatureListFromURL(): {
+    dataset: string;
+    identifiersList: (string | number)[];
+    popupComponent?: Type<Component>;
+  } | null {
     const parsedRoute = this.router.parseUrl(this.router.url);
     const queryParameters = parsedRoute.queryParams;
     
@@ -879,14 +883,18 @@ export class EsriMapService {
         const parameterValue = queryParameters[matchedParam];
         
         if (parameterValue?.trim()) {
-          const tokens = parameterValue.split(',');
+          // Numeric-field sources (e.g. OBJECTID) must pass unquoted values; strict MapServer layers
+          // reject a quoted integer. String sources are left as-is.
+          const tokens = parameterValue
+            .split(',')
+            .map((token) => (searchSource.urlQueryParamNumeric ? Number(token) : token));
           const deduplicatedTokens = tokens.reduce((uniqueList, token) => {
             if (!uniqueList.includes(token)) {
               uniqueList.push(token);
             }
             return uniqueList;
-          }, [] as string[]);
-          
+          }, [] as (string | number)[]);
+
           return {
             dataset: searchSource.source,
             identifiersList: deduplicatedTokens,

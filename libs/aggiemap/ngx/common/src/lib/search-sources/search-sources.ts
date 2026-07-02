@@ -296,6 +296,28 @@ export function SearchSources(
       featuresLocation: 'features',
       displayTemplate: '{attributes.Type}',
       searchActive: false
+    },
+    // Deep-link-only source (searchActive: false) so a shared `?busstop=<OBJECTID>` URL re-opens a
+    // bus stop with its popup, like other point features. Keyed on OBJECTID because StopName/StopNum
+    // are not unique across routes. Backs the copy-link in BusStopPopupComponent.
+    BUS_STOPS_EXACT: {
+      source: 'bus-stops-exact',
+      name: 'Bus Stop',
+      url: `${connections.busRoutesUrl}/0`,
+      queryParams: {
+        ...commonQueryParams,
+        where: {
+          keys: ['OBJECTID'],
+          operators: ['=']
+        }
+      },
+      featuresLocation: 'features',
+      displayTemplate: '{attributes.StopName}',
+      popupComponent: Popups.BusStopPopupComponent,
+      searchActive: false,
+      urlQueryParam: 'busstop',
+      // OBJECTID is an integer field on a strict MapServer layer; the value must be unquoted.
+      urlQueryParamNumeric: true
     }
   };
 
@@ -333,4 +355,5 @@ export type ComposedSearchSourcesKeyMap = {
   POINTS_OF_INTEREST_EXACT: SearchSource;
   POINTS_OF_INTEREST: SearchSource;
   BIKE_RACKS: SearchSource;
+  BUS_STOPS_EXACT: SearchSource;
 };
