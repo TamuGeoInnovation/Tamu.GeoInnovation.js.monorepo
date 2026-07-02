@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { filter, take } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { BusService, TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
@@ -20,7 +21,7 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   templateUrl: './bus-stop.component.html',
   styleUrls: ['../base/base.popup.component.scss']
 })
-export class BusStopPopupComponent extends BaseDirectionsComponent {
+export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
   /**
    * Transportation Services bus schedules — the AggieSpirit per-stop schedule page requires a stopCode
    * and directionName that the TS/Bus_Routes source does not provide, so this links to the general page.
@@ -32,9 +33,15 @@ export class BusStopPopupComponent extends BaseDirectionsComponent {
     private rt: ActivatedRoute,
     private ps: TripPlannerService,
     private anl: Angulartics2,
-    private mp: EsriMapService
+    private mp: EsriMapService,
+    private busService: BusService
   ) {
     super(rtr, rt, ps, anl, mp);
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+    this.drawServingRouteForDeepLink();
   }
 
   /**
@@ -46,5 +53,36 @@ export class BusStopPopupComponent extends BaseDirectionsComponent {
     const objectId = this.data?.attributes?.OBJECTID;
 
     return objectId != null ? this._buildShareUrlFragment('bus-stops-exact', objectId) : null;
+  }
+
+  /**
+   * When opened from a shared `?busstop=` deep-link, the route serving the stop is not on the map yet
+   * (client-drawn stop graphics carry a `type` attribute; a deep-link-resolved feature does not). Draw
+   * the first serving route for context — waiting for the bus layer to exist and preserving the stop's
+   * zoom (`zoomToRoute: false`).
+   */
+  private drawServingRouteForDeepLink(): void {
+    const attributes = this.data?.attributes;
+
+    // Only for deep-link-resolved stops. Click-path stops (`type: 'waypoints'`) and the route line
+    // (`type: 'route'`) already have their route drawn.
+    if (!attributes || attributes.type !== undefined) {
+      return;
+    }
+
+    const firstRoute = (attributes.Route ?? '').toString().split(',')[0].trim();
+
+    if (!firstRoute) {
+      return;
+    }
+
+    this.busService.busLayer
+      .pipe(
+        filter((layer) => layer !== null),
+        take(1)
+      )
+      .subscribe(() => {
+        this.busService.toggleMapRoute(firstRoute, undefined, false);
+      });
   }
 }
