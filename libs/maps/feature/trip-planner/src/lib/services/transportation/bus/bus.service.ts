@@ -21,7 +21,20 @@ const ROUTE_NUMBER_REGEX = /on ([0-9\-A-Za-z]+)$/;
 
 @Injectable({ providedIn: 'root' })
 export class BusService {
+  // Legacy Transportation Services API. It is no longer available; the methods still referencing it
+  // (waypoints/stops/timetable/live-bus, used only by the currently-disabled trip-planner bus mode)
+  // are kept for compilation but are not exercised by the bus map.
   private base_url = 'https://nodes.geoservices.tamu.edu/api/route';
+
+  // AggieSpirit Bus Routes ArcGIS MapServer. Layer 0 = Bus Stops (multipoint), Layer 1 = Bus Routes
+  // (polyline, with a uniqueValue renderer on RouteNum that supplies per-route colors).
+  //
+  // NOTE: TS/Bus_Routes is currently published only to the dev GIS host. It is pinned here (rather than
+  // host-derived) so it also resolves on localhost — a host-from-hostname helper returns the prod host
+  // for `localhost`, which 404s for this dev-only service. It will 404 on production until TS publishes
+  // the service there; at that point switch this to the host-derived (prod) URL.
+  // TODO: un-pin to `gis.it.tamu.edu` once TS/Bus_Routes is published to production.
+  private serviceUrl = 'https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Bus_Routes/MapServer';
 
   private _routes = null;
   private stop_map = [];
@@ -67,28 +80,71 @@ export class BusService {
   }
 
   /**
-   * Fetches the bus routes and caches the result for faster access while the service remains alive.
+   * Fetches the bus routes from the ArcGIS Bus Routes layer and caches the result for faster access
+   * while the service remains alive.
+   *
+   * ArcGIS attributes are mapped into the legacy `TSRoute` shape so the existing UI works unchanged:
+   * `RouteNum` -> `ShortName`, `RouteName` -> `Name`, renderer color -> `Color`, and `Campus` -> group.
    */
   public getRoutes(): Observable<TSRoute[]> {
-    const routes_url = this.base_url + '/';
-
     if (this._routes != null) {
       return of(this._routes);
     }
 
-    return this.http.get(routes_url).pipe(
+    return forkJoin([
+      this.arcgisQuery(1, {
+        where: '1=1',
+        outFields: 'RouteNum,RouteName,Campus',
+        returnGeometry: 'false'
+      }),
+      // Layer metadata, for the uniqueValue renderer that defines each route's color.
+      this.http.get<ArcGISLayerInfo>(`${this.serviceUrl}/1?f=json`)
+    ]).pipe(
+      map((argument: [ArcGISQueryResponse, ArcGISLayerInfo]) => {
+        const [query, layerInfo] = argument;
+        const colors = this.buildRouteColorMap(layerInfo);
+        const seen = new Set<string>();
+        const routes: TSRoute[] = [];
+
+        for (const feature of query.features || []) {
+          const attributes = feature.attributes || {};
+          const shortName = (attributes.RouteNum ?? '').toString().trim();
+
+          // Skip blank route numbers and de-duplicate (the source has repeated RouteNum rows, e.g. `47/48`).
+          if (shortName === '' || seen.has(shortName)) {
+            continue;
+          }
+          seen.add(shortName);
+
+          const onCampus = (attributes.Campus ?? '').toString().trim().toLowerCase() === 'on';
+
+          routes.push({
+            Color: colors[shortName] || '#500000',
+            Description: '',
+            Group: {
+              Name: onCampus ? 'On Campus' : 'Off Campus',
+              Order: onCampus ? 0 : 1,
+              IsGameDay: false
+            },
+            Icon: '',
+            Key: shortName,
+            Name: (attributes.RouteName ?? '').toString().trim() || shortName,
+            ShortName: shortName
+          });
+        }
+
+        return routes;
+      }),
+      tap((routes: TSRoute[]) => {
+        if (routes.length > 0) {
+          this._routes = routes;
+        }
+      }),
       catchError(() => {
         this.reportFailedRequest('Routes', '*');
-        return timer(1000).pipe(
-          switchMap(() => {
-            return this.http.get(routes_url);
-          })
-        );
+        return of([] as TSRoute[]);
       }),
-      shareReplay(),
-      tap((routes: TSRoute[]) => {
-        this._routes = routes;
-      })
+      shareReplay()
     );
   }
 
@@ -623,90 +679,229 @@ export class BusService {
 
     if (existingGraphics && existingGraphicsForToggledRouteName) {
       this.removeAllFromMap();
-    } else {
-      forkJoin([
-        this.getRoutes(),
-        this.waypointsForRoute(short_name),
-        this.moduleProvider.require(['Graphic', 'SimpleLineSymbol', 'SimpleMarkerSymbol', 'Polyline'])
-      ]).subscribe(
-        (
-          argument: [
-            TSRoute[],
-            Waypoint[],
-            [
-              esri.GraphicConstructor,
-              esri.SimpleLineSymbolConstructor,
-              esri.SimpleMarkerSymbolConstructor,
-              esri.PolylineConstructor
-            ]
+      return;
+    }
+
+    forkJoin([
+      this.getRoutes(),
+      this.routeGeometry(short_name),
+      this.routeStops(short_name),
+      this.moduleProvider.require(['Graphic', 'SimpleLineSymbol', 'SimpleMarkerSymbol', 'Polyline'])
+    ]).subscribe(
+      (
+        argument: [
+          TSRoute[],
+          number[][][],
+          MapStop[],
+          [
+            esri.GraphicConstructor,
+            esri.SimpleLineSymbolConstructor,
+            esri.SimpleMarkerSymbolConstructor,
+            esri.PolylineConstructor
           ]
-        ) => {
-          const [routes, waypoints, [Graphic, SimpleLineSymbol, SimpleMarkerSymbol, Polyline]] = argument;
+        ]
+      ) => {
+        const [routes, paths, stops, [Graphic, SimpleLineSymbol, SimpleMarkerSymbol, Polyline]] = argument;
 
-          this.removeAllFromMap();
-          const route = routes.find((r) => r.ShortName === short_name);
+        this.removeAllFromMap();
 
-          const points = waypoints.map((waypoint) => [waypoint.point.longitude, waypoint.point.latitude]);
+        const route = routes.find((r) => r.ShortName === short_name);
 
-          let color = route.Color;
+        let color = route ? route.Color : '#500000';
 
-          // Only convert named colors, ESRI correctly maps other html colors such as #0f0 or rgb(102, 0, 102)
-          if (!color.startsWith('#') && !color.startsWith('rgb')) {
-            color = toHex(color);
-          }
+        // Only convert named colors, ESRI correctly maps other html colors such as #0f0 or rgb(102, 0, 102)
+        if (!color.startsWith('#') && !color.startsWith('rgb')) {
+          color = toHex(color);
+        }
 
-          const stops = waypoints
-            .filter((waypoint) => waypoint.stop)
-            .map((waypoint) => {
-              return new Graphic({
-                geometry: waypoint.point,
-                attributes: {
-                  id: short_name,
-                  type: 'waypoints'
-                },
-                symbol: new SimpleMarkerSymbol({
-                  style: waypoint.timed_stop ? 'square' : 'circle',
-                  color: color,
-                  outline: {
-                    color: 'white',
-                    width: 1
-                  }
-                })
-              });
-            });
-
-          const route_graphic = new Graphic({
-            geometry: new Polyline({
-              paths: [points]
-            }),
+        const stopGraphics = stops.map((stop) => {
+          return new Graphic({
+            geometry: {
+              type: 'point',
+              longitude: stop.longitude,
+              latitude: stop.latitude
+            } as unknown as esri.GeometryProperties,
             attributes: {
               id: short_name,
-              type: 'route'
+              type: 'waypoints'
             },
-            symbol: new SimpleLineSymbol({
+            symbol: new SimpleMarkerSymbol({
+              style: stop.timed ? 'square' : 'circle',
               color: color,
-              width: 3
+              outline: {
+                color: 'white',
+                width: 1
+              }
             })
           });
+        });
 
-          if (symbols == null || symbols.indexOf('route') !== -1) {
-            this._busLayer.getValue().add(route_graphic);
+        const route_graphic = new Graphic({
+          geometry: new Polyline({
+            paths: paths,
+            spatialReference: { wkid: 4326 }
+          }),
+          attributes: {
+            id: short_name,
+            type: 'route'
+          },
+          symbol: new SimpleLineSymbol({
+            color: color,
+            width: 3
+          })
+        });
 
-            // Zoom to bus line geometry when added;
-            this.mapService.store
-              .pipe(
-                take(1),
-                map((instances) => instances.view)
-              )
-              .subscribe((m) => m.goTo(route_graphic));
-          }
+        if ((symbols == null || symbols.indexOf('route') !== -1) && paths.length > 0) {
+          this._busLayer.getValue().add(route_graphic);
 
-          if (symbols == null || symbols.indexOf('stops') !== -1) {
-            this._busLayer.getValue().addMany(stops);
+          // Zoom to bus line geometry when added;
+          this.mapService.store
+            .pipe(
+              take(1),
+              map((instances) => instances.view)
+            )
+            .subscribe((m) => m.goTo(route_graphic));
+        }
+
+        if (symbols == null || symbols.indexOf('stops') !== -1) {
+          this._busLayer.getValue().addMany(stopGraphics);
+        }
+
+        // 'buses' (live vehicle locations) is intentionally a no-op: the ArcGIS source has no live GPS.
+      }
+    );
+  }
+
+  /**
+   * Returns the ordered list of stop names for a route, sourced from the denormalized `Stop1..Stop31`
+   * fields on the Bus Routes layer. Used to populate the route detail panel.
+   */
+  public getRouteStops(short_name: string): Observable<string[]> {
+    const stopFields = Array.from({ length: 31 }, (_, i) => `Stop${i + 1}`);
+
+    return this.arcgisQuery(1, {
+      where: `RouteNum='${this.escapeSql(short_name)}'`,
+      outFields: stopFields.join(','),
+      returnGeometry: 'false'
+    }).pipe(
+      map((response: ArcGISQueryResponse) => {
+        const feature = response.features && response.features[0];
+
+        if (!feature) {
+          return [];
+        }
+
+        return stopFields
+          .map((field) => feature.attributes[field])
+          .filter((value): value is string | number => value != null && value.toString().trim() !== '')
+          .map((value) => value.toString().trim());
+      }),
+      catchError(() => of([] as string[]))
+    );
+  }
+
+  /**
+   * Fetches the polyline path(s) for a route from the Bus Routes layer, in WGS84.
+   */
+  private routeGeometry(short_name: string): Observable<number[][][]> {
+    return this.arcgisQuery(1, {
+      where: `RouteNum='${this.escapeSql(short_name)}'`,
+      outFields: 'RouteNum',
+      returnGeometry: 'true',
+      outSR: '4326'
+    }).pipe(
+      map((response: ArcGISQueryResponse) => {
+        const paths: number[][][] = [];
+
+        for (const feature of response.features || []) {
+          if (feature.geometry && feature.geometry.paths) {
+            paths.push(...feature.geometry.paths);
           }
         }
-      );
+
+        return paths;
+      }),
+      catchError(() => {
+        this.reportFailedRequest('Route Geometry', short_name);
+        return of([] as number[][][]);
+      })
+    );
+  }
+
+  /**
+   * Fetches the stops that serve a route from the Bus Stops layer, in WGS84.
+   *
+   * The `Route` field is a comma-separated list (e.g. `05, 08, 35`), so the `LIKE` pre-filter is narrowed
+   * with an exact token match to avoid false positives (e.g. `05` matching `NW0305`).
+   */
+  private routeStops(short_name: string): Observable<MapStop[]> {
+    return this.arcgisQuery(0, {
+      where: `Route LIKE '%${this.escapeSql(short_name)}%'`,
+      outFields: 'Route,StopType',
+      returnGeometry: 'true',
+      outSR: '4326'
+    }).pipe(
+      map((response: ArcGISQueryResponse) => {
+        const stops: MapStop[] = [];
+
+        for (const feature of response.features || []) {
+          const routeTokens = (feature.attributes.Route ?? '')
+            .toString()
+            .split(',')
+            .map((token) => token.trim());
+
+          if (routeTokens.indexOf(short_name) === -1) {
+            continue;
+          }
+
+          const timed = (feature.attributes.StopType ?? '').toString().trim().toLowerCase() === 'time';
+          const points = (feature.geometry && feature.geometry.points) || [];
+
+          for (const point of points) {
+            stops.push({ longitude: point[0], latitude: point[1], timed: timed });
+          }
+        }
+
+        return stops;
+      }),
+      catchError(() => {
+        this.reportFailedRequest('Stops', short_name);
+        return of([] as MapStop[]);
+      })
+    );
+  }
+
+  /**
+   * Issues a query against a layer of the ArcGIS Bus Routes MapServer, returning the parsed JSON.
+   */
+  private arcgisQuery(layerId: number, params: { [key: string]: string }): Observable<ArcGISQueryResponse> {
+    const query = Object.entries({ f: 'json', ...params })
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+
+    return this.http.get<ArcGISQueryResponse>(`${this.serviceUrl}/${layerId}/query?${query}`);
+  }
+
+  /**
+   * Builds a `RouteNum -> css color` map from the Bus Routes layer's uniqueValue renderer.
+   */
+  private buildRouteColorMap(layerInfo: ArcGISLayerInfo): { [routeNum: string]: string } {
+    const colors: { [routeNum: string]: string } = {};
+    const infos = layerInfo?.drawingInfo?.renderer?.uniqueValueInfos || [];
+
+    for (const info of infos) {
+      const color = info.symbol && info.symbol.color;
+
+      if (info.value != null && Array.isArray(color) && color.length >= 3) {
+        colors[info.value.toString().trim()] = `rgb(${color[0]},${color[1]},${color[2]})`;
+      }
     }
+
+    return colors;
+  }
+
+  private escapeSql(value: string): string {
+    return value.replace(/'/g, "''");
   }
 
   /**
@@ -1051,4 +1246,42 @@ export interface TimetableRow {
 interface TimetableWithLinger {
   timetable: TimetableRow[];
   linger_minutes: number;
+}
+
+/**
+ * Minimal shape of an ArcGIS REST `query` response used by the bus map.
+ */
+interface ArcGISQueryResponse {
+  features?: Array<{
+    attributes: { [key: string]: string | number | null };
+    geometry?: {
+      paths?: number[][][];
+      points?: number[][];
+    };
+  }>;
+}
+
+/**
+ * Minimal shape of an ArcGIS layer metadata response, for the uniqueValue renderer colors.
+ */
+interface ArcGISLayerInfo {
+  drawingInfo?: {
+    renderer?: {
+      uniqueValueInfos?: Array<{
+        value: string | number;
+        symbol?: {
+          color?: number[];
+        };
+      }>;
+    };
+  };
+}
+
+/**
+ * A bus stop reduced to what the map needs: a WGS84 location and whether it is a timed stop.
+ */
+interface MapStop {
+  longitude: number;
+  latitude: number;
+  timed: boolean;
 }
