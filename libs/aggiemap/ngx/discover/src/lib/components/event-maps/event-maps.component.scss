@@ -2,7 +2,8 @@
 
 .event-links {
   column-count: 3;
-  column-gap: 4rem;
+  column-gap: 3rem;
+  max-width: 64rem;
 
   @media (max-width: 768px) {
     column-count: 1;
@@ -13,13 +14,14 @@
   break-inside: avoid;
 }
 
+// Concise supporting navigation block — inset from the left, narrow and short (not a major section).
 .related-links-box {
-  margin: 3rem 0 0;
-  max-width: 53rem;
-  margin-left: 4rem;
+  margin: 2.5rem 0 0;
+  max-width: 42rem;
+  margin-left: 3rem;
   border: 1px solid #d1d1d1;
   border-radius: 12px;
-  padding: 1.25rem 1.75rem;
+  padding: 1rem 1.5rem;
 
   @media (max-width: 768px) {
     margin-left: 0;
@@ -33,19 +35,19 @@
   letter-spacing: 0.08em;
   font-size: 0.85rem;
   font-weight: 600;
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.45rem;
 }
 
 .related-links-divider {
   border: none;
   border-top: 2px dotted #d0d0d0;
-  margin: 0 0 1rem;
+  margin: 0 0 0.7rem;
 }
 
 .related-links-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.6rem 2.5rem;
+  gap: 0.35rem 2.5rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -58,7 +60,7 @@
   gap: 0.5rem;
   color: #500000;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1rem;
   text-decoration: none;
 
   .related-link-label {

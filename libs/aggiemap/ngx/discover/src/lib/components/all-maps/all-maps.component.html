@@ -1,6 +1,5 @@
-<div class="container12 flex justify-center">
-  <div class="column9">
-    <div class="breadcrumbs leader-2 trailer-1">
+<div class="maps-page-shell">
+  <div class="breadcrumbs leader-2 trailer-1">
       <p><a routerLink="/">Aggie Map</a></p>
       <p><a href="javascript:void(0)">All Maps</a></p>
     </div>
@@ -44,7 +43,7 @@
       </div>
     </div>
 
-    <div class="search-section trailer-3">
+    <div class="search-section trailer-5">
       <h2>Search Maps</h2>
       <div class="search-input-container">
         <tamu-gisc-autocomplete [control]="searchControl" [options]="filteredApplications" (optionSelected)="onApplicationSelect($event)" [showOnFocus]="false" [placeholder]="'Type to search for maps'" [autofocus]="false">
@@ -111,6 +110,5 @@
       </div>
     </div>
   </div>
-</div>
 
 <tamu-gisc-footer></tamu-gisc-footer>

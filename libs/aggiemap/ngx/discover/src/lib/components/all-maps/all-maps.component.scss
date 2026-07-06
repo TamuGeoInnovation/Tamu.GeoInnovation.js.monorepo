@@ -1,8 +1,13 @@
 @import '../discover-shared';
 
+// All Maps uses an editorial, restrained title: near-black, light-weight condensed Oswald — a
+// deliberately different treatment from the bold maroon directory-page titles.
 .maps-page-title {
-  color: #500000;
-  font-weight: 700;
+  color: #111;
+  font-weight: 300;
+  font-size: 2.6rem;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   margin: 0;
 }
@@ -15,13 +20,13 @@
   flex-wrap: wrap;
 }
 
-// Compact, square horizontal maroon action button (shared geometry with the sub-page header CTA).
+// Compact, square horizontal maroon action button — wider than tall so it reads as a utility action.
 .main-parking-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3.6rem;
-  padding: 0 1.75rem;
+  min-height: 3.3rem;
+  padding: 0 2.75rem;
   background: #500000;
   color: #fff;
   font-weight: 700;
@@ -73,9 +78,15 @@
   line-height: 1.2;
 }
 
-// Narrow, initially-unfocused search field.
+// Narrow, initially-unfocused search field that ends around the first half of the page. Override the
+// textbox's default blue-gray fill / near-invisible border with the neutral #F4F4F4 + visible gray.
 .search-input-container {
-  max-width: 34rem;
+  max-width: 26rem;
+
+  ::ng-deep tamu-gisc-textbox {
+    background: #f4f4f4;
+    border-color: #c9c9c9;
+  }
 }
 
 // Three shadowless, light-gray event cards in one row.
