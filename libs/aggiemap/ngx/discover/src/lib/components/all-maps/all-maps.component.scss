@@ -48,7 +48,6 @@
 
   &:hover .visit-maps-icon,
   &:focus .visit-maps-icon {
-    border-color: #3d0000;
     color: #3d0000;
   }
 }
@@ -57,23 +56,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border: 2px solid #500000;
-  border-radius: 50%;
+  width: 3.25rem;
+  height: 3.25rem;
   color: #500000;
 
   svg {
-    width: 1.85rem;
-    height: 1.85rem;
+    width: 100%;
+    height: 100%;
   }
-}
-
-.visit-maps-icon--p {
-  font-family: 'Oswald', sans-serif;
-  font-weight: 700;
-  font-size: 1.6rem;
-  line-height: 1;
 }
 
 .visit-maps-label {

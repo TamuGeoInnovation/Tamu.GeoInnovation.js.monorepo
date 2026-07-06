@@ -13,7 +13,7 @@
           <ul class="map-entry-list" *ngIf="column.applications.length > 0; else noColumnMaps">
             <li class="map-entry-item" *ngFor="let app of column.applications">
               <a class="map-entry" [routerLink]="getApplicationRoute(app)">
-                <span class="material-icons-outlined map-entry-icon">auto_awesome</span>
+                <span class="map-entry-icon" aria-hidden="true"></span>
                 <span class="map-entry-label">{{ app.name }}</span>
               </a>
             </li>

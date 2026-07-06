@@ -6,7 +6,7 @@
       <ul class="event-links map-entry-list" *ngIf="applications.length > 0; else noEvents">
         <li class="event-link-item map-entry-item" *ngFor="let app of applications">
           <a class="map-entry" [routerLink]="getApplicationRoute(app)">
-            <span class="material-icons-outlined map-entry-icon">auto_awesome</span>
+            <span class="map-entry-icon" aria-hidden="true"></span>
             <span class="map-entry-label">{{ app.name }}</span>
           </a>
         </li>
