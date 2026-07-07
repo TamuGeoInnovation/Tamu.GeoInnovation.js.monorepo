@@ -72,9 +72,24 @@ function createConnections(gisHost: string): IComposedConnections {
     // otherwise resolves to prod and 404s). Revert to `https://${gisHost}/...` once the service is
     // published to production.
     fishCampUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Fish_Camp/MapServer`,
-    // NOTE: TS/T_Camp ... (keep development's comment)
+    // NOTE: TS/T_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
+    // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
+    // deployment loads it correctly; it will 404 on production until the service is published there.
     tCampUrl: `https://${gisHost}/arcgis/rest/services/TS/T_Camp/MapServer`,
-    // ... fireSchoolUrl, beefCattleUrl (gis-dev hard-pinned, as in development) ...
+    // NOTE: hard-pinned to gis-dev. The Municipal_Fire_School_Vendor_Show service is only usable on
+    // the dev GIS host — on production (gis.it.tamu.edu) it is published but token-protected, so the
+    // `${gisHost}` form fails to load on localhost/prod (struck-through layers, empty legend). Revert
+    // to `https://${gisHost}/...` once the prod service is public.
+    fireSchoolUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Municipal_Fire_School_Vendor_Show/MapServer`,
+    // NOTE: hard-pinned to gis-dev. The Beef_Cattle_Vendor_Load_In service is only usable on the dev
+    // GIS host — on production (gis.it.tamu.edu) it is published but token-protected, so the
+    // `${gisHost}` form fails to load on localhost/prod (struck-through layers, empty legend). Revert
+    // to `https://${gisHost}/...` once the prod service is public.
+    beefCattleUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Beef_Cattle_Vendor_Load_In/MapServer`,
+    // NOTE: TS/Games_of_Texas is only published to the dev GIS host. On production it is either
+    // absent or token-protected, so the `${gisHost}` form 401s/404s from localhost and prod. Pin to
+    // the dev host so local dev (`npx nx serve`) loads it. Revert to `${gisHost}` once the service
+    // is published publicly on production.
     gamesOfTexasUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Games_of_Texas/MapServer`
   };
 }
