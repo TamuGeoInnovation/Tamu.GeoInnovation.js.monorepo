@@ -56,6 +56,7 @@ import { SecGroundsConferenceTs } from './sec-grounds-conference.definitions';
 import { ArgentinaVsHondurasTs } from './argentina-vs-honduras.definitions';
 import { ConstructionMapTs } from './construction-map.definitions';
 import { FishCampTs } from './fish-camp.definitions';
+import { FireSchoolTs } from './fire-school.definitions';
 import { BeefCattleTs } from './beef-cattle-vendor.definitions';
 import { AggieFamilyParadeTs } from './aggie-family-parade.definitions';
 import { GamesOfTexasTs } from './games-of-texas.definitions';
@@ -118,6 +119,7 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   ArgentinaVsHondurasTs,
   ConstructionMapTs,
   FishCampTs,
+  FireSchoolTs,
   BeefCattleTs,
   AggieFamilyParadeTs,
   GamesOfTexasTs
