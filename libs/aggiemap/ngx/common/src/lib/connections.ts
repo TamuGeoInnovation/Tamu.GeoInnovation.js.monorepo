@@ -17,6 +17,7 @@ function createConnections(gisHost: string): IComposedConnections {
     footballGamedayShuttlesUrl: `https://${gisHost}/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer`,
     maroonWhiteGameUrl: `https://${gisHost}/arcgis/rest/services/TS/Maroon_White_Game/MapServer`,
     accessibleParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/AccessibleParking/MapServer`,
+    aggieFamilyParadeUrl: `https://${gisHost}/arcgis/rest/services/TS/Aggie_Family_Parade/MapServer`,
     aggielandSaturdayUrl: `https://${gisHost}/arcgis/rest/services/TS/AggielandSaturday/MapServer`,
     avpParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/AnyValidPermitParking/MapServer`,
     baseballParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/BaseballParking/MapServer`,
@@ -73,7 +74,17 @@ function createConnections(gisHost: string): IComposedConnections {
     // the dev GIS host — on production (gis.it.tamu.edu) it is published but token-protected, so the
     // `${gisHost}` form fails to load on localhost/prod (struck-through layers, empty legend). Revert
     // to `https://${gisHost}/...` once the prod service is public.
-    fireSchoolUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Municipal_Fire_School_Vendor_Show/MapServer`
+    fireSchoolUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Municipal_Fire_School_Vendor_Show/MapServer`,
+    // NOTE: hard-pinned to gis-dev. The Beef_Cattle_Vendor_Load_In service is only usable on the dev
+    // GIS host — on production (gis.it.tamu.edu) it is published but token-protected, so the
+    // `${gisHost}` form fails to load on localhost/prod (struck-through layers, empty legend). Revert
+    // to `https://${gisHost}/...` once the prod service is public.
+    beefCattleUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Beef_Cattle_Vendor_Load_In/MapServer`,
+    // NOTE: TS/Games_of_Texas is only published to the dev GIS host. On production it is either
+    // absent or token-protected, so the `${gisHost}` form 401s/404s from localhost and prod. Pin to
+    // the dev host so local dev (`npx nx serve`) loads it. Revert to `${gisHost}` once the service
+    // is published publicly on production.
+    gamesOfTexasUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Games_of_Texas/MapServer`
   };
 }
 
@@ -108,6 +119,7 @@ export interface IComposedConnections {
   footballGamedayShuttlesUrl: string;
   maroonWhiteGameUrl: string;
   accessibleParkingUrl: string;
+  aggieFamilyParadeUrl: string;
   aggielandSaturdayUrl: string;
   avpParkingUrl: string;
   baseballParkingUrl: string;
@@ -158,4 +170,6 @@ export interface IComposedConnections {
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;
   fireSchoolUrl: string;
+  beefCattleUrl: string;
+  gamesOfTexasUrl: string;
 }
