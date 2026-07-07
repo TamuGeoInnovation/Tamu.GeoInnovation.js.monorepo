@@ -57,6 +57,7 @@ import { ArgentinaVsHondurasTs } from './argentina-vs-honduras.definitions';
 import { ConstructionMapTs } from './construction-map.definitions';
 import { FishCampTs } from './fish-camp.definitions';
 import { AggieFamilyParadeTs } from './aggie-family-parade.definitions';
+import { GamesOfTexasTs } from './games-of-texas.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -117,4 +118,5 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   ConstructionMapTs,
   FishCampTs,
   AggieFamilyParadeTs
+  GamesOfTexasTs
 ];
