@@ -70,6 +70,10 @@ function createConnections(gisHost: string): IComposedConnections {
     // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
     // deployment loads it correctly; it will 404 on production until the service is published there.
     fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`,
+    // NOTE: TS/T_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
+    // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
+    // deployment loads it correctly; it will 404 on production until the service is published there.
+    tCampUrl: `https://${gisHost}/arcgis/rest/services/TS/T_Camp/MapServer`,
     // NOTE: hard-pinned to gis-dev. The Municipal_Fire_School_Vendor_Show service is only usable on
     // the dev GIS host — on production (gis.it.tamu.edu) it is published but token-protected, so the
     // `${gisHost}` form fails to load on localhost/prod (struck-through layers, empty legend). Revert
@@ -169,6 +173,7 @@ export interface IComposedConnections {
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;
+  tCampUrl: string;
   fireSchoolUrl: string;
   beefCattleUrl: string;
   gamesOfTexasUrl: string;
