@@ -78,7 +78,7 @@ function createConnections(gisHost: string): IComposedConnections {
     // this dev-only service). BusService keeps its own copy of this URL because it lives in a low-level
     // lib that cannot import connections. TODO: un-pin both to `${gisHost}` once TS/Bus_Routes is
     // published to production.
-    busRoutesUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Bus_Routes/MapServer`
+    busRoutesUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Bus_Routes/MapServer`,
     // NOTE: TS/T_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
     // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
     // deployment loads it correctly; it will 404 on production until the service is published there.
@@ -182,6 +182,7 @@ export interface IComposedConnections {
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;
+  busRoutesUrl: string;
   tCampUrl: string;
   fireSchoolUrl: string;
   beefCattleUrl: string;
