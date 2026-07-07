@@ -66,10 +66,12 @@ function createConnections(gisHost: string): IComposedConnections {
     fourHRoundupUrl: `https://${gisHost}/arcgis/rest/services/TS/4H_Roundup/MapServer`,
     gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
-    // NOTE: TS/Fish_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
-    // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
-    // deployment loads it correctly; it will 404 on production until the service is published there.
-    fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`,
+    // NOTE: TS/Fish_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it
+    // is NOT yet on the production host. It is intentionally hard-pinned to gis-dev (rather than
+    // resolving via `gisHost`) so the map loads everywhere, including localhost (whose `gisHost`
+    // otherwise resolves to prod and 404s). Revert to `https://${gisHost}/...` once the service is
+    // published to production.
+    fishCampUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Fish_Camp/MapServer`,
     // NOTE: TS/Bus_Routes is currently published only to the dev GIS host. It is HARD-PINNED to
     // gis-dev here (not host-derived) so bus-stop deep-links resolve on localhost too, matching the
     // dev-pin in BusService (`getDefaultGisHost()` returns the prod host on localhost, which 404s for
