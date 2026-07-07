@@ -117,6 +117,6 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   ArgentinaVsHondurasTs,
   ConstructionMapTs,
   FishCampTs,
-  AggieFamilyParadeTs
+  AggieFamilyParadeTs,
   GamesOfTexasTs
 ];
