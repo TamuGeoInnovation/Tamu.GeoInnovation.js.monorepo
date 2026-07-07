@@ -19,15 +19,18 @@ import {
  * TODO: revert `tsFootballCacheUrl` to the prod host (`gis.tamu.edu`) once the cache is published there.
  */
 const tsFootballCacheUrl = 'https://gis.dev.tamu.edu/arcgis/rest/services/TS/TSFootball_Cache/MapServer';
-const footballLotsUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lots/FeatureServer';
+const footballLotsUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lots_view/FeatureServer';
 
 /**
- * The `Hosted/Lots` FeatureServer exposes exactly two sublayers. The service listing is token-gated so the
- * 0 ↔ 1 assignment below is confirmed by rendering in-app.
- * TODO: verify which sublayer is the polygon lots vs the point gameday-parking icons and swap if needed.
+ * `Lots_view` is the PUBLIC view of the Marcomm-maintained hosted lots layer. The base `Hosted/Lots`
+ * service is secured and prompts anonymous visitors to sign in, so the public view is used instead.
+ *
+ * Sublayer 0 = Gameday Parking (points), sublayer 1 = Football Parking Lots (polygons).
+ * Field names on the view are lowercase (e.g. `type`, `twelfthman`, `name`, `note`, `lotname`,
+ * `notes`, `notes_1`) and SQL where-clauses against it are case-sensitive.
  */
-const LOTS_POLYGON_LAYER_INDEX = 0;
-const GAMEDAY_PARKING_POINT_LAYER_INDEX = 1;
+const GAMEDAY_PARKING_POINT_LAYER_INDEX = 0;
+const LOTS_POLYGON_LAYER_INDEX = 1;
 
 export enum FOOTBALL_PARKING_LAYERS {
   FP_STRIPES = 'football-stripes',
@@ -332,19 +335,19 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     url: `${footballLotsUrl}/${LOTS_POLYGON_LAYER_INDEX}`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.LotName',
-      description: 'attributes.Note'
+      name: 'attributes.lotname',
+      description: 'attributes.note'
     },
     native: {
       outFields: ['*'],
       visible: false,
       listMode: 'hide',
-      // TODO: confirm the Hosted/Lots polygon schema exposes Name / TwelfthMan / Type; adjust if the fields differ.
+      // Field names on the Lots_view polygon layer are lowercase and case-sensitive in SQL where-clauses.
       labelingInfo: [
         {
-          // TwelfthMan lots (treat blank or single space as empty; anything else shows second line)
+          // twelfthman lots (treat blank or single space as empty; anything else shows second line)
           labelExpressionInfo: {
-            expression: '$feature.Name + TextFormatting.NewLine + $feature.TwelfthMan'
+            expression: '$feature.name + TextFormatting.NewLine + $feature.twelfthman'
           },
           labelPlacement: 'always-horizontal',
           useCodedValues: true,
@@ -362,13 +365,13 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
           },
           minScale: 9500,
           maxScale: 0,
-          where: "TwelfthMan IS NOT NULL AND TRIM(TwelfthMan) <> ''"
+          where: "twelfthman IS NOT NULL AND TRIM(twelfthman) <> ''"
         },
         {
-          // Non-TwelfthMan lots with a price embedded in Type (e.g. "Public $30")
+          // Non-twelfthman lots with a price embedded in type (e.g. "Public $30")
           labelExpressionInfo: {
             expression:
-              "var t=$feature.Type; var p=''; if(t!=null && t!='' && Find('$', t)>-1){ var i=Find('$', t); var seg=Mid(t,i,10); var sp=Find(' ', seg); if(sp>-1){ seg=Left(seg, sp);} var last=Right(seg,1); if(last=='-' || last==':' || last==',' ){ seg=Left(seg, Length(seg)-1);} p=seg; } $feature.Name + IIf(p=='','', ' - '+p);"
+              "var t=$feature.type; var p=''; if(t!=null && t!='' && Find('$', t)>-1){ var i=Find('$', t); var seg=Mid(t,i,10); var sp=Find(' ', seg); if(sp>-1){ seg=Left(seg, sp);} var last=Right(seg,1); if(last=='-' || last==':' || last==',' ){ seg=Left(seg, Length(seg)-1);} p=seg; } $feature.name + IIf(p=='','', ' - '+p);"
           },
           labelPlacement: 'always-horizontal',
           useCodedValues: true,
@@ -386,11 +389,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
           },
           minScale: 9500,
           maxScale: 0,
-          where: "(TwelfthMan IS NULL OR TRIM(TwelfthMan) = '') AND Type IS NOT NULL AND Type LIKE '%$%' AND Type <> 'AVP'"
+          where: "(twelfthman IS NULL OR TRIM(twelfthman) = '') AND type IS NOT NULL AND type LIKE '%$%' AND type <> 'AVP'"
         },
         {
-          // Fallback: non-priced, non-TwelfthMan
-          labelExpression: '[Name]',
+          // Fallback: non-priced, non-twelfthman
+          labelExpression: '[name]',
           labelPlacement: 'always-horizontal',
           useCodedValues: true,
           symbol: {
@@ -407,7 +410,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
           },
           minScale: 9500,
           maxScale: 0,
-          where: "(TwelfthMan IS NULL OR TRIM(TwelfthMan) = '') AND (Type IS NULL OR Type NOT LIKE '%$%' OR Type = 'AVP')"
+          where: "(twelfthman IS NULL OR TRIM(twelfthman) = '') AND (type IS NULL OR type NOT LIKE '%$%' OR type = 'AVP')"
         }
       ]
     }
@@ -420,14 +423,14 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     url: `${footballLotsUrl}/${LOTS_POLYGON_LAYER_INDEX}`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.LotName',
-      description: 'attributes.Note'
+      name: 'attributes.lotname',
+      description: 'attributes.note'
     },
     native: {
       outFields: ['*'],
       visible: false,
       listMode: 'hide',
-      definitionExpression: "Type = 'Charter'"
+      definitionExpression: "type = 'Charter'"
     }
   },
   {
@@ -437,8 +440,8 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     url: `${footballLotsUrl}/${GAMEDAY_PARKING_POINT_LAYER_INDEX}`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Type',
-      description: 'attributes.Notes'
+      name: 'attributes.notes',
+      description: 'attributes.notes_1'
     },
     native: {
       outFields: ['*'],
@@ -612,8 +615,8 @@ export const FootballParkingOptions: SpecialEventOptions = [
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_PARKING_LOTS,
           conversions: [
-            { input: TransportType.TWELFTH_MAN, expression: "Type = 'Reserved Athletic'", propOverrides: SHOW },
-            { input: TransportType.RV, expression: "Type = 'RV'", propOverrides: SHOW },
+            { input: TransportType.TWELFTH_MAN, expression: "type = 'Reserved Athletic'", propOverrides: SHOW },
+            { input: TransportType.RV, expression: "type = 'RV'", propOverrides: SHOW },
             { input: TransportType.PERSONAL_VEHICLE, propOverrides: SHOW }
           ]
         },
