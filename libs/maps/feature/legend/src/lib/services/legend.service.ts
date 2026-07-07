@@ -21,6 +21,7 @@ export class LegendService {
   public legend(options?: LegendOptions) {
     const excludedLayerIds = new Set(options?.excludedLayerIds ?? []);
     const allowedLayerIds = options?.allowedLayerIds ?? [];
+    const forceShowLayerIds = options?.forceShowLayerIds ?? [];
 
     return combineLatest([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).pipe(
       switchMap(([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
@@ -56,6 +57,10 @@ export class LegendService {
           // allowed set and therefore never appear in the legend. Once a layer has been seen
           // as visible it stays in the legend permanently so that toggling it off collapses
           // the entry instead of removing it.
+          //
+          // `forceShowLayerIds` seeds the set so those layers always appear, even when they
+          // start hidden (e.g. an off-by-default layer in a mutually-exclusive group that
+          // should still be listed in the legend so users know it exists).
           scan(
             (
               acc: { allowedIds: Set<string>; result: esri.ActiveLayerInfo[] },
@@ -65,7 +70,7 @@ export class LegendService {
               items.filter((l) => l.layer.visible).forEach((l) => allowedIds.add(l.layer.id));
               return { allowedIds, result: items.filter((l) => allowedIds.has(l.layer.id)) };
             },
-            { allowedIds: new Set<string>(), result: [] as esri.ActiveLayerInfo[] }
+            { allowedIds: new Set<string>(forceShowLayerIds), result: [] as esri.ActiveLayerInfo[] }
           ),
           map((acc) => acc.result)
         );
@@ -77,6 +82,13 @@ export class LegendService {
 interface LegendOptions {
   excludedLayerIds?: string[];
   allowedLayerIds?: string[];
+
+  /**
+   * Layer ids that should always appear in the legend, even if they start hidden and have never
+   * been toggled on. Use for off-by-default layers that should still be listed (e.g. one half of a
+   * mutually-exclusive group). Must also satisfy `allowedLayerIds`/`excludedLayerIds` filtering.
+   */
+  forceShowLayerIds?: string[];
 }
 
 export interface IActiveLayerInfosChangeEvent {
