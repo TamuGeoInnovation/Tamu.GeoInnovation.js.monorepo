@@ -24,6 +24,12 @@ type PopupDataDefinition = NonNullable<LayerSource['popupData']>;
 type PopupDataResolutionStrategy = NonNullable<LayerSource['popupDataResolutionStrategy']>;
 type PopupDataEntry = PopupDataDefinition[string];
 
+/** Number of on/off highlight cycles used to flash a configured focus feature on load. */
+const FOCUS_FLASH_PULSES = 3;
+
+/** Duration, in milliseconds, of each on (and each off) phase of the focus-feature flash. */
+const FOCUS_FLASH_INTERVAL = 450;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -162,6 +168,7 @@ export class EventService {
         await this.mapService.loadLayers(sources);
         await this.selectFeatureFromUrl(sources);
         await this.applySelectedChoiceView();
+        await this.flashFocusFeature();
       } else {
         throw new Error('drawEvent: No layer sources found.');
       }
@@ -288,6 +295,49 @@ export class EventService {
     }
   }
 
+  /**
+   * Briefly flashes the configured `flashLayerId` to draw the user's eye to a focal feature once the
+   * map has loaded and framed (for example, the chosen residence hall).
+   *
+   * The layer's visibility is blinked a few times, then left in its original state. A highlight glow
+   * is imperceptible against a layer's own solid fill renderer, so toggling visibility gives an
+   * unmistakable flash regardless of styling. Opt-in: a no-op unless `flashLayerId` is set.
+   */
+  private async flashFocusFeature(): Promise<void> {
+    const flashLayerId = this.eventSettingsService.eventConfiguration()?.configuration?.flashLayerId;
+
+    if (!flashLayerId || !this._view || !this._map) {
+      return;
+    }
+
+    const layer = this._map.findLayerById(flashLayerId) as esri.FeatureLayer | undefined;
+
+    if (!layer) {
+      return;
+    }
+
+    try {
+      await layer.load();
+
+      const originalVisible = layer.visible;
+
+      // Blink the layer off/on a few times, then restore its original visibility.
+      for (let pulse = 0; pulse < FOCUS_FLASH_PULSES; pulse++) {
+        layer.visible = false;
+        await this._sleep(FOCUS_FLASH_INTERVAL);
+        layer.visible = true;
+        await this._sleep(FOCUS_FLASH_INTERVAL);
+      }
+
+      layer.visible = originalVisible;
+    } catch (err) {
+      console.error('EventService: Failed to flash focus feature', err);
+    }
+  }
+
+  private _sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   /**
    * Returns a clone layer source of the provided layer source `id` reference.
