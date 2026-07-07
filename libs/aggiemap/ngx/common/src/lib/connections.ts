@@ -68,7 +68,12 @@ function createConnections(gisHost: string): IComposedConnections {
     // NOTE: TS/Fish_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
     // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
     // deployment loads it correctly; it will 404 on production until the service is published there.
-    fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`
+    fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`,
+    // NOTE: TS/Games_of_Texas is only published to the dev GIS host. On production it is either
+    // absent or token-protected, so the `${gisHost}` form 401s/404s from localhost and prod. Pin to
+    // the dev host so local dev (`npx nx serve`) loads it. Revert to `${gisHost}` once the service
+    // is published publicly on production.
+    gamesOfTexasUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Games_of_Texas/MapServer`
   };
 }
 
@@ -152,4 +157,5 @@ export interface IComposedConnections {
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;
+  gamesOfTexasUrl: string;
 }
