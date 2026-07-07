@@ -17,6 +17,7 @@ function createConnections(gisHost: string): IComposedConnections {
     footballGamedayShuttlesUrl: `https://${gisHost}/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer`,
     maroonWhiteGameUrl: `https://${gisHost}/arcgis/rest/services/TS/Maroon_White_Game/MapServer`,
     accessibleParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/AccessibleParking/MapServer`,
+    aggieFamilyParadeUrl: `https://${gisHost}/arcgis/rest/services/TS/Aggie_Family_Parade/MapServer`,
     aggielandSaturdayUrl: `https://${gisHost}/arcgis/rest/services/TS/AggielandSaturday/MapServer`,
     avpParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/AnyValidPermitParking/MapServer`,
     baseballParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/BaseballParking/MapServer`,
@@ -108,6 +109,7 @@ export interface IComposedConnections {
   footballGamedayShuttlesUrl: string;
   maroonWhiteGameUrl: string;
   accessibleParkingUrl: string;
+  aggieFamilyParadeUrl: string;
   aggielandSaturdayUrl: string;
   avpParkingUrl: string;
   baseballParkingUrl: string;
