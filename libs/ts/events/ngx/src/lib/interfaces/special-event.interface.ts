@@ -119,6 +119,16 @@ export interface EventConfiguration {
   reviewText?: string;
 
   /**
+   * Optional layer id whose features are briefly flashed (highlighted) once the event map finishes
+   * loading and framing. Use it to draw the user's eye to a focal feature tied to a builder
+   * selection — for example, the residence hall the user chose.
+   *
+   * Generic and opt-in: omit to disable. The layer's active definition expression is honored, so
+   * only the currently-shown features flash.
+   */
+  flashLayerId?: string;
+
+  /**
    * Optional informational panel rendered in the right-hand sidebar above the layer list and legend.
    *
    * Used to surface reference content that lives outside of the map data — for example, the

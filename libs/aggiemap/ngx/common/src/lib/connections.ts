@@ -17,6 +17,7 @@ function createConnections(gisHost: string): IComposedConnections {
     footballGamedayShuttlesUrl: `https://${gisHost}/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer`,
     maroonWhiteGameUrl: `https://${gisHost}/arcgis/rest/services/TS/Maroon_White_Game/MapServer`,
     accessibleParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/AccessibleParking/MapServer`,
+    aggieFamilyParadeUrl: `https://${gisHost}/arcgis/rest/services/TS/Aggie_Family_Parade/MapServer`,
     aggielandSaturdayUrl: `https://${gisHost}/arcgis/rest/services/TS/AggielandSaturday/MapServer`,
     avpParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/AnyValidPermitParking/MapServer`,
     baseballParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/BaseballParking/MapServer`,
@@ -70,7 +71,11 @@ function createConnections(gisHost: string): IComposedConnections {
     // resolving via `gisHost`) so the map loads everywhere, including localhost (whose `gisHost`
     // otherwise resolves to prod and 404s). Revert to `https://${gisHost}/...` once the service is
     // published to production.
-    fishCampUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Fish_Camp/MapServer`
+    fishCampUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Fish_Camp/MapServer`,
+    // NOTE: TS/T_Camp ... (keep development's comment)
+    tCampUrl: `https://${gisHost}/arcgis/rest/services/TS/T_Camp/MapServer`,
+    // ... fireSchoolUrl, beefCattleUrl (gis-dev hard-pinned, as in development) ...
+    gamesOfTexasUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Games_of_Texas/MapServer`
   };
 }
 
@@ -105,6 +110,7 @@ export interface IComposedConnections {
   footballGamedayShuttlesUrl: string;
   maroonWhiteGameUrl: string;
   accessibleParkingUrl: string;
+  aggieFamilyParadeUrl: string;
   aggielandSaturdayUrl: string;
   avpParkingUrl: string;
   baseballParkingUrl: string;
@@ -154,4 +160,8 @@ export interface IComposedConnections {
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;
+  tCampUrl: string;
+  fireSchoolUrl: string;
+  beefCattleUrl: string;
+  gamesOfTexasUrl: string;
 }
