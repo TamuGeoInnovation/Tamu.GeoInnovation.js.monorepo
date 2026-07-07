@@ -233,6 +233,32 @@ export interface SpecialEventOption {
    */
   uiType?: 'default' | 'date-card-grid' | 'grouped-card-grid' | 'binary';
 
+  /**
+   * Optional visibility condition. When present, this option is only shown as a builder step (and only
+   * treated as required) when another option's saved value is one of `equalsAnyOf`.
+   *
+   * This enables conditional/branching builder flows without affecting events that omit it. For example,
+   * an Entry/Exit `direction` step can be shown only for the transportation modes that have both directions:
+   *
+   * ```
+   * visibleWhen: { setting: 'transport-type', equalsAnyOf: ['12th-man', 'personal-vehicle', 'micromobility'] }
+   * ```
+   *
+   * The referenced `setting` should generally appear earlier in the options array so its value is already
+   * chosen by the time this option would be shown.
+   */
+  visibleWhen?: {
+    /**
+     * The `value` (key) of another {@link SpecialEventOption} whose saved selection gates this option.
+     */
+    setting: string;
+
+    /**
+     * This option is only visible/required when the gating setting's saved value is one of these.
+     */
+    equalsAnyOf: Array<string | number | boolean>;
+  };
+
   choices: Array<EventAccommodationOption>;
 
   effects: {
