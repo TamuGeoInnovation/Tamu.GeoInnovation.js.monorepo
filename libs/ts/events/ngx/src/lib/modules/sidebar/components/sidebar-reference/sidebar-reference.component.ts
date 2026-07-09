@@ -24,6 +24,8 @@ export class SidebarReferenceComponent implements OnInit {
   public legendAllowVisibilityToggle = false;
   public legendCombineChildrenUnderPrimary = false;
   public eventLayerIds: string[] = [];
+  public legendForceShowLayerIds: string[] = [];
+  public layerListOrderBy: 'title' | 'allowed' = 'title';
   public showResolvedSettingNotes = false;
 
   constructor(
@@ -40,6 +42,8 @@ export class SidebarReferenceComponent implements OnInit {
     this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
     this.legendAllowVisibilityToggle = this.configuration?.legendAllowVisibilityToggle ?? true;
     this.legendCombineChildrenUnderPrimary = this.configuration?.legendCombineChildrenUnderPrimary ?? false;
+    this.layerListOrderBy = this.configuration?.referenceLayerListOrder === 'source' ? 'allowed' : 'title';
+    this.legendForceShowLayerIds = this.configuration?.legendForceShowLayerIds ?? [];
     const settings = this.eventSettingsService.settings();
     const options = this.eventSettingsService.eventOptions();
     this.eventLayerIds = this.eventSettingsService
