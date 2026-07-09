@@ -34,11 +34,7 @@ export enum MOVE_IN_LAYERS {
   LOTS_CLOSURES = 'move-in-lots-closures'
 }
 
-// NOTE: The Fall Move-In service schema this map depends on (CampusArea, StartDate/EndDate, and the
-// split `Type` values) is currently only published to the dev GIS host. Pin the move-in service to
-// gis-dev so local/dev builds load the new schema instead of the older production one.
-// TODO: revert to `Connections.moveInParkingUrl` once the new schema is published to production.
-const moveInServiceUrl = Connections('gis-dev.it.tamu.edu').moveInParkingUrl;
+const moveInServiceUrl = Connections.moveInParkingUrl;
 const basemapServiceUrl = Connections.basemapUrl;
 
 const poiUrl = `${moveInServiceUrl}/0`;
