@@ -261,12 +261,12 @@ enum MoveInBuilderOptions {
 }
 
 enum MoveInDateChoices {
+  AUG_18_2026 = '2026-08-18',
   AUG_19_2026 = '2026-08-19',
   AUG_20_2026 = '2026-08-20',
   AUG_21_2026 = '2026-08-21',
   AUG_22_2026 = '2026-08-22',
-  AUG_23_2026 = '2026-08-23',
-  AUG_24_2026 = '2026-08-24'
+  AUG_23_2026 = '2026-08-23'
 }
 
 enum MoveInHallChoices {
@@ -406,12 +406,12 @@ export const MoveInOptions: SpecialEventOptions = [
     description: 'Select your move-in day.',
     uiType: 'date-card-grid',
     choices: [
+      { value: MoveInDateChoices.AUG_18_2026, label: 'August 18, 2026' },
       { value: MoveInDateChoices.AUG_19_2026, label: 'August 19, 2026' },
       { value: MoveInDateChoices.AUG_20_2026, label: 'August 20, 2026' },
       { value: MoveInDateChoices.AUG_21_2026, label: 'August 21, 2026' },
       { value: MoveInDateChoices.AUG_22_2026, label: 'August 22, 2026' },
-      { value: MoveInDateChoices.AUG_23_2026, label: 'August 23, 2026' },
-      { value: MoveInDateChoices.AUG_24_2026, label: 'August 24, 2026' }
+      { value: MoveInDateChoices.AUG_23_2026, label: 'August 23, 2026' }
     ],
     effects: {
       layers: DATE_FILTERED_LAYER_IDS.map((layerId) => ({ layerId, conversions: dateConversions }))
