@@ -139,8 +139,11 @@ export const TCampConfiguration: EventConfiguration = {
     'Find parking, entry routes, and closures for T Camp. Use the map to plan your drop-off and pickup.',
   eventDates: [],
   scheduleUrl: 'https://transport.tamu.edu/Parking/Events/camp.aspx',
-  mapCenter: [-96.33322, 30.61178],
-  zoom: 18,
+  // The Williams Alumni Center sits ~570m southwest of the lots, so the initial view has to cover the
+  // full extent of all four layers (~460m x ~575m) rather than framing the lots alone. Centered on
+  // that combined extent at the zoom level that fits it.
+  mapCenter: [-96.33368, 30.61101],
+  zoom: 17,
   legendAllowVisibilityToggle: true
 };
 
