@@ -560,19 +560,19 @@ export const SearchSources: SearchSource[] = [
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['Number', 'BldgAbbr', 'BldgName'],
+        keys: ['Number', 'BldgAbbrev', 'BldgName'],
         operators: ['LIKE', 'LIKE', 'LIKE'],
         wildcards: ['includes', 'includes', 'includes'],
         transformations: ['UPPER', 'UPPER', 'UPPER']
       },
       scoringWhere: {
-        keys: ['BldgName', 'BldgAbbr'],
+        keys: ['BldgName', 'BldgAbbrev'],
         operators: ['LIKE', 'LIKE'],
         wildcards: ['startsWith', 'startsWith'],
         transformations: ['UPPER', 'UPPER']
       }
     },
-    scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
+    scoringKeys: ['attributes.BldgAbbrev', 'attributes.Number', 'attributes.BldgName'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: Definitions.BUILDINGS.popupComponent,
