@@ -5,7 +5,7 @@ desktopSizes.forEach((size) => {
   describe(`Test Layers, Feature Page: ${size} Resolution`, function () {
     beforeEach(() => {
       cy.viewport(size[0], size[1]);
-      cy.intercept('GET', '**/TAMU_BaseMap/**').as('basemap');
+      cy.intercept('GET', '**/TAMU_BaseMap_060826/**').as('basemap');
       cy.intercept('GET', '**/Construction_2018/**').as('construction');
       cy.intercept('GET', '**/Physical_Distancing_Tents/**').as('tents');
       cy.visit('https://aggiemap.tamu.edu/map/d');
