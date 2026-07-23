@@ -12,7 +12,7 @@ mobileSizes.forEach((size) => {
   describe(`Test Elements on Mobile Page: ${size} resolution`, () => {
     beforeEach(() => {
       cy.viewport(size[0], size[1]);
-      cy.intercept('GET', '**/TAMU_BaseMap/**').as('basemap');
+      cy.intercept('GET', '**/TAMU_BaseMap_060826/**').as('basemap');
       cy.visit('https://aggiemap.tamu.edu/map/m');
       cy.wait('@basemap', { requestTimeout: 100, responseTimeout: 100 });
 
