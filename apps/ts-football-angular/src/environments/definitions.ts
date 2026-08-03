@@ -4,6 +4,9 @@ import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { GAMEDAY_LAYERS, SHOWDOWN_LAYERS } from '@tamu-gisc/ts/football/ngx';
 
 import { Popups as EventPopups } from '@tamu-gisc/ts/football/ngx';
+import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+const gisHost = getDefaultGisHost();
+const tsgisHost = getDefaultGisHosts().tsgisHost;
 
 export const NotificationEvents = [];
 
@@ -13,10 +16,11 @@ export const Connections = {
   accessibleUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
   departmentUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
-  tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
-  bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
+  tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
+  bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
-  gamedayUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer',
+  gamedayUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TSFootball/MapServer`,
+
   showdownUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Lonestar_Showdown/FeatureServer'
 };
 

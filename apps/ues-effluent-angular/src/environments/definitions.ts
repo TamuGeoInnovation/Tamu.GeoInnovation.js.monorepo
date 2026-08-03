@@ -4,6 +4,9 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { tiers } from './tier-dictionary';
 
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
+import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+const gisHost = getDefaultGisHost();
+const tsgisHost = getDefaultGisHosts().tsgisHost;
 
 import esri = __esri;
 
@@ -13,8 +16,9 @@ export const Connections = {
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
-  tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
-  bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
+  tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
+  bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
+
   effluentZonesUrl: 'https://ues-arc.tamu.edu/arcgis/rest/services/Sanitary/SanitarySampling/MapServer/2',
   effluentSampleLocationsUrl: 'https://ues-arc.tamu.edu/arcgis/rest/services/Sanitary/SanitarySampling/MapServer/0'
 };

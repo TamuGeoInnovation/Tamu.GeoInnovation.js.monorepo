@@ -63,7 +63,7 @@ function createConnections(gisHost: string): IComposedConnections {
     visitorParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/VisitorParking/MapServer`,
     volleyballParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/VolleyballParking/MapServer`,
     womensBasketballUrl: `https://${gisHost}/arcgis/rest/services/TS/TracSocSoftSwimVollWbask/MapServer`,
-    fourHRoundupUrl: `https://${gisHost}/arcgis/rest/services/TS/4H_Roundup/MapServer`,
+    fourHRoundupUrl: `https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/4H_Roundup_view/FeatureServer`,
     gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
     fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`,
@@ -74,10 +74,29 @@ function createConnections(gisHost: string): IComposedConnections {
   };
 }
 
-function getDefaultGisHost() {
-  const hostname = globalThis.location?.hostname;
+/**
+ * Backwards-compatible single-host getter.
+ * Existing code can continue to call `getDefaultGisHost()` and receive the string host.
+ * New code that needs both hosts should call `getDefaultGisHosts()`.
+ */
+export function getDefaultGisHost(): string {
+  return getDefaultGisHosts().gisHost;
+}
 
-  return hostname?.includes('dev') ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+/**
+ * New: return both gisHost and tsgisHost for callers that need both base URLs.
+ * Default values follow hostname-based dev detection:
+ * - gisHost: 'gis-dev.it.tamu.edu' / 'gis.it.tamu.edu'
+ * - tsgisHost: 'arc.ts-dev.tamu.edu' / 'arc.ts.tamu.edu'
+ */
+export function getDefaultGisHosts() {
+  const hostname = globalThis.location?.hostname;
+  const isDev = hostname?.includes('dev');
+
+  const gisHost = isDev ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
+  const tsgisHost = isDev ? 'arc.ts-dev.tamu.edu' : 'arc.ts.tamu.edu';
+
+  return { gisHost, tsgisHost } as { gisHost: string; tsgisHost: string };
 }
 
 export type IConnectionsFactory = ((gisHost: string) => IComposedConnections) & IComposedConnections;

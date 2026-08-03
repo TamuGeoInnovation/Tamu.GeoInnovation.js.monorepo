@@ -15,11 +15,16 @@ const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
 };
 
 // Search sources used for querying features.
+import { getDefaultGisHost, getDefaultGisHosts } from '../connections';
+
 export function SearchSources(
   connections: IComposedConnections,
   definitions: IComposedIDefinitions,
   options?: IFactoryExcludeOptions<ComposedSearchSourcesKeyMap>
 ): Array<SearchSource> {
+  const gisHost = getDefaultGisHost();
+  const tsgisHost = getDefaultGisHosts().tsgisHost;
+
   const SEARCH_SOURCES: ComposedSearchSourcesKeyMap = {
     BUILDING: {
       source: 'building',
@@ -173,7 +178,7 @@ export function SearchSources(
     NIGHT_PARKING: {
       source: 'night-parking',
       name: 'Night Parking',
-      url: `https://gis.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
+      url: `https://${tsgisHost}/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
       queryParams: {
         ...commonQueryParams,
         returnGeometry: true,
