@@ -5,6 +5,8 @@ import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { LegendElementComponent } from './legend-element.component';
 import { getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
 
+const tsgisHost = getDefaultGisHosts().tsgisHost;
+
 describe('LegendElementComponent', () => {
   let component: LegendElementComponent;
   let fixture: ComponentFixture<LegendElementComponent>;
@@ -15,7 +17,6 @@ describe('LegendElementComponent', () => {
     };
 
     // Ensure tsgisHost is available in tests that reference TS URLs
-    const tsgisHost = getDefaultGisHosts().tsgisHost;
 
     await TestBed.configureTestingModule({
       declarations: [LegendElementComponent],
