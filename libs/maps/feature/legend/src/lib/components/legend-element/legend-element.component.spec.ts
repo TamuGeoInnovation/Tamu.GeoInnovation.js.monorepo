@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { LegendElementComponent } from './legend-element.component';
+import { getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
 
 describe('LegendElementComponent', () => {
   let component: LegendElementComponent;
@@ -14,7 +15,6 @@ describe('LegendElementComponent', () => {
     };
 
     // Ensure tsgisHost is available in tests that reference TS URLs
-    const { getDefaultGisHosts } = require('@tamu-gisc/aggiemap/ngx/common');
     const tsgisHost = getDefaultGisHosts().tsgisHost;
 
     await TestBed.configureTestingModule({
