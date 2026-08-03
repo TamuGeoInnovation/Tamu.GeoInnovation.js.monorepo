@@ -14,7 +14,7 @@ function createConnections(gisHost: string): IComposedConnections {
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
     diningLocationsUrl: `https://api.aggiemap.tamu.edu/dining/locations/geojson`,
     aggiePrintUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/TAMUPrinters/FeatureServer',
-    tsFootballUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSFootball_view/FeatureServer`,
+    tsFootballUrl: `https://${gisHost}/arcgis/rest/services/TS/TSFootball/MapServer`,
     footballGamedayShuttlesUrl: `https://${gisHost}/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer`,
     maroonWhiteGameUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Maroon_White_Game_view/FeatureServer`,
     accessibleParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/AccessibleParking_view/FeatureServer`,
