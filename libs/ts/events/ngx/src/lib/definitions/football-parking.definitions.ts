@@ -13,10 +13,15 @@ import {
  * Data comes from two services:
  *
  * 1. `TSFootball_Cache` (all transportation layers except the parking lots / gameday parking icons).
- * 2. `Hosted/Lots` (the parking-lot polygons + gameday parking point icons that Marcomm edits on game days).
+ * 2. `Hosted/Lots_view` (the parking-lot polygons + gameday parking point icons that Marcomm edits on game days).
  *
- * NOTE: `tsFootballCacheUrl` is pinned to the **dev** host until `TSFootball_Cache` is promoted to prod.
- * TODO: revert `tsFootballCacheUrl` to the prod host (`gis.tamu.edu`) once the cache is published there.
+ * NOTE on the transportation source: the spec calls for `Hosted/Football_view/FeatureServer`, but that
+ * service returns "Token Required" for anonymous users (prod AND dev), which would pop an ArcGIS sign-in
+ * on AggieMap — the same problem that forced the public `Lots_view`. Until a PUBLIC view of the football
+ * transportation layers exists, the only anonymously-readable source is the dev `TSFootball_Cache`
+ * MapServer, whose 14 sublayers (0–13) match the spec's layer names exactly.
+ * TODO: point `tsFootballCacheUrl` at the public `Football_view` (or a prod cache) once one is shared
+ * publicly — and re-verify sublayer indices + field casing against it, as they may differ from the cache.
  */
 const tsFootballCacheUrl = 'https://gis.dev.tamu.edu/arcgis/rest/services/TS/TSFootball_Cache/MapServer';
 const footballLotsUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lots_view/FeatureServer';
@@ -457,16 +462,17 @@ export const FootballParkingConfiguration: EventConfiguration = {
   applicationName: 'Football Transportation Map',
   shortApplicationName: 'Football Map',
   introductionText: 'Get the best transportation and parking information for game days.',
-  // TODO: confirm the 2026 home schedule dates before release.
+  // 2026 home schedule (7 home dates at Kyle Field), per the SEC-released schedule:
+  // 9/5 Missouri State, 9/12 Arizona State, 9/19 Kentucky, 10/3 Arkansas, 10/17 The Citadel,
+  // 11/14 Tennessee, 11/27 Texas (Black Friday). https://12thman.com/news/2025/12/11/2026-texas-am-football-schedule-announced
   eventDates: [
-    '2025-08-30',
-    '2025-09-06',
-    '2025-09-27',
-    '2025-10-04',
-    '2025-10-11',
-    '2025-11-15',
-    '2025-11-22',
-    '2025-12-20'
+    '2026-09-05',
+    '2026-09-12',
+    '2026-09-19',
+    '2026-10-03',
+    '2026-10-17',
+    '2026-11-14',
+    '2026-11-27'
   ],
   scheduleUrl: 'https://12thman.com/sports/football/schedule',
   mapCenter: [-96.34344, 30.61011],
