@@ -7,6 +7,8 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
+import esri = __esri;
+
 /**
  * Football gameday transportation map.
  *
@@ -37,7 +39,15 @@ const footballLotsUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lots_v
 const GAMEDAY_PARKING_POINT_LAYER_INDEX = 0;
 const LOTS_POLYGON_LAYER_INDEX = 1;
 
+/**
+ * Declaration order here IS the top-to-bottom map draw order. `EventService` reads this enum, reverses
+ * it, then adds each layer with `map.add()` (no index), so ArcGIS appends bottom→top — the FIRST entry
+ * ends up drawn on top, the LAST at the bottom. Keep the point icons (`FP_GAMEDAY_PARKING`) first so they
+ * sit above the parking-lot polygons; keep the polygon lots (`FP_PARKING_LOTS`/`FP_CHARTER_PARKING`/
+ * `FP_RV_PARKING`) last so they stay at the bottom.
+ */
 export enum FOOTBALL_PARKING_LAYERS {
+  FP_GAMEDAY_PARKING = 'football-gameday-parking',
   FP_STRIPES = 'football-stripes',
   FP_RNS_SPACES = 'football-rns-spaces',
   FP_ENTRY_ROUTES = 'football-entry-routes',
@@ -54,7 +64,7 @@ export enum FOOTBALL_PARKING_LAYERS {
   FP_PEDICAB_CLOSURES = 'football-pedicab-closures',
   FP_PARKING_LOTS = 'football-parking-lots',
   FP_CHARTER_PARKING = 'football-charter-parking',
-  FP_GAMEDAY_PARKING = 'football-gameday-parking'
+  FP_RV_PARKING = 'football-rv-parking'
 }
 
 /**
@@ -93,6 +103,47 @@ enum FootballBuilderOptions {
  */
 const SHOW: Partial<LayerSource> = { native: { visible: true, listMode: 'show' } };
 const HIDE: Partial<LayerSource> = { native: { visible: false, listMode: 'hide' } };
+
+/**
+ * The route layers publish from the service as flat, thick solid lines (a "green blob") — the arrow
+ * symbology from ArcGIS Pro isn't carried in the exported service renderer. Re-symbolize them as thin
+ * directional lines with an arrowhead at the end. Colors follow the travel `Type` so the shared
+ * Entry/Exit Routes layers render green (vehicle), purple (cyclist), or blue (pedestrian) per mode.
+ */
+const ROUTE_COLORS = {
+  vehicle: 'rgb(38, 115, 0)',
+  cyclist: 'rgb(112, 48, 160)',
+  pedestrian: 'rgb(0, 92, 230)'
+};
+
+/** A solid line with a direction arrow at its end, used to re-symbolize the flat route/arrow layers. */
+const arrowLineSymbol = (color: string): esri.SimpleLineSymbolProperties => ({
+  type: 'simple-line',
+  color,
+  width: 3,
+  style: 'solid',
+  marker: { style: 'arrow', color, placement: 'end' }
+});
+
+/** A solid polygon fill with a matching outline, used for the categorized Football Parking Lots renderer. */
+const lotFillSymbol = (fill: number[], outline: number[]): esri.SimpleFillSymbolProperties => ({
+  type: 'simple-fill',
+  color: fill,
+  outline: { color: outline, width: 1 }
+});
+
+/**
+ * Football Parking Lots categories (mirrors the `Lots_view` service renderer, keyed on `type`). Defining
+ * the renderer explicitly makes it available synchronously — the map factory otherwise only picks up the
+ * service renderer after an async load, so the legend can build before the categories exist. Many `type`
+ * values collapse to a few labeled categories; the legend's `deduplicate` merges the repeated labels and
+ * `respectDefinitionExpression` hides categories not present under a mode's filter.
+ */
+const LOT_RESERVED_SYMBOL = lotFillSymbol([244, 162, 97, 255], [230, 124, 0, 255]);
+const LOT_PERMIT_SYMBOL = lotFillSymbol([94, 137, 234, 255], [94, 52, 234, 255]);
+const LOT_CHARTER_SYMBOL = lotFillSymbol([0, 167, 116, 255], [0, 120, 84, 255]);
+const LOT_PAID_SYMBOL = lotFillSymbol([76, 230, 0, 255], [110, 110, 110, 255]);
+const LOT_FULL_SYMBOL = lotFillSymbol([230, 0, 0, 255], [168, 0, 0, 255]);
 
 export const FootballParkingColdLayerSources: LayerSource[] = [
   // --- RV striping + reserved spaces (RV mode) ---
@@ -145,7 +196,13 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide'
+      listMode: 'hide',
+      // Entry Routes only ever show Vehicle routes here, so a single green directional arrow suffices.
+      renderer: {
+        type: 'unique-value',
+        field: 'Type',
+        uniqueValueInfos: [{ value: 'Vehicle', symbol: arrowLineSymbol(ROUTE_COLORS.vehicle) }]
+      }
     }
   },
   {
@@ -161,7 +218,18 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide'
+      listMode: 'hide',
+      // Exit Routes are shared by 12th Man/Personal Vehicle (Vehicle), Micromobility (Cyclist) and
+      // Pedestrian, so color the directional arrows by `Type` — each mode filters to one type.
+      renderer: {
+        type: 'unique-value',
+        field: 'Type',
+        uniqueValueInfos: [
+          { value: 'Vehicle', symbol: arrowLineSymbol(ROUTE_COLORS.vehicle) },
+          { value: 'Cyclist', symbol: arrowLineSymbol(ROUTE_COLORS.cyclist) },
+          { value: 'Pedestrian', symbol: arrowLineSymbol(ROUTE_COLORS.pedestrian) }
+        ]
+      }
     }
   },
 
@@ -226,6 +294,17 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     popupData: {
       name: 'attributes.Type',
       description: 'attributes.BR_Notes'
+    },
+    // Same pin-stretch bug as the Gameday Parking icons: the picture marker is a pin (natural 60x73,
+    // ~0.82 ratio) forced into a 30x30 square by the service renderer, so it stretches wide on the map
+    // and in the legend swatch. Re-render both at a matching ~0.82 ratio (25x30). `EsriMapService`
+    // applies these width/height hints to the on-map picture marker too (`applyLegendOverrideToLayerSymbols`).
+    legend: {
+      mode: 'renderer-symbol',
+      preserveAspectRatio: true,
+      fit: 'contain',
+      width: 25,
+      height: 30
     },
     native: {
       outFields: ['*'],
@@ -312,7 +391,17 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide'
+      listMode: 'hide',
+      // Directional arrows colored by pedicab trip phase, matching the service's Arrival/Departure scheme.
+      renderer: {
+        type: 'unique-value',
+        field: 'edited',
+        uniqueValueInfos: [
+          { value: 'Arrival', symbol: arrowLineSymbol('rgb(56, 168, 0)') },
+          { value: 'Departure', symbol: arrowLineSymbol('rgb(230, 152, 0)') },
+          { value: 'Arrival/Departure', symbol: arrowLineSymbol('rgb(0, 92, 230)') }
+        ]
+      }
     }
   },
   {
@@ -343,10 +432,35 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       name: 'attributes.lotname',
       description: 'attributes.note'
     },
+    // Always show the full color key (Reserved/Permit/Charter/Paid/Lot Full) even though each mode
+    // filters the drawn lots to one type — the legend is a reference, not a mirror of what's drawn.
+    legend: { ignoreDefinitionExpression: true },
     native: {
       outFields: ['*'],
       visible: false,
       listMode: 'hide',
+      // Categorize lots so the map + legend show Reserved Parking / Any Valid Texas A&M Permit /
+      // Charter Bus / Paid Parking (and Lot Full when a lot is closed). Mirrors the Lots_view renderer.
+      renderer: {
+        type: 'unique-value',
+        field: 'type',
+        uniqueValueInfos: [
+          { value: 'Reserved Athletic', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL },
+          { value: 'Reserved', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL },
+          { value: 'RV', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL },
+          { value: 'SPresale', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL },
+          { value: 'AVP', label: 'Any Valid Texas A&M Permit', symbol: LOT_PERMIT_SYMBOL },
+          { value: 'Charter', label: 'Charter Bus', symbol: LOT_CHARTER_SYMBOL },
+          { value: 'ParkMobile', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
+          { value: 'Public', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
+          { value: 'Public $20', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
+          { value: 'Public $25', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
+          { value: 'Public $30', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
+          { value: 'Public $40', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
+          { value: 'Public $G', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
+          { value: 'Lot Full', label: 'Lot Full', symbol: LOT_FULL_SYMBOL }
+        ]
+      },
       // Field names on the Lots_view polygon layer are lowercase and case-sensitive in SQL where-clauses.
       labelingInfo: [
         {
@@ -435,7 +549,59 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       visible: false,
       listMode: 'hide',
-      definitionExpression: "type = 'Charter'"
+      definitionExpression: "type = 'Charter'",
+      renderer: {
+        type: 'unique-value',
+        field: 'type',
+        uniqueValueInfos: [{ value: 'Charter', label: 'Charter Bus', symbol: LOT_CHARTER_SYMBOL }]
+      }
+    }
+  },
+  {
+    // Dedicated RV lots layer (same polygon service, scoped to RV). It has its own single-category
+    // renderer and is NOT flagged with `ignoreDefinitionExpression`, so the RV map's legend shows only
+    // "Reserved Parking" — unlike FP_PARKING_LOTS, which shows the full color key for 12th Man / Personal
+    // Vehicle. RV is wired to this layer instead of FP_PARKING_LOTS for that reason.
+    type: 'feature',
+    id: FOOTBALL_PARKING_LAYERS.FP_RV_PARKING,
+    title: 'Football Parking Lots',
+    url: `${footballLotsUrl}/${LOTS_POLYGON_LAYER_INDEX}`,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.lotname',
+      description: 'attributes.note'
+    },
+    native: {
+      outFields: ['*'],
+      visible: false,
+      listMode: 'hide',
+      definitionExpression: "type = 'RV'",
+      renderer: {
+        type: 'unique-value',
+        field: 'type',
+        uniqueValueInfos: [{ value: 'RV', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL }]
+      },
+      labelingInfo: [
+        {
+          labelExpression: '[name]',
+          labelPlacement: 'always-horizontal',
+          useCodedValues: true,
+          symbol: {
+            type: 'text',
+            color: [255, 255, 255, 255],
+            haloColor: [0, 0, 0, 255],
+            haloSize: 1,
+            font: {
+              family: 'Arial',
+              size: 10,
+              style: 'normal',
+              weight: 'bold'
+            }
+          },
+          minScale: 9500,
+          maxScale: 0
+        }
+      ]
     }
   },
   {
@@ -447,6 +613,18 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     popupData: {
       name: 'attributes.notes',
       description: 'attributes.notes_1'
+    },
+    // The gameday parking picture markers are pin-shaped (natural ~60x73, 0.82 ratio) but the service
+    // renderer forces most of them into a 30x30 square, which stretches them wide on the map AND in the
+    // legend swatch. Re-render both at a matching ~0.82 ratio (25x30). `EsriMapService` applies these
+    // width/height hints to the on-map picture markers too (`applyLegendOverrideToLayerSymbols`), so a
+    // single override de-stretches the icons and the legend swatches without re-embedding the images.
+    legend: {
+      mode: 'renderer-symbol',
+      preserveAspectRatio: true,
+      fit: 'contain',
+      width: 25,
+      height: 30
     },
     native: {
       outFields: ['*'],
@@ -619,12 +797,17 @@ export const FootballParkingOptions: SpecialEventOptions = [
         },
         // Parking lots (per-mode filter)
         {
+          // 12th Man + Personal Vehicle use the shared lots layer (full color key via ignoreDefinitionExpression);
+          // RV uses its own FP_RV_PARKING layer so its legend stays scoped to a single category.
           layerId: FOOTBALL_PARKING_LAYERS.FP_PARKING_LOTS,
           conversions: [
             { input: TransportType.TWELFTH_MAN, expression: "type = 'Reserved Athletic'", propOverrides: SHOW },
-            { input: TransportType.RV, expression: "type = 'RV'", propOverrides: SHOW },
             { input: TransportType.PERSONAL_VEHICLE, propOverrides: SHOW }
           ]
+        },
+        {
+          layerId: FOOTBALL_PARKING_LAYERS.FP_RV_PARKING,
+          conversions: [{ input: TransportType.RV, propOverrides: SHOW }]
         },
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_CHARTER_PARKING,
