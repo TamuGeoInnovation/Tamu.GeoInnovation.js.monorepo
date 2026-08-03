@@ -41,6 +41,7 @@ export class EventService {
 
   private _map: esri.Map;
   private _view: esri.MapView;
+  private _exclusiveVisibilityHandles: Array<esri.Handle> = [];
 
   constructor(
     private readonly env: EnvironmentService,
@@ -166,6 +167,7 @@ export class EventService {
 
       if (sources.length > 0) {
         await this.mapService.loadLayers(sources);
+        this.applyExclusiveLayerVisibility();
         await this.selectFeatureFromUrl(sources);
         await this.applySelectedChoiceView();
         await this.flashFocusFeature();
@@ -175,6 +177,63 @@ export class EventService {
     } catch (err) {
       console.error(`Failed to event areas`, err);
     }
+  }
+
+  /**
+   * Enforces radio-button behavior across the layers named by the configuration's
+   * `exclusiveLayerIds`: turning one on turns the rest of the set off.
+   *
+   * Both the sidebar Layers (TOC) list and the legend toggle `layer.visible` directly on the map's
+   * layer instances, so watching that single property covers user interaction from either surface.
+   * Turning the active layer off is left alone — the set is allowed to be entirely off.
+   *
+   * Opt-in: a no-op unless at least two of the configured ids resolve to layers on the map.
+   */
+  private applyExclusiveLayerVisibility(): void {
+    const exclusiveLayerIds = this.eventSettingsService.eventConfiguration()?.configuration?.exclusiveLayerIds;
+
+    if (!exclusiveLayerIds || !this._map) {
+      return;
+    }
+
+    // drawEvent re-runs whenever the map service emits a new instance. Drop the previous instance's
+    // handles so a re-draw doesn't stack duplicate handlers on the same layers.
+    this._exclusiveVisibilityHandles.forEach((handle) => handle.remove());
+    this._exclusiveVisibilityHandles = [];
+
+    const layers = exclusiveLayerIds
+      .map((id) => this._map.findLayerById(id))
+      .filter((layer): layer is esri.Layer => Boolean(layer));
+
+    if (layers.length < 2) {
+      return;
+    }
+
+    const hideOthers = (active: esri.Layer): void => {
+      layers.forEach((layer) => {
+        if (layer !== active) {
+          layer.visible = false;
+        }
+      });
+    };
+
+    // Reconcile the configured starting state, so a definition that marks several members visible
+    // still opens with only the first of them on.
+    const initiallyVisible = layers.find((layer) => layer.visible);
+
+    if (initiallyVisible) {
+      hideOthers(initiallyVisible);
+    }
+
+    this._exclusiveVisibilityHandles = layers.map((layer) =>
+      // Only reacting to a layer turning *on* keeps this from re-entering: the `visible = false`
+      // writes in hideOthers fire these same handlers, but fall through this guard.
+      layer.watch('visible', (visible: boolean) => {
+        if (visible) {
+          hideOthers(layer);
+        }
+      })
+    );
   }
 
   /**

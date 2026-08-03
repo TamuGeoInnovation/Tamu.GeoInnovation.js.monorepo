@@ -24,42 +24,48 @@ export enum FISH_CAMP_LAYERS {
 
 const fishCampUrl = Connections.fishCampUrl;
 
-// The published service tags every feature with a start/end date. The two Fish Camp drop-off
-// locations are distinguished entirely by those dates:
-//   - Sessions A–F (Reed area):  Jul 20 – Aug 6, 2026
-//   - Session G    (Lot 40):     Aug 7  – Aug 9, 2026
+// The published service has no session-letter field. The two Fish Camp drop-off locations are
+// distinguished entirely by the start/end date tagged on every feature:
+//   - Reed area (lots 100b/100c): Jul 20 – Aug 6, 2026
+//   - Lot 40b:                    Aug 7  – Aug 9, 2026
 // The two ranges are disjoint, so a single split date (Aug 1) cleanly separates them and is robust
 // to any timezone offset. Point/route layers expose the date as `Start_Date`; lot layers use
 // `StartDate`, hence the two field variants below.
+//
+// Which session letters meet at which location is regrouped year to year, so it is carried only by
+// the choice labels below — never by this filter.
 const SESSION_SPLIT_DATE = "DATE '2026-08-01'";
 
 enum FishCampBuilderOptions {
   SESSION = 'fish-camp-session'
 }
 
+// Keyed by drop-off location, the stable discriminator in the data. The string values are persisted
+// to local storage and shared map URLs, so they keep their original session-letter spelling to avoid
+// invalidating links users already hold.
 enum FishCampSessionChoices {
-  SESSIONS_A_F = 'sessions-a-f',
-  SESSION_G = 'session-g'
+  REED = 'sessions-a-f',
+  LOT_40 = 'session-g'
 }
 
 const pointRouteDateFilter: Record<FishCampSessionChoices, string> = {
-  [FishCampSessionChoices.SESSIONS_A_F]: `Start_Date < ${SESSION_SPLIT_DATE}`,
-  [FishCampSessionChoices.SESSION_G]: `Start_Date >= ${SESSION_SPLIT_DATE}`
+  [FishCampSessionChoices.REED]: `Start_Date < ${SESSION_SPLIT_DATE}`,
+  [FishCampSessionChoices.LOT_40]: `Start_Date >= ${SESSION_SPLIT_DATE}`
 };
 
 const lotDateFilter: Record<FishCampSessionChoices, string> = {
-  [FishCampSessionChoices.SESSIONS_A_F]: `StartDate < ${SESSION_SPLIT_DATE}`,
-  [FishCampSessionChoices.SESSION_G]: `StartDate >= ${SESSION_SPLIT_DATE}`
+  [FishCampSessionChoices.REED]: `StartDate < ${SESSION_SPLIT_DATE}`,
+  [FishCampSessionChoices.LOT_40]: `StartDate >= ${SESSION_SPLIT_DATE}`
 };
 
 const pointRouteConversions = [
-  { input: FishCampSessionChoices.SESSIONS_A_F, expression: pointRouteDateFilter[FishCampSessionChoices.SESSIONS_A_F] },
-  { input: FishCampSessionChoices.SESSION_G, expression: pointRouteDateFilter[FishCampSessionChoices.SESSION_G] }
+  { input: FishCampSessionChoices.REED, expression: pointRouteDateFilter[FishCampSessionChoices.REED] },
+  { input: FishCampSessionChoices.LOT_40, expression: pointRouteDateFilter[FishCampSessionChoices.LOT_40] }
 ];
 
 const lotConversions = [
-  { input: FishCampSessionChoices.SESSIONS_A_F, expression: lotDateFilter[FishCampSessionChoices.SESSIONS_A_F] },
-  { input: FishCampSessionChoices.SESSION_G, expression: lotDateFilter[FishCampSessionChoices.SESSION_G] }
+  { input: FishCampSessionChoices.REED, expression: lotDateFilter[FishCampSessionChoices.REED] },
+  { input: FishCampSessionChoices.LOT_40, expression: lotDateFilter[FishCampSessionChoices.LOT_40] }
 ];
 
 const popup = {
@@ -243,15 +249,15 @@ export const FishCampOptions: SpecialEventOptions = [
     description: 'Select your Fish Camp session to see the correct send-off and pickup location.',
     choices: [
       {
-        value: FishCampSessionChoices.SESSIONS_A_F,
+        value: FishCampSessionChoices.REED,
         label: 'Sessions B, C, E, & F',
-        // Reed area (Lot 100c / 100e). Tune center/zoom here to adjust framing.
+        // Reed area (lots 100b / 100c). Tune center/zoom here to adjust framing.
         mapView: { center: [-96.34624, 30.60582], zoom: 17 }
       },
       {
-        value: FishCampSessionChoices.SESSION_G,
-        label: 'Sessions: A & D',
-        // Lot 40. Tune center/zoom here to adjust framing.
+        value: FishCampSessionChoices.LOT_40,
+        label: 'Sessions A, D, & G',
+        // Lot 40b. Tune center/zoom here to adjust framing.
         mapView: { center: [-96.33380, 30.61118], zoom: 17 }
       }
     ],
