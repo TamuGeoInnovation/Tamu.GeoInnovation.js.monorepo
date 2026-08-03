@@ -95,7 +95,9 @@ export function getDefaultGisHosts() {
   const isDev = hostname?.includes('dev');
 
   const gisHost = isDev ? 'gis-dev.it.tamu.edu' : 'gis.it.tamu.edu';
-  const tsgisHost = isDev ? 'arc.ts-dev.tamu.edu' : 'arc.ts.tamu.edu';
+  // TEMP: force tsgisHost to production host until dev host is available
+  // const tsgisHost = isDev ? 'arc.ts-dev.tamu.edu' : 'arc.ts.tamu.edu';
+  const tsgisHost = 'arc.ts.tamu.edu';
 
   return { gisHost, tsgisHost } as { gisHost: string; tsgisHost: string };
 }
