@@ -8,7 +8,7 @@ function createConnections(gisHost: string): IComposedConnections {
     departmentUrl: `https://${gisHost}/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1`,
     tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/TS_Main/MapServer`,
     bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
-    bikeMapUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/BikeMap/MapServer`,
+    bikeMapUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer`,
     bikeLocationsUrl: `https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson`,
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
