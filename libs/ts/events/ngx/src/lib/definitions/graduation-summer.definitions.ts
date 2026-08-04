@@ -11,8 +11,9 @@ import {
 import esri = __esri;
 
 export enum SUMMER_COMMENCEMENT_LAYERS {
-  PARKING_LOTS = 'summer-commencement-parking-lots',
-  TRAFFIC_FLOW = 'summer-commencement-traffic-flow'
+  // Enum order drives draw order (first = top). Recommended Route above Parking Lots so its arrows show.
+  TRAFFIC_FLOW = 'summer-commencement-traffic-flow',
+  PARKING_LOTS = 'summer-commencement-parking-lots'
 }
 
 const eventUrl = Connections.summerCommencementUrl;
