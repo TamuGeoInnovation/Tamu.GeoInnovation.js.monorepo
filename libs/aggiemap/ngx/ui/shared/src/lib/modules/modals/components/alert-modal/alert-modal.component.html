@@ -1,0 +1,14 @@
+<div class="alert-modal">
+  <div class="alert-modal__header">
+    <h2 class="alert-modal__title">{{ title }}</h2>
+  </div>
+
+  <div class="alert-modal__body">
+    <p [innerHTML]="message"></p>
+  </div>
+
+  <div class="alert-modal__footer">
+    <button *ngIf="secondaryText" class="tamu-btn tamu-btn--secondary" (click)="secondary()">{{ secondaryText }}</button>
+    <button class="tamu-btn" (click)="primary()">{{ primaryText }}</button>
+  </div>
+</div>

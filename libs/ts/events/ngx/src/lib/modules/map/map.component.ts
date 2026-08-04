@@ -139,17 +139,17 @@ export class MapComponent implements OnInit, OnDestroy {
                 if (latest < now) {
                   // Open modal and persist acknowledgement when closed
                   this.ms
-                    .open<boolean>(EventPassedWarningComponent, {
+                    .open<boolean>(AlertModalComponent, {
                       data: {
                         title: 'This event has passed',
                         message:
                           "This event has passed. The information on this map may be outdated and should be used for informational purposes only. A new map will be released as we get closer to the date.",
-                        acknowledgeText: 'OK'
+                        primaryText: 'OK',
+                        persistKey: ackKey
                       }
                     })
                     .subscribe(() => {
-                      // Persist dismissal so modal doesn't reappear for this event
-                      this.ss.updateSettings({ [ackKey]: true });
+                      // persisted by AlertModalComponent via persistKey; no-op here
                     });
                 }
               }
