@@ -110,27 +110,33 @@ export class MapComponent implements OnInit, OnDestroy {
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
 
-    this.ss
-      .init({
-        storage: {
-          subKey: 'modals'
-        },
-        settings: {
-          beta_acknowledge: {
-            value: false,
-            persistent: true
-          }
-        }
-      })
-      .pipe(
-        filter((settings) => {
-          return settings['beta_acknowledge'] === false;
-        }),
-        withLatestFrom(this.isDev)
-      )
-      .subscribe(([, isDev]) => {
-        this.openBetaModal(isDev);
-      });
+    /*
+     * Old beta popup flow.
+     * Kept here for now in case we need to restore it later, but the dev-only
+     * AGGIEMAP BETA popup already covers this behavior.
+     *
+     * this.ss
+     *   .init({
+     *     storage: {
+     *       subKey: 'modals'
+     *     },
+     *     settings: {
+     *       beta_acknowledge: {
+     *         value: false,
+     *         persistent: true
+     *       }
+     *     }
+     *   })
+     *   .pipe(
+     *     filter((settings) => {
+     *       return settings['beta_acknowledge'] === false;
+     *     }),
+     *     withLatestFrom(this.isDev)
+     *   )
+     *   .subscribe(([, isDev]) => {
+     *     this.openBetaModal(isDev);
+     *   });
+     */
   }
 
   public ngOnDestroy() {

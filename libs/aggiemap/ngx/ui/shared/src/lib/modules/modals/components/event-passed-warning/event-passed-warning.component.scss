@@ -1,16 +1,10 @@
+@import '../modal-shared';
+
 .event-passed-modal {
   padding: 1rem;
   max-width: 36rem;
 }
 
 .event-passed-modal__title {
-  margin: 0 0 0.5rem 0;
-}
-
-.event-passed-modal__body {
-  margin-bottom: 1rem;
-}
-
-.event-passed-modal__footer {
-  text-align: right;
+  margin: 0;
 }

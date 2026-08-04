@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, ReplaySubject, Observable } from 'rxjs';
+import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { loadModules } from 'esri-loader';
 
@@ -15,12 +15,11 @@ import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { AggiemapBasemap, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventService } from '../../services/event/event.service';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { EventPassedWarningComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
@@ -67,7 +66,6 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly store: LocalStoreService,
-    private readonly ss: SettingsService,
     private readonly eventsSettingsService: EventSettingsService,
     private readonly eventService: EventService, // While not called, needs to be injected to initialize event layers  loading
     private readonly ms: ModalService
@@ -92,74 +90,34 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.shareUrl = `${window.location.origin}${window.location.pathname}?${this.eventsSettingsService.queryParamsFromSettings}`;
 
-    this._connections = this.env.value('Connections');
-    this.isDev = this.ts.get('isTesting');
+    this._connections = this.env.value?.('Connections') ?? {};
+    this.isDev = this.ts.get?.('isTesting') ?? of(false);
 
-    // Persist dismissal per-event using SettingsService. Register the key on init and only show modal when not acknowledged.
     try {
-      const eventId = root?.configuration?.id || 'unknown_event';
-      const ackKey = `event_passed_ack_${eventId}`;
+      const eventDates = root?.configuration?.eventDates || [];
 
-      // Initialize the settings branch and register the per-event key
-      this.ss
-        .init({
-          storage: {
-            subKey: 'modals'
-          },
-          settings: {
-            [ackKey]: {
-              value: false,
-              persistent: true
-            }
+      const parsed = (eventDates || [])
+        .map((d) => {
+          if (typeof d === 'string' || typeof d === 'number') {
+            return new Date(d).getTime();
+          } else if (d instanceof Date) {
+            return d.getTime();
           }
+
+          return NaN;
         })
-        // Only continue when the ack value is false (not yet dismissed)
-        .pipe()
-        .subscribe((settings) => {
-          try {
-            if (settings && settings[ackKey] === false) {
-              const eventDates = root?.configuration?.eventDates || [];
+        .filter((t) => !isNaN(t));
 
-              const parsed = (eventDates || [])
-                .map((d) => {
-                  if (typeof d === 'string' || typeof d === 'number') {
-                    return new Date(d).getTime();
-                  } else if (d instanceof Date) {
-                    return d.getTime();
-                  }
+      if (parsed.length > 0) {
+        const latest = Math.max(...parsed);
+        const now = Date.now();
 
-                  return NaN;
-                })
-                .filter((t) => !isNaN(t));
-
-              if (parsed.length > 0) {
-                const latest = Math.max(...parsed);
-                const now = Date.now();
-
-                if (latest < now) {
-                  // Open modal and persist acknowledgement when closed
-                  this.ms
-                    .open<boolean>(AlertModalComponent, {
-                      data: {
-                        title: 'This event has passed',
-                        message:
-                          "This event has passed. The information on this map may be outdated and should be used for informational purposes only. A new map will be released as we get closer to the date.",
-                        primaryText: 'OK',
-                        persistKey: ackKey
-                      }
-                    })
-                    .subscribe(() => {
-                      // persisted by AlertModalComponent via persistKey; no-op here
-                    });
-                }
-              }
-            }
-          } catch (err) {
-            console.warn('Failed to evaluate event dates for event-passed warning.', err);
-          }
-        });
+        if (latest < now) {
+          this.ms.open<boolean>(EventPassedWarningComponent);
+        }
+      }
     } catch (err) {
-      console.warn('Failed to initialize event-passed acknowledgement setting.', err);
+      console.warn('Failed to evaluate event dates for event-passed warning.', err);
     }
 
     // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.
@@ -235,7 +193,11 @@ export class MapComponent implements OnInit, OnDestroy {
       "Gig 'Em!",
       'Howdy Ags!'
     ];
-    (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    const phraseEl = document.querySelector('.phrase') as HTMLElement | null;
+
+    if (phraseEl) {
+      phraseEl.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    }
   }
 
   public ngOnDestroy() {

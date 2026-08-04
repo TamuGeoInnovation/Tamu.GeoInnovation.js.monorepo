@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
 import { MapComponent } from './map.component';
 
@@ -36,8 +37,8 @@ describe('MapComponent (event-passed flow)', () => {
     };
 
     mockSettingsService = {
-      init: jest.fn(() => ({ pipe: () => ({ subscribe: (cb: any) => cb({}) }) })),
-      updateSettings: jest.fn()
+      updateSettings: jest.fn(),
+      getStorageObjectKeyValue: jest.fn(() => null)
     };
 
     mockEventSettingsService = {
@@ -48,14 +49,13 @@ describe('MapComponent (event-passed flow)', () => {
     };
 
     componentInstance = new MapComponent(
+      { isMobile: of(false) } as any,
+      { value: jest.fn(() => ({})) } as any,
       {} as any,
-      {} as any,
-      {} as any,
-      {} as any,
-      {} as any,
-      { snapshot: { queryParams: {} } } as any,
-      {} as any,
-      mockSettingsService as any,
+      { get: jest.fn(() => of(false)) } as any,
+      { navigate: jest.fn() } as any,
+      { snapshot: { queryParams: {} }, parent: null } as any,
+      { getStorageObjectKeyValue: jest.fn(() => null) } as any,
       mockEventSettingsService as any,
       {} as any,
       mockModalService as any
@@ -63,8 +63,6 @@ describe('MapComponent (event-passed flow)', () => {
   });
 
   it('opens event-passed modal when dates are past', () => {
-    (mockSettingsService as any).init = jest.fn(() => ({ pipe: () => ({ subscribe: (cb: any) => cb({ ['event_passed_ack_test-event']: false }) }) }));
-
     componentInstance.ngOnInit();
 
     expect((mockModalService as any).open.mock.calls.length).toBe(1);
