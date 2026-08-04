@@ -15,6 +15,7 @@ import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { AggiemapBasemap, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventService } from '../../services/event/event.service';
@@ -66,6 +67,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly rt: Router,
     private readonly ar: ActivatedRoute,
     private readonly store: LocalStoreService,
+    private readonly ss: SettingsService,
     private readonly eventsSettingsService: EventSettingsService,
     private readonly eventService: EventService, // While not called, needs to be injected to initialize event layers  loading
     private readonly ms: ModalService
@@ -93,45 +95,71 @@ export class MapComponent implements OnInit, OnDestroy {
     this._connections = this.env.value('Connections');
     this.isDev = this.ts.get('isTesting');
 
-    // Check if event has passed and show a modal warning if so
+    // Persist dismissal per-event using SettingsService. Register the key on init and only show modal when not acknowledged.
     try {
-      const eventDates = root?.configuration?.eventDates || [];
+      const eventId = root?.configuration?.id || 'unknown_event';
+      const ackKey = `event_passed_ack_${eventId}`;
 
-      const parsed = (eventDates || [])
-        .map((d) => {
-          if (typeof d === 'string' || typeof d === 'number') {
-            return new Date(d).getTime();
-          } else if (d instanceof Date) {
-            return d.getTime();
-          }
-
-          return NaN;
-        })
-        .filter((t) => !isNaN(t));
-
-      if (parsed.length > 0) {
-        const latest = Math.max(...parsed);
-        const now = Date.now();
-
-        if (latest < now) {
-          // Open modal with standard message; allow apps to override message via passed in data if desired.
-          this.ms.open<boolean>(EventPassedWarningComponent, {
-            data: {
-              title: 'This event has passed',
-              message:
-                "This event has passed. The information on this map may be outdated and should be used for informational purposes only. A new map will be released as we get closer to the date.",
-              acknowledgeText: 'OK'
+      // Initialize the settings branch and register the per-event key
+      this.ss
+        .init({
+          storage: {
+            subKey: 'modals'
+          },
+          settings: {
+            [ackKey]: {
+              value: false,
+              persistent: true
             }
-          })
-            // We don't need to force any action on acknowledge; just subscribe to consume the observable
-            .subscribe(() => {});
-        }
-      }
+          }
+        })
+        // Only continue when the ack value is false (not yet dismissed)
+        .pipe()
+        .subscribe((settings) => {
+          try {
+            if (settings && settings[ackKey] === false) {
+              const eventDates = root?.configuration?.eventDates || [];
+
+              const parsed = (eventDates || [])
+                .map((d) => {
+                  if (typeof d === 'string' || typeof d === 'number') {
+                    return new Date(d).getTime();
+                  } else if (d instanceof Date) {
+                    return d.getTime();
+                  }
+
+                  return NaN;
+                })
+                .filter((t) => !isNaN(t));
+
+              if (parsed.length > 0) {
+                const latest = Math.max(...parsed);
+                const now = Date.now();
+
+                if (latest < now) {
+                  // Open modal and persist acknowledgement when closed
+                  this.ms
+                    .open<boolean>(EventPassedWarningComponent, {
+                      data: {
+                        title: 'This event has passed',
+                        message:
+                          "This event has passed. The information on this map may be outdated and should be used for informational purposes only. A new map will be released as we get closer to the date.",
+                        acknowledgeText: 'OK'
+                      }
+                    })
+                    .subscribe(() => {
+                      // Persist dismissal so modal doesn't reappear for this event
+                      this.ss.updateSettings({ [ackKey]: true });
+                    });
+                }
+              }
+            }
+          } catch (err) {
+            console.warn('Failed to evaluate event dates for event-passed warning.', err);
+          }
+        });
     } catch (err) {
-      // Fail silently — do not break map init for a malformed date
-      /* eslint-disable no-console */
-      console.warn('Failed to evaluate event dates for event-passed warning.', err);
-      /* eslint-enable no-console */
+      console.warn('Failed to initialize event-passed acknowledgement setting.', err);
     }
 
     // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.
