@@ -18,6 +18,8 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventService } from '../../services/event/event.service';
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { EventPassedWarningComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
@@ -65,7 +67,8 @@ export class MapComponent implements OnInit, OnDestroy {
     private readonly ar: ActivatedRoute,
     private readonly store: LocalStoreService,
     private readonly eventsSettingsService: EventSettingsService,
-    private readonly eventService: EventService // While not called, needs to be injected to initialize event layers  loading
+    private readonly eventService: EventService, // While not called, needs to be injected to initialize event layers  loading
+    private readonly ms: ModalService
   ) {}
 
   public ngOnInit() {
@@ -89,6 +92,47 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this._connections = this.env.value('Connections');
     this.isDev = this.ts.get('isTesting');
+
+    // Check if event has passed and show a modal warning if so
+    try {
+      const eventDates = root?.configuration?.eventDates || [];
+
+      const parsed = (eventDates || [])
+        .map((d) => {
+          if (typeof d === 'string' || typeof d === 'number') {
+            return new Date(d).getTime();
+          } else if (d instanceof Date) {
+            return d.getTime();
+          }
+
+          return NaN;
+        })
+        .filter((t) => !isNaN(t));
+
+      if (parsed.length > 0) {
+        const latest = Math.max(...parsed);
+        const now = Date.now();
+
+        if (latest < now) {
+          // Open modal with standard message; allow apps to override message via passed in data if desired.
+          this.ms.open<boolean>(EventPassedWarningComponent, {
+            data: {
+              title: 'This event has passed',
+              message:
+                "This event has passed. The information on this map may be outdated and should be used for informational purposes only. A new map will be released as we get closer to the date.",
+              acknowledgeText: 'OK'
+            }
+          })
+            // We don't need to force any action on acknowledge; just subscribe to consume the observable
+            .subscribe(() => {});
+        }
+      }
+    } catch (err) {
+      // Fail silently — do not break map init for a malformed date
+      /* eslint-disable no-console */
+      console.warn('Failed to evaluate event dates for event-passed warning.', err);
+      /* eslint-enable no-console */
+    }
 
     // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.
     // https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/274
