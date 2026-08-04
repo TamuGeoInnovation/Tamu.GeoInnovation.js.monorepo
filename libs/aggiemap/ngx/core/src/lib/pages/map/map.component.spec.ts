@@ -18,7 +18,7 @@ describe('Aggiemap MapComponent (beta flow)', () => {
     };
 
     // Instantiate directly with minimal mocks for the Beta modal flow
-    component = new MapComponent({} as any, {} as any, mockModalService as any, mockSettingsService as any, {} as any, {} as any, {} as any, {} as any, {} as any, {} as any, mockModalService as any);
+    component = new MapComponent({} as any, {} as any, mockModalService as any, mockSettingsService as any, {} as any, {} as any);
   });
 
   it('should open AlertModal and persist beta ack when acknowledged', () => {

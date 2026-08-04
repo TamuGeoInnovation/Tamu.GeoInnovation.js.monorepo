@@ -20,7 +20,7 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventService } from '../../services/event/event.service';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { EventPassedWarningComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
