@@ -23,7 +23,7 @@ export class SlideToggleComponent<Option extends object, Value>
   @ViewChildren('toggleOption')
   public toggleOptions: QueryList<ElementRef>;
 
-  public activeOptionElement$: Subject<ElementRef> = new Subject<ElementRef>();
+  public activeOptionElement$: Subject<ElementRef | undefined> = new Subject<ElementRef | undefined>();
   public activeDimensions$: Observable<{ width: number; translate: number }>;
 
   public ngOnInit(): void {
@@ -31,6 +31,9 @@ export class SlideToggleComponent<Option extends object, Value>
       // Wait for the next tick to ensure that the element has been rendered and avoid ExpressionChangedAfterItHasBeenCheckedError
       delay(0),
       map((option) => {
+        if (!option) {
+          return { width: 0, translate: 0 };
+        }
         const width = option.nativeElement.offsetWidth;
         const translate = option.nativeElement.offsetLeft;
 
@@ -48,14 +51,16 @@ export class SlideToggleComponent<Option extends object, Value>
     this._findActiveElement(v);
   }
 
-  public override evaluateSetValue(option: Option): void {
+  public override evaluateSetValue(option: Option): Value | undefined {
     const t = super.evaluateSetValue(option);
 
     this._findActiveElement(t);
+    
+    return t;
   }
 
-  private _findActiveElement(plainValue: Value) {
-    if (plainValue !== null && this.toggleOptions) {
+  private _findActiveElement(plainValue: Value | undefined) {
+    if (plainValue !== null && plainValue !== undefined && this.toggleOptions) {
       const active = this.toggleOptions.find((option) => {
         return option.nativeElement.attributes['attr-value'].value === plainValue;
       });

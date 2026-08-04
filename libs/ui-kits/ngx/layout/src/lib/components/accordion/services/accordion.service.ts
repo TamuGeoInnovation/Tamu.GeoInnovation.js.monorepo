@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 // event emitter, it does not work with any components extending the accordion header component.
 @Injectable()
 export class AccordionService {
-  private _state: BehaviorSubject<IAccordionModel> = new BehaviorSubject({ expanded: false, animate: false, resize: false });
+  private _state: BehaviorSubject<IAccordionModel> = new BehaviorSubject<IAccordionModel>({ expanded: false, animate: false, resize: false });
   public state: Observable<IAccordionModel> = this._state.asObservable();
 
   /**

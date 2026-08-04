@@ -24,7 +24,7 @@ export class ParkingService {
         persistent: true
       },
       Permit: {
-        value: undefined,
+        value: '' as string | number | boolean,
         persistent: true
       },
       Depart_Time: {
@@ -94,7 +94,7 @@ export class ParkingService {
    * alphabetics and numerics.
    */
   public getParkingPermits(): Observable<ParkingFeature[]> {
-    const source = this.environment.value('SearchSources').find((source) => source.source === 'all-parking');
+    const source = this.environment.value('SearchSources').find((source: SearchSource) => source.source === 'all-parking');
 
     return this.search
       .search<ParkingFeature>({
@@ -109,14 +109,14 @@ export class ParkingService {
 
           return of(
             new SearchResult({
-              results: [{ ...res.results[0], features: normalized }]
+              results: [{ ...(res.results?.[0] as any), features: normalized }]
             })
           );
         }),
         switchMap((results): Observable<ParkingFeature> => {
           // Return only the features in the search result.
           // Breadcrumbing, source data, etc, are not needed from this point on.
-          return from(results.results.map((r) => r.features as ParkingFeature[]).flat());
+          return from((results.results ?? []).map((r: any) => r.features as ParkingFeature[]).flat());
         }),
         filter((lot) => {
           // Return the features that have a valid FAC_CODE.
@@ -138,7 +138,7 @@ export class ParkingService {
         switchMap((filteredPermits) => {
           const grouped = filteredPermits.reduce(
             (acc, curr) => {
-              const isAlphabetic = isNaN(parseInt(curr.attributes.FAC_CODE, 10));
+              const isAlphabetic = isNaN(parseInt(curr.attributes.FAC_CODE ?? '', 10));
 
               if (isAlphabetic) {
                 acc.alphabetic = [...acc.alphabetic, curr];
@@ -151,7 +151,7 @@ export class ParkingService {
             { alphabetic: [], numeric: [] } as { alphabetic: ParkingFeature[]; numeric: ParkingFeature[] }
           );
 
-          const compareFn = (a, b) => {
+          const compareFn = (a: any, b: any) => {
             if (a.attributes.FAC_CODE > b.attributes.FAC_CODE) {
               return 1;
             } else {
@@ -176,6 +176,7 @@ export class ParkingService {
   public getAuthorizedParkingLocations(): Observable<ParkingFeature[]> {
     // Parking options snapshot.
     const parkingOptions = this._ParkingOptions.getValue();
+    const opts: any = parkingOptions;
 
     // Used to evaluate time-dependent expressions.
     const date = parkingOptions.Depart_Time ? parkingOptions.Depart_Time : new Date();
@@ -223,15 +224,15 @@ export class ParkingService {
         sqlColumns: ['TS_GIS.dbo.LOTS.UB_Lot'],
         // This is not supported at the moment but will be in the future. Never include it in the search queries.
         include: false,
-        values: parkingOptions.UB > 0 ? [1] : [0],
+        values: opts.UB > 0 ? [1] : [0],
         operators: ['=']
       },
       {
         sqlColumns: ['GIS.TS.SpacePnt_Count.UB'],
         include: false,
         // This is not supported at the moment but will be in the future. Never include it in the search queries.
-        values: parkingOptions.UB > 0 ? [1] : [0],
-        operators: parkingOptions.UB > 0 ? ['>='] : ['=']
+        values: opts.UB > 0 ? [1] : [0],
+        operators: opts.UB > 0 ? ['>='] : ['=']
       },
       {
         sqlColumns: ['GIS.TS.SpacePnt_Count.H_C'],
@@ -239,15 +240,15 @@ export class ParkingService {
         // This will remain the case until the search service is updated to allow more flexibility in composing SQL queries.
         include: false,
         // include: parkingOptions.H_C > 0 && parkingOptions.Use_Permit && parkingOptions.Permit !== undefined,
-        values: parkingOptions.H_C > 0 ? [1] : [0],
-        operators: parkingOptions.H_C > 0 ? ['>='] : ['=']
+        values: opts.H_C > 0 ? [1] : [0],
+        operators: opts.H_C > 0 ? ['>='] : ['=']
       },
       {
         searchSource: 'all-parking',
         sqlColumns: ['GIS.TS.SpacePnt_Count.Visitor_H_C'],
-        include: parkingOptions.Visitor_H_C > 0 && parkingOptions.Use_Permit === false,
-        values: parkingOptions.H_C > 0 ? [1] : [0],
-        operators: parkingOptions.Visitor_H_C > 0 ? ['>='] : ['=']
+        include: opts.Visitor_H_C > 0 && opts.Use_Permit === false,
+        values: opts.H_C > 0 ? [1] : [0],
+        operators: opts.Visitor_H_C > 0 ? ['>='] : ['=']
       }
     ].filter((option) => {
       return option.include;
@@ -259,19 +260,19 @@ export class ParkingService {
       );
 
       if (source !== undefined) {
-        source = JSON.parse(JSON.stringify(source));
+        source = JSON.parse(JSON.stringify(source)) as SearchSource;
       } else {
         throw new Error('No search source found for parking restriction.');
       }
 
-      source.queryParams.where = {
+      (source as any).queryParams.where = {
         keys: incl.sqlColumns,
         operators: incl.operators
       };
 
       return this.search.search<ParkingFeature>({
         sources: [source],
-        values: [incl.values],
+        values: [incl.values as any],
         stateful: false
       });
     });
@@ -279,33 +280,35 @@ export class ParkingService {
     return forkJoin(queries).pipe(
       mergeMap((results) => results),
       switchMap((res) => from(this.normalizeAttributeKeys(res.features()))),
-      reduce((acc, curr) => {
-        if (acc[curr.attributes.LotName] !== undefined) {
-          acc[curr.attributes.LotName].count++;
-          acc[curr.attributes.LotName].attributes = { ...acc[curr.attributes.LotName].attributes, ...curr.attributes };
+      reduce((acc: any, curr: any) => {
+        const lotName = curr.attributes.LotName ?? 'unknown';
+
+        if (acc[lotName] !== undefined) {
+          acc[lotName].count++;
+          acc[lotName].attributes = { ...acc[lotName].attributes, ...curr.attributes };
         } else {
-          acc[curr.attributes.LotName] = { count: 1 };
-          acc[curr.attributes.LotName].attributes = curr.attributes;
-          acc[curr.attributes.LotName].geometry = curr.geometry;
+          acc[lotName] = { count: 1 };
+          acc[lotName].attributes = curr.attributes;
+          acc[lotName].geometry = curr.geometry;
         }
 
         return acc;
       }, {}),
       switchMap((filtered) => {
         return from(Object.entries(filtered)).pipe(
-          filter(([, value]: [string, { count: number; attributes: unknown; geometry: unknown }]) => {
+          filter(([, value]: [string, any]) => {
             return value.count === queries.length;
           }),
-          map(([, value]) => {
+          map(([, value]: [string, any]) => {
             return {
               attributes: value.attributes,
               geometry: value.geometry
             } as ParkingFeature;
           }),
-          switchMap((f) => {
+          switchMap((f: ParkingFeature) => {
             return from(this.moduleProvider.require(['Graphic'])).pipe(
               map(([Graphic]) => {
-                return new Graphic({ attributes: f.attributes, geometry: { type: 'polygon', ...f.geometry } });
+                return new Graphic({ attributes: f.attributes, geometry: { ...(f.geometry as any), type: 'polygon' } });
               })
             );
           }),
@@ -328,12 +331,12 @@ export class ParkingService {
   private normalizeAttributeKeys(features: ParkingFeature[]) {
     return features.map((feature) => {
       if (feature.attributes) {
-        const normalized = Object.keys(feature.attributes).reduce((acc, curr) => {
+        const normalized = Object.keys(feature.attributes).reduce((acc: any, curr: string) => {
           if (!acc[curr]) {
             const split = curr.split('.');
             const key = split[split.length - 1];
 
-            acc[key] = feature.attributes[curr];
+            acc[key] = (feature.attributes as any)[curr];
             return acc;
           } else {
             return acc;

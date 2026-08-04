@@ -12,8 +12,8 @@ export function makeWhere(
   transformations?: string[]
 ): string {
   // Wildcards container. This will either be generated in-function or be provided from the callee
-  let wc;
-  let ts;
+  let wc: Array<string | null>;
+  let ts: Array<string | null>;
 
   if (!keys || !values || !operators) {
     throw new Error('Input Parameter Missing');
@@ -49,7 +49,7 @@ export function makeWhere(
     let str = '';
 
     // TODO: This could be simplified to co-apply transformations to keys and values.
-    const getValueDeclaration = (wildcard, value) => {
+    const getValueDeclaration = (wildcard: string | null, value: string): string => {
       if (wildcard === 'startsWith') {
         return `'${value}%'`.toUpperCase();
       } else if (wildcard === 'endsWith') {
@@ -61,7 +61,7 @@ export function makeWhere(
       }
     };
 
-    const getKeyTransformation = (transformation, key) => {
+    const getKeyTransformation = (transformation: string | null, key: string): string => {
       if (transformation !== null) {
         return `${transformation.toUpperCase()}(${key})`;
       } else {

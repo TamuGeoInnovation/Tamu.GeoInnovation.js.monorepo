@@ -32,8 +32,8 @@ export class TripPlannerConnectionService {
     this._serviceURL = this.env.value('Connections', false)?.routingBaseUrl + '?f=pjson';
 
     // Instantiate Subjects and observables from subjects
-    this._allNetworks = new BehaviorSubject([]);
-    this._abNetworks = new BehaviorSubject([]);
+    this._allNetworks = new BehaviorSubject<TripPlannerConnection[]>([]);
+    this._abNetworks = new BehaviorSubject<TripPlannerConnection[]>([]);
     this._latestNonAbNetwork = new BehaviorSubject(
       new TripPlannerConnection({
         baseServiceUrl: this._serviceURL,
@@ -61,7 +61,7 @@ export class TripPlannerConnectionService {
   }
 
   private fetchNetworks() {
-    this.http.get(this._serviceURL).subscribe({
+    this.http.get<{ services: TripPlannerServiceType[] }>(this._serviceURL).subscribe({
       next: (res: { services: TripPlannerServiceType[] }) => {
         // Regex expression that checks against the allowed format for a service name.
         // Name must match the following pattern:
@@ -110,7 +110,7 @@ export class TripPlannerConnectionService {
           .sort();
 
         const latestAB = (): TripPlannerConnection[] => {
-          let networks = [];
+          let networks: TripPlannerConnection[] = [];
           if (uniqueMatchingABServices.length > 0) {
             const latestPrefix = uniqueMatchingABServices[uniqueMatchingABServices.length - 1].name.substring(
               0,
@@ -202,12 +202,19 @@ export class TripPlannerConnectionService {
         });
       }
     }
+    
+    // Fallback return for all paths
+    return new TripPlannerConnection({
+      baseServiceUrl: this._serviceURL,
+      name: '',
+      type: ''
+    });
   }
 
   /**
    * Sets the current network by network name reference.
    */
-  public set network(name) {
+  public set network(name: string) {
     // Find the network object by name reference
     const newNetwork = this._store.allNetworks.find((o) => {
       return (o.name = name);

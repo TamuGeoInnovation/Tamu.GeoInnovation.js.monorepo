@@ -25,7 +25,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
 
   private _lastRoute: string;
 
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject();
 
   constructor(
     private tripPlanner: TripPlannerService,
@@ -46,7 +46,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 
@@ -54,19 +54,24 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
    * Calls analytics event method
    */
   public submitBadRoute() {
-    const label = {
+    const travelModeId = this.result && this.result.params && this.result.params.travelMode ? this.result.params.travelMode.id : 'unknown';
+    const connectionName = this.result && this.result.connection ? this.result.connection.name : 'unknown';
+
+    const label: Record<string, any> = {
       guid: guid(),
       date: Date.now(),
-      travel_mode: this.result.params.travelMode.id,
-      connection: this.result.connection.name,
+      travel_mode: travelModeId,
+      connection: connectionName,
       description: this.description ? this.description : 'No Description',
       email: this.email ? this.email : 'No email'
       // Might implement this in a custom reporting tool
       // stops: this.result.stopsSource
     };
 
-    // Iterate through each sto in this.result.stopsToArray() and add a property for each stop prefixed with stop_ to label.gstCustom
-    this.result.stopsToArray().forEach((stop, index) => {
+    // Iterate through each stop in this.result.stopsToArray() and add a property for each stop prefixed with stop_ to label.gstCustom
+    const stops = (this.result && typeof this.result.stopsToArray === 'function') ? this.result.stopsToArray() : [];
+
+    stops.forEach((stop, index) => {
       label[`stop_${index}`] = stop.toString();
     });
 

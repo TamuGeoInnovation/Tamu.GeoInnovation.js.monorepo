@@ -80,10 +80,11 @@ export class EventSettingsService {
   public settings(asObservable: true): Observable<EventSettings>;
   public settings(asObservable: false): EventSettings;
   public settings(asObservable?: boolean): EventSettings | Observable<EventSettings> {
-    const settings: EventSettings = this.store.getStorageObjectKeyValue({
+    const settings: EventSettings =
+      this.store.getStorageObjectKeyValue({
       primaryKey: this._settingsPrimaryKey,
       subKey: this._settingsSecondaryKey
-    });
+      }) ?? ({} as EventSettings);
 
     if (asObservable) {
       return of(settings);
@@ -96,7 +97,7 @@ export class EventSettingsService {
   public eventOptions(asObservable: true): Observable<SpecialEventOptions>;
   public eventOptions(asObservable: false): SpecialEventOptions;
   public eventOptions(asObservable?: boolean): SpecialEventOptions | Observable<SpecialEventOptions> {
-    const options: SpecialEventOptions = this.eventConfiguration().options || [];
+    const options: SpecialEventOptions = this.eventConfiguration()?.options || [];
 
     if (asObservable) {
       return of(options);
@@ -105,22 +106,20 @@ export class EventSettingsService {
     }
   }
 
-  public eventConfiguration(): AggiemapCustomMapConfiguration;
-  public eventConfiguration(asObservable: true): Observable<AggiemapCustomMapConfiguration>;
-  public eventConfiguration(asObservable: false): AggiemapCustomMapConfiguration;
+  public eventConfiguration(): AggiemapCustomMapConfiguration | null;
+  public eventConfiguration(asObservable: true): Observable<AggiemapCustomMapConfiguration | null>;
+  public eventConfiguration(asObservable: false): AggiemapCustomMapConfiguration | null;
   public eventConfiguration(
     asObservable?: boolean
-  ): AggiemapCustomMapConfiguration | Observable<AggiemapCustomMapConfiguration> {
+  ): AggiemapCustomMapConfiguration | null | Observable<AggiemapCustomMapConfiguration | null> {
     const config = this.getEventDefinitionById(this._settingsSecondaryKey);
 
     if (!config) {
-      throw new Error(`Event configuration for ID '${this._settingsSecondaryKey}' not found.`);
+      return asObservable ? of(null) : null;
+    } else if (asObservable) {
+      return of(config);
     } else {
-      if (asObservable) {
-        return of(config);
-      } else {
-        return config;
-      }
+      return config;
     }
   }
 
@@ -236,11 +235,11 @@ export class EventSettingsService {
     return merged;
   }
 
-  public getSavedAccommodation(accommodationKey: string) {
+  public getSavedAccommodation(accommodationKey: string): string | boolean | number | null {
     const settings = this.settings();
 
     if (settings !== null && settings !== undefined) {
-      return settings[accommodationKey] !== undefined ? settings[accommodationKey] : null;
+      return settings[accommodationKey] ?? null;
     } else {
       return null;
     }
@@ -397,7 +396,7 @@ export class EventSettingsService {
    */
   public getEventDefinitionById(eventId: string): AggiemapCustomMapConfiguration | null {
     if (!eventId || eventId.length === 0) {
-      return null;
+      return EventDefinitions[0] ?? null;
     }
 
     const eventIndex = EventDefinitions.findIndex((event) => event?.configuration?.id === eventId);

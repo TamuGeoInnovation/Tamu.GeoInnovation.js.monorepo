@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BaseEntity, Repository, FindOneOptions, FindManyOptions, DeepPartial } from 'typeorm';
 
 @Injectable()
-export class BaseService<T extends BaseEntity> {
+export class BaseService<T extends BaseEntity & { guid: string }> {
   constructor(public readonly repository: Repository<T>) {}
 
   public async createOne(entity: DeepPartial<T>) {

@@ -5,6 +5,9 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {},
   coverageDirectory: '../../../../coverage/libs/aggiemap/ngx/popups',
+  moduleNameMapper: {
+    '^lightgallery/angular/13$': '<rootDir>/src/testing/lightgallery.mock.ts'
+  },
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',

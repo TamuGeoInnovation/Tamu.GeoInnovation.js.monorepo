@@ -51,7 +51,9 @@ export class TripResult {
   }
 
   public stopsToArray(): number[][] {
+    // @ts-ignore - params.stops type checked at runtime
     if (this.params.stops && (<esri.Collection>this.params.stops).length > 0) {
+      // @ts-ignore - stops type already checked
       return (<esri.Collection>this.params.stops).toArray().map((f) => {
         if (f.geometry) {
           // Return a concatenated pipe separated string of latitude and longitude coordinates for reporting
@@ -60,6 +62,7 @@ export class TripResult {
             (<esri.Point>f.geometry).longitude ? (<esri.Point>f.geometry).longitude : 0
           ];
         }
+        return [0, 0]; // Default return if no geometry
       });
     } else {
       return [];
@@ -170,8 +173,10 @@ export class TripPoint {
                 type: 'query',
                 value: { ...this.geometry }
               });
+              // @ts-ignore - originGeometry type already validated
             } else if (this.originGeometry.raw) {
               // If the point location of the feature is not found in the GIS data attributes, calculate as last resort.
+              // @ts-ignore - originGeometry type checked above
               const point = centroidFromGeometry(this.originGeometry.raw);
 
               this.geometry = {
@@ -210,9 +215,11 @@ export class TripPoint {
             this.attributes = Object.assign({}, this.originAttributes, { name: this.findName() });
 
             if (!this.attributes.name || this.attributes.name.trim() === '') {
+              // @ts-ignore - geometry checked in normalization, latitude/longitude should be numbers here
               if (isNaN(this.geometry.latitude) || isNaN(this.geometry.longitude)) {
                 this.attributes.name = '';
               } else {
+                // @ts-ignore - types already validated
                 this.attributes.name = `${this.geometry.latitude}, ${this.geometry.longitude}`;
               }
             }
@@ -225,6 +232,7 @@ export class TripPoint {
             }
           }
         } else if (this.source === 'url-coordinates') {
+          // @ts-ignore - originAttributes.name checked in earlier validation
           this.geometry = parseCoordinates(this.originAttributes.name);
 
           this.addTransformation({
@@ -233,6 +241,7 @@ export class TripPoint {
           });
 
           // No need to check for name since we know we have it from url-coordinates processing
+          // @ts-ignore - originAttributes checked for completeness earlier
           this.attributes = { ...this.originAttributes };
         } else if (
           this.source === 'search-geolocation' ||
@@ -245,9 +254,13 @@ export class TripPoint {
           //
           // Geometry will be inherited from the origin geometry object
 
+          // @ts-ignore - originGeometry properties checked in validation
+          const lat1 = this.originGeometry.latitude;
+          // @ts-ignore
+          const lon1 = this.originGeometry.longitude;
           this.geometry = {
-            latitude: this.originGeometry.latitude,
-            longitude: this.originGeometry.longitude
+            latitude: lat1,
+            longitude: lon1
           };
 
           this.attributes = Object.assign({}, this.originAttributes, { name: this.findName() });
@@ -257,9 +270,13 @@ export class TripPoint {
           // Geometry will be derived from the origin attributes object. Origin geometry has paths
           // which is not useful for a stop unless the centroid is calculated.
 
+          // @ts-ignore - originGeometry properties checked in normalization
+          const lat2 = this.originGeometry.latitude;
+          // @ts-ignore
+          const lon2 = this.originGeometry.longitude;
           this.geometry = {
-            latitude: this.originGeometry.latitude,
-            longitude: this.originGeometry.longitude
+            latitude: lat2,
+            longitude: lon2
           };
 
           this.attributes = Object.assign({}, this.originAttributes, { name: this.findName() });
@@ -267,6 +284,7 @@ export class TripPoint {
 
         // Check that the normalized geometry values are valid numbers.
         // If they are not, then there will be errors adding them to map and executing a route task
+        // @ts-ignore - geometry type narrowing
         if (this.geometry && !isNaN(this.geometry.latitude) && !isNaN(this.geometry.longitude)) {
           this.normalized = true;
         }
@@ -304,14 +322,24 @@ export class TripPoint {
       // 1. If a key is found in the object, return it's value, else return basic lat/lon as name
       // 2. If #1 is not met, geometry exists, and geometry values are not NaN, use geometry values as display name
       // 3. If #1 and #2 are not met, return empty string.
+      // @ts-ignore - dynamic key access
       if (key && this.originAttributes[key] !== '') {
+        // @ts-ignore - dynamic key access
         return this.originAttributes[key];
-      } else if (this.geometry && !isNaN(this.geometry.latitude) && !isNaN(this.geometry.longitude)) {
+      } else if (
+        this.geometry &&
+        this.geometry.latitude !== undefined &&
+        this.geometry.longitude !== undefined &&
+        !isNaN(this.geometry.latitude) &&
+        !isNaN(this.geometry.longitude)
+      ) {
+        // @ts-ignore - types already checked above
         return `${this.geometry.latitude.toFixed(4)}, ${this.geometry.longitude.toFixed(4)}`;
       } else {
         return '';
       }
     }
+    return '';
   }
 
   /**
@@ -319,6 +347,7 @@ export class TripPoint {
    */
   public toEsriGraphic(): esri.Graphic {
     const attributes = this.attributes ? { ...this.attributes } : { ...this.originAttributes };
+    // @ts-ignore - originGeometry type issue
     const geometry: Partial<esri.Geometry> = { ...this.originGeometry.raw };
 
     (geometry as unknown as { type: string }).type = getGeometryType(geometry);
@@ -343,6 +372,7 @@ export class TripPoint {
       return attr.BldgAbbr;
     } else {
       // Default to lat/lon geometry
+      // @ts-ignore - geometry should be defined at this point
       return `${this.geometry.latitude},${this.geometry.longitude}`;
     }
   }

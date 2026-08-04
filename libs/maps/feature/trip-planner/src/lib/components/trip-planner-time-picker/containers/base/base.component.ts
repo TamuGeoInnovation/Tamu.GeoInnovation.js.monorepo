@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, shareReplay, pluck } from 'rxjs/operators';
+import { takeUntil, shareReplay, pluck, map } from 'rxjs/operators';
 
 import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 
@@ -15,32 +15,37 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**
    * Trip time mode that determines how the trip results are modified.
    */
-  public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(pluck('time_mode'), shareReplay(1));
+  public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(
+    pluck('time_mode'),
+    // @ts-ignore - travel options may temporarily omit time_mode
+    map((mode) => mode as TimeModeOption),
+    shareReplay(1)
+  ) as Observable<TimeModeOption>;
 
   /**
    * Date in milliseconds. If a date is set in the trip planner service, it will be converted to milliseconds.
    */
-  public requestedTime: number;
-  public oldTime: number;
+  public requestedTime: number | undefined;
+  public oldTime: number | undefined;
 
   public dateTimePickerVisible = false;
 
   /**
    * Subject that triggers on ngOnDestroy life cycle hook to any active manual observable subscriptions.
    */
-  private destroy$: Subject<boolean> = new Subject();
+  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private plannerService: TripPlannerService) {}
 
   public ngOnInit(): void {
     this.plannerService.TravelOptions.pipe(pluck('requested_time'), takeUntil(this.destroy$)).subscribe((date) => {
       this.requestedTime = date ? date.getTime() : undefined;
-      this.oldTime = this.requestedTime ? this.requestedTime : undefined;
+      this.oldTime = this.requestedTime ?? undefined;
     });
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next(undefined);
+    this.destroy$.next();
     this.destroy$.complete();
   }
 
@@ -75,8 +80,10 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    * Once the update is made in the trip planner service state, the component subscriber will be
    * notified and update it here.
    */
-  public setRequestedTime(newRequestedTime: DlDateTimePickerChange<Date> | Date): void {
-    if (newRequestedTime instanceof DlDateTimePickerChange) {
+  public setRequestedTime(newRequestedTime: DlDateTimePickerChange<Date> | Date | null): void {
+    if (newRequestedTime === null) {
+      this.plannerService.updateTravelOptions({ requested_time: undefined as any });
+    } else if (newRequestedTime instanceof DlDateTimePickerChange) {
       if (newRequestedTime.value && this.oldTime !== newRequestedTime.value.getTime()) {
         this.plannerService.updateTravelOptions({ requested_time: new Date(newRequestedTime.value.getTime()) });
         this.dateTimePickerVisible = false;

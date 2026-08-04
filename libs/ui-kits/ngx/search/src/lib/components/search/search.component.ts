@@ -176,9 +176,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Describes if and geolocation selection is visible
    */
-  public searchResultsActive: boolean = undefined;
+  public searchResultsActive = false;
 
-  private _sources: SearchSource[];
+  private _sources: SearchSource[] = [];
 
   /**
    * Search service subscription, allowing un-subscription on component destroy
@@ -213,8 +213,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
       // Test if any search result object contains at least one search result.
       // If there are no search result objects, it is understood that it a search service clear was invoked.
-      if (res.results.length > 0) {
-        this.searchResultStatus = res.results.some((result) => result.features.length > 0);
+      if (Array.isArray(res.results) && res.results.length > 0) {
+        this.searchResultStatus = res.results.some((result) => Array.isArray(result.features) && result.features.length > 0);
       } else {
         // Prevent the "no features found" suggestion on an empty search result.
         this.searchResultStatus = true;
@@ -241,7 +241,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.setSelected(value, {
               name: value,
               breadcrumbs: {
-                source: undefined,
+                source: { source: 'search-geolocation' } as any,
                 value: value
               }
             });
@@ -298,7 +298,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     // Dispose of any subscriptions made
-    this._destroy$.next(undefined);
+    this._destroy$.next(true);
     this._destroy$.complete();
   }
 
@@ -366,7 +366,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     if (feature && !isString) {
       // Update the DOM model value
-      this.value = this.evaluateDisplayTemplate(feature as unknown as object, parentResult.displayTemplate);
+      this.value = this.evaluateDisplayTemplate(feature as unknown as object, parentResult.displayTemplate || '');
 
       // De-focus the component
       this.loseFocus();
@@ -491,10 +491,10 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Uses a template renderer to evaluate the display template with values from the provided feature object.
    */
-  public evaluateDisplayTemplate(obj: object, template: string) {
+  public evaluateDisplayTemplate(obj: object, template?: string) {
     return new TemplateRenderer({
       lookup: obj,
-      template: template
+      template: template || ''
     }).render();
   }
 

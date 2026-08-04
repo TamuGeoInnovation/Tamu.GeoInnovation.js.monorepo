@@ -13,18 +13,18 @@ import { BusStop, TimetableRow, BusService } from '../../../../services/transpor
 })
 export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   @Input()
-  public switch: TripModeSwitch;
+  public switch: TripModeSwitch | null = null;
 
-  private $destroy: Subject<boolean> = new Subject();
+  private $destroy: Subject<void> = new Subject<void>();
 
   public busStops: Array<BusStop> = [];
   public busStopsList: Array<BusStop> = [];
   public stopCount = 0;
-  public routeNumber?: string = null;
+  public routeNumber: string | null = null;
   public timetable: TimetableRow[] = [];
-  public lingerMinutes?: number = null;
-  public passengerLoad?: number = null;
-  public busCount?: number = null;
+  public lingerMinutes: number | null = null;
+  public passengerLoad: number | null = null;
+  public busCount: number | null = null;
   public now: TimetableRow;
 
   public timeTableExpanded = false;
@@ -68,11 +68,11 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.$destroy.next(true);
+    this.$destroy.next();
     this.$destroy.complete();
   }
 
-  public getDateString(time) {
+  public getDateString(time: Date) {
     return timeStringForDate(time);
   }
 }

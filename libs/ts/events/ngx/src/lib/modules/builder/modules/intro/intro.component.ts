@@ -25,7 +25,7 @@ export class IntroComponent extends BuilderModuleBaseComponent implements OnInit
   }
 
   public ngOnInit(): void {
-    this.settings = this.es.eventConfiguration()?.configuration;
+    this.settings = this.es.eventConfiguration()?.configuration ?? null;
   }
 
   public next() {

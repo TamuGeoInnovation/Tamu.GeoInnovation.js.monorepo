@@ -10,5 +10,5 @@ import { StepComponent } from './components/step/step.component';
 })
 export class StepperComponent extends AbstractContentReplacerComponent implements AfterContentInit {
   @ContentChildren(StepComponent)
-  public toggleList: QueryList<StepComponent>;
+  public override toggleList: QueryList<StepComponent>;
 }

@@ -17,7 +17,7 @@ export class ModalComponent implements OnInit, OnDestroy {
 
   private _lastRoute: string;
 
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject();
 
   constructor(
     private router: Router,
@@ -32,13 +32,13 @@ export class ModalComponent implements OnInit, OnDestroy {
     this.history
       .last()
       .pipe(takeUntil(this._destroy$))
-      .subscribe((event: RouterEvent) => {
-        this._lastRoute = event.url;
+      .subscribe((event: any) => {
+        this._lastRoute = (event && (event as any).url) || this._lastRoute;
       });
   }
 
   public ngOnDestroy() {
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 

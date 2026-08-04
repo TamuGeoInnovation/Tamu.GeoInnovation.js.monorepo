@@ -9,7 +9,7 @@ import { marked } from 'marked';
 export class MarkdownParsePipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 
-  public transform(value: string): SafeHtml {
+  public transform(value: string): SafeHtml | null {
     if (value) {
       const content = marked(value);
 

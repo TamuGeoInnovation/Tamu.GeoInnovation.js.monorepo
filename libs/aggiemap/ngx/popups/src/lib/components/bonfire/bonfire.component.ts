@@ -84,7 +84,7 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     super(rtr, rt, ps, anl, mp);
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     super.ngOnInit();
 
     if (this.data.attributes.Name) {
@@ -92,7 +92,7 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
       // fallen, historywalk, lastcorps, memorial
 
       const ignoreCaseName = this.data.attributes.Name.toLowerCase();
-      let fileNames = [];
+      let fileNames: string[] = [];
 
       // If the name start with "bonfire" then filter _allMedias by prefix `memorial_`
       if (ignoreCaseName.startsWith('bonfire')) {
@@ -113,14 +113,14 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
       // The name is going to be the same as the image name (minus extension and the fallen_ suffix), so we can just use the name as the image name.
       if (fileNames.length === 0) {
         // A fallen name follows the format "FirstName LastName `Year". Extract only first and last name, ignore year, and join the names with no space.
-        const fallen = this.fallenMap[this.data.attributes.Name];
+        const fallen = this.fallenMap[this.data.attributes.Name as keyof typeof this.fallenMap];
 
         if (fallen) {
           fileNames = [fallen];
         }
       }
 
-      this.medias = fileNames.map((imgName) => {
+      this.medias = fileNames.map((imgName: string) => {
         return `https://aggiemap.tamu.edu/images/bonfire/${imgName}`;
       });
     }
@@ -161,7 +161,7 @@ export class BonfirePopupComponent extends BaseDirectionsComponent implements On
     }
   }
 
-  public startDirections() {
+  public override startDirections() {
     super.startDirections(`${this.data.attributes.Name}`);
   }
 }

@@ -65,7 +65,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
    *
    * Fn: Stores the spawned notification timing function
    */
-  public timer = {
+  public timer: { step: number; current: number; limit: number; fn?: ReturnType<typeof setInterval> } = {
     step: 50,
     current: 0,
     limit: 10000,

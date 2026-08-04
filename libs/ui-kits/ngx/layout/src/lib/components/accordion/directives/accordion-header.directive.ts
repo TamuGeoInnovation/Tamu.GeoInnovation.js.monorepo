@@ -14,7 +14,7 @@ export class AccordionHeaderDirective {
   }
 
   @Input()
-  public set giscAccordionHeader(controller) {
+  public set giscAccordionHeader(controller: AccordionDirective) {
     this.parent = controller;
   }
 }

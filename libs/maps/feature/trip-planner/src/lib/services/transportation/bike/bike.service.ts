@@ -18,9 +18,9 @@ export class BikeService {
    *
    * If no units are found within a reasonable distance, return undefined.
    */
-  public getNearbyBike(point: Point): Observable<Bike> {
+  public getNearbyBike(point: Point): Observable<Bike | undefined> {
     return this.http
-      .get('http://localhost:27000/bikes/nearest', {
+      .get<NearestJSONResponse>('http://localhost:27000/bikes/nearest', {
         params: {
           latitude: `${point.latitude}`,
           longitude: `${point.longitude}`,
@@ -28,7 +28,7 @@ export class BikeService {
         }
       })
       .pipe(
-        switchMap((result: NearestJSONResponse) => {
+        switchMap((result: any) => {
           if (result && result.data.geometry && result.data.geometry.length > 0) {
             return of(result.data.geometry[0]);
           } else {
@@ -42,7 +42,7 @@ export class BikeService {
    * Gets all bike rack points on campus and determines the nearest to the provided
    * point.
    */
-  public getNearestBikeRack(point: Point): Observable<Point> {
+  public getNearestBikeRack(point: Point): Observable<Point | undefined> {
     return this.search
       .search({
         sources: ['bike-racks'],
@@ -50,7 +50,7 @@ export class BikeService {
         stateful: false
       })
       .pipe(
-        switchMap((result: SearchResult<RelativeDistancePoint>) => {
+        switchMap((result: any) => {
           if (result && result.results && result.results.length > 0) {
             const features = result.features();
 
@@ -63,12 +63,11 @@ export class BikeService {
             const feature = features[smallestIndex];
 
             return of(centroidFromGeometry(feature.geometry));
-          } else {
-            return of(undefined);
           }
+          return of(undefined);
         }),
         catchError((err) => {
-          return of(err);
+          return of(undefined);
         })
       );
   }

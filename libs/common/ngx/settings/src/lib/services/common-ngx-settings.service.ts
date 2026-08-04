@@ -39,7 +39,7 @@ export class SettingsService {
     const compoundsFromStorageTree = this.simpleSettingsTreeToCompoundSettings(storage);
 
     // Override any settings with locally stored setting values (if any).
-    const merged: CompoundSettings = Object.keys(storageInjected).reduce((acc, curr) => {
+    const merged: CompoundSettings = Object.keys(storageInjected).reduce((acc: any, curr) => {
       if (curr in compoundsFromStorageTree) {
         acc[curr] = { ...storageInjected[curr], value: compoundsFromStorageTree[curr].value };
         return acc;
@@ -70,7 +70,8 @@ export class SettingsService {
    * Handles an `undefined` value before, which the service state must not be.
    */
   private getStorage(config: StorageConfig): SimpleSettingTree {
-    const storage: SimpleSettingTree | null = this.storage.getStorage(config);
+    // @ts-ignore - storage service returns undefined in some cases
+    const storage: SimpleSettingTree | null | undefined = this.storage.getStorage(config);
 
     if (storage) {
       return storage;
@@ -112,6 +113,9 @@ export class SettingsService {
         return acc;
       }
 
+      // Extract effects for type narrowing
+      const effects = storeSettings[curr].effects;
+
       // If the setting to be updated exists in service state, there is `CompoundSettings`
       // information that describes how the property was being used. If it has a `get` effect,
       // don't update the service value for the setting key currently being iterated.
@@ -120,7 +124,7 @@ export class SettingsService {
       // potential transformation applied to it. Because of this, if we update the current setting
       // with the value received, any other services subscribing to the service state will not be
       // notified of changes.
-      if (!storeSettings[curr].effects || !storeSettings[curr].effects.get) {
+      if (!effects || !effects.get) {
         acc[curr] = { ...storeSettings[curr], value: settingsToUpdate[curr] };
         return acc;
       }
@@ -130,31 +134,31 @@ export class SettingsService {
       //
       // If the service setting does not have a `set` effect, ignore the setting. This will later result
       // in the existing service value to be inherited.
-      if (!storeSettings[curr].effects.set) {
+      if (!effects.set) {
         console.warn(`${curr} does not have a 'set' effect. Ignoring setting update.`);
         return acc;
       }
 
       // If the compound setting reference to the current setting to be changed DOES HAVE a `set` effect,
       // make final check to make sure the `set` effect has a target and a evaluating function..
-      if (!storeSettings[curr].effects.set.target || !storeSettings[curr].effects.set.fn) {
+      if (!effects.set.target || !effects.set.fn) {
         console.warn(`${curr} does not have 'set' target or function. Ignoring setting update.`);
         return acc;
       }
 
       // Check that the compound effect target exists in the store settings. If it doesn't the process will throw an error.
-      if (!storeSettings[storeSettings[curr].effects.set.target]) {
-        console.warn(`${storeSettings[curr].effects.set.target} setting does not exist. Ignoring setting update.`);
+      if (!storeSettings[effects.set.target]) {
+        console.warn(`${effects.set.target} setting does not exist. Ignoring setting update.`);
         return acc;
       }
 
       // Execute the effect `set` function to calculate the value. Use the value of the current provided setting-to-change
       // as the parameter.
-      const value = storeSettings[curr].effects.set.fn(settingsToUpdate[curr]);
+      const value = effects.set.fn(settingsToUpdate[curr]);
 
       // Update the value of the target setting.
-      acc[storeSettings[curr].effects.set.target] = {
-        ...storeSettings[storeSettings[curr].effects.set.target],
+      acc[effects.set.target] = {
+        ...storeSettings[effects.set.target],
         value
       };
       return acc;
@@ -186,50 +190,56 @@ export class SettingsService {
   private calculateReturnValues(returnSettings: Settings): Observable<CompoundSettings> {
     return this._Store.asObservable().pipe(
       switchMap((settings) => {
-        const calculated = Object.keys(settings).reduce((acc, setting) => {
+       const calculated = Object.keys(settings).reduce((acc: any, setting) => {
           // Skip properties not included in the initialization configuration.
           // This is effectively in the same reducing step.
           if (setting in returnSettings === false) {
             return acc;
           }
 
+          // Extract effects for type narrowing
+          const effects = settings[setting].effects;
+
           // Check if the setting has a return getter effect. If it doesn't return early.
-          if (!settings[setting].effects || !settings[setting].effects.get) {
+          if (!effects || !effects.get) {
             acc[setting] = { ...settings[setting], value: settings[setting].value };
             return acc;
           }
+
+          const getEffect = effects.get;
 
           // Convert the target to an array if it's not. This facilitates support for both strings and arrays
           // if we only have to worry about one type.
           const targets: string[] =
-            settings[setting].effects.get.target instanceof Array
-              ? (settings[setting].effects.get.target as string[])
-              : [settings[setting].effects.get.target as string];
+            getEffect.target instanceof Array
+              ? (getEffect.target as string[])
+             : [getEffect.target as string];
 
-          // Checks that all targets exist in settings store.
-          const allTargetsExist = targets.every((target) => {
-            return target in settings;
-          });
+         // Checks that all targets exist in settings store.
+         const allTargetsExist = targets.every((target) => {
+           return target in settings;
+         });
 
-          // If at least one of the targets does not exist, return early
-          if (!allTargetsExist) {
-            acc[setting] = { ...settings[setting], value: settings[setting].value };
-            return acc;
-          }
+         // If at least one of the targets does not exist, return early
+         if (!allTargetsExist) {
+           acc[setting] = { ...settings[setting], value: settings[setting].value };
+           return acc;
+         }
 
-          // Get values of all targets
-          const values = targets.map((target) => {
-            return settings[target].value;
-          });
+         // Get values of all targets
+         const values = targets.map((target) => {
+           return settings[target].value;
+         });
 
-          // Get value of setting effect getter function
-          const value = settings[setting].effects.get.fn(...values);
+         // Get value of setting effect getter function
+         // @ts-ignore - values could contain undefined, but function can handle it
+         const value = getEffect.fn(...values);
 
-          acc[setting] = { ...settings[setting], value };
-          return acc;
-        }, {} as CompoundSettings);
+         acc[setting] = { ...settings[setting], value };
+         return acc;
+       }, {} as CompoundSettings);
 
-        return of(calculated);
+       return of(calculated);
       })
     );
   }
@@ -242,7 +252,7 @@ export class SettingsService {
    * than the ones they have initialized their subscription with.
    *
    */
-  private checkSimpleSettingsEquality(previous, current): boolean {
+  private checkSimpleSettingsEquality(previous: any, current: any): boolean {
     return Object.keys(current).every((key) => {
       if (key in previous) {
         return previous[key] === current[key];
@@ -260,21 +270,22 @@ export class SettingsService {
    * Flattening is the required format for updating the local storage.
    */
   private compoundToSimpleSettingsTree(settings: CompoundSettings): SimpleSettingTree {
-    const groups = Object.keys(settings).reduce((acc, curr) => {
+    const groups = Object.keys(settings).reduce((acc: any, curr) => {
       // Check if an object with the key value of the setting subKey exists.
       //
       // If it does, add the setting as a child.
       // If it doesn't, make the object with the value of the setting subKey, and add setting a child.
       const settingSubKey = settings[curr].storage.subKey;
 
-      if (acc[settingSubKey]) {
+      if (settingSubKey && acc[settingSubKey]) {
         acc[settingSubKey][curr] = settings[curr].value;
         return acc;
-      } else {
+      } else if (settingSubKey) {
         acc[settingSubKey] = {};
         acc[settingSubKey][curr] = settings[curr].value;
         return acc;
       }
+      return acc;
     }, {});
 
     return groups;
@@ -333,7 +344,7 @@ export class SettingsService {
    * ```
    */
   private compoundToSimpleSettingsBranch(settings: CompoundSettings): SimpleSettingBranch {
-    return Object.keys(settings).reduce((acc, curr) => {
+   return Object.keys(settings).reduce((acc: any, curr) => {
       acc[curr] = settings[curr].value;
       return acc;
     }, {});
@@ -371,7 +382,7 @@ export class SettingsService {
    *
    */
   private getPersistentCompoundSettings(settings: CompoundSettings): CompoundSettings {
-    return Object.keys(settings).reduce((acc, curr) => {
+    return Object.keys(settings).reduce((acc: any, curr) => {
       if (settings[curr].persistent) {
         acc[curr] = settings[curr];
         return acc;
@@ -422,7 +433,7 @@ export class SettingsService {
     return this.Store.pipe(
       switchMap((settings) => {
         return of(
-          Object.keys(settings).reduce((acc, curr) => {
+         Object.keys(settings).reduce((acc: any, curr) => {
             if (settings[curr].storage.subKey === branch) {
               acc[curr] = settings[curr];
               return acc;
@@ -547,7 +558,7 @@ interface SettingEffectsSetFunction {
    *
    * @param [value] Value of the target setting.
    */
-  fn(value?): SettingValue;
+  fn(value?: SettingValue): SettingValue | undefined;
 }
 
 export interface CompoundSettings {

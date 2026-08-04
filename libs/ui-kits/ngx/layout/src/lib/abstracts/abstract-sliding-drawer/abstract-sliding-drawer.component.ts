@@ -117,13 +117,17 @@ export class AbstractSlidingDrawerComponent implements OnInit {
    *
    */
   private _removeUnits(measurement: string): number {
-    const split = measurement.match(/-?\d+/g);
+    const split = measurement.match(/-?\d+/g) || [];
+
+    if (split.length === 0) {
+      return 0;
+    }
 
     // Check if result is float or whole number.
     if (split.length > 1) {
       return parseFloat(split.join('.'));
     } else {
-      return parseInt(split[0], 10);
+      return parseInt(split[0]!, 10);
     }
   }
 
@@ -133,7 +137,8 @@ export class AbstractSlidingDrawerComponent implements OnInit {
    * Example: `-20rem` => `rem`
    */
   private _getUnits(measurement: string): string {
-    const unit = measurement.match(/[a-zA-Z]+/g).join('');
+    const matches = measurement.match(/[a-zA-Z]+/g);
+    const unit = matches ? matches.join('') : '';
 
     return unit;
   }

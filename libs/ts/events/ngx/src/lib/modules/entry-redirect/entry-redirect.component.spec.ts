@@ -42,6 +42,10 @@ describe('EntryRedirectComponent', () => {
       ]
     });
 
+    TestBed.overrideProvider(Router, { useValue: router });
+    TestBed.overrideProvider(ActivatedRoute, { useValue: route });
+    TestBed.overrideProvider(EventSettingsService, { useValue: eventSettingsService });
+
     component = TestBed.inject(EntryRedirectComponent);
   });
 

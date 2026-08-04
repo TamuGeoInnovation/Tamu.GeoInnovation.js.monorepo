@@ -31,7 +31,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    */
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
-  private _value: string = undefined;
+  private _value: string | undefined = undefined;
 
   @Input()
   public formControlName = 'default';
@@ -39,13 +39,14 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
   @Input()
   public floatLabel = false;
 
-  public get value() {
+  public get value(): string | undefined {
     return this._value;
   }
 
-  public set value(value: string) {
-    this._value = value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value;
-    this._onChange(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
+  public set value(value: string | undefined) {
+    const normalized = value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value;
+    this._value = normalized;
+    this._onChange(normalized);
     this._onTouched();
     this.cd.markForCheck();
   }
@@ -86,15 +87,15 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    * Event emitted when the value of the select input element is changed.
    */
   @Output()
-  public changed: EventEmitter<string> = new EventEmitter();
+  public changed: EventEmitter<string | undefined> = new EventEmitter();
 
   constructor(private cd: ChangeDetectorRef) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  private _onChange = (value: string) => {};
+  private _onChange: (value: string | undefined) => void = (_: string | undefined) => {};
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private _onTouched = () => {};
+  private _onTouched: () => void = () => {};
 
   /**
    * Responsible for emitting the model changed event to the parent component.
@@ -108,7 +109,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    *
    * If no value template is provided, return will be the object reference.
    */
-  public getDataItemValue<U extends object>(iterated: U, template?: string): U | object {
+  public getDataItemValue<U extends object>(iterated: U, template?: string): U | object | undefined {
     if (template !== undefined) {
       return getPropertyValue<U>(iterated, template);
     } else {
@@ -116,15 +117,15 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
     }
   }
 
-  public writeValue(value: string) {
+  public writeValue(value: string | undefined) {
     this.value = value;
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (value: string | undefined) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouched = fn;
   }
 

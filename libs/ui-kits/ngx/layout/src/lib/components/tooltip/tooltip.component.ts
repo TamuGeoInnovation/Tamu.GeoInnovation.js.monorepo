@@ -92,14 +92,15 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    */
   public tooltipContentVisible: Observable<boolean>;
 
-  private _$destroy: Subject<boolean> = new Subject();
+  private _$destroy: Subject<void> = new Subject();
 
   /**
    * Detects if interaction clicks are within the component to reset the visibility
    */
   @HostListener('document:mousedown', ['$event'])
-  public clickOutside(event) {
-    if (this.isVisible && !this.elementRef.nativeElement.contains(event.target)) {
+  public clickOutside(event: MouseEvent) {
+    const target = event?.target as Node | null;
+    if (this.isVisible && target && !this.elementRef.nativeElement.contains(target)) {
       this.isVisible = false;
     }
   }
@@ -110,13 +111,18 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     // Set debounce time otherwise there will be two changes in the change detection cycle.
     this.containerPosition = combineLatest([this._container.pipe(debounceTime(0))]).pipe(
       map(([c]) => {
-        const triggerRects: DOMRect = this.triggerElem.nativeElement.getBoundingClientRect();
+        const triggerRects: DOMRect = this.triggerElem?.nativeElement?.getBoundingClientRect();
         const containerRects: DOMRect = c.getBoundingClientRect();
 
         return [containerRects, triggerRects];
       }),
       map(([cr, tr]) => {
-        return this.calculateOffset(tr, cr, { left: 0, top: 0, height: window.innerHeight, width: window.innerWidth });
+        return this.calculateOffset(tr || { left: 0, top: 0, height: window.innerHeight, width: window.innerWidth }, cr, {
+          left: 0,
+          top: 0,
+          height: window.innerHeight,
+          width: window.innerWidth
+        });
       }),
       shareReplay()
     );
@@ -143,7 +149,13 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    * exceeding the `boundary`.
    */
   private calculateOffset(reference: PartialDomRect, element: PartialDomRect, boundary: PartialDomRect): IOffsetCoordinates {
-    let x, y;
+    let x: number = 0;
+    let y: number = 0;
+
+    const bHeight = boundary?.height ?? window.innerHeight;
+    const bWidth = boundary?.width ?? window.innerWidth;
+    const eHeight = element?.height ?? 0;
+    const eWidth = element?.width ?? 0;
 
     // Dictionary of 4 locations, in a clockwise direction
     const possibleLocations: Array<[YPosition, XPosition]> = [
@@ -162,9 +174,9 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
       // Check if determined coordinates within the boundary extent
       //
       // Check if initial offsets (top left of element) are inside the boundary.
-      if (y > 0 && y < boundary.height && x > 0 && x < boundary.width) {
+      if (y > 0 && y < bHeight && x > 0 && x < bWidth) {
         // Check if the entire container at those offsets is within the boundary.
-        if (y + element.height < boundary.height && x + element.width < boundary.width) {
+        if (y + eHeight < bHeight && x + eWidth < bWidth) {
           break;
         }
       }
@@ -181,26 +193,30 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    * that isn't outside a containing `boundary` block.
    */
   private calculateY(reference: PartialDomRect, element: PartialDomRect, pole: YPosition, buffer?: number) {
-    let yInitial: number;
-    let yOffset: number;
+    let yInitial: number = 0;
+    let yOffset: number = 0;
     let direction: 1 | -1 = 1;
+
+    const refTop = reference?.top ?? 0;
+    const refHeight = reference?.height ?? 0;
+    const elemHeight = element?.height ?? 0;
 
     if (pole === 'top') {
       direction = -1;
 
       // If the element is going to be positioned above the reference box, then the yInitial
       // is the top edge of the reference box.
-      yInitial = reference.top;
-      yOffset = yInitial + direction * element.height;
+      yInitial = refTop;
+      yOffset = yInitial + direction * elemHeight;
     } else if (pole === 'bottom') {
       // If the element is going to be positioned below the reference, then then yInitial
       // is the bottom edge of the reference box.
-      yInitial = reference.top + reference.height;
+      yInitial = refTop + refHeight;
       yOffset = yInitial;
     } else if (pole === 'center') {
       direction = -1;
-      yInitial = reference.top - reference.height / 2;
-      yOffset = yInitial + (direction * element.height) / 2;
+      yInitial = refTop - refHeight / 2;
+      yOffset = yInitial + (direction * elemHeight) / 2;
     }
 
     if (buffer !== undefined) {
@@ -211,22 +227,26 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   private calculateX(reference: PartialDomRect, element: PartialDomRect, hemisphere: XPosition, buffer?: number) {
-    let xInitial: number;
-    let xOffset: number;
+    let xInitial: number = 0;
+    let xOffset: number = 0;
     let direction: 1 | -1 = 1;
+
+    const refLeft = reference?.left ?? 0;
+    const refWidth = reference?.width ?? 0;
+    const elemWidth = element?.width ?? 0;
 
     if (hemisphere === 'left') {
       direction = -1;
 
-      xInitial = reference.left;
-      xOffset = xInitial + direction * element.width;
+      xInitial = refLeft;
+      xOffset = xInitial + direction * elemWidth;
     } else if (hemisphere === 'right') {
-      xInitial = reference.left + reference.width;
+      xInitial = refLeft + refWidth;
       xOffset = xInitial + direction;
     } else if (hemisphere === 'center') {
       direction = -1;
-      xInitial = reference.left + reference.width / 2;
-      xOffset = xInitial + direction * (element.width / 2);
+      xInitial = refLeft + refWidth / 2;
+      xOffset = xInitial + direction * (elemWidth / 2);
     }
 
     if (buffer !== undefined) {

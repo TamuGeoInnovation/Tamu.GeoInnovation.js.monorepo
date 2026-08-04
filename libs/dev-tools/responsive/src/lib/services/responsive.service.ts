@@ -7,9 +7,7 @@ export class ResponsiveService {
     this._checkWidth({ target: window })
   );
   public isMobile = this._state.asObservable().pipe(
-    filter((mobile) => {
-      return mobile !== null;
-    }),
+    filter((mobile): mobile is ResponsiveSnapshot => mobile !== null && mobile !== undefined),
     map((state) => state.isMobile)
   );
 
@@ -30,9 +28,9 @@ export class ResponsiveService {
   }
 
   private _checkWidth(event: Event | { target: Window }) {
-    const ret = {
+    const ret: ResponsiveSnapshot = {
       screenWidth: (event.target as Window).innerWidth,
-      isMobile: undefined
+      isMobile: false
     };
 
     if (ret.screenWidth <= 768) {

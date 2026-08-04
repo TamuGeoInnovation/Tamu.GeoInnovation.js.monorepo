@@ -11,7 +11,7 @@ export class NearestDatePipe implements PipeTransform {
 
     const now = new Date();
 
-    let nearestDate: Date = null;
+    let nearestDate: Date | null = null;
     let smallestDiff: number = Number.MAX_SAFE_INTEGER;
 
     for (const date of dates) {

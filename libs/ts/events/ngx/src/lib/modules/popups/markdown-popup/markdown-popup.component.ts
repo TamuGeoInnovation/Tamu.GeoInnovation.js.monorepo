@@ -31,6 +31,6 @@ export class MarkdownPopupComponent extends BaseEventPopupComponent implements O
   public override ngOnInit(): void {
     super.ngOnInit();
 
-    this.title = this.data?.attributes?.name ? this.data.attributes.name : this.data.layer.title;
+    this.title = this.data?.attributes?.name ? this.data.attributes.name : this.data?.layer?.title ?? '';
   }
 }

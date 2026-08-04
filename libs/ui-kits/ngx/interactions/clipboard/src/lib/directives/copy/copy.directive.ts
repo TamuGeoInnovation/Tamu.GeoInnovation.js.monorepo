@@ -40,8 +40,8 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    * hook will be called to reset the clipboard text copied on trigger.
    */
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.text) {
-      if (changes.text.firstChange) {
+    if (changes['text']) {
+      if (changes['text'].firstChange) {
         this._initializeHandler();
       } else {
         this._clipboard.destroy();

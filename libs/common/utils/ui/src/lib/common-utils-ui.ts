@@ -10,7 +10,12 @@ export function arrowKeyControl(event: KeyboardEvent, action: string, target: st
 
   if ([38, 40].includes(event.keyCode)) {
     if (action === 'focus') {
-      const elementList = Array.from((event.currentTarget as HTMLElement).parentElement.querySelectorAll(target));
+      const currentTarget = event.currentTarget as HTMLElement | null;
+      if (!currentTarget || !currentTarget.parentElement) {
+        return;
+      }
+
+      const elementList = Array.from(currentTarget.parentElement.querySelectorAll(target));
 
       const indexOfFocused = elementList.findIndex((element) => {
         return element === document.activeElement;
@@ -26,9 +31,7 @@ export function arrowKeyControl(event: KeyboardEvent, action: string, target: st
             (elementList[indexOfFocused - 1] as HTMLElement).focus({ preventScroll: false });
           } else {
             (
-              (event.currentTarget as HTMLElement).parentElement.querySelector(
-                '.input-action-container input'
-              ) as HTMLElement
+              currentTarget.parentElement.querySelector('.input-action-container input') as HTMLElement
             ).focus({ preventScroll: false });
           }
         }
@@ -49,9 +52,13 @@ export function arrowKeyControl(event: KeyboardEvent, action: string, target: st
  * @param event Event object
  * @param target HTMLElement property. In most cases, it is 'parentElement'
  */
-export function trackFocus(event, target) {
+export function trackFocus(event: any, target: string) {
   // Set the target element
-  const el = event.currentTarget[target];
+  const el = event.currentTarget && event.currentTarget[target];
+
+  if (!el) {
+    return;
+  }
 
   // Add class to input parent element to show results dropdown
   el.classList.add('focusing');
@@ -73,11 +80,11 @@ export function trackFocus(event, target) {
   // Add tracking classes to keep track of added event listener to prevent adding duplicates
   if (!el.classList.contains('keydown-listen')) {
     // If a selection is made with ENTER or SPACE OR ESCAPE key is pressed, remove focus
-    el.addEventListener('keydown', (keydownEvent) => {
+    el.addEventListener('keydown', (keydownEvent: KeyboardEvent) => {
       const dismissKeyCodes = [13, 32, 27];
 
-      if (dismissKeyCodes.includes(keydownEvent.keyCode)) {
-        if (keydownEvent.target !== keydownEvent.target) {
+      if (dismissKeyCodes.includes((keydownEvent as any).keyCode)) {
+        if ((keydownEvent as any).target !== (keydownEvent as any).target) {
           removeFocus();
         }
       }
@@ -89,9 +96,9 @@ export function trackFocus(event, target) {
   // Add tracking classes to keep track of added event listener to prevent adding duplicates
   if (!el.classList.contains('mousedown-listen')) {
     // If left-mouse click on a dropdown suggestion, remove focus from dialog, hiding it
-    el.addEventListener('mousedown', (mousedownEvent) => {
-      if (mousedownEvent.button === 0) {
-        if (mousedownEvent.target !== mousedownEvent.target) {
+    el.addEventListener('mousedown', (mousedownEvent: MouseEvent) => {
+      if ((mousedownEvent as any).button === 0) {
+        if ((mousedownEvent as any).target !== (mousedownEvent as any).target) {
           removeFocus();
         }
       }

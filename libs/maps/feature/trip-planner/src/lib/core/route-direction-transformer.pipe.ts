@@ -8,7 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'routeDirectionTransformer'
 })
 export class RouteDirectionTransformerPipe implements PipeTransform {
-  public transform(value) {
+  public transform(value: any) {
     const units = this.resolveUnits(value);
 
     const transformedDirection = this.modifyDirections(value, units);
@@ -16,7 +16,7 @@ export class RouteDirectionTransformerPipe implements PipeTransform {
     return transformedDirection;
   }
 
-  public modifyDirections = (direction, units) => {
+  public modifyDirections = (direction: any, units: any) => {
     // If path length is greater than zero, return populated string, else nothing to prevent "for 0 [units]"
     if (units.travelLength > 0) {
       if (direction.text.includes('Curb_Cut')) {
@@ -33,7 +33,7 @@ export class RouteDirectionTransformerPipe implements PipeTransform {
     }
   };
 
-  public resolveUnits = (direction) => {
+  public resolveUnits = (direction: any) => {
     const ret = {
       displayUnit: 'miles',
       travelLength: 0

@@ -4,6 +4,9 @@ const { compilerOptions } = require('./tsconfig.base.json');
 module.exports = {
   ...nxPreset,
   testMatch: ['**/+(*.)+(spec).+(ts|js)?(x)'],
+  moduleNameMapper: {
+    '^lightgallery/angular/13$': require('path').resolve(__dirname, 'libs/aggiemap/ngx/popups/src/testing/lightgallery.mock.ts')
+  },
   transform: {
     '^.+\\.(ts|js|html)$': 'ts-jest'
   },

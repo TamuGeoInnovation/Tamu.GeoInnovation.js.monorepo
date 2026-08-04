@@ -42,11 +42,11 @@ export class TurnstileChallengeComponent extends AbstractValueAccessorFormCompon
   }
 
   private initChallenge(): void {
-    const turnstile = window['turnstile'];
+    const turnstile = (window as any)['turnstile'];
     if (turnstile) {
       turnstile.render('.turnstile-container', {
         sitekey: this.env.value('turnstile_sitekey'),
-        callback: (token) => {
+        callback: (token: string) => {
           this.value = token;
         }
       });

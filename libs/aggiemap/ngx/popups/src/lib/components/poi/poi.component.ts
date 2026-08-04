@@ -42,10 +42,10 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
     super(rtr, rt, ps, anl, mp);
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     super.ngOnInit();
 
-    this.medias = this.data.attributes.images.split(',').map((imgName) => {
+    this.medias = this.data.attributes.images.split(',').map((imgName: string) => {
       return `https://aggiemap.tamu.edu/images/cb/${imgName}`;
     });
   }
@@ -89,7 +89,7 @@ export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit
     return this._buildShareUrlFragment('points-of-interest-exact', this.data.attributes.OBJECTID);
   }
 
-  public startDirections() {
+  public override startDirections() {
     super.startDirections(`${this.data.attributes.Name}`);
   }
 }

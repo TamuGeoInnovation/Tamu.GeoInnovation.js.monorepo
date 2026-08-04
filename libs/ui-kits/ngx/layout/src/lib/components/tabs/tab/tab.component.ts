@@ -9,8 +9,8 @@ import { AbstractContentReplacerToggleComponent } from '../../../abstracts/abstr
 })
 export class TabComponent extends AbstractContentReplacerToggleComponent {
   @Input()
-  public label: string;
+  public override label: string;
 
   @ViewChild('template', { static: true })
-  public template: TemplateRef<TabComponent>;
+  public override template: TemplateRef<TabComponent>;
 }

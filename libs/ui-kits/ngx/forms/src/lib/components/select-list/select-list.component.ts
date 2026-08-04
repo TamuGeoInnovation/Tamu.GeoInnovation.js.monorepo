@@ -83,13 +83,19 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes?.options?.currentValue) {
-      this.initializeOptions(changes.options.currentValue);
+    const optionsChange = changes['options'];
+    if (optionsChange?.currentValue) {
+      this.initializeOptions(optionsChange.currentValue);
     }
   }
 
   private initializeOptions(options: Array<T>): void {
-    this.options$ = this.form.get('search').valueChanges.pipe(
+    const searchControl = this.form.get('search');
+    if (!searchControl) {
+      return;
+    }
+    
+    this.options$ = searchControl.valueChanges.pipe(
       debounceTime(300),
       startWith(''),
       map((value) => {

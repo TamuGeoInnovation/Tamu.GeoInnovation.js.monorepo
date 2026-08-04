@@ -12,7 +12,7 @@ export class SearchResultPipe implements PipeTransform {
     compareValue: string,
     compareKey: string
   ): Array<{ attributes: ValidObject }> {
-    const ret = [];
+    const ret: Array<{ attributes: ValidObject }> = [];
 
     // Simple check to see if data was passed in or not
     if (value) {

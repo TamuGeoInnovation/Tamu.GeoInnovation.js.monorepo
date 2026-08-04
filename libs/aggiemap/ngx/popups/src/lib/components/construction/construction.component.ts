@@ -27,7 +27,7 @@ export class ConstructionPopupComponent extends BaseDirectionsComponent implemen
     super(rtr, rt, ps, anl, mp);
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     super.ngOnInit();
 
     // Determine if the contact name and info should be shown based valid attribute data (not null or empty)

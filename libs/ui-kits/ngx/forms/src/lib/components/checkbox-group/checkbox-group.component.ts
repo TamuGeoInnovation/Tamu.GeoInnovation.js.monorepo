@@ -67,13 +67,13 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
     this._onTouched();
   }
 
-  private _$destroy: Subject<boolean> = new Subject();
+  private _$destroy: Subject<void> = new Subject();
 
-  private _onChange = (values: Array<string | number>) => {
-    return values;
+  private _onChange: (values: Array<string | number>) => void = (values: Array<string | number>) => {
+    return;
   };
 
-  private _onTouched = () => {
+  private _onTouched: () => void = () => {
     return;
   };
 
@@ -84,7 +84,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   public ngOnDestroy() {
-    this._$destroy.next(undefined);
+    this._$destroy.next();
     this._$destroy.complete();
   }
 
@@ -116,7 +116,9 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
         takeUntil(this._$destroy)
       )
       .subscribe((res) => {
-        this.toggle(res);
+        if (res !== undefined) {
+          this.toggle(res);
+        }
       });
   }
 
@@ -124,7 +126,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
    * Check to see if provided value exists. If it exists in the group value,
    * remove it, else add it.
    */
-  private toggle(valueToToggle) {
+  private toggle(valueToToggle: string | number) {
     if (!valueToToggle) {
       return;
     }
@@ -175,7 +177,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
    * Number inputs as strings will be problematic because the value will be coerced to a string and
    * equality checks will fail.
    */
-  public writeValue(value) {
+  public writeValue(value: Array<string | number> | string | number | null) {
     if (value === null) return;
 
     // Handle string inputs
@@ -186,17 +188,17 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
     } else if (typeof value === 'number') {
       this.value = [value];
     } else {
-      this.value = [...value];
+      this.value = [...(value as Array<string | number>)];
     }
 
     this.setChildrenValue();
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (values: Array<string | number>) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouched = fn;
   }
 }

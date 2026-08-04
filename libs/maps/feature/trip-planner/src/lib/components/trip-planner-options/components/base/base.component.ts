@@ -40,7 +40,7 @@ export class TripPlannerOptionsBaseComponent implements OnInit {
      * and value with the scoped parent function value.
      */
     const createOptionsObject = (e: string[]) => {
-      return e.reduce((acc, curr) => {
+      return e.reduce((acc: any, curr) => {
         acc[curr] = value;
         return acc;
       }, {});

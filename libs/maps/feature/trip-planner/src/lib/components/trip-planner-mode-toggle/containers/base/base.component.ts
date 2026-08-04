@@ -72,9 +72,9 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    * Correctly determining the travel mode for the toggle is critical because it displays at-a-glance result info
    * such as status, eta, and progress.
    */
-  public travelMode: number;
+  public travelMode: number = 0;
 
-  private $destroy: Subject<boolean> = new Subject();
+  private $destroy: Subject<void> = new Subject<void>();
 
   constructor(private tripPlanner: TripPlannerService) {}
 
@@ -89,7 +89,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.$destroy)
     ).subscribe((mode) => {
-      this.travelMode = mode;
+      this.travelMode = mode ?? 0;
     });
 
     //
@@ -145,8 +145,8 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
     //
     this.active = this.tripPlanner.TravelOptions.pipe(
       pluck('travel_mode'),
-      map((val: number) => {
-        return this.activeModes.includes(val);
+      map((val: number | undefined) => {
+        return this.activeModes.includes(val ?? 0);
       })
     );
 
@@ -194,7 +194,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.$destroy.next(true);
+    this.$destroy.next();
     this.$destroy.complete();
   }
 

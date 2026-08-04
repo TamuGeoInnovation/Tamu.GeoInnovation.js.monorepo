@@ -21,7 +21,7 @@ export class LayerListService {
 
         let handle: esri.Handle;
 
-        const add = (handler) => {
+        const add = (handler: (length: number) => void) => {
           handle = this._model.operationalItems.watch('length', handler);
         };
 

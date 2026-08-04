@@ -28,7 +28,7 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   public eagerLoad = false;
 
   @ViewChild(AccordionComponent, { static: false })
-  public accordion;
+  public accordion: AccordionComponent | undefined;
 
   /**
    * Describes whether or not any given bus route is drawn on the map.
@@ -39,13 +39,13 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _graphics: Observable<boolean>;
 
-  private _timer;
+  private _timer: { unsubscribe: () => void } | undefined;
 
   /**
    * Emits once per bus route when the component is destroyed, ending all active and manual
    * observable subscriptions.
    */
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private busService: BusService,
@@ -116,13 +116,13 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.eagerLoad) {
           this.toggleRoute();
 
-          this.accordion.toggle();
+          this.accordion?.toggle();
         }
       });
   }
 
   public ngOnDestroy() {
-    this._destroy$.next(true);
+    this._destroy$.next();
     this._destroy$.complete();
 
     // Remove any active bus locations on the map.

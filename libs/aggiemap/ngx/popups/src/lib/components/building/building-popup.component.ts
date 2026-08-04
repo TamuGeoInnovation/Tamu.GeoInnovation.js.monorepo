@@ -24,7 +24,7 @@ export class BuildingPopupComponent extends BaseDirectionsComponent implements O
     super(rtr, rt, ps, anl, ms);
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     super.ngOnInit();
   }
 
@@ -32,7 +32,7 @@ export class BuildingPopupComponent extends BaseDirectionsComponent implements O
     return this._buildShareUrlFragment('building-exact', this.data.attributes.Number);
   }
 
-  public startDirections() {
+  public override startDirections() {
     super.startDirections(
       `${this.data.attributes.Number}|${
         this.data.attributes.BldgAbbr ? this.data.attributes.BldgAbbr : this.data.attributes.Abbrev

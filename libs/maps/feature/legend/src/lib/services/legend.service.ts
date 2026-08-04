@@ -33,18 +33,19 @@ export class LegendService {
           respectLayerVisibility: false
         });
 
-        let handle;
+        let handle: { remove: () => void } | undefined;
 
-        const add = (handler) => {
+        const add = (handler: (event: IActiveLayerInfosChangeEvent) => void) => {
           handle = model.activeLayerInfos.on('change', handler);
         };
 
         const remove = (): void => {
-          handle.remove();
+          handle?.remove();
         };
 
         return fromEventPattern(add, remove).pipe(
-          startWith({ target: model.activeLayerInfos }),
+          // @ts-ignore - event stream is seeded with a synthetic change event
+          startWith({ target: model.activeLayerInfos } as IActiveLayerInfosChangeEvent),
           map((event: IActiveLayerInfosChangeEvent) => {
             return event.target
               .filter((l) => l.layer.listMode !== 'hide')

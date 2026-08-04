@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'dateRange'
 })
 export class DateRangePipe implements PipeTransform {
-  public transform(dates: Array<ParseableDate>): string {
+  public transform(dates: Array<ParseableDate>): string | null {
     if (dates === undefined || dates === null) {
       return null;
     }
@@ -31,7 +31,8 @@ export class DateRangePipe implements PipeTransform {
       return null;
     }
 
-    const sortedDates = parsedDates.sort((a, b) => a.getTime() - b.getTime());
+    const cleanDates = parsedDates.filter((d): d is Date => d instanceof Date);
+    const sortedDates = cleanDates.sort((a, b) => a.getTime() - b.getTime());
 
     // The goal is to determine the date range from the first date to the last date and display it in a condensed format, so that
     // the user can quickly understand the range of dates.
@@ -41,7 +42,7 @@ export class DateRangePipe implements PipeTransform {
 
     // With every parsed date, group it into year, month, and day buckets.
 
-    const grouped = sortedDates.reduce((acc, curr) => {
+    const grouped = sortedDates.reduce((acc: any, curr: Date) => {
       const year = curr.getUTCFullYear();
       const month = curr.getUTCMonth();
       const day = curr.getUTCDate();
@@ -60,11 +61,11 @@ export class DateRangePipe implements PipeTransform {
     }, {});
 
     // For each year, month, and day bucket, determine the range of days.
-    const ranges = Object.keys(grouped).reduce((acc, year) => {
-      const months = Object.keys(grouped[year]).reduce((acc, month) => {
+    const ranges = Object.keys(grouped).reduce((acc: any, year: string) => {
+      const months = Object.keys(grouped[year]).reduce((acc: any, month: string) => {
         const days = grouped[year][month];
 
-        const ranges = days.reduce((acc, day, index) => {
+        const ranges = days.reduce((acc: any, day: any, index: number) => {
           if (index === 0) {
             acc.push([day]);
             return acc;
@@ -98,9 +99,9 @@ export class DateRangePipe implements PipeTransform {
     }, []);
 
     // For each year, month, and range of days, format the range of days.
-    const formatted = ranges.map((range) => {
-      const formattedMonths = range.months.map((month) => {
-        const formattedRanges = month.ranges.map((r) => {
+    const formatted = ranges.map((range: any) => {
+      const formattedMonths = range.months.map((month: any) => {
+        const formattedRanges = month.ranges.map((r: any) => {
           if (r.length === 1) {
             return r[0].toString();
           }

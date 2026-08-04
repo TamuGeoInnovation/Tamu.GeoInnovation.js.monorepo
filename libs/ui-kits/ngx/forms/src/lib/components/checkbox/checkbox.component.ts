@@ -30,7 +30,7 @@ export class CheckboxComponent implements ControlValueAccessor {
     return this._checked;
   }
 
-  public set checked(c) {
+  public set checked(c: boolean) {
     this._checked = c;
     this._onChange(c);
     this._onTouch();
@@ -88,11 +88,11 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Output()
   public changed: EventEmitter<boolean> = new EventEmitter();
 
-  private _onChange = (v) => {
-    return v;
+  private _onChange: (v: boolean) => void = (v: boolean) => {
+    return;
   };
 
-  private _onTouch = () => {
+  private _onTouch: () => void = () => {
     return;
   };
 
@@ -111,20 +111,20 @@ export class CheckboxComponent implements ControlValueAccessor {
     this.checked = !this.checked;
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (v: boolean) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouch = fn;
   }
 
-  public writeValue(val) {
+  public writeValue(val: boolean) {
     this.checked = val;
   }
 
-  public setDisabledState(disabled?: boolean) {
-    this.disabled = disabled;
+  public setDisabledState(disabled: boolean) {
+    this.disabled = disabled ?? false;
   }
 
   /**

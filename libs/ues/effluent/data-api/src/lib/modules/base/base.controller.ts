@@ -4,7 +4,7 @@ import { BaseEntity, DeepPartial } from 'typeorm';
 import { BaseService } from './base.service';
 
 @Controller('base')
-export class BaseController<T extends BaseEntity> {
+export class BaseController<T extends BaseEntity & { guid: string }> {
   constructor(private s: BaseService<T>) {}
 
   @Get('')

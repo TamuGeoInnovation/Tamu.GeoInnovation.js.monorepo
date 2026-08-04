@@ -13,7 +13,7 @@ import { TripPlannerModePickerComponent } from '../base/base.component';
   styleUrls: ['../base/base.component.scss', './mobile.component.scss']
 })
 export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerComponent implements OnInit, OnDestroy {
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject<void>();
 
   public accessible: Observable<boolean>;
   public isAccessibleMode: Observable<boolean>;
@@ -22,8 +22,11 @@ export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerC
     super(tps, dts);
   }
 
-  public ngOnInit() {
-    this.accessible = this.tps.TravelOptions.pipe(pluck('accessible'));
+  public override ngOnInit() {
+    this.accessible = this.tps.TravelOptions.pipe(
+      pluck('accessible'),
+      map((accessible) => !!accessible)
+    );
     this.isAccessibleMode = this.tps.TravelOptions.pipe(
       pluck('travel_mode'),
       map(() => {
@@ -33,7 +36,7 @@ export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerC
   }
 
   public ngOnDestroy() {
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 }

@@ -18,7 +18,8 @@ export class TripPlannerOptionsComponentService {
    * dictionary, the reference popup component is returned.
    */
   public getComponent() {
-    const constraints = this.tripPlanner.getCurrentRule().constraints;
+    const currentRule = this.tripPlanner.getCurrentRule();
+    const constraints = currentRule ? currentRule.constraints : undefined;
 
     if (!constraints) {
       return;

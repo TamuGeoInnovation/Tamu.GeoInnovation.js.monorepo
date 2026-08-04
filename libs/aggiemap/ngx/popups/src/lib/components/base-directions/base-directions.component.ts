@@ -23,7 +23,7 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
   /**
    * Data set by the parent popup component.
    */
-  public data: esri.Graphic;
+  public override data: esri.Graphic;
 
   /**
    * Current href string, used in UI
@@ -39,7 +39,7 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
 
   private _stops: TripPoint[];
 
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -87,7 +87,7 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
   }
 
   public ngOnDestroy(): void {
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 
@@ -112,7 +112,7 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
           type: 'directions-to-here',
           // Value for this is set during normalization else logic would have to be duplicated here.
           value: {
-            source: undefined,
+            source: '' as any,
             value: analyticsLabel
           }
         }

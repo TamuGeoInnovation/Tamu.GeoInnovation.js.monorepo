@@ -16,7 +16,7 @@ import { TripResult } from '../../../../core/trip-planner-core';
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
   public result: TripResult;
 
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject();
 
   constructor(private router: Router, private plannerService: TripPlannerService, private analytics: Angulartics2) {}
 
@@ -32,7 +32,7 @@ export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 }

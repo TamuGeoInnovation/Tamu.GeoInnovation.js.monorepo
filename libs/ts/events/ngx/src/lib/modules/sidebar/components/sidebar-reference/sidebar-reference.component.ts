@@ -38,7 +38,7 @@ export class SidebarReferenceComponent implements OnInit {
 
   public ngOnInit(): void {
     this.hasSettings = this.eventSettingsService.queryParamsFromSettings !== null;
-    this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
+    this.configuration = this.eventSettingsService.eventConfiguration()?.configuration ?? null;
     this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
     this.legendAllowVisibilityToggle = this.configuration?.legendAllowVisibilityToggle ?? true;
     this.legendCombineChildrenUnderPrimary = this.configuration?.legendCombineChildrenUnderPrimary ?? false;
@@ -66,13 +66,17 @@ export class SidebarReferenceComponent implements OnInit {
   }
 
   public onSearchResult(result: SearchSelection<unknown>): void {
-    this.helper.handleSearchResultFeatureSelection(result as SearchSelection<object>).subscribe((res) => {
-      const tPoint = TripPoint.from(res as SearchSelection<esri.Graphic>);
+    this.helper.handleSearchResultFeatureSelection(result as SearchSelection<esri.Graphic>).subscribe((res) => {
+      if (!res) {
+        return;
+      }
+
+      const tPoint = TripPoint.from(res);
 
       this.mapService.selectFeatures({
         graphics: [tPoint.toEsriGraphic()],
         shouldShowPopup: true,
-        popupComponent: (res as SearchSelection<esri.Graphic>)?.result?.breadcrumbs.source.popupComponent
+        popupComponent: res?.result?.breadcrumbs?.source?.popupComponent
       });
     });
   }

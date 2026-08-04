@@ -22,16 +22,18 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   /**
    * INTERNAL USE ONLY. Use `value` getter/setter instead.
    */
-  public _value = undefined;
+  public _value: Value | undefined = undefined;
 
   @Input()
-  public set value(v) {
+  public set value(v: Value | undefined) {
     this._value = v;
 
-    this.onInitialValue(v);
+    if (v !== undefined) {
+      this.onInitialValue(v);
+    }
   }
 
-  public get value() {
+  public get value(): Value | undefined {
     return this._value;
   }
 
@@ -52,19 +54,19 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
     return;
   }
 
-  public onChange = (v) => {
-    return v;
-  };
-
-  public onTouch = () => {
+  public onChange: (v: Value | undefined) => void = (v: Value | undefined) => {
     return;
   };
 
-  public registerOnChange(fn) {
+  public onTouch: () => void = () => {
+    return;
+  };
+
+  public registerOnChange(fn: (v: Value | undefined) => void) {
     this.onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this.onTouch = fn;
   }
 
@@ -72,7 +74,7 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
     this.disabled = disabled;
   }
 
-  public writeValue(value: Value) {
+  public writeValue(value: Value | undefined) {
     this.value = value;
   }
 
@@ -85,10 +87,10 @@ export class RadioGroupComponent<Option extends object, Value> implements Contro
   }
 
   public evaluateSetValue(option: Option) {
-    let value;
+    let value: Value | undefined;
 
     if (this.disabled === false) {
-      value = this.renderTemplate(option, this.valuePath);
+      value = this.renderTemplate(option, this.valuePath) as Value;
 
       this.value = value;
 

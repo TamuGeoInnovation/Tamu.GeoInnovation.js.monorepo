@@ -45,7 +45,7 @@ export class EsriModuleProviderService {
     return loadModules(classNames)
       .then((resolvedModules) => {
         if (asObject) {
-          const obj = {};
+          const obj: Record<string, any> = {};
 
           resolvedModules.forEach((module, index) => {
             obj[modules[index]] = module;

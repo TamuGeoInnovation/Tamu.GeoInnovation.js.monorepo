@@ -26,7 +26,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
 
   public animating: Observable<boolean>;
 
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -43,7 +43,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
       takeUntil(this._destroy$)
     ).subscribe((result) => {
       if (result && result.stops != null) {
-        const params = {
+        const params: any = {
           stops: undefined,
           mode: undefined,
           time: undefined,
@@ -91,7 +91,7 @@ export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy 
   }
 
   public ngOnDestroy(): void {
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 

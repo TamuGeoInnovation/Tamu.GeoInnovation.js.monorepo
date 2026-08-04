@@ -50,7 +50,7 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   public responsive: ResponsiveSnapshot;
 
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private legendService: LegendService,
@@ -84,7 +84,7 @@ export class LegendComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 

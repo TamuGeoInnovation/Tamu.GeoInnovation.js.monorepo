@@ -18,13 +18,13 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
     },
     settings: {
       basemap_url: {
-        value: null,
+        value: '' as string | number | boolean,
         persistent: true
       }
     }
   };
 
-  private $destroy: Subject<boolean> = new Subject();
+  private $destroy: Subject<void> = new Subject<void>();
 
   constructor(private readonly ss: SettingsService, private readonly fb: UntypedFormBuilder) {}
 
@@ -33,11 +33,11 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
       url: ['', Validators.required]
     });
 
-    this.ss.init(this.settingsConfig).pipe(takeUntil(this.$destroy)).subscribe(this.next.bind(this));
+    this.ss.init(this.settingsConfig).pipe(takeUntil(this.$destroy)).subscribe((settings: any) => this.next(settings));
   }
 
   public ngOnDestroy(): void {
-    this.$destroy.next(true);
+    this.$destroy.next();
     this.$destroy.complete();
   }
 
@@ -49,7 +49,7 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
     }
 
     this.form
-      .get('url')
+      .get('url')!
       .valueChanges.pipe(
         takeUntil(this.$destroy),
         debounceTime(1000),

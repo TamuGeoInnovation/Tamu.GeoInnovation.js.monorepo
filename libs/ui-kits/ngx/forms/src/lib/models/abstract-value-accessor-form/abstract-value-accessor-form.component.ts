@@ -12,35 +12,35 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
-  private _value: T = undefined;
+  private _value: T | undefined = undefined;
 
-  public get value() {
+  public get value(): T | undefined {
     return this.getInternalValue();
   }
 
-  public set value(v: T) {
+  public set value(v: T | undefined) {
     this.setInternalValue(v);
   }
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  private _onChange = (v: T) => {
-    return v;
-  };
-
-  private _onTouched = () => {
+  private _onChange: (v: T | undefined) => void = (v: T | undefined) => {
     return;
   };
 
-  public writeValue(v: T) {
+  private _onTouched: () => void = () => {
+    return;
+  };
+
+  public writeValue(v: T | undefined) {
     this.value = v;
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (v: T | undefined) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouched = fn;
   }
 
@@ -50,13 +50,13 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
 
   // Simple wrappers for children to use to set the value of the component
   // and trigger side effects when they override the value the `value` getters/setters.
-  public getInternalValue() {
+  public getInternalValue(): T | undefined {
     return this._value;
   }
 
   // Simple wrappers for children to use to set the value of the component
   // and trigger side effects when they override the value the `value` getters/setters.
-  public setInternalValue(v: T) {
+  public setInternalValue(v: T | undefined) {
     this._value = v === null ? undefined : v;
 
     this.cd.markForCheck();

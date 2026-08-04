@@ -3,7 +3,7 @@
 </div>
 
 <div class="popup-section">
-  <p class="trailer-1" *ngIf="isContentLengthZero === false" [innerHTML]="data.attributes?.description"></p>
+  <p class="trailer-1" *ngIf="isContentLengthZero === false" [innerHTML]="data?.attributes?.description"></p>
 
   <tamu-gisc-copy-field *ngIf="shareUrl" [text]="shareUrl"></tamu-gisc-copy-field>
 

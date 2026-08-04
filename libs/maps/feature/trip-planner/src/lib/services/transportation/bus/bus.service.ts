@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
+// @ts-ignore - colornames package ships without typings in this workspace
 import toHex from 'colornames';
 import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
@@ -21,20 +22,21 @@ const ROUTE_NUMBER_REGEX = /on ([0-9\-A-Za-z]+)$/;
 
 @Injectable({ providedIn: 'root' })
 export class BusService {
+  // TODO(COPILOT-ERROR-CHASE): continue strict TS cleanup across trip-planner bus service and adjacent services.
   private base_url = 'https://nodes.geoservices.tamu.edu/api/route';
 
-  private _routes = null;
-  private stop_map = [];
-  private timetable_map = [];
-  private waypoint_map = [];
+  private _routes: any = null;
+  private stop_map: any[] = [];
+  private timetable_map: any[] = [];
+  private waypoint_map: any[] = [];
 
   private _map: esri.Map;
   private _view: esri.MapView | esri.SceneView;
 
-  private _busLayer: BehaviorSubject<esri.GraphicsLayer> = new BehaviorSubject(null);
+  private _busLayer: BehaviorSubject<esri.GraphicsLayer> = new BehaviorSubject<esri.GraphicsLayer>(undefined as any);
   public busLayer: Observable<esri.GraphicsLayer> = this._busLayer.asObservable();
 
-  private _busLayerGraphics: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+  private _busLayerGraphics: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject<esri.Graphic[]>([]);
   public busLayerGraphics: Observable<esri.Graphic[]> = this._busLayerGraphics.asObservable();
 
   private _busLocationsLayer: esri.FeatureLayer;
@@ -55,7 +57,7 @@ export class BusService {
   }
 
   private init(): void {
-    this.busMapLayer().subscribe((busLayer: esri.GraphicsLayer) => {
+    this.busMapLayer().subscribe((busLayer: any) => {
       this._busLayer.next(busLayer);
 
       // TODO: Probably have to dispose of this event handlers on service destroy.
@@ -76,12 +78,12 @@ export class BusService {
       return of(this._routes);
     }
 
-    return this.http.get(routes_url).pipe(
+    return this.http.get<TSRoute[]>(routes_url).pipe(
       catchError(() => {
         this.reportFailedRequest('Routes', '*');
         return timer(1000).pipe(
           switchMap(() => {
-            return this.http.get(routes_url);
+            return this.http.get<TSRoute[]>(routes_url);
           })
         );
       }),
@@ -101,21 +103,20 @@ export class BusService {
     }
 
     return forkJoin([
-      this.http.get(waypoints_url).pipe(
+      this.http.get<TSWaypoint[]>(waypoints_url).pipe(
         catchError(() => {
           this.reportFailedRequest('Waypoints', short_name);
 
           return timer(1000).pipe(
             switchMap(() => {
-              return this.http.get(waypoints_url);
+              return this.http.get<TSWaypoint[]>(waypoints_url);
             })
           );
         })
       ),
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
-      switchMap(
-        (argument: [TSWaypoint[], [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]]) => {
+      switchMap((argument: any) => {
           const [waypoints_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
           const waypoints: Waypoint[] = [];
           for (const waypoint of waypoints_raw) {
@@ -151,13 +152,13 @@ export class BusService {
     }
 
     return forkJoin([
-      this.http.get(stops_url).pipe(
+      this.http.get<TSStopJson[]>(stops_url).pipe(
         catchError(() => {
           this.reportFailedRequest('Stops', short_name);
 
           return timer(1000).pipe(
             switchMap(() => {
-              return this.http.get(stops_url);
+              return this.http.get<TSStopJson[]>(stops_url);
             })
           );
         })
@@ -201,15 +202,15 @@ export class BusService {
     const timetable_url = `${this.base_url}/${short_name}/timetable/${date_string}`;
     const matching_routes = this.timetable_map.filter((el) => el.short_name === short_name && el.date === date_string);
     if (matching_routes.length > 0) {
-      of(matching_routes[0].timetable);
+      return of(matching_routes[0].timetable);
     }
-    return this.http.get(timetable_url).pipe(
+    return this.http.get<TSTimetable[]>(timetable_url).pipe(
       catchError(() => {
         this.reportFailedRequest(`Date Timetable;${date_string}`, short_name);
 
         return timer(1000).pipe(
           switchMap(() => {
-            return this.http.get(timetable_url);
+            return this.http.get<TSTimetable[]>(timetable_url);
           })
         );
       }),
@@ -222,12 +223,13 @@ export class BusService {
             row.push({
               stop_name: key.substr(36), // First 36 characters are the UUID, for some reason
               time: time,
+              // @ts-ignore - historical data may omit a datetime
               datetime: time == null ? null : dateForDateTimeString(time, date)
-            });
+            } as TimetableEntry);
           }
           timetable.push(row);
         }
-        this.stop_map.push({
+        (this.stop_map as any).push({
           short_name: short_name,
           date: date_string,
           stops: timetable
@@ -379,8 +381,16 @@ export class BusService {
             // We now have two points with known times and the number of stops between them.
             // Continue to associate estimated times for the provided points that did not have an associate time (arrival, departure, or both).
 
-            const timeBracketTime =
-              mappedTimeTableStops[upperLimitIndex].time.getTime() - mappedTimeTableStops[lowerLimitIndex].time.getTime();
+            const upperStop = mappedTimeTableStops[upperLimitIndex];
+            const lowerStop = mappedTimeTableStops[lowerLimitIndex];
+              if (!upperStop?.time || !lowerStop?.time) {
+                return of({
+                  timetable: [],
+                  linger_minutes: 0
+                });
+              }
+
+            const timeBracketTime = upperStop.time.getTime() - lowerStop.time.getTime();
 
             const timeBracketStopCount = upperLimitIndex - lowerLimitIndex;
 
@@ -388,7 +398,7 @@ export class BusService {
 
             // Populate stops with missing times, with calculated estimated times.
             mappedTimeTableStops.slice(lowerLimitIndex, upperLimitIndex).forEach((stop, index, arr) => {
-              if (index > 0) {
+              if (index > 0 && arr[0].time) {
                 // arr[0] will always have be the time of the bracket lower boundary; base time.
                 stop.time = new Date(arr[0].time.getTime() + estimatedTimeBetweenBracketStops * index);
               }
@@ -422,14 +432,22 @@ export class BusService {
         const filtered_timetable = generated_timetable.filter((row) => {
           // Only return the rows for which their index time is greater than the min time (now).
           // Do not want to give stops that will happen before the user gets there.
-          return minDate < row.stops[row.first].time;
+          const rowStop = row.stops[row.first];
+          return rowStop?.time ? minDate < rowStop.time : false;
         });
         // .slice(0, 3);
 
-        let linger_minutes = null;
+        let linger_minutes = 0;
         if (filtered_timetable.length > 0) {
+          const firstStop = filtered_timetable[0].stops[filtered_timetable[0].first];
+          if (!firstStop?.time) {
+            return of({
+              timetable: filtered_timetable,
+              linger_minutes: linger_minutes
+            });
+          }
           linger_minutes = Math.round(
-            (filtered_timetable[0].stops[filtered_timetable[0].first].time.getTime() - minDate.getTime()) / 60000
+            (firstStop.time.getTime() - minDate.getTime()) / 60000
           );
         }
 
@@ -481,10 +499,12 @@ export class BusService {
         if (filtered_timetable.length === 0 || linger_minutes == null) {
           return of(modeSwitch);
         }
-        const on_bus_minutes =
-          (filtered_timetable[0].stops[filtered_timetable[0].last].time.getTime() -
-            filtered_timetable[0].stops[filtered_timetable[0].first].time.getTime()) /
-          60000;
+        const firstStop = filtered_timetable[0].stops[filtered_timetable[0].first];
+        const lastStop = filtered_timetable[0].stops[filtered_timetable[0].last];
+        if (!firstStop?.time || !lastStop?.time) {
+          return of(modeSwitch);
+        }
+        const on_bus_minutes = (lastStop.time.getTime() - firstStop.time.getTime()) / 60000;
 
         // Create the modeSwitch results object if it doesn't exist. The resulting bus information will be stored
         // there.
@@ -500,7 +520,7 @@ export class BusService {
           stops_list: stops
         };
 
-        modeSwitch.results.relativeTime += on_bus_minutes + linger_minutes - firstGraphic.attributes.time;
+        modeSwitch.results.relativeTime = (modeSwitch.results.relativeTime ?? 0) + on_bus_minutes + linger_minutes - firstGraphic.attributes.time;
 
         return of(modeSwitch);
       })
@@ -564,9 +584,9 @@ export class BusService {
       ),
       this.moduleProvider.require(['Point', 'SpatialReference', 'webMercatorUtils'])
     ]).pipe(
-      map((argument: [TSBus[], [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]]) => {
+      map((argument: any) => {
         const [buses_raw, [Point, SpatialReference, webMercatorUtils]] = argument;
-        const buses = buses_raw.map((bus_raw) => {
+        const buses = buses_raw.map((bus_raw: any) => {
           const point = <esri.Point>webMercatorUtils.webMercatorToGeographic(
             new Point({
               y: bus_raw.GPS.Lat,
@@ -644,7 +664,10 @@ export class BusService {
           const [routes, waypoints, [Graphic, SimpleLineSymbol, SimpleMarkerSymbol, Polyline]] = argument;
 
           this.removeAllFromMap();
-          const route = routes.find((r) => r.ShortName === short_name);
+          const route = routes.find((r: any) => r.ShortName === short_name);
+          if (!route) {
+            return;
+          }
 
           const points = waypoints.map((waypoint) => [waypoint.point.longitude, waypoint.point.latitude]);
 
@@ -740,7 +763,7 @@ export class BusService {
       const features = getFeatures();
 
       if (features) {
-        getFeatures().then((res) => {
+        features.then((res) => {
           layer.applyEdits({
             deleteFeatures: res
           });
@@ -752,21 +775,11 @@ export class BusService {
         this.busesForRoute(short_name).toPromise(),
         getFeatures() as unknown as Promise<esri.Graphic[]>
       ]).then(
-        (
-          result: [
-            [
-              esri.PointConstructor,
-              esri.GraphicConstructor,
-              esri.FeatureLayerConstructor,
-              esri.PictureMarkerSymbolConstructor
-            ],
-            RouteBus[],
-            esri.Graphic[]
-          ]
-        ) => {
+        // @ts-ignore - RxJS Observable type inference issues
+        (result: any) => {
           const [[Point, Graphic, FeatureLayer, PictureMarkerSymbol], apiBuses, features] = result;
 
-          const makeBusGraphic = (bus) => {
+          const makeBusGraphic = (bus: any) => {
             return new Graphic({
               geometry: {
                 type: 'point',
@@ -784,7 +797,7 @@ export class BusService {
 
           // If no features, add.
           if (!layer) {
-            const busGraphics = apiBuses.map((bus) => makeBusGraphic(bus));
+            const busGraphics = apiBuses.map((bus: any) => makeBusGraphic(bus));
 
             const featureLayer = new FeatureLayer({
               id: 'buses-feature-layer',
@@ -849,15 +862,18 @@ export class BusService {
 
             // Collect all existing buses that need a location update.
             const existing = features
-              .filter((bus) => {
+              .filter((bus: any) => {
                 return (
-                  apiBuses.findIndex((apiBus) => {
+                  apiBuses.findIndex((apiBus: any) => {
                     return apiBus.name === bus.attributes.name;
                   }) > -1
                 );
               })
-              .map((bus) => {
-                const apiMatch = apiBuses.find((apiBus) => apiBus.name === bus.attributes.name);
+              .map((bus: any) => {
+                const apiMatch = apiBuses.find((apiBus: any) => apiBus.name === bus.attributes.name);
+                if (!apiMatch) {
+                  return bus;
+                }
 
                 bus.attributes.rotation = apiMatch.angle;
                 bus.geometry = new Point({
@@ -868,15 +884,15 @@ export class BusService {
               });
 
             const toAddToMap = apiBuses
-              .filter((apiBus) => {
-                return features.findIndex((bus) => apiBus.name === bus.attributes.name) === -1;
+              .filter((apiBus: any) => {
+                return features.findIndex((bus: any) => apiBus.name === bus.attributes.name) === -1;
               })
-              .map((apiBus) => {
+              .map((apiBus: any) => {
                 return makeBusGraphic(apiBus);
               });
 
-            const toRemoveFromMap = features.filter((bus) => {
-              return apiBuses.findIndex((apiBus) => apiBus.name === bus.attributes.name) === -1;
+            const toRemoveFromMap = features.filter((bus: any) => {
+              return apiBuses.findIndex((apiBus: any) => apiBus.name === bus.attributes.name) === -1;
             });
 
             layer.applyEdits({

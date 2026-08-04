@@ -14,13 +14,13 @@ export class LocalStoreService {
    * @param config Object
    * @returns If no local storage reference provided in config, application default storage will be used.
    */
-  public getStorage<T>(config: StorageConfig): T {
+  public getStorage<T>(config: StorageConfig): T | undefined {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
     const content = this.store.get(storeKey);
 
     if (typeof content === 'object' && content !== null) {
-      return content;
+      return content as T;
     } else {
       return undefined;
     }
@@ -46,12 +46,13 @@ export class LocalStoreService {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
     let content = this.store.get(storeKey);
+    const subKey = config.subKey ?? 'value';
 
     if (typeof content === 'object' && content !== null) {
-      content[config.subKey] = config.value;
+      (content as any)[subKey] = config.value;
     } else {
       content = {};
-      content[config.subKey] = config.value;
+      (content as any)[subKey] = config.value;
     }
 
     this.store.set(storeKey, content);
@@ -64,14 +65,15 @@ export class LocalStoreService {
    * @param config Object
    * @returns Undefined if key does not exist, else key value
    */
-  public getStorageObjectKeyValue<T>(config: ValueConfig<T>): T {
+  public getStorageObjectKeyValue<T>(config: ValueConfig<T>): T | undefined {
     const storeKey = config.primaryKey || STORAGE_KEY;
+    const subKey = config.subKey ?? 'value';
 
     const content = this.store.get(storeKey);
 
     if (typeof content === 'object' && content !== null) {
-      if (content[config.subKey] !== undefined) {
-        return content[config.subKey];
+      if ((content as any)[subKey] !== undefined) {
+        return (content as any)[subKey];
       }
       return undefined;
     } else {

@@ -16,7 +16,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class FileComponent implements ControlValueAccessor {
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
-  private _value = null;
+  private _value: File | null = null;
 
   /**
    * File formats to accept. Default is all.
@@ -33,27 +33,28 @@ export class FileComponent implements ControlValueAccessor {
   public clearMessage = 'Clear';
 
   @Output()
-  public fileSelected: EventEmitter<File> = new EventEmitter();
+  public fileSelected: EventEmitter<File | null> = new EventEmitter();
 
-  public fileName: string;
+  public fileName: string = '';
 
-  public dataType: string;
+  public dataType: string = '';
 
-  public fileExtension: string;
+  public fileExtension: string = '';
 
   public get checked() {
     return this._value;
   }
 
-  public set value(c) {
+  public set value(c: File | null) {
     this._value = c;
     this._onChange(c);
     this._onTouch();
   }
 
-  public handleFileChange(event) {
-    if (event.target.files && event.target.files.length) {
-      const [file]: [File] = event.target.files;
+  public handleFileChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length) {
+      const [file]: [File] = target.files as unknown as [File];
 
       // Pull the name for the file
       this.fileName = file.name;
@@ -62,45 +63,46 @@ export class FileComponent implements ControlValueAccessor {
       this.dataType = file.type;
 
       // Pull the file extension from the file.
-      this.fileExtension = file.name.split('.').length > 0 ? file.name.split('.').pop().toLowerCase() : 'unkown';
+      const splits = file.name.split('.');
+      this.fileExtension = splits.length > 0 ? (splits.pop() ?? 'unknown').toLowerCase() : 'unknown';
 
       this.value = file;
 
       this.fileSelected.emit(file);
 
       // Immediately clear the input value to prepare for the next file selection. This is important when the file input is cleared and the same file is selected again.
-      event.target.value = '';
+      target.value = '';
     }
   }
 
-  private _onChange = (v) => {
-    return v;
+  private _onChange: (v: File | null) => void = (v: File | null) => {
+    return;
   };
-  private _onTouch = () => {
+  private _onTouch: () => void = () => {
     return;
   };
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (v: File | null) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouch = fn;
   }
 
-  public writeValue(val) {
+  public writeValue(val: File | null) {
     this.value = val;
   }
 
   public setDisabledState(disabled?: boolean) {
-    this.value = disabled;
+    // disabled state is not typically applied to file inputs
   }
 
   public reset() {
     this.value = null;
-    this.fileName = undefined;
-    this.dataType = undefined;
-    this.fileExtension = undefined;
-    this.fileSelected.next(undefined);
+    this.fileName = '';
+    this.dataType = '';
+    this.fileExtension = '';
+    this.fileSelected.next(null);
   }
 }

@@ -14,6 +14,6 @@ export class BuilderComponent implements OnInit {
   constructor(private readonly settings: EventSettingsService) {}
 
   public ngOnInit(): void {
-    this.config = this.settings.eventConfiguration()?.configuration;
+    this.config = this.settings.eventConfiguration()?.configuration ?? null;
   }
 }

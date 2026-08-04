@@ -4,11 +4,13 @@ import { ActivatedRouteSnapshot } from '@angular/router';
  * Returns a string segment array representing the current path route from the app root.
  */
 export function getPathFromRouteSnapshot(snapshot: ActivatedRouteSnapshot): string[] {
-  return snapshot.pathFromRoot
+  const segments = snapshot.pathFromRoot
     .map((route) => {
       return route.routeConfig && route.routeConfig.path ? route.routeConfig.path : undefined;
     })
-    .filter((segment) => segment);
+    .filter((segment): segment is string => typeof segment === 'string');
+
+  return segments;
 }
 
 /**
@@ -22,10 +24,10 @@ export function getUrlSegmentsFromRouteSnapshot(snapshot: ActivatedRouteSnapshot
       return route.url.length > 0 ? route.url.map((segment) => segment.path) : [];
     })
     .filter((segments) => segments.length > 0)
-    .flat();
+    .reduce((acc: string[], segs: string[]) => acc.concat(segs), []);
 }
 
-export function makeUrlParams(params: object, encode: boolean, prefix?: string): string {
+export function makeUrlParams(params: Record<string, unknown>, encode: boolean, prefix?: string): string {
   if (!params) {
     throw new Error('Could not make URL params because no params were provided.');
   }
@@ -33,7 +35,7 @@ export function makeUrlParams(params: object, encode: boolean, prefix?: string):
   const segments = Object.keys(params)
     .map((k): string => {
       // Return a simple "key=value" string
-      return `${k}=${params[k]}`;
+      return `${k}=${(params as Record<string, any>)[k]}`;
     })
     .join('&');
 

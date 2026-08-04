@@ -111,14 +111,14 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
   public minDisplay: string | number;
   public maxDisplay: string | number;
 
-  public override get value(): number {
+  public override get value(): number | undefined {
     return this.getInternalValue();
   }
 
-  public override set value(value: number) {
+  public override set value(value: number | undefined) {
     this.setInternalValue(value);
 
-    if (this.showTooltip) {
+    if (this.showTooltip && value !== undefined) {
       if (this.customDataMap) {
         this.liveValue.nativeElement.innerText = this.customDataMap[value].display;
       } else {
@@ -146,12 +146,12 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
       // Set the tooltip position to the center of the slider.
       // This is based on the fact that the slider is broken down into even steps from 0 to max
       // and the tooltip is positioned as a percentage of the slider width minus half the width of the tooltip.
-      this.liveValue.nativeElement.style.left = `calc(${(this.value / this.max) * 100}% - ${tooltipOffset}px)`;
+      this.liveValue.nativeElement.style.left = `calc(${((value ?? 0) / this.max) * 100}% - ${tooltipOffset}px)`;
     }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.customDataMap && changes.customDataMap.currentValue !== undefined) {
+    if (changes['customDataMap'] && changes['customDataMap'].currentValue !== undefined) {
       // Simplify the template by having mapped and vanilla limits referenced by the same property.
       // This might need to be moved to OnChanges because the data source can change at any point in time
       // and the limits will not update.
@@ -164,7 +164,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
         // When the data map value changes, the maximum value of the slider can potentially be higher than the size
         // of the new data map. This will cause the slider to be out of bounds. To prevent this, we need to
         // set the value to the maximum value of the data map.
-        if (this.value > this.max) {
+        if ((this.value ?? 0) > this.max) {
           this.value = this.max;
         }
       } else {
@@ -180,7 +180,7 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
    * Before the midpoint, the offset is negative. After the midpoint, the offset is positive.
    */
   private get offsetDirection(): number {
-    const position = this.value / this.max;
+    const position = (this.value ?? 0) / this.max;
 
     if (position === 0.5) {
       return 0;
@@ -198,9 +198,9 @@ export class RangeComponent extends AbstractValueAccessorFormComponent<number> i
     if (this.offsetDirection === 0) {
       return 0;
     } else if (this.offsetDirection === 1) {
-      return (this.value - this.max / 2) / (this.max / 2);
+      return ((this.value ?? 0) - this.max / 2) / (this.max / 2);
     } else {
-      return (this.max / 2 - this.value) / (this.max / 2);
+      return (this.max / 2 - (this.value ?? 0)) / (this.max / 2);
     }
   }
 }

@@ -138,7 +138,7 @@ export class LegendCollectionComponent {
   public trackByLegendElement(index: number, el: esri.LegendElement): string {
     const identifier = el?.infos ? el.infos?.map((i) => `${i.label}-${i.value}`).join(',') : null;
 
-    return identifier;
+    return identifier ?? `${index}`;
   }
 
   public trackByLegendGroup(index: number, group: IActiveLayerInfo): string {
@@ -161,7 +161,9 @@ export class LegendCollectionComponent {
     }
 
     if (typeof collectionAsObject.length === 'number' && typeof collectionAsObject.getItemAt === 'function') {
-      return Array.from({ length: collectionAsObject.length }, (_, index) => collectionAsObject.getItemAt(index));
+      const getItemAt = collectionAsObject.getItemAt;
+
+      return Array.from({ length: collectionAsObject.length }, (_, index) => getItemAt(index));
     }
 
     return [];

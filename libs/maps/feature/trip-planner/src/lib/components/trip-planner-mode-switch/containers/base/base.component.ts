@@ -11,13 +11,13 @@ import { BusService } from '../../../../services/transportation/bus/bus.service'
 })
 export class TripPlannerModeSwitchComponent implements OnInit {
   @Input()
-  public modeSwitch: TripModeSwitch = null;
+  public modeSwitch: TripModeSwitch | null = null;
 
   @Input()
   public result: TripResult;
 
   public mode_header = '';
-  public mode_icon?: string = null;
+  public mode_icon: string | null = null;
 
   constructor(private tripPlanner: TripPlannerService, private busService: BusService) {}
 
@@ -43,8 +43,13 @@ export class TripPlannerModeSwitchComponent implements OnInit {
 
     const rule = this.tripPlanner.getRuleForModes([parseInt(travelMode, 10)]);
     const mode = this.tripPlanner.getTravelModeFromRule(rule);
+    if (!mode) {
+      this.mode_icon = null;
+      this.mode_header = '';
+      return;
+    }
 
-    this.mode_icon = mode.directions_icon;
-    this.mode_header = mode.directions_verb;
+    this.mode_icon = mode.directions_icon ?? null;
+    this.mode_header = mode.directions_verb ?? '';
   }
 }

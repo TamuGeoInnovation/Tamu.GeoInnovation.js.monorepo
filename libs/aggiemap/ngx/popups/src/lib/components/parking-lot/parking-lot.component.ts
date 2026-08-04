@@ -44,7 +44,7 @@ export class ParkingLotPopupComponent extends BaseDirectionsComponent {
     return identifier !== null ? this._buildShareUrlFragment('parking-lot', identifier) : null;
   }
 
-  public startDirections() {
+  public override startDirections() {
     super.startDirections(`Lot ${this.lotIdentifier ?? this.data.attributes.OBJECTID}`);
   }
 }

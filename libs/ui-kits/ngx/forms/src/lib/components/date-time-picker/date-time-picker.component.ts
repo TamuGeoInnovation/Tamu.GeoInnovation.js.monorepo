@@ -70,17 +70,17 @@ export class DateTimePickerComponent<D> implements ControlValueAccessor {
     return new Date(this._value.getTime());
   }
 
-  public set value(v) {
+  public set value(v: Date) {
     this._value = new Date(v.getTime());
     this._onChange(new Date(v.getTime()));
     this._onTouched();
   }
 
-  private _onChange = (v) => {
-    return v;
+  private _onChange: (v: Date) => void = (v: Date) => {
+    return;
   };
 
-  private _onTouched = () => {
+  private _onTouched: () => void = () => {
     return;
   };
 
@@ -92,15 +92,15 @@ export class DateTimePickerComponent<D> implements ControlValueAccessor {
     this.changed.emit(event);
   }
 
-  public writeValue(v) {
+  public writeValue(v: Date) {
     this.value = v;
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (v: Date) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouched = fn;
   }
 }

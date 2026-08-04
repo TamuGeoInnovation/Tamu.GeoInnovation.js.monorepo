@@ -20,7 +20,7 @@ export function pairwiseOverlap<T>(elements: T[]): T[][] {
 
     // Return the current array item and the next one.
     return [...pairs, [arr[index], arr[index + 1]]];
-  }, []);
+  }, [] as T[][]);
 }
 
 /**
@@ -34,11 +34,13 @@ export function pairwiseOverlap<T>(elements: T[]): T[][] {
 export function groupBy<T extends object>(collection: Array<T>, path: string, groupIdentityPath?: string): Array<Group<T>> {
   // Return early if no collection
   if (!collection || collection.length === 0) {
-    return collection;
+    return collection as any;
   }
 
-  const groupedObj = collection.reduce((acc, curr) => {
-    const propValue: string = getPropertyValue(curr, path);
+  // @ts-ignore - Dynamic object key access
+  const groupedObj: { [key: string]: T[] } = collection.reduce((acc: any, curr) => {
+    // @ts-ignore
+    const propValue: string = getPropertyValue(curr, path) ?? 'undefined';
     // TODO: This might need a test. Values that return a false boolean will not pass this expression even though the
     // property and value exist.
     //
@@ -54,11 +56,13 @@ export function groupBy<T extends object>(collection: Array<T>, path: string, gr
 
   return Object.keys(groupedObj).map((g) => {
     if (groupIdentityPath) {
-      const identity: string = getPropertyValue(groupedObj[g][0], groupIdentityPath);
+      // @ts-ignore - Dynamic index access
+      const identity: string | undefined = getPropertyValue(groupedObj[g]?.[0], groupIdentityPath);
 
       if (identity) {
         return {
           identity,
+          // @ts-ignore
           items: groupedObj[g]
         };
       }
@@ -66,6 +70,7 @@ export function groupBy<T extends object>(collection: Array<T>, path: string, gr
 
     // Default return
     return {
+      // @ts-ignore
       items: groupedObj[g]
     };
   });

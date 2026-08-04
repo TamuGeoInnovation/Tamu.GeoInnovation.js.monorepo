@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, filter } from 'rxjs/operators';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
@@ -50,7 +50,8 @@ export class BusListComponent implements OnInit, OnDestroy {
         return catOrder.map((cat) => {
           return grouped.find((g) => (g.identity as TSRoute).Name === cat);
         });
-      })
+      }),
+      map((groups) => groups.filter((group): group is Group<TSRoute> => group !== undefined))
     );
   }
 

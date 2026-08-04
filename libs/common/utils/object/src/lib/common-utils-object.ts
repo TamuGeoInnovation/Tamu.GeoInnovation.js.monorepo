@@ -10,7 +10,7 @@
  * @param property Dot notation string representing the location of the property
  * @param isFlatPath If true, the property string is treated as a flat path and not split by '.'
  */
-export function getPropertyValue<T>(lookup: object, property: string, isFlatPath = false): T {
+export function getPropertyValue<T>(lookup: object, property: string, isFlatPath = false): T | undefined {
   if (!lookup || !property) {
     return undefined;
   }
@@ -43,9 +43,9 @@ export function getPropertyValue<T>(lookup: object, property: string, isFlatPath
  *
  * Returns a concatenated value string if `join` is provided AND is true.
  */
-export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: false): T[];
+export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: false): (T | undefined)[];
 export function getObjectPropertyValues(lookup: object, properties: string[], join?: true): string;
-export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: boolean): string | T[] {
+export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: boolean): string | (T | undefined)[] {
   const values = properties.map((property) => getPropertyValue<T>(lookup, property));
 
   if (join && values.every((value) => typeof value === 'string')) {

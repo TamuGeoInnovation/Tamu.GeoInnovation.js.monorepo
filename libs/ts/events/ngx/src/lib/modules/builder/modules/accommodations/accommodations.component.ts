@@ -18,7 +18,7 @@ interface AccommodationChoiceGroup {
   styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss']
 })
 export class AccommodationsComponent implements OnInit {
-  public config = this.eventSettingsService.eventConfiguration()?.configuration;
+  public config = this.eventSettingsService.eventConfiguration()?.configuration ?? null;
   public savedOptionValue: Observable<string | boolean | number | null>;
 
   public accommodation$: Observable<SpecialEventOption>;
@@ -82,7 +82,7 @@ export class AccommodationsComponent implements OnInit {
     );
 
     this.savedOptionValue = routeAccommodation.pipe(
-      map((accommodation) => this.eventSettingsService.getSavedAccommodation(accommodation)),
+      map((accommodation) => this.eventSettingsService.getSavedAccommodation(accommodation) ?? null),
       shareReplay(1)
     );
   }

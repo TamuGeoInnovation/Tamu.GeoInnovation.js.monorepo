@@ -35,14 +35,12 @@ export class TemplateRenderer {
    */
   public render(): string {
     if (this.template && this.replacement) {
-      return this.template.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, () => {
-        // Replace captured block with the provided replacement string.
-        return this.replacement;
-      });
+      // Replace captured blocks with the provided replacement string.
+      return this.template.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, this.replacement);
     } else if (this.template && this.lookup) {
       return this.template.replace(TEMPLATE_EXPRESSION_GLOBAL_PATTERN, (match: string) => {
         // Remove template braces before setting value from lookup object.
-        const resolved = getPropertyValue<unknown>(this.lookup, match.replace('{', '').replace('}', ''));
+        const resolved = getPropertyValue<unknown>(this.lookup || {}, match.replace('{', '').replace('}', ''));
 
         if (resolved === undefined || resolved === null) {
           // Keep placeholder when no nullish replacement is provided.
@@ -62,6 +60,9 @@ export class TemplateRenderer {
         return resolvedString;
       });
     }
+
+    // Fallback: return template as-is or empty string
+    return this.template || '';
   }
 }
 

@@ -27,7 +27,7 @@ export class TripPlannerOptionsComponent implements OnInit {
   /**
    * Available mode options for the currently selected travel mode.
    */
-  public readonly Options: Observable<TripPlannerRuleMode[]> = this.travelOptions.pipe(
+  public readonly Options: Observable<TripPlannerRuleMode[] | undefined> = this.travelOptions.pipe(
     pluck('travel_mode'),
     switchMap((mode) => {
       return this.plannerService.Rules.pipe(
@@ -54,10 +54,10 @@ export class TripPlannerOptionsComponent implements OnInit {
     // it will never complete and the subscription will will never trigger.
     take(1),
     switchMap((modes) => {
-      return from(modes);
+      return from(modes ?? []);
     }),
-    filter((mode) => {
-      return mode.visible;
+    filter((mode): boolean => {
+      return !!mode && !!mode.visible;
     }),
     toArray(),
     shareReplay(1) // Share result will multiple template and late subscribers.
@@ -81,11 +81,11 @@ export class TripPlannerOptionsComponent implements OnInit {
     this.render();
   }
 
-  public updateOption(option, value): void {
+  public updateOption(option: string, value: any): void {
     // Create options object to be passed into planner service.
     const opt = Array(1)
       .fill(null)
-      .reduce((acc) => {
+      .reduce((acc: any) => {
         acc[option] = value;
 
         return acc;

@@ -37,34 +37,43 @@ export class AltSearchHelper {
    * If the alt lookup definition does not exist, use the result of the original query to map/highlight, and invoke popup.
    */
   public handleSearchResultFeatureSelection<T extends object>(incoming: SearchSelection<T>) {
-    const source = incoming.result.breadcrumbs.source;
+    const source = incoming.result?.breadcrumbs?.source;
 
-    if (source && source.altLookup) {
-      const altSource = this._sources.find((s) => s.source === source.altLookup.source);
-
-      const values = getObjectPropertyValues<string>(incoming.selection, source.altLookup.reference.keys);
-
-      const altSearchResult = this.searchService
-        .search({
-          sources: [altSource],
-          values: [values],
-          stateful: false,
-          returnAsPromise: true
-        })
-        .then((res: SearchResult<esri.Graphic>) => {
-          if (res.results && res.results[0].features.length > 0) {
-            return new SearchSelection({
-              type: 'search',
-              selection: res.results[0].features[0],
-              result: res.results[0]
-            });
-          }
-        });
-
-      return from(altSearchResult);
-    } else {
-      // Do return here
+    if (!source) {
       return of(incoming);
     }
+
+    const altLookup = source.altLookup;
+
+    if (!altLookup) {
+      return of(incoming);
+    }
+
+    const altSource = this._sources.find((s) => s.source === altLookup.source);
+
+    if (!altSource) {
+      return of(incoming);
+    }
+
+    const values = getObjectPropertyValues<string>(incoming.selection, altLookup.reference.keys);
+
+    const altSearchResultPromise = (this.searchService.search({
+      sources: [altSource as SearchSource],
+      values: [values as any],
+      stateful: false,
+      returnAsPromise: true
+    }) as unknown as Promise<SearchResult<esri.Graphic>>).then((res: SearchResult<esri.Graphic> | undefined) => {
+      if (res && res.results && res.results[0] && res.results[0].features && res.results[0].features.length > 0) {
+        return new SearchSelection({
+          type: 'search',
+          selection: res.results[0].features[0],
+          result: res.results[0]
+        });
+      }
+
+      return undefined;
+    });
+
+    return from(altSearchResultPromise);
   }
 }

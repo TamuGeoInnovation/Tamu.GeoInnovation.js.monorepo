@@ -34,7 +34,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
     super(rtr, rt, ps, anl, ms);
   }
 
-  public ngOnInit() {
+  public override ngOnInit() {
     super.ngOnInit();
     this._todaysDateStamp = of(new Date()).pipe(
       map((date) => {
@@ -50,7 +50,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
     this._fetchDiningDetails();
   }
 
-  public startDirections() {
+  public override startDirections() {
     super.startDirections(`${this.data.attributes.name}`);
   }
 
@@ -136,7 +136,7 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
             return {
               status: 'Closed',
               statusCode: DINING_LOCATION_OPERATION_STATUS.CLOSED,
-              message: null
+              message: ''
             } as IDeconstructedStatusText;
           }
 
@@ -183,6 +183,14 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
 
           return now >= start && now <= end;
         });
+
+        if (!firstRelevantTimeBlock) {
+          return {
+            status: 'Closed',
+            statusCode: DINING_LOCATION_OPERATION_STATUS.CLOSED,
+            message: ''
+          } as IDeconstructedStatusText;
+        }
 
         let statusCode: DINING_LOCATION_OPERATION_STATUS;
 

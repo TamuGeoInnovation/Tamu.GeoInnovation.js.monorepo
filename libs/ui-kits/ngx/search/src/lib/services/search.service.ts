@@ -41,12 +41,12 @@ export class SearchService {
     // Check we don't have an array for sources
     if (!(options.sources instanceof Array)) {
       console.error(`Method expected a source array.`);
-      return;
+      throw new Error('Method expected a source array.');
     }
 
     if (options.sources.length === 0) {
       console.error(`Expected at least one source. Got ${options.sources.length}.`);
-      return;
+      throw new Error('Expected at least one source.');
     }
 
     // Check that all sources in array exist
@@ -58,15 +58,18 @@ export class SearchService {
 
     if (!allSourcesExist) {
       console.error(`At least one search source does not exist.`);
-      return;
+      throw new Error('At least one search source does not exist.');
     }
 
     // Match a SearchSource to every provided source.
     // If the source is a string reference, return the reference source.
     // If the source is a SearchSource, return self
-    const sources: SearchSource[] = options.sources.map((src) => {
+    const sources: SearchSource[] = (options.sources.map((src) => {
       return typeof src === 'string' ? this._sources.find((s) => s.source === src) : src;
-    });
+    }) as unknown) as SearchSource[];
+
+    // Normalize option values to avoid undefined access
+    const optionValues = options.values || [];
 
     // Generate an array of http get observables
     const requests = sources.map((source, index) => {
@@ -85,12 +88,12 @@ export class SearchService {
       .map((source, index) => {
         // Create a modified SearchProperties object for the single
         const indexOfSourceValueInOptions = sources.findIndex((s) => s.source === source.source);
-        let modifiedOptions;
+        let modifiedOptions: any;
 
         if (indexOfSourceValueInOptions > -1) {
           modifiedOptions = {
             sources: [sources[indexOfSourceValueInOptions].source],
-            values: [options.values[indexOfSourceValueInOptions]]
+            values: [optionValues[indexOfSourceValueInOptions]]
           };
         } else {
           // If this block is hit, then it means that the provided options sources list does not
@@ -100,16 +103,16 @@ export class SearchService {
           throw new Error(`Could not find the referenced '${source.source}' in the original sources.`);
         }
 
-        const modifiedQueryParams: SearchSourceQueryParamsProperties = {
-          ...source.queryParams,
-          where: source.queryParams.scoringWhere
+        const modifiedQueryParams: any = {
+          ...source.queryParams!,
+          where: source.queryParams!.scoringWhere
         };
 
         // Search source with a modified query params that has the nested scoring where `queryParams`.
         const modifiedScoringSource: SearchSource = { ...source, queryParams: modifiedQueryParams };
 
         // Remove the excess identical scoringWhere clause for the same of cleanliness.
-        delete modifiedScoringSource.queryParams.scoringWhere;
+        delete modifiedScoringSource.queryParams!.scoringWhere;
 
         const query = this._getUrlQueryParams(modifiedOptions, modifiedScoringSource, index);
 
@@ -133,79 +136,48 @@ export class SearchService {
           scoring: responses[1]
         });
       }),
-      switchMap((responses) => {
-        // Check if there were any scoring responses.
-        //
-        // If not, return back the base responses.
-        //
-        // If there are any, find to which base response they belong to and
-        // prepend the features.
-        if (responses.scoring && responses.scoring.length === 0) {
-          return of(responses.base);
-        } else {
-          // Since the response order is guarantee with forkJoin and concatMap,
-          // we are able to map response index to original sources indexes.
-          //
-          // This means we can know which scoring request response belongs to which
-          // base request response allowing us to merge the features from a scoring response
-          // with those of a base response.
-          const baseIndexes = sources
-            .filter((s) => {
-              // Filter out the sources with a scoringWhere.
-              // The array size for this will be equal to the number of scoring responses.
-              return s.queryParams && s.queryParams.scoringWhere;
-            })
-            .map((s) => {
-              // For each source that has scoring where properties, get the index for the
-              // string in original sources that is equal to the source identifier.
-              //
-              // This index will be representative of the array location for a given base response
-              // and consequently which scoring response belongs to what base response.
-              return sources.findIndex((source) => source.source === s.source);
-            });
+      switchMap((responses: any) => {
+       // Normalize to any for safer manipulation with dynamic response shapes
+       const resp = responses as any;
 
-          const baseScoringMerged = responses.base.map((r, i) => {
-            if (baseIndexes.includes(i)) {
-              // This index will correspond to the array location of scoring responses.
-              const indexOfScoringResponse = baseIndexes.indexOf(i);
-              const featuresKey = sources[i].featuresLocation;
+       // Check if there were any scoring responses.
+       // If not, return back the base responses.
+       // If there are any, merge scoring features into base responses.
+       if (resp.scoring && resp.scoring.length === 0) {
+         return of(resp.base as any[]);
+       } else {
+         const baseIndexes = sources
+           .filter((s) => s.queryParams && s.queryParams.scoringWhere)
+           .map((s) => sources.findIndex((source) => source.source === s.source));
 
-              // Guard against responses that omit the features array (e.g. ArcGIS error envelopes
-              // returned when a layer has been removed). Without these defaults the spread below
-              // would throw and crash the whole pipeline.
-              const scoringFeatures = (responses.scoring[indexOfScoringResponse] || {})[featuresKey] || [];
-              const baseFeatures = (r || {})[featuresKey] || [];
+         const baseScoringMerged: any[] = (resp.base as any[]).map((r: any, i: number) => {
+           if (baseIndexes.includes(i)) {
+             const indexOfScoringResponse = baseIndexes.indexOf(i);
+             const featuresKey = sources[i].featuresLocation as string;
 
-              // This is merging the current base response features, with the
-              // features in the scoring response.
-              r[featuresKey] = [...scoringFeatures, ...baseFeatures];
+             const scoringFeatures: any[] = ((resp.scoring && resp.scoring[indexOfScoringResponse]) || {})[
+               featuresKey
+             ] || [];
+             const baseFeatures: any[] = (r || {})[featuresKey] || [];
 
-              // Remove any duplicates in the list.
-              // Determine duplication by simple object stringify equivalence.
-              r[featuresKey] = r[featuresKey].filter((feature, index, arr) => {
-                const findFirstMatchingIndex = arr.findIndex((f) => {
-                  return JSON.stringify(f) === JSON.stringify(feature);
-                });
+             (r as any)[featuresKey] = [...scoringFeatures, ...baseFeatures];
 
-                // If the first matching index is equal to the current (smallest) index, it means it's the first
-                // time the object has been iterated over.
-                //
-                // If not, it means there is another identical object in the array prior to this one.
-                //
-                // Only return the first occurrence, ignore the rest.
-                return findFirstMatchingIndex === index;
-              });
+             // Remove duplicates
+             (r as any)[featuresKey] = (r as any)[featuresKey].filter((feature: any, index: number, arr: any[]) => {
+               const findFirstMatchingIndex = arr.findIndex((f: any) => JSON.stringify(f) === JSON.stringify(feature));
+               return findFirstMatchingIndex === index;
+             });
 
-              return r;
-            } else {
-              return r;
-            }
-          });
+             return r;
+           }
 
-          return of(baseScoringMerged);
-        }
+           return r;
+         });
+
+         return of(baseScoringMerged);
+       }
       }),
-      switchMap((result: Array<T>) => {
+      switchMap((result: any[]) => {
         // Create a single SearchResult class instance, where the results of all http results will be placed in
         // the results property.
         return of(
@@ -214,17 +186,17 @@ export class SearchService {
               // `r` may be an empty object when `_safeRequest` swallowed a transport- or envelope-level
               // failure for this source. Treat that the same as a result with no features so the rest
               // of the search response continues to render normally.
-              const featureCollection = r && r[sources[index].featuresLocation];
+              const featureCollection = r && (r as any)[sources[index].featuresLocation];
 
               return <SearchResultItem<T>>{
                 name: sources[index].name,
                 features: featureCollection
-                  ? this.scoreResults(featureCollection, sources, index, options.values[index] as string)
+                  ? this.scoreResults(featureCollection as any[], sources, index, (optionValues[index] as unknown) as string)
                   : [],
                 displayTemplate: sources[index].displayTemplate,
                 breadcrumbs: {
                   source: sources[index],
-                  value: options.values[index]
+                  value: optionValues[index]
                 }
               };
             })
@@ -244,38 +216,28 @@ export class SearchService {
           }
         },
         (err) => {
-          // Backstop for any error that slipped past the per-source `_safeRequest` guards. We
-          // intentionally do not re-throw — doing so tears down the active subscription and leaves
-          // consumers without a SearchResult to render, which is how the search UI used to wedge
-          // when a single upstream source went bad. Instead, log the failure and emit an empty
-          // result so the store stays in a usable state.
           console.error('Search pipeline error:', err);
           this._searching.next(false);
           this._store.next(new SearchResult({}));
         }
       );
 
-      // The default return for this method is an observable.
-      // If `returnAsPromise` is not specified OR it's set to false, return the observable value.
       if (!('returnAsPromise' in options) || options.returnAsPromise !== true) {
         return this._store.asObservable();
       }
 
-      // If returnAsPromise is not undefined AND is set to true, return as a promise instead of the default observable.
       if (options.returnAsPromise !== undefined && options.returnAsPromise === true) {
-        return this._store.toPromise();
+        return (this._store.toPromise() as unknown) as Promise<SearchResult<T>>;
       }
     } else {
-      // If method call was not stateful, return the request stream and let callee handle response.
-
       if (!('returnAsPromise' in options) || options.returnAsPromise !== true) {
-        // Handle default observable return type.
         return requestStream;
       } else if (options.returnAsPromise !== undefined && options.returnAsPromise === true) {
-        // Handle promise return type
-        return requestStream.toPromise();
+        return (requestStream.toPromise() as unknown) as Promise<SearchResult<T>>;
       }
     }
+
+    return this._store.asObservable();
   }
 
   public clear() {
@@ -355,18 +317,13 @@ export class SearchService {
 
       //
       // Uses keys from source config
-      const keys = source.queryParams.where.keys;
-      //
-      // Uses operators from source config
-      const operators = source.queryParams.where.operators;
+      const whereObj = source.queryParams!.where!;
+      const keys = whereObj.keys || [];
+      const operators = whereObj.operators || [];
 
-      //
-      // Uses wildcards (if any) from source config
-      const wildcards = source.queryParams.where.wildcards;
-
-      //
-      // Uses transformations (if any) from source config
-      const transformations = source.queryParams.where.transformations;
+      // Use any[] for wildcard/transformations to avoid strict null issues in calling makeWhere
+      const wildcards = (whereObj.wildcards || []) as any[];
+      const transformations = (whereObj.transformations || []) as any[];
 
       //
       // Creates a value that matches the number of query param keys.
@@ -376,9 +333,13 @@ export class SearchService {
       //
       // When options.values is an array of string-containing arrays, each inner array is assumed to contain the
       // exact number of matching values for the keys in options.keys.
-      const values = Array.isArray(options.values[srcIndex])
-        ? <Array<string>>options.values[srcIndex]
-        : Array(source.queryParams.where.keys.length).fill(options.values[srcIndex]);
+      const localOptionValues = (options as any).values || [];
+
+      const values = Array.isArray(localOptionValues[srcIndex])
+        ? <Array<string>>localOptionValues[srcIndex]
+        : Array((source.queryParams && source.queryParams.where && source.queryParams.where.keys.length) || 0).fill(
+            localOptionValues[srcIndex]
+          );
 
       // Generate the SQL WHERE clause from defined keys, values, and operators.
       const where = makeWhere(keys, values, operators, wildcards, transformations);
@@ -392,6 +353,9 @@ export class SearchService {
 
       return `${query}`;
     }
+
+    // Fallback: return empty query string when no query params or template provided.
+    return '';
   }
 
   /**
@@ -420,37 +384,31 @@ export class SearchService {
     const source = sources[responseIndex];
 
     if (source && source.scoringKeys) {
-      const ranked = features
-        .map((f) => {
-          const points = source.scoringKeys.reduce((acc, curr, i) => {
-            const propValue: string = getPropertyValue(f, curr);
+       const ranked = features
+         .map((f) => {
+           const points = (source.scoringKeys || []).reduce((acc: number, curr: string, i: number) => {
+             const prop = getPropertyValue<any>(f, curr) as unknown as string | undefined;
+             const propValue = (prop as string) || '';
 
-            if (!propValue) {
-              return acc;
-            }
+             if (!propValue) {
+               return acc;
+             }
 
-            if (propValue.toLowerCase() === searchTerm.toLowerCase()) {
-              return acc + source.scoringKeys.length - i;
-            } else {
-              return acc;
-            }
-          }, 0);
+             if (propValue.toLowerCase() === (searchTerm || '').toLowerCase()) {
+               return acc + (source.scoringKeys || []).length - i;
+             } else {
+               return acc;
+             }
+           }, 0);
 
-          // Return the feature, appending a points property that will be used for sorting.
-          return { ...f, _score: points };
-        })
-        .sort((a: { _score: number }, b: { _score: number }) => {
-          // Sort results by point count.
-          return b._score - a._score;
-        })
-        .map((f, i) => {
-          // Add a rank property based on the sorted array by points.
-          return { ...f, _rank: i + 1 };
-        });
+           return { ...f, _score: points };
+         })
+         .sort((a: { _score: number }, b: { _score: number }) => b._score - a._score)
+         .map((f: any, i: number) => ({ ...f, _rank: i + 1 }));
 
-      return ranked;
+       return ranked;
     } else {
-      return features;
+       return features;
     }
   }
 }
@@ -466,13 +424,12 @@ export class SearchResult<T> {
    * Extracts and flattens feature results from every search item in the SearchResult.
    */
   public features() {
-    return this.results
-      .map((resultItem) => {
-        return resultItem.features;
-      })
-      .reduce((prev, curr) => {
+    const results = this.results || [];
+    return results
+      .map((resultItem) => resultItem.features || [])
+      .reduce((prev: any[], curr: any[]) => {
         return [...prev, ...curr];
-      }, []);
+      }, [] as any[]);
   }
 }
 

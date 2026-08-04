@@ -37,12 +37,12 @@ export function getGeolocation(
 export class TrackLocation {
   private _trackID: number;
   private _options: PositionOptions;
-  private _location: BehaviorSubject<GeolocationPosition>;
+  private _location: BehaviorSubject<GeolocationPosition | undefined>;
 
   constructor(options?: PositionOptions) {
     this._options = { ...options };
 
-    this._location = new BehaviorSubject(undefined);
+    this._location = new BehaviorSubject<GeolocationPosition | undefined>(undefined);
   }
 
   /**
@@ -60,7 +60,7 @@ export class TrackLocation {
       this._options
     );
 
-    return this._location.asObservable().pipe(skip(1));
+    return this._location.asObservable().pipe(skip(1)) as unknown as Observable<GeolocationPosition>;
   }
 
   /**
@@ -141,7 +141,7 @@ export function relativeDistance(reference: Point, points: RelativeDistancePoint
     );
 
     return [...acc, distance];
-  }, []);
+  }, [] as number[]);
 
   return distances;
 }

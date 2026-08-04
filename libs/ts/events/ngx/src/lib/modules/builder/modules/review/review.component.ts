@@ -36,7 +36,7 @@ export class ReviewComponent implements OnInit {
     this.settings = this.eventSettingsService.settings(true).pipe(shareReplay(1));
     this.mergedSettings = this.eventSettingsService.getMergedSettings();
     this.settingsValid = this.eventSettingsService.accommodationsValid();
-    this.configuration = this.eventSettingsService.eventConfiguration()?.configuration;
+    this.configuration = this.eventSettingsService.eventConfiguration()?.configuration ?? null;
   }
 
   public goToAccommodationSelection(optionKey: string) {

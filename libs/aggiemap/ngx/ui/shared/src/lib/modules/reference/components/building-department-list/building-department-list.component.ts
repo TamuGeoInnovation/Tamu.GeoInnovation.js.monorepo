@@ -22,7 +22,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   private source: number;
 
-  private _sources: SearchSource[];
+  private _sources: SearchSource[] = [];
 
   private _destroy$: Subject<boolean> = new Subject();
 
@@ -52,8 +52,15 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this._destroy$))
       .subscribe((result) => {
-        // Store the result in component scope.
-        this.result = result.features();
+        // Store the result in component scope. Be defensive — features() may be undefined or non-array.
+        try {
+          const features = (result && typeof result.features === 'function') ? result.features() : [];
+          this.result = Array.isArray(features) ? features : [];
+        } catch (e) {
+          // In case the result object is unexpected, fallback to empty array.
+          this.result = [];
+          console.warn('Unexpected search result shape in BuildingDepartmentListComponent', e);
+        }
       });
   }
 

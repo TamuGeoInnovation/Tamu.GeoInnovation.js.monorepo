@@ -13,7 +13,7 @@ export const notificationStorage = new InjectionToken<string>('StorageKey');
 export class NotificationService {
   private _store: Notification[];
   private _localStorageSettings: StorageConfig;
-  private _events: PlatformNotification[];
+  private _events: PlatformNotification[] = [];
 
   public readonly notifications: Observable<Notification[]>;
   private _notifications: BehaviorSubject<Notification[]>;
@@ -41,7 +41,7 @@ export class NotificationService {
       this._localStorageSettings.primaryKey = this._defaultPrimaryStoreKey;
     }
 
-    this._notifications = new BehaviorSubject([]);
+    this._notifications = new BehaviorSubject<Notification[]>([]);
     this.notifications = this._notifications.asObservable();
 
     if (this.environment.value('NotificationEvents')) {
@@ -58,7 +58,7 @@ export class NotificationService {
       });
     }
 
-    const notificationsInLocalStorage: PlatformNotificationStore = this.store.getStorage({
+    const notificationsInLocalStorage: PlatformNotificationStore | undefined = this.store.getStorage({
       primaryKey: this._localStorageSettings.primaryKey
     });
 
@@ -75,7 +75,7 @@ export class NotificationService {
 
     const stored = this.store.getStorage<PlatformNotificationStore>({
       primaryKey: this._localStorageSettings.primaryKey
-    });
+    }) || { version: this._settingsGeneration, notifications: [] };
 
     // Store any active notifications. The service will take care of dispatching these to the notification module
     this._store = this.getActiveNotifications([...stored.notifications, ...this._events]).map((property) => {
@@ -86,7 +86,7 @@ export class NotificationService {
     this._notifications.next([...this._store]);
   }
 
-  private migrate(storeData: PlatformNotificationStore): PlatformNotificationStore {
+  private migrate(storeData: PlatformNotificationStore | undefined): PlatformNotificationStore {
     const _default = { version: this._settingsGeneration, notifications: [] };
 
     if (!storeData) {
@@ -179,7 +179,7 @@ export class NotificationService {
    */
   private isNotificationAcknowledged(notificationId: string): boolean {
     try {
-      const currentLocalStorage: PlatformNotification[] = this.store.getStorageObjectKeyValue<PlatformNotification[]>({
+      const currentLocalStorage: PlatformNotification[] | undefined = this.store.getStorageObjectKeyValue<PlatformNotification[]>({
         primaryKey: this._localStorageSettings.primaryKey,
         subKey: this._defaultSecondaryStoreKey
       });
@@ -292,7 +292,7 @@ export class NotificationService {
    */
   public preset(id: string): void {
     // Attempt to find notification event by ID from the latest EVENTS object
-    const match: PlatformNotification = this._events.find((n) => n.properties.id === id);
+    const match: PlatformNotification | undefined = this._events.find((n) => n.properties.id === id);
 
     // If the referenced event by id was found, append it to the store and give the updated value to the subject
     if (match) {

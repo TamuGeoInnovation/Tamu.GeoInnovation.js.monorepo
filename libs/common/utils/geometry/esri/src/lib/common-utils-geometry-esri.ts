@@ -49,6 +49,8 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
         latitude: p.geometry.coordinates[1],
         longitude: p.geometry.coordinates[0]
       };
+    } else {
+      throw new Error('Feature provided does not contain usable centroid coordinates.');
     }
   } else {
     throw new Error('Feature provided does not contain rings.');
@@ -162,18 +164,21 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
       title: layer.name
     };
   }
+
+  // Fallback for other layer types
+  return { type: 'map-image', title: layer.name };
 }
 
 export class CoordinateConverter {
   private modules: {
-    point: esri.PointConstructor;
-    spatialReference: esri.SpatialReferenceConstructor;
-    webMercatorUtils: esri.webMercatorUtils;
-  } = { point: undefined, spatialReference: undefined, webMercatorUtils: undefined };
+    point?: esri.PointConstructor;
+    spatialReference?: esri.SpatialReferenceConstructor;
+    webMercatorUtils?: esri.webMercatorUtils;
+  } = {};
 
   constructor() {
     loadModules(['esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'])
-      .then(([p, s, u]: [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]) => {
+      .then(([p, s, u]) => {
         this.modules.point = p;
         this.modules.spatialReference = s;
         this.modules.webMercatorUtils = u;
@@ -184,11 +189,11 @@ export class CoordinateConverter {
   }
 
   public webMercatorToGeographic(latitude: number, longitude: number) {
-    return this.modules.webMercatorUtils.webMercatorToGeographic(
-      new this.modules.point({
+    return this.modules.webMercatorUtils!.webMercatorToGeographic(
+      new this.modules.point!({
         y: latitude,
         x: longitude,
-        spatialReference: this.modules.spatialReference.WebMercator
+        spatialReference: this.modules.spatialReference!.WebMercator
       })
     ) as esri.Point;
   }

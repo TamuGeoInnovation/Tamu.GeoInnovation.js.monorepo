@@ -14,8 +14,8 @@ export class FieldEnumerator<T> {
   }
 
   public filter(type: 'include' | 'exclude', fields: string[]): FieldEnumerator<T> {
-    const filtered = Object.fromEntries(
-      Object.entries(this._obj).filter(([key]) => {
+    const filtered = Object.entries(this._obj as any)
+      .filter(([key]) => {
         const fss = fields;
 
         if (type === 'include') {
@@ -24,7 +24,10 @@ export class FieldEnumerator<T> {
           return !fss.includes(key);
         }
       })
-    );
+      .reduce((acc: any, [k, v]) => {
+        acc[k] = v;
+        return acc;
+      }, {} as any);
 
     this._obj = filtered as T;
     return this;
@@ -58,10 +61,10 @@ export class FieldEnumerator<T> {
   }
 
   public toArray(): Array<EnumeratorKeyValuePair> {
-    return Object.keys(this._obj).map((k: string) => {
+    return Object.keys(this._obj as any).map((k: string) => {
       return {
         key: k,
-        value: this._obj[k]
+        value: (this._obj as any)[k]
       };
     });
   }
