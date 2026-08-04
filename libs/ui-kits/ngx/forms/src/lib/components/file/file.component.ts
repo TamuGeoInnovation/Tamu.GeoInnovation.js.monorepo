@@ -35,11 +35,11 @@ export class FileComponent implements ControlValueAccessor {
   @Output()
   public fileSelected: EventEmitter<File | null> = new EventEmitter();
 
-  public fileName: string = '';
+  public fileName = '';
 
-  public dataType: string = '';
+  public dataType = '';
 
-  public fileExtension: string = '';
+  public fileExtension = '';
 
   public get checked() {
     return this._value;

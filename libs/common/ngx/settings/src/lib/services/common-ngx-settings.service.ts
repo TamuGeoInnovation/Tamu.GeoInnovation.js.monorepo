@@ -70,7 +70,6 @@ export class SettingsService {
    * Handles an `undefined` value before, which the service state must not be.
    */
   private getStorage(config: StorageConfig): SimpleSettingTree {
-    // @ts-ignore - storage service returns undefined in some cases
     const storage: SimpleSettingTree | null | undefined = this.storage.getStorage(config);
 
     if (storage) {
@@ -232,7 +231,6 @@ export class SettingsService {
          });
 
          // Get value of setting effect getter function
-         // @ts-ignore - values could contain undefined, but function can handle it
          const value = getEffect.fn(...values);
 
          acc[setting] = { ...settings[setting], value };

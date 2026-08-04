@@ -48,8 +48,12 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
       this.form.patchValue({ url: basemap_url });
     }
 
-    this.form
-      .get('url')!
+    const urlControl = this.form.get('url');
+    if (!urlControl) {
+      throw new Error('Missing url control.');
+    }
+
+    urlControl
       .valueChanges.pipe(
         takeUntil(this.$destroy),
         debounceTime(1000),

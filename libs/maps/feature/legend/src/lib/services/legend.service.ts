@@ -44,7 +44,6 @@ export class LegendService {
         };
 
         return fromEventPattern(add, remove).pipe(
-          // @ts-ignore - event stream is seeded with a synthetic change event
           startWith({ target: model.activeLayerInfos } as IActiveLayerInfosChangeEvent),
           map((event: IActiveLayerInfosChangeEvent) => {
             return event.target

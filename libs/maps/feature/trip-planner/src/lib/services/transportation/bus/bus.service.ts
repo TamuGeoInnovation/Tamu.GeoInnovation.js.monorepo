@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject, timer } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
-// @ts-ignore - colornames package ships without typings in this workspace
 import toHex from 'colornames';
 import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';

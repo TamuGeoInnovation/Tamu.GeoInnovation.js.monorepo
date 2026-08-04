@@ -127,7 +127,7 @@ export class AbstractSlidingDrawerComponent implements OnInit {
     if (split.length > 1) {
       return parseFloat(split.join('.'));
     } else {
-      return parseInt(split[0]!, 10);
+      return parseInt(split[0] ?? '0', 10);
     }
   }
 

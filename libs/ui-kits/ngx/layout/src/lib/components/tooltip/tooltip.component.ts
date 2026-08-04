@@ -149,8 +149,8 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    * exceeding the `boundary`.
    */
   private calculateOffset(reference: PartialDomRect, element: PartialDomRect, boundary: PartialDomRect): IOffsetCoordinates {
-    let x: number = 0;
-    let y: number = 0;
+    let x = 0;
+    let y = 0;
 
     const bHeight = boundary?.height ?? window.innerHeight;
     const bWidth = boundary?.width ?? window.innerWidth;
@@ -193,8 +193,8 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    * that isn't outside a containing `boundary` block.
    */
   private calculateY(reference: PartialDomRect, element: PartialDomRect, pole: YPosition, buffer?: number) {
-    let yInitial: number = 0;
-    let yOffset: number = 0;
+    let yInitial = 0;
+    let yOffset = 0;
     let direction: 1 | -1 = 1;
 
     const refTop = reference?.top ?? 0;
@@ -227,8 +227,8 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   private calculateX(reference: PartialDomRect, element: PartialDomRect, hemisphere: XPosition, buffer?: number) {
-    let xInitial: number = 0;
-    let xOffset: number = 0;
+    let xInitial = 0;
+    let xOffset = 0;
     let direction: 1 | -1 = 1;
 
     const refLeft = reference?.left ?? 0;

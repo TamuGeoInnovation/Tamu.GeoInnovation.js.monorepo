@@ -72,7 +72,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    * Correctly determining the travel mode for the toggle is critical because it displays at-a-glance result info
    * such as status, eta, and progress.
    */
-  public travelMode: number = 0;
+  public travelMode = 0;
 
   private $destroy: Subject<void> = new Subject<void>();
 

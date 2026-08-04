@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // Contains classes that are integral to the operation of the trip planner service.
 
 import esri = __esri;

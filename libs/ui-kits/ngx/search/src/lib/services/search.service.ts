@@ -103,16 +103,21 @@ export class SearchService {
           throw new Error(`Could not find the referenced '${source.source}' in the original sources.`);
         }
 
-        const modifiedQueryParams: any = {
-          ...source.queryParams!,
-          where: source.queryParams!.scoringWhere
+        const queryParams = source.queryParams;
+        if (!queryParams) {
+          throw new Error(`Missing queryParams for scoring source.`);
+        }
+
+        const modifiedQueryParams = {
+          ...queryParams,
+          where: queryParams.scoringWhere
         };
 
         // Search source with a modified query params that has the nested scoring where `queryParams`.
         const modifiedScoringSource: SearchSource = { ...source, queryParams: modifiedQueryParams };
 
         // Remove the excess identical scoringWhere clause for the same of cleanliness.
-        delete modifiedScoringSource.queryParams!.scoringWhere;
+        delete modifiedScoringSource.queryParams.scoringWhere;
 
         const query = this._getUrlQueryParams(modifiedOptions, modifiedScoringSource, index);
 
@@ -136,35 +141,36 @@ export class SearchService {
           scoring: responses[1]
         });
       }),
-      switchMap((responses: any) => {
+      switchMap((responses: { base: Array<Record<string, unknown>>; scoring: Array<Record<string, unknown>> }) => {
        // Normalize to any for safer manipulation with dynamic response shapes
-       const resp = responses as any;
+       const resp = responses;
 
        // Check if there were any scoring responses.
        // If not, return back the base responses.
        // If there are any, merge scoring features into base responses.
        if (resp.scoring && resp.scoring.length === 0) {
-         return of(resp.base as any[]);
+         return of(resp.base);
        } else {
          const baseIndexes = sources
            .filter((s) => s.queryParams && s.queryParams.scoringWhere)
            .map((s) => sources.findIndex((source) => source.source === s.source));
 
-         const baseScoringMerged: any[] = (resp.base as any[]).map((r: any, i: number) => {
+         const baseScoringMerged = resp.base.map((r, i: number) => {
            if (baseIndexes.includes(i)) {
              const indexOfScoringResponse = baseIndexes.indexOf(i);
              const featuresKey = sources[i].featuresLocation as string;
 
-             const scoringFeatures: any[] = ((resp.scoring && resp.scoring[indexOfScoringResponse]) || {})[
-               featuresKey
-             ] || [];
-             const baseFeatures: any[] = (r || {})[featuresKey] || [];
+             const scoringResponse = resp.scoring[indexOfScoringResponse] as Record<string, unknown> | undefined;
+             const scoringFeatures = (scoringResponse?.[featuresKey] as unknown[] | undefined) ?? [];
+             const baseFeatures = ((r as Record<string, unknown>)[featuresKey] as unknown[] | undefined) ?? [];
 
-             (r as any)[featuresKey] = [...scoringFeatures, ...baseFeatures];
+             (r as Record<string, unknown>)[featuresKey] = [...scoringFeatures, ...baseFeatures];
 
              // Remove duplicates
-             (r as any)[featuresKey] = (r as any)[featuresKey].filter((feature: any, index: number, arr: any[]) => {
-               const findFirstMatchingIndex = arr.findIndex((f: any) => JSON.stringify(f) === JSON.stringify(feature));
+             (r as Record<string, unknown>)[featuresKey] = (
+               (r as Record<string, unknown>)[featuresKey] as unknown[]
+             ).filter((feature: unknown, index: number, arr: unknown[]) => {
+               const findFirstMatchingIndex = arr.findIndex((f: unknown) => JSON.stringify(f) === JSON.stringify(feature));
                return findFirstMatchingIndex === index;
              });
 
@@ -177,7 +183,7 @@ export class SearchService {
          return of(baseScoringMerged);
        }
       }),
-      switchMap((result: any[]) => {
+      switchMap((result: Array<Record<string, unknown>>) => {
         // Create a single SearchResult class instance, where the results of all http results will be placed in
         // the results property.
         return of(
@@ -186,12 +192,12 @@ export class SearchService {
               // `r` may be an empty object when `_safeRequest` swallowed a transport- or envelope-level
               // failure for this source. Treat that the same as a result with no features so the rest
               // of the search response continues to render normally.
-              const featureCollection = r && (r as any)[sources[index].featuresLocation];
+              const featureCollection = r && (r as Record<string, unknown>)[sources[index].featuresLocation];
 
               return <SearchResultItem<T>>{
                 name: sources[index].name,
                 features: featureCollection
-                  ? this.scoreResults(featureCollection as any[], sources, index, (optionValues[index] as unknown) as string)
+                  ? this.scoreResults(featureCollection as object[], sources, index, (optionValues[index] as unknown) as string)
                   : [],
                 displayTemplate: sources[index].displayTemplate,
                 breadcrumbs: {
@@ -317,7 +323,10 @@ export class SearchService {
 
       //
       // Uses keys from source config
-      const whereObj = source.queryParams!.where!;
+      const whereObj = source.queryParams.where;
+      if (!whereObj) {
+        throw new Error('No where property provided.');
+      }
       const keys = whereObj.keys || [];
       const operators = whereObj.operators || [];
 

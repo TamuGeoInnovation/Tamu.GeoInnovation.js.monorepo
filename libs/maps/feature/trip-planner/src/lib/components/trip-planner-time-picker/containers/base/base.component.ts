@@ -17,8 +17,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    */
   public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(
     pluck('time_mode'),
-    // @ts-ignore - travel options may temporarily omit time_mode
-    map((mode) => mode as TimeModeOption),
+    map((mode) => (mode ?? 'now') as TimeModeOption),
     shareReplay(1)
   ) as Observable<TimeModeOption>;
 
@@ -82,7 +81,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    */
   public setRequestedTime(newRequestedTime: DlDateTimePickerChange<Date> | Date | null): void {
     if (newRequestedTime === null) {
-      this.plannerService.updateTravelOptions({ requested_time: undefined as any });
+      this.plannerService.updateTravelOptions({ requested_time: new Date() });
     } else if (newRequestedTime instanceof DlDateTimePickerChange) {
       if (newRequestedTime.value && this.oldTime !== newRequestedTime.value.getTime()) {
         this.plannerService.updateTravelOptions({ requested_time: new Date(newRequestedTime.value.getTime()) });
