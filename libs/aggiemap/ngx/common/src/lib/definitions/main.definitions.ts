@@ -406,8 +406,8 @@ export function MainMapLayerSources(
             symbol: {
               type: 'text',
               color: [80, 0, 0, 255],
-              haloColor: [255, 255, 255, 235],
-              haloSize: 1,
+              haloColor: [255, 255, 255, 255],
+              haloSize: 1.5,
               font: { size: 8, family: 'Arial', weight: 'bold' }
             },
             minScale: 1200,
@@ -438,9 +438,9 @@ export function MainMapLayerSources(
             labelPlacement: 'center-center',
             symbol: {
               type: 'text',
-              color: [50, 50, 50, 255],
-              haloColor: [255, 255, 255, 235],
-              haloSize: 1,
+              color: [30, 30, 30, 255],
+              haloColor: [255, 255, 255, 255],
+              haloSize: 1.5,
               font: { size: 9, family: 'Arial', weight: 'normal' }
             },
             minScale: 1200,

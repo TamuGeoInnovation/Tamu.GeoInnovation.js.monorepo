@@ -301,6 +301,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 42.428047,
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               family: 'Arial',
               size: 10,
@@ -323,6 +325,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 311.18826944,
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               size: 10,
               family: 'Arial',
@@ -345,6 +349,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 42.35101,
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               size: 7,
               family: 'Arial',
@@ -367,6 +373,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 310.998628,
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               size: 7,
               family: 'Arial',
@@ -387,6 +395,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 40,
             color: [27, 94, 32, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 6,
               family: 'Arial',
@@ -407,6 +417,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 310,
             color: [27, 94, 32, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 6,
               family: 'Arial',
@@ -427,6 +439,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 40,
             color: [230, 115, 0, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 10,
               family: 'Arial',
@@ -447,6 +461,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 310,
             color: [230, 115, 0, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 10,
               family: 'Arial',
@@ -474,6 +490,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
           symbol: {
             type: 'text',
             color: [80, 0, 0, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 8,
               family: 'Arial',
@@ -509,6 +527,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
           symbol: {
             type: 'text',
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               size: 9,
               family: 'Arial',
