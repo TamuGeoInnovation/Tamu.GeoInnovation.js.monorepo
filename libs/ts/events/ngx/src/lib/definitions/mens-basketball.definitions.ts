@@ -9,7 +9,6 @@ import {
 } from '../interfaces/special-event.interface';
 
 export enum MENS_BASKETBALL_LAYERS {
-  LINE_PAINT = 'mens-basketball-line-paint',
   GATES = 'mens-basketball-gates',
   SYMBOLS = 'mens-basketball-symbols',
   PARKING_LOTS = 'mens-basketball-parking-lots'
@@ -18,45 +17,27 @@ export enum MENS_BASKETBALL_LAYERS {
 const eventUrl = Connections.mensBasketballUrl;
 
 export const MensBasketball_Definitions = {
-  LINE_PAINT: {
-    id: MENS_BASKETBALL_LAYERS.LINE_PAINT,
-    layerId: MENS_BASKETBALL_LAYERS.LINE_PAINT,
-    name: "Men's Basketball Line Paint",
-    url: `${eventUrl}/6`
-  },
   GATES: {
     id: MENS_BASKETBALL_LAYERS.GATES,
     layerId: MENS_BASKETBALL_LAYERS.GATES,
     name: "Men's Basketball Gates",
-    url: `${eventUrl}/1`
+    url: `${eventUrl}/0`
   },
   SYMBOLS: {
     id: MENS_BASKETBALL_LAYERS.SYMBOLS,
     layerId: MENS_BASKETBALL_LAYERS.SYMBOLS,
     name: "Men's Basketball Symbols",
-    url: `${eventUrl}/4`
+    url: `${eventUrl}/1`
   },
   PARKING: {
     id: MENS_BASKETBALL_LAYERS.PARKING_LOTS,
     layerId: MENS_BASKETBALL_LAYERS.PARKING_LOTS,
     name: "Men's Basketball Parking",
-    url: `${eventUrl}/9`
+    url: `${eventUrl}/2`
   }
 };
 
 export const MensBasketball_ColdLayerSources: LayerSource[] = [
-  {
-    type: 'feature',
-    id: MensBasketball_Definitions.LINE_PAINT.id,
-    title: MensBasketball_Definitions.LINE_PAINT.name,
-    url: MensBasketball_Definitions.LINE_PAINT.url,
-    visible: true,
-    listMode: 'hide',
-    native: {
-      outFields: ['*']
-    }
-  },
-
   {
     type: 'feature',
     id: MensBasketball_Definitions.GATES.id,

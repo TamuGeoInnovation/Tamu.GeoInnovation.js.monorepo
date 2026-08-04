@@ -35,7 +35,7 @@ function createConnections(gisHost: string): IComposedConnections {
     loadingZonesUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/Loading_Zones/MapServer`,
     maintenanceParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MaintenanceParking/MapServer`,
     mediaParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MediaParking/MapServer`,
-    mensBasketballUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/BaseMBasketTennisXCountry/MapServer`,
+    mensBasketballUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/MensBasketballParking_view/FeatureServer`,
     motorcycleParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MotorcycleParking/MapServer`,
     motoristAssistanceUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MotoristAssistance/MapServer`,
     moveInParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/FallMoveInParking_view/FeatureServer`,
