@@ -63,10 +63,10 @@ describe('MapComponent (event-passed flow)', () => {
   });
 
   it('opens event-passed modal when dates are past', () => {
-    (mockSettingsService.init as jest.Mock).mockImplementation(() => ({ pipe: () => ({ subscribe: (cb: any) => cb({ ['event_passed_ack_test-event']: false }) }) }));
+    (mockSettingsService as any).init = jest.fn(() => ({ pipe: () => ({ subscribe: (cb: any) => cb({ ['event_passed_ack_test-event']: false }) }) }));
 
     componentInstance.ngOnInit();
 
-    expect((mockModalService.open as jest.Mock).mock.calls.length).toBe(1);
+    expect((mockModalService as any).open.mock.calls.length).toBe(1);
   });
 });
