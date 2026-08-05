@@ -22,6 +22,7 @@ import { VolleyballParkingTs } from './volleyball-parking.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
 import { RingDayEvent } from './ring-day.definitions';
+import { AprilRingDayEvent } from './april-ring-day.definitions';
 import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';
 import { WomensBasketball_Ts } from './womens-basketball.definitions';
@@ -82,6 +83,7 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   VolleyballParkingTs,
   TroubadourTs,
   FootballParkingEvent,
+  AprilRingDayEvent,
   RingDayEvent,
   WomensBasketball_Ts,
   GisDayTs,

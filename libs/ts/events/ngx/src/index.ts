@@ -21,6 +21,7 @@ export * from './lib/definitions/softball-regionals.definitions';
 export * from './lib/definitions/graduation-summer.definitions';
 export * from './lib/definitions/football-parking.definitions';
 export * from './lib/definitions/ring-day.definitions';
+export * from './lib/definitions/april-ring-day.definitions';
 export * from './lib/definitions/womens-basketball.definitions';
 export * from './lib/definitions/timed-parking.definitions';
 export * from './lib/definitions/vendor-parking.definitions';
