@@ -7,13 +7,9 @@
   max-width: 78rem;
 }
 
-// Title-case (not uppercase), italic, bold, maroon — Open Sans.
-.maps-list-section .parking-column-heading {
+:host .maps-list-section .parking-column-heading {
   color: #500000;
-  font-family: 'Open Sans', sans-serif;
-  font-style: italic;
-  font-weight: 800;
-  font-size: 1.45rem;
+  font: italic 800 1.45rem 'Open Sans', sans-serif;
   text-transform: none;
   margin: 0 0 0.85rem;
 }
