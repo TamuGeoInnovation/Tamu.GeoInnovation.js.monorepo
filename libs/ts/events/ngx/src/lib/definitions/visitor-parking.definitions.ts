@@ -109,6 +109,7 @@ export const VisitorParkingTs: AggiemapCustomMapConfiguration = {
     type: 'parking',
     parkingCategory: 'general',
     showInQuickLinks: true,
+    quickLinkOrder: 2,
     keywords: ['visitor', 'parking', 'kiosk', 'hourly']
   }
 };

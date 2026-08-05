@@ -412,6 +412,12 @@ export interface DiscoverMetadata {
    * Defaults to `false` when omitted.
    */
   showInQuickLinks?: boolean;
+
+  /**
+   * Controls the order of the map within the Quick Links section when `showInQuickLinks` is true.
+   * Lower values appear first. Invalid or duplicate values fall back to a safe default order.
+   */
+  quickLinkOrder?: number;
 }
 
 /**

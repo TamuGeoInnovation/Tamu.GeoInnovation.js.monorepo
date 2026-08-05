@@ -14,14 +14,6 @@ import { ExternalDiscoverApplications } from '../../definitions/external-discove
  * map pages and therefore excluded from the grouped parking columns.
  */
 export const FEATURED_PARKING_ID = 'ts-main-parking';
-const QUICK_LINK_ORDER = [
-  'ts-main-parking',
-  'visitor-parking',
-  'accessible-parking',
-  'timed-parking',
-  'night-weekend',
-  'break-summer'
-];
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +30,7 @@ export class DiscoveryService {
       mapType: event.discover?.mapType || (event.discover?.type === 'parking' ? 'parking' : event.discover?.type === 'operations' ? 'operations' : 'campus'),
       parkingCategory: event.discover?.parkingCategory,
       showInQuickLinks: event.discover?.showInQuickLinks,
+      quickLinkOrder: event.discover?.quickLinkOrder,
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
       configuration: event.configuration,
@@ -76,26 +69,71 @@ export class DiscoveryService {
   }
 
   public getQuickLinkApplications(): InternalDiscoverApplication[] {
-    const quickLinks = this.getInternalDiscoverApplications().filter((app) => app.showInQuickLinks === true);
+    const quickLinks = this.getInternalDiscoverApplications()
+      .map((app, index) => ({ app, index }))
+      .filter(({ app }) => app.showInQuickLinks === true);
 
-    return quickLinks.sort((a, b) => {
-      const orderA = QUICK_LINK_ORDER.indexOf(a.id);
-      const orderB = QUICK_LINK_ORDER.indexOf(b.id);
-
-      if (orderA === -1 && orderB === -1) {
-        return a.name.localeCompare(b.name);
+    const orderCounts = new Map<number, number>();
+    for (const { app } of quickLinks) {
+      const order = app.quickLinkOrder;
+      if (typeof order === 'number' && Number.isFinite(order) && order >= 0) {
+        orderCounts.set(order, (orderCounts.get(order) ?? 0) + 1);
       }
+    }
 
-      if (orderA === -1) {
-        return 1;
+    const seenOrders = new Map<number, number>();
+    const resolved = quickLinks
+      .map(({ app, index }) => ({
+        app,
+        index,
+        order: this.resolveQuickLinkOrder(app, index, orderCounts, seenOrders)
+      }))
+      .sort((a, b) => {
+        if (a.order.group !== b.order.group) {
+          return a.order.group - b.order.group;
+        }
+
+        if (a.order.group === 0 && b.order.group === 0 && a.order.value !== b.order.value) {
+          return a.order.value - b.order.value;
+        }
+
+        return a.index - b.index;
+      });
+
+    return resolved.map(({ app }) => app);
+  }
+
+  private resolveQuickLinkOrder(
+    app: InternalDiscoverApplication,
+    fallbackIndex: number,
+    orderCounts: Map<number, number>,
+    seenOrders: Map<number, number>
+  ): { group: 0 | 1; value: number } {
+    const order = app.quickLinkOrder;
+
+    if (order === undefined) {
+      return { group: 1, value: fallbackIndex };
+    }
+
+    if (!Number.isFinite(order) || order < 0) {
+      console.warn(`Invalid quick link order '${order}' for '${app.id}'. Falling back to default order.`);
+      return { group: 1, value: fallbackIndex };
+    }
+
+    const count = orderCounts.get(order) ?? 0;
+    if (count > 1) {
+      const seen = seenOrders.get(order) ?? 0;
+      seenOrders.set(order, seen + 1);
+
+      if (seen > 0) {
+        console.warn(
+          `Duplicate quick link order '${order}' for '${app.id}'. The first match keeps the explicit position; this entry falls back to the default order.`
+        );
+        return { group: 1, value: fallbackIndex };
       }
+    }
 
-      if (orderB === -1) {
-        return -1;
-      }
-
-      return orderA - orderB;
-    });
+    return { group: 0, value: order };
   }
 
   public getAllDiscoverApplications(): DiscoverApplication[] {

@@ -165,6 +165,7 @@ export const BreakSummerParkingTs: AggiemapCustomMapConfiguration = {
     parkingCategory: 'permit',
     mapType: 'parking',
     showInQuickLinks: true,
+    quickLinkOrder: 6,
     keywords: ['break', 'summer', 'parking', 'permit']
   }
 };

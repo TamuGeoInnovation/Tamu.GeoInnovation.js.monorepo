@@ -97,6 +97,7 @@ export const NightWeekendTs: AggiemapCustomMapConfiguration = {
     type: 'parking',
     parkingCategory: 'permit',
     showInQuickLinks: true,
+    quickLinkOrder: 5,
     keywords: ['night', 'weekend', 'parking', 'permit']
   }
 };

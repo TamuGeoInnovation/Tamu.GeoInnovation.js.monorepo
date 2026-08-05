@@ -74,6 +74,7 @@ export const TimedParking_Ts: AggiemapCustomMapConfiguration = {
     type: 'parking',
     parkingCategory: 'general',
     showInQuickLinks: true,
+    quickLinkOrder: 4,
     keywords: ['timed', 'parking', 'transportation']
   }
 };
