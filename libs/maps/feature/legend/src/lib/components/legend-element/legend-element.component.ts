@@ -134,6 +134,12 @@ export class LegendElementComponent implements OnInit {
           return of(info);
         }
 
+        // Per-layer opt-out: a layer can request its full renderer legend (every category) even when a
+        // definition expression is filtering what's drawn — used for reference color keys.
+        if (this.legendOverride?.ignoreDefinitionExpression === true) {
+          return of(info);
+        }
+
         const operableLayer = this.layer as esri.FeatureLayer;
 
         // If operable layer has no definition expression, return the current legend info as-is

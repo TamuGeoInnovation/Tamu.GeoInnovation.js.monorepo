@@ -15,6 +15,7 @@ export enum MAIN_MAP_LAYERS {
   SURFACE_LOTS = 'surface-lots-layer',
   VISITOR_PARKING = 'visitor-parking-layer',
   TRANSPORTATION_PARKING = 'transportation-parking-layer',
+  RNS_SPACES = 'rns-spaces-layer',
   ACESSIBLE_ENTRANCES = 'accessible-entrances-layer',
   EMERGENCY_PHONES = 'emergency-phones-layer',
   BIKE_RACKS = 'bike-racks-layer',
@@ -47,6 +48,7 @@ export interface IComposedIDefinitions {
   SURFACE_LOTS: IDefinition;
   VISITOR_PARKING: IDefinition;
   TRANSPORTATION_PARKING: IDefinition;
+  RNS_SPACES: IDefinition;
   ACESSIBLE_ENTRANCES: IDefinition;
   EMERGENCY_PHONES: IDefinition;
   BIKE_RACKS: IDefinition;
@@ -127,6 +129,12 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       name: 'Transportation Parking',
       url: `${connections.tsMainUrl}/6`,
       popupComponent: Popups.ParkingKioskPopupComponent
+    },
+    RNS_SPACES: {
+      id: 'rns-spaces',
+      layerId: MAIN_MAP_LAYERS.RNS_SPACES,
+      name: 'RNS Spaces',
+      url: `${connections.tsMainUrl}/7`
     },
     ACESSIBLE_ENTRANCES: {
       id: 'accessible-entrances',
@@ -355,6 +363,91 @@ export function MainMapLayerSources(
       visible: false,
       native: {
         ...commonLayerProps
+      }
+    },
+    {
+      // Reserved Numbered Space (RNS) labels. Points are invisible; only the number
+      // labels render, so each reserved/numbered space shows its number when zoomed in.
+      type: 'feature',
+      id: definitions.RNS_SPACES.layerId,
+      title: definitions.RNS_SPACES.name,
+      url: definitions.RNS_SPACES.url,
+      listMode: 'hide',
+      visible: true,
+      layerIndex: 3,
+      native: {
+        ...commonLayerProps,
+        legendEnabled: false,
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'simple-marker',
+            style: 'circle',
+            size: 0,
+            color: [0, 0, 0, 0],
+            outline: { width: 0, color: [0, 0, 0, 0] }
+          }
+        },
+        labelsVisible: true,
+        labelingInfo: [
+          {
+            // Department-reserved spaces: "DEPT. RESERVED" + the space number.
+            where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C', 'H/C', '2HR Timed', 'Loading')`,
+            labelExpressionInfo: {
+              expression: `
+                if ($feature.DeptSpc_YN != 1) { return ''; }
+                var num = Trim(Text($feature.RNS_Num));
+                if (num == null || num == '' || num == 'null') { num = Trim(Text($feature.Spc_ID_Num)); }
+                if (num == null || num == '' || num == 'null') { return 'DEPT. RESERVED'; }
+                return 'DEPT. RESERVED' + TextFormatting.NewLine + num;
+              `
+            },
+            labelPlacement: 'center-center',
+            symbol: {
+              type: 'text',
+              color: [80, 0, 0, 255],
+              haloColor: [255, 255, 255, 255],
+              haloSize: 1.5,
+              font: { size: 8, family: 'Arial', weight: 'bold' }
+            },
+            minScale: 1200,
+            maxScale: 0,
+            deconflictionStrategy: 'none'
+          },
+          {
+            // All other reserved/numbered spaces: show whichever space-number field is
+            // populated. RNS_Num is authoritative (the only populated field for reserved
+            // spaces in many lots, e.g. Lot 96 '9608'); VisSpcNum/RV_SpcNum/Spc_ID_Num
+            // are fallbacks for visitor/RV/other numbered spaces.
+            where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C', '2HR Timed', 'Loading')`,
+            labelExpressionInfo: {
+              expression: `
+                if ($feature.Anno_Type == 'H/C') { return ''; }
+                if ($feature.DeptSpc_YN == 1) { return ''; }
+                var rnsNum = Trim(Text($feature.RNS_Num));
+                if (rnsNum != null && rnsNum != '' && rnsNum != 'null') { return rnsNum; }
+                var visNum = Trim(Text($feature.VisSpcNum));
+                if (visNum != null && visNum != '' && visNum != 'null') { return visNum; }
+                var rvNum = Trim(Text($feature.RV_SpcNum));
+                if (rvNum != null && rvNum != '' && rvNum != 'null') { return rvNum; }
+                var spcId = Trim(Text($feature.Spc_ID_Num));
+                if (spcId != null && spcId != '' && spcId != 'null') { return spcId; }
+                return '';
+              `
+            },
+            labelPlacement: 'center-center',
+            symbol: {
+              type: 'text',
+              color: [30, 30, 30, 255],
+              haloColor: [255, 255, 255, 255],
+              haloSize: 1.5,
+              font: { size: 9, family: 'Arial', weight: 'normal' }
+            },
+            minScale: 1200,
+            maxScale: 0,
+            deconflictionStrategy: 'none'
+          }
+        ]
       }
     },
     {

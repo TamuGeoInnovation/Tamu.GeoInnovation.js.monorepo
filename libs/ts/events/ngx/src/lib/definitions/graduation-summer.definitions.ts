@@ -11,8 +11,9 @@ import {
 import esri = __esri;
 
 export enum SUMMER_COMMENCEMENT_LAYERS {
-  PARKING_LOTS = 'summer-commencement-parking-lots',
-  TRAFFIC_FLOW = 'summer-commencement-traffic-flow'
+  // Enum order drives draw order (first = top). Recommended Route above Parking Lots so its arrows show.
+  TRAFFIC_FLOW = 'summer-commencement-traffic-flow',
+  PARKING_LOTS = 'summer-commencement-parking-lots'
 }
 
 const eventUrl = Connections.summerCommencementUrl;
@@ -124,16 +125,39 @@ export const SummerCommencementConfiguration: EventConfiguration = {
   applicationName: 'Summer Commencement Transportation Map',
   shortApplicationName: 'Summer Commencement Map',
   introductionText: 'Get the best transportation and parking information for the summer commencement ceremonies.',
-  eventDates: ['2025-08-09'],
+  eventDates: ['2026-08-08'],
+  scheduleUrl: 'https://aggie.tamu.edu/graduation',
   mapCenter: [-96.34458, 30.60629],
   zoom: 17
 };
 
 enum SummerCommencementAttendanceDateChoices {
-  DayOne = '2025-08-09T05:00:00.000Z' // May 8, 12AM UTC
+  DayOne = '2026-08-08T05:00:00.000Z' // August 8, 12AM UTC
 }
 
-export const SummerCommencementOptions: SpecialEventOptions = [];
+export const SummerCommencementOptions: SpecialEventOptions = [
+  {
+    value: 'date',
+    description:
+      'Please select the day of your commencement ceremony to provide the most accurate transportation and parking information.',
+    shortDescription: 'Event Day',
+    label: 'Event Day',
+    uiType: 'date-card-grid',
+    choices: [{ value: SummerCommencementAttendanceDateChoices.DayOne, label: 'August 8, 2026' }],
+    effects: {
+      layers: [
+        {
+          layerId: SUMMER_COMMENCEMENT_LAYERS.PARKING_LOTS,
+          conversions: [{ input: SummerCommencementAttendanceDateChoices.DayOne, propOverrides: { visible: true } }]
+        },
+        {
+          layerId: SUMMER_COMMENCEMENT_LAYERS.TRAFFIC_FLOW,
+          conversions: [{ input: SummerCommencementAttendanceDateChoices.DayOne, propOverrides: { visible: true } }]
+        }
+      ]
+    }
+  }
+];
 
 export const SummerCommencementTs: AggiemapCustomMapConfiguration = {
   type: 'special-event',

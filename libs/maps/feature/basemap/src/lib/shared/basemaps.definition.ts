@@ -4,7 +4,7 @@ export const AggiemapBasemap: BaseMapProperties = {
   baseLayers: [
     {
       type: 'TileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer`,
+      url: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer`,
       spatialReference: {
         wkid: 102100
       },
@@ -17,7 +17,7 @@ export const AggiemapBasemap: BaseMapProperties = {
   ],
   id: 'aggie_basemap',
   title: 'Aggieland',
-  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/info/thumbnail'
+  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer/info/thumbnail'
 };
 
 export const NearmapCSBasemap: BaseMapProperties = {

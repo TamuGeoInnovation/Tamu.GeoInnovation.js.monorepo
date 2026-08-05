@@ -1,6 +1,6 @@
 function createConnections(gisHost: string): IComposedConnections {
   return {
-    basemapUrl: `https://${gisHost}/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer`,
+    basemapUrl: `https://${gisHost}/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer`,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
     constructionUrl: `https://${gisHost}/arcgis/rest/services/FCOR/Construction_2018/MapServer`,
@@ -17,6 +17,7 @@ function createConnections(gisHost: string): IComposedConnections {
     footballGamedayShuttlesUrl: `https://${gisHost}/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer`,
     maroonWhiteGameUrl: `https://${gisHost}/arcgis/rest/services/TS/Maroon_White_Game/MapServer`,
     accessibleParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/AccessibleParking/MapServer`,
+    aggieFamilyParadeUrl: `https://${gisHost}/arcgis/rest/services/TS/Aggie_Family_Parade/MapServer`,
     aggielandSaturdayUrl: `https://${gisHost}/arcgis/rest/services/TS/AggielandSaturday/MapServer`,
     avpParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/AnyValidPermitParking/MapServer`,
     baseballParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/BaseballParking/MapServer`,
@@ -65,10 +66,11 @@ function createConnections(gisHost: string): IComposedConnections {
     fourHRoundupUrl: `https://${gisHost}/arcgis/rest/services/TS/4H_Roundup/MapServer`,
     gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
-    // NOTE: TS/Fish_Camp is currently only published to the dev GIS host (gis-dev.it.tamu.edu) — it is
-    // NOT yet on the production host. It resolves via `gisHost` like every other layer, so the dev
-    // deployment loads it correctly; it will 404 on production until the service is published there.
-    fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`
+    fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`,
+    tCampUrl: `https://${gisHost}/arcgis/rest/services/TS/T_Camp/MapServer`,
+    fireSchoolUrl: `https://${gisHost}/arcgis/rest/services/TS/Municipal_Fire_School_Vendor_Show/MapServer`,
+    beefCattleUrl: `https://${gisHost}/arcgis/rest/services/TS/Beef_Cattle_Vendor_Load_In/MapServer`,
+    gamesOfTexasUrl: `https://${gisHost}/arcgis/rest/services/TS/Games_of_Texas/MapServer`
   };
 }
 
@@ -103,6 +105,7 @@ export interface IComposedConnections {
   footballGamedayShuttlesUrl: string;
   maroonWhiteGameUrl: string;
   accessibleParkingUrl: string;
+  aggieFamilyParadeUrl: string;
   aggielandSaturdayUrl: string;
   avpParkingUrl: string;
   baseballParkingUrl: string;
@@ -152,4 +155,8 @@ export interface IComposedConnections {
   gisDayUrl: string;
   argentinaVsHondurasUrl: string;
   fishCampUrl: string;
+  tCampUrl: string;
+  fireSchoolUrl: string;
+  beefCattleUrl: string;
+  gamesOfTexasUrl: string;
 }

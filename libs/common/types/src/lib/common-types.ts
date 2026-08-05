@@ -442,6 +442,18 @@ export interface LayerLegendOverride {
    * Rendered icon height in pixels.
    */
   height?: number;
+
+  /**
+   * When `true`, the legend shows this layer's full renderer legend (all unique-value categories)
+   * even while the layer carries a `definitionExpression` that filters the features drawn on the map.
+   *
+   * By default the legend honors the definition expression (see the legend component's
+   * `respectDefinitionExpression`) and hides categories with no matching features — correct for
+   * layers whose legend should mirror what's drawn. Opt in here for a layer that should always
+   * present its complete color key as a reference (e.g. parking-lot categories that are filtered
+   * to one type per mode but should still explain every color).
+   */
+  ignoreDefinitionExpression?: boolean;
 }
 
 interface LayerSourceAuthInfo {

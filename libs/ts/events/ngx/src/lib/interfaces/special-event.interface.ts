@@ -119,12 +119,51 @@ export interface EventConfiguration {
   reviewText?: string;
 
   /**
+   * Optional layer id whose features are briefly flashed (highlighted) once the event map finishes
+   * loading and framing. Use it to draw the user's eye to a focal feature tied to a builder
+   * selection — for example, the residence hall the user chose.
+   *
+   * Generic and opt-in: omit to disable. The layer's active definition expression is honored, so
+   * only the currently-shown features flash.
+   */
+  flashLayerId?: string;
+
+  /**
    * Optional informational panel rendered in the right-hand sidebar above the layer list and legend.
    *
    * Used to surface reference content that lives outside of the map data — for example, the
    * Break / Summer Parking dates that Transportation Services enforcement relies on.
    */
   sidebarInfo?: SidebarInfoPanel;
+
+  /**
+   * Layer ids that behave as a mutually-exclusive set: turning one on automatically turns the
+   * others in the set off (radio-button behavior). Honored by the EventService once the layers
+   * load and applies to visibility toggles from both the Layers (TOC) list and the legend.
+   *
+   * Defaults to no exclusivity when omitted, so existing events are unaffected.
+   */
+  exclusiveLayerIds?: string[];
+
+  /**
+   * Controls how the sidebar "Layers" (TOC) list orders its entries.
+   *
+   * - `title` (default): alphabetical by layer title.
+   * - `source`: follows the event's reference/source order, matching the legend's draw order so
+   *   the two surfaces agree.
+   *
+   * Defaults to `title` when omitted to preserve existing behavior for other events.
+   */
+  referenceLayerListOrder?: 'title' | 'source';
+
+  /**
+   * Layer ids that should always appear in the legend, even when they start hidden by default.
+   * The legend normally only lists layers that have been visible at least once; use this to keep
+   * an off-by-default layer listed (for example, the "off" half of a mutually-exclusive group).
+   *
+   * Defaults to none when omitted, preserving existing legend behavior for other events.
+   */
+  legendForceShowLayerIds?: string[];
 }
 
 /**
@@ -193,6 +232,32 @@ export interface SpecialEventOption {
    * Optional display layout used by the builder accommodations step.
    */
   uiType?: 'default' | 'date-card-grid' | 'grouped-card-grid' | 'binary';
+
+  /**
+   * Optional visibility condition. When present, this option is only shown as a builder step (and only
+   * treated as required) when another option's saved value is one of `equalsAnyOf`.
+   *
+   * This enables conditional/branching builder flows without affecting events that omit it. For example,
+   * an Entry/Exit `direction` step can be shown only for the transportation modes that have both directions:
+   *
+   * ```
+   * visibleWhen: { setting: 'transport-type', equalsAnyOf: ['12th-man', 'personal-vehicle', 'micromobility'] }
+   * ```
+   *
+   * The referenced `setting` should generally appear earlier in the options array so its value is already
+   * chosen by the time this option would be shown.
+   */
+  visibleWhen?: {
+    /**
+     * The `value` (key) of another {@link SpecialEventOption} whose saved selection gates this option.
+     */
+    setting: string;
+
+    /**
+     * This option is only visible/required when the gating setting's saved value is one of these.
+     */
+    equalsAnyOf: Array<string | number | boolean>;
+  };
 
   choices: Array<EventAccommodationOption>;
 
