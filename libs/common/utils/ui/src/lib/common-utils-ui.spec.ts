@@ -24,7 +24,9 @@ describe('trackFocus', () => {
 
     expect(parent.classList.contains('focusing')).toBe(true);
 
-    child.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 13, bubbles: true }));
+    const keydownEvent = new KeyboardEvent('keydown', { bubbles: true });
+    Object.defineProperty(keydownEvent, 'keyCode', { value: 13 });
+    child.dispatchEvent(keydownEvent);
 
     expect(parent.classList.contains('focusing')).toBe(false);
   });
