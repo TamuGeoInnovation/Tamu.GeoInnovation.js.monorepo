@@ -172,6 +172,7 @@ export const GamesOfTexasTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'campus',
+    columnKey: 'summer',
     keywords: ['games of texas', 'parking', 'transportation', 'routes', 'event']
   }
 };

@@ -120,9 +120,9 @@ export const SoftballParkingColdLayerSources: LayerSource[] = [
 
 export const SoftballParkingConfiguration: EventConfiguration = {
   id: 'softball-parking',
-  name: 'Softball Map',
-  applicationName: 'Softball Parking Map',
-  shortApplicationName: 'Softball Parking Map',
+  name: 'Softball',
+  applicationName: 'Softball Parking',
+  shortApplicationName: 'Softball Parking',
   introductionText: 'Parking and transportation information for Texas A&M softball games.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/softball/schedule',

@@ -106,9 +106,9 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
 
 export const MensBasketball_Configuration: EventConfiguration = {
   id: 'mens-basketball',
-  name: "Men's Basketball Map",
-  applicationName: "Men's Basketball Parking Map",
-  shortApplicationName: "Men's Basketball Parking Map",
+  name: "Men's Basketball",
+  applicationName: "Men's Basketball Parking",
+  shortApplicationName: "Men's Basketball Parking",
   eventDates: [
     '2025-11-03',
     '2025-11-06',

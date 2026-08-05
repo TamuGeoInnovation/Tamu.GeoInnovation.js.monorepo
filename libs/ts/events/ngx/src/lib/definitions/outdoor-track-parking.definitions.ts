@@ -123,9 +123,9 @@ export const OutdoorTrackParkingColdLayerSources: LayerSource[] = [
 
 export const OutdoorTrackParkingConfiguration: EventConfiguration = {
   id: 'outdoor-track-parking',
-  name: 'Outdoor Track Map',
-  applicationName: 'Outdoor Track Parking Map',
-  shortApplicationName: 'Outdoor Track Parking Map',
+  name: 'Outdoor Track',
+  applicationName: 'Outdoor Track Parking',
+  shortApplicationName: 'Outdoor Track Parking',
   introductionText: 'Parking and transportation information for Texas A&M outdoor track events.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/track-and-field/schedule',

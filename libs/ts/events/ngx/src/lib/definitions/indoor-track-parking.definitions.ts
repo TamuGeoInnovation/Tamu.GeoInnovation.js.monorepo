@@ -172,9 +172,9 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
 
 export const IndoorTrackParkingConfiguration: EventConfiguration = {
   id: 'indoor-track-parking',
-  name: 'Indoor Track Map',
-  applicationName: 'Indoor Track Parking Map',
-  shortApplicationName: 'Indoor Track Parking Map',
+  name: 'Indoor Track',
+  applicationName: 'Indoor Track Parking',
+  shortApplicationName: 'Indoor Track Parking',
   introductionText: 'Parking and transportation information for Texas A&M indoor track events.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/track-and-field/schedule',

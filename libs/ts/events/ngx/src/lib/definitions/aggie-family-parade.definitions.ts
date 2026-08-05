@@ -119,6 +119,7 @@ export const AggieFamilyParadeTs: AggiemapCustomMapConfiguration = {
     description: 'Parade route and points of interest for the Aggie Family Parade.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['aggie', 'family', 'parade', 'route', '150']
   }
 };
