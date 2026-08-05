@@ -13,6 +13,7 @@ import {
 } from '../../interfaces/discover-application.interface';
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { getApplicationRoute, getEventDateRange, parseEventDate } from '../discover.utils';
+import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 /**
  * "All Maps" landing page. Surfaces the Visit Maps quick links, a map search, and the top upcoming
@@ -31,6 +32,7 @@ export class AllMapsComponent implements OnInit {
   private allApplications: DiscoverApplication[];
 
   public upcomingApplications: InternalDiscoverApplication[] = [];
+  public quickLinks: QuickLinkItem[] = [];
 
   public searchControl = new FormControl();
   public filteredApplications: Observable<DiscoverApplication[]>;
@@ -50,6 +52,10 @@ export class AllMapsComponent implements OnInit {
     this.internalApplications = this.discoveryService.getInternalDiscoverApplications();
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
     this.allApplications = this.discoveryService.getAllDiscoverApplications();
+    this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
+      label: app.name,
+      routerLink: getApplicationRoute(app)
+    }));
 
     this.filteredApplications = combineLatest([this.searchControl.valueChanges.pipe(startWith('')), this.isDev]).pipe(
       debounceTime(100),
