@@ -14,6 +14,14 @@ import { ExternalDiscoverApplications } from '../../definitions/external-discove
  * map pages and therefore excluded from the grouped parking columns.
  */
 export const FEATURED_PARKING_ID = 'ts-main-parking';
+const QUICK_LINK_ORDER = [
+  'ts-main-parking',
+  'visitor-parking',
+  'accessible-parking',
+  'timed-parking',
+  'night-weekend',
+  'break-summer'
+];
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +37,7 @@ export class DiscoveryService {
       type: event.discover?.type || 'event',
       mapType: event.discover?.mapType || (event.discover?.type === 'parking' ? 'parking' : event.discover?.type === 'operations' ? 'operations' : 'campus'),
       parkingCategory: event.discover?.parkingCategory,
+      showInQuickLinks: event.discover?.showInQuickLinks,
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
       configuration: event.configuration,
@@ -64,6 +73,29 @@ export class DiscoveryService {
 
   public getExternalDiscoverApplications(): ExternalDiscoverApplication[] {
     return ExternalDiscoverApplications;
+  }
+
+  public getQuickLinkApplications(): InternalDiscoverApplication[] {
+    const quickLinks = this.getInternalDiscoverApplications().filter((app) => app.showInQuickLinks === true);
+
+    return quickLinks.sort((a, b) => {
+      const orderA = QUICK_LINK_ORDER.indexOf(a.id);
+      const orderB = QUICK_LINK_ORDER.indexOf(b.id);
+
+      if (orderA === -1 && orderB === -1) {
+        return a.name.localeCompare(b.name);
+      }
+
+      if (orderA === -1) {
+        return 1;
+      }
+
+      if (orderB === -1) {
+        return -1;
+      }
+
+      return orderA - orderB;
+    });
   }
 
   public getAllDiscoverApplications(): DiscoverApplication[] {

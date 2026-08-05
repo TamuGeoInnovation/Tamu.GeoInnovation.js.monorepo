@@ -61,6 +61,7 @@ export const AccessibleParkingTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'parking',
     parkingCategory: 'general',
+    showInQuickLinks: true,
     keywords: ['accessible', 'parking', 'handicap', 'ada']
   }
 };

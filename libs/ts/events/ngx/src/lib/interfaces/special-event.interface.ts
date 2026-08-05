@@ -406,6 +406,12 @@ export interface DiscoverMetadata {
    * parking map falls back to the `general` column.
    */
   parkingCategory?: ParkingCategory;
+
+  /**
+   * Marks a discoverable map as eligible for the Quick Links section on the All Maps pages.
+   * Defaults to `false` when omitted.
+   */
+  showInQuickLinks?: boolean;
 }
 
 /**
