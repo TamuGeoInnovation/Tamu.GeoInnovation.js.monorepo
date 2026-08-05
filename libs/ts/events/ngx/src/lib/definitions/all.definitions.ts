@@ -22,7 +22,7 @@ import { VolleyballParkingTs } from './volleyball-parking.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
 import { NovemberRingDayEvent } from './november-ring-day.definitions';
-import { RingDayEvent } from './ring-day.definitions';
+import { RingDayEvent } from './october-ring-day.definitions';
 import { AprilRingDayEvent } from './april-ring-day.definitions';
 import { AggiemapCustomMapConfiguration } from '../interfaces/special-event.interface';
 import { MensBasketball_Ts } from './mens-basketball.definitions';

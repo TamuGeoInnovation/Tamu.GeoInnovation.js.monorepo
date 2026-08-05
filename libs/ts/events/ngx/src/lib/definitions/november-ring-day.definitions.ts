@@ -190,6 +190,7 @@ export const NovemberRingDayEvent: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     columnKey: 'fall',
+    visible: false,
     keywords: ['ring', 'day', 'aggie', 'ring day', 'transportation', 'parking', 'celebration']
   }
 };
