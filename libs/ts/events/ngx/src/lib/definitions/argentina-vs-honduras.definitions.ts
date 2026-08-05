@@ -192,6 +192,7 @@ export const ArgentinaVsHondurasTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for the Road to 26: Argentina vs. Honduras soccer match.',
     source: 'internal',
     type: 'event',
+    visible: false,
     columnKey: 'summer',
     keywords: ['road to 26', 'argentina', 'honduras', 'soccer', 'parking', 'shuttle', 'transportation']
   }

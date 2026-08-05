@@ -46,6 +46,15 @@ const routes: Routes = [
       title: 'Athletics Events',
       intro: 'Browse athletic event maps for gameday parking and transportation information.'
     }
+  },
+  {
+    path: 'operations',
+    component: EventMapsComponent,
+    data: {
+      mapType: 'operations',
+      title: 'Operations Maps',
+      intro: 'Browse operations-focused maps for campus construction and future internal-use overlays.'
+    }
   }
 ];
 

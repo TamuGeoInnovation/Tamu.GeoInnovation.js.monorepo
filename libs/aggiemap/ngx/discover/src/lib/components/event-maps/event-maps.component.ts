@@ -9,7 +9,7 @@ import { buildMapColumnGroups, getApplicationRoute, sortApplicationsByName, MapC
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 interface EventMapsRouteData {
-  mapType: Extract<DiscoverMapType, 'campus' | 'athletics'>;
+  mapType: Extract<DiscoverMapType, 'campus' | 'athletics' | 'operations'>;
   title: string;
   intro?: string;
   columns?: Array<MapColumnDefinition>;
