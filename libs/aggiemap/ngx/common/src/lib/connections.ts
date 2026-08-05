@@ -67,6 +67,12 @@ function createConnections(gisHost: string): IComposedConnections {
     gisDayUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/MSC_and_Rudder_Building_Polygon_Layer/FeatureServer',
     argentinaVsHondurasUrl: `https://${gisHost}/arcgis/rest/services/TS/Argentina_vs_Honduras26/MapServer`,
     fishCampUrl: `https://${gisHost}/arcgis/rest/services/TS/Fish_Camp/MapServer`,
+    // NOTE: TS/Bus_Routes is only published publicly on the dev GIS host — the prod host answers
+    // 499 "Token Required". It is pinned here (rather than host-derived) so bus-stop deep-links also
+    // resolve on localhost, whose host-derived value is the prod host. This mirrors the pin in
+    // BusService, which keeps its own copy of the URL because it lives in a low-level lib that cannot
+    // import connections. TODO: un-pin both to `${gisHost}` once TS/Bus_Routes is public on prod.
+    busRoutesUrl: `https://gis-dev.it.tamu.edu/arcgis/rest/services/TS/Bus_Routes/MapServer`,
     tCampUrl: `https://${gisHost}/arcgis/rest/services/TS/T_Camp/MapServer`,
     fireSchoolUrl: `https://${gisHost}/arcgis/rest/services/TS/Municipal_Fire_School_Vendor_Show/MapServer`,
     beefCattleUrl: `https://${gisHost}/arcgis/rest/services/TS/Beef_Cattle_Vendor_Load_In/MapServer`,
