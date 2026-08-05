@@ -132,9 +132,9 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
 
 export const WomensBasketball_Configuration: EventConfiguration = {
   id: 'womens-basketball',
-  name: "Women's Basketball Map",
-  applicationName: "Women's Basketball Parking Map",
-  shortApplicationName: "Women's Basketball Parking Map",
+  name: "Women's Basketball",
+  applicationName: "Women's Basketball Parking",
+  shortApplicationName: "Women's Basketball Parking",
   eventDates: [
     '2025-11-05',
     '2025-11-13',
