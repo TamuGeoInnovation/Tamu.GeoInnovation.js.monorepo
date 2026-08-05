@@ -1,7 +1,9 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
+import { ConstructionPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 import esri = __esri;
@@ -181,6 +183,14 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.CAMPUS_STOPS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'StopName',
+        collapsed: true
+      },
+      description: 'Route: {attributes.Route}'
+    },
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -193,6 +203,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.CONSTRUCTION.url,
     visible: true,
     listMode: 'show',
+    popupComponent: ConstructionPopupComponent,
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -205,6 +216,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.VISITOR_KIOSKS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
     native: {
       outFields: ['*']
     } as unknown as FeatureNative

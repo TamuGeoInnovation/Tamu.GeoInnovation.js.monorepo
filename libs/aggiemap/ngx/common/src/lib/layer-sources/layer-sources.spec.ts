@@ -123,6 +123,48 @@ describe('LayerSources', () => {
         name: 'Single Occupancy Restroom Locations',
         url: 'single-occupancy-restroom-locations-url',
         popupComponent: 'single-occupancy-restroom-locations-popup'
+      },
+      RNS_SPACES: {
+        id: 'rns-spaces',
+        layerId: 'rns-spaces',
+        name: 'RNS Spaces',
+        url: 'rns-spaces-url'
+      },
+      BIKE_DISMOUNT_ZONES: {
+        id: 'bike-dismount-zones',
+        layerId: 'bike-dismount-zones',
+        name: 'Bike Dismount Zones',
+        url: 'bike-dismount-zones-url'
+      },
+      CITY_BIKE_LANES_ROUTES: {
+        id: 'city-bike-lanes-routes',
+        layerId: 'city-bike-lanes-routes',
+        name: 'City Bike Lanes and Routes',
+        url: 'city-bike-lanes-routes-url'
+      },
+      CAMPUS_BIKE_LANES: {
+        id: 'campus-bike-lanes',
+        layerId: 'campus-bike-lanes',
+        name: 'Campus Bike Lanes',
+        url: 'campus-bike-lanes-url'
+      },
+      BIKE_FIX_STATIONS: {
+        id: 'bike-fix-stations',
+        layerId: 'bike-fix-stations',
+        name: 'Bike Fix Stations',
+        url: 'bike-fix-stations-url'
+      },
+      BIKE_RACKS_MAP: {
+        id: 'bike-racks-map',
+        layerId: 'bike-racks-map',
+        name: 'Bike Racks',
+        url: 'bike-racks-map-url'
+      },
+      EV_CHARGE_STATIONS: {
+        id: 'ev-charge-stations',
+        layerId: 'ev-charge-stations',
+        name: 'EV Charge Stations',
+        url: 'ev-charge-stations-url'
       }
     };
     options = { exclude: [] };
@@ -131,14 +173,14 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(16);
+    expect(result.length).toBe(17);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(14);
+    expect(result.length).toBe(15);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -147,7 +189,7 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(16);
+    expect(result.length).toBe(17);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {
@@ -172,19 +214,24 @@ describe('LayerSources', () => {
 
     expect(sustainableTransportationGroup?.type).toBe('group');
     expect(childTitles).toEqual([
-      'EV Charge Stations (Main + RELLIS)',
-      'Bike Fix Stations',
-      'Bike Lanes',
+      'Bike Dismount Zones',
       'City Bike Lanes and Routes',
+      'Campus Bike Lanes',
+      'Bike Fix Stations',
       'Bike Racks',
-      'Shared Mobility Racks',
-      'Hub Corral',
-      'Bike Dismount Zones'
+      'EV Charge Stations'
     ]);
     expect(childIds).toEqual(
-      expect.arrayContaining(['bike-racks-map-layer', 'shared-mobility-racks-layer', 'hub-corrals-layer'])
+      expect.arrayContaining([
+        'bike-dismount-zones',
+        'city-bike-lanes-routes',
+        'campus-bike-lanes',
+        'bike-fix-stations',
+        'bike-racks-map',
+        'ev-charge-stations'
+      ])
     );
-    expect(childIds.filter((id) => id === 'bike-racks-map-layer')).toHaveLength(1);
+    expect(childIds.filter((id) => id === 'bike-racks-map')).toHaveLength(1);
   });
 
 });

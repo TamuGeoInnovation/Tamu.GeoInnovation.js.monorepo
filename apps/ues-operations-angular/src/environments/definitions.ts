@@ -280,7 +280,14 @@ export const LayerSources: LayerSource[] = [
             title: 'Campus Stops',
             url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/2`,
             listMode: 'show',
-            popupComponent: Popups.BasePopupComponent,
+            popupComponent: Popups.MarkdownWDirectionsPopupComponent,
+            popupData: {
+              title: {
+                field: 'StopName',
+                collapsed: true
+              },
+              description: 'Route: {attributes.Route}'
+            },
             native: {
               ...commonLayerProps
             }
