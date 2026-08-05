@@ -118,6 +118,22 @@
   font-weight: 700;
 }
 
+:host ::ng-deep tamu-gisc-quick-links .related-links-box {
+  margin-left: 0;
+  max-width: none;
+  margin-bottom: 2.5rem;
+}
+
+:host ::ng-deep tamu-gisc-quick-links .related-links-superheader {
+  color: #500000;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
 @media (max-width: 768px) {
   .visit-maps-row {
     gap: 1.5rem;

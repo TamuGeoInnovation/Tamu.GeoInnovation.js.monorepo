@@ -52,8 +52,6 @@
       </div>
     </div>
 
-    <tamu-gisc-quick-links *ngIf="quickLinks.length > 0" [links]="quickLinks"></tamu-gisc-quick-links>
-
     <div class="search-section trailer-5">
       <h2>Search Maps</h2>
       <div class="search-input-container">
@@ -89,6 +87,8 @@
         </div>
       </ng-template>
     </div>
+
+    <tamu-gisc-quick-links *ngIf="quickLinks.length > 0" [links]="quickLinks"></tamu-gisc-quick-links>
 
     <div class="all-events-section trailer-3" *ngIf="(isDev | async) === true">
       <h2>All Events</h2>
