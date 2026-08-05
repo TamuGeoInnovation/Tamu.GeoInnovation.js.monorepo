@@ -29,6 +29,7 @@ export class DiscoveryService {
       type: event.discover?.type || 'event',
       mapType: event.discover?.mapType || (event.discover?.type === 'parking' ? 'parking' : event.discover?.type === 'operations' ? 'operations' : 'campus'),
       parkingCategory: event.discover?.parkingCategory,
+      columnKey: event.discover?.columnKey ?? event.discover?.parkingCategory,
       visible: event.discover?.visible ?? true,
       showInQuickLinks: event.discover?.showInQuickLinks,
       quickLinkOrder: event.discover?.quickLinkOrder,

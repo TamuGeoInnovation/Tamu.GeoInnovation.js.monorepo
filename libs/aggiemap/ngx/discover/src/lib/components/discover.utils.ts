@@ -33,6 +33,65 @@ export function buildApplicationColumns(apps: InternalDiscoverApplication[], col
   return result;
 }
 
+export interface MapColumnDefinition {
+  id: string;
+  heading: string;
+}
+
+export interface MapColumnGroup {
+  id: string;
+  heading?: string;
+  applications: InternalDiscoverApplication[];
+}
+
+/**
+ * Builds named columns when a page opts into column headers. Maps without a matching key fall back
+ * to the first configured column so they remain visible.
+ */
+export function buildNamedApplicationColumns(
+  apps: InternalDiscoverApplication[],
+  columnDefinitions: MapColumnDefinition[],
+  getColumnKey: (app: InternalDiscoverApplication) => string | undefined = (app) => app.columnKey
+): MapColumnGroup[] {
+  if (!columnDefinitions || columnDefinitions.length === 0) {
+    return buildApplicationColumns(apps, 3).map((applications, index) => ({
+      id: `column-${index + 1}`,
+      applications
+    }));
+  }
+
+  const groups = columnDefinitions.map((definition) => ({
+    id: definition.id,
+    heading: definition.heading,
+    applications: [] as InternalDiscoverApplication[]
+  }));
+
+  const groupLookup = new Map<string, MapColumnGroup>(
+    groups.map((group) => [group.id.trim().toLowerCase(), group])
+  );
+  const fallbackGroup = groups[0];
+
+  for (const app of apps) {
+    const columnKey = getColumnKey(app)?.trim().toLowerCase();
+    const group = columnKey ? groupLookup.get(columnKey) : undefined;
+
+    if (group) {
+      group.applications.push(app);
+      continue;
+    }
+
+    if (columnDefinitions.length > 0) {
+      console.warn(
+        `Missing or unknown column key for '${app.id}'. Falling back to '${fallbackGroup.heading ?? fallbackGroup.id}'.`
+      );
+    }
+
+    fallbackGroup.applications.push(app);
+  }
+
+  return groups;
+}
+
 /**
  * Index the second ordered-list column should start at so numbering continues across columns.
  */

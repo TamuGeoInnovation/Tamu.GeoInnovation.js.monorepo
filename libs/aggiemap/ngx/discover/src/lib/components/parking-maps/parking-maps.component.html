@@ -7,7 +7,7 @@
     <div class="maps-list-section trailer-3">
       <div class="parking-columns">
         <div class="parking-column" *ngFor="let column of columns">
-          <h2 class="parking-column-heading">{{ column.heading }}</h2>
+          <h2 class="parking-column-heading" *ngIf="column.heading">{{ column.heading }}</h2>
 
           <ul class="map-entry-list" *ngIf="column.applications.length > 0; else noColumnMaps">
             <li class="map-entry-item" *ngFor="let app of column.applications">

@@ -4,15 +4,25 @@
   margin: 0;
 }
 
-.event-link-item {
-  break-inside: avoid;
-}
-
 .event-columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem 2rem;
   max-width: 64rem;
+}
+
+.event-column-heading {
+  color: #500000;
+  font-family: 'Open Sans', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.45rem;
+  text-transform: none;
+  margin: 0 0 0.85rem;
+}
+
+.event-link-item {
+  break-inside: avoid;
 }
 
 @media (max-width: 768px) {

@@ -26,6 +26,7 @@ export interface InternalDiscoverApplication extends BaseDiscoverApplication {
   type: 'event' | 'parking' | 'operations';
   mapType: DiscoverMapType;
   parkingCategory?: ParkingCategory;
+  columnKey?: string;
   showInQuickLinks?: boolean;
   quickLinkOrder?: number;
   configuration: EventConfiguration;

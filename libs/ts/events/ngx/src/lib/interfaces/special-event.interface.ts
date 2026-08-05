@@ -413,6 +413,12 @@ export interface DiscoverMetadata {
   parkingCategory?: ParkingCategory;
 
   /**
+   * Optional column key used by map pages that render named columns.
+   * When omitted, the page should fall back to a safe default layout.
+   */
+  columnKey?: string;
+
+  /**
    * Marks a discoverable map as eligible for the Quick Links section on the All Maps pages.
    * Defaults to `false` when omitted.
    */

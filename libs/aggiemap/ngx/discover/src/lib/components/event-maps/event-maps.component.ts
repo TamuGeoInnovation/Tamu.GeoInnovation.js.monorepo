@@ -5,13 +5,14 @@ import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { buildApplicationColumns, getApplicationRoute, sortApplicationsByName } from '../discover.utils';
+import { buildApplicationColumns, buildNamedApplicationColumns, getApplicationRoute, sortApplicationsByName, MapColumnDefinition, MapColumnGroup } from '../discover.utils';
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 interface EventMapsRouteData {
   mapType: Extract<DiscoverMapType, 'campus' | 'athletics'>;
   title: string;
   intro?: string;
+  columns?: Array<MapColumnDefinition>;
 }
 
 /**
@@ -28,7 +29,7 @@ export class EventMapsComponent implements OnInit {
   public intro?: string;
 
   public applications: InternalDiscoverApplication[] = [];
-  public applicationColumns: InternalDiscoverApplication[][] = [];
+  public applicationColumns: MapColumnGroup[] = [];
   public quickLinks: QuickLinkItem[] = [];
   public readonly getApplicationRoute = getApplicationRoute;
 
@@ -47,6 +48,11 @@ export class EventMapsComponent implements OnInit {
     this.applications = sortApplicationsByName(
       this.discoveryService.getVisibleInternalDiscoverApplications().filter((app) => app.mapType === data.mapType)
     );
-    this.applicationColumns = buildApplicationColumns(this.applications, 3);
+    this.applicationColumns = data.columns
+      ? buildNamedApplicationColumns(this.applications, data.columns)
+      : buildApplicationColumns(this.applications, 3).map((applications, index) => ({
+          id: `column-${index + 1}`,
+          applications
+        }));
   }
 }
