@@ -8,10 +8,13 @@
 }
 
 :host .maps-list-section .parking-column-heading {
-  color: #500000;
-  font: italic 800 1.45rem 'Open Sans', sans-serif;
-  text-transform: none;
-  margin: 0 0 0.85rem;
+  color: #500000 !important;
+  font-family: 'Open Sans', sans-serif !important;
+  font-style: italic !important;
+  font-weight: 800 !important;
+  font-size: 1.45rem !important;
+  text-transform: none !important;
+  margin: 0 0 0.85rem !important;
 }
 
 @media (max-width: 768px) {
