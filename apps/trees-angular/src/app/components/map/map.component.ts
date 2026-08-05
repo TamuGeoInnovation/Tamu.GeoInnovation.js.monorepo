@@ -18,7 +18,7 @@ export class MapComponent {
         baseLayers: [
           {
             type: 'TileLayer',
-            url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
+            url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer',
             spatialReference: {
               wkid: 102100
             },

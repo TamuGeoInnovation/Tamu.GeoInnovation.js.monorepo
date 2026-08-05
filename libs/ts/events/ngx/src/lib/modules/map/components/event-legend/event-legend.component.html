@@ -1,3 +1,15 @@
+<ng-container *ngIf="sidebarInfo as info">
+  <div *ngFor="let section of info.sections" class="sidebar-info-section">
+    <div class="sidebar-component-name">
+      <p [ngStyle]="section.styleOverrides?.heading">{{ section.heading }}</p>
+    </div>
+    <p *ngIf="section.subheading" class="sidebar-info-subheading" [ngStyle]="section.styleOverrides?.subheading">{{ section.subheading }}</p>
+    <ul *ngIf="section.items?.length" class="sidebar-info-items" [ngStyle]="section.styleOverrides?.items">
+      <li *ngFor="let item of section.items" [ngStyle]="section.styleOverrides?.item">{{ item }}</li>
+    </ul>
+  </div>
+</ng-container>
+
 <tamu-gisc-legend
   [deduplicate]="deduplicate"
   [respectDefinitionExpression]="respectDefinitionExpression"

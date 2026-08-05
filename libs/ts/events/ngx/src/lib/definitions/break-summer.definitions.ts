@@ -136,7 +136,7 @@ export const BreakSummerConfiguration: EventConfiguration = {
           'Jan. 19, 2026 – MLK',
           'Mar. 9 – 13, 2026 – Spring Break',
           'May 10 – 25, 2026',
-          'Aug. 10 – 23, 2026'
+          'Aug. 10 – 21, 2026'
         ]
       },
       {

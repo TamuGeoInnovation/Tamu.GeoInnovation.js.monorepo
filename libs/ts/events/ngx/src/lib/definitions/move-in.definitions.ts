@@ -197,15 +197,16 @@ export const MoveInColdLayerSources: LayerSource[] = [
     title: 'Points of Interest',
     visible: true,
     listMode: 'show',
-    // All POI icons are off by default — the user opts into whichever they want. Bike, Keys, and
-    // No-Roadside-Parking are de-stretched (see `pinAspectRatioLegend`).
+    // All POI icons are on by default (Issue #887) so the whole map is legible at load; each stays
+    // independently toggleable. Bike, Keys, and No-Roadside-Parking are de-stretched (see
+    // `pinAspectRatioLegend`).
     sources: [
-      poiIconLayer(MOVE_IN_LAYERS.POI_KEYS, 'Keys', 'Check-In / Key Pickup', false, true),
-      poiIconLayer(MOVE_IN_LAYERS.POI_INFO, 'Info', 'Information', false),
-      poiIconLayer(MOVE_IN_LAYERS.POI_DINING, 'Dining', 'Dining', false),
-      poiIconLayer(MOVE_IN_LAYERS.POI_RECYCLE, 'Recycle', 'Cardboard Recycling', false),
-      poiIconLayer(MOVE_IN_LAYERS.POI_BIKE, 'Bike', 'Bike Registration', false, true),
-      poiIconLayer(MOVE_IN_LAYERS.POI_NO_PARKING, 'NoParking', 'No Roadside Parking', false, true)
+      poiIconLayer(MOVE_IN_LAYERS.POI_KEYS, 'Keys', 'Check-In / Key Pickup', true, true),
+      poiIconLayer(MOVE_IN_LAYERS.POI_INFO, 'Info', 'Information', true),
+      poiIconLayer(MOVE_IN_LAYERS.POI_DINING, 'Dining', 'Dining', true),
+      poiIconLayer(MOVE_IN_LAYERS.POI_RECYCLE, 'Recycle', 'Cardboard Recycling', true),
+      poiIconLayer(MOVE_IN_LAYERS.POI_BIKE, 'Bike', 'Bike Registration', true, true),
+      poiIconLayer(MOVE_IN_LAYERS.POI_NO_PARKING, 'NoParking', 'No Roadside Parking', true, true)
     ]
   },
   {
@@ -216,8 +217,8 @@ export const MoveInColdLayerSources: LayerSource[] = [
     listMode: 'show',
     sources: [
       streetLayer(MOVE_IN_LAYERS.STREETS_DROPOFF, `Type IN ('LZAllWeek', 'LZSundayOnly')`, 'Drop-Off Zones', true),
-      // Street closures: off by default (matches the lot closures), still independently toggleable.
-      streetLayer(MOVE_IN_LAYERS.STREETS_CLOSURES, `Type = 'LZNoParking'`, 'No Roadside Parking', false)
+      // Street closures: on by default (Issue #887), still independently toggleable.
+      streetLayer(MOVE_IN_LAYERS.STREETS_CLOSURES, `Type = 'LZNoParking'`, 'No Roadside Parking', true)
     ]
   },
   {
@@ -228,10 +229,11 @@ export const MoveInColdLayerSources: LayerSource[] = [
     listMode: 'show',
     sources: [
       lotLayer(MOVE_IN_LAYERS.LOTS_AVAILABLE, `Type NOT IN ('NoParking', 'Disabled')`, 'Available Lots', true),
-      // Accessible parking: hidden until the accessible-parking step opts in (Issues 5 & 6).
+      // Accessible parking: hidden until the accessible-parking step opts in (Issues 5 & 6). Left
+      // builder-controlled — the YES/NO step overrides this default, so Issue #887 doesn't touch it.
       lotLayer(MOVE_IN_LAYERS.LOTS_ACCESSIBLE, `Type = 'Disabled'`, 'Accessible Parking', false),
-      // Lot closures: off by default (Issue 3), still independently toggleable.
-      lotLayer(MOVE_IN_LAYERS.LOTS_CLOSURES, `Type = 'NoParking'`, 'Lot Closures', false)
+      // Lot closures: on by default (Issue #887), still independently toggleable.
+      lotLayer(MOVE_IN_LAYERS.LOTS_CLOSURES, `Type = 'NoParking'`, 'Lot Closures', true)
     ]
   }
 ];
@@ -261,12 +263,12 @@ enum MoveInBuilderOptions {
 }
 
 enum MoveInDateChoices {
+  AUG_18_2026 = '2026-08-18',
   AUG_19_2026 = '2026-08-19',
   AUG_20_2026 = '2026-08-20',
   AUG_21_2026 = '2026-08-21',
   AUG_22_2026 = '2026-08-22',
-  AUG_23_2026 = '2026-08-23',
-  AUG_24_2026 = '2026-08-24'
+  AUG_23_2026 = '2026-08-23'
 }
 
 enum MoveInHallChoices {
@@ -406,12 +408,12 @@ export const MoveInOptions: SpecialEventOptions = [
     description: 'Select your move-in day.',
     uiType: 'date-card-grid',
     choices: [
+      { value: MoveInDateChoices.AUG_18_2026, label: 'August 18, 2026' },
       { value: MoveInDateChoices.AUG_19_2026, label: 'August 19, 2026' },
       { value: MoveInDateChoices.AUG_20_2026, label: 'August 20, 2026' },
       { value: MoveInDateChoices.AUG_21_2026, label: 'August 21, 2026' },
       { value: MoveInDateChoices.AUG_22_2026, label: 'August 22, 2026' },
-      { value: MoveInDateChoices.AUG_23_2026, label: 'August 23, 2026' },
-      { value: MoveInDateChoices.AUG_24_2026, label: 'August 24, 2026' }
+      { value: MoveInDateChoices.AUG_23_2026, label: 'August 23, 2026' }
     ],
     effects: {
       layers: DATE_FILTERED_LAYER_IDS.map((layerId) => ({ layerId, conversions: dateConversions }))

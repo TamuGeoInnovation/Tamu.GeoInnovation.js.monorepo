@@ -5,7 +5,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import esri = __esri;
 
 export const Connections = {
-  basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
+  basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer',
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
@@ -567,7 +567,7 @@ export const SearchSources: SearchSource[] = [
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['Number', 'BldgAbbr', 'BldgName'],
+        keys: ['Number', 'BldgAbbrev', 'BldgName'],
         operators: ['LIKE', 'LIKE', 'LIKE'],
         wildcards: ['includes', 'includes', 'includes'],
         transformations: ['UPPER', 'UPPER', 'UPPER']
@@ -579,7 +579,7 @@ export const SearchSources: SearchSource[] = [
         transformations: ['UPPER']
       }
     },
-    scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
+    scoringKeys: ['attributes.BldgAbbrev', 'attributes.Number', 'attributes.BldgName'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: Popups.BuildingPopupComponent,

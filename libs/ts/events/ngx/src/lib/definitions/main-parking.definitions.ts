@@ -301,6 +301,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 42.428047,
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               family: 'Arial',
               size: 10,
@@ -323,6 +325,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 311.18826944,
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               size: 10,
               family: 'Arial',
@@ -345,6 +349,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 42.35101,
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               size: 7,
               family: 'Arial',
@@ -367,6 +373,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 310.998628,
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               size: 7,
               family: 'Arial',
@@ -387,6 +395,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 40,
             color: [27, 94, 32, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 6,
               family: 'Arial',
@@ -407,6 +417,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 310,
             color: [27, 94, 32, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 6,
               family: 'Arial',
@@ -427,6 +439,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 40,
             color: [230, 115, 0, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 10,
               family: 'Arial',
@@ -447,6 +461,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             type: 'text',
             angle: 310,
             color: [230, 115, 0, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 10,
               family: 'Arial',
@@ -462,7 +478,10 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
           labelExpressionInfo: {
             expression: `
               if ($feature.DeptSpc_YN != 1) { return ''; }
-              var num = Trim(Text($feature.Spc_ID_Num));
+              // RNS_Num is the authoritative reserved-space number (e.g. '9640'); Spc_ID_Num
+              // is only a fallback since it is empty in many lots.
+              var num = Trim(Text($feature.RNS_Num));
+              if (num == null || num == '' || num == 'null') { num = Trim(Text($feature.Spc_ID_Num)); }
               if (num == null || num == '' || num == 'null') { return 'DEPT. RESERVED'; }
               return 'DEPT. RESERVED' + TextFormatting.NewLine + num;
             `
@@ -471,6 +490,8 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
           symbol: {
             type: 'text',
             color: [80, 0, 0, 255],
+            haloColor: [255, 255, 255, 255],
+            haloSize: 1.5,
             font: {
               size: 8,
               family: 'Arial',
@@ -487,10 +508,18 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
             expression: `
               if ($feature.Anno_Type == 'H/C') { return ''; }
               if ($feature.DeptSpc_YN == 1) { return ''; }
-              var spcId = Trim(Text($feature.Spc_ID_Num));
-              if (spcId != null && spcId != '' && spcId != 'null') { return spcId; }
+              // Show whichever space-number field is populated, in priority order. RNS_Num is
+              // the reserved-numbered-space value and must win (it is the only populated field
+              // for reserved spaces in many lots, e.g. Lot 96 '9608'/Lot 97 '97024'). VisSpcNum
+              // is the visitor-space number, RV_SpcNum the RV number, and Spc_ID_Num a fallback.
+              var rnsNum = Trim(Text($feature.RNS_Num));
+              if (rnsNum != null && rnsNum != '' && rnsNum != 'null') { return rnsNum; }
+              var visNum = Trim(Text($feature.VisSpcNum));
+              if (visNum != null && visNum != '' && visNum != 'null') { return visNum; }
               var rvNum = Trim(Text($feature.RV_SpcNum));
               if (rvNum != null && rvNum != '' && rvNum != 'null') { return rvNum; }
+              var spcId = Trim(Text($feature.Spc_ID_Num));
+              if (spcId != null && spcId != '' && spcId != 'null') { return spcId; }
               return '';
             `
           },
@@ -498,13 +527,15 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
           symbol: {
             type: 'text',
             color: [255, 255, 255, 255],
+            haloColor: [38, 38, 38, 255],
+            haloSize: 1.5,
             font: {
               size: 9,
               family: 'Arial',
               weight: 'normal'
             }
           },
-          minScale: 400,
+          minScale: 1200,
           maxScale: 0,
           deconflictionStrategy: 'none'
         }

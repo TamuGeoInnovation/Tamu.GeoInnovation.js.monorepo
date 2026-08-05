@@ -133,7 +133,7 @@ export const SearchSources: SearchSource[] = [
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['Number', 'BldgAbbr', 'BldgName'],
+        keys: ['Number', 'BldgAbbrev', 'BldgName'],
         operators: ['LIKE', 'LIKE', 'LIKE'],
         wildcards: ['includes', 'includes', 'includes'],
         transformations: ['UPPER', 'UPPER', 'UPPER']
@@ -145,7 +145,7 @@ export const SearchSources: SearchSource[] = [
         transformations: ['UPPER']
       }
     },
-    scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
+    scoringKeys: ['attributes.BldgAbbrev', 'attributes.Number', 'attributes.BldgName'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: 'BuildingPopupComponent',

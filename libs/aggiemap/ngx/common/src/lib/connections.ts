@@ -1,6 +1,6 @@
 function createConnections(gisHost: string): IComposedConnections {
   return {
-    basemapUrl: `https://${gisHost}/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer`,
+    basemapUrl: `https://${gisHost}/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer`,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
     constructionUrl: `https://${gisHost}/arcgis/rest/services/FCOR/Construction_2018/MapServer`,
