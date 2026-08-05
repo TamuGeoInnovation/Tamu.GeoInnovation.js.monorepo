@@ -268,7 +268,7 @@ export function MainMapLayerSources(
       listMode: 'show',
       visible: false,
       essential: false,
-      layerIndex: 2,
+      layerIndex: 4,
       native: {
         ...commonLayerProps,
         definitionExpression: `EndDate > CAST('${new Date().toISOString()}' AS DATE ) AND Status = 'Active'`
@@ -338,7 +338,7 @@ export function MainMapLayerSources(
       popupComponent: definitions.SURFACE_LOTS.popupComponent,
       listMode: 'hide',
       visible: true,
-      layerIndex: 1,
+      layerIndex: 2,
       native: {
         ...commonLayerProps,
         legendEnabled: false,
@@ -361,6 +361,7 @@ export function MainMapLayerSources(
       popupComponent: definitions.VISITOR_PARKING.popupComponent,
       listMode: 'show',
       visible: false,
+      layerIndex: 3,
       native: {
         ...commonLayerProps
       }
@@ -374,7 +375,7 @@ export function MainMapLayerSources(
       url: definitions.RNS_SPACES.url,
       listMode: 'hide',
       visible: true,
-      layerIndex: 3,
+      layerIndex: 5,
       native: {
         ...commonLayerProps,
         legendEnabled: false,
