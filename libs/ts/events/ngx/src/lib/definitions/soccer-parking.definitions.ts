@@ -158,9 +158,9 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
 
 export const SoccerParkingConfiguration: EventConfiguration = {
   id: 'soccer-parking',
-  name: 'Soccer Map',
-  applicationName: 'Soccer Parking Map',
-  shortApplicationName: 'Soccer Parking Map',
+  name: 'Soccer',
+  applicationName: 'Soccer Parking',
+  shortApplicationName: 'Soccer Parking',
   introductionText: 'Parking and transportation information for Texas A&M soccer events.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/womens-soccer/schedule',

@@ -108,9 +108,9 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
 
 export const CrossCountryParkingConfiguration: EventConfiguration = {
   id: 'cross-country-parking',
-  name: 'Cross Country Map',
-  applicationName: 'Cross Country Parking Map',
-  shortApplicationName: 'Cross Country Parking Map',
+  name: 'Cross Country',
+  applicationName: 'Cross Country Parking',
+  shortApplicationName: 'Cross Country Parking',
   introductionText: 'Parking and transportation information for Texas A&M cross country events.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/mens-cross-country/schedule',

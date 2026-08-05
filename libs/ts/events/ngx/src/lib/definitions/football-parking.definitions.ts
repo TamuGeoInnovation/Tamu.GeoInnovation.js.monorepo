@@ -636,9 +636,9 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
 
 export const FootballParkingConfiguration: EventConfiguration = {
   id: 'gameday-parking',
-  name: 'Football Map',
-  applicationName: 'Football Transportation Map',
-  shortApplicationName: 'Football Map',
+  name: 'Football',
+  applicationName: 'Football Transportation',
+  shortApplicationName: 'Football',
   introductionText: 'Get the best transportation and parking information for game days.',
   // 2026 home schedule (7 home dates at Kyle Field), per the SEC-released schedule:
   // 9/5 Missouri State, 9/12 Arizona State, 9/19 Kentucky, 10/3 Arkansas, 10/17 The Citadel,
