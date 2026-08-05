@@ -4,7 +4,7 @@
   <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" *ngIf="!isMobile" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
     <span class="material-icons">help</span>
     <div class="topics">
-      <p><a routerLink="/discover" tabindex="0">All Maps</a></p>
+      <p><a routerLink="/all-maps" tabindex="0">All Maps</a></p>
       <p><a routerLink="/about" tabindex="0">About Aggie Map</a></p>
       <p><a routerLink="/instructions" tabindex="0">Map Instructions</a></p>
       <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
@@ -31,7 +31,7 @@
   <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
     <div class="map-overlay-ui">
       <div class="overlay-zone top left">
-        <a class="all-maps-button esri-component esri-widget" routerLink="/discover" aria-label="Open All Maps">ALL MAPS</a>
+        <a class="all-maps-button esri-component esri-widget" routerLink="/all-maps" aria-label="Open All Maps">ALL MAPS</a>
         <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
       </div>
 

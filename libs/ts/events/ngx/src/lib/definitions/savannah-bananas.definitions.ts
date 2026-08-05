@@ -207,6 +207,7 @@ export const SavannahBananasParkingTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'athletics',
+    visible: false,
     keywords: ['savannah bananas', 'texas tailgaters', 'kyle field', 'parking', 'transportation']
   }
 };

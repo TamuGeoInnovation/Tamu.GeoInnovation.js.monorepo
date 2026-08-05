@@ -72,6 +72,7 @@ export const RetireeParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking lot information for Retiree permits.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'permit',
     keywords: ['retiree', 'parking', 'permit']
   }
 };

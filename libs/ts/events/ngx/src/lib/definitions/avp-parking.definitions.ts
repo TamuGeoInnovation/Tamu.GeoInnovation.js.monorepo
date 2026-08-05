@@ -73,6 +73,7 @@ export const AVPParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking lot information for AVP permits.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'permit',
     keywords: ['avp', 'parking', 'permit']
   }
 };

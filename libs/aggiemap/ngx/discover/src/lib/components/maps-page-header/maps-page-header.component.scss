@@ -1,0 +1,67 @@
+:host {
+  display: block;
+}
+
+.dotted-divider {
+  border-top: 2px dotted #d0d0d0;
+}
+
+.maps-page-header-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+// Directory pages (Parking / Campus / Athletics): strong condensed maroon Oswald, but controlled —
+// smaller and lighter than a hero banner so it doesn't overpower the body copy beneath it.
+.maps-page-title {
+  color: #500000;
+  font-weight: 600;
+  font-size: 2.2rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin: 0 0 0.6rem;
+}
+
+.maps-page-intro {
+  color: #333;
+  max-width: 78ch;
+  margin: 0;
+}
+
+// Controlled utility button — not a hero element. Kept compact so it doesn't dominate the header.
+.main-parking-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.1rem;
+  padding: 0 2rem;
+  background: #500000;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus {
+    background: #3d0000;
+  }
+}
+
+@media (max-width: 768px) {
+  .maps-page-header-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .main-parking-button {
+    width: 100%;
+    text-align: center;
+  }
+}

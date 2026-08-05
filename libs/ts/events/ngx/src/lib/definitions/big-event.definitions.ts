@@ -325,6 +325,7 @@ export const BigEventTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for Big Event.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['big event', 'parking', 'transportation']
   }
 };

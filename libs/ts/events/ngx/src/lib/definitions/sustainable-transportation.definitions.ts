@@ -192,6 +192,7 @@ export const SustainableTransportationTs: AggiemapCustomMapConfiguration = {
     description: 'Bike amenities and EV charging locations for Main Campus and the RELLIS Campus.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'general',
     keywords: [
       'sustainable transportation',
       'bike',

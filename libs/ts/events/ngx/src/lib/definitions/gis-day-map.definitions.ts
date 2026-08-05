@@ -94,6 +94,7 @@ export const GisDayTs: AggiemapCustomMapConfiguration = {
     description: 'Building and parking location information for GIS Day.',
     source: 'internal',
     type: 'event',
+    columnKey: 'fall',
     keywords: ['gis', 'msc', 'rudder', 'parking']
   }
 };

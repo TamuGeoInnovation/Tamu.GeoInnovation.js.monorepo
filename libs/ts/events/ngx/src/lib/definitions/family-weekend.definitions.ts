@@ -224,6 +224,7 @@ export const FamilyWeekendTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for Family Weekend.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['family', 'weekend', 'parking', 'shuttles', 'transportation']
   }
 };

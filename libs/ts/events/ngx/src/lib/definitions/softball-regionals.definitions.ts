@@ -124,6 +124,7 @@ export const SoftballRegionalsTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'athletics',
+    visible: false,
     keywords: ['softball', 'regionals', 'parking', 'transportation']
   }
 };

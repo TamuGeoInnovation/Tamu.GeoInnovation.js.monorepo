@@ -486,6 +486,7 @@ export const MoveInTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'parking',
     mapType: 'campus',
+    columnKey: 'fall',
     keywords: ['move in', 'fall move in', 'parking', 'transportation']
   }
 };

@@ -1,4 +1,4 @@
-import { DiscoverMapType, EventConfiguration } from '@tamu-gisc/ts/events/ngx';
+import { DiscoverMapType, EventConfiguration, ParkingCategory } from '@tamu-gisc/ts/events/ngx';
 
 interface BaseDiscoverApplication {
   id: string;
@@ -6,6 +6,7 @@ interface BaseDiscoverApplication {
   description: string;
   thumbnail?: string;
   keywords?: string[];
+  visible?: boolean;
   /**
    * Optional labels to display on the application card (e.g., "New", "Beta", etc.)
    *
@@ -24,6 +25,10 @@ export interface InternalDiscoverApplication extends BaseDiscoverApplication {
   source: 'internal';
   type: 'event' | 'parking' | 'operations';
   mapType: DiscoverMapType;
+  parkingCategory?: ParkingCategory;
+  columnKey?: string;
+  showInQuickLinks?: boolean;
+  quickLinkOrder?: number;
   configuration: EventConfiguration;
 }
 

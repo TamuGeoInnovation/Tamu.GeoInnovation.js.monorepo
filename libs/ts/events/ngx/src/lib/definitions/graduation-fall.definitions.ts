@@ -286,6 +286,7 @@ export const GraduationFallEventTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for fall graduation ceremonies.',
     source: 'internal',
     type: 'event',
+    columnKey: 'fall',
     keywords: ['graduation', 'commencement', 'parking', 'transportation']
   }
 };

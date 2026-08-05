@@ -568,6 +568,8 @@ export const TsMainParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Main parking map with lot information.',
     source: 'internal',
     type: 'parking',
+    showInQuickLinks: true,
+    quickLinkOrder: 1,
     keywords: ['main', 'parking', 'map', 'lots', 'construction', 'bus', 'kiosk', 'rns', 'line paint']
   }
 };
