@@ -5,24 +5,7 @@
     ></tamu-gisc-maps-page-header>
 
     <div class="maps-list-section trailer-3">
-      <div class="parking-columns">
-        <div class="parking-column" *ngFor="let column of columns">
-          <h2 class="parking-column-heading" *ngIf="column.heading">{{ column.heading }}</h2>
-
-          <ul class="map-entry-list" *ngIf="column.applications.length > 0; else noColumnMaps">
-            <li class="map-entry-item" *ngFor="let app of column.applications">
-              <a class="map-entry" [routerLink]="getApplicationRoute(app)">
-                <span class="map-entry-icon" aria-hidden="true"></span>
-                <span class="map-entry-label">{{ app.name }}</span>
-              </a>
-            </li>
-          </ul>
-
-          <ng-template #noColumnMaps>
-            <p class="section-description">No maps available.</p>
-          </ng-template>
-        </div>
-      </div>
+      <tamu-gisc-aggiemap-map-columns [columns]="columns" [getApplicationRoute]="getApplicationRoute"></tamu-gisc-aggiemap-map-columns>
     </div>
 
     <!--

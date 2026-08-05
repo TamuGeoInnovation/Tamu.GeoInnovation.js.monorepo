@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { buildNamedApplicationColumns, getApplicationRoute, MapColumnDefinition, MapColumnGroup } from '../discover.utils';
+import { buildMapColumnGroups, getApplicationRoute, MapColumnDefinition, MapColumnGroup, sortApplicationsByName } from '../discover.utils';
 
 /**
  * Parking Maps page. Renders the parking maps grouped into the General / Business / Permit columns
@@ -25,10 +25,12 @@ export class ParkingMapsComponent implements OnInit {
   constructor(private readonly discoveryService: DiscoveryService) {}
 
   public ngOnInit(): void {
-    const applications = this.discoveryService
-      .getVisibleInternalDiscoverApplications()
-      .filter((app) => app.mapType === 'parking' && app.id !== 'ts-main-parking');
+    const applications = sortApplicationsByName(
+      this.discoveryService
+        .getVisibleInternalDiscoverApplications()
+        .filter((app) => app.mapType === 'parking' && app.id !== 'ts-main-parking')
+    );
 
-    this.columns = buildNamedApplicationColumns(applications, this.columnDefinitions, (app) => app.columnKey ?? app.parkingCategory);
+    this.columns = buildMapColumnGroups(applications, this.columnDefinitions, (app) => app.columnKey ?? app.parkingCategory);
   }
 }

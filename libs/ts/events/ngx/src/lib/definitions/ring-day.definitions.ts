@@ -242,6 +242,7 @@ export const RingDayEvent: AggiemapCustomMapConfiguration = {
     description: 'Transportation and logistics information for Ring Day celebrations.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['ring', 'day', 'aggie', 'ring day', 'transportation', 'parking', 'celebration']
   }
 };

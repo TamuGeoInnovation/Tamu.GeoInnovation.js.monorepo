@@ -1,0 +1,26 @@
+@import '../discover-shared';
+
+.parking-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.15rem 3rem;
+  max-width: 78rem;
+}
+
+// Title-case (not uppercase), italic, bold, maroon — Open Sans.
+.maps-list-section .parking-column-heading {
+  color: #500000;
+  font-family: 'Open Sans', sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 1.45rem;
+  text-transform: none;
+  margin: 0 0 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .parking-columns {
+    grid-template-columns: 1fr;
+    gap: 0.5rem 2rem;
+  }
+}

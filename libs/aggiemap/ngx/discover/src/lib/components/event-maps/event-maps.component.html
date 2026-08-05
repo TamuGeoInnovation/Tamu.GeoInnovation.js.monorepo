@@ -2,26 +2,7 @@
     <tamu-gisc-maps-page-header [title]="title" [intro]="intro"></tamu-gisc-maps-page-header>
 
     <div class="maps-list-section trailer-3">
-      <div class="event-columns" *ngIf="applicationColumns.length > 0; else noEvents">
-        <div class="event-column" *ngFor="let column of applicationColumns">
-          <h2 class="event-column-heading" *ngIf="column.heading">{{ column.heading }}</h2>
-
-          <ul class="event-links map-entry-list">
-            <li class="event-link-item map-entry-item" *ngFor="let app of column.applications">
-            <a class="map-entry" [routerLink]="getApplicationRoute(app)">
-              <span class="map-entry-icon" aria-hidden="true"></span>
-              <span class="map-entry-label">{{ app.name }}</span>
-            </a>
-          </li>
-          </ul>
-        </div>
-      </div>
-
-      <ng-template #noEvents>
-        <div class="empty-state">
-          <p>No event maps are available right now.</p>
-        </div>
-      </ng-template>
+      <tamu-gisc-aggiemap-map-columns [columns]="applicationColumns" [getApplicationRoute]="getApplicationRoute" noMapsMessage="No event maps are available right now."></tamu-gisc-aggiemap-map-columns>
     </div>
 
     <tamu-gisc-quick-links [links]="quickLinks"></tamu-gisc-quick-links>

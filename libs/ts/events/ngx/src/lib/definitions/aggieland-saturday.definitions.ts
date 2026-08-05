@@ -240,6 +240,7 @@ export const AggielandSaturdayEventTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for Aggieland Saturday.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['aggieland', 'saturday', 'parking', 'bus', 'transportation']
   }
 };

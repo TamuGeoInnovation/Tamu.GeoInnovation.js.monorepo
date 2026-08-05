@@ -93,6 +93,25 @@ export function buildNamedApplicationColumns(
 }
 
 /**
+ * Builds column groups for a map page, using named columns when configured and a balanced fallback
+ * when the page does not define column headers.
+ */
+export function buildMapColumnGroups(
+  apps: InternalDiscoverApplication[],
+  columnDefinitions?: MapColumnDefinition[],
+  getColumnKey: (app: InternalDiscoverApplication) => string | undefined = (app) => app.columnKey
+): MapColumnGroup[] {
+  if (columnDefinitions && columnDefinitions.length > 0) {
+    return buildNamedApplicationColumns(apps, columnDefinitions, getColumnKey);
+  }
+
+  return buildApplicationColumns(apps, 3).map((applications, index) => ({
+    id: `column-${index + 1}`,
+    applications
+  }));
+}
+
+/**
  * Index the second ordered-list column should start at so numbering continues across columns.
  */
 export function getSecondColumnStart(columns: InternalDiscoverApplication[][]): number {

@@ -68,6 +68,7 @@ export const TroubadourTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for Troubadour Festival.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['troubadour', 'festival', 'parking', 'transportation']
   }
 };
