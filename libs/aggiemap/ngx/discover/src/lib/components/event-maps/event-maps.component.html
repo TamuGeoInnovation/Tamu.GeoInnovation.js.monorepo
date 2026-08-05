@@ -2,14 +2,16 @@
     <tamu-gisc-maps-page-header [title]="title" [intro]="intro"></tamu-gisc-maps-page-header>
 
     <div class="maps-list-section trailer-3">
-      <ul class="event-links map-entry-list" *ngIf="applications.length > 0; else noEvents">
-        <li class="event-link-item map-entry-item" *ngFor="let app of applications">
-          <a class="map-entry" [routerLink]="getApplicationRoute(app)">
-            <span class="map-entry-icon" aria-hidden="true"></span>
-            <span class="map-entry-label">{{ app.name }}</span>
-          </a>
-        </li>
-      </ul>
+      <div class="event-columns" *ngIf="applicationColumns.length > 0; else noEvents">
+        <ul class="event-links map-entry-list" *ngFor="let column of applicationColumns">
+          <li class="event-link-item map-entry-item" *ngFor="let app of column">
+            <a class="map-entry" [routerLink]="getApplicationRoute(app)">
+              <span class="map-entry-icon" aria-hidden="true"></span>
+              <span class="map-entry-label">{{ app.name }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
       <ng-template #noEvents>
         <div class="empty-state">

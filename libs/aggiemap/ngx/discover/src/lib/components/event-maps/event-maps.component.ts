@@ -5,7 +5,7 @@ import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { getApplicationRoute, sortApplicationsByName } from '../discover.utils';
+import { buildApplicationColumns, getApplicationRoute, sortApplicationsByName } from '../discover.utils';
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 interface EventMapsRouteData {
@@ -28,6 +28,7 @@ export class EventMapsComponent implements OnInit {
   public intro?: string;
 
   public applications: InternalDiscoverApplication[] = [];
+  public applicationColumns: InternalDiscoverApplication[][] = [];
   public quickLinks: QuickLinkItem[] = [];
   public readonly getApplicationRoute = getApplicationRoute;
 
@@ -46,5 +47,6 @@ export class EventMapsComponent implements OnInit {
     this.applications = sortApplicationsByName(
       this.discoveryService.getVisibleInternalDiscoverApplications().filter((app) => app.mapType === data.mapType)
     );
+    this.applicationColumns = buildApplicationColumns(this.applications, 3);
   }
 }

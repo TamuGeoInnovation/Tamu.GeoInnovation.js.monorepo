@@ -1,15 +1,22 @@
 @import '../discover-shared';
 
 .event-links {
-  column-count: 3;
-  column-gap: 3rem;
-  max-width: 64rem;
-
-  @media (max-width: 768px) {
-    column-count: 1;
-  }
+  margin: 0;
 }
 
 .event-link-item {
   break-inside: avoid;
+}
+
+.event-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem 2rem;
+  max-width: 64rem;
+}
+
+@media (max-width: 768px) {
+  .event-columns {
+    grid-template-columns: 1fr;
+  }
 }

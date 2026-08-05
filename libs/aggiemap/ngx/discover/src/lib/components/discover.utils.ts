@@ -10,11 +10,27 @@ export function getApplicationRoute(app: InternalDiscoverApplication): string[] 
 }
 
 /**
- * Splits a list of applications into two roughly even columns for the two-column link layouts.
+ * Splits a list of applications into evenly sized columns for the link layouts.
  */
-export function buildApplicationColumns(apps: InternalDiscoverApplication[]): InternalDiscoverApplication[][] {
-  const midpoint = Math.ceil(apps.length / 2);
-  return [apps.slice(0, midpoint), apps.slice(midpoint)];
+export function buildApplicationColumns(apps: InternalDiscoverApplication[], columnCount = 2): InternalDiscoverApplication[][] {
+  if (apps.length === 0) {
+    return [];
+  }
+
+  const columns = Math.max(1, Math.min(columnCount, apps.length));
+  const baseSize = Math.floor(apps.length / columns);
+  const remainder = apps.length % columns;
+
+  const result: InternalDiscoverApplication[][] = [];
+  let start = 0;
+
+  for (let index = 0; index < columns; index++) {
+    const size = baseSize + (index < remainder ? 1 : 0);
+    result.push(apps.slice(start, start + size));
+    start += size;
+  }
+
+  return result;
 }
 
 /**
