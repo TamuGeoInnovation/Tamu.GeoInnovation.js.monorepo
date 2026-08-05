@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
+import { EventConfiguration } from '@tamu-gisc/ts/events/ngx';
+
+import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { DiscoveryService } from './discovery.service';
 
 describe('DiscoveryService', () => {
@@ -43,4 +46,42 @@ describe('DiscoveryService', () => {
 
     expect(constructionMap?.mapType).toBe('operations');
   });
+
+  it('treats visible maps as public by default', () => {
+    const applications = service.getInternalDiscoverApplications();
+    const aggielandSaturday = applications.find((app) => app.id === 'aggieland-saturday');
+
+    expect(aggielandSaturday?.visible).toBeTrue();
+  });
+
+  it('filters hidden maps from the public discover lists', () => {
+    const visibleApp = createDiscoverApplication({ id: 'visible', showInQuickLinks: true });
+    const hiddenApp = createDiscoverApplication({ id: 'hidden', visible: false, showInQuickLinks: true });
+
+    spyOn(service, 'getInternalDiscoverApplications').and.returnValue([visibleApp, hiddenApp]);
+
+    expect(service.getVisibleInternalDiscoverApplications()).toEqual([visibleApp]);
+    expect(service.getQuickLinkApplications()).toEqual([visibleApp]);
+  });
 });
+
+function createDiscoverApplication(overrides: Partial<InternalDiscoverApplication> = {}): InternalDiscoverApplication {
+  const configuration: EventConfiguration = {
+    id: overrides.id ?? 'test-map',
+    name: overrides.name ?? 'Test Map',
+    applicationName: 'Test Application',
+    shortApplicationName: 'Test App',
+    eventDates: []
+  };
+
+  return {
+    id: 'test-map',
+    name: 'Test Map',
+    description: '',
+    source: 'internal',
+    type: 'event',
+    mapType: 'campus',
+    configuration,
+    ...overrides
+  };
+}

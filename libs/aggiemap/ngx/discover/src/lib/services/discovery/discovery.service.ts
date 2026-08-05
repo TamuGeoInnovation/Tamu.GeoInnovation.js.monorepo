@@ -29,6 +29,7 @@ export class DiscoveryService {
       type: event.discover?.type || 'event',
       mapType: event.discover?.mapType || (event.discover?.type === 'parking' ? 'parking' : event.discover?.type === 'operations' ? 'operations' : 'campus'),
       parkingCategory: event.discover?.parkingCategory,
+      visible: event.discover?.visible ?? true,
       showInQuickLinks: event.discover?.showInQuickLinks,
       quickLinkOrder: event.discover?.quickLinkOrder,
       name: event.discover?.name || event.configuration.name,
@@ -51,7 +52,7 @@ export class DiscoveryService {
       permit: []
     };
 
-    this.getInternalDiscoverApplications()
+    this.getVisibleInternalDiscoverApplications()
       .filter((app) => app.mapType === 'parking' && app.id !== FEATURED_PARKING_ID)
       .forEach((app) => {
         groups[app.parkingCategory ?? 'general'].push(app);
@@ -69,7 +70,7 @@ export class DiscoveryService {
   }
 
   public getQuickLinkApplications(): InternalDiscoverApplication[] {
-    const quickLinks = this.getInternalDiscoverApplications()
+    const quickLinks = this.getVisibleInternalDiscoverApplications()
       .map((app, index) => ({ app, index }))
       .filter(({ app }) => app.showInQuickLinks === true);
 
@@ -101,6 +102,10 @@ export class DiscoveryService {
       });
 
     return resolved.map(({ app }) => app);
+  }
+
+  public getVisibleInternalDiscoverApplications(): InternalDiscoverApplication[] {
+    return this.getInternalDiscoverApplications().filter((app) => app.visible !== false);
   }
 
   private resolveQuickLinkOrder(

@@ -44,7 +44,7 @@ export class EventMapsComponent implements OnInit {
 
     // Category pages are a navigation directory of every map of this type, not an upcoming-only list.
     this.applications = sortApplicationsByName(
-      this.discoveryService.getInternalDiscoverApplications().filter((app) => app.mapType === data.mapType)
+      this.discoveryService.getVisibleInternalDiscoverApplications().filter((app) => app.mapType === data.mapType)
     );
   }
 }

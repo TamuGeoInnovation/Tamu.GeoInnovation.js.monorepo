@@ -79,7 +79,8 @@ export class AllMapsComponent implements OnInit {
   private getUpcomingApplications(): InternalDiscoverApplication[] {
     const now = Date.now();
 
-    return this.internalApplications
+    return this.discoveryService
+      .getVisibleInternalDiscoverApplications()
       .map((app) => ({
         app,
         earliestUpcomingDate: this.getEarliestUpcomingDate(app.configuration.eventDates, now)
@@ -99,7 +100,9 @@ export class AllMapsComponent implements OnInit {
   }
 
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
-    const filtered = isDev ? this.allApplications : this.allApplications.filter((app) => app.type !== 'experiment');
+    const filtered = isDev
+      ? this.allApplications
+      : this.allApplications.filter((app) => app.source === 'external' || app.visible !== false);
 
     if (!value) {
       return filtered.slice(0, 10);

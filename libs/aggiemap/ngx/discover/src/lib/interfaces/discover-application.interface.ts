@@ -6,6 +6,7 @@ interface BaseDiscoverApplication {
   description: string;
   thumbnail?: string;
   keywords?: string[];
+  visible?: boolean;
   /**
    * Optional labels to display on the application card (e.g., "New", "Beta", etc.)
    *

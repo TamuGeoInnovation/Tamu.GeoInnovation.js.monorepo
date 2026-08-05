@@ -386,6 +386,11 @@ export interface DiscoverMetadata {
   thumbnail?: string;
   keywords?: string[];
   /**
+   * Controls whether the map appears in public discover lists.
+   * Defaults to `true` when omitted.
+   */
+  visible?: boolean;
+  /**
    * Optional labels to display on the application card (e.g., "New", "Beta", etc.)
    *
    * These will generally be used as chips or badges and are intended to be used to supplement the `type` field.
