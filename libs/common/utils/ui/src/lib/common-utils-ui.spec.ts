@@ -12,13 +12,15 @@ describe('trackFocus', () => {
 
     const wrapper = document.createElement('div');
     const parent = document.createElement('div');
+    const trigger = document.createElement('input');
     const child = document.createElement('button');
 
+    parent.appendChild(trigger);
     parent.appendChild(child);
     wrapper.appendChild(parent);
     document.body.appendChild(wrapper);
 
-    trackFocus({ currentTarget: child }, 'parentElement');
+    trackFocus({ currentTarget: trigger }, 'parentElement');
 
     expect(parent.classList.contains('focusing')).toBe(true);
 
@@ -32,13 +34,15 @@ describe('trackFocus', () => {
 
     const wrapper = document.createElement('div');
     const parent = document.createElement('div');
+    const trigger = document.createElement('input');
     const child = document.createElement('button');
 
+    parent.appendChild(trigger);
     parent.appendChild(child);
     wrapper.appendChild(parent);
     document.body.appendChild(wrapper);
 
-    trackFocus({ currentTarget: child }, 'parentElement');
+    trackFocus({ currentTarget: trigger }, 'parentElement');
 
     expect(parent.classList.contains('focusing')).toBe(true);
 
