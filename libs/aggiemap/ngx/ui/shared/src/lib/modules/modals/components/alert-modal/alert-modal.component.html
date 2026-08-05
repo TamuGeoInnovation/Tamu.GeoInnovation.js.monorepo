@@ -1,0 +1,14 @@
+<div class="alert-modal">
+  <div class="alert-modal__header">
+    <h2 class="alert-modal__title">{{ title }}</h2>
+  </div>
+
+  <div class="alert-modal__body">
+    <p [innerHTML]="message"></p>
+  </div>
+
+  <div class="alert-modal__footer">
+    <tamu-gisc-button *ngIf="secondaryText" [value]="secondaryText" fit="relaxed" look="secondary" (click)="secondary()"></tamu-gisc-button>
+    <tamu-gisc-button [value]="primaryText" fit="relaxed" (click)="primary()"></tamu-gisc-button>
+  </div>
+</div>

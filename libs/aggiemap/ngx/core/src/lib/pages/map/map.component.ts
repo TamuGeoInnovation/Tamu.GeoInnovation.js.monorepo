@@ -12,7 +12,7 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-import { BetaPromptComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { BetaPromptComponent, AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import { EventNotificationsService } from '../../services/event-notifications/event-notifications.service';
 
@@ -110,27 +110,33 @@ export class MapComponent implements OnInit, OnDestroy {
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
 
-    this.ss
-      .init({
-        storage: {
-          subKey: 'modals'
-        },
-        settings: {
-          beta_acknowledge: {
-            value: false,
-            persistent: true
-          }
-        }
-      })
-      .pipe(
-        filter((settings) => {
-          return settings['beta_acknowledge'] === false;
-        }),
-        withLatestFrom(this.isDev)
-      )
-      .subscribe(([, isDev]) => {
-        this.openBetaModal(isDev);
-      });
+    /*
+     * Old beta popup flow.
+     * Kept here for now in case we need to restore it later, but the dev-only
+     * AGGIEMAP BETA popup already covers this behavior.
+     *
+     * this.ss
+     *   .init({
+     *     storage: {
+     *       subKey: 'modals'
+     *     },
+     *     settings: {
+     *       beta_acknowledge: {
+     *         value: false,
+     *         persistent: true
+     *       }
+     *     }
+     *   })
+     *   .pipe(
+     *     filter((settings) => {
+     *       return settings['beta_acknowledge'] === false;
+     *     }),
+     *     withLatestFrom(this.isDev)
+     *   )
+     *   .subscribe(([, isDev]) => {
+     *     this.openBetaModal(isDev);
+     *   });
+     */
   }
 
   public ngOnDestroy() {
@@ -197,13 +203,22 @@ export class MapComponent implements OnInit, OnDestroy {
   public openBetaModal(shouldOpen: boolean) {
     if (shouldOpen) {
       this.ms
-        .open<boolean>(BetaPromptComponent)
+        .open<boolean>(AlertModalComponent, {
+          data: {
+            title: 'Beta Feature',
+            message:
+              'You are viewing a beta feature. Functionality and content may change. Please provide feedback if you find issues.',
+            primaryText: 'Acknowledge',
+            persistKey: 'beta_acknowledge'
+          }
+        })
         .pipe(
           filter((acknowledged) => {
             return acknowledged;
           })
         )
         .subscribe(() => {
+          // Keep existing update for compatibility; AlertModal also persists using the provided persistKey.
           this.updateModalSettings();
         });
     }
