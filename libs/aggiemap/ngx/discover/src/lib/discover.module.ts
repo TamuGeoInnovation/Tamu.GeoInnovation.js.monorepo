@@ -12,6 +12,7 @@ import { AllMapsComponent } from './components/all-maps/all-maps.component';
 import { ParkingMapsComponent } from './components/parking-maps/parking-maps.component';
 import { EventMapsComponent } from './components/event-maps/event-maps.component';
 import { MapsPageHeaderComponent } from './components/maps-page-header/maps-page-header.component';
+import { QuickLinksComponent } from './components/quick-links/quick-links.component';
 
 const routes: Routes = [
   {
@@ -53,7 +54,7 @@ const routes: Routes = [
     AggiemapNgxSharedUiStructuralModule,
     PipesModule
   ],
-  declarations: [AllMapsComponent, ParkingMapsComponent, EventMapsComponent, MapsPageHeaderComponent],
+  declarations: [AllMapsComponent, ParkingMapsComponent, EventMapsComponent, MapsPageHeaderComponent, QuickLinksComponent],
   exports: [AllMapsComponent]
 })
 export class DiscoverModule {}

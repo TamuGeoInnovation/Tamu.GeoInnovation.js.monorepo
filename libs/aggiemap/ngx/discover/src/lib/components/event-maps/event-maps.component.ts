@@ -6,6 +6,7 @@ import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { getApplicationRoute, sortApplicationsByName } from '../discover.utils';
+import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 interface EventMapsRouteData {
   mapType: Extract<DiscoverMapType, 'campus' | 'athletics'>;
@@ -27,6 +28,7 @@ export class EventMapsComponent implements OnInit {
   public intro?: string;
 
   public applications: InternalDiscoverApplication[] = [];
+  public quickLinks: QuickLinkItem[] = [];
 
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];
   public readonly getApplicationRoute = getApplicationRoute;
@@ -37,6 +39,14 @@ export class EventMapsComponent implements OnInit {
     const data = this.route.snapshot.data as EventMapsRouteData;
     this.title = data.title;
     this.intro = data.intro;
+    this.quickLinks = [
+      { label: 'Campus Main Parking', routerLink: this.mainParkingRoute },
+      { label: 'Visitor Parking', routerLink: '/parking/visitor-parking' },
+      { label: 'Accessible Parking', routerLink: '/parking/accessible-parking' },
+      { label: 'Timed Parking', routerLink: '/parking/timed-parking' },
+      { label: 'Night / Weekend', routerLink: '/parking/night-weekend' },
+      { label: 'Break / Summer', routerLink: '/parking/break-summer' }
+    ];
 
     // Category pages are a navigation directory of every map of this type, not an upcoming-only list.
     this.applications = sortApplicationsByName(

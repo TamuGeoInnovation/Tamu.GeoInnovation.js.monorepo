@@ -18,18 +18,7 @@
       </ng-template>
     </div>
 
-    <!-- TODO: Replace placeholder related-link targets with the final Transportation Services list. -->
-    <div class="related-links-box">
-      <p class="related-links-superheader">General Parking</p>
-      <hr class="related-links-divider" />
-
-      <div class="related-links-grid">
-        <a class="related-link" [routerLink]="mainParkingRoute"><span class="related-link-chevron">&raquo;</span><span class="related-link-label">Campus Main Parking</span></a>
-        <a class="related-link" routerLink="/parking/visitor-parking"><span class="related-link-chevron">&raquo;</span><span class="related-link-label">Visitor Parking</span></a>
-        <a class="related-link" routerLink="/parking/accessible-parking"><span class="related-link-chevron">&raquo;</span><span class="related-link-label">Accessible Parking</span></a>
-        <a class="related-link" routerLink="/parking/timed-parking"><span class="related-link-chevron">&raquo;</span><span class="related-link-label">Timed Parking</span></a>
-      </div>
-    </div>
+    <tamu-gisc-quick-links [links]="quickLinks"></tamu-gisc-quick-links>
 </div>
 
 <tamu-gisc-footer></tamu-gisc-footer>
