@@ -162,6 +162,7 @@ export const TCampTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'campus',
+    columnKey: 'summer',
     keywords: ['t camp', 'tcamp', 'transfer camp', 'new student', 'parking', 'transportation', 'closures', 'entry route']
   }
 };
