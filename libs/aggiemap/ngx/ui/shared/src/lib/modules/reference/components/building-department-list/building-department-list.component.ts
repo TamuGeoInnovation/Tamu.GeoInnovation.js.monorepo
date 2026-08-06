@@ -18,7 +18,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
   @Input()
   public buildingNumber: string;
 
-  public result;
+  public result: any[] = [];
 
   private source: number;
 
@@ -59,7 +59,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     // Unsubscribe from any open observable streams.
-    this._destroy$.next(undefined);
+    this._destroy$.next(true);
     this._destroy$.complete();
   }
 }

@@ -164,9 +164,9 @@ export const VolleyballParkingColdLayerSources: LayerSource[] = [
 
 export const VolleyballParkingConfiguration: EventConfiguration = {
   id: 'volleyball-parking',
-  name: 'Volleyball Map',
-  applicationName: 'Volleyball Parking Map',
-  shortApplicationName: 'Volleyball Parking Map',
+  name: 'Volleyball',
+  applicationName: 'Volleyball Parking',
+  shortApplicationName: 'Volleyball Parking',
   introductionText: 'Parking and transportation information for Texas A&M volleyball events.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/womens-volleyball/schedule',

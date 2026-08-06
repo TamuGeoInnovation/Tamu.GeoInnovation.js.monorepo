@@ -11,6 +11,7 @@ import {
   AggiemapCustomMapConfiguration,
   EventSettings,
   ResolvedEventSettings,
+  SpecialEventOption,
   SpecialEventOptions
 } from '../../interfaces/special-event.interface';
 import { EventDefinitions } from '../../definitions/all.definitions';
@@ -161,6 +162,30 @@ export class EventSettingsService {
     }
   }
 
+  /**
+   * Determines whether an option should be shown as a builder step (and treated as required) given the
+   * current settings. Options without a `visibleWhen` condition are always visible. Options with one are
+   * only visible when the gating setting's saved value is one of the configured `equalsAnyOf` values.
+   */
+  public isOptionVisible(option: SpecialEventOption, settings: EventSettings | null | undefined): boolean {
+    if (!option.visibleWhen) {
+      return true;
+    }
+
+    const gatingValue = settings?.[option.visibleWhen.setting];
+
+    return option.visibleWhen.equalsAnyOf.some((candidate) => candidate === gatingValue);
+  }
+
+  /**
+   * Returns the event options that are currently visible given the provided settings (defaults to the
+   * settings in storage). Used to drive conditional builder flows so hidden steps are neither shown,
+   * required, nor summarized.
+   */
+  public getVisibleOptions(settings: EventSettings | null | undefined = this.settings()): SpecialEventOptions {
+    return this.eventOptions().filter((option) => this.isOptionVisible(option, settings));
+  }
+
   public saveAccommodation(accommodationKey: string, accommodationValue: string | boolean | number) {
     const existing = this.store.getStorageObjectKeyValue<EventSettings>({
       primaryKey: this._settingsPrimaryKey,
@@ -190,7 +215,9 @@ export class EventSettingsService {
     let changed = false;
 
     const merged = options.reduce((acc, option) => {
-      if (acc[option.value] === undefined && option.choices.length > 0) {
+      // Evaluate visibility against the accumulating settings so a gating option (listed earlier) can
+      // determine whether a dependent, conditionally-visible option should receive a default value.
+      if (this.isOptionVisible(option, acc) && acc[option.value] === undefined && option.choices.length > 0) {
         acc[option.value] = option.choices[0].value;
         changed = true;
       }
@@ -248,8 +275,10 @@ export class EventSettingsService {
    * This is used for UI representation of the settings.
    */
   public getMergedSettings() {
-    const options = this.eventOptions();
     const settings = this.settings();
+    // Only summarize options that are currently visible so conditionally-hidden steps (e.g. an
+    // Entry/Exit direction that doesn't apply to the selected mode) don't render as blank rows.
+    const options = this.getVisibleOptions(settings);
 
     return options.reduce((merged, option) => {
       if (settings && settings[option.value] !== undefined) {
@@ -296,8 +325,9 @@ export class EventSettingsService {
   }
 
   public accommodationsValid() {
-    const options = this.eventOptions();
     const settings = this.settings();
+    // A conditionally-hidden option is not required, so validity is measured against visible options only.
+    const options = this.getVisibleOptions(settings);
 
     return options.every((opt) => {
       return settings?.[opt.value] !== undefined;

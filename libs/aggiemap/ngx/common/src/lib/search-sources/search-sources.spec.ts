@@ -209,7 +209,7 @@ describe('SearchSources', () => {
     expect(bldgExactAbbr?.urlQueryParam).toBe('BldgAbbrv');
     expect(bldgExactAbbr?.urlQueryParamAliases).toEqual(['bldgabbrv', 'BldgAbbr', 'bldgabbr']);
     expect(bldgExactAbbr?.queryParams?.where).toEqual({
-      keys: ['BldgAbbr'],
+      keys: ['BldgAbbrev'],
       operators: ['='],
       transformations: ['UPPER']
     });

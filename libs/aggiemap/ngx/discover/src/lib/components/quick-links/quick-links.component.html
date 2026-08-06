@@ -1,0 +1,11 @@
+<div class="related-links-box">
+  <p class="related-links-superheader">{{ title }}</p>
+  <hr class="related-links-divider" />
+
+  <div class="related-links-grid">
+    <a class="related-link" *ngFor="let link of links" [routerLink]="link.routerLink">
+      <span class="related-link-chevron" aria-hidden="true">&raquo;</span>
+      <span class="related-link-label">{{ link.label }}</span>
+    </a>
+  </div>
+</div>

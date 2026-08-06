@@ -1,0 +1,15 @@
+<div class="event-passed-modal">
+  <div class="event-passed-modal__header modal-body-spaced">
+    <h2 class="event-passed-modal__title modal-title-centered">{{ title }}</h2>
+  </div>
+
+  <div class="event-passed-modal__body modal-body-spaced">
+    <p>{{ message }}</p>
+    <p>{{ followupMessage }}</p>
+  </div>
+
+  <div class="event-passed-modal__footer modal-actions-centered">
+    <!-- TODO: Add a "don't remind me again" checkbox here and restore persisted acknowledgement for beta and event-passed popups. -->
+    <tamu-gisc-button [value]="acknowledgeText" (click)="acknowledge()"></tamu-gisc-button>
+  </div>
+</div>

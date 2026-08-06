@@ -5,7 +5,7 @@ desktopSizes.forEach((size) => {
   describe(`Test Elements, Features Page: ${size} Resolution`, () => {
     beforeEach(() => {
       cy.viewport(size[0], size[1]);
-      cy.intercept('GET', '**/TAMU_BaseMap/**').as('basemap');
+      cy.intercept('GET', '**/TAMU_BaseMap_060826/**').as('basemap');
       cy.visit('https://aggiemap.tamu.edu/map/d');
       cy.get('canvas').should('be.visible', { timeout: 5000 });
       cy.wait('@basemap', { requestTimeout: 2000, responseTimeout: 2000 });

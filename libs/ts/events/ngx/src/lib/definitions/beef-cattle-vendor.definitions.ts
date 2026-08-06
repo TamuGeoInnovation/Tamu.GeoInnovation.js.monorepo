@@ -197,6 +197,7 @@ export const BeefCattleTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'campus',
+    columnKey: 'summer',
     keywords: ['beef cattle', 'beef cattle vendor', 'vendor load in', 'vendor', 'loading', 'unloading', 'routes']
   }
 };

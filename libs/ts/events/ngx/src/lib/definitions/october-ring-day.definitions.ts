@@ -96,10 +96,10 @@ export const RingDayColdLayerSources: LayerSource[] = [
 
 export const RingDayConfiguration: EventConfiguration = {
   id: 'ring-day',
-  name: 'Ring Day',
-  applicationName: 'Ring Day Transportation Map',
-  shortApplicationName: 'Ring Day Map',
-  introductionText: 'Get the best transportation and logistics information for Ring Day.',
+  name: 'October Ring Day',
+  applicationName: 'October Ring Day Transportation Map',
+  shortApplicationName: 'October Ring Day Map',
+  introductionText: 'Get the best transportation and logistics information for October Ring Day.',
   eventDates: [RingDayDates.DAY1, RingDayDates.DAY2, RingDayDates.DAY3],
   scheduleUrl: 'https://www.aggienetwork.com/ring/ringday/',
   mapCenter: [-96.33616, 30.60958],
@@ -239,9 +239,10 @@ export const RingDayEvent: AggiemapCustomMapConfiguration = {
   discover: {
     id: RingDayConfiguration.id,
     name: RingDayConfiguration.name,
-    description: 'Transportation and logistics information for Ring Day celebrations.',
+    description: 'Transportation and logistics information for October Ring Day celebrations.',
     source: 'internal',
     type: 'event',
+    columnKey: 'fall',
     keywords: ['ring', 'day', 'aggie', 'ring day', 'transportation', 'parking', 'celebration']
   }
 };

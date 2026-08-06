@@ -77,7 +77,7 @@ export function trackFocus(event, target) {
       const dismissKeyCodes = [13, 32, 27];
 
       if (dismissKeyCodes.includes(keydownEvent.keyCode)) {
-        if (keydownEvent.target !== keydownEvent.target) {
+        if (keydownEvent.target !== event.currentTarget) {
           removeFocus();
         }
       }
@@ -91,7 +91,7 @@ export function trackFocus(event, target) {
     // If left-mouse click on a dropdown suggestion, remove focus from dialog, hiding it
     el.addEventListener('mousedown', (mousedownEvent) => {
       if (mousedownEvent.button === 0) {
-        if (mousedownEvent.target !== mousedownEvent.target) {
+        if (mousedownEvent.target !== event.currentTarget) {
           removeFocus();
         }
       }

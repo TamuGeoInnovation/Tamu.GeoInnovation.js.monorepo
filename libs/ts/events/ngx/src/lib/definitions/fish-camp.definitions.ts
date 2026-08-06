@@ -292,6 +292,7 @@ export const FishCampTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'campus',
+    columnKey: 'summer',
     keywords: ['fish camp', 'fishcamp', 'new student', 'send off', 'pickup', 'parking', 'transportation']
   }
 };

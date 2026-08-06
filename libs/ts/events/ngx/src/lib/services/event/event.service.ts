@@ -37,6 +37,13 @@ export class EventService {
   public settings: EventSettings;
   public eventOptions: SpecialEventOptions;
 
+  /**
+   * The subset of `eventOptions` that are visible for the current settings. Conditionally-hidden options
+   * (see `SpecialEventOption.visibleWhen`) must not contribute layer effects, otherwise a stale selection
+   * for a step that no longer applies to the chosen mode would leak into the rendered map.
+   */
+  public visibleOptions: SpecialEventOptions;
+
   public specialEventLayerReferences: Array<string>;
 
   private _map: esri.Map;
@@ -61,6 +68,7 @@ export class EventService {
 
     this.eventOptions = this.eventSettingsService.eventOptions();
     this.settings = this.eventSettingsService.settings() || {};
+    this.visibleOptions = this.eventSettingsService.getVisibleOptions(this.settings);
     this.specialEventLayerReferences = Object.entries(this.eventSettingsService.eventLayerReferences())
       .map(([, value]) => value)
       .reverse();
@@ -82,7 +90,7 @@ export class EventService {
         .map((ref) => this.getLayerSourceCopy(ref))
         .map((source) => {
           // Determine the list of options that list the current source as an effect target
-          const specialEventOptionsTargetingSource = this.eventOptions.filter((o) => {
+          const specialEventOptionsTargetingSource = this.visibleOptions.filter((o) => {
             return o.effects.layers?.some((layer) => layer.layerId === source.id);
           });
 
@@ -256,7 +264,7 @@ export class EventService {
       // Handle nested groups before applying effects to the immediate child.
       this.applyEffectsToGroupChildren(child);
 
-      const optionsTargetingChild = this.eventOptions.filter((o) =>
+      const optionsTargetingChild = this.visibleOptions.filter((o) =>
         o.effects.layers?.some((layer) => layer.layerId === child.id)
       );
 
@@ -332,7 +340,7 @@ export class EventService {
       return;
     }
 
-    for (const option of this.eventOptions) {
+    for (const option of this.visibleOptions) {
       const settingValue = this.settings[option.value];
 
       if (settingValue === undefined) {

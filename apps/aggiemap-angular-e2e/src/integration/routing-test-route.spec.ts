@@ -4,7 +4,7 @@ desktopSizes.forEach((size) => {
   describe(`Test Route: ${size} Resolution`, () => {
     beforeEach(() => {
       cy.viewport(size[0], size[1]);
-      cy.intercept('GET', '**/TAMU_BaseMap/**').as('basemap');
+      cy.intercept('GET', '**/TAMU_BaseMap_060826/**').as('basemap');
       cy.intercept('GET', '**/Routing/**').as('routing');
       cy.intercept('GET', '/geometryEngine.js').as('geo');
       cy.intercept('GET', '**/maneurvers/**').as('images');

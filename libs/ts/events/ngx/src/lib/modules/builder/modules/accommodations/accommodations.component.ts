@@ -22,7 +22,6 @@ export class AccommodationsComponent implements OnInit {
   public savedOptionValue: Observable<string | boolean | number | null>;
 
   public accommodation$: Observable<SpecialEventOption>;
-  public nextAccommodation$: Observable<SpecialEventOption | null>;
 
   private _eventOptions$: BehaviorSubject<SpecialEventOptions>;
   private _accommodationIndex$: Observable<number>;
@@ -51,7 +50,12 @@ export class AccommodationsComponent implements OnInit {
         if (params['accommodation']) {
           return of(params['accommodation']);
         } else {
-          const firstAccommodation = Object.values(options)[0];
+          // Land on the first option that is actually visible for the current settings so conditional
+          // flows never open on a step that should be skipped.
+          const settings = this.eventSettingsService.settings();
+          const firstAccommodation =
+            Object.values(options).find((option) => this.eventSettingsService.isOptionVisible(option, settings)) ??
+            Object.values(options)[0];
 
           return this.router.navigate([firstAccommodation.value], {
             relativeTo: this.route,
@@ -73,17 +77,6 @@ export class AccommodationsComponent implements OnInit {
     this.accommodation$ = combineLatest([this._eventOptions$, this._accommodationIndex$]).pipe(
       map(([options, index]) => {
         return options[index];
-      }),
-      shareReplay(1)
-    );
-
-    this.nextAccommodation$ = combineLatest([this._eventOptions$, this._accommodationIndex$]).pipe(
-      map(([options, index]) => {
-        if (index < options.length - 1) {
-          return options[index + 1];
-        } else {
-          return null;
-        }
       }),
       shareReplay(1)
     );
@@ -116,18 +109,25 @@ export class AccommodationsComponent implements OnInit {
       if (hasRet) {
         return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
       } else {
-        if (this.nextAccommodation$) {
-          return this.nextAccommodation$.pipe(take(1)).subscribe((res) => {
-            if (res === null || res === undefined) {
-              return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
-            }
+        // Determine the next step after the option just saved. Settings are read fresh (post-save) so a
+        // gating selection is reflected when deciding which conditional steps remain visible.
+        return this._accommodationIndex$.pipe(take(1)).subscribe((index) => {
+          const options = this._eventOptions$.value;
+          const settings = this.eventSettingsService.settings();
 
-            // Navigate to the next accommodation in the builder flow
-            return this.router.navigate(['accommodations', res?.value], { relativeTo: this.route.parent?.parent });
+          const nextAccommodation = options
+            .slice(index + 1)
+            .find((option) => this.eventSettingsService.isOptionVisible(option, settings));
+
+          if (!nextAccommodation) {
+            return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
+          }
+
+          // Navigate to the next visible accommodation in the builder flow
+          return this.router.navigate(['accommodations', nextAccommodation.value], {
+            relativeTo: this.route.parent?.parent
           });
-        } else {
-          return this.router.navigate(['review'], { relativeTo: this.route.parent?.parent });
-        }
+        });
       }
     } else {
       throw new Error('Error saving accommodation selection.');

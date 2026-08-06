@@ -253,6 +253,7 @@ export const HsGraduationTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for high school graduation ceremonies.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['high school', 'graduation', 'parking', 'transportation']
   }
 };

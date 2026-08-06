@@ -1,0 +1,25 @@
+@import '../discover-shared';
+
+.parking-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.15rem 3rem;
+  max-width: 78rem;
+}
+
+.parking-column-heading {
+  color: #500000 !important;
+  font-family: 'Open Sans', sans-serif !important;
+  font-style: italic !important;
+  font-weight: 800 !important;
+  font-size: 1.45rem !important;
+  text-transform: none !important;
+  margin: 0 0 0.85rem !important;
+}
+
+@media (max-width: 768px) {
+  .parking-columns {
+    grid-template-columns: 1fr;
+    gap: 0.5rem 2rem;
+  }
+}

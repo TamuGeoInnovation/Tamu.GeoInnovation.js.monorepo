@@ -447,6 +447,7 @@ export const SecGroundsConferenceTs: AggiemapCustomMapConfiguration = {
     description: 'Routes and points of interest for the SEC Grounds Conference.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['sec', 'grounds', 'conference', 'routes', 'transportation']
   }
 };

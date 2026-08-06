@@ -122,6 +122,7 @@ export const MS150Ts: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for Bike MS 150.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['bike', 'ms150', 'cycling', 'parking', 'transportation']
   }
 };

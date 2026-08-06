@@ -41,7 +41,7 @@ export class MainMobileSidebarComponent {
     {
       name: 'All Maps',
       type: 'router-path',
-      path: '/discover'
+      path: '/all-maps'
     },
     {
       name: 'About Aggie Map',

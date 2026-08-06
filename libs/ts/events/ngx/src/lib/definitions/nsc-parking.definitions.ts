@@ -94,6 +94,7 @@ export const NscParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking lot information for New Student Conference (NSC) permits.',
     source: 'internal',
     type: 'event',
+    columnKey: 'summer',
     keywords: ['nsc', 'new student conference', 'parking', 'permit']
   }
 };

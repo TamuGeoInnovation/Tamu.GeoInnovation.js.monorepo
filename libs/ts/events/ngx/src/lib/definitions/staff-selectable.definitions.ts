@@ -72,6 +72,7 @@ export const StaffSelectableTs: AggiemapCustomMapConfiguration = {
     description: 'Selectable parking information for staff.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'permit',
     keywords: ['permit select', 'staff', 'selectable', 'parking']
   }
 };

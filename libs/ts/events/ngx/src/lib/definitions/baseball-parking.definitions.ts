@@ -130,7 +130,7 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
 export const BaseballParkingConfiguration: EventConfiguration = {
   id: 'baseball-parking',
   name: 'Baseball',
-  applicationName: 'Baseball Parking Map',
+  applicationName: 'Baseball Parking',
   shortApplicationName: 'Baseball Parking',
   introductionText: 'Parking and access information for Texas A&M baseball home games.',
   eventDates: [
@@ -257,7 +257,7 @@ export const BaseballParkingTs: AggiemapCustomMapConfiguration = {
   type: 'general-map',
   discover: {
     id: 'baseball-parking',
-    name: 'Baseball Map',
+    name: BaseballParkingConfiguration.name,
     description: 'Baseball event parking with optional accessibility-focused view.',
     source: 'internal',
     type: 'parking',
