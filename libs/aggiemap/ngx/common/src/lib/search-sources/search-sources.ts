@@ -225,19 +225,38 @@ export function SearchSources(
       popupComponent: Popups.BuildingPopupComponent,
       searchActive: true
     },
+    // A single parking facility is stored as several polygons — the lot proper plus its loading,
+    // restricted, and visitor sub-areas — all sharing a `FAC_CODE` and, often, a `LotName`. They are
+    // told apart by `CIT_CODE` (the facility code plus a two-digit sub-code, where `00` is the lot
+    // itself; this is the identifier TS parking map links use, e.g. `?cit=07700`).
+    //
+    // `?lot=` deep links resolve to `features[0]`, so an ambiguous match has to be ordered rather
+    // than left in the service's default `OBJECTID` order — otherwise the sub-area that happens to
+    // have been digitized first wins. `?lot=077` landed on the Lot 77 loading zone and `?lot=097`
+    // on the Lot 97 visitor section for exactly this reason.
+    //
+    // `AggieMap DESC` drops the sub-areas flagged as not shown on this map below the ones that are,
+    // and `CIT_CODE ASC` then prefers the lot itself over its sub-areas — together resolving a bare
+    // lot number to the same polygon the TS parking map's `?cit=<lot>00` link points at.
     PARKING_LOT: {
       source: 'parking-lot',
       name: 'Parking Lot',
       url: `${connections.basemapUrl}/9`,
       queryParams: {
         ...commonQueryParams,
+        orderByFields: 'AggieMap DESC, CIT_CODE ASC',
         where: {
-          keys: ['LotName', 'Name'],
-          operators: ['LIKE', 'LIKE'],
-          wildcards: ['includes', 'includes'],
-          transformations: ['UPPER', 'UPPER']
+          // `FAC_CODE` is matched alongside the display names so the zero-padded facility number
+          // used by TS links (`?lot=077`) resolves as readily as the unpadded `Name` (`?lot=77`).
+          keys: ['LotName', 'Name', 'FAC_CODE'],
+          operators: ['LIKE', 'LIKE', 'LIKE'],
+          wildcards: ['includes', 'includes', 'includes'],
+          transformations: ['UPPER', 'UPPER', 'UPPER']
         }
       },
+      // Ranks an exact identifier match above the partial ones the `includes` wildcards let through,
+      // so `?lot=100` cannot settle on `Lot 1001` when `Lot 100` exists.
+      scoringKeys: ['attributes.Name', 'attributes.FAC_CODE', 'attributes.LotName'],
       featuresLocation: 'features',
       displayTemplate: '{attributes.LotName}',
       popupComponent: Popups.ParkingLotPopupComponent,

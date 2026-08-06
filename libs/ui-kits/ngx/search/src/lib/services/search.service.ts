@@ -643,6 +643,18 @@ export interface SearchSourceQueryParamsProperties {
   spatialRel?: string | 'esriSpatialRelIntersects';
 
   /**
+   * Comma-delimited list of fields (each optionally suffixed with `ASC`/`DESC`) used to sort the
+   * features returned by the service.
+   *
+   * Without it, a service returns features in `OBJECTID` order, which makes the "first" feature of
+   * an ambiguous match arbitrary. Provide this for any source whose `resultRecordCount` truncates
+   * results or whose consumers select `features[0]` (e.g. URL parameter feature selection).
+   *
+   * Example: `'AggieMap DESC, CIT_CODE ASC'`
+   */
+  orderByFields?: string;
+
+  /**
    * Where clause properties that dictate how the search query will be constructed.
    */
   where?: SearchSourceWhereProperties;
