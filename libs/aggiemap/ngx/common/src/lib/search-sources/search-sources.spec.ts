@@ -214,4 +214,27 @@ describe('SearchSources', () => {
       transformations: ['UPPER']
     });
   });
+
+  it('should resolve parking lot deep links to the lot itself rather than one of its sub-areas', () => {
+    const result = SearchSources(connections, definitions);
+    const parkingLot = result.find((source) => source.source === 'parking-lot');
+
+    expect(parkingLot?.urlQueryParam).toBe('lot');
+    expect(parkingLot?.urlQueryParamAliases).toEqual(['Lot']);
+
+    // `?lot=077` (zero-padded, as TS parking map links are) has to match on FAC_CODE; `?lot=77`
+    // matches on Name. Dropping either key makes one of the two link styles unresolvable.
+    expect(parkingLot?.queryParams?.where).toEqual({
+      keys: ['LotName', 'Name', 'FAC_CODE'],
+      operators: ['LIKE', 'LIKE', 'LIKE'],
+      wildcards: ['includes', 'includes', 'includes'],
+      transformations: ['UPPER', 'UPPER', 'UPPER']
+    });
+
+    // Multiple polygons share a lot's name and facility code. Without an explicit ordering the
+    // service answers in OBJECTID order and `features[0]` lands on whichever loading, restricted,
+    // or visitor sub-area was digitized first — the Lot 77 and Lot 97 deep link defect.
+    expect(parkingLot?.queryParams?.orderByFields).toBe('AggieMap DESC, CIT_CODE ASC');
+    expect(parkingLot?.scoringKeys).toEqual(['attributes.Name', 'attributes.FAC_CODE', 'attributes.LotName']);
+  });
 });
