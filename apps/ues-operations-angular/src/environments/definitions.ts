@@ -1,6 +1,9 @@
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource } from '@tamu-gisc/common/types';
+import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+const gisHost = getDefaultGisHost();
+const tsgisHost = getDefaultGisHosts().tsgisHost;
 
 import esri = __esri;
 
@@ -10,8 +13,8 @@ export const Connections = {
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
-  tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
-  bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
+  tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
+  bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
   bikeLocationsUrl: 'http://nodes.geoservices.tamu.edu/api/veoride/bikes/?format=geojson&metadata=false&fields=lat,lon'
 };
 
@@ -267,7 +270,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-bus-stop-start-points-layer',
             title: 'Route Stop/Start Points',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/1`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer/1`,
             listMode: 'show',
             popupComponent: Popups.BasePopupComponent,
             native: {
@@ -278,7 +281,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-bus-campus-stops-layer',
             title: 'Campus Stops',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/2`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer/2`,
             listMode: 'show',
             popupComponent: Popups.MarkdownWDirectionsPopupComponent,
             popupData: {
@@ -304,7 +307,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-bicycle-lanes-layer',
             title: 'Lanes',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/4`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/4`,
             listMode: 'show',
             popupComponent: Popups.BasePopupComponent,
             native: {
@@ -315,7 +318,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-bicycle-racks-layer',
             title: 'Racks',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
             listMode: 'show',
             popupComponent: Popups.BasePopupComponent,
             native: {
@@ -334,7 +337,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-moveing-no-parking-areas-layer',
             title: 'No Parking Areas',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/1`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/MoveInMoveOut/MapServer/1`,
             listMode: 'show',
 
             popupComponent: Popups.BasePopupComponent,
@@ -346,7 +349,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-movein-pois-layer',
             title: 'Move-In Points of Interest',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/2`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/MoveInMoveOut/MapServer/2`,
             listMode: 'show',
 
             popupComponent: Popups.BasePopupComponent,
@@ -358,7 +361,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-moveout-street-parking-layer',
             title: 'Move-Out Allowed Street Parking',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/4`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/MoveInMoveOut/MapServer/4`,
             listMode: 'show',
 
             popupComponent: Popups.BasePopupComponent,
@@ -370,7 +373,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-movein-streets-layer',
             title: 'Move-In Streets',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/5`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/MoveInMoveOut/MapServer/5`,
             listMode: 'show',
 
             popupComponent: Popups.BasePopupComponent,
@@ -382,7 +385,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-movein-lots-layer',
             title: 'Move-In Lots',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/6`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/MoveInMoveOut/MapServer/6`,
             listMode: 'show',
 
             popupComponent: Popups.BasePopupComponent,
@@ -394,7 +397,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-moveout-lots-layer',
             title: 'Move-Out Lots',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/7`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/MoveInMoveOut/MapServer/7`,
             listMode: 'show',
 
             popupComponent: Popups.BasePopupComponent,
@@ -419,7 +422,7 @@ export const LayerSources: LayerSource[] = [
                 type: 'feature',
                 id: 'ts-gameday-thurs-parking-layer',
                 title: 'Parking Lots',
-                url: `https://gis.tamu.edu/arcgis/rest/services/TS/ThursdayFootball/MapServer/5`,
+                url: `https://${tsgisHost}/arcgis/rest/services/TS/ThursdayFootball/MapServer/5`,
                 listMode: 'show',
                 popupComponent: Popups.BasePopupComponent,
                 native: {
@@ -430,7 +433,7 @@ export const LayerSources: LayerSource[] = [
                 type: 'feature',
                 id: 'ts-gameday-thurs-grass-areas-layer',
                 title: 'Street/Grass Areas',
-                url: `https://gis.tamu.edu/arcgis/rest/services/TS/ThursdayFootball/MapServer/6`,
+                url: `https://${tsgisHost}/arcgis/rest/services/TS/ThursdayFootball/MapServer/6`,
                 listMode: 'show',
                 popupComponent: Popups.BasePopupComponent,
                 native: {
@@ -448,7 +451,7 @@ export const LayerSources: LayerSource[] = [
                 type: 'feature',
                 id: 'ts-gameday-sat-parking-layer',
                 title: 'Parking Lots',
-                url: `https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer/5`,
+                url: `https://${tsgisHost}/arcgis/rest/services/TS/TSFootball/MapServer/5`,
                 listMode: 'show',
                 popupComponent: Popups.BasePopupComponent,
                 native: {
@@ -459,7 +462,7 @@ export const LayerSources: LayerSource[] = [
                 type: 'feature',
                 id: 'ts-gameday-sat-grass-areas-layer',
                 title: 'Street/Grass Areas',
-                url: `https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer/6`,
+                url: `https://${tsgisHost}/arcgis/rest/services/TS/TSFootball/MapServer/6`,
                 listMode: 'show',
                 popupComponent: Popups.BasePopupComponent,
                 native: {
@@ -480,7 +483,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-parking-spaces-accessible-layer',
             title: 'Reserved',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/7`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer/7`,
             listMode: 'show',
             popupComponent: Popups.BasePopupComponent,
             native: {
@@ -501,7 +504,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-parking-spaces-dept-space-layer',
             title: 'Department Space',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/7`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer/7`,
             listMode: 'show',
             popupComponent: Popups.BasePopupComponent,
             native: {
@@ -522,7 +525,7 @@ export const LayerSources: LayerSource[] = [
             type: 'feature',
             id: 'ts-parking-spaces-accessible-layer',
             title: 'Accessible',
-            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/7`,
+            url: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer/7`,
             listMode: 'show',
             popupComponent: Popups.BasePopupComponent,
             native: {

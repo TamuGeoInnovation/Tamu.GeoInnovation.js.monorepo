@@ -1,13 +1,18 @@
 export const Protocol = `${window.location.protocol}/`;
 export const HostName = `${window.location.hostname}/`;
 
+import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+const gisHost = getDefaultGisHost();
+const tsgisHost = getDefaultGisHosts().tsgisHost;
+
 export const Connections = {
   basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/BaseMap_20190913/MapServer',
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
-  tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer'
+
+  tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`
 };
 
 export const Definitions = {
