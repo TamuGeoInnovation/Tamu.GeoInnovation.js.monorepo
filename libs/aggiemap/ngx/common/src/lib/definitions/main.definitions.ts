@@ -386,69 +386,10 @@ export function MainMapLayerSources(
             style: 'circle',
             size: 0,
             color: [0, 0, 0, 0],
-            outline: { width: 0, color: [0, 0, 0, 0] }
+            outline: { width: 0, color: [0, 0, 0, 0]             }
           }
         },
-        labelsVisible: true,
-        labelingInfo: [
-          {
-            // Department-reserved spaces: "DEPT. RESERVED" + the space number.
-            where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C', 'H/C', '2HR Timed', 'Loading')`,
-            labelExpressionInfo: {
-              expression: `
-                if ($feature.DeptSpc_YN != 1) { return ''; }
-                var num = Trim(Text($feature.RNS_Num));
-                if (num == null || num == '' || num == 'null') { num = Trim(Text($feature.Spc_ID_Num)); }
-                if (num == null || num == '' || num == 'null') { return 'DEPT. RESERVED'; }
-                return 'DEPT. RESERVED' + TextFormatting.NewLine + num;
-              `
-            },
-            labelPlacement: 'center-center',
-            symbol: {
-              type: 'text',
-              color: [80, 0, 0, 255],
-              haloColor: [255, 255, 255, 255],
-              haloSize: 1.5,
-              font: { size: 8, family: 'Arial', weight: 'bold' }
-            },
-            minScale: 1200,
-            maxScale: 0,
-            deconflictionStrategy: 'none'
-          },
-          {
-            // All other reserved/numbered spaces: show whichever space-number field is
-            // populated. RNS_Num is authoritative (the only populated field for reserved
-            // spaces in many lots, e.g. Lot 96 '9608'); VisSpcNum/RV_SpcNum/Spc_ID_Num
-            // are fallbacks for visitor/RV/other numbered spaces.
-            where: `Anno_Type IS NULL OR Anno_Type NOT IN ('Serv', 'M/C', '2HR Timed', 'Loading')`,
-            labelExpressionInfo: {
-              expression: `
-                if ($feature.Anno_Type == 'H/C') { return ''; }
-                if ($feature.DeptSpc_YN == 1) { return ''; }
-                var rnsNum = Trim(Text($feature.RNS_Num));
-                if (rnsNum != null && rnsNum != '' && rnsNum != 'null') { return rnsNum; }
-                var visNum = Trim(Text($feature.VisSpcNum));
-                if (visNum != null && visNum != '' && visNum != 'null') { return visNum; }
-                var rvNum = Trim(Text($feature.RV_SpcNum));
-                if (rvNum != null && rvNum != '' && rvNum != 'null') { return rvNum; }
-                var spcId = Trim(Text($feature.Spc_ID_Num));
-                if (spcId != null && spcId != '' && spcId != 'null') { return spcId; }
-                return '';
-              `
-            },
-            labelPlacement: 'center-center',
-            symbol: {
-              type: 'text',
-              color: [30, 30, 30, 255],
-              haloColor: [255, 255, 255, 255],
-              haloSize: 1.5,
-              font: { size: 9, family: 'Arial', weight: 'normal' }
-            },
-            minScale: 1200,
-            maxScale: 0,
-            deconflictionStrategy: 'none'
-          }
-        ]
+        labelsVisible: false
       }
     },
     {
