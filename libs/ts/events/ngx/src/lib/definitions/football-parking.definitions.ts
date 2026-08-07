@@ -570,7 +570,43 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide'
+      listMode: 'hide',
+      labelingInfo: [
+        {
+          // 12th Man lots show their pass letter on a second line.
+          labelExpressionInfo: {
+            expression: '$feature.name + TextFormatting.NewLine + $feature.twelfthman'
+          },
+          labelPlacement: 'always-horizontal',
+          useCodedValues: true,
+          symbol: lotLabelSymbol,
+          minScale: 9500,
+          maxScale: 0,
+          where: "twelfthman IS NOT NULL AND TRIM(twelfthman) <> ''"
+        },
+        {
+          // Non-12th-Man lots with a price embedded in the type string (e.g. "Public $30").
+          labelExpressionInfo: {
+            expression:
+              "var t=$feature.type; var p=''; if(t!=null && t!='' && Find('$', t)>-1){ var i=Find('$', t); var seg=Mid(t,i,10); var sp=Find(' ', seg); if(sp>-1){ seg=Left(seg, sp);} var last=Right(seg,1); if(last=='-' || last==':' || last==',' ){ seg=Left(seg, Length(seg)-1);} p=seg; } $feature.name + IIf(p=='','', ' - '+p);"
+          },
+          labelPlacement: 'always-horizontal',
+          useCodedValues: true,
+          symbol: lotLabelSymbol,
+          minScale: 9500,
+          maxScale: 0,
+          where: "(twelfthman IS NULL OR TRIM(twelfthman) = '') AND type IS NOT NULL AND type LIKE '%$%' AND type <> 'AVP'"
+        },
+        {
+          labelExpression: '[name]',
+          labelPlacement: 'always-horizontal',
+          useCodedValues: true,
+          symbol: lotLabelSymbol,
+          minScale: 9500,
+          maxScale: 0,
+          where: "(twelfthman IS NULL OR TRIM(twelfthman) = '') AND (type IS NULL OR type NOT LIKE '%$%' OR type = 'AVP')"
+        }
+      ]
     }
   },
   {
