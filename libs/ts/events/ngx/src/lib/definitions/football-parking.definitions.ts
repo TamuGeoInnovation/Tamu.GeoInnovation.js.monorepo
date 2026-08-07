@@ -537,7 +537,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     }
   },
 
-  // --- Parking lots + gameday parking icons (Hosted/Lots, token-gated, Marcomm-maintained) ---
+  // --- Parking lots (Hosted/Lots, token-gated, Marcomm-maintained) ---
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_PARKING_LOTS,
