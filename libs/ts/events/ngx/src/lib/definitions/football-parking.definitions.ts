@@ -151,10 +151,10 @@ const ROUTE_COLORS = {
 };
 
 /** A solid line with a direction arrow at its end, used to re-symbolize the flat route/arrow layers. */
-const arrowLineSymbol = (color: string): esri.SimpleLineSymbolProperties => ({
+const arrowLineSymbol = (color: string, width = 3): esri.SimpleLineSymbolProperties => ({
   type: 'simple-line',
   color,
-  width: 3,
+  width,
   style: 'solid',
   marker: { style: 'arrow', color, placement: 'end' }
 });
@@ -198,6 +198,82 @@ const lotLabelSymbol: esri.TextSymbolProperties & { type: 'text' } = {
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
+
+const personalVehicleReservedLotSymbol = {
+  type: 'cim',
+  data: {
+    type: 'CIMSymbolReference',
+    symbol: {
+      type: 'CIMPolygonSymbol',
+      symbolLayers: [
+        {
+          type: 'CIMHatchFill',
+          enable: true,
+          rotation: 90,
+          separation: 2.5,
+          lineSymbol: {
+            type: 'CIMLineSymbol',
+            symbolLayers: [
+              {
+                type: 'CIMSolidStroke',
+                enable: true,
+                color: [0, 0, 0, 255],
+                width: 0.5
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+} as unknown as esri.SymbolProperties;
+
+const footballPersonalVehicleLotsRenderer = {
+  type: 'unique-value',
+  field: 'type',
+  uniqueValueInfos: [
+    {
+      value: 'Pay Upon Arrival',
+      label: 'Pay Upon Arrival',
+      symbol: lotFillSymbol([81, 179, 54, 255], [68, 137, 112, 255])
+    },
+    {
+      value: 'Pay Upon Arrival/Any Valid A&M Permit',
+      label: 'Pay Upon Arrival/Any Valid A&M Permit',
+      symbol: lotFillSymbol([0, 166, 113, 255], [0, 115, 76, 255])
+    },
+    {
+      value: 'AVP',
+      label: 'Any Valid Texas A&M Permit',
+      symbol: LOT_PERMIT_SYMBOL
+    },
+    {
+      value: 'SPresale',
+      label: 'Season Presale',
+      symbol: lotFillSymbol([35, 68, 156, 255], [35, 68, 156, 255])
+    },
+    {
+      value: 'Charter',
+      label: 'Charter Bus',
+      symbol: LOT_RESERVED_SYMBOL
+    },
+    {
+      value: 'RV',
+      label: 'Reserved Parking',
+      symbol: personalVehicleReservedLotSymbol
+    },
+    {
+      value: 'Reserved Athletic',
+      label: 'Reserved Parking',
+      symbol: personalVehicleReservedLotSymbol
+    },
+    {
+      value: 'Reserved',
+      label: 'Reserved Parking',
+      symbol: personalVehicleReservedLotSymbol
+    }
+  ]
+} as unknown as FeatureRenderer;
 
 const createPictureMarkerSymbol = (
   imageData: string,
@@ -273,6 +349,15 @@ const footballGamedayParkingRenderer = {
       )
     },
     {
+      value: 'Alert',
+      label: 'Alert',
+      symbol: createPictureMarkerSymbol(
+        'iVBORw0KGgoAAAANSUhEUgAAACAAAAAoCAYAAACfKfiZAAAACXBIWXMAAAFsAAABbAH7rpytAAAIjElEQVRYhYzMIRUAIBQEwYlCFCIRhUhEIAoNjodFfTFmxUpSgo6JjRd+BwsDrfRNXAAAAP//YoQajhMwMjImMDAwNJjq6cjbiHG/lH7//g/3m59CTH/+cyJr+s3F/P6TCOeX29yCIruuP+B8+vTpQZC+////gxyFHTAwMAAAAAD//8LpAEZGRgMGBoYF/vZW+tbf3r7kf/ZdHK9LkcA/FsbvzxUEP82981r86dOnC0Gh8v//f1AIoQIGBgYAAAAA///C6gCQr6WlpedHq0u+Ub75SgSbRhEzRRT+m1P3sTrklKoMw/w9R18xMDAE/P//HxR9CMDAwAAAAAD//8JwAMhyN2vz+Z6f37zhevsbbjkrHzuDvI81g1ZoLIOEqRNWn99aM5vh3r5dDI82nUIRf6wq/K7lwHlmUDpCcQQDAwMAAAD//0JxAMzywCcvviPHsUqUE4NVeTsDh7AEmP/j7QuGF2cPw/VxCAqjOOrDrQsMR1qrGZ7tvYLNEQb///9/ABZkYGAAAAAA//+COwAU59LS0udLhDngPgf52nFCK9iCY+1NDFaVdWCLQA5YpG8ONxwUHUHrIGltX1kimAY5+Nb6RQwnGqbC1d1VF3vTte/M0////4PSFwMDAwMDAAAA//9iQgqNBaA4R7bceXInw40Nqxg2BSaC4/jO9g0QHwtLMPBrQUIDBMQM9ODsZ4fPMNxZto9hua0dw8/PnxgsGrLhcqD0BErUjIyMDWABBgYGAAAAAP//AjsAFPQgCeQEB/I5Gx8/w/MDF+EGvLpwCc4WNdCCs2UsbMH0i9P7GL49/gRm//70k+He9t0MaoFxDIbFsXC1Ls+ffwTlCkZGRgEGBgYGAAAAAP//goVAAyirIce5glsoOLg9F84AhwYIgEIBFPxgS82s4IaC1ILj+cg+uBgohPyXbwSHlmlhCzzXsH39y5/oYs0GLrAYGBgAAAAA//9iYmRkdAAVMrB8DrIMFH8wgO6IR/s3g2k5R194/MMAyMfolsOAUweoEIUAvVcvvjIwMCQwMDAwAAAAAP//AoVAAKiEg0mCshqyRmRHgAxm4wOHHFhN2pOH8MQHtlhFDqvlICCgZsAg5awDZoPSGcjTjIyMBgAAAAD//2IB5U1Q8QpTCMrn2ADIEeG7TmKVgwGPaavxysvZ2sOzpok47/vTDAwBAAAAAP//AjlAn/vNz+/IvsUGQHF/ZmobSkLEBlS8vBj0UsqwO8DOjeEEAyRb8v/59Y2BgUEBAAAA//8CJ0JYoYNevCKDA7W5DNdmbcRr+bfnb8H5/tKcLqzyoGiAAdGPn/4wMDAoAAAAAP//AoUAQQAq2UDFK3KBgw2A1K1y8me4NHcxzlAAmQGvNxgYGAAAAAD//0IuiHACULEKAkYZiEIFlw/l/MzAZQGuUPj9BR7bDAwMDAwAAAAA//8iGAI7skLhCefcjKlgjA/ALDjbN4eBQ0CQQS0kFUX5x2uQcuQ/IyMLAwMDAwAAAP//AhEff3Mx/2P99lcQvUo93V8DDnouWT6G3x9/Yq1ysQGY+gMFLQxieqbwuAdFEQw8FxT4w8DAcAEAAAD//wJFwQVQSwYmAapSYQBUloNAzPHLDInXbjGE7duIUgegA600f4a4iyfB6q2bSiGWPrgNV/bo0C44+8k/VnkGBoYLAAAAAP//AjlgA6gZBZMA1efoAFb8gnzCLYm1fQIGYlq68ALo4+OHGPJ3tm2Ds4/cfMDAwMBwAAAAAP//AkXBhl3XH/Sbs7L+YPz9jwMU5B8KLqBkGeSqFx8ABTkIYwMPdq2GR+FbOZ7HT49fe/f///8HAAAAAP//YgIRT58+3fhMXgBUS0FcB0311AQne3rgxp1kE5AFt7AZGBgAAAAA//+C5YIJc++83l/DwgJuCYFSPbZsBEpcXJLCeN318cYzcFWMDI405cFT/2tFvjcbDx77+v///wUMDAwMAAAAAP//AjsA1HRmZGRceMrFOszi+mOwQlCJJutljGKQXnIszgIGBrbEe8OzLagGfXnpLLwE/cfK+GP6/fegRARJoQwMDAAAAAD//0JukoGquQs1Doa8srffCsEUgBoToPqcHADyOXLxvV9D9tuKvUdn////H9wWYGBgYAAAAAD//0JvlBrIysodLBJk/YXcIgYVn6D6HDlh4gOgBAeKc1iwg8A1TcmPE/ecfIDcHmRgYGAAAAAA///C2SxHbxmDAKg+B1WpoFoN3THg+uLQLnBWQy+wPkhzvSk/dYMVvUXMwMDAAAAAAP//wtUxWRDhbB3qeOMxFz6fgkIGVPQi+xQdgOK95fcfjqdPnzpidNMYGBgAAAAA///C5QBQejhQ5mQijatnRCxYqyDJsOvoycb////DW8JwwMDAAAAAAP//wtc3VAAlyn595b9cb37DEyUp4JyWzI+Zu4+d/P//P6hnjQkYGBgAAAAA///CWR1D4yqh580PIVAwkmo5KL/P3H0MVCAE4FTEwMAAAAAA///C2x74////hqdPn07cIS/NQYrlv7iZP0LzO6gviLVXDAYMDAwAAAAA//8i2CAB5dmNB49dBGUjYiz/x8z4bbOoGP/Tp08LsfWGUQADAwMAAAD//yI4QAFWBEmUDzrNNH4LPP2GN1Ge0JT9Pn/P0V3////HG/RgwMDAAAAAAP//IqpJBg3GgElPP4uAgheXOlAPeP6eo7dgnQ6CgIGBAQAAAP//IsoBUEccePr0aSMoeLHJfxNhfbfw7ltQ3ZJAKN7hgIGBAQAAAP//ItoBUEc07Dp6ciMoeyGLg0ZClv3nFHr8+FE+MfEOBwwMDAAAAAD//yIqDaBogFZama6WfBI/vhz6xcwicI2B02T9gWNr/v//T3TQgwEDAwMAAAD//yJ6mA4Zg1pnoB41dGgOXF6QY87///8ZAAAAAP//AwCl/cDDWaATWwAAAABJRU5ErkJggg==',
+        24,
+        30
+      )
+    },
+    {
       value: 'Road Closed',
       label: 'Road Closed',
       symbol: createPictureMarkerSymbol(
@@ -341,7 +426,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       renderer: {
         type: 'unique-value',
         field: 'type',
-        uniqueValueInfos: [{ value: 'Vehicle', symbol: arrowLineSymbol(ROUTE_COLORS.vehicle) }]
+        uniqueValueInfos: [{ value: 'Vehicle', symbol: arrowLineSymbol(ROUTE_COLORS.vehicle, 2) }]
       }
     }
   },
@@ -451,7 +536,52 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide'
+      listMode: 'hide',
+      renderer: {
+        type: 'unique-value',
+        field: 'type',
+        uniqueValueInfos: [
+          {
+            value: 'AreaClosed',
+            label: 'Street Closures',
+            symbol: {
+              type: 'simple-fill',
+              style: 'diagonal-cross',
+              color: [230, 0, 0, 255],
+              outline: {
+                color: [230, 0, 0, 255],
+                width: 0.4
+              }
+            }
+          },
+          {
+            value: 'Permit Required',
+            label: 'Permit Required',
+            symbol: {
+              type: 'simple-fill',
+              style: 'diagonal-cross',
+              color: [255, 170, 0, 255],
+              outline: {
+                color: [230, 152, 0, 255],
+                width: 1
+              }
+            }
+          },
+          {
+            value: 'Tailgate',
+            label: 'Reserved Tailgate',
+            symbol: {
+              type: 'simple-fill',
+              style: 'diagonal-cross',
+              color: [122, 142, 245, 255],
+              outline: {
+                color: [122, 142, 245, 255],
+                width: 2
+              }
+            }
+          }
+        ]
+      } as unknown as FeatureRenderer
     }
   },
   {
@@ -659,6 +789,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       visible: false,
       listMode: 'hide',
+      renderer: footballPersonalVehicleLotsRenderer,
       labelingInfo: [
         {
           // 12th Man lots show their pass letter on a second line.
