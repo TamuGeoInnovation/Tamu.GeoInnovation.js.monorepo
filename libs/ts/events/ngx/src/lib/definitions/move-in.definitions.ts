@@ -67,8 +67,8 @@ const markdownPopup = {
 const poiPopup = {
   ...markdownPopup,
   popupData: {
-    name: '{attributes.Type}',
-    description: { field: 'Note' }
+    name: { field: 'Type' },
+    description: { field: 'note' }
   }
 };
 

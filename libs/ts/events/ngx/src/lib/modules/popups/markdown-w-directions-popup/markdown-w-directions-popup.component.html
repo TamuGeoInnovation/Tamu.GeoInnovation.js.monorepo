@@ -2,9 +2,11 @@
   <div class="feature-style-1" tabindex="0" [title]="title">{{ title }}</div>
 </div>
 
-<div class="popup-section">
+<div class="popup-section" *ngIf="isContentLengthZero === false">
   <p class="trailer-1" *ngIf="isContentLengthZero === false" [innerHTML]="data.attributes?.description"></p>
+</div>
 
+<div class="popup-section">
   <tamu-gisc-copy-field *ngIf="shareUrl" [text]="shareUrl"></tamu-gisc-copy-field>
 
   <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
