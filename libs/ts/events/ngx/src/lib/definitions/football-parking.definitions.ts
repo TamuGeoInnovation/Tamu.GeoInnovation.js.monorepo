@@ -17,25 +17,27 @@ import esri = __esri;
  * should show. Sources currently in play:
  *
  * 1. `Hosted/12thMan_view` + `Hosted/12thMan_2_view` — the 12th Man entry and exit maps.
- * 2. `Hosted/Lots_view` (the parking-lot polygons + gameday parking point icons that Marcomm edits on game days).
- * 3. `TSFootball_Cache` (every remaining mode: RV, Shuttle, Personal Vehicle, Micromobility, Pedestrian, Pedicab).
+ * 2. `Hosted/Football_Personal_Vehicle_Entry` — the Personal Vehicle entry map.
+ * 3. `Hosted/Lots_view` (the parking-lot polygons + gameday parking point icons that Marcomm edits on game days).
+ * 4. `TSFootball_Cache` (every remaining mode: RV, Shuttle, Personal Vehicle Exit, Micromobility, Pedestrian, Pedicab).
  *
- * NOTE on the remaining per-mode services: the RV and Personal Vehicle maps are also specified to move to
- * hosted services, but all three return "Token Required" for anonymous users on prod AND dev, and none of
+ * NOTE on the remaining per-mode services: the RV and Personal Vehicle Exit maps are also specified to move to
+ * hosted services, but both return "Token Required" for anonymous users on prod AND dev, and none of
  * them appear in the public `Hosted` service directory:
  *
  *   - RV                      https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer
- *   - Personal Vehicle Entry  https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Entry/FeatureServer
  *   - Personal Vehicle Exit   https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Exit/FeatureServer
  *
  * Wiring them now would pop an ArcGIS sign-in on AggieMap — the same problem that forced the public
  * `Lots_view` and that previously blocked `Football_view`. Those modes therefore stay on the anonymously
  * readable `TSFootball_Cache` until public views exist.
- * TODO: move RV and Personal Vehicle onto the services above once they are shared publicly, following the
+ * TODO: move RV and Personal Vehicle Exit onto the services above once they are shared publicly, following the
  * 12th Man layers below as the pattern — and re-verify sublayer indices, field casing (the hosted views
  * publish lowercase fields, the cache TitleCase) and any filters baked into each view.
  */
 const tsFootballCacheUrl = 'https://gis.dev.tamu.edu/arcgis/rest/services/TS/TSFootball_Cache/MapServer';
+const footballPersonalVehicleEntryUrl =
+  'https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Entry/FeatureServer';
 const footballLotsUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lots_view/FeatureServer';
 
 /**
@@ -64,7 +66,6 @@ const TWELFTH_MAN_LOTS_LAYER_INDEX = 3;
  * Field names on the view are lowercase (e.g. `type`, `twelfthman`, `name`, `note`, `lotname`,
  * `notes`, `notes_1`) and SQL where-clauses against it are case-sensitive.
  */
-const GAMEDAY_PARKING_POINT_LAYER_INDEX = 0;
 const LOTS_POLYGON_LAYER_INDEX = 1;
 
 /**
@@ -83,6 +84,7 @@ export enum FOOTBALL_PARKING_LAYERS {
   FP_12TH_MAN_ENTRY_ROUTES = 'football-12th-man-entry-routes',
   FP_12TH_MAN_EXIT_ROUTES = 'football-12th-man-exit-routes',
   FP_STREET_GRASS_AREAS = 'football-street-grass-areas',
+  FP_PV_STREET_GRASS_AREAS = 'football-pv-street-grass-areas',
   FP_12TH_MAN_STREET_GRASS_AREAS = 'football-12th-man-street-grass-areas',
   FP_SHUTTLE_STOPS = 'football-shuttle-stops',
   FP_SHUTTLE_ROUTES = 'football-shuttle-routes',
@@ -229,27 +231,28 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     }
   },
 
-  // --- Entry / Exit routes (12th Man, Personal Vehicle, Micromobility, Pedestrian) ---
-  // Base source has no query/visibility; `transport-type` sets the `Type` filter + turns it on, and the
-  // `direction` step appends the `Pre_Post` clause and hides the off-direction layer.
+  // --- Entry / Exit routes (Personal Vehicle, Micromobility, Pedestrian) ---
+  // The Personal Vehicle entry route layer is already scoped by the hosted service; the shared cache
+  // exit layer still handles the other route modes.
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_ENTRY_ROUTES,
     title: 'Entry Routes',
-    url: `${tsFootballCacheUrl}/2`,
+    url: `${footballPersonalVehicleEntryUrl}/1`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Location',
-      description: 'attributes.Description'
+      name: 'attributes.location',
+      description: 'attributes.description'
     },
     native: {
       outFields: ['*'],
       visible: false,
       listMode: 'hide',
-      // Entry Routes only ever show Vehicle routes here, so a single green directional arrow suffices.
+      // The hosted entry service is already scoped to the vehicle pre-game route set, but its renderer
+      // still exports as a thick solid line. Re-symbolize it as a thin directional arrow.
       renderer: {
         type: 'unique-value',
-        field: 'Type',
+        field: 'type',
         uniqueValueInfos: [{ value: 'Vehicle', symbol: arrowLineSymbol(ROUTE_COLORS.vehicle) }]
       }
     }
@@ -330,7 +333,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     }
   },
 
-  // --- Street / grass areas (RV, Personal Vehicle; 12th Man uses its own layer below) ---
+  // --- Street / grass areas (RV; Personal Vehicle gets a hosted copy below; 12th Man uses its own) ---
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_STREET_GRASS_AREAS,
@@ -340,6 +343,22 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     popupData: {
       name: 'attributes.Name',
       description: 'attributes.aNote'
+    },
+    native: {
+      outFields: ['*'],
+      visible: false,
+      listMode: 'hide'
+    }
+  },
+  {
+    type: 'feature',
+    id: FOOTBALL_PARKING_LAYERS.FP_PV_STREET_GRASS_AREAS,
+    title: 'Street/Grass Areas (Click for details)',
+    url: `${footballPersonalVehicleEntryUrl}/3`,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.name',
+      description: 'attributes.anote'
     },
     native: {
       outFields: ['*'],
@@ -542,79 +561,16 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_PARKING_LOTS,
     title: 'Football Parking Lots',
-    url: `${footballLotsUrl}/${LOTS_POLYGON_LAYER_INDEX}`,
+    url: `${footballPersonalVehicleEntryUrl}/4`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.lotname',
       description: 'attributes.note'
     },
-    // Always show the full color key (Reserved/Permit/Charter/Paid/Lot Full) even when a mode filters the
-    // drawn lots — the legend is a reference, not a mirror of what's drawn.
-    legend: { ignoreDefinitionExpression: true },
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide',
-      // Categorize lots so the map + legend show Reserved Parking / Any Valid Texas A&M Permit /
-      // Charter Bus / Paid Parking (and Lot Full when a lot is closed). Mirrors the Lots_view renderer.
-      renderer: {
-        type: 'unique-value',
-        field: 'type',
-        uniqueValueInfos: [
-          { value: 'Reserved Athletic', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL },
-          { value: 'Reserved', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL },
-          { value: 'RV', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL },
-          { value: 'SPresale', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL },
-          { value: 'AVP', label: 'Any Valid Texas A&M Permit', symbol: LOT_PERMIT_SYMBOL },
-          { value: 'Charter', label: 'Charter Bus', symbol: LOT_CHARTER_SYMBOL },
-          { value: 'ParkMobile', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
-          { value: 'Public', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
-          { value: 'Public $20', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
-          { value: 'Public $25', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
-          { value: 'Public $30', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
-          { value: 'Public $40', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
-          { value: 'Public $G', label: 'Paid Parking', symbol: LOT_PAID_SYMBOL },
-          { value: 'Lot Full', label: 'Lot Full', symbol: LOT_FULL_SYMBOL }
-        ]
-      },
-      // Field names on the Lots_view polygon layer are lowercase and case-sensitive in SQL where-clauses.
-      labelingInfo: [
-        {
-          // twelfthman lots (treat blank or single space as empty; anything else shows second line)
-          labelExpressionInfo: {
-            expression: '$feature.name + TextFormatting.NewLine + $feature.twelfthman'
-          },
-          labelPlacement: 'always-horizontal',
-          useCodedValues: true,
-          symbol: lotLabelSymbol,
-          minScale: 9500,
-          maxScale: 0,
-          where: "twelfthman IS NOT NULL AND TRIM(twelfthman) <> ''"
-        },
-        {
-          // Non-twelfthman lots with a price embedded in type (e.g. "Public $30")
-          labelExpressionInfo: {
-            expression:
-              "var t=$feature.type; var p=''; if(t!=null && t!='' && Find('$', t)>-1){ var i=Find('$', t); var seg=Mid(t,i,10); var sp=Find(' ', seg); if(sp>-1){ seg=Left(seg, sp);} var last=Right(seg,1); if(last=='-' || last==':' || last==',' ){ seg=Left(seg, Length(seg)-1);} p=seg; } $feature.name + IIf(p=='','', ' - '+p);"
-          },
-          labelPlacement: 'always-horizontal',
-          useCodedValues: true,
-          symbol: lotLabelSymbol,
-          minScale: 9500,
-          maxScale: 0,
-          where: "(twelfthman IS NULL OR TRIM(twelfthman) = '') AND type IS NOT NULL AND type LIKE '%$%' AND type <> 'AVP'"
-        },
-        {
-          // Fallback: non-priced, non-twelfthman
-          labelExpression: '[name]',
-          labelPlacement: 'always-horizontal',
-          useCodedValues: true,
-          symbol: lotLabelSymbol,
-          minScale: 9500,
-          maxScale: 0,
-          where: "(twelfthman IS NULL OR TRIM(twelfthman) = '') AND (type IS NULL OR type NOT LIKE '%$%' OR type = 'AVP')"
-        }
-      ]
+      listMode: 'hide'
     }
   },
   {
@@ -734,23 +690,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_GAMEDAY_PARKING,
     title: 'Gameday Parking',
-    url: `${footballLotsUrl}/${GAMEDAY_PARKING_POINT_LAYER_INDEX}`,
+    url: `${footballPersonalVehicleEntryUrl}/0`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.notes',
       description: 'attributes.notes_1'
-    },
-    // The gameday parking picture markers are pin-shaped (natural ~60x73, 0.82 ratio) but the service
-    // renderer forces most of them into a 30x30 square, which stretches them wide on the map AND in the
-    // legend swatch. Re-render both at a matching ~0.82 ratio (25x30). `EsriMapService` applies these
-    // width/height hints to the on-map picture markers too (`applyLegendOverrideToLayerSymbols`), so a
-    // single override de-stretches the icons and the legend swatches without re-embedding the images.
-    legend: {
-      mode: 'renderer-symbol',
-      preserveAspectRatio: true,
-      fit: 'contain',
-      width: 25,
-      height: 30
     },
     native: {
       outFields: ['*'],
@@ -850,10 +794,10 @@ export const FootballParkingOptions: SpecialEventOptions = [
           layerId: FOOTBALL_PARKING_LAYERS.FP_RNS_SPACES,
           conversions: [{ input: TransportType.RV, propOverrides: SHOW }]
         },
-        // Entry routes: shown (with a vehicle filter) for the vehicle-based modes; direction adds Pre_Post.
+        // Personal Vehicle entry routes come from the hosted entry service.
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_ENTRY_ROUTES,
-          conversions: [{ input: TransportType.PERSONAL_VEHICLE, expression: "Type = 'Vehicle'", propOverrides: SHOW }]
+          conversions: [{ input: TransportType.PERSONAL_VEHICLE, propOverrides: SHOW }]
         },
         // Exit routes: filtered per mode; Pedestrian is fully self-contained (no direction step).
         {
@@ -881,10 +825,11 @@ export const FootballParkingOptions: SpecialEventOptions = [
         // Street / grass areas
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_STREET_GRASS_AREAS,
-          conversions: [
-            { input: TransportType.RV, propOverrides: SHOW },
-            { input: TransportType.PERSONAL_VEHICLE, propOverrides: SHOW }
-          ]
+          conversions: [{ input: TransportType.RV, propOverrides: SHOW }]
+        },
+        {
+          layerId: FOOTBALL_PARKING_LAYERS.FP_PV_STREET_GRASS_AREAS,
+          conversions: [{ input: TransportType.PERSONAL_VEHICLE, propOverrides: SHOW }]
         },
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_12TH_MAN_STREET_GRASS_AREAS,
