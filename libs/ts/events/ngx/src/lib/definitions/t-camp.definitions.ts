@@ -20,6 +20,21 @@ export enum T_CAMP_LAYERS {
 
 const tCampUrl = Connections.tCampUrl;
 
+const streetClosureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    style: 'diagonal-cross',
+    color: [230, 0, 0, 255],
+    outline: {
+      type: 'simple-line',
+      style: 'solid',
+      color: [230, 0, 0, 255],
+      width: 1
+    }
+  }
+} as unknown as NonNullable<NonNullable<FeatureLayerSourceProperties['native']>['renderer']>;
+
 // Every feature in the service carries a rich, pre-formatted HTML `description` along with a `name`,
 // so a single name/description popup works for all four layers.
 const popup = {
@@ -92,7 +107,8 @@ export const TCampColdLayerSources: LayerSource[] = [
     listMode: 'show',
     ...popup,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: streetClosureRenderer
     }
   },
   {
@@ -135,8 +151,7 @@ export const TCampConfiguration: EventConfiguration = {
   name: 'T Camp',
   applicationName: 'T Camp Parking & Transportation Map',
   shortApplicationName: 'T Camp Map',
-  introductionText:
-    'Find parking, entry routes, and closures for T Camp. Use the map to plan your drop-off and pickup.',
+  introductionText: 'Find parking, entry routes, and closures for T Camp. Use the map to plan your drop-off and pickup.',
   eventDates: [],
   scheduleUrl: 'https://transport.tamu.edu/Parking/Events/camp.aspx',
   // The Williams Alumni Center sits ~570m southwest of the lots, so the initial view has to cover the
