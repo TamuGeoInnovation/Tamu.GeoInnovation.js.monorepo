@@ -18,27 +18,18 @@ import esri = __esri;
  *
  * 1. `Hosted/12thMan_view` + `Hosted/12thMan_2_view` — the 12th Man entry and exit maps.
  * 2. `Hosted/Football_Personal_Vehicle_Entry` — the Personal Vehicle entry map.
- * 3. `Hosted/Lots_view` (the parking-lot polygons + gameday parking point icons that Marcomm edits on game days).
- * 4. `TSFootball_Cache` (every remaining mode: RV, Shuttle, Personal Vehicle Exit, Micromobility, Pedestrian, Pedicab).
- *
- * NOTE on the remaining per-mode services: the RV and Personal Vehicle Exit maps are also specified to move to
- * hosted services, but both return "Token Required" for anonymous users on prod AND dev, and none of
- * them appear in the public `Hosted` service directory:
- *
- *   - RV                      https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer
- *   - Personal Vehicle Exit   https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Exit/FeatureServer
- *
- * Wiring them now would pop an ArcGIS sign-in on AggieMap — the same problem that forced the public
- * `Lots_view` and that previously blocked `Football_view`. Those modes therefore stay on the anonymously
- * readable `TSFootball_Cache` until public views exist.
- * TODO: move RV and Personal Vehicle Exit onto the services above once they are shared publicly, following the
- * 12th Man layers below as the pattern — and re-verify sublayer indices, field casing (the hosted views
- * publish lowercase fields, the cache TitleCase) and any filters baked into each view.
+ * 3. `Hosted/Football_Personal_Vehicle_Exit` — the Personal Vehicle exit map.
+ * 4. `Hosted/RV_view` — RV striping, reserved spaces and street/grass areas.
+ * 5. `Hosted/Lots_view` (the parking-lot polygons + gameday parking point icons that Marcomm edits on game days).
+ * 6. `Hosted/TSFootball_view` — Shuttle, Micromobility, Pedestrian and Pedicab.
  */
-const tsFootballCacheUrl = 'https://gis.dev.tamu.edu/arcgis/rest/services/TS/TSFootball_Cache/MapServer';
 const footballPersonalVehicleEntryUrl =
   'https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Entry/FeatureServer';
+const footballPersonalVehicleExitUrl =
+  'https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Exit/FeatureServer';
+const footballRvUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer';
 const footballLotsUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lots_view/FeatureServer';
+const footballHostedUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/TSFootball_view/FeatureServer';
 
 /**
  * The 12th Man entry and exit services. Both are public and already filtered to `aggiemap = 1`, so the
@@ -80,6 +71,7 @@ export enum FOOTBALL_PARKING_LAYERS {
   FP_STRIPES = 'football-stripes',
   FP_RNS_SPACES = 'football-rns-spaces',
   FP_ENTRY_ROUTES = 'football-entry-routes',
+  FP_PV_EXIT_ROUTES = 'football-pv-exit-routes',
   FP_EXIT_ROUTES = 'football-exit-routes',
   FP_12TH_MAN_ENTRY_ROUTES = 'football-12th-man-entry-routes',
   FP_12TH_MAN_EXIT_ROUTES = 'football-12th-man-exit-routes',
@@ -198,6 +190,96 @@ const lotLabelSymbol: esri.TextSymbolProperties & { type: 'text' } = {
 
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
+
+const createCimHatchPolygonSymbol = (
+  outlineColor: number[],
+  outlineWidth: number,
+  hatches: Array<{
+    color: number[];
+    width: number;
+    rotation: number;
+    separation: number;
+    offsetX?: number;
+    offsetY?: number;
+    colorLocked?: boolean;
+  }>
+) => ({
+  type: 'cim',
+  data: {
+    type: 'CIMSymbolReference',
+    symbol: {
+      type: 'CIMPolygonSymbol',
+      angleAlignment: 'Map',
+      symbolLayers: [
+        {
+          type: 'CIMSolidStroke',
+          enable: true,
+          color: outlineColor,
+          width: outlineWidth
+        },
+        ...hatches.map((hatch) => ({
+          type: 'CIMHatchFill',
+          enable: true,
+          colorLocked: hatch.colorLocked,
+          rotation: hatch.rotation,
+          separation: hatch.separation,
+          offsetX: hatch.offsetX,
+          offsetY: hatch.offsetY,
+          lineSymbol: {
+            type: 'CIMLineSymbol',
+            symbolLayers: [
+              {
+                type: 'CIMSolidStroke',
+                enable: true,
+                color: hatch.color,
+                width: hatch.width
+              }
+            ]
+          }
+        }))
+      ]
+    }
+  }
+});
+
+// RV_view's FeatureServer metadata publishes Street Closures as a solid fill, but its portal item carries
+// the authored hatch renderer shown in Map Viewer. Reproduce that portal renderer because this app loads
+// the FeatureServer URL directly and therefore cannot receive the item-level renderer override.
+const footballRvStreetGrassRenderer = {
+  type: 'unique-value',
+  field: 'type',
+  uniqueValueInfos: [
+    {
+      value: 'AreaClosed',
+      label: 'Street Closures',
+      symbol: createCimHatchPolygonSymbol([230, 0, 0, 255], 0.4, [
+        {
+          color: [230, 0, 0, 255],
+          width: 1.2,
+          rotation: -30,
+          separation: 5,
+          offsetX: -0.45,
+          offsetY: -0.7794228634059949
+        },
+        {
+          color: [230, 152, 0, 255],
+          width: 1.2,
+          rotation: 30,
+          separation: 5,
+          colorLocked: true
+        }
+      ])
+    },
+    {
+      value: 'Tailgate',
+      label: 'Reserved Tailgate',
+      symbol: createCimHatchPolygonSymbol([122, 142, 245, 255], 2, [
+        { color: [122, 142, 245, 255], width: 0.5, rotation: 135, separation: 5 },
+        { color: [122, 142, 245, 255], width: 0.5, rotation: 45, separation: 5 }
+      ])
+    }
+  ]
+} as unknown as FeatureRenderer;
 
 const personalVehicleReservedLotSymbol = {
   type: 'cim',
@@ -375,11 +457,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_STRIPES,
     title: 'Stripes',
-    url: `${tsFootballCacheUrl}/0`,
+    url: `${footballRvUrl}/0`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Use_',
-      description: 'attributes.Location'
+      name: 'attributes.use_',
+      description: 'attributes.location'
     },
     native: {
       outFields: ['*'],
@@ -391,11 +473,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_RNS_SPACES,
     title: 'RNS Spaces',
-    url: `${tsFootballCacheUrl}/1`,
+    url: `${footballRvUrl}/1`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.RV_SpcNum',
-      description: 'attributes.Spc_Type'
+      name: 'attributes.rv_spcnum',
+      description: 'attributes.spc_type'
     },
     native: {
       outFields: ['*'],
@@ -405,8 +487,8 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
   },
 
   // --- Entry / Exit routes (Personal Vehicle, Micromobility, Pedestrian) ---
-  // The Personal Vehicle entry route layer is already scoped by the hosted service; the shared cache
-  // exit layer still handles the other route modes.
+  // The Personal Vehicle entry route layer is already scoped by its hosted service. The shared hosted
+  // exit layer handles the other route modes.
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_ENTRY_ROUTES,
@@ -432,23 +514,46 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: FOOTBALL_PARKING_LAYERS.FP_EXIT_ROUTES,
+    id: FOOTBALL_PARKING_LAYERS.FP_PV_EXIT_ROUTES,
     title: 'Exit Routes',
-    url: `${tsFootballCacheUrl}/3`,
+    url: `${footballPersonalVehicleExitUrl}/2`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Location',
-      description: 'attributes.Description'
+      name: 'attributes.location',
+      description: 'attributes.description'
     },
     native: {
       outFields: ['*'],
       visible: false,
       listMode: 'hide',
-      // Exit Routes are shared by 12th Man/Personal Vehicle (Vehicle), Micromobility (Cyclist) and
-      // Pedestrian, so color the directional arrows by `Type` — each mode filters to one type.
+      // The hosted view is already scoped to vehicle post-game routes. Preserve the existing thin
+      // directional exit symbology instead of its published 15px solid line.
       renderer: {
         type: 'unique-value',
-        field: 'Type',
+        field: 'type',
+        uniqueValueInfos: [{ value: 'Vehicle', symbol: arrowLineSymbol(ROUTE_COLORS.vehicle) }]
+      }
+    }
+  },
+  {
+    type: 'feature',
+    id: FOOTBALL_PARKING_LAYERS.FP_EXIT_ROUTES,
+    title: 'Exit Routes',
+    url: `${footballHostedUrl}/3`,
+    popupComponent: MarkdownPopupComponent,
+    popupData: {
+      name: 'attributes.location',
+      description: 'attributes.description'
+    },
+    native: {
+      outFields: ['*'],
+      visible: false,
+      listMode: 'hide',
+      // The hosted layer is shared by Micromobility (Cyclist) and Pedestrian, so color the directional
+      // arrows by `type`.
+      renderer: {
+        type: 'unique-value',
+        field: 'type',
         uniqueValueInfos: [
           { value: 'Vehicle', symbol: arrowLineSymbol(ROUTE_COLORS.vehicle) },
           { value: 'Cyclist', symbol: arrowLineSymbol(ROUTE_COLORS.cyclist) },
@@ -511,16 +616,17 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_STREET_GRASS_AREAS,
     title: 'Street/Grass Areas (Click for details)',
-    url: `${tsFootballCacheUrl}/4`,
+    url: `${footballRvUrl}/2`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Name',
-      description: 'attributes.aNote'
+      name: 'attributes.name',
+      description: 'attributes.anote'
     },
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide'
+      listMode: 'hide',
+      renderer: footballRvStreetGrassRenderer
     }
   },
   {
@@ -609,11 +715,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_SHUTTLE_STOPS,
     title: 'Campus Shuttle Stops',
-    url: `${tsFootballCacheUrl}/5`,
+    url: `${footballHostedUrl}/5`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.StopName}',
-      description: 'For route: {attributes.RouteName}'
+      name: '{attributes.stopname}',
+      description: 'For route: {attributes.routename}'
     },
     native: {
       outFields: ['*'],
@@ -625,10 +731,10 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_SHUTTLE_ROUTES,
     title: 'Shuttle Routes',
-    url: `${tsFootballCacheUrl}/6`,
+    url: `${footballHostedUrl}/6`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.RouteName} ({attributes.RouteNum})'
+      name: '{attributes.routename} ({attributes.routenum})'
     },
     native: {
       outFields: ['*'],
@@ -642,11 +748,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_PARKING,
     title: 'Micromobility Parking Area',
-    url: `${tsFootballCacheUrl}/7`,
+    url: `${footballHostedUrl}/7`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Type',
-      description: 'attributes.BR_Notes'
+      name: 'attributes.type',
+      description: 'attributes.br_notes'
     },
     // Same pin-stretch bug as the Gameday Parking icons: the picture marker is a pin (natural 60x73,
     // ~0.82 ratio) forced into a 30x30 square by the service renderer, so it stretches wide on the map
@@ -669,11 +775,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_DISMOUNT_ZONES,
     title: 'Bike Dismount Zones',
-    url: `${tsFootballCacheUrl}/8`,
+    url: `${footballHostedUrl}/8`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Name',
-      description: 'attributes.Bike_Notes'
+      name: 'attributes.name',
+      description: 'attributes.bike_notes'
     },
     native: {
       outFields: ['*'],
@@ -685,11 +791,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_VEO_GEOFENCE,
     title: 'Bike Veo Geofence',
-    url: `${tsFootballCacheUrl}/9`,
+    url: `${footballHostedUrl}/9`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Name',
-      description: 'attributes.Type'
+      name: 'attributes.name',
+      description: 'attributes.type'
     },
     native: {
       outFields: ['*'],
@@ -701,11 +807,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
     title: 'Bike Lanes',
-    url: `${tsFootballCacheUrl}/10`,
+    url: `${footballHostedUrl}/10`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Use_',
-      description: 'attributes.Location'
+      name: 'attributes.use_',
+      description: 'attributes.location'
     },
     native: {
       outFields: ['*'],
@@ -719,7 +825,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_PEDICAB_STOPS,
     title: 'Pedicab Drop Off/Pick Up',
-    url: `${tsFootballCacheUrl}/11`,
+    url: `${footballHostedUrl}/11`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
@@ -735,7 +841,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_PEDICAB_ROUTES,
     title: 'Pedicab Routes',
-    url: `${tsFootballCacheUrl}/12`,
+    url: `${footballHostedUrl}/12`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
@@ -761,11 +867,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_PEDICAB_CLOSURES,
     title: 'Pedicab Closures',
-    url: `${tsFootballCacheUrl}/13`,
+    url: `${footballHostedUrl}/13`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: 'attributes.Event',
-      description: 'attributes.Notes'
+      name: 'attributes.event',
+      description: 'attributes.notes'
     },
     native: {
       outFields: ['*'],
@@ -906,14 +1012,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     }
   },
   {
-    // Dedicated RV lots layer (same polygon service, scoped to RV). It has its own single-category
-    // renderer and is NOT flagged with `ignoreDefinitionExpression`, so the RV map's legend shows only
-    // "Reserved Parking" — unlike FP_PARKING_LOTS, which shows the full color key for 12th Man / Personal
-    // Vehicle. RV is wired to this layer instead of FP_PARKING_LOTS for that reason.
+    // The hosted RV view is already scoped to RV lots and publishes the authoritative symbology.
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_RV_PARKING,
     title: 'Football Parking Lots',
-    url: `${footballLotsUrl}/${LOTS_POLYGON_LAYER_INDEX}`,
+    url: `${footballRvUrl}/3`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.lotname',
@@ -922,23 +1025,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide',
-      definitionExpression: "type = 'RV'",
-      renderer: {
-        type: 'unique-value',
-        field: 'type',
-        uniqueValueInfos: [{ value: 'RV', label: 'Reserved Parking', symbol: LOT_RESERVED_SYMBOL }]
-      },
-      labelingInfo: [
-        {
-          labelExpression: '[name]',
-          labelPlacement: 'always-horizontal',
-          useCodedValues: true,
-          symbol: lotLabelSymbol,
-          minScale: 9500,
-          maxScale: 0
-        }
-      ]
+      listMode: 'hide'
     }
   },
   {
@@ -1062,15 +1149,20 @@ export const FootballParkingOptions: SpecialEventOptions = [
           layerId: FOOTBALL_PARKING_LAYERS.FP_ENTRY_ROUTES,
           conversions: [{ input: TransportType.PERSONAL_VEHICLE, propOverrides: SHOW }]
         },
-        // Exit routes: filtered per mode; Pedestrian is fully self-contained (no direction step).
+        {
+          // The hosted exit view is pre-filtered to Personal Vehicle post-game routes.
+          layerId: FOOTBALL_PARKING_LAYERS.FP_PV_EXIT_ROUTES,
+          conversions: [{ input: TransportType.PERSONAL_VEHICLE, propOverrides: SHOW }]
+        },
+        // The shared hosted exit layer serves Micromobility and Pedestrian. Pedestrian is fully
+        // self-contained and therefore does not show the direction step.
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_EXIT_ROUTES,
           conversions: [
-            { input: TransportType.PERSONAL_VEHICLE, expression: "Type = 'Vehicle'", propOverrides: SHOW },
-            { input: TransportType.MICROMOBILITY, expression: "Type = 'Cyclist'", propOverrides: SHOW },
+            { input: TransportType.MICROMOBILITY, expression: "type = 'Cyclist'", propOverrides: SHOW },
             {
               input: TransportType.PEDESTRIAN,
-              expression: "Type = 'Pedestrian' AND Pre_Post = 'Post-Game'",
+              expression: "type = 'Pedestrian' AND pre_post = 'Post-Game'",
               propOverrides: SHOW
             }
           ]
@@ -1197,10 +1289,18 @@ export const FootballParkingOptions: SpecialEventOptions = [
           ]
         },
         {
-          // Exit map: keep Exit Routes (adding the post-game clause), hide Entry Routes.
+          // Personal Vehicle exit comes from a post-game-only hosted view, so direction only toggles it.
+          layerId: FOOTBALL_PARKING_LAYERS.FP_PV_EXIT_ROUTES,
+          conversions: [
+            { input: Direction.EXIT },
+            { input: Direction.ENTRY, propOverrides: HIDE }
+          ]
+        },
+        {
+          // Micromobility exit uses the shared hosted layer; add the post-game clause and hide it on entry.
           layerId: FOOTBALL_PARKING_LAYERS.FP_EXIT_ROUTES,
           conversions: [
-            { input: Direction.EXIT, expression: "Pre_Post = 'Post-Game'" },
+            { input: Direction.EXIT, expression: "pre_post = 'Post-Game'" },
             { input: Direction.ENTRY, propOverrides: HIDE }
           ]
         },
