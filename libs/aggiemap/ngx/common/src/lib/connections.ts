@@ -23,7 +23,7 @@ function createConnections(gisHost: string): IComposedConnections {
     avpParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/AnyValidPermitParking/MapServer`,
     baseballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/BaseballParking_view/FeatureServer`,
     bigEventUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Big_Event_view/FeatureServer`,
-    breakSummerParkingUrl: `https://${gisHost}/arcgis/rest/services/TS/SummerBreakParking/MapServer`,
+    breakSummerParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/SummerBreakParking/MapServer`,
     businessParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/BusinessParking/MapServer`,
     contractorParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/ContractorParking/MapServer`,
     crossCountryParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/CrossCountryParking_view/FeatureServer`,
