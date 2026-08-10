@@ -528,8 +528,13 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
               if (rnsNum != null && rnsNum != '' && rnsNum != 'null') { return rnsNum; }
               var visNum = Trim(Text($feature.VisSpcNum));
               if (visNum != null && visNum != '' && visNum != 'null') { return visNum; }
-              var rvNum = Trim(Text($feature.RV_SpcNum));
-              if (rvNum != null && rvNum != '' && rvNum != 'null') { return rvNum; }
+              // RV_SpcNum is only trustworthy on true RV spaces (Anno_Type = 'RV'). Some lots
+              // (e.g. 100e) have stray values in this field on regular (Reg) spaces, which
+              // showed up as bogus space numbers across lots that have no RV parking at all.
+              if ($feature.Anno_Type == 'RV') {
+                var rvNum = Trim(Text($feature.RV_SpcNum));
+                if (rvNum != null && rvNum != '' && rvNum != 'null') { return rvNum; }
+              }
               var spcId = Trim(Text($feature.Spc_ID_Num));
               if (spcId != null && spcId != '' && spcId != 'null') { return spcId; }
               return '';
