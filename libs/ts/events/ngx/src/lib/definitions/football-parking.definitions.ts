@@ -242,42 +242,65 @@ const createCimHatchPolygonSymbol = (
   }
 });
 
-// RV_view's FeatureServer metadata publishes Street Closures as a solid fill, but its portal item carries
-// the authored hatch renderer shown in Map Viewer. Reproduce that portal renderer because this app loads
-// the FeatureServer URL directly and therefore cannot receive the item-level renderer override.
+const streetClosureHatchSymbol = createCimHatchPolygonSymbol([230, 0, 0, 255], 0.4, [
+  {
+    color: [230, 0, 0, 255],
+    width: 1.2,
+    rotation: -30,
+    separation: 5,
+    offsetX: -0.45,
+    offsetY: -0.7794228634059949
+  },
+  {
+    color: [230, 152, 0, 255],
+    width: 1.2,
+    rotation: 30,
+    separation: 5,
+    colorLocked: true
+  }
+]);
+
+const reservedTailgateHatchSymbol = createCimHatchPolygonSymbol([122, 142, 245, 255], 2, [
+  { color: [122, 142, 245, 255], width: 0.5, rotation: 135, separation: 5 },
+  { color: [122, 142, 245, 255], width: 0.5, rotation: 45, separation: 5 }
+]);
+
+const permitRequiredHatchSymbol = createCimHatchPolygonSymbol([230, 152, 0, 255], 1, [
+  { color: [255, 170, 0, 255], width: 1, rotation: 135, separation: 6 },
+  { color: [255, 170, 0, 255], width: 1, rotation: 45, separation: 6 }
+]);
+
+const streetClosureUniqueValueInfo = {
+  value: 'AreaClosed',
+  label: 'Street Closures',
+  symbol: streetClosureHatchSymbol
+};
+
+const reservedTailgateUniqueValueInfo = {
+  value: 'Tailgate',
+  label: 'Reserved Tailgate',
+  symbol: reservedTailgateHatchSymbol
+};
+
+// The FeatureServer metadata publishes Street Closures as a solid fill, while the portal items carry
+// the authored hatch renderer shown in Map Viewer. Reproduce those item-level renderer overrides here.
 const footballRvStreetGrassRenderer = {
   type: 'unique-value',
   field: 'type',
+  uniqueValueInfos: [streetClosureUniqueValueInfo, reservedTailgateUniqueValueInfo]
+} as unknown as FeatureRenderer;
+
+const footballPersonalVehicleStreetGrassRenderer = {
+  type: 'unique-value',
+  field: 'type',
   uniqueValueInfos: [
+    streetClosureUniqueValueInfo,
     {
-      value: 'AreaClosed',
-      label: 'Street Closures',
-      symbol: createCimHatchPolygonSymbol([230, 0, 0, 255], 0.4, [
-        {
-          color: [230, 0, 0, 255],
-          width: 1.2,
-          rotation: -30,
-          separation: 5,
-          offsetX: -0.45,
-          offsetY: -0.7794228634059949
-        },
-        {
-          color: [230, 152, 0, 255],
-          width: 1.2,
-          rotation: 30,
-          separation: 5,
-          colorLocked: true
-        }
-      ])
+      value: 'Permit Required',
+      label: 'Permit Required',
+      symbol: permitRequiredHatchSymbol
     },
-    {
-      value: 'Tailgate',
-      label: 'Reserved Tailgate',
-      symbol: createCimHatchPolygonSymbol([122, 142, 245, 255], 2, [
-        { color: [122, 142, 245, 255], width: 0.5, rotation: 135, separation: 5 },
-        { color: [122, 142, 245, 255], width: 0.5, rotation: 45, separation: 5 }
-      ])
-    }
+    reservedTailgateUniqueValueInfo
   ]
 } as unknown as FeatureRenderer;
 
@@ -643,57 +666,11 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       visible: false,
       listMode: 'hide',
-      renderer: {
-        type: 'unique-value',
-        field: 'type',
-        uniqueValueInfos: [
-          {
-            value: 'AreaClosed',
-            label: 'Street Closures',
-            symbol: {
-              type: 'simple-fill',
-              style: 'diagonal-cross',
-              color: [230, 0, 0, 255],
-              outline: {
-                color: [230, 0, 0, 255],
-                width: 0.4
-              }
-            }
-          },
-          {
-            value: 'Permit Required',
-            label: 'Permit Required',
-            symbol: {
-              type: 'simple-fill',
-              style: 'diagonal-cross',
-              color: [255, 170, 0, 255],
-              outline: {
-                color: [230, 152, 0, 255],
-                width: 1
-              }
-            }
-          },
-          {
-            value: 'Tailgate',
-            label: 'Reserved Tailgate',
-            symbol: {
-              type: 'simple-fill',
-              style: 'diagonal-cross',
-              color: [122, 142, 245, 255],
-              outline: {
-                color: [122, 142, 245, 255],
-                width: 2
-              }
-            }
-          }
-        ]
-      } as unknown as FeatureRenderer
+      renderer: footballPersonalVehicleStreetGrassRenderer
     }
   },
   {
-    // 12th Man street/grass areas. Same content and symbology as the cache layer above (Street Closures
-    // in red, Reserved Tailgate in blue hatch), published on the hosted 12th Man view; the service
-    // renderer is used as-authored, as it is for the cache layer.
+    // The 12th Man portal item uses the same authored hatch renderer as the RV portal item.
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_12TH_MAN_STREET_GRASS_AREAS,
     title: 'Street/Grass Areas (Click for details)',
@@ -706,7 +683,8 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       visible: false,
-      listMode: 'hide'
+      listMode: 'hide',
+      renderer: footballRvStreetGrassRenderer
     }
   },
 
