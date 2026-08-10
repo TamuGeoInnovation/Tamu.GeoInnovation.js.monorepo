@@ -119,21 +119,26 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
   }
 ];
 
+const SUMMER_COMMENCEMENT_DATES = [
+  { eventDate: '2026-08-08', value: '2026-08-08T05:00:00.000Z', label: 'August 8, 2026' }
+] as const;
+
+const summerCommencementDateConversions = SUMMER_COMMENCEMENT_DATES.map(({ value }) => ({
+  input: value,
+  propOverrides: { visible: true }
+}));
+
 export const SummerCommencementConfiguration: EventConfiguration = {
   id: 'graduation-summer',
   name: 'Summer Commencement Ceremony',
   applicationName: 'Summer Commencement Transportation Map',
   shortApplicationName: 'Summer Commencement Map',
   introductionText: 'Get the best transportation and parking information for the summer commencement ceremonies.',
-  eventDates: ['2026-08-08'],
+  eventDates: SUMMER_COMMENCEMENT_DATES.map(({ eventDate }) => eventDate),
   scheduleUrl: 'https://aggie.tamu.edu/graduation',
   mapCenter: [-96.34458, 30.60629],
   zoom: 17
 };
-
-enum SummerCommencementAttendanceDateChoices {
-  DayOne = '2026-08-08T05:00:00.000Z' // August 8, 12AM UTC
-}
 
 export const SummerCommencementOptions: SpecialEventOptions = [
   {
@@ -143,16 +148,16 @@ export const SummerCommencementOptions: SpecialEventOptions = [
     shortDescription: 'Event Day',
     label: 'Event Day',
     uiType: 'date-card-grid',
-    choices: [{ value: SummerCommencementAttendanceDateChoices.DayOne, label: 'August 8, 2026' }],
+    choices: SUMMER_COMMENCEMENT_DATES.map(({ value, label }) => ({ value, label })),
     effects: {
       layers: [
         {
           layerId: SUMMER_COMMENCEMENT_LAYERS.PARKING_LOTS,
-          conversions: [{ input: SummerCommencementAttendanceDateChoices.DayOne, propOverrides: { visible: true } }]
+          conversions: summerCommencementDateConversions
         },
         {
           layerId: SUMMER_COMMENCEMENT_LAYERS.TRAFFIC_FLOW,
-          conversions: [{ input: SummerCommencementAttendanceDateChoices.DayOne, propOverrides: { visible: true } }]
+          conversions: summerCommencementDateConversions
         }
       ]
     }

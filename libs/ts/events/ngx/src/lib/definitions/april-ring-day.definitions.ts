@@ -14,10 +14,16 @@ export enum APRIL_RING_DAY_LAYERS {
   RD_AREAS = 'ring-day-areas'
 }
 
-enum AprilRingDayDates {
-  DAY1 = '2026-04-09',
-  DAY2 = '2026-04-10'
-}
+const APRIL_RING_DAY_PERIODS = [
+  { value: 'day1', label: 'Aggie Ring Pickup (April 9, 2026)', dates: ['2026-04-09'] },
+  { value: 'day2', label: 'Aggie Ring Day (April 10, 2026)', dates: ['2026-04-10'] }
+] as const;
+
+const aprilRingDayDateConversions = (startField: string, endField: string) =>
+  APRIL_RING_DAY_PERIODS.map(({ value, dates }) => ({
+    input: value,
+    expression: `${startField} <= date'${dates[dates.length - 1]}' AND ${endField} >= date'${dates[0]}'`
+  }));
 
 const eventUrl = Connections.ringDayUrl;
 
@@ -99,7 +105,7 @@ export const AprilRingDayConfiguration: EventConfiguration = {
   applicationName: 'April Ring Day Transportation Map',
   shortApplicationName: 'April Ring Day Map',
   introductionText: 'Get the best transportation and logistics information for April Ring Day.',
-  eventDates: [AprilRingDayDates.DAY1, AprilRingDayDates.DAY2],
+  eventDates: APRIL_RING_DAY_PERIODS.flatMap(({ dates }) => dates),
   scheduleUrl: 'https://www.aggienetwork.com/ring/ringday/',
   mapCenter: [-96.33616, 30.60958],
   zoom: 16,
@@ -128,11 +134,6 @@ enum AprilRingDayOptions {
   ACCESSIBILITY = 'accessibility'
 }
 
-enum EventDay {
-  DAY1 = 'day1',
-  DAY2 = 'day2'
-}
-
 export const AprilRingDaySpecialEventOptions: SpecialEventOptions = [
   {
     value: AprilRingDayOptions.EVENT_DAY,
@@ -140,56 +141,20 @@ export const AprilRingDaySpecialEventOptions: SpecialEventOptions = [
     description:
       'Select which April Ring Day period you plan to attend to see the most relevant transportation and logistics information.',
     shortDescription: 'Event Day',
-    choices: [
-      {
-        value: EventDay.DAY1,
-        label: 'Aggie Ring Pickup (April 9, 2026)'
-      },
-      {
-        value: EventDay.DAY2,
-        label: 'Aggie Ring Day (April 10, 2026)'
-      }
-    ],
+    choices: APRIL_RING_DAY_PERIODS.map(({ value, label }) => ({ value, label })),
     effects: {
       layers: [
         {
           layerId: APRIL_RING_DAY_LAYERS.RD_AREAS,
-          conversions: [
-            {
-              input: EventDay.DAY1,
-              expression: `StartDate <= date'${AprilRingDayDates.DAY1}' AND EndDate >= date'${AprilRingDayDates.DAY1}'`
-            },
-            {
-              input: EventDay.DAY2,
-              expression: `StartDate <= date'${AprilRingDayDates.DAY2}' AND EndDate >= date'${AprilRingDayDates.DAY2}'`
-            }
-          ]
+          conversions: aprilRingDayDateConversions('StartDate', 'EndDate')
         },
         {
           layerId: APRIL_RING_DAY_LAYERS.RD_ROUTES,
-          conversions: [
-            {
-              input: EventDay.DAY1,
-              expression: `Start_Date <= date'${AprilRingDayDates.DAY1}' AND End_Date >= date'${AprilRingDayDates.DAY1}'`
-            },
-            {
-              input: EventDay.DAY2,
-              expression: `Start_Date <= date'${AprilRingDayDates.DAY2}' AND End_Date >= date'${AprilRingDayDates.DAY2}'`
-            }
-          ]
+          conversions: aprilRingDayDateConversions('Start_Date', 'End_Date')
         },
         {
           layerId: APRIL_RING_DAY_LAYERS.RD_POIS,
-          conversions: [
-            {
-              input: EventDay.DAY1,
-              expression: `Start_Date <= date'${AprilRingDayDates.DAY1}' AND End_Date >= date'${AprilRingDayDates.DAY1}'`
-            },
-            {
-              input: EventDay.DAY2,
-              expression: `Start_Date <= date'${AprilRingDayDates.DAY2}' AND End_Date >= date'${AprilRingDayDates.DAY2}'`
-            }
-          ]
+          conversions: aprilRingDayDateConversions('Start_Date', 'End_Date')
         }
       ]
     }
