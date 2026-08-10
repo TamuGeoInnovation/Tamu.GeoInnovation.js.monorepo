@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -23,13 +24,16 @@ import esri = __esri;
  * 5. `Hosted/Lots_view` (the parking-lot polygons + gameday parking point icons that Marcomm edits on game days).
  * 6. `Hosted/TSFootball_view` — Shuttle, Micromobility, Pedestrian and Pedicab.
  */
+const gisHost = getDefaultGisHost();
+const tsgisHost = getDefaultGisHosts().tsgisHost;
+
 const footballPersonalVehicleEntryUrl =
-  'https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Entry/FeatureServer';
+  `https://${gisHost}/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Entry/FeatureServer`;
 const footballPersonalVehicleExitUrl =
-  'https://gis.tamu.edu/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Exit/FeatureServer';
-const footballRvUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/RV_view/FeatureServer';
-const footballLotsUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/Lots_view/FeatureServer';
-const footballHostedUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/TSFootball_view/FeatureServer';
+  `https://${gisHost}/arcgis/rest/services/Hosted/Football_Personal_Vehicle_Exit/FeatureServer`;
+const footballRvUrl = `https://${gisHost}/arcgis/rest/services/Hosted/RV_view/FeatureServer`;
+const footballLotsUrl = `https://${gisHost}/arcgis/rest/services/Hosted/Lots_view/FeatureServer`;
+const footballHostedUrl = `https://${tsgisHost}/arcgis/rest/services/Hosted/TSFootball_view/FeatureServer`;
 
 /**
  * The 12th Man entry and exit services. Both are public and already filtered to `aggiemap = 1`, so the
@@ -41,8 +45,8 @@ const footballHostedUrl = 'https://arc.ts.tamu.edu/arcgis/rest/services/Hosted/T
  * (same 24 / 26 features, schema and symbology), so those two layers are sourced once from the entry
  * service and shown for both directions rather than duplicated per direction.
  */
-const twelfthManEntryUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/12thMan_view/FeatureServer';
-const twelfthManExitUrl = 'https://gis.tamu.edu/arcgis/rest/services/Hosted/12thMan_2_view/FeatureServer';
+const twelfthManEntryUrl = `https://${gisHost}/arcgis/rest/services/Hosted/12thMan_view/FeatureServer`;
+const twelfthManExitUrl = `https://${gisHost}/arcgis/rest/services/Hosted/12thMan_2_view/FeatureServer`;
 
 const TWELFTH_MAN_ENTRY_ROUTES_LAYER_INDEX = 0;
 const TWELFTH_MAN_EXIT_ROUTES_LAYER_INDEX = 1;
