@@ -14,9 +14,15 @@ export enum NOVEMBER_RING_DAY_LAYERS {
   RD_AREAS = 'ring-day-areas'
 }
 
-enum NovemberRingDayDates {
-  DAY2 = '2026-11-06'
-}
+const NOVEMBER_RING_DAY_PERIODS = [
+  { value: 'day2', label: 'Aggie Ring Day (November 6, 2026)', dates: ['2026-11-06'] }
+] as const;
+
+const novemberRingDayDateConversions = (startField: string, endField: string) =>
+  NOVEMBER_RING_DAY_PERIODS.map(({ value, dates }) => ({
+    input: value,
+    expression: `${startField} <= date'${dates[dates.length - 1]}' AND ${endField} >= date'${dates[0]}'`
+  }));
 
 const eventUrl = Connections.ringDayUrl;
 
@@ -98,7 +104,7 @@ export const NovemberRingDayConfiguration: EventConfiguration = {
   applicationName: 'November Ring Day Transportation Map',
   shortApplicationName: 'November Ring Day Map',
   introductionText: 'Get the best transportation and logistics information for November Ring Day.',
-  eventDates: [NovemberRingDayDates.DAY2],
+  eventDates: NOVEMBER_RING_DAY_PERIODS.flatMap(({ dates }) => dates),
   scheduleUrl: 'https://www.aggienetwork.com/ring/ringday/',
   mapCenter: [-96.33616, 30.60958],
   zoom: 16,
@@ -126,10 +132,6 @@ enum NovemberRingDayOptions {
   EVENT_DAY = 'event-day'
 }
 
-enum EventDay {
-  DAY2 = 'day2'
-}
-
 export const NovemberRingDaySpecialEventOptions: SpecialEventOptions = [
   {
     value: NovemberRingDayOptions.EVENT_DAY,
@@ -137,40 +139,20 @@ export const NovemberRingDaySpecialEventOptions: SpecialEventOptions = [
     description:
       'Select the November Ring Day period you plan to attend to see the most relevant transportation and logistics information.',
     shortDescription: 'Event Day',
-    choices: [
-      {
-        value: EventDay.DAY2,
-        label: 'Aggie Ring Day (November 6, 2026)'
-      }
-    ],
+    choices: NOVEMBER_RING_DAY_PERIODS.map(({ value, label }) => ({ value, label })),
     effects: {
       layers: [
         {
           layerId: NOVEMBER_RING_DAY_LAYERS.RD_AREAS,
-          conversions: [
-            {
-              input: EventDay.DAY2,
-              expression: `StartDate <= date'${NovemberRingDayDates.DAY2}' AND EndDate >= date'${NovemberRingDayDates.DAY2}'`
-            }
-          ]
+          conversions: novemberRingDayDateConversions('StartDate', 'EndDate')
         },
         {
           layerId: NOVEMBER_RING_DAY_LAYERS.RD_ROUTES,
-          conversions: [
-            {
-              input: EventDay.DAY2,
-              expression: `Start_Date <= date'${NovemberRingDayDates.DAY2}' AND End_Date >= date'${NovemberRingDayDates.DAY2}'`
-            }
-          ]
+          conversions: novemberRingDayDateConversions('Start_Date', 'End_Date')
         },
         {
           layerId: NOVEMBER_RING_DAY_LAYERS.RD_POIS,
-          conversions: [
-            {
-              input: EventDay.DAY2,
-              expression: `Start_Date <= date'${NovemberRingDayDates.DAY2}' AND End_Date >= date'${NovemberRingDayDates.DAY2}'`
-            }
-          ]
+          conversions: novemberRingDayDateConversions('Start_Date', 'End_Date')
         }
       ]
     }

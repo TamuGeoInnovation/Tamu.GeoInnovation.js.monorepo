@@ -75,7 +75,7 @@ export const GisDayConfiguration: EventConfiguration = {
   applicationName: 'GIS Day Event Map',
   shortApplicationName: 'GIS Day',
   introductionText: 'Building and parking locations for GIS Day.',
-  eventDates: ['2025-11-17', '2025-11-18', '2025-11-19', '2025-11-20', '2025-11-21'],
+  eventDates: ['2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20'],
   mapCenter: [-96.3379, 30.61286],
   zoom: 16
 };

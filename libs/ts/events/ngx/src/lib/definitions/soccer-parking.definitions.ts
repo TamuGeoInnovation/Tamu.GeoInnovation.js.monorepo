@@ -162,7 +162,18 @@ export const SoccerParkingConfiguration: EventConfiguration = {
   applicationName: 'Soccer Parking',
   shortApplicationName: 'Soccer Parking',
   introductionText: 'Parking and transportation information for Texas A&M soccer events.',
-  eventDates: [],
+  eventDates: [
+    '2026-08-05',
+    '2026-08-22',
+    '2026-08-27',
+    '2026-09-03',
+    '2026-09-06',
+    '2026-09-24',
+    '2026-09-27',
+    '2026-10-15',
+    '2026-10-18',
+    '2026-11-01'
+  ],
   scheduleUrl: 'https://12thman.com/sports/womens-soccer/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]

@@ -238,6 +238,15 @@ export const MoveInColdLayerSources: LayerSource[] = [
   }
 ];
 
+const MOVE_IN_DATES = [
+  { value: '2026-08-18', label: 'August 18, 2026' },
+  { value: '2026-08-19', label: 'August 19, 2026' },
+  { value: '2026-08-20', label: 'August 20, 2026' },
+  { value: '2026-08-21', label: 'August 21, 2026' },
+  { value: '2026-08-22', label: 'August 22, 2026' },
+  { value: '2026-08-23', label: 'August 23, 2026' }
+] as const;
+
 export const MoveInConfiguration: EventConfiguration = {
   id: 'move-in',
   name: 'Move In',
@@ -248,7 +257,7 @@ export const MoveInConfiguration: EventConfiguration = {
   reviewText:
     "Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations on your move-in day.",
   mapCenter: [-96.34358, 30.61035],
-  eventDates: [],
+  eventDates: MOVE_IN_DATES.map(({ value }) => value),
   scheduleUrl: 'https://reslife.tamu.edu/movein/',
   zoom: 16,
   builderStartStep: 'accommodations',
@@ -260,15 +269,6 @@ enum MoveInBuilderOptions {
   MOVE_IN_DATE = 'move-in-date',
   RESIDENCE_HALL = 'move-in-residence-hall',
   ACCESSIBLE_PARKING = 'move-in-accessible-parking'
-}
-
-enum MoveInDateChoices {
-  AUG_18_2026 = '2026-08-18',
-  AUG_19_2026 = '2026-08-19',
-  AUG_20_2026 = '2026-08-20',
-  AUG_21_2026 = '2026-08-21',
-  AUG_22_2026 = '2026-08-22',
-  AUG_23_2026 = '2026-08-23'
 }
 
 enum MoveInHallChoices {
@@ -378,7 +378,7 @@ const DATE_FILTERED_LAYER_IDS: MOVE_IN_LAYERS[] = [
 
 // Show a street/lot arrangement when the selected day falls within its [StartDate, EndDate] window.
 // The service stores each window at day granularity, so a date-only comparison is exact.
-const dateConversions = Object.values(MoveInDateChoices).map((date) => ({
+const dateConversions = MOVE_IN_DATES.map(({ value: date }) => ({
   input: date,
   expression: `StartDate <= DATE '${date}' AND EndDate >= DATE '${date}'`,
   deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_AND
@@ -409,14 +409,7 @@ export const MoveInOptions: SpecialEventOptions = [
     shortDescription: 'Move-In Date',
     description: 'Select your move-in day.',
     uiType: 'date-card-grid',
-    choices: [
-      { value: MoveInDateChoices.AUG_18_2026, label: 'August 18, 2026' },
-      { value: MoveInDateChoices.AUG_19_2026, label: 'August 19, 2026' },
-      { value: MoveInDateChoices.AUG_20_2026, label: 'August 20, 2026' },
-      { value: MoveInDateChoices.AUG_21_2026, label: 'August 21, 2026' },
-      { value: MoveInDateChoices.AUG_22_2026, label: 'August 22, 2026' },
-      { value: MoveInDateChoices.AUG_23_2026, label: 'August 23, 2026' }
-    ],
+    choices: MOVE_IN_DATES.map(({ value, label }) => ({ value, label })),
     effects: {
       layers: DATE_FILTERED_LAYER_IDS.map((layerId) => ({ layerId, conversions: dateConversions }))
     }

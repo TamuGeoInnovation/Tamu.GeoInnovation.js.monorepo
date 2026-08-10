@@ -216,22 +216,22 @@ export const GraduationColdLayerSources: LayerSource[] = [
   }
 ];
 
+const GRADUATION_DATES = [
+  { eventDate: '2025-12-17', value: '2025-12-17T05:00:00.000Z', label: 'Wednesday, December 17th' },
+  { eventDate: '2025-12-18', value: '2025-12-18T05:00:00.000Z', label: 'Thursday, December 18th' }
+] as const;
+
 export const GraduationConfiguration: EventConfiguration = {
   id: 'graduation-fall',
   name: 'Fall Commencement Ceremony',
   applicationName: 'Fall Commencement Transportation Map',
   shortApplicationName: 'Fall Commencement Map',
   introductionText: 'Get the best transportation and parking information for the fall commencement ceremonies.',
-  eventDates: ['2025-12-17', '2025-12-18'],
+  eventDates: GRADUATION_DATES.map(({ eventDate }) => eventDate),
   scheduleUrl: 'https://aggie.tamu.edu/graduation',
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };
-
-enum GraduationAttendanceDateChoices {
-  DayOne = '2025-12-17T05:00:00.000Z',
-  DayTwo = '2025-12-18T05:00:00.000Z'
-}
 
 export const GraduationOptions: SpecialEventOptions = [
   {
@@ -240,34 +240,17 @@ export const GraduationOptions: SpecialEventOptions = [
       'Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.',
     shortDescription: 'Event Day',
     label: 'Event Day',
-    choices: [
-      {
-        value: GraduationAttendanceDateChoices.DayOne,
-        label: 'Wednesday, December 17th'
-      },
-      {
-        value: GraduationAttendanceDateChoices.DayTwo,
-        label: 'Thursday, December 18th'
-      }
-    ],
+    choices: GRADUATION_DATES.map(({ value, label }) => ({ value, label })),
     effects: {
       layers: [
         {
           layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
-          conversions: [
-            {
-              input: GraduationAttendanceDateChoices.DayOne,
-              propOverrides: {
-                visible: true
-              }
-            },
-            {
-              input: GraduationAttendanceDateChoices.DayTwo,
-              propOverrides: {
-                visible: true
-              }
+          conversions: GRADUATION_DATES.map(({ value }) => ({
+            input: value,
+            propOverrides: {
+              visible: true
             }
-          ]
+          }))
         }
       ]
     }

@@ -15,11 +15,28 @@ export enum SEC_GROUNDS_LAYERS {
   DAY3_ROUTES = 'sec-grounds-day3-routes'
 }
 
-enum ConferenceDay {
-  DAY1 = 'day1',
-  DAY2 = 'day2',
-  DAY3 = 'day3'
-}
+const CONFERENCE_DAYS = [
+  {
+    value: 'day1',
+    date: '2026-04-07',
+    label: 'Day 1 (April 7, 2026)',
+    layerIds: [SEC_GROUNDS_LAYERS.DAY1_POIS, SEC_GROUNDS_LAYERS.DAY1_ROUTES]
+  },
+  {
+    value: 'day2',
+    date: '2026-04-08',
+    label: 'Day 2 (April 8, 2026)',
+    layerIds: [SEC_GROUNDS_LAYERS.DAY2_POIS, SEC_GROUNDS_LAYERS.DAY2_ROUTES]
+  },
+  {
+    value: 'day3',
+    date: '2026-04-09',
+    label: 'Day 3 (April 9, 2026)',
+    layerIds: [SEC_GROUNDS_LAYERS.DAY3_POIS, SEC_GROUNDS_LAYERS.DAY3_ROUTES]
+  }
+] as const;
+
+type ConferenceDay = (typeof CONFERENCE_DAYS)[number]['value'];
 
 const eventUrl = Connections.secGroundsConferenceUrl;
 
@@ -277,13 +294,11 @@ const HIDDEN_DAY_LAYER_OVERRIDES = {
   listMode: 'hide'
 } as const;
 
-const CONFERENCE_DAYS = [ConferenceDay.DAY1, ConferenceDay.DAY2, ConferenceDay.DAY3] as const;
-
 const createConferenceDayLayerConversions = (activeDay: ConferenceDay) =>
-  CONFERENCE_DAYS.map((day) => ({
-    input: day,
-    expression: day === activeDay ? '1=1' : '1=0',
-    propOverrides: day === activeDay ? VISIBLE_DAY_LAYER_OVERRIDES : HIDDEN_DAY_LAYER_OVERRIDES
+  CONFERENCE_DAYS.map(({ value }) => ({
+    input: value,
+    expression: value === activeDay ? '1=1' : '1=0',
+    propOverrides: value === activeDay ? VISIBLE_DAY_LAYER_OVERRIDES : HIDDEN_DAY_LAYER_OVERRIDES
   }));
 
 export const SecGroundsColdLayerSources: LayerSource[] = [
@@ -366,7 +381,7 @@ export const SecGroundsConfiguration: EventConfiguration = {
   applicationName: 'SEC Grounds Conference Map',
   shortApplicationName: 'SEC Grounds Map',
   introductionText: 'Get routes and points of interest for the SEC Grounds Conference.',
-  eventDates: ['2026-04-07', '2026-04-08', '2026-04-09'],
+  eventDates: CONFERENCE_DAYS.map(({ date }) => date),
   mapCenter: [-96.3438, 30.6186],
   zoom: 14,
   defaultLayerOverrides: {
@@ -382,47 +397,14 @@ export const SecGroundsSpecialEventOptions: SpecialEventOptions = [
     label: 'Conference Day',
     description: 'Select which day of the SEC Grounds Conference you are attending to see the relevant routes and points of interest.',
     shortDescription: 'Conference Day',
-    choices: [
-      {
-        value: ConferenceDay.DAY1,
-        label: 'Day 1 (April 7, 2026)'
-      },
-      {
-        value: ConferenceDay.DAY2,
-        label: 'Day 2 (April 8, 2026)'
-      },
-      {
-        value: ConferenceDay.DAY3,
-        label: 'Day 3 (April 9, 2026)'
-      }
-    ],
+    choices: CONFERENCE_DAYS.map(({ value, label }) => ({ value, label })),
     effects: {
-      layers: [
-        {
-          layerId: SEC_GROUNDS_LAYERS.DAY1_POIS,
-          conversions: createConferenceDayLayerConversions(ConferenceDay.DAY1)
-        },
-        {
-          layerId: SEC_GROUNDS_LAYERS.DAY1_ROUTES,
-          conversions: createConferenceDayLayerConversions(ConferenceDay.DAY1)
-        },
-        {
-          layerId: SEC_GROUNDS_LAYERS.DAY2_POIS,
-          conversions: createConferenceDayLayerConversions(ConferenceDay.DAY2)
-        },
-        {
-          layerId: SEC_GROUNDS_LAYERS.DAY2_ROUTES,
-          conversions: createConferenceDayLayerConversions(ConferenceDay.DAY2)
-        },
-        {
-          layerId: SEC_GROUNDS_LAYERS.DAY3_POIS,
-          conversions: createConferenceDayLayerConversions(ConferenceDay.DAY3)
-        },
-        {
-          layerId: SEC_GROUNDS_LAYERS.DAY3_ROUTES,
-          conversions: createConferenceDayLayerConversions(ConferenceDay.DAY3)
-        }
-      ]
+      layers: CONFERENCE_DAYS.flatMap(({ value, layerIds }) =>
+        layerIds.map((layerId) => ({
+          layerId,
+          conversions: createConferenceDayLayerConversions(value)
+        }))
+      )
     }
   }
 ];
