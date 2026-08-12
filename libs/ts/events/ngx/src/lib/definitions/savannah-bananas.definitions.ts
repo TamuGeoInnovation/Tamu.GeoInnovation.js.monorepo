@@ -181,8 +181,8 @@ export const SavannahBananasParkingColdLayerSources: LayerSource[] = [
 export const SavannahBananasParkingConfiguration: EventConfiguration = {
   id: 'savannah-bananas-parking',
   name: 'Banana Ball',
-  applicationName: 'Banana Ball Transportation Map',
-  shortApplicationName: 'Banana Ball Map',
+  applicationName: 'Banana Ball Transportation',
+  shortApplicationName: 'Banana Ball',
   introductionText: 'Parking and transportation info for Savannah Bananas vs Texas Tailgaters at Kyle Field.',
   eventDates: ['2026-05-02'],
   scheduleUrl: 'https://app.12thman.com/bananaball',
@@ -207,6 +207,7 @@ export const SavannahBananasParkingTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'athletics',
+    visible: false,
     keywords: ['savannah bananas', 'texas tailgaters', 'kyle field', 'parking', 'transportation']
   }
 };

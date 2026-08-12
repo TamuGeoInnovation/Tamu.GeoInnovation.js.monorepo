@@ -1,7 +1,9 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
+import { ConstructionPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
 
 import esri = __esri;
@@ -181,6 +183,14 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.CAMPUS_STOPS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
+    popupData: {
+      name: {
+        field: 'StopName',
+        collapsed: true
+      },
+      description: 'Route: {attributes.Route}'
+    },
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -193,6 +203,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.CONSTRUCTION.url,
     visible: true,
     listMode: 'show',
+    popupComponent: ConstructionPopupComponent,
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -205,6 +216,7 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     url: TsMainParkingDefinitions.VISITOR_KIOSKS.url,
     visible: true,
     listMode: 'show',
+    popupComponent: MarkdownWDirectionsPopupComponent,
     native: {
       outFields: ['*']
     } as unknown as FeatureNative
@@ -516,8 +528,13 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
               if (rnsNum != null && rnsNum != '' && rnsNum != 'null') { return rnsNum; }
               var visNum = Trim(Text($feature.VisSpcNum));
               if (visNum != null && visNum != '' && visNum != 'null') { return visNum; }
-              var rvNum = Trim(Text($feature.RV_SpcNum));
-              if (rvNum != null && rvNum != '' && rvNum != 'null') { return rvNum; }
+              // RV_SpcNum is only trustworthy on true RV spaces (Anno_Type = 'RV'). Some lots
+              // (e.g. 100e) have stray values in this field on regular (Reg) spaces, which
+              // showed up as bogus space numbers across lots that have no RV parking at all.
+              if ($feature.Anno_Type == 'RV') {
+                var rvNum = Trim(Text($feature.RV_SpcNum));
+                if (rvNum != null && rvNum != '' && rvNum != 'null') { return rvNum; }
+              }
               var spcId = Trim(Text($feature.Spc_ID_Num));
               if (spcId != null && spcId != '' && spcId != 'null') { return spcId; }
               return '';
@@ -568,6 +585,8 @@ export const TsMainParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Main parking map with lot information.',
     source: 'internal',
     type: 'parking',
+    showInQuickLinks: true,
+    quickLinkOrder: 1,
     keywords: ['main', 'parking', 'map', 'lots', 'construction', 'bus', 'kiosk', 'rns', 'line paint']
   }
 };

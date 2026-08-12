@@ -14,11 +14,16 @@ export enum RING_DAY_LAYERS {
   RD_AREAS = 'ring-day-areas'
 }
 
-enum RingDayDates {
-  DAY1 = '2026-10-08',
-  DAY2 = '2026-10-09',
-  DAY3 = '2026-10-10'
-}
+const RING_DAY_PERIODS = [
+  { value: 'day1', label: 'Aggie Ring Pickup (October 8, 2026)', dates: ['2026-10-08'] },
+  { value: 'day2', label: 'Aggie Ring Day (October 9-10, 2026)', dates: ['2026-10-09', '2026-10-10'] }
+] as const;
+
+const ringDayDateConversions = (startField: string, endField: string) =>
+  RING_DAY_PERIODS.map(({ value, dates }) => ({
+    input: value,
+    expression: `${startField} <= date'${dates[dates.length - 1]}' AND ${endField} >= date'${dates[0]}'`
+  }));
 
 const eventUrl = Connections.ringDayUrl;
 
@@ -96,11 +101,11 @@ export const RingDayColdLayerSources: LayerSource[] = [
 
 export const RingDayConfiguration: EventConfiguration = {
   id: 'ring-day',
-  name: 'Ring Day',
-  applicationName: 'Ring Day Transportation Map',
-  shortApplicationName: 'Ring Day Map',
-  introductionText: 'Get the best transportation and logistics information for Ring Day.',
-  eventDates: [RingDayDates.DAY1, RingDayDates.DAY2, RingDayDates.DAY3],
+  name: 'October Ring Day',
+  applicationName: 'October Ring Day Transportation Map',
+  shortApplicationName: 'October Ring Day Map',
+  introductionText: 'Get the best transportation and logistics information for October Ring Day.',
+  eventDates: RING_DAY_PERIODS.flatMap(({ dates }) => dates),
   scheduleUrl: 'https://www.aggienetwork.com/ring/ringday/',
   mapCenter: [-96.33616, 30.60958],
   zoom: 16,
@@ -129,11 +134,6 @@ enum RingDayOptions {
   ACCESSIBILITY = 'accessibility'
 }
 
-enum EventDay {
-  DAY1 = 'day1',
-  DAY2 = 'day2'
-}
-
 export const RingDaySpecialEventOptions: SpecialEventOptions = [
   {
     value: RingDayOptions.EVENT_DAY,
@@ -141,56 +141,20 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
     description:
       'Select which Ring Day period you plan to attend to see the most relevant transportation and logistics information.',
     shortDescription: 'Event Day',
-    choices: [
-      {
-        value: EventDay.DAY1,
-        label: 'Aggie Ring Pickup (October 8, 2026)'
-      },
-      {
-        value: EventDay.DAY2,
-        label: 'Aggie Ring Day (October 9-10, 2026)'
-      }
-    ],
+    choices: RING_DAY_PERIODS.map(({ value, label }) => ({ value, label })),
     effects: {
       layers: [
         {
           layerId: RING_DAY_LAYERS.RD_AREAS,
-          conversions: [
-            {
-              input: EventDay.DAY1,
-              expression: `StartDate <= date'${RingDayDates.DAY1}' AND EndDate >= date'${RingDayDates.DAY1}'`
-            },
-            {
-              input: EventDay.DAY2,
-              expression: `StartDate <= date'${RingDayDates.DAY3}' AND EndDate >= date'${RingDayDates.DAY2}'`
-            }
-          ]
+          conversions: ringDayDateConversions('StartDate', 'EndDate')
         },
         {
           layerId: RING_DAY_LAYERS.RD_ROUTES,
-          conversions: [
-            {
-              input: EventDay.DAY1,
-              expression: `Start_Date <= date'${RingDayDates.DAY1}' AND End_Date >= date'${RingDayDates.DAY1}'`
-            },
-            {
-              input: EventDay.DAY2,
-              expression: `Start_Date <= date'${RingDayDates.DAY3}' AND End_Date >= date'${RingDayDates.DAY2}'`
-            }
-          ]
+          conversions: ringDayDateConversions('Start_Date', 'End_Date')
         },
         {
           layerId: RING_DAY_LAYERS.RD_POIS,
-          conversions: [
-            {
-              input: EventDay.DAY1,
-              expression: `Start_Date <= date'${RingDayDates.DAY1}' AND End_Date >= date'${RingDayDates.DAY1}'`
-            },
-            {
-              input: EventDay.DAY2,
-              expression: `Start_Date <= date'${RingDayDates.DAY3}' AND End_Date >= date'${RingDayDates.DAY2}'`
-            }
-          ]
+          conversions: ringDayDateConversions('Start_Date', 'End_Date')
         }
       ]
     }
@@ -239,9 +203,10 @@ export const RingDayEvent: AggiemapCustomMapConfiguration = {
   discover: {
     id: RingDayConfiguration.id,
     name: RingDayConfiguration.name,
-    description: 'Transportation and logistics information for Ring Day celebrations.',
+    description: 'Transportation and logistics information for October Ring Day celebrations.',
     source: 'internal',
     type: 'event',
+    columnKey: 'fall',
     keywords: ['ring', 'day', 'aggie', 'ring day', 'transportation', 'parking', 'celebration']
   }
 };

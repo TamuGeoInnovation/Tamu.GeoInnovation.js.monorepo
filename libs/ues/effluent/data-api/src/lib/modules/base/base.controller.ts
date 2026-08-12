@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Body, Delete, Patch } from '@nestjs/common';
-import { BaseEntity, DeepPartial } from 'typeorm';
+import { BaseEntity, DeepPartial, FindManyOptions } from 'typeorm';
 
 import { BaseService } from './base.service';
 
@@ -31,7 +31,7 @@ export class BaseController<T extends BaseEntity> {
   @Patch(':id')
   public update(@Param() params, @Body() body: DeepPartial<T>) {
     if (params && body) {
-      return this.s.updateOne({ where: { guid: params.id } }, body);
+      return this.s.updateOne({ where: { guid: params.id } } as unknown as FindManyOptions<T>, body);
     } else {
       throw new Error('Input parameter missing');
     }
@@ -40,7 +40,7 @@ export class BaseController<T extends BaseEntity> {
   @Delete(':id')
   public delete(@Param() params) {
     if (params) {
-      return this.s.deleteOne({ where: { guid: params.id } });
+      return this.s.deleteOne({ where: { guid: params.id } } as unknown as FindManyOptions<T>);
     } else {
       throw new Error('Input parameter missing');
     }

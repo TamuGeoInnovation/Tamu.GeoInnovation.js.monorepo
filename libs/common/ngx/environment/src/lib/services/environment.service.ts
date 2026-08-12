@@ -1,12 +1,12 @@
 import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
 
-export const env = new InjectionToken<string>('environment');
+export const env = new InjectionToken<any>('environment');
 
 @Injectable()
 export class EnvironmentService {
-  private _config;
+  private _config: any;
 
-  constructor(@Optional() @Inject(env) private environment) {
+  constructor(@Optional() @Inject(env) private environment: any) {
     if (environment) {
       // Freeze the environment object to ensure immutability
       this._config = Object.freeze(this.environment);
@@ -34,8 +34,8 @@ Node Name: ${this._config.metadata.nodeName}\n
    * @param {string} property Existing key/token in environment configuration.
    * @param {boolean} [optional] Marking a value as optional will not throw an application error. Will return `undefined` if token does not exist.
    */
-  public value(property: string, optional?: boolean) {
-    if (this._config[property] !== undefined) {
+  public value(property: string, optional?: boolean): any {
+    if (this._config && this._config[property] !== undefined) {
       return this._config[property];
     } else {
       if (optional) {

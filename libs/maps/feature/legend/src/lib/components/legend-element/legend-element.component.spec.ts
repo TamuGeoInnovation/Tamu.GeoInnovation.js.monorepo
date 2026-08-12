@@ -3,6 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { LegendElementComponent } from './legend-element.component';
+import { getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+
+const tsgisHost = getDefaultGisHosts().tsgisHost;
 
 describe('LegendElementComponent', () => {
   let component: LegendElementComponent;
@@ -12,6 +15,8 @@ describe('LegendElementComponent', () => {
     const spy = {
       require: jest.fn()
     };
+
+    // Ensure tsgisHost is available in tests that reference TS URLs
 
     await TestBed.configureTestingModule({
       declarations: [LegendElementComponent],
@@ -46,7 +51,7 @@ describe('LegendElementComponent', () => {
     component.groupTitle = 'Baseball Symbols';
     component.layer = {
       id: 'baseball-event-symbols',
-      url: 'https://gis.tamu.edu/arcgis/rest/services/TS/BaseballParking/MapServer/0'
+      url: `https://${tsgisHost}/arcgis/rest/services/TS/BaseballParking/MapServer/0`
     } as unknown as __esri.Layer;
     component.element = {
       infos: [{ label: 'Reserved', src: 'baseball-icon', value: 'reserved' }]

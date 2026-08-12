@@ -2,6 +2,9 @@ import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-k
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { EventDates, Popups as EventPopups } from '@tamu-gisc/ts/ringday/ngx';
+import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+const gisHost = getDefaultGisHost();
+const tsgisHost = getDefaultGisHosts().tsgisHost;
 
 export const NotificationEvents = [];
 
@@ -11,8 +14,8 @@ export const Connections = {
   accessibleUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
   departmentUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
-  tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
-  bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
+  tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
+  bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
   bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
   eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Ring_Day_2_view/FeatureServer'
 };

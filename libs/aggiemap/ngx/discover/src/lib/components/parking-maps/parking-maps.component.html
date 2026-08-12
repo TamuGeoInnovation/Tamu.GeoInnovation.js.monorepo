@@ -1,0 +1,33 @@
+<div class="maps-page-shell">
+    <tamu-gisc-maps-page-header
+      title="Parking Maps"
+      intro="Browse available parking maps for the Texas A&amp;M University campus, organized by general, business, and permit parking."
+    ></tamu-gisc-maps-page-header>
+
+    <div class="maps-list-section trailer-3">
+      <tamu-gisc-aggiemap-map-columns [columns]="columns" [getApplicationRoute]="getApplicationRoute"></tamu-gisc-aggiemap-map-columns>
+    </div>
+
+    <!--
+    TODO: Restore the Parking page accordion if we need it again in the future.
+    <div class="accordion-section">
+      <details class="maps-accordion" *ngFor="let item of [1, 2]">
+        <summary class="maps-accordion-summary">
+          <span class="accordion-heading">
+            <span class="accordion-superheader">Superheader</span>
+            <span class="accordion-title">Accordion Heading</span>
+          </span>
+          <span class="accordion-toggle">
+            <span class="accordion-toggle-label">Expand</span>
+            <span class="accordion-toggle-icon" aria-hidden="true"></span>
+          </span>
+        </summary>
+        <div class="accordion-body">
+          <p>Placeholder accordion content.</p>
+        </div>
+      </details>
+    </div>
+    -->
+</div>
+
+<tamu-gisc-footer></tamu-gisc-footer>

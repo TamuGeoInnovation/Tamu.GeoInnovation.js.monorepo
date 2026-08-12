@@ -154,23 +154,38 @@ export const FamilyWeekendColdLayerSources: LayerSource[] = [
   }
 ];
 
+const FAMILY_WEEKEND_DATES = [
+  {
+    eventDate: '2026-04-10',
+    value: '2026-04-10T05:00:00.000Z',
+    label: 'Friday, April 10th',
+    layerId: FAMILY_WEEKEND_LAYERS.FRIDAY_PARKING_LOTS
+  },
+  {
+    eventDate: '2026-04-11',
+    value: '2026-04-11T05:00:00.000Z',
+    label: 'Saturday, April 11th',
+    layerId: FAMILY_WEEKEND_LAYERS.SATURDAY_PARKING_LOTS
+  },
+  {
+    eventDate: '2026-04-12',
+    value: '2026-04-12T05:00:00.000Z',
+    label: 'Sunday, April 12th',
+    layerId: FAMILY_WEEKEND_LAYERS.SUNDAY_PARKING_LOTS
+  }
+] as const;
+
 export const FamilyWeekendConfiguration: EventConfiguration = {
   id: 'family-weekend-2026',
   name: 'Family Weekend',
   applicationName: 'Family Weekend Transportation Map',
   shortApplicationName: 'Family Weekend Map',
   introductionText: 'Get the best parking information for',
-  eventDates: ['2026-04-10', '2026-04-11', '2026-04-12'],
+  eventDates: FAMILY_WEEKEND_DATES.map(({ eventDate }) => eventDate),
   scheduleUrl: 'https://familyweekend.tamu.edu/',
   mapCenter: [-96.3405, 30.61114],
   zoom: 16
 };
-
-enum FamilyWeekendAttendanceDateChoices {
-  DayOne = '2026-04-10T05:00:00.000Z', //  Apr 10, 12AM UTC
-  DayTwo = '2026-04-11T05:00:00.000Z', // Apr 11, 12AM UTC
-  DayThree = '2026-04-12T05:00:00.000Z' // Apr 12, 12AM UTC
-}
 
 export const FamilyWeekendOptions: SpecialEventOptions = [
   {
@@ -179,35 +194,12 @@ export const FamilyWeekendOptions: SpecialEventOptions = [
       'To best provide you with the most accurate parking information, please select the day you plan to attend Family Weekend.',
     shortDescription: 'Event Day',
     label: 'Event Day',
-    choices: [
-      {
-        value: FamilyWeekendAttendanceDateChoices.DayOne,
-        label: 'Friday, April 10th'
-      },
-      {
-        value: FamilyWeekendAttendanceDateChoices.DayTwo,
-        label: 'Saturday, April 11th'
-      },
-      {
-        value: FamilyWeekendAttendanceDateChoices.DayThree,
-        label: 'Sunday, April 12th'
-      }
-    ],
+    choices: FAMILY_WEEKEND_DATES.map(({ value, label }) => ({ value, label })),
     effects: {
-      layers: [
-        {
-          layerId: FAMILY_WEEKEND_LAYERS.FRIDAY_PARKING_LOTS,
-          conversions: [{ input: FamilyWeekendAttendanceDateChoices.DayOne, propOverrides: { visible: true } }]
-        },
-        {
-          layerId: FAMILY_WEEKEND_LAYERS.SATURDAY_PARKING_LOTS,
-          conversions: [{ input: FamilyWeekendAttendanceDateChoices.DayTwo, propOverrides: { visible: true } }]
-        },
-        {
-          layerId: FAMILY_WEEKEND_LAYERS.SUNDAY_PARKING_LOTS,
-          conversions: [{ input: FamilyWeekendAttendanceDateChoices.DayThree, propOverrides: { visible: true } }]
-        }
-      ]
+      layers: FAMILY_WEEKEND_DATES.map(({ layerId, value }) => ({
+        layerId,
+        conversions: [{ input: value, propOverrides: { visible: true } }]
+      }))
     }
   }
 ];
@@ -224,6 +216,7 @@ export const FamilyWeekendTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for Family Weekend.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['family', 'weekend', 'parking', 'shuttles', 'transportation']
   }
 };

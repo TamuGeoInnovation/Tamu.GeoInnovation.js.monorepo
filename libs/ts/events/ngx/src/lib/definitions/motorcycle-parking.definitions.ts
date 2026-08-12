@@ -70,6 +70,7 @@ export const MotorcycleParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Motorcycle parking space locations on campus.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'permit',
     keywords: ['motorcycle', 'parking', 'transportation']
   }
 };

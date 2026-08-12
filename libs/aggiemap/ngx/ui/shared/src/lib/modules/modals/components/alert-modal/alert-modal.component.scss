@@ -1,0 +1,9 @@
+.alert-modal { max-width: 36rem; padding: 1rem; }
+.alert-modal__header { margin-bottom: 0.5rem; }
+.alert-modal__title { margin: 0; }
+.alert-modal__body { margin-bottom: 1rem; }
+.alert-modal__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

@@ -53,11 +53,11 @@ export const TennisParkingColdLayerSources: LayerSource[] = [
 
 export const TennisParkingConfiguration: EventConfiguration = {
   id: 'tennis-parking',
-  name: 'Tennis Map',
-  applicationName: 'Tennis Parking Map',
-  shortApplicationName: 'Tennis Parking Map',
+  name: 'Tennis',
+  applicationName: 'Tennis Parking',
+  shortApplicationName: 'Tennis Parking',
   introductionText: 'Parking and transportation information for Texas A&M tennis events.',
-  eventDates: [],
+  eventDates: ['2027-01-23', '2027-01-24'],
   scheduleUrl: 'https://12thman.com/sports/mens-tennis/schedule',
   zoom: 16,
   mapCenter: [-96.34454, 30.60338]

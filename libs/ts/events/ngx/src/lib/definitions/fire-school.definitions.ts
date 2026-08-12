@@ -136,6 +136,7 @@ export const FireSchoolTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'campus',
+    columnKey: 'summer',
     keywords: ['fire school', 'municipal fire school', 'vendor show', 'vendor', 'parking', 'road closures', 'route']
   }
 };

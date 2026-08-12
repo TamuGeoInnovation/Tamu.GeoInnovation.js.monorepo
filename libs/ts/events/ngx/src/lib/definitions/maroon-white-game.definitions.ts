@@ -188,8 +188,8 @@ export const MaroonWhiteGameColdLayerSources: LayerSource[] = [
 export const MaroonWhiteGameConfiguration: EventConfiguration = {
   id: 'maroon-white-game-2026',
   name: 'Maroon & White Game',
-  applicationName: 'Maroon & White Game Transportation Map',
-  shortApplicationName: 'Maroon & White Game Map',
+  applicationName: 'Maroon & White Game Transportation',
+  shortApplicationName: 'Maroon & White Game',
   introductionText: 'Get the best parking information for',
   eventDates: ['2026-04-18'],
   scheduleUrl: 'https://12thman.com/sports/football/schedule',

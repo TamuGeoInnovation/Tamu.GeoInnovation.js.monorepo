@@ -119,6 +119,7 @@ export const MaintenanceParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Maintenance parking lots and spaces.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'business',
     keywords: ['maintenance', 'parking']
   }
 };

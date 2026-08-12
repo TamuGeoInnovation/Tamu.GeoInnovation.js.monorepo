@@ -451,6 +451,11 @@ export interface DiscoverMetadata {
   thumbnail?: string;
   keywords?: string[];
   /**
+   * Controls whether the map appears in public discover lists.
+   * Defaults to `true` when omitted.
+   */
+  visible?: boolean;
+  /**
    * Optional labels to display on the application card (e.g., "New", "Beta", etc.)
    *
    * These will generally be used as chips or badges and are intended to be used to supplement the `type` field.
@@ -464,4 +469,34 @@ export interface DiscoverMetadata {
    * When omitted, consuming UIs can derive a sensible default from `type`.
    */
   mapType?: DiscoverMapType;
+
+  /**
+   * Optional sub-category used to group parking maps into named columns (General / Business / Permit)
+   * on the Parking Maps page. Only relevant when `mapType` resolves to `parking`. When omitted, a
+   * parking map falls back to the `general` column.
+   */
+  parkingCategory?: ParkingCategory;
+
+  /**
+   * Optional column key used by map pages that render named columns.
+   * When omitted, the page should fall back to a safe default layout.
+   */
+  columnKey?: string;
+
+  /**
+   * Marks a discoverable map as eligible for the Quick Links section on the All Maps pages.
+   * Defaults to `false` when omitted.
+   */
+  showInQuickLinks?: boolean;
+
+  /**
+   * Controls the order of the map within the Quick Links section when `showInQuickLinks` is true.
+   * Lower values appear first. Invalid or duplicate values fall back to a safe default order.
+   */
+  quickLinkOrder?: number;
 }
+
+/**
+ * Sub-grouping for parking maps on the Parking Maps page.
+ */
+export type ParkingCategory = 'general' | 'business' | 'permit';

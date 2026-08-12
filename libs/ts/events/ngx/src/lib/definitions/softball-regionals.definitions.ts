@@ -99,9 +99,9 @@ export const SoftballLayerSources: LayerSource[] = [
 
 export const SoftballConfiguration: EventConfiguration = {
   id: 'softball-regionals-2025',
-  name: 'Softball Regionals Map',
-  applicationName: 'Softball Regionals Event Map',
-  shortApplicationName: 'Softball Regionals Map',
+  name: 'Softball Regionals',
+  applicationName: 'Softball Regionals Event',
+  shortApplicationName: 'Softball Regionals',
   introductionText: 'Get the best transportation and parking information for Softball Regionals.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/softball/schedule',
@@ -124,6 +124,7 @@ export const SoftballRegionalsTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'athletics',
+    visible: false,
     keywords: ['softball', 'regionals', 'parking', 'transportation']
   }
 };

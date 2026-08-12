@@ -12,8 +12,12 @@ const hybridRoutes: Routes = [
   { path: 'changelog', loadChildren: () => import('./pages/changelog/changelog.module').then((m) => m.ChangelogModule) },
   { path: 'directory', loadChildren: () => import('./pages/directory/directory.module').then((m) => m.DirectoryModule) },
   {
-    path: 'discover',
+    path: 'all-maps',
     loadChildren: () => import('@tamu-gisc/aggiemap/ngx/discover').then((m) => m.DiscoverModule)
+  },
+  {
+    path: 'discover',
+    redirectTo: 'all-maps'
   },
   { path: 'feedback', loadChildren: () => import('./pages/feedback/feedback.module').then((m) => m.FeedbackModule) },
   {

@@ -216,24 +216,24 @@ export const GraduationColdLayerSources: LayerSource[] = [
   }
 ];
 
+const GRADUATION_DATES = [
+  { eventDate: '2026-05-06', value: '2026-05-06T05:00:00.000Z', label: 'Wednesday, May 6th' },
+  { eventDate: '2026-05-07', value: '2026-05-07T05:00:00.000Z', label: 'Thursday, May 7th' },
+  { eventDate: '2026-05-08', value: '2026-05-08T05:00:00.000Z', label: 'Friday, May 8th' },
+  { eventDate: '2026-05-09', value: '2026-05-09T05:00:00.000Z', label: 'Saturday, May 9th' }
+] as const;
+
 export const GraduationConfiguration: EventConfiguration = {
   id: 'graduation-spring',
   name: 'Spring Commencement Ceremony',
   applicationName: 'Spring Commencement Transportation Map',
   shortApplicationName: 'Spring Commencement Map',
   introductionText: 'Get the best transportation and parking information for the spring commencement ceremonies.',
-  eventDates: ['2026-05-06', '2026-05-07', '2026-05-08', '2026-05-09'],
+  eventDates: GRADUATION_DATES.map(({ eventDate }) => eventDate),
   scheduleUrl: 'https://aggie.tamu.edu/graduation',
   mapCenter: [-96.34458, 30.60629],
   zoom: 16
 };
-
-enum GraduationAttendanceDateChoices {
-  DayOne = '2026-05-06T05:00:00.000Z', // May 6, 12AM UTC
-  DayTwo = '2026-05-07T05:00:00.000Z', // May 7, 12AM UTC
-  DayThree = '2026-05-08T05:00:00.000Z', // May 8, 12AM UTC
-  DayFour = '2026-05-09T05:00:00.000Z' // May 9, 12AM UTC
-}
 
 export const GraduationOptions: SpecialEventOptions = [
   {
@@ -242,22 +242,15 @@ export const GraduationOptions: SpecialEventOptions = [
       'Please select the day of your commencement or commissioning ceremony to provide the most accurate transportation and parking information.',
     shortDescription: 'Event Day',
     label: 'Event Day',
-    choices: [
-      { value: GraduationAttendanceDateChoices.DayOne, label: 'Wednesday, May 6th' },
-      { value: GraduationAttendanceDateChoices.DayTwo, label: 'Thursday, May 7th' },
-      { value: GraduationAttendanceDateChoices.DayThree, label: 'Friday, May 8th' },
-      { value: GraduationAttendanceDateChoices.DayFour, label: 'Saturday, May 9th' }
-    ],
+    choices: GRADUATION_DATES.map(({ value, label }) => ({ value, label })),
     effects: {
       layers: [
         {
           layerId: GRADUATION_LAYERS.GRADUATION_EVENT_PARKING_LOTS,
-          conversions: [
-            { input: GraduationAttendanceDateChoices.DayOne, propOverrides: { visible: true } },
-            { input: GraduationAttendanceDateChoices.DayTwo, propOverrides: { visible: true } },
-            { input: GraduationAttendanceDateChoices.DayThree, propOverrides: { visible: true } },
-            { input: GraduationAttendanceDateChoices.DayFour, propOverrides: { visible: true } }
-          ]
+          conversions: GRADUATION_DATES.map(({ value }) => ({
+            input: value,
+            propOverrides: { visible: true }
+          }))
         }
       ]
     }
@@ -276,6 +269,7 @@ export const GraduationSpringEventTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for spring graduation ceremonies.',
     source: 'internal',
     type: 'event',
+    columnKey: 'spring',
     keywords: ['graduation', 'commencement', 'parking', 'transportation']
   }
 };

@@ -71,6 +71,7 @@ export const EvChargersTs: AggiemapCustomMapConfiguration = {
     description: 'EV charging locations for Main Campus and the RELLIS Campus.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'general',
     keywords: ['ev', 'ev chargers', 'electric vehicle', 'charging', 'sustainable transportation', 'rellis']
   }
 };

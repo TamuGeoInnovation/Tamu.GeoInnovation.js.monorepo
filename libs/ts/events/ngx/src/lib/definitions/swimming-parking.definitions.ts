@@ -155,9 +155,9 @@ export const SwimmingParkingColdLayerSources: LayerSource[] = [
 
 export const SwimmingParkingConfiguration: EventConfiguration = {
   id: 'swimming-parking',
-  name: 'Swimming Map',
-  applicationName: 'Swimming Parking Map',
-  shortApplicationName: 'Swimming Parking Map',
+  name: 'Swimming',
+  applicationName: 'Swimming Parking',
+  shortApplicationName: 'Swimming Parking',
   introductionText: 'Parking and transportation information for Texas A&M swimming events.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/swimdive/schedule',

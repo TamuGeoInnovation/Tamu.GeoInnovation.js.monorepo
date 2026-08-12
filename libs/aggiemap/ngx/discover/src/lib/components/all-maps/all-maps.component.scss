@@ -1,0 +1,150 @@
+@import '../discover-shared';
+
+// All Maps uses an editorial, restrained title: near-black, light-weight condensed Oswald — a
+// deliberately different treatment from the bold maroon directory-page titles.
+.maps-page-title {
+  color: #111;
+  font-weight: 300;
+  font-size: 2.6rem;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.visit-maps-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+// Compact, square horizontal maroon action button — wider than tall so it reads as a utility action.
+.main-parking-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.3rem;
+  padding: 0 2.75rem;
+  background: #500000;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus {
+    background: #3d0000;
+  }
+}
+
+.visit-maps-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: #500000;
+  width: 6rem;
+
+  &:hover .visit-maps-icon,
+  &:focus .visit-maps-icon {
+    color: #3d0000;
+  }
+}
+
+.visit-maps-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  color: #500000;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.visit-maps-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 1.2;
+}
+
+// Narrow, initially-unfocused search field that ends around the first half of the page. Override the
+// textbox's default blue-gray fill / near-invisible border with the neutral #F4F4F4 + visible gray.
+.search-input-container {
+  max-width: 26rem;
+
+  ::ng-deep tamu-gisc-textbox {
+    background: #f4f4f4;
+    border-color: #c9c9c9;
+  }
+}
+
+// Three shadowless, light-gray event cards in one row.
+.events-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.75rem;
+}
+
+.event-card {
+  background: #f4f4f4;
+  border: 1px solid #d1d1d1;
+  border-radius: 12px;
+  box-shadow: none;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #500000;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+.event-title {
+  margin: 0 0 0.5rem;
+  color: #111;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+:host ::ng-deep tamu-gisc-quick-links .related-links-box {
+  margin-left: 0;
+  max-width: none;
+  margin-bottom: 2.5rem;
+}
+
+:host ::ng-deep tamu-gisc-quick-links .related-links-superheader {
+  color: #500000;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .visit-maps-row {
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  .main-parking-button {
+    width: 100%;
+  }
+
+  .events-list {
+    grid-template-columns: 1fr;
+  }
+}

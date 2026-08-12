@@ -161,6 +161,7 @@ export const BusinessParkingTs: AggiemapCustomMapConfiguration = {
     description: 'Parking lot information for University Business permits.',
     source: 'internal',
     type: 'parking',
+    parkingCategory: 'business',
     keywords: ['business', 'university business', 'ub', 'ub+', 'parking', 'permit', '2 hour']
   }
 };

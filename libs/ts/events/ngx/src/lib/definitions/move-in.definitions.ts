@@ -67,8 +67,8 @@ const markdownPopup = {
 const poiPopup = {
   ...markdownPopup,
   popupData: {
-    name: '{attributes.Type}',
-    description: { field: 'Note' }
+    name: { field: 'Type' },
+    description: { field: 'note' }
   }
 };
 
@@ -238,6 +238,15 @@ export const MoveInColdLayerSources: LayerSource[] = [
   }
 ];
 
+const MOVE_IN_DATES = [
+  { value: '2026-08-18', label: 'August 18, 2026' },
+  { value: '2026-08-19', label: 'August 19, 2026' },
+  { value: '2026-08-20', label: 'August 20, 2026' },
+  { value: '2026-08-21', label: 'August 21, 2026' },
+  { value: '2026-08-22', label: 'August 22, 2026' },
+  { value: '2026-08-23', label: 'August 23, 2026' }
+] as const;
+
 export const MoveInConfiguration: EventConfiguration = {
   id: 'move-in',
   name: 'Move In',
@@ -248,7 +257,7 @@ export const MoveInConfiguration: EventConfiguration = {
   reviewText:
     "Please review that your selections are correct. In doing so, you'll receive the best parking locations and avoid parking citations on your move-in day.",
   mapCenter: [-96.34358, 30.61035],
-  eventDates: [],
+  eventDates: MOVE_IN_DATES.map(({ value }) => value),
   scheduleUrl: 'https://reslife.tamu.edu/movein/',
   zoom: 16,
   builderStartStep: 'accommodations',
@@ -260,15 +269,6 @@ enum MoveInBuilderOptions {
   MOVE_IN_DATE = 'move-in-date',
   RESIDENCE_HALL = 'move-in-residence-hall',
   ACCESSIBLE_PARKING = 'move-in-accessible-parking'
-}
-
-enum MoveInDateChoices {
-  AUG_18_2026 = '2026-08-18',
-  AUG_19_2026 = '2026-08-19',
-  AUG_20_2026 = '2026-08-20',
-  AUG_21_2026 = '2026-08-21',
-  AUG_22_2026 = '2026-08-22',
-  AUG_23_2026 = '2026-08-23'
 }
 
 enum MoveInHallChoices {
@@ -292,6 +292,7 @@ enum MoveInHallChoices {
   DUNN = 'hall-dunn',
   EPPRIGHT = 'hall-eppright',
   HART = 'hall-hart',
+  HARRINGTON = 'hall-harrington',
   KRUEGER = 'hall-krueger',
   MOSHER = 'hall-mosher',
   RUDDER = 'hall-rudder',
@@ -335,6 +336,7 @@ const MOVE_IN_HALLS: HallDefinition[] = [
   { value: MoveInHallChoices.DUNN, label: 'Dunn Hall', area: 'Southside', buildings: ['0442'] },
   { value: MoveInHallChoices.EPPRIGHT, label: 'Eppright Hall', area: 'Southside', buildings: ['0292'] },
   { value: MoveInHallChoices.HART, label: 'Hart Hall', area: 'Southside', buildings: ['0417'] },
+  { value: MoveInHallChoices.HARRINGTON, label: 'Harrington Hall', area: 'Southside', buildings: ['0410'] },
   { value: MoveInHallChoices.KRUEGER, label: 'Krueger Hall', area: 'Southside', buildings: ['0441'] },
   { value: MoveInHallChoices.MOSHER, label: 'Mosher Hall', area: 'Southside', buildings: ['0433'] },
   { value: MoveInHallChoices.RUDDER, label: 'Rudder Hall', area: 'Southside', buildings: ['0291'] },
@@ -376,7 +378,7 @@ const DATE_FILTERED_LAYER_IDS: MOVE_IN_LAYERS[] = [
 
 // Show a street/lot arrangement when the selected day falls within its [StartDate, EndDate] window.
 // The service stores each window at day granularity, so a date-only comparison is exact.
-const dateConversions = Object.values(MoveInDateChoices).map((date) => ({
+const dateConversions = MOVE_IN_DATES.map(({ value: date }) => ({
   input: date,
   expression: `StartDate <= DATE '${date}' AND EndDate >= DATE '${date}'`,
   deconflictingStrategy: ConversionDeconflictingStrategy.APPEND_AND
@@ -407,14 +409,7 @@ export const MoveInOptions: SpecialEventOptions = [
     shortDescription: 'Move-In Date',
     description: 'Select your move-in day.',
     uiType: 'date-card-grid',
-    choices: [
-      { value: MoveInDateChoices.AUG_18_2026, label: 'August 18, 2026' },
-      { value: MoveInDateChoices.AUG_19_2026, label: 'August 19, 2026' },
-      { value: MoveInDateChoices.AUG_20_2026, label: 'August 20, 2026' },
-      { value: MoveInDateChoices.AUG_21_2026, label: 'August 21, 2026' },
-      { value: MoveInDateChoices.AUG_22_2026, label: 'August 22, 2026' },
-      { value: MoveInDateChoices.AUG_23_2026, label: 'August 23, 2026' }
-    ],
+    choices: MOVE_IN_DATES.map(({ value, label }) => ({ value, label })),
     effects: {
       layers: DATE_FILTERED_LAYER_IDS.map((layerId) => ({ layerId, conversions: dateConversions }))
     }
@@ -486,6 +481,7 @@ export const MoveInTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'parking',
     mapType: 'campus',
+    columnKey: 'fall',
     keywords: ['move in', 'fall move in', 'parking', 'transportation']
   }
 };

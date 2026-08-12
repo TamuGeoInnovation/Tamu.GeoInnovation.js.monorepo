@@ -31,7 +31,11 @@ export enum CONSTRUCTION_MAP_LAYERS {
  *     Legacy 2018 service used solely as the popup data source for current construction.
  *     Sublayer 0 exposes a Description field, which TSConstruction sublayer 0 does not.
  */
-const eventUrl = 'https://gis.tamu.edu/arcgis/rest/services/TS/TSConstruction/MapServer';
+import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+const gisHost = getDefaultGisHost();
+const tsgisHost = getDefaultGisHosts().tsgisHost;
+
+const eventUrl = `https://${tsgisHost}/arcgis/rest/services/TS/TSConstruction/MapServer`;
 const popupEventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer';
 
 /**
