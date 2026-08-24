@@ -166,15 +166,44 @@ export class EventSettingsService {
    * Determines whether an option should be shown as a builder step (and treated as required) given the
    * current settings. Options without a `visibleWhen` condition are always visible. Options with one are
    * only visible when the gating setting's saved value is one of the configured `equalsAnyOf` values.
+   * When several conditions are provided, any one of them matching makes the option visible.
+   *
+   * Gating is transitive: a condition pointing at a setting whose own option is currently hidden never
+   * matches. Settings persist per-key, so a step that has been branched away from still has its last
+   * selection in storage — without this, that stale value would keep a dependent step visible (for
+   * example, a `direction` step gated on a personal-vehicle sub-mode would survive a switch to Shuttle).
+   *
+   * @param visiting Internal cycle guard for the transitive check; not part of the public contract.
    */
-  public isOptionVisible(option: SpecialEventOption, settings: EventSettings | null | undefined): boolean {
+  public isOptionVisible(
+    option: SpecialEventOption,
+    settings: EventSettings | null | undefined,
+    visiting: ReadonlySet<string> = new Set()
+  ): boolean {
     if (!option.visibleWhen) {
       return true;
     }
 
-    const gatingValue = settings?.[option.visibleWhen.setting];
+    // A cyclic `visibleWhen` chain is a configuration error; treat the revisited option as unconditioned
+    // rather than recursing forever.
+    if (visiting.has(option.value)) {
+      return true;
+    }
 
-    return option.visibleWhen.equalsAnyOf.some((candidate) => candidate === gatingValue);
+    const chain = new Set(visiting).add(option.value);
+    const conditions = Array.isArray(option.visibleWhen) ? option.visibleWhen : [option.visibleWhen];
+
+    return conditions.some((condition) => {
+      const gatingOption = this.eventOptions().find((o) => o.value === condition.setting);
+
+      if (gatingOption && !this.isOptionVisible(gatingOption, settings, chain)) {
+        return false;
+      }
+
+      const gatingValue = settings?.[condition.setting];
+
+      return condition.equalsAnyOf.some((candidate) => candidate === gatingValue);
+    });
   }
 
   /**
