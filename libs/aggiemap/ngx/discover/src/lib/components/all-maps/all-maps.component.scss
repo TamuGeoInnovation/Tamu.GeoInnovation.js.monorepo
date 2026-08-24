@@ -12,14 +12,6 @@
   margin: 0;
 }
 
-.visit-maps-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 2.5rem;
-  flex-wrap: wrap;
-}
-
 // Compact, square horizontal maroon action button — wider than tall so it reads as a utility action.
 .main-parking-button {
   display: inline-flex;
@@ -39,43 +31,6 @@
   &:focus {
     background: #3d0000;
   }
-}
-
-.visit-maps-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.4rem;
-  text-decoration: none;
-  color: #500000;
-  width: 6rem;
-
-  &:hover .visit-maps-icon,
-  &:focus .visit-maps-icon {
-    color: #3d0000;
-  }
-}
-
-.visit-maps-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  color: #500000;
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.visit-maps-label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-align: center;
-  line-height: 1.2;
 }
 
 // Narrow, initially-unfocused search field that ends around the first half of the page. Override the
@@ -135,11 +90,6 @@
 }
 
 @media (max-width: 768px) {
-  .visit-maps-row {
-    gap: 1.5rem;
-    justify-content: center;
-  }
-
   .main-parking-button {
     width: 100%;
   }

@@ -34,6 +34,54 @@
   position: relative;
 }
 
+// Visit Maps quick-nav tiles (Parking / Athletics Events / Campus Events / Operations). Shared
+// between the All Maps landing page and the persistent `MapsPageHeaderComponent` bar so every
+// map-type sub-page can navigate directly to the others.
+.visit-maps-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.visit-maps-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: #500000;
+  width: 6rem;
+
+  &:hover .visit-maps-icon,
+  &:focus .visit-maps-icon {
+    color: #3d0000;
+  }
+}
+
+.visit-maps-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  color: #500000;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.visit-maps-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 1.2;
+}
+
 .section-description {
   color: #666;
   font-style: italic;
@@ -248,5 +296,10 @@
   .map-columns,
   .applications-list {
     grid-template-columns: 1fr;
+  }
+
+  .visit-maps-row {
+    gap: 1.5rem;
+    justify-content: center;
   }
 }
