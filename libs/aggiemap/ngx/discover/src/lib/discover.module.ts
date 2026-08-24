@@ -12,6 +12,7 @@ import { AllMapsComponent } from './components/all-maps/all-maps.component';
 import { ParkingMapsComponent } from './components/parking-maps/parking-maps.component';
 import { EventMapsComponent } from './components/event-maps/event-maps.component';
 import { MapsPageHeaderComponent } from './components/maps-page-header/maps-page-header.component';
+import { VisitMapsNavComponent } from './components/visit-maps-nav/visit-maps-nav.component';
 import { MapColumnsComponent } from './components/map-columns/map-columns.component';
 import { QuickLinksComponent } from './components/quick-links/quick-links.component';
 
@@ -74,6 +75,7 @@ const routes: Routes = [
     ParkingMapsComponent,
     EventMapsComponent,
     MapsPageHeaderComponent,
+    VisitMapsNavComponent,
     MapColumnsComponent,
     QuickLinksComponent
   ],
