@@ -244,20 +244,23 @@ export interface SpecialEventOption {
    * visibleWhen: { setting: 'transport-type', equalsAnyOf: ['12th-man', 'parkmobile', 'micromobility'] }
    * ```
    *
+   * An array of conditions is satisfied when *any* of them match, which allows a step shared by two
+   * branches of the flow to be gated on either branch:
+   *
+   * ```
+   * visibleWhen: [
+   *   { setting: 'transport-type', equalsAnyOf: ['micromobility'] },
+   *   { setting: 'vehicle-type', equalsAnyOf: ['parkmobile', 'presale'] }
+   * ]
+   * ```
+   *
+   * A condition whose gating option is itself hidden never matches, so a stale saved value for a step
+   * that no longer applies cannot keep a dependent step visible.
+   *
    * The referenced `setting` should generally appear earlier in the options array so its value is already
    * chosen by the time this option would be shown.
    */
-  visibleWhen?: {
-    /**
-     * The `value` (key) of another {@link SpecialEventOption} whose saved selection gates this option.
-     */
-    setting: string;
-
-    /**
-     * This option is only visible/required when the gating setting's saved value is one of these.
-     */
-    equalsAnyOf: Array<string | number | boolean>;
-  };
+  visibleWhen?: SpecialEventOptionVisibilityCondition | Array<SpecialEventOptionVisibilityCondition>;
 
   choices: Array<EventAccommodationOption>;
 
@@ -305,6 +308,21 @@ export interface SpecialEventOption {
       conversions?: Array<ISpecialEventOptionEffectsConversion>;
     }>;
   };
+}
+
+/**
+ * A single gating condition used by {@link SpecialEventOption.visibleWhen}.
+ */
+export interface SpecialEventOptionVisibilityCondition {
+  /**
+   * The `value` (key) of another {@link SpecialEventOption} whose saved selection gates this option.
+   */
+  setting: string;
+
+  /**
+   * This option is only visible/required when the gating setting's saved value is one of these.
+   */
+  equalsAnyOf: Array<string | number | boolean>;
 }
 
 export enum ConversionDeconflictingStrategy {

@@ -15,8 +15,11 @@ import esri = __esri;
  *
  * Every mode reads from its own public hosted service, each pre-filtered and re-symbolized by
  * Transportation Services to exactly what that mode's map should show. The shared, client-filtered
- * `TSFootball_Cache`/`TSFootball_view` services and the Marcomm `Lots_view` service are no longer
- * used, and neither is the old "Personal Vehicle" mode they backed.
+ * `TSFootball_Cache`/`TSFootball_view` services and the Marcomm `Lots_view` service are no longer used.
+ *
+ * The builder asks for the mode in up to three steps: a transportation type, then — for Personal
+ * Vehicle only — which parking/arrival option within it, then Entry or Exit for the modes that publish
+ * both. "Personal Vehicle" is purely a grouping in the builder; it has no layers of its own.
  *
  * Three consequences of the per-mode services shape the code below:
  *
@@ -115,13 +118,10 @@ export enum FOOTBALL_PARKING_LAYERS {
 
 /**
  * The user-selectable transportation modes (the first builder step), in the order they are shown.
+ * `PERSONAL_VEHICLE` opens the {@link VehicleType} step rather than turning on layers of its own.
  */
 enum TransportType {
-  PAY_AVP = 'pay-avp',
-  PARKMOBILE = 'parkmobile',
-  TWELFTH_MAN = '12th-man',
-  PRESALE = 'presale',
-  RIDESHARE = 'rideshare',
+  PERSONAL_VEHICLE = 'personal-vehicle',
   SHUTTLE = 'shuttle',
   RV = 'rv',
   MICROMOBILITY = 'micromobility',
@@ -129,7 +129,19 @@ enum TransportType {
 }
 
 /**
- * The Entry/Exit sub-choice (the second, conditional builder step). Only shown for the modes that
+ * The Personal Vehicle sub-choice (the second, conditional builder step) — how the driver is paying
+ * for or being dropped off at their spot. Only shown when Personal Vehicle is the selected mode.
+ */
+enum VehicleType {
+  PAY_AVP = 'pay-avp',
+  PARKMOBILE = 'parkmobile',
+  TWELFTH_MAN = '12th-man',
+  PRESALE = 'presale',
+  RIDESHARE = 'rideshare'
+}
+
+/**
+ * The Entry/Exit sub-choice (the last, conditional builder step). Only shown for the modes that
  * publish a separate arrival and departure service.
  */
 enum Direction {
@@ -139,6 +151,7 @@ enum Direction {
 
 enum FootballBuilderOptions {
   TRANSPORT_TYPE = 'transport-type',
+  VEHICLE_TYPE = 'vehicle-type',
   DIRECTION = 'direction'
 }
 
@@ -358,11 +371,12 @@ const PIN_LEGEND: LayerSource['legend'] = {
 };
 
 /**
- * A "vehicle" mode: one of the four modes published as a matched pair of entry/exit services sharing
- * the same five-sublayer shape.
+ * A "vehicle" mode: one of the four Personal Vehicle options published as a matched pair of entry/exit
+ * services sharing the same five-sublayer shape. (Rideshare, the fifth Personal Vehicle option, is a
+ * single-layer service and is defined inline below.)
  */
 interface VehicleMode {
-  transport: TransportType;
+  vehicle: VehicleType;
   entryUrl: string;
   exitUrl: string;
   layers: {
@@ -376,7 +390,7 @@ interface VehicleMode {
 
 const VEHICLE_MODES: VehicleMode[] = [
   {
-    transport: TransportType.PAY_AVP,
+    vehicle: VehicleType.PAY_AVP,
     entryUrl: `${HOSTED_ROOT}/Pay_AVP_entry/FeatureServer`,
     exitUrl: `${HOSTED_ROOT}/Pay_AVP_2_exit/FeatureServer`,
     layers: {
@@ -388,7 +402,7 @@ const VEHICLE_MODES: VehicleMode[] = [
     }
   },
   {
-    transport: TransportType.PARKMOBILE,
+    vehicle: VehicleType.PARKMOBILE,
     entryUrl: `${HOSTED_ROOT}/PM_entry/FeatureServer`,
     exitUrl: `${HOSTED_ROOT}/PM_exit/FeatureServer`,
     layers: {
@@ -400,7 +414,7 @@ const VEHICLE_MODES: VehicleMode[] = [
     }
   },
   {
-    transport: TransportType.TWELFTH_MAN,
+    vehicle: VehicleType.TWELFTH_MAN,
     entryUrl: `${HOSTED_ROOT}/12thMan_entry/FeatureServer`,
     exitUrl: `${HOSTED_ROOT}/12thMan_exit/FeatureServer`,
     layers: {
@@ -412,7 +426,7 @@ const VEHICLE_MODES: VehicleMode[] = [
     }
   },
   {
-    transport: TransportType.PRESALE,
+    vehicle: VehicleType.PRESALE,
     entryUrl: `${HOSTED_ROOT}/Presale_entry/FeatureServer`,
     exitUrl: `${HOSTED_ROOT}/Presale_2_exit/FeatureServer`,
     layers: {
@@ -724,11 +738,11 @@ export const FootballParkingConfiguration: EventConfiguration = {
   }
 };
 
-/** Turns every layer belonging to a vehicle mode on when that mode is selected. */
-const vehicleModeTransportEffects = (mode: VehicleMode) =>
+/** Turns every layer belonging to a vehicle mode on when that Personal Vehicle option is selected. */
+const vehicleModeVehicleTypeEffects = (mode: VehicleMode) =>
   Object.values(mode.layers).map((layerId) => ({
     layerId,
-    conversions: [{ input: mode.transport, propOverrides: SHOW }]
+    conversions: [{ input: mode.vehicle, propOverrides: SHOW }]
   }));
 
 /**
@@ -756,24 +770,8 @@ export const FootballParkingOptions: SpecialEventOptions = [
     shortDescription: 'Transportation Type',
     choices: [
       {
-        value: TransportType.PAY_AVP,
-        label: 'Pay Upon Arrival/Any Valid Texas A&M Permit'
-      },
-      {
-        value: TransportType.PARKMOBILE,
-        label: 'ParkMobile Prepay'
-      },
-      {
-        value: TransportType.TWELFTH_MAN,
-        label: '12th Man'
-      },
-      {
-        value: TransportType.PRESALE,
-        label: 'Presale Season Parking'
-      },
-      {
-        value: TransportType.RIDESHARE,
-        label: 'Rideshare'
+        value: TransportType.PERSONAL_VEHICLE,
+        label: 'Personal Vehicle'
       },
       {
         value: TransportType.SHUTTLE,
@@ -794,13 +792,7 @@ export const FootballParkingOptions: SpecialEventOptions = [
     ],
     effects: {
       layers: [
-        ...VEHICLE_MODES.flatMap(vehicleModeTransportEffects),
-
-        // Rideshare
-        {
-          layerId: FOOTBALL_PARKING_LAYERS.FP_RIDESHARE_LOCATIONS,
-          conversions: [{ input: TransportType.RIDESHARE, propOverrides: SHOW }]
-        },
+        // Personal Vehicle turns on no layers of its own — the Vehicle Type step that follows it does.
         // Shuttle
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_SHUTTLE_STOPS,
@@ -863,23 +855,70 @@ export const FootballParkingOptions: SpecialEventOptions = [
     }
   },
   {
+    value: FootballBuilderOptions.VEHICLE_TYPE,
+    label: 'Parking Option',
+    description:
+      'How are you paying for parking, or being dropped off, on game day? Each option has its own lots, entry and exit routes.',
+    shortDescription: 'Parking Option',
+    // Only drivers see this step; every other mode goes straight from the transportation type to its map.
+    visibleWhen: {
+      setting: FootballBuilderOptions.TRANSPORT_TYPE,
+      equalsAnyOf: [TransportType.PERSONAL_VEHICLE]
+    },
+    choices: [
+      {
+        value: VehicleType.PAY_AVP,
+        label: 'Pay Upon Arrival/Any Valid Texas A&M Permit'
+      },
+      {
+        value: VehicleType.PARKMOBILE,
+        label: 'ParkMobile Prepay'
+      },
+      {
+        value: VehicleType.TWELFTH_MAN,
+        label: '12th Man'
+      },
+      {
+        value: VehicleType.PRESALE,
+        label: 'Presale Season Parking'
+      },
+      {
+        value: VehicleType.RIDESHARE,
+        label: 'Rideshare'
+      }
+    ],
+    effects: {
+      layers: [
+        ...VEHICLE_MODES.flatMap(vehicleModeVehicleTypeEffects),
+
+        // Rideshare — drop-off/pick-up locations only, so no direction step.
+        {
+          layerId: FOOTBALL_PARKING_LAYERS.FP_RIDESHARE_LOCATIONS,
+          conversions: [{ input: VehicleType.RIDESHARE, propOverrides: SHOW }]
+        }
+      ]
+    }
+  },
+  {
     value: FootballBuilderOptions.DIRECTION,
     label: 'Direction',
     description:
       'Are you arriving at the game (Entry) or leaving afterward (Exit)? Choose one to see the routes tailored to your trip.',
     shortDescription: 'Direction',
     uiType: 'binary',
-    // Only the modes that publish a separate arrival and departure service ask for a direction.
-    visibleWhen: {
-      setting: FootballBuilderOptions.TRANSPORT_TYPE,
-      equalsAnyOf: [
-        TransportType.PAY_AVP,
-        TransportType.PARKMOBILE,
-        TransportType.TWELFTH_MAN,
-        TransportType.PRESALE,
-        TransportType.MICROMOBILITY
-      ]
-    },
+    // Only the modes that publish a separate arrival and departure service ask for a direction. The
+    // parking-option conditions can only match while the Personal Vehicle branch is active, because a
+    // condition on a hidden step's setting never matches.
+    visibleWhen: [
+      {
+        setting: FootballBuilderOptions.TRANSPORT_TYPE,
+        equalsAnyOf: [TransportType.MICROMOBILITY]
+      },
+      {
+        setting: FootballBuilderOptions.VEHICLE_TYPE,
+        equalsAnyOf: [VehicleType.PAY_AVP, VehicleType.PARKMOBILE, VehicleType.TWELFTH_MAN, VehicleType.PRESALE]
+      }
+    ],
     choices: [
       {
         value: Direction.ENTRY,
