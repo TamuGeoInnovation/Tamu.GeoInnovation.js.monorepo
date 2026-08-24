@@ -241,7 +241,7 @@ export interface SpecialEventOption {
    * an Entry/Exit `direction` step can be shown only for the transportation modes that have both directions:
    *
    * ```
-   * visibleWhen: { setting: 'transport-type', equalsAnyOf: ['12th-man', 'personal-vehicle', 'micromobility'] }
+   * visibleWhen: { setting: 'transport-type', equalsAnyOf: ['12th-man', 'parkmobile', 'micromobility'] }
    * ```
    *
    * The referenced `setting` should generally appear earlier in the options array so its value is already
