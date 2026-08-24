@@ -1,5 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { getDefaultGisHost } from '@tamu-gisc/aggiemap/ngx/common';
+// import { getDefaultGisHost } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -37,8 +37,10 @@ import esri = __esri;
  *
  * Field names on these views are lowercase and case-sensitive in SQL where-clauses.
  */
-const gisHost = getDefaultGisHost();
-const HOSTED_ROOT = `https://${gisHost}/arcgis/rest/services/Hosted`;
+// Re-enable the environment-specific host when the development GIS host publishes all football layers.
+// const gisHost = getDefaultGisHost();
+// const HOSTED_ROOT = `https://${gisHost}/arcgis/rest/services/Hosted`;
+const HOSTED_ROOT = 'https://gis.tamu.edu/arcgis/rest/services/Hosted';
 
 /**
  * Sublayer indices shared by the four "vehicle" mode services (Pay/AVP, ParkMobile, 12th Man,
