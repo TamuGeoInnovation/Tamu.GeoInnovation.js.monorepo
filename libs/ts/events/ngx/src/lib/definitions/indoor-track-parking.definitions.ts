@@ -2,6 +2,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { createAthleticsSymbol } from './athletics-symbols.definitions';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -20,6 +21,19 @@ export enum INDOOR_TRACK_PARKING_LAYERS {
 }
 
 const eventUrl = Connections.indoorTrackParkingUrl;
+
+/**
+ * The hosted views expose a campus-wide symbol table and the campus-wide street striping table,
+ * so every layer sourced from them has to be narrowed down to this event on the client.
+ */
+const accessibleParkingSymbol = createAthleticsSymbol('ACCESSIBLE_PARKING');
+
+const crosswalkSymbol = {
+  type: 'simple-line',
+  color: [214, 170, 81, 255],
+  width: 2,
+  style: 'short-dash'
+} as unknown as esri.SymbolProperties;
 
 export const IndoorTrackParkingDefinitions = {
   VISITOR_KIOSK: {
@@ -86,8 +100,17 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
-    layerIndex: 24
-  },
+    layerIndex: 24,
+    native: {
+      outFields: ['*'],
+      definitionExpression: `event = 'TrackIndoor'`,
+      renderer: {
+        type: 'simple',
+        label: 'Accessible Parking Spaces',
+        symbol: accessibleParkingSymbol
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: IndoorTrackParkingDefinitions.PARKING.id,
@@ -96,14 +119,14 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       /**
        * Notes requested from column: IndoorN
        */
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.IndoorN',
+        field: 'indoorn',
         collapsed: true
       }
     },
@@ -121,8 +144,8 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     url: IndoorTrackParkingDefinitions.BUILDING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.BldgCode}',
-      description: '{attributes.Abbrev}'
+      name: IndoorTrackParkingDefinitions.BUILDING.name,
+      description: '{attributes.sp_sh_notes}'
     },
     visible: true,
     listMode: 'show',
@@ -132,25 +155,24 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'map-image',
+    type: 'feature',
     id: IndoorTrackParkingDefinitions.SAFETY_FIRST.id,
     title: IndoorTrackParkingDefinitions.SAFETY_FIRST.name,
-    url: eventUrl,
+    url: IndoorTrackParkingDefinitions.SAFETY_FIRST.url,
     visible: true,
     listMode: 'show',
     layerIndex: 20,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 4,
-          title: IndoorTrackParkingDefinitions.SAFETY_FIRST.name,
-          visible: true,
-          popupEnabled: false
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+      outFields: ['*'],
+      popupEnabled: false,
+      definitionExpression: `street_use = 'X-Walk'`,
+      renderer: {
+        type: 'simple',
+        label: 'Please use marked crosswalks. No mid-street crossing.',
+        symbol: crosswalkSymbol
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.id,
@@ -158,8 +180,8 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     url: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.Type}',
-      description: '{attributes.SP_SH_Notes}'
+      name: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.name,
+      description: '{attributes.sp_sh_notes}'
     },
     visible: true,
     listMode: 'show',

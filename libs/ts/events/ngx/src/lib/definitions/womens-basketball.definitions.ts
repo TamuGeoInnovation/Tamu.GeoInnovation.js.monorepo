@@ -2,6 +2,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { createAthleticsSymbol } from './athletics-symbols.definitions';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -28,19 +29,19 @@ export const WomensBasketball_Definitions = {
     id: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
     layerId: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
     name: 'Accessible Parking Spaces',
-    url: `${eventUrl}/4`
+    url: `${eventUrl}/1`
   },
   PARKING: {
     id: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
     layerId: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
     name: "Women's Basketball Event Parking Lots",
-    url: `${eventUrl}/12`
+    url: `${eventUrl}/2`
   },
   SAFETY_FIRST: {
     id: WOMENS_BASKETBALL_LAYERS.SAFETY_FIRST,
     layerId: WOMENS_BASKETBALL_LAYERS.SAFETY_FIRST,
     name: 'Crosswalks',
-    url: `${eventUrl}/14`
+    url: `${eventUrl}/3`
   }
 };
 
@@ -69,15 +70,23 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     url: WomensBasketball_Definitions.ACCESSIBLE_PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.Type}',
-      description: `**Event:** {attributes.Event}`
+      name: '{attributes.type}',
+      description: `**Event:** {attributes.event}`
     },
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // The symbol table in the view is campus-wide and unfiltered; basketball accessible spaces
+      // are tagged as either `Accessible` or `Disabled` depending on when they were captured.
+      definitionExpression: `event = 'Basketball' AND type IN ('Accessible', 'Disabled')`,
+      renderer: {
+        type: 'simple',
+        label: 'Accessible Parking Spaces',
+        symbol: createAthleticsSymbol('ACCESSIBLE_PARKING')
+      }
     }
-  },
+  } as unknown as LayerSource,
 
   {
     type: 'feature',
@@ -87,18 +96,21 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.WBasketballN',
+        field: 'wbasketballn',
         collapsed: true
       }
     },
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // The view's own definition query (`WBasketballN <> '<Null>'`) never filters anything out,
+      // so all 140 campus lots come back without this.
+      definitionExpression: `wbasketball IS NOT NULL`
     }
   },
 
@@ -110,13 +122,13 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Crosswalk',
-      description: `**Location:** {attributes.Location}`
+      description: `**Location:** {attributes.location}`
     },
     visible: true,
     listMode: 'show',
     native: {
       outFields: ['*'],
-      definitionExpression: "Street_Use = 'X-Walk'",
+      definitionExpression: "street_use = 'X-Walk'",
       renderer: {
         type: 'simple',
         symbol: {

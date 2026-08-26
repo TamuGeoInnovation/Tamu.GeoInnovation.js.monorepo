@@ -2,6 +2,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { createAthleticsSymbol } from './athletics-symbols.definitions';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -18,6 +19,19 @@ export enum SOCCER_PARKING_LAYERS {
 }
 
 const eventUrl = Connections.soccerParkingUrl;
+
+/**
+ * The hosted views expose a campus-wide symbol table and the campus-wide street striping table,
+ * so every layer sourced from them has to be narrowed down to this event on the client.
+ */
+const accessibleParkingSymbol = createAthleticsSymbol('ACCESSIBLE_PARKING');
+
+const crosswalkSymbol = {
+  type: 'simple-line',
+  color: [214, 170, 81, 255],
+  width: 2,
+  style: 'short-dash'
+} as unknown as esri.SymbolProperties;
 
 export const SoccerParkingDefinitions = {
   VISITOR_KIOSK: {
@@ -84,7 +98,13 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 11,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      definitionExpression: `event = 'Soccer'`,
+      renderer: {
+        type: 'simple',
+        label: 'Accessible Parking Spaces',
+        symbol: accessibleParkingSymbol
+      }
     }
   } as unknown as LayerSource,
   {
@@ -95,11 +115,11 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.SoccerN',
+        field: 'soccern',
         collapsed: true
       }
     },
@@ -110,7 +130,7 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       renderer: {
         type: 'unique-value',
-        field: 'GIS.TS.SPEV_Lot_Use.Soccer',
+        field: 'soccer',
         uniqueValueInfos: [
           {
             value: 'AnyValidRec',
@@ -135,25 +155,24 @@ export const SoccerParkingColdLayerSources: LayerSource[] = [
     }
   } as unknown as LayerSource,
   {
-    type: 'map-image',
+    type: 'feature',
     id: SoccerParkingDefinitions.SAFETY_FIRST.id,
     title: SoccerParkingDefinitions.SAFETY_FIRST.name,
-    url: eventUrl,
+    url: SoccerParkingDefinitions.SAFETY_FIRST.url,
     visible: true,
     listMode: 'show',
     layerIndex: 9,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 3,
-          title: SoccerParkingDefinitions.SAFETY_FIRST.name,
-          visible: true,
-          popupEnabled: false
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  }
+      outFields: ['*'],
+      popupEnabled: false,
+      definitionExpression: `street_use = 'X-Walk'`,
+      renderer: {
+        type: 'simple',
+        label: 'Please use marked crosswalks. No mid-street crossing.',
+        symbol: crosswalkSymbol
+      }
+    }
+  } as unknown as LayerSource
 ];
 
 export const SoccerParkingConfiguration: EventConfiguration = {

@@ -3,6 +3,7 @@ import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
+import { createAthleticsSymbol } from './athletics-symbols.definitions';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -28,6 +29,32 @@ enum BaseballMapMode {
 
 const eventUrl = Connections.baseballParkingUrl;
 
+/**
+ * The hosted view publishes the symbol layer with a plain dot renderer, so the symbology has to
+ * come from the client. Types with no entry here were not drawn on the legacy map either.
+ */
+const baseballSymbolsRenderer = {
+  type: 'unique-value',
+  field: 'type',
+  uniqueValueInfos: [
+    {
+      value: 'Accessible Shuttle Stop',
+      label: 'Accessible Shuttle Stop',
+      symbol: createAthleticsSymbol('ACCESSIBLE_SHUTTLE_STOP')
+    },
+    {
+      value: '$5 Accessible Parking',
+      label: '$5 Accessible Parking',
+      symbol: createAthleticsSymbol('ACCESSIBLE_PARKING_5')
+    },
+    { value: '$10 Bus Parking', label: '$10 Bus Parking', symbol: createAthleticsSymbol('BUS_PARKING_10') },
+    { value: 'Club Parking', label: 'Club Parking', symbol: createAthleticsSymbol('CLUB_PARKING') },
+    { value: 'Suite Parking', label: 'Suite Parking', symbol: createAthleticsSymbol('SUITE_PARKING') },
+    { value: 'RV Parking', label: 'RV Parking', symbol: createAthleticsSymbol('RV_PARKING') },
+    { value: 'Motorcycle', label: 'Motorcycle', symbol: createAthleticsSymbol('MOTORCYCLE') }
+  ]
+};
+
 export const BaseballParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
@@ -36,13 +63,14 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     url: `${eventUrl}/0`,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: '{attributes.Type}'
+      name: '{attributes.type}'
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `Event = 'Baseball' AND Type <> 'Accessible Shuttle Stop'`
+      definitionExpression: `event = 'Baseball' AND type <> 'Accessible Shuttle Stop'`,
+      renderer: baseballSymbolsRenderer
     }
-  },
+  } as unknown as LayerSource,
 
   {
     type: 'feature',
@@ -52,13 +80,14 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     visible: false,
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
-      name: '{attributes.Type}'
+      name: '{attributes.type}'
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `Event = 'Baseball'`
+      definitionExpression: `event = 'Baseball'`,
+      renderer: baseballSymbolsRenderer
     }
-  },
+  } as unknown as LayerSource,
 
   {
     type: 'feature',
@@ -78,17 +107,17 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.BaseballN',
+        field: 'baseballn',
         collapsed: true
       }
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `GIS.TS.SPEV_Lot_Use.Baseball IN ('AnyValid','SeasonPass')`
+      definitionExpression: `baseball IN ('AnyValid','SeasonPass')`
     }
   },
 
@@ -101,17 +130,17 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownWDirectionsPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.BaseballN',
+        field: 'baseballn',
         collapsed: true
       }
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `GIS.TS.SPEV_Lot_Use.Baseball = 'Permit'`
+      definitionExpression: `baseball = 'Permit'`
     }
   },
   {

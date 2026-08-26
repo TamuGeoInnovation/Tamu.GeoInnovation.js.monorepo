@@ -2,6 +2,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
+import { createAthleticsSymbol } from './athletics-symbols.definitions';
 import {
   AggiemapCustomMapConfiguration,
   EventConfiguration,
@@ -15,6 +16,21 @@ export enum MENS_BASKETBALL_LAYERS {
 }
 
 const eventUrl = Connections.mensBasketballUrl;
+
+/**
+ * The hosted view publishes the symbol layer with a plain dot renderer, so the symbology has to
+ * come from the client. Types with no entry here were not drawn on the legacy map either.
+ */
+const mensBasketballSymbolsRenderer = {
+  type: 'unique-value',
+  field: 'type',
+  uniqueValueInfos: [
+    { value: '$10 Bus Parking', label: '$10 Bus Parking', symbol: createAthleticsSymbol('BUS_PARKING_10_BASKETBALL') },
+    { value: 'Event Credential', label: 'Event Credential', symbol: createAthleticsSymbol('EVENT_CREDENTIAL') },
+    { value: 'ParkMobile', label: 'ParkMobile Prepay Parking', symbol: createAthleticsSymbol('PARKMOBILE') },
+    { value: 'Preferred Parking', label: 'Preferred Parking', symbol: createAthleticsSymbol('PREFERRED_PARKING') }
+  ]
+};
 
 export const MensBasketball_Definitions = {
   GATES: {
@@ -57,15 +73,18 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     url: MensBasketball_Definitions.SYMBOLS.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.Type}',
-      description: `{attributes.Event}`
+      name: '{attributes.type}',
+      description: `{attributes.event}`
     },
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // The symbol table in the view is campus-wide and unfiltered.
+      definitionExpression: `event = 'Basketball'`,
+      renderer: mensBasketballSymbolsRenderer
     }
-  },
+  } as unknown as LayerSource,
 
   {
     type: 'feature',
@@ -74,8 +93,8 @@ export const MensBasketball_ColdLayerSources: LayerSource[] = [
     url: MensBasketball_Definitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.LotType} - {attributes.LotNum}',
-      description: `{attributes.Description}`
+      name: '{attributes.lottype} - {attributes.lotnum}',
+      description: `{attributes.description}`
     },
     visible: true,
     listMode: 'show',
