@@ -21,6 +21,38 @@ export enum INDOOR_TRACK_PARKING_LAYERS {
 
 const eventUrl = Connections.indoorTrackParkingUrl;
 
+/**
+ * The hosted views expose a campus-wide symbol table and the campus-wide street striping table,
+ * so every layer sourced from them has to be narrowed down to this event on the client. The view
+ * also publishes the symbol layer with a plain dot renderer, so this map's art has to live on the
+ * client — this is the image the legacy `TS_Events/TracSocSoftSwimVollWbask` map service drew.
+ */
+const ACCESSIBLE_PARKING_IMAGE_DATA =
+  'iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACzUlEQVRIieWVe0hTURzHv1t36rRZ05WpMH' +
+  'toSaRIJaloptHDQDN6kD0gpDCSYEUgSUH9EWWBSmH0sH/CkrSECBTzESLhi2yFKx8zG+ZjppPNvdzcTuwE0bQ7bltG0BcO53LO7/4+/O75/u5h' +
+  '8BfF/Eew2NsrISD+HmfmWU14Lethh8UVLT+xO/J+t2oyHoTw3OUQgCwVC5uqUCz7GegMszMSg2kmpVk+7ASSBolwPGMtalpUaOka5QTcHBOSAi' +
+  'IQuvyMPB7mVHQnbwvS4sNwJisGkh2lmLbauPB4bhlEozPTWW+0wmYncFcMl6D+IR0GhnVIPlWFGZt9fmEanZlWNKjWuw3iDJvQmhHg7w1PxXAJ' +
+  'stkIxCIfFMmS5uwVlr/lXLFLWIjED0+vpkE1MuVwKYIDfTFltDrF8B0bHMUKE3ozaCzJRLN8BDcr3uHgtghcftCOj58nOSfnDDu5Zx20egtyCl' +
+  '7B39eLrlUXpsNsmdtju86+oG51G7Z9kxTlL3thtxNoDdM4cqnOad/HawF2xkkRFR6I/anhuF7W6T7McT5jkyb6TAjwqNbpnwqxyBul+am49vAN' +
+  'Dmz1EPZlTI81YWLWFyPDxNAZLLj3XIG8oxuwKnQR+oe07sEqGpQoyE2g5nD02WzlH9uIykYlPas2xSitrqCsE6FL/FhbgRVWVtuDwztWo/5WJr' +
+  'Iu1qJb9d2FAf4+KJYlISZCgtjsCrr2pL6PVpe7L5qC956v+T2YwxiZedUoOZeMrseH8GFAQ50YHR6IdoUaiTnPMDphpLGVjUpIFgtRXtcLxScN' +
+  'W8pfXjE/ZJqeQfaVBtpfCVHBEDB8vFeOQ9437vTO0FcDLtxtnZWHR1zDCF8dLPHryEhcsR4855vaYLbQWbpsIR2uRAhIUIBva5N8RM8O68gdvM' +
+  'EvTgdfIIKn4tuNaDk9zA5zqE2mBuAYf1zMfCT9J2DfAHKADImJlJspAAAAAElFTkSuQmCC';
+
+const accessibleParkingSymbol = {
+  type: 'picture-marker',
+  url: `data:image/png;base64,${ACCESSIBLE_PARKING_IMAGE_DATA}`,
+  width: 20,
+  height: 20
+} as unknown as esri.SymbolProperties;
+
+const crosswalkSymbol = {
+  type: 'simple-line',
+  color: [214, 170, 81, 255],
+  width: 2,
+  style: 'short-dash'
+} as unknown as esri.SymbolProperties;
+
 export const IndoorTrackParkingDefinitions = {
   VISITOR_KIOSK: {
     id: INDOOR_TRACK_PARKING_LAYERS.VISITOR_KIOSK,
@@ -86,8 +118,17 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
-    layerIndex: 24
-  },
+    layerIndex: 24,
+    native: {
+      outFields: ['*'],
+      definitionExpression: `event = 'TrackIndoor'`,
+      renderer: {
+        type: 'simple',
+        label: 'Accessible Parking Spaces',
+        symbol: accessibleParkingSymbol
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: IndoorTrackParkingDefinitions.PARKING.id,
@@ -96,14 +137,14 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       /**
        * Notes requested from column: IndoorN
        */
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.IndoorN',
+        field: 'indoorn',
         collapsed: true
       }
     },
@@ -121,8 +162,8 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     url: IndoorTrackParkingDefinitions.BUILDING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.BldgCode}',
-      description: '{attributes.Abbrev}'
+      name: IndoorTrackParkingDefinitions.BUILDING.name,
+      description: '{attributes.sp_sh_notes}'
     },
     visible: true,
     listMode: 'show',
@@ -132,25 +173,24 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'map-image',
+    type: 'feature',
     id: IndoorTrackParkingDefinitions.SAFETY_FIRST.id,
     title: IndoorTrackParkingDefinitions.SAFETY_FIRST.name,
-    url: eventUrl,
+    url: IndoorTrackParkingDefinitions.SAFETY_FIRST.url,
     visible: true,
     listMode: 'show',
     layerIndex: 20,
     native: {
-      listMode: 'hide-children',
-      sublayers: [
-        {
-          id: 4,
-          title: IndoorTrackParkingDefinitions.SAFETY_FIRST.name,
-          visible: true,
-          popupEnabled: false
-        } as unknown as esri.SublayerProperties
-      ]
-    } as unknown as esri.MapImageLayerProperties
-  },
+      outFields: ['*'],
+      popupEnabled: false,
+      definitionExpression: `street_use = 'X-Walk'`,
+      renderer: {
+        type: 'simple',
+        label: 'Please use marked crosswalks. No mid-street crossing.',
+        symbol: crosswalkSymbol
+      }
+    }
+  } as unknown as LayerSource,
   {
     type: 'feature',
     id: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.id,
@@ -158,8 +198,8 @@ export const IndoorTrackParkingColdLayerSources: LayerSource[] = [
     url: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.Type}',
-      description: '{attributes.SP_SH_Notes}'
+      name: IndoorTrackParkingDefinitions.TEAM_BUS_PARKING.name,
+      description: '{attributes.sp_sh_notes}'
     },
     visible: true,
     listMode: 'show',

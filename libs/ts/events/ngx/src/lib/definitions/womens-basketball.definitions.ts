@@ -17,6 +17,29 @@ export enum WOMENS_BASKETBALL_LAYERS {
 
 const eventUrl = Connections.womensBasketballUrl;
 
+/**
+ * The hosted view publishes the symbol layer with a plain dot renderer, so this map's art has to
+ * live on the client — this is the image the legacy `TS_Events/TracSocSoftSwimVollWbask` map service drew.
+ */
+const ACCESSIBLE_PARKING_IMAGE_DATA =
+  'iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACzUlEQVRIieWVe0hTURzHv1t36rRZ05WpMH' +
+  'toSaRIJaloptHDQDN6kD0gpDCSYEUgSUH9EWWBSmH0sH/CkrSECBTzESLhi2yFKx8zG+ZjppPNvdzcTuwE0bQ7bltG0BcO53LO7/4+/O75/u5h' +
+  '8BfF/Eew2NsrISD+HmfmWU14Lethh8UVLT+xO/J+t2oyHoTw3OUQgCwVC5uqUCz7GegMszMSg2kmpVk+7ASSBolwPGMtalpUaOka5QTcHBOSAi' +
+  'IQuvyMPB7mVHQnbwvS4sNwJisGkh2lmLbauPB4bhlEozPTWW+0wmYncFcMl6D+IR0GhnVIPlWFGZt9fmEanZlWNKjWuw3iDJvQmhHg7w1PxXAJ' +
+  'stkIxCIfFMmS5uwVlr/lXLFLWIjED0+vpkE1MuVwKYIDfTFltDrF8B0bHMUKE3ozaCzJRLN8BDcr3uHgtghcftCOj58nOSfnDDu5Zx20egtyCl' +
+  '7B39eLrlUXpsNsmdtju86+oG51G7Z9kxTlL3thtxNoDdM4cqnOad/HawF2xkkRFR6I/anhuF7W6T7McT5jkyb6TAjwqNbpnwqxyBul+am49vAN' +
+  'Dmz1EPZlTI81YWLWFyPDxNAZLLj3XIG8oxuwKnQR+oe07sEqGpQoyE2g5nD02WzlH9uIykYlPas2xSitrqCsE6FL/FhbgRVWVtuDwztWo/5WJr' +
+  'Iu1qJb9d2FAf4+KJYlISZCgtjsCrr2pL6PVpe7L5qC956v+T2YwxiZedUoOZeMrseH8GFAQ50YHR6IdoUaiTnPMDphpLGVjUpIFgtRXtcLxScN' +
+  'W8pfXjE/ZJqeQfaVBtpfCVHBEDB8vFeOQ9437vTO0FcDLtxtnZWHR1zDCF8dLPHryEhcsR4855vaYLbQWbpsIR2uRAhIUIBva5N8RM8O68gdvM' +
+  'EvTgdfIIKn4tuNaDk9zA5zqE2mBuAYf1zMfCT9J2DfAHKADImJlJspAAAAAElFTkSuQmCC';
+
+const accessibleParkingSymbol = {
+  type: 'picture-marker',
+  url: `data:image/png;base64,${ACCESSIBLE_PARKING_IMAGE_DATA}`,
+  width: 20,
+  height: 20
+};
+
 export const WomensBasketball_Definitions = {
   VISITOR_KIOSK: {
     id: WOMENS_BASKETBALL_LAYERS.VISITOR_KIOSK,
@@ -28,19 +51,19 @@ export const WomensBasketball_Definitions = {
     id: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
     layerId: WOMENS_BASKETBALL_LAYERS.ACCESSIBLE_PARKING,
     name: 'Accessible Parking Spaces',
-    url: `${eventUrl}/4`
+    url: `${eventUrl}/1`
   },
   PARKING: {
     id: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
     layerId: WOMENS_BASKETBALL_LAYERS.PARKING_LOTS,
     name: "Women's Basketball Event Parking Lots",
-    url: `${eventUrl}/12`
+    url: `${eventUrl}/2`
   },
   SAFETY_FIRST: {
     id: WOMENS_BASKETBALL_LAYERS.SAFETY_FIRST,
     layerId: WOMENS_BASKETBALL_LAYERS.SAFETY_FIRST,
     name: 'Crosswalks',
-    url: `${eventUrl}/14`
+    url: `${eventUrl}/3`
   }
 };
 
@@ -69,15 +92,23 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     url: WomensBasketball_Definitions.ACCESSIBLE_PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.Type}',
-      description: `**Event:** {attributes.Event}`
+      name: '{attributes.type}',
+      description: `**Event:** {attributes.event}`
     },
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // The symbol table in the view is campus-wide and unfiltered; basketball accessible spaces
+      // are tagged as either `Accessible` or `Disabled` depending on when they were captured.
+      definitionExpression: `event = 'Basketball' AND type IN ('Accessible', 'Disabled')`,
+      renderer: {
+        type: 'simple',
+        label: 'Accessible Parking Spaces',
+        symbol: accessibleParkingSymbol
+      }
     }
-  },
+  } as unknown as LayerSource,
 
   {
     type: 'feature',
@@ -87,18 +118,21 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.WBasketballN',
+        field: 'wbasketballn',
         collapsed: true
       }
     },
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // The view's own definition query (`WBasketballN <> '<Null>'`) never filters anything out,
+      // so all 140 campus lots come back without this.
+      definitionExpression: `wbasketball IS NOT NULL`
     }
   },
 
@@ -110,13 +144,13 @@ export const WomensBasketball_ColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'Crosswalk',
-      description: `**Location:** {attributes.Location}`
+      description: `**Location:** {attributes.location}`
     },
     visible: true,
     listMode: 'show',
     native: {
       outFields: ['*'],
-      definitionExpression: "Street_Use = 'X-Walk'",
+      definitionExpression: "street_use = 'X-Walk'",
       renderer: {
         type: 'simple',
         symbol: {

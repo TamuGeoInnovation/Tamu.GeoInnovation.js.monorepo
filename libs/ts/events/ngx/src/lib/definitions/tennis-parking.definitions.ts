@@ -32,14 +32,14 @@ export const TennisParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       /**
        * Notes requested from column: TennisN
        */
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.TennisN',
+        field: 'tennisn',
         collapsed: true
       }
     },
