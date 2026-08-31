@@ -1,4 +1,4 @@
-import { LayerSource } from '@tamu-gisc/common/types';
+import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
@@ -26,6 +26,79 @@ const ringDayDateConversions = (startField: string, endField: string) =>
   }));
 
 const eventUrl = Connections.ringDayUrl;
+
+const simpleFillSymbol = (
+  color: number[],
+  outlineColor: number[],
+  outlineWidth: number,
+  style: 'solid' | 'backward-diagonal' | 'diagonal-cross' = 'solid'
+) => ({
+  type: 'simple-fill',
+  style,
+  color,
+  outline:
+    outlineWidth > 0
+      ? {
+          type: 'simple-line',
+          style: 'solid',
+          color: outlineColor,
+          width: outlineWidth
+        }
+      : null
+});
+
+// Preserve the hosted layer categories while replacing its solid closure fill with the Move-In hatch.
+const ringDayAreaRenderer = {
+  type: 'unique-value',
+  field: 'type',
+  uniqueValueInfos: [
+    {
+      value: 'Accessible',
+      label: 'Accessible Path',
+      symbol: simpleFillSymbol([0, 112, 255, 255], [110, 110, 110, 255], 0.7)
+    },
+    {
+      value: 'Event Parking',
+      label: 'Event Parking',
+      symbol: simpleFillSymbol([0, 197, 255, 255], [0, 112, 255, 255], 2)
+    },
+    {
+      value: 'Sales',
+      label: 'Aggie Ring Day Marketplace',
+      symbol: simpleFillSymbol([56, 168, 0, 255], [110, 110, 110, 255], 0)
+    },
+    {
+      value: 'Ticketed Area',
+      label: 'Ticketed Area',
+      symbol: simpleFillSymbol([233, 196, 106, 255], [233, 196, 106, 255], 1, 'backward-diagonal')
+    },
+    {
+      value: 'Gathering Area',
+      label: 'Gathering Area',
+      symbol: simpleFillSymbol([115, 0, 0, 255], [110, 110, 110, 255], 0)
+    },
+    {
+      value: 'Closure',
+      label: 'Lot or Street Closure',
+      symbol: simpleFillSymbol([230, 0, 0, 255], [230, 0, 0, 255], 1, 'diagonal-cross')
+    },
+    {
+      value: 'The Williams Alumni Center',
+      label: 'The Williams Alumni Center',
+      symbol: simpleFillSymbol([137, 68, 68, 255], [115, 0, 0, 255], 1, 'diagonal-cross')
+    },
+    {
+      value: '$5 Event Parking',
+      label: '$10 Event Parking',
+      symbol: simpleFillSymbol([233, 196, 106, 255], [110, 110, 110, 255], 0.7)
+    },
+    {
+      value: 'Lot Specific Permit Required',
+      label: 'Lot Specific Permit Required',
+      symbol: simpleFillSymbol([244, 162, 97, 255], [110, 110, 110, 255], 0.7)
+    }
+  ]
+} as unknown as NonNullable<NonNullable<FeatureLayerSourceProperties['native']>['renderer']>;
 
 const RingDayEventDefinitions = {
   RD_AREAS: {
@@ -62,7 +135,8 @@ export const RingDayColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: ringDayAreaRenderer
     }
   },
   {

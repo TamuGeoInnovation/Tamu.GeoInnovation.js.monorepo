@@ -1,4 +1,4 @@
-import { LayerSource } from '@tamu-gisc/common/types';
+import { FeatureLayerSourceProperties, LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
@@ -27,6 +27,21 @@ enum BaseballMapMode {
 }
 
 const eventUrl = Connections.baseballParkingUrl;
+
+const streetClosureRenderer = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    style: 'diagonal-cross',
+    color: [230, 0, 0, 255],
+    outline: {
+      type: 'simple-line',
+      style: 'solid',
+      color: [230, 0, 0, 255],
+      width: 1
+    }
+  }
+} as unknown as NonNullable<NonNullable<FeatureLayerSourceProperties['native']>['renderer']>;
 
 export const BaseballParkingColdLayerSources: LayerSource[] = [
   {
@@ -67,7 +82,8 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     url: `${eventUrl}/2`,
     popupComponent: MarkdownPopupComponent,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      renderer: streetClosureRenderer
     }
   },
   {
