@@ -17,10 +17,9 @@ import esri = __esri;
  * Transportation Services to exactly what that mode's map should show. The shared, client-filtered
  * `TSFootball_Cache`/`TSFootball_view` services and the Marcomm `Lots_view` service are no longer used.
  *
- * Most modes come as a pair of direction-split views (`*_entry` / `*_exit`). Pay/AVP has since moved
- * off its pair and onto a single un-split hosted feature layer, `Pay_AVP`, holding both directions —
- * the interface below models that by letting a mode point both of its URLs at the same service and
- * omit the sublayers its map does not use.
+ * The vehicle modes come as a pair of direction-split views (`*_entry` / `*_exit`). A mode does not
+ * have to use every sublayer its pair publishes — Pay/AVP deliberately omits its entry arrows — so the
+ * interface below lets a mode leave a sublayer out.
  *
  * The builder asks for the mode in up to three steps: a transportation type, then — for Personal
  * Vehicle only — which parking/arrival option within it, then Entry or Exit for the modes that publish
@@ -48,12 +47,11 @@ import esri = __esri;
 const HOSTED_ROOT = 'https://gis.tamu.edu/arcgis/rest/services/Hosted';
 
 /**
- * Sublayer indices shared by the four "vehicle" modes (Pay/AVP, ParkMobile, 12th Man, Presale). Every
- * service publishes the same sublayers at the same indices, whether it is one of the direction-split
- * views or an un-split hosted feature layer: Entry Routes at 1, Exit Routes at 2, and Gameday Parking,
- * Street/Grass Areas and Football Parking Lots as identical copies alongside them. The shared three
- * are therefore sourced once, from `entryUrl`, and shown for both directions rather than duplicated
- * per direction.
+ * Sublayer indices shared by the four "vehicle" mode services (Pay/AVP, ParkMobile, 12th Man,
+ * Presale). Each publishes the same sublayers at the same indices — the entry services carry Entry
+ * Routes (1) and the exit services Exit Routes (2), while Gameday Parking, Street/Grass Areas and
+ * Football Parking Lots are identical copies in both. The shared three are therefore sourced once
+ * from the entry service and shown for both directions rather than duplicated per direction.
  */
 const VEHICLE_LAYER_INDEX = {
   GAMEDAY_PARKING: 0,
@@ -72,8 +70,8 @@ const VEHICLE_LAYER_INDEX = {
  */
 export enum FOOTBALL_PARKING_LAYERS {
   // --- Pay Upon Arrival / Any Valid Texas A&M Permit ---
-  // No entry routes: the service publishes them at index 1, but the decision was made to leave the
-  // entry arrows off this mode's map, so the layer is never created.
+  // No entry routes: `Pay_AVP_entry` publishes them at index 1, but the decision was made to leave
+  // the entry arrows off this mode's map, so the layer is never created.
   FP_PAY_AVP_GAMEDAY_PARKING = 'football-pay-avp-gameday-parking',
   FP_PAY_AVP_EXIT_ROUTES = 'football-pay-avp-exit-routes',
   FP_PAY_AVP_STREET_GRASS_AREAS = 'football-pay-avp-street-grass-areas',
@@ -380,15 +378,12 @@ const PIN_LEGEND: LayerSource['legend'] = {
 };
 
 /**
- * A "vehicle" mode: one of the four Personal Vehicle options, sourced from services sharing the same
- * five-sublayer shape. (Rideshare, the fifth Personal Vehicle option, is a single-layer service and is
- * defined inline below.)
- *
- * Most modes publish a matched pair of direction-split views, so `entryUrl` and `exitUrl` differ.
- * Pay/AVP instead publishes one hosted feature layer holding both directions, so both point at it.
+ * A "vehicle" mode: one of the four Personal Vehicle options published as a matched pair of entry/exit
+ * services sharing the same five-sublayer shape. (Rideshare, the fifth Personal Vehicle option, is a
+ * single-layer service and is defined inline below.)
  *
  * `layers.entryRoutes` is optional: omitting it drops the entry route layer for that mode entirely —
- * it is neither created nor wired into the direction step.
+ * it is neither created nor wired into the direction step, even though the service still publishes it.
  */
 interface VehicleMode {
   vehicle: VehicleType;
@@ -405,12 +400,11 @@ interface VehicleMode {
 
 const VEHICLE_MODES: VehicleMode[] = [
   {
-    // Both directions come from the one un-split `Pay_AVP` hosted feature layer that replaced the
-    // `Pay_AVP_entry` / `Pay_AVP_2_exit` views. No `entryRoutes`, so the entry map shows gameday
-    // parking, street/grass areas and the lots without arrows.
+    // No `entryRoutes`: `Pay_AVP_entry` publishes them at index 1, but the entry arrows are left off
+    // this mode's map by decision, so the entry map is gameday parking, street/grass areas and lots.
     vehicle: VehicleType.PAY_AVP,
-    entryUrl: `${HOSTED_ROOT}/Pay_AVP/FeatureServer`,
-    exitUrl: `${HOSTED_ROOT}/Pay_AVP/FeatureServer`,
+    entryUrl: `${HOSTED_ROOT}/Pay_AVP_entry/FeatureServer`,
+    exitUrl: `${HOSTED_ROOT}/Pay_AVP_2_exit/FeatureServer`,
     layers: {
       gamedayParking: FOOTBALL_PARKING_LAYERS.FP_PAY_AVP_GAMEDAY_PARKING,
       exitRoutes: FOOTBALL_PARKING_LAYERS.FP_PAY_AVP_EXIT_ROUTES,
@@ -509,7 +503,7 @@ const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
     {
       type: 'feature',
       id: mode.layers.streetGrass,
-      title: 'Street/Grass Areas (Click for details)',
+      title: 'Street Grass Areas (Click for details)',
       url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.STREET_GRASS}`,
       popupComponent: MarkdownPopupComponent,
       popupData: {
@@ -617,7 +611,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_RV_STREET_GRASS_AREAS,
-    title: 'Street/Grass Areas (Click for details)',
+    title: 'Street Grass Areas (Click for details)',
     url: `${HOSTED_ROOT}/RV_view/FeatureServer/3`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
