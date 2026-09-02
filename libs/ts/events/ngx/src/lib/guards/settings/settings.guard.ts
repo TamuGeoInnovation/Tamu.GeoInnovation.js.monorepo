@@ -34,7 +34,11 @@ export class SettingsGuard implements CanActivate {
 
     try {
       // Call event settings service to update and set/overwrite any settings in local storage.
-      if (queryParamsKeySize && queryParamsKeySize > 0) {
+      //
+      // Only params keyed to a configurable option count as settings. A link that carries just a
+      // feature deep-link (e.g. `?feature=Move-In Lots:34815`) would otherwise be read as an empty
+      // set of selections and wipe whatever the visitor already had saved.
+      if (this.ess.hasSettingsQueryParams(queryParams)) {
         this.ess.setSettingsFromQueryParams(queryParams);
 
         this.anl.eventTrack.next({
@@ -49,6 +53,9 @@ export class SettingsGuard implements CanActivate {
       } else if (appSettings) {
         return of(true).pipe(delay(100)); // Add artificial delay to allow settings to be set before proceeding.
       }
+
+      // Nothing to restore from either source; the map handles the unconfigured case.
+      return true;
     } catch (err) {
       this.ns.toast({
         id: 'special-events-settings-error',
@@ -58,7 +65,5 @@ export class SettingsGuard implements CanActivate {
 
       return this.router.parseUrl('/builder');
     }
-
-    return false;
   }
 }

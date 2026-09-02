@@ -483,13 +483,18 @@ export class EventSettingsService {
 
   /**
    * Returns true when the provided query params include a supported feature deep-link
-   * such as `?lot=43`, allowing maps to open directly without builder selections.
+   * such as `?lot=43` or the generic `?feature=<layerId>:<objectId>` emitted by popup share links,
+   * allowing maps to open directly without builder selections.
    */
   public hasFeatureSelectionQueryParams(params?: Params): boolean {
     const queryParams = params ?? this.at.snapshot.queryParams;
 
     if (!queryParams) {
       return false;
+    }
+
+    if (this._hasQueryParamValue(queryParams, 'feature')) {
+      return true;
     }
 
     const searchSources = this.env.value('SearchSources') as SearchSource[] | null | undefined;
@@ -505,15 +510,33 @@ export class EventSettingsService {
 
       const parameterKeys = [searchSource.urlQueryParam, ...(searchSource.urlQueryParamAliases || [])];
 
-      return parameterKeys.some((key) => {
-        const value = queryParams[key];
-
-        if (Array.isArray(value)) {
-          return value.some((entry) => `${entry}`.trim().length > 0);
-        }
-
-        return value !== undefined && value !== null && `${value}`.trim().length > 0;
-      });
+      return parameterKeys.some((key) => this._hasQueryParamValue(queryParams, key));
     });
+  }
+
+  /**
+   * Returns true when the provided query params carry at least one builder selection, i.e. a param
+   * keyed to one of the event's configurable options. Used to determine whether the url should be
+   * treated as the authoritative source of settings; params like `?feature=` or `?basemap=` are not
+   * selections and must not be mistaken for them.
+   */
+  public hasSettingsQueryParams(params?: Params): boolean {
+    const queryParams = params ?? this.at.snapshot.queryParams;
+
+    if (!queryParams) {
+      return false;
+    }
+
+    return this.eventOptions().some((option) => this._hasQueryParamValue(queryParams, option.value));
+  }
+
+  private _hasQueryParamValue(params: Params, key: string): boolean {
+    const value = params[key];
+
+    if (Array.isArray(value)) {
+      return value.some((entry) => `${entry}`.trim().length > 0);
+    }
+
+    return value !== undefined && value !== null && `${value}`.trim().length > 0;
   }
 }
