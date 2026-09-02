@@ -1,3 +1,4 @@
+import { inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -8,9 +9,13 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
+import { EventSettingsService } from '../../../services/settings/event-settings.service';
+
 import esri = __esri;
 
 export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
+  private readonly _eventSettingsService = inject(EventSettingsService);
+
   constructor(
     router: Router,
     route: ActivatedRoute,
@@ -39,9 +44,32 @@ export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
     const params = new URLSearchParams(window.location.search);
 
     this._clearExistingFeatureParams(params);
+    this._applyEventSettingParams(params);
     params.set('feature', `${layerId}:${objectId}`);
 
     return `?${params.toString()}`;
+  }
+
+  /**
+   * Builder selections are persisted in local storage rather than in the map url, so a link copied
+   * from a popup would otherwise carry only the feature reference. Without the selections, the
+   * recipient lands on an unconfigured map and gets bounced into the builder instead of the shared
+   * feature. Stamping the current selections onto the link lets the settings guard restore them.
+   *
+   * Any setting already present in the url wins, as it is what the current map is actually showing.
+   */
+  private _applyEventSettingParams(params: URLSearchParams): void {
+    const settingParams = this._eventSettingsService.queryParamsFromSettings;
+
+    if (!settingParams) {
+      return;
+    }
+
+    settingParams.forEach((value, key) => {
+      if (!params.has(key)) {
+        params.set(key, value);
+      }
+    });
   }
 
   private _clearExistingFeatureParams(params: URLSearchParams): void {
