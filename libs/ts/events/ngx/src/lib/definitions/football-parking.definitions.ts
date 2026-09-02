@@ -17,6 +17,11 @@ import esri = __esri;
  * Transportation Services to exactly what that mode's map should show. The shared, client-filtered
  * `TSFootball_Cache`/`TSFootball_view` services and the Marcomm `Lots_view` service are no longer used.
  *
+ * Most modes come as a pair of direction-split views (`*_entry` / `*_exit`). Pay/AVP has since moved
+ * off its pair and onto a single un-split hosted feature layer, `Pay_AVP`, holding both directions —
+ * the interface below models that by letting a mode point both of its URLs at the same service and
+ * omit the sublayers its map does not use.
+ *
  * The builder asks for the mode in up to three steps: a transportation type, then — for Personal
  * Vehicle only — which parking/arrival option within it, then Entry or Exit for the modes that publish
  * both. "Personal Vehicle" is purely a grouping in the builder; it has no layers of its own.
@@ -43,11 +48,12 @@ import esri = __esri;
 const HOSTED_ROOT = 'https://gis.tamu.edu/arcgis/rest/services/Hosted';
 
 /**
- * Sublayer indices shared by the four "vehicle" mode services (Pay/AVP, ParkMobile, 12th Man,
- * Presale). Each publishes the same sublayers at the same indices — the entry services carry Entry
- * Routes (1) and the exit services Exit Routes (2), while Gameday Parking, Street/Grass Areas and
- * Football Parking Lots are identical copies in both. The shared three are therefore sourced once
- * from the entry service and shown for both directions rather than duplicated per direction.
+ * Sublayer indices shared by the four "vehicle" modes (Pay/AVP, ParkMobile, 12th Man, Presale). Every
+ * service publishes the same sublayers at the same indices, whether it is one of the direction-split
+ * views or an un-split hosted feature layer: Entry Routes at 1, Exit Routes at 2, and Gameday Parking,
+ * Street/Grass Areas and Football Parking Lots as identical copies alongside them. The shared three
+ * are therefore sourced once, from `entryUrl`, and shown for both directions rather than duplicated
+ * per direction.
  */
 const VEHICLE_LAYER_INDEX = {
   GAMEDAY_PARKING: 0,
@@ -66,8 +72,9 @@ const VEHICLE_LAYER_INDEX = {
  */
 export enum FOOTBALL_PARKING_LAYERS {
   // --- Pay Upon Arrival / Any Valid Texas A&M Permit ---
+  // No entry routes: the service publishes them at index 1, but the decision was made to leave the
+  // entry arrows off this mode's map, so the layer is never created.
   FP_PAY_AVP_GAMEDAY_PARKING = 'football-pay-avp-gameday-parking',
-  FP_PAY_AVP_ENTRY_ROUTES = 'football-pay-avp-entry-routes',
   FP_PAY_AVP_EXIT_ROUTES = 'football-pay-avp-exit-routes',
   FP_PAY_AVP_STREET_GRASS_AREAS = 'football-pay-avp-street-grass-areas',
   FP_PAY_AVP_PARKING_LOTS = 'football-pay-avp-parking-lots',
@@ -373,9 +380,15 @@ const PIN_LEGEND: LayerSource['legend'] = {
 };
 
 /**
- * A "vehicle" mode: one of the four Personal Vehicle options published as a matched pair of entry/exit
- * services sharing the same five-sublayer shape. (Rideshare, the fifth Personal Vehicle option, is a
- * single-layer service and is defined inline below.)
+ * A "vehicle" mode: one of the four Personal Vehicle options, sourced from services sharing the same
+ * five-sublayer shape. (Rideshare, the fifth Personal Vehicle option, is a single-layer service and is
+ * defined inline below.)
+ *
+ * Most modes publish a matched pair of direction-split views, so `entryUrl` and `exitUrl` differ.
+ * Pay/AVP instead publishes one hosted feature layer holding both directions, so both point at it.
+ *
+ * `layers.entryRoutes` is optional: omitting it drops the entry route layer for that mode entirely —
+ * it is neither created nor wired into the direction step.
  */
 interface VehicleMode {
   vehicle: VehicleType;
@@ -383,7 +396,7 @@ interface VehicleMode {
   exitUrl: string;
   layers: {
     gamedayParking: FOOTBALL_PARKING_LAYERS;
-    entryRoutes: FOOTBALL_PARKING_LAYERS;
+    entryRoutes?: FOOTBALL_PARKING_LAYERS;
     exitRoutes: FOOTBALL_PARKING_LAYERS;
     streetGrass: FOOTBALL_PARKING_LAYERS;
     lots: FOOTBALL_PARKING_LAYERS;
@@ -392,12 +405,14 @@ interface VehicleMode {
 
 const VEHICLE_MODES: VehicleMode[] = [
   {
+    // Both directions come from the one un-split `Pay_AVP` hosted feature layer that replaced the
+    // `Pay_AVP_entry` / `Pay_AVP_2_exit` views. No `entryRoutes`, so the entry map shows gameday
+    // parking, street/grass areas and the lots without arrows.
     vehicle: VehicleType.PAY_AVP,
-    entryUrl: `${HOSTED_ROOT}/Pay_AVP_entry/FeatureServer`,
-    exitUrl: `${HOSTED_ROOT}/Pay_AVP_2_exit/FeatureServer`,
+    entryUrl: `${HOSTED_ROOT}/Pay_AVP/FeatureServer`,
+    exitUrl: `${HOSTED_ROOT}/Pay_AVP/FeatureServer`,
     layers: {
       gamedayParking: FOOTBALL_PARKING_LAYERS.FP_PAY_AVP_GAMEDAY_PARKING,
-      entryRoutes: FOOTBALL_PARKING_LAYERS.FP_PAY_AVP_ENTRY_ROUTES,
       exitRoutes: FOOTBALL_PARKING_LAYERS.FP_PAY_AVP_EXIT_ROUTES,
       streetGrass: FOOTBALL_PARKING_LAYERS.FP_PAY_AVP_STREET_GRASS_AREAS,
       lots: FOOTBALL_PARKING_LAYERS.FP_PAY_AVP_PARKING_LOTS
@@ -442,72 +457,81 @@ const VEHICLE_MODES: VehicleMode[] = [
 ];
 
 /**
- * Builds the five layer sources for a vehicle mode. The three non-route layers come from the entry
- * service because both services publish identical copies of them.
+ * Builds the layer sources for a vehicle mode. The three non-route layers come from `entryUrl` because
+ * every service publishes identical copies of them. Modes without an `entryRoutes` layer id get four
+ * sources instead of five.
  */
-const vehicleModeSources = (mode: VehicleMode): LayerSource[] => [
-  {
-    type: 'feature',
-    id: mode.layers.gamedayParking,
-    title: 'Gameday Parking',
-    url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.GAMEDAY_PARKING}`,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.notes',
-      description: 'attributes.notes_1'
+const vehicleModeSources = (mode: VehicleMode): LayerSource[] => {
+  const entryRouteSources: LayerSource[] = mode.layers.entryRoutes
+    ? [
+        {
+          type: 'feature',
+          id: mode.layers.entryRoutes,
+          title: 'Entry Routes',
+          url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.ENTRY_ROUTES}`,
+          popupComponent: MarkdownPopupComponent,
+          popupData: {
+            name: 'attributes.location',
+            description: 'attributes.description'
+          },
+          native: hiddenNative({ renderer: routeRenderer(ROUTE_COLORS.vehicle) })
+        }
+      ]
+    : [];
+
+  return [
+    {
+      type: 'feature',
+      id: mode.layers.gamedayParking,
+      title: 'Gameday Parking',
+      url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.GAMEDAY_PARKING}`,
+      popupComponent: MarkdownPopupComponent,
+      popupData: {
+        name: 'attributes.notes',
+        description: 'attributes.notes_1'
+      },
+      legend: PIN_LEGEND,
+      native: hiddenNative()
     },
-    legend: PIN_LEGEND,
-    native: hiddenNative()
-  },
-  {
-    type: 'feature',
-    id: mode.layers.entryRoutes,
-    title: 'Entry Routes',
-    url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.ENTRY_ROUTES}`,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.location',
-      description: 'attributes.description'
+    ...entryRouteSources,
+    {
+      type: 'feature',
+      id: mode.layers.exitRoutes,
+      title: 'Exit Routes',
+      url: `${mode.exitUrl}/${VEHICLE_LAYER_INDEX.EXIT_ROUTES}`,
+      popupComponent: MarkdownPopupComponent,
+      popupData: {
+        name: 'attributes.location',
+        description: 'attributes.description'
+      },
+      native: hiddenNative({ renderer: routeRenderer(ROUTE_COLORS.vehicle) })
     },
-    native: hiddenNative({ renderer: routeRenderer(ROUTE_COLORS.vehicle) })
-  },
-  {
-    type: 'feature',
-    id: mode.layers.exitRoutes,
-    title: 'Exit Routes',
-    url: `${mode.exitUrl}/${VEHICLE_LAYER_INDEX.EXIT_ROUTES}`,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.location',
-      description: 'attributes.description'
+    {
+      type: 'feature',
+      id: mode.layers.streetGrass,
+      title: 'Street/Grass Areas (Click for details)',
+      url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.STREET_GRASS}`,
+      popupComponent: MarkdownPopupComponent,
+      popupData: {
+        name: 'attributes.name',
+        description: 'attributes.anote'
+      },
+      native: hiddenNative({ renderer: streetGrassRenderer })
     },
-    native: hiddenNative({ renderer: routeRenderer(ROUTE_COLORS.vehicle) })
-  },
-  {
-    type: 'feature',
-    id: mode.layers.streetGrass,
-    title: 'Street/Grass Areas (Click for details)',
-    url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.STREET_GRASS}`,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.name',
-      description: 'attributes.anote'
-    },
-    native: hiddenNative({ renderer: streetGrassRenderer })
-  },
-  {
-    type: 'feature',
-    id: mode.layers.lots,
-    title: 'Football Parking Lots',
-    url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.LOTS}`,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.lotname',
-      description: 'attributes.note'
-    },
-    native: hiddenNative({ labelingInfo: lotLabelingInfo })
-  }
-];
+    {
+      type: 'feature',
+      id: mode.layers.lots,
+      title: 'Football Parking Lots',
+      url: `${mode.entryUrl}/${VEHICLE_LAYER_INDEX.LOTS}`,
+      popupComponent: MarkdownPopupComponent,
+      popupData: {
+        name: 'attributes.lotname',
+        description: 'attributes.note'
+      },
+      native: hiddenNative({ labelingInfo: lotLabelingInfo })
+    }
+  ];
+};
 
 export const FootballParkingColdLayerSources: LayerSource[] = [
   ...VEHICLE_MODES.flatMap(vehicleModeSources),
@@ -742,26 +766,39 @@ export const FootballParkingConfiguration: EventConfiguration = {
 
 /** Turns every layer belonging to a vehicle mode on when that Personal Vehicle option is selected. */
 const vehicleModeVehicleTypeEffects = (mode: VehicleMode) =>
-  Object.values(mode.layers).map((layerId) => ({
-    layerId,
-    conversions: [{ input: mode.vehicle, propOverrides: SHOW }]
-  }));
+  Object.values(mode.layers)
+    .filter((layerId): layerId is FOOTBALL_PARKING_LAYERS => layerId !== undefined)
+    .map((layerId) => ({
+      layerId,
+      conversions: [{ input: mode.vehicle, propOverrides: SHOW }]
+    }));
 
 /**
  * Hides the off-direction route layer for a vehicle mode. Both directions come on with the mode, so
- * the direction step only has to switch one off; the services are already scoped to their phase, so
+ * the direction step only has to switch one off; the sublayers are already scoped to their phase, so
  * no expression is needed. These conversions are inert for the modes that never turn them on.
+ *
+ * A mode with no entry route layer contributes only the exit-side conversion — there is nothing to
+ * hide when the entry map has no arrows.
  */
-const vehicleModeDirectionEffects = (mode: VehicleMode) => [
-  {
-    layerId: mode.layers.entryRoutes,
-    conversions: [{ input: Direction.EXIT, propOverrides: HIDE }]
-  },
-  {
-    layerId: mode.layers.exitRoutes,
-    conversions: [{ input: Direction.ENTRY, propOverrides: HIDE }]
-  }
-];
+const vehicleModeDirectionEffects = (mode: VehicleMode) => {
+  const entryRoutes = mode.layers.entryRoutes;
+
+  return [
+    ...(entryRoutes
+      ? [
+          {
+            layerId: entryRoutes,
+            conversions: [{ input: Direction.EXIT, propOverrides: HIDE }]
+          }
+        ]
+      : []),
+    {
+      layerId: mode.layers.exitRoutes,
+      conversions: [{ input: Direction.ENTRY, propOverrides: HIDE }]
+    }
+  ];
+};
 
 export const FootballParkingOptions: SpecialEventOptions = [
   {
