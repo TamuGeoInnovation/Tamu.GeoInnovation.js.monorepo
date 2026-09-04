@@ -323,6 +323,38 @@ const lotLabelSymbol: esri.TextSymbolProperties & { type: 'text' } = {
   }
 };
 
+/** White-on-black-halo label text for RV space numbers — smaller than the lot labels since the RNS
+ * points are densely packed. */
+const rvSpaceLabelSymbol: esri.TextSymbolProperties & { type: 'text' } = {
+  type: 'text',
+  color: [255, 255, 255, 255],
+  haloColor: [0, 0, 0, 255],
+  haloSize: 1,
+  font: {
+    family: 'Arial',
+    size: 8,
+    style: 'normal',
+    weight: 'bold'
+  }
+};
+
+/**
+ * RNS (reserved numbered space) labels. The view publishes no labeling of its own, so the reserved
+ * spaces' numbers (`rv_spcnum`) are labeled here. Spaces without a number (e.g. unreserved/open areas)
+ * are left unlabeled.
+ */
+const rvSpaceLabelingInfo = [
+  {
+    labelExpressionInfo: { expression: '$feature.rv_spcnum' },
+    labelPlacement: 'center-center',
+    useCodedValues: true,
+    symbol: rvSpaceLabelSymbol,
+    minScale: 4514,
+    maxScale: 0,
+    where: "rv_spcnum IS NOT NULL AND TRIM(rv_spcnum) <> ''"
+  }
+] as unknown as FeatureLabelingInfo;
+
 /**
  * Lot labels. The views publish no labeling of their own, so the rules are supplied here: 12th Man
  * lots show their parking pass letter on a second line, priced lots append the price, and everything
@@ -594,7 +626,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
       name: 'attributes.rv_spcnum',
       description: 'attributes.spc_type'
     },
-    native: hiddenNative()
+    native: hiddenNative({ labelingInfo: rvSpaceLabelingInfo })
   },
   {
     type: 'feature',
