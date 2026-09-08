@@ -13,7 +13,7 @@ import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
 })
 export class BusListComponent implements OnInit, OnDestroy {
   @Input()
-  public selectionAction: 'in-place' | 'navigate' = 'in-place';
+  public selectionAction: 'route' | 'in-place' = 'in-place';
 
   public routes: Observable<Group<TSRoute>[]>;
 
@@ -22,7 +22,9 @@ export class BusListComponent implements OnInit, OnDestroy {
   constructor(private busService: BusService, private responsiveService: ResponsiveService) {}
 
   public ngOnInit(): void {
-    const catOrder = ['On Campus', 'Off Campus', 'Game Day'];
+    // The ArcGIS Bus Routes source groups routes by `Campus` (On/Off) only; the legacy "Game Day"
+    // group no longer exists.
+    const catOrder = ['On Campus', 'Off Campus'];
 
     this.responsive = this.responsiveService.snapshot;
 
@@ -47,9 +49,11 @@ export class BusListComponent implements OnInit, OnDestroy {
         return of(grouped);
       }),
       map((grouped) => {
-        return catOrder.map((cat) => {
-          return grouped.find((g) => (g.identity as TSRoute).Name === cat);
-        });
+        return catOrder
+          .map((cat) => {
+            return grouped.find((g) => (g.identity as TSRoute).Name === cat);
+          })
+          .filter((group): group is Group<TSRoute> => group !== undefined);
       })
     );
   }

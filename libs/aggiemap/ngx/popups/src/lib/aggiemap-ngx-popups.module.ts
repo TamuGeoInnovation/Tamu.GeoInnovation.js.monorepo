@@ -22,6 +22,7 @@ import { BonfirePopupComponent } from './components/bonfire/bonfire.component';
 import { DiningPopupComponent } from './components/dining/dining.component';
 import { MarkdownPopupComponent } from './components/markdown-popup/markdown-popup.component';
 import { MarkdownWDirectionsPopupComponent } from './components/markdown-w-directions-popup/markdown-w-directions-popup.component';
+import { BusStopPopupComponent } from './components/bus-stop/bus-stop.component';
 
 const PopsArr = [
   BasePopupComponent,
@@ -37,7 +38,8 @@ const PopsArr = [
   BonfirePopupComponent,
   DiningPopupComponent,
   MarkdownPopupComponent,
-  MarkdownWDirectionsPopupComponent
+  MarkdownWDirectionsPopupComponent,
+  BusStopPopupComponent
 ];
 
 const PopsObj = {
@@ -54,7 +56,8 @@ const PopsObj = {
   BonfirePopupComponent,
   DiningPopupComponent,
   MarkdownPopupComponent,
-  MarkdownWDirectionsPopupComponent
+  MarkdownWDirectionsPopupComponent,
+  BusStopPopupComponent
 };
 
 @NgModule({
