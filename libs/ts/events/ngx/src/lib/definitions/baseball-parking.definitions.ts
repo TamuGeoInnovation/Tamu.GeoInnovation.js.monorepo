@@ -263,7 +263,11 @@ export const BaseballParkingColdLayerSources: LayerSource[] = [
     url: `${eventUrl}/2`,
     popupComponent: MarkdownPopupComponent,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // The layer holds every sport's gates (90 features, 3 of them baseball's) and the view has no
+      // filter. Filter here so the map doesn't depend on the published unique-value renderer to hide
+      // the other sports' gates — a simple closure renderer would draw all of them.
+      definitionExpression: 'baseball = 1'
     }
   },
   {
