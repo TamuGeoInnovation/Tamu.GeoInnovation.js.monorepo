@@ -53,6 +53,7 @@ function createConnections(gisHost: string): IComposedConnections {
     soccerParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SoccerParking_view/FeatureServer`,
     softballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SoftballParking_view/FeatureServer`,
     softballRegionalsUrl: `https://${gisHost}/arcgis/rest/services/TS/Softball_Regionals/MapServer`,
+    spiritOf150WeekUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Spirit_of_150_Week/FeatureServer`,
     staffParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/StaffSelectableParking/MapServer`,
     studentParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/StudentSelectableParking/MapServer`,
     summerCommencementUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Summer_Commencement_view/FeatureServer`,
@@ -162,6 +163,7 @@ export interface IComposedConnections {
   soccerParkingUrl: string;
   softballParkingUrl: string;
   softballRegionalsUrl: string;
+  spiritOf150WeekUrl: string;
   staffParkingUrl: string;
   studentParkingUrl: string;
   summerCommencementUrl: string;
