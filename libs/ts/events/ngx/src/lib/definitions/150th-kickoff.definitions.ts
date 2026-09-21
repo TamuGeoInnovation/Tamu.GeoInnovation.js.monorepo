@@ -184,10 +184,12 @@ export const Kickoff150thLayerSources: LayerSource[] = [
 ];
 
 export const Kickoff150thConfiguration: EventConfiguration = {
+  // The route id stays `150th-kickoff` so links already shared for this map keep working, even
+  // though the event has since been renamed to the 150th Opening Ceremony.
   id: '150th-kickoff',
-  name: '150th Kickoff',
-  applicationName: '150th Kickoff Map',
-  shortApplicationName: '150th Kickoff',
+  name: '150th Opening Ceremony',
+  applicationName: '150th Opening Ceremony Map',
+  shortApplicationName: '150th Opening Ceremony',
   eventDates: ['2026-10-02'],
   zoom: 16,
   mapCenter: [-96.3368, 30.6212]
@@ -204,13 +206,13 @@ export const Kickoff150thTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: Kickoff150thConfiguration.id,
     name: Kickoff150thConfiguration.name,
-    description: 'Event locations, shuttle route and parking for the 150th campus kickoff celebration.',
+    description: 'Event locations, shuttle route and parking for the 150th Opening Ceremony celebration.',
     source: 'internal',
     type: 'event',
     columnKey: 'fall',
-    // RSVP-only campus kickoff: reachable by direct link (/events/150th-kickoff) but kept out of the
-    // All Maps search, Upcoming Events and Campus Events lists so it isn't promoted to the public.
+    // Not public yet: reachable by direct link (/events/150th-kickoff) but kept out of the All Maps
+    // search, Upcoming Events and Campus Events lists so it isn't promoted until the event is announced.
     visible: false,
-    keywords: ['150', '150th', 'kickoff', 'celebration', 'shuttle', 'parking']
+    keywords: ['150', '150th', 'opening', 'ceremony', 'kickoff', 'celebration', 'shuttle', 'parking']
   }
 };
