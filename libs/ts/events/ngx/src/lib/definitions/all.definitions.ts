@@ -63,6 +63,7 @@ import { FireSchoolTs } from './fire-school.definitions';
 import { BeefCattleTs } from './beef-cattle-vendor.definitions';
 import { AggieFamilyParadeTs } from './aggie-family-parade.definitions';
 import { GamesOfTexasTs } from './games-of-texas.definitions';
+import { SpiritOf150WeekTs } from './spirit-of-150-week.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -128,5 +129,6 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FireSchoolTs,
   BeefCattleTs,
   AggieFamilyParadeTs,
-  GamesOfTexasTs
+  GamesOfTexasTs,
+  SpiritOf150WeekTs
 ];
