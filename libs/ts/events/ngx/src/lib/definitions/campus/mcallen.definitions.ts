@@ -1,16 +1,20 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
 
 /**
- * Layer ids used by the McAllen satellite-campus map. Unlike the main map, this map only ever
- * shows a single vector-tile basemap, so there's only one layer source.
+ * Layer ids used by the McAllen satellite-campus map. `BASEMAP` is the visual vector-tile basemap.
+ * `BUILDINGS` is a near-invisible, click-queryable `FeatureLayer` overlay backed by the companion
+ * `FeatureServer` -- vector-tile layers aren't queryable via `view.hitTest()`, so without this
+ * overlay clicking on a building would not show a popup (search-selected results still work since
+ * those bypass `hitTest()` entirely).
  */
 export enum MCALLEN_LAYERS {
-  BASEMAP = 'mcallen-basemap-layer'
+  BASEMAP = 'mcallen-basemap-layer',
+  BUILDINGS = 'mcallen-buildings-layer'
 }
 
 const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
@@ -31,6 +35,31 @@ export const McAllenLayerSources: LayerSource[] = [
     listMode: 'hide',
     visible: true,
     essential: true
+  },
+  {
+    type: 'feature',
+    id: MCALLEN_LAYERS.BUILDINGS,
+    title: 'Buildings',
+    url: `${Connections.mcallenFeatureServerUrl}/2`,
+    popupComponent: Popups.BasePopupComponent,
+    listMode: 'hide',
+    visible: true,
+    essential: true,
+    native: {
+      ...commonLayerProps,
+      legendEnabled: false,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'solid',
+          color: [0, 0, 0, 0.01],
+          outline: {
+            width: '0'
+          }
+        }
+      }
+    }
   }
 ];
 
