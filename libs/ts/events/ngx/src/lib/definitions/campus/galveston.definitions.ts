@@ -75,6 +75,8 @@ export const GalvestonConfiguration: EventConfiguration = {
   eventDates: [],
   hideLayerToggle: true,
   sidebarTabs: ['features'],
+  // TODO: set `brandingIconUrl` to an official Texas A&M University at Galveston logo once one is
+  // sourced. Until then, the sidebar falls back to the default TAMU branding block.
   searchSources: GalvestonSearchSources
 };
 
