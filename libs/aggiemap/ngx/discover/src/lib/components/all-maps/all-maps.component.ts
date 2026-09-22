@@ -51,7 +51,11 @@ export class AllMapsComponent implements OnInit {
     this.isDev = this.dev.get('isTesting');
     this.internalApplications = this.discoveryService.getInternalDiscoverApplications();
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
-    this.allApplications = this.discoveryService.getAllDiscoverApplications();
+    // Satellite-campus maps have their own dedicated "Campus Maps" listing page and should not
+    // appear in the general map search results.
+    this.allApplications = this.discoveryService
+      .getAllDiscoverApplications()
+      .filter((app) => !(app.source === 'internal' && app.type === 'satellite-campus'));
     this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
       label: app.name,
       routerLink: getApplicationRoute(app)

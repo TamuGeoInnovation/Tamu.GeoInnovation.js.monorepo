@@ -1,5 +1,6 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
+import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
 export interface EventConfiguration {
   /**
@@ -174,6 +175,42 @@ export interface EventConfiguration {
    * Defaults to `false` when omitted so existing events are unaffected.
    */
   hideSidebar?: boolean;
+
+  /**
+   * When `true`, hides the toggleable data-layer controls (`tamu-gisc-layer-list` and
+   * `tamu-gisc-legend`) from the "Features" sidebar tab while keeping search, directions, and
+   * settings available. Used for satellite-campus maps, which only ever show a single basemap and
+   * therefore have nothing for the user to toggle.
+   *
+   * Defaults to `false` when omitted so existing events are unaffected.
+   */
+  hideLayerToggle?: boolean;
+
+  /**
+   * Overrides the default TAMU branding block shown at the top of the sidebar with a single image
+   * (for example, a campus-specific icon/logo) at this URL. When omitted, the default TAMU block is
+   * shown as usual.
+   */
+  brandingIconUrl?: string;
+
+  /**
+   * Restricts which sidebar tabs (Features, Directions, Settings) are shown, in addition to
+   * `hideSidebar`/`hideLayerToggle`. Used for satellite-campus maps, which have no TAMU routing
+   * network data for that campus, so "Directions" would otherwise silently attempt (and fail) to
+   * route against the main College Station network.
+   *
+   * When omitted, all tabs are shown as usual.
+   */
+  sidebarTabs?: Array<'features' | 'directions' | 'settings'>;
+
+  /**
+   * Search sources scoped specifically to this map, used instead of the application-wide search
+   * sources. Used for satellite-campus maps, where search should only ever query that campus's own
+   * basemap data, never the main College Station search sources.
+   *
+   * When omitted, the sidebar search falls back to the application-wide search sources as usual.
+   */
+  searchSources?: SearchSource[];
 }
 
 /**
@@ -467,7 +504,7 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
 /**
  * High-level discover grouping used by the tabbed Discover page UI.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations';
+export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'satellite-campus';
 
 /**
  * Metadata used to represent a map in the Discover application.
@@ -490,7 +527,13 @@ export interface DiscoverMetadata {
    */
   labels?: string[];
   source: 'internal';
-  type: 'event' | 'parking' | 'operations';
+  /**
+   * `satellite-campus` identifies a single-basemap map for a TAMU campus other than College Station
+   * (Galveston, McAllen, DC, etc.). It resolves to the `/campus/:id` route, is excluded from the
+   * general "Search Maps" list, and is instead surfaced only via the dedicated Campus Maps listing
+   * page.
+   */
+  type: 'event' | 'parking' | 'operations' | 'satellite-campus';
   /**
    * Optional tab grouping override for the Discover page.
    *
