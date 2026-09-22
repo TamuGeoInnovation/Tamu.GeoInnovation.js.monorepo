@@ -74,6 +74,9 @@ export const DCBushSchoolConfiguration: EventConfiguration = {
   shortApplicationName: 'DC / Bush School',
   introductionText: 'Map of the Texas A&M Bush School of Government & Public Service campus in Washington, D.C.',
   eventDates: [],
+  // Center/zoom derived from the campus property layer's full extent (DC_Bush_School FeatureServer).
+  mapCenter: [-77.037605, 38.903422],
+  zoom: 19,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
   // TODO: set `brandingIconUrl` to an official Bush School of Government & Public Service (D.C.

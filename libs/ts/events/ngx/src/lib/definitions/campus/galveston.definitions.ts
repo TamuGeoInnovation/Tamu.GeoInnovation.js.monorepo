@@ -73,6 +73,9 @@ export const GalvestonConfiguration: EventConfiguration = {
   shortApplicationName: 'Galveston',
   introductionText: 'Map of the Texas A&M University at Galveston campus.',
   eventDates: [],
+  // Center/zoom derived from the campus building layer's full extent (GalvBase FeatureServer).
+  mapCenter: [-94.818414, 29.316658],
+  zoom: 16,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
   // TODO: set `brandingIconUrl` to an official Texas A&M University at Galveston logo once one is

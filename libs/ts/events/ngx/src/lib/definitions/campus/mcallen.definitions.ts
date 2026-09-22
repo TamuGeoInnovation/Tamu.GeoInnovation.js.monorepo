@@ -73,6 +73,9 @@ export const McAllenConfiguration: EventConfiguration = {
   shortApplicationName: 'McAllen',
   introductionText: 'Map of the Texas A&M Higher Education Center at McAllen campus.',
   eventDates: [],
+  // Center/zoom derived from the campus building layer's full extent (HigherEd FeatureServer, layer 2).
+  mapCenter: [-98.263057, 26.344692],
+  zoom: 18,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
   // TODO: set `brandingIconUrl` to an official Texas A&M Higher Education Center at McAllen logo
