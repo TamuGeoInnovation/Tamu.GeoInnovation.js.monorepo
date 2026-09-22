@@ -164,6 +164,16 @@ export interface EventConfiguration {
    * Defaults to none when omitted, preserving existing legend behavior for other events.
    */
   legendForceShowLayerIds?: string[];
+
+  /**
+   * When `true`, the map never loads the desktop/mobile sidebar (search, trip planner, settings,
+   * legend, layers, basemap, etc.) or its associated overlay buttons. Used for "kiosk" style maps
+   * that are meant to be embedded elsewhere (for example, in a mobile app webview) with a preset
+   * set of visible layers and no user-facing controls.
+   *
+   * Defaults to `false` when omitted so existing events are unaffected.
+   */
+  hideSidebar?: boolean;
 }
 
 /**
@@ -456,8 +466,12 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
 
 /**
  * High-level discover grouping used by the tabbed Discover page UI.
+ *
+ * `kiosk` maps are intentionally excluded from every generic discover grouping (search, "All
+ * Events", parking columns, quick links) — they are only ever surfaced in the dedicated,
+ * development-only "Kiosk Maps" section. See `DiscoveryService.getKioskDiscoverApplications`.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations';
+export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'kiosk';
 
 /**
  * Metadata used to represent a map in the Discover application.
@@ -480,7 +494,12 @@ export interface DiscoverMetadata {
    */
   labels?: string[];
   source: 'internal';
-  type: 'event' | 'parking' | 'operations';
+  /**
+   * `kiosk` identifies a sidebar-free, preset-layer map meant to be embedded elsewhere (for example,
+   * in a mobile app webview). It resolves to the `/kiosk/:id` route and is never listed in the
+   * normal discover search, "All Events", or column groupings.
+   */
+  type: 'event' | 'parking' | 'operations' | 'kiosk';
   /**
    * Optional tab grouping override for the Discover page.
    *
