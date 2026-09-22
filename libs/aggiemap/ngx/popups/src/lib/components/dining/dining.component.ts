@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { combineLatestWith, concatMap, map, Observable, of, reduce, shareReplay, withLatestFrom } from 'rxjs';
+import { catchError, combineLatestWith, concatMap, map, Observable, of, reduce, shareReplay } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -17,8 +17,24 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
   public menu: Observable<IDiningLocationMenu>;
-  public schedule: Observable<ISimplifiedDiningLocationHours>;
-  public statusText: Observable<IDeconstructedStatusText>;
+
+  /**
+   * Emits `null` when the schedule request fails. The weekly breakdown is the only part of the popup
+   * that still depends on that endpoint, so a failure degrades the accordion rather than the popup.
+   */
+  public schedule: Observable<ISimplifiedDiningLocationHours | null>;
+
+  /**
+   * Open/closed state for the location, read straight off the layer feature.
+   *
+   * The dining service already resolves this server-side and publishes `label` and a pre-composed
+   * `message` on every feature, so the popup neither recomputes it nor waits on a request. This also
+   * keeps the badge consistent with the map pin, which is rendered from the same `label` field.
+   */
+  public status: IDeconstructedStatusText;
+
+  /** Distinguishes "the schedule request failed" from "it hasn't come back yet" in the accordion. */
+  public scheduleUnavailable = false;
 
   private _serviceUrl = 'https://api.aggiemap.tamu.edu/dining';
   private _todaysDateStamp: Observable<string>;
@@ -46,6 +62,8 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
       }),
       shareReplay(1)
     );
+
+    this.status = this._deriveStatus();
 
     this._fetchDiningDetails();
   }
@@ -99,147 +117,36 @@ export class DiningPopupComponent extends BaseDirectionsComponent implements OnI
 
           return acc;
         }, {} as ISimplifiedDiningLocationHours),
+        catchError(() => {
+          // The schedule endpoint is a separate upstream call from the layer itself and fails
+          // independently of it. Degrade the accordion rather than letting the error tear down the
+          // surrounding popup section.
+          this.scheduleUnavailable = true;
+
+          return of(null);
+        }),
         shareReplay(1)
       );
+  }
 
-    this.statusText = this.schedule.pipe(
-      withLatestFrom(this._todaysDateStamp),
-      map(([schedule, todayDatestamp]) => {
-        const scheduleKeys = Object.keys(schedule);
-        const today = schedule[todayDatestamp];
-        const todayIndex = scheduleKeys.findIndex((key) => key === todayDatestamp);
+  /**
+   * Builds the status badge from the layer feature attributes.
+   *
+   * `message` arrives pre-composed as `"<state>. <detail>"` — e.g. `"Closed. Opens tomorrow at 7:30am."` — so the
+   * leading state is dropped in favour of `label`, which the map pin renderer also keys on, and the remainder becomes
+   * the detail line.
+   */
+  private _deriveStatus(): IDeconstructedStatusText {
+    const attributes = this.data.attributes;
+    const isOpen = `${attributes?.label ?? ''}`.toLowerCase() === 'open';
+    const message = `${attributes?.message ?? ''}`.trim();
+    const detailIndex = message.indexOf('. ');
 
-        // If current day has no hours, location is closed.
-        // If current day has hours and now > the last time block, location is closed.
-        // If current day has hours and the end time of the last time block is 00:00 then location closes at midnight.
-        // If either of these two conditions are true, find the next day with hours.
-        const todayHasHours = today.hours.length > 0;
-        const lastTimeBlock = today.hours[today.hours.length - 1];
-        const lastTimeBBlockEndCarriesOverAndIsElapsed =
-          lastTimeBlock?.end < lastTimeBlock?.start &&
-          lastTimeBlock?.end.setDate(lastTimeBlock?.end.getDate() + 1) < Date.now();
-        const todayHasHoursAndIsClosed = todayHasHours && lastTimeBlock?.end < new Date();
-
-        if (
-          todayHasHours === false ||
-          todayHasHoursAndIsClosed === true ||
-          lastTimeBBlockEndCarriesOverAndIsElapsed === true
-        ) {
-          const nextOpenDay = scheduleKeys.slice(todayIndex + 1).find((key) => {
-            // todayIndex + 1 to skip today since we have already determined it is closed for the rest of the day
-            const day = schedule[key];
-
-            return day.hours.length > 0;
-          });
-
-          if (nextOpenDay === undefined) {
-            return {
-              status: 'Closed',
-              statusCode: DINING_LOCATION_OPERATION_STATUS.CLOSED,
-              message: null
-            } as IDeconstructedStatusText;
-          }
-
-          return {
-            status: 'Closed',
-            statusCode: DINING_LOCATION_OPERATION_STATUS.CLOSED,
-            message: `Opens ${schedule[nextOpenDay].hours[0].start.toLocaleString('en-US', {
-              weekday: 'long',
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true
-            })}` // date should be format EEEE hh:mm a
-          } as IDeconstructedStatusText;
-        }
-
-        const now = new Date();
-
-        // If today has hours, check if current time is within those hours
-        // If it is, location is open. If not, then location is going to open later or is closed for the rest of the day
-        const firstRelevantTimeBlock = today?.hours.find((timeBlock) => {
-          const start = timeBlock.start;
-          const end = timeBlock.end;
-
-          // If current time is before the current time block's start, then the location has not opened yet
-          // This should only ever return early if the condition is true for the first time block.
-          if (now < start) {
-            return true;
-          }
-
-          // If we get this far, then the current time block has an ending time of 00:00 or next day
-          // If the current time is after the current time block's end, then the location is closed
-          if (now > end && end < start) {
-            return true;
-          }
-
-          // If we got this far, then we are not in the first time block. Check if the current time is after the last time block's end
-          // If it is, then the location is closed
-          if (now > end) {
-            return true;
-          }
-
-          // If we got this far, then the current time is within the time block
-          // Check if the current time is between the start and end of the time block
-
-          return now >= start && now <= end;
-        });
-
-        let statusCode: DINING_LOCATION_OPERATION_STATUS;
-
-        if (now > firstRelevantTimeBlock.start && now < firstRelevantTimeBlock.end) {
-          statusCode = DINING_LOCATION_OPERATION_STATUS.OPEN;
-        } else if (firstRelevantTimeBlock.end < firstRelevantTimeBlock.start) {
-          statusCode = DINING_LOCATION_OPERATION_STATUS.OPEN_NEXT_DAY;
-        } else {
-          statusCode = DINING_LOCATION_OPERATION_STATUS.CLOSED;
-        }
-
-        let text: string;
-
-        if (statusCode === DINING_LOCATION_OPERATION_STATUS.OPEN) {
-          text = `Closes ${firstRelevantTimeBlock.end.toLocaleString('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-          })}`;
-        } else if (statusCode === DINING_LOCATION_OPERATION_STATUS.OPEN_NEXT_DAY) {
-          // Add one day to the end time to get the next day's closing time
-          const lateClosingDate = new Date(firstRelevantTimeBlock.end);
-          lateClosingDate.setDate(lateClosingDate.getDate() + 1);
-
-          text = `Closes ${lateClosingDate.toLocaleString('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-          })}`;
-
-          // Change status code to simple open to avoid having to deal with custom text and additional enums for this case.
-          statusCode = DINING_LOCATION_OPERATION_STATUS.OPEN;
-        } else {
-          // If the location is closed, it's either too early or too late
-          // The second case is already covered by the first condition above
-          // So we the only remaining case is if the current time is before the first time block's start
-          if (now < firstRelevantTimeBlock.start) {
-            text = `Opens ${firstRelevantTimeBlock.start.toLocaleString('en-US', {
-              weekday: 'long',
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true
-            })}`;
-          } else {
-            // Should never hit this case, but just in case
-            console.warn('Location is closed but no implementation for this case.');
-            text = '';
-          }
-        }
-
-        return {
-          status: statusCode,
-          statusCode,
-          message: text
-        } as IDeconstructedStatusText;
-      })
-    );
+    return {
+      status: isOpen ? 'Open' : 'Closed',
+      statusCode: isOpen ? DINING_LOCATION_OPERATION_STATUS.OPEN : DINING_LOCATION_OPERATION_STATUS.CLOSED,
+      message: detailIndex > -1 ? message.slice(detailIndex + 2) : null
+    };
   }
 }
 
@@ -342,12 +249,12 @@ interface ISimplifiedDiningLocationHours {
 
 enum DINING_LOCATION_OPERATION_STATUS {
   OPEN = 'open',
-  OPEN_NEXT_DAY = 'open-next-day',
   CLOSED = 'closed'
 }
 
 interface IDeconstructedStatusText {
   status: string;
   statusCode: DINING_LOCATION_OPERATION_STATUS;
-  message: string;
+  /** `null` when the service publishes a bare state with no trailing detail, e.g. just "Closed." */
+  message: string | null;
 }
