@@ -1,6 +1,6 @@
 <tamu-gisc-reveille-console-log></tamu-gisc-reveille-console-log>
 
-<div class="map-ui bottom left">
+<div class="map-ui bottom left" *ngIf="!hideSidebar">
   <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" *ngIf="!isMobile" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
     <span class="material-icons">help</span>
     <div class="topics">
@@ -28,7 +28,7 @@
 <!-- Map component -->
 <ng-container *ngIf="(config | async) as c">
   <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
-    <div class="map-overlay-ui">
+    <div class="map-overlay-ui" *ngIf="!hideSidebar">
       <div class="overlay-zone top left">
         <a class="all-maps-button esri-component esri-widget" routerLink="/discover" aria-label="Open All Maps">ALL MAPS</a>
         <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
@@ -47,8 +47,20 @@
 <!-- Router outlet where desktop and mobile controls are rendered -->
 <router-outlet></router-outlet>
 
+<!-- Kiosk maps (see `hideSidebar`) skip the sidebar/mobile routes entirely, so those routes' normal
+     `<tamu-gisc-feature-popup>`/`<tamu-gisc-feature-mobile-popup>` instances never mount, and clicking
+     a feature would otherwise show nothing. Render the same popup panel directly here instead — it's
+     self-contained (listens to the map's hit-test stream on its own) and independent of the rest of
+     the sidebar UI (search, tabs, settings), so this alone restores feature-click details. -->
+<ng-container *ngIf="hideSidebar">
+  <tamu-gisc-feature-mobile-popup *ngIf="isMobile; else desktopKioskPopup"></tamu-gisc-feature-mobile-popup>
+  <ng-template #desktopKioskPopup>
+    <tamu-gisc-feature-popup></tamu-gisc-feature-popup>
+  </ng-template>
+</ng-container>
+
 <!-- Mobile keyboard viewfinder/feature list -->
-<tamu-gisc-map-viewfinder *ngIf="!isMobile" [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+<tamu-gisc-map-viewfinder *ngIf="!isMobile && !hideSidebar" [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
 
 <!-- Application Loader -->
 <div class="loader flex flex-column justify-center align-center">
@@ -58,3 +70,4 @@
     <p class="phrase"></p>
   </div>
 </div>
+

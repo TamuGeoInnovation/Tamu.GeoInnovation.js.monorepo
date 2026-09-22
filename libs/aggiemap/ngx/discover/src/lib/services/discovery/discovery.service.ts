@@ -22,7 +22,7 @@ export class DiscoveryService {
   public getInternalDiscoverApplications(): InternalDiscoverApplication[] {
     return EventDefinitions.filter(
       (event): event is typeof event & { configuration: NonNullable<typeof event.configuration> } =>
-        event.configuration !== null
+        event.configuration !== null && event.discover?.type !== 'kiosk'
     ).map((event) => ({
       id: event.discover?.id || event.configuration.id,
       source: 'internal' as const,
@@ -107,6 +107,35 @@ export class DiscoveryService {
 
   public getVisibleInternalDiscoverApplications(): InternalDiscoverApplication[] {
     return this.getInternalDiscoverApplications().filter((app) => app.visible !== false);
+  }
+
+  /**
+   * Development-only listing of "kiosk" maps (sidebar-free, preset-layer maps meant to be embedded
+   * elsewhere, e.g. in a mobile app webview). These are intentionally excluded from
+   * `getInternalDiscoverApplications()` and therefore never appear in search, "All Events", parking
+   * columns, or quick links — this is the only place they are surfaced, so their URLs can be shared
+   * with the team embedding them.
+   */
+  public getKioskDiscoverApplications(): InternalDiscoverApplication[] {
+    return EventDefinitions.filter(
+      (event): event is typeof event & { configuration: NonNullable<typeof event.configuration> } =>
+        event.configuration !== null && event.discover?.type === 'kiosk'
+    ).map((event) => ({
+      id: event.discover?.id || event.configuration.id,
+      source: 'internal' as const,
+      type: 'kiosk' as const,
+      mapType: 'kiosk' as const,
+      parkingCategory: event.discover?.parkingCategory,
+      columnKey: event.discover?.columnKey,
+      visible: event.discover?.visible ?? true,
+      showInQuickLinks: false,
+      quickLinkOrder: undefined,
+      name: event.discover?.name || event.configuration.name,
+      description: event.discover?.description || event.configuration.introductionText || '',
+      configuration: event.configuration,
+      keywords: event.discover?.keywords || [],
+      labels: event.discover?.labels || []
+    }));
   }
 
   private resolveQuickLinkOrder(
