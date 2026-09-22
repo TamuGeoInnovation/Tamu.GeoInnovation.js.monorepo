@@ -466,12 +466,8 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
 
 /**
  * High-level discover grouping used by the tabbed Discover page UI.
- *
- * `kiosk` maps are intentionally excluded from every generic discover grouping (search, "All
- * Events", parking columns, quick links) — they are only ever surfaced in the dedicated,
- * development-only "Kiosk Maps" section. See `DiscoveryService.getKioskDiscoverApplications`.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'kiosk';
+export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations';
 
 /**
  * Metadata used to represent a map in the Discover application.
@@ -494,12 +490,7 @@ export interface DiscoverMetadata {
    */
   labels?: string[];
   source: 'internal';
-  /**
-   * `kiosk` identifies a sidebar-free, preset-layer map meant to be embedded elsewhere (for example,
-   * in a mobile app webview). It resolves to the `/kiosk/:id` route and is never listed in the
-   * normal discover search, "All Events", or column groupings.
-   */
-  type: 'event' | 'parking' | 'operations' | 'kiosk';
+  type: 'event' | 'parking' | 'operations';
   /**
    * Optional tab grouping override for the Discover page.
    *

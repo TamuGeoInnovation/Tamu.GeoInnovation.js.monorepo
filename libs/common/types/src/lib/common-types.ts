@@ -176,6 +176,17 @@ export interface MapImageLayerSourceProperties extends IRemoteLayerService {
   native?: esri.MapImageLayerProperties;
 }
 
+/**
+ * Represents a vector tile basemap layer, such as a custom `VectorTileServer` service used as the
+ * basemap for a satellite-campus map (Galveston, McAllen, DC, etc.), where the layer's own tile
+ * schema and style are defined server-side rather than composed of individually stylable features.
+ */
+export interface VectorTileLayerSourceProperties extends IRemoteLayerService {
+  type: 'vector-tile';
+
+  native?: esri.VectorTileLayerProperties;
+}
+
 export interface CSVLayerSourceProperties extends IRemoteLayerService {
   type: 'csv';
 
@@ -257,6 +268,7 @@ export type LayerSourceType =
   | GraphicLayerSourceProperties
   | GroupLayerSourceProperties
   | MapImageLayerSourceProperties
+  | VectorTileLayerSourceProperties
   | PortalMapServerLayerSourceProperties
   | UnknownLayerSourceProperties;
 
