@@ -22,9 +22,8 @@ describe('getGeolocation', () => {
    * exercised both inside one test and called `done()` from each, so `done()` fired twice and Jest
    * failed the test even though both paths worked. Split so each form completes independently.
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
   const mockGeolocationSuccess = () => {
-    (window.navigator as unknown as { geolocation: {} }).geolocation = {
+    (window.navigator as unknown as { geolocation: unknown }).geolocation = {
       getCurrentPosition: (success) => {
         success({ coords: coords, timestamp: 1 });
       }
@@ -48,9 +47,7 @@ describe('getGeolocation', () => {
 
   it('should throw error on fail', (done) => {
     // TODO: The tests work but the geolocation mock probably needs to be a global
-    //
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    (window.navigator as unknown as { geolocation: {} }).geolocation = {
+    (window.navigator as unknown as { geolocation: unknown }).geolocation = {
       getCurrentPosition: (_, fail) => {
         fail(new Error("I just don't feel like it"));
       }
