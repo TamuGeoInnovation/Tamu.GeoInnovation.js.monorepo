@@ -1,0 +1,57 @@
+name: GIS Day Smoke
+
+# Runs against a DEPLOYED environment, so it deliberately cannot gate a pull request: a failure
+# here means the deployment is unhealthy, not that a commit is bad. Scheduled, plus manual for
+# checking a deploy immediately after it lands.
+on:
+  schedule:
+    # Every 6 hours. Frequent enough to notice an outage, rare enough to stay quiet.
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Environment to smoke test'
+        required: false
+        default: 'https://txgisday.org'
+        type: string
+
+jobs:
+  smoke:
+    name: Deployed
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.1'
+
+      - uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run smoke tests
+        env:
+          SMOKE_BASE_URL: ${{ inputs.base_url || 'https://txgisday.org' }}
+        run: npx playwright test --config=playwright.smoke.config.ts
+
+      - name: Upload report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 14
