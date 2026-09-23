@@ -51,14 +51,14 @@ describe('DiscoveryService', () => {
     const applications = service.getInternalDiscoverApplications();
     const aggielandSaturday = applications.find((app) => app.id === 'aggieland-saturday');
 
-    expect(aggielandSaturday?.visible).toBeTrue();
+    expect(aggielandSaturday?.visible).toBe(true);
   });
 
   it('filters hidden maps from the public discover lists', () => {
     const visibleApp = createDiscoverApplication({ id: 'visible', showInQuickLinks: true });
     const hiddenApp = createDiscoverApplication({ id: 'hidden', visible: false, showInQuickLinks: true });
 
-    jest.spyOn(service, 'getInternalDiscoverApplications').and.returnValue([visibleApp, hiddenApp]);
+    jest.spyOn(service, 'getInternalDiscoverApplications').mockReturnValue([visibleApp, hiddenApp]);
 
     expect(service.getVisibleInternalDiscoverApplications()).toEqual([visibleApp]);
     expect(service.getQuickLinkApplications()).toEqual([visibleApp]);

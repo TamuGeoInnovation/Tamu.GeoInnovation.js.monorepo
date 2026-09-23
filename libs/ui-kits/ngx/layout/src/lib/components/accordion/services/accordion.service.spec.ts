@@ -1,11 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-
-import { AccordionService } from './accordion.service';
+import { AccordionService, IAccordionModel } from './accordion.service';
 
 describe('AccordionService', () => {
   let service: AccordionService;
+
   beforeEach(() => {
-    TestBed.configureTestingModule({});
     service = new AccordionService();
   });
 
@@ -13,32 +11,42 @@ describe('AccordionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should toggle and emit correct values', (done) => {
+  /**
+   * `state` is a BehaviorSubject, so a subscriber receives the current value immediately and then
+   * every subsequent one. These tests therefore record the emission sequence from a single
+   * subscription rather than subscribing once per expected value -- the previous version
+   * subscribed twice without unsubscribing, so the first subscriber also saw the second emission,
+   * failed its assertion, and called `done()` a second time.
+   *
+   * The emissions are copied on arrival because `toggle()` mutates the state object in place
+   * before re-emitting it, so every emission is the same object reference.
+   */
+  it('should toggle and emit correct values', () => {
+    const emissions: Array<IAccordionModel> = [];
+    const subscription = service.state.subscribe((state) => emissions.push({ ...state }));
+
     service.toggle('expanded');
-    const getEmit = service.state;
-    getEmit.subscribe((emitted) => {
-      expect(emitted).toMatchObject({ expanded: true, resize: false, animate: false });
-      done();
-    });
     service.toggle('expanded');
-    const getEmitFinal = service.state;
-    getEmitFinal.subscribe((emitted) => {
-      expect(emitted).toMatchObject({ expanded: false, resize: false, animate: false });
-      done();
-    });
+
+    subscription.unsubscribe();
+
+    expect(emissions).toHaveLength(3);
+    expect(emissions[0]).toMatchObject({ expanded: false, resize: false, animate: false });
+    expect(emissions[1]).toMatchObject({ expanded: true, resize: false, animate: false });
+    expect(emissions[2]).toMatchObject({ expanded: false, resize: false, animate: false });
   });
-  it('should update and emit correct values', (done) => {
+
+  it('should update and emit correct values', () => {
+    const emissions: Array<IAccordionModel> = [];
+    const subscription = service.state.subscribe((state) => emissions.push({ ...state }));
+
     service.update({ expanded: true, resize: true, animate: true });
-    const getEmit = service.state;
-    getEmit.subscribe((emitted) => {
-      expect(emitted).toMatchObject({ expanded: true, resize: true, animate: true });
-      done();
-    });
     service.update({ expanded: false, resize: true, animate: true });
-    const getEmitFinal = service.state;
-    getEmitFinal.subscribe((emitted) => {
-      expect(emitted).toMatchObject({ expanded: false, resize: true, animate: true });
-      done();
-    });
+
+    subscription.unsubscribe();
+
+    expect(emissions).toHaveLength(3);
+    expect(emissions[1]).toMatchObject({ expanded: true, resize: true, animate: true });
+    expect(emissions[2]).toMatchObject({ expanded: false, resize: true, animate: true });
   });
 });
