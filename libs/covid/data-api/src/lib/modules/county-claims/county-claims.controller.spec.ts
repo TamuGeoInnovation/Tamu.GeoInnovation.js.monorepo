@@ -143,18 +143,17 @@ describe('CountyClaims Controller', () => {
       expect(countyClaimsController.getClaimDetails(mockParameters)).toMatchObject(expectedResult);
     });
 
-    it('should return expectedResult - Error handling', async (done) => {
+    /**
+     * Jest 27 onwards rejects a test that both takes a `done` callback and returns a
+     * promise. Rewritten with rejects.toThrow, which also removes the done.fail branch.
+     */
+    it('should return expectedResult - Error handling', async () => {
       const expectedResult = 'Internal server error';
       jest.spyOn(countyClaimsService, 'getInfosForClaim').mockImplementation(() => {
         throw new Error();
       });
-      await countyClaimsController
-        .getClaimDetails(mockParameters)
-        .then(() => done.fail(''))
-        .catch((error) => {
-          expect(error.message).toBe(expectedResult);
-          done();
-        });
+
+      await expect(countyClaimsController.getClaimDetails(mockParameters)).rejects.toThrow(expectedResult);
     });
   });
   describe('registerClaim', () => {

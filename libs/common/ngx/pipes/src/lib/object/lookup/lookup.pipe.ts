@@ -11,7 +11,10 @@ export class LookupPipe<T> implements PipeTransform {
    */
   public transform(value: Record<string, T> | string, secondary: string | Record<string, T>): T {
     if (value === undefined || value === null) {
-      return null;
+      // The signature claims `T` but this genuinely returns null for the miss cases. The cast keeps
+      // the existing runtime behaviour; widening the return type to `T | null` would force every
+      // template and caller to handle it, which is a public API change and belongs in its own PR.
+      return null as unknown as T;
     }
 
     // Two cases:
@@ -23,6 +26,6 @@ export class LookupPipe<T> implements PipeTransform {
       return getPropertyValue(value, secondary);
     }
 
-    return null;
+    return null as unknown as T;
   }
 }

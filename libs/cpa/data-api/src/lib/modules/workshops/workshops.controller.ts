@@ -120,9 +120,11 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   }
 }
 
-export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
+// DeepPartial is a mapped type, so an interface cannot extend it. Expressed as an
+// intersection type, which is equivalent and does typecheck.
+export type IWorkshopRequestPayload = DeepPartial<Workshop> & {
   guid: string;
-}
+};
 
 export interface IWorkshopSnapshotPayload {
   snapshotGuid: string;

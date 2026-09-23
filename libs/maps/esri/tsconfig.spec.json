@@ -3,6 +3,11 @@
   "compilerOptions": {
     "outDir": "../../../dist/out-tsc",
     "module": "commonjs",
+    // deepmerge is CJS and exports a function directly. tsconfig.base sets
+    // allowSyntheticDefaultImports but not esModuleInterop, so `import deepmerge from` compiles
+    // but emits `deepmerge_1.default`, which is undefined at runtime. The Angular build applies
+    // its own interop, so this only ever broke under ts-jest.
+    "esModuleInterop": true,
     "types": ["jest", "node", "arcgis-js-api"],
     "target": "es2016"
   },

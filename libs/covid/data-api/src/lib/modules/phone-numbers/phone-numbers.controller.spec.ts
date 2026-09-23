@@ -35,7 +35,10 @@ describe('PhoneNumbers Controller', () => {
   describe('getAllNumbers', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
-      phoneNumbersService.repo = new Repository();
+      // TypeORM 0.3 requires (target, manager, queryRunner) on the Repository constructor.
+      // The spec only needs an object whose methods can be spied on, so build one from the
+      // prototype rather than constructing a real repository.
+      phoneNumbersService.repo = Object.create(Repository.prototype);
       jest.spyOn(phoneNumbersService.repo, 'find').mockResolvedValue(expectedResult);
       expect(await phoneNumbersController.getAllNumbers()).toStrictEqual(expectedResult);
     });
@@ -56,7 +59,7 @@ describe('PhoneNumbers Controller', () => {
   });
   describe('storePhoneNumber', () => {
     it('should throw error', async () => {
-      await expect(phoneNumbersController.storePhoneNumber(mockParameters)).rejects.toThrow();
+      await expect(phoneNumbersController.storePhoneNumber()).rejects.toThrow();
     });
   });
 });

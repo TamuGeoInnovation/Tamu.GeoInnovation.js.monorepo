@@ -68,7 +68,8 @@ describe('EmailService', () => {
         expect(spy).toHaveBeenCalledWith({
           relations: ['attachments'],
           where: {
-            id: mockParam.id
+            // getEmail() does parseInt(id, 10), so the repository receives a number.
+            id: Number(mockParam.id)
           }
         });
       });
@@ -91,7 +92,8 @@ describe('EmailService', () => {
         expect(spyFind).toHaveBeenCalledWith({
           relations: ['attachments'],
           where: {
-            id: mockParam.id
+            // getEmail() does parseInt(id, 10), so the repository receives a number.
+            id: Number(mockParam.id)
           }
         });
 
