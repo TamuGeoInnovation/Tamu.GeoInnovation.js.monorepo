@@ -138,7 +138,7 @@ export const Kickoff150thLayerSources: LayerSource[] = [
         uniqueValueInfos: [
           {
             value: 'Event Location',
-            label: 'Event Location',
+            label: 'Opening Ceremony Location',
             symbol: { type: 'picture-marker', url: EVENT_LOCATION_ICON_URL, width: 24, height: 30 }
           },
           {
