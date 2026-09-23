@@ -52,7 +52,6 @@ stay that way — it runs against production on a schedule.
 
 | workflow | trigger | gates a PR |
 |---|---|---|
-| `test.yml` | every push/PR, via `main.yml` | yes |
 | `e2e.yml` | push/PR touching GIS Day or the suite | yes |
 | `smoke.yml` | every 6 hours, plus manual | no |
 
@@ -60,22 +59,33 @@ stay that way — it runs against production on a schedule.
 standalone here — see the comment in `playwright.config.ts` for why, and what it would take to
 change that.
 
-## Known gaps
+## Unit tests are not yet run in CI
 
-- **The unit suite fails on 144 of 201 projects.** Pre-existing config rot, none of it caused by
-  application code — `build` passes. `publish` in `main.yml` deliberately does **not** depend on
-  `test`, so a red suite cannot block releases. The job still runs and still reports red, so the
-  problem stays visible. Tracked in #963, which also documents how to iterate locally in Docker
-  (~30s per project, instead of ~17 minutes per CI round).
+There is deliberately no workflow running `nx affected:test`. The suite does not pass: **144 of 201
+projects fail**, on breakage that predates this work and is unrelated to application code — `build`
+passes. The causes are catalogued in **#963**, along with the local Docker workflow for iterating on
+them (~30s per project rather than ~17 minutes per CI round).
 
-- **Unit coverage is effectively zero even where it passes.** Of ~256 `*.spec.ts` files under
-  `libs/gisday`, **245 are Nx scaffolds** containing a single `it('should create')` — roughly one
-  assertion per test. A green unit result means "nothing regressed", not "this is tested".
+A job that is permanently red teaches people to ignore CI, so the test job will be introduced by the
+PR that makes it green, not before.
 
-- **Playwright assertions are structural, not content-based.** Routes load, the app boots, nothing
-  throws, no request 5xxs. They do not yet assert page content, because the suite had not been run
-  against a live app when it was written. Content assertions should be added per page as each one
-  is covered.
+Scale of the problem, from the audit in #963:
+
+```
+1,057  spec files
+  859  are Nx scaffolds asserting only that a class can be constructed  (81%)
+  197  contain real assertions
+
+  417  test failures, of which 327 are those scaffolds                  (78%)
+```
+
+So most of the work is deletion, not repair.
+
+## Known gaps in the Playwright suites
+
+- **Assertions are structural, not content-based.** Routes load, the app boots, nothing throws, no
+  request 5xxs. They do not yet assert page content, because the suite had not been run against a
+  live app when it was written. Content assertions should be added per page as each is covered.
 
 - **Authenticated flows cannot be tested against a local build.** `common.config.ts` holds Auth0
   settings as build-time placeholders (`___ANGULAR_AUTH0_DOMAIN___`) substituted at deploy, so a
