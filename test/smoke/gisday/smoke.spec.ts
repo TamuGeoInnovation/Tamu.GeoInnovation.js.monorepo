@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test';
 
+/** Nx prefix for this workspace is `tamu-gisc`, so the root element is not the CLI default `app-root`. */
+const APP_ROOT = 'tamu-gisc-root';
+
 /**
  * Smoke checks against a deployed GIS Day environment.
  *
@@ -13,7 +16,7 @@ test('the landing page serves', async ({ page }) => {
   const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
 
   expect(response?.status()).toBe(200);
-  await expect(page.locator('app-root')).toBeAttached();
+  await expect(page.locator(APP_ROOT)).toBeAttached();
   expect((await page.locator('body').innerText()).trim().length).toBeGreaterThan(0);
 });
 
@@ -24,7 +27,7 @@ test('the sessions page serves and renders', async ({ page }) => {
   const response = await page.goto('/sessions', { waitUntil: 'domcontentloaded' });
 
   expect(response?.status()).toBe(200);
-  await expect(page.locator('app-root')).toBeAttached();
+  await expect(page.locator(APP_ROOT)).toBeAttached();
   expect(pageErrors.map((e) => e.message)).toHaveLength(0);
 });
 

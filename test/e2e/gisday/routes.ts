@@ -20,3 +20,10 @@ export const PUBLIC_ROUTES = [
 
 /** Routes that require authentication. Unauthenticated visitors are redirected. */
 export const GUARDED_ROUTES = [{ path: '/admin', redirectsTo: '/forbidden', name: 'admin' }] as const;
+
+/**
+ * The app's root element. Nx generated this workspace with the `tamu-gisc` prefix
+ * (`apps/gisday-angular/project.json`), so the root is `tamu-gisc-root`, NOT the Angular CLI
+ * default of `app-root`. Defined once here because every spec needs it.
+ */
+export const APP_ROOT = 'tamu-gisc-root';

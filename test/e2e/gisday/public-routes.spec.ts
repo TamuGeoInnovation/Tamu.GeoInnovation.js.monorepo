@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { PUBLIC_ROUTES } from './routes';
+import { APP_ROOT, PUBLIC_ROUTES } from './routes';
 
 /**
  * Every public route must load without a server error and without the app throwing.
@@ -21,7 +21,7 @@ for (const route of PUBLIC_ROUTES) {
     expect(response?.status(), `${route.path} returned ${response?.status()}`).toBeLessThan(400);
 
     // Angular has bootstrapped and routed rather than leaving the shell empty.
-    await expect(page.locator('app-root')).toBeAttached();
+    await expect(page.locator(APP_ROOT)).toBeAttached();
     await expect(page.locator('router-outlet')).toBeAttached();
 
     // Something was actually rendered. Guards against a route that resolves but paints nothing.
@@ -38,5 +38,5 @@ test('an unknown route does not hang or 500', async ({ page }) => {
   // A SPA serves index.html for unknown paths and handles the 404 client-side, so the useful
   // assertion is that the server did not error and the app still rendered something.
   expect(response?.status()).toBeLessThan(500);
-  await expect(page.locator('app-root')).toBeAttached();
+  await expect(page.locator(APP_ROOT)).toBeAttached();
 });
