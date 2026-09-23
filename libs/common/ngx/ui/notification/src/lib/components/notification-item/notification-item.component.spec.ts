@@ -1,11 +1,11 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { NotificationItemComponent } from './notification-item.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Notification } from '../../services/notification.service';
+import { Notification } from '../../helpers/notification.helper';
 
 describe('NotificationItemComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [NotificationItemComponent],
       declarations: [NotificationItemComponent],
@@ -19,6 +19,12 @@ describe('NotificationItemComponent', () => {
     expect(notificationItemComponent.ngOnDestroy()).toBeUndefined();
   }));
 
+  /**
+   * The countdown advances by `timer.step` on an interval of `timer.step` milliseconds, so
+   * `timer.current` counts in whole steps -- it is not a running total of elapsed time. The
+   * original assertions expected 60 and 120 after advancing 60ms twice, which assumed the latter.
+   * With a step of 50 the real values are 50 and 100.
+   */
   it('should count down', (done) => {
     inject([NotificationItemComponent], (notificationItemComponent: NotificationItemComponent) => {
       const testNotification = new Notification({
@@ -29,18 +35,22 @@ describe('NotificationItemComponent', () => {
       });
       notificationItemComponent.notification = testNotification;
 
+      const step = notificationItemComponent.timer.step;
+
       jest.useFakeTimers();
       notificationItemComponent.ngOnInit();
-      jest.advanceTimersByTime(60);
-      expect(notificationItemComponent.timer.current).toEqual(60);
 
+      jest.advanceTimersByTime(step + 10);
+      expect(notificationItemComponent.timer.current).toEqual(step);
+
+      // Paused: further time passing must not advance the counter.
       notificationItemComponent.pause();
       jest.advanceTimersByTime(1000);
-      expect(notificationItemComponent.timer.current).toEqual(60);
+      expect(notificationItemComponent.timer.current).toEqual(step);
 
       notificationItemComponent.resume();
-      jest.advanceTimersByTime(60);
-      expect(notificationItemComponent.timer.current).toEqual(120);
+      jest.advanceTimersByTime(step + 10);
+      expect(notificationItemComponent.timer.current).toEqual(step * 2);
 
       jest.advanceTimersByTime(10000);
       expect(notificationItemComponent.animateStatus).toBeFalsy();
@@ -52,10 +62,6 @@ describe('NotificationItemComponent', () => {
       jest.advanceTimersByTime(500);
 
       notificationItemComponent.animateStatus = true;
-      // TODO: The tests for this component are currently not working.
-      // The following lines throws eslint errors but might be necessary when tests are fixed
-      //
-      // console.warn = () => {}; // Disable ngZone warning
       notificationItemComponent.action();
       expect(notificationItemComponent.animateStatus).toBeFalsy();
     })();

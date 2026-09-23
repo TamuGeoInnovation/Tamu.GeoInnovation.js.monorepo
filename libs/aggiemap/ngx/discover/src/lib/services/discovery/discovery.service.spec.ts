@@ -33,7 +33,10 @@ describe('DiscoveryService', () => {
 
   it('supports explicit discover tab overrides for athletics and campus parking maps', () => {
     const applications = service.getInternalDiscoverApplications();
-    const football = applications.find((app) => app.id === 'football-parking');
+    // The football event's discover id is 'gameday-parking' (FootballParkingConfiguration.id),
+    // not 'football-parking'. The old id made `find` return undefined, so the assertion
+    // below compared undefined against 'athletics' rather than checking the override.
+    const football = applications.find((app) => app.id === 'gameday-parking');
     const moveIn = applications.find((app) => app.id === 'move-in');
 
     expect(football?.mapType).toBe('athletics');
@@ -51,14 +54,14 @@ describe('DiscoveryService', () => {
     const applications = service.getInternalDiscoverApplications();
     const aggielandSaturday = applications.find((app) => app.id === 'aggieland-saturday');
 
-    expect(aggielandSaturday?.visible).toBeTrue();
+    expect(aggielandSaturday?.visible).toBe(true);
   });
 
   it('filters hidden maps from the public discover lists', () => {
     const visibleApp = createDiscoverApplication({ id: 'visible', showInQuickLinks: true });
     const hiddenApp = createDiscoverApplication({ id: 'hidden', visible: false, showInQuickLinks: true });
 
-    jest.spyOn(service, 'getInternalDiscoverApplications').and.returnValue([visibleApp, hiddenApp]);
+    jest.spyOn(service, 'getInternalDiscoverApplications').mockReturnValue([visibleApp, hiddenApp]);
 
     expect(service.getVisibleInternalDiscoverApplications()).toEqual([visibleApp]);
     expect(service.getQuickLinkApplications()).toEqual([visibleApp]);

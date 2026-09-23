@@ -2,6 +2,8 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { Angulartics2 } from 'angulartics2';
+
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
@@ -17,8 +19,14 @@ describe('BusTimetableComponent (isolated)', () => {
         BusTimetableComponent,
         BusService,
         {
+          // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather
+          // than importing the real module, matching parking-lot.component.spec.ts.
+          provide: Angulartics2,
+          useValue: { eventTrack: { next: jest.fn() } }
+        },
+        {
           provide: env,
-          useValue: { SearchSources: [] }
+          useValue: { SearchSources: [], LayerSources: [] }
         }
       ]
     }).compileComponents();
@@ -38,10 +46,15 @@ describe('BusTimeTableComponent (integrated)', () => {
       imports: [HttpClientTestingModule, EsriMapModule, RouterTestingModule, SearchModule, EnvironmentModule],
       declarations: [BusTimetableComponent],
       providers: [
+        {
+          // The integrated block has its own TestBed and needs the same Angulartics2 mock.
+          provide: Angulartics2,
+          useValue: { eventTrack: { next: jest.fn() } }
+        },
         BusService,
         {
           provide: env,
-          useValue: { SearchSources: [] }
+          useValue: { SearchSources: [], LayerSources: [] }
         }
       ]
     });

@@ -1,3 +1,4 @@
+import { NotImplementedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
@@ -39,7 +40,10 @@ describe('TestingSitesController', () => {
   describe('getValidated', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
-      testingSitesService.repo = new Repository();
+      // TypeORM 0.3 requires (target, manager, queryRunner) on the Repository constructor.
+      // The spec only needs an object whose methods can be spied on, so build one from the
+      // prototype rather than constructing a real repository.
+      testingSitesService.repo = Object.create(Repository.prototype);
       jest.spyOn(testingSitesService.repo, 'find').mockResolvedValue(expectedResult);
       expect(await testingSitesController.getValidated()).toStrictEqual(expectedResult);
     });
@@ -123,13 +127,13 @@ describe('TestingSitesController', () => {
 
   describe('validateLockdown', () => {
     it('should be undefiend', async () => {
-      expect(await testingSitesController.validateLockdown(mockParameters)).toBeUndefined();
+      expect(await testingSitesController.validateLockdown()).toBeInstanceOf(NotImplementedException);
     });
   });
 
   describe('deleteValidatedLockdown', () => {
     it('should be undefiend', async () => {
-      expect(await testingSitesController.deleteValidatedLockdown(mockParameters)).toBeUndefined();
+      expect(await testingSitesController.deleteValidatedLockdown()).toBeInstanceOf(NotImplementedException);
     });
   });
 });

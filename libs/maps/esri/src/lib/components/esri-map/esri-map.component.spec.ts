@@ -16,7 +16,7 @@ describe('EsriMapComponent', () => {
         EsriMapComponent,
         {
           provide: env,
-          useValue: { SearchSources: [] }
+          useValue: { SearchSources: [], LayerSources: [] }
         }
       ],
       imports: [EsriMapModule, RouterTestingModule, SearchModule, HttpClientTestingModule, EnvironmentModule]

@@ -48,7 +48,7 @@ describe('Websites Controller', () => {
 
   describe('storePhoneNumber', () => {
     it('should throw error', async () => {
-      await expect(websitesController.storePhoneNumber(undefined)).rejects.toThrow();
+      await expect(websitesController.storePhoneNumber()).rejects.toThrow();
     });
   });
 });

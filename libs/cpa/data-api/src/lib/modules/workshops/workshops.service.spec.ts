@@ -71,9 +71,9 @@ describe('WorkshopsService', () => {
 
   describe('getOne', () => {
     it('should throw error ', async () => {
+      // getOne takes TypeORM FindOneOptions, not a workshop/snapshot payload.
       const mockparameter = {
-        snapshotGuid: '',
-        workshopGuid: ''
+        where: { guid: '' }
       };
       jest.spyOn(workshopsRepository, 'findOne').mockResolvedValue(undefined);
       try {
