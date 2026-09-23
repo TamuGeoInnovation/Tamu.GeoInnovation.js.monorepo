@@ -62,6 +62,13 @@ change that.
 
 ## Known gaps
 
+- **Authenticated flows cannot be tested against a local build.** `common.config.ts` holds
+  Auth0 settings as build-time placeholders (`___ANGULAR_AUTH0_DOMAIN___`) substituted at
+  deploy. A locally served build therefore treats the literal placeholder as a hostname and
+  the Auth0 hand-off dies with ERR_NAME_NOT_RESOLVED. The guard spec works around this by
+  asserting only that the visitor left the guarded route. Covering anything past the login
+  redirect needs real or mocked Auth0 config — a decision to make before building it.
+
 - Assertions are currently structural: routes load, the app boots, nothing throws, no 5xx. They do
   not yet assert page content, because the suite has not been run against a live app.
   Content assertions should be added per page as each one is covered.
