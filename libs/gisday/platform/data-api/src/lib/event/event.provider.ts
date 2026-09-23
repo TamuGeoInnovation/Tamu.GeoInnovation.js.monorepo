@@ -1,4 +1,10 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
@@ -42,6 +48,12 @@ export class EventProvider extends BaseProvider<Event> {
     try {
       return this.getEventsForSeason(season.guid);
     } catch (error) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
       throw new InternalServerErrorException('Could not get events for active season.');
     }
   }
@@ -106,6 +118,12 @@ export class EventProvider extends BaseProvider<Event> {
         return eventEnt.save();
       }
     } catch (error) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
       throw new UnprocessableEntityException(null, 'Could not insert new Event');
     }
   }
@@ -136,6 +154,12 @@ export class EventProvider extends BaseProvider<Event> {
 
       return newEnt.save();
     } catch (error) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
       throw new UnprocessableEntityException(null, 'Could not insert new Event');
     }
   }
@@ -287,6 +311,12 @@ export class EventProvider extends BaseProvider<Event> {
     try {
       return Promise.all(newEvents);
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException('Could not copy events into season');
     }
   }
