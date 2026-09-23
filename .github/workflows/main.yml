@@ -71,7 +71,15 @@ jobs:
 
   publish:
     name: Publish
-    needs: [lint, test, build]
+    # `test` is deliberately NOT in `needs`. The unit suite had never run in CI before it
+    # was added, and 144 of 201 projects fail on pre-existing breakage -- Jest 27 removing
+    # the global spyOn, jsdom lacking TextEncoder under Node 20, dependencies going ESM,
+    # and imports left behind by deleted libraries. None of it is caused by application
+    # code; `build` passes. Gating publish on it would block all releases on years of rot.
+    #
+    # The job still runs and still reports red, so the problem stays visible and progress
+    # is measurable. Add `test` back here once the suite is green -- see #963.
+    needs: [lint, build]
     # Usually you don't want to publish from fork PRs
     if: github.event_name == 'push'
     uses: ./.github/workflows/publish.yml

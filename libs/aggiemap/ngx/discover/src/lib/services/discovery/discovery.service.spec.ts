@@ -58,7 +58,7 @@ describe('DiscoveryService', () => {
     const visibleApp = createDiscoverApplication({ id: 'visible', showInQuickLinks: true });
     const hiddenApp = createDiscoverApplication({ id: 'hidden', visible: false, showInQuickLinks: true });
 
-    spyOn(service, 'getInternalDiscoverApplications').and.returnValue([visibleApp, hiddenApp]);
+    jest.spyOn(service, 'getInternalDiscoverApplications').and.returnValue([visibleApp, hiddenApp]);
 
     expect(service.getVisibleInternalDiscoverApplications()).toEqual([visibleApp]);
     expect(service.getQuickLinkApplications()).toEqual([visibleApp]);
