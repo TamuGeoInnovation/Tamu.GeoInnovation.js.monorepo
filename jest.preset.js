@@ -3,6 +3,8 @@ const { compilerOptions } = require('./tsconfig.base.json');
 
 module.exports = {
   ...nxPreset,
+  // Absolute path: <rootDir> in a preset resolves per-project, not to the workspace root.
+  setupFiles: [require.resolve('./test/jest.polyfills.js')],
   testMatch: ['**/+(*.)+(spec).+(ts|js)?(x)'],
   transform: {
     '^.+\\.(ts|js|html)$': 'ts-jest'

@@ -26,7 +26,7 @@ describe('MobileTabNavigationTabComponent', () => {
   });
 
   it('should create', () => {
-    const spy = spyOn(component, 'navigate');
+    const spy = jest.spyOn(component, 'navigate');
 
     component.navigate();
     expect(spy).toHaveBeenCalled();
