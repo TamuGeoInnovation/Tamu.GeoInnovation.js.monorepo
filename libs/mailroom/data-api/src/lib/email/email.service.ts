@@ -24,9 +24,20 @@ export class EmailService {
 
   public async deleteEmail(id: string) {
     const email = await this.emailRepo.findOne({
-      where: {},
+      where: {
+        // Was `where: {}`, which matches every row. `findOne` then returned whichever one the
+        // database ordered first, and that email was deleted instead of the requested one, with
+        // its attachments cascading. The caller still got `true`, so it failed silently.
+        id: parseInt(id, 10)
+      },
       relations: ['attachments']
     });
+
+    // `remove(undefined)` throws, so an id matching nothing surfaced as a 500 rather than as
+    // "no such email".
+    if (!email) {
+      return false;
+    }
 
     const removed = (await this.emailRepo.remove(email)) ? true : false;
 
