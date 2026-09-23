@@ -62,16 +62,24 @@ change that.
 
 ## Known gaps
 
-- **Authenticated flows cannot be tested against a local build.** `common.config.ts` holds
-  Auth0 settings as build-time placeholders (`___ANGULAR_AUTH0_DOMAIN___`) substituted at
-  deploy. A locally served build therefore treats the literal placeholder as a hostname and
-  the Auth0 hand-off dies with ERR_NAME_NOT_RESOLVED. The guard spec works around this by
-  asserting only that the visitor left the guarded route. Covering anything past the login
-  redirect needs real or mocked Auth0 config — a decision to make before building it.
+- **The unit suite fails on 144 of 201 projects.** Pre-existing config rot, none of it caused by
+  application code — `build` passes. `publish` in `main.yml` deliberately does **not** depend on
+  `test`, so a red suite cannot block releases. The job still runs and still reports red, so the
+  problem stays visible. Tracked in #963, which also documents how to iterate locally in Docker
+  (~30s per project, instead of ~17 minutes per CI round).
 
-- Assertions are currently structural: routes load, the app boots, nothing throws, no 5xx. They do
-  not yet assert page content, because the suite has not been run against a live app.
-  Content assertions should be added per page as each one is covered.
-- Unit coverage is effectively zero. Of ~256 `*.spec.ts` files under `libs/gisday`, **245 are Nx
-  scaffolds** containing a single `it('should create')`. Roughly one assertion per test overall.
-  `test.yml` runs them, so treat a green result as "nothing regressed", not "this is tested".
+- **Unit coverage is effectively zero even where it passes.** Of ~256 `*.spec.ts` files under
+  `libs/gisday`, **245 are Nx scaffolds** containing a single `it('should create')` — roughly one
+  assertion per test. A green unit result means "nothing regressed", not "this is tested".
+
+- **Playwright assertions are structural, not content-based.** Routes load, the app boots, nothing
+  throws, no request 5xxs. They do not yet assert page content, because the suite had not been run
+  against a live app when it was written. Content assertions should be added per page as each one
+  is covered.
+
+- **Authenticated flows cannot be tested against a local build.** `common.config.ts` holds Auth0
+  settings as build-time placeholders (`___ANGULAR_AUTH0_DOMAIN___`) substituted at deploy, so a
+  locally served build treats the literal placeholder as a hostname and the Auth0 hand-off dies
+  with ERR_NAME_NOT_RESOLVED. The guard spec works around this by asserting only that the visitor
+  left the guarded route. Covering anything past the login redirect needs real or mocked Auth0
+  config — a decision to make before building it.
