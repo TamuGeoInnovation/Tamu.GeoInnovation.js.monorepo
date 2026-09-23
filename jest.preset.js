@@ -5,6 +5,9 @@ module.exports = {
   ...nxPreset,
   // Absolute path: <rootDir> in a preset resolves per-project, not to the workspace root.
   setupFiles: [require.resolve('./test/jest.polyfills.js')],
+  // 88 projects legitimately have no specs after the scaffold removal. Without this, Jest
+  // exits non-zero on "No tests found", turning an empty project into a failing one.
+  passWithNoTests: true,
   testMatch: ['**/+(*.)+(spec).+(ts|js)?(x)'],
   transform: {
     '^.+\\.(ts|js|html)$': 'ts-jest'

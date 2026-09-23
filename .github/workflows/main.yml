@@ -53,6 +53,14 @@ jobs:
     with:
       base: ${{ needs.set-base.outputs.base }}
 
+  test:
+    name: Test
+    needs: [lint, set-base]
+    if: needs.set-base.result == 'success'
+    uses: ./.github/workflows/test.yml
+    with:
+      base: ${{ needs.set-base.outputs.base }}
+
   build:
     name: Build
     needs: [lint, set-base]
@@ -63,7 +71,7 @@ jobs:
 
   publish:
     name: Publish
-    needs: [lint, build]
+    needs: [lint, test, build]
     # Usually you don't want to publish from fork PRs
     if: github.event_name == 'push'
     uses: ./.github/workflows/publish.yml
