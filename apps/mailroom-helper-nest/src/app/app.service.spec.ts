@@ -14,8 +14,8 @@ describe('AppService', () => {
   });
 
   describe('getData', () => {
-    it('should return "Welcome to mailroom-helper-nest!"', () => {
-      expect(service.getData()).toEqual({ message: 'Welcome to mailroom-helper-nest!' });
+    it('should return "mailroom-helper-nest!"', () => {
+      expect(service.getData()).toEqual({ message: 'mailroom-helper-nest!' });
     });
   });
 });
