@@ -11,23 +11,41 @@ const APP_ROOT = 'tamu-gisc-root';
  * deployment is unhealthy, not that a commit is bad, which is why this cannot gate a PR.
  *
  * Target with SMOKE_BASE_URL; defaults to https://txgisday.org.
+ *
+ * ---
+ *
+ * Every assertion about rendered content has to auto-retry, because this is a client-rendered
+ * Angular app. Two traps, both of which this file previously fell into and which reported a healthy
+ * site as down every six hours:
+ *
+ * 1. `waitUntil: 'domcontentloaded'` resolves when the HTML has parsed, which is *before* Angular
+ *    bootstraps. There is no rendered content at that point.
+ * 2. `<tamu-gisc-root>` ships in `index.html`, so `toBeAttached()` passes immediately -- while the
+ *    element is still empty. It proves the shell was served, not that the app started.
+ *
+ * So: assert on content inside the root, and only through `expect()` matchers, which poll until
+ * the timeout. A bare `await locator.innerText()` is a single sample and will read an empty body.
  */
 test('the landing page serves', async ({ page }) => {
-  const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const response = await page.goto('/');
 
   expect(response?.status()).toBe(200);
-  await expect(page.locator(APP_ROOT)).toBeAttached();
-  expect((await page.locator('body').innerText()).trim().length).toBeGreaterThan(0);
+
+  // Polls until Angular has rendered into the root, rather than sampling once.
+  await expect(page.locator(APP_ROOT)).not.toBeEmpty();
 });
 
 test('the sessions page serves and renders', async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on('pageerror', (error) => pageErrors.push(error));
 
-  const response = await page.goto('/sessions', { waitUntil: 'domcontentloaded' });
+  const response = await page.goto('/sessions');
 
   expect(response?.status()).toBe(200);
-  await expect(page.locator(APP_ROOT)).toBeAttached();
+  await expect(page.locator(APP_ROOT)).not.toBeEmpty();
+
+  // Checked after the render assertion above, so a bootstrap failure is reported as an empty app
+  // rather than as an incidental console error.
   expect(pageErrors.map((e) => e.message)).toHaveLength(0);
 });
 
