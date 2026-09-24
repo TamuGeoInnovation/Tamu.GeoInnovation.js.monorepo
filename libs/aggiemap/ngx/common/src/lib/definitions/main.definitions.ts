@@ -271,7 +271,24 @@ export function MainMapLayerSources(
       layerIndex: 4,
       native: {
         ...commonLayerProps,
-        definitionExpression: `EndDate > CAST('${new Date().toISOString()}' AS DATE ) AND Status = 'Active'`
+        // The hosted service has no Status field (unlike the legacy FCOR service), so
+        // "currently active" construction is now determined solely by end date.
+        definitionExpression: `enddate > CAST('${new Date().toISOString()}' AS DATE )`,
+        // Override the hosted service's own per-owner unique-value renderer so the main
+        // map keeps showing a single, undifferentiated orange/red hatch for all construction,
+        // matching the legacy FCOR service's look.
+        renderer: {
+          type: 'simple',
+          symbol: {
+            type: 'simple-fill',
+            style: 'diagonal-cross',
+            color: [255, 85, 0, 255],
+            outline: {
+              color: [255, 85, 0, 255],
+              width: 1
+            }
+          }
+        }
       }
     },
     {

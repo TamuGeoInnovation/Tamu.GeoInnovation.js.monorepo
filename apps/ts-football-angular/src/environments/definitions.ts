@@ -14,7 +14,7 @@ export const Connections = {
   basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer',
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
-  constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
+  constructionUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
   departmentUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
   bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
@@ -318,7 +318,21 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     visible: true,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // Override the hosted service's own per-owner unique-value renderer so this
+      // map keeps showing a single, undifferentiated orange/red hatch for all construction.
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'diagonal-cross',
+          color: [255, 85, 0, 255],
+          outline: {
+            color: [255, 85, 0, 255],
+            width: 1
+          }
+        }
+      }
     }
   },
   {

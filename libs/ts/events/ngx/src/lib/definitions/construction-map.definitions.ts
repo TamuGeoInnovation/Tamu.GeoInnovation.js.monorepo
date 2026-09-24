@@ -8,10 +8,7 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
-
 export enum CONSTRUCTION_MAP_LAYERS {
-  CONSTRUCTION_DRAW = 'construction-map-draw',
   CURRENT_CONSTRUCTION_AREA = 'current-construction-area',
   PLANNED_CONSTRUCTION_AREA = 'planned-construction-area',
   CONSTRUCTION_POPUP = 'construction-map-popup',
@@ -19,24 +16,26 @@ export enum CONSTRUCTION_MAP_LAYERS {
 }
 
 /**
- * Two ArcGIS services back this map:
- *
- *   eventUrl (TSConstruction/MapServer)
- *     Sublayer 0 (current) and sublayer 1 (planned). Drives the MapImageLayer that
- *     produces the visible cross-hatched fills, and the two visible FeatureLayers
- *     that drive the legend swatches.
- *     Sublayer 1 field schema: Name, Number, StartDate, EndDate, Owner (no Description).
- *
- *   popupEventUrl (FCOR/Construction_2018/MapServer)
- *     Legacy 2018 service used solely as the popup data source for current construction.
- *     Sublayer 0 exposes a Description field, which TSConstruction sublayer 0 does not.
+ * eventUrl (Hosted/TSConstruction_Hosted/FeatureServer)
+ *   Sublayer 0 (current) and sublayer 1 (planned). Both sublayers use a
+ *   `esriSFSDiagonalCross` fill (a style natively supported by the ArcGIS JS API's
+ *   SimpleFillSymbol), so the two visible FeatureLayers render the cross-hatched fills
+ *   directly from the service's own renderer — no proxy MapImageLayer is needed, and
+ *   toggling each FeatureLayer's visibility (TOC or legend) directly controls what's drawn.
+ *   This hosted service replaces the previous TS_Events/TSConstruction MapServer, whose
+ *   queries stopped returning geometry (confirmed via direct REST query testing) even
+ *   though attribute data still resolved — nothing would draw on the map as a result.
+ *   Both sublayers expose a lowercase field schema (objectid, name, number, startdate,
+ *   enddate, owner, description, notes, link, contactname, contactinfo — sublayer 1 adds
+ *   utilitytype), so both current and planned popups can be sourced directly from this
+ *   service. The legacy FCOR/Construction_2018/MapServer popup workaround is no longer
+ *   needed since this service's sublayer 0 already exposes a description field.
  */
 import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
 const gisHost = getDefaultGisHost();
 const tsgisHost = getDefaultGisHosts().tsgisHost;
 
-const eventUrl = `https://${tsgisHost}/arcgis/rest/services/TS/TSConstruction/MapServer`;
-const popupEventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer';
+const eventUrl = `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer`;
 
 /**
  * 'cumulative' lets the popup service resolve each entry sequentially, writing each resolved
@@ -46,11 +45,11 @@ const popupEventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/FCOR/Constru
 const popupDataResolutionStrategy: NonNullable<LayerSource['popupDataResolutionStrategy']> = 'cumulative';
 
 const plannedConstructionPopupData: NonNullable<LayerSource['popupData']> = {
-  projectName: { field: 'Name', collapsed: true },
-  projectNumber: { field: 'Number', collapsed: true },
-  startDate: { field: 'StartDate', collapsed: true },
-  endDate: { field: 'EndDate', collapsed: true },
-  owner: { field: 'Owner', collapsed: true },
+  projectName: { field: 'name', collapsed: true },
+  projectNumber: { field: 'number', collapsed: true },
+  startDate: { field: 'startdate', collapsed: true },
+  endDate: { field: 'enddate', collapsed: true },
+  owner: { field: 'owner', collapsed: true },
 
   name: '{attributes.projectName}',
   description:
@@ -63,12 +62,12 @@ const plannedConstructionPopupData: NonNullable<LayerSource['popupData']> = {
 };
 
 const constructionPopupData: NonNullable<LayerSource['popupData']> = {
-  projectName: { field: 'Name', collapsed: true },
-  projectNumber: { field: 'Number', collapsed: true },
-  projectDescription: { field: 'Description', collapsed: true },
-  startDate: { field: 'StartDate', collapsed: true },
-  endDate: { field: 'EndDate', collapsed: true },
-  owner: { field: 'Owner', collapsed: true },
+  projectName: { field: 'name', collapsed: true },
+  projectNumber: { field: 'number', collapsed: true },
+  projectDescription: { field: 'description', collapsed: true },
+  startDate: { field: 'startdate', collapsed: true },
+  endDate: { field: 'enddate', collapsed: true },
+  owner: { field: 'owner', collapsed: true },
 
   name: '{attributes.projectName}',
   description:
@@ -82,11 +81,6 @@ const constructionPopupData: NonNullable<LayerSource['popupData']> = {
 };
 
 export const ConstructionMapDefinitions = {
-  CONSTRUCTION_DRAW: {
-    id: CONSTRUCTION_MAP_LAYERS.CONSTRUCTION_DRAW,
-    name: 'Construction Map Draw',
-    url: eventUrl
-  },
   CURRENT_CONSTRUCTION_AREA: {
     id: CONSTRUCTION_MAP_LAYERS.CURRENT_CONSTRUCTION_AREA,
     name: 'Current Construction Area',
@@ -100,7 +94,7 @@ export const ConstructionMapDefinitions = {
   CONSTRUCTION_POPUP: {
     id: CONSTRUCTION_MAP_LAYERS.CONSTRUCTION_POPUP,
     name: 'Construction Area',
-    url: `${popupEventUrl}/0`
+    url: `${eventUrl}/0`
   },
   PLANNED_CONSTRUCTION_POPUP: {
     id: CONSTRUCTION_MAP_LAYERS.PLANNED_CONSTRUCTION_POPUP,
@@ -112,16 +106,16 @@ export const ConstructionMapDefinitions = {
 /**
  * Layer architecture:
  *
- *   Two FeatureLayers drive the legend (one per area). The MapImageLayer above them
- *   covers their default rendering with server-side cross-hatched fills, but the
- *   FeatureLayers' renderers still populate the legend panel.
+ *   Two visible FeatureLayers render the cross-hatched construction-area fills directly
+ *   using the service's own `esriSFSDiagonalCross` renderer, and drive the legend swatches.
+ *   Because these are the actual on-screen layers (not a proxy), toggling them via the TOC
+ *   or legend directly shows/hides the rendered areas.
  *
- *   Two more invisible FeatureLayers (opacity 0) sit above the MapImageLayer purely
- *   to intercept popup clicks. They are added last so they end up at the top of the
- *   layers collection — ESRI's Map.add() clamps high `layerIndex` values to the
- *   current collection size, so relying on `layerIndex` alone is not enough to
- *   guarantee a layer ends up on top. Order of insertion is what determines the
- *   final z-position.
+ *   Two more invisible FeatureLayers (opacity 0) sit above them purely to intercept popup
+ *   clicks. They are added last so they end up at the top of the layers collection — ESRI's
+ *   Map.add() clamps high `layerIndex` values to the current collection size, so relying on
+ *   `layerIndex` alone is not enough to guarantee a layer ends up on top. Order of insertion
+ *   is what determines the final z-position.
  *
  *   Current construction uses the legacy 2018 service for its popup layer because
  *   it is the only source that exposes the Description field.
@@ -147,30 +141,6 @@ export const ConstructionMapColdLayerSources: LayerSource[] = [
     listMode: 'show',
     native: {
       outFields: ['*']
-    }
-  },
-  {
-    type: 'map-image',
-    id: ConstructionMapDefinitions.CONSTRUCTION_DRAW.id,
-    title: ConstructionMapDefinitions.CONSTRUCTION_DRAW.name,
-    url: ConstructionMapDefinitions.CONSTRUCTION_DRAW.url,
-    visible: true,
-    listMode: 'hide',
-    native: {
-      sublayers: [
-        {
-          id: 1,
-          title: ConstructionMapDefinitions.PLANNED_CONSTRUCTION_AREA.name,
-          visible: true,
-          popupEnabled: false
-        },
-        {
-          id: 0,
-          title: ConstructionMapDefinitions.CURRENT_CONSTRUCTION_AREA.name,
-          visible: true,
-          popupEnabled: false
-        }
-      ] as unknown as esri.SublayerProperties[]
     }
   },
   {
