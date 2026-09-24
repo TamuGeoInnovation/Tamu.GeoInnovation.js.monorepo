@@ -15,9 +15,12 @@ export class EventLocationService extends BaseProvider<EventLocation> {
     super(esRepo);
   }
 
-  public getEventLocationsForSeason(seasonGuid: string) {
+  public async getEventLocationsForSeason(seasonGuid: string) {
     try {
-      const season = this.seasonService.findOne({ where: { guid: seasonGuid } });
+      // `await`, and the method is `async` to allow it. Without both, `season` held a pending
+      // Promise -- always truthy -- so the guard below never fired and a request for a season
+      // that does not exist ran the query anyway and answered an empty list instead of 422.
+      const season = await this.seasonService.findOne({ where: { guid: seasonGuid } });
 
       if (!season) {
         throw new UnprocessableEntityException('Season not found');
