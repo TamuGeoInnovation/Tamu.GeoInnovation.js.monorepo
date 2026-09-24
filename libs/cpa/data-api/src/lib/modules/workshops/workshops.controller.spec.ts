@@ -20,7 +20,9 @@ describe('Workshops Controller', () => {
     workshopsController = module.get<WorkshopsController>(WorkshopsController);
   });
 
-  const mockParameters = 'foobar';
+  // The controller methods take payload objects, not a string. `foobar` predates the
+  // IWorkshopSnapshotPayload signatures.
+  const mockParameters = { snapshotGuid: 'snapshot-guid', workshopGuid: 'workshop-guid' };
 
   describe('Validation ', () => {
     it('controller should be defined', async () => {
@@ -38,16 +40,23 @@ describe('Workshops Controller', () => {
 
   describe('deleteSnapshot', () => {
     it('should call service method deleteSnapshot', async () => {
-      const expectedResult = new Workshop();
-      jest.spyOn(workshopsService, 'deleteSnapshot').mockResolvedValue(expectedResult);
-      expect(await workshopsController.addSnapshot(mockParameters)).toBe(expectedResult);
+      // removeWorkshopSnapshot resolves IWorkshopExtractedSnapshots, whose `snapshots` are
+      // Snapshot rather than WorkshopSnapshot, so a bare Workshop no longer satisfies it.
+      const expectedResult = { ...new Workshop(), snapshots: [] } as unknown as Awaited<
+        ReturnType<WorkshopsService['removeWorkshopSnapshot']>
+      >;
+      jest.spyOn(workshopsService, 'removeWorkshopSnapshot').mockResolvedValue(expectedResult);
+      expect(await workshopsController.deleteSnapshot(mockParameters)).toBe(expectedResult);
     });
   });
 
   describe('getOne', () => {
-    it('should call service method getOne', async () => {
+    // The controller delegates to getWorkshop, not the BaseService getOne. The spec mocked
+    // getOne, so the real getWorkshop ran against a jest.mock()'d service and returned
+    // undefined.
+    it('should call service method getWorkshop', async () => {
       const expectedResult = new Workshop();
-      jest.spyOn(workshopsService, 'getOne').mockResolvedValue(expectedResult);
+      jest.spyOn(workshopsService, 'getWorkshop').mockResolvedValue(expectedResult);
       expect(await workshopsController.getOne(mockParameters)).toBe(expectedResult);
     });
   });

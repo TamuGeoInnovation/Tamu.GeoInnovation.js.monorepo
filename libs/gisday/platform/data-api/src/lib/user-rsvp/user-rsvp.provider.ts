@@ -1,4 +1,10 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -41,6 +47,13 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
         }
       });
 
+      // The result was not checked. `event` being null carried straight through to `create`
+      // below -- the relation is nullable -- so a guid matching no event answered 201 and left an
+      // orphan RSVP behind. `CheckInProvider.insertUserCheckin` guards the same case.
+      if (!event) {
+        throw new UnprocessableEntityException(null, 'Event could not be found');
+      }
+
       const existingRsvp = await this.userRsvpRepo.findOne({
         where: {
           event: event,
@@ -48,8 +61,10 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
         }
       });
 
+      // Was a bare `Error`, which the catch below wrapped as InternalServerErrorException -- so
+      // RSVPing twice answered 500 instead of telling the caller it had already happened.
       if (existingRsvp) {
-        throw new Error('RSVP already exists');
+        throw new UnprocessableEntityException(null, 'RSVP already exists');
       }
 
       const newUserRsvp = this.userRsvpRepo.create({
@@ -59,6 +74,12 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
 
       return this.userRsvpRepo.save(newUserRsvp);
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException(`Error creating RSVP. ${err}`);
     }
   }

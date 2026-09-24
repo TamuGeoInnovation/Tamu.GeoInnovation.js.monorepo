@@ -1,0 +1,83 @@
+name: GIS Day E2E
+
+# Standalone rather than called from main.yml, and path-filtered, so a Playwright run only happens
+# when GIS Day or the suite itself changes. Playwright does not participate in `nx affected` here
+# (see the note in playwright.config.ts), so these filters do that job instead -- without them,
+# every AggieMap commit would boot an Angular dev server for nothing.
+#
+# The path list is duplicated rather than shared via a YAML anchor: GitHub Actions does not support
+# anchors or aliases in workflow files. Keep the two lists in sync.
+on:
+  push:
+    branches: [development, master]
+    paths:
+      - 'apps/gisday-angular/**'
+      - 'libs/gisday/**'
+      - 'test/e2e/**'
+      - 'playwright.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/e2e.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'apps/gisday-angular/**'
+      - 'libs/gisday/**'
+      - 'test/e2e/**'
+      - 'playwright.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/e2e.yml'
+
+concurrency:
+  group: e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Playwright
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.1'
+
+      - uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      # Cached separately from node_modules: the browser binaries are large and change only when
+      # the Playwright version does.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      # playwright.config.ts starts the dev server itself via its `webServer` block.
+      - name: Run E2E tests
+        run: npx playwright test --config=playwright.config.ts
+
+      - name: Upload report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 14

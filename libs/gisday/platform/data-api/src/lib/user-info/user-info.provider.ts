@@ -1,4 +1,5 @@
 import {
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotImplementedException,
@@ -50,8 +51,15 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
       throw new UnprocessableEntityException('User metadata is incomplete.');
     }
 
-    if (!updatedUserInfo.app_metadata.gisday.attendeeType) {
+    if (!updatedUserInfo.app_metadata.gisday?.attendeeType) {
       throw new UnprocessableEntityException('User metadata (gisday) is incomplete.');
+    }
+
+    // Every validation block below is keyed to a known attendee type, so an unrecognized value
+    // matched none of them: the request skipped validation entirely and was still marked as a
+    // completed profile on the way out.
+    if (!Object.values(ParticipantType).includes(updatedUserInfo.app_metadata.gisday.attendeeType)) {
+      throw new UnprocessableEntityException('User metadata (gisday) has an unrecognized attendee type.');
     }
 
     //
@@ -59,7 +67,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     //
     if (updatedUserInfo.app_metadata.gisday.attendeeType === ParticipantType.Student) {
       if (
-        !updatedUserInfo.user_metadata.education.id ||
+        !updatedUserInfo.user_metadata.education?.id ||
         !updatedUserInfo.user_metadata.education.fieldOfStudy ||
         !updatedUserInfo.user_metadata.education.classification
       ) {
@@ -88,7 +96,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     //
     if (updatedUserInfo.app_metadata.gisday.attendeeType === ParticipantType.Academia) {
       if (
-        !updatedUserInfo.user_metadata.occupation.employer ||
+        !updatedUserInfo.user_metadata.occupation?.employer ||
         !updatedUserInfo.user_metadata.occupation.department ||
         !updatedUserInfo.user_metadata.occupation.position
       ) {
@@ -117,7 +125,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     //
     if (updatedUserInfo.app_metadata.gisday.attendeeType === ParticipantType.Industry) {
       if (
-        !updatedUserInfo.user_metadata.occupation.employer ||
+        !updatedUserInfo.user_metadata.occupation?.employer ||
         !updatedUserInfo.user_metadata.occupation.department ||
         !updatedUserInfo.user_metadata.occupation.position
       ) {
@@ -170,6 +178,12 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
 
       return institution;
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException('Error resolving university.');
     }
   }
@@ -195,6 +209,12 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
 
       return organization;
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException('Error resolving organization.');
     }
   }

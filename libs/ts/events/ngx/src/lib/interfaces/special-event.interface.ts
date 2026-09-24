@@ -503,8 +503,12 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
 
 /**
  * High-level discover grouping used by the tabbed Discover page UI.
+ *
+ * `kiosk` maps are intentionally excluded from every generic discover grouping (search, "All
+ * Events", parking columns, quick links) — they are only ever surfaced in the dedicated,
+ * development-only "Kiosk Maps" section. See `DiscoveryService.getKioskDiscoverApplications`.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'satellite-campus';
+export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'satellite-campus' | 'kiosk';
 
 /**
  * Metadata used to represent a map in the Discover application.
@@ -528,18 +532,24 @@ export interface DiscoverMetadata {
   labels?: string[];
   source: 'internal';
   /**
+  /**
    * `satellite-campus` identifies a single-basemap map for a TAMU campus other than College Station
    * (Galveston, McAllen, DC, etc.). It resolves to the `/campus/:id` route, is excluded from the
    * general "Search Maps" list, and is instead surfaced only via the dedicated Campus Maps listing
    * page.
+   *
+   * `kiosk` identifies a sidebar-free, preset-layer map meant to be embedded elsewhere (for example,
+   * in a mobile app webview). It resolves to the `/kiosk/:id` route and is never listed in the
+   * normal discover search, "All Events", or column groupings.
    */
-  type: 'event' | 'parking' | 'operations' | 'satellite-campus';
+  type: 'event' | 'parking' | 'operations' | 'satellite-campus' | 'kiosk';
   /**
    * Optional tab grouping override for the Discover page.
    *
    * When omitted, consuming UIs can derive a sensible default from `type`.
    */
   mapType?: DiscoverMapType;
+
 
   /**
    * Optional sub-category used to group parking maps into named columns (General / Business / Permit)

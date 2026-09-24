@@ -31,6 +31,13 @@ export class AllMapsComponent implements OnInit {
   private internalApplications: InternalDiscoverApplication[];
   private allApplications: DiscoverApplication[];
 
+  /**
+   * Dev-only listing of "kiosk" (sidebar-free, preset-layer) maps, surfaced here with their full,
+   * shareable URLs so the team embedding them (e.g. in a mobile app webview) can copy them. Never
+   * shown in prod and never searchable, even in dev — see `DiscoveryService.getKioskDiscoverApplications`.
+   */
+  public kioskApplications: Array<InternalDiscoverApplication & { url: string }> = [];
+
   public upcomingApplications: InternalDiscoverApplication[] = [];
   public quickLinks: QuickLinkItem[] = [];
 
@@ -56,6 +63,10 @@ export class AllMapsComponent implements OnInit {
     this.allApplications = this.discoveryService
       .getAllDiscoverApplications()
       .filter((app) => !(app.source === 'internal' && app.type === 'satellite-campus'));
+    this.kioskApplications = this.discoveryService.getKioskDiscoverApplications().map((app) => ({
+      ...app,
+      url: `${window.location.origin}${getApplicationRoute(app).join('/')}`
+    }));
     this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
       label: app.name,
       routerLink: getApplicationRoute(app)

@@ -33,11 +33,28 @@ describe('FileComponent', () => {
     expect(component.checked).toBeTruthy();
   });
 
+  /**
+   * `handleFileChange` no longer uses FileReader -- the previous assertion spied on
+   * `FileReader.prototype.readAsDataURL`, which the component stopped calling. It now reads the
+   * file's metadata, stores the file as the control value, emits `fileSelected`, and clears the
+   * input so the same file can be picked again. Assert that instead.
+   */
   it('should handleFileChange()', () => {
     const mockFile = new File(['go'], 'go.text', { type: 'text/plain' });
-    const mockEvt = { target: { files: [mockFile] } };
-    const readAsDataURLSpy = jest.spyOn(FileReader.prototype, 'readAsDataURL');
+    const mockEvt = { target: { files: [mockFile], value: 'go.text' } };
+
+    const emitted: Array<File> = [];
+    component.fileSelected.subscribe((f: File) => emitted.push(f));
+
     component.handleFileChange(mockEvt);
-    expect(readAsDataURLSpy).toBeCalledWith(mockFile);
+
+    expect(component.fileName).toEqual('go.text');
+    expect(component.dataType).toEqual('text/plain');
+    expect(component.fileExtension).toEqual('text');
+    // The component defines a `value` setter but names its getter `checked`, so `value`
+    // is write-only. The stored file is therefore read back through `checked`.
+    expect(component.checked).toBe(mockFile);
+    expect(emitted).toEqual([mockFile]);
+    expect(mockEvt.target.value).toEqual('');
   });
 });

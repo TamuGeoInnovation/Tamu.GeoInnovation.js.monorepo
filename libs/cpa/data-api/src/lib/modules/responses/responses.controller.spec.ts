@@ -22,7 +22,14 @@ describe('Responses Controller', () => {
     responsesController = module.get<ResponsesController>(ResponsesController);
   });
 
-  const mockParameters = 'foobar';
+  // The controller takes IResponseRequestDto objects, not a string.
+  const mockParameters = {
+    snapshotGuid: 'snapshot-guid',
+    workshopGuid: 'workshop-guid',
+    scenarioGuid: 'scenario-guid',
+    participantGuid: 'participant-guid',
+    shapes: {}
+  };
 
   describe('Validation ', () => {
     it('controller should be defined', async () => {
@@ -30,11 +37,11 @@ describe('Responses Controller', () => {
     });
   });
 
-  describe('getAllForScenarioAndWorkshop', () => {
+  describe('getAllForSnapshotAndWorkshop', () => {
     it('should call service method getAllForBoth', async () => {
       const expectedResult = [];
       jest.spyOn(responsesService, 'getAllForBoth').mockResolvedValue(expectedResult);
-      expect(await responsesController.getAllForScenarioAndWorkshop(mockParameters)).toBe(expectedResult);
+      expect(await responsesController.getAllForSnapshotAndWorkshop(mockParameters)).toBe(expectedResult);
     });
   });
 

@@ -1,4 +1,4 @@
-import { Injectable, Logger, UnprocessableEntityException } from '@nestjs/common';
+import { HttpException, Injectable, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { DeleteResult, In, Repository } from 'typeorm';
@@ -73,8 +73,16 @@ export class UniversityProvider extends BaseProvider<University> {
     });
 
     try {
-      return this.universityRepo.save(newEntities);
+      // Returned without awaiting, the promise settles outside this try and the catch below
+      // never ran, so a failed write surfaced as a raw driver error rather than the 422.
+      return await this.universityRepo.save(newEntities);
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(err.message, 'UniversityProvider');
       throw new UnprocessableEntityException('Could not insert universities into season.');
     }
@@ -84,7 +92,9 @@ export class UniversityProvider extends BaseProvider<University> {
     const guids = typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids;
 
     try {
-      return this.universityRepo.manager.transaction(async (transactionalEntityManager) => {
+      // Awaited so the catch below can actually see a failed transaction; see the note in
+      // `insertUniversitiesIntoSeason`.
+      return await this.universityRepo.manager.transaction(async (transactionalEntityManager) => {
         const speakersForUniversity = await transactionalEntityManager.find(Speaker, {
           where: {
             university: In(guids)
@@ -102,6 +112,12 @@ export class UniversityProvider extends BaseProvider<University> {
         return transactionalEntityManager.delete(University, guids);
       });
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(err.message, 'UniversityProvider.deleteEntities');
       throw new UnprocessableEntityException('Could not delete universities.');
     }

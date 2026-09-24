@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, Repository } from 'typeorm';
 
@@ -20,6 +20,12 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
         }
       });
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException(err);
     }
   }
@@ -35,6 +41,12 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
         }
       });
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException(err);
     }
   }
@@ -52,6 +64,12 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
         }
       });
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException(err);
     }
   }
@@ -83,9 +101,21 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
       try {
         return Promise.all(newEntities);
       } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
         throw new InternalServerErrorException(err);
       }
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new UnprocessableEntityException(err);
     }
   }
@@ -114,6 +144,12 @@ export class EventBroadcastService extends BaseProvider<EventBroadcast> {
         return transactionalEntityManager.delete(EventBroadcast, guids);
       });
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(err.message, 'EventBroadcastService.deleteEntities');
       throw new InternalServerErrorException('Could not delete entities');
     }

@@ -1,3 +1,4 @@
+import { NotImplementedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Lockdown } from '@tamu-gisc/covid/common/entities';
@@ -149,23 +150,16 @@ describe('Lockdowns Controller', () => {
 
   describe('validateLockdown', () => {
     it('should return expectedResult - Error', async () => {
-      const expectedResult = {
-        status: 501,
-        success: false,
-        message: 'Not implemented.'
-      };
-      expect(await lockdownsController.validateLockdown(mockParameters)).toEqual(expectedResult);
+      // The controller now takes no arguments and returns a NestJS NotImplementedException
+      // rather than the plain { status, success, message } object this asserted.
+      expect(await lockdownsController.validateLockdown()).toBeInstanceOf(NotImplementedException);
     });
   });
 
   describe('deleteValidatedLockdown', () => {
     it('should return expectedResult - Error', async () => {
-      const expectedResult = {
-        status: 501,
-        success: false,
-        message: 'Not implemented.'
-      };
-      expect(await lockdownsController.deleteValidatedLockdown(mockParameters)).toEqual(expectedResult);
+      // See the note on validateLockdown above.
+      expect(await lockdownsController.deleteValidatedLockdown()).toBeInstanceOf(NotImplementedException);
     });
   });
 });

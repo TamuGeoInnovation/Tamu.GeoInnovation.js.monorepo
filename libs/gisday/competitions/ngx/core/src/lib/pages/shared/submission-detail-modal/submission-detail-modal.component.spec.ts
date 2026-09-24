@@ -8,6 +8,8 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
+import { EsriMapService } from '@tamu-gisc/maps/esri';
+
 import { SubmissionDetailModalComponent } from './submission-detail-modal.component';
 
 describe('SubmissionDetailModalComponent', () => {
@@ -58,7 +60,13 @@ describe('SubmissionDetailModalComponent', () => {
         { provide: SettingsService, useValue: mockSettingsService },
         { provide: EnvironmentService, useValue: mockEnvService },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: DomSanitizer, useValue: mockSanitizer }
+        { provide: DomSanitizer, useValue: mockSanitizer },
+        {
+          // EsriMapService drags in SearchService -> HttpClient -> ActivatedRoute and more.
+          // The component only reads `store`, so mock it rather than wiring the whole chain.
+          provide: EsriMapService,
+          useValue: { store: of([]) }
+        }
       ]
     }).compileComponents();
 

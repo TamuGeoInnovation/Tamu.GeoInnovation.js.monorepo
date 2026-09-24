@@ -73,7 +73,7 @@ export class WorkshopsService extends BaseService<Workshop> {
     }
 
     if (workshop) {
-      const snapshots = await getRepository(Snapshot).find({ guid: In(body.snapshotGuids) });
+      const snapshots = await getRepository(Snapshot).find({ where: { guid: In(body.snapshotGuids) } });
 
       workshop.snapshots = [];
 
@@ -137,7 +137,7 @@ export class WorkshopsService extends BaseService<Workshop> {
     const workshop = await this.getWorkshop(body.workshopGuid, false, true, false, true);
 
     if (workshop) {
-      const scenarios = await getRepository(Scenario).find({ guid: In(body.scenarioGuids) });
+      const scenarios = await getRepository(Scenario).find({ where: { guid: In(body.scenarioGuids) } });
 
       // Since emptying the workshop.scenarios and then calling workshop.remove() does not
       // actually clear the relationship and causes conflicts when adding a new row,

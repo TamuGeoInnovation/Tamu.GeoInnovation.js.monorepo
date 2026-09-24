@@ -20,7 +20,7 @@ export function pairwiseOverlap<T>(elements: T[]): T[][] {
 
     // Return the current array item and the next one.
     return [...pairs, [arr[index], arr[index + 1]]];
-  }, []);
+  }, [] as T[][]);
 }
 
 /**
@@ -37,7 +37,9 @@ export function groupBy<T extends object>(collection: Array<T>, path: string, gr
     return collection;
   }
 
-  const groupedObj = collection.reduce((acc, curr) => {
+  // The seed `{}` gives the accumulator type `{}`, so indexing it by a string key does not
+  // typecheck under strict settings. Typed as a keyed map of T arrays, which is what it is.
+  const groupedObj = collection.reduce((acc: Record<string, Array<T>>, curr) => {
     const propValue: string = getPropertyValue(curr, path);
     // TODO: This might need a test. Values that return a false boolean will not pass this expression even though the
     // property and value exist.
@@ -50,7 +52,7 @@ export function groupBy<T extends object>(collection: Array<T>, path: string, gr
     }
 
     return acc;
-  }, {});
+  }, {} as Record<string, Array<T>>);
 
   return Object.keys(groupedObj).map((g) => {
     if (groupIdentityPath) {

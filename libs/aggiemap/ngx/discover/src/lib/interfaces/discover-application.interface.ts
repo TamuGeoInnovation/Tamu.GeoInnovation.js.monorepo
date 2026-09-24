@@ -23,7 +23,7 @@ export interface ExternalDiscoverApplication extends BaseDiscoverApplication {
 
 export interface InternalDiscoverApplication extends BaseDiscoverApplication {
   source: 'internal';
-  type: 'event' | 'parking' | 'operations' | 'satellite-campus';
+  type: 'event' | 'parking' | 'operations' | 'satellite-campus' | 'kiosk';
   mapType: DiscoverMapType;
   parkingCategory?: ParkingCategory;
   columnKey?: string;

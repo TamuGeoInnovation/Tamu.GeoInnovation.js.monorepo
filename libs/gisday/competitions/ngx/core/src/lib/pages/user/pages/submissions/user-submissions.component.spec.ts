@@ -47,6 +47,12 @@ describe('UserSubmissionsComponent', () => {
   it('should fetch user submissions on init', () => {
     component.ngOnInit();
     expect(mockSettingsService.getSimpleSettingsBranch).toHaveBeenCalled();
+
+    // ngOnInit only builds submissions$. getUserSubmissions runs inside switchMap, so it
+    // does not fire until something subscribes -- the original test asserted it after
+    // ngOnInit alone, which can never have called it.
+    component.submissions$.subscribe();
+
     expect(mockSubmissionService.getUserSubmissions).toHaveBeenCalled();
   });
 });

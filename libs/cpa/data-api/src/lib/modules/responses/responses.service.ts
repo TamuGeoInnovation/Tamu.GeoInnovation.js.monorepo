@@ -83,9 +83,9 @@ export class ResponsesService extends BaseService<Response> {
       let scenario;
 
       if (body.snapshotGuid) {
-        snapshot = await getRepository(Snapshot).findOne({ guid: body.snapshotGuid });
+        snapshot = await getRepository(Snapshot).findOne({ where: { guid: body.snapshotGuid } });
       } else if (body.scenarioGuid) {
-        scenario = await getRepository(Scenario).findOne({ guid: body.scenarioGuid });
+        scenario = await getRepository(Scenario).findOne({ where: { guid: body.scenarioGuid } });
       }
 
       if ((workshop && snapshot) || (workshop && scenario)) {

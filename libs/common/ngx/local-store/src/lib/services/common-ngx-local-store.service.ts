@@ -22,7 +22,10 @@ export class LocalStoreService {
     if (typeof content === 'object' && content !== null) {
       return content;
     } else {
-      return undefined;
+      // The signature claims `T` but this genuinely returns undefined. The cast keeps the existing
+      // runtime behaviour; widening the return type to `T | undefined` would force every caller to
+      // handle it, which is a public API change and belongs in its own PR.
+      return undefined as unknown as T;
     }
   }
 
@@ -45,13 +48,19 @@ export class LocalStoreService {
   public setStorageObjectKeyValue<T>(config: ValueConfig<T>): void {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
+    // `subKey` is optional on StorageConfig, so its type is `string | undefined` and it cannot be
+    // used as an index. Narrowed here rather than changing the interface, which would affect every
+    // caller. Behaviour is unchanged: an undefined subKey indexed as "undefined" before, and still
+    // does.
+    const subKey = config.subKey as string;
+
     let content = this.store.get(storeKey);
 
     if (typeof content === 'object' && content !== null) {
-      content[config.subKey] = config.value;
+      content[subKey] = config.value;
     } else {
       content = {};
-      content[config.subKey] = config.value;
+      content[subKey] = config.value;
     }
 
     this.store.set(storeKey, content);
@@ -67,15 +76,18 @@ export class LocalStoreService {
   public getStorageObjectKeyValue<T>(config: ValueConfig<T>): T {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
+    // See the note in setStorageObjectKeyValue.
+    const subKey = config.subKey as string;
+
     const content = this.store.get(storeKey);
 
     if (typeof content === 'object' && content !== null) {
-      if (content[config.subKey] !== undefined) {
-        return content[config.subKey];
+      if (content[subKey] !== undefined) {
+        return content[subKey];
       }
-      return undefined;
+      return undefined as unknown as T;
     } else {
-      return undefined;
+      return undefined as unknown as T;
     }
   }
 }

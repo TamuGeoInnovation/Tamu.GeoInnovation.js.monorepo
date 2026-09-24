@@ -12,7 +12,10 @@
  */
 export function getPropertyValue<T>(lookup: object, property: string, isFlatPath = false): T {
   if (!lookup || !property) {
-    return undefined;
+    // The signature claims `T`, and the doc comment above says it returns undefined when
+    // there is no match. The cast keeps that behaviour; widening the return type to
+    // `T | undefined` is a public API change affecting every caller.
+    return undefined as unknown as T;
   }
 
   const path = isFlatPath ? [property] : property.split('.');

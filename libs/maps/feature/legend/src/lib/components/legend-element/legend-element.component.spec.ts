@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { LegendElementComponent } from './legend-element.component';
@@ -20,7 +21,13 @@ describe('LegendElementComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [LegendElementComponent],
-      providers: [{ provide: EsriModuleProviderService, useValue: spy }]
+        providers: [
+          { provide: EsriModuleProviderService, useValue: spy },
+          // LegendElementComponent pulls in LayerSourcesService, which injects
+          // EnvironmentService. Mocked directly rather than importing EnvironmentModule,
+          // matching the pattern already used in layer-sources.service.spec.ts.
+          { provide: EnvironmentService, useValue: { value: jest.fn().mockReturnValue([]) } }
+        ]
     }).compileComponents();
   });
 

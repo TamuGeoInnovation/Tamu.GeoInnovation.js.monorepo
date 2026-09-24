@@ -21,26 +21,39 @@ const eventUrl = Connections.kickoff150thUrl;
 /**
  * Picture-marker art from the service's published renderer, inlined because the hosted service's image
  * endpoint (`/0/images/<hash>`) returns 400, which would leave the markers and legend swatches blank.
+ *
+ * Because these are static copies (not fetched live from the service), this data goes stale whenever
+ * the source renderer's symbol is updated in ArcGIS -- the map keeps showing whatever was inlined here
+ * at the time this file was last synced. If a marker looks outdated, re-pull `imageData` from
+ * `${eventUrl}/0?f=json` (`drawingInfo.renderer.uniqueValueGroups[0].classes[].symbol.imageData`) and
+ * paste the refreshed base64 in below. Last synced: 2026-09-23 (Event Location symbol refreshed).
  */
 const EVENT_LOCATION_IMAGE_DATA =
-  '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';
+  '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' +
+  '2QAAAABJRU5ErkJggg==';
 
 const SHUTTLE_IMAGE_DATA =
   'iVBORw0KGgoAAAANSUhEUgAAADwAAABJCAYAAABhE0UAAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAACNJJREFUeNrsW1tsFFUYPl1a' +
@@ -125,7 +138,7 @@ export const Kickoff150thLayerSources: LayerSource[] = [
         uniqueValueInfos: [
           {
             value: 'Event Location',
-            label: 'Event Location',
+            label: 'Opening Ceremony Location',
             symbol: { type: 'picture-marker', url: EVENT_LOCATION_ICON_URL, width: 24, height: 30 }
           },
           {

@@ -101,6 +101,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this._connections = this.env.value?.('Connections') ?? {};
     this.isDev = this.ts.get?.('isTesting') ?? of(false);
 
+
     try {
       const eventDates = root?.configuration?.eventDates || [];
 

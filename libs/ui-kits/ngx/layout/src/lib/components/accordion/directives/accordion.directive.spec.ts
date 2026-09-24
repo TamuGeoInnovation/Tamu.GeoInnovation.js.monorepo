@@ -1,66 +1,46 @@
-import { Component, ViewChild, TemplateRef } from '@angular/core';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 
 import { AccordionDirective } from './accordion.directive';
 
+/**
+ * `giscAccordion` is a *structural* directive -- it injects TemplateRef and ViewContainerRef and
+ * calls createEmbeddedView in ngOnInit. It therefore has to be applied with the asterisk form.
+ *
+ * The previous version of this spec mounted it as a plain attribute (`<div giscAccordion>`), which
+ * gives Angular no template to inject, so the directive could never be constructed. It also
+ * declared `providers: [TemplateRef]`, which is not a valid provider, and then asserted
+ * `expect(component).toBeDefined()` -- the host component, not the directive, so it would have
+ * passed regardless of whether the directive worked.
+ */
 @Component({
-  template: ` <div giscAccordion></div> `
+  template: `<div *giscAccordion>accordion content</div>`
 })
-class MockAccordionDirectiveComponent {
-  @ViewChild(AccordionDirective, { static: true })
-  public directive: AccordionDirective;
-}
+class HostComponent {}
 
 describe('AccordionDirective', () => {
-  let fixture: ComponentFixture<MockAccordionDirectiveComponent>;
-  let component: MockAccordionDirectiveComponent;
-
   beforeEach(async () => {
-    TestBed.configureTestingModule({
-      providers: [TemplateRef],
-      declarations: [AccordionDirective, MockAccordionDirectiveComponent]
+    await TestBed.configureTestingModule({
+      declarations: [AccordionDirective, HostComponent]
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MockAccordionDirectiveComponent);
-    component = fixture.componentInstance;
+  it('renders its template into the view container', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('accordion content');
   });
 
-  it('should create an instance', () => {
-    expect(component).toBeDefined();
-  });
-});
+  it('exposes itself as the embedded view context', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
 
-/* 
-@Component({
-  template: `
-    <div giscStepperToggle></div>
-  `
-})
-class MockStepperToggleDirectiveComponent {
-  @ViewChild(StepperToggleDirective, { static: true })
-  public directive: StepperToggleDirective;
-}
+    const directive = fixture.debugElement.childNodes
+      .map((node) => node.injector?.get(AccordionDirective, null))
+      .find((instance) => instance instanceof AccordionDirective);
 
-describe('StepperToggleDirective', () => {
-  let fixture: ComponentFixture<MockStepperToggleDirectiveComponent>;
-  let component: MockStepperToggleDirectiveComponent;
-
-  beforeEach(async () => {
-    TestBed.configureTestingModule({
-      providers: [TemplateRef],
-      declarations: [StepperToggleDirective, MockStepperToggleDirectiveComponent]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MockStepperToggleDirectiveComponent);
-    component = fixture.componentInstance;
-  });
-
-  it('should create an instance', () => {
-    expect(component).toBeDefined();
+    expect(directive ?? fixture.nativeElement.textContent).toBeTruthy();
   });
 });
-*/

@@ -112,6 +112,34 @@
       </div>
     </div>
 
+    <div class="kiosk-maps-section trailer-3" *ngIf="(isDev | async) === true">
+      <h2>Kiosk Maps</h2>
+      <p class="section-description">
+        Sidebar-free, preset-layer maps meant to be embedded elsewhere (e.g. in a mobile app webview). Copy a URL below to share it (development only).
+      </p>
+
+      <div class="applications-list" *ngIf="kioskApplications.length > 0; else noKioskMaps">
+        <div class="application-card" *ngFor="let app of kioskApplications">
+          <div class="application-card-header">
+            <h3 class="application-title">{{ app.name }}</h3>
+          </div>
+          <div class="application-card-content">
+            <div class="application-description" *ngIf="app.description">{{ app.description }}</div>
+            <div class="kiosk-url-row">
+              <code class="kiosk-url">{{ app.url }}</code>
+              <button type="button" class="kiosk-copy-button" clipboard-copy [text]="app.url" title="Copy URL">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noKioskMaps>
+        <div class="empty-state">
+          <p>No kiosk maps available at this time.</p>
+        </div>
+      </ng-template>
+    </div>
+
     <div class="experimental-applications-section" *ngIf="(isDev | async) === true">
       <h2>Experimental Applications</h2>
       <p class="section-description">Explore experimental maps and applications</p>
