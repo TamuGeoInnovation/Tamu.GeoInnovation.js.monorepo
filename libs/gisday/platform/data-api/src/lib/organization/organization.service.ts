@@ -208,10 +208,15 @@ export class OrganizationService extends BaseProvider<Organization> {
       relations: ['speakers', 'speakers.organization']
     });
 
-    // Pluck out all orgs from event speakers
-
+    // Pluck out all orgs from event speakers.
+    //
+    // Speakers without an organization are dropped here rather than carried into the
+    // de-duplication below, which reads `org.guid` and threw a TypeError on them. That state is
+    // not bad data -- `deleteEntities` further down sets `speaker.organization = null` on every
+    // speaker of an organization it removes, so deleting an organization used to break this
+    // endpoint for every caller until those speakers were reassigned.
     const orgs = events.reduce((acc, curr) => {
-      const orgs = curr.speakers.map((s) => s.organization);
+      const orgs = (curr.speakers ?? []).map((s) => s.organization).filter((o) => o != null);
 
       return [...acc, ...orgs];
     }, []);
