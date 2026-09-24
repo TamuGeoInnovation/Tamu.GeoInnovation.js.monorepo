@@ -9,15 +9,15 @@ import { buildMapColumnGroups, getApplicationRoute, sortApplicationsByName, MapC
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 interface EventMapsRouteData {
-  mapType: Extract<DiscoverMapType, 'campus' | 'athletics' | 'operations' | 'satellite-campus'>;
+  mapType: Extract<DiscoverMapType, 'campus' | 'athletics' | 'operations'>;
   title: string;
   intro?: string;
   columns?: Array<MapColumnDefinition>;
 }
 
 /**
- * Shared page for the event map categories (Campus Events, Athletics Events, Campus Maps). The
- * category is supplied via the route `data` so a single component serves all of these routes.
+ * Shared page for the event map categories (Campus Events, Athletics Events). The category is
+ * supplied via the route `data` so a single component serves both routes.
  */
 @Component({
   selector: 'tamu-gisc-aggiemap-event-maps',

@@ -66,9 +66,6 @@ import { AggieFamilyParadeTs } from './aggie-family-parade.definitions';
 import { GamesOfTexasTs } from './games-of-texas.definitions';
 import { SpiritOf150WeekTs } from './spirit-of-150-week.definitions';
 import { Kickoff150thTs } from './150th-kickoff.definitions';
-import { GalvestonTs } from './campus/galveston.definitions';
-import { McAllenTs } from './campus/mcallen.definitions';
-import { DCBushSchoolTs } from './campus/dc-bush-school.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -137,8 +134,5 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   GamesOfTexasTs,
   SpiritOf150WeekTs,
   Kickoff150thTs,
-  GalvestonTs,
-  McAllenTs,
-  DCBushSchoolTs,
   DiningKioskTs
 ];

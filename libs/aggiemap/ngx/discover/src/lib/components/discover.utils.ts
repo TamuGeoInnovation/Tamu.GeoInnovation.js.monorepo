@@ -2,11 +2,10 @@ import { DiscoverApplication, InternalDiscoverApplication } from '../interfaces/
 
 /**
  * Builds the router commands used to navigate to a map application. Events live under `/events`,
- * satellite-campus maps live under `/campus`, everything else (parking, operations) is routed
- * under its own type segment.
+ * everything else (parking, operations) is routed under its own type segment.
  */
 export function getApplicationRoute(app: InternalDiscoverApplication): string[] {
-  const routeSegment = app.type === 'event' ? 'events' : app.type === 'satellite-campus' ? 'campus' : app.type;
+  const routeSegment = app.type === 'event' ? 'events' : app.type;
 
   // Kiosk maps have no builder/options flow, so their working route always includes the trailing
   // `map` segment (e.g. `/kiosk/dining/map`) rather than `/kiosk/dining`.
