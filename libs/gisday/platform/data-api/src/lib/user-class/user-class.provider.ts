@@ -41,13 +41,21 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       }
     });
 
+    // Unguarded, a guid matching no class still created a registration -- with a null class,
+    // so the row belonged to no class and could never appear on a roster.
+    if (!existing) {
+      throw new NotFoundException('Class not found');
+    }
+
     const created = await this.userClassRepo.create({
       class: existing,
       accountGuid: accountGuid
     });
 
     try {
-      return this.userClassRepo.save(created);
+      // Returned without awaiting, the promise settled outside this try and the catch below
+      // never ran.
+      return await this.userClassRepo.save(created);
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
@@ -86,7 +94,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
     }
 
     try {
-      return this.userClassRepo.delete(foundClass.guid);
+      return await this.userClassRepo.delete(foundClass.guid);
     } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
