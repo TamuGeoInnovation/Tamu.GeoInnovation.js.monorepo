@@ -1,0 +1,12 @@
+<div class="visit-maps-row">
+  <ng-content></ng-content>
+
+  <a class="visit-maps-tile" *ngFor="let tile of tiles" [routerLink]="tile.route" [attr.aria-label]="tile.label">
+    <span class="visit-maps-icon">
+      <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+        <path [attr.d]="tile.icon" />
+      </svg>
+    </span>
+    <span class="visit-maps-label">{{ tile.label }}</span>
+  </a>
+</div>

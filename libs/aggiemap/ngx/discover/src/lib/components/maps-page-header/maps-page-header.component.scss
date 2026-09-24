@@ -14,13 +14,13 @@
   gap: 2rem;
 }
 
-// Directory pages (Parking / Campus / Athletics): strong condensed maroon Oswald, but controlled —
-// smaller and lighter than a hero banner so it doesn't overpower the body copy beneath it.
+// Matches the All Maps landing page title treatment: near-black, light-weight condensed Oswald.
 .maps-page-title {
-  color: #500000;
-  font-weight: 600;
-  font-size: 2.2rem;
-  line-height: 1.1;
+  color: #111;
+  font-weight: 300;
+  font-size: 2.6rem;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   margin: 0 0 0.6rem;
 }
