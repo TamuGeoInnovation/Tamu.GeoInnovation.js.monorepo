@@ -1,41 +1,102 @@
-import { async, TestBed } from '@angular/core/testing';
 import { TileService } from './tile.service';
 
+/**
+ * Constructed directly rather than through `TestBed`. The service has no injected dependencies, so
+ * a testing module adds nothing -- the previous version configured an empty one and then ignored it,
+ * building the service with `new` anyway.
+ */
 describe('TileService', () => {
   let service: TileService;
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({});
+
+  beforeEach(() => {
     service = new TileService();
-  }));
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should toggleMenu: True to false', () => {
-    service.toggleMenu();
-    expect(service.menuActive.value).toBeTruthy();
-    service.toggleMenu();
-    expect(service.menuActive.value).toBeFalsy();
+  describe('.toggleMenu()', () => {
+    it('starts closed and flips on each call', () => {
+      expect(service.menuActive.value).toBe(false);
+
+      service.toggleMenu();
+      expect(service.menuActive.value).toBe(true);
+
+      service.toggleMenu();
+      expect(service.menuActive.value).toBe(false);
+    });
+
+    it('uses an explicit state instead of flipping when one is given', () => {
+      service.toggleMenu(false);
+      expect(service.menuActive.value).toBe(false);
+
+      service.toggleMenu(true);
+      service.toggleMenu(true);
+      expect(service.menuActive.value).toBe(true);
+    });
   });
 
-  it('should toggleSubmenu: True to false', () => {
-    service.toggleSubmenu();
-    expect(service.submenuActive.value).toBeTruthy();
-    service.toggleSubmenu();
-    expect(service.submenuActive.value).toBeFalsy();
+  describe('.toggleSubmenu()', () => {
+    it('starts closed and flips on each call', () => {
+      expect(service.submenuActive.value).toBe(false);
+
+      service.toggleSubmenu();
+      expect(service.submenuActive.value).toBe(true);
+
+      service.toggleSubmenu();
+      expect(service.submenuActive.value).toBe(false);
+    });
+
+    it('uses an explicit state instead of flipping when one is given', () => {
+      service.toggleSubmenu(false);
+      service.toggleSubmenu(false);
+      expect(service.submenuActive.value).toBe(false);
+    });
   });
 
-  it('should toggleSubmenu: False to stay false', () => {
-    service.toggleSubmenu(false);
-    expect(service.submenuActive.value).toBeFalsy();
+  /**
+   * The previous version of this file toggled the *menu* and then asserted on the *submenu*, which
+   * was already false -- so it passed without testing anything and would have kept passing if
+   * `toggleMenu` stopped working. The two states are genuinely independent, which is what that
+   * assertion was reaching for, so it is covered explicitly here.
+   */
+  it('keeps the menu and submenu states independent', () => {
+    service.toggleMenu(true);
+
+    expect(service.menuActive.value).toBe(true);
+    expect(service.submenuActive.value).toBe(false);
+
+    service.toggleSubmenu(true);
     service.toggleMenu(false);
-    expect(service.submenuActive.value).toBeFalsy();
+
+    expect(service.menuActive.value).toBe(false);
+    expect(service.submenuActive.value).toBe(true);
   });
 
-  it('should updateSubmenu', () => {
-    const testInterface = { template: undefined, title: 'yeet' };
-    service.updateSubmenu(testInterface);
-    expect(service.activeSubMenu.getValue()).toStrictEqual({ template: undefined, title: 'yeet' });
+  describe('.updateSubmenu()', () => {
+    it('publishes the submenu to subscribers', () => {
+      const submenu = { template: undefined, title: 'yeet' };
+
+      service.updateSubmenu(submenu);
+
+      expect(service.activeSubMenu.getValue()).toStrictEqual(submenu);
+    });
+
+    // Consumers subscribe to render the sub-menu, so the stream has to emit rather than only hold
+    // the latest value.
+    it('emits to an existing subscriber', () => {
+      const seen: Array<unknown> = [];
+      service.activeSubMenu.subscribe((v) => seen.push(v));
+
+      service.updateSubmenu({ template: undefined, title: 'first' });
+      service.updateSubmenu({ template: undefined, title: 'second' });
+
+      expect(seen).toEqual([
+        undefined,
+        { template: undefined, title: 'first' },
+        { template: undefined, title: 'second' }
+      ]);
+    });
   });
 });

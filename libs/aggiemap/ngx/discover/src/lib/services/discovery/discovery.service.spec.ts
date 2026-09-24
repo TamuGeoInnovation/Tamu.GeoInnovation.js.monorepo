@@ -9,12 +9,10 @@ describe('DiscoveryService', () => {
   let service: DiscoveryService;
 
   beforeEach(() => {
+    // DiscoveryService takes no constructor dependencies, so an empty testing module is all
+    // `inject` needs. Anything added to the service later has to be provided here.
     TestBed.configureTestingModule({});
     service = TestBed.inject(DiscoveryService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
   });
 
   it('defaults standard event maps to the campus tab', () => {
