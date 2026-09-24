@@ -8,10 +8,7 @@ import {
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
 
-import esri = __esri;
-
 export enum CONSTRUCTION_MAP_LAYERS {
-  CONSTRUCTION_DRAW = 'construction-map-draw',
   CURRENT_CONSTRUCTION_AREA = 'current-construction-area',
   PLANNED_CONSTRUCTION_AREA = 'planned-construction-area',
   CONSTRUCTION_POPUP = 'construction-map-popup',
@@ -22,9 +19,11 @@ export enum CONSTRUCTION_MAP_LAYERS {
  * Two ArcGIS services back this map:
  *
  *   eventUrl (TSConstruction/MapServer)
- *     Sublayer 0 (current) and sublayer 1 (planned). Drives the MapImageLayer that
- *     produces the visible cross-hatched fills, and the two visible FeatureLayers
- *     that drive the legend swatches.
+ *     Sublayer 0 (current) and sublayer 1 (planned). Both sublayers use a
+ *     `esriSFSDiagonalCross` fill (a style natively supported by the ArcGIS JS API's
+ *     SimpleFillSymbol), so the two visible FeatureLayers render the cross-hatched fills
+ *     directly from the service's own renderer — no proxy MapImageLayer is needed, and
+ *     toggling each FeatureLayer's visibility (TOC or legend) directly controls what's drawn.
  *     Sublayer 1 field schema: Name, Number, StartDate, EndDate, Owner (no Description).
  *
  *   popupEventUrl (FCOR/Construction_2018/MapServer)
@@ -82,11 +81,6 @@ const constructionPopupData: NonNullable<LayerSource['popupData']> = {
 };
 
 export const ConstructionMapDefinitions = {
-  CONSTRUCTION_DRAW: {
-    id: CONSTRUCTION_MAP_LAYERS.CONSTRUCTION_DRAW,
-    name: 'Construction Map Draw',
-    url: eventUrl
-  },
   CURRENT_CONSTRUCTION_AREA: {
     id: CONSTRUCTION_MAP_LAYERS.CURRENT_CONSTRUCTION_AREA,
     name: 'Current Construction Area',
@@ -112,16 +106,16 @@ export const ConstructionMapDefinitions = {
 /**
  * Layer architecture:
  *
- *   Two FeatureLayers drive the legend (one per area). The MapImageLayer above them
- *   covers their default rendering with server-side cross-hatched fills, but the
- *   FeatureLayers' renderers still populate the legend panel.
+ *   Two visible FeatureLayers render the cross-hatched construction-area fills directly
+ *   using the service's own `esriSFSDiagonalCross` renderer, and drive the legend swatches.
+ *   Because these are the actual on-screen layers (not a proxy), toggling them via the TOC
+ *   or legend directly shows/hides the rendered areas.
  *
- *   Two more invisible FeatureLayers (opacity 0) sit above the MapImageLayer purely
- *   to intercept popup clicks. They are added last so they end up at the top of the
- *   layers collection — ESRI's Map.add() clamps high `layerIndex` values to the
- *   current collection size, so relying on `layerIndex` alone is not enough to
- *   guarantee a layer ends up on top. Order of insertion is what determines the
- *   final z-position.
+ *   Two more invisible FeatureLayers (opacity 0) sit above them purely to intercept popup
+ *   clicks. They are added last so they end up at the top of the layers collection — ESRI's
+ *   Map.add() clamps high `layerIndex` values to the current collection size, so relying on
+ *   `layerIndex` alone is not enough to guarantee a layer ends up on top. Order of insertion
+ *   is what determines the final z-position.
  *
  *   Current construction uses the legacy 2018 service for its popup layer because
  *   it is the only source that exposes the Description field.
@@ -147,30 +141,6 @@ export const ConstructionMapColdLayerSources: LayerSource[] = [
     listMode: 'show',
     native: {
       outFields: ['*']
-    }
-  },
-  {
-    type: 'map-image',
-    id: ConstructionMapDefinitions.CONSTRUCTION_DRAW.id,
-    title: ConstructionMapDefinitions.CONSTRUCTION_DRAW.name,
-    url: ConstructionMapDefinitions.CONSTRUCTION_DRAW.url,
-    visible: true,
-    listMode: 'hide',
-    native: {
-      sublayers: [
-        {
-          id: 1,
-          title: ConstructionMapDefinitions.PLANNED_CONSTRUCTION_AREA.name,
-          visible: true,
-          popupEnabled: false
-        },
-        {
-          id: 0,
-          title: ConstructionMapDefinitions.CURRENT_CONSTRUCTION_AREA.name,
-          visible: true,
-          popupEnabled: false
-        }
-      ] as unknown as esri.SublayerProperties[]
     }
   },
   {
