@@ -16,26 +16,26 @@ export enum CONSTRUCTION_MAP_LAYERS {
 }
 
 /**
- * Two ArcGIS services back this map:
- *
- *   eventUrl (TSConstruction/MapServer)
- *     Sublayer 0 (current) and sublayer 1 (planned). Both sublayers use a
- *     `esriSFSDiagonalCross` fill (a style natively supported by the ArcGIS JS API's
- *     SimpleFillSymbol), so the two visible FeatureLayers render the cross-hatched fills
- *     directly from the service's own renderer — no proxy MapImageLayer is needed, and
- *     toggling each FeatureLayer's visibility (TOC or legend) directly controls what's drawn.
- *     Sublayer 1 field schema: Name, Number, StartDate, EndDate, Owner (no Description).
- *
- *   popupEventUrl (FCOR/Construction_2018/MapServer)
- *     Legacy 2018 service used solely as the popup data source for current construction.
- *     Sublayer 0 exposes a Description field, which TSConstruction sublayer 0 does not.
+ * eventUrl (Hosted/TSConstruction_Hosted/FeatureServer)
+ *   Sublayer 0 (current) and sublayer 1 (planned). Both sublayers use a
+ *   `esriSFSDiagonalCross` fill (a style natively supported by the ArcGIS JS API's
+ *   SimpleFillSymbol), so the two visible FeatureLayers render the cross-hatched fills
+ *   directly from the service's own renderer — no proxy MapImageLayer is needed, and
+ *   toggling each FeatureLayer's visibility (TOC or legend) directly controls what's drawn.
+ *   This hosted service replaces the previous TS_Events/TSConstruction MapServer, whose
+ *   queries stopped returning geometry (confirmed via direct REST query testing) even
+ *   though attribute data still resolved — nothing would draw on the map as a result.
+ *   Both sublayers expose a lowercase field schema (objectid, name, number, startdate,
+ *   enddate, owner, description, notes, link, contactname, contactinfo — sublayer 1 adds
+ *   utilitytype), so both current and planned popups can be sourced directly from this
+ *   service. The legacy FCOR/Construction_2018/MapServer popup workaround is no longer
+ *   needed since this service's sublayer 0 already exposes a description field.
  */
 import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
 const gisHost = getDefaultGisHost();
 const tsgisHost = getDefaultGisHosts().tsgisHost;
 
-const eventUrl = `https://${tsgisHost}/arcgis/rest/services/TS_Events/TSConstruction/MapServer`;
-const popupEventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer';
+const eventUrl = `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer`;
 
 /**
  * 'cumulative' lets the popup service resolve each entry sequentially, writing each resolved
@@ -45,11 +45,11 @@ const popupEventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/FCOR/Constru
 const popupDataResolutionStrategy: NonNullable<LayerSource['popupDataResolutionStrategy']> = 'cumulative';
 
 const plannedConstructionPopupData: NonNullable<LayerSource['popupData']> = {
-  projectName: { field: 'Name', collapsed: true },
-  projectNumber: { field: 'Number', collapsed: true },
-  startDate: { field: 'StartDate', collapsed: true },
-  endDate: { field: 'EndDate', collapsed: true },
-  owner: { field: 'Owner', collapsed: true },
+  projectName: { field: 'name', collapsed: true },
+  projectNumber: { field: 'number', collapsed: true },
+  startDate: { field: 'startdate', collapsed: true },
+  endDate: { field: 'enddate', collapsed: true },
+  owner: { field: 'owner', collapsed: true },
 
   name: '{attributes.projectName}',
   description:
@@ -62,12 +62,12 @@ const plannedConstructionPopupData: NonNullable<LayerSource['popupData']> = {
 };
 
 const constructionPopupData: NonNullable<LayerSource['popupData']> = {
-  projectName: { field: 'Name', collapsed: true },
-  projectNumber: { field: 'Number', collapsed: true },
-  projectDescription: { field: 'Description', collapsed: true },
-  startDate: { field: 'StartDate', collapsed: true },
-  endDate: { field: 'EndDate', collapsed: true },
-  owner: { field: 'Owner', collapsed: true },
+  projectName: { field: 'name', collapsed: true },
+  projectNumber: { field: 'number', collapsed: true },
+  projectDescription: { field: 'description', collapsed: true },
+  startDate: { field: 'startdate', collapsed: true },
+  endDate: { field: 'enddate', collapsed: true },
+  owner: { field: 'owner', collapsed: true },
 
   name: '{attributes.projectName}',
   description:
@@ -94,7 +94,7 @@ export const ConstructionMapDefinitions = {
   CONSTRUCTION_POPUP: {
     id: CONSTRUCTION_MAP_LAYERS.CONSTRUCTION_POPUP,
     name: 'Construction Area',
-    url: `${popupEventUrl}/0`
+    url: `${eventUrl}/0`
   },
   PLANNED_CONSTRUCTION_POPUP: {
     id: CONSTRUCTION_MAP_LAYERS.PLANNED_CONSTRUCTION_POPUP,
