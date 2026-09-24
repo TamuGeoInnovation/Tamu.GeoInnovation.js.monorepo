@@ -140,10 +140,14 @@ export class EventProvider extends BaseProvider<Event> {
         throw new NotFoundException();
       }
 
-      const tags = event.tags.map((t) => {
+      // `UpdateEventDto` declares both as required and TypeScript enforces that at every call site
+      // it can see -- but it is an interface, so `ValidationPipe` has no metadata to check a
+      // request against and an HTTP caller can omit them. Doing so threw a TypeError here, which
+      // the catch below reported as 422 "Could not insert new Event": wrong reason, wrong verb.
+      const tags = (event.tags ?? []).map((t) => {
         return this.tagRepo.create({ guid: t });
       });
-      const speakers = event.speakers.map((t) => this.speakerRepo.create({ guid: t }));
+      const speakers = (event.speakers ?? []).map((t) => this.speakerRepo.create({ guid: t }));
 
       const newEnt = this.eventRepo.create({
         ...existingEvent,
@@ -160,7 +164,9 @@ export class EventProvider extends BaseProvider<Event> {
         throw error;
       }
 
-      throw new UnprocessableEntityException(null, 'Could not insert new Event');
+      // Was "Could not insert new Event" -- copy-pasted from insertEvent, and misleading when it
+      // surfaces on an update.
+      throw new UnprocessableEntityException(null, 'Could not update Event');
     }
   }
 
@@ -286,7 +292,10 @@ export class EventProvider extends BaseProvider<Event> {
       }
     });
 
-    if (!events) {
+    // Was `if (!events)`. `find` resolves to an array, never null, so this never fired and copying
+    // guids that match nothing answered 200 with an empty list rather than saying so. Sibling
+    // providers check the length, which is the intent.
+    if (!events || events.length === 0) {
       throw new NotFoundException();
     }
 
