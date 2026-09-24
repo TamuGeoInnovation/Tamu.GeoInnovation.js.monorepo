@@ -76,8 +76,8 @@ function createConnections(gisHost: string): IComposedConnections {
     gamesOfTexasUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer`,
     // Satellite-campus basemaps. These are fixed `gis.tamu.edu` hosted services (not tied to
     // gisHost/tsgisHost), each with a companion FeatureServer of the same name used for search.
-    galvestonBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/GalvBase/VectorTileServer',
-    galvestonFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/GalvBase/FeatureServer',
+    galvestonBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/VectorTileServer',
+    galvestonFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/FeatureServer',
     mcallenBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/VectorTileServer',
     mcallenFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/FeatureServer',
     dcBushSchoolBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DC_Bush_School/VectorTileServer',
