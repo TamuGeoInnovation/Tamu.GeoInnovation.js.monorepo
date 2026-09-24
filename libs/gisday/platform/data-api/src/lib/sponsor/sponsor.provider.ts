@@ -154,11 +154,11 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
 
           return savedEntity.save();
         } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
+          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+          if (err instanceof HttpException) {
+            throw err;
+          }
 
           Logger.error(err.message, 'SponsorProvider');
           throw new InternalServerErrorException('Could not save sponsor logo.');
@@ -188,11 +188,11 @@ export class SponsorProvider extends BaseProvider<Sponsor> {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
+          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+          if (err instanceof HttpException) {
+            throw err;
+          }
 
           Logger.error(err.message, 'SponsorProvider');
           throw new InternalServerErrorException('Could not save sponsor logo.');
