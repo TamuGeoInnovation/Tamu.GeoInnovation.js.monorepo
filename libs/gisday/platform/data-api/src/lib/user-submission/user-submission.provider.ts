@@ -144,23 +144,30 @@ export class UserSubmissionProvider extends BaseProvider<Submission> {
       throw new UnauthorizedException();
     }
 
+    // The row is written from `submission` -- the caller's request body -- so anything that must
+    // not be caller-settable has to be removed from *that* object. The guid is dropped in every
+    // case: the row to update is already identified by `submissionGuid`, and letting the body
+    // carry one would let a caller retarget the write.
+    delete submission.guid;
+
     let shouldEmail = false;
-    // Only attempt to modify review fields if the user has permission
-    // Otherwise, remove them preemptively to avoid users setting these.
+
+    // Only a reviewer may touch the review fields. This previously stripped them from
+    // `existingSubmission`, which is never written, and only inside this branch -- so an entrant
+    // without the permission skipped it entirely and could approve their own submission by
+    // including `acceptance` in the PATCH body.
     if (requestorPermissions.indexOf('update:competitions') > -1) {
       if (submission.acceptance !== undefined) {
         existingSubmission.reviewed = true;
         existingSubmission.acceptance = submission.acceptance;
         existingSubmission.message = submission.message;
+        submission.reviewed = true;
         shouldEmail = true;
-      } else {
-        delete existingSubmission.acceptance;
-        delete existingSubmission.message;
-        delete existingSubmission.reviewed;
       }
-
-      // At this point we have resolved the existing submission, so we can remove the guid.
-      delete submission.guid;
+    } else {
+      delete submission.acceptance;
+      delete submission.message;
+      delete submission.reviewed;
     }
 
     try {
