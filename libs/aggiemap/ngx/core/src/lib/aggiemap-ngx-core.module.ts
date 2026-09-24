@@ -41,10 +41,6 @@ const hybridRoutes: Routes = [
     loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
   },
   {
-    path: 'campus',
-    loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
-  },
-  {
     // Sidebar-free, preset-layer maps meant to be embedded elsewhere (e.g. a mobile app webview).
     // Kept as its own top-level segment (rather than under `events`/`parking`/`operations`) so all
     // present and future "kiosk" maps stay grouped together.

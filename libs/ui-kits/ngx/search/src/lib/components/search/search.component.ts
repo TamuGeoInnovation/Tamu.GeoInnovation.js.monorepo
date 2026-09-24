@@ -93,19 +93,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Input()
   public focused = false;
 
-  /**
-   * Overrides the application-wide search sources (normally read from the `SearchSources`
-   * environment value) with a specific set of sources for this search instance.
-   *
-   * Used by maps that need search scoped to their own data — for example, a satellite-campus map
-   * whose search should only ever query that campus's own basemap, never the main College Station
-   * search sources.
-   *
-   * When omitted, falls back to the application-wide search sources as usual.
-   */
-  @Input()
-  public sources?: SearchSource[];
-
   // ===========================================================================
 
   /**
@@ -217,12 +204,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    // A per-instance `sources` input takes precedence over the application-wide search sources
-    // read in the constructor (for example, a satellite-campus map's own scoped sources).
-    if (this.sources && this.sources.length > 0) {
-      this._sources = this.sources;
-    }
-
     this.searchStatus = this.searchService.searching;
 
     // Wait for the map service to load map and view
@@ -265,14 +246,12 @@ export class SearchComponent implements OnInit, OnDestroy {
               }
             });
           } else {
-            // Search source objects to submit search query to. Passing the full source objects
-            // (rather than string ids looked up against SearchService's own global source list)
-            // lets this component's overridden `sources` input (see `ngOnInit`) work correctly,
-            // since SearchService.search() accepts either form and uses objects as-is.
-            const searchSources = this._sources.filter((s) => s.searchActive);
+            // Array of search source references to submit search query to.
+            // const searchSourceIds = ['building', 'parking-garage', 'parking-lot', 'points-of-interest'];
+            const searchSourceIds = this._sources.filter((s) => s.searchActive).map((s) => s.source);
 
             // Submit search service query
-            this.searchService.search({ sources: searchSources, values: Array(searchSources.length).fill(value) });
+            this.searchService.search({ sources: searchSourceIds, values: Array(searchSourceIds.length).fill(value) });
           }
 
           // If the input value has changed trigger a "dirty" event

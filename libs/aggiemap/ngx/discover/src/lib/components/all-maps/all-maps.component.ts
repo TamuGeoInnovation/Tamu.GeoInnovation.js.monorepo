@@ -58,11 +58,7 @@ export class AllMapsComponent implements OnInit {
     this.isDev = this.dev.get('isTesting');
     this.internalApplications = this.discoveryService.getInternalDiscoverApplications();
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
-    // Satellite-campus maps have their own dedicated "Campus Maps" listing page and should not
-    // appear in the general map search results.
-    this.allApplications = this.discoveryService
-      .getAllDiscoverApplications()
-      .filter((app) => !(app.source === 'internal' && app.type === 'satellite-campus'));
+    this.allApplications = this.discoveryService.getAllDiscoverApplications();
     this.kioskApplications = this.discoveryService.getKioskDiscoverApplications().map((app) => ({
       ...app,
       url: `${window.location.origin}${getApplicationRoute(app).join('/')}`
