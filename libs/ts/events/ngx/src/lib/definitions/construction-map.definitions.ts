@@ -35,7 +35,7 @@ import { getDefaultGisHost, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/c
 const gisHost = getDefaultGisHost();
 const tsgisHost = getDefaultGisHosts().tsgisHost;
 
-const eventUrl = `https://${tsgisHost}/arcgis/rest/services/TS/TSConstruction/MapServer`;
+const eventUrl = `https://${tsgisHost}/arcgis/rest/services/TS_Events/TSConstruction/MapServer`;
 const popupEventUrl = 'https://gis.it.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer';
 
 /**
