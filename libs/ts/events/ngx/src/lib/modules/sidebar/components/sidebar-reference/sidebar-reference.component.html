@@ -1,4 +1,4 @@
-<tamu-gisc-search [placeholder]="'Find Building or Parking'" [leftActionIcon]="'search'" [rightActionIcon]="'close'" (result)="onSearchResult($event)"></tamu-gisc-search>
+<tamu-gisc-search [placeholder]="'Find Building or Parking'" [leftActionIcon]="'search'" [rightActionIcon]="'close'" [sources]="searchSources" (result)="onSearchResult($event)"></tamu-gisc-search>
 
 <div *ngIf="configuration?.applicationName" class="map-title">
   <h1>{{ configuration?.applicationName }}</h1>
@@ -39,13 +39,15 @@
   </div>
 </ng-container>
 
-<tamu-gisc-layer-list [allowedLayerIds]="eventLayerIds" [orderBy]="layerListOrderBy"></tamu-gisc-layer-list>
+<ng-container *ngIf="!hideLayerToggle">
+  <tamu-gisc-layer-list [allowedLayerIds]="eventLayerIds" [orderBy]="layerListOrderBy"></tamu-gisc-layer-list>
 
-<tamu-gisc-legend
-  [deduplicate]="true"
-  [respectDefinitionExpression]="true"
-  [allowVisibilityToggle]="legendAllowVisibilityToggle"
-  [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary"
-  [allowedLayerIds]="eventLayerIds"
-  [forceShowLayerIds]="legendForceShowLayerIds"
-></tamu-gisc-legend>
+  <tamu-gisc-legend
+    [deduplicate]="true"
+    [respectDefinitionExpression]="true"
+    [allowVisibilityToggle]="legendAllowVisibilityToggle"
+    [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary"
+    [allowedLayerIds]="eventLayerIds"
+    [forceShowLayerIds]="legendForceShowLayerIds"
+  ></tamu-gisc-legend>
+</ng-container>

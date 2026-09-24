@@ -398,6 +398,16 @@ export class EsriMapService {
         // Create and return new geojson layer
         return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
       });
+    } else if (source.type === 'vector-tile') {
+      return this.moduleProvider
+        .require(['VectorTileLayer'])
+        .then(([VectorTileLayer]: [esri.VectorTileLayerConstructor]) => {
+          // Delete the type property as it cannot be set on layer creation.
+          delete props.type;
+
+          // Create and return new vector tile layer
+          return new VectorTileLayer(props as esri.VectorTileLayerProperties);
+        });
     } else if (source.type === 'csv') {
       return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
         // Delete the type property as it cannot be set on layer creation.

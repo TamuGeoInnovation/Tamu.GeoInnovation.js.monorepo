@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { AltSearchHelper, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search';
+import { AltSearchHelper, SearchSelection, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
@@ -27,6 +27,8 @@ export class SidebarReferenceComponent implements OnInit {
   public legendForceShowLayerIds: string[] = [];
   public layerListOrderBy: 'title' | 'allowed' = 'title';
   public showResolvedSettingNotes = false;
+  public hideLayerToggle = false;
+  public searchSources?: SearchSource[];
 
   constructor(
     private readonly router: Router,
@@ -44,6 +46,8 @@ export class SidebarReferenceComponent implements OnInit {
     this.legendCombineChildrenUnderPrimary = this.configuration?.legendCombineChildrenUnderPrimary ?? false;
     this.layerListOrderBy = this.configuration?.referenceLayerListOrder === 'source' ? 'allowed' : 'title';
     this.legendForceShowLayerIds = this.configuration?.legendForceShowLayerIds ?? [];
+    this.hideLayerToggle = this.configuration?.hideLayerToggle ?? false;
+    this.searchSources = this.configuration?.searchSources;
     const settings = this.eventSettingsService.settings();
     const options = this.eventSettingsService.eventOptions();
     this.eventLayerIds = this.eventSettingsService
