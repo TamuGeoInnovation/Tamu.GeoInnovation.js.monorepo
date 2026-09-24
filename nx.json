@@ -28,7 +28,20 @@
       "unitTestRunner": "jest"
     },
     "@nx/angular:component": {
-      "style": "scss"
+      "style": "scss",
+      "skipTests": true
+    },
+    "@nx/angular:guard": {
+      "skipTests": true
+    },
+    "@nx/angular:service": {
+      "skipTests": true
+    },
+    "@nx/angular:pipe": {
+      "skipTests": true
+    },
+    "@nx/angular:directive": {
+      "skipTests": true
     }
   },
   "nxCloudId": "68bf66e05ea3cd1b684d15cb",
