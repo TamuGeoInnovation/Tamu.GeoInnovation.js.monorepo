@@ -90,36 +90,30 @@ export abstract class BaseProvider<T extends { guid: string }> {
    * If a string is passed in, it is assumed to be a comma-separated list of guids.
    */
   public async deleteEntities(oneOrMoreEntityGuids: Array<string> | string) {
-    if (typeof oneOrMoreEntityGuids === 'string') {
-      const eventGuidsArray = oneOrMoreEntityGuids.split(',');
+    // Blank entries are dropped before the count is checked. `''.split(',')` yields `['']`, not an
+    // empty array, so the guard below never fired for an empty string and a blank guid reached the
+    // delete. An empty array reached neither branch at all and the method resolved undefined --
+    // the caller saw a success for a delete that never happened.
+    const guids = (typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids ?? [])
+      .map((guid) => guid.trim())
+      .filter((guid) => guid !== '');
 
-      if (eventGuidsArray.length === 0) {
-        throw new UnprocessableEntityException(null, 'No entity guids provided');
-      }
+    if (guids.length === 0) {
+      throw new UnprocessableEntityException(null, 'No entity guids provided');
+    }
 
-      try {
-        return this.repo.delete(eventGuidsArray);
-      } catch (err) {
+    try {
+      // Awaited so the catch can see a failed delete; returned bare, the promise settled outside
+      // this block and the catch was unreachable.
+      return await this.repo.delete(guids);
+    } catch (err) {
       // An HttpException carries a deliberate status. Re-wrapping it below turned intended
       // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
       if (err instanceof HttpException) {
         throw err;
       }
 
-        throw new InternalServerErrorException('Could not delete entities');
-      }
-    } else if (oneOrMoreEntityGuids instanceof Array && oneOrMoreEntityGuids.length > 0) {
-      try {
-        return this.repo.delete(oneOrMoreEntityGuids);
-      } catch (err) {
-      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
-      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-        throw new InternalServerErrorException('Could not delete entities');
-      }
+      throw new InternalServerErrorException('Could not delete entities');
     }
   }
 
