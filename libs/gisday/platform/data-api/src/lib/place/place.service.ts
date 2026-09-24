@@ -1,4 +1,5 @@
 import {
+  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -38,6 +39,12 @@ export class PlaceService extends BaseProvider<Place> {
         .addOrderBy('links.label', 'ASC')
         .getMany();
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(`Error retrieving places for season, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
@@ -53,6 +60,12 @@ export class PlaceService extends BaseProvider<Place> {
 
       return this.getPlacesForSeason(season.guid);
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(`Error retrieving places for active season, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException();
     }
@@ -68,6 +81,12 @@ export class PlaceService extends BaseProvider<Place> {
         .where('place.guid = :guid', { guid })
         .getOne();
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(`Error retrieving place, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
@@ -83,6 +102,12 @@ export class PlaceService extends BaseProvider<Place> {
         .addOrderBy('links.label', 'ASC')
         .getMany();
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(`Error retrieving places, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
@@ -137,6 +162,12 @@ export class PlaceService extends BaseProvider<Place> {
 
       return Promise.all(copied);
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(`Error copying places into season, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
@@ -170,6 +201,12 @@ export class PlaceService extends BaseProvider<Place> {
 
           return saved.save();
         } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
           Logger.error(err.message, 'PlaceService');
           throw new InternalServerErrorException('Could not save place logo.');
         }
@@ -177,6 +214,12 @@ export class PlaceService extends BaseProvider<Place> {
         return saved;
       }
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(`Error creating place, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
@@ -221,6 +264,12 @@ export class PlaceService extends BaseProvider<Place> {
         try {
           logoImage = await this._saveImage(file);
         } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
           Logger.error(err.message, 'PlaceService');
           throw new InternalServerErrorException('Could not save place logo.');
         }
@@ -242,6 +291,12 @@ export class PlaceService extends BaseProvider<Place> {
 
       return updated;
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(`Error updating place, ${err.message}`, 'PlaceService');
       throw new InternalServerErrorException(err);
     }
@@ -280,6 +335,12 @@ export class PlaceService extends BaseProvider<Place> {
         return manager.delete(Place, guids);
       });
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(err.message, 'PlaceService.deleteEntities');
       throw new InternalServerErrorException('Could not delete entities.');
     }

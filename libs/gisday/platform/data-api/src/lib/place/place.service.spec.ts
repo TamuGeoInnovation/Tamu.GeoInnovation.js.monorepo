@@ -1,4 +1,4 @@
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -90,6 +90,59 @@ describe('PlaceService', () => {
 
       await expect(service.getEntities()).resolves.toEqual([{ guid: 'p-1' }]);
       expect(qb.orderBy).toHaveBeenCalledWith('place.name', 'ASC');
+    });
+  });
+
+  /**
+   * These four methods raise an `HttpException` from inside their own `try`, and the `catch` used
+   * to re-wrap it as `InternalServerErrorException` -- so every one of them answered 500 and the
+   * caller could not tell "not found" from "server broke". Each catch in this library now
+   * re-throws an `HttpException` unchanged before wrapping anything else.
+   *
+   * A genuine database failure is still wrapped, which the last test here pins down: the guard
+   * must not turn every error into a pass-through.
+   */
+  describe('HTTP status preservation', () => {
+    it('answers 404 when updating a place that does not exist', async () => {
+      jest.spyOn(placeRepo, 'findOne').mockResolvedValue(null);
+
+      await expect(service.updatePlace('missing', { name: 'Alpha' })).rejects.toThrow(
+        NotFoundException
+      );
+    });
+
+    it('answers 404 when no season is active', async () => {
+      jest
+        .spyOn(seasonService, 'findOneActive')
+        .mockRejectedValue(new NotFoundException('No active season found.'));
+
+      await expect(service.getPlacesForActiveSeason()).rejects.toThrow(NotFoundException);
+    });
+
+    it('answers 422 when copying into a season that does not exist', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue(null);
+
+      await expect(service.copyPlacesIntoSeason('missing', ['p-1'])).rejects.toThrow(
+        UnprocessableEntityException
+      );
+    });
+
+    it('answers 422 when there is nothing to copy', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      jest.spyOn(placeRepo, 'find').mockResolvedValue([]);
+
+      await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow(
+        UnprocessableEntityException
+      );
+    });
+
+    it('still wraps a genuine database failure as 500', async () => {
+      jest.spyOn(seasonService, 'findOne').mockResolvedValue({ guid: 'season-2' } as never);
+      jest.spyOn(placeRepo, 'find').mockRejectedValue(new Error('connection lost'));
+
+      await expect(service.copyPlacesIntoSeason('season-2', ['p-1'])).rejects.toThrow(
+        InternalServerErrorException
+      );
     });
   });
 

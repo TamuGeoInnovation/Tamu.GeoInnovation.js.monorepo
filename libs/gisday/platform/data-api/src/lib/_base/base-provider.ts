@@ -1,4 +1,9 @@
-import { InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  HttpException,
+  InternalServerErrorException,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 
 import { Repository, DeepPartial, FindOneOptions, FindManyOptions } from 'typeorm';
 
@@ -95,12 +100,24 @@ export abstract class BaseProvider<T extends { guid: string }> {
       try {
         return this.repo.delete(eventGuidsArray);
       } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
         throw new InternalServerErrorException('Could not delete entities');
       }
     } else if (oneOrMoreEntityGuids instanceof Array && oneOrMoreEntityGuids.length > 0) {
       try {
         return this.repo.delete(oneOrMoreEntityGuids);
       } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
         throw new InternalServerErrorException('Could not delete entities');
       }
     }

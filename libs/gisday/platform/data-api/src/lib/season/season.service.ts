@@ -1,4 +1,5 @@
 import {
+  HttpException,
   BadRequestException,
   ConflictException,
   Injectable,
@@ -382,6 +383,12 @@ export class SeasonService extends BaseProvider<Season> {
         return latest;
       }
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new UnprocessableEntityException('No previous season found.');
     }
   }
