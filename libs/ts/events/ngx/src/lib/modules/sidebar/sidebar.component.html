@@ -1,14 +1,17 @@
 <tamu-gisc-sidebar [position]="'right'">
   <div class="tabs left">
-    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab *ngIf="showTab('features')" [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
 
-    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab *ngIf="showTab('directions')" [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'"></tamu-gisc-sidebar-tab>
 
-    <tamu-gisc-sidebar-tab [title]="'Settings'" [description]="'Settings'" [material_icon]="'settings'" [route]="'settings'"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab *ngIf="showTab('settings')" [title]="'Settings'" [description]="'Settings'" [material_icon]="'settings'" [route]="'settings'"></tamu-gisc-sidebar-tab>
   </div>
 
   <div class="content">
-    <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
+    <tamu-gisc-tamu-block *ngIf="!configuration?.brandingIconUrl; else campusBranding"></tamu-gisc-tamu-block>
+    <ng-template #campusBranding>
+      <img class="campus-branding-icon" [src]="configuration?.brandingIconUrl" [alt]="configuration?.applicationName" />
+    </ng-template>
     <router-outlet></router-outlet>
     <tamu-gisc-feature-popup></tamu-gisc-feature-popup>
   </div>

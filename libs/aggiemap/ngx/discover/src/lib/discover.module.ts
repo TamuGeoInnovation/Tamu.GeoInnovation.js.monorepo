@@ -56,6 +56,15 @@ const routes: Routes = [
       title: 'Operations Maps',
       intro: 'Browse operations-focused maps for campus construction and future internal-use overlays.'
     }
+  },
+  {
+    path: 'campus',
+    component: EventMapsComponent,
+    data: {
+      mapType: 'satellite-campus',
+      title: 'Campus Maps',
+      intro: 'Browse single-basemap maps for TAMU campuses outside of College Station.'
+    }
   }
 ];
 
