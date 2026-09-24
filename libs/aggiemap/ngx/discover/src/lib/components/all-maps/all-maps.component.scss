@@ -1,3 +1,5 @@
+@import 'libs/sass/components/brand-button';
+
 @import '../discover-shared';
 
 // All Maps uses an editorial, restrained title: near-black, light-weight condensed Oswald — a
@@ -21,26 +23,6 @@
 }
 
 // Compact, square horizontal maroon action button — wider than tall so it reads as a utility action.
-.main-parking-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 3.3rem;
-  padding: 0 2.75rem;
-  background: #500000;
-  color: #fff;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  text-decoration: none;
-  white-space: nowrap;
-
-  &:hover,
-  &:focus {
-    background: #3d0000;
-  }
-}
-
 .visit-maps-tile {
   display: flex;
   flex-direction: column;
@@ -138,10 +120,6 @@
   .visit-maps-row {
     gap: 1.5rem;
     justify-content: center;
-  }
-
-  .main-parking-button {
-    width: 100%;
   }
 
   .events-list {

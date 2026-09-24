@@ -12,7 +12,7 @@
       <h2>Visit Maps</h2>
 
       <div class="visit-maps-row">
-        <a class="main-parking-button" [routerLink]="mainParkingRoute">Main Campus Parking Map</a>
+        <a class="brand-button" [routerLink]="mainParkingRoute">Main Campus Parking Map</a>
 
         <a class="visit-maps-tile" routerLink="/all-maps/parking">
           <span class="visit-maps-icon">
@@ -132,7 +132,7 @@
           <div class="application-card-content">
             <div class="application-description" *ngIf="app.description">{{ app.description }}</div>
             <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
-            <a [routerLink]="getApplicationRoute(app)">Open map</a>
+            <a class="button secondary" [routerLink]="getApplicationRoute(app)">Open map</a>
           </div>
         </div>
       </div>
@@ -156,7 +156,7 @@
           <div class="application-card-content">
             <div class="application-description" *ngIf="app.description">{{ app.description }}</div>
             <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
-            <a [routerLink]="getApplicationRoute(app)">Open map</a>
+            <a class="button secondary" [routerLink]="getApplicationRoute(app)">Open map</a>
           </div>
         </div>
       </div>
