@@ -38,6 +38,16 @@ export class AllMapsComponent implements OnInit {
    */
   public kioskApplications: Array<InternalDiscoverApplication & { url: string }> = [];
 
+  /**
+   * Dev-only listing of the satellite-campus maps (Galveston, McAllen, DC Bush School).
+   *
+   * These are deliberately reachable in production by direct URL -- the testing team uses them --
+   * but nothing links to them there, and they are filtered out of the map search in both
+   * environments. This section and the Visit Maps tile are the only entry points, and both are
+   * gated on `isDev`.
+   */
+  public campusApplications: Array<InternalDiscoverApplication & { url: string }> = [];
+
   public upcomingApplications: InternalDiscoverApplication[] = [];
   public quickLinks: QuickLinkItem[] = [];
 
@@ -67,6 +77,11 @@ export class AllMapsComponent implements OnInit {
       ...app,
       url: `${window.location.origin}${getApplicationRoute(app).join('/')}`
     }));
+    // Sourced from the internal list rather than a dedicated service method: unlike kiosk maps,
+    // satellite-campus maps are ordinary discover applications and are only excluded from search.
+    this.campusApplications = this.internalApplications
+      .filter((app) => app.type === 'satellite-campus')
+      .map((app) => ({ ...app, url: `${window.location.origin}${getApplicationRoute(app).join('/')}` }));
     this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
       label: app.name,
       routerLink: getApplicationRoute(app)

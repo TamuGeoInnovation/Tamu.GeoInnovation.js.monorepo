@@ -50,7 +50,12 @@
           <span class="visit-maps-label">Operations</span>
         </a>
 
-        <a class="visit-maps-tile" routerLink="/all-maps/campus" aria-label="Campus Maps">
+        <a
+          class="visit-maps-tile"
+          routerLink="/all-maps/campus"
+          aria-label="Campus Maps"
+          *ngIf="(isDev | async) === true"
+        >
           <span class="visit-maps-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
@@ -112,10 +117,35 @@
       </div>
     </div>
 
+    <div class="campus-maps-section trailer-3" *ngIf="(isDev | async) === true">
+      <h2>Campus Maps</h2>
+      <p class="section-description">
+        Single-basemap maps for TAMU campuses outside College Station. These are reachable in production by
+        direct URL but are not linked or searchable there (development only).
+      </p>
+
+      <div class="applications-list" *ngIf="campusApplications.length > 0; else noCampusMaps">
+        <div class="application-card" *ngFor="let app of campusApplications">
+          <div class="application-card-header">
+            <h3 class="application-title">{{ app.name }}</h3>
+          </div>
+          <div class="application-card-content">
+            <div class="application-description" *ngIf="app.description">{{ app.description }}</div>
+            <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
+            <a [routerLink]="getApplicationRoute(app)">Open map</a>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noCampusMaps>
+        <p class="section-description">No campus maps are defined.</p>
+      </ng-template>
+    </div>
+
     <div class="kiosk-maps-section trailer-3" *ngIf="(isDev | async) === true">
       <h2>Kiosk Maps</h2>
       <p class="section-description">
-        Sidebar-free, preset-layer maps meant to be embedded elsewhere (e.g. in a mobile app webview). Copy a URL below to share it (development only).
+        Sidebar-free, preset-layer maps meant to be embedded elsewhere (e.g. in a mobile app webview). Open one to check it, or copy its URL to embed it (development only).
       </p>
 
       <div class="applications-list" *ngIf="kioskApplications.length > 0; else noKioskMaps">
@@ -125,10 +155,8 @@
           </div>
           <div class="application-card-content">
             <div class="application-description" *ngIf="app.description">{{ app.description }}</div>
-            <div class="kiosk-url-row">
-              <code class="kiosk-url">{{ app.url }}</code>
-              <button type="button" class="kiosk-copy-button" clipboard-copy [text]="app.url" title="Copy URL">Copy</button>
-            </div>
+            <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
+            <a [routerLink]="getApplicationRoute(app)">Open map</a>
           </div>
         </div>
       </div>
