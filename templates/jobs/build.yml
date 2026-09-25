@@ -26,8 +26,33 @@ jobs:
         displayName: 'Copy secrets'
 
       - bash: |
-          npx nx affected:build --base=$(baseSha) --head=$(HEAD_SHA) --configuration=${{ parameters.buildType }} --exclude=$(EXCLUDED_PROJECTS)
+          set -e
+
+          # Deployable branches must publish a COMPLETE artifact. The release clears its
+          # target directory before copying, so an artifact missing an app does not merely
+          # skip that app - it leaves the environment empty. `affected` is correct for
+          # validating a pull request, but on a branch that gets deployed it can legitimately
+          # build nothing (a docs-only commit, for example) and still publish an artifact
+          # that looks deployable.
+          if [ "$(IS_DEPLOYABLE)" = "True" ]; then
+            echo "Deployable branch: building all non-excluded projects."
+            npx nx run-many --target=build --all --configuration=${{ parameters.buildType }} --exclude=$(EXCLUDED_PROJECTS)
+          else
+            echo "Validation build: building affected projects only."
+            npx nx affected:build --base=$(baseSha) --head=$(HEAD_SHA) --configuration=${{ parameters.buildType }} --exclude=$(EXCLUDED_PROJECTS)
+          fi
         displayName: 'Running build'
+
+      - bash: |
+          if [ ! -d dist/apps ] || [ -z "$(ls -A dist/apps 2>/dev/null)" ]; then
+            echo "##vso[task.logissue type=error]No applications were built. Refusing to publish an artifact that a release would deploy as an empty site."
+            exit 1
+          fi
+
+          echo "Applications in this artifact:"
+          ls -1 dist/apps
+        displayName: 'Verify artifact contains applications'
+        condition: and(succeeded(), eq(variables['IS_DEPLOYABLE'], 'True'))
 
       - task: CopyFiles@2
         inputs:
