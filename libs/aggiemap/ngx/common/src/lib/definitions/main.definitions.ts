@@ -28,7 +28,10 @@ export enum MAIN_MAP_LAYERS {
   CAMPUS_BIKE_LANES = 'bike-lanes-layer',
   BIKE_FIX_STATIONS = 'bike-fix-stations-layer',
   BIKE_RACKS_MAP = 'bike-racks-map-layer',
-  EV_CHARGE_STATIONS = 'ev-charge-stations-layer'
+  EV_CHARGE_STATIONS = 'ev-charge-stations-layer',
+  EVENT_150_KICKOFF_AT_KYLE = 'event-150-kickoff-at-kyle-layer',
+  EVENT_150_LIVE_AT_THE_STATION = 'event-150-live-at-the-station-layer',
+  EVENT_150_SPIRIT_WEEK = 'event-150-spirit-week-layer'
 }
 
 export interface IDefinition {
@@ -62,6 +65,9 @@ export interface IComposedIDefinitions {
   BIKE_FIX_STATIONS: IDefinition;
   BIKE_RACKS_MAP: IDefinition;
   EV_CHARGE_STATIONS: IDefinition;
+  EVENT_150_KICKOFF_AT_KYLE: IDefinition;
+  EVENT_150_LIVE_AT_THE_STATION: IDefinition;
+  EVENT_150_SPIRIT_WEEK: IDefinition;
 }
 
 export const commonLayerProps = {
@@ -167,6 +173,36 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       name: 'Dining Locations',
       url: `${connections.diningLocationsUrl}`,
       popupComponent: Popups.DiningPopupComponent
+    },
+
+    // 150th anniversary event layers, requested on the main map alongside the standard layers
+    // (#1017). Titles carry a "150 - " prefix so the set sorts together at the top of the
+    // alphabetical layer list.
+    //
+    // Only events that are discoverable in their own right appear here. The 150th Opening
+    // Ceremony map is deliberately excluded: it is hidden until the event is announced, and
+    // surfacing its geometry on the landing page would defeat that. Aggie Family Parade is
+    // excluded because it is April 2027 and not part of this autumn's set.
+    EVENT_150_KICKOFF_AT_KYLE: {
+      id: 'event-150-kickoff-at-kyle',
+      layerId: MAIN_MAP_LAYERS.EVENT_150_KICKOFF_AT_KYLE,
+      name: '150 - Kickoff at Kyle',
+      url: `${connections.kickoffAtKyleUrl}/0`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    EVENT_150_LIVE_AT_THE_STATION: {
+      id: 'event-150-live-at-the-station',
+      layerId: MAIN_MAP_LAYERS.EVENT_150_LIVE_AT_THE_STATION,
+      name: '150 - Live at the Station',
+      url: `${connections.liveAtTheStationUrl}/0`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    EVENT_150_SPIRIT_WEEK: {
+      id: 'event-150-spirit-week',
+      layerId: MAIN_MAP_LAYERS.EVENT_150_SPIRIT_WEEK,
+      name: '150 - Spirit of 150 Week',
+      url: `${connections.spiritOf150WeekUrl}/0`,
+      popupComponent: Popups.MarkdownPopupComponent
     },
     AGGIEPRINT_LOCATIONS: {
       id: 'aggieprint-locations',
@@ -704,6 +740,64 @@ export function MainMapLayerSources(
       native: {
         ...commonLayerProps,
         definitionExpression: "showOnAggieMap = 'Y'"
+      }
+    },
+
+    // 150th anniversary event layers (#1017). Off by default: they are opt-in layers on the
+    // landing map, not a change to what every visitor sees.
+    //
+    // These draw the same services as the standalone event maps, but without those maps'
+    // custom symbology. Spirit of 150 Week uses a cake marker on its own map, drawn from an
+    // inline image that lives in the events library; reproducing it here would mean either a
+    // cross-library import that closes a dependency cycle, or duplicating the image data. The
+    // service's own symbology is used instead.
+    {
+      type: 'feature',
+      id: definitions.EVENT_150_KICKOFF_AT_KYLE.layerId,
+      title: definitions.EVENT_150_KICKOFF_AT_KYLE.name,
+      url: definitions.EVENT_150_KICKOFF_AT_KYLE.url,
+      popupComponent: definitions.EVENT_150_KICKOFF_AT_KYLE.popupComponent,
+      listMode: 'show',
+      visible: false,
+      // Lots carry `name` (lot numbers) and `description` ("Free Event Parking" and similar).
+      popupData: {
+        name: '{attributes.name}',
+        description: '{attributes.description}'
+      },
+      native: {
+        ...commonLayerProps
+      }
+    },
+    {
+      type: 'feature',
+      id: definitions.EVENT_150_LIVE_AT_THE_STATION.layerId,
+      title: definitions.EVENT_150_LIVE_AT_THE_STATION.name,
+      url: definitions.EVENT_150_LIVE_AT_THE_STATION.url,
+      popupComponent: definitions.EVENT_150_LIVE_AT_THE_STATION.popupComponent,
+      listMode: 'show',
+      visible: false,
+      popupData: {
+        name: '{attributes.name}',
+        description: '{attributes.description}'
+      },
+      native: {
+        ...commonLayerProps
+      }
+    },
+    {
+      type: 'feature',
+      id: definitions.EVENT_150_SPIRIT_WEEK.layerId,
+      title: definitions.EVENT_150_SPIRIT_WEEK.name,
+      url: definitions.EVENT_150_SPIRIT_WEEK.url,
+      popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
+      listMode: 'show',
+      visible: false,
+      popupData: {
+        name: '{attributes.name}',
+        description: '{attributes.description}'
+      },
+      native: {
+        ...commonLayerProps
       }
     }
   ];
