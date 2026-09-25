@@ -20,6 +20,7 @@ import { CrossCountryParkingTs } from './cross-country-parking.definitions';
 import { SoccerParkingTs } from './soccer-parking.definitions';
 import { VolleyballParkingTs } from './volleyball-parking.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
+import { KickoffAtKyleTs } from './kickoff-at-kyle.definitions';
 import { LiveAtTheStationTs } from './live-at-the-station.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
 import { NovemberRingDayEvent } from './november-ring-day.definitions';
@@ -142,5 +143,6 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   McAllenTs,
   DCBushSchoolTs,
   DiningKioskTs,
+  KickoffAtKyleTs,
   LiveAtTheStationTs
 ];

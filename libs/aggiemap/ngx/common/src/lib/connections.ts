@@ -34,6 +34,7 @@ function createConnections(gisHost: string): IComposedConnections {
     hsGraduationUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/HS_Graduation/MapServer`,
     indoorTrackParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer`,
     loadingZonesUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/Loading_Zones/MapServer`,
+    kickoffAtKyleUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Kickoff_at_Kyle/FeatureServer`,
     liveAtTheStationUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Live_at_the_Station/FeatureServer`,
     maintenanceParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MaintenanceParking/MapServer`,
     mediaParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MediaParking/MapServer`,
@@ -181,6 +182,7 @@ export interface IComposedConnections {
   swimmingParkingUrl: string;
   tennisParkingUrl: string;
   timedParkingUrl: string;
+  kickoffAtKyleUrl: string;
   liveAtTheStationUrl: string;
   troubadourFestivalUrl: string;
   vendorParkingUrl: string;
