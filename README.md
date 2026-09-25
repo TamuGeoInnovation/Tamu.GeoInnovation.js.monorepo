@@ -24,6 +24,8 @@ Once the application is running, it will be available locally @ http://localhost
 
 As you make changes to the project, the local web server will automatically rebuild affected chunks and refresh the page.
 
+No Node.js on your machine? See [Path 5: Windows with Docker Only](GETTING_STARTED.md#path-5-windows-with-docker-only-no-local-nodejs) to install dependencies and run AggieMap entirely in Docker.
+
 ## Contributing
 
 If you would like to contribute, please read the[ contribution guidelines](CONTRIBUTING.md).
