@@ -164,6 +164,14 @@ Two hostnames, deliberately different:
 | `http://localhost:4200` | dev, with dev-only sections visible | normal development |
 | `http://127.0.0.1:4200` | production, with those sections hidden | checking production gating without deploying |
 
+**The production view is not a perfect production preview.** It hides the dev-only sections
+exactly as production does, which is what it is for. But some APIs allow
+`http://localhost:4200` as a browser origin and not `http://127.0.0.1:4200` - browsers treat
+those as different origins - so a layer served by one of them fails to load and is drawn
+with the layer list's error style. That is a CORS allowlist gap, not a fault in the app, and
+the same layer is fine on the live site. Check the browser console for a CORS message before
+concluding anything, and use `localhost:4200` for everyday work.
+
 Stop it with `docker rm -f aggiemap-dev`.
 
 ## Known false alarms
@@ -175,6 +183,9 @@ Check this list before reporting any of the following as a problem.
 - **`curl` returns `000` for a `*.tamu.edu` host.** Git Bash ships a CA bundle from 2022
   that lacks the root these hosts now chain to. The host is almost certainly up. Check it in
   a browser instead, and never report it as unreachable on the strength of `curl` alone.
+- **A layer drawn with a strikethrough or error style at `127.0.0.1:4200`.** Usually a CORS
+  allowlist that includes `localhost` but not `127.0.0.1`, not a broken layer. Confirm in the
+  browser console, and check the same layer at `localhost:4200`.
 - **Console errors on first load.** Some of them occur on the live site too. Compare against
   production before attributing one to the local setup.
 - **Layers returning 404 on a `dev` hostname.** Any hostname containing `dev` reads from the
