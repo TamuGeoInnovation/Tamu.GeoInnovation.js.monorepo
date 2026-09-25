@@ -4,5 +4,42 @@ jobs:
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |
-          npx nx affected:apps --base=$(baseSha) --head=$(HEAD_SHA) --exclude=$(EXCLUDED_PROJECTS) | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
-        displayName: 'Add Build Tags for Affected Projects'
+          set -euo pipefail
+
+          # `nx affected:apps` was removed in Nx 16. The previous command errored, the grep it
+          # fed matched nothing, and with no pipefail the step still exited 0 - so builds have
+          # carried no tags since the upgrade. A release filtering on an app tag then matches
+          # no build and falls back to the latest build on any branch, which is how a
+          # documentation-only pull request build reached the development environment.
+          #
+          # Deployable branches build every non-excluded project, so their tags must name all
+          # of them rather than only the affected ones, or a release could not find a build
+          # holding an app that happened not to change.
+          #
+          # Command substitution uses backticks: Azure Pipelines rewrites $(...) as its own
+          # variable syntax before bash ever sees it.
+          if [ "$(IS_DEPLOYABLE)" = "True" ]; then
+            echo "Deployable branch: tagging every non-excluded application."
+            APPS=`npx nx print-affected --all --type=app --select=projects`
+          else
+            echo "Validation build: tagging affected applications."
+            APPS=`npx nx print-affected --base=$(baseSha) --head=$(HEAD_SHA) --type=app --select=projects`
+          fi
+
+          EXCLUDED=",$(EXCLUDED_PROJECTS),"
+          TAGGED=0
+
+          for app in `echo "$APPS" | tr ',' ' '`; do
+            case "$EXCLUDED" in
+              *",$app,"*) continue ;;
+            esac
+
+            echo "Tagging build with: $app"
+            echo "##vso[build.addbuildtag]$app"
+            TAGGED=`expr $TAGGED + 1`
+          done
+
+          if [ "$TAGGED" -eq 0 ]; then
+            echo "##vso[task.logissue type=warning]No application tags were applied. A release filtering on an application tag will not match this build."
+          fi
+        displayName: 'Add Build Tags for Built Projects'
