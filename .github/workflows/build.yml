@@ -35,8 +35,47 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Build Affected
-        run: npx nx affected:build --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }}  --base=${{ inputs.base }} --parallel=2
+      - name: Build
+        run: |
+          set -euo pipefail
+
+          # On a deployable branch this artifact is what gets published as container images:
+          # the publish workflow builds its matrix from the Dockerfiles it finds inside it. So
+          # an app that `affected` skipped produces no image, and its deployment keeps running
+          # whatever it was already on. That is why aggiemap-angular sat on a tag built from a
+          # pull request 645 days ago while its package still existed in the registry.
+          #
+          # Build every app that has a Dockerfile, derived rather than listed, so adding one is
+          # all it takes for a new app to be built and published.
+          if [ "${{ github.ref_name }}" = "development" ] || [ "${{ github.ref_name }}" = "master" ]; then
+            PUBLISHABLE=$(find apps -name Dockerfile -not -path "*/node_modules/*" | cut -d/ -f2 | sort -u | paste -sd, -)
+
+            if [ -z "$PUBLISHABLE" ]; then
+              echo "::error::No app Dockerfiles found. The publish job would have nothing to build."
+              exit 1
+            fi
+
+            echo "Deployable branch. Building every publishable app: $PUBLISHABLE"
+            npx nx run-many --target=build --projects="$PUBLISHABLE" --configuration=production --parallel=2
+          else
+            echo "Validation build: affected projects only."
+            npx nx affected:build --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }} --base=${{ inputs.base }} --parallel=2
+          fi
+
+      - name: Verify the artifact has something to publish
+        if: github.ref_name == 'development' || github.ref_name == 'master'
+        run: |
+          set -euo pipefail
+
+          COUNT=$(find dist/apps -name Dockerfile 2>/dev/null | wc -l)
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::No Dockerfiles in dist/apps, so the publish job would skip and every image would go stale."
+            exit 1
+          fi
+
+          echo "Images to be published: $COUNT"
+          find dist/apps -name Dockerfile | cut -d/ -f3 | sort
 
       - name: Copy Files Needed For Image Build
         run: |
