@@ -165,6 +165,24 @@ describe('LayerSources', () => {
         layerId: 'ev-charge-stations',
         name: 'EV Charge Stations',
         url: 'ev-charge-stations-url'
+      },
+      EVENT_150_KICKOFF_AT_KYLE: {
+        id: 'event-150-kickoff-at-kyle',
+        layerId: 'event-150-kickoff-at-kyle',
+        name: '150 - Kickoff at Kyle',
+        url: 'kickoff-at-kyle-url'
+      },
+      EVENT_150_LIVE_AT_THE_STATION: {
+        id: 'event-150-live-at-the-station',
+        layerId: 'event-150-live-at-the-station',
+        name: '150 - Live at the Station',
+        url: 'live-at-the-station-url'
+      },
+      EVENT_150_SPIRIT_WEEK: {
+        id: 'event-150-spirit-week',
+        layerId: 'event-150-spirit-week',
+        name: '150 - Spirit of 150 Week',
+        url: 'spirit-of-150-week-url'
       }
     };
     options = { exclude: [] };
@@ -173,14 +191,14 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(20);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(15);
+    expect(result.length).toBe(18);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -189,7 +207,7 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(20);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {
