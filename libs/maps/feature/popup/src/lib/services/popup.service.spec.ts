@@ -100,4 +100,35 @@ describe('PopupService', () => {
     expect(result?.data.attributes.total).toBe(200);
     expect(result?.data.attributes.description).toBe('Lot 100: 200');
   });
+
+  it('should format date fields when the entry declares format: date', () => {
+    // ArcGIS returns esriFieldTypeDate attributes as epoch milliseconds. Without formatting,
+    // a popup template substitutes the raw number (e.g. 1754784000000) into its output.
+    const snapshot = {
+      graphics: [
+        {
+          attributes: {
+            name: 'Aplin Center',
+            startdate: 1754784000000
+          },
+          layer: {
+            id: 'construction',
+            title: 'Construction',
+            popupComponent: TestPopupComponent,
+            popupDataResolutionStrategy: 'cumulative',
+            popupData: {
+              projectName: { field: 'name', collapsed: true },
+              startDate: { field: 'startdate', collapsed: true, format: 'date' },
+              description: 'Start Date: {attributes.startDate}'
+            }
+          }
+        }
+      ]
+    } as unknown as HitTestSnapshot;
+
+    const result = service.getComponent(snapshot);
+
+    expect(result?.data.attributes.startDate).toBe('August 10, 2025');
+    expect(result?.data.attributes.description).toBe('Start Date: August 10, 2025');
+  });
 });

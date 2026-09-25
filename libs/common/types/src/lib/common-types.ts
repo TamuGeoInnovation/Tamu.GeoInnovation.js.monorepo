@@ -362,6 +362,15 @@ export type LayerSource = LayerSourceType & {
          * Example: "GIS.TS.SpEv_Lot_Notes.WBasketballN" as a fully qualified key in the attributes object.
          */
         collapsed?: boolean;
+
+        /**
+         * Formats the resolved value before it is written back into `attributes`.
+         *
+         * `date` renders an epoch-millisecond value as a long date. ArcGIS returns
+         * `esriFieldTypeDate` fields as epoch milliseconds, so without this a template
+         * expression substitutes the raw number instead of a readable date.
+         */
+        format?: 'date';
       }
   >;
 

@@ -1,4 +1,5 @@
 import { Component, Injectable, Type } from '@angular/core';
+import { formatDate } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
@@ -133,6 +134,27 @@ export class PopupService {
     }, {});
   }
 
+  /**
+   * Renders an epoch-millisecond date value as a long date, matching the `date: 'longDate'`
+   * pipe used by the Angular popup components.
+   *
+   * Values that are nullish or not a valid date are returned untouched, so a missing or
+   * unexpected attribute degrades to its original value rather than rendering "Invalid Date".
+   */
+  private formatDateValue(value: unknown): unknown {
+    if (value === null || value === undefined || value === '') {
+      return value;
+    }
+
+    const date = new Date(value as string | number);
+
+    if (isNaN(date.getTime())) {
+      return value;
+    }
+
+    return formatDate(date, 'longDate', 'en-US');
+  }
+
   private resolvePopupDataEntry(
     graphic: esri.Graphic,
     definition: PopupDataEntry,
@@ -140,7 +162,9 @@ export class PopupService {
     strategy: PopupDataResolutionStrategy
   ): unknown {
     if (typeof definition !== 'string') {
-      return getPropertyValue(graphic.attributes, definition.field, definition.collapsed);
+      const value = getPropertyValue(graphic.attributes, definition.field, definition.collapsed);
+
+      return definition.format === 'date' ? this.formatDateValue(value) : value;
     }
 
     const lookup = this.getPopupDataLookup(graphic, resolvedEntries, strategy);

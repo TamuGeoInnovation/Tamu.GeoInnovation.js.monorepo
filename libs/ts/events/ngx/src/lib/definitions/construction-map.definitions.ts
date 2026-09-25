@@ -47,8 +47,8 @@ const popupDataResolutionStrategy: NonNullable<LayerSource['popupDataResolutionS
 const plannedConstructionPopupData: NonNullable<LayerSource['popupData']> = {
   projectName: { field: 'name', collapsed: true },
   projectNumber: { field: 'number', collapsed: true },
-  startDate: { field: 'startdate', collapsed: true },
-  endDate: { field: 'enddate', collapsed: true },
+  startDate: { field: 'startdate', collapsed: true, format: 'date' },
+  endDate: { field: 'enddate', collapsed: true, format: 'date' },
   owner: { field: 'owner', collapsed: true },
 
   name: '{attributes.projectName}',
@@ -65,8 +65,8 @@ const constructionPopupData: NonNullable<LayerSource['popupData']> = {
   projectName: { field: 'name', collapsed: true },
   projectNumber: { field: 'number', collapsed: true },
   projectDescription: { field: 'description', collapsed: true },
-  startDate: { field: 'startdate', collapsed: true },
-  endDate: { field: 'enddate', collapsed: true },
+  startDate: { field: 'startdate', collapsed: true, format: 'date' },
+  endDate: { field: 'enddate', collapsed: true, format: 'date' },
   owner: { field: 'owner', collapsed: true },
 
   name: '{attributes.projectName}',
