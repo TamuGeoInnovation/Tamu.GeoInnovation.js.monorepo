@@ -56,10 +56,11 @@ export const KickoffAtKyleConfiguration: EventConfiguration = {
   shortApplicationName: 'Kickoff at Kyle Map',
   introductionText: 'Get the best transportation and logistics information for Kickoff at Kyle.',
   eventDates: ['2026-10-02'],
-  // Centre and zoom derived from the service extent (WGS84): x -96.34988..-96.33725,
-  // y 30.60111..30.61305 -- roughly 1.2km across.
+  // Centre derived from the service extent (WGS84): x -96.34988..-96.33725,
+  // y 30.60111..30.61305 -- roughly 1.2km across. Zoom set one level tighter than that extent
+  // would suggest, so the lots fill the view rather than sitting small in the middle.
   mapCenter: [-96.34356, 30.60708],
-  zoom: 15,
+  zoom: 16,
   toast: {
     id: 'kickoff-at-kyle-notification',
     title: 'Kickoff at Kyle Transportation Map Available',
