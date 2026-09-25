@@ -1,7 +1,7 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 
-import { MarkdownWDirectionsPopupComponent } from '../modules/popups/markdown-w-directions-popup/markdown-w-directions-popup.component';
+import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
 import {
   AggiemapCustomMapConfiguration,
@@ -30,7 +30,11 @@ export const LiveAtTheStationColdLayerSources: LayerSource[] = [
     id: LiveAtTheStationEventDefinitions.LIVE_AT_THE_STATION_PARKING.id,
     title: LiveAtTheStationEventDefinitions.LIVE_AT_THE_STATION_PARKING.name,
     url: LiveAtTheStationEventDefinitions.LIVE_AT_THE_STATION_PARKING.url,
-    popupComponent: MarkdownWDirectionsPopupComponent,
+    // Deliberately the popup without directions. The routing service behind "Directions To Here"
+    // is unpublished (gis.it.tamu.edu/arcgis/rest/services/Routing returns no services) and is
+    // being rewritten with no ETA, so the directions variant would ship a button that cannot
+    // work. The share/copy field is preserved either way. See #1003.
+    popupComponent: MarkdownPopupComponent,
     // The service's lots carry `name` (e.g. "Lot 62", "WCG") and `description` (e.g.
     // "$30 Paid Parking/Any Valid Texas A&M Permit"), matching the popup's expected bindings.
     popupData: {
