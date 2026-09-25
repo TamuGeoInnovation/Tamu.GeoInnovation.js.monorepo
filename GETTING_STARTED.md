@@ -457,6 +457,8 @@ The container is removed when it stops. Run step 2 again to restart.
 
 # Working with Claude Code
 
+> To have Claude Code perform the setup itself rather than following this guide by hand, point it at [CLAUDE_SETUP.md](CLAUDE_SETUP.md), which orders the same steps with a verification after each.
+
 [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) runs Node commands with the Docker-only setup in [Path 5](#path-5-windows-with-docker-only-no-local-nodejs), so the host needs no Node.js install. Open the Claude Code session in the repository folder (for example `C:\TAMU\Tamu.GeoInnovation.js.monorepo`) so git, file links and the diff view work.
 
 ## What Claude Code needs from you

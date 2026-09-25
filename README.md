@@ -26,6 +26,8 @@ As you make changes to the project, the local web server will automatically rebu
 
 No Node.js on your machine? See [Path 5: Windows with Docker Only](GETTING_STARTED.md#path-5-windows-with-docker-only-no-local-nodejs) to install dependencies and run AggieMap entirely in Docker.
 
+Using Claude Code? [CLAUDE_SETUP.md](CLAUDE_SETUP.md) is the same setup as a runbook it can execute and verify step by step.
+
 ## Contributing
 
 If you would like to contribute, please read the[ contribution guidelines](CONTRIBUTING.md).
