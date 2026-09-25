@@ -43,3 +43,15 @@ jobs:
             echo "##vso[task.logissue type=warning]No application tags were applied. A release filtering on an application tag will not match this build."
           fi
         displayName: 'Add Build Tags for Built Projects'
+        # Tagging is metadata. It must never fail a build.
+        #
+        # The Build Service account is not granted "Edit build quality" on pull request builds,
+        # so `##vso[build.addbuildtag]` is refused there and the task errors. That was invisible
+        # until the command above was fixed: it previously used `nx affected:apps`, removed in
+        # Nx 16, so it emitted nothing and no tag was ever attempted.
+        #
+        # Pull request builds are tagged too, because they get pushed out for review and a
+        # release has to be able to tell which apps a build contains. Tolerating the refusal
+        # keeps that working the moment the permission is granted, without a pipeline change.
+        # The step warns when it applies no tags, so a silent regression still shows up.
+        continueOnError: true
