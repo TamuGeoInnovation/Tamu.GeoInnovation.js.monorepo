@@ -8,6 +8,10 @@ This monorepo is maintained by the Texas A&M GeoInnovation Service Center and co
 
 Please see the [Getting Started Guide](GETTING_STARTED.md) for detailed instructions on setting up your development environment.
 
+## Release notes
+
+Notes for each release live in [docs/releases](docs/releases). This repository is public, so those links can be shared with anyone without a sign-in.
+
 ## Running an application
 
 All applications are "served" locally with a simple command with the pattern:
