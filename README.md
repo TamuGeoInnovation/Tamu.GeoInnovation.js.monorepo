@@ -10,6 +10,10 @@ Please see the [Getting Started Guide](GETTING_STARTED.md) for detailed instruct
 
 Setting up with Claude Code? Point it at the repository and ask it to set this up; it reads [CLAUDE.md](CLAUDE.md) automatically and follows [CLAUDE_SETUP.md](CLAUDE_SETUP.md).
 
+## Release notes
+
+Notes for each release live in [docs/releases](docs/releases). This repository is public, so those links can be shared with anyone without a sign-in.
+
 ## Running an application
 
 All applications are "served" locally with a simple command with the pattern:
