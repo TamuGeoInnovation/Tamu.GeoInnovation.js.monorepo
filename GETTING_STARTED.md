@@ -1,5 +1,10 @@
 # Nx Workspace Setup Guide
 
+> **Setting this up with Claude Code?** Use [CLAUDE_SETUP.md](CLAUDE_SETUP.md) instead of
+> this guide. It covers the same ground as Path 5 below, ordered as steps an agent can
+> execute and verify. The "Recommended" label further down refers to the devcontainer
+> path, which is a choice for someone setting up by hand.
+
 ## Table of Contents
 
 - [Devcontainers: What and why?](#devcontainers-what-and-why)

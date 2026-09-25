@@ -8,6 +8,8 @@ This monorepo is maintained by the Texas A&M GeoInnovation Service Center and co
 
 Please see the [Getting Started Guide](GETTING_STARTED.md) for detailed instructions on setting up your development environment.
 
+Setting up with Claude Code? Point it at the repository and ask it to set this up; it reads [CLAUDE.md](CLAUDE.md) automatically and follows [CLAUDE_SETUP.md](CLAUDE_SETUP.md).
+
 ## Running an application
 
 All applications are "served" locally with a simple command with the pattern:
@@ -25,8 +27,6 @@ Once the application is running, it will be available locally @ http://localhost
 As you make changes to the project, the local web server will automatically rebuild affected chunks and refresh the page.
 
 No Node.js on your machine? See [Path 5: Windows with Docker Only](GETTING_STARTED.md#path-5-windows-with-docker-only-no-local-nodejs) to install dependencies and run AggieMap entirely in Docker.
-
-Using Claude Code? [CLAUDE_SETUP.md](CLAUDE_SETUP.md) is the same setup as a runbook it can execute and verify step by step.
 
 ## Contributing
 
