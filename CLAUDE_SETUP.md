@@ -103,6 +103,41 @@ git clone git@github.com:TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git
 **The trunk is `development`, not `master`.** `master` was abandoned in 2022 and is hundreds
 of commits stale. Anything branched from it will not merge cleanly.
 
+### Add the user's fork
+
+Everyone on the team, the maintainer included, pushes branches to their own fork and opens pull
+requests from it. `origin` (the clone) is only for pulling `development`. Find the user's
+GitHub login, then check for their fork:
+
+```
+gh api user --jq .login
+gh repo view <login>/Tamu.GeoInnovation.js.monorepo --json isFork,parent --jq '"\(.isFork) \(.parent.owner.login)"'
+```
+
+**Expect:** `true TamuGeoInnovation`. If the repository does not exist, **ask the user before
+creating it**; creating a fork is an account action. With their go-ahead:
+`gh repo fork TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --clone=false`.
+
+Then add it as a second remote:
+
+```
+git remote add fork git@github.com:<login>/Tamu.GeoInnovation.js.monorepo.git
+git fetch fork
+git remote -v
+```
+
+**Expect:** `fork` and `origin`, each with fetch and push.
+
+Finally, check the user's access to the main repository:
+
+```
+gh api repos/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/collaborators/<login>/permission --jq .permission
+```
+
+**Expect:** `write` or `admin`. If it says `read`, tell the user: their pull requests will work,
+but every run of the checks will wait for a maintainer to approve it until someone gives them
+write access. Do not try to change access yourself.
+
 ## Phase 3 - Install dependencies
 
 Run from the repository root, substituting the real path in `-v`.
@@ -159,10 +194,18 @@ compiled.
 
 Two hostnames, deliberately different:
 
-| URL | Behaves as | Use for |
-| --- | --- | --- |
-| `http://localhost:4200` | dev, with dev-only sections visible | normal development |
+| URL                     | Behaves as                             | Use for                                      |
+| ----------------------- | -------------------------------------- | -------------------------------------------- |
+| `http://localhost:4200` | dev, with dev-only sections visible    | normal development                           |
 | `http://127.0.0.1:4200` | production, with those sections hidden | checking production gating without deploying |
+
+**The production view is not a perfect production preview.** It hides the dev-only sections
+exactly as production does, which is what it is for. But some APIs allow
+`http://localhost:4200` as a browser origin and not `http://127.0.0.1:4200` - browsers treat
+those as different origins - so a layer served by one of them fails to load and is drawn
+with the layer list's error style. That is a CORS allowlist gap, not a fault in the app, and
+the same layer is fine on the live site. Check the browser console for a CORS message before
+concluding anything, and use `localhost:4200` for everyday work.
 
 Stop it with `docker rm -f aggiemap-dev`.
 
@@ -175,6 +218,9 @@ Check this list before reporting any of the following as a problem.
 - **`curl` returns `000` for a `*.tamu.edu` host.** Git Bash ships a CA bundle from 2022
   that lacks the root these hosts now chain to. The host is almost certainly up. Check it in
   a browser instead, and never report it as unreachable on the strength of `curl` alone.
+- **A layer drawn with a strikethrough or error style at `127.0.0.1:4200`.** Usually a CORS
+  allowlist that includes `localhost` but not `127.0.0.1`, not a broken layer. Confirm in the
+  browser console, and check the same layer at `localhost:4200`.
 - **Console errors on first load.** Some of them occur on the live site too. Compare against
   production before attributing one to the local setup.
 - **Layers returning 404 on a `dev` hostname.** Any hostname containing `dev` reads from the
@@ -185,6 +231,8 @@ Check this list before reporting any of the following as a problem.
 ## Before making a first change
 
 - **Trunk is `development`.** Branch from it; branch protection requires a pull request.
+- **Push to the fork, never to `origin`.** `git push -u fork <branch>`, then
+  `gh pr create --repo TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --base development --head <login>:<branch>`.
 - **Reuse before building.** Check `libs/ui-kits/ngx/**` for an existing component, and
   `libs/sass/` plus the app's global `styles.scss` for existing classes, before writing any
   CSS. There is a shared copy-field component, a shared `.button` with variants, spacing

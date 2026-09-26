@@ -80,6 +80,15 @@
     }
   }
 
+  // Heading-only group: no visibility dot, and the title does not toggle anything.
+  &.heading {
+    color: initial;
+
+    p {
+      cursor: default;
+    }
+  }
+
   tamu-gisc-tooltip-trigger {
     margin: 0 0.5rem;
 

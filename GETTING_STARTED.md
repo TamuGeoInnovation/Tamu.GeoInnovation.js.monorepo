@@ -1,5 +1,10 @@
 # Nx Workspace Setup Guide
 
+> **Setting this up with Claude Code?** Use [CLAUDE_SETUP.md](CLAUDE_SETUP.md) instead of
+> this guide. It covers the same ground as Path 5 below, ordered as steps an agent can
+> execute and verify. The "Recommended" label further down refers to the devcontainer
+> path, which is a choice for someone setting up by hand.
+
 ## Table of Contents
 
 - [Devcontainers: What and why?](#devcontainers-what-and-why)
@@ -33,6 +38,7 @@
   - [2. Run AggieMap](#2-run-aggiemap)
   - [3. Stop AggieMap](#3-stop-aggiemap)
 - [Working with Claude Code](#working-with-claude-code)
+- [Fork Setup (All Paths)](#fork-setup-all-paths)
 - [Final Step (All Paths): Run the Project](#final-step-all-paths-run-the-project)
 
 ---
@@ -404,6 +410,7 @@ Runs every Node command in a throwaway `node:20.18.1` container against your che
 
 - Docker Desktop and Git, installed as in Path 1, steps 2 and 4.
 - SSH keys added to GitHub, as in Path 1, step 5.
+- Your fork set up as a second remote; see [Fork Setup](#fork-setup-all-paths).
 - The repository cloned. The commands below assume `C:\TAMU\Tamu.GeoInnovation.js.monorepo`; change the `-v` path to match your clone.
 
 Run the commands from **Git Bash**. `MSYS_NO_PATHCONV=1` stops Git Bash from rewriting the Windows path in `-v`.
@@ -467,14 +474,62 @@ Claude Code can check each of these, but some need you to act in a browser or si
 
 - **Docker Desktop running.**
 - **Your SSH key on GitHub _and_ authorized for SSO.** On [GitHub → Settings → SSH keys](https://github.com/settings/keys), click **Configure SSO → Authorize** for TamuGeoInnovation next to the key. Without that step, the key signs in to GitHub but is refused on this organization's repositories.
+- **Your own fork of the repository, and write access to the main one.** See [Fork Setup](#fork-setup-all-paths). Without write access, every pull request's checks wait for a maintainer to approve them.
 - **The GitHub CLI signed in.** Install it with `winget install --id GitHub.cli`, then run `gh auth login` in your own terminal. Claude Code uses `gh` for issues, pull requests and CI status. If `gh` was installed after the Claude Code session started, the session may not find it on `PATH`; restart the session, or Claude Code can call `C:\Program Files\GitHub CLI\gh.exe` directly.
 
 ## Things to tell Claude Code (or check it knows)
 
 - The trunk is `development`, not `master`. Branch protection requires a pull request.
+- Push branches to your fork (the `fork` remote), never to `TamuGeoInnovation` (`origin`). `CLAUDE.md` says so too, so Claude Code should already follow it.
 - Run `nx` through the Docker command in Path 5, as `node node_modules/nx/bin/nx.js`.
 - Don't edit files while a Docker run is in progress. The bind mount is live, so the run's result would describe files that changed partway through.
 - Most libraries have no `build` target. To typecheck a library, build the app that uses it. `nx test` only typechecks what the specs import, and `nx lint` doesn't typecheck at all.
+
+---
+
+# Fork Setup (All Paths)
+
+Everyone on the team works from their own fork, the maintainer included. Branches are pushed to your fork, and pull requests go from your fork into `TamuGeoInnovation:development`. Nobody pushes branches to `TamuGeoInnovation` directly.
+
+A checkout has two remotes:
+
+| Remote   | Points at                                          | Used for              |
+| -------- | -------------------------------------------------- | --------------------- |
+| `origin` | `TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo` | Pulling `development` |
+| `fork`   | `<your-username>/Tamu.GeoInnovation.js.monorepo`   | Pushing your branches |
+
+## 1. Create your fork (once per person)
+
+On [the repository's GitHub page](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo), click **Fork**. Or, with the GitHub CLI:
+
+```bash
+gh repo fork TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --clone=false
+```
+
+## 2. Add the fork remote (once per machine)
+
+After cloning (the clone's `origin` is the main repository):
+
+```bash
+git remote add fork git@github.com:<your-username>/Tamu.GeoInnovation.js.monorepo.git
+git fetch fork
+git remote -v
+```
+
+**What to Expect:** four lines, `fork` and `origin`, each with `(fetch)` and `(push)`.
+
+## 3. Everyday workflow
+
+```bash
+git switch development
+git pull origin development
+git switch -c <branch>
+# ...commit...
+git push -u fork <branch>
+gh pr create --repo TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --base development --head <your-username>:<branch>
+```
+
+**Ask for write access.** Checks on your pull requests run automatically only if you have **write** access to `TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo`. With read access, GitHub holds every run under "workflow awaiting approval" until a maintainer approves it, even though you are on the team.
 
 ---
 

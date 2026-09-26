@@ -213,6 +213,12 @@ export interface GroupLayerSourceProperties {
   sources?: LayerSource[];
 
   /**
+   * Show the group in the layer list as a heading only: no visibility toggle of its own, with each
+   * child toggled independently. The group layer is kept visible so its children can draw.
+   */
+  listHeading?: boolean;
+
+  /**
    * Native group layer properties.
    */
   native?: esri.GroupLayerProperties;
