@@ -53,11 +53,13 @@ $border-radius: 5px;
 
   .route-number {
     color: #fafafa;
-    width: 4rem;
-    text-align: center;
+    min-width: 4rem;
     font-weight: 600;
     border-top-left-radius: $border-radius;
     border-bottom-left-radius: $border-radius;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .route-name {

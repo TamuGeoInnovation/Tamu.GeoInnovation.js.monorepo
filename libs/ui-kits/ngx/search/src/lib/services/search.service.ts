@@ -599,6 +599,14 @@ export interface SearchSource {
    * Example: ['Bldg', 'BldgAbbrv', 'bldgabbrv'] for buildings
    */
   urlQueryParamAliases?: string[];
+
+  /**
+   * When true, URL identifier value(s) for this source are passed to the query as numbers rather than
+   * quoted strings. Required for exact-match queries on numeric fields (e.g. `OBJECTID`) against strict
+   * ArcGIS Enterprise MapServer layers, which reject a quoted integer (`OBJECTID = '4728'`). Lenient
+   * ArcGIS Online FeatureServers accept both, so existing string-based sources are unaffected.
+   */
+  urlQueryParamNumeric?: boolean;
 }
 
 /**

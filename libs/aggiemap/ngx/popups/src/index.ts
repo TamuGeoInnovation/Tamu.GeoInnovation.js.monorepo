@@ -14,3 +14,4 @@ export * from './lib/components/restroom/restroom.component';
 export * from './lib/components/dining/dining.component';
 export * from './lib/components/markdown-popup/markdown-popup.component';
 export * from './lib/components/markdown-w-directions-popup/markdown-w-directions-popup.component';
+export * from './lib/components/bus-stop/bus-stop.component';

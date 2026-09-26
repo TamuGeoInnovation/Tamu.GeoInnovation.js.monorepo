@@ -1,0 +1,27 @@
+<!-- Bus stop -->
+<ng-container *ngIf="data.attributes.type !== 'route'">
+  <div class="popup-section">
+    <div class="feature-style-1" tabindex="0">{{ data.attributes.StopName || 'Bus Stop' }}</div>
+    <div class="feature-style-2" tabindex="0"><strong>Served by route(s)</strong>: {{ data.attributes.Route }}</div>
+    <div class="feature-style-2" tabindex="0" *ngIf="data.attributes.StopType === 'Time'"><strong>Timed Stop</strong></div>
+  </div>
+
+  <div class="popup-section">
+    <!-- Copy link to this stop -->
+    <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+
+    <!-- Directions To Button -->
+    <div class="button" tabindex="0" role="button" (click)="startDirections(data?.attributes?.StopName)">Directions To Here</div>
+
+    <!-- Transportation Services schedules -->
+    <a class="feature-style-2" [href]="transportUrl" target="_blank" rel="noopener">View times at Transportation Services</a>
+  </div>
+</ng-container>
+
+<!-- Route line -->
+<ng-container *ngIf="data.attributes.type === 'route'">
+  <div class="popup-section">
+    <div class="feature-style-1" tabindex="0">Route {{ data.attributes.id }}: {{ data.attributes.routeName }}</div>
+    <a class="feature-style-2" [href]="transportUrl" target="_blank" rel="noopener">View times at Transportation Services</a>
+  </div>
+</ng-container>
