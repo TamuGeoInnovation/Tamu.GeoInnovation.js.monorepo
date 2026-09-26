@@ -1,5 +1,10 @@
 # Nx Workspace Setup Guide
 
+> **Setting this up with Claude Code?** Use [CLAUDE_SETUP.md](CLAUDE_SETUP.md) instead of
+> this guide. It covers the same ground as Path 5 below, ordered as steps an agent can
+> execute and verify. The "Recommended" label further down refers to the devcontainer
+> path, which is a choice for someone setting up by hand.
+
 ## Table of Contents
 
 - [Devcontainers: What and why?](#devcontainers-what-and-why)
@@ -28,6 +33,12 @@
   - [3. Install Git](#3-install-git-1)
   - [4. Create SSH Keys and Add to GitHub](#4-create-ssh-keys-and-add-to-github)
   - [5. Install Dev Containers Extension in VS Code](#5-install-dev-containers-extension-in-vs-code)
+- [Path 5: Windows with Docker Only (No Local Node.js)](#path-5-windows-with-docker-only-no-local-nodejs)
+  - [1. Install Dependencies](#1-install-dependencies)
+  - [2. Run AggieMap](#2-run-aggiemap)
+  - [3. Stop AggieMap](#3-stop-aggiemap)
+- [Working with Claude Code](#working-with-claude-code)
+- [Fork Setup (All Paths)](#fork-setup-all-paths)
 - [Final Step (All Paths): Run the Project](#final-step-all-paths-run-the-project)
 
 ---
@@ -388,6 +399,137 @@ git@github.com:TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git
 **What to Expect:** Repo cloned inside container, VS Code status bar shows `Dev Container: <name>`.
 
 📖 [VS Code Remote - Containers docs](https://code.visualstudio.com/docs/remote/containers)
+
+---
+
+# Path 5: Windows with Docker Only (No Local Node.js)
+
+Runs every Node command in a throwaway `node:20.18.1` container against your checkout, so nothing but Docker Desktop and Git is needed on the host. Use this if you don't want a devcontainer or a local Node install. It is also the setup Claude Code uses; see [Working with Claude Code](#working-with-claude-code).
+
+## Prerequisites
+
+- Docker Desktop and Git, installed as in Path 1, steps 2 and 4.
+- SSH keys added to GitHub, as in Path 1, step 5.
+- Your fork set up as a second remote; see [Fork Setup](#fork-setup-all-paths).
+- The repository cloned. The commands below assume `C:\TAMU\Tamu.GeoInnovation.js.monorepo`; change the `-v` path to match your clone.
+
+Run the commands from **Git Bash**. `MSYS_NO_PATHCONV=1` stops Git Bash from rewriting the Windows path in `-v`.
+
+## 1. Install Dependencies
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm -m 8g -e CYPRESS_INSTALL_BINARY=0 \
+  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -w /w node:20.18.1 \
+  sh -c "npm ci --no-audit --no-fund"
+```
+
+**What to Expect:** `added ~2200 packages`, then the repo's `postinstall` (`ngcc`) runs for a few minutes.
+**Notes:**
+
+- The first run also downloads the `node:20.18.1` image, which is several hundred MB.
+- `CYPRESS_INSTALL_BINARY=0` skips the ~800 MB Cypress download. It would be thrown away with the container on every run anyway, and serving the app doesn't need it. Leave the flag off if you run Cypress tests.
+- A full-tunnel VPN can slow these downloads badly. Disconnect it if you can.
+
+## 2. Run AggieMap
+
+```bash
+MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 \
+  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -w /w node:20.18.1 \
+  sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+```
+
+Watch the first compile, which takes a few minutes:
+
+```bash
+docker logs -f aggiemap-dev
+```
+
+**What to Expect:** `✔ Compiled successfully.` Then open [http://localhost:4200](http://localhost:4200). The map can take 20–40 seconds to draw the first time.
+**Notes:**
+
+- **`--poll=2000` is required on Windows.** File-change events don't cross the Windows-to-Linux bind mount. Without polling, the server compiles once and then never rebuilds, even though it looks like it's working.
+- Use `node node_modules/nx/bin/nx.js`, not `nx` or `npx nx`. `node_modules/.bin` may not be populated.
+- `localhost:4200` shows dev-only features. `http://127.0.0.1:4200` hides them, so you can check the production code path without deploying.
+- Both hostnames read map layers from the **production** GIS server (`gis.it.tamu.edu`). Only hostnames containing `dev` use `gis-dev.it.tamu.edu`. See `libs/aggiemap/ngx/common/src/lib/connections.ts`.
+
+## 3. Stop AggieMap
+
+```bash
+docker stop aggiemap-dev
+```
+
+The container is removed when it stops. Run step 2 again to restart.
+
+---
+
+# Working with Claude Code
+
+> To have Claude Code perform the setup itself rather than following this guide by hand, point it at [CLAUDE_SETUP.md](CLAUDE_SETUP.md), which orders the same steps with a verification after each.
+
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) runs Node commands with the Docker-only setup in [Path 5](#path-5-windows-with-docker-only-no-local-nodejs), so the host needs no Node.js install. Open the Claude Code session in the repository folder (for example `C:\TAMU\Tamu.GeoInnovation.js.monorepo`) so git, file links and the diff view work.
+
+## What Claude Code needs from you
+
+Claude Code can check each of these, but some need you to act in a browser or sign in:
+
+- **Docker Desktop running.**
+- **Your SSH key on GitHub _and_ authorized for SSO.** On [GitHub → Settings → SSH keys](https://github.com/settings/keys), click **Configure SSO → Authorize** for TamuGeoInnovation next to the key. Without that step, the key signs in to GitHub but is refused on this organization's repositories.
+- **Your own fork of the repository, and write access to the main one.** See [Fork Setup](#fork-setup-all-paths). Without write access, every pull request's checks wait for a maintainer to approve them.
+- **The GitHub CLI signed in.** Install it with `winget install --id GitHub.cli`, then run `gh auth login` in your own terminal. Claude Code uses `gh` for issues, pull requests and CI status. If `gh` was installed after the Claude Code session started, the session may not find it on `PATH`; restart the session, or Claude Code can call `C:\Program Files\GitHub CLI\gh.exe` directly.
+
+## Things to tell Claude Code (or check it knows)
+
+- The trunk is `development`, not `master`. Branch protection requires a pull request.
+- Push branches to your fork (the `fork` remote), never to `TamuGeoInnovation` (`origin`). `CLAUDE.md` says so too, so Claude Code should already follow it.
+- Run `nx` through the Docker command in Path 5, as `node node_modules/nx/bin/nx.js`.
+- Don't edit files while a Docker run is in progress. The bind mount is live, so the run's result would describe files that changed partway through.
+- Most libraries have no `build` target. To typecheck a library, build the app that uses it. `nx test` only typechecks what the specs import, and `nx lint` doesn't typecheck at all.
+
+---
+
+# Fork Setup (All Paths)
+
+Everyone on the team works from their own fork, the maintainer included. Branches are pushed to your fork, and pull requests go from your fork into `TamuGeoInnovation:development`. Nobody pushes branches to `TamuGeoInnovation` directly.
+
+A checkout has two remotes:
+
+| Remote   | Points at                                          | Used for              |
+| -------- | -------------------------------------------------- | --------------------- |
+| `origin` | `TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo` | Pulling `development` |
+| `fork`   | `<your-username>/Tamu.GeoInnovation.js.monorepo`   | Pushing your branches |
+
+## 1. Create your fork (once per person)
+
+On [the repository's GitHub page](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo), click **Fork**. Or, with the GitHub CLI:
+
+```bash
+gh repo fork TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --clone=false
+```
+
+## 2. Add the fork remote (once per machine)
+
+After cloning (the clone's `origin` is the main repository):
+
+```bash
+git remote add fork git@github.com:<your-username>/Tamu.GeoInnovation.js.monorepo.git
+git fetch fork
+git remote -v
+```
+
+**What to Expect:** four lines, `fork` and `origin`, each with `(fetch)` and `(push)`.
+
+## 3. Everyday workflow
+
+```bash
+git switch development
+git pull origin development
+git switch -c <branch>
+# ...commit...
+git push -u fork <branch>
+gh pr create --repo TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --base development --head <your-username>:<branch>
+```
+
+**Ask for write access.** Checks on your pull requests run automatically only if you have **write** access to `TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo`. With read access, GitHub holds every run under "workflow awaiting approval" until a maintainer approves it, even though you are on the team.
 
 ---
 

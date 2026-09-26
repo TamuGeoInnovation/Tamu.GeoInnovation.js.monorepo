@@ -14,7 +14,10 @@ describe('AuthGuard', () => {
         AuthGuard,
         {
           provide: env,
-          useValue: { api_url: 'api' }
+          // AuthGuard pulls in AuthService, which transitively constructs the account services.
+          // Those read `legacy_api_url` in their field initialisers, so the environment mock
+          // has to carry it or EnvironmentService throws on the missing token.
+          useValue: { api_url: 'api', legacy_api_url: 'legacy/' }
         }
       ]
     });

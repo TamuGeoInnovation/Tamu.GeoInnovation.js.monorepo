@@ -6,7 +6,7 @@ desktopSizes.forEach((size) => {
     beforeEach(() => {
       cy.viewport(size[0], size[1]);
       cy.intercept('GET', '**/TAMU_BaseMap_060826/**').as('basemap');
-      cy.intercept('GET', '**/Construction_2018/**').as('construction');
+      cy.intercept('GET', '**/TSConstruction_Hosted/**').as('construction');
       cy.intercept('GET', '**/Physical_Distancing_Tents/**').as('tents');
       cy.visit('https://aggiemap.tamu.edu/map/d');
       cy.get('canvas').should('be.visible', { timeout: 5000 });

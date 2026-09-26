@@ -4,7 +4,7 @@ function createConnections(gisHost: string): IComposedConnections {
     basemapUrl: `https://${gisHost}/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer`,
     inforUrl: `https://${gisHost}/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer`,
     accessibleUrl: `https://${gisHost}/arcgis/rest/services/FCOR/ADA_120717/MapServer/0`,
-    constructionUrl: `https://${gisHost}/arcgis/rest/services/FCOR/Construction_2018/MapServer`,
+    constructionUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
     departmentUrl: `https://${gisHost}/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1`,
     tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/TS_Main/MapServer`,
     bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
@@ -18,6 +18,7 @@ function createConnections(gisHost: string): IComposedConnections {
     footballGamedayShuttlesUrl: `https://${gisHost}/arcgis/rest/services/TS/Ftbl_Gameday_Shuttles/MapServer`,
     maroonWhiteGameUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Maroon_White_Game_view/FeatureServer`,
     accessibleParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/AccessibleParking_view/FeatureServer`,
+    kickoff150thUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/150th_Kickoff/FeatureServer`,
     aggieFamilyParadeUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Aggie_Family_Parade_view/FeatureServer`,
     aggielandSaturdayUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/AggielandSaturday_view/FeatureServer`,
     avpParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/AnyValidPermitParking/MapServer`,
@@ -33,6 +34,8 @@ function createConnections(gisHost: string): IComposedConnections {
     hsGraduationUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/HS_Graduation/MapServer`,
     indoorTrackParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/IndoorTrackParking_view/FeatureServer`,
     loadingZonesUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/Loading_Zones/MapServer`,
+    kickoffAtKyleUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Kickoff_at_Kyle/FeatureServer`,
+    liveAtTheStationUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Live_at_the_Station/FeatureServer`,
     maintenanceParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MaintenanceParking/MapServer`,
     mediaParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/MediaParking/MapServer`,
     mensBasketballUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/MensBasketballParking_view/FeatureServer`,
@@ -53,6 +56,7 @@ function createConnections(gisHost: string): IComposedConnections {
     soccerParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SoccerParking_view/FeatureServer`,
     softballParkingUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/SoftballParking_view/FeatureServer`,
     softballRegionalsUrl: `https://${gisHost}/arcgis/rest/services/TS/Softball_Regionals/MapServer`,
+    spiritOf150WeekUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Spirit_of_150_Week/FeatureServer`,
     staffParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/StaffSelectableParking/MapServer`,
     studentParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/StudentSelectableParking/MapServer`,
     summerCommencementUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Summer_Commencement_view/FeatureServer`,
@@ -82,7 +86,15 @@ function createConnections(gisHost: string): IComposedConnections {
     tCampUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/T_Camp_view/FeatureServer`,
     fireSchoolUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Municipal_Fire__School_Vendor_Show_view/FeatureServer`,
     beefCattleUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Beef_Cattle_Vendor_Load_In_view/FeatureServer`,
-    gamesOfTexasUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer`
+    gamesOfTexasUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/Games_of_Texas_view/FeatureServer`,
+    // Satellite-campus basemaps. These are fixed `gis.tamu.edu` hosted services (not tied to
+    // gisHost/tsgisHost), each with a companion FeatureServer of the same name used for search.
+    galvestonBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/VectorTileServer',
+    galvestonFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/FeatureServer',
+    mcallenBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/VectorTileServer',
+    mcallenFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/FeatureServer',
+    dcBushSchoolBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DC_Bush_School/VectorTileServer',
+    dcBushSchoolFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DC_Bush_School/FeatureServer'
   };
 }
 
@@ -138,6 +150,7 @@ export interface IComposedConnections {
   footballGamedayShuttlesUrl: string;
   maroonWhiteGameUrl: string;
   accessibleParkingUrl: string;
+  kickoff150thUrl: string;
   aggieFamilyParadeUrl: string;
   aggielandSaturdayUrl: string;
   avpParkingUrl: string;
@@ -173,12 +186,15 @@ export interface IComposedConnections {
   soccerParkingUrl: string;
   softballParkingUrl: string;
   softballRegionalsUrl: string;
+  spiritOf150WeekUrl: string;
   staffParkingUrl: string;
   studentParkingUrl: string;
   summerCommencementUrl: string;
   swimmingParkingUrl: string;
   tennisParkingUrl: string;
   timedParkingUrl: string;
+  kickoffAtKyleUrl: string;
+  liveAtTheStationUrl: string;
   troubadourFestivalUrl: string;
   vendorParkingUrl: string;
   visitorParkingUrl: string;
@@ -193,4 +209,10 @@ export interface IComposedConnections {
   fireSchoolUrl: string;
   beefCattleUrl: string;
   gamesOfTexasUrl: string;
+  galvestonBasemapUrl: string;
+  galvestonFeatureServerUrl: string;
+  mcallenBasemapUrl: string;
+  mcallenFeatureServerUrl: string;
+  dcBushSchoolBasemapUrl: string;
+  dcBushSchoolFeatureServerUrl: string;
 }

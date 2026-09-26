@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 import { AllMapsComponent } from './components/all-maps/all-maps.component';
@@ -55,6 +56,15 @@ const routes: Routes = [
       title: 'Operations Maps',
       intro: 'Browse operations-focused maps for campus construction and future internal-use overlays.'
     }
+  },
+  {
+    path: 'campus',
+    component: EventMapsComponent,
+    data: {
+      mapType: 'satellite-campus',
+      title: 'Campus Maps',
+      intro: 'Browse single-basemap maps for TAMU campuses outside of College Station.'
+    }
   }
 ];
 
@@ -67,7 +77,8 @@ const routes: Routes = [
     UILayoutModule,
     RouterModule.forChild(routes),
     AggiemapNgxSharedUiStructuralModule,
-    PipesModule
+    PipesModule,
+    UIClipboardModule
   ],
   declarations: [
     AllMapsComponent,

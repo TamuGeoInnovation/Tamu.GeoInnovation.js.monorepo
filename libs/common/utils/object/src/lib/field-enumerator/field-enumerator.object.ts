@@ -13,9 +13,14 @@ export class FieldEnumerator<T> {
     }
   }
 
+  /**
+   * `T` is unconstrained, so `Object.entries` and index access on `_obj` do not typecheck
+   * under strict settings. Cast at the point of use rather than constraining `T` to an
+   * object type, which would be a public API change for every caller of this class.
+   */
   public filter(type: 'include' | 'exclude', fields: string[]): FieldEnumerator<T> {
     const filtered = Object.fromEntries(
-      Object.entries(this._obj).filter(([key]) => {
+      Object.entries(this._obj as Record<string, unknown>).filter(([key]) => {
         const fss = fields;
 
         if (type === 'include') {
@@ -58,10 +63,10 @@ export class FieldEnumerator<T> {
   }
 
   public toArray(): Array<EnumeratorKeyValuePair> {
-    return Object.keys(this._obj).map((k: string) => {
+    return Object.keys(this._obj as Record<string, unknown>).map((k: string) => {
       return {
         key: k,
-        value: this._obj[k]
+        value: (this._obj as Record<string, unknown>)[k]
       };
     });
   }

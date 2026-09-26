@@ -70,7 +70,21 @@ export const LayerSources: LayerSource[] = [
       }
     ],
     native: {
-      ...commonLayerProps
+      ...commonLayerProps,
+      // Override the hosted service's own per-owner unique-value renderer so this
+      // map keeps showing a single, undifferentiated orange/red hatch for all construction.
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'diagonal-cross',
+          color: [255, 85, 0, 255],
+          outline: {
+            color: [255, 85, 0, 255],
+            width: 1
+          }
+        }
+      }
     }
   },
   {

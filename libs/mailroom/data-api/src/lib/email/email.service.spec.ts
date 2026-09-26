@@ -68,42 +68,71 @@ describe('EmailService', () => {
         expect(spy).toHaveBeenCalledWith({
           relations: ['attachments'],
           where: {
-            id: mockParam.id
+            // getEmail() does parseInt(id, 10), so the repository receives a number.
+            id: Number(mockParam.id)
           }
         });
       });
     });
 
     describe('.deleteEmail', () => {
-      it('should return a boolean indicating the status of the remove() operation', async () => {
-        const mockParam = {
-          id: '1'
-        };
-
-        // Set a mock on repo's findOne(); this will return the instance of MailroomEmail we wanna delete
+      /**
+       * The previous version asserted only that `remove()` was called with the object `findOne()`
+       * returned. `findOne` was mocked with `mockResolvedValue`, so every call handed back the same
+       * instance -- which held whether or not `deleteEmail` passed the id along. It did not: it
+       * looked up `where: {}` and deleted an arbitrary row.
+       *
+       * These assert against the criteria rather than the returned object, so the id has to reach
+       * the repository for them to pass.
+       */
+      it('looks the email up by the id it was given', async () => {
         const spyFind = jest.spyOn(repo, 'findOne').mockResolvedValue(new MailroomEmail());
-        // Call service's getEmail() method providing any parameters; our spy will handle this call
-        const email = await service.getEmail(mockParam.id);
+        jest.spyOn(repo, 'remove').mockResolvedValue(new MailroomEmail());
 
-        // Assert the result of getEmail() is an instance of MailroomEmail
-        expect(email).toBeInstanceOf(MailroomEmail);
-        // Assert that the findOne() method was called with the right relations table and with the provided id
+        await service.deleteEmail('1');
+
         expect(spyFind).toHaveBeenCalledWith({
           relations: ['attachments'],
-          where: {
-            id: mockParam.id
-          }
+          // deleteEmail() does parseInt(id, 10), so the repository receives a number.
+          where: { id: 1 }
         });
+      });
 
-        // Set mock on the repo's remove(); this will return the removed MailroomEmail instance
+      it('deletes the email matching the id rather than whichever row comes back first', async () => {
+        // Distinct ids matter: `toHaveBeenCalledWith` compares structurally, so two bare
+        // `new MailroomEmail()` instances are indistinguishable to it.
+        const requested = Object.assign(new MailroomEmail(), { id: 7 });
+        const someOtherEmail = Object.assign(new MailroomEmail(), { id: 1 });
+
+        // Answer the way a real repository would: only the matching id yields the requested row.
+        jest.spyOn(repo, 'findOne').mockImplementation((options) => {
+          const where = (options as { where: { id: number } }).where;
+
+          return Promise.resolve(where?.id === 7 ? requested : someOtherEmail);
+        });
+        const spyRemove = jest.spyOn(repo, 'remove').mockResolvedValue(requested);
+
+        await service.deleteEmail('7');
+
+        expect(spyRemove).toHaveBeenCalledWith(requested);
+        expect(spyRemove).not.toHaveBeenCalledWith(someOtherEmail);
+      });
+
+      it('should return a boolean indicating the status of the remove() operation', async () => {
+        jest.spyOn(repo, 'findOne').mockResolvedValue(new MailroomEmail());
         const spyRemove = jest.spyOn(repo, 'remove').mockResolvedValue(new MailroomEmail());
-        // Call service's deleteEmail() method with the id
-        const wasRemoved = await service.deleteEmail(mockParam.id);
 
-        // Assert we got a truthy value back from deleteEmail()
-        expect(wasRemoved).toBeTruthy();
-        // Assert we called repo remove() with the email we found earlier given an id
-        expect(spyRemove).toHaveBeenCalledWith(email);
+        await expect(service.deleteEmail('1')).resolves.toBe(true);
+        expect(spyRemove).toHaveBeenCalled();
+      });
+
+      it('reports false and removes nothing when no email has that id', async () => {
+        jest.spyOn(repo, 'findOne').mockResolvedValue(null);
+        const spyRemove = jest.spyOn(repo, 'remove');
+
+        // `remove(undefined)` throws, so this used to be a 500 rather than a negative result.
+        await expect(service.deleteEmail('404')).resolves.toBe(false);
+        expect(spyRemove).not.toHaveBeenCalled();
       });
     });
   });

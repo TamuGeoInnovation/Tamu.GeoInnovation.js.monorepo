@@ -51,6 +51,7 @@ import { MapComponent } from './map.component';
 import { MoveInOutSidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 import { EventLegendComponent } from './components/event-legend/event-legend.component';
+import { SidebarRedirectGuard } from '../../guards/sidebar-redirect/sidebar-redirect.guard';
 
 const routes: Routes = [
   {
@@ -59,8 +60,12 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'd',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        canActivate: [SidebarRedirectGuard],
+        // Angular requires one of component/loadComponent/redirectTo/children/loadChildren on every
+        // route. This route never actually renders children — when `SidebarRedirectGuard` allows
+        // activation (kiosk maps), the outlet is simply left empty.
+        children: []
       },
       {
         path: 'd',

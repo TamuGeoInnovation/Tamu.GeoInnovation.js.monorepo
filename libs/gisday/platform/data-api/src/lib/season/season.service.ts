@@ -1,4 +1,5 @@
 import {
+  HttpException,
   BadRequestException,
   ConflictException,
   Injectable,
@@ -122,8 +123,13 @@ export class SeasonService extends BaseProvider<Season> {
 
       const existing = await this.seasonRepo.findOne({ where: { year: createSeasonDto.year } });
 
-      // Only create a new season if one does not already exist for the given year
-      if (existing === undefined) {
+      // Only create a new season if one does not already exist for the given year.
+      //
+      // This read `existing === undefined`, which TypeORM 0.2 would satisfy. Since 0.3 `findOne`
+      // resolves to `null` when nothing matches, so the comparison was never true, every call fell
+      // through to the `else`, and creating a season for a year that did not exist yet answered
+      // 409 Conflict. Truthiness covers both.
+      if (!existing) {
         const newSeason = this.seasonRepo.create(createSeasonDto);
         return this.seasonRepo.save(newSeason);
       } else {
@@ -377,6 +383,12 @@ export class SeasonService extends BaseProvider<Season> {
         return latest;
       }
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new UnprocessableEntityException('No previous season found.');
     }
   }

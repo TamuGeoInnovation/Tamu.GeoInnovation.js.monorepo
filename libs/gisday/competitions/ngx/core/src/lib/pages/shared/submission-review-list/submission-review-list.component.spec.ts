@@ -40,7 +40,9 @@ describe('SubmissionReviewListComponent', () => {
       imageGuids: []
     };
 
-    component.onRowClick({ row: mockSubmission });
+    // onRowClick returns early unless event.type is 'click'. The original event omitted
+    // type, so the guard short-circuited and the modal was never opened.
+    component.onRowClick({ type: 'click', row: mockSubmission } as never);
 
     expect(mockModalService.open).toHaveBeenCalled();
   });

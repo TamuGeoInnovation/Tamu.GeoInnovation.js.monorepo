@@ -3,6 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { Angulartics2 } from 'angulartics2';
+
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
@@ -37,8 +39,14 @@ describe('BusListComponent (Shallow)', () => {
       declarations: [BusListComponent],
       providers: [
         {
+          // BusService injects Angulartics2, which needs RouterlessTracking. Mocked rather
+          // than importing the real module, matching parking-lot.component.spec.ts.
+          provide: Angulartics2,
+          useValue: { eventTrack: { next: jest.fn() } }
+        },
+        {
           provide: env,
-          useValue: { SearchSources: [] }
+          useValue: { SearchSources: [], LayerSources: [] }
         }
       ],
       schemas: [NO_ERRORS_SCHEMA]

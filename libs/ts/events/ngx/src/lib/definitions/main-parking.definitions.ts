@@ -37,7 +37,7 @@ export const TsMainParkingDefinitions = {
     id: TS_MAIN_PARKING_LAYERS.CONSTRUCTION,
     layerId: TS_MAIN_PARKING_LAYERS.CONSTRUCTION,
     name: 'Construction',
-    url: `${eventUrl}/3`
+    url: Connections.constructionUrl
   },
   VISITOR_KIOSKS: {
     id: TS_MAIN_PARKING_LAYERS.VISITOR_KIOSKS,
@@ -205,7 +205,21 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     popupComponent: ConstructionPopupComponent,
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // Override the hosted service's own per-owner unique-value renderer so this map
+      // keeps showing a single, undifferentiated orange/red hatch for all construction.
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          style: 'diagonal-cross',
+          color: [255, 85, 0, 255],
+          outline: {
+            color: [255, 85, 0, 255],
+            width: 1
+          }
+        }
+      }
     } as unknown as FeatureNative
   },
 

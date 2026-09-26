@@ -20,6 +20,8 @@ import { CrossCountryParkingTs } from './cross-country-parking.definitions';
 import { SoccerParkingTs } from './soccer-parking.definitions';
 import { VolleyballParkingTs } from './volleyball-parking.definitions';
 import { TroubadourTs } from './troubadour-festival.definitions';
+import { KickoffAtKyleTs } from './kickoff-at-kyle.definitions';
+import { LiveAtTheStationTs } from './live-at-the-station.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
 import { NovemberRingDayEvent } from './november-ring-day.definitions';
 import { RingDayEvent } from './october-ring-day.definitions';
@@ -55,6 +57,7 @@ import { SustainableTransportationTs } from './sustainable-transportation.defini
 import { EvChargersTs } from './ev-chargers.definitions';
 import { TsMainParkingTs } from './main-parking.definitions';
 import { SecGroundsConferenceTs } from './sec-grounds-conference.definitions';
+import { DiningKioskTs } from './dining.definitions';
 import { ArgentinaVsHondurasTs } from './argentina-vs-honduras.definitions';
 import { ConstructionMapTs } from './construction-map.definitions';
 import { FishCampTs } from './fish-camp.definitions';
@@ -63,6 +66,11 @@ import { FireSchoolTs } from './fire-school.definitions';
 import { BeefCattleTs } from './beef-cattle-vendor.definitions';
 import { AggieFamilyParadeTs } from './aggie-family-parade.definitions';
 import { GamesOfTexasTs } from './games-of-texas.definitions';
+import { SpiritOf150WeekTs } from './spirit-of-150-week.definitions';
+import { Kickoff150thTs } from './150th-kickoff.definitions';
+import { GalvestonTs } from './campus/galveston.definitions';
+import { McAllenTs } from './campus/mcallen.definitions';
+import { DCBushSchoolTs } from './campus/dc-bush-school.definitions';
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -128,5 +136,13 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FireSchoolTs,
   BeefCattleTs,
   AggieFamilyParadeTs,
-  GamesOfTexasTs
+  GamesOfTexasTs,
+  SpiritOf150WeekTs,
+  Kickoff150thTs,
+  GalvestonTs,
+  McAllenTs,
+  DCBushSchoolTs,
+  DiningKioskTs,
+  KickoffAtKyleTs,
+  LiveAtTheStationTs
 ];

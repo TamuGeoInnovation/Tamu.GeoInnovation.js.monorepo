@@ -51,6 +51,13 @@ export class MapComponent implements OnInit, OnDestroy {
   public hasOptions: boolean;
 
   /**
+   * When `true` (see `EventConfiguration.hideSidebar`), the map hides its sidebar entirely (already
+   * enforced by `SidebarRedirectGuard`) as well as every overlay control tied to it — settings,
+   * share URL, legend, layers, and basemap gallery — leaving only the bare map.
+   */
+  public hideSidebar: boolean;
+
+  /**
    * Text content for the share button (mobile)
    */
   public shareUrl: string;
@@ -77,6 +84,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.hasSettings = this.eventsSettingsService.hasSettings;
     this.hasOptions = this.eventsSettingsService.hasOptions;
     const root = this.eventsSettingsService.eventConfiguration();
+    this.hideSidebar = root?.configuration?.hideSidebar === true;
 
     // If the current event has options but none are set, redirect to the builder
     if (
@@ -92,6 +100,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this._connections = this.env.value?.('Connections') ?? {};
     this.isDev = this.ts.get?.('isTesting') ?? of(false);
+
 
     try {
       const eventDates = root?.configuration?.eventDates || [];

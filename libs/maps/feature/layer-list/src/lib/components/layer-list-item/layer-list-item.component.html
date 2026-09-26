@@ -1,5 +1,5 @@
-<div class="layer-item" [ngClass]="{ 'visible': listItem?.visible, 'outside-extent': listItem.visibleAtCurrentScale === false, 'error': listItem?.error, 'has-children': listItem?.children?.length > 0}">
-  <div [ngSwitch]="listItem.updating" (click)="toggleLayer()">
+<div class="layer-item" [ngClass]="{ 'visible': listItem?.visible, 'outside-extent': listItem.visibleAtCurrentScale === false, 'error': listItem?.error, 'has-children': listItem?.children?.length > 0, 'heading': isHeading}">
+  <div *ngIf="!isHeading" [ngSwitch]="listItem.updating" (click)="toggleLayer()">
     <div *ngSwitchCase="false" class="layer-visibility-dot"></div>
 
     <div *ngSwitchDefault>

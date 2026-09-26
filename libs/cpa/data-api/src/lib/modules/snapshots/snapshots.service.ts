@@ -23,7 +23,7 @@ export class SnapshotsService extends BaseService<Snapshot> {
   }
 
   public async createSnapshotCopy(donorSnapshotGuid: string) {
-    const existing = await this.repo.findOne({ guid: donorSnapshotGuid });
+    const existing = await this.repo.findOne({ where: { guid: donorSnapshotGuid } });
 
     if (existing) {
       const snapshotCopy = this.repo.create({

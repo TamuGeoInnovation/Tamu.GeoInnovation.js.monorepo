@@ -1,10 +1,10 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0">{{ data.attributes.name }}</div>
-  <div class="feature-style-2" tabindex="0"><span>{{data?.attributes?.street}} </span><span>{{data?.attributes?.city}}</span>, TX <span>{{data?.attributes?.zip_code}}</span></div>
+  <div class="feature-style-2" tabindex="0"><span>{{data?.attributes?.street}} </span><span>{{data?.attributes?.city}}</span>, <span>{{data?.attributes?.state}}</span></div>
 </div>
 
 <div class="popup-section" *giscAccordion="let parent;" id="dining-location-schedule-container">
-  <div class="flex flex-row align-center justify-between" tab-index="0" *ngIf="(statusText | async) as status" [giscAccordionHeader]="parent">
+  <div class="flex flex-row align-center justify-between" tab-index="0" *ngIf="status" [giscAccordionHeader]="parent">
     <div class="flex flex-row">
       <p [ngClass]="{'clr-md-green-700': status.statusCode === 'open', 'clr-md-red-600': status.statusCode === 'closed', 'no-message' : status?.message === null}" class="status-text flex flex-row align-center"><span class="material-icons">schedule</span>{{status.status}}</p>
       <p class="status-message" *ngIf="status.message">{{status?.message}}</p>
@@ -16,7 +16,7 @@
   </div>
 
   <div class="leader-1" *giscAccordionContent="parent.expanded">
-    <ng-container *ngIf="schedule | async as schedule">
+    <ng-container *ngIf="schedule | async as schedule; else scheduleFallback">
       <div *ngFor="let day of schedule | keyvalue" class="flex flex-row justify-between schedule-day-row">
         <p>{{ day.key | date : 'EEEE' }}</p>
         <div [ngSwitch]="day.value.hours.length > 0">
@@ -27,6 +27,10 @@
         </div>
       </div>
     </ng-container>
+
+    <ng-template #scheduleFallback>
+      <p class="schedule-fallback">{{ scheduleUnavailable ? 'Hours unavailable' : 'Loading hours&hellip;' }}</p>
+    </ng-template>
   </div>
 </div>
 

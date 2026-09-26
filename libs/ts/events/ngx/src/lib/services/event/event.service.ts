@@ -487,8 +487,8 @@ export class EventService {
       return;
     }
 
-    const layer = this._map.findLayerById(layerId) as esri.FeatureLayer | undefined;
-    const source = sources.find((candidate) => candidate.id === layerId);
+    const layer = this.findMapLayerById(layerId) as esri.FeatureLayer | undefined;
+    const source = this.findLayerSourceById(sources, layerId);
 
     if (!layer || !source) {
       console.warn(`EventService.selectFeatureFromUrl: Layer '${layerId}' not found.`);
@@ -523,6 +523,48 @@ export class EventService {
       shouldShowPopup: true,
       popupComponent: this.getPopupComponent(source)
     });
+  }
+
+  /**
+   * Resolves a layer by id anywhere on the map, including layers nested inside a group layer.
+   *
+   * `Map.findLayerById` only looks at top-level operational layers, so a feature belonging to a
+   * grouped layer (e.g. the move-in parking lots, which live under a `Parking Lots` group) could
+   * not be resolved from a shared `feature=` link.
+   */
+  private findMapLayerById(layerId: string): esri.Layer | undefined {
+    if (!this._map) {
+      return undefined;
+    }
+
+    const topLevel = this._map.findLayerById(layerId);
+
+    if (topLevel) {
+      return topLevel;
+    }
+
+    return this._map.allLayers?.find((layer) => layer.id === layerId);
+  }
+
+  /**
+   * Resolves a layer source by id, walking nested group sources. The counterpart to
+   * `findMapLayerById` for the definition side of a grouped layer.
+   */
+  private findLayerSourceById(sources: LayerSource[], layerId: string): LayerSource | undefined {
+    for (const source of sources) {
+      if (source.id === layerId) {
+        return source;
+      }
+
+      const children = (source as { sources?: LayerSource[] }).sources;
+      const nested = children ? this.findLayerSourceById(children, layerId) : undefined;
+
+      if (nested) {
+        return nested;
+      }
+    }
+
+    return undefined;
   }
 
   /**

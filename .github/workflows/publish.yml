@@ -63,11 +63,16 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}
-          flavor: |
-            latest=true
+          # `flavor: latest=true` was set here, which overrode the action's `latest=auto` default
+          # and tagged *every* build as `latest`, including feature branches. Anything deployed
+          # from `:latest` could therefore pick up unreviewed code the next time a pod was
+          # recreated. Relying on the default means only the default branch gets the tag.
+          # `stable` is the tag production deployments pin to. It used to be published from
+          # `master` as well, but `master` was abandoned in 2022 and is hundreds of commits
+          # stale, so a single stray push to it would have shipped four-year-old code to
+          # production. Only `development` may produce `stable`. See issue #956.
           tags: |
             type=raw,value=stable,enable=${{ github.ref_name == 'development' }}
-            type=raw,value=stable,enable=${{ github.ref_name == 'master' }}
             type=raw,value=${{ github.ref_name }},enable=${{ github.ref_name != 'development' && github.ref_name != 'master' }}
             type=sha
 

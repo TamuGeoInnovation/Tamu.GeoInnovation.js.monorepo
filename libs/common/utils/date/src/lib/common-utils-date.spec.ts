@@ -45,10 +45,12 @@ describe('dateForTimeString', () => {
     expect(dateForDateTimeString('').toTimeString()).toBe('Invalid Date');
   });
 
-  it('should return null for null string', () => {
-    expect(() => dateForDateTimeString(null).toTimeString()).toThrow(
-      new TypeError("Cannot read property 'startsWith' of null")
-    );
+  // Asserts the error TYPE rather than V8's message text. The original asserted
+  // "Cannot read property 'startsWith' of null", which was V8's wording up to Node 14;
+  // Node 16 onwards phrases it "Cannot read properties of null (reading 'startsWith')".
+  // Pinning a test to an engine's error string breaks on every runtime upgrade.
+  it('should throw for a null string', () => {
+    expect(() => dateForDateTimeString(null).toTimeString()).toThrow(TypeError);
   });
 });
 

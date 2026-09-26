@@ -1,4 +1,5 @@
 import {
+  HttpException,
   Injectable,
   UnprocessableEntityException,
   NotFoundException,
@@ -43,6 +44,12 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         }
       });
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(err.message, 'SpeakerProvider');
       throw new InternalServerErrorException('Could not find speakers for season.');
     }
@@ -87,11 +94,15 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       return [];
     }
 
+    // The initial value matters. Without it, `reduce` on an empty array throws
+    // "Reduce of empty array with no initial value" -- so an active season with no days yet, which
+    // is the state a season sits in while it is being set up, answered 500 instead of an empty
+    // list. The reduce further down already passes `[]`.
     const eventGuids = season.days
       .map((day) => day.events.map((event) => event.guid))
       .reduce((acc, curr) => {
         return acc.concat(curr);
-      });
+      }, []);
 
     const events = await this.eventRepo.find({
       where: {
@@ -202,6 +213,12 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         try {
           speakerImage = await this._saveImage(file, guid);
         } catch (err) {
+          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+          if (err instanceof HttpException) {
+            throw err;
+          }
+
           Logger.error(err.message, 'SpeakerProvider');
           throw new InternalServerErrorException('Could not save speaker image');
         }
@@ -243,6 +260,12 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
           return savedEntity.save();
         } catch (err) {
+          // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+          // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+          if (err instanceof HttpException) {
+            throw err;
+          }
+
           Logger.error(err.message, 'SpeakerProvider');
           throw new InternalServerErrorException('Could not save speaker image');
         }
@@ -300,6 +323,12 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     try {
       return Promise.all(newEntities.map((entity) => entity.save()));
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException('Could not copy speakers into season.');
     }
   }
@@ -416,6 +445,12 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         newSpeakers: savedSpeakerEntities
       };
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException(err.message);
     }
   }
@@ -441,6 +476,12 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         return manager.delete(Speaker, guids);
       });
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       Logger.error(err.message, 'SpeakerProvider.deleteEntities');
       throw new InternalServerErrorException('Could not delete entities');
     }

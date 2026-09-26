@@ -1,4 +1,10 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnprocessableEntityException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { from, groupBy, mergeMap, toArray } from 'rxjs';
@@ -42,6 +48,12 @@ export class EventProvider extends BaseProvider<Event> {
     try {
       return this.getEventsForSeason(season.guid);
     } catch (error) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
       throw new InternalServerErrorException('Could not get events for active season.');
     }
   }
@@ -106,6 +118,12 @@ export class EventProvider extends BaseProvider<Event> {
         return eventEnt.save();
       }
     } catch (error) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
       throw new UnprocessableEntityException(null, 'Could not insert new Event');
     }
   }
@@ -122,10 +140,14 @@ export class EventProvider extends BaseProvider<Event> {
         throw new NotFoundException();
       }
 
-      const tags = event.tags.map((t) => {
+      // `UpdateEventDto` declares both as required and TypeScript enforces that at every call site
+      // it can see -- but it is an interface, so `ValidationPipe` has no metadata to check a
+      // request against and an HTTP caller can omit them. Doing so threw a TypeError here, which
+      // the catch below reported as 422 "Could not insert new Event": wrong reason, wrong verb.
+      const tags = (event.tags ?? []).map((t) => {
         return this.tagRepo.create({ guid: t });
       });
-      const speakers = event.speakers.map((t) => this.speakerRepo.create({ guid: t }));
+      const speakers = (event.speakers ?? []).map((t) => this.speakerRepo.create({ guid: t }));
 
       const newEnt = this.eventRepo.create({
         ...existingEvent,
@@ -136,7 +158,15 @@ export class EventProvider extends BaseProvider<Event> {
 
       return newEnt.save();
     } catch (error) {
-      throw new UnprocessableEntityException(null, 'Could not insert new Event');
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      // Was "Could not insert new Event" -- copy-pasted from insertEvent, and misleading when it
+      // surfaces on an update.
+      throw new UnprocessableEntityException(null, 'Could not update Event');
     }
   }
 
@@ -262,7 +292,10 @@ export class EventProvider extends BaseProvider<Event> {
       }
     });
 
-    if (!events) {
+    // Was `if (!events)`. `find` resolves to an array, never null, so this never fired and copying
+    // guids that match nothing answered 200 with an empty list rather than saying so. Sibling
+    // providers check the length, which is the intent.
+    if (!events || events.length === 0) {
       throw new NotFoundException();
     }
 
@@ -287,6 +320,12 @@ export class EventProvider extends BaseProvider<Event> {
     try {
       return Promise.all(newEvents);
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException('Could not copy events into season');
     }
   }

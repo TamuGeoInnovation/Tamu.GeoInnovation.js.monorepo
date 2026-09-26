@@ -165,6 +165,42 @@ describe('LayerSources', () => {
         layerId: 'ev-charge-stations',
         name: 'EV Charge Stations',
         url: 'ev-charge-stations-url'
+      },
+      EVENT_150_OPENING_EVENT_LOCATIONS: {
+        id: 'event-150-opening-event-locations',
+        layerId: 'event-150-opening-event-locations',
+        name: 'Event Locations',
+        url: 'opening-ceremony-url/0'
+      },
+      EVENT_150_OPENING_SHUTTLE_ROUTE: {
+        id: 'event-150-opening-shuttle-route',
+        layerId: 'event-150-opening-shuttle-route',
+        name: 'Shuttle Route',
+        url: 'opening-ceremony-url/1'
+      },
+      EVENT_150_OPENING_PARKING: {
+        id: 'event-150-opening-parking',
+        layerId: 'event-150-opening-parking',
+        name: 'Parking',
+        url: 'opening-ceremony-url/2'
+      },
+      EVENT_150_KICKOFF_AT_KYLE: {
+        id: 'event-150-kickoff-at-kyle',
+        layerId: 'event-150-kickoff-at-kyle',
+        name: 'Kickoff at Kyle',
+        url: 'kickoff-at-kyle-url'
+      },
+      EVENT_150_LIVE_AT_THE_STATION: {
+        id: 'event-150-live-at-the-station',
+        layerId: 'event-150-live-at-the-station',
+        name: 'Live at the Station',
+        url: 'live-at-the-station-url'
+      },
+      EVENT_150_SPIRIT_WEEK: {
+        id: 'event-150-spirit-week',
+        layerId: 'event-150-spirit-week',
+        name: 'Spirit of 150 Week',
+        url: 'spirit-of-150-week-url'
       }
     };
     options = { exclude: [] };
@@ -173,14 +209,14 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(18);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(15);
+    expect(result.length).toBe(16);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -189,7 +225,7 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(18);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {
@@ -199,7 +235,39 @@ describe('LayerSources', () => {
     expect(resultWithExclusions.map((layer) => layer.id)).toEqual([
       'selection-layer',
       'bus-route-layer',
-      'sustainable-transportation-group-layer'
+      'sustainable-transportation-group-layer',
+      'event-150-group-layer'
+    ]);
+  });
+
+  it('should list the 150th event sets under a heading, each off by default, in list order', () => {
+    const result = LayerSources(connections, definitions);
+    const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
+    const children = eventsGroup?.sources ?? [];
+    const openingCeremony = children.find((layer) => layer.id === 'event-150-opening-ceremony-group-layer') as
+      | GroupLayerSource
+      | undefined;
+
+    expect(eventsGroup?.type).toBe('group');
+    expect(eventsGroup?.title).toBe('150th Events');
+    expect(eventsGroup?.listHeading).toBe(true);
+    expect(children.every((layer) => layer.visible === false)).toBe(true);
+
+    // Opening Ceremony is one list entry that toggles all three of its layers together.
+    expect(openingCeremony?.native?.listMode).toBe('hide-children');
+
+    // Esri's layer list shows a group's children in reverse source order, so reversing the sources
+    // gives the order visitors see.
+    expect([...children].reverse().map((layer) => layer.title)).toEqual([
+      'Opening Ceremony',
+      'Kickoff at Kyle',
+      'Live at the Station',
+      'Spirit of 150 Week'
+    ]);
+    expect([...(openingCeremony?.sources ?? [])].reverse().map((layer) => layer.title)).toEqual([
+      'Event Locations',
+      'Shuttle Route',
+      'Parking'
     ]);
   });
 
@@ -233,5 +301,4 @@ describe('LayerSources', () => {
     );
     expect(childIds.filter((id) => id === 'bike-racks-map')).toHaveLength(1);
   });
-
 });

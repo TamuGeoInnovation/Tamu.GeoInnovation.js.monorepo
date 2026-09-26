@@ -17,19 +17,28 @@ describe('getGeolocation', () => {
     speed: 69
   };
 
-  it('should work for successes', (done) => {
-    // TODO: The tests work but the geolocation mock probably needs to be a global
-    //
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    (window.navigator as unknown as { geolocation: {} }).geolocation = {
+  /**
+   * `getGeolocation` has two call forms -- a Promise and an Observable. The previous version
+   * exercised both inside one test and called `done()` from each, so `done()` fired twice and Jest
+   * failed the test even though both paths worked. Split so each form completes independently.
+   */
+  const mockGeolocationSuccess = () => {
+    (window.navigator as unknown as { geolocation: unknown }).geolocation = {
       getCurrentPosition: (success) => {
         success({ coords: coords, timestamp: 1 });
       }
     };
-    getGeolocation(false).then((c) => {
-      expect(c).toEqual(coords);
-      done();
-    });
+  };
+
+  it('resolves the coordinates in promise form', async () => {
+    mockGeolocationSuccess();
+
+    await expect(getGeolocation(false)).resolves.toEqual(coords);
+  });
+
+  it('emits the coordinates in observable form', (done) => {
+    mockGeolocationSuccess();
+
     getGeolocation(true).subscribe((c) => {
       expect(c).toEqual(coords);
       done();
@@ -38,9 +47,7 @@ describe('getGeolocation', () => {
 
   it('should throw error on fail', (done) => {
     // TODO: The tests work but the geolocation mock probably needs to be a global
-    //
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    (window.navigator as unknown as { geolocation: {} }).geolocation = {
+    (window.navigator as unknown as { geolocation: unknown }).geolocation = {
       getCurrentPosition: (_, fail) => {
         fail(new Error("I just don't feel like it"));
       }

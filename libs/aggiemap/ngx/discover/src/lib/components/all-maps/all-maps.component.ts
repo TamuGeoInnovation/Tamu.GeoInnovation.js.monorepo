@@ -31,6 +31,23 @@ export class AllMapsComponent implements OnInit {
   private internalApplications: InternalDiscoverApplication[];
   private allApplications: DiscoverApplication[];
 
+  /**
+   * Dev-only listing of "kiosk" (sidebar-free, preset-layer) maps, surfaced here with their full,
+   * shareable URLs so the team embedding them (e.g. in a mobile app webview) can copy them. Never
+   * shown in prod and never searchable, even in dev — see `DiscoveryService.getKioskDiscoverApplications`.
+   */
+  public kioskApplications: Array<InternalDiscoverApplication & { url: string }> = [];
+
+  /**
+   * Dev-only listing of the satellite-campus maps (Galveston, McAllen, DC Bush School).
+   *
+   * These are deliberately reachable in production by direct URL -- the testing team uses them --
+   * but nothing links to them there, and they are filtered out of the map search in both
+   * environments. This section and the Visit Maps tile are the only entry points, and both are
+   * gated on `isDev`.
+   */
+  public campusApplications: Array<InternalDiscoverApplication & { url: string }> = [];
+
   public upcomingApplications: InternalDiscoverApplication[] = [];
   public quickLinks: QuickLinkItem[] = [];
 
@@ -51,7 +68,20 @@ export class AllMapsComponent implements OnInit {
     this.isDev = this.dev.get('isTesting');
     this.internalApplications = this.discoveryService.getInternalDiscoverApplications();
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
-    this.allApplications = this.discoveryService.getAllDiscoverApplications();
+    // Satellite-campus maps have their own dedicated "Campus Maps" listing page and should not
+    // appear in the general map search results.
+    this.allApplications = this.discoveryService
+      .getAllDiscoverApplications()
+      .filter((app) => !(app.source === 'internal' && app.type === 'satellite-campus'));
+    this.kioskApplications = this.discoveryService.getKioskDiscoverApplications().map((app) => ({
+      ...app,
+      url: `${window.location.origin}${getApplicationRoute(app).join('/')}`
+    }));
+    // Sourced from the internal list rather than a dedicated service method: unlike kiosk maps,
+    // satellite-campus maps are ordinary discover applications and are only excluded from search.
+    this.campusApplications = this.internalApplications
+      .filter((app) => app.type === 'satellite-campus')
+      .map((app) => ({ ...app, url: `${window.location.origin}${getApplicationRoute(app).join('/')}` }));
     this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
       label: app.name,
       routerLink: getApplicationRoute(app)

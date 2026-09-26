@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { catchError, concatMap, from, map, of, toArray } from 'rxjs';
@@ -77,8 +77,11 @@ export class ClassProvider extends BaseProvider<Class> {
       }
     });
 
-    if (!classes) {
-      throw new UnprocessableEntityException('Events not found.');
+    // Was `if (!classes)` with an "Events not found" message copy-pasted from elsewhere. `find`
+    // resolves to an array and never null, so the guard never fired and copying guids that match
+    // nothing answered 200 with an empty list.
+    if (!classes || classes.length === 0) {
+      throw new UnprocessableEntityException('Classes not found.');
     }
 
     const newClasses = classes.map((c) => {
@@ -101,6 +104,12 @@ export class ClassProvider extends BaseProvider<Class> {
     try {
       return Promise.all(newClasses);
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new InternalServerErrorException('Could not copy classes into season');
     }
   }
@@ -126,6 +135,13 @@ export class ClassProvider extends BaseProvider<Class> {
       .leftJoinAndSelect('class.students', 'userClass')
       .where('class.guid = :classGuid', { classGuid })
       .getOne();
+
+    // `getOne` resolves null for a guid that matches nothing, and reading `.students` off it threw
+    // a TypeError that surfaced as 500 -- on the roster an instructor exports to mark attendance.
+    // `getClassStudents` above answers an empty list for the same case.
+    if (!cl) {
+      return [];
+    }
 
     const students = cl.students;
     const studentGuids = students.map((s) => s.accountGuid);

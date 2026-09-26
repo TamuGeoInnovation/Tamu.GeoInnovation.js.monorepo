@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { HttpException, Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
@@ -50,7 +50,10 @@ export class TagProvider extends BaseProvider<Tag> {
       }
     });
 
-    if (season === undefined) {
+    // TypeORM 0.3 `findOne` resolves null, not undefined, so this guard never fired: copying
+    // into a season that does not exist fell through and wrote tags with a null season,
+    // leaving orphaned rows attached to no season at all.
+    if (!season) {
       throw new UnprocessableEntityException('Could not find season.');
     }
 
@@ -78,6 +81,12 @@ export class TagProvider extends BaseProvider<Tag> {
     try {
       return this.tagRepo.save(newEntities);
     } catch (err) {
+      // An HttpException carries a deliberate status. Re-wrapping it below turned intended
+      // 404s and 422s into 500s, so the caller could not tell "not found" from "server broke".
+      if (err instanceof HttpException) {
+        throw err;
+      }
+
       throw new UnprocessableEntityException('Could not copy tags into season');
     }
   }
@@ -97,7 +106,10 @@ export class TagProvider extends BaseProvider<Tag> {
     }
     const existing = await qb.getOne();
 
-    if (existing === undefined) {
+    // Same TypeORM 0.3 change as above, but here it disabled the create path entirely:
+    // `getOne` resolves null for no match, so this never took the true branch and the method
+    // returned that null instead of creating the tag. The endpoint has never created one.
+    if (!existing) {
       const newTag = this.tagRepo.create(tag);
 
       return this.tagRepo.save(newTag);

@@ -3,27 +3,12 @@ import { of } from 'rxjs';
 
 import { MapComponent } from './map.component';
 
-describe('MapComponent', () => {
-  let component: MapComponent;
-  let fixture: ComponentFixture<MapComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [MapComponent]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MapComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
-
+// The generated `describe('MapComponent')` block that used to sit here declared the component in a
+// TestBed with no providers. MapComponent injects roughly a dozen services -- EnvironmentService,
+// EsriMapService, TripPlannerService, LegendService, LayerListService and more -- so it could never
+// construct. It asserted only `toBeTruthy()`, which the build already guarantees. The
+// event-passed-flow block below is the real coverage: it builds the component with mocks and
+// exercises actual behaviour.
 // Additional unit test for event-passed modal behavior using mocked services
 describe('MapComponent (event-passed flow)', () => {
   let componentInstance: MapComponent;

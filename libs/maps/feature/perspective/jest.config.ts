@@ -10,11 +10,16 @@ export default {
       'jest-preset-angular',
       {
         tsconfig: '<rootDir>/tsconfig.spec.json',
+        // Report type errors only for files in THIS project. Otherwise a project with
+        // `strict: true` type-checks the source of every library it imports under its own
+        // settings, so a non-strict library fails as a dependency of a strict one while
+        // compiling fine on its own and in the build. Each project owns its own types.
+        diagnostics: { exclude: ['!<rootDir>/**'] },
         stringifyContentPathRegex: '\\.(html|svg)$'
       }
     ]
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  transformIgnorePatterns: ['node_modules/(?!(.*\\.mjs$|lightgallery))'],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',

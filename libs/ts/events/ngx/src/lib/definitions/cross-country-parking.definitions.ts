@@ -46,7 +46,7 @@ const crossCountryAreaRenderer: FeatureRenderer = {
 
 const crossCountryParkingRenderer: FeatureRenderer = {
   type: 'unique-value',
-  field: 'GIS.TS.SPEV_Lot_Use.TrackXC',
+  field: 'trackxc',
   uniqueValueInfos: [
     {
       value: 'EventParking',
@@ -68,8 +68,8 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
-      name: '{attributes.Name}',
-      description: '{attributes.Type}'
+      name: '{attributes.name}',
+      description: '{attributes.description}'
     },
     visible: true,
     listMode: 'show',
@@ -87,11 +87,11 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: {
-        field: 'GIS.TS.ParkingLots.LotName',
+        field: 'lotname',
         collapsed: true
       },
       description: {
-        field: 'GIS.TS.SpEv_Lot_Notes.XcounN',
+        field: 'xcounn',
         collapsed: true
       }
     },
@@ -99,7 +99,7 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 60,
     native: {
-      definitionExpression: `GIS.TS.SPEV_Lot_Use.TrackXC = 'EventParking'`,
+      definitionExpression: `trackxc = 'EventParking'`,
       outFields: ['*'],
       renderer: crossCountryParkingRenderer
     } as unknown as FeatureNative

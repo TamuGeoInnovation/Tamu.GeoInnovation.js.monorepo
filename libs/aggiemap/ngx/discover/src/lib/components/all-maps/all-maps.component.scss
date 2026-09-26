@@ -148,3 +148,14 @@
     grid-template-columns: 1fr;
   }
 }
+
+// Neither kiosk nor campus cards navigate on click -- each carries its own copy field and link --
+// so the shared card's pointer cursor and hover border would be misleading.
+.kiosk-maps-section .application-card,
+.campus-maps-section .application-card {
+  cursor: default;
+
+  &:hover {
+    border-color: #d1d1d1;
+  }
+}

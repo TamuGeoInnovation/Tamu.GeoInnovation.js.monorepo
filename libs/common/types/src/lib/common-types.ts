@@ -176,6 +176,17 @@ export interface MapImageLayerSourceProperties extends IRemoteLayerService {
   native?: esri.MapImageLayerProperties;
 }
 
+/**
+ * Represents a vector tile basemap layer, such as a custom `VectorTileServer` service used as the
+ * basemap for a satellite-campus map (Galveston, McAllen, DC, etc.), where the layer's own tile
+ * schema and style are defined server-side rather than composed of individually stylable features.
+ */
+export interface VectorTileLayerSourceProperties extends IRemoteLayerService {
+  type: 'vector-tile';
+
+  native?: esri.VectorTileLayerProperties;
+}
+
 export interface CSVLayerSourceProperties extends IRemoteLayerService {
   type: 'csv';
 
@@ -200,6 +211,12 @@ export interface GroupLayerSourceProperties {
    * group layer construction.
    */
   sources?: LayerSource[];
+
+  /**
+   * Show the group in the layer list as a heading only: no visibility toggle of its own, with each
+   * child toggled independently. The group layer is kept visible so its children can draw.
+   */
+  listHeading?: boolean;
 
   /**
    * Native group layer properties.
@@ -257,6 +274,7 @@ export type LayerSourceType =
   | GraphicLayerSourceProperties
   | GroupLayerSourceProperties
   | MapImageLayerSourceProperties
+  | VectorTileLayerSourceProperties
   | PortalMapServerLayerSourceProperties
   | UnknownLayerSourceProperties;
 
@@ -350,6 +368,15 @@ export type LayerSource = LayerSourceType & {
          * Example: "GIS.TS.SpEv_Lot_Notes.WBasketballN" as a fully qualified key in the attributes object.
          */
         collapsed?: boolean;
+
+        /**
+         * Formats the resolved value before it is written back into `attributes`.
+         *
+         * `date` renders an epoch-millisecond value as a long date. ArcGIS returns
+         * `esriFieldTypeDate` fields as epoch milliseconds, so without this a template
+         * expression substitutes the raw number instead of a readable date.
+         */
+        format?: 'date';
       }
   >;
 

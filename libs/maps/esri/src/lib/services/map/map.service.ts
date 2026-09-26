@@ -398,6 +398,16 @@ export class EsriMapService {
         // Create and return new geojson layer
         return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
       });
+    } else if (source.type === 'vector-tile') {
+      return this.moduleProvider
+        .require(['VectorTileLayer'])
+        .then(([VectorTileLayer]: [esri.VectorTileLayerConstructor]) => {
+          // Delete the type property as it cannot be set on layer creation.
+          delete props.type;
+
+          // Create and return new vector tile layer
+          return new VectorTileLayer(props as esri.VectorTileLayerProperties);
+        });
     } else if (source.type === 'csv') {
       return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
         // Delete the type property as it cannot be set on layer creation.
@@ -412,6 +422,18 @@ export class EsriMapService {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
+        // `listHeading` is not an esri property, so strip it before construction and set it on the
+        // layer afterwards for the layer list to read. A heading has no toggle, so it must stay visible
+        // or its children could never draw.
+        const listHeading = s.listHeading === true;
+        delete props.listHeading;
+
+        if (listHeading) {
+          props.visible = true;
+        }
+
+        let group: esri.GroupLayer;
+
         // If sources have been defined in the layer source, cast them into their respective layer types.
         if (s.sources) {
           const layerPromises = s.sources.map((ls) => this.generateLayer(ls));
@@ -419,11 +441,17 @@ export class EsriMapService {
           const layers = await Promise.all(layerPromises);
 
           // Create and return new group layer
-          return new GroupLayer({ ...props, layers: layers } as esri.GroupLayerProperties);
+          group = new GroupLayer({ ...props, layers: layers } as esri.GroupLayerProperties);
         } else {
           // Create and return new group layer
-          return new GroupLayer(props as esri.GroupLayerProperties);
+          group = new GroupLayer(props as esri.GroupLayerProperties);
         }
+
+        if (listHeading) {
+          group['listHeading'] = true;
+        }
+
+        return group;
       });
     } else if (source.type === 'unknown') {
       return this.moduleProvider.require(['Layer']).then(async ([L]: [esri.LayerConstructor]) => {
