@@ -29,6 +29,9 @@ export enum MAIN_MAP_LAYERS {
   BIKE_FIX_STATIONS = 'bike-fix-stations-layer',
   BIKE_RACKS_MAP = 'bike-racks-map-layer',
   EV_CHARGE_STATIONS = 'ev-charge-stations-layer',
+  EVENT_150_OPENING_EVENT_LOCATIONS = 'event-150-opening-event-locations-layer',
+  EVENT_150_OPENING_SHUTTLE_ROUTE = 'event-150-opening-shuttle-route-layer',
+  EVENT_150_OPENING_PARKING = 'event-150-opening-parking-layer',
   EVENT_150_KICKOFF_AT_KYLE = 'event-150-kickoff-at-kyle-layer',
   EVENT_150_LIVE_AT_THE_STATION = 'event-150-live-at-the-station-layer',
   EVENT_150_SPIRIT_WEEK = 'event-150-spirit-week-layer'
@@ -65,6 +68,9 @@ export interface IComposedIDefinitions {
   BIKE_FIX_STATIONS: IDefinition;
   BIKE_RACKS_MAP: IDefinition;
   EV_CHARGE_STATIONS: IDefinition;
+  EVENT_150_OPENING_EVENT_LOCATIONS: IDefinition;
+  EVENT_150_OPENING_SHUTTLE_ROUTE: IDefinition;
+  EVENT_150_OPENING_PARKING: IDefinition;
   EVENT_150_KICKOFF_AT_KYLE: IDefinition;
   EVENT_150_LIVE_AT_THE_STATION: IDefinition;
   EVENT_150_SPIRIT_WEEK: IDefinition;
@@ -175,32 +181,46 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       popupComponent: Popups.DiningPopupComponent
     },
 
-    // 150th anniversary event layers, requested on the main map alongside the standard layers
-    // (#1017). Titles carry a "150 - " prefix so the set sorts together at the top of the
-    // alphabetical layer list.
-    //
-    // Only events that are discoverable in their own right appear here. The 150th Opening
-    // Ceremony map is deliberately excluded: it is hidden until the event is announced, and
-    // surfacing its geometry on the landing page would defeat that. Aggie Family Parade is
-    // excluded because it is April 2027 and not part of this autumn's set.
+    // 150th anniversary event layers, shown on the main map in a "150th Events" group (#1017).
+    // Aggie Family Parade is excluded because it is April 2027 and not part of this autumn's set.
+    EVENT_150_OPENING_EVENT_LOCATIONS: {
+      id: 'event-150-opening-event-locations',
+      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_EVENT_LOCATIONS,
+      name: 'Event Locations',
+      url: `${connections.kickoff150thUrl}/0`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
+    EVENT_150_OPENING_SHUTTLE_ROUTE: {
+      id: 'event-150-opening-shuttle-route',
+      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_SHUTTLE_ROUTE,
+      name: 'Shuttle Route',
+      url: `${connections.kickoff150thUrl}/1`
+    },
+    EVENT_150_OPENING_PARKING: {
+      id: 'event-150-opening-parking',
+      layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_PARKING,
+      name: 'Parking',
+      url: `${connections.kickoff150thUrl}/2`,
+      popupComponent: Popups.MarkdownPopupComponent
+    },
     EVENT_150_KICKOFF_AT_KYLE: {
       id: 'event-150-kickoff-at-kyle',
       layerId: MAIN_MAP_LAYERS.EVENT_150_KICKOFF_AT_KYLE,
-      name: '150 - Kickoff at Kyle',
+      name: 'Kickoff at Kyle',
       url: `${connections.kickoffAtKyleUrl}/0`,
       popupComponent: Popups.MarkdownPopupComponent
     },
     EVENT_150_LIVE_AT_THE_STATION: {
       id: 'event-150-live-at-the-station',
       layerId: MAIN_MAP_LAYERS.EVENT_150_LIVE_AT_THE_STATION,
-      name: '150 - Live at the Station',
+      name: 'Live at the Station',
       url: `${connections.liveAtTheStationUrl}/0`,
       popupComponent: Popups.MarkdownPopupComponent
     },
     EVENT_150_SPIRIT_WEEK: {
       id: 'event-150-spirit-week',
       layerId: MAIN_MAP_LAYERS.EVENT_150_SPIRIT_WEEK,
-      name: '150 - Spirit of 150 Week',
+      name: 'Spirit of 150 Week',
       url: `${connections.spiritOf150WeekUrl}/0`,
       popupComponent: Popups.MarkdownPopupComponent
     },
@@ -439,7 +459,7 @@ export function MainMapLayerSources(
             style: 'circle',
             size: 0,
             color: [0, 0, 0, 0],
-            outline: { width: 0, color: [0, 0, 0, 0]             }
+            outline: { width: 0, color: [0, 0, 0, 0] }
           }
         },
         labelsVisible: false
@@ -743,62 +763,145 @@ export function MainMapLayerSources(
       }
     },
 
-    // 150th anniversary event layers (#1017). Off by default: they are opt-in layers on the
-    // landing map, not a change to what every visitor sees.
+    // 150th anniversary event layers (#1017), in one "150th Events" group. The group is off by
+    // default, so these are opt-in on the landing map rather than a change to what every visitor
+    // sees; turning the group on shows every layer in it.
     //
-    // These draw the same services as the standalone event maps, but without those maps'
-    // custom symbology. Spirit of 150 Week uses a cake marker on its own map, drawn from an
-    // inline image that lives in the events library; reproducing it here would mean either a
-    // cross-library import that closes a dependency cycle, or duplicating the image data. The
-    // service's own symbology is used instead.
+    // Esri's layer list shows a group's children in reverse draw order (the last source is listed
+    // first), so these sources are written in reverse of the order they appear in the list:
+    // Opening Ceremony, Kickoff at Kyle, Live at the Station, Spirit of 150 Week.
+    //
+    // These draw the same services as the standalone event maps. Spirit of 150 Week uses the
+    // service's own symbology rather than the cake marker on its own map: that marker is an inline
+    // image in the events library, which cannot be imported here without a dependency cycle.
     {
-      type: 'feature',
-      id: definitions.EVENT_150_KICKOFF_AT_KYLE.layerId,
-      title: definitions.EVENT_150_KICKOFF_AT_KYLE.name,
-      url: definitions.EVENT_150_KICKOFF_AT_KYLE.url,
-      popupComponent: definitions.EVENT_150_KICKOFF_AT_KYLE.popupComponent,
+      type: 'group',
+      id: 'event-150-group-layer',
+      title: '150th Events',
       listMode: 'show',
       visible: false,
-      // Lots carry `name` (lot numbers) and `description` ("Free Event Parking" and similar).
-      popupData: {
-        name: '{attributes.name}',
-        description: '{attributes.description}'
-      },
-      native: {
-        ...commonLayerProps
-      }
-    },
-    {
-      type: 'feature',
-      id: definitions.EVENT_150_LIVE_AT_THE_STATION.layerId,
-      title: definitions.EVENT_150_LIVE_AT_THE_STATION.name,
-      url: definitions.EVENT_150_LIVE_AT_THE_STATION.url,
-      popupComponent: definitions.EVENT_150_LIVE_AT_THE_STATION.popupComponent,
-      listMode: 'show',
-      visible: false,
-      popupData: {
-        name: '{attributes.name}',
-        description: '{attributes.description}'
-      },
-      native: {
-        ...commonLayerProps
-      }
-    },
-    {
-      type: 'feature',
-      id: definitions.EVENT_150_SPIRIT_WEEK.layerId,
-      title: definitions.EVENT_150_SPIRIT_WEEK.name,
-      url: definitions.EVENT_150_SPIRIT_WEEK.url,
-      popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
-      listMode: 'show',
-      visible: false,
-      popupData: {
-        name: '{attributes.name}',
-        description: '{attributes.description}'
-      },
-      native: {
-        ...commonLayerProps
-      }
+      sources: [
+        {
+          type: 'feature',
+          id: definitions.EVENT_150_SPIRIT_WEEK.layerId,
+          title: definitions.EVENT_150_SPIRIT_WEEK.name,
+          url: definitions.EVENT_150_SPIRIT_WEEK.url,
+          popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
+          listMode: 'show',
+          visible: true,
+          popupData: {
+            name: '{attributes.name}',
+            description: '{attributes.description}'
+          },
+          native: {
+            ...commonLayerProps
+          }
+        },
+        {
+          type: 'feature',
+          id: definitions.EVENT_150_LIVE_AT_THE_STATION.layerId,
+          title: definitions.EVENT_150_LIVE_AT_THE_STATION.name,
+          url: definitions.EVENT_150_LIVE_AT_THE_STATION.url,
+          popupComponent: definitions.EVENT_150_LIVE_AT_THE_STATION.popupComponent,
+          listMode: 'show',
+          visible: true,
+          popupData: {
+            name: '{attributes.name}',
+            description: '{attributes.description}'
+          },
+          native: {
+            ...commonLayerProps
+          }
+        },
+        {
+          type: 'feature',
+          id: definitions.EVENT_150_KICKOFF_AT_KYLE.layerId,
+          title: definitions.EVENT_150_KICKOFF_AT_KYLE.name,
+          url: definitions.EVENT_150_KICKOFF_AT_KYLE.url,
+          popupComponent: definitions.EVENT_150_KICKOFF_AT_KYLE.popupComponent,
+          listMode: 'show',
+          visible: true,
+          // Lots carry `name` (lot numbers) and `description` ("Free Event Parking" and similar).
+          popupData: {
+            name: '{attributes.name}',
+            description: '{attributes.description}'
+          },
+          native: {
+            ...commonLayerProps
+          }
+        },
+        {
+          // The Opening Ceremony service has three layers, kept together in their own group.
+          // Listed as Event Locations, Shuttle Route, Parking (reverse of the order below).
+          type: 'group',
+          id: 'event-150-opening-ceremony-group-layer',
+          title: 'Opening Ceremony',
+          listMode: 'show',
+          visible: true,
+          sources: [
+            {
+              type: 'feature',
+              id: definitions.EVENT_150_OPENING_PARKING.layerId,
+              title: definitions.EVENT_150_OPENING_PARKING.name,
+              url: definitions.EVENT_150_OPENING_PARKING.url,
+              popupComponent: definitions.EVENT_150_OPENING_PARKING.popupComponent,
+              listMode: 'show',
+              visible: true,
+              popupData: {
+                name: '{attributes.name}',
+                description: '{attributes.description}'
+              },
+              native: {
+                ...commonLayerProps
+              }
+            },
+            {
+              type: 'feature',
+              id: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.layerId,
+              title: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.name,
+              url: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.url,
+              listMode: 'show',
+              visible: true,
+              native: {
+                ...commonLayerProps,
+                // Same symbol as the standalone Opening Ceremony map: the route is digitized from the
+                // PRG shuttle stop to the Lot 54 stop, so an arrowhead at the end shows the direction.
+                renderer: {
+                  type: 'simple',
+                  label: 'Shuttle Route',
+                  symbol: {
+                    type: 'simple-line',
+                    color: 'rgb(38, 115, 0)',
+                    width: 2,
+                    style: 'solid',
+                    marker: {
+                      style: 'arrow',
+                      color: 'rgb(38, 115, 0)',
+                      placement: 'end'
+                    }
+                  }
+                }
+              }
+            },
+            {
+              type: 'feature',
+              id: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.layerId,
+              title: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.name,
+              url: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.url,
+              popupComponent: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.popupComponent,
+              listMode: 'show',
+              visible: true,
+              popupData: {
+                name: '{attributes.name}',
+                description: '{attributes.description}'
+              },
+              native: {
+                ...commonLayerProps
+              }
+            }
+          ]
+        }
+      ]
     }
   ];
 
