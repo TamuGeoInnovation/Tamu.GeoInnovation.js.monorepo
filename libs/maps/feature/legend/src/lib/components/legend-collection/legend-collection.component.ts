@@ -77,6 +77,12 @@ export class LegendCollectionComponent {
       return [];
     }
 
+    // A heading-only group (`listHeading`) is always visible and its children are toggled one by
+    // one, so list only the children that are on. With none on, the heading shows nothing.
+    if (this.group?.layer?.['listHeading'] === true) {
+      return this.childGroups.filter((child) => child.layer?.visible === true);
+    }
+
     return this.childGroups;
   }
 

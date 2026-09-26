@@ -223,9 +223,7 @@ export const Kickoff150thTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     columnKey: 'fall',
-    // Not public yet: reachable by direct link (/events/150th-kickoff) but kept out of the All Maps
-    // search, Upcoming Events and Campus Events lists so it isn't promoted until the event is announced.
-    visible: false,
+    visible: true,
     keywords: ['150', '150th', 'opening', 'ceremony', 'kickoff', 'celebration', 'shuttle', 'parking']
   }
 };
