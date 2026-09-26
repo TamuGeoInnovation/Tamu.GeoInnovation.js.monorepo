@@ -103,6 +103,41 @@ git clone git@github.com:TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git
 **The trunk is `development`, not `master`.** `master` was abandoned in 2022 and is hundreds
 of commits stale. Anything branched from it will not merge cleanly.
 
+### Add the user's fork
+
+Everyone on the team, the maintainer included, pushes branches to their own fork and opens pull
+requests from it. `origin` (the clone) is only for pulling `development`. Find the user's
+GitHub login, then check for their fork:
+
+```
+gh api user --jq .login
+gh repo view <login>/Tamu.GeoInnovation.js.monorepo --json isFork,parent --jq '"\(.isFork) \(.parent.owner.login)"'
+```
+
+**Expect:** `true TamuGeoInnovation`. If the repository does not exist, **ask the user before
+creating it**; creating a fork is an account action. With their go-ahead:
+`gh repo fork TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --clone=false`.
+
+Then add it as a second remote:
+
+```
+git remote add fork git@github.com:<login>/Tamu.GeoInnovation.js.monorepo.git
+git fetch fork
+git remote -v
+```
+
+**Expect:** `fork` and `origin`, each with fetch and push.
+
+Finally, check the user's access to the main repository:
+
+```
+gh api repos/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/collaborators/<login>/permission --jq .permission
+```
+
+**Expect:** `write` or `admin`. If it says `read`, tell the user: their pull requests will work,
+but every run of the checks will wait for a maintainer to approve it until someone gives them
+write access. Do not try to change access yourself.
+
 ## Phase 3 - Install dependencies
 
 Run from the repository root, substituting the real path in `-v`.
@@ -159,9 +194,9 @@ compiled.
 
 Two hostnames, deliberately different:
 
-| URL | Behaves as | Use for |
-| --- | --- | --- |
-| `http://localhost:4200` | dev, with dev-only sections visible | normal development |
+| URL                     | Behaves as                             | Use for                                      |
+| ----------------------- | -------------------------------------- | -------------------------------------------- |
+| `http://localhost:4200` | dev, with dev-only sections visible    | normal development                           |
 | `http://127.0.0.1:4200` | production, with those sections hidden | checking production gating without deploying |
 
 **The production view is not a perfect production preview.** It hides the dev-only sections
@@ -196,6 +231,8 @@ Check this list before reporting any of the following as a problem.
 ## Before making a first change
 
 - **Trunk is `development`.** Branch from it; branch protection requires a pull request.
+- **Push to the fork, never to `origin`.** `git push -u fork <branch>`, then
+  `gh pr create --repo TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --base development --head <login>:<branch>`.
 - **Reuse before building.** Check `libs/ui-kits/ngx/**` for an existing component, and
   `libs/sass/` plus the app's global `styles.scss` for existing classes, before writing any
   CSS. There is a shared copy-field component, a shared `.button` with variants, spacing
