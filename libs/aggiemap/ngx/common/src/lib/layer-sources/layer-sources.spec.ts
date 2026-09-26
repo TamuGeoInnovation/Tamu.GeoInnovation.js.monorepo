@@ -240,7 +240,7 @@ describe('LayerSources', () => {
     ]);
   });
 
-  it('should group the 150th event layers, off by default, in list order', () => {
+  it('should list the 150th event sets under a heading, each off by default, in list order', () => {
     const result = LayerSources(connections, definitions);
     const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
     const children = eventsGroup?.sources ?? [];
@@ -250,7 +250,11 @@ describe('LayerSources', () => {
 
     expect(eventsGroup?.type).toBe('group');
     expect(eventsGroup?.title).toBe('150th Events');
-    expect(eventsGroup?.visible).toBe(false);
+    expect(eventsGroup?.listHeading).toBe(true);
+    expect(children.every((layer) => layer.visible === false)).toBe(true);
+
+    // Opening Ceremony is one list entry that toggles all three of its layers together.
+    expect(openingCeremony?.native?.listMode).toBe('hide-children');
 
     // Esri's layer list shows a group's children in reverse source order, so reversing the sources
     // gives the order visitors see.

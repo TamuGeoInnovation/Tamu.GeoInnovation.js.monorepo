@@ -763,9 +763,9 @@ export function MainMapLayerSources(
       }
     },
 
-    // 150th anniversary event layers (#1017), in one "150th Events" group. The group is off by
-    // default, so these are opt-in on the landing map rather than a change to what every visitor
-    // sees; turning the group on shows every layer in it.
+    // 150th anniversary event layers (#1017), under a "150th Events" heading. Each event set is off
+    // by default and toggled on its own, so these are opt-in on the landing map rather than a change
+    // to what every visitor sees.
     //
     // Esri's layer list shows a group's children in reverse draw order (the last source is listed
     // first), so these sources are written in reverse of the order they appear in the list:
@@ -779,7 +779,8 @@ export function MainMapLayerSources(
       id: 'event-150-group-layer',
       title: '150th Events',
       listMode: 'show',
-      visible: false,
+      // Listed as a heading with no toggle of its own; each event set below is toggled separately.
+      listHeading: true,
       sources: [
         {
           type: 'feature',
@@ -788,7 +789,7 @@ export function MainMapLayerSources(
           url: definitions.EVENT_150_SPIRIT_WEEK.url,
           popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
           listMode: 'show',
-          visible: true,
+          visible: false,
           popupData: {
             name: '{attributes.name}',
             description: '{attributes.description}'
@@ -804,7 +805,7 @@ export function MainMapLayerSources(
           url: definitions.EVENT_150_LIVE_AT_THE_STATION.url,
           popupComponent: definitions.EVENT_150_LIVE_AT_THE_STATION.popupComponent,
           listMode: 'show',
-          visible: true,
+          visible: false,
           popupData: {
             name: '{attributes.name}',
             description: '{attributes.description}'
@@ -820,7 +821,7 @@ export function MainMapLayerSources(
           url: definitions.EVENT_150_KICKOFF_AT_KYLE.url,
           popupComponent: definitions.EVENT_150_KICKOFF_AT_KYLE.popupComponent,
           listMode: 'show',
-          visible: true,
+          visible: false,
           // Lots carry `name` (lot numbers) and `description` ("Free Event Parking" and similar).
           popupData: {
             name: '{attributes.name}',
@@ -831,13 +832,13 @@ export function MainMapLayerSources(
           }
         },
         {
-          // The Opening Ceremony service has three layers, kept together in their own group.
-          // Listed as Event Locations, Shuttle Route, Parking (reverse of the order below).
+          // The Opening Ceremony service has three layers, kept together in one group that the layer
+          // list shows as a single entry. Parking is listed first so it draws beneath the other two.
           type: 'group',
           id: 'event-150-opening-ceremony-group-layer',
           title: 'Opening Ceremony',
           listMode: 'show',
-          visible: true,
+          visible: false,
           sources: [
             {
               type: 'feature',
@@ -899,7 +900,11 @@ export function MainMapLayerSources(
                 ...commonLayerProps
               }
             }
-          ]
+          ],
+          // One toggle for all three layers, like Sustainable Transportation.
+          native: {
+            listMode: 'hide-children'
+          }
         }
       ]
     }
