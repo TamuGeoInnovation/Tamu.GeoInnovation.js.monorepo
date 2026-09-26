@@ -66,6 +66,24 @@ fails for the expected reason before applying the fix.
 
 ## Pull requests
 
+**Work from a fork. Never push branches to `TamuGeoInnovation`.** Everyone on the team, the
+maintainer included, pushes branches to their own fork and opens pull requests from
+`<user>:<branch>` into `TamuGeoInnovation:development`. Keep two remotes: `origin` is the main
+repository, used only to pull `development`; `fork` is the user's fork, where branches are
+pushed. If a checkout has no `fork` remote, ask which fork to use before pushing anything.
+
+```
+git remote add fork git@github.com:<user>/Tamu.GeoInnovation.js.monorepo.git
+git switch -c <branch> origin/development
+git push -u fork <branch>
+gh pr create --repo TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo --base development --head <user>:<branch>
+```
+
+Pull request checks run without approval only for people with write access to the main
+repository. For anyone with read access, even a team member, GitHub holds every run under
+"workflow awaiting approval" until a maintainer approves it. Team members should have write
+access.
+
 Titles follow `scope(project-name): Short description`, where scope is `fix`, `feat`,
 `chore` or `ci`. One change per pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
