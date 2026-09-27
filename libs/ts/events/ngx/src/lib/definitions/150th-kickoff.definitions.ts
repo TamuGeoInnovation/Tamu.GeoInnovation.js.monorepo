@@ -191,7 +191,48 @@ export const Kickoff150thLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // A local copy of the service's renderer, minus the "Hourly Paid Parking" class.
+      //
+      // Polo Road Garage became Any Valid Permit, so that class is obsolete and no feature uses
+      // it - PRG's `type` is already `Event Parking`. It was removed in Portal on 25 September,
+      // but only from the portal item. Saving a style in Map Viewer writes to the item, not to
+      // the service definition, and this layer loads by service URL, so the service still
+      // publishes all three classes and the legend still shows the dead one.
+      //
+      // This is a workaround, not the fix. Hard-coding symbology here means later changes in
+      // ArcGIS stop reaching this map, which is the same trap that makes these maps drift from
+      // their data. Remove it once the class is gone from the service definition itself - see
+      // the tracking issue on removing hard-coded layer styling.
+      //
+      // Colours are copied exactly from `${eventUrl}/2?f=pjson`, drawingInfo.renderer, so the map
+      // looks the same as before, one class shorter.
+      renderer: {
+        type: 'unique-value',
+        field: 'type',
+        uniqueValueInfos: [
+          {
+            value: 'Event Parking',
+            label: 'Any Valid Texas A&M Permit',
+            // Cast as the repo does elsewhere for renderer symbols: the shared symbol types are
+            // narrower than the colour-array form ArcGIS publishes. See spirit-of-150-week.
+            symbol: {
+              type: 'simple-fill',
+              color: [95, 138, 232, 255],
+              outline: { color: [94, 52, 234, 255], width: 1 }
+            } as unknown as esri.SymbolProperties
+          },
+          {
+            value: 'Reserved',
+            label: 'Reserved - VIP & Accessible Parking',
+            symbol: {
+              type: 'simple-fill',
+              color: [242, 160, 97, 255],
+              outline: { color: [230, 124, 0, 255], width: 1 }
+            } as unknown as esri.SymbolProperties
+          }
+        ]
+      }
     }
   }
 ];
