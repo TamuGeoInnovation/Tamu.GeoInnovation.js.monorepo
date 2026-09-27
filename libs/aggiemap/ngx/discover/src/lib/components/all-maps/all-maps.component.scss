@@ -71,6 +71,15 @@
   }
 }
 
+// The 150th anniversary wordmark is the university's own artwork, used unaltered. It is square
+// and single-colour in the same maroon the row already uses, so it sits at the same size as the
+// traced glyphs beside it. It does not inherit `currentColor`, so unlike them it does not darken
+// on hover; making it do so would mean editing the artwork.
+.visit-maps-icon--mark img {
+  width: 100%;
+  height: 100%;
+}
+
 .visit-maps-label {
   font-weight: 600;
   font-size: 0.9rem;
