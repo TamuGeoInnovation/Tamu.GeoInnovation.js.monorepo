@@ -34,14 +34,13 @@ export class MapsPageHeaderComponent {
   constructor(private readonly lastMap: LastMapService) {}
 
   /**
-   * Where the first crumb points: the map the visitor was last looking at rather than always the
-   * main campus map. See LastMapService.
+   * Where the breadcrumb's first crumb points: the map the visitor was last looking at, rather than
+   * always the main campus map. Someone who opened this page from an event map expects to be
+   * returned there. See LastMapService.
+   *
+   * Path only. The query and fragment are bound separately below, because `[routerLink]` encodes a
+   * `?` into the path when given a whole URL as a string.
    */
-  public get lastMapUrl(): string {
-    return this.lastMap.url;
-  }
-
-  /** Path portion of the back link. Bound separately from the query so `?` is not encoded into it. */
   public get lastMapPath(): string {
     return this.lastMap.path;
   }
