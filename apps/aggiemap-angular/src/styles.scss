@@ -779,9 +779,40 @@ body.mapping {
 //  ==========================================================================
 //   BUTTONS AND INPUT BOXES
 //  ==========================================================================
+// Anchors styled as buttons need two things the class alone does not give them.
+//
+// An anchor is inline by default, so `width: 100%`, the padding and the vertical margins below all
+// fail to apply and it overlaps whatever sits above it.
+//
+// And `a:link` has specificity (0,1,1) while `.button` has (0,1,0), so the link colour and
+// underline win over the button's own. Matching on `:link` and `:visited` here ties that
+// specificity and lets source order settle it, rather than reaching for `!important`.
+//
+// Scoped to anchors, so real buttons and submit inputs are untouched.
+a.button:link,
+a.button:visited {
+  display: block;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+a.button.secondary:link,
+a.button.secondary:visited {
+  color: darken(#0079c1, 7%);
+}
+
+a.button.tertiary:link,
+a.button.tertiary:visited {
+  color: #eeeeee;
+}
+
 .button,
 button[type='submit'] {
   line-height: initial;
+  // Matches the Main Campus Parking Map button, which is the most prominent button on the site
+  // and the closest thing to a house style. Set on the class rather than per-button, so the next
+  // one does not have to decide for itself.
+  font-weight: 700;
   padding: 0.9rem;
   text-align: center;
   box-sizing: border-box;

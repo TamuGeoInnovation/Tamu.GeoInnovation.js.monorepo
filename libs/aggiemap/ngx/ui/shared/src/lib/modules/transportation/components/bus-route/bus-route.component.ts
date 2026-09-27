@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, Subject, timer, Observable, NEVER } from 'rxjs';
+import { of, Subject, Observable } from 'rxjs';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';
 
 import { v4 as guid } from 'uuid';
@@ -38,8 +38,6 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   public isLoading: boolean;
 
   private _graphics: Observable<boolean>;
-
-  private _timer;
 
   /**
    * Emits once per bus route when the component is destroyed, ending all active and manual
@@ -79,29 +77,6 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
       if (!this.isActive) {
         this.isLoading = false;
-
-        if (this._timer) {
-          this._timer.unsubscribe();
-          this._timer = undefined;
-          this.busService.toggleBusLocations(this.route.ShortName, 'remove');
-        }
-      }
-
-      if (this.isActive) {
-        // Begin timer that runs when the route is drawn on the map.
-        // After each specified time interval, it updates the bus locations on map.
-        if (!this._timer) {
-          this._timer = timer(0, 15000)
-            .pipe(
-              takeUntil(this._destroy$),
-              switchMap(() => {
-                return this.isActive ? of(true) : NEVER;
-              })
-            )
-            .subscribe(() => {
-              this.busService.toggleBusLocations(this.route.ShortName, 'update');
-            });
-        }
       }
     });
   }
@@ -124,11 +99,6 @@ export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   public ngOnDestroy() {
     this._destroy$.next(true);
     this._destroy$.complete();
-
-    // Remove any active bus locations on the map.
-    if (this.isActive) {
-      this.busService.toggleBusLocations(this.route.ShortName, 'remove');
-    }
   }
 
   /**
