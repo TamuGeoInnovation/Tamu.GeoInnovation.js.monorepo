@@ -12,6 +12,7 @@ import {
   InternalDiscoverApplication
 } from '../../interfaces/discover-application.interface';
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
+import { LastMapService } from '../../services/last-map/last-map.service';
 import { getApplicationRoute, getEventDateRange, parseEventDate } from '../discover.utils';
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
@@ -61,8 +62,18 @@ export class AllMapsComponent implements OnInit {
   constructor(
     private readonly rt: Router,
     private readonly discoveryService: DiscoveryService,
-    private readonly dev: TestingService
+    private readonly dev: TestingService,
+    private readonly lastMap: LastMapService
   ) {}
+
+  /**
+   * Where the breadcrumb's first crumb points: the map the visitor was last looking at, rather
+   * than always the main campus map. Someone who opened this page from an event map expects to be
+   * returned there.
+   */
+  public get lastMapUrl(): string {
+    return this.lastMap.url;
+  }
 
   public ngOnInit(): void {
     this.isDev = this.dev.get('isTesting');

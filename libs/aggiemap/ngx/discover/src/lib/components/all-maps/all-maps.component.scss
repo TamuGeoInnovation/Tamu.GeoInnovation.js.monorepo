@@ -167,10 +167,28 @@
 
   .maps-page-shell > .breadcrumbs {
     order: 0;
+
+    // A back link rather than a trail. See discover-shared.
+    @include breadcrumbs-as-back-link;
+
+    // The trail's generous leading suits a full breadcrumb under a page title. A single back
+    // link at the top of a phone screen does not need it.
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .maps-page-shell > .maps-page-title-block {
     order: 1;
+
+    // The heading is removed from view, so its wrapper's spacing would otherwise leave a gap
+    // where nothing is drawn.
+    margin: 0;
+  }
+
+  // "All Maps" is already the answer to "where am I" - the reader just tapped it, and the back
+  // link above says where it goes. Hidden from sight but kept for screen readers and indexing.
+  .maps-page-title {
+    @include visually-hidden;
   }
 
   .maps-page-shell > .search-section {
