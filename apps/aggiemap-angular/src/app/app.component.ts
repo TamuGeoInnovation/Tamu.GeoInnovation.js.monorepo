@@ -2,6 +2,7 @@ import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+import { LastMapService } from '@tamu-gisc/aggiemap/ngx/discover';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
@@ -12,7 +13,11 @@ export class AppComponent implements OnInit {
   constructor(
     public analytics: Angulartics2GoogleGlobalSiteTag,
     private readonly vcr: ViewContainerRef,
-    private readonly ms: ModalService
+    private readonly ms: ModalService,
+    // Injected only so it exists from startup. It is `providedIn: 'root'`, which is lazy: without
+    // this it would first be constructed on a discover page, by which time the map navigation it
+    // needs to observe has already happened and there would be nothing to go back to.
+    private readonly lastMap: LastMapService
   ) {
     analytics.startTracking();
   }
