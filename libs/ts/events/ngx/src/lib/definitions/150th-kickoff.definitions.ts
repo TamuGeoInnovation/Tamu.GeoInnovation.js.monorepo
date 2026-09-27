@@ -222,6 +222,9 @@ export const Kickoff150thTs: AggiemapCustomMapConfiguration = {
     description: 'Event locations, shuttle route and parking for the 150th Opening Ceremony celebration.',
     source: 'internal',
     type: 'event',
+    // Listed on Campus Events and on the 150th Anniversary page. Both, not either:
+    // these are campus events that also belong to the anniversary set.
+    mapTypes: ['campus', '150'],
     columnKey: 'fall',
     visible: true,
     keywords: ['150', '150th', 'opening', 'ceremony', 'kickoff', 'celebration', 'shuttle', 'parking']

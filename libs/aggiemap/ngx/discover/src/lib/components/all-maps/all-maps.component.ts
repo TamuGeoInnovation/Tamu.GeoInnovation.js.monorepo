@@ -98,7 +98,7 @@ export class AllMapsComponent implements OnInit {
 
   public get allEvents(): InternalDiscoverApplication[] {
     return this.internalApplications
-      .filter((app) => app.mapType === 'campus' || app.mapType === 'athletics')
+      .filter((app) => app.mapTypes.includes('campus') || app.mapTypes.includes('athletics'))
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 

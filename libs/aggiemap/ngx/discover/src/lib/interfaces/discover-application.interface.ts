@@ -24,7 +24,11 @@ export interface ExternalDiscoverApplication extends BaseDiscoverApplication {
 export interface InternalDiscoverApplication extends BaseDiscoverApplication {
   source: 'internal';
   type: 'event' | 'parking' | 'operations' | 'satellite-campus' | 'kiosk';
-  mapType: DiscoverMapType;
+  /**
+   * Every detail page this map is listed on. Always at least one entry, so consumers can test
+   * membership with `includes` and never have to handle a missing value.
+   */
+  mapTypes: DiscoverMapType[];
   parkingCategory?: ParkingCategory;
   columnKey?: string;
   showInQuickLinks?: boolean;

@@ -28,7 +28,7 @@ export class ParkingMapsComponent implements OnInit {
     const applications = sortApplicationsByName(
       this.discoveryService
         .getVisibleInternalDiscoverApplications()
-        .filter((app) => app.mapType === 'parking' && app.id !== 'ts-main-parking')
+        .filter((app) => app.mapTypes.includes('parking') && app.id !== 'ts-main-parking')
     );
 
     this.columns = buildMapColumnGroups(applications, this.columnDefinitions, (app) => app.columnKey ?? app.parkingCategory);

@@ -159,6 +159,9 @@ export const AggieFamilyParadeTs: AggiemapCustomMapConfiguration = {
     description: 'Parade route and points of interest for the Aggie Family Parade.',
     source: 'internal',
     type: 'event',
+    // Listed on Campus Events and on the 150th Anniversary page. Both, not either:
+    // these are campus events that also belong to the anniversary set.
+    mapTypes: ['campus', '150'],
     columnKey: 'spring',
     keywords: ['aggie', 'family', 'parade', 'route', '150']
   }

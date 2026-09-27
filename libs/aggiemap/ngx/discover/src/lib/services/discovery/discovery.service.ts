@@ -27,7 +27,17 @@ export class DiscoveryService {
       id: event.discover?.id || event.configuration.id,
       source: 'internal' as const,
       type: event.discover?.type || 'event',
-      mapType: event.discover?.mapType || (event.discover?.type === 'parking' ? 'parking' : event.discover?.type === 'operations' ? 'operations' : 'campus'),
+      // A map can be listed on more than one detail page. `mapTypes` wins when set; otherwise the
+      // single `mapType` is used, and failing that the type decides. Campus is the fallback, which
+      // is why maps that declare nothing land on Campus Events.
+      mapTypes: event.discover?.mapTypes ?? [
+        event.discover?.mapType ||
+          (event.discover?.type === 'parking'
+            ? 'parking'
+            : event.discover?.type === 'operations'
+              ? 'operations'
+              : 'campus')
+      ],
       parkingCategory: event.discover?.parkingCategory,
       columnKey: event.discover?.columnKey ?? event.discover?.parkingCategory,
       visible: event.discover?.visible ?? true,
@@ -54,7 +64,7 @@ export class DiscoveryService {
     };
 
     this.getVisibleInternalDiscoverApplications()
-      .filter((app) => app.mapType === 'parking' && app.id !== FEATURED_PARKING_ID)
+      .filter((app) => app.mapTypes.includes('parking') && app.id !== FEATURED_PARKING_ID)
       .forEach((app) => {
         groups[app.parkingCategory ?? 'general'].push(app);
       });
@@ -124,7 +134,7 @@ export class DiscoveryService {
       id: event.discover?.id || event.configuration.id,
       source: 'internal' as const,
       type: 'kiosk' as const,
-      mapType: 'kiosk' as const,
+      mapTypes: ['kiosk' as const],
       parkingCategory: event.discover?.parkingCategory,
       columnKey: event.discover?.columnKey,
       visible: event.discover?.visible ?? true,

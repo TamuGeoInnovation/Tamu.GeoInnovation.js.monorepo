@@ -114,6 +114,9 @@ export const SpiritOf150WeekTs: AggiemapCustomMapConfiguration = {
     description: 'Cake and ice cream locations across campus for Spirit of 150 Week.',
     source: 'internal',
     type: 'event',
+    // Listed on Campus Events and on the 150th Anniversary page. Both, not either:
+    // these are campus events that also belong to the anniversary set.
+    mapTypes: ['campus', '150'],
     columnKey: 'fall',
     keywords: ['spirit', '150', 'week', 'cake', 'ice cream', 'celebration']
   }
