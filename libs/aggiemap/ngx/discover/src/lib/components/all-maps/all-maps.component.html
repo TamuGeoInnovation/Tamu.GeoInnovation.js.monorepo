@@ -4,16 +4,20 @@
       <p><a href="javascript:void(0)">All Maps</a></p>
     </div>
 
-    <div class="leader-1 trailer-3">
+    <div class="maps-page-title-block leader-1 trailer-3">
       <h1 class="maps-page-title">All Maps</h1>
     </div>
 
     <div class="visit-maps-section trailer-3">
       <h2>Visit Maps</h2>
 
-      <div class="visit-maps-row">
-        <a class="main-parking-button" [routerLink]="mainParkingRoute">Main Campus Parking Map</a>
+      <a class="main-parking-button trailer-2" [routerLink]="mainParkingRoute">Main Campus Parking Map</a>
 
+      <!--
+        The parking button used to sit inside this row as a sibling of the tiles. It is not a tile,
+        and at phone widths it took a whole line to itself, pushing six tiles onto three more.
+      -->
+      <div class="visit-maps-row">
         <a class="visit-maps-tile" routerLink="/all-maps/150" aria-label="150th Anniversary">
           <span class="visit-maps-icon visit-maps-icon--mark">
             <img src="/assets/images/logo/150th-wordmark-stacked-maroon.svg" alt="" aria-hidden="true" />

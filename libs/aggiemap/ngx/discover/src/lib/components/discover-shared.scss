@@ -39,6 +39,53 @@
   font-style: italic;
 }
 
+// A compact icon-beside-label row, for a small set of destinations on a narrow screen.
+//
+// The stacked icon-above-label tile is right when there is room for it. Below the phone
+// breakpoint it is not: six stacked tiles either wrap onto four uneven lines or have to shrink
+// their icons past the point of being readable. At that size the label carries the meaning and
+// the icon is supporting, so the two sit side by side and each destination becomes one row of a
+// short list.
+//
+// Deliberately not tied to Visit Maps. Any discover page with a handful of icon-and-label
+// destinations can `@extend` or apply these classes; the grid column count is left to the caller
+// so a page with three items is not forced into two columns.
+@mixin icon-label-rows($icon-size: 1.75rem, $min-height: 2.75rem) {
+  align-items: stretch;
+
+  .icon-label-row,
+  .visit-maps-tile {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    width: auto;
+    min-height: $min-height;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+
+    &:hover,
+    &:focus {
+      border-color: #500000;
+    }
+  }
+
+  .icon-label-row__icon,
+  .visit-maps-icon {
+    width: $icon-size;
+    height: $icon-size;
+    flex: 0 0 auto;
+  }
+
+  .icon-label-row__label,
+  .visit-maps-label {
+    text-align: left;
+    font-size: 0.8rem;
+    line-height: 1.15;
+  }
+}
+
 .events-list {
   display: flex;
   flex-direction: column;
