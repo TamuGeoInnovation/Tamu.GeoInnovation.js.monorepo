@@ -10,11 +10,21 @@
     <!-- Copy link to this stop -->
     <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 
-    <!-- Directions To Button -->
-    <div class="button" tabindex="0" role="button" (click)="startDirections(data?.attributes?.StopName)">Directions To Here</div>
+    <!--
+      Directions To Here is deliberately absent. The routing service behind it is unpublished -
+      /arcgis/rest/services/Routing returns an empty services list - so the button offers an action
+      that cannot succeed. The two new 150th event maps shipped without it for the same reason.
 
-    <!-- Transportation Services schedules -->
-    <a class="feature-style-2" [href]="transportUrl" target="_blank" rel="noopener">View times at Transportation Services</a>
+      This is a local omission, not the fix. #1003 covers hiding every directions affordance behind
+      a DirectionsEnabled flag, which is reversible in one line when routing returns; this popup is
+      on its list. Restore the button by that flag rather than by pasting it back.
+    -->
+
+    <!--
+      The shared `.button` rather than plain text: with the directions button gone this is the
+      popup's only action, and it read as body copy.
+    -->
+    <a class="button" [href]="transportUrl" target="_blank" rel="noopener">View full schedule</a>
   </div>
 </ng-container>
 
@@ -22,6 +32,6 @@
 <ng-container *ngIf="data.attributes.type === 'route'">
   <div class="popup-section">
     <div class="feature-style-1" tabindex="0">Route {{ data.attributes.id }}: {{ data.attributes.routeName }}</div>
-    <a class="feature-style-2" [href]="transportUrl" target="_blank" rel="noopener">View times at Transportation Services</a>
+    <a class="button" [href]="transportUrl" target="_blank" rel="noopener">View full schedule</a>
   </div>
 </ng-container>

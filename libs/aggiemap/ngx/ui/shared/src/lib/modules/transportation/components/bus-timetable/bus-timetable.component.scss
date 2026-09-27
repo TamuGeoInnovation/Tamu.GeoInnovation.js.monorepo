@@ -29,13 +29,6 @@
   }
 }
 
-.schedule-link {
-  display: inline-flex;
-  align-items: center;
-  font-weight: 600;
-
-  .material-icons {
-    font-size: 1.1rem;
-    margin-right: 0.35rem;
-  }
-}
+// Appearance comes entirely from the shared `.button`. This previously styled the link from
+// scratch and sat an icon beside the label, which meant the same destination looked different here
+// and in the bus stop popup, and the two-line label made the button unusually tall.
