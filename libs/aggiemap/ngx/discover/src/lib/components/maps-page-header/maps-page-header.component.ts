@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Params } from '@angular/router';
 
 import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { LastMapService } from '../../services/last-map/last-map.service';
@@ -38,6 +39,19 @@ export class MapsPageHeaderComponent {
    */
   public get lastMapUrl(): string {
     return this.lastMap.url;
+  }
+
+  /** Path portion of the back link. Bound separately from the query so `?` is not encoded into it. */
+  public get lastMapPath(): string {
+    return this.lastMap.path;
+  }
+
+  public get lastMapQueryParams(): Params {
+    return this.lastMap.queryParams;
+  }
+
+  public get lastMapFragment(): string | undefined {
+    return this.lastMap.fragment;
   }
 
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];

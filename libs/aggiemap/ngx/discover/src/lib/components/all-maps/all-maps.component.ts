@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Params, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
@@ -73,6 +73,19 @@ export class AllMapsComponent implements OnInit {
    */
   public get lastMapUrl(): string {
     return this.lastMap.url;
+  }
+
+  /** Path portion of the back link. Bound separately from the query so `?` is not encoded into it. */
+  public get lastMapPath(): string {
+    return this.lastMap.path;
+  }
+
+  public get lastMapQueryParams(): Params {
+    return this.lastMap.queryParams;
+  }
+
+  public get lastMapFragment(): string | undefined {
+    return this.lastMap.fragment;
   }
 
   public ngOnInit(): void {
