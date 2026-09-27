@@ -58,20 +58,26 @@ stages:
     dependsOn:
       - Setup
       - Build
-    # Pull request builds are skipped, because they cannot be tagged.
+    # Tagged everywhere it is possible: branch builds, and pull request builds whose branch is on
+    # this repository. Skipped only for pull requests from a fork, where Azure DevOps gives the
+    # build a deliberately restricted access token so that opening a pull request cannot make the
+    # pipeline modify its own resources. `Edit build quality` is allowed here and still does not
+    # apply to those runs.
     #
-    # Azure DevOps gives a pull request build from a fork a deliberately restricted access token,
-    # whatever the Build Service is granted - otherwise anyone opening a pull request could make
-    # the pipeline modify its own resources. `Edit build quality` is allowed on this pipeline and
-    # still does not apply to those runs. Since everyone now works from a fork, that is every
-    # pull request build.
+    # Attempting it on fork builds produced five "Access denied" warnings on every run, which left
+    # the build status permanently amber and made the indicator worth ignoring.
     #
-    # Attempting it anyway produced five "Access denied" warnings on every run, which turned the
-    # build status permanently amber and made the indicator worth ignoring.
-    #
-    # Nothing is lost. The release consumes tags from branch builds, which tag normally, and a
-    # release can select a pull request build with or without tags.
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    # If a pull request build has no tags: push the branch to this repository rather than to a
+    # fork. Working from a fork is the documented default (#1022), so most pull request builds
+    # will not be tagged, and that is expected rather than broken.
+    condition: |
+      and(
+        succeeded(),
+        or(
+          ne(variables['Build.Reason'], 'PullRequest'),
+          eq(variables['System.PullRequest.IsFork'], 'False')
+        )
+      )
     variables:
       baseSha: $[stageDependencies.Setup.Last_SHA.outputs['last_successful_sha.BASE_SHA']]
     jobs:
