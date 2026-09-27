@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Params, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 /**
@@ -42,19 +42,46 @@ export class LastMapService {
 
   /**
    * The last map visited, or the main campus map if this is the visitor's first page.
+   *
+   * This is the whole URL, query string and fragment included. Do **not** bind it to `[routerLink]`:
+   * a string is treated as a path, so any `?` and `=` are percent-encoded into it and the link routes
+   * nowhere. Bind `path`, `queryParams` and `fragment` instead -- `routerLink` in Angular 15 takes
+   * no `UrlTree`, so the parts have to be passed separately.
    */
   public get url(): string {
     return this._url;
   }
 
+  /** The path alone, safe to bind to `[routerLink]`. */
+  public get path(): string {
+    const tree = this.router.parseUrl(this._url);
+
+    tree.queryParams = {};
+    tree.fragment = null;
+
+    return this.router.serializeUrl(tree);
+  }
+
+  /** Query parameters of the last map, for `[queryParams]`. Empty when it had none. */
+  public get queryParams(): Params {
+    return this.router.parseUrl(this._url).queryParams;
+  }
+
+  /** Fragment of the last map, for `[fragment]`. `undefined` when it had none. */
+  public get fragment(): string | undefined {
+    return this.router.parseUrl(this._url).fragment ?? undefined;
+  }
+
   private static isMapUrl(url: string): boolean {
-    // `/map` exactly, or `/map?...`, but not a route that merely starts with those letters.
+    // `/map` exactly, or `/map` followed by a separator, but not a route that merely starts with
+    // those letters. `#` is in the list because a fragment is as much a boundary as `?` or `/`, and
+    // omitting it meant `/map#north` was not recognised as a map at all.
     return LastMapService.MAP_ROUTE_PREFIXES.some((prefix) => {
       if (prefix.endsWith('/')) {
         return url.startsWith(prefix);
       }
 
-      return url === prefix || url.startsWith(`${prefix}?`) || url.startsWith(`${prefix}/`);
+      return url === prefix || ['?', '#', '/'].some((separator) => url.startsWith(`${prefix}${separator}`));
     });
   }
 

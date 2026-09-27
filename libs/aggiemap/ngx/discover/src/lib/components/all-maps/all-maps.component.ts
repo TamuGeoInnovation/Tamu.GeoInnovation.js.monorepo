@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Params, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
@@ -67,12 +67,23 @@ export class AllMapsComponent implements OnInit {
   ) {}
 
   /**
-   * Where the breadcrumb's first crumb points: the map the visitor was last looking at, rather
-   * than always the main campus map. Someone who opened this page from an event map expects to be
-   * returned there.
+   * Where the breadcrumb's first crumb points: the map the visitor was last looking at, rather than
+   * always the main campus map. Someone who opened this page from an event map expects to be
+   * returned there. See LastMapService.
+   *
+   * Path only. The query and fragment are bound separately below, because `[routerLink]` encodes a
+   * `?` into the path when given a whole URL as a string.
    */
-  public get lastMapUrl(): string {
-    return this.lastMap.url;
+  public get lastMapPath(): string {
+    return this.lastMap.path;
+  }
+
+  public get lastMapQueryParams(): Params {
+    return this.lastMap.queryParams;
+  }
+
+  public get lastMapFragment(): string | undefined {
+    return this.lastMap.fragment;
   }
 
   public ngOnInit(): void {
