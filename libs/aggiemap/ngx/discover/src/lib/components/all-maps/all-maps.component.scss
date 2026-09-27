@@ -12,12 +12,15 @@
   margin: 0;
 }
 
+// A grid rather than a wrapping flex row. Wrapping distributed tiles unevenly - at phone widths
+// two of them ended up on their own lines 8px apart, which read as a layout fault - and the count
+// is not fixed: Campus Maps is development-only and tiles get added over time.
 .visit-maps-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, max-content));
+  justify-content: start;
+  align-items: start;
   gap: 2.5rem;
-  flex-wrap: wrap;
 }
 
 // Compact, square horizontal maroon action button — wider than tall so it reads as a utility action.
@@ -69,6 +72,15 @@
     width: 100%;
     height: 100%;
   }
+}
+
+// The 150th anniversary wordmark is the university's own artwork, used unaltered. It is square
+// and single-colour in the same maroon the row already uses, so it sits at the same size as the
+// traced glyphs beside it. It does not inherit `currentColor`, so unlike them it does not darken
+// on hover; making it do so would mean editing the artwork.
+.visit-maps-icon--mark img {
+  width: 100%;
+  height: 100%;
 }
 
 .visit-maps-label {
@@ -135,13 +147,72 @@
 }
 
 @media (max-width: 768px) {
+  // Option C: search comes first on a phone. Visit Maps is browse-by-category; search is the
+  // faster route when someone already knows what they want. Reordering costs nothing and puts
+  // the quicker path above the fold.
+  //
+  // `order` moves the visual box only, so the document order screen readers and keyboard users
+  // follow is unchanged.
+  .maps-page-shell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Everything not named below keeps its document order behind the search field. This has to
+  // match every child, not just divs: Quick Links is a custom element and was skipped by an
+  // earlier `> div` selector, which floated it to the top of the page.
+  .maps-page-shell > * {
+    order: 3;
+  }
+
+  .maps-page-shell > .breadcrumbs {
+    order: 0;
+
+    // A back link rather than a trail. See discover-shared.
+    @include breadcrumbs-as-back-link;
+
+    // The trail's generous leading suits a full breadcrumb under a page title. A single back
+    // link at the top of a phone screen does not need it.
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .maps-page-shell > .maps-page-title-block {
+    order: 1;
+
+    // The heading is removed from view, so its wrapper's spacing would otherwise leave a gap
+    // where nothing is drawn.
+    margin: 0;
+  }
+
+  // "All Maps" is already the answer to "where am I" - the reader just tapped it, and the back
+  // link above says where it goes. Hidden from sight but kept for screen readers and indexing.
+  .maps-page-title {
+    @include visually-hidden;
+  }
+
+  .maps-page-shell > .search-section {
+    order: 2;
+
+    // trailer-5 puts 5rem below this section, which is right when Upcoming Events follows it on a
+    // wide screen. Reordered above Visit Maps on a phone, that much air reads as a break in the
+    // page rather than a gap between two related blocks.
+    margin-bottom: 2rem;
+  }
+
+  // Two columns of the shared icon-beside-label rows. The pattern lives in discover-shared so
+  // other discover pages can use it; only the column count is decided here.
   .visit-maps-row {
-    gap: 1.5rem;
-    justify-content: center;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+
+    @include icon-label-rows;
   }
 
   .main-parking-button {
     width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem;
   }
 
   .events-list {

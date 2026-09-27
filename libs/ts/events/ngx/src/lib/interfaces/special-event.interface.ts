@@ -508,7 +508,7 @@ export type AggiemapCustomMapConfiguration = ISpecialEventRoot | IGeneralMapRoot
  * Events", parking columns, quick links) — they are only ever surfaced in the dedicated,
  * development-only "Kiosk Maps" section. See `DiscoveryService.getKioskDiscoverApplications`.
  */
-export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'satellite-campus' | 'kiosk';
+export type DiscoverMapType = 'parking' | 'campus' | 'athletics' | 'operations' | 'satellite-campus' | 'kiosk' | '150';
 
 /**
  * Metadata used to represent a map in the Discover application.
@@ -549,6 +549,18 @@ export interface DiscoverMetadata {
    * When omitted, consuming UIs can derive a sensible default from `type`.
    */
   mapType?: DiscoverMapType;
+
+  /**
+   * The detail pages this map is listed on, when it belongs on more than one.
+   *
+   * A single home is the common case, so `mapType` stays. Some maps belong in two places at
+   * once: the 150th anniversary maps are campus events and also members of the anniversary
+   * set, and should appear under both without either listing losing them.
+   *
+   * When set, this replaces `mapType` rather than adding to it, so a map keeping its existing
+   * home must name that here as well.
+   */
+  mapTypes?: DiscoverMapType[];
 
 
   /**

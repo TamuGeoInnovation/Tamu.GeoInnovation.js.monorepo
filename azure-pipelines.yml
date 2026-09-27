@@ -58,6 +58,20 @@ stages:
     dependsOn:
       - Setup
       - Build
+    # Pull request builds are skipped, because they cannot be tagged.
+    #
+    # Azure DevOps gives a pull request build from a fork a deliberately restricted access token,
+    # whatever the Build Service is granted - otherwise anyone opening a pull request could make
+    # the pipeline modify its own resources. `Edit build quality` is allowed on this pipeline and
+    # still does not apply to those runs. Since everyone now works from a fork, that is every
+    # pull request build.
+    #
+    # Attempting it anyway produced five "Access denied" warnings on every run, which turned the
+    # build status permanently amber and made the indicator worth ignoring.
+    #
+    # Nothing is lost. The release consumes tags from branch builds, which tag normally, and a
+    # release can select a pull request build with or without tags.
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     variables:
       baseSha: $[stageDependencies.Setup.Last_SHA.outputs['last_successful_sha.BASE_SHA']]
     jobs:

@@ -19,14 +19,14 @@ describe('DiscoveryService', () => {
     const applications = service.getInternalDiscoverApplications();
     const aggielandSaturday = applications.find((app) => app.id === 'aggieland-saturday');
 
-    expect(aggielandSaturday?.mapType).toBe('campus');
+    expect(aggielandSaturday?.mapTypes).toEqual(['campus']);
   });
 
   it('keeps general parking maps in the parking tab', () => {
     const applications = service.getInternalDiscoverApplications();
     const accessibleParking = applications.find((app) => app.id === 'accessible-parking');
 
-    expect(accessibleParking?.mapType).toBe('parking');
+    expect(accessibleParking?.mapTypes).toEqual(['parking']);
   });
 
   it('supports explicit discover tab overrides for athletics and campus parking maps', () => {
@@ -37,15 +37,24 @@ describe('DiscoveryService', () => {
     const football = applications.find((app) => app.id === 'gameday-parking');
     const moveIn = applications.find((app) => app.id === 'move-in');
 
-    expect(football?.mapType).toBe('athletics');
-    expect(moveIn?.mapType).toBe('campus');
+    expect(football?.mapTypes).toEqual(['athletics']);
+    expect(moveIn?.mapTypes).toEqual(['campus']);
+  });
+
+  it('lists a map on every page named in mapTypes', () => {
+    const applications = service.getInternalDiscoverApplications();
+    const kickoffAtKyle = applications.find((app) => app.id === 'kickoff-at-kyle');
+
+    // The 150th maps belong on Campus Events and on the anniversary page. Declaring the second
+    // must not cost them the first, which is what a single `mapType` would have done.
+    expect(kickoffAtKyle?.mapTypes).toEqual(['campus', '150']);
   });
 
   it('supports explicit discover tab overrides for operations maps', () => {
     const applications = service.getInternalDiscoverApplications();
     const constructionMap = applications.find((app) => app.id === 'construction-map');
 
-    expect(constructionMap?.mapType).toBe('operations');
+    expect(constructionMap?.mapTypes).toEqual(['operations']);
   });
 
   it('treats visible maps as public by default', () => {

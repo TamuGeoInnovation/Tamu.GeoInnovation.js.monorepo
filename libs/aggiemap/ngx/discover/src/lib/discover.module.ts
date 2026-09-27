@@ -58,6 +58,15 @@ const routes: Routes = [
     }
   },
   {
+    path: '150',
+    component: EventMapsComponent,
+    data: {
+      mapType: '150',
+      title: '150th Anniversary',
+      intro: 'Browse maps for the events marking the 150th anniversary of Texas A&M University.'
+    }
+  },
+  {
     path: 'campus',
     component: EventMapsComponent,
     data: {
