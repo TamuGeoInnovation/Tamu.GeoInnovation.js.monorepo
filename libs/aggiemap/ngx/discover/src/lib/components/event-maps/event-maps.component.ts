@@ -9,7 +9,7 @@ import { buildMapColumnGroups, getApplicationRoute, sortApplicationsByName, MapC
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 interface EventMapsRouteData {
-  mapType: Extract<DiscoverMapType, 'campus' | 'athletics' | 'operations' | 'satellite-campus'>;
+  mapType: Extract<DiscoverMapType, 'campus' | 'athletics' | 'operations' | 'satellite-campus' | '150'>;
   title: string;
   intro?: string;
   columns?: Array<MapColumnDefinition>;
@@ -46,7 +46,7 @@ export class EventMapsComponent implements OnInit {
 
     // Category pages are a navigation directory of every map of this type, not an upcoming-only list.
     this.applications = sortApplicationsByName(
-      this.discoveryService.getVisibleInternalDiscoverApplications().filter((app) => app.mapType === data.mapType)
+      this.discoveryService.getVisibleInternalDiscoverApplications().filter((app) => app.mapTypes.includes(data.mapType))
     );
     this.applicationColumns = buildMapColumnGroups(this.applications, data.columns);
   }

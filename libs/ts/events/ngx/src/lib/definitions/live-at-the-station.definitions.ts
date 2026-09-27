@@ -93,6 +93,9 @@ export const LiveAtTheStationTs: AggiemapCustomMapConfiguration = {
     // list on All Maps. #993 asks for this event to be listed there.
     visible: true,
     type: 'event',
+    // Listed on Campus Events and on the 150th Anniversary page. Both, not either:
+    // these are campus events that also belong to the anniversary set.
+    mapTypes: ['campus', '150'],
     columnKey: 'fall',
     keywords: ['live at the station', 'concert', 'station', 'parking', 'transportation']
   }
