@@ -78,6 +78,13 @@ still appear under Campus Events, so nobody has to learn a new route to find the
 **Check on dev:** [dev.aggiemap.tamu.edu/all-maps](https://dev.aggiemap.tamu.edu/all-maps), then the
 Anniversary tile.
 
+| Before | After |
+| --- | --- |
+| <img src="images/unreleased/all-maps-desktop-before.png" width="420" alt="All Maps on a desktop browser, before: no Anniversary tile" /> | <img src="images/unreleased/all-maps-desktop-after.png" width="420" alt="All Maps on a desktop browser, after: an Anniversary tile leads the row" /> |
+
+The **Anniversary** tile is the new one. *Campus Maps* also appears in the "after" image — that is a
+development-only section and is not part of this release.
+
 ### 150th events on the main map
 
 Four anniversary events are available on the main campus map under a *150th Events* heading:
@@ -97,6 +104,13 @@ came from rather than always the main map.
 
 **Check on dev:** [dev.aggiemap.tamu.edu/all-maps](https://dev.aggiemap.tamu.edu/all-maps) on a phone,
 or a narrow browser window.
+
+| Before | After |
+| --- | --- |
+| <img src="images/unreleased/all-maps-phone-before.png" width="300" alt="All Maps on a phone, before: large stacked tiles, two per line, under a breadcrumb and page heading" /> | <img src="images/unreleased/all-maps-phone-after.png" width="300" alt="All Maps on a phone, after: compact tiles side by side, with a Back link and the search box moved up" /> |
+
+The tiles now sit side by side as compact rows rather than large stacked icons, the breadcrumb and
+page heading are replaced by a single **‹ Back** link, and search moves above the tiles.
 
 ### About page
 
