@@ -47,6 +47,22 @@ writes CRLF turns a ten-line change into a thousand-line diff. Compare `git diff
 with `git diff --stat --ignore-all-space`; if they disagree wildly, normalize before
 committing.
 
+## Checking a deployed environment
+
+Nothing in the pull request checks notices when a map breaks *without* a release — the maps draw from
+hosted GIS services, so a layer can stop working with no commit and no build. Two tools cover that,
+each with its own README:
+
+- **[`test/smoke/aggiemap`](test/smoke/aggiemap/README.md)** loads every map in a deployed
+  environment and verifies each layer resolves and returns data. Runs daily against dev and
+  production, and on demand.
+- **[`tools/builder-inventory`](tools/builder-inventory/README.md)** covers the eleven maps that
+  cannot be reached by URL, because they require choices in a builder first. It records where every
+  combination lands, including a shareable link that reaches each destination directly.
+
+Both need the map probe (`window.__tamuGiscMapProbe`) in the deployed build. If layer data comes back
+empty, the environment is running something older.
+
 ## Before changing code
 
 **Reuse before building.** Check `libs/ui-kits/ngx/**` for an existing component, and
