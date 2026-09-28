@@ -1,14 +1,17 @@
 import { Component, Input } from '@angular/core';
-import { Params } from '@angular/router';
 
 import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
-import { LastMapService } from '../../services/last-map/last-map.service';
 
 /**
  * Shared header for the Maps sub-pages (Parking Maps, Campus Events, Athletics Events).
  *
  * Renders the breadcrumb trail (`Aggie Map › All Maps › {label}`), a dotted divider, the page
  * title with optional intro text, and the featured "Campus Main Parking" button.
+ *
+ * The trail's crumbs are fixed destinations: "Aggie Map" is the main map, "All Maps" is its parent
+ * page. The phone layout turns the parent crumb into "< Back". This component no longer consults
+ * `LastMapService` - returning to the map a visitor came from belongs to All Maps, where the back
+ * link is the only way back; here the parent page is.
  */
 @Component({
   selector: 'tamu-gisc-maps-page-header',
@@ -30,28 +33,6 @@ export class MapsPageHeaderComponent {
    * Whether to render the featured Campus Main Parking button. Defaults to `true`.
    */
   @Input() public showMainParking = true;
-
-  constructor(private readonly lastMap: LastMapService) {}
-
-  /**
-   * Where the breadcrumb's first crumb points: the map the visitor was last looking at, rather than
-   * always the main campus map. Someone who opened this page from an event map expects to be
-   * returned there. See LastMapService.
-   *
-   * Path only. The query and fragment are bound separately below, because `[routerLink]` encodes a
-   * `?` into the path when given a whole URL as a string.
-   */
-  public get lastMapPath(): string {
-    return this.lastMap.path;
-  }
-
-  public get lastMapQueryParams(): Params {
-    return this.lastMap.queryParams;
-  }
-
-  public get lastMapFragment(): string | undefined {
-    return this.lastMap.fragment;
-  }
 
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];
 }

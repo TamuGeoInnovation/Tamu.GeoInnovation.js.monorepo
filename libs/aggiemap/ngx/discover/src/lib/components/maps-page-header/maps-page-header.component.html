@@ -1,6 +1,7 @@
 <div class="breadcrumbs leader-2 trailer-1">
-  <p><a [routerLink]="lastMapPath" [queryParams]="lastMapQueryParams" [fragment]="lastMapFragment">Aggie Map</a></p>
-  <p><a routerLink="/all-maps">All Maps</a></p>
+  <p><a routerLink="/map">Aggie Map</a></p>
+  <!-- The parent crumb, and the one the phone layout turns into "< Back". -->
+  <p class="breadcrumb-back"><a routerLink="/all-maps">All Maps</a></p>
   <p><a href="javascript:void(0)">{{ title }}</a></p>
 </div>
 
