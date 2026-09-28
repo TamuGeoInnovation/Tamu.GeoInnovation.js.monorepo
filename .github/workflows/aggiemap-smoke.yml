@@ -1,0 +1,169 @@
+name: AggieMap Smoke
+
+# Runs against DEPLOYED environments, so it deliberately cannot gate a pull request: a failure here
+# means an environment is unhealthy, not that a commit is bad.
+#
+# Development and production run as separate jobs rather than one combined run, because the two
+# environments legitimately differ and a shared expectation would have to be loosened to the weaker
+# of the two. Separate jobs also make the result diagnostic:
+#
+#   fails on production only   a back-end change broke production
+#   fails on development only  the pending release is broken, or a dev-only service is missing
+#   fails on both              a shared service or a layer definition is broken
+#
+# See #1034.
+on:
+  schedule:
+    # 06:17 College Station. Cron is UTC with no daylight saving, so the local time shifts by an hour
+    # twice a year, which does not matter for a daily health check. The offset minute avoids :00,
+    # which is the most contended slot on GitHub's schedulers.
+    - cron: '17 11 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to check'
+        required: true
+        default: both
+        type: choice
+        options: [both, production, development]
+
+# Needed to open, update and close the health issue below.
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: aggiemap-smoke
+  cancel-in-progress: false
+
+jobs:
+  # Builds the job matrix so a manual run can target one environment. A scheduled run always does
+  # both.
+  setup:
+    name: Select environments
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.pick.outputs.matrix }}
+    steps:
+      - id: pick
+        shell: bash
+        run: |
+          production='{"name":"production","base_url":"https://aggiemap.tamu.edu","gtag":"G-GNS4JMVEZW","label":"prod-health"}'
+          development='{"name":"development","base_url":"https://dev.aggiemap.tamu.edu","gtag":"G-71VY0QZS5P","label":"dev-health"}'
+
+          case "${{ github.event.inputs.environment || 'both' }}" in
+            production)  echo "matrix={\"include\":[$production]}" >> "$GITHUB_OUTPUT" ;;
+            development) echo "matrix={\"include\":[$development]}" >> "$GITHUB_OUTPUT" ;;
+            *)           echo "matrix={\"include\":[$production,$development]}" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+  smoke:
+    name: ${{ matrix.name }}
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    strategy:
+      # One unhealthy environment must not cancel the check on the other - knowing whether a failure
+      # is on both is how the result is diagnosed.
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
+
+    env:
+      AGGIEMAP_SMOKE_BASE_URL: ${{ matrix.base_url }}
+      # Asserts the environment reports to its own Google Analytics property. Development served the
+      # production measurement id until #1037; nothing noticed, and production's numbers absorbed
+      # development traffic the whole time.
+      AGGIEMAP_EXPECTED_GTAG_ID: ${{ matrix.gtag }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.1'
+
+      - uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run smoke tests
+        run: npx playwright test --config=playwright.aggiemap-smoke.config.ts
+
+      # Only on failure. A healthy run should leave nothing behind but a green check.
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aggiemap-smoke-${{ matrix.name }}-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 14
+
+      # Opens one issue per environment and keeps it updated, rather than filing a new one each day.
+      # A layer that breaks on a Friday and is fixed the next Wednesday would otherwise produce five
+      # identical issues, which is how a label stops being read.
+      - name: Report failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          existing=$(gh issue list --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "Still failing on ${{ matrix.name }} (\`${{ matrix.base_url }}\`). [Run]($run_url)"
+          else
+            # `gh issue create` fails outright on a label that does not exist, which would break this
+            # handler on the very first real failure. Created here so the workflow needs no manual
+            # setup; harmless once it exists.
+            gh label create '${{ matrix.label }}' \
+              --description 'A scheduled AggieMap smoke run is failing against this environment' \
+              --color 'B60205' 2>/dev/null || true
+
+            gh issue create \
+              --title "AggieMap smoke failing on ${{ matrix.name }}" \
+              --label '${{ matrix.label }}' \
+              --body "The scheduled smoke run is failing against \`${{ matrix.base_url }}\`.
+
+          The report artifact on the run lists which maps failed and why. Layer failures generally mean a
+          hosted service changed, rather than anything in this repository - see #1034 for what the suite
+          checks and #1036 for an example.
+
+          This issue is updated on each failing run and closed automatically when the run next passes.
+
+          [Run]($run_url)"
+          fi
+
+      # Closes the issue once the environment recovers, so the open health issues describe the present
+      # rather than accumulating as a history of resolved alarms.
+      - name: Clear failure
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          existing=$(gh issue list --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
+
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Passing again on ${{ matrix.name }}. [Run]($run_url)"
+          fi
