@@ -11,7 +11,7 @@ import { defineConfig, devices } from '@playwright/test';
  * This one cannot -- a failure here may mean the deployment is broken, not the commit.
  */
 export default defineConfig({
-  testDir: './test/smoke',
+  testDir: './test/smoke/gisday',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 2,
