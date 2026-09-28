@@ -1,0 +1,59 @@
+name: Linked Issue
+
+# Every pull request needs an issue behind it. Work on this project is reported to keep it funded and
+# that reporting is built from issues, so a pull request with no issue does not appear in the record -
+# the work effectively disappears, however good it was. See #1056.
+#
+# A rule that is only written down gets skipped exactly when someone is moving quickly, which is when
+# it was skipped nine times in one session. This makes it visible at the moment it is broken rather
+# than at reporting time months later.
+on:
+  pull_request:
+    # `edited` matters: the usual fix is adding `Closes #N` to the body, and without it the check
+    # would stay red until an unrelated push.
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  linked-issue:
+    name: Has a linked issue
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check for a closing reference
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+          TITLE: ${{ github.event.pull_request.title }}
+        shell: bash
+        run: |
+          # GitHub's own closing keywords. Matched case-insensitively, and `#123` may also be a full
+          # issue URL, which is what the second pattern allows.
+          pattern='(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#[0-9]+|https://github\.com/[^/]+/[^/]+/issues/[0-9]+)'
+
+          if printf '%s\n%s' "$TITLE" "$BODY" | grep -qiE "$pattern"; then
+            echo "Found a linked issue."
+            exit 0
+          fi
+
+          # Deliberately a hard failure with instructions rather than a warning. A warning here would
+          # be ignored, and the cost of ignoring it only appears at reporting time.
+          cat >&2 <<'EOF'
+          No linked issue found.
+
+          Every pull request needs an issue behind it. Work on this project is reported to keep it
+          funded, and that reporting is built from issues -- a pull request with no issue does not
+          appear in the record.
+
+          To fix: open an issue describing the work, then add a line to this pull request's body:
+
+              Closes #1234
+
+          Accepted keywords: closes, fixes, resolves (and their variants). A full issue URL works too.
+
+          If the change genuinely has no issue, open one. It takes a minute, and it is the point.
+          EOF
+          exit 1

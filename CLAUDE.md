@@ -107,6 +107,28 @@ fails for the expected reason before applying the fix.
 
 ## Pull requests
 
+**Open an issue first, then the pull request, and link them.** Every change — bug fix, docs, CI, a
+one-line change. Put `Closes #<issue>` in the pull request body. A CI check enforces this.
+
+Work on this project is reported to keep it funded, and that reporting is built from issues. A pull
+request with no issue behind it does not appear in the record, so the work effectively disappears
+however good it was. See #1056.
+
+File the issue as soon as the work is identified, including work noticed while doing something else —
+that is the case most likely to be skipped.
+
+**Anything with a visible result carries before/after screenshots**, in the issue and the pull
+request. Do not wait to be asked.
+
+This is not only documentation. The duplicated 150th Anniversary tile (#1055) was found *because*
+before/after images were being captured: a duplicated block reads as correct in a diff, since each
+copy is individually right, and is obvious the moment you look at the page.
+
+`gh` cannot upload to GitHub's image CDN, so commit screenshots to the repository and link them by
+raw URL — this repository is public, so they render and do not rot. Release-notes images go under
+`docs/releases/images/<release>/` so they travel with the notes.
+
+
 **Work from a fork. Never push branches to `TamuGeoInnovation`.** Everyone on the team, the
 maintainer included, pushes branches to their own fork and opens pull requests from
 `<user>:<branch>` into `TamuGeoInnovation:development`. Keep two remotes: `origin` is the main
