@@ -27,6 +27,29 @@ against the live site.
 
 ---
 
+## What to test
+
+Everything below is on **dev**. Each link opens the thing it describes; the detail is further down if
+you want it.
+
+| Open this | Look for |
+| --- | --- |
+| [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | a **150th Anniversary** tile; opening it lists all five anniversary maps |
+| [All Maps, on a phone](https://dev.aggiemap.tamu.edu/all-maps) | the tiles sit **side by side** rather than one per line, and a **‹ Back** link replaces the breadcrumb |
+| [The main map](https://dev.aggiemap.tamu.edu/map) | a **150th Events** heading in the layer list, four events, all starting switched off |
+| [Bus routes](https://dev.aggiemap.tamu.edu/map/d/bus) | routes and stops list; clicking a stop opens a popup with a schedule link |
+| [Gameday Parking, micromobility](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | **Bike Dismount Zones** and **Bike Veo Geofence** draw the right things — they were showing each other's data |
+| [150th Opening Ceremony](https://dev.aggiemap.tamu.edu/events/150th-kickoff) | the legend no longer lists *Hourly Paid Parking* |
+
+Two things worth knowing before you report something as broken:
+
+- **Bus routes will not appear on production** when this ships. That is deliberate, not a bug — the
+  service they read is not published there yet. On dev they work.
+- **Dev shows sections production does not**, such as Campus Maps and kiosk maps. Those are
+  development-only and are not part of this release.
+
+---
+
 ## New
 
 ### Bus routes and stops are back — on dev only, for now
@@ -40,7 +63,8 @@ not yet publicly readable on the production server, so on production Aggie Map k
 live site until that service is published, at which point this is switched on without a code change
 of any substance.
 
-**Check on dev:** the bus panel, the bus layer on the main map, and a stop popup.
+**Check on dev:** [the bus panel](https://dev.aggiemap.tamu.edu/map/d/bus), the bus layer on the main
+map, and a stop popup.
 
 ### A 150th Anniversary section
 
@@ -51,7 +75,8 @@ Parade.
 The anniversary maps keep their existing addresses, so links already shared still work. They also
 still appear under Campus Events, so nobody has to learn a new route to find them.
 
-**Check:** `/all-maps`, then the Anniversary tile.
+**Check on dev:** [dev.aggiemap.tamu.edu/all-maps](https://dev.aggiemap.tamu.edu/all-maps), then the
+Anniversary tile.
 
 ### 150th events on the main map
 
@@ -61,13 +86,17 @@ off on its own, and all four start off, so they are there when wanted without ch
 looks like on arrival. Opening Ceremony is one entry that shows its event locations, shuttle route and
 parking together.
 
+**Check on dev:** [the main map](https://dev.aggiemap.tamu.edu/map), then the layer list for the
+*150th Events* heading.
+
 ### The Maps pages work on a phone
 
 The Visit Maps tiles were taking roughly half a phone screen each. They now sit side by side, and the
 breadcrumb on narrow screens is replaced with a single Back link that returns to whichever map you
 came from rather than always the main map.
 
-**Check:** `/all-maps` on a phone, or a narrow browser window.
+**Check on dev:** [dev.aggiemap.tamu.edu/all-maps](https://dev.aggiemap.tamu.edu/all-maps) on a phone,
+or a narrow browser window.
 
 ### About page
 
