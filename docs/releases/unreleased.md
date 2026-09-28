@@ -55,9 +55,11 @@ still appear under Campus Events, so nobody has to learn a new route to find the
 
 ### 150th events on the main map
 
-Three anniversary event layers are available on the main campus map, grouped under a *150th Events*
-heading and turned off by default, so they are there when wanted without changing what the map looks
-like on arrival.
+Four anniversary events are available on the main campus map under a *150th Events* heading:
+Opening Ceremony, Kickoff at Kyle, Live at the Station and Spirit of 150 Week. Each is turned on and
+off on its own, and all four start off, so they are there when wanted without changing what the map
+looks like on arrival. Opening Ceremony is one entry that shows its event locations, shuttle route and
+parking together.
 
 ### The Maps pages work on a phone
 
