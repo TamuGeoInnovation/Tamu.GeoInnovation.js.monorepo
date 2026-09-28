@@ -137,6 +137,20 @@ Three layers are corrected. **Bike Lanes is temporarily withheld** — see *Need
 "Hourly Paid Parking" was removed from the data but stayed in the legend, because the map carried its
 own copy of the classes rather than reading the service. Reported by Megan.
 
+### The "Aggie Map" breadcrumb went back to the wrong place
+
+On a desktop browser, the **Aggie Map** crumb returned you to whichever map you had just come from
+rather than to the main Aggie Map. Opening the bus map, clicking All Maps, then clicking Aggie Map
+took you back to the bus map.
+
+It affected every Maps page, not only All Maps, because they share a header.
+
+The phone layout is unchanged: there the same trail is shown as a single **‹ Back** link, and going
+back to the map you came from is what it is for.
+
+**Check on dev:** open [the bus map](https://dev.aggiemap.tamu.edu/map/d/bus), click **All Maps**, then
+click **Aggie Map** — you should land on the main campus map.
+
 ### The Back link lost shared-link details
 
 On the Maps pages, the "Aggie Map" link back to your last map dropped any detail in the address — so
