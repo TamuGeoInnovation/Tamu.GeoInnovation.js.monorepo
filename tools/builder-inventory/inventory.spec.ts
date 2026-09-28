@@ -1,6 +1,7 @@
 import { Browser, Page, chromium, expect, test } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as crypto from 'crypto';
 
 /**
  * Records where every builder selection takes a visitor, and the share URL of the map it lands on.
@@ -306,7 +307,7 @@ async function explore(browser: Browser, route: string, prefix: number[]): Promi
       break;
     }
 
-    return { kind: 'destination', destination: await readDestination(page, stepsTaken) };
+    return { kind: 'destination', destination: await readDestination(page, stepsTaken, route) };
   } catch (error) {
     return {
       kind: 'destination',
@@ -357,7 +358,133 @@ async function clickOption(page: Page, index: number): Promise<void> {
     .catch(() => undefined);
 }
 
-async function readDestination(page: Page, stepsTaken: StepTaken[]): Promise<Destination> {
+/**
+ * Where destination screenshots are written. Deliberately outside the repository by default.
+ *
+ * At two viewports this is roughly 720 images for a full crawl, and whether all of them should be
+ * committed is an open question in #1089 - `/parking/move-in` alone produces 324 destinations that
+ * differ only in which features are drawn. Capturing them costs nothing extra while we are already
+ * here; deciding what to keep can happen afterwards, which is the right order.
+ *
+ * Set BUILDER_INVENTORY_SHOTS to a directory to enable. Unset, nothing is captured and the crawl
+ * behaves exactly as before.
+ */
+const SHOT_DIR = process.env.BUILDER_INVENTORY_SHOTS ?? '';
+
+/**
+ * How many destinations per map are photographed. The walk itself is never capped - #1088 exists to
+ * enumerate *every* builder path, and a truncated inventory would mean the smoke suite silently
+ * tests a subset.
+ *
+ * **Unset means capture everything**, which is the point: the purpose of these pictures is to confirm
+ * that every map still behaves as expected before a release goes to production, and a sample cannot
+ * do that. Set the variable only when deliberately sampling.
+ *
+ * It is worth knowing what complete costs. Two viewports, each needing the view to settle, takes a
+ * destination from roughly ten seconds to thirty, and `/parking/move-in` alone has 324 destinations -
+ * so a full capture is around three hours. That is affordable because this runs when a build goes to
+ * dev, not on every build.
+ */
+const SHOTS_PER_MAP = Number(process.env.BUILDER_INVENTORY_SHOTS_MAX ?? Number.MAX_SAFE_INTEGER);
+
+/** Destinations photographed so far, per map route. */
+const shotsTaken = new Map<string, number>();
+
+const FORCE_SHOTS = process.env.BUILDER_INVENTORY_SHOTS_FORCE === 'true';
+
+/**
+ * One place that names a capture, so the resume check and the write can never disagree.
+ *
+ * Kept short deliberately. The builder choices make descriptive names long - "FRIDAY August 21 2026,
+ * Appelt Hall, No I do not need accessible parking" reaches 137 characters - and Windows cannot open
+ * a path over 260, which the scratchpad's own depth almost exhausts before the filename starts. Files
+ * written from the container were then unreadable from the host.
+ *
+ * So the name is a readable prefix plus a hash of the whole slug: short enough to survive any
+ * reasonable directory, still sorts sensibly, and stays unique. The full builder choices live in the
+ * inventory JSON, which is where they belong - a filename is an identifier, not a record.
+ */
+function shotName(slug: string): string {
+  const digest = crypto.createHash('sha1').update(slug).digest('hex').slice(0, 10);
+
+  return `${slug.slice(0, 60)}__${digest}.png`;
+}
+
+const SHOT_VIEWPORTS: { name: string; width: number; height: number }[] = [
+  { name: 'desktop', width: 1280, height: 900 },
+  { name: 'phone', width: 375, height: 812 }
+];
+
+/** Settles on the view having finished drawing, then captures each viewport. */
+async function captureDestination(page: Page, stepsTaken: StepTaken[], route: string): Promise<void> {
+  if (!SHOT_DIR) {
+    return;
+  }
+
+  const already = shotsTaken.get(route) ?? 0;
+
+  if (already >= SHOTS_PER_MAP) {
+    return;
+  }
+
+  shotsTaken.set(route, already + 1);
+
+  const slug =
+    (safeUrl(page).replace(/^\//, '').replace(/[^a-zA-Z0-9]+/g, '-') || 'root') +
+    (stepsTaken.length > 0 ? '__' + stepsTaken.map((s) => s.chosenLabel).join('_').replace(/[^a-zA-Z0-9]+/g, '-') : '');
+
+  // Resume rather than restart. A full capture is around three hours, so a run that is interrupted -
+  // or refined and re-run, which happened three times while this was being written - must not begin
+  // again from nothing. An existing file means this destination and viewport were already
+  // photographed, and the expensive part is not the file write but the two view settles below.
+  //
+  // Set BUILDER_INVENTORY_SHOTS_FORCE to re-photograph everything, which is what to do after a
+  // release changes how the maps look.
+  const pending = SHOT_VIEWPORTS.filter(
+    (viewport) => FORCE_SHOTS || !fs.existsSync(path.join(SHOT_DIR, viewport.name, shotName(slug)))
+  );
+
+  if (pending.length === 0) {
+    return;
+  }
+
+  for (const viewport of pending) {
+    try {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+
+      // Resizing makes the view redraw, so the settle has to happen after it, per viewport.
+      await page
+        .waitForFunction(
+          (name) => (window as unknown as Record<string, { drawing?: boolean }>)[name]?.drawing === false,
+          PROBE_GLOBAL,
+          { timeout: 90_000, polling: 1_000 }
+        )
+        .catch(() => undefined);
+
+      await page.waitForTimeout(1_500);
+
+      // Dismissed here, not earlier: a map whose event is in the past opens an "This event has
+      // passed" dialog over the canvas, and it appears *after* the probe reports ready. Dismissing
+      // before the settle therefore ran while there was nothing to dismiss, and the dialog then
+      // opened during the wait and was photographed - which is exactly what the first captures
+      // showed. Several of these maps are seasonal and out of season, so this is the normal case.
+      //
+      // Best-effort: a destination with no dialog must not pay for it, and one that will not close
+      // must not cost the picture.
+      await page.locator('.event-passed-modal tamu-gisc-button').first().click({ timeout: 1_500 }).catch(() => undefined);
+      await page.keyboard.press('Escape').catch(() => undefined);
+      await page.waitForTimeout(500);
+
+      fs.mkdirSync(path.join(SHOT_DIR, viewport.name), { recursive: true });
+      await page.screenshot({ path: path.join(SHOT_DIR, viewport.name, shotName(slug)) });
+    } catch {
+      // A screenshot is a by-product here. Losing one must never cost the destination record, which
+      // is what this crawl exists to produce.
+    }
+  }
+}
+
+async function readDestination(page: Page, stepsTaken: StepTaken[], route: string): Promise<Destination> {
   await page
     .waitForFunction(
       (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
@@ -380,6 +507,16 @@ async function readDestination(page: Page, stepsTaken: StepTaken[]): Promise<Des
     .catch(() => undefined);
 
   const layers = snapshot?.layers ?? [];
+
+  // Captured here because this walk is the expensive part. Reaching a builder destination means
+  // replaying every choice that leads to it, so a separate pass to photograph the same places would
+  // repeat the whole crawl - roughly an hour - to stand in exactly the spots we are already standing
+  // in. See #1089, which needs these pictures.
+  //
+  // Waits for `drawing === false`, not just `ready`: the probe reports ready some 13-16 seconds
+  // before the view stops drawing, and a capture taken at `ready` records a half-drawn map. That gap
+  // is why map screenshots were written off as unavoidably flaky.
+  await captureDestination(page, stepsTaken, route);
 
   const shareUrl = await page
     .locator('.copy-element .copy-text')
