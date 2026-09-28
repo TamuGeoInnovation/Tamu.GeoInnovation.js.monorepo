@@ -48,8 +48,8 @@ jobs:
       - id: pick
         shell: bash
         run: |
-          production='{"name":"production","base_url":"https://aggiemap.tamu.edu","gtag":"G-GNS4JMVEZW","label":"prod-health"}'
-          development='{"name":"development","base_url":"https://dev.aggiemap.tamu.edu","gtag":"G-71VY0QZS5P","label":"dev-health"}'
+          production='{"name":"production","base_url":"https://aggiemap.tamu.edu","gtag":"G-GNS4JMVEZW","label":"prod-health","allowed_layer_failures":""}'
+          development='{"name":"development","base_url":"https://dev.aggiemap.tamu.edu","gtag":"G-71VY0QZS5P","label":"dev-health","allowed_layer_failures":"Lactation Rooms,Accessible Building Entrances,Emergency Phones,Dismount Zones,City Bike Lanes and Routes,Campus Bike Lanes,Bike Fix Stations,Bike Racks,EV Charge Stations (Main + RELLIS),Single Occupancy Restroom Locations"}'
 
           case "${{ github.event.inputs.environment || 'both' }}" in
             production)  echo "matrix={\"include\":[$production]}" >> "$GITHUB_OUTPUT" ;;
@@ -78,6 +78,10 @@ jobs:
       # production measurement id until #1037; nothing noticed, and production's numbers absorbed
       # development traffic the whole time.
       AGGIEMAP_EXPECTED_GTAG_ID: ${{ matrix.gtag }}
+      # Layers the development GIS server does not serve. Production serves all of them, so this is
+      # empty there -- an entry appearing on production would be a real outage. Tolerated failures
+      # are still listed in the test's annotations, so this suppresses noise without hiding anything.
+      AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES: ${{ matrix.allowed_layer_failures }}
 
     steps:
       - name: Checkout repo
