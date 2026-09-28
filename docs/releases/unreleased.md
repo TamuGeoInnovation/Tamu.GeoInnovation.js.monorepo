@@ -6,8 +6,13 @@
 
 **Production is currently running the [25 September release](2026-09-25.md).**
 
-**Not yet built anywhere.** The current dev deployment predates the last two merges, so a
-fresh build of `development` is needed before any of this can be checked on dev.
+**On dev now, ready to check.** Everything below is deployed to
+[dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu) as of 27 September. Bus routes appear there
+and are deliberately held on production — see the bus entry below.
+
+Confirmed on that deployment: analytics reports to the development property, and the bus panel
+behaves correctly for the environment. The per-map layer checks are described under *Behind the
+scenes*.
 
 ---
 

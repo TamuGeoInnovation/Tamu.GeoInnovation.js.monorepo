@@ -228,6 +228,27 @@ Check this list before reporting any of the following as a problem.
   tracked and is not a setup fault. `localhost` does not contain `dev`, so it uses the
   production GIS server and never hits this.
 
+## Where the work stands
+
+This file describes how to set a machine up. It deliberately does **not** describe what is currently
+being worked on — a status section here would be wrong within a day, and a stale status is worse than
+no status, because it is believed.
+
+When picking up on a different machine, or after time away, read these instead. They are kept current
+as work merges, not written up afterwards:
+
+| Source | What it tells you |
+| --- | --- |
+| [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | everything merged since the last production release, where it is deployed, and what still needs a decision |
+| Open pull requests | what is in flight right now |
+| Open issues | what is known and not yet done |
+
+`unreleased.md` is the one to start with. Its **Needs a decision** section is where anything blocked
+on a person rather than on code is recorded, which is usually what matters most after a gap.
+
+Its status line says which environments the work has actually reached. Trust it over any summary,
+including one in this file.
+
 ## Before making a first change
 
 - **Trunk is `development`.** Branch from it; branch protection requires a pull request.
