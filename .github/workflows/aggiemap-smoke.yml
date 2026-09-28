@@ -99,25 +99,61 @@ jobs:
       AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES: ${{ matrix.allowed_layer_failures }}
 
     steps:
+      # The suite inspects each map through the map probe (window.__tamuGiscMapProbe). A deployed
+      # build older than the probe cannot be checked at all: every map would wait out the probe,
+      # fail, retry twice and report "deploy a newer build", taking 30+ minutes and holding a health
+      # issue open until the next release. Skip instead, and say so. An environment that cannot be
+      # reached is still a failure, so the report below still fires for a real outage.
+      - name: Check the deployed build has the map probe
+        id: probe
+        shell: bash
+        run: |
+          base="${AGGIEMAP_SMOKE_BASE_URL%/}"
+
+          # Accept: text/html, or the SPA fallback answers 404 (see the smoke README).
+          html=$(curl -fsSL --max-time 60 -H 'Accept: text/html' "$base/") || {
+            echo "::error::Could not load $base/"
+            exit 1
+          }
+
+          bundle=$(printf '%s' "$html" | grep -o 'main\.[0-9a-f]*\.js' | head -n 1)
+          if [ -z "$bundle" ]; then
+            echo "::error::No main bundle referenced by $base/, so the build cannot be checked for the map probe"
+            exit 1
+          fi
+
+          if curl -fsSL --max-time 120 "$base/$bundle" | grep -q '__tamuGiscMapProbe'; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            message="The build deployed to ${{ matrix.name }} ($bundle) predates the map probe, so the smoke suite cannot check it. Skipped; it runs again once a newer build is deployed."
+            echo "::warning::$message"
+            echo "$message" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Checkout repo
+        if: steps.probe.outputs.present == 'true'
         uses: actions/checkout@v4
 
       - name: Setup Node
+        if: steps.probe.outputs.present == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20.18.1'
 
       - uses: actions/cache@v4
+        if: steps.probe.outputs.present == 'true'
         id: npm-cache
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install Dependencies
-        if: steps.npm-cache.outputs.cache-hit != 'true'
+        if: steps.probe.outputs.present == 'true' && steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Cache Playwright browsers
+        if: steps.probe.outputs.present == 'true'
         uses: actions/cache@v4
         id: playwright-cache
         with:
@@ -125,9 +161,11 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install Playwright browser
+        if: steps.probe.outputs.present == 'true'
         run: npx playwright install --with-deps chromium
 
       - name: Run smoke tests
+        if: steps.probe.outputs.present == 'true'
         run: npx playwright test --config=playwright.aggiemap-smoke.config.ts
 
       # Only on failure. A healthy run should leave nothing behind but a green check.
@@ -176,9 +214,10 @@ jobs:
           fi
 
       # Closes the issue once the environment recovers, so the open health issues describe the present
-      # rather than accumulating as a history of resolved alarms.
+      # rather than accumulating as a history of resolved alarms. Only after the suite actually ran: a
+      # skipped run (build without the probe) has checked nothing, so it must not close an issue.
       - name: Clear failure
-        if: success()
+        if: success() && steps.probe.outputs.present == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
