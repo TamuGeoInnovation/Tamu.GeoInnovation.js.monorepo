@@ -63,6 +63,27 @@ each with its own README:
 Both need the map probe (`window.__tamuGiscMapProbe`) in the deployed build. If layer data comes back
 empty, the environment is running something older.
 
+### What "run the tests" means
+
+Map the request to one of these. Only the environment named decides which; if none is named and it
+is unclear, ask.
+
+| The user says | Run |
+| --- | --- |
+| "run the test suite on dev", "smoke test dev" | The smoke suite against `dev.aggiemap.tamu.edu`, by running its workflow: `gh workflow run aggiemap-smoke.yml -f environment=development` |
+| "... on prod", "... on production", "... on both" | The same workflow with `-f environment=production` or `-f environment=both` |
+| "... locally", "... against my dev server" | The smoke suite against a local dev server, as in the smoke README's local section |
+| "run the tests", "run the unit tests" (no environment) | `nx test` for the affected projects, in Docker as in CLAUDE_SETUP.md |
+
+**Prefer the workflow for dev and production.** It carries each environment's expected Google
+Analytics id and the list of layers the dev GIS server does not serve
+(`AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES`). A hand-written `docker run` drifts from that list. Then
+follow the run with `gh run watch`, and report per environment what failed and why, not only pass or
+fail.
+
+A failing run opens an issue for that environment, manual runs included, and the issue closes itself
+when a later run passes. Say so when reporting a failure, so nobody opens a duplicate.
+
 ## Before changing code
 
 **Reuse before building.** Check `libs/ui-kits/ngx/**` for an existing component, and
