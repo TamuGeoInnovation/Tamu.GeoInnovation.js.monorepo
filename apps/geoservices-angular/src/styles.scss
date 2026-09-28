@@ -699,6 +699,12 @@ input[type='submit'] {
   }
 }
 
+// The anchor handling only - see #1031. This application's button keeps its own colour and shadow;
+// what it lacked was any handling for the anchors in `libs/geoservices` that are styled as buttons.
+$button-foreground: #fafafa;
+@import 'libs/sass/components/button';
+@include button-anchors;
+
 .service-logo {
   // Size Limiter
   height: 20rem;

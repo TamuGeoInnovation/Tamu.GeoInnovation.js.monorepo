@@ -1,0 +1,150 @@
+// One button definition, adopted in pieces.
+//
+// Nine applications each defined `.button` in their own `styles.scss` and the definitions had
+// diverged, so "the button style" depended on which application you were in - and a component in a
+// shared library rendered differently depending on who imported it. See #1031.
+//
+// Two mixins rather than one stylesheet, because the applications differ in two very different ways:
+//
+// `button-anchors` is the part every application needs and none but AggieMap had. It is a bug fix,
+// it changes only anchors that are already styled as buttons and already look wrong, and it is safe
+// to apply everywhere.
+//
+// `button-base` is the box model and the variants. Adopting it changes how an application's buttons
+// look - GeoServices has no width, KissingBug is `width: 50%`, none of them set `font-weight` - so
+// it is opt-in, one application at a time, each with its own before-and-after. Applying it to all
+// nine at once would be a redesign wearing a refactor's clothes.
+//
+// Usage:
+//
+//   $button-foreground: #fafafa;
+//   @import 'libs/sass/components/button';
+//   @include button-anchors;
+
+$button-background: #0079c1 !default;
+$button-foreground: #ffffff !default;
+
+// Not derived from the background: an application's hover is usually a hand-picked colour, and
+// AggieMap's #005e95 is not what darken(#0079c1, 10%) produces.
+$button-hover: darken($button-background, 10%) !default;
+
+// Full width suits a button that fills a form column. One that sits beside a heading sets `auto`.
+$button-width: 100% !default;
+$button-padding: 0.9rem !default;
+$button-radius: 99rem !default;
+
+// Set rather than left to inherit. Leaving it unset is how `main-parking-button` came to choose 700
+// and `.feature-style-1` 600, each deciding for itself what a prominent button weighs.
+$button-weight: 700 !default;
+
+// `null` so that an application which does not set these emits no declaration at all. `none` and
+// `normal` would each *add* one, overriding a value that used to be inherited - not the same thing.
+$button-transform: null !default;
+$button-letter-spacing: null !default;
+
+// The box model and the variants. Opt-in; see the note at the top.
+@mixin button-base {
+  .button,
+  button[type='submit'] {
+    line-height: initial;
+    font-weight: $button-weight;
+    padding: $button-padding;
+    text-align: center;
+
+    // What lets `width` and side padding be set together without the element growing wider than its
+    // parent. There is no global border-box reset here, so a button that sets its own width has to
+    // get this from somewhere - and when it did not, the Main Campus Parking Map button overflowed a
+    // phone screen by 44px (#1078).
+    box-sizing: border-box;
+
+    border: 1px solid transparent;
+    width: $button-width;
+    border-radius: $button-radius;
+    cursor: pointer;
+    text-transform: $button-transform;
+    letter-spacing: $button-letter-spacing;
+
+    background: $button-background;
+    color: $button-foreground;
+
+    &:hover {
+      background: $button-hover;
+    }
+
+    &.secondary {
+      background: none;
+      border-color: $button-background;
+      color: darken($button-background, 7%);
+
+      &:hover {
+        background: #f5f5f5;
+        color: darken($button-background, 10%);
+      }
+    }
+
+    // Transparent, with a light border and text, for a dark or photographic background.
+    &.tertiary {
+      border-color: #eeeeee;
+      color: #eeeeee;
+      background: none;
+
+      &.active {
+        background: #eeeeee;
+        color: #500000;
+      }
+
+      &:hover {
+        @extend .active;
+      }
+
+      &.disabled {
+        opacity: 0.75 !important;
+        border-color: #eeeeee;
+        color: #eeeeee;
+
+        &:hover {
+          cursor: not-allowed;
+          background: none;
+          border-color: #eeeeee;
+        }
+      }
+    }
+  }
+}
+
+// Anchors styled as buttons need two things the class alone cannot give them. 37 anchors across this
+// repository are styled as buttons, and every one outside AggieMap was missing both.
+//
+// An anchor is inline by default, so a width, the padding and the vertical margins do not apply and
+// it overlaps whatever sits above it.
+//
+// And `a:link` has specificity (0,1,1) while `.button` has (0,1,0), so the link colour and underline
+// win over the button's own. Matching on `:link` and `:visited` ties that specificity and lets source
+// order settle it, rather than reaching for `!important`.
+//
+// Scoped to anchors, so real buttons and submit inputs are untouched.
+//
+// `$secondary` and `$tertiary` are the variant text colours; pass `null` for a variant the
+// application does not have, and no rule is emitted for it.
+@mixin button-anchors($secondary: null, $tertiary: null) {
+  a.button:link,
+  a.button:visited {
+    display: block;
+    color: $button-foreground;
+    text-decoration: none;
+  }
+
+  @if $secondary {
+    a.button.secondary:link,
+    a.button.secondary:visited {
+      color: $secondary;
+    }
+  }
+
+  @if $tertiary {
+    a.button.tertiary:link,
+    a.button.tertiary:visited {
+      color: $tertiary;
+    }
+  }
+}

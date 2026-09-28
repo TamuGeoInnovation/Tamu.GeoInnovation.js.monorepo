@@ -307,6 +307,16 @@ a {
   }
 }
 
+// The anchor handling only. 22 anchors in `libs/gisday` are styled as buttons, and every one was
+// rendering inline, in the link colour, underlined - because a class alone cannot make an anchor
+// behave like a button. See #1031.
+//
+// Only the anchors: this application's button is its own (#558ad8, capitalised, 1.5rem corners) and
+// adopting the shared box model would be a redesign, not a fix.
+$button-foreground: #fafafa;
+@import 'libs/sass/components/button';
+@include button-anchors($secondary: rgba(85, 138, 216, 1), $tertiary: $gisday-gray-primary);
+
 nav a {
   //CAUTION: Heavy use overflow: hidden; !important declarations in this selector. Nav anchors will have their own style and cannot negate [nav a].
   &::before,

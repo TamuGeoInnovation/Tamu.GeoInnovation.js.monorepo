@@ -135,6 +135,12 @@ router-outlet {
   }
 }
 
+// The anchor handling only - see #1031. This application's button is its own (#582020, a progress
+// overlay); what it lacked was any handling for anchors styled as buttons.
+$button-foreground: #ffffff;
+@import 'libs/sass/components/button';
+@include button-anchors;
+
 // The following styles are for the competitions form designer
 .container,
 .row {
