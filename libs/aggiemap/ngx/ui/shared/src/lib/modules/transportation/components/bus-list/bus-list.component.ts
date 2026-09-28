@@ -4,6 +4,7 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
 
 @Component({
@@ -17,11 +18,34 @@ export class BusListComponent implements OnInit, OnDestroy {
 
   public routes: Observable<Group<TSRoute>[]>;
 
+  /**
+   * Whether to show the routes at all.
+   *
+   * `TS/Bus_Routes` is not publicly readable on the production GIS server, so AggieMap reads bus data
+   * from the development server. That is fine on dev and wrong on production, where it would leave a
+   * live feature depending on a development server: if that server restarts or is taken down, bus
+   * routes vanish from the live site with nothing to explain why.
+   *
+   * Until the service is published, production keeps the notice it was already showing, and this is
+   * a no-op for anyone using the site. Remove this and the template's `ngIf` once the service is
+   * public - see #1036's sibling discussion and the release notes.
+   *
+   * The routes pipeline below is cold, so leaving it unsubscribed means production makes no request
+   * to the development server at all. Hiding only the markup would not have achieved that.
+   */
+  public busRoutesAvailable: Observable<boolean>;
+
   public responsive: ResponsiveSnapshot;
 
-  constructor(private busService: BusService, private responsiveService: ResponsiveService) {}
+  constructor(
+    private busService: BusService,
+    private responsiveService: ResponsiveService,
+    private testing: TestingService
+  ) {}
 
   public ngOnInit(): void {
+    this.busRoutesAvailable = this.testing.get('isTesting');
+
     // The ArcGIS Bus Routes source groups routes by `Campus` (On/Off) only; the legacy "Game Day"
     // group no longer exists.
     const catOrder = ['On Campus', 'Off Campus'];
