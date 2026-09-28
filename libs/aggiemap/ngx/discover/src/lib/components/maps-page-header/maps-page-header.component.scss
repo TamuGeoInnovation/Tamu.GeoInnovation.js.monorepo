@@ -33,27 +33,11 @@
   margin: 0;
 }
 
-// Controlled utility button — not a hero element. Kept compact so it doesn't dominate the header.
-.main-parking-button {
+// Appearance comes from the shared `.button.maroon` in the app stylesheet (#1078). Only how it sits
+// in this row belongs here: the row is a flex container and the button must not be squeezed by a long
+// page title beside it.
+.button.maroon {
   flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 3.1rem;
-  padding: 0 2rem;
-  background: #500000;
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  text-decoration: none;
-  white-space: nowrap;
-
-  &:hover,
-  &:focus {
-    background: #3d0000;
-  }
 }
 
 @media (max-width: 768px) {
@@ -62,10 +46,6 @@
     gap: 1rem;
   }
 
-  .main-parking-button {
-    width: 100%;
-    text-align: center;
-  }
 }
 
 // The full trail is a lot of chrome on a phone for something whose only tapped part is the way

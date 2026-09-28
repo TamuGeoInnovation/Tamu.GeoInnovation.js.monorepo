@@ -806,6 +806,16 @@ a.button.tertiary:visited {
   color: #eeeeee;
 }
 
+// `a.button:link` above sets `display: block`, which stretches an anchor across its container. The
+// other variants want that; this one is sized to its label and sits beside a heading, so it has to
+// win that declaration back. Matched the same way the variants above are, for the same reason -
+// tying the specificity and letting source order settle it, rather than reaching for `!important`.
+a.button.maroon:link,
+a.button.maroon:visited {
+  display: inline-flex;
+  color: #ffffff;
+}
+
 .button,
 button[type='submit'] {
   line-height: initial;
@@ -839,6 +849,40 @@ button[type='submit'] {
     }
   }
 
+  // The Main Campus Parking Map button: maroon, square-cornered and uppercase. It appears on All Maps
+  // and on every Maps page header, and until #1078 it was two near-identical copies in two component
+  // stylesheets. They drifted: one gained `box-sizing: border-box` for phones and the other did not,
+  // so the same button overflowed a phone screen by 44px on one set of pages and fitted on the other.
+  //
+  // Defined here with the other variants so there is one of it. The box model comes from `.button`
+  // above - in particular `box-sizing: border-box`, which is what stops `width: 100%` and side padding
+  // adding up to more than the screen. This codebase has no global border-box reset, so a button that
+  // sets its own width and padding has to inherit that from somewhere.
+  &.maroon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    // Sized to its label on a desktop. `.button` is `width: 100%` for form buttons that fill a
+    // column; this one sits beside a heading and would look absurd stretched across the page.
+    width: auto;
+    min-height: 3.3rem;
+    padding: 0 2.75rem;
+
+    background: #500000;
+    color: #ffffff;
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus {
+      background: #3d0000;
+    }
+  }
+
   // This is a support style, transparent button with white border and text
   // Hover should colorize the background to the same color as the border
   // and change the text color to #500000
@@ -867,6 +911,16 @@ button[type='submit'] {
         border-color: #eeeeee;
       }
     }
+  }
+}
+
+// Full width on a phone, where there is no room to sit beside anything. Safe only because `.button`
+// sets `box-sizing: border-box`: with the browser default the 2.75rem of side padding would be added
+// on top of the 100% and push the page 44px wider than the screen, which is exactly what #1078 was.
+@media (max-width: 768px) {
+  .button.maroon {
+    width: 100%;
+    padding: 0 1rem;
   }
 }
 
