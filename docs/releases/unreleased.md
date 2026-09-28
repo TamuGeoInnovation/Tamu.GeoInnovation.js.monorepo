@@ -27,6 +27,29 @@ against the live site.
 
 ---
 
+## What to test
+
+Everything below is on **dev**. Each link opens the thing it describes; the detail is further down if
+you want it.
+
+| Open this | Look for |
+| --- | --- |
+| [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | a **150th Anniversary** tile; opening it lists all five anniversary maps |
+| [All Maps, on a phone](https://dev.aggiemap.tamu.edu/all-maps) | the tiles sit **side by side** rather than one per line, and a **‹ Back** link replaces the breadcrumb |
+| [The main map](https://dev.aggiemap.tamu.edu/map) | a **150th Events** heading in the layer list, four events, all starting switched off |
+| [Bus routes](https://dev.aggiemap.tamu.edu/map/d/bus) | routes and stops list; clicking a stop opens a popup with a schedule link |
+| [Gameday Parking, micromobility](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | **Bike Dismount Zones** and **Bike Veo Geofence** draw the right things — they were showing each other's data |
+| [150th Opening Ceremony](https://dev.aggiemap.tamu.edu/events/150th-kickoff) | the legend no longer lists *Hourly Paid Parking* |
+
+Two things worth knowing before you report something as broken:
+
+- **Bus routes will not appear on production** when this ships. That is deliberate, not a bug — the
+  service they read is not published there yet. On dev they work.
+- **Dev shows sections production does not**, such as Campus Maps and kiosk maps. Those are
+  development-only and are not part of this release.
+
+---
+
 ## New
 
 ### Bus routes and stops are back — on dev only, for now
