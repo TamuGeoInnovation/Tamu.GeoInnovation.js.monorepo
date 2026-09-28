@@ -61,7 +61,10 @@ jobs:
     name: ${{ matrix.name }}
     needs: setup
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # Generous on purpose. A job that exceeds this is *cancelled*, not failed, and `if: failure()`
+    # steps do not run on cancellation - so a slow failure would produce a red job and no issue,
+    # which is the one outcome this workflow must not have.
+    timeout-minutes: 75
 
     strategy:
       # One unhealthy environment must not cancel the check on the other - knowing whether a failure

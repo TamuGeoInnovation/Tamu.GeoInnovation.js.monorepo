@@ -116,6 +116,30 @@ for (const mapPath of manifest.maps) {
     // app booted.
     await expect(page.locator(APP_ROOT)).not.toBeEmpty();
 
+    // Is the probe there at all? Installed as soon as the map service is constructed, well before any
+    // layer settles, so its absence means the deployed build predates it rather than that a map is
+    // slow.
+    //
+    // Checked separately, and with a much shorter wait, because the two failures want different
+    // answers: a missing probe is "deploy a newer build", a probe that never becomes ready is "a
+    // layer is broken". Conflating them also made an environment without the probe take the full
+    // poll on every map -- against production that was roughly 85 minutes of timeouts, which
+    // exceeded the job timeout and cancelled the run instead of failing it, so the scheduled job
+    // never reported anything.
+    const probePresent = await page
+      .waitForFunction((name) => (window as unknown as Record<string, unknown>)[name] !== undefined, PROBE_GLOBAL, {
+        timeout: 30_000,
+        polling: 500
+      })
+      .then(() => true)
+      .catch(() => false);
+
+    expect(
+      probePresent,
+      `${mapPath} has no map probe, so this build predates it. Nothing about the map's layers can be ` +
+        `checked until a newer build is deployed here.`
+    ).toBe(true);
+
     // Behaviour 2: the map itself comes up. Esri needs tens of seconds on a cold load, hence the
     // long poll rather than the default expect timeout.
     await expect
