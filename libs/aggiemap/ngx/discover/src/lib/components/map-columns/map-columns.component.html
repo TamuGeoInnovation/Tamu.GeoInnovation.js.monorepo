@@ -1,6 +1,12 @@
 <ng-container *ngIf="columns.length > 0; else noMaps">
   <div class="parking-columns">
-    <div class="parking-column" *ngFor="let column of columns">
+    <!--
+      `--titled` marks a column that is a real section rather than a layout split. On a phone
+      the columns collapse into one list and their boundaries should disappear, but a titled
+      one keeps its separation because its heading gives it meaning. Set here rather than
+      inferred in CSS so it does not depend on `:has()`.
+    -->
+    <div class="parking-column" [class.parking-column--titled]="column.heading" *ngFor="let column of columns">
       <h2 class="parking-column-heading" *ngIf="column.heading">{{ column.heading }}</h2>
 
       <ul class="map-entry-list" *ngIf="column.applications.length > 0">

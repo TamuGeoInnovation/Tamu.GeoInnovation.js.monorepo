@@ -20,6 +20,38 @@
 @media (max-width: 768px) {
   .parking-columns {
     grid-template-columns: 1fr;
-    gap: 0.5rem 2rem;
+
+    // No gap between the groups. Columns exist to use horizontal space, and a phone has none to
+    // use - so the three groups stack and the row gap falls *between* them, reading as arbitrary
+    // breaks in what looks like a single list. On the 150th Anniversary page that showed five maps
+    // as 2, then a gap, then 2, then a gap, then 1 (#1075).
+    //
+    // The item spacing comes from `.map-entry` and is already even, so removing the gap lets the
+    // groups flow together as one list rather than needing a matching value here - which would
+    // look right until the item spacing changed.
+    gap: 0;
+  }
+
+  // Removing the grid gap is not enough on its own: the global stylesheet carries
+  // `ul { margin-bottom: 1rem !important; }`, which silently defeats `.map-entry-list { margin: 0 }`
+  // and leaves 16px between the groups. `!important` here only because it is answering an
+  // `!important` - the global rule is the thing that should eventually go.
+  //
+  // Only for untitled columns. A titled one is a section and its list should still be spaced from
+  // whatever follows.
+  .parking-column:not(.parking-column--titled) .map-entry-list {
+    margin-bottom: 0 !important;
+  }
+
+  // A titled column is a section in its own right, not an artefact of the layout, so it keeps its
+  // separation on a phone. Parking Maps is the case: its headings carry meaning that the groups on
+  // the event pages do not.
+  //
+  // This value replaces the row gap removed above rather than adding to it: measured on a phone, the
+  // space above a heading is 65px before this change and 65px after, so Parking Maps and Campus
+  // Events render identically and only the untitled groups move. A larger value here read as an
+  // improvement in isolation and was a second, unasked-for change to pages that were fine.
+  .parking-column--titled:not(:first-child) {
+    margin-top: 0.5rem;
   }
 }
