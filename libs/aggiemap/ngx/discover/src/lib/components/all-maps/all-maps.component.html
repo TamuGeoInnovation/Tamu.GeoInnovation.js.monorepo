@@ -1,6 +1,15 @@
 <div class="maps-page-shell">
   <div class="breadcrumbs leader-2 trailer-1">
-      <p><a [routerLink]="lastMapPath" [queryParams]="lastMapQueryParams" [fragment]="lastMapFragment">Aggie Map</a></p>
+      <!--
+        Two different ideas, so two elements. "Aggie Map" names a destination and must lead there.
+        The back crumb is the one the phone layout turns into "< Back", and it returns to whichever
+        map the visitor came from. Only one is ever visible: the back crumb is hidden until the
+        phone breakpoint, where the rest are hidden instead.
+      -->
+      <p class="breadcrumb-back">
+        <a [routerLink]="lastMapPath" [queryParams]="lastMapQueryParams" [fragment]="lastMapFragment">Aggie Map</a>
+      </p>
+      <p><a routerLink="/map">Aggie Map</a></p>
       <p><a href="javascript:void(0)">All Maps</a></p>
     </div>
 

@@ -79,3 +79,10 @@
     margin-bottom: 0.5rem;
   }
 }
+
+// The back crumb exists only for the phone layout, where `breadcrumbs-as-back-link` turns it into
+// "< Back". On wider screens the full trail is shown and this would be a second, wrongly-labelled
+// "Aggie Map" crumb, so it is hidden here and revealed at the breakpoint.
+.breadcrumbs > p.breadcrumb-back {
+  display: none;
+}

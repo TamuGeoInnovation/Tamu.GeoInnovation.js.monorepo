@@ -2,102 +2,72 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { LastMapService } from '../../services/last-map/last-map.service';
 import { MapsPageHeaderComponent } from './maps-page-header.component';
 
-/** Host page the back link points at, standing in for whichever map the visitor came from. */
-@Component({ selector: 'tamu-gisc-test-map', template: 'map' })
-class TestMapComponent {}
+@Component({ selector: 'tamu-gisc-test-page', template: 'page' })
+class TestPageComponent {}
 
 /**
- * Regression cover for the "Aggie Map" back link.
+ * The breadcrumb crumbs are fixed destinations, and each is asserted separately because they are
+ * rendered by the same markup and styled differently by viewport.
  *
- * The link is built from the last map the visitor was on, and that URL can carry a query string --
- * a shared bus stop deep link (`/map/d/bus?busstop=4718`) being the case that exposed this. Binding
- * such a string straight to `[routerLink]` makes Angular treat the whole thing as a path and
- * percent-encode the `?` and `=` into it, producing `/map/d/bus%3Fbusstop%3D4718`, which routes
- * nowhere.
+ * This previously asserted that the first crumb pointed at the map the visitor came from. That was
+ * wrong and is what #1066 fixed: a crumb labelled "Aggie Map" names a place, so it must lead there.
+ * Returning to the previous map is the job of the "< Back" link on All Maps, where it is the only
+ * way back; on these pages the parent is All Maps.
  */
 describe('MapsPageHeaderComponent', () => {
   let fixture: ComponentFixture<MapsPageHeaderComponent>;
 
-  const backLinkHref = (): string =>
-    fixture.nativeElement.querySelector('.breadcrumbs p:first-child a').getAttribute('href');
+  const crumbHref = (index: number): string | null =>
+    fixture.nativeElement.querySelectorAll('.breadcrumbs p a')[index]?.getAttribute('href') ?? null;
 
-  const withLastMap = async (url: string): Promise<void> => {
+  const crumbText = (index: number): string =>
+    fixture.nativeElement.querySelectorAll('.breadcrumbs p a')[index]?.textContent.trim() ?? '';
+
+  beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([
-          { path: 'map/d/bus', component: TestMapComponent },
-          { path: 'map', component: TestMapComponent },
-          { path: 'all-maps', component: TestMapComponent }
+          { path: 'map', component: TestPageComponent },
+          { path: 'all-maps', component: TestPageComponent }
         ])
       ],
-      declarations: [MapsPageHeaderComponent, TestMapComponent],
-      // Stubbed rather than real: the service derives its value from router history, and this test
-      // is about how the header renders that value, not about how it is captured.
-      providers: [{ provide: LastMapService, useValue: lastMapStub(url) }]
+      declarations: [MapsPageHeaderComponent, TestPageComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapsPageHeaderComponent);
     fixture.componentInstance.title = 'Campus Events';
     fixture.detectChanges();
-  };
+  });
 
   afterEach(() => TestBed.resetTestingModule());
 
-  it('links back to a plain map url', async () => {
-    await withLastMap('/map');
-
-    expect(backLinkHref()).toBe('/map');
+  it('sends the "Aggie Map" crumb to the main map', () => {
+    expect(crumbText(0)).toBe('Aggie Map');
+    expect(crumbHref(0)).toBe('/map');
   });
 
-  it('keeps a query string as a query string', async () => {
-    await withLastMap('/map/d/bus?busstop=4718');
-
-    const href = backLinkHref();
-
-    // The defect: `%3F` in the path instead of a real query separator.
-    expect(href).not.toContain('%3F');
-    expect(href).toBe('/map/d/bus?busstop=4718');
+  it('sends the parent crumb to All Maps', () => {
+    expect(crumbText(1)).toBe('All Maps');
+    expect(crumbHref(1)).toBe('/all-maps');
   });
 
-  it('preserves a fragment', async () => {
-    await withLastMap('/map?foo=bar#section');
+  /**
+   * The phone layout hides every crumb except this one and relabels it "< Back". It is marked by
+   * class rather than by position, because position depends on how many crumbs a page has - which is
+   * how the wrong element came to be relabelled in the first place.
+   */
+  it('marks the parent crumb as the one the phone layout turns into a back link', () => {
+    const back = fixture.nativeElement.querySelectorAll('.breadcrumbs p.breadcrumb-back');
 
-    expect(backLinkHref()).toBe('/map?foo=bar#section');
+    expect(back.length).toBe(1);
+    expect(back[0].querySelector('a').getAttribute('href')).toBe('/all-maps');
+  });
+
+  it('does not depend on where the visitor came from', () => {
+    // Nothing on this header reads LastMapService any more; if that changes, the destinations above
+    // stop being fixed and this test is the one that should be revisited.
+    expect(fixture.nativeElement.querySelectorAll('.breadcrumbs p a').length).toBe(3);
   });
 });
-
-/**
- * What the header actually reads off the service.
- *
- * Declared here rather than as `Partial<LastMapService>` so the stub is checked against the surface
- * the template consumes, and does not have to be revisited every time the service grows a member
- * unrelated to this component.
- */
-interface LastMapLike {
-  url: string;
-  path: string;
-  queryParams: Record<string, string>;
-  fragment: string | undefined;
-}
-
-function lastMapStub(url: string): LastMapLike {
-  return {
-    get url(): string {
-      return url;
-    },
-    get path(): string {
-      return url.split(/[?#]/)[0];
-    },
-    get queryParams(): Record<string, string> {
-      const query = url.split('#')[0].split('?')[1];
-
-      return query ? Object.fromEntries(new URLSearchParams(query).entries()) : {};
-    },
-    get fragment(): string | undefined {
-      return url.split('#')[1];
-    }
-  };
-}
