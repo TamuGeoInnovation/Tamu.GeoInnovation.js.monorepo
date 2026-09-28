@@ -24,15 +24,24 @@ module.exports = {
   // `apps/x`), so a relative hop lands somewhere different for each one. The first attempt at this
   // wrote into `libs/test-results`.
   //
-  // `uniqueOutputName` because 88 projects write into one directory and would otherwise overwrite
-  // each other; it names each file after the run rather than the project.
+  // 88 projects write into one directory, so each file needs a distinct name. `uniqueOutputName`
+  // does that by naming the file after the *run* - `junit.xml-3b9c52a0-bb59-11f1-...` - which made
+  // the CI summary table a list of random ids with no way to tell which project each row was.
+  //
+  // Nx sets `NX_TASK_TARGET_PROJECT` for every forked task, so the file can be named after the
+  // project instead and the summary can label rows from the filename alone. The fallback keeps the
+  // old unique naming when that is missing - a run outside an Nx task, where every project would
+  // otherwise overwrite one `junit.xml`. See #1070.
   reporters: [
     'default',
     [
       'jest-junit',
       {
         outputDirectory: process.env.JEST_JUNIT_OUTPUT_DIR || 'test-results/junit',
-        uniqueOutputName: 'true',
+        ...(process.env.NX_TASK_TARGET_PROJECT
+          ? { outputName: `${process.env.NX_TASK_TARGET_PROJECT}.xml` }
+          : { uniqueOutputName: 'true' }),
+        suiteName: process.env.NX_TASK_TARGET_PROJECT || 'jest tests',
         classNameTemplate: '{classname}',
         titleTemplate: '{title}',
         ancestorSeparator: ' > ',
