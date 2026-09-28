@@ -36,6 +36,7 @@ you want it.
 | --- | --- |
 | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | a **150th Anniversary** tile; opening it lists all five anniversary maps |
 | [All Maps, on a phone](https://dev.aggiemap.tamu.edu/all-maps) | the tiles sit **side by side** rather than one per line, and a **‹ Back** link replaces the breadcrumb |
+| [150th Anniversary, on a phone](https://dev.aggiemap.tamu.edu/all-maps/150) | the five maps read as **one evenly spaced list**, not split into groups of two, two and one |
 | [The main map](https://dev.aggiemap.tamu.edu/map) | a **150th Events** heading in the layer list, four events, all starting switched off |
 | [Bus routes](https://dev.aggiemap.tamu.edu/map/d/bus) | routes and stops list; clicking a stop opens a popup with a schedule link |
 | [Gameday Parking, micromobility](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | **Bike Dismount Zones** and **Bike Veo Geofence** draw the right things — they were showing each other's data |
@@ -150,6 +151,26 @@ back to the map you came from is what it is for.
 
 **Check on dev:** open [the bus map](https://dev.aggiemap.tamu.edu/map/d/bus), click **All Maps**, then
 click **Aggie Map** — you should land on the main campus map.
+
+### Uneven gaps between maps on a phone
+
+On a phone, the map lists showed gaps in places that looked arbitrary — the 150th Anniversary page
+listed its five maps as two, a gap, two, a gap, one.
+
+The gaps were the desktop column boundaries. These pages lay their maps out in three columns; on a
+phone the columns stack, and the space between them ended up *inside* what now reads as a single
+list. Pages whose columns have headings, such as Parking Maps and Campus Events, are unaffected:
+there the break is a real section and the heading explains it. Those two pages render identically
+before and after.
+
+Found in a baseline screenshot rather than by anyone reporting it.
+
+**Check on dev:** [the 150th Anniversary page](https://dev.aggiemap.tamu.edu/all-maps/150) on a phone,
+or a narrow browser window — the five maps should read as one list.
+
+| Before | After |
+| --- | --- |
+| <img src="images/unreleased/anniversary-phone-gaps-before.png" width="300" alt="150th Anniversary on a phone, before: five maps split into groups of two, two and one by uneven gaps" /> | <img src="images/unreleased/anniversary-phone-gaps-after.png" width="300" alt="150th Anniversary on a phone, after: the five maps read as one evenly spaced list" /> |
 
 ### The Back link lost shared-link details
 
