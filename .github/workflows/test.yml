@@ -40,4 +40,64 @@ jobs:
       # uploaded nor checked against a threshold, so instrumenting every run is pure overhead.
       # Coverage is still available locally via `npm run coverage`.
       - name: Test Affected
+        env:
+          # Absolute, so every project writes into one place regardless of its depth.
+          JEST_JUNIT_OUTPUT_DIR: ${{ github.workspace }}/test-results/junit
         run: npx nx affected:test --configuration=production --exclude=${{ env.EXCLUDED_PROJECTS }} --base=${{ inputs.base }} --parallel=2 --ci --coverage=false
+
+      # Everything below runs even when the tests fail. A failing run is the one whose results are
+      # worth reading, and the default `success()` condition would skip exactly those.
+
+      - name: Summarise results
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          shopt -s nullglob
+          files=(test-results/junit/*.xml)
+
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No JUnit output was produced. Either nothing was affected, or the reporter is not running." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Parsed with grep rather than a dependency: the attributes are on the <testsuite> element
+          # and adding a parser here would be more to install and more to break than it saves.
+          total=0; failures=0; errors=0; skipped=0
+
+          {
+            echo "## Test results"
+            echo
+            echo "| Suite | Tests | Failures | Skipped |"
+            echo "| --- | ---: | ---: | ---: |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for f in "${files[@]}"; do
+            line=$(grep -o '<testsuites[^>]*' "$f" | head -1)
+            [ -z "$line" ] && line=$(grep -o '<testsuite[^>]*' "$f" | head -1)
+
+            get() { echo "$line" | grep -o "$1=\"[0-9]*\"" | head -1 | grep -o '[0-9]*' || echo 0; }
+
+            t=$(get tests); fl=$(get failures); er=$(get errors); sk=$(get skipped)
+            t=${t:-0}; fl=${fl:-0}; er=${er:-0}; sk=${sk:-0}
+
+            total=$((total + t)); failures=$((failures + fl)); errors=$((errors + er)); skipped=$((skipped + sk))
+
+            name=$(basename "$f" .xml)
+            echo "| $name | $t | $((fl + er)) | $sk |" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+          {
+            echo
+            echo "**$total tests, $((failures + errors)) failed, $skipped skipped.**"
+            echo
+            echo "_The XML is attached to this run as an artifact._"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-junit-${{ github.run_id }}
+          path: test-results/junit/
+          retention-days: 14
+          if-no-files-found: ignore
