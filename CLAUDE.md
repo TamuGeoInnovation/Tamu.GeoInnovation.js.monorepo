@@ -128,6 +128,23 @@ copy is individually right, and is obvious the moment you look at the page.
 raw URL — this repository is public, so they render and do not rot. Release-notes images go under
 `docs/releases/images/<release>/` so they travel with the notes.
 
+**Pin image links to a commit, not a branch name and not `development`.**
+`https://raw.githubusercontent.com/<owner>/<repo>/<full-sha>/<path>` renders during review and cannot
+rot. A branch name 404s once the branch is deleted — which is what happened to the screenshot in
+#1075 when #1076 merged — and a `development` link 404s until the change merges, which is exactly the
+window where a reviewer needs to see it. Check the link resolves before posting:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}" "<raw url>"
+```
+
+**Write every capture to `docs/screenshots/<slug>/` as soon as it is taken, not when it is needed.**
+A "before" image stops being obtainable the moment the fix is on disk: recovering one means stashing
+the change, waiting for a rebuild, re-capturing, then restoring — ten minutes to get back something
+that was already on screen. Save it while the state exists, even if it may never be used. The same
+goes for measurements taken alongside a capture; put the numbers in the commit message or the issue
+rather than only in a terminal that scrolls away.
+
 
 **Work from a fork. Never push branches to `TamuGeoInnovation`.** Everyone on the team, the
 maintainer included, pushes branches to their own fork and opens pull requests from
