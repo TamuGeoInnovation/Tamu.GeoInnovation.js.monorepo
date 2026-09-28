@@ -45,17 +45,32 @@ jobs:
     outputs:
       matrix: ${{ steps.pick.outputs.matrix }}
     steps:
+      # Each environment's settings live in test/smoke/aggiemap/environments.json, shared with
+      # run-local.sh, so a run from a workstation checks exactly what the scheduled run checks.
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - id: pick
         shell: bash
         run: |
-          production='{"name":"production","base_url":"https://aggiemap.tamu.edu","gtag":"G-GNS4JMVEZW","label":"prod-health","allowed_layer_failures":""}'
-          development='{"name":"development","base_url":"https://dev.aggiemap.tamu.edu","gtag":"G-71VY0QZS5P","label":"dev-health","allowed_layer_failures":"Lactation Rooms,Accessible Building Entrances,Emergency Phones,Dismount Zones,City Bike Lanes and Routes,Campus Bike Lanes,Bike Fix Stations,Bike Racks,EV Charge Stations (Main + RELLIS),Single Occupancy Restroom Locations"}'
-
           case "${{ github.event.inputs.environment || 'both' }}" in
-            production)  echo "matrix={\"include\":[$production]}" >> "$GITHUB_OUTPUT" ;;
-            development) echo "matrix={\"include\":[$development]}" >> "$GITHUB_OUTPUT" ;;
-            *)           echo "matrix={\"include\":[$production,$development]}" >> "$GITHUB_OUTPUT" ;;
+            production)  selected='["production"]' ;;
+            development) selected='["development"]' ;;
+            *)           selected='["production","development"]' ;;
           esac
+
+          matrix=$(jq -c --argjson selected "$selected" '
+            . as $envs
+            | { include: [ $selected[] as $name
+                | $envs[$name]
+                | { name: $name,
+                    base_url: .baseUrl,
+                    gtag: .gtag,
+                    label: .healthLabel,
+                    allowed_layer_failures: (.allowedLayerFailures | join(",")) } ] }
+          ' test/smoke/aggiemap/environments.json)
+
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
   smoke:
     name: ${{ matrix.name }}

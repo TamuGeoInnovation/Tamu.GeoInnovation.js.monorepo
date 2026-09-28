@@ -26,7 +26,25 @@ event.
 
 ## Running it
 
-Node runs in Docker here, so Playwright runs in a container.
+**From a workstation, use the script.** It runs the suite in the Playwright container with the same
+settings as the scheduled workflow:
+
+```bash
+test/smoke/aggiemap/run-local.sh development   # dev.aggiemap.tamu.edu
+test/smoke/aggiemap/run-local.sh production    # aggiemap.tamu.edu
+test/smoke/aggiemap/run-local.sh local         # a dev server in the aggiemap-dev container
+```
+
+Anything after the environment goes to `playwright test`, for example `--grep "gameday"`. It needs
+only Docker and bash (Git Bash on Windows). The first run downloads the Playwright image, about 2 GB.
+
+**Each environment's settings live in [`environments.json`](environments.json)**: its address, the
+Google Analytics id it should report to, and the layers it is allowed to fail. The workflow and the
+script both read that file, so a change there applies to scheduled, manual and local runs alike.
+Change expectations there, not in a command line.
+
+The commands below are what the script runs, for reference or for running without it. Node runs in
+Docker here, so Playwright runs in a container.
 
 **Against dev or production:**
 

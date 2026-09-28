@@ -70,19 +70,23 @@ is unclear, ask.
 
 | The user says | Run |
 | --- | --- |
-| "run the test suite on dev", "smoke test dev" | The smoke suite against `dev.aggiemap.tamu.edu`, by running its workflow: `gh workflow run aggiemap-smoke.yml -f environment=development` |
-| "... on prod", "... on production", "... on both" | The same workflow with `-f environment=production` or `-f environment=both` |
-| "... locally", "... against my dev server" | The smoke suite against a local dev server, as in the smoke README's local section |
+| "run the test suite on dev", "smoke test dev" | `test/smoke/aggiemap/run-local.sh development`, from this machine |
+| "... on prod", "... on production" | `test/smoke/aggiemap/run-local.sh production` |
+| "... on both" | Both of the above, one after the other |
+| "... locally", "... against my dev server" | `test/smoke/aggiemap/run-local.sh local`, with the dev server running in the `aggiemap-dev` container |
+| "... on GitHub", "run the smoke workflow" | `gh workflow run aggiemap-smoke.yml -f environment=development` (or `production`, `both`), then `gh run watch` |
 | "run the tests", "run the unit tests" (no environment) | `nx test` for the affected projects, in Docker as in CLAUDE_SETUP.md |
 
-**Prefer the workflow for dev and production.** It carries each environment's expected Google
-Analytics id and the list of layers the dev GIS server does not serve
-(`AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES`). A hand-written `docker run` drifts from that list. Then
-follow the run with `gh run watch`, and report per environment what failed and why, not only pass or
-fail.
+**Local runs are the default.** `run-local.sh` runs the suite in the Playwright container on this
+machine with the same settings as the scheduled workflow, because both read
+`test/smoke/aggiemap/environments.json`: each environment's address, expected Google Analytics id and
+the layers it is allowed to fail (the dev GIS server does not serve several). Change expectations
+there, never in a hand-written `docker run`. The first local run downloads the Playwright image,
+about 2 GB.
 
-A failing run opens an issue for that environment, manual runs included, and the issue closes itself
-when a later run passes. Say so when reporting a failure, so nobody opens a duplicate.
+Report per environment what failed and why, not only pass or fail. Only a GitHub run opens or closes a
+health issue; a failing workflow run opens one per environment, manual runs included, and it closes
+itself when a later run passes. Say so when reporting a failure, so nobody opens a duplicate.
 
 ## Before changing code
 

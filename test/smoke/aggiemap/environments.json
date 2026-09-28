@@ -1,0 +1,31 @@
+{
+  "development": {
+    "baseUrl": "https://dev.aggiemap.tamu.edu",
+    "gtag": "G-71VY0QZS5P",
+    "healthLabel": "dev-health",
+    "allowedLayerFailures": [
+      "Lactation Rooms",
+      "Accessible Building Entrances",
+      "Emergency Phones",
+      "Dismount Zones",
+      "City Bike Lanes and Routes",
+      "Campus Bike Lanes",
+      "Bike Fix Stations",
+      "Bike Racks",
+      "EV Charge Stations (Main + RELLIS)",
+      "Single Occupancy Restroom Locations"
+    ]
+  },
+  "production": {
+    "baseUrl": "https://aggiemap.tamu.edu",
+    "gtag": "G-GNS4JMVEZW",
+    "healthLabel": "prod-health",
+    "allowedLayerFailures": []
+  },
+  "local": {
+    "baseUrl": "http://127.0.0.1:4200",
+    "gtag": null,
+    "healthLabel": null,
+    "allowedLayerFailures": ["Dining Locations"]
+  }
+}
