@@ -13,7 +13,7 @@ fresh build of `development` is needed before any of this can be checked on dev.
 
 ## Summary
 
-Bus routes return to Aggie Map. The 150th Anniversary maps gain a section of their own and appear on
+Bus routes return to Aggie Map on dev, held on production until their service is published. The 150th Anniversary maps gain a section of their own and appear on
 the main map. The Maps pages work properly on a phone. Three map bugs are fixed, one of which had
 been showing incorrect data on production. Behind the scenes, every map is now checked automatically
 against the live site.
@@ -24,12 +24,18 @@ against the live site.
 
 ## New
 
-### Bus routes and stops are back
+### Bus routes and stops are back — on dev only, for now
 
 Bus routes and stops return to Aggie Map, with stop popups and shareable links to a specific stop.
 Opening a shared stop link draws the route serving it.
 
-**Check:** the bus layer on the main map, and a stop popup.
+**Held on production until the bus service is published.** The data comes from a GIS service that is
+not yet publicly readable on the production server, so on production Aggie Map keeps showing the
+"Bus routes are currently unavailable" notice it shows today. Nothing changes for anyone using the
+live site until that service is published, at which point this is switched on without a code change
+of any substance.
+
+**Check on dev:** the bus panel, the bus layer on the main map, and a stop popup.
 
 ### A 150th Anniversary section
 
@@ -117,12 +123,17 @@ notes themselves.
 `TS/Bus_Routes` is not publicly readable on the production GIS server — it returns "Token Required" —
 so Aggie Map is pointed at the development server for bus data.
 
-**This should be resolved before this release reaches production.** As it stands, a production
-feature depends on a development server: if that server is restarted, changed, or taken down for
-maintenance, bus routes disappear from the live Aggie Map and nothing in Aggie Map would explain why.
+**Decided: bus routes are held on production rather than holding the release.** Shipping as-is would
+leave a live feature depending on a development server — if that server were restarted or taken down
+for maintenance, bus routes would disappear from the live site with nothing to explain why. Everything
+else in this release is independent of bus and should not wait for one service.
 
-The fix is to make `TS/Bus_Routes` publicly readable on production, matching `TS/BikeMap`, which is
-already public. Once that is done the pin is a two-line change.
+So on production the bus panel keeps the "currently unavailable" notice it already shows, and makes no
+request to the development server at all. Dev is unaffected and shows the working feature.
+
+**What is still needed:** make `TS/Bus_Routes` publicly readable on the production GIS server,
+matching `TS/BikeMap`, which is already public. Once it is, removing the hold is a small change and
+bus routes appear on production.
 
 Worth knowing: because bus data is drawn as graphics rather than loaded as a map layer, the automated
 checks above would **not** notice if it stopped working.
