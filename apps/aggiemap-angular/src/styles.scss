@@ -779,139 +779,55 @@ body.mapping {
 //  ==========================================================================
 //   BUTTONS AND INPUT BOXES
 //  ==========================================================================
-// Anchors styled as buttons need two things the class alone does not give them.
+// The shared button. Its colours and box model are set here and the definition lives in
+// `libs/sass/components/_button.scss`, because nine applications each had their own and they had
+// drifted - including this one being the only place the anchor handling had been fixed. See #1031.
+$button-background: #0079c1;
+$button-hover: #005e95;
+@import 'libs/sass/components/button';
+@include button-base;
+@include button-anchors($secondary: darken(#0079c1, 7%), $tertiary: #eeeeee);
+
+// The Main Campus Parking Map button: maroon, square-cornered and uppercase. It appears on All Maps
+// and on every Maps page header, and until #1078 it was two near-identical copies in two component
+// stylesheets. They drifted: one gained `box-sizing: border-box` for phones and the other did not,
+// so the same button overflowed a phone screen by 44px on one set of pages and fitted on the other.
 //
-// An anchor is inline by default, so `width: 100%`, the padding and the vertical margins below all
-// fail to apply and it overlaps whatever sits above it.
-//
-// And `a:link` has specificity (0,1,1) while `.button` has (0,1,0), so the link colour and
-// underline win over the button's own. Matching on `:link` and `:visited` here ties that
-// specificity and lets source order settle it, rather than reaching for `!important`.
-//
-// Scoped to anchors, so real buttons and submit inputs are untouched.
-a.button:link,
-a.button:visited {
-  display: block;
+// The box model comes from `.button` - in particular `box-sizing: border-box`, which is what stops
+// `width: 100%` and side padding adding up to more than the screen.
+.button.maroon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  // Sized to its label on a desktop. `.button` is `width: 100%` for form buttons that fill a
+  // column; this one sits beside a heading and would look absurd stretched across the page.
+  width: auto;
+  min-height: 3.3rem;
+  padding: 0 2.75rem;
+
+  background: #500000;
   color: #ffffff;
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   text-decoration: none;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus {
+    background: #3d0000;
+  }
 }
 
-a.button.secondary:link,
-a.button.secondary:visited {
-  color: darken(#0079c1, 7%);
-}
-
-a.button.tertiary:link,
-a.button.tertiary:visited {
-  color: #eeeeee;
-}
-
-// `a.button:link` above sets `display: block`, which stretches an anchor across its container. The
-// other variants want that; this one is sized to its label and sits beside a heading, so it has to
-// win that declaration back. Matched the same way the variants above are, for the same reason -
-// tying the specificity and letting source order settle it, rather than reaching for `!important`.
+// `a.button:link` in the shared partial sets `display: block`, which stretches an anchor across its
+// container. The other variants want that; this one is sized to its label, so it has to win that
+// declaration back. Matched the way the shared variants are, tying the specificity and letting
+// source order settle it, rather than reaching for `!important`.
 a.button.maroon:link,
 a.button.maroon:visited {
   display: inline-flex;
   color: #ffffff;
-}
-
-.button,
-button[type='submit'] {
-  line-height: initial;
-  // Matches the Main Campus Parking Map button, which is the most prominent button on the site
-  // and the closest thing to a house style. Set on the class rather than per-button, so the next
-  // one does not have to decide for itself.
-  font-weight: 700;
-  padding: 0.9rem;
-  text-align: center;
-  box-sizing: border-box;
-  border: 1px solid transparent;
-  width: 100%;
-  border-radius: 99rem;
-  cursor: pointer;
-
-  background: #0079c1;
-  color: #ffffff;
-
-  &:hover {
-    background: #005e95;
-  }
-
-  &.secondary {
-    background: none;
-    border-color: #0079c1;
-    color: darken(#0079c1, 7%);
-
-    &:hover {
-      background: #f5f5f5;
-      color: darken(#0079c1, 10%);
-    }
-  }
-
-  // The Main Campus Parking Map button: maroon, square-cornered and uppercase. It appears on All Maps
-  // and on every Maps page header, and until #1078 it was two near-identical copies in two component
-  // stylesheets. They drifted: one gained `box-sizing: border-box` for phones and the other did not,
-  // so the same button overflowed a phone screen by 44px on one set of pages and fitted on the other.
-  //
-  // Defined here with the other variants so there is one of it. The box model comes from `.button`
-  // above - in particular `box-sizing: border-box`, which is what stops `width: 100%` and side padding
-  // adding up to more than the screen. This codebase has no global border-box reset, so a button that
-  // sets its own width and padding has to inherit that from somewhere.
-  &.maroon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    // Sized to its label on a desktop. `.button` is `width: 100%` for form buttons that fill a
-    // column; this one sits beside a heading and would look absurd stretched across the page.
-    width: auto;
-    min-height: 3.3rem;
-    padding: 0 2.75rem;
-
-    background: #500000;
-    color: #ffffff;
-    border-radius: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    text-decoration: none;
-    white-space: nowrap;
-
-    &:hover,
-    &:focus {
-      background: #3d0000;
-    }
-  }
-
-  // This is a support style, transparent button with white border and text
-  // Hover should colorize the background to the same color as the border
-  // and change the text color to #500000
-  &.tertiary {
-    border-color: #eeeeee;
-    color: #eeeeee;
-    background: none;
-
-    &.active {
-      background: #eeeeee;
-      color: #500000;
-    }
-
-    &:hover {
-      @extend .active;
-    }
-
-    &.disabled {
-      opacity: 0.75 !important;
-      border-color: #eeeeee;
-      color: #eeeeee;
-
-      &:hover {
-        cursor: not-allowed;
-        background: none;
-        border-color: #eeeeee;
-      }
-    }
-  }
 }
 
 // Full width on a phone, where there is no room to sit beside anything. Safe only because `.button`
