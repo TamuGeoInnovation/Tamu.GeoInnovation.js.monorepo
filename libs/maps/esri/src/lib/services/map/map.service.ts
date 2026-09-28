@@ -17,6 +17,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { EsriModuleProviderService } from '../module-provider/module-provider.service';
 import { LayerSourcesService } from '../layer-sources/layer-sources.service';
+import { registerMapProbe } from './map-probe';
 
 import esri = __esri;
 
@@ -53,7 +54,14 @@ export class EsriMapService {
     private environment: EnvironmentService,
     private http: HttpClient,
     private layerSourcesService: LayerSourcesService
-  ) {}
+  ) {
+    // Keep the automated-test probe pointed at this instance. Subscribed to the private subject
+    // rather than the public `store`, because the probe needs the `undefined` emission on destroy
+    // too, and `store` filters those out.
+    //
+    // Done here rather than at each `_store.next` call so a future emission point cannot forget it.
+    this._store.subscribe((instance) => registerMapProbe(instance, this));
+  }
 
   public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {
     // If properties specifies 2d mode, load 2d map view.
