@@ -27,6 +27,33 @@ without an account. That is the point — release notes are for the people who a
 work and the people who test it, not only for the people who wrote it. Sharing a link should
 never require the reader to sign in to anything.
 
+## The first thing after a production deployment
+
+**Update these notes before starting anything else.** Not after the next piece of work, not when
+somebody asks - first.
+
+Until it is done, `unreleased.md` is publicly claiming that a shipped release has not reached users.
+That file is the one shared outside the team, so it is the worst one to leave stale, and the gap is
+invisible to everyone except the person who knows a deployment just happened.
+
+The steps, in order:
+
+1. **Run the smoke suite against production** once the deployment is live, and record the real
+   numbers - maps checked, failures, duration. The status line should say what was observed, not
+   that it "was verified". If something failed, say which and why it is acceptable.
+2. **Rename** `unreleased.md` to `YYYY-MM-DD.md` for the date it reached production, and turn the
+   "Unreleased" banner into the status line for a release that has shipped.
+3. **Repoint the *What to test* links at production.** That is where anyone following them will now
+   look. Anything deliberately held off production keeps its dev link and says why - bus routes on
+   the 28 September release are the example.
+4. **Leave a pointer in the new `unreleased.md`.** Links to `unreleased.md` and its anchors get
+   shared while people are testing on dev, and the rename alone leaves them resolving to an empty
+   page. A line naming the dated file costs nothing and keeps those links useful.
+5. **Check the commit message for stray closing keywords.** Writing `Closes #1234` in prose, even to
+   say an issue is *not* closed by the change, will close it. This has happened once.
+
+See #1094 for why this is written down rather than remembered.
+
 ## What belongs here
 
 Notes written for the person who will _use_ or _check_ the change: what shipped, where to see
