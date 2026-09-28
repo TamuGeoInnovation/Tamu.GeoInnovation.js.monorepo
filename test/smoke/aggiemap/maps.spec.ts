@@ -134,6 +134,22 @@ for (const mapPath of manifest.maps) {
       .then(() => true)
       .catch(() => false);
 
+    // A map that is gated behind a builder never creates a map view, so the probe never installs.
+    // That is not the same as a build without the probe, and reporting it as one sends someone to
+    // redeploy an environment that is working. `/events/:eventId` redirects into the builder, and
+    // `/events/:eventId/map` redirects back until a selection has been made, so there is no URL that
+    // reaches these maps -- which is what `tools/builder-inventory` exists to solve.
+    //
+    // Skipped rather than failed: the suite cannot reach these by design, and a nightly failure for
+    // something no one intends to change is how a health label stops being read.
+    const inBuilder = page.url().includes('/builder/');
+
+    test.skip(
+      !probePresent && inBuilder,
+      `${mapPath} is gated behind a builder, so no map is created and there is nothing to check. ` +
+        `Its destinations are covered by tools/builder-inventory.`
+    );
+
     expect(
       probePresent,
       `${mapPath} has no map probe, so this build predates it. Nothing about the map's layers can be ` +
