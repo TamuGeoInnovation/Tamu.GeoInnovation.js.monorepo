@@ -115,7 +115,11 @@ export enum FOOTBALL_PARKING_LAYERS {
   // --- Micromobility ---
   FP_MICROMOBILITY_PARKING = 'football-micromobility-parking',
   FP_MICROMOBILITY_EXIT_ROUTES = 'football-micromobility-exit-routes',
-  FP_BIKE_LANES = 'football-bike-lanes',
+  // FP_BIKE_LANES is withheld with its layer - see #1036. It cannot simply be left here: this enum is
+  // exported as the map's `references`, and the event service resolves every member to a layer source,
+  // so a member without one throws "Layer source reference 'football-bike-lanes' not found" and the
+  // map fails to build its areas.
+  // FP_BIKE_LANES = 'football-bike-lanes',
   FP_BIKE_DISMOUNT_ZONES = 'football-bike-dismount-zones',
   FP_BIKE_VEO_GEOFENCE = 'football-bike-veo-geofence',
 
@@ -686,7 +690,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
     title: 'Exit Routes',
-    url: `${HOSTED_ROOT}/FBike_exit/FeatureServer/1`,
+    url: `${HOSTED_ROOT}/FBike_exit/FeatureServer/2`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.location',
@@ -694,23 +698,28 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     },
     native: hiddenNative({ renderer: routeRenderer(ROUTE_COLORS.cyclist) })
   },
-  {
-    type: 'feature',
-    id: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-    title: 'Bike Lanes',
-    url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/4`,
-    popupComponent: MarkdownPopupComponent,
-    popupData: {
-      name: 'attributes.use_',
-      description: 'attributes.location'
-    },
-    native: hiddenNative()
-  },
+  // Bike Lanes is withheld until we know where its data went. `FBike_entry` publishes no layer by
+  // that name, and the index this used to point at (4) is Bike Veo Geofence - so it was drawing the
+  // geofence under the Bike Lanes label, with no error. Showing nothing is better than confidently
+  // showing the wrong thing. Restore this once the source is identified. See #1036.
+  //
+  // {
+  //   type: 'feature',
+  //   id: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
+  //   title: 'Bike Lanes',
+  //   url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/?`,
+  //   popupComponent: MarkdownPopupComponent,
+  //   popupData: {
+  //     name: 'attributes.use_',
+  //     description: 'attributes.location'
+  //   },
+  //   native: hiddenNative()
+  // },
   {
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_DISMOUNT_ZONES,
     title: 'Bike Dismount Zones',
-    url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/2`,
+    url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/3`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
@@ -722,7 +731,7 @@ export const FootballParkingColdLayerSources: LayerSource[] = [
     type: 'feature',
     id: FOOTBALL_PARKING_LAYERS.FP_BIKE_VEO_GEOFENCE,
     title: 'Bike Veo Geofence',
-    url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/3`,
+    url: `${HOSTED_ROOT}/FBike_entry/FeatureServer/4`,
     popupComponent: MarkdownPopupComponent,
     popupData: {
       name: 'attributes.name',
@@ -897,12 +906,12 @@ export const FootballParkingOptions: SpecialEventOptions = [
           layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
         },
-        {
-          // Bike lanes only exist on the micromobility ENTRY service; the direction step hides them
-          // on the exit map.
-          layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-          conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
-        },
+        // Bike Lanes is withheld - see the note on its layer definition and #1036. The previous
+        // comment here said it exists only on the entry service; it does not exist on either.
+        // {
+        //   layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
+        //   conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
+        // },
         {
           layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_DISMOUNT_ZONES,
           conversions: [{ input: TransportType.MICROMOBILITY, propOverrides: SHOW }]
@@ -1003,11 +1012,12 @@ export const FootballParkingOptions: SpecialEventOptions = [
           layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
           conversions: [{ input: Direction.ENTRY, propOverrides: HIDE }]
         },
-        {
-          // Bike lanes are entry-only; hide them on the micromobility exit map.
-          layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
-          conversions: [{ input: Direction.EXIT, propOverrides: HIDE }]
-        }
+        // Bike Lanes is withheld - see the note on its layer definition and #1036. This hid it on the
+        // exit map; with no layer to hide, the rule has nothing to act on.
+        // {
+        //   layerId: FOOTBALL_PARKING_LAYERS.FP_BIKE_LANES,
+        //   conversions: [{ input: Direction.EXIT, propOverrides: HIDE }]
+        // }
       ]
     }
   }
