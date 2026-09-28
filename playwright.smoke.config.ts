@@ -15,7 +15,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 2,
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['list']],
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }], ['junit', { outputFile: 'test-results/junit/playwright-smoke.xml' }]]
+    : [['list']],
   timeout: 45_000,
   expect: { timeout: 15_000 },
 

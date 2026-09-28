@@ -16,7 +16,30 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'html'],
   collectCoverage: true,
   coverageReporters: ['html', 'lcov', 'text'],
-  repoters: ['default', 'jest-junit'],
+  // `reporters`, not `repoters`. It was misspelled here, so Jest silently ignored it and no report
+  // was ever produced - and `jest-junit` was not installed either. See #1070.
+  //
+  // The output directory comes from the environment rather than a path relative to `<rootDir>`:
+  // `<rootDir>` resolves per project, and projects sit at different depths (`libs/a/b/c` against
+  // `apps/x`), so a relative hop lands somewhere different for each one. The first attempt at this
+  // wrote into `libs/test-results`.
+  //
+  // `uniqueOutputName` because 88 projects write into one directory and would otherwise overwrite
+  // each other; it names each file after the run rather than the project.
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: process.env.JEST_JUNIT_OUTPUT_DIR || 'test-results/junit',
+        uniqueOutputName: 'true',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+        ancestorSeparator: ' > ',
+        addFileAttribute: 'true'
+      }
+    ]
+  ],
   verbose: true,
   /* TODO: Update to latest Jest snapshotFormat
    * By default Nx has kept the older style of Jest Snapshot formats

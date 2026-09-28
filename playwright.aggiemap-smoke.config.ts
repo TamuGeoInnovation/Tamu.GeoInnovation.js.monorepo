@@ -31,7 +31,9 @@ export default defineConfig({
   // make the GIS services the bottleneck, which shows up as timeouts that look like map failures.
   workers: process.env.CI ? 4 : 2,
 
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['list']],
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }], ['junit', { outputFile: 'test-results/junit/playwright-aggiemap-smoke.xml' }]]
+    : [['list']],
 
   // Generous: a cold Esri load on a 60-layer map takes tens of seconds, and this suite has no
   // interest in performance -- only in whether the map works at all.
