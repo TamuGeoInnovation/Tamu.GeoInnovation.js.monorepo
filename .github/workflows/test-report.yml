@@ -1,0 +1,56 @@
+name: Test Report
+
+# Publishes the JUnit results from "Quabity Assuance" as a check run, so a failure can be read in the
+# pull request itself - which test, which assertion, annotated on the line - instead of downloading a
+# zip of XML.
+#
+# This is a separate workflow on `workflow_run` rather than a step in the test job, because of how
+# fork pull requests are permissioned. Everyone here works from a fork (see CONTRIBUTING.md), and a
+# `pull_request` event from a fork gets a read-only `GITHUB_TOKEN` whatever the `permissions:` block
+# says. A reporter step inside the test job would therefore fail to create a check on exactly the
+# pull requests it is meant to serve, and work only on pushes to `development`.
+#
+# `workflow_run` runs in the context of the *base* repository, with its own token, after the other
+# workflow has finished.
+#
+# Security: this workflow has `checks: write` and runs base-repository code. It must never check out
+# or execute anything from the pull request - it only downloads an artifact and reads the XML inside
+# it. Do not add a checkout of `github.event.workflow_run.head_sha`, and do not add a build or test
+# step here. That is the whole reason the reporting is split out rather than done in the test job.
+on:
+  workflow_run:
+    workflows: ['Quabity Assuance']
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  report:
+    name: Publish test results
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Runs even when the tests failed. A failing run is the one whose results are worth reading, so
+    # gating on success would skip exactly the case this exists for. Skipped when the run was
+    # cancelled, where there is nothing to report.
+    if: github.event.workflow_run.conclusion != 'cancelled'
+
+    steps:
+      - name: Publish
+        uses: dorny/test-reporter@v2
+        with:
+          # Reads the artifact uploaded by the test job rather than checking anything out.
+          artifact: jest-junit-${{ github.event.workflow_run.id }}
+          name: Test results
+          path: '*.xml'
+          reporter: jest-junit
+          # The check reports on the tests; whether the run passes is already decided by the test
+          # job itself. Failing here as well would report one problem twice.
+          fail-on-error: false
+          # 88 projects, most with no specs. An empty report is normal and is not an error.
+          fail-on-empty: false
+          list-suites: all
+          list-tests: failed

@@ -62,12 +62,12 @@ jobs:
 
           # Parsed with grep rather than a dependency: the attributes are on the <testsuite> element
           # and adding a parser here would be more to install and more to break than it saves.
-          total=0; failures=0; errors=0; skipped=0
+          total=0; failures=0; errors=0; skipped=0; listed=0
 
           {
             echo "## Test results"
             echo
-            echo "| Suite | Tests | Failures | Skipped |"
+            echo "| Project | Tests | Failures | Skipped |"
             echo "| --- | ---: | ---: | ---: |"
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -82,13 +82,41 @@ jobs:
 
             total=$((total + t)); failures=$((failures + fl)); errors=$((errors + er)); skipped=$((skipped + sk))
 
+            # The project name, from the file jest-junit wrote for it. Falls back to the `name`
+            # attribute and then to the bare filename, so an unexpected shape degrades to something
+            # readable rather than to nothing.
             name=$(basename "$f" .xml)
-            echo "| $name | $t | $((fl + er)) | $sk |" >> "$GITHUB_STEP_SUMMARY"
+            case "$name" in
+              junit.xml-*)
+                attr=$(echo "$line" | grep -o 'name="[^"]*"' | head -1 | sed 's/name="//; s/"$//')
+                [ -n "$attr" ] && [ "$attr" != "jest tests" ] && name=$attr
+                ;;
+            esac
+
+            # 88 projects legitimately have no specs. A row of zeroes for each of them buries the
+            # handful that ran, so they are counted in the total and left out of the table.
+            if [ "$t" -eq 0 ]; then
+              continue
+            fi
+
+            listed=$((listed + 1))
+            mark=""
+            [ $((fl + er)) -gt 0 ] && mark=" :x:"
+
+            echo "| \`$name\`$mark | $t | $((fl + er)) | $sk |" >> "$GITHUB_STEP_SUMMARY"
           done
+
+          if [ "$listed" -eq 0 ]; then
+            echo "| _no project had any tests to run_ | 0 | 0 | 0 |" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
           {
             echo
-            echo "**$total tests, $((failures + errors)) failed, $skipped skipped.**"
+            echo "**$total tests, $((failures + errors)) failed, $skipped skipped**, across $listed $([ "$listed" -eq 1 ] && echo project || echo projects) with specs."
+            echo
+            if [ $((failures + errors)) -gt 0 ]; then
+              echo "See the **Test results** check for which tests failed and where."
+            fi
             echo
             echo "_The XML is attached to this run as an artifact._"
           } >> "$GITHUB_STEP_SUMMARY"
