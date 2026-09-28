@@ -49,6 +49,19 @@ export interface MapProbeSnapshot {
 
 export interface MapProbe {
   /**
+   * Whether the view is still drawing.
+   *
+   * `MapView.updating` is true while the view is fetching or painting. It is a different question
+   * from `ready`, and a later one: measured against a local build, layers settle around six seconds
+   * in and drawing finishes around twenty. Anything that captures the canvas - a screenshot, a pixel
+   * assertion - has to wait for this, or it records a half-drawn map.
+   *
+   * Observed to flip exactly twice per load and settle, across repeated runs and different maps, so
+   * it is safe to poll rather than something that thrashes.
+   */
+  readonly drawing: boolean;
+
+  /**
    * Whether a map is registered and all of its layers have finished loading, successfully or not.
    *
    * This is the signal tests poll before taking a snapshot: it means "layer state is now worth
@@ -121,6 +134,12 @@ export function registerMapProbe(instance: MapServiceInstance | undefined, owner
     target[MAP_PROBE_GLOBAL] = {
       get ready(): boolean {
         return layersSettled();
+      },
+      get drawing(): boolean {
+        // True only when a view exists and says it is updating. With no view there is nothing being
+        // drawn, which is reported as "not drawing" rather than as unknown - a caller waiting for
+        // drawing to finish should not wait forever on a page that has no map.
+        return (current?.view as unknown as { updating?: boolean })?.updating === true;
       },
       snapshot: takeSnapshot
     };
