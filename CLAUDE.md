@@ -105,6 +105,16 @@ generators are configured with `skipTests`.
 **Prove a regression test fails first.** Run it against the unmodified code and confirm it
 fails for the expected reason before applying the fix.
 
+## After a release reaches production
+
+**Updating the release notes is the first thing, before any new work.** Run the smoke suite against
+production, record the real numbers, rename `docs/releases/unreleased.md` to the date it shipped, and
+point its *What to test* links at production. Until that is done, `unreleased.md` publicly claims a
+shipped release has not reached users - and it is the file shared outside the team.
+
+The full checklist, including the two traps that have caught us, is in
+[docs/releases/README.md](docs/releases/README.md). See #1094.
+
 ## Pull requests
 
 **Open an issue first, then the pull request, and link them.** Every change — bug fix, docs, CI, a
