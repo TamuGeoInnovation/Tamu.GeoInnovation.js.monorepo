@@ -1,0 +1,150 @@
+# Unreleased
+
+> **Not in production.** This file collects what has merged since the last production release
+> and is rewritten as it goes. On the day it ships it is renamed to `YYYY-MM-DD.md` for that
+> date and this heading becomes the status line. Nothing here has reached users yet.
+
+**Production is currently running the [25 September release](2026-09-25.md).**
+
+**Not yet built anywhere.** The current dev deployment predates the last two merges, so a
+fresh build of `development` is needed before any of this can be checked on dev.
+
+---
+
+## Summary
+
+Bus routes return to Aggie Map. The 150th Anniversary maps gain a section of their own and appear on
+the main map. The Maps pages work properly on a phone. Three map bugs are fixed, one of which had
+been showing incorrect data on production. Behind the scenes, every map is now checked automatically
+against the live site.
+
+**One thing needs resolving before this goes to production** — see *Needs a decision* at the end.
+
+---
+
+## New
+
+### Bus routes and stops are back
+
+Bus routes and stops return to Aggie Map, with stop popups and shareable links to a specific stop.
+Opening a shared stop link draws the route serving it.
+
+**Check:** the bus layer on the main map, and a stop popup.
+
+### A 150th Anniversary section
+
+All Maps now has a 150th Anniversary tile leading to a page listing all five anniversary maps —
+Kickoff at Kyle, Live at the Station, Spirit of 150 Week, Opening Ceremony, and the Aggie Family
+Parade.
+
+The anniversary maps keep their existing addresses, so links already shared still work. They also
+still appear under Campus Events, so nobody has to learn a new route to find them.
+
+**Check:** `/all-maps`, then the Anniversary tile.
+
+### 150th events on the main map
+
+Three anniversary event layers are available on the main campus map, grouped under a *150th Events*
+heading and turned off by default, so they are there when wanted without changing what the map looks
+like on arrival.
+
+### The Maps pages work on a phone
+
+The Visit Maps tiles were taking roughly half a phone screen each. They now sit side by side, and the
+breadcrumb on narrow screens is replaced with a single Back link that returns to whichever map you
+came from rather than always the main map.
+
+**Check:** `/all-maps` on a phone, or a narrow browser window.
+
+### About page
+
+Kaleb Wilson added.
+
+---
+
+## Fixed
+
+### Gameday Parking was showing the wrong bike layers
+
+**This is the one worth knowing about.** On the Gameday Parking map, two micromobility layers were
+displaying the wrong data under the wrong names — "Bike Veo Geofence" was drawing dismount zones, and
+"Bike Lanes" was drawing the geofence. Two further layers failed to load entirely.
+
+The underlying services had been republished and their layer positions shifted; the map was still
+asking for the old positions. Nothing errored for the two mislabelled ones, so nothing flagged it.
+This has been wrong on production for some time.
+
+Three layers are corrected. **Bike Lanes is temporarily withheld** — see *Needs a decision*.
+
+### The 150th Opening Ceremony legend listed a class that no longer exists
+
+"Hourly Paid Parking" was removed from the data but stayed in the legend, because the map carried its
+own copy of the classes rather than reading the service. Reported by Megan.
+
+### The Back link lost shared-link details
+
+On the Maps pages, the "Aggie Map" link back to your last map dropped any detail in the address — so
+returning from a shared bus stop link went nowhere useful. It now returns you to exactly the map you
+were on.
+
+---
+
+## Behind the scenes
+
+Not user-visible, but worth recording.
+
+**Every map is now checked automatically.** A suite loads all 73 maps against the live site and
+verifies each layer actually loads and returns data. It runs daily and will open an issue only when
+something breaks. It found the Gameday Parking bug above.
+
+Eleven maps cannot be reached by address at all — they require choices in a builder first — so every
+combination of every builder was walked and recorded, producing 360 shareable links that reach each
+destination directly. That record is also a baseline: if a choice is renamed or a destination starts
+drawing different layers, it shows up as a difference.
+
+The application now carries a small read-only handle used by those tests to inspect which layers a
+map has loaded. It exposes nothing that was not already public and cannot change anything.
+
+Also: build-tagging fixes in the pipeline, and documentation for the fork-based workflow and release
+notes themselves.
+
+---
+
+## Needs a decision
+
+### Bus routes read from the development GIS server
+
+`TS/Bus_Routes` is not publicly readable on the production GIS server — it returns "Token Required" —
+so Aggie Map is pointed at the development server for bus data.
+
+**This should be resolved before this release reaches production.** As it stands, a production
+feature depends on a development server: if that server is restarted, changed, or taken down for
+maintenance, bus routes disappear from the live Aggie Map and nothing in Aggie Map would explain why.
+
+The fix is to make `TS/Bus_Routes` publicly readable on production, matching `TS/BikeMap`, which is
+already public. Once that is done the pin is a two-line change.
+
+Worth knowing: because bus data is drawn as graphics rather than loaded as a map layer, the automated
+checks above would **not** notice if it stopped working.
+
+### Where did Bike Lanes go?
+
+Neither micromobility service publishes a layer named "Bike Lanes" any more. Rather than leave it
+showing the wrong data, it is hidden for now. Both services were republished on 24 September, which
+is when the positions shifted, so the question is whether Bike Lanes was dropped then and where its
+data now lives.
+
+The map still shows Campus Bike Lanes and City Bike Lanes and Routes, so bike lane information has
+not disappeared from it.
+
+---
+
+## Fixed outside this release
+
+**Development analytics were being recorded as production traffic.** `dev.aggiemap.tamu.edu` was
+reporting into the production Google Analytics property, so development activity was mixed into the
+production numbers and the development property recorded nothing at all. This was a pipeline
+configuration issue, fixed and verified — development now reports to its own property. No code change
+was involved, so it is already in effect.
+
+GIS Day has the same problem and has not been fixed.

@@ -4,10 +4,23 @@ One file per production release, named for the date it reached production: `YYYY
 If a second release reaches production on the same day, add a suffix: `YYYY-MM-DD-2.md`,
 then `-3`, and so on. The first file keeps its name, so links already shared still work.
 
-A file is added when the release reaches production, not before. While a release is on dev
-waiting for approval, its draft lives outside the repository (a shared review document works
-well), because every file here reads as a record of something that shipped. When it is
-deployed, the draft becomes the file here, named for that day, with its status line updated.
+A **dated** file is added when the release reaches production, not before, because a file named
+for a date reads as a record of something that shipped.
+
+Work in progress lives in [`unreleased.md`](unreleased.md), which collects what has merged since
+the last production release. It is rewritten as things merge rather than assembled from memory at
+the end — the last release was reconstructed afterwards and four changes were nearly missed,
+including a data-correctness fix that mattered more than the features around it.
+
+On the day it ships, `unreleased.md` is renamed to `YYYY-MM-DD.md` for that date and its
+"Unreleased" heading becomes the status line. A fresh `unreleased.md` starts empty.
+
+That rename is the whole mechanism. It keeps one place to look for what is coming, and keeps the
+dated files meaning exactly what they have always meant.
+
+**Keep `unreleased.md` honest about environments.** It describes things that have not reached
+users, so it is the file most likely to make a claim a reader cannot verify. If something is on
+dev, say so; if it has not been built anywhere yet, say that too.
 
 This repository is public, so every file here has a permanent URL that anyone can read
 without an account. That is the point — release notes are for the people who asked for the
