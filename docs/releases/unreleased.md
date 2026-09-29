@@ -14,6 +14,26 @@ shipped; this one only ever describes what has not shipped yet.
 
 ## Summary
 
+### 150 Cake & Ice Cream, corrected
+
+The cake and ice cream event was published as **Spirit of 150 Week**, the week it sits in, and the
+date beside it read a range rather than the day it happens. It is one event, on **5 October**.
+
+It now reads **150 Cake & Ice Cream - Oct. 5, 2026** in the 150th Events group on the main map, and
+carries that name on its own map, on Campus Events and on the 150th Anniversary page.
+
+**Its address has not changed.** Any link already shared still works.
+
+| Before (production) | After (dev) |
+| --- | --- |
+| <img src="../screenshots/1142-cake-and-ice-cream/before-prod.png" width="340" alt="150th Events on production: Opening Ceremony, Kickoff at Kyle and Spirit of 150 Week - Oct. 2-8, 2026" /> | <img src="../screenshots/1142-cake-and-ice-cream/after-local.png" width="340" alt="150th Events after: Opening Ceremony, Kickoff at Kyle and 150 Cake and Ice Cream - Oct. 5, 2026" /> |
+
+**Check on dev:** [the main map](https://dev.aggiemap.tamu.edu/map), 150th Events in the layer list;
+and [the event map](https://dev.aggiemap.tamu.edu/events/spirit-of-150-week), whose address keeps the
+old name on purpose. Searching *cake*, *ice cream* or *spirit* should all find it.
+
+Corrected by Tricia Speed.
+
 _Nothing has merged since the second 28 September release._
 
 ---

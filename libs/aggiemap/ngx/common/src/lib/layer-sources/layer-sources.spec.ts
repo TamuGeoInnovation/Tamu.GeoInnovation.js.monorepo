@@ -193,7 +193,7 @@ describe('LayerSources', () => {
       EVENT_150_SPIRIT_WEEK: {
         id: 'event-150-spirit-week',
         layerId: 'event-150-spirit-week',
-        name: 'Spirit of 150 Week',
+        name: '150 Cake & Ice Cream',
         url: 'spirit-of-150-week-url'
       }
     };
@@ -256,7 +256,7 @@ describe('LayerSources', () => {
     expect([...children].reverse().map((layer) => layer.title)).toEqual([
       'Opening Ceremony',
       'Kickoff at Kyle',
-      'Spirit of 150 Week'
+      '150 Cake & Ice Cream'
     ]);
     expect([...(openingCeremony?.sources ?? [])].reverse().map((layer) => layer.title)).toEqual([
       'Event Locations',
@@ -273,7 +273,7 @@ describe('LayerSources', () => {
     expect([...(eventsGroup?.sources ?? [])].reverse().map((layer) => [layer.title, layer.listNote])).toEqual([
       ['Opening Ceremony', 'Oct. 2, 2026'],
       ['Kickoff at Kyle', 'Oct. 2, 2026'],
-      ['Spirit of 150 Week', 'Oct. 2-8, 2026']
+      ['150 Cake & Ice Cream', 'Oct. 5, 2026']
     ]);
   });
 
