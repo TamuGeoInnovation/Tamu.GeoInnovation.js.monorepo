@@ -92,9 +92,9 @@ export const SpiritOf150WeekLayerSources: LayerSource[] = [
 
 export const SpiritOf150WeekConfiguration: EventConfiguration = {
   id: 'spirit-of-150-week',
-  name: 'Spirit of 150 Week',
-  applicationName: 'Spirit of 150 Week Map',
-  shortApplicationName: 'Spirit of 150 Week',
+  name: '150 Cake & Ice Cream',
+  applicationName: '150 Cake & Ice Cream Map',
+  shortApplicationName: '150 Cake & Ice Cream',
   eventDates: ['2026-10-05'],
   zoom: 15,
   mapCenter: [-96.34683, 30.61039]
@@ -111,13 +111,15 @@ export const SpiritOf150WeekTs: AggiemapCustomMapConfiguration = {
   discover: {
     id: SpiritOf150WeekConfiguration.id,
     name: SpiritOf150WeekConfiguration.name,
-    description: 'Cake and ice cream locations across campus for Spirit of 150 Week.',
+    description: 'Cake and ice cream locations across campus on 5 October.',
     source: 'internal',
     type: 'event',
     // Listed on Campus Events and on the 150th Anniversary page. Both, not either:
     // these are campus events that also belong to the anniversary set.
     mapTypes: ['campus', '150'],
     columnKey: 'fall',
-    keywords: ['spirit', '150', 'week', 'cake', 'ice cream', 'celebration']
+    // 'spirit' and 'week' are kept deliberately: the event was announced under the old name,
+    // so anyone searching for it that way should still find it (#1142).
+    keywords: ['cake', 'ice cream', '150', 'spirit', 'week', 'celebration']
   }
 };

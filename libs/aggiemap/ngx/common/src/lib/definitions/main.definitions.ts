@@ -212,7 +212,9 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
     EVENT_150_SPIRIT_WEEK: {
       id: 'event-150-spirit-week',
       layerId: MAIN_MAP_LAYERS.EVENT_150_SPIRIT_WEEK,
-      name: 'Spirit of 150 Week',
+      // The event is one day of cake and ice cream, not the week around it. The id and layer key
+      // keep the old name so shared links and the layer's own key are undisturbed (#1142).
+      name: '150 Cake & Ice Cream',
       url: `${connections.spiritOf150WeekUrl}/0`,
       popupComponent: Popups.MarkdownPopupComponent
     },
@@ -763,12 +765,12 @@ export function MainMapLayerSources(
     //
     // Esri's layer list shows a group's children in reverse draw order (the last source is listed
     // first), so these sources are written in reverse of the order they appear in the list:
-    // Opening Ceremony, Kickoff at Kyle, Spirit of 150 Week.
+    // Opening Ceremony, Kickoff at Kyle, 150 Cake & Ice Cream.
     //
     // Live at the Station is not a 150th event, so it is not listed here (#1125). Its own map is
     // unchanged.
     //
-    // These draw the same services as the standalone event maps. Spirit of 150 Week uses the
+    // These draw the same services as the standalone event maps. 150 Cake & Ice Cream uses the
     // service's own symbology rather than the cake marker on its own map: that marker is an inline
     // image in the events library, which cannot be imported here without a dependency cycle.
     {
@@ -783,7 +785,7 @@ export function MainMapLayerSources(
           type: 'feature',
           id: definitions.EVENT_150_SPIRIT_WEEK.layerId,
           title: definitions.EVENT_150_SPIRIT_WEEK.name,
-          listNote: 'Oct. 2-8, 2026',
+          listNote: 'Oct. 5, 2026',
           url: definitions.EVENT_150_SPIRIT_WEEK.url,
           popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
           listMode: 'show',
