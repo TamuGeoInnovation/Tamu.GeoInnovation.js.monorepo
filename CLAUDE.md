@@ -118,6 +118,12 @@ on dev, open the pull request that renames `unreleased.md` to the date it will s
 run's numbers, and points *What to test* at production. When production is up and looks right, merge
 it. Nothing is captured, rebuilt or re-run for the notes after production.
 
+**Tag the commit each build comes from.** `scripts/tag-build.sh dev` when a build reaches dev,
+`scripts/tag-build.sh prod` when it is promoted, then `git push origin <tag>`. One build serves both
+environments, so the same commit carries both tags. `prod` refuses a commit with no `dev-*` tag,
+which is what makes "we shipped what we tested" a fact rather than an assumption. Tags go to
+`origin`. See #1145.
+
 **Link every issue and pull request, with full URLs, and end each release file with a table of all
 of them.** GitHub only auto-links `#1122` inside issue and pull request comments — in a file under
 `docs/releases/` it is inert text, so a bare number leads nowhere for the reader these notes exist
