@@ -1,96 +1,20 @@
 # Unreleased
 
-> **Not on production.** This file collects what has merged since the last production release. The
-> two 150th Events changes below merged tonight, 28 September, and are being built for dev. They will be released to
-> production once the full test suite passes on dev. Until then, the *What to test* links point at dev.
+> **Nothing here yet.** This file collects what has merged since the last production release. It is
+> empty because the most recent release has just gone out.
 
-**Production is currently running the [28 September release](2026-09-28.md).**
+**Production is currently running the [second 28 September release](2026-09-28-2.md).**
 
-If you followed a link to this page expecting the notes for the 28 September release, including its
-*What to test* checklist, they are in [28 September](2026-09-28.md). That file is the permanent
-record of what shipped; this one only ever describes what has not shipped yet.
+If you followed a link to this page expecting the notes for the release being tested, including the
+*What to test* checklist and the before and after screenshots, they are in
+[28 September, second release](2026-09-28-2.md) now. That file is the permanent record of what
+shipped; this one only ever describes what has not shipped yet.
 
 ---
 
 ## Summary
 
-The **150th Events** list on the main map is corrected. Live at the Station comes out of the group,
-because it is a concert rather than part of the anniversary celebration. Each remaining event now
-shows its date next to its name. The DC / Bush School campus map works again after its services
-moved. Behind the scenes, the automated checks now cover search, map popups, and every GIS service
-the maps use.
-
----
-
-## What to test
-
-**On dev**, once tonight's build is deployed. Each link opens the thing it describes on
-[dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu).
-
-| Open this | Look for |
-| --- | --- |
-| [The main map](https://dev.aggiemap.tamu.edu/map) | the layer list's **150th Events** heading lists **three** events, with no Live at the Station |
-| [The main map](https://dev.aggiemap.tamu.edu/map) | each event shows its date after its name: **Opening Ceremony - Oct. 2, 2026**, **Kickoff at Kyle - Oct. 2, 2026**, **Spirit of 150 Week - Oct. 2-8, 2026** |
-| [Live at the Station](https://dev.aggiemap.tamu.edu/events/live-at-the-station) | its own map is unchanged, and it is still listed on All Maps |
-| [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school) | the map draws, and searching for "Bush" finds **Bush School - DC (F002)** |
-
----
-
-## Changed
-
-### Live at the Station is no longer listed under 150th Events
-
-The main map's layer list showed Live at the Station under the **150th Events** heading. It is a
-concert and not part of the 150th anniversary celebration. Megan McMullen caught this, and Tricia
-Speed confirmed it against the university's event page. The heading now lists Opening Ceremony,
-Kickoff at Kyle and Spirit of 150 Week.
-
-Only the main map's list changes. The Live at the Station map itself, and where it is listed on All
-Maps, stay as they were. (#1125)
-
-### Each 150th event shows its date
-
-Tricia asked for each event's date in the layer list, next to its name, rather than in the layers
-themselves:
-
-| Event | Date |
-| --- | --- |
-| Opening Ceremony | Oct. 2, 2026 |
-| Kickoff at Kyle | Oct. 2, 2026 |
-| Spirit of 150 Week | Oct. 2-8, 2026 |
-
-The date follows the name after a dash, in the list's usual grey. Any other layer can show a note
-the same way later with only a definition change, no code change. (#1126)
-
-## Fixed
-
-### The DC / Bush School map stopped loading
-
-Its services were republished at a new address, and the old one began asking for a sign-in, so the
-map drew nothing. It now reads the new services. Search now finds buildings by name, abbreviation or
-number. (#1110)
-
-Campus maps are a development-only section, so this is visible on dev; production does not list
-them.
-
-One thing is still for the GIS team: a building label on the new basemap reads
-"F002 CONCAT NEWLINE CONCAT TAMUDC" instead of two lines. That comes from the service's label style,
-not from Aggie Map, and is noted on #1110.
-
----
-
-## Behind the scenes
-
-Not user-visible, but worth recording.
-
-- **Search and popups are tested.** The automated checks now type a search, pick the result and
-  confirm its details open. They also click a map feature and confirm its popup shows data. (#1116,
-  #1117)
-- **Maps behind a builder are tested** rather than skipped. (#1106)
-- **Local test runs use `localhost`,** so they check the same maps dev shows. (#1114)
-- **Every GIS service the maps use is checked directly**, so a service that is moved, stopped or
-  made private is named outright rather than surfacing as a map that does not load (#1118). Its first run found four stopped services for past events (#1098), a missing bike racks
-  service on production (#1122) and two unused entries (#1123).
+_Nothing has merged since the second 28 September release._
 
 ---
 
@@ -117,12 +41,8 @@ since git keeps every version. Where they should live is #1107.
 
 ### Open pull requests
 
-None from today. #1106 (builder-map tests), #1124 (GIS services check), #1127 and #1128 (150th
-Events) have all merged.
-
-**Next:** once the dev build is deployed, run the full suite on dev
-(`test/smoke/aggiemap/run-local.sh development`). If it passes, release to production, then follow
-[the checklist](README.md#the-first-thing-after-a-production-deployment).
+None from 28 September. Everything merged that day shipped in the
+[second 28 September release](2026-09-28-2.md).
 
 ### The decision waiting to be made
 
