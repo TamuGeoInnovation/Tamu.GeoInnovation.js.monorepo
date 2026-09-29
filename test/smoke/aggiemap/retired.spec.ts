@@ -6,9 +6,13 @@ import { retiredMaps } from './retired';
  * Retired maps are offered nowhere (#1098).
  *
  * An event that is over is marked `status: 'retired'`: its definition stays, so a link already
- * shared still resolves, but no list and no search offers it, on any environment. Dev is the case
- * that matters. There, search and the development-only All Events list also show hidden maps, and
- * `visible: false` alone kept retired maps in both.
+ * shared still resolves, but search and the listing pages do not offer it, on any environment. Dev is
+ * the case that matters, since its search also shows hidden maps and `visible: false` alone kept
+ * retired maps in it.
+ *
+ * The one exception is dev's All Events list, which keeps every event, working or not: it is where
+ * the team finds a map that no longer works. That is checked too, so the exception cannot quietly
+ * become "retired maps vanish from dev".
  *
  * The unit test on DiscoveryService covers the list every page is built from. This covers what a
  * visitor actually sees, so a page that someday builds its own list is caught too.
@@ -28,6 +32,9 @@ const LISTING_PAGES = [
 
 /** A current map every environment lists, so an empty search cannot pass by finding nothing at all. */
 const CURRENT = 'Kickoff at Kyle';
+
+/** Dev's list of every event, retired ones included. Links inside it are not "offering" a map. */
+const ALL_EVENTS = '.all-events-section';
 
 /** Map routes are /<section>/<id>, optionally followed by more path or a query string. */
 function linksTo(href: string, id: string): boolean {
@@ -92,7 +99,10 @@ test.describe('retired maps', () => {
         timeout: 60_000
       });
 
-      const hrefs = await mapLinks.evaluateAll((anchors) => anchors.map((a) => a.getAttribute('href') ?? ''));
+      const hrefs = await mapLinks.evaluateAll(
+        (anchors, allEvents) => anchors.filter((a) => !a.closest(allEvents)).map((a) => a.getAttribute('href') ?? ''),
+        ALL_EVENTS
+      );
       const offending = RETIRED.filter((map) => hrefs.some((href) => linksTo(href, map.id))).map(
         (map) => `${map.name} (${map.file})`
       );
@@ -100,4 +110,26 @@ test.describe('retired maps', () => {
       expect(offending, `${listing} links retired maps`).toEqual([]);
     });
   }
+
+  test("dev's All Events list still lists every retired map", async ({ page }) => {
+    await page.goto('/all-maps');
+
+    const section = page.locator(ALL_EVENTS);
+    const links = section.locator('a[href]');
+    const present = await links
+      .first()
+      .waitFor({ timeout: 30_000 })
+      .then(() => true)
+      .catch(() => false);
+
+    // All Events is development-only, so production has nothing to check.
+    test.skip(!present, 'no All Events list on this environment (it is development-only)');
+
+    const hrefs = await links.evaluateAll((anchors) => anchors.map((a) => a.getAttribute('href') ?? ''));
+    const missing = RETIRED.filter((map) => !hrefs.some((href) => linksTo(href, map.id))).map(
+      (map) => `${map.name} (${map.file})`
+    );
+
+    expect(missing, 'All Events should keep retired maps; it is where the team finds them').toEqual([]);
+  });
 });

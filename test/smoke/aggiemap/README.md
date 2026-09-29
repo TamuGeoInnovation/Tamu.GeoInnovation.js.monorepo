@@ -25,9 +25,10 @@ expected for that environment, and that a builder selection still produces an ap
 event.
 
 `retired.spec.ts` checks that no retired map (`status: 'retired'` in its definition, #1098) is
-offered: searching All Maps for each one finds nothing, and no listing page links it. Retired maps are
-read from the definitions as text by `retired.ts`, which `services.spec.ts` also uses to skip services
-that only retired maps use.
+offered: searching All Maps for each one finds nothing, and no listing page links it. The exception is
+dev's All Events list, which keeps every event, working or not; the spec checks that it still lists
+them. Retired maps are read from the definitions as text by `retired.ts`. The crawl uses it to leave
+retired maps out of the maps it tests, and `services.spec.ts` to skip services only retired maps use.
 
 ## Running it
 

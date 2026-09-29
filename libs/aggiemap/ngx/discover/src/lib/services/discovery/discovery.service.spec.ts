@@ -64,19 +64,28 @@ describe('DiscoveryService', () => {
     expect(aggielandSaturday?.visible).toBe(true);
   });
 
-  it('does not list retired maps anywhere, including the development-only lists', () => {
+  describe('retired maps', () => {
     // Events that are over are marked `status: 'retired'` (#1098). Their definitions stay so old
-    // links still resolve, but no list offers them, on any environment: `visible: false` only hid
-    // them from production, so dev kept listing and testing them every night.
+    // links still resolve. `visible: false` only hid them from production, so dev kept offering them
+    // in search and testing them every night.
     const retired = [
       'savannah-bananas-parking',
       'softball-regionals-2025',
       'troubadour-festival-2025',
       'argentina-vs-honduras-2026'
     ];
-    const listed = service.getAllDiscoverApplications().map((app) => app.id);
 
-    expect(listed.filter((id) => retired.includes(id))).toEqual([]);
+    it('are left out of search and the listing pages', () => {
+      const listed = service.getAllDiscoverApplications().map((app) => app.id);
+
+      expect(listed.filter((id) => retired.includes(id))).toEqual([]);
+    });
+
+    it('are kept when asked for, as the development-only All Events list does', () => {
+      const listed = service.getInternalDiscoverApplications({ includeRetired: true }).map((app) => app.id);
+
+      expect(retired.filter((id) => listed.includes(id))).toEqual(retired);
+    });
   });
 
   it('filters hidden maps from the public discover lists', () => {

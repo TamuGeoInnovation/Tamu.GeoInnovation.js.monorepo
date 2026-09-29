@@ -20,14 +20,18 @@ export const FEATURED_PARKING_ID = 'ts-main-parking';
 })
 export class DiscoveryService {
   /**
-   * Every listable map. Kiosk maps have their own listing, and retired maps are listed nowhere: their
-   * events are over, so no list on any environment offers them (#1098). Every discover list is built
-   * from this, including the development-only ones.
+   * Every listable map. Kiosk maps have their own listing.
+   *
+   * Retired maps are left out unless `includeRetired` is set: their events are over, so search and
+   * the listing pages do not offer them on any environment (#1098). The development-only All Events
+   * list is the one exception, because it is where the team keeps every event, working or not.
    */
-  public getInternalDiscoverApplications(): InternalDiscoverApplication[] {
+  public getInternalDiscoverApplications(options: { includeRetired?: boolean } = {}): InternalDiscoverApplication[] {
     return EventDefinitions.filter(
       (event): event is typeof event & { configuration: NonNullable<typeof event.configuration> } =>
-        event.configuration !== null && event.discover?.type !== 'kiosk' && event.discover?.status !== 'retired'
+        event.configuration !== null &&
+        event.discover?.type !== 'kiosk' &&
+        (options.includeRetired === true || event.discover?.status !== 'retired')
     ).map((event) => ({
       id: event.discover?.id || event.configuration.id,
       source: 'internal' as const,

@@ -2,6 +2,8 @@ import { chromium } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { retiredMaps } from './retired';
+
 /**
  * Discovers every map the target environment lists, and writes it to a manifest the spec reads at
  * collection time so one test can be generated per map.
@@ -17,7 +19,7 @@ import * as path from 'path';
  *
  * Crawling has a real advantage besides. The two environments legitimately list different maps --
  * production does not show the kiosk or satellite-campus sections, a map can be marked
- * `visible: false`, and a retired map (`status: 'retired'`, #1098) is listed nowhere -- so a crawl
+ * `visible: false`, and a retired map (`status: 'retired'`, #1098) is filtered out below -- so a crawl
  * gives each environment the right set automatically, where a
  * committed list would need per-environment exceptions.
  *
@@ -109,15 +111,24 @@ export default async function globalSetup(): Promise<void> {
       }
     }
 
+    // Dev's All Events list keeps retired maps on purpose, so the crawl finds them there. They are
+    // over and their services are often stopped, so they are not tested (#1098).
+    const retiredIds = retiredMaps().map((map) => map.id);
+    const isRetired = (href: string) => retiredIds.includes(href.split(/[/?#]/)[2]);
+    const skipped = [...maps].filter(isRetired);
+
     const manifest: MapManifest = {
       baseUrl,
       discoveredAt: new Date().toISOString(),
-      maps: [...maps].sort()
+      maps: [...maps].filter((href) => !isRetired(href)).sort()
     };
 
     fs.writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
 
-    console.log(`[smoke] discovered ${manifest.maps.length} maps on ${baseUrl}`);
+    console.log(
+      `[smoke] discovered ${manifest.maps.length} maps on ${baseUrl}` +
+        (skipped.length > 0 ? `; skipped ${skipped.length} retired: ${skipped.join(', ')}` : '')
+    );
   } finally {
     await browser.close();
   }
