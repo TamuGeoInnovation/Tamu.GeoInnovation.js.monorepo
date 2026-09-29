@@ -28,6 +28,17 @@ Closes #
   Delete this section if the change has no visible result.
 -->
 
+## Release notes
+
+<!--
+  Anything with a user-visible result adds its entry to docs/releases/unreleased.md in this pull
+  request, with the before/after images above linked from docs/screenshots/<slug>/. Nobody writes
+  the notes later. See docs/releases/README.md.
+-->
+
+- [ ] Entry added to `docs/releases/unreleased.md`, with screenshots
+- [ ] Not user-visible (tests, CI, internal docs), so no entry needed
+
 ## How it was verified
 
 <!--

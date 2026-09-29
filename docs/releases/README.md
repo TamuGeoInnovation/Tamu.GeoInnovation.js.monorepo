@@ -4,13 +4,32 @@ One file per production release, named for the date it reached production: `YYYY
 If a second release reaches production on the same day, add a suffix: `YYYY-MM-DD-2.md`,
 then `-3`, and so on. The first file keeps its name, so links already shared still work.
 
-A **dated** file is added when the release reaches production, not before, because a file named
-for a date reads as a record of something that shipped.
+A **dated** file lands on `development` when the release reaches production, not before, because a
+file named for a date reads as a record of something that shipped. It is *written* before, though -
+see [Cutting a release](#cutting-a-release).
 
 Work in progress lives in [`unreleased.md`](unreleased.md), which collects what has merged since
-the last production release. It is rewritten as things merge rather than assembled from memory at
-the end — the last release was reconstructed afterwards and four changes were nearly missed,
-including a data-correctness fix that mattered more than the features around it.
+the last production release. It is not assembled from memory at the end — one release was
+reconstructed afterwards and four changes were nearly missed, including a data-correctness fix that
+mattered more than the features around it.
+
+**Each pull request with a user-visible result adds its own entry to `unreleased.md`, in that pull
+request**, with the before/after screenshots it already has. When it merges, the notes are already
+complete; nobody writes them later or goes back for images. Link the images where the pull request
+committed them, relative to this folder:
+
+```html
+<img src="../screenshots/1125-live-at-the-station/before-prod-desktop.png" width="340" alt="..." />
+```
+
+One capture then serves the issue, the pull request and the notes, and nothing has to be named for a
+release date that is not known yet. The link keeps working when the file is renamed, since both
+names are in this folder. A "before" from production and an "after" from localhost or dev is fine:
+label each with where it was taken. The "after" is the build that goes to production, so there is
+nothing to re-capture at release time.
+
+A pull request with no user-visible result, such as tests, CI or internal docs, adds a line under
+*Behind the scenes* if it is worth recording, or nothing.
 
 On the day it ships, `unreleased.md` is renamed to `YYYY-MM-DD.md` for that date and its
 "Unreleased" heading becomes the status line. A fresh `unreleased.md` starts empty.
@@ -27,32 +46,37 @@ without an account. That is the point — release notes are for the people who a
 work and the people who test it, not only for the people who wrote it. Sharing a link should
 never require the reader to sign in to anything.
 
-## The first thing after a production deployment
+## Cutting a release
 
-**Update these notes before starting anything else.** Not after the next piece of work, not when
-somebody asks - first.
+**Prepare the release pull request before deploying to production, and merge it once production is
+up.** Merging is the only release-notes step after production. Writing the notes after the deploy
+made them the first job of every release night, and the file most likely to be shared outside the
+team stayed wrong until someone got to it (#1094, #1132).
 
-Until it is done, `unreleased.md` is publicly claiming that a shipped release has not reached users.
-That file is the one shared outside the team, so it is the worst one to leave stale, and the gap is
-invisible to everyone except the person who knows a deployment just happened.
+Once the full smoke suite passes on dev, open one pull request that:
 
-The steps, in order:
-
-1. **Run the smoke suite against production** once the deployment is live, and record the real
-   numbers - maps checked, failures, duration. The status line should say what was observed, not
-   that it "was verified". If something failed, say which and why it is acceptable.
-2. **Rename** `unreleased.md` to `YYYY-MM-DD.md` for the date it reached production, and turn the
-   "Unreleased" banner into the status line for a release that has shipped.
-3. **Repoint the *What to test* links at production.** That is where anyone following them will now
-   look. Anything deliberately held off production keeps its dev link and says why - bus routes on
-   the 28 September release are the example.
-4. **Leave a pointer in the new `unreleased.md`.** Links to `unreleased.md` and its anchors get
-   shared while people are testing on dev, and the rename alone leaves them resolving to an empty
-   page. A line naming the dated file costs nothing and keeps those links useful.
-5. **Check the commit message for stray closing keywords.** Writing `Closes #1234` in prose, even to
+1. **Renames** `unreleased.md` to `YYYY-MM-DD.md` for the day it will ship, and turns the
+   "Unreleased" banner into the status line of a release that has shipped. If the deploy slips to
+   another day, rename it before merging.
+2. **Records the dev run's numbers**: checks passed, failed and skipped, and how long the run took.
+   That run is what cleared the release, so it is the number worth writing down. The status line
+   says so, and links to the
+   [smoke workflow](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/workflows/aggiemap-smoke.yml),
+   which checks production every day and opens a health issue if something breaks. Production
+   numbers are not recorded by hand.
+3. **Points the *What to test* links at production.** Anything deliberately not on production keeps
+   its dev link and says why. Bus routes on the first 28 September release, and campus maps, are the
+   examples.
+4. **Leaves a pointer in a fresh `unreleased.md`.** Links to `unreleased.md` get shared while people
+   are testing on dev, and the rename alone leaves them resolving to an empty page. A line naming the
+   dated file keeps them useful. Carry forward anything else the file holds that is not part of the
+   release, such as a work-in-flight section.
+5. **Checks the commit message for stray closing keywords.** Writing `Closes #1234` in prose, even to
    say an issue is *not* closed by the change, will close it. This has happened once.
 
-See #1094 for why this is written down rather than remembered.
+Then deploy. When production is up, open it and check the thing the release is about, then merge the
+pull request. If production shows a problem, do not merge: fix it, or change the status line to say
+what did not ship.
 
 ## What belongs here
 

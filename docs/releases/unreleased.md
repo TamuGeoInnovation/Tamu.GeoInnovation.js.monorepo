@@ -18,7 +18,7 @@ _Nothing has merged since the second 28 September release._
 
 ---
 
-## Work in flight — 28 September, end of day
+## Work in flight — 28 September, after the second release
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty

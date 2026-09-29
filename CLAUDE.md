@@ -105,15 +105,21 @@ generators are configured with `skipTests`.
 **Prove a regression test fails first.** Run it against the unmodified code and confirm it
 fails for the expected reason before applying the fix.
 
-## After a release reaches production
+## Release notes
 
-**Updating the release notes is the first thing, before any new work.** Run the smoke suite against
-production, record the real numbers, rename `docs/releases/unreleased.md` to the date it shipped, and
-point its *What to test* links at production. Until that is done, `unreleased.md` publicly claims a
-shipped release has not reached users - and it is the file shared outside the team.
+**A pull request with a user-visible result adds its own entry to `docs/releases/unreleased.md`, in
+the same pull request**, with its before/after screenshots linked from `docs/screenshots/<slug>/`
+(`../screenshots/<slug>/<file>.png` from the notes). Never write the notes afterwards in a separate
+pull request: on 28 September that left the notes without images when the pull request merged, and
+meant going back for them after the release reached production (#1132).
 
-The full checklist, including the two traps that have caught us, is in
-[docs/releases/README.md](docs/releases/README.md). See #1094.
+**Prepare the release pull request before production; merge it after.** Once the full suite passes
+on dev, open the pull request that renames `unreleased.md` to the date it will ship, records the dev
+run's numbers, and points *What to test* at production. When production is up and looks right, merge
+it. Nothing is captured, rebuilt or re-run for the notes after production.
+
+The full checklist is in [docs/releases/README.md](docs/releases/README.md#cutting-a-release). See
+#1094 and #1132.
 
 ## Pull requests
 
@@ -183,8 +189,8 @@ before/after images were being captured: a duplicated block reads as correct in 
 copy is individually right, and is obvious the moment you look at the page.
 
 `gh` cannot upload to GitHub's image CDN, so commit screenshots to the repository and link them by
-raw URL — this repository is public, so they render and do not rot. Release-notes images go under
-`docs/releases/images/<release>/` so they travel with the notes.
+raw URL — this repository is public, so they render and do not rot. The release notes link the same
+files by relative path, so one capture serves the issue, the pull request and the notes.
 
 **Pin image links to a commit, not a branch name and not `development`.**
 `https://raw.githubusercontent.com/<owner>/<repo>/<full-sha>/<path>` renders during review and cannot
