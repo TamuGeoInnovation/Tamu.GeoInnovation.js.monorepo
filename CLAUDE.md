@@ -127,6 +127,54 @@ however good it was. See #1056.
 File the issue as soon as the work is identified, including work noticed while doing something else —
 that is the case most likely to be skipped.
 
+**Fill in every field on the issue and the pull request, not only the title and body.** A field left
+empty drops the work out of the project board and the funding record just as surely as a missing
+issue does. Where a value is not known and not covered below, **ask the user before filing**; never
+leave a field empty silently. Say in your reply which values you chose. See #1112.
+
+| Issue field | Value |
+| --- | --- |
+| Assignee | `danielgoldbergtamu`, unless the user names someone else |
+| Type | Choose: **Bug** (worked, now broken or wrong), **Feature** (new capability), **Task** (docs, CI, tests, cleanup, investigation) |
+| Labels | Matching existing labels, e.g. `bug`, `documentation` |
+| Priority (organization issue field) | **Ask the user every time**: Urgent, High, Medium or Low |
+| Project | AggieMap work: **Texas A&M Aggiemap**. GIS Day work: **GIS Day Angular + NestJS**. Repo-wide process, docs or CI: **both**. If unclear, ask |
+| Project Status | **Todo** when filed; **In Progress** when work starts |
+
+| Pull request field | Value |
+| --- | --- |
+| Development | `Closes #<issue>` in the body |
+| Assignee | `danielgoldbergtamu` |
+| Labels | Copy the linked issue's labels |
+| Project | The same project(s) as the issue, Status **Pending Approval** (GIS Day Angular + NestJS has no such status; use **In Progress** there) |
+| Reviewers | None: pull requests are opened under the maintainer's account, and he is the only one who can merge |
+
+Both projects' built-in workflows move an item to **Done** when it is closed or its pull request is
+merged, so nothing needs updating after the merge.
+
+**Only the issue being fixed may follow a closing keyword.** GitHub treats `close`, `closes`, `fix`,
+`fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
+sentence like "the next smoke run should close #1096" would close #1096 too. Reword such sentences,
+then check with `gh pr view <n> --json closingIssuesReferences`.
+
+`gh issue create` sets title, body, labels and assignee. The rest needs these, run after creating:
+
+```bash
+R=TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo
+# Type: look up the id of Bug, Feature or Task, then set it
+gh api graphql -f query='query{repository(owner:"TamuGeoInnovation",name:"Tamu.GeoInnovation.js.monorepo"){issue(number:<n>){id} issueTypes(first:10){nodes{id name}}}}'
+gh api graphql -f query='mutation($i:ID!,$t:ID!){updateIssue(input:{id:$i,issueTypeId:$t}){issue{number}}}' -f i=<issue id> -f t=<type id>
+# Priority: look up the field and option ids, then set it
+gh api graphql -f query='{organization(login:"TamuGeoInnovation"){issueFields(first:10){nodes{... on IssueFieldSingleSelect{id name options{id name}}}}}}'
+gh api graphql -f query='mutation($i:ID!,$f:ID!,$o:ID!){setIssueFieldValue(input:{issueId:$i,issueFields:[{fieldId:$f,singleSelectOptionId:$o}]}){clientMutationId}}' -f i=<issue id> -f f=<field id> -f o=<option id>
+# Project and Status (project 2 = Texas A&M Aggiemap, 3 = GIS Day Angular + NestJS)
+item=$(gh project item-add <project> --owner TamuGeoInnovation --url <issue or PR url> --format json --jq .id)
+gh project field-list <project> --owner TamuGeoInnovation --format json   # Status field id and option ids
+gh project item-edit --id "$item" --project-id <project node id> --field-id <status field id> --single-select-option-id <option id>
+```
+
+`gh project view <n> --owner TamuGeoInnovation --format json --jq .id` gives the project node id.
+
 **Anything with a visible result carries before/after screenshots**, in the issue and the pull
 request. Do not wait to be asked.
 
