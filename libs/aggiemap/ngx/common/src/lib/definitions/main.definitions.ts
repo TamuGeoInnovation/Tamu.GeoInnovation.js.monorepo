@@ -759,6 +759,8 @@ export function MainMapLayerSources(
     // by default and toggled on its own, so these are opt-in on the landing map rather than a change
     // to what every visitor sees.
     //
+    // Each event set's date is shown after its name in the layer list (`listNote`, #1126).
+    //
     // Esri's layer list shows a group's children in reverse draw order (the last source is listed
     // first), so these sources are written in reverse of the order they appear in the list:
     // Opening Ceremony, Kickoff at Kyle, Spirit of 150 Week.
@@ -781,6 +783,7 @@ export function MainMapLayerSources(
           type: 'feature',
           id: definitions.EVENT_150_SPIRIT_WEEK.layerId,
           title: definitions.EVENT_150_SPIRIT_WEEK.name,
+          listNote: 'Oct. 2-8, 2026',
           url: definitions.EVENT_150_SPIRIT_WEEK.url,
           popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
           listMode: 'show',
@@ -797,6 +800,7 @@ export function MainMapLayerSources(
           type: 'feature',
           id: definitions.EVENT_150_KICKOFF_AT_KYLE.layerId,
           title: definitions.EVENT_150_KICKOFF_AT_KYLE.name,
+          listNote: 'Oct. 2, 2026',
           url: definitions.EVENT_150_KICKOFF_AT_KYLE.url,
           popupComponent: definitions.EVENT_150_KICKOFF_AT_KYLE.popupComponent,
           listMode: 'show',
@@ -816,6 +820,7 @@ export function MainMapLayerSources(
           type: 'group',
           id: 'event-150-opening-ceremony-group-layer',
           title: 'Opening Ceremony',
+          listNote: 'Oct. 2, 2026',
           listMode: 'show',
           visible: false,
           sources: [
