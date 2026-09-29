@@ -62,6 +62,12 @@ themselves:
 The date follows the name after a dash, in the list's usual grey. Any other layer can show a note
 the same way later with only a definition change, no code change. (#1126)
 
+Both changes together, on the main map's layer list:
+
+| Before (production) | After (dev) |
+| --- | --- |
+| <img src="images/2026-09-28-2/150th-events-before.png" width="340" alt="150th Events before: Opening Ceremony, Kickoff at Kyle, Live at the Station and Spirit of 150 Week, with no dates" /> | <img src="images/2026-09-28-2/150th-events-after.png" width="340" alt="150th Events after: Opening Ceremony - Oct. 2, 2026, Kickoff at Kyle - Oct. 2, 2026, Spirit of 150 Week - Oct. 2-8, 2026" /> |
+
 ## Fixed
 
 ### The DC / Bush School map stopped loading
@@ -69,6 +75,10 @@ the same way later with only a definition change, no code change. (#1126)
 Its services were republished at a new address, and the old one began asking for a sign-in, so the
 map drew nothing. It now reads the new services. Search now finds buildings by name, abbreviation or
 number. (#1110)
+
+| Before (dev) | After (dev) |
+| --- | --- |
+| <img src="images/2026-09-28-2/dc-bush-school-before.png" width="420" alt="DC / Bush School map before: a sign-in prompt over a blank map" /> | <img src="images/2026-09-28-2/dc-bush-school-after.png" width="420" alt="DC / Bush School map after: the building drawn on the new basemap" /> |
 
 Campus maps are a development-only section, so this is visible on dev; production does not list
 them.
