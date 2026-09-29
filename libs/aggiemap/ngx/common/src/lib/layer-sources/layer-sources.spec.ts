@@ -190,12 +190,6 @@ describe('LayerSources', () => {
         name: 'Kickoff at Kyle',
         url: 'kickoff-at-kyle-url'
       },
-      EVENT_150_LIVE_AT_THE_STATION: {
-        id: 'event-150-live-at-the-station',
-        layerId: 'event-150-live-at-the-station',
-        name: 'Live at the Station',
-        url: 'live-at-the-station-url'
-      },
       EVENT_150_SPIRIT_WEEK: {
         id: 'event-150-spirit-week',
         layerId: 'event-150-spirit-week',
@@ -258,10 +252,10 @@ describe('LayerSources', () => {
 
     // Esri's layer list shows a group's children in reverse source order, so reversing the sources
     // gives the order visitors see.
+    // Live at the Station is not a 150th event (#1125), so it is not in this group.
     expect([...children].reverse().map((layer) => layer.title)).toEqual([
       'Opening Ceremony',
       'Kickoff at Kyle',
-      'Live at the Station',
       'Spirit of 150 Week'
     ]);
     expect([...(openingCeremony?.sources ?? [])].reverse().map((layer) => layer.title)).toEqual([

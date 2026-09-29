@@ -33,7 +33,6 @@ export enum MAIN_MAP_LAYERS {
   EVENT_150_OPENING_SHUTTLE_ROUTE = 'event-150-opening-shuttle-route-layer',
   EVENT_150_OPENING_PARKING = 'event-150-opening-parking-layer',
   EVENT_150_KICKOFF_AT_KYLE = 'event-150-kickoff-at-kyle-layer',
-  EVENT_150_LIVE_AT_THE_STATION = 'event-150-live-at-the-station-layer',
   EVENT_150_SPIRIT_WEEK = 'event-150-spirit-week-layer'
 }
 
@@ -72,7 +71,6 @@ export interface IComposedIDefinitions {
   EVENT_150_OPENING_SHUTTLE_ROUTE: IDefinition;
   EVENT_150_OPENING_PARKING: IDefinition;
   EVENT_150_KICKOFF_AT_KYLE: IDefinition;
-  EVENT_150_LIVE_AT_THE_STATION: IDefinition;
   EVENT_150_SPIRIT_WEEK: IDefinition;
 }
 
@@ -183,6 +181,7 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
 
     // 150th anniversary event layers, shown on the main map in a "150th Events" group (#1017).
     // Aggie Family Parade is excluded because it is April 2027 and not part of this autumn's set.
+    // Live at the Station is excluded because it is not a 150th event (#1125).
     EVENT_150_OPENING_EVENT_LOCATIONS: {
       id: 'event-150-opening-event-locations',
       layerId: MAIN_MAP_LAYERS.EVENT_150_OPENING_EVENT_LOCATIONS,
@@ -208,13 +207,6 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       layerId: MAIN_MAP_LAYERS.EVENT_150_KICKOFF_AT_KYLE,
       name: 'Kickoff at Kyle',
       url: `${connections.kickoffAtKyleUrl}/0`,
-      popupComponent: Popups.MarkdownPopupComponent
-    },
-    EVENT_150_LIVE_AT_THE_STATION: {
-      id: 'event-150-live-at-the-station',
-      layerId: MAIN_MAP_LAYERS.EVENT_150_LIVE_AT_THE_STATION,
-      name: 'Live at the Station',
-      url: `${connections.liveAtTheStationUrl}/0`,
       popupComponent: Popups.MarkdownPopupComponent
     },
     EVENT_150_SPIRIT_WEEK: {
@@ -769,7 +761,10 @@ export function MainMapLayerSources(
     //
     // Esri's layer list shows a group's children in reverse draw order (the last source is listed
     // first), so these sources are written in reverse of the order they appear in the list:
-    // Opening Ceremony, Kickoff at Kyle, Live at the Station, Spirit of 150 Week.
+    // Opening Ceremony, Kickoff at Kyle, Spirit of 150 Week.
+    //
+    // Live at the Station is not a 150th event, so it is not listed here (#1125). Its own map is
+    // unchanged.
     //
     // These draw the same services as the standalone event maps. Spirit of 150 Week uses the
     // service's own symbology rather than the cake marker on its own map: that marker is an inline
@@ -788,22 +783,6 @@ export function MainMapLayerSources(
           title: definitions.EVENT_150_SPIRIT_WEEK.name,
           url: definitions.EVENT_150_SPIRIT_WEEK.url,
           popupComponent: definitions.EVENT_150_SPIRIT_WEEK.popupComponent,
-          listMode: 'show',
-          visible: false,
-          popupData: {
-            name: '{attributes.name}',
-            description: '{attributes.description}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: definitions.EVENT_150_LIVE_AT_THE_STATION.layerId,
-          title: definitions.EVENT_150_LIVE_AT_THE_STATION.name,
-          url: definitions.EVENT_150_LIVE_AT_THE_STATION.url,
-          popupComponent: definitions.EVENT_150_LIVE_AT_THE_STATION.popupComponent,
           listMode: 'show',
           visible: false,
           popupData: {
