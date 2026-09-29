@@ -61,26 +61,28 @@ Production uses `https://aggiemap.tamu.edu` and `G-GNS4JMVEZW`.
 On Windows, prefix with `MSYS_NO_PATHCONV=1` and give the mount as a Windows path.
 
 **Against a local dev server**, share the dev server container's network namespace so the browser
-reaches it on `127.0.0.1`:
+reaches it on `localhost`. The script's `local` environment does this for you:
 
 ```bash
 docker run --rm --network container:aggiemap-dev -v "$PWD:/work" -w /work \
-  -e AGGIEMAP_SMOKE_BASE_URL=http://127.0.0.1:4200 \
+  -e AGGIEMAP_SMOKE_BASE_URL=http://localhost:4200 \
   -e AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES="Dining Locations" \
   mcr.microsoft.com/playwright:v1.63.0-noble \
   npx playwright test --config=playwright.aggiemap-smoke.config.ts
 ```
 
-`127.0.0.1` rather than a Docker gateway address, for two reasons that each cost an hour to find:
+`localhost` rather than a Docker gateway address, for two reasons that each cost an hour to find:
 
 1. **The Angular dev server rejects unknown `Host` headers** — and serves "Invalid Host header" with
    status **200**, so a status check passes on a page containing no application at all.
-2. **The dining API's CORS allowlist names specific origins.** `http://127.0.0.1:4200` is on it; a
+2. **The dining API's CORS allowlist names specific origins.** `http://localhost:4200` is on it; a
    gateway address is not, so `Dining Locations` fails to fetch. That layer is in the shared main
    layer set, so it appears to break every map.
 
-Note that `127.0.0.1` makes the application take its **production** path — `isTesting` keys off the
-host containing `dev` or `localhost` — so a local run sees production's map list, not dev's.
+**And `localhost` rather than `127.0.0.1`**, which also passes both of the above: `isTesting` keys off
+the host containing `dev` or `localhost`, so `127.0.0.1` makes the application take its **production**
+path. It then lists production's maps, without the dev-only ones such as the satellite-campus maps,
+and a local run skips them while still passing (#1114).
 
 ## Environment variables
 
