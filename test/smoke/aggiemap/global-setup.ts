@@ -16,8 +16,9 @@ import * as path from 'path';
  * to list some URLs is the wrong shape for a smoke process anyway.
  *
  * Crawling has a real advantage besides. The two environments legitimately list different maps --
- * production does not show the kiosk or satellite-campus sections, and a map can be marked
- * `visible: false` -- so a crawl gives each environment the right set automatically, where a
+ * production does not show the kiosk or satellite-campus sections, a map can be marked
+ * `visible: false`, and a retired map (`status: 'retired'`, #1098) is listed nowhere -- so a crawl
+ * gives each environment the right set automatically, where a
  * committed list would need per-environment exceptions.
  *
  * The cost is that a map which disappears from the discovery pages is silently not tested, rather
@@ -95,7 +96,11 @@ export default async function globalSetup(): Promise<void> {
       // Not required: a section can legitimately be empty in an environment, and that should reduce
       // this environment's discovered set rather than fail discovery outright. The coverage floor in
       // `maps.spec.ts` catches the case where too many come back empty.
-      await gotoAndWaitForLinks(detailPage, 'a[href^="/events/"], a[href^="/parking/"], a[href^="/operations/"], a[href^="/campus/"], a[href^="/kiosk/"]', false);
+      await gotoAndWaitForLinks(
+        detailPage,
+        'a[href^="/events/"], a[href^="/parking/"], a[href^="/operations/"], a[href^="/campus/"], a[href^="/kiosk/"]',
+        false
+      );
 
       for (const href of await internalLinks()) {
         if (MAP_ROUTE.test(href)) {

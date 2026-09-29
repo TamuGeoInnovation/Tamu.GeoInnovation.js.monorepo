@@ -24,6 +24,11 @@ Per map, generated from the routes the environment actually lists:
 expected for that environment, and that a builder selection still produces an application-level
 event.
 
+`retired.spec.ts` checks that no retired map (`status: 'retired'` in its definition, #1098) is
+offered: searching All Maps for each one finds nothing, and no listing page links it. Retired maps are
+read from the definitions as text by `retired.ts`, which `services.spec.ts` also uses to skip services
+that only retired maps use.
+
 ## Running it
 
 **From a workstation, use the script.** It runs the suite in the Playwright container with the same

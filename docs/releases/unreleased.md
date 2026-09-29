@@ -1,7 +1,7 @@
 # Unreleased
 
-> **Nothing here yet.** This file collects what has merged since the last production release. It is
-> empty because the most recent release has just gone out.
+> **Not on production.** This file collects what has merged since the last production release. Each
+> entry says where it can be seen.
 
 **Production is currently running the [second 28 September release](2026-09-28-2.md).**
 
@@ -14,7 +14,38 @@ shipped; this one only ever describes what has not shipped yet.
 
 ## Summary
 
-_Nothing has merged since the second 28 September release._
+Events that are over can now be marked **retired**, and four are. Production looks the same, because
+they were already hidden there. On dev they no longer appear in All Maps search or the All Events
+list, and the nightly checks stop testing them.
+
+---
+
+## Changed
+
+### Retired events are no longer offered anywhere
+
+Events that are over used to be hidden with the same setting as maps not announced yet. Hidden maps
+still show on dev, so four finished events stayed in dev's search and All Events list and were tested
+every night, although their services are stopped on the production GIS server. They are now marked
+**retired**: listed nowhere, on any environment, and skipped by the automated checks. A link already
+shared still opens the map; what it should say is #1103.
+
+Retired: Banana Ball, Softball Regionals, Troubadour Festival, and Road to 26: Argentina vs. Honduras.
+(#1098)
+
+**Visible on dev only.** Production already hid these maps.
+
+| Before (dev) | After (dev) |
+| --- | --- |
+| <img src="../screenshots/1098-retired-status/before-local-search.png" width="420" alt="All Maps search on dev, before: searching troubadour offers Troubadour Festival" /> | <img src="../screenshots/1098-retired-status/after-local-search.png" width="420" alt="All Maps search on dev, after: searching troubadour finds no results" /> |
+| <img src="../screenshots/1098-retired-status/before-local-all-events.png" width="240" alt="Dev's All Events list, before: 46 events including Banana Ball, Road to 26, Softball Regionals and Troubadour Festival" /> | <img src="../screenshots/1098-retired-status/after-local-all-events.png" width="240" alt="Dev's All Events list, after: 42 events, none of them retired" /> |
+
+## Behind the scenes
+
+- **A check that retired maps stay hidden.** The smoke suite searches All Maps for each retired map
+  and reads every listing page, on each environment. (#1098)
+- **The GIS services check skips retired maps' services** rather than listing them as known
+  failures. (#1098)
 
 ---
 

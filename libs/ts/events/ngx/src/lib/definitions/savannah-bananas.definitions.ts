@@ -207,7 +207,8 @@ export const SavannahBananasParkingTs: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     mapType: 'athletics',
-    visible: false,
+    // The event is over and its services are stopped on the production GIS server (#1098).
+    status: 'retired',
     keywords: ['savannah bananas', 'texas tailgaters', 'kyle field', 'parking', 'transportation']
   }
 };
