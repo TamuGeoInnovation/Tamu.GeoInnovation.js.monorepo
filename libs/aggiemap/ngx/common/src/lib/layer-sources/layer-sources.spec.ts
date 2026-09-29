@@ -265,6 +265,18 @@ describe('LayerSources', () => {
     ]);
   });
 
+  it("should show each 150th event's date next to its name in the layer list", () => {
+    const result = LayerSources(connections, definitions);
+    const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
+
+    // Shown in the layer list rather than in the layers themselves (#1126).
+    expect([...(eventsGroup?.sources ?? [])].reverse().map((layer) => [layer.title, layer.listNote])).toEqual([
+      ['Opening Ceremony', 'Oct. 2, 2026'],
+      ['Kickoff at Kyle', 'Oct. 2, 2026'],
+      ['Spirit of 150 Week', 'Oct. 2-8, 2026']
+    ]);
+  });
+
   it('should split shared bike racks into flat sustainable transportation child layers', () => {
     const result = LayerSources(connections, definitions);
     const sustainableTransportationGroup = result.find((layer) => layer.id === 'sustainable-transportation-group-layer') as

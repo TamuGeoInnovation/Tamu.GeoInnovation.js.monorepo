@@ -302,6 +302,11 @@ export type LayerSource = LayerSourceType & {
   listMode?: 'show' | 'hide';
 
   /**
+   * Short text the layer list shows after the layer's title, such as an event's date.
+   */
+  listNote?: string;
+
+  /**
    * Determines whether the layer will be loaded on application load.
    *
    * A layer can be listed as "show" but not load on init. This will enable layer lazy-loading,
