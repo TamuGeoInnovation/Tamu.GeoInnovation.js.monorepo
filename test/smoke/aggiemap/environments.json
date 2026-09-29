@@ -14,18 +14,41 @@
       "Bike Racks",
       "EV Charge Stations (Main + RELLIS)",
       "Single Occupancy Restroom Locations"
-    ]
+    ],
+    "allowedServiceFailures": {
+      "accessibleUrl": "#1005: the development GIS server does not serve this layer",
+      "bikeMapUrl": "#1005: the development GIS server requires a token for this service",
+      "footballGamedayShuttlesUrl": "#1123: unused entry; the development GIS server requires a token"
+    }
   },
   "production": {
     "baseUrl": "https://aggiemap.tamu.edu",
     "gtag": "G-GNS4JMVEZW",
     "healthLabel": "prod-health",
-    "allowedLayerFailures": []
+    "allowedLayerFailures": [],
+    "allowedServiceFailures": {
+      "savannahBananasUrl": "#1098: retired event; service stopped on the production GIS server",
+      "softballRegionalsUrl": "#1098: retired event; service stopped on the production GIS server",
+      "troubadourFestivalUrl": "#1098: retired event; service stopped on the production GIS server",
+      "argentinaVsHondurasUrl": "#1098: retired event; service stopped on the production GIS server",
+      "bikeRacksUrl": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
+      "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
+      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
+    }
   },
   "local": {
     "baseUrl": "http://localhost:4200",
     "gtag": null,
     "healthLabel": null,
-    "allowedLayerFailures": ["Dining Locations"]
+    "allowedLayerFailures": ["Dining Locations"],
+    "allowedServiceFailures": {
+      "savannahBananasUrl": "#1098: retired event; service stopped on the production GIS server",
+      "softballRegionalsUrl": "#1098: retired event; service stopped on the production GIS server",
+      "troubadourFestivalUrl": "#1098: retired event; service stopped on the production GIS server",
+      "argentinaVsHondurasUrl": "#1098: retired event; service stopped on the production GIS server",
+      "bikeRacksUrl": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
+      "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
+      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
+    }
   }
 }
