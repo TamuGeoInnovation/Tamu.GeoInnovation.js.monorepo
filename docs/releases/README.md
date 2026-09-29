@@ -106,6 +106,37 @@ Then deploy. When production is up, open it and check the thing the release is a
 pull request. If production shows a problem, do not merge: fix it, or change the status line to say
 what did not ship.
 
+## Tagging what was built
+
+A build is identified by an Azure DevOps build number, which nobody outside the pipeline can resolve.
+So the repository alone cannot answer which commit production is running, which build the team tested
+on dev on a given day, or whether the build promoted to production is the one that passed. Tags
+answer all three, and anyone with the repository can read them.
+
+**Tag the build, not the deploy.** `azure-pipelines.yml` runs the build template twice in a single
+run, publishing `js-monorepo-development` and `js-monorepo-production` from the same commit, so one
+build serves both environments and the same commit is expected to carry both tags.
+
+```bash
+scripts/tag-build.sh dev       # when a build reaches dev
+git push origin dev-2026-09-29
+
+scripts/tag-build.sh prod      # when that same build is promoted
+git push origin prod-2026-09-29
+```
+
+`prod` **refuses a commit that carries no `dev-*` tag**, because promoting a build that was never
+tested is the failure worth catching. `--force` overrides it, and should be rare enough to explain.
+
+A second build on the same day is suffixed (`dev-2026-09-29-2`) rather than refused. Re-running for a
+commit already tagged does nothing.
+
+Tags go to `origin`, not to a fork. That is the one place the never-push-to-origin rule does not
+apply, so it is worth being deliberate about.
+
+**Not called release candidates.** That implies a gate these do not have: most dev builds are simply
+the latest commit. `dev-<date>` says what it is.
+
 ## What belongs here
 
 Notes written for the person who will _use_ or _check_ the change: what shipped, where to see
