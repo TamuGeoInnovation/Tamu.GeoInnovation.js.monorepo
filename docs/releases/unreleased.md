@@ -19,6 +19,9 @@ they were already hidden there. On dev they no longer appear in All Maps search,
 the All Events list, labelled Retired. On every environment, a retired map's link now says the event
 has ended instead of opening a map whose data is gone, and the nightly checks stop testing them.
 
+The cake and ice cream event is corrected: it is **150 Cake & Ice Cream** on **5 October**, not
+"Spirit of 150 Week" over a range of days. Its address is unchanged, so shared links still work.
+
 ---
 
 ## Changed
@@ -47,6 +50,28 @@ ended page is on every environment.
 | <img src="../screenshots/1098-retired-status/before-local-retired-link.png" width="420" alt="Opening the Troubadour Festival link, before: its map opens" /> | <img src="../screenshots/1098-retired-status/after-local-retired-link.png" width="420" alt="Opening the Troubadour Festival link, after: a page saying Troubadour Festival has ended, with a See All Maps button" /> |
 | <img src="../screenshots/1098-retired-status/before-local-search.png" width="420" alt="All Maps search on dev, before: searching troubadour offers Troubadour Festival" /> | <img src="../screenshots/1098-retired-status/after-local-search.png" width="420" alt="All Maps search on dev, after: searching troubadour finds no results" /> |
 | <img src="../screenshots/1098-retired-status/before-local-all-events-label.png" width="240" alt="Dev's All Events list, before: retired maps listed with no label" /> | <img src="../screenshots/1098-retired-status/after-local-all-events-label.png" width="240" alt="Dev's All Events list, after: the four retired maps carry a Retired label" /> |
+
+### 150 Cake & Ice Cream, corrected
+
+The cake and ice cream event was published as **Spirit of 150 Week**, the week it sits in, and the
+date beside it read a range rather than the day it happens. It is one event, on **5 October**.
+
+It now reads **150 Cake & Ice Cream - Oct. 5, 2026** in the 150th Events group on the main map, and
+carries that name on its own map, on Campus Events and on the 150th Anniversary page.
+
+**Its address has not changed.** Any link already shared still works.
+
+| Before (production) | After (dev) |
+| --- | --- |
+| <img src="../screenshots/1142-cake-and-ice-cream/before-prod.png" width="340" alt="150th Events on production: Opening Ceremony, Kickoff at Kyle and Spirit of 150 Week - Oct. 2-8, 2026" /> | <img src="../screenshots/1142-cake-and-ice-cream/after-local.png" width="340" alt="150th Events after: Opening Ceremony, Kickoff at Kyle and 150 Cake and Ice Cream - Oct. 5, 2026" /> |
+
+**Check on dev:** [the main map](https://dev.aggiemap.tamu.edu/map), 150th Events in the layer list;
+and [the event map](https://dev.aggiemap.tamu.edu/events/spirit-of-150-week), whose address keeps the
+old name on purpose. Searching *cake*, *ice cream* or *spirit* should all find it.
+
+Corrected by Tricia Speed.
+
+_Nothing has merged since the second 28 September release._
 
 ## Behind the scenes
 
