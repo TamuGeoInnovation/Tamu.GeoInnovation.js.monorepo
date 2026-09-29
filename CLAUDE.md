@@ -118,6 +118,15 @@ on dev, open the pull request that renames `unreleased.md` to the date it will s
 run's numbers, and points *What to test* at production. When production is up and looks right, merge
 it. Nothing is captured, rebuilt or re-run for the notes after production.
 
+**Link every issue and pull request, with full URLs, and end each release file with a table of all
+of them.** GitHub only auto-links `#1122` inside issue and pull request comments — in a file under
+`docs/releases/` it is inert text, so a bare number leads nowhere for the reader these notes exist
+for. `2026-09-28-2.md` named eleven and linked none (#1139).
+
+The prose says what changed and why; the closing **What went into this release** table says what the
+release carried. The second question is the one asked months later, when tracing when a behaviour
+arrived or reporting what the work produced.
+
 The full checklist is in [docs/releases/README.md](docs/releases/README.md#cutting-a-release). See
 #1094 and #1132.
 

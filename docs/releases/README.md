@@ -31,6 +31,34 @@ nothing to re-capture at release time.
 A pull request with no user-visible result, such as tests, CI or internal docs, adds a line under
 *Behind the scenes* if it is worth recording, or nothing.
 
+**Link every issue and pull request you mention, and list them all at the end.** Two separate things:
+
+Inline, write the full URL rather than a bare `#1122`:
+
+```markdown
+Reported in [#1122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1122).
+```
+
+GitHub only turns `#1122` into a link inside issue and pull request comments. In a file in this
+folder it is inert text, so a bare number is a dead end for exactly the reader these notes exist
+for - someone outside the team, opening a shared link, who was not in the room.
+
+Then end the file with **What went into this release**, a table of every issue and pull request it
+carried:
+
+```markdown
+## What went into this release
+
+| | |
+| --- | --- |
+| [#1098](https://github.com/.../issues/1098) | `visible:false` meant both "not announced" and "finished" |
+| [#1136](https://github.com/.../pull/1136) | Retire finished events |
+```
+
+The prose answers "what changed and why". The table answers "what went into this", which is a
+different question and the one asked months later, when someone is tracing when a behaviour arrived
+or reporting what the work produced. Neither substitutes for the other.
+
 On the day it ships, `unreleased.md` is renamed to `YYYY-MM-DD.md` for that date and its
 "Unreleased" heading becomes the status line. A fresh `unreleased.md` starts empty.
 
