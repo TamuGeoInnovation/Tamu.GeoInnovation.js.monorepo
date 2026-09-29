@@ -6,6 +6,8 @@ import * as path from 'path';
 // same function the app calls, so the URLs checked are exactly the URLs the app requests.
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
 
+import { retiredConnections } from './retired';
+
 /**
  * Every GIS service the maps use is public and answering (#1118).
  *
@@ -55,6 +57,8 @@ function allowedFailures(): Record<string, string> {
 
 const ALLOWED = allowedFailures();
 
+const RETIRED = retiredConnections();
+
 const connections = Connections(GIS_HOST) as unknown as Record<string, unknown>;
 const services = Object.entries(connections).filter(
   (entry): entry is [string, string] => typeof entry[1] === 'string' && /^https?:\/\//.test(entry[1])
@@ -99,6 +103,10 @@ test.describe(`GIS services (${GIS_HOST})`, () => {
 
   for (const [name, url] of services) {
     test(`${name} is public and answering`, async ({ request }) => {
+      const retiredIn = RETIRED.get(name);
+
+      test.skip(retiredIn !== undefined, `used only by retired maps: ${retiredIn?.join(', ')}`);
+
       const problem = await problemWith(request, url);
       const known = ALLOWED[name];
 

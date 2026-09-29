@@ -131,7 +131,11 @@
       <div class="map-columns" *ngIf="allEvents.length > 0">
         <ol class="map-links">
           <li class="map-link-item" *ngFor="let app of allEvents">
-            <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+            <!-- Same layout as a search result's name and chips. Retired maps stay in this list so the team can find them, labelled so nobody expects them to work (#1098). -->
+            <div class="flex flex-row align-center title">
+              <a class="map-link" [routerLink]="getApplicationRoute(app)">{{ app.name }}</a>
+              <span class="chip chip-label retired-label" *ngIf="app.status === 'retired'">Retired</span>
+            </div>
           </li>
         </ol>
       </div>

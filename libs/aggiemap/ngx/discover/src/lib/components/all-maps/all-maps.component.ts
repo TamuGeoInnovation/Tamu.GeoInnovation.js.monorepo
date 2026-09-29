@@ -33,6 +33,12 @@ export class AllMapsComponent implements OnInit {
   private allApplications: DiscoverApplication[];
 
   /**
+   * The development-only All Events list keeps every event, retired ones included: it is where the
+   * team finds a map that no longer works (#1098). Every other list leaves retired maps out.
+   */
+  private allEventApplications: InternalDiscoverApplication[];
+
+  /**
    * Dev-only listing of "kiosk" (sidebar-free, preset-layer) maps, surfaced here with their full,
    * shareable URLs so the team embedding them (e.g. in a mobile app webview) can copy them. Never
    * shown in prod and never searchable, even in dev — see `DiscoveryService.getKioskDiscoverApplications`.
@@ -89,6 +95,7 @@ export class AllMapsComponent implements OnInit {
   public ngOnInit(): void {
     this.isDev = this.dev.get('isTesting');
     this.internalApplications = this.discoveryService.getInternalDiscoverApplications();
+    this.allEventApplications = this.discoveryService.getInternalDiscoverApplications({ includeRetired: true });
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
     // Satellite-campus maps have their own dedicated "Campus Maps" listing page and should not
     // appear in the general map search results.
@@ -119,7 +126,7 @@ export class AllMapsComponent implements OnInit {
   }
 
   public get allEvents(): InternalDiscoverApplication[] {
-    return this.internalApplications
+    return this.allEventApplications
       .filter((app) => app.mapTypes.includes('campus') || app.mapTypes.includes('athletics'))
       .sort((a, b) => a.name.localeCompare(b.name));
   }
@@ -150,9 +157,7 @@ export class AllMapsComponent implements OnInit {
   }
 
   private getEarliestUpcomingDate(dates: Array<string | Date | number>, now: number): number {
-    const upcomingDates = dates
-      .map((date) => parseEventDate(date))
-      .filter((time) => Number.isFinite(time) && time >= now);
+    const upcomingDates = dates.map((date) => parseEventDate(date)).filter((time) => Number.isFinite(time) && time >= now);
 
     return upcomingDates.length > 0 ? Math.min(...upcomingDates) : Number.POSITIVE_INFINITY;
   }

@@ -67,7 +67,8 @@ export const TroubadourTs: AggiemapCustomMapConfiguration = {
     name: TroubadourConfiguration.name,
     description: 'Transportation and parking information for Troubadour Festival.',
     source: 'internal',
-    visible: false,
+    // The event is over and its services are stopped on the production GIS server (#1098).
+    status: 'retired',
     type: 'event',
     columnKey: 'spring',
     keywords: ['troubadour', 'festival', 'parking', 'transportation']

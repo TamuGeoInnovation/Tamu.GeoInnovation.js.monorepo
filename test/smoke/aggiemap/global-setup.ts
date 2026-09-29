@@ -2,6 +2,8 @@ import { chromium } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { retiredMaps } from './retired';
+
 /**
  * Discovers every map the target environment lists, and writes it to a manifest the spec reads at
  * collection time so one test can be generated per map.
@@ -16,8 +18,9 @@ import * as path from 'path';
  * to list some URLs is the wrong shape for a smoke process anyway.
  *
  * Crawling has a real advantage besides. The two environments legitimately list different maps --
- * production does not show the kiosk or satellite-campus sections, and a map can be marked
- * `visible: false` -- so a crawl gives each environment the right set automatically, where a
+ * production does not show the kiosk or satellite-campus sections, a map can be marked
+ * `visible: false`, and a retired map (`status: 'retired'`, #1098) is filtered out below -- so a crawl
+ * gives each environment the right set automatically, where a
  * committed list would need per-environment exceptions.
  *
  * The cost is that a map which disappears from the discovery pages is silently not tested, rather
@@ -95,7 +98,11 @@ export default async function globalSetup(): Promise<void> {
       // Not required: a section can legitimately be empty in an environment, and that should reduce
       // this environment's discovered set rather than fail discovery outright. The coverage floor in
       // `maps.spec.ts` catches the case where too many come back empty.
-      await gotoAndWaitForLinks(detailPage, 'a[href^="/events/"], a[href^="/parking/"], a[href^="/operations/"], a[href^="/campus/"], a[href^="/kiosk/"]', false);
+      await gotoAndWaitForLinks(
+        detailPage,
+        'a[href^="/events/"], a[href^="/parking/"], a[href^="/operations/"], a[href^="/campus/"], a[href^="/kiosk/"]',
+        false
+      );
 
       for (const href of await internalLinks()) {
         if (MAP_ROUTE.test(href)) {
@@ -104,15 +111,24 @@ export default async function globalSetup(): Promise<void> {
       }
     }
 
+    // Dev's All Events list keeps retired maps on purpose, so the crawl finds them there. They are
+    // over and their services are often stopped, so they are not tested (#1098).
+    const retiredIds = retiredMaps().map((map) => map.id);
+    const isRetired = (href: string) => retiredIds.includes(href.split(/[/?#]/)[2]);
+    const skipped = [...maps].filter(isRetired);
+
     const manifest: MapManifest = {
       baseUrl,
       discoveredAt: new Date().toISOString(),
-      maps: [...maps].sort()
+      maps: [...maps].filter((href) => !isRetired(href)).sort()
     };
 
     fs.writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
 
-    console.log(`[smoke] discovered ${manifest.maps.length} maps on ${baseUrl}`);
+    console.log(
+      `[smoke] discovered ${manifest.maps.length} maps on ${baseUrl}` +
+        (skipped.length > 0 ? `; skipped ${skipped.length} retired: ${skipped.join(', ')}` : '')
+    );
   } finally {
     await browser.close();
   }

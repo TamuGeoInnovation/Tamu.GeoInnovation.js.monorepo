@@ -19,10 +19,19 @@ export const FEATURED_PARKING_ID = 'ts-main-parking';
   providedIn: 'root'
 })
 export class DiscoveryService {
-  public getInternalDiscoverApplications(): InternalDiscoverApplication[] {
+  /**
+   * Every listable map. Kiosk maps have their own listing.
+   *
+   * Retired maps are left out unless `includeRetired` is set: their events are over, so search and
+   * the listing pages do not offer them on any environment (#1098). The development-only All Events
+   * list is the one exception, because it is where the team keeps every event, working or not.
+   */
+  public getInternalDiscoverApplications(options: { includeRetired?: boolean } = {}): InternalDiscoverApplication[] {
     return EventDefinitions.filter(
       (event): event is typeof event & { configuration: NonNullable<typeof event.configuration> } =>
-        event.configuration !== null && event.discover?.type !== 'kiosk'
+        event.configuration !== null &&
+        event.discover?.type !== 'kiosk' &&
+        (options.includeRetired === true || event.discover?.status !== 'retired')
     ).map((event) => ({
       id: event.discover?.id || event.configuration.id,
       source: 'internal' as const,
@@ -32,17 +41,14 @@ export class DiscoveryService {
       // is why maps that declare nothing land on Campus Events.
       mapTypes: event.discover?.mapTypes ?? [
         event.discover?.mapType ||
-          (event.discover?.type === 'parking'
-            ? 'parking'
-            : event.discover?.type === 'operations'
-              ? 'operations'
-              : 'campus')
+          (event.discover?.type === 'parking' ? 'parking' : event.discover?.type === 'operations' ? 'operations' : 'campus')
       ],
       parkingCategory: event.discover?.parkingCategory,
       columnKey: event.discover?.columnKey ?? event.discover?.parkingCategory,
       visible: event.discover?.visible ?? true,
       showInQuickLinks: event.discover?.showInQuickLinks,
       quickLinkOrder: event.discover?.quickLinkOrder,
+      status: event.discover?.status,
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
       configuration: event.configuration,

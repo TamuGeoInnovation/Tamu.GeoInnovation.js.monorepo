@@ -24,6 +24,13 @@ Per map, generated from the routes the environment actually lists:
 expected for that environment, and that a builder selection still produces an application-level
 event.
 
+`retired.spec.ts` checks that no retired map (`status: 'retired'` in its definition, #1098) is
+offered: searching All Maps for each one finds nothing, and no listing page links it. The exception is
+dev's All Events list, which keeps every event, working or not; the spec checks that it still lists
+them, each with a Retired label. It also opens each retired map's link, bare and `/map`, and checks it
+lands on the "has ended" page with no map loaded. Retired maps are read from the definitions as text by `retired.ts`. The crawl uses it to leave
+retired maps out of the maps it tests, and `services.spec.ts` to skip services only retired maps use.
+
 ## Running it
 
 **From a workstation, use the script.** It runs the suite in the Playwright container with the same

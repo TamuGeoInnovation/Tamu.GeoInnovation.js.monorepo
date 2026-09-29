@@ -192,7 +192,8 @@ export const ArgentinaVsHondurasTs: AggiemapCustomMapConfiguration = {
     description: 'Transportation and parking information for the Road to 26: Argentina vs. Honduras soccer match.',
     source: 'internal',
     type: 'event',
-    visible: false,
+    // The event is over and its services are stopped on the production GIS server (#1098).
+    status: 'retired',
     columnKey: 'summer',
     keywords: ['road to 26', 'argentina', 'honduras', 'soccer', 'parking', 'shuttle', 'transportation']
   }

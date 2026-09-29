@@ -525,6 +525,18 @@ export interface DiscoverMetadata {
    */
   visible?: boolean;
   /**
+   * Where the map is in its life. Omitted means current.
+   *
+   * `retired` is for an event that is over. The definition stays, so a link already shared still
+   * resolves, but search and the listing pages leave the map out on every environment, and the smoke
+   * suite and the GIS services check skip it. Only dev's All Events list, which keeps every event,
+   * still shows it. That is the difference from `visible: false`, which only keeps a map off
+   * production's lists and is for maps that are not announced yet or reached by link only (#1098).
+   *
+   * Other stages, such as `upcoming` or `seasonal`, can be added when something needs to act on them.
+   */
+  status?: 'retired';
+  /**
    * Optional labels to display on the application card (e.g., "New", "Beta", etc.)
    *
    * These will generally be used as chips or badges and are intended to be used to supplement the `type` field.
