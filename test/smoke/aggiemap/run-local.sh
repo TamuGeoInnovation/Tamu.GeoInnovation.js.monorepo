@@ -31,7 +31,7 @@ image="mcr.microsoft.com/playwright:v${pw_version}-noble"
 export MSYS_NO_PATHCONV=1
 mount=$(pwd -W 2>/dev/null || pwd)
 
-# A local run shares the dev server container's network so the browser reaches it on 127.0.0.1,
+# A local run shares the dev server container's network so the browser reaches it on localhost,
 # which is the address the Angular dev server and the dining API's CORS allowlist accept. See the
 # README's local section.
 network_args=()
