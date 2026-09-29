@@ -111,12 +111,11 @@ test.describe('retired maps', () => {
     });
   }
 
-  test("dev's All Events list still lists every retired map", async ({ page }) => {
+  test("dev's All Events list keeps every retired map, labelled Retired", async ({ page }) => {
     await page.goto('/all-maps');
 
-    const section = page.locator(ALL_EVENTS);
-    const links = section.locator('a[href]');
-    const present = await links
+    const items = page.locator(`${ALL_EVENTS} li`);
+    const present = await items
       .first()
       .waitFor({ timeout: 30_000 })
       .then(() => true)
@@ -125,11 +124,46 @@ test.describe('retired maps', () => {
     // All Events is development-only, so production has nothing to check.
     test.skip(!present, 'no All Events list on this environment (it is development-only)');
 
-    const hrefs = await links.evaluateAll((anchors) => anchors.map((a) => a.getAttribute('href') ?? ''));
-    const missing = RETIRED.filter((map) => !hrefs.some((href) => linksTo(href, map.id))).map(
-      (map) => `${map.name} (${map.file})`
+    const entries = await items.evaluateAll((lis) =>
+      lis.map((li) => ({
+        href: li.querySelector('a')?.getAttribute('href') ?? '',
+        retiredLabel: Array.from(li.querySelectorAll('.retired-label')).some(
+          (el) => el.textContent?.trim().toLowerCase() === 'retired'
+        )
+      }))
     );
 
-    expect(missing, 'All Events should keep retired maps; it is where the team finds them').toEqual([]);
+    for (const map of RETIRED) {
+      const entry = entries.find((e) => linksTo(e.href, map.id));
+
+      expect.soft(entry, `All Events should keep ${map.name} (${map.file}); it is where the team finds it`).toBeDefined();
+      expect.soft(entry?.retiredLabel, `${map.name} should carry a Retired label in All Events`).toBe(true);
+    }
+
+    const labelledCurrent = entries
+      .filter((e) => e.retiredLabel && !RETIRED.some((map) => linksTo(e.href, map.id)))
+      .map((e) => e.href);
+
+    expect.soft(labelledCurrent, 'only retired maps carry the Retired label').toEqual([]);
   });
+
+  for (const map of RETIRED) {
+    for (const suffix of ['', '/map']) {
+      test(`${map.route}${suffix} shows that the event has ended, not a map`, async ({ page }) => {
+        await page.goto(`${map.route}${suffix}`);
+
+        await expect(page, 'a retired map should land on its ended page').toHaveURL(new RegExp(`${map.route}/ended$`), {
+          timeout: 30_000
+        });
+        await expect(page.getByRole('heading', { level: 1 })).toHaveText(`${map.name} has ended`);
+        await expect(page.getByRole('link', { name: /all maps/i }).last()).toBeVisible();
+
+        // Not a map: no map view, and the map probe never appears.
+        await expect(page.locator('.esri-view-surface')).toHaveCount(0);
+        expect(await page.evaluate(() => '__tamuGiscMapProbe' in window), 'the map probe loaded, so a map started').toBe(
+          false
+        );
+      });
+    }
+  }
 });

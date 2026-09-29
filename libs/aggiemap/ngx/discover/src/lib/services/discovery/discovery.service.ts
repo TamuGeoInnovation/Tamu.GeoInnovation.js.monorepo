@@ -48,6 +48,7 @@ export class DiscoveryService {
       visible: event.discover?.visible ?? true,
       showInQuickLinks: event.discover?.showInQuickLinks,
       quickLinkOrder: event.discover?.quickLinkOrder,
+      status: event.discover?.status,
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
       configuration: event.configuration,

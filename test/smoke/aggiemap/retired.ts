@@ -18,7 +18,18 @@ export interface RetiredMap {
   id: string;
   name: string;
   file: string;
+  /** Root-relative route, e.g. `/events/troubadour-festival-2025`. */
+  route: string;
 }
+
+/** The route section for each discover `type`, as `getApplicationRoute` builds it. */
+const SECTION_BY_TYPE: Record<string, string> = {
+  event: 'events',
+  parking: 'parking',
+  operations: 'operations',
+  'satellite-campus': 'campus',
+  kiosk: 'kiosk'
+};
 
 /** Every retired map, from its definition's `EventConfiguration`. */
 export function retiredMaps(): RetiredMap[] {
@@ -34,7 +45,16 @@ export function retiredMaps(): RetiredMap[] {
         throw new Error(`${file} is marked retired but its EventConfiguration id and name could not be read.`);
       }
 
-      return { id: configuration[1], name: configuration[2], file };
+      // The discover block's `type` decides the route section; `event` is the default.
+      const discover = source.slice(source.indexOf('discover: {'));
+      const type = discover.match(/\btype: '([a-z-]+)'/)?.[1] ?? 'event';
+
+      return {
+        id: configuration[1],
+        name: configuration[2],
+        file,
+        route: `/${SECTION_BY_TYPE[type] ?? 'events'}/${configuration[1]}`
+      };
     });
 }
 

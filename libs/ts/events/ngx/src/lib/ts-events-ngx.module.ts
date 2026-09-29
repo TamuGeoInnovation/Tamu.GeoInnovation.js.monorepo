@@ -9,12 +9,20 @@ import { BuilderComponent } from './modules/builder/builder.component';
 import { BuilderAccessGuard } from './guards/builder-access/builder-access.guard';
 import { EventEntryGuard } from './guards/event-entry/event-entry.guard';
 import { RouteParamsGuard } from './guards/route-params/route-params.guard';
+import { ENDED_PATH, RetiredEventGuard } from './guards/retired-event/retired-event.guard';
+import { EndedComponent } from './modules/ended/ended.component';
 
 const routes: Routes = [
   {
     path: ':eventId',
     canActivate: [RouteParamsGuard, EventEntryGuard],
+    // A retired event opens its ended page, never its map or builder (#1098).
+    canActivateChild: [RetiredEventGuard],
     children: [
+      {
+        path: ENDED_PATH,
+        component: EndedComponent
+      },
       {
         path: 'map',
         loadChildren: () => import('./modules/map/map.module').then((m) => m.MapModule),
@@ -57,7 +65,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), PipesModule],
-  declarations: [BuilderComponent],
+  declarations: [BuilderComponent, EndedComponent],
   exports: [RouterModule]
 })
 export class TsEventsNgxModule {}

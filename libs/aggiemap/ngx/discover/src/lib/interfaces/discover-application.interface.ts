@@ -33,6 +33,11 @@ export interface InternalDiscoverApplication extends BaseDiscoverApplication {
   columnKey?: string;
   showInQuickLinks?: boolean;
   quickLinkOrder?: number;
+  /**
+   * `retired` for an event that is over (#1098). Only lists built with `includeRetired` contain
+   * one, and they label it.
+   */
+  status?: 'retired';
   configuration: EventConfiguration;
 }
 

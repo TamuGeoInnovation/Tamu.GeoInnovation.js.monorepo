@@ -16,7 +16,8 @@ shipped; this one only ever describes what has not shipped yet.
 
 Events that are over can now be marked **retired**, and four are. Production looks the same, because
 they were already hidden there. On dev they no longer appear in All Maps search, though they stay in
-the All Events list, and the nightly checks stop testing them.
+the All Events list, labelled Retired. On every environment, a retired map's link now says the event
+has ended instead of opening a map whose data is gone, and the nightly checks stop testing them.
 
 ---
 
@@ -28,23 +29,31 @@ Events that are over used to be hidden with the same setting as maps not announc
 still show in dev's search, so four finished events were offered there and tested every night,
 although their services are stopped on the production GIS server. They are now marked **retired**:
 search and the listing pages leave them out on every environment, and the automated checks skip them.
-Dev's All Events list still includes them, because that list is where the team keeps every event,
-working or not. A link already shared still opens the map; what it should say is #1103.
+Dev's All Events list still includes them, labelled **Retired**, because that list is where the team
+keeps every event, working or not.
+
+**A retired map's link no longer opens a map.** An old shared link, the map's own address, or the
+entry in All Events leads to a short page saying the event has ended, with a button to All Maps. This
+applies on production too, where these links used to open a map whose layers could not load.
 
 Retired: Banana Ball, Softball Regionals, Troubadour Festival, and Road to 26: Argentina vs. Honduras.
 (#1098)
 
-**Visible on dev only.** Production already hid these maps.
+The search and the All Events label are visible on dev only; production already hid these maps. The
+ended page is on every environment.
 
 | Before (dev) | After (dev) |
 | --- | --- |
+| <img src="../screenshots/1098-retired-status/before-local-retired-link.png" width="420" alt="Opening the Troubadour Festival link, before: its map opens" /> | <img src="../screenshots/1098-retired-status/after-local-retired-link.png" width="420" alt="Opening the Troubadour Festival link, after: a page saying Troubadour Festival has ended, with a See All Maps button" /> |
 | <img src="../screenshots/1098-retired-status/before-local-search.png" width="420" alt="All Maps search on dev, before: searching troubadour offers Troubadour Festival" /> | <img src="../screenshots/1098-retired-status/after-local-search.png" width="420" alt="All Maps search on dev, after: searching troubadour finds no results" /> |
+| <img src="../screenshots/1098-retired-status/before-local-all-events-label.png" width="240" alt="Dev's All Events list, before: retired maps listed with no label" /> | <img src="../screenshots/1098-retired-status/after-local-all-events-label.png" width="240" alt="Dev's All Events list, after: the four retired maps carry a Retired label" /> |
 
 ## Behind the scenes
 
 - **A check that retired maps stay hidden.** The smoke suite searches All Maps for each retired map
-  and reads every listing page, on each environment, and checks that dev's All Events list still has
-  them. (#1098)
+  and reads every listing page, on each environment. It checks that dev's All Events list still has
+  them, each labelled Retired, and that each retired map's link opens the ended page and no map.
+  (#1098)
 - **The GIS services check skips retired maps' services** rather than listing them as known
   failures. (#1098)
 
