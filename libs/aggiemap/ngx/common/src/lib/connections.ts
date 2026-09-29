@@ -88,8 +88,8 @@ function createConnections(gisHost: string): IComposedConnections {
     galvestonFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/GalBase2/FeatureServer',
     mcallenBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/VectorTileServer',
     mcallenFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/HigherEd/FeatureServer',
-    dcBushSchoolBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DC_Bush_School/VectorTileServer',
-    dcBushSchoolFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DC_Bush_School/FeatureServer'
+    dcBushSchoolBasemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/VectorTileServer',
+    dcBushSchoolFeatureServerUrl: 'https://gis.tamu.edu/arcgis/rest/services/Hosted/DCBush/FeatureServer'
   };
 }
 

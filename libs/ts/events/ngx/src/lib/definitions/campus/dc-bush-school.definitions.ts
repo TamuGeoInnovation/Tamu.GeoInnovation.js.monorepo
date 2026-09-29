@@ -65,8 +65,9 @@ export const DCBushSchoolLayerSources: LayerSource[] = [
 
 /**
  * Property search source for the DC / Bush School campus, backed by the `FeatureServer` companion
- * to the vector-tile basemap (same base path, layer `0`, "On-Campus"). This service only exposes a
- * `propertyname` field, unlike Galveston/McAllen which also have abbreviation/number fields.
+ * to the vector-tile basemap (same base path, layer `0`, "Bush-DC Buildings"). Since the services
+ * were republished as `Hosted/DCBush` (#1110) the layer carries the same building fields as
+ * Galveston/McAllen, except that the abbreviation field is `bldgabbr`, not `bldgabbrev`.
  */
 export const DCBushSchoolSearchSources: SearchSource[] = [
   {
@@ -76,21 +77,21 @@ export const DCBushSchoolSearchSources: SearchSource[] = [
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['propertyname'],
-        operators: ['LIKE'],
-        wildcards: ['includes'],
-        transformations: ['UPPER']
+        keys: ['bldgname', 'bldgabbr', 'number'],
+        operators: ['LIKE', 'LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes', 'includes'],
+        transformations: ['UPPER', 'UPPER', 'UPPER']
       },
       scoringWhere: {
-        keys: ['propertyname'],
-        operators: ['LIKE'],
-        wildcards: ['startsWith'],
-        transformations: ['UPPER']
+        keys: ['bldgname', 'bldgabbr'],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['startsWith', 'startsWith'],
+        transformations: ['UPPER', 'UPPER']
       }
     },
-    scoringKeys: ['attributes.propertyname'],
+    scoringKeys: ['attributes.bldgabbr', 'attributes.number', 'attributes.bldgname'],
     featuresLocation: 'features',
-    displayTemplate: '{attributes.propertyname}',
+    displayTemplate: '{attributes.bldgname} ({attributes.number})',
     popupComponent: Popups.BasePopupComponent,
     searchActive: true
   }
@@ -103,7 +104,7 @@ export const DCBushSchoolConfiguration: EventConfiguration = {
   shortApplicationName: 'DC / Bush School',
   introductionText: 'Map of the Texas A&M Bush School of Government & Public Service campus in Washington, D.C.',
   eventDates: [],
-  // Center/zoom derived from the campus property layer's full extent (DC_Bush_School FeatureServer).
+  // Center/zoom derived from the campus property layer's full extent (DCBush FeatureServer).
   mapCenter: [-77.037605, 38.903422],
   zoom: 19,
   hideLayerToggle: true,
