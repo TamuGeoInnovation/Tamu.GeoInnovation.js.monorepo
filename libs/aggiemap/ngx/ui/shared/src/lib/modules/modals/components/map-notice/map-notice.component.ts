@@ -39,21 +39,6 @@ export class MapNoticeComponent {
   public details: string[];
   public acknowledgeText: string;
 
-  constructor(private readonly mr: ModalRefService, @Inject(MODAL_DATA) private readonly data: MapNoticeData) {
-    this.title = data?.title ?? '';
-    this.message = data?.message ?? '';
-    this.details = data?.details ?? [];
-    this.acknowledgeText = data?.acknowledgeText || 'OK';
-  }
-
-  public acknowledge() {
-    if (this.data?.sessionKey) {
-      MapNoticeComponent.markDismissed(this.data.sessionKey);
-    }
-
-    this.mr.close(true);
-  }
-
   /** Whether this notice has already been dismissed in this session. */
   public static isDismissed(sessionKey: string): boolean {
     try {
@@ -69,5 +54,20 @@ export class MapNoticeComponent {
     } catch {
       // Nothing to do: the notice will show again next time, which is the safe failure.
     }
+  }
+
+  constructor(private readonly mr: ModalRefService, @Inject(MODAL_DATA) private readonly data: MapNoticeData) {
+    this.title = data?.title ?? '';
+    this.message = data?.message ?? '';
+    this.details = data?.details ?? [];
+    this.acknowledgeText = data?.acknowledgeText || 'OK';
+  }
+
+  public acknowledge() {
+    if (this.data?.sessionKey) {
+      MapNoticeComponent.markDismissed(this.data.sessionKey);
+    }
+
+    this.mr.close(true);
   }
 }
