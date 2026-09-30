@@ -123,8 +123,23 @@ globally-applied widget styles belong in an app's `styles.scss`.
 with a lone "should be created" breaks as soon as the class gains a dependency. The Angular
 generators are configured with `skipTests`.
 
+**Every bug gets a test.** Nothing else here requires one, so a bug could be fixed, and every rule
+followed, with nothing to stop it coming back.
+
+- **When a bug is filed**, an automated check catches it by then. If it cannot be fixed yet, the check
+  still runs and lists it as a known failure tied to the issue (`allowedServiceFailures`,
+  `allowedSearchSourceFailures` and the like in `test/smoke/aggiemap/environments.json`), so it stays
+  visible and its fix is noticed.
+- **When it is fixed**, the pull request includes the test that failed on the unfixed code, and
+  removes its known-failure entry where the fix now runs. If a bug genuinely cannot be tested
+  automatically, the pull request says why.
+
 **Prove a regression test fails first.** Run it against the unmodified code and confirm it
 fails for the expected reason before applying the fix.
+
+**A check must ask what the app actually does.** "Does the service answer?" passed a query asking for
+renamed fields (#1166) and, on dev, a bike racks address that pointed at bike lanes (#1122). Check the
+layer is the right one, has the fields the app uses, and answers the app's own query. See #1167.
 
 ## Release notes
 

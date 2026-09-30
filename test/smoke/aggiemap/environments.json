@@ -22,7 +22,9 @@
     },
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
-      "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the GIS server"
+      "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the GIS server",
+      "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has",
+      "bike-racks": "#1122: on the development GIS server, TS_Bicycles layer 3 is Campus Bike Lanes, not bike racks"
     }
   },
   "production": {
@@ -38,7 +40,8 @@
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
       "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
-      "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server"
+      "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
+      "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has"
     }
   },
   "local": {
@@ -53,7 +56,8 @@
     },
     "allowedSearchSourceFailures": {
       "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
-      "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server"
+      "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
+      "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has"
     }
   }
 }

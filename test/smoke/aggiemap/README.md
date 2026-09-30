@@ -34,7 +34,9 @@ retired maps out of the maps it tests, and `services.spec.ts` to skip services o
 `search-sources.spec.ts` exercises every search source the main map defines, each the way a visitor
 reaches it (#1138). Typed sources must answer their term under their own heading and open real
 details. Deep-link sources (`?bldg=`, `?BldgAbbrv=`, `?poi=`, `?busstop=`) must open theirs. Sources
-used only by the Directions tab have their service asked directly. A guard fails if
+used only by the Directions tab are checked at their layer: it must be the layer the row expects,
+have every field the source's query, where clause and display use (read from `search-sources.ts`),
+and answer the source's own query (#1167). A guard fails if
 `search-sources.ts` gains a source with no row. Known failures per environment are listed under
 `allowedSearchSourceFailures` in `environments.json`, each tied to an issue.
 

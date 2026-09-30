@@ -58,6 +58,13 @@ fields a garage doesn't have. They now get their own details, with the garage's 
   confirms the bike racks problem already filed
   ([#1122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1122)).
   ([#1138](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1138))
+- **Every bug gets a test, and the search checks ask what the app actually does.** A rule in
+  `CLAUDE.md` now requires a test when a bug is filed and when it is fixed. The checks for the
+  sources only the Directions tab uses now run each source's own query instead of asking whether its
+  service answers. That found a third hidden problem: the parking lookup used by drive directions
+  asks for fields that were renamed, so its query fails on production
+  ([#1166](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1166)).
+  ([#1167](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1167))
 
 ---
 
