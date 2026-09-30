@@ -74,6 +74,80 @@ without an account. That is the point — release notes are for the people who a
 work and the people who test it, not only for the people who wrote it. Sharing a link should
 never require the reader to sign in to anything.
 
+## The deploy pipeline
+
+Two systems, and most confusion here is about where the first one's job ends.
+
+**GitHub holds the code and runs checks.** Lint, tests, build-affected, the linked-issue rule, and the
+daily smoke schedule. These answer "is this commit all right?" **None of them produce anything that can
+be deployed.**
+
+**Azure DevOps builds artifacts and puts them on servers.** Two separate definitions, and the
+difference between them is worth holding on to: a *build* compiles, a *release* deploys.
+
+### Build definition 19, "Monorepo"
+
+YAML, from [`azure-pipelines.yml`](../../azure-pipelines.yml) at the repository root.
+
+**It builds automatically on pull requests only. Merging to `development` does not start a build.**
+Every automatic build is a `pullRequest` build against `refs/pull/<n>/merge`; a build of `development`
+itself has to be queued by hand. On 30 September, nine pull requests merged overnight and **no**
+deployable build existed the next morning until one was queued.
+
+**A pull request build is not deployable, and not only by convention.** `IS_DEPLOYABLE` in
+`azure-pipelines.yml` is true for `development` and `master` only, and those builds compile *every*
+non-excluded project. Other branches build only the projects Nx says are affected, so their artifact
+is genuinely incomplete — there is nothing to deploy, rather than a rule saying you may not.
+
+**One run produces both artifacts.** The Build stage calls the same template twice, with
+`buildType: development` and `buildType: production`, so `js-monorepo-development` and
+`js-monorepo-production` come out of one run at one commit. That is why a single commit correctly
+carries both a `dev-` and a `prod-` tag.
+
+To queue one: Pipelines → Monorepo → Run pipeline → branch `development`.
+
+### Release definition 13, "AggieMap"
+
+Takes a build's artifact and puts it on a server. Stages:
+
+| Stage | Environment |
+| --- | --- |
+| `GIS-1D Development` | `dev.aggiemap.tamu.edu` |
+| `GIS-1P Production` | `aggiemap.tamu.edu` |
+| `Production (OLD)` | retired |
+
+Each stage is approved separately. **Create the release after its build has finished** — a release
+created against a build still running is asking for an artifact that does not exist yet. **Promoting to
+production means approving the next stage of the same release**, not making a new build: the point is
+to ship the artifact that was tested.
+
+`G_TAG` is substituted **during the release, per stage**, by a step that rewrites `index.html`. Not in
+the build, and not at container start — `index.html` ships the literal `G_TAG` placeholder, which is
+why a local dev server serves it unsubstituted. The values come from variable groups: **65
+`Aggiemap Prod`** and **58 `Aggiemap Dev`**.
+
+### Tags are ours, in git, not Azure DevOps
+
+The tags are how a build becomes identifiable outside the pipeline. What they mean and how they behave
+is under [What the tags are for](#what-the-tags-are-for).
+
+### Verify a deploy by what is served, not by what the release says
+
+A release reporting success means its steps ran, not that the browser is getting new code. Fetch
+`/map`, read the hashed `main.<hash>.js` it references, and look in that file for a string only the new
+build contains. The bundle hash changing is the proof.
+
+This is not pedantry. On 29 September a deployment was declared missing on the strength of a mistyped
+URL, and an issue was filed on that false premise; on 30 September the same check settled in minutes
+why 57 production tests were failing. Both times the bundle was the thing that answered.
+
+### Who does what
+
+| | |
+| --- | --- |
+| Queue builds, approve release stages | Daniel — Azure DevOps write access is deliberately not shared |
+| Verify, test, tag, write the record | whoever is running the release |
+
 ## Cutting a release
 
 One sequence, in order. Each step either proves something or records it, and the note under each says
@@ -87,8 +161,15 @@ wrong until someone got to it (#1094, #1132, #1144).
 
 ### 1. Build and deploy to dev
 
-Create the release **after** its build has finished. A release created against a build still in
-progress is asking for the artifact it wants before it exists.
+**Queue the build by hand**, against `development`. Merging does not start one, and a pull request
+build cannot be deployed - [The deploy pipeline](#the-deploy-pipeline) says why.
+
+Then create the release **after** that build has finished, and approve `GIS-1D Development`. A release
+created against a build still in progress is asking for the artifact it wants before it exists.
+
+Confirm dev is actually serving the new code before going on: the bundle hash under `/map` should have
+changed, and should contain something only this build has. The release reporting success is not the
+same claim.
 
 ### 2. Run the full suite against dev
 
@@ -167,9 +248,9 @@ A build is identified by an Azure DevOps build number, which nobody outside the 
 Tags make three things answerable from the repository alone: which commit production is running,
 which build was verified on dev on a given day, and whether the one promoted is the one that passed.
 
-`azure-pipelines.yml` runs the build template twice in one run, publishing `js-monorepo-development`
-and `js-monorepo-production` from the same commit, so one build serves both environments and the same
-commit carries both tags.
+One build run publishes both `js-monorepo-development` and `js-monorepo-production` from the same
+commit, so one build serves both environments and the same commit carries both tags - see
+[The deploy pipeline](#the-deploy-pipeline).
 
 Tags go to `origin`, not to a fork - the one place the never-push-to-origin rule does not apply.
 
