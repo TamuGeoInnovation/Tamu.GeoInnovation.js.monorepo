@@ -7,7 +7,7 @@ import { Angulartics2Module } from 'angulartics2';
 
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { AggiemapNgxCoreModule, EVENT_NOTIFICATION_DEFINITIONS } from '@tamu-gisc/aggiemap/ngx/core';
-import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
+import { NotificationGroupedModule, NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
 import { BUS_STOP_POPUP_COMPONENT } from '@tamu-gisc/maps/feature/trip-planner';
 import { BusStopPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
@@ -31,6 +31,7 @@ WebFont.load({
     HttpClientModule,
     EnvironmentModule,
     NotificationModule,
+    NotificationGroupedModule,
     AggiemapNgxCoreModule
   ],
   declarations: [AppComponent],

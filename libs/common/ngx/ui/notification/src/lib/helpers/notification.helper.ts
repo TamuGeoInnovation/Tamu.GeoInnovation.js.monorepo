@@ -11,6 +11,7 @@ export class Notification {
   public range: NotificationProperties['range'];
   public acknowledge: NotificationProperties['acknowledge'];
   public action: NotificationProperties['action'];
+  public priority: NotificationProperties['priority'];
 
   constructor(properties: NotificationProperties) {
     this.id = properties.id || '';
@@ -23,5 +24,6 @@ export class Notification {
     this.range = properties.range || [0, 0];
     this.acknowledge = properties.acknowledge || false;
     this.action = properties.action || undefined;
+    this.priority = properties.priority || 'normal';
   }
 }

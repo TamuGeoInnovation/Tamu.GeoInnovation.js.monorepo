@@ -1,3 +1,6 @@
+/** Relative urgency of a notification. `normal` when unset. */
+export type NotificationPriority = 'high' | 'normal';
+
 export interface NotificationProperties {
   /**
    * Unique notification identification. Can be used to call a preset.
@@ -20,6 +23,17 @@ export interface NotificationProperties {
    * If false, it will be prompted every time unless it is a preset call.
    */
   acknowledge?: boolean;
+
+  /**
+   * How urgent this notification is relative to others showing at the same time.
+   *
+   * `high` sorts above `normal`, which is the default. Within a priority, the order notifications
+   * arrived in is kept, so two ordinary notifications behave exactly as they did before.
+   *
+   * Only meaningful where several can show at once - a grouped container. On its own a notification
+   * is neither first nor last.
+   */
+  priority?: NotificationPriority;
 
   /**
    * Image URL for the notification icon.
