@@ -1,8 +1,37 @@
-<tamu-gisc-notification-item 
-  *ngFor="let item of notifications | async" 
-  [notification]="item" 
-  (closeNotification)="close($event)" 
-  (acknowledgeNotification)="acknowledge($event)"
-  (actionNotification)="action($event)" 
-  [position]="position">
-</tamu-gisc-notification-item>
+<ng-container *ngIf="!grouped">
+  <tamu-gisc-notification-item
+    *ngFor="let item of notifications | async"
+    [notification]="item"
+    (closeNotification)="close($event)"
+    (acknowledgeNotification)="acknowledge($event)"
+    (actionNotification)="action($event)"
+    [position]="position">
+  </tamu-gisc-notification-item>
+</ng-container>
+
+<div
+  *ngIf="grouped && groupVisible"
+  class="notification-grouped-wrapper"
+  [ngClass]="[position, groupShowing ? 'show' : '']"
+  (mouseover)="pauseGroup()"
+  (mouseleave)="resumeGroup()">
+  <div class="status" [style.width.%]="groupTimerPercent"></div>
+  <div class="close material-icons" tabindex="0" (click)="closeGroup()" title="Close">close</div>
+  <ng-container *ngFor="let item of groupedItems; let last = last">
+    <div class="grouped-item" (click)="actionGroupItem(item)" [class.actionable]="item.action">
+      <div class="grouped-image" *ngIf="item.imgUrl">
+        <img [src]="item.imgUrl" [title]="item.imgAltText" [alt]="item.imgAltText" />
+      </div>
+      <div class="grouped-text">
+        <div class="grouped-title">{{ item.title }}</div>
+        <div class="grouped-description" [innerHTML]="item.message"></div>
+        <div class="grouped-ack" *ngIf="item.acknowledge">
+          <a href="#" class="dont-show-again"
+            (click)="acknowledgeGroupItem(item); $event.preventDefault(); $event.stopPropagation();"
+            title="Don't show this notification again">[ Don't show again ]</a>
+        </div>
+      </div>
+    </div>
+    <hr *ngIf="!last" class="grouped-separator" />
+  </ng-container>
+</div>
