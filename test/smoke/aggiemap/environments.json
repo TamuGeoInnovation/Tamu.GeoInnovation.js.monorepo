@@ -19,6 +19,10 @@
       "accessibleUrl": "#1005: the development GIS server does not serve this layer",
       "bikeMapUrl": "#1005: the development GIS server requires a token for this service",
       "footballGamedayShuttlesUrl": "#1123: unused entry; the development GIS server requires a token"
+    },
+    "allowedSearchSourceFailures": {
+      "parking-garage": "#1163: choosing a garage opens an empty details panel",
+      "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the GIS server"
     }
   },
   "production": {
@@ -30,6 +34,11 @@
       "bikeRacksUrl": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
       "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
+    },
+    "allowedSearchSourceFailures": {
+      "parking-garage": "#1163: choosing a garage opens an empty details panel",
+      "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
+      "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server"
     }
   },
   "local": {
@@ -41,6 +50,11 @@
       "bikeRacksUrl": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
       "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
+    },
+    "allowedSearchSourceFailures": {
+      "parking-garage": "#1163: choosing a garage opens an empty details panel",
+      "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
+      "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server"
     }
   }
 }
