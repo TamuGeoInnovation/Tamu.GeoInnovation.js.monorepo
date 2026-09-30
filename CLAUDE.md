@@ -113,10 +113,15 @@ the same pull request**, with its before/after screenshots linked from `docs/scr
 pull request: on 28 September that left the notes without images when the pull request merged, and
 meant going back for them after the release reached production (#1132).
 
-**Prepare the release pull request before production; merge it after.** Once the full suite passes
-on dev, open the pull request that renames `unreleased.md` to the date it will ship, records the dev
-run's numbers, and points *What to test* at production. When production is up and looks right, merge
-it. Nothing is captured, rebuilt or re-run for the notes after production.
+**The release notes merge before production, not after.** They describe what a release contains and
+what cleared it; they do not assert that it is deployed. The `prod-*` tag records that, which is a
+fact rather than a claim someone has to remember to make true. Writing them after the deploy left the
+file most likely to be shared outside the team wrong until someone got to it (#1094, #1132, #1144).
+
+**The order is one sequence, in [docs/releases/README.md](docs/releases/README.md):** build and deploy
+to dev, run the full suite, tag dev only if it passed, merge the notes, deploy production, tag
+production, check production. Follow it rather than reconstructing it; it was written after doing it
+by hand and getting the order wrong.
 
 **Tag the commit each build comes from.** `scripts/tag-build.sh dev` when a build reaches dev,
 `scripts/tag-build.sh prod` when it is promoted, then `git push origin <tag>`. One build serves both
