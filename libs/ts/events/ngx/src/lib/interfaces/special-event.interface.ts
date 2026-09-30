@@ -107,6 +107,14 @@ export interface EventConfiguration {
   toast?: NotificationProperties;
 
   /**
+   * The series this event belongs to, such as the 150th anniversary events.
+   *
+   * Supplies a shared notification icon, so a definition says what the event *is* rather than which
+   * file to draw. See `EVENT_SERIES_ICONS`.
+   */
+  series?: string;
+
+  /**
    * A notice shown once per session when this map opens, in a modal like the event-passed warning.
    *
    * For something a visitor must see before using the map and that the map itself cannot show - a

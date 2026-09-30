@@ -245,6 +245,7 @@ export const Kickoff150thConfiguration: EventConfiguration = {
   applicationName: '150th Opening Ceremony Map',
   shortApplicationName: '150th Opening Ceremony',
   eventDates: ['2026-10-02'],
+  series: '150th',
   // Centre and zoom derived from the service extent, not chosen by eye. Queried in WGS84 (the service
   // is published in EPSG:32139, Texas State Plane Central, so its native extent is not lon/lat):
   // [-96.34541, 30.60766] .. [-96.33802, 30.61329], about 0.71km across.
@@ -257,11 +258,14 @@ export const Kickoff150thConfiguration: EventConfiguration = {
 
   // Announced 30 September: the ceremony moved indoors because of the forecast. The toast carries the
   // short version on the main map; the full details are in `notice` below, shown on this event's own
-  // map. No `imgUrl`, so the notification renders as text - there is no 150th icon in `libs/assets`.
+  // map. The icon comes from the `150th` series rather than being named here.
   //
   // Remove both once the event has passed on 2 October.
   toast: {
     id: '150th-kickoff-venue-change',
+    // Above the other 2 October event's toast: a venue change is the thing someone needs to know, and
+    // without this the two arrive in definition order and the more useful one can end up second.
+    priority: 'high',
     title: 'Opening Ceremony moved to Rudder Auditorium',
     message:
       'Because of the forecast, the Sesquicentennial Opening Ceremony on Friday 2 October is now indoors at Rudder Auditorium. Click me for parking, shuttles and timings.',

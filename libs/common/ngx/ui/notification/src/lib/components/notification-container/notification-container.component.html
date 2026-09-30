@@ -18,11 +18,16 @@
   <div class="status" [style.width.%]="groupTimerPercent"></div>
   <div class="close material-icons" tabindex="0" (click)="closeGroup()" title="Close">close</div>
   <ng-container *ngFor="let item of groupedItems; let last = last">
-    <div class="grouped-item" (click)="actionGroupItem(item)" [class.actionable]="item.action">
+    <div
+      class="grouped-item"
+      (click)="actionGroupItem(item)"
+      [class.actionable]="item.action"
+      [class.grouped-item--high]="item.priority === 'high'">
       <div class="grouped-image" *ngIf="item.imgUrl">
         <img [src]="item.imgUrl" [title]="item.imgAltText" [alt]="item.imgAltText" />
       </div>
       <div class="grouped-text">
+        <div class="grouped-priority" *ngIf="item.priority === 'high'">Important</div>
         <div class="grouped-title">{{ item.title }}</div>
         <div class="grouped-description" [innerHTML]="item.message"></div>
         <div class="grouped-ack" *ngIf="item.acknowledge">

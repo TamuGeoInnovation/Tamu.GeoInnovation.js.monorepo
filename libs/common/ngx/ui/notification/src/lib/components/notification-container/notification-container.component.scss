@@ -63,6 +63,24 @@
     }
   }
 
+  // A high-priority entry is already sorted to the top, but position alone does not say why it is
+  // there - the entry below it looks identical. The bar and the label are what make it read as more
+  // than "first".
+  .grouped-item--high {
+    border-left: 4px solid #500000;
+    padding-left: calc(1.25rem - 4px);
+    background: #fbf7f7;
+  }
+
+  .grouped-priority {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #500000;
+    margin-bottom: 0.15rem;
+  }
+
   .grouped-image {
     display: flex;
     flex-direction: column;

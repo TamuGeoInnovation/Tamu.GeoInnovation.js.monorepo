@@ -44,13 +44,29 @@ export class NotificationContainerComponent implements OnInit, OnDestroy {
     private readonly service: NotificationService
   ) {}
 
+  /**
+   * Highest priority first, and within a priority the order they arrived in.
+   *
+   * A plain `sort` is not enough: it is only stable by specification in modern engines, and relying
+   * on that would make "two ordinary notifications keep their order" an accident rather than a
+   * guarantee. Sorting on the index makes it explicit.
+   */
+  public static byPriority(items: Notification[]): Notification[] {
+    const rank = (item: Notification) => (item.priority === 'high' ? 0 : 1);
+
+    return items
+      .map((item, index) => ({ item, index }))
+      .sort((a, b) => rank(a.item) - rank(b.item) || a.index - b.index)
+      .map(({ item }) => item);
+  }
+
   public ngOnInit() {
     this.notifications = this.service.notifications;
 
     if (this.grouped) {
       this._groupSubscription = this.service.notifications.subscribe((items) => {
         const hadItems = this.groupedItems.length > 0;
-        this.groupedItems = [...items];
+        this.groupedItems = NotificationContainerComponent.byPriority(items);
 
         if (items.length > 0 && !this.groupVisible) {
           this.groupVisible = true;

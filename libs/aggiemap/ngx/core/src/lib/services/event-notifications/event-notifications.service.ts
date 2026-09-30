@@ -5,7 +5,25 @@ interface EventToastConfig {
   id: string;
   eventDates: Array<string | Date | number>;
   toast?: NotificationProperties;
+  /** The series this event belongs to, if any. Supplies a shared toast icon - see EVENT_SERIES_ICONS. */
+  series?: string;
 }
+
+/**
+ * The icon a series' events use in notifications.
+ *
+ * Events in a series share an identity, and repeating a file path in every definition means the next
+ * one is added without it, or a logo change misses one. A definition says which series it belongs to;
+ * the icon follows from that.
+ *
+ * A toast may still set `imgUrl` itself, which wins - for a one-off that genuinely differs.
+ */
+export const EVENT_SERIES_ICONS: Record<string, { imgUrl: string; imgAltText: string }> = {
+  '150th': {
+    imgUrl: './assets/images/logo/150th-wordmark-stacked-maroon.svg',
+    imgAltText: 'Texas A&M 150th Anniversary'
+  }
+};
 
 interface EventNotificationEntry {
   configuration?: EventToastConfig | null;
@@ -65,7 +83,7 @@ export class EventNotificationsService {
       });
 
       if (isOngoing || isUpcoming) {
-        this.triggerEventToast(config.toast, config.id);
+        this.triggerEventToast(config.toast, config.id, config.series);
       }
     });
   }
@@ -76,9 +94,15 @@ export class EventNotificationsService {
    * @param toastConfig The notification properties for the toast
    * @param eventId The event ID to ensure unique notification IDs
    */
-  private triggerEventToast(toastConfig: NotificationProperties, eventId: string): void {
+  private triggerEventToast(toastConfig: NotificationProperties, eventId: string, series?: string): void {
     // Create a copy of the toast config to avoid modifying the original
     const notificationProps = { ...toastConfig };
+
+    // A series supplies the icon unless the toast set one itself.
+    if (!notificationProps.imgUrl && series && EVENT_SERIES_ICONS[series]) {
+      notificationProps.imgUrl = EVENT_SERIES_ICONS[series].imgUrl;
+      notificationProps.imgAltText = notificationProps.imgAltText || EVENT_SERIES_ICONS[series].imgAltText;
+    }
 
     // Add a unique ID if not provided to prevent duplicate notifications
     if (!notificationProps.id) {

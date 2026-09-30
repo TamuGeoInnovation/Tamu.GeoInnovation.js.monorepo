@@ -56,6 +56,7 @@ export const KickoffAtKyleConfiguration: EventConfiguration = {
   shortApplicationName: 'Kickoff at Kyle Map',
   introductionText: 'Get the best transportation and logistics information for Kickoff at Kyle.',
   eventDates: ['2026-10-02'],
+  series: '150th',
   // Centre derived from the service extent (WGS84): x -96.34988..-96.33725,
   // y 30.60111..30.61305 -- roughly 1.2km across. Zoom set one level tighter than that extent
   // would suggest, so the lots fill the view rather than sitting small in the middle.
@@ -66,8 +67,6 @@ export const KickoffAtKyleConfiguration: EventConfiguration = {
     title: 'Kickoff at Kyle Transportation Map Available',
     message:
       'Attending Kickoff at Kyle? Click me to open the Kickoff at Kyle Transportation Map to get the best logistics and transportation information!',
-    imgUrl: './assets/images/icons/sports/Football.png',
-    imgAltText: 'Kickoff at Kyle Icon',
     acknowledge: true,
     action: {
       type: 'internal',
