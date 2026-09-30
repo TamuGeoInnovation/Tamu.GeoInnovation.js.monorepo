@@ -20,8 +20,11 @@ import { blockAnalytics } from './analytics';
  *   source's heading, and choosing the result must open its details.
  * - `deep-link`: a URL parameter such as `?bldg=` opens a feature through that source.
  * - `service`: used only by the Directions tab. Planning a route to reach it is out of scope here, so
- *   the source's service is asked directly whether it answers with features. That catches a moved or
- *   stopped service, not a wrong where clause.
+ *   the source's own query is run against its layer directly. The layer must be the one the row
+ *   expects, must have every field the source's query, where clause and display use (read from
+ *   `search-sources.ts`, so they cannot drift), and must answer the source's own query with features.
+ *   Asking only whether the service answered missed a query asking for renamed fields (#1166) and, on
+ *   dev, a bike racks address that is a bike lanes layer (#1122).
  *
  * `not-on-main-map` records a source the main map defines but never uses, so the guard below still
  * knows it was considered.
@@ -44,7 +47,13 @@ type SourceCase =
       popupShows: RegExp;
     }
   | { kind: 'deep-link'; query: string; popupShows: RegExp }
-  | { kind: 'service'; url: string; usedBy: string }
+  | {
+      kind: 'service';
+      url: string;
+      usedBy: string;
+      /** The layer's name, so an address that now points at another layer fails. */
+      layerName: RegExp;
+    }
   | { kind: 'not-on-main-map'; usedBy: string };
 
 const BASE_URL = process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu';
@@ -95,15 +104,31 @@ const SOURCE_CASES: Record<string, SourceCase> = {
     kind: 'not-on-main-map',
     usedBy: 'BuildingDepartmentListComponent, which no template includes'
   },
-  'all-parking': { kind: 'service', url: `${connections.tsMainUrl}/6`, usedBy: 'Directions, drive mode' },
-  'visitor-parking': { kind: 'service', url: `${connections.tsMainUrl}/6`, usedBy: 'Directions, drive mode' },
+  'all-parking': {
+    kind: 'service',
+    url: `${connections.tsMainUrl}/6`,
+    usedBy: 'Directions, drive mode',
+    layerName: /^Parking Lots$/
+  },
+  'visitor-parking': {
+    kind: 'service',
+    url: `${connections.tsMainUrl}/6`,
+    usedBy: 'Directions, drive mode',
+    layerName: /^Parking Lots$/
+  },
   // Hard-coded in search-sources.ts rather than in connections.ts, so it is copied here (#1162).
   'night-parking': {
     kind: 'service',
     url: 'https://arc.ts.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer/6',
-    usedBy: 'Directions, drive mode'
+    usedBy: 'Directions, drive mode',
+    layerName: /parking/i
   },
-  'bike-racks': { kind: 'service', url: connections.bikeRacksUrl, usedBy: 'Directions, bike mode' },
+  'bike-racks': {
+    kind: 'service',
+    url: connections.bikeRacksUrl,
+    usedBy: 'Directions, bike mode',
+    layerName: /bike rack/i
+  },
   'university-departments': {
     kind: 'not-on-main-map',
     usedBy: 'the football, move-in, ring day and effluent apps define their own copy'
@@ -114,9 +139,9 @@ const SOURCE_CASES: Record<string, SourceCase> = {
   }
 };
 
-/** The sources `search-sources.ts` defines, read as text: it imports Angular, so it cannot be loaded here. */
-function definedSources(): string[] {
-  const file = path.join(
+/** `search-sources.ts` as text: it imports Angular, so it cannot be loaded here. */
+const SEARCH_SOURCES_TEXT = fs.readFileSync(
+  path.join(
     __dirname,
     '..',
     '..',
@@ -129,11 +154,57 @@ function definedSources(): string[] {
     'lib',
     'search-sources',
     'search-sources.ts'
-  );
-  const source = fs.readFileSync(file, 'utf8');
+  ),
+  'utf8'
+);
 
+/** The sources `search-sources.ts` defines. */
+function definedSources(): string[] {
   // Top-level entries are indented six spaces; an `altLookup` names a source at eight, and is not a new one.
-  return [...source.matchAll(/^ {6}source: '([a-z-]+)',$/gm)].map((match) => match[1]);
+  return [...SEARCH_SOURCES_TEXT.matchAll(/^ {6}source: '([a-z-]+)',$/gm)].map((match) => match[1]);
+}
+
+interface SourceQuery {
+  /** What the source asks for, as it sends it; `*` when it does not narrow the fields. */
+  outFields: string[];
+  /** Every field the source's query, where clause and display template name. */
+  fieldsUsed: string[];
+}
+
+/**
+ * A source's query, read from its entry in `search-sources.ts`: its `outFields`, the keys of its
+ * `where` clause (not `scoringWhere`), and the fields its `displayTemplate` shows.
+ */
+function sourceQuery(source: string): SourceQuery {
+  const start = SEARCH_SOURCES_TEXT.search(new RegExp(`^ {6}source: '${source}',$`, 'm'));
+
+  if (start === -1) {
+    throw new Error(`${source} was not found in search-sources.ts`);
+  }
+
+  // The entry runs until the next top-level key (`    NIGHT_PARKING: {`) or the end of the map.
+  const rest = SEARCH_SOURCES_TEXT.slice(start);
+  const end = rest.search(/\n {4}[A-Z_]+: \{|\n {2}\};/);
+  const entry = end === -1 ? rest : rest.slice(0, end);
+
+  const outFields = (entry.match(/outFields: [`'"]([^`'"]*)[`'"]/)?.[1] ?? '*')
+    .split(',')
+    .map((field) => field.trim())
+    .filter((field) => field.length > 0);
+
+  const whereKeys = [...(entry.match(/\bwhere: \{[^}]*?keys: \[([^\]]*)\]/)?.[1].matchAll(/'([^']+)'/g) ?? [])]
+    .map((match) => match[1])
+    // `keys: ['1']` with `=` is the "every feature" clause, not a field.
+    .filter((key) => key !== '1');
+
+  const displayFields = [...(entry.match(/displayTemplate: '([^']*)'/)?.[1].matchAll(/\{attributes\.([^}]+)\}/g) ?? [])].map(
+    (match) => match[1]
+  );
+
+  return {
+    outFields,
+    fieldsUsed: [...new Set([...outFields.filter((field) => field !== '*'), ...whereKeys, ...displayFields])]
+  };
 }
 
 interface EnvironmentSettings {
@@ -202,36 +273,104 @@ async function checkOrRecordKnown(source: string, known: string | undefined, che
   }
 }
 
-/** Why a service does not answer with features, or null if it does. */
-async function serviceProblem(request: import('@playwright/test').APIRequestContext, url: string): Promise<string | null> {
+/** A layer field matches a name the source uses exactly, or as the last part of a joined layer's qualified name. */
+function hasField(layerFields: string[], field: string): boolean {
+  return layerFields.some((name) => name === field || name.endsWith(`.${field}`));
+}
+
+async function getJson(
+  request: import('@playwright/test').APIRequestContext,
+  url: string,
+  params: Record<string, string>
+): Promise<{ body?: Record<string, unknown>; problem?: string }> {
   let response;
 
   try {
-    response = await request.get(`${url}/query`, {
-      params: { where: '1=1', outFields: '*', returnGeometry: 'false', resultRecordCount: '1', f: 'json' },
-      timeout: 30_000,
-      failOnStatusCode: false
-    });
+    response = await request.get(url, { params: { ...params, f: 'json' }, timeout: 30_000, failOnStatusCode: false });
   } catch (error) {
-    return `request failed: ${(error as Error).message.split('\n')[0]}`;
+    return { problem: `request failed: ${(error as Error).message.split('\n')[0]}` };
   }
 
-  let body: { error?: { code?: number; message?: string }; features?: unknown[] };
+  let body: Record<string, unknown> & { error?: { code?: number; message?: string } };
 
   try {
     body = await response.json();
   } catch {
-    return `HTTP ${response.status()}, not JSON`;
+    return { problem: `HTTP ${response.status()}, not JSON` };
   }
 
   if (body.error) {
-    return `${body.error.code ?? 'error'} ${body.error.message ?? ''}`.trim();
+    return { problem: `${body.error.code ?? 'error'} ${body.error.message ?? ''}`.trim() };
   }
 
-  return (body.features?.length ?? 0) > 0 ? null : 'answered with no features';
+  return { body };
+}
+
+/**
+ * Everything wrong with a Directions-only source's layer: the wrong layer, a field the source uses that
+ * the layer lacks, or the source's own query failing or finding nothing. Empty when all is well.
+ */
+async function sourceProblems(
+  request: import('@playwright/test').APIRequestContext,
+  source: string,
+  url: string,
+  layerName: RegExp
+): Promise<string[]> {
+  const layer = await getJson(request, url, {});
+
+  if (layer.problem) {
+    return [`the layer answered "${layer.problem}"`];
+  }
+
+  const problems: string[] = [];
+  const name = String(layer.body?.['name'] ?? '');
+  const layerFields = ((layer.body?.['fields'] as { name: string }[] | undefined) ?? []).map((field) => field.name);
+  const { outFields, fieldsUsed } = sourceQuery(source);
+
+  if (!layerName.test(name)) {
+    problems.push(`the layer is "${name}", not one matching ${layerName}`);
+  }
+
+  const missing = fieldsUsed.filter((field) => !hasField(layerFields, field));
+
+  if (missing.length > 0) {
+    problems.push(`the layer has no field ${missing.map((field) => `"${field}"`).join(', ')}`);
+  }
+
+  const query = await getJson(request, `${url}/query`, {
+    where: '1=1',
+    outFields: outFields.join(','),
+    returnGeometry: 'false',
+    resultRecordCount: '1'
+  });
+
+  if (query.problem) {
+    problems.push(`its own query answered "${query.problem}"`);
+  } else if (((query.body?.['features'] as unknown[] | undefined) ?? []).length === 0) {
+    problems.push('its own query found no features');
+  }
+
+  return problems;
 }
 
 test.describe('search sources on the main map', () => {
+  test('every Directions-only source has a query that can be read from search-sources.ts', () => {
+    // Guards the parsing the service rows depend on: an entry that cannot be found, or a query that
+    // reads as no fields, would otherwise be checked against nothing.
+    for (const [source, sourceCase] of Object.entries(SOURCE_CASES)) {
+      if (sourceCase.kind === 'service') {
+        expect(sourceQuery(source).outFields.length, `${source}: no outFields were read`).toBeGreaterThan(0);
+      }
+    }
+
+    expect(
+      sourceQuery('all-parking').fieldsUsed,
+      'all-parking should read its four outFields and display field'
+    ).toHaveLength(5);
+    expect(sourceQuery('night-parking').fieldsUsed, 'night-parking should read its where key').toContain('Night_Lot');
+    expect(sourceQuery('bike-racks').fieldsUsed, 'bike-racks should read its display field').toEqual(['Type']);
+  });
+
   test('every source in search-sources.ts has a case', () => {
     const defined = definedSources();
 
@@ -293,13 +432,13 @@ test.describe('search sources on the main map', () => {
         });
       });
     } else if (sourceCase.kind === 'service') {
-      const { url, usedBy } = sourceCase;
+      const { url, usedBy, layerName } = sourceCase;
 
-      test(`${source}: its service answers with features (used by ${usedBy})`, async ({ request }) => {
+      test(`${source}: its layer answers its own query (used by ${usedBy})`, async ({ request }) => {
         await checkOrRecordKnown(source, known, async () => {
-          const problem = await serviceProblem(request, url);
+          const problems = await sourceProblems(request, source, url, layerName);
 
-          expect(problem, `${source}: ${url} answered "${problem}"`).toBeNull();
+          expect(problems, `${source} (${url}): ${problems.join('; ')}`).toEqual([]);
         });
       });
     } else {

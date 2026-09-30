@@ -130,7 +130,11 @@ Nx provides a nifty interactive dependency graph tool that allows you to select 
 
 #### Unit tests
 
-The lack of coverage is where we could see a lot of improvement. However, they are NOT required at the moment but are highly appreciated. Unit tests are written with Jest and e2e tests with Cypress.
+The lack of coverage is where we could see a lot of improvement. New unit tests are not required for every change, but are highly appreciated.
+
+**Bug fixes are the exception: every bug fix includes a test** that fails on the unfixed code and passes with the fix. If a bug genuinely cannot be tested automatically, say why in the pull request. See the testing rules in [CLAUDE.md](CLAUDE.md).
+
+Unit tests are written with Jest. Checks against a deployed site are Playwright suites under `test/smoke/`.
 
 ### General feedback or inquiries
 

@@ -263,5 +263,7 @@ including one in this file.
 - **Do not commit generator scaffold specs.** An empty `TestBed.configureTestingModule({})`
   with a lone "should be created" breaks as soon as the class gains a dependency. The Angular
   generators are configured with `skipTests`, so these are no longer produced.
+- **Every bug gets a test**, when it is filed (as a known failure if it cannot be fixed yet) and in
+  the pull request that fixes it. See `CLAUDE.md`.
 - **Prove a regression test fails first.** Run it against the unmodified code and confirm it
   fails for the expected reason before applying the fix.
