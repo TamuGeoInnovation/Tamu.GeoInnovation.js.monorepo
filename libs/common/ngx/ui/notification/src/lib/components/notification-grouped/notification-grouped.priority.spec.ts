@@ -1,5 +1,5 @@
 import { Notification } from '../../helpers/notification.helper';
-import { NotificationContainerComponent } from './notification-container.component';
+import { NotificationGroupedComponent } from './notification-grouped.component';
 
 /**
  * Ordering of grouped notifications (#1194).
@@ -12,21 +12,21 @@ import { NotificationContainerComponent } from './notification-container.compone
 const make = (id: string, priority?: 'high' | 'normal') =>
   new Notification({ id, title: id, message: id, ...(priority ? { priority } : {}) });
 
-describe('NotificationContainerComponent.byPriority', () => {
+describe('NotificationGroupedComponent.byPriority', () => {
   it('puts high priority first', () => {
-    const ordered = NotificationContainerComponent.byPriority([make('a'), make('urgent', 'high'), make('b')]);
+    const ordered = NotificationGroupedComponent.byPriority([make('a'), make('urgent', 'high'), make('b')]);
 
     expect(ordered.map((n) => n.id)).toEqual(['urgent', 'a', 'b']);
   });
 
   it('keeps arrival order within the same priority', () => {
-    const ordered = NotificationContainerComponent.byPriority([make('a'), make('b'), make('c')]);
+    const ordered = NotificationGroupedComponent.byPriority([make('a'), make('b'), make('c')]);
 
     expect(ordered.map((n) => n.id)).toEqual(['a', 'b', 'c']);
   });
 
   it('keeps arrival order among several high priority notifications', () => {
-    const ordered = NotificationContainerComponent.byPriority([
+    const ordered = NotificationGroupedComponent.byPriority([
       make('first', 'high'),
       make('ordinary'),
       make('second', 'high')
@@ -37,14 +37,14 @@ describe('NotificationContainerComponent.byPriority', () => {
 
   it('treats an unset priority as normal', () => {
     // The Notification constructor defaults it, so an unset priority must not sort above `normal`.
-    const ordered = NotificationContainerComponent.byPriority([make('unset'), make('explicit', 'normal')]);
+    const ordered = NotificationGroupedComponent.byPriority([make('unset'), make('explicit', 'normal')]);
 
     expect(ordered.map((n) => n.id)).toEqual(['unset', 'explicit']);
   });
 
   it('does not change the array it was given', () => {
     const items = [make('a'), make('urgent', 'high')];
-    NotificationContainerComponent.byPriority(items);
+    NotificationGroupedComponent.byPriority(items);
 
     expect(items.map((n) => n.id)).toEqual(['a', 'urgent']);
   });
