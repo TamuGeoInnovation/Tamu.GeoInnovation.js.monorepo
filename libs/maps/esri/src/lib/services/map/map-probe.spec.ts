@@ -57,6 +57,49 @@ describe('map probe', () => {
       await expect(probe.snapshot()).resolves.toEqual({ ready: false, viewReady: false, layers: [] });
     });
 
+    it("reports a graphics layer's graphics by type, and null for other layers (#1174)", async () => {
+      registerMapProbe(
+        {
+          map: {
+            allLayers: {
+              toArray: () => [
+                {
+                  id: 'bus-route-layer',
+                  title: 'Bus Routes',
+                  type: 'graphics',
+                  visible: true,
+                  loaded: true,
+                  graphics: {
+                    toArray: () => [
+                      { attributes: { type: 'route' } },
+                      { attributes: { type: 'waypoints' } },
+                      { attributes: { type: 'waypoints' } },
+                      { attributes: {} }
+                    ]
+                  }
+                },
+                { id: 'buildings', title: 'Buildings', type: 'feature', visible: true, loaded: true }
+              ]
+            }
+          },
+          view: { ready: true }
+        } as unknown as Parameters<typeof registerMapProbe>[0],
+        owner
+      );
+
+      const probe = (
+        window as unknown as Record<string, { snapshot: () => Promise<{ layers: { id: string; graphicTypes: unknown }[] }> }>
+      )[MAP_PROBE_GLOBAL];
+      const layers = (await probe.snapshot()).layers;
+
+      expect(layers.find((layer) => layer.id === 'bus-route-layer')?.graphicTypes).toEqual({
+        route: 1,
+        waypoints: 2,
+        untyped: 1
+      });
+      expect(layers.find((layer) => layer.id === 'buildings')?.graphicTypes).toBeNull();
+    });
+
     /**
      * Layers arrive in batches -- basemap first, operational layers after -- so the probe requires
      * the layer count to hold steady before calling the map settled. Without it a fast poller

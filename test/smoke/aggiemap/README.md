@@ -47,6 +47,12 @@ on production, shown on dev and localhost. Each environment's `directionsAvailab
 offers directions, both ways. `maps.spec.ts` also checks no map offers directions where they are
 unavailable. When routing returns to production, set `directionsAvailable` to true there.
 
+`bus.spec.ts` checks every bus route the bus panel lists draws its line and one stop marker for each
+stop it lists, and that choosing a route expands it and draws its stops (#1175, for #1174). It reads
+what the bus layer drew from the map probe's `graphicTypes`. Routes known to fail are listed per
+environment under `allowedBusRouteFailures`, tied to their issue. Where bus routes are not offered yet,
+or the deployed build's probe predates `graphicTypes`, it skips.
+
 ## Running it
 
 **From a workstation, use the script.** It runs the suite in the Playwright container with the same

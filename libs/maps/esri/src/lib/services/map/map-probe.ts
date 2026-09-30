@@ -28,6 +28,14 @@ export interface MapLayerProbe {
    * conflate the two.
    */
   featureCount: number | null;
+
+  /**
+   * For a graphics layer, how many graphics it holds, by each graphic's `attributes.type` (`untyped`
+   * when it has none); `null` for every other layer type. A graphics layer has no features to count,
+   * so this is how a test sees what it has drawn: the bus routes layer, for one, tags its route lines
+   * `route` and its stops `waypoints` (#1174).
+   */
+  graphicTypes: Record<string, number> | null;
 }
 
 export interface MapProbeSnapshot {
@@ -225,7 +233,8 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     visible: layer.visible,
     loaded: layer.loaded === true,
     error: readLoadError(layer),
-    featureCount: null
+    featureCount: null,
+    graphicTypes: countGraphicTypes(layer)
   };
 
   // A layer that failed to load cannot be queried, and asking would replace a useful load error
@@ -235,6 +244,22 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
   }
 
   return { ...base, featureCount: await countFeatures(layer) };
+}
+
+function countGraphicTypes(layer: esri.Layer): Record<string, number> | null {
+  if (layer.type !== 'graphics') {
+    return null;
+  }
+
+  const counts: Record<string, number> = {};
+
+  for (const graphic of (layer as esri.GraphicsLayer).graphics?.toArray() ?? []) {
+    const type = typeof graphic.attributes?.type === 'string' ? graphic.attributes.type : 'untyped';
+
+    counts[type] = (counts[type] ?? 0) + 1;
+  }
+
+  return counts;
 }
 
 function readLoadError(layer: esri.Layer): string | null {
