@@ -18,13 +18,14 @@
     "allowedServiceFailures": {
       "accessibleUrl": "#1005: the development GIS server does not serve this layer",
       "bikeMapUrl": "#1005: the development GIS server requires a token for this service",
-      "footballGamedayShuttlesUrl": "#1123: unused entry; the development GIS server requires a token"
+      "footballGamedayShuttlesUrl": "#1123: unused entry; the development GIS server requires a token",
+      "bikeRacksUrl": "#1005: the development GIS server requires a token for TS/BikeMap"
     },
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
       "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the GIS server",
       "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has",
-      "bike-racks": "#1122: on the development GIS server, TS_Bicycles layer 3 is Campus Bike Lanes, not bike racks"
+      "bike-racks": "#1005: the development GIS server requires a token for TS/BikeMap"
     }
   },
   "production": {
@@ -33,14 +34,12 @@
     "healthLabel": "prod-health",
     "allowedLayerFailures": [],
     "allowedServiceFailures": {
-      "bikeRacksUrl": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
       "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
     },
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
       "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
-      "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
       "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has"
     }
   },
@@ -50,13 +49,11 @@
     "healthLabel": null,
     "allowedLayerFailures": ["Dining Locations"],
     "allowedServiceFailures": {
-      "bikeRacksUrl": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
       "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
     },
     "allowedSearchSourceFailures": {
       "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
-      "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
       "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has"
     }
   }
