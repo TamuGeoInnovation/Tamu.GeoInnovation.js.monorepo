@@ -268,7 +268,7 @@ export const Kickoff150thConfiguration: EventConfiguration = {
     priority: 'high',
     title: 'Opening Ceremony moved to Rudder Auditorium',
     message:
-      'Because of the forecast, the Sesquicentennial Opening Ceremony on Friday 2 October is now indoors at Rudder Auditorium. Click me for parking, shuttles and timings.',
+      'Because of the forecast, the Sesquicentennial Opening Ceremony on Friday 2 October is now indoors at Rudder Auditorium. Click here for parking, shuttles and times.',
     acknowledge: true,
     action: {
       type: 'internal',
