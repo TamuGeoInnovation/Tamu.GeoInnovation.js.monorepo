@@ -227,14 +227,14 @@ export class ParkingService {
         operators: ['=']
       },
       {
-        sqlColumns: ['GIS.TS.SpacePnt_Count.UB'],
+        sqlColumns: ['GIS.TS.SPC_PNT_CNT.UB'],
         include: false,
         // This is not supported at the moment but will be in the future. Never include it in the search queries.
         values: parkingOptions.UB > 0 ? [1] : [0],
         operators: parkingOptions.UB > 0 ? ['>='] : ['=']
       },
       {
-        sqlColumns: ['GIS.TS.SpacePnt_Count.H_C'],
+        sqlColumns: ['GIS.TS.SPC_PNT_CNT.H_C'],
         // Assume if user has parking permit, they've already pre-determined whether that permit suits their needs.
         // This will remain the case until the search service is updated to allow more flexibility in composing SQL queries.
         include: false,
@@ -244,7 +244,7 @@ export class ParkingService {
       },
       {
         searchSource: 'all-parking',
-        sqlColumns: ['GIS.TS.SpacePnt_Count.Visitor_H_C'],
+        sqlColumns: ['GIS.TS.SPC_PNT_CNT.Visitor_H_C'],
         include: parkingOptions.Visitor_H_C > 0 && parkingOptions.Use_Permit === false,
         values: parkingOptions.H_C > 0 ? [1] : [0],
         operators: parkingOptions.Visitor_H_C > 0 ? ['>='] : ['=']

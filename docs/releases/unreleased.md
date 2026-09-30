@@ -15,6 +15,8 @@ ever describes what has not shipped yet.
 ## Summary
 
 Choosing a parking garage from search shows its details again, and a garage can be shared by link.
+Drive directions can find parking again: its lookups for all lots and for night-privilege lots were
+both failing on production.
 
 ## What to test
 
@@ -44,6 +46,23 @@ fields a garage doesn't have. They now get their own details, with the garage's 
 | Before (production) | After (local) |
 | --- | --- |
 | <img src="../screenshots/1163-garage-popup-empty/before-prod-desktop.png" width="420" alt="Central Campus Garage chosen from search on production: the details panel shows only ', TX' and an empty link" /> | <img src="../screenshots/1163-garage-popup-empty/after-local-desktop.png" width="420" alt="Central Campus Garage chosen from search after the fix: the details show its name, College Station, TX 77843, and the link ?garage=CCG" /> |
+
+### Drive directions could not look up parking
+
+Two of the parking lookups the Directions tab uses when planning a drive were failing on production,
+so no lot came back from them:
+
+| Lookup | Before | After |
+| --- | --- | --- |
+| All lots (used with a permit) | "Failed to execute query": it asked for space-count fields renamed when the parking table was renamed | answers, with the renamed fields |
+| Night-privilege lots (evenings, with a permit) | "Service not found": the service had moved to another folder | answers, 91 night lots |
+
+([#1162](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1162),
+[#1166](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1166))
+
+The lookup for visitors without a permit is still broken: it asks for a column the parking layer has
+never had, and what it should ask for needs a decision
+([#1169](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1169)).
 
 ## Behind the scenes
 
