@@ -107,6 +107,18 @@ export interface EventConfiguration {
   toast?: NotificationProperties;
 
   /**
+   * A notice shown once per session when this map opens, in a modal like the event-passed warning.
+   *
+   * For something a visitor must see before using the map and that the map itself cannot show - a
+   * venue change, a closure, a date move. The toast above is the short version on the main map; this
+   * is the full version on the map itself.
+   *
+   * Dismissal lasts for the browser session rather than forever: these notices are usually about an
+   * event days away, and someone who dismissed it on Wednesday still needs it on Friday.
+   */
+  notice?: MapNotice;
+
+  /**
    * Determines which builder step should open after intro.
    *
    * - `accommodations`: standard flow
@@ -605,3 +617,26 @@ export interface DiscoverMetadata {
  * Sub-grouping for parking maps on the Parking Maps page.
  */
 export type ParkingCategory = 'general' | 'business' | 'permit';
+
+/**
+ * A one-off notice for a map, shown once per browser session.
+ */
+export interface MapNotice {
+  /** Heading. Short - it renders large and centred. */
+  title: string;
+
+  /** The lead sentence: what changed. */
+  message: string;
+
+  /** Supporting lines, one paragraph each. Times, addresses, parking, anything unchanged. */
+  details?: string[];
+
+  /** Dismiss button text. Defaults to `OK`. */
+  acknowledgeText?: string;
+
+  /**
+   * Identifies the notice for session dismissal. Change it and everyone sees the notice again, which
+   * is what you want when the content changes rather than being withdrawn.
+   */
+  sessionKey: string;
+}
