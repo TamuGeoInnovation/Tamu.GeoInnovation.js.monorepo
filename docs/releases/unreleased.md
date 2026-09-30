@@ -25,6 +25,16 @@ Nothing user-visible has merged since the 29 September release.
   shared outside the team was wrong until someone got to it.
   ([#1150](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1150),
   [#1151](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1151))
+- **Every search source on the main map is tested**, each the way a visitor reaches it: typed into
+  the search box, opened by a link, or used by the Directions tab. Before, one source could stop
+  working while the others kept returning results. The first run found two problems nobody had
+  noticed: choosing a parking garage from search opens an empty details panel
+  ([#1163](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1163)), and
+  the night parking lookup used by drive directions reads a service that no longer exists
+  ([#1162](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1162)). It also
+  confirms the bike racks problem already filed
+  ([#1122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1122)).
+  ([#1138](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1138))
 
 ---
 

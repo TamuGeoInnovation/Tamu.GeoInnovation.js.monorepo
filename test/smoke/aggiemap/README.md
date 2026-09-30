@@ -31,6 +31,13 @@ them, each with a Retired label. It also opens each retired map's link, bare and
 lands on the "has ended" page with no map loaded. Retired maps are read from the definitions as text by `retired.ts`. The crawl uses it to leave
 retired maps out of the maps it tests, and `services.spec.ts` to skip services only retired maps use.
 
+`search-sources.spec.ts` exercises every search source the main map defines, each the way a visitor
+reaches it (#1138). Typed sources must answer their term under their own heading and open real
+details. Deep-link sources (`?bldg=`, `?BldgAbbrv=`, `?poi=`, `?busstop=`) must open theirs. Sources
+used only by the Directions tab have their service asked directly. A guard fails if
+`search-sources.ts` gains a source with no row. Known failures per environment are listed under
+`allowedSearchSourceFailures` in `environments.json`, each tied to an issue.
+
 ## Running it
 
 **From a workstation, use the script.** It runs the suite in the Playwright container with the same
