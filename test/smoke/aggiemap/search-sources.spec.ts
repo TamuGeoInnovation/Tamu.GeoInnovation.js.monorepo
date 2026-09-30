@@ -123,12 +123,11 @@ const SOURCE_CASES: Record<string, SourceCase> = {
     usedBy: 'Directions, drive mode',
     layerName: /^Parking Lots$/
   },
-  // Hard-coded in search-sources.ts rather than in connections.ts, so it is copied here (#1162).
   'night-parking': {
     kind: 'service',
-    url: 'https://arc.ts.tamu.edu/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer/6',
+    url: connections.nightParkingUrl,
     usedBy: 'Directions, drive mode',
-    layerName: /parking/i
+    layerName: /^Night Privileges/
   },
   'bike-racks': {
     kind: 'service',
@@ -171,16 +170,53 @@ function definedSources(): string[] {
   return [...SEARCH_SOURCES_TEXT.matchAll(/^ {6}source: '([a-z-]+)',$/gm)].map((match) => match[1]);
 }
 
+/**
+ * The trip planner's parking service as text. It replaces a source's where clause with its own
+ * `sqlColumns` when it plans a drive, so those columns are what the source is really queried on.
+ */
+const TRIP_PLANNER_PARKING_TEXT = fs.readFileSync(
+  path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'libs',
+    'maps',
+    'feature',
+    'trip-planner',
+    'src',
+    'lib',
+    'services',
+    'transportation',
+    'drive',
+    'parking.service.ts'
+  ),
+  'utf8'
+);
+
+/**
+ * The columns the trip planner queries a source on: each `{ searchSource: '<source>', sqlColumns: [...] }`
+ * entry in its parking service. A stale column there hid for years because nothing read it (#1169).
+ */
+function tripPlannerColumns(source: string): string[] {
+  return [...TRIP_PLANNER_PARKING_TEXT.matchAll(/searchSource: '([a-z-]+)',\s*sqlColumns: \[([^\]]*)\]/g)]
+    .filter((match) => match[1] === source)
+    .flatMap((match) => [...match[2].matchAll(/'([^']+)'/g)].map((column) => column[1]));
+}
+
 interface SourceQuery {
   /** What the source asks for, as it sends it; `*` when it does not narrow the fields. */
   outFields: string[];
-  /** Every field the source's query, where clause and display template name. */
+  /** Every field the source's query, where clause, display template and trip planner queries name. */
   fieldsUsed: string[];
+  /** How many features the source asks for, as it sends it: a number, or `*` for all. */
+  resultRecordCount: string;
 }
 
 /**
  * A source's query, read from its entry in `search-sources.ts`: its `outFields`, the keys of its
- * `where` clause (not `scoringWhere`), and the fields its `displayTemplate` shows.
+ * `where` clause (not `scoringWhere`), and the fields its `displayTemplate` shows, plus the columns
+ * the trip planner queries it on.
  */
 function sourceQuery(source: string): SourceQuery {
   const start = SEARCH_SOURCES_TEXT.search(new RegExp(`^ {6}source: '${source}',$`, 'm'));
@@ -208,9 +244,20 @@ function sourceQuery(source: string): SourceQuery {
     (match) => match[1]
   );
 
+  // `commonQueryParams` asks for 5 unless the entry overrides it.
+  const resultRecordCount = entry.match(/resultRecordCount: '?([0-9]+|\*)'?/)?.[1] ?? '5';
+
   return {
     outFields,
-    fieldsUsed: [...new Set([...outFields.filter((field) => field !== '*'), ...whereKeys, ...displayFields])]
+    resultRecordCount,
+    fieldsUsed: [
+      ...new Set([
+        ...outFields.filter((field) => field !== '*'),
+        ...whereKeys,
+        ...displayFields,
+        ...tripPlannerColumns(source)
+      ])
+    ]
   };
 }
 
@@ -332,7 +379,7 @@ async function sourceProblems(
   const problems: string[] = [];
   const name = String(layer.body?.['name'] ?? '');
   const layerFields = ((layer.body?.['fields'] as { name: string }[] | undefined) ?? []).map((field) => field.name);
-  const { outFields, fieldsUsed } = sourceQuery(source);
+  const { outFields, fieldsUsed, resultRecordCount } = sourceQuery(source);
 
   if (!layerName.test(name)) {
     problems.push(`the layer is "${name}", not one matching ${layerName}`);
@@ -348,7 +395,8 @@ async function sourceProblems(
     where: '1=1',
     outFields: outFields.join(','),
     returnGeometry: 'false',
-    resultRecordCount: '1'
+    // As the source sends it: some layers refuse a count they cannot page, and the app never sends one.
+    resultRecordCount
   });
 
   if (query.problem) {
@@ -376,6 +424,10 @@ test.describe('search sources on the main map', () => {
     ).toHaveLength(5);
     expect(sourceQuery('night-parking').fieldsUsed, 'night-parking should read its where key').toContain('Night_Lot');
     expect(sourceQuery('bike-racks').fieldsUsed, 'bike-racks should read its display field').toEqual(['Type']);
+    expect(tripPlannerColumns('night-parking'), "night-parking should read the trip planner's column").toEqual([
+      'Night_Lot'
+    ]);
+    expect(tripPlannerColumns('visitor-parking').length, "visitor-parking should read the trip planner's column").toBe(1);
   });
 
   test('every source in search-sources.ts has a case', () => {

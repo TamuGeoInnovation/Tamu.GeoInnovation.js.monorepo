@@ -22,9 +22,8 @@
     },
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
-      "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the GIS server",
-      "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has",
-      "bike-racks": "#1122: on the development GIS server, TS_Bicycles layer 3 is Campus Bike Lanes, not bike racks"
+      "bike-racks": "#1122: on the development GIS server, TS_Bicycles layer 3 is Campus Bike Lanes, not bike racks",
+      "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
     }
   },
   "production": {
@@ -39,9 +38,8 @@
     },
     "allowedSearchSourceFailures": {
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
-      "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
       "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
-      "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has"
+      "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
     }
   },
   "local": {
@@ -55,9 +53,8 @@
       "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
     },
     "allowedSearchSourceFailures": {
-      "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
       "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server",
-      "all-parking": "#1166: asks for GIS.TS.SpacePnt_Count fields the parking layer no longer has"
+      "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
     }
   }
 }

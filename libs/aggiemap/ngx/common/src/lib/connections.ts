@@ -7,6 +7,8 @@ function createConnections(gisHost: string): IComposedConnections {
     constructionUrl: `https://${tsgisHost}/arcgis/rest/services/Hosted/TSConstruction_Hosted/FeatureServer/0`,
     departmentUrl: `https://${gisHost}/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1`,
     tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/TS_Main/MapServer`,
+    // Night-privilege lots, used by drive directions. Moved from the `TS` folder to `TS_Events` (#1162).
+    nightParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
     bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
     bikeMapUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer`,
     bikeLocationsUrl: `https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson`,
@@ -134,6 +136,7 @@ export interface IComposedConnections {
   constructionUrl: string;
   departmentUrl: string;
   tsMainUrl: string;
+  nightParkingUrl: string;
   bikeRacksUrl: string;
   bikeMapUrl: string;
   bikeLocationsUrl: string;

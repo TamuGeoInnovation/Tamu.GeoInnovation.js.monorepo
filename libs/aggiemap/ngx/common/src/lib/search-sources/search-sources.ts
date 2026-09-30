@@ -15,7 +15,7 @@ const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
 };
 
 // Search sources used for querying features.
-import { getDefaultGisHost, getDefaultGisHosts } from '../connections';
+import { getDefaultGisHost } from '../connections';
 
 export function SearchSources(
   connections: IComposedConnections,
@@ -23,7 +23,6 @@ export function SearchSources(
   options?: IFactoryExcludeOptions<ComposedSearchSourcesKeyMap>
 ): Array<SearchSource> {
   const gisHost = getDefaultGisHost();
-  const tsgisHost = getDefaultGisHosts().tsgisHost;
 
   const SEARCH_SOURCES: ComposedSearchSourcesKeyMap = {
     BUILDING: {
@@ -142,8 +141,8 @@ export function SearchSources(
         resultRecordCount: '*',
         outFields: `GIS.TS.ParkingLots.FAC_CODE,
           GIS.TS.ParkingLots.LotName,
-          GIS.TS.SpacePnt_Count.UB,
-          GIS.TS.SpacePnt_Count.Visitor_H_C
+          GIS.TS.SPC_PNT_CNT.UB,
+          GIS.TS.SPC_PNT_CNT.Visitor_H_C
           `,
         where: {
           keys: ['1'],
@@ -178,13 +177,13 @@ export function SearchSources(
     NIGHT_PARKING: {
       source: 'night-parking',
       name: 'Night Parking',
-      url: `https://${tsgisHost}/arcgis/rest/services/TS/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
+      // The night-privilege layer has no FAC_CODE; the trip planner matches its lots by name (#1162).
+      url: connections.nightParkingUrl,
       queryParams: {
         ...commonQueryParams,
         returnGeometry: true,
         resultRecordCount: '*',
-        outFields: `GIS.TS.ParkingLots.FAC_CODE,
-          GIS.TS.ParkingLots.LotName,
+        outFields: `GIS.TS.ParkingLots.LotName,
           GIS.TS.Lot_Use.Night_Lot`,
         where: {
           keys: ['Night_Lot'],
@@ -206,7 +205,7 @@ export function SearchSources(
         outFields: `GIS.TS.ParkingLots.AggieMap,
           GIS.TS.ParkingLots.FAC_CODE,
           GIS.TS.ParkingLots.LotName,
-          GIS.TS.SpacePnt_Count.UB`
+          GIS.TS.SPC_PNT_CNT.UB`
       },
       featuresLocation: 'features',
       displayTemplate: '{attributes.LotName}',
