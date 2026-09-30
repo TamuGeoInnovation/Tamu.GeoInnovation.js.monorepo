@@ -220,6 +220,13 @@ merged, so nothing needs updating after the merge.
 sentence like "the next smoke run should close #1096" would close #1096 too. Reword such sentences,
 then check with `gh pr view <n> --json closingIssuesReferences`.
 
+**That check is not reliable straight after `gh pr create`.** GitHub populates the closing reference
+asynchronously, so for the first several minutes it comes back empty on a pull request whose body is
+perfectly correct. An empty result means "not linked *yet*", not "not linked". Re-check a few minutes
+later before concluding anything, and never close the issue by hand on the strength of one early
+reading - three pull requests in one afternoon were each declared broken and each linked itself
+shortly after.
+
 `gh issue create` sets title, body, labels and assignee. The rest needs these, run after creating:
 
 ```bash
