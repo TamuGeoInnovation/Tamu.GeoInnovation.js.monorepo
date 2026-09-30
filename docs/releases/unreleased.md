@@ -41,6 +41,13 @@ ready. ([#1003](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monor
 | --- | --- |
 | <img src="../screenshots/1003-hide-directions/before-local-as-prod-main-map-building.png" width="420" alt="The main map as production renders it, before: a Directions tab in the sidebar and a Directions To Here button in a building's details" /> | <img src="../screenshots/1003-hide-directions/after-local-as-prod-main-map-building.png" width="420" alt="The same view after: no Directions tab, and no Directions To Here button" /> |
 
+### Bike directions could not find a bike rack
+
+Planning a bike trip looks up the nearest bike rack. On production that lookup read a service that no
+longer exists, so it found none. It now reads the same bike racks the map shows, 318 of them. Like all
+directions, bike trips are for now offered on dev only (above).
+([#1122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1122))
+
 ### Choosing a parking garage from search opened an empty details panel
 
 Searching for a garage and choosing it highlighted the garage on the map, but the details panel showed
