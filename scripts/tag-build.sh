@@ -49,7 +49,27 @@ cd "$(git rev-parse --show-toplevel)"
 
 # Default to whatever development points at on the main repository, not to the local checkout, which
 # may be behind or on another branch.
-git fetch origin development --quiet
+git fetch origin development --quiet --tags
+
+day="${date_override:-$(date +%Y-%m-%d)}"
+
+# `prod` defaults to the commit its `dev-` tag points at, not to development's head.
+#
+# By the time production is tagged, the release notes have merged (step 4 of the sequence), so
+# development's head is the notes commit rather than the build that shipped. Defaulting to the head
+# would tag a commit that was never built, tested or deployed. The refusal below catches that, but
+# only by failing - and the answer it wants is always the same commit, so take it directly.
+#
+# The latest tag for the day wins, because a second build is suffixed (`dev-2026-09-30-2`).
+if [ -z "$sha" ] && [ "$env_name" = prod ]; then
+  dev_tag=$(git tag -l "dev-${day}" "dev-${day}-*" | sort -V | tail -1)
+
+  if [ -n "$dev_tag" ]; then
+    sha=$(git rev-list -n1 "$dev_tag")
+    echo "defaulting to $dev_tag -> $(git rev-parse --short "$sha")" >&2
+  fi
+fi
+
 sha="${sha:-$(git rev-parse origin/development)}"
 
 if ! git cat-file -e "${sha}^{commit}" 2>/dev/null; then
@@ -68,7 +88,6 @@ if ! git merge-base --is-ancestor "$sha" origin/development; then
   exit 1
 fi
 
-day="${date_override:-$(date +%Y-%m-%d)}"
 tag="${env_name}-${day}"
 
 # More than one build a day is normal on dev. Suffix rather than refuse, so the second build of a day
