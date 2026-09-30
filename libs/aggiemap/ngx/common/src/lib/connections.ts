@@ -9,7 +9,9 @@ function createConnections(gisHost: string): IComposedConnections {
     tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/TS_Main/MapServer`,
     // Night-privilege lots, used by drive directions. Moved from the `TS` folder to `TS_Events` (#1162).
     nightParkingUrl: `https://${tsgisHost}/arcgis/rest/services/TS_Events/AVPVisBSUBVenNWRetNSCMed/MapServer/6`,
-    bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
+    // TS/TS_Bicycles no longer exists on the production GIS server, and on dev its layer 3 is bike lanes.
+    // Bike racks are layer 1 of TS/BikeMap, which the main map's Bike Racks layer already uses (#1122).
+    bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer/1`,
     bikeMapUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer`,
     bikeLocationsUrl: `https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson`,
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
