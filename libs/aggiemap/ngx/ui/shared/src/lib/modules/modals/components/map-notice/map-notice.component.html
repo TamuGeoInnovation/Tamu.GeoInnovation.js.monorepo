@@ -1,0 +1,14 @@
+<div class="map-notice-modal">
+  <div class="map-notice-modal__header modal-body-spaced">
+    <h2 class="map-notice-modal__title modal-title-centered">{{ title }}</h2>
+  </div>
+
+  <div class="map-notice-modal__body modal-body-spaced">
+    <p>{{ message }}</p>
+    <p *ngFor="let detail of details">{{ detail }}</p>
+  </div>
+
+  <div class="map-notice-modal__footer modal-actions-centered">
+    <tamu-gisc-button [value]="acknowledgeText" (click)="acknowledge()"></tamu-gisc-button>
+  </div>
+</div>

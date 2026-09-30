@@ -245,8 +245,46 @@ export const Kickoff150thConfiguration: EventConfiguration = {
   applicationName: '150th Opening Ceremony Map',
   shortApplicationName: '150th Opening Ceremony',
   eventDates: ['2026-10-02'],
-  zoom: 16,
-  mapCenter: [-96.3368, 30.6212]
+  // Centre and zoom derived from the service extent, not chosen by eye. Queried in WGS84 (the service
+  // is published in EPSG:32139, Texas State Plane Central, so its native extent is not lon/lat):
+  // [-96.34541, 30.60766] .. [-96.33802, 30.61329], about 0.71km across.
+  //
+  // The previous centre [-96.3368, 30.6212] was set for the outdoor venue and was left behind when the
+  // ceremony moved indoors and the service was republished - roughly 1.2km north of the data, which
+  // pushed the event marker to the bottom edge of the map.
+  zoom: 17,
+  mapCenter: [-96.34172, 30.61047],
+
+  // Announced 30 September: the ceremony moved indoors because of the forecast. The toast carries the
+  // short version on the main map; the full details are in `notice` below, shown on this event's own
+  // map. No `imgUrl`, so the notification renders as text - there is no 150th icon in `libs/assets`.
+  //
+  // Remove both once the event has passed on 2 October.
+  toast: {
+    id: '150th-kickoff-venue-change',
+    title: 'Opening Ceremony moved to Rudder Auditorium',
+    message:
+      'Because of the forecast, the Sesquicentennial Opening Ceremony on Friday 2 October is now indoors at Rudder Auditorium. Click me for parking, shuttles and timings.',
+    acknowledge: true,
+    action: {
+      type: 'internal',
+      value: '/events/150th-kickoff'
+    }
+  },
+
+  notice: {
+    title: 'Venue change: Rudder Auditorium',
+    message:
+      'Because of projected inclement weather, the Sesquicentennial Opening Ceremony will take place in Rudder Auditorium.',
+    details: [
+      'Friday, October 2, 2026. Program 4 p.m., reception 5 p.m.',
+      'Rudder Tower, Auditorium. 401 Joe Routt Blvd, College Station, TX.',
+      'Free parking at West Campus Garage. Shuttles run from West Campus Garage to Rudder from 3 p.m.',
+      'Yell Practice at 9 p.m. will proceed as planned.'
+    ],
+    acknowledgeText: 'Got it',
+    sessionKey: '150th-kickoff-venue-change'
+  }
 };
 
 export const Kickoff150thOptions: SpecialEventOptions = [];
