@@ -29,6 +29,18 @@ both failing on production.
 
 ## Fixed
 
+### Directions are no longer offered while routing does not work
+
+The routing service behind directions is unpublished, so the Directions tab and the "Directions To
+Here" buttons offered something that could not work: the tab opened a maintenance notice. On
+production they are now hidden, on the main map, the event and parking maps, and in every popup. They
+stay on dev, where routing is being rebuilt, and come back to production with one change when it is
+ready. ([#1003](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1003))
+
+| Before (as production) | After (as production) |
+| --- | --- |
+| <img src="../screenshots/1003-hide-directions/before-local-as-prod-main-map-building.png" width="420" alt="The main map as production renders it, before: a Directions tab in the sidebar and a Directions To Here button in a building's details" /> | <img src="../screenshots/1003-hide-directions/after-local-as-prod-main-map-building.png" width="420" alt="The same view after: no Directions tab, and no Directions To Here button" /> |
+
 ### Choosing a parking garage from search opened an empty details panel
 
 Searching for a garage and choosing it highlighted the garage on the map, but the details panel showed

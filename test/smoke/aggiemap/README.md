@@ -40,6 +40,13 @@ and answer the source's own query (#1167). A guard fails if
 `search-sources.ts` gains a source with no row. Known failures per environment are listed under
 `allowedSearchSourceFailures` in `environments.json`, each tied to an issue.
 
+`directions.spec.ts` checks directions are offered only where routing works (#1003). Routing is
+unpublished, so the Directions tab and every "Directions To Here" button are development-only: hidden
+on production, shown on dev and localhost. Each environment's `directionsAvailable` in
+`environments.json` says which, and the spec checks the main map's tab and one popup of each kind that
+offers directions, both ways. `maps.spec.ts` also checks no map offers directions where they are
+unavailable. When routing returns to production, set `directionsAvailable` to true there.
+
 ## Running it
 
 **From a workstation, use the script.** It runs the suite in the Playwright container with the same
@@ -47,6 +54,7 @@ settings as the scheduled workflow:
 
 ```bash
 test/smoke/aggiemap/run-local.sh development   # dev.aggiemap.tamu.edu
+test/smoke/aggiemap/run-local.sh local-production  # the local dev server as production renders it (127.0.0.1)
 test/smoke/aggiemap/run-local.sh production    # aggiemap.tamu.edu
 test/smoke/aggiemap/run-local.sh local         # a dev server in the aggiemap-dev container
 ```

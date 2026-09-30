@@ -5,6 +5,9 @@
 #   test/smoke/aggiemap/run-local.sh development   # dev.aggiemap.tamu.edu
 #   test/smoke/aggiemap/run-local.sh production    # aggiemap.tamu.edu
 #   test/smoke/aggiemap/run-local.sh local         # a dev server running in the aggiemap-dev container
+#   test/smoke/aggiemap/run-local.sh local-production
+#                                     # the same dev server as production renders it: 127.0.0.1 is not
+#                                     # a dev host, so development-only features are hidden
 #
 # Anything after the environment is passed to `playwright test`, e.g. `--grep "gameday"`.
 # Needs only Docker and bash (Git Bash on Windows); Node runs inside the container. The first run
@@ -13,9 +16,9 @@ set -euo pipefail
 
 env_name="${1:-}"
 case "$env_name" in
-  development | production | local) shift ;;
+  development | production | local | local-production) shift ;;
   *)
-    echo "usage: $0 development|production|local [playwright args...]" >&2
+    echo "usage: $0 development|production|local|local-production [playwright args...]" >&2
     exit 2
     ;;
 esac
@@ -35,7 +38,7 @@ mount=$(pwd -W 2>/dev/null || pwd)
 # which is the address the Angular dev server and the dining API's CORS allowlist accept. See the
 # README's local section.
 network_args=()
-if [ "$env_name" = local ]; then
+if [ "$env_name" = local ] || [ "$env_name" = local-production ]; then
   if ! docker ps --format '{{.Names}}' | grep -qx aggiemap-dev; then
     echo "No aggiemap-dev container is running. Start the dev server first (GETTING_STARTED.md, Path 5)." >&2
     exit 1

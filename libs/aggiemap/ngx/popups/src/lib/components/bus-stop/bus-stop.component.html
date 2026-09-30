@@ -10,15 +10,8 @@
     <!-- Copy link to this stop -->
     <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 
-    <!--
-      Directions To Here is deliberately absent. The routing service behind it is unpublished -
-      /arcgis/rest/services/Routing returns an empty services list - so the button offers an action
-      that cannot succeed. The two new 150th event maps shipped without it for the same reason.
-
-      This is a local omission, not the fix. #1003 covers hiding every directions affordance behind
-      a DirectionsEnabled flag, which is reversible in one line when routing returns; this popup is
-      on its list. Restore the button by that flag rather than by pasting it back.
-    -->
+    <!-- Development-only while routing is unpublished, like every other directions entry point (#1003). -->
+    <div *ngIf="directionsAvailable | async" class="button" tabindex="0" role="button" (click)="startDirections('Bus stop ' + (data.attributes.StopName || ''))">Directions To Here</div>
 
     <!--
       The shared `.button` rather than plain text: with the directions button gone this is the
