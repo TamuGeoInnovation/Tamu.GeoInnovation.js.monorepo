@@ -19,7 +19,7 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventService } from '../../services/event/event.service';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { EventPassedWarningComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { EventPassedWarningComponent, MapNoticeComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
 
@@ -127,6 +127,21 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     } catch (err) {
       console.warn('Failed to evaluate event dates for event-passed warning.', err);
+    }
+
+    // A one-off notice for this map - a venue change, a closure - shown once per browser session.
+    //
+    // After the passed-event check on purpose: a map whose event is over should say so rather than
+    // announce a change to something that has already happened. The two never stack, because that
+    // check only fires once the last event date is behind us and a notice is removed by then.
+    try {
+      const notice = root?.configuration?.notice;
+
+      if (notice && !MapNoticeComponent.isDismissed(notice.sessionKey)) {
+        this.ms.open<boolean>(MapNoticeComponent, { data: notice });
+      }
+    } catch (err) {
+      console.warn('Failed to show the map notice.', err);
     }
 
     // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.
