@@ -79,6 +79,12 @@ never had, and what it should ask for needs a decision
 
 ## Behind the scenes
 
+- **Every bus route is tested for its stops**, before bus routes go to production. Each route the bus
+  panel lists is chosen in turn and must draw one stop on the map for every stop it lists. Five routes
+  draw none (NW0104, NW0305, NW4041, 15R, 47/48) and two draw a different number (40, 47), because
+  the bus stop data does not tag them; that is being fixed in the data
+  ([#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174)).
+  ([#1175](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1175))
 - **The release steps are one ordered sequence**, in [README.md](README.md): build and deploy to dev,
   run the full suite, tag dev only if it passed, merge the notes, deploy production, tag production,
   check production. They had been spread across three documents that each described part of it, in

@@ -26,6 +26,15 @@
       "parking-garage": "#1163: choosing a garage opens an empty details panel",
       "bike-racks": "#1005: the development GIS server requires a token for TS/BikeMap",
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
+    },
+    "allowedBusRouteFailures": {
+      "NW0104": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "NW0305": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "NW4041": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "15R": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "47/48": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "40": "#1174: the Bus Stops layer tags one more stop than the route lists",
+      "47": "#1174: the Bus Stops layer tags two fewer stops than the route lists"
     }
   },
   "production": {
@@ -55,6 +64,15 @@
     },
     "allowedSearchSourceFailures": {
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
+    },
+    "allowedBusRouteFailures": {
+      "NW0104": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "NW0305": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "NW4041": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "15R": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "47/48": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "40": "#1174: the Bus Stops layer tags one more stop than the route lists",
+      "47": "#1174: the Bus Stops layer tags two fewer stops than the route lists"
     }
   },
   "local-production": {
@@ -69,6 +87,15 @@
     },
     "allowedSearchSourceFailures": {
       "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
+    },
+    "allowedBusRouteFailures": {
+      "NW0104": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "NW0305": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "NW4041": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "15R": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "47/48": "#1174: no stop in the Bus Stops layer is tagged with this route",
+      "40": "#1174: the Bus Stops layer tags one more stop than the route lists",
+      "47": "#1174: the Bus Stops layer tags two fewer stops than the route lists"
     }
   }
 }
