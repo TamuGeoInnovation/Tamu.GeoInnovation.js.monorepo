@@ -51,10 +51,22 @@ Run Nx as `node node_modules/nx/bin/nx.js`, not bare `nx` or `npx nx` — `node_
 may not be populated. CLAUDE_SETUP.md has the full command.
 
 **Build to typecheck, don't rely on tests.** Most libraries have no `build` target, so
-`nx build <library>` answers `Cannot find configuration for task` and checks nothing. Build
-an app that consumes the library instead — `aggiemap-angular` or `ts-events-angular` for the
-map libraries, `gisday-nest` for the GIS Day data API. `nx test` only compiles what the
-specs import, and `nx lint` does not typecheck at all.
+`nx build <library>` answers `Cannot find configuration for task` and checks nothing. `nx test` only
+compiles what the specs import, and `nx lint` does not typecheck at all.
+
+**Run this before every push, and read its exit code:**
+
+```bash
+docker run --rm -m 8g -v "$(pwd -W):/w" -w /w node:20.18.1 sh -c "node node_modules/nx/bin/nx.js affected -t lint,test,build --base=origin/development"
+```
+
+**Not one app you picked — every affected app.** Building only the app you were working in is what the
+advice used to say, and it is not enough: a change to a shared library can break an application you
+have never opened. On 30 September a 969-byte growth in the notification component's stylesheet pushed
+`correction-lite-angular` past its 1 MB bundle budget. `aggiemap-angular` built fine. The failure was
+found by CI, twice, because lint and unit tests had been run and a build had not.
+
+Budgets are part of the build, so a purely additive change can fail it without a line of bad code.
 
 **Do not pipe `nx` output into `tail`, `head` or `grep`.** The pipeline's exit code hides the
 task's, so a task that never ran still looks like a pass. Redirect to a file, capture the
