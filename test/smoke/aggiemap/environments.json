@@ -3,6 +3,7 @@
     "baseUrl": "https://dev.aggiemap.tamu.edu",
     "gtag": "G-71VY0QZS5P",
     "healthLabel": "dev-health",
+    "directionsAvailable": true,
     "allowedLayerFailures": [
       "Lactation Rooms",
       "Accessible Building Entrances",
@@ -31,6 +32,7 @@
     "baseUrl": "https://aggiemap.tamu.edu",
     "gtag": "G-GNS4JMVEZW",
     "healthLabel": "prod-health",
+    "directionsAvailable": false,
     "allowedLayerFailures": [],
     "allowedServiceFailures": {
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
@@ -45,7 +47,22 @@
     "baseUrl": "http://localhost:4200",
     "gtag": null,
     "healthLabel": null,
+    "directionsAvailable": true,
     "allowedLayerFailures": ["Dining Locations"],
+    "allowedServiceFailures": {
+      "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
+      "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
+    },
+    "allowedSearchSourceFailures": {
+      "visitor-parking": "#1169: the trip planner queries TS_GIS.dbo.LOTS.Visitor_Lot, which the parking layer does not have"
+    }
+  },
+  "local-production": {
+    "baseUrl": "http://127.0.0.1:4200",
+    "gtag": null,
+    "healthLabel": null,
+    "directionsAvailable": false,
+    "allowedLayerFailures": [],
     "allowedServiceFailures": {
       "tsFootballUrl": "#1123: unused entry pointing at a stopped service",
       "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"

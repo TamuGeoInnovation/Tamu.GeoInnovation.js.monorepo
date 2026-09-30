@@ -2,7 +2,8 @@
   <div class="tabs left">
     <tamu-gisc-sidebar-tab *ngIf="showTab('features')" [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
 
-    <tamu-gisc-sidebar-tab *ngIf="showTab('directions')" [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'"></tamu-gisc-sidebar-tab>
+    <!-- Development-only while routing is unpublished (#1003). -->
+    <tamu-gisc-sidebar-tab *ngIf="showTab('directions') && (isDev | async) === true" [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'"></tamu-gisc-sidebar-tab>
 
     <tamu-gisc-sidebar-tab *ngIf="showTab('settings')" [title]="'Settings'" [description]="'Settings'" [material_icon]="'settings'" [route]="'settings'"></tamu-gisc-sidebar-tab>
   </div>

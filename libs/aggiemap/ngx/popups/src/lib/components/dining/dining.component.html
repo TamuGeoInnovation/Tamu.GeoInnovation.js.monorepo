@@ -43,5 +43,5 @@
 <div class="popup-section">
   <div *ngIf="data?.attributes?.description" [innerHTML]="data.attributes.description| markdownParse"></div>
   <!-- Directions To Button -->
-  <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.name" (click)="startDirections()">Directions To Here</div>
+  <div *ngIf="directionsAvailable | async" class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.name" (click)="startDirections()">Directions To Here</div>
 </div>

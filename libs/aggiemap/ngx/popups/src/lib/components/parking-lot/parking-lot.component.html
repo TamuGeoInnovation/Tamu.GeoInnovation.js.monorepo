@@ -6,5 +6,5 @@
 <div class="popup-section">
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
   
-  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+  <div *ngIf="directionsAvailable | async" class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
 </div>

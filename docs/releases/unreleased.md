@@ -29,10 +29,23 @@ both failing on production.
 
 ## Fixed
 
+### Directions are no longer offered while routing does not work
+
+The routing service behind directions is unpublished, so the Directions tab and the "Directions To
+Here" buttons offered something that could not work: the tab opened a maintenance notice. On
+production they are now hidden, on the main map, the event and parking maps, and in every popup. They
+stay on dev, where routing is being rebuilt, and come back to production with one change when it is
+ready. ([#1003](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1003))
+
+| Before (as production) | After (as production) |
+| --- | --- |
+| <img src="../screenshots/1003-hide-directions/before-local-as-prod-main-map-building.png" width="420" alt="The main map as production renders it, before: a Directions tab in the sidebar and a Directions To Here button in a building's details" /> | <img src="../screenshots/1003-hide-directions/after-local-as-prod-main-map-building.png" width="420" alt="The same view after: no Directions tab, and no Directions To Here button" /> |
+
 ### Bike directions could not find a bike rack
 
 Planning a bike trip looks up the nearest bike rack. On production that lookup read a service that no
-longer exists, so it found none. It now reads the same bike racks the map shows, 318 of them.
+longer exists, so it found none. It now reads the same bike racks the map shows, 318 of them. Like all
+directions, bike trips are for now offered on dev only (above).
 ([#1122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1122))
 
 ### Choosing a parking garage from search opened an empty details panel

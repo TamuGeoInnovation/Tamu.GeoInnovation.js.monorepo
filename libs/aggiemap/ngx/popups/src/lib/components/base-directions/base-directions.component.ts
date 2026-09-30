@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
@@ -9,6 +9,7 @@ import { v4 as guid } from 'uuid';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { BasePopupComponent } from '../base/base.popup.component';
 
@@ -34,6 +35,13 @@ export class BaseDirectionsComponent extends BasePopupComponent implements OnIni
    * Composed URL passed into the copy component
    */
   public shareUrl: string;
+
+  /**
+   * Whether "Directions To Here" is offered. Routing is not working (the Routing service is unpublished),
+   * so directions are development-only, like other features not ready for production: shown on dev and
+   * localhost, hidden on production (#1003). When routing returns, make this true everywhere.
+   */
+  public directionsAvailable: Observable<boolean> = inject(TestingService).get('isTesting');
 
   private _searchService = inject(SearchService);
 

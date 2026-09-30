@@ -4,6 +4,7 @@ import * as path from 'path';
 
 import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { directionsAvailable, directionsEntryPoints } from './directions';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
@@ -332,6 +333,13 @@ for (const { mapPath, loadPath, title } of cases) {
       withFeatures.length,
       `no layer on ${mapPath} returned any features, so the map is drawing nothing`
     ).toBeGreaterThan(0);
+
+    // While routing is unavailable, no map may offer directions: no Directions tab, and no
+    // "Directions To Here" left on the page (#1003). Whether a map offers them when routing is
+    // available depends on its own configuration, so only the "hidden" case is checked per map.
+    if (!directionsAvailable()) {
+      expect(await directionsEntryPoints(page), `${mapPath} still offers directions`).toEqual({ tabs: 0, buttons: 0 });
+    }
 
     // Checked last so a bootstrap failure is reported as a map that never became ready, rather than
     // as an incidental console error.

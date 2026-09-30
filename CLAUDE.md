@@ -95,6 +95,7 @@ is unclear, ask.
 | "... on prod", "... on production" | `test/smoke/aggiemap/run-local.sh production` |
 | "... on both" | Both of the above, one after the other |
 | "... locally", "... against my dev server" | `test/smoke/aggiemap/run-local.sh local`, with the dev server running in the `aggiemap-dev` container |
+| "... locally as production", "check the production gating" | `test/smoke/aggiemap/run-local.sh local-production`: the same dev server at `127.0.0.1`, which is not a dev host, so development-only features are hidden as on production |
 | "... on GitHub", "run the smoke workflow" | `gh workflow run aggiemap-smoke.yml -f environment=development` (or `production`, `both`), then `gh run watch` |
 | "run the tests", "run the unit tests" (no environment) | `nx test` for the affected projects, in Docker as in CLAUDE_SETUP.md |
 

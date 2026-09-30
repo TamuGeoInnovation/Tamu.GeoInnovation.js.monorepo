@@ -6,7 +6,8 @@ We are injecting application-specific sidebar tabs and content -->
   <div class="tabs left">
     <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''" (click)="reportSidebarContent('Features')"></tamu-gisc-sidebar-tab>
 
-    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'" (click)="reportSidebarContent('Directions')"></tamu-gisc-sidebar-tab>
+    <!-- Development-only while routing is unpublished (#1003). -->
+    <tamu-gisc-sidebar-tab *ngIf="(isDev | async) === true" [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'" (click)="reportSidebarContent('Directions')"></tamu-gisc-sidebar-tab>
 
     <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'" (click)="reportSidebarContent('Bus Routes')"></tamu-gisc-sidebar-tab>
 

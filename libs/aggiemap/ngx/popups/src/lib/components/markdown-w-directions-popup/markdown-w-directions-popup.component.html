@@ -5,5 +5,5 @@
 <div class="popup-section">
   <p class="trailer-1" *ngIf="isContentLengthZero === false" [innerHTML]="data.attributes?.description"></p>
 
-  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+  <div *ngIf="directionsAvailable | async" class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
 </div>
