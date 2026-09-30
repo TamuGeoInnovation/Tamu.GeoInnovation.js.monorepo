@@ -3,18 +3,18 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**The [30 September release](2026-09-30.md) is cleared and on its way to production.**
+**The [second 30 September release](2026-09-30-2.md) is cleared and on its way to production.**
 
-If you followed a link here expecting the notes for the release that just shipped — directions hidden
-while routing is unpublished, the parking garage popup, the drive directions and bike rack fixes, and
-their before and after screenshots — they are in [30 September](2026-09-30.md) now. That file is the
-permanent record of what shipped; this one only ever describes what has not shipped yet.
+If you followed a link here expecting the notes for the release that just shipped — the 150th Opening
+Ceremony venue change, and notices that stack instead of hiding each other — they are in
+[30 September, second release](2026-09-30-2.md) now. That file is the permanent record of what shipped;
+this one only ever describes what has not shipped yet.
 
 ---
 
 ## Summary
 
-Nothing has merged since the 30 September release.
+Nothing has merged since the second 30 September release.
 
 ---
 

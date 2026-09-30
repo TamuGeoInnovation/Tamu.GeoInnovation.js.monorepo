@@ -197,6 +197,11 @@ If the suite failed and a tag was already pushed, delete it: `git push origin :d
 
 ### 4. Merge the release notes
 
+**Write them as soon as step 2 passes, without being asked.** This step belongs to whoever is running
+the release, not to the person approving deployments - describing what the notes will say and waiting
+for a go-ahead just stalls the release on someone who is waiting for you.
+
+
 Open one pull request that:
 
 1. **Renames** `unreleased.md` to `YYYY-MM-DD.md` for the day it will ship. If the deploy slips, rename
