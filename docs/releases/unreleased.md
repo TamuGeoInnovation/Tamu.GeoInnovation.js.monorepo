@@ -3,18 +3,19 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**The [second 30 September release](2026-09-30-2.md) is cleared and on its way to production.**
+**The [third 30 September release](2026-09-30-3.md) is cleared and on its way to production.**
 
-If you followed a link here expecting the notes for the release that just shipped — the 150th Opening
-Ceremony venue change, and notices that stack instead of hiding each other — they are in
-[30 September, second release](2026-09-30-2.md) now. That file is the permanent record of what shipped;
+If you followed a link here expecting the notes for a release that just shipped, they are in a dated
+file now — the Opening Ceremony notice wording in
+[30 September, third release](2026-09-30-3.md), and the venue change and stacking notices in
+[30 September, second release](2026-09-30-2.md). Those files are the permanent record of what shipped;
 this one only ever describes what has not shipped yet.
 
 ---
 
 ## Summary
 
-Nothing has merged since the second 30 September release.
+Nothing has merged since the third 30 September release.
 
 ---
 
