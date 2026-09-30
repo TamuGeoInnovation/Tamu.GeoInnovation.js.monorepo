@@ -3,88 +3,32 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**Production is currently running the [second 28 September release](2026-09-28-2.md).**
+**Production is currently running the [29 September release](2026-09-29.md).**
 
-If you followed a link to this page expecting the notes for the release being tested, including the
-*What to test* checklist and the before and after screenshots, they are in
-[28 September, second release](2026-09-28-2.md) now. That file is the permanent record of what
-shipped; this one only ever describes what has not shipped yet.
+If you followed a link here expecting the notes for the release that just shipped — the retired
+events, the 150 Cake & Ice Cream correction, and the before and after screenshots — they are in
+[29 September](2026-09-29.md) now. That file is the permanent record of what shipped; this one only
+ever describes what has not shipped yet.
 
 ---
 
 ## Summary
 
-Events that are over can now be marked **retired**, and four are. Production looks the same, because
-they were already hidden there. On dev they no longer appear in All Maps search, though they stay in
-the All Events list, labelled Retired. On every environment, a retired map's link now says the event
-has ended instead of opening a map whose data is gone, and the nightly checks stop testing them.
-
-The cake and ice cream event is corrected: it is **150 Cake & Ice Cream** on **5 October**, not
-"Spirit of 150 Week" over a range of days. Its address is unchanged, so shared links still work.
-
----
-
-## Changed
-
-### Retired events are no longer offered anywhere
-
-Events that are over used to be hidden with the same setting as maps not announced yet. Hidden maps
-still show in dev's search, so four finished events were offered there and tested every night,
-although their services are stopped on the production GIS server. They are now marked **retired**:
-search and the listing pages leave them out on every environment, and the automated checks skip them.
-Dev's All Events list still includes them, labelled **Retired**, because that list is where the team
-keeps every event, working or not.
-
-**A retired map's link no longer opens a map.** An old shared link, the map's own address, or the
-entry in All Events leads to a short page saying the event has ended, with a button to All Maps. This
-applies on production too, where these links used to open a map whose layers could not load.
-
-Retired: Banana Ball, Softball Regionals, Troubadour Festival, and Road to 26: Argentina vs. Honduras.
-(#1098)
-
-The search and the All Events label are visible on dev only; production already hid these maps. The
-ended page is on every environment.
-
-| Before (dev) | After (dev) |
-| --- | --- |
-| <img src="../screenshots/1098-retired-status/before-local-retired-link.png" width="420" alt="Opening the Troubadour Festival link, before: its map opens" /> | <img src="../screenshots/1098-retired-status/after-local-retired-link.png" width="420" alt="Opening the Troubadour Festival link, after: a page saying Troubadour Festival has ended, with a See All Maps button" /> |
-| <img src="../screenshots/1098-retired-status/before-local-search.png" width="420" alt="All Maps search on dev, before: searching troubadour offers Troubadour Festival" /> | <img src="../screenshots/1098-retired-status/after-local-search.png" width="420" alt="All Maps search on dev, after: searching troubadour finds no results" /> |
-| <img src="../screenshots/1098-retired-status/before-local-all-events-label.png" width="240" alt="Dev's All Events list, before: retired maps listed with no label" /> | <img src="../screenshots/1098-retired-status/after-local-all-events-label.png" width="240" alt="Dev's All Events list, after: the four retired maps carry a Retired label" /> |
-
-### 150 Cake & Ice Cream, corrected
-
-The cake and ice cream event was published as **Spirit of 150 Week**, the week it sits in, and the
-date beside it read a range rather than the day it happens. It is one event, on **5 October**.
-
-It now reads **150 Cake & Ice Cream - Oct. 5, 2026** in the 150th Events group on the main map, and
-carries that name on its own map, on Campus Events and on the 150th Anniversary page.
-
-**Its address has not changed.** Any link already shared still works.
-
-| Before (production) | After (dev) |
-| --- | --- |
-| <img src="../screenshots/1142-cake-and-ice-cream/before-prod.png" width="340" alt="150th Events on production: Opening Ceremony, Kickoff at Kyle and Spirit of 150 Week - Oct. 2-8, 2026" /> | <img src="../screenshots/1142-cake-and-ice-cream/after-local.png" width="340" alt="150th Events after: Opening Ceremony, Kickoff at Kyle and 150 Cake and Ice Cream - Oct. 5, 2026" /> |
-
-**Check on dev:** [the main map](https://dev.aggiemap.tamu.edu/map), 150th Events in the layer list;
-and [the event map](https://dev.aggiemap.tamu.edu/events/spirit-of-150-week), whose address keeps the
-old name on purpose. Searching *cake*, *ice cream* or *spirit* should all find it.
-
-Corrected by Tricia Speed.
-
-_Nothing has merged since the second 28 September release._
+Nothing user-visible has merged since the 29 September release.
 
 ## Behind the scenes
 
-- **A check that retired maps stay hidden.** The smoke suite searches All Maps for each retired map
-  and reads every listing page, on each environment. It checks that dev's All Events list still has
-  them, each labelled Retired, and that each retired map's link opens the ended page and no map.
-  (#1098)
-- **The GIS services check skips retired maps' services** rather than listing them as known
-  failures. (#1098)
+- **The release steps are one ordered sequence**, in [README.md](README.md): build and deploy to dev,
+  run the full suite, tag dev only if it passed, merge the notes, deploy production, tag production,
+  check production. They had been spread across three documents that each described part of it, in
+  different orders, and the notes were written after the deploy — so the file most likely to be
+  shared outside the team was wrong until someone got to it.
+  ([#1150](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1150),
+  [#1151](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1151))
 
 ---
 
-## Work in flight — 28 September, after the second release
+## Work in flight — 29 September, after the release
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
@@ -97,52 +41,63 @@ untracked and deliberately uncommitted — 363 builder destinations at two viewp
 the output of a two-hour crawl against dev and can be regenerated with:
 
 ```bash
-AGGIEMAP_SMOKE_BASE_URL=https://dev.aggiemap.tamu.edu BUILDER_INVENTORY_SHOTS=/some/dir   npx playwright test --config=tools/builder-inventory/playwright.config.ts
+AGGIEMAP_SMOKE_BASE_URL=https://dev.aggiemap.tamu.edu BUILDER_INVENTORY_SHOTS=/some/dir \
+  npx playwright test --config=tools/builder-inventory/playwright.config.ts
 ```
 
 The capture resumes rather than restarts, so an interrupted run costs only what it had not reached.
 
-They are uncommitted on purpose: at 322MB they would more than triple a 151MB repository, permanently,
-since git keeps every version. Where they should live is #1107.
+They are uncommitted on purpose: at 322MB they would more than triple a 151MB repository,
+permanently, since git keeps every version. Where they should live is
+[#1107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1107).
 
-### Open pull requests
+### The two things the release process still does by hand
 
-None from 28 September. Everything merged that day shipped in the
-[second 28 September release](2026-09-28-2.md).
+Tagging dev and tagging production are manual, which was fine for proving the sequence and will not
+survive a normal week. Automating them needs the build to say which commit it came from
+([#1148](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1148)); until
+then the smoke suite tests a URL and cannot know which commit it verified. A tag applied after a
+passing run is the only thing making "we shipped what we tested" checkable, so the gap matters.
 
 ### The decision waiting to be made
 
-**#1107 — evaluate Visual Regression Tracker on the cluster** as the home for baseline images. It
-holds the comparison of the options, why Percy and Chromatic cannot work here (they re-render from
-DOM, and these maps are a WebGL canvas), and the caveat that VRT's Playwright agent is two years
-stale while its server is current.
+**[#1107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1107) — evaluate
+Visual Regression Tracker on the cluster** as the home for baseline images. It holds the comparison of
+the options, why Percy and Chromatic cannot work here (they re-render from DOM, and these maps are a
+WebGL canvas), and the caveat that VRT's Playwright agent is two years stale while its server is
+current.
 
 The contained test is in that issue: stand VRT up, point the existing capture at `gameday-parking`'s
 14 destinations, and find out whether the agent works before migrating 726 images.
 
-### Filed today, none started
+### Open, none started
 
 | Issue | |
 | --- | --- |
-| #1089 | Full visual suite: a screenshot of every page, including builder paths |
-| #1090 | Nothing asserts development-only sections stay off production |
-| #1091 | Layer toggle round-trip: prove a layer returns the map to its original state |
-| #1097 | Two 2025 events still registered and tested nightly on dev |
-| #1098 | `visible:false` means both "not announced" and "finished", so hidden maps accumulate |
-| #1099 | Ring Day naming: October holds the generic `/events/ring-day` id |
-| #1100 | The builder-inventory README claims the smoke suite consumes its output; nothing did |
-| #1101 | Inventory every GIS service, with dev and prod URLs and which maps use them |
-| #1102 | Dev is hardcoded to the production transportation GIS host by a `TEMP` |
-| #1103 | No test that a past event shows the "this event has passed" warning |
-| #1104 | Define an emergency test tier for urgent deploys |
-| #1105 | Map captures are not byte-reproducible; page captures are |
-| #1122 | Bike racks search reads a service that does not exist on the production GIS server |
-| #1123 | Two unused football entries point at stopped services |
+| [#1079](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1079) | Visual baselines are stale against dev, and there is one set for all environments |
+| [#1082](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1082) | All Maps scrolls sideways on a phone: a copy field with an unbreakable URL widens its card |
+| [#1089](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1089) | Full visual suite: a screenshot of every page, including builder paths |
+| [#1090](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1090) | Nothing asserts development-only sections stay off production |
+| [#1091](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1091) | Layer toggle round-trip: prove a layer returns the map to its original state |
+| [#1097](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1097) | Two 2025 events still registered on dev |
+| [#1099](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1099) | Ring Day naming: October holds the generic `/events/ring-day` id |
+| [#1101](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1101) | Inventory every GIS service, with dev and prod URLs and which maps use them |
+| [#1102](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1102) | Dev is hardcoded to the production transportation GIS host by a `TEMP` |
+| [#1103](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1103) | No test that a past event shows the "this event has passed" warning |
+| [#1104](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1104) | Define an emergency test tier for urgent deploys |
+| [#1105](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1105) | Map captures are not byte-reproducible; page captures are |
+| [#1122](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1122) | Bike racks search reads a service that does not exist on the production GIS server |
+| [#1123](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1123) | Two unused football entries point at stopped services |
+| [#1140](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1140) | Field names differ between three maps in the latest service data |
+| [#1144](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1144) | Release process: which of the remaining options to adopt |
+| [#1146](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1146) | Professionalization sweep |
+| [#1148](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1148) | Builds do not say which commit they came from |
 
 ### Worth knowing before touching the visual work
 
 - **Page captures are byte-identical across runs; map captures are not.** Measured three times each.
-  So hash comparison works for pages and cannot work for maps, which need pixel tolerance (#1105).
+  So hash comparison works for pages and cannot work for maps, which need pixel tolerance
+  ([#1105](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1105)).
 - **A local dev server must be reached at `http://localhost:4200`, not `127.0.0.1`.** `TestingService`
   keys on the host containing `dev` or `localhost`, so `127.0.0.1` renders the *production* variant —
   6 headings on All Maps instead of 31.
