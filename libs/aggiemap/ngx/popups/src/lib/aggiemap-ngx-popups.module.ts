@@ -16,6 +16,7 @@ import { ConstructionPopupComponent } from './components/construction/constructi
 import { LactationPopupComponent } from './components/lactation/lactation.component';
 import { ParkingKioskPopupComponent } from './components/parking-kiosk/parking-kiosk.component';
 import { ParkingLotPopupComponent } from './components/parking-lot/parking-lot.component';
+import { ParkingGaragePopupComponent } from './components/parking-garage/parking-garage.component';
 import { RestroomPopupComponent } from './components/restroom/restroom.component';
 import { PoiPopupComponent } from './components/poi/poi.component';
 import { BonfirePopupComponent } from './components/bonfire/bonfire.component';
@@ -33,6 +34,7 @@ const PopsArr = [
   LactationPopupComponent,
   ParkingKioskPopupComponent,
   ParkingLotPopupComponent,
+  ParkingGaragePopupComponent,
   RestroomPopupComponent,
   PoiPopupComponent,
   BonfirePopupComponent,
@@ -51,6 +53,7 @@ const PopsObj = {
   LactationPopupComponent,
   ParkingKioskPopupComponent,
   ParkingLotPopupComponent,
+  ParkingGaragePopupComponent,
   RestroomPopupComponent,
   PoiPopupComponent,
   BonfirePopupComponent,

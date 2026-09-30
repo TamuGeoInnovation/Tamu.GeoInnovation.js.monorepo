@@ -14,7 +14,30 @@ ever describes what has not shipped yet.
 
 ## Summary
 
-Nothing user-visible has merged since the 29 September release.
+Choosing a parking garage from search shows its details again, and a garage can be shared by link.
+
+## What to test
+
+**On dev**, once this is deployed. Production follows the next release.
+
+| Open this | Look for |
+| --- | --- |
+| [The main map](https://dev.aggiemap.tamu.edu/map) | search **Central Campus Garage**, choose it under **Parking Garage**: the details show its name and a link ending `?garage=CCG` |
+| [A garage link](https://dev.aggiemap.tamu.edu/map?garage=CCG) | opens Central Campus Garage's details |
+
+## Fixed
+
+### Choosing a parking garage from search opened an empty details panel
+
+Searching for a garage and choosing it highlighted the garage on the map, but the details panel showed
+only ", TX" and an empty link. Garages were opened with the building details, which look for building
+fields a garage doesn't have. They now get their own details, with the garage's name, and a link
+(`?garage=CCG`) that reopens it; a parking lot link could not, since garages aren't in the lots layer.
+([#1163](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1163))
+
+| Before (production) | After (local) |
+| --- | --- |
+| <img src="../screenshots/1163-garage-popup-empty/before-prod-desktop.png" width="420" alt="Central Campus Garage chosen from search on production: the details panel shows only ', TX' and an empty link" /> | <img src="../screenshots/1163-garage-popup-empty/after-local-desktop.png" width="420" alt="Central Campus Garage chosen from search after the fix: the details show its name, College Station, TX 77843, and the link ?garage=CCG" /> |
 
 ## Behind the scenes
 

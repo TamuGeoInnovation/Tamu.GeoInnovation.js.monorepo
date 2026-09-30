@@ -52,7 +52,6 @@
       "footballGamedayShuttlesUrl": "#1123: unused entry pointing at a stopped service"
     },
     "allowedSearchSourceFailures": {
-      "parking-garage": "#1163: choosing a garage opens an empty details panel",
       "night-parking": "#1162: TS/AVPVisBSUBVenNWRetNSCMed does not exist on the production GIS server",
       "bike-racks": "#1122: TS/TS_Bicycles does not exist on the production GIS server"
     }
