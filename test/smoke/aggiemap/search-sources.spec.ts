@@ -42,6 +42,11 @@ type SourceCase =
       /** The result as displayed. The list title-cases it, so the comparison ignores case. */
       result: string;
       popupShows: RegExp;
+      /**
+       * The query the details' share link must end with. When set, the link is also opened, and must
+       * reopen the same feature.
+       */
+      shareQuery?: string;
     }
   | { kind: 'deep-link'; query: string; popupShows: RegExp }
   | { kind: 'service'; url: string; usedBy: string }
@@ -70,7 +75,9 @@ const SOURCE_CASES: Record<string, SourceCase> = {
     category: 'Parking Garage',
     term: 'Central Campus Garage',
     result: 'Central Campus Garage',
-    popupShows: /Central Campus Garage/
+    popupShows: /Central Campus Garage/,
+    // Garages are not in the parking lots layer, so a `?lot=` link could not find one (#1163).
+    shareQuery: '?garage=CCG'
   },
   'parking-lot': {
     kind: 'typed',
@@ -251,7 +258,7 @@ test.describe('search sources on the main map', () => {
     const known = ALLOWED[source];
 
     if (sourceCase.kind === 'typed') {
-      const { category, term, result, popupShows } = sourceCase;
+      const { category, term, result, popupShows, shareQuery } = sourceCase;
 
       test(`${source}: typing "${term}" finds "${result}" under ${category} and shows its data`, async ({ page }) => {
         await openMainMap(page);
@@ -278,6 +285,21 @@ test.describe('search sources on the main map', () => {
             timeout: 15_000
           });
           await expect(popup, `the details for "${result}" did not show its data`).toContainText(popupShows);
+
+          if (shareQuery) {
+            // The copy field is a button named "Click to copy to clipboard." whose text is the link it copies.
+            const shareLink = popup.getByRole('button').filter({ hasText: new RegExp(`${escapeRegExp(shareQuery)}$`) });
+            await expect(shareLink, `the details for "${result}" do not share ${shareQuery}`).toBeVisible();
+
+            await openMainMap(page, shareQuery);
+            const reopened = page.locator(POPUP);
+            await expect(reopened, `/map${shareQuery} did not reopen "${result}"`).not.toHaveClass(/hidden/, {
+              timeout: 30_000
+            });
+            await expect(reopened, `/map${shareQuery} did not show "${result}"'s data`).toContainText(popupShows, {
+              timeout: 15_000
+            });
+          }
         });
       });
     } else if (sourceCase.kind === 'deep-link') {

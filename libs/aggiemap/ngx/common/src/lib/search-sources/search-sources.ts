@@ -227,8 +227,12 @@ export function SearchSources(
       },
       featuresLocation: 'features',
       displayTemplate: '{attributes.LotName}',
-      popupComponent: Popups.BuildingPopupComponent,
-      searchActive: true
+      // Garages carry lot fields, not building ones, so the building popup rendered them empty (#1163).
+      popupComponent: Popups.ParkingGaragePopupComponent,
+      searchActive: true,
+      // Garages are not in the parking lots layer, so they need their own link rather than `?lot=`.
+      urlQueryParam: 'garage',
+      urlQueryParamAliases: ['Garage']
     },
     // A single parking facility is stored as several polygons — the lot proper plus its loading,
     // restricted, and visitor sub-areas — all sharing a `FAC_CODE` and, often, a `LotName`. They are
