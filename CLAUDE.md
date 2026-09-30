@@ -20,6 +20,27 @@ An [Nx](https://nx.dev) monorepo holding the Texas A&M GeoInnovation Service Cen
 work: AggieMap (`aggiemap.tamu.edu`), the event and parking maps built on it, GIS Day, and
 the shared libraries behind them. A change to a shared library can affect several apps.
 
+## Where things are written down
+
+Three places, each with one job.
+
+| Where | What belongs there |
+| --- | --- |
+| This file | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month. |
+| [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
+| The maintainer's handoff page | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt. |
+
+**The handoff page is for one person, so it cannot be where anything else lives.** If a fact matters to
+anybody but him — a decision, a gotcha, something in flight, a number someone might check — it goes in
+this file, in `unreleased.md`, or in a GitHub issue *as well*. A page only one person can open looks
+like a record and is not one.
+
+That also means the work-in-flight section of `unreleased.md` stays complete on its own. It is not a
+summary of the handoff page, and a reader who cannot open that page must not be missing anything.
+
+Claude's auto memory is currently on here, so some state also lives in a per-machine folder that no
+other machine sees and that is not in git. Whether to turn it off, as the C# repository did, is #1156.
+
 ## Things that are easy to get wrong
 
 **The trunk is `development`, not `master`.** `master` was abandoned in 2022 and is hundreds
