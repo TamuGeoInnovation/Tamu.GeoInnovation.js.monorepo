@@ -76,66 +76,113 @@ never require the reader to sign in to anything.
 
 ## Cutting a release
 
-**Prepare the release pull request before deploying to production, and merge it once production is
-up.** Merging is the only release-notes step after production. Writing the notes after the deploy
-made them the first job of every release night, and the file most likely to be shared outside the
-team stayed wrong until someone got to it (#1094, #1132).
+One sequence, in order. Each step either proves something or records it, and the note under each says
+which.
 
-Once the full smoke suite passes on dev, open one pull request that:
+**The notes merge before production, not after.** They describe what a release contains and what
+cleared it; they do not assert that it is deployed. A tag records that (step 6), which is a fact
+rather than a claim someone has to remember to make true. Writing the notes after the deploy made
+them the first job of every release night and left the file most likely to be shared outside the team
+wrong until someone got to it (#1094, #1132, #1144).
 
-1. **Renames** `unreleased.md` to `YYYY-MM-DD.md` for the day it will ship, and turns the
-   "Unreleased" banner into the status line of a release that has shipped. If the deploy slips to
-   another day, rename it before merging.
-2. **Records the dev run's numbers**: checks passed, failed and skipped, and how long the run took.
-   That run is what cleared the release, so it is the number worth writing down. The status line
-   says so, and links to the
-   [smoke workflow](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/workflows/aggiemap-smoke.yml),
-   which checks production every day and opens a health issue if something breaks. Production
-   numbers are not recorded by hand.
-3. **Points the *What to test* links at production.** Anything deliberately not on production keeps
-   its dev link and says why. Bus routes on the first 28 September release, and campus maps, are the
-   examples.
-4. **Leaves a pointer in a fresh `unreleased.md`.** Links to `unreleased.md` get shared while people
-   are testing on dev, and the rename alone leaves them resolving to an empty page. A line naming the
-   dated file keeps them useful. Carry forward anything else the file holds that is not part of the
-   release, such as a work-in-flight section.
-5. **Checks the commit message for stray closing keywords.** Writing `Closes #1234` in prose, even to
-   say an issue is *not* closed by the change, will close it. This has happened once.
+### 1. Build and deploy to dev
 
-Then deploy. When production is up, open it and check the thing the release is about, then merge the
-pull request. If production shows a problem, do not merge: fix it, or change the status line to say
-what did not ship.
+Create the release **after** its build has finished. A release created against a build still in
+progress is asking for the artifact it wants before it exists.
 
-## Tagging what was built
-
-A build is identified by an Azure DevOps build number, which nobody outside the pipeline can resolve.
-So the repository alone cannot answer which commit production is running, which build the team tested
-on dev on a given day, or whether the build promoted to production is the one that passed. Tags
-answer all three, and anyone with the repository can read them.
-
-**Tag the build, not the deploy.** `azure-pipelines.yml` runs the build template twice in a single
-run, publishing `js-monorepo-development` and `js-monorepo-production` from the same commit, so one
-build serves both environments and the same commit is expected to carry both tags.
+### 2. Run the full suite against dev
 
 ```bash
-scripts/tag-build.sh dev       # when a build reaches dev
-git push origin dev-2026-09-29
+test/smoke/aggiemap/run-local.sh development
+```
 
-scripts/tag-build.sh prod      # when that same build is promoted
+This is the gate. Nothing below happens if it fails.
+
+Record what it says - passed, failed, skipped, duration. Those numbers go in the notes at step 4, and
+they are what cleared the release.
+
+### 3. Tag the dev build
+
+```bash
+bash scripts/tag-build.sh dev
+git push origin dev-2026-09-29
+```
+
+**Only after the suite passes.** `dev-*` means "deployed to dev and verified there", which is the
+claim the production tag depends on. Tagging before the run makes it mean "deployed", and the check
+at step 6 then guarantees nothing.
+
+If the suite failed and a tag was already pushed, delete it: `git push origin :dev-2026-09-29`.
+
+### 4. Merge the release notes
+
+Open one pull request that:
+
+1. **Renames** `unreleased.md` to `YYYY-MM-DD.md` for the day it will ship. If the deploy slips, rename
+   before merging.
+2. **Records the dev run from step 2** - the numbers that cleared it.
+3. **Points the *What to test* links at production**, since that is where anyone following them will
+   look once it is out. Anything deliberately not on production keeps its dev link and says why.
+4. **Ends with the "What went into this release" table** - every pull request and the issue behind it
+   (#1139).
+5. **Leaves a pointer in a fresh `unreleased.md`**, because links to it get shared while people are
+   testing on dev and the rename alone leaves them on an empty page. Carry forward anything not part
+   of this release, such as a work-in-flight section.
+
+Then **merge it**. Nothing about the notes happens after this point.
+
+Check the commit message for stray closing keywords: writing `Closes #1234` in prose, even to say an
+issue is *not* closed, will close it. That has happened twice.
+
+### 5. Deploy to production
+
+Promote the build that was tested. Not a new one.
+
+### 6. Tag the production build
+
+```bash
+bash scripts/tag-build.sh prod
 git push origin prod-2026-09-29
 ```
 
-`prod` **refuses a commit that carries no `dev-*` tag**, because promoting a build that was never
-tested is the failure worth catching. `--force` overrides it, and should be rare enough to explain.
+**This refuses a commit carrying no `dev-*` tag.** That refusal is the point: it is what makes "we
+shipped what we tested" a fact rather than an assumption. `--force` overrides it and should be rare
+enough to explain.
 
-A second build on the same day is suffixed (`dev-2026-09-29-2`) rather than refused. Re-running for a
-commit already tagged does nothing.
+Both tags land on the same commit, which reads correctly: verified on dev on this date, shipped on
+that one.
 
-Tags go to `origin`, not to a fork. That is the one place the never-push-to-origin rule does not
-apply, so it is worth being deliberate about.
+### 7. Check production
 
-**Not called release candidates.** That implies a gate these do not have: most dev builds are simply
-the latest commit. `dev-<date>` says what it is.
+Open the thing the release is about. If it is wrong, the notes are already merged - so say what did
+not ship, in a follow-up, rather than quietly editing the record.
+
+Production numbers are not recorded by hand. The
+[smoke workflow](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/actions/workflows/aggiemap-smoke.yml)
+checks production daily and opens a health issue when something breaks.
+
+### What the tags are for
+
+A build is identified by an Azure DevOps build number, which nobody outside the pipeline can resolve.
+Tags make three things answerable from the repository alone: which commit production is running,
+which build was verified on dev on a given day, and whether the one promoted is the one that passed.
+
+`azure-pipelines.yml` runs the build template twice in one run, publishing `js-monorepo-development`
+and `js-monorepo-production` from the same commit, so one build serves both environments and the same
+commit carries both tags.
+
+Tags go to `origin`, not to a fork - the one place the never-push-to-origin rule does not apply.
+
+Not called release candidates: that implies a gate these do not have. `dev-<date>` says what it is.
+
+A second build the same day is suffixed (`dev-2026-09-29-2`). Re-running for an already-tagged commit
+does nothing.
+
+### Doing this by hand will not last
+
+Steps 3 and 6 are manual, which is fine for proving the sequence and will not survive a normal week.
+Automating them needs the build to say which commit it came from (#1148); until then the smoke suite
+tests a URL and cannot know what it verified.
 
 ## What belongs here
 
