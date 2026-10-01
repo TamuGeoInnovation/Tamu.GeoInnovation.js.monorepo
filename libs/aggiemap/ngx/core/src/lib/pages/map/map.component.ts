@@ -4,7 +4,7 @@ import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { AggiemapBasemap } from '@tamu-gisc/maps/feature/basemap';
+import { aggiemapBasemap } from '@tamu-gisc/maps/feature/basemap';
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
@@ -63,7 +63,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
       this.config.next({
         basemap: {
-          basemap: AggiemapBasemap
+          basemap: aggiemapBasemap(this.ts.isTesting)
         },
         view: {
           mode: '2d',

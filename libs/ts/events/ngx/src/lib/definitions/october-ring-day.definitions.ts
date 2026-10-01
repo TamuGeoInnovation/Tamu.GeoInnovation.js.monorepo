@@ -15,8 +15,20 @@ export enum RING_DAY_LAYERS {
 }
 
 const RING_DAY_PERIODS = [
-  { value: 'day1', label: 'Aggie Ring Pickup (October 8, 2026)', dates: ['2026-10-08'] },
-  { value: 'day2', label: 'Aggie Ring Day (October 9-10, 2026)', dates: ['2026-10-09', '2026-10-10'] }
+  {
+    value: 'day1',
+    label: 'Aggie Ring Pickup (October 8, 2026)',
+    dates: ['2026-10-08'],
+    // Pickup parking and the Williams Alumni Center. Tune center/zoom here to adjust framing.
+    mapView: { center: [-96.3354, 30.6095], zoom: 18 }
+  },
+  {
+    value: 'day2',
+    label: 'Aggie Ring Day (October 9-10, 2026)',
+    dates: ['2026-10-09', '2026-10-10'],
+    // Aggie Park out to the West Campus Garage shuttle loop. Tune center/zoom here to adjust framing.
+    mapView: { center: [-96.3405, 30.6088], zoom: 17 }
+  }
 ] as const;
 
 const ringDayDateConversions = (startField: string, endField: string) =>
@@ -141,7 +153,11 @@ export const RingDaySpecialEventOptions: SpecialEventOptions = [
     description:
       'Select which Ring Day period you plan to attend to see the most relevant transportation and logistics information.',
     shortDescription: 'Event Day',
-    choices: RING_DAY_PERIODS.map(({ value, label }) => ({ value, label })),
+    choices: RING_DAY_PERIODS.map(({ value, label, mapView }) => ({
+      value,
+      label,
+      mapView: { center: [...mapView.center] as [number, number], zoom: mapView.zoom }
+    })),
     effects: {
       layers: [
         {

@@ -47,6 +47,14 @@ on production, shown on dev and localhost. Each environment's `directionsAvailab
 offers directions, both ways. `maps.spec.ts` also checks no map offers directions where they are
 unavailable. When routing returns to production, set `directionsAvailable` to true there.
 
+`development-only.spec.ts` checks development-only work stays off production, both ways, from each
+environment's `developmentSectionsVisible`. The sections listed in `development-only.ts` (Directions,
+Bus Routes, Experiments) must be offered on dev and absent on production (#1090). The GIS services
+listed in `DEVELOPMENT_ONLY_SERVICES` must be requested on dev and never on production (#1229). The
+main map and an event map with Aggieland saved as the basemap are both loaded, and every request is
+recorded. A service with no production counterpart goes on that list. It comes off only when it is
+published for production, together with the code's gate.
+
 `bus.spec.ts` checks every bus route the bus panel lists draws its line and one stop marker for each
 stop it lists, and that choosing a route expands it and draws its stops (#1175, for #1174). It reads
 what the bus layer drew from the map probe's `graphicTypes`. Routes known to fail are listed per

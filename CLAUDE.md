@@ -124,6 +124,12 @@ itself when a later run passes. Say so when reporting a failure, so nobody opens
 
 ## Before changing code
 
+**Nothing without a production service is visible on production unless explicitly allowed.** A
+layer, basemap or service published only on dev is gated with `TestingService` (`isTesting`), as bus
+routes and the vector tile basemap are. Add it to `DEVELOPMENT_ONLY_SERVICES` in
+`test/smoke/aggiemap/development-only.ts`, so the smoke suite fails if production ever requests it.
+The maintainer decides when it moves to production. See #1229.
+
 **Reuse before building.** Check `libs/ui-kits/ngx/**` for an existing component, and
 `libs/sass/` plus the app's global `styles.scss` for existing classes, before writing any
 CSS. There is a shared copy-field component, a shared `.button` with variants, spacing
