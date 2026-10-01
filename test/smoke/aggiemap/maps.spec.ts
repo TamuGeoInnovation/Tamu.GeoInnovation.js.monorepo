@@ -69,11 +69,21 @@ interface ProbeLayer {
   loaded: boolean;
   error: string | null;
   featureCount: number | null;
+
+  /** Diagnostics only. Never compare this to the view's - see the drawable check below. */
+  spatialReference?: number | null;
+
+  /** Absent on builds older than this field; see the drawable check below. */
+  drawable?: boolean | null;
 }
 
 interface ProbeSnapshot {
   ready: boolean;
   viewReady: boolean;
+
+  /** Absent on builds older than this field; see the drawable check below. */
+  spatialReference?: number | null;
+
   layers: ProbeLayer[];
 }
 
@@ -299,13 +309,35 @@ for (const { mapPath, loadPath, title } of cases) {
     // false alarms this suite cannot afford.
     test.info().annotations.push({
       type: 'layers',
-      description: `viewReady=${snapshot.viewReady}
+      description: `viewReady=${snapshot.viewReady} viewSR=${snapshot.spatialReference ?? 'n/a'}
 ` + snapshot.layers
         .map((l) => `${l.title || l.id} [${l.type}] loaded=${l.loaded} count=${l.featureCount ?? 'n/a'}`)
         .join('\n')
     });
 
     expect(snapshot.layers.length, `${mapPath} has no layers at all`).toBeGreaterThan(0);
+
+    // A map that loads everything and draws nothing.
+    //
+    // Esri reprojects feature data on request but never reprojects a tiled or vector tiled layer, so
+    // one whose spatial reference differs from the view's is simply invisible: it loads, reports no
+    // error, counts no features because it has none to count, and paints an empty canvas. Every
+    // assertion above passes. That is exactly how every event and parking map went blank while this
+    // suite reported them healthy (#1240).
+    //
+    // `drawable` is the probe's answer, not a comparison made here. The same spatial reference has
+    // more than one number - Web Mercator is 102100 and 3857 - so comparing wkids reports every
+    // healthy map as broken. Asking Esri's `SpatialReference.equals` is the only reliable form.
+    //
+    // Testing for `=== false` rather than falsiness also skips builds published before the probe
+    // carried the field, the same way the bus checks skip a build without theirs: absent means "this
+    // build cannot answer", not "the map is broken".
+    const undrawable = snapshot.layers.filter((l) => l.visible && l.drawable === false);
+
+    expect(
+      undrawable.map((l) => `${l.title || l.id} [${l.type}] is ${l.spatialReference}`),
+      `${mapPath} draws nothing: the view is ${snapshot.spatialReference} and these tiled layers cannot be reprojected into it`
+    ).toEqual([]);
 
     const failed = snapshot.layers.filter((l) => l.error !== null);
     const tolerated = failed.filter(

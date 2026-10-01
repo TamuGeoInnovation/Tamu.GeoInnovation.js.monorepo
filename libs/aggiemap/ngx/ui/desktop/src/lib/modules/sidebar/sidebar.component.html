@@ -2,7 +2,9 @@
 
 We are injecting application-specific sidebar tabs and content -->
 
-<tamu-gisc-sidebar [position]="'right'">
+<!-- `tamuGiscRevealSidebarOnPopup`: the feature popup renders inside this panel, so a closed panel
+     swallows it and clicking a feature appears to do nothing (#1244). -->
+<tamu-gisc-sidebar [position]="'right'" tamuGiscRevealSidebarOnPopup>
   <div class="tabs left">
     <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''" (click)="reportSidebarContent('Features')"></tamu-gisc-sidebar-tab>
 

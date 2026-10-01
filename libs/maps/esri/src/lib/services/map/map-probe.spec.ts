@@ -54,7 +54,7 @@ describe('map probe', () => {
       ];
 
       expect(probe.ready).toBe(false);
-      await expect(probe.snapshot()).resolves.toEqual({ ready: false, viewReady: false, layers: [] });
+      await expect(probe.snapshot()).resolves.toEqual({ ready: false, viewReady: false, spatialReference: null, layers: [] });
     });
 
     it("reports a graphics layer's graphics by type, and null for other layers (#1174)", async () => {
@@ -98,6 +98,53 @@ describe('map probe', () => {
         untyped: 1
       });
       expect(layers.find((layer) => layer.id === 'buildings')?.graphicTypes).toBeNull();
+    });
+
+    /**
+     * A basemap that loads cleanly and draws nothing (#1240, #1241).
+     *
+     * Esri never reprojects a tiled or vector tiled layer, so one whose spatial reference differs
+     * from the view's is invisible while reporting itself perfectly healthy. `drawable` is the only
+     * signal that separates the two, and it must be decided by `SpatialReference.equals` rather than
+     * by comparing wkids: **the same reference has more than one number.** Web Mercator is 102100 as
+     * `wkid` and 3857 as `latestWkid`, and a view and a layer may each report a different one of the
+     * pair -- a first attempt at this check compared the numbers and reported every healthy map on
+     * the site as broken.
+     */
+    it('reports whether a tiled layer can draw in the view it is in (#1240)', async () => {
+      // Stands in for Esri's own SpatialReference.equals, which treats the two numberings as equal.
+      const reference = (wkid: number) => ({
+        wkid,
+        equals: (other: { wkid: number }) => new Set([wkid, other.wkid]).size === 1 || [wkid, other.wkid].every((w) => w === 102100 || w === 3857)
+      });
+
+      registerMapProbe(
+        {
+          map: {
+            allLayers: {
+              toArray: () => [
+                // The same reference, reported by its other number. Must not be called undrawable.
+                { id: 'esri-base', title: 'World Topo', type: 'vector-tile', visible: true, loaded: true, spatialReference: reference(3857) },
+                // A genuinely different reference, which cannot be reprojected into the view.
+                { id: 'campus-base', title: 'Base Map', type: 'vector-tile', visible: true, loaded: true, spatialReference: reference(32139) },
+                // Feature data is reprojected on request, so it is always drawable.
+                { id: 'buildings', title: 'Buildings', type: 'feature', visible: true, loaded: true, spatialReference: reference(32139) }
+              ]
+            }
+          },
+          view: { ready: true, spatialReference: reference(102100) }
+        } as unknown as Parameters<typeof registerMapProbe>[0],
+        owner
+      );
+
+      const probe = (
+        window as unknown as Record<string, { snapshot: () => Promise<{ layers: { id: string; drawable: boolean | null }[] }> }>
+      )[MAP_PROBE_GLOBAL];
+      const layers = (await probe.snapshot()).layers;
+
+      expect(layers.find((layer) => layer.id === 'esri-base')?.drawable).toBe(true);
+      expect(layers.find((layer) => layer.id === 'campus-base')?.drawable).toBe(false);
+      expect(layers.find((layer) => layer.id === 'buildings')?.drawable).toBe(true);
     });
 
     /**

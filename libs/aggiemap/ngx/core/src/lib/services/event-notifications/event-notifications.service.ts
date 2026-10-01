@@ -43,6 +43,10 @@ export class EventNotificationsService {
   /**
    * Checks all event definitions for active events and triggers toast notifications
    * for any that have toast configuration and are currently active/upcoming.
+   *
+   * Called once per page load, from the application shell, so that an event map reached by link
+   * raises them as well - the event maps are lazy routes of this same application. Anything the user
+   * has already dismissed during this load is left alone; see `NotificationService`.
    */
   public checkAndTriggerEventNotifications(): void {
     if (!this.definitions) {
@@ -107,6 +111,13 @@ export class EventNotificationsService {
     // Add a unique ID if not provided to prevent duplicate notifications
     if (!notificationProps.id) {
       notificationProps.id = `event-${eventId}-toast`;
+    }
+
+    // Already dismissed during this page load, so leave it dismissed. This runs on every route, and
+    // without the check, walking from the main map to an event map would raise the whole stack again
+    // a moment after the user cleared it.
+    if (this.notificationService.wasDismissedThisLoad(notificationProps.id)) {
+      return;
     }
 
     // Trigger the notification

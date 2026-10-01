@@ -9,11 +9,46 @@ import { Notification } from '../helpers/notification.helper';
 
 export const notificationStorage = new InjectionToken<string>('StorageKey');
 
+/**
+ * The local storage key shared by the AggieMap family of applications.
+ *
+ * Acknowledging a notification - 'Don't show again' - has to mean everywhere, and local storage is
+ * per key, not per application. AggieMap, the event maps and Ring Day are separate builds on one
+ * origin, so an acknowledgement under a key of their own would be invisible to the others and the
+ * same notice would return on the next of them the visitor opened.
+ *
+ * Only for applications that share notifications. The UES, CPA and GIS Day applications keep their
+ * own keys: they are different products whose notices have nothing to do with these. See #1246.
+ */
+export const AGGIEMAP_NOTIFICATION_STORE_KEY = 'aggiemap-notifications';
+
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private _store: Notification[];
   private _localStorageSettings: StorageConfig;
-  private _events: PlatformNotification[];
+  /**
+   * Defaults to empty rather than being left undefined when an application configures no
+   * `NotificationEvents`. It is spread unconditionally below, so without this the service throws
+   * while being constructed and takes the application down with it.
+   */
+  private _events: PlatformNotification[] = [];
+
+  /**
+   * Notification ids taken off screen during this page load.
+   *
+   * Deliberately in memory and nowhere else. A notification the user has already dealt with must not
+   * come back as they move around the application - the event maps are routes of the same
+   * application, so a dismissal that only emptied the subject would be undone the moment the
+   * destination raised its notifications again. Equally it must not outlive the page: reloading is
+   * how someone asks to see the current notices again, and these are tied to dates rather than being
+   * one-off announcements. `acknowledge` is the permanent form of this and writes to local storage.
+   *
+   * `toast` deliberately does not consult this. Callers decide, through `wasDismissedThisLoad`,
+   * because most toasts are transient feedback - 'URL Copied' must appear every time the user copies
+   * a URL, however many times they dismissed it earlier. Only a notification that is re-raised from a
+   * standing definition needs the guard. See #1246.
+   */
+  private _dismissedThisLoad = new Set<string>();
 
   public readonly notifications: Observable<Notification[]>;
   private _notifications: BehaviorSubject<Notification[]>;
@@ -205,6 +240,11 @@ export class NotificationService {
    * This method is called when a notification times out or is manually dismissed (but not acknowledged).
    */
   public remove(notification: Notification): void {
+    // Remember it for the rest of this page load, so moving to another route does not raise it again.
+    if (notification.id) {
+      this._dismissedThisLoad.add(notification.id);
+    }
+
     // Create a new array without the provided notification object
     const filtered = this._store.filter((n) => {
       // Filter criteria will be one of two:
@@ -226,6 +266,17 @@ export class NotificationService {
 
     // Note: We do NOT update the acknowledge property in local storage here
     // because this method is for dismissing/timing out, not acknowledging
+  }
+
+  /**
+   * Whether this notification id has already been taken off screen during this page load.
+   *
+   * For callers that raise a notification from a standing definition on more than one route, so a
+   * dismissal is not undone by the next route raising it again. In-memory only, so a reload shows it
+   * again. See #1246.
+   */
+  public wasDismissedThisLoad(notificationId: string): boolean {
+    return this._dismissedThisLoad.has(notificationId);
   }
 
   /**
