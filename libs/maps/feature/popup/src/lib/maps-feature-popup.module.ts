@@ -7,10 +7,11 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { PopupComponent } from './containers/base/base.component';
 import { PopupMobileComponent } from './containers/mobile/mobile.component';
 import { BasePopupComponent } from './components/base/base.component';
+import { RevealSidebarOnPopupDirective } from './directives/reveal-sidebar/reveal-sidebar.directive';
 
 @NgModule({
   imports: [CommonModule, UIDragModule, UILayoutModule],
-  declarations: [PopupComponent, PopupMobileComponent, BasePopupComponent],
-  exports: [PopupComponent, PopupMobileComponent]
+  declarations: [PopupComponent, PopupMobileComponent, BasePopupComponent, RevealSidebarOnPopupDirective],
+  exports: [PopupComponent, PopupMobileComponent, RevealSidebarOnPopupDirective]
 })
 export class MapPopupModule {}
