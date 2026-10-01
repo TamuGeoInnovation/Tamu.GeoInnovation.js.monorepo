@@ -52,6 +52,24 @@ describe('campus basemap', () => {
     expect(urlsOf(resolve(true)).some((url) => url.includes(VECTOR_SERVICE))).toBe(true);
   });
 
+  it('is used only by views that let the basemap decide the spatial reference', () => {
+    // The vector tile cache is EPSG:32139 and Esri does not reproject vector tiles, so a view that
+    // pins its own spatial reference loads the basemap correctly and draws nothing. #1227 removed the
+    // pin from the main map; #1233 routed two more maps through the resolver and left theirs in, and
+    // every event map and Ring Day went blank on dev (#1240).
+    //
+    // The suite cannot catch this - a map with no basemap still resolves all its layers - so the
+    // invariant is asserted here instead: if you call the resolver, you do not pin the view.
+    const offenders = sources()
+      // The definition file is where the resolver lives, and the raster basemap declares its own
+      // Web Mercator reference there, correctly.
+      .filter((file) => path.normalize(file) !== DEFINITION)
+      .filter((file) => fs.readFileSync(path.join(REPO_ROOT, file), 'utf8').includes('aggiemapBasemap('))
+      .filter((file) => /spatialReference:\s*\{[^}]*wkid:\s*\d+/.test(fs.readFileSync(path.join(REPO_ROOT, file), 'utf8')));
+
+    expect(offenders).toEqual([]);
+  });
+
   it('is never named outside its definition, so every map resolves it by environment', () => {
     const offenders = sources()
       .filter((file) => path.normalize(file) !== DEFINITION)
