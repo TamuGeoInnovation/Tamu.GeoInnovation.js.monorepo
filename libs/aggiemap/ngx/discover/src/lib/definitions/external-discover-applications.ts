@@ -137,16 +137,6 @@ export const ExternalDiscoverApplications: ExternalDiscoverApplication[] = [
     labels: ['deprecated']
   },
   {
-    id: 'movein',
-    name: 'Movein',
-    description: '',
-    source: 'external',
-    type: 'experiment',
-    location: 'https://dev.aggiemap.tamu.edu/movein',
-    keywords: ['2d'],
-    labels: ['deprecated']
-  },
-  {
     id: 'graduation-arrival',
     name: 'Graduation Arrival',
     description: '',
