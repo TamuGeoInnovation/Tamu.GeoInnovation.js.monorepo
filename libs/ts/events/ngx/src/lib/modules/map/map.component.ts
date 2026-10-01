@@ -159,9 +159,27 @@ export class MapComponent implements OnInit, OnDestroy {
     // 2. If a basemap is provided in the settings, use that.
     // 3. If the basemap provided in settings is the default Aggiemap basemap, resolve the Aggiemap basemap from the id
     // 4. If no basemap is provided in the URL or settings, use the default 'topo-vector' basemap.
+    // A satellite campus map brings its own basemap, as a vector tile source layer in Web Mercator,
+    // and must not adopt AggieMap's saved basemap preference.
+    //
+    // On development that preference resolves to the Aggieland vector tile cache in EPSG:32139. The
+    // view then takes its projection from the basemap - it no longer pins itself to Web Mercator -
+    // so the campus's own tiled basemap cannot be reprojected into the view and simply disappears,
+    // while the buildings feature layer reprojects and draws. Grey outlines on a white page, with
+    // every layer reporting itself loaded, visible and drawable.
+    //
+    // Three things have to coincide for it: the vector basemap, which is development-only; a visitor
+    // who has chosen a basemap at some point; and the view no longer being pinned. That is why
+    // production is unaffected and why a browser with no saved preference looks fine. See #1259.
+    //
+    // An explicit `?basemap=` still wins, so a shared link that names one is honoured.
+    const isSatelliteCampus = root?.discover?.type === 'satellite-campus';
+
     const basemap: MapConfig['basemap'] = {
       basemap: basemapIdFromUrl
         ? basemapIdFromUrl
+        : isSatelliteCampus
+        ? 'topo-vector'
         : settings && settings.basemap
         ? settings.basemap && settings.basemap !== 'aggie_basemap'
           ? settings.basemap
