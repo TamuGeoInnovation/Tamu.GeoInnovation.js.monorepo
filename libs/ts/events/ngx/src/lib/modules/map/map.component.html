@@ -37,8 +37,12 @@
       <div class="overlay-zone bottom right">
         <div *ngIf="hasSettings" class="esri-component esri-track esri-widget--button esri-widget" role="button" alt="URL Share" clipboard-copy [text]="shareUrl"><span class="material-icons" (click)="notifyUrlCopy()">share</span></div>
         <div *ngIf="hasOptions" routerLink="../builder/review" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Map Settings">settings</span></div>
-        <div routerLink="./m/sidebar/legend" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Legend">format_list_bulleted</span></div>
-        <div routerLink="./m/sidebar/layers" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Layer List">layers</span></div>
+        <!-- Mobile only. These two target routes that exist only under the mobile (`m`) branch, so on a
+             desktop map the router cannot resolve them and falls back to the root map - a click that
+             silently throws away the map the user was looking at. They also sit beneath the desktop
+             side panel, which already offers Layers and Legend properly. See #1251. -->
+        <div *ngIf="isMobile" routerLink="./m/sidebar/legend" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Legend">format_list_bulleted</span></div>
+        <div *ngIf="isMobile" routerLink="./m/sidebar/layers" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons" role="button" alt="Layer List">layers</span></div>
       </div>
     </div>
   </tamu-gisc-esri-map>
