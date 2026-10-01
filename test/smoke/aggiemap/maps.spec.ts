@@ -5,12 +5,15 @@ import * as path from 'path';
 import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';
+import { BLANK_ABOVE, waitForPaint } from './paint';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
  *
  * 1. The map loads -- served, Angular bootstraps, no uncaught errors, no server errors.
  * 2. Every layer resolves -- on the map, loaded without error, and the map is serving features.
+ * 3. The map drew something -- the canvas is not one flat colour. Behaviours 1 and 2 can both pass
+ *    on a blank map, which is the whole of #1240 and #1259.
  *
  * One test per map, generated from the manifest `global-setup.ts` writes. A new event map is
  * covered the moment it appears on a discovery page; nobody adds a test.
@@ -365,6 +368,30 @@ for (const { mapPath, loadPath, title } of cases) {
       withFeatures.length,
       `no layer on ${mapPath} returned any features, so the map is drawing nothing`
     ).toBeGreaterThan(0);
+
+    // Behaviour 3: the map drew something.
+    //
+    // Every assertion above asks the application about itself, and a map can answer all of them
+    // correctly while showing a blank rectangle. On 1 October the three campus maps reported 34
+    // layers, all loaded, all visible, all drawable, and were still being read as broken by eye -
+    // nothing above could tell a map that paints from one that does not. See #1259.
+    //
+    // Polls rather than asserting once: maps painted between 6 and 13 seconds on both environments
+    // when this was measured, and the probe's `ready` is not a usable signal for it - it was observed
+    // never to become true within 80 seconds on most maps.
+    const paint = await waitForPaint(page);
+
+    test.info().annotations.push({
+      type: 'paint',
+      description: `dominant=${paint.colour} share=${paint.share.toFixed(3)} colours=${paint.colours} ` +
+        `paintedAfter=${paint.paintedAfterMs === null ? 'never' : paint.paintedAfterMs + 'ms'}`
+    });
+
+    expect(
+      paint.paintedAfterMs,
+      `${mapPath} never painted: the canvas is ${paint.share.toFixed(3)} ${paint.colour}, and a map ` +
+        `that has drawn is below ${BLANK_ABOVE}`
+    ).not.toBeNull();
 
     // While routing is unavailable, no map may offer directions: no Directions tab, and no
     // "Directions To Here" left on the page (#1003). Whether a map offers them when routing is
