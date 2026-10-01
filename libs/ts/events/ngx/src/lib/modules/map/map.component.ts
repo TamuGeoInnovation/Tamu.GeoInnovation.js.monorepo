@@ -180,9 +180,10 @@ export class MapComponent implements OnInit, OnDestroy {
             // container: this.mapViewEl.nativeElement,
             map: undefined, // Reference to the map object created before the scene
             center: root?.configuration?.mapCenter !== null ? root?.configuration?.mapCenter : [-96.34442, 30.60665],
-            spatialReference: {
-              wkid: 102100
-            },
+            // No explicit spatialReference: the view takes it from the basemap. On dev the campus
+            // basemap is a vector tile cache in EPSG:32139, and Esri does not reproject vector tiles -
+            // pinning the view to Web Mercator here left the basemap loading correctly and drawing
+            // nothing. `center` stays lon/lat and is projected into whichever reference the view adopts.
             constraints: {
               minScale: 100000, // minZoom is the max you can zoom OUT into space
               maxScale: 0 // maxZoom is the max you can zoom INTO the ground
