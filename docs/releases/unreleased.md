@@ -3,37 +3,22 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**The [third 30 September release](2026-09-30-3.md) is cleared and on its way to production.**
+**The [1 October release](2026-10-01.md) is cleared and on its way to production.**
 
 If you followed a link here expecting the notes for a release that just shipped, they are in a dated
-file now — the Opening Ceremony notice wording in
-[30 September, third release](2026-09-30-3.md), and the venue change and stacking notices in
-[30 September, second release](2026-09-30-2.md). Those files are the permanent record of what shipped;
-this one only ever describes what has not shipped yet.
+file now — the Ring Day framing, the basemap loading indicator, the development-only vector tile
+basemap and the dead-project removal in [1 October](2026-10-01.md). Those files are the permanent record of what shipped; this one
+only ever describes what has not shipped yet.
 
 ---
 
 ## Summary
 
-### The Ring Day map opens on each day's own area
-
-**[#1230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1230).** The
-October Ring Day map framed both event days with one view, and they cover very different areas. Ring
-Pickup (8 October) now opens close in on the pickup lots and the Williams Alumni Center. Ring Day
-(9–10 October) opens on Aggie Park and the West Campus Garage shuttle loop, centered rather than
-pushed against the right edge.
-
-| | Before | After |
-| --- | --- | --- |
-| Ring Pickup | ![Before: the pickup lots fill a small corner of a wide view](../screenshots/1230-ring-day-framing/before-dev-pickup.png) | ![After: the pickup lots and Williams Alumni Center fill the view](../screenshots/1230-ring-day-framing/after-pickup.png) |
-| Ring Day | ![Before: the Ring Day content sits against the right edge](../screenshots/1230-ring-day-framing/before-dev-ring-day.png) | ![After: Aggie Park and the shuttle loop, centered](../screenshots/1230-ring-day-framing/after-ring-day.png) |
-
-**What to test:** [Ring Pickup](https://dev.aggiemap.tamu.edu/events/ring-day/map?event-day=day1) and
-[Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day/map?event-day=day2) on dev.
+Nothing has merged since the 1 October release.
 
 ---
 
-## Work in flight — 30 September, after the release
+## Work in flight — 1 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
