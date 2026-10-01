@@ -70,6 +70,13 @@ the popup drew, and it was behind the panel you had shut.
 The panel now opens when a popup opens. It only ever opens — it will not close itself on you while
 you are reading one.
 
+![After: the panel opens on its own when a parking lot is clicked](../screenshots/1244-popup-reveals-sidebar/after-panel-opens-on-feature-click.jpg)
+
+Only the after is shown. The before is a closed panel and an unchanged map — a picture of nothing
+happening, which is the fault but not something an image conveys. What was measured on production
+instead: with the panel off screen, clicking the same lot left the popup element present with a
+height of `0` and no text. On development it now reports the lot's name and its share link.
+
 ([#1244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1244))
 
 ### Two unexplained icons are gone from the desktop maps
