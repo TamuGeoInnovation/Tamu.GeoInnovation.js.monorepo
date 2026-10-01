@@ -16,6 +16,18 @@ import * as path from 'path';
  */
 export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experiments'];
 
+/**
+ * GIS services with no production counterpart, each with the issue that keeps it off production.
+ *
+ * A service is not visible on production unless it is explicitly allowed, and this list is how it is
+ * not allowed: production must make no request to any of them, and development must, so the check is
+ * proven able to see one. Matched against request URLs as a substring. When a service is published for
+ * production, take it out of this list and out of the code's development-only gate together.
+ */
+export const DEVELOPMENT_ONLY_SERVICES: Record<string, string> = {
+  'Hosted/VTBase/VectorTileServer': '#1229: the vector tile campus basemap'
+};
+
 /** Whether the environment under test renders the development variant. */
 export function developmentSectionsVisible(): boolean {
   const baseUrl = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');

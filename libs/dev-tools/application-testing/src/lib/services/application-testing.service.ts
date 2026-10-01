@@ -13,6 +13,15 @@ export class TestingService {
     this._determineTestingMode();
   }
 
+  /**
+   * Whether this is a development host, now. Settled in the constructor, so it never changes after
+   * injection - for code building a configuration synchronously, where `get('isTesting')` would mean
+   * subscribing to read a value that is already known.
+   */
+  public get isTesting(): boolean {
+    return this._store.value.isTesting;
+  }
+
   public get(property: keyof TestingStore) {
     return this.store.pipe(pluck(property));
   }

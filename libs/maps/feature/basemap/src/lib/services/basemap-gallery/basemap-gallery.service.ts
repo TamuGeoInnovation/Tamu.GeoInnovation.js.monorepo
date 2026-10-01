@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { combineLatest, firstValueFrom, from, map, switchMap } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
-import { AggiemapBasemap, NearmapCSBasemap } from '../../shared/basemaps.definition';
+import { aggiemapBasemap, NearmapCSBasemap } from '../../shared/basemaps.definition';
 
 import esri = __esri;
 
@@ -11,7 +12,11 @@ import esri = __esri;
   providedIn: 'root'
 })
 export class BasemapGalleryService {
-  constructor(private readonly mp: EsriModuleProviderService, private readonly ms: EsriMapService) {}
+  constructor(
+    private readonly mp: EsriModuleProviderService,
+    private readonly ms: EsriMapService,
+    private readonly ts: TestingService
+  ) {}
 
   public gallery() {
     return combineLatest([
@@ -19,6 +24,7 @@ export class BasemapGalleryService {
         'BaseMapGalleryViewModel',
         'LocalBasemapsSource',
         'Basemap',
+        'TileLayer',
         'VectorTileLayer',
         'WMSLayer',
         'projection'
@@ -26,18 +32,22 @@ export class BasemapGalleryService {
       this.ms.store
     ]).pipe(
       switchMap(
-        ([[BasemapGalleryViewModel, LocalBasemapsSource, Basemap, VectorTileLayer, WMSLayer, projection], instances]: [
+        ([
+          [BasemapGalleryViewModel, LocalBasemapsSource, Basemap, TileLayer, VectorTileLayer, WMSLayer, projection],
+          instances
+        ]: [
           [
             esri.BasemapGalleryViewModelConstructor,
             esri.LocalBasemapsSourceConstructor,
             esri.BasemapConstructor,
+            esri.TileLayerConstructor,
             esri.VectorTileLayerConstructor,
             esri.WMSLayerConstructor,
             esri.projection
           ],
           MapServiceInstance
         ]) => {
-          // The Aggieland basemap is published in EPSG:32139 and the rest of the gallery is in Web Mercator.
+          // On dev the Aggieland basemap is published in EPSG:32139 and the rest of the gallery is in Web Mercator.
           // Switching between them changes the view's spatial reference, which the API supports from 4.23 -
           // but only with the projection engine loaded. Without it the view's center does not survive the
           // switch. Loading it before the gallery exists means the first switch is already safe.
@@ -47,18 +57,25 @@ export class BasemapGalleryService {
               // from an auto-castable source because the baseLayers are not an instance of a class and the load() method does not exist.
               // To work around this, we need ton construct a new instance of the layer class and pass in the base
 
+              // Vector tiles on dev, raster on production, until the vector tiles are published there (#1229).
+              const campusBasemap = aggiemapBasemap(this.ts.isTesting);
+
               // Clone the base layer JSON object
-              const baseLayerJSON = JSON.parse(JSON.stringify(AggiemapBasemap.baseLayers[0]));
+              const baseLayerJSON = JSON.parse(JSON.stringify(campusBasemap.baseLayers[0]));
+              const baseLayerType = baseLayerJSON.type;
               const nearmapJSON = JSON.parse(JSON.stringify(NearmapCSBasemap.baseLayers[0]));
 
               // Remove the type property to prevent read-only property assignment error.
               delete baseLayerJSON.type;
               delete nearmapJSON.type;
 
-              const baseLayers = new VectorTileLayer({ ...baseLayerJSON });
+              const baseLayers =
+                baseLayerType === 'VectorTileLayer'
+                  ? new VectorTileLayer({ ...baseLayerJSON })
+                  : new TileLayer({ ...baseLayerJSON });
               const nearmapCSLayer = new WMSLayer({ ...nearmapJSON });
 
-              const instancedAggiemapBasemap = new Basemap({ ...AggiemapBasemap, baseLayers: [baseLayers] });
+              const instancedAggiemapBasemap = new Basemap({ ...campusBasemap, baseLayers: [baseLayers] });
               const nearmapCSBasemap = new Basemap({ ...NearmapCSBasemap, baseLayers: [nearmapCSLayer] });
 
               const model = new BasemapGalleryViewModel({
