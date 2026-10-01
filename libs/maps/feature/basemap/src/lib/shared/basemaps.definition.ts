@@ -1,23 +1,30 @@
 import { BaseMapProperties } from '@tamu-gisc/maps/esri';
 
+/**
+ * The campus basemap, as vector tiles.
+ *
+ * Published in EPSG:32139 (Texas State Plane Central), not Web Mercator like the rest of the gallery.
+ * That is deliberate on the publisher's side and the API supports it: from 4.23 the view changes its
+ * own spatial reference when a basemap in another projection is selected. It needs the projection
+ * engine loaded first - see `BasemapGalleryService`.
+ *
+ * No `spatialReference` here: a VectorTileLayer takes it from the service's tiling scheme and the
+ * property is read-only. No `minScale`/`maxScale` either, because the cache carries its own levels.
+ */
 export const AggiemapBasemap: BaseMapProperties = {
   baseLayers: [
     {
-      type: 'TileLayer',
-      url: `https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer`,
-      spatialReference: {
-        wkid: 102100
-      },
+      type: 'VectorTileLayer',
+      url: `https://gis.tamu.edu/arcgis/rest/services/Hosted/VTBase/VectorTileServer`,
       listMode: 'hide',
       visible: true,
-      minScale: 100000,
-      maxScale: 0,
       title: 'Base Map'
     }
   ],
   id: 'aggie_basemap',
   title: 'Aggieland',
-  thumbnailUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap_060826/MapServer/info/thumbnail'
+  thumbnailUrl:
+    'https://divops.tamu.edu/portal/sharing/rest/content/items/0786efd67d0a467e8da4d889b7364ddb/info/thumbnail/_7B6C3A79E6-2D18-4FB5-87C9-99192ACA9248_7D.png'
 };
 
 export const NearmapCSBasemap: BaseMapProperties = {
