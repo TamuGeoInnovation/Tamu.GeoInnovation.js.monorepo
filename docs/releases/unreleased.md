@@ -14,7 +14,22 @@ only ever describes what has not shipped yet.
 
 ## Summary
 
-Nothing has merged since the 1 October release.
+### Dead projects removed
+
+**[#1232](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1232), merged in
+[#1237](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1237).** TWO, COVID,
+Kissing Bug, and the old standalone Football and Move-In apps are gone from the repository, as decided in
+the dead-project survey
+([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)). Nothing
+visible changes on the maps. The Discover page loses its deprecated "Movein" link. The Azure release
+build compiles 7 apps instead of 9, 380 s down to 282 s, and the workspace goes from 201 projects to 173.
+
+Not yet in a `development` build; the 1 October release was built before it merged.
+
+The old Ring Day app is kept until after Ring Day
+([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old
+Move-In app stays deployed at `/movein/` until its server copy is deleted
+([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
 
 ---
 
@@ -23,18 +38,6 @@ Nothing has merged since the 1 October release.
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
-
-### Open pull request
-
-**Removing dead projects
-([#1232](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1232)).** TWO,
-COVID, Kissing Bug, and the old standalone Football and Move-In apps, decided in the dead-project survey
-([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)). It cuts the
-Azure release build from 9 apps to 7 (380 s to 282 s) and the workspace from 201 projects to 173. The
-old Ring Day app is kept until after Ring Day
-([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old
-Move-In app is still deployed at `/movein` until its server copy is deleted
-([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
 
 ### Waiting on someone else
 
