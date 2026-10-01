@@ -97,14 +97,41 @@ describe('NotificationService dismissal memory', () => {
   it('still raises a transient toast that was dismissed earlier', () => {
     // `toast` deliberately does not consult the dismissal record. 'URL Copied' has to appear every
     // time the user copies a URL, however many times they dismissed it before.
+    //
+    // The notification handed to `remove` is the one the service emitted, not a freshly built stand-in:
+    // `remove` matches on id *and* `timeGenerated`, so a stand-in only removes anything when both
+    // `Date.now()` calls happen to land in the same millisecond. Built that way this passed locally
+    // and failed on CI.
     const service = build();
-    const seen: string[][] = [];
-    service.notifications.subscribe((items) => seen.push(items.map((n) => n.id)));
+    const seen: Notification[][] = [];
+    service.notifications.subscribe((items) => seen.push(items));
 
     service.toast({ id: 'url-copied', title: 'URL Copied', message: 'Copied' });
-    service.remove(notification('url-copied'));
+
+    const raised = seen[seen.length - 1];
+    expect(raised.map((n) => n.id)).toEqual(['url-copied']);
+
+    service.remove(raised[0]);
+    expect(seen[seen.length - 1]).toEqual([]);
+
     service.toast({ id: 'url-copied', title: 'URL Copied', message: 'Copied' });
 
-    expect(seen[seen.length - 1]).toEqual(['url-copied']);
+    expect(seen[seen.length - 1].map((n) => n.id)).toEqual(['url-copied']);
+  });
+
+  it('removes only the notification it was given, matching how it was raised', () => {
+    // Guards the trap above directly: a stand-in with the same id but a different `timeGenerated`
+    // must not be treated as the raised notification.
+    const service = build();
+    const seen: Notification[][] = [];
+    service.notifications.subscribe((items) => seen.push(items));
+
+    service.toast({ id: 'url-copied', title: 'URL Copied', message: 'Copied' });
+    const raised = seen[seen.length - 1][0];
+
+    expect(raised.timeGenerated).toBeDefined();
+    service.remove(raised);
+
+    expect(seen[seen.length - 1]).toEqual([]);
   });
 });
