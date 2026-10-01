@@ -126,6 +126,7 @@ export const McAllenTs: AggiemapCustomMapConfiguration = {
     description: 'Map of the Texas A&M Higher Education Center at McAllen campus.',
     source: 'internal',
     type: 'satellite-campus',
-    mapType: 'satellite-campus'
+    mapType: 'satellite-campus',
+    thumbnail: './assets/images/campus/mcallen.jpg'
   }
 };

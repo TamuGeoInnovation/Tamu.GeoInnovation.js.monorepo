@@ -129,6 +129,7 @@ export const DCBushSchoolTs: AggiemapCustomMapConfiguration = {
     description: 'Map of the Texas A&M Bush School of Government & Public Service campus in Washington, D.C.',
     source: 'internal',
     type: 'satellite-campus',
-    mapType: 'satellite-campus'
+    mapType: 'satellite-campus',
+    thumbnail: './assets/images/campus/dc-bush-school.jpg'
   }
 };
