@@ -36,6 +36,28 @@ export interface MapLayerProbe {
    * `route` and its stops `waypoints` (#1174).
    */
   graphicTypes: Record<string, number> | null;
+
+  /**
+   * The layer's spatial reference wkid, reported for diagnostics. `null` where it has none.
+   *
+   * **Do not compare this to the view's.** The same reference has more than one number: Web Mercator
+   * is `wkid` 102100 and `latestWkid` 3857, and a view and a layer may each report a different one of
+   * the pair. Comparing them as numbers reports every healthy map as broken - observed, not
+   * hypothetical. Use `drawable`, which asks Esri.
+   */
+  spatialReference: number | null;
+
+  /**
+   * Whether this layer can actually draw in the view it is in.
+   *
+   * `true` for anything Esri will reproject on demand, which is most layer types. For a tiled or
+   * vector tiled layer it is the answer to the only question that matters: Esri never reprojects
+   * those, so one in a view of another spatial reference loads cleanly, reports no error, and paints
+   * nothing. `null` when there is no view to compare against.
+   *
+   * Decided by `SpatialReference.equals`, which knows 102100 and 3857 are the same reference.
+   */
+  drawable: boolean | null;
 }
 
 export interface MapProbeSnapshot {
@@ -51,6 +73,16 @@ export interface MapProbeSnapshot {
    * rendering concern into spurious layer failures.
    */
   viewReady: boolean;
+
+  /**
+   * The view's spatial reference wkid, or `null` before a view exists.
+   *
+   * Paired with each layer's, this is how a test sees a map that loads everything and draws nothing.
+   * A tiled or vector tiled basemap in a view of another spatial reference is invisible: Esri cannot
+   * reproject it, so the canvas stays empty while every layer reports loaded with no error. Every
+   * event and parking map failed exactly that way and the suite passed them (#1240, #1241).
+   */
+  spatialReference: number | null;
 
   layers: MapLayerProbe[];
 }
@@ -215,12 +247,13 @@ async function takeSnapshot(): Promise<MapProbeSnapshot> {
   const layers = registeredLayers();
 
   if (current === undefined || layers.length === 0) {
-    return { ready: false, viewReady: false, layers: [] };
+    return { ready: false, viewReady: false, spatialReference: null, layers: [] };
   }
 
   return {
     ready: layersSettled(),
     viewReady: current.view?.ready === true,
+    spatialReference: readSpatialReference(current.view),
     layers: await Promise.all(layers.map(probeLayer))
   };
 }
@@ -234,7 +267,9 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
     loaded: layer.loaded === true,
     error: readLoadError(layer),
     featureCount: null,
-    graphicTypes: countGraphicTypes(layer)
+    graphicTypes: countGraphicTypes(layer),
+    spatialReference: readSpatialReference(layer),
+    drawable: isDrawable(layer)
   };
 
   // A layer that failed to load cannot be queried, and asking would replace a useful load error
@@ -244,6 +279,47 @@ async function probeLayer(layer: esri.Layer): Promise<MapLayerProbe> {
   }
 
   return { ...base, featureCount: await countFeatures(layer) };
+}
+
+/**
+ * A wkid from anything carrying a spatial reference - a view, or a layer with its own tiling scheme.
+ *
+ * Prefers `latestWkid`, which is what a service reports for a reference that has been renumbered:
+ * Web Mercator answers 102100 as `wkid` and 3857 as `latestWkid`, and comparing the two forms of the
+ * same reference as though they differed would report every healthy map as broken.
+ */
+function readSpatialReference(source: unknown): number | null {
+  const reference = (source as { spatialReference?: { wkid?: number; latestWkid?: number } })?.spatialReference;
+
+  return reference?.latestWkid ?? reference?.wkid ?? null;
+}
+
+/**
+ * Whether a layer can draw in the current view.
+ *
+ * Only tiled and vector tiled layers can fail this: everything else is reprojected on request. The
+ * comparison is Esri's own `equals`, never a wkid comparison - see `MapLayerProbe.spatialReference`.
+ */
+function isDrawable(layer: esri.Layer): boolean | null {
+  const view = current?.view as unknown as { spatialReference?: { equals?: (other: unknown) => boolean } };
+
+  if (!view?.spatialReference) {
+    return null;
+  }
+
+  if (layer.type !== 'tile' && layer.type !== 'vector-tile') {
+    return true;
+  }
+
+  const layerReference = (layer as unknown as { spatialReference?: unknown }).spatialReference;
+
+  // A tiled layer that has not reported a spatial reference cannot be judged, and guessing would
+  // either hide a real failure or invent one.
+  if (!layerReference) {
+    return null;
+  }
+
+  return view.spatialReference.equals?.(layerReference) ?? null;
 }
 
 function countGraphicTypes(layer: esri.Layer): Record<string, number> | null {
