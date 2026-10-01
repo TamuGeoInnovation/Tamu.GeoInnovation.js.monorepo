@@ -15,7 +15,21 @@ this one only ever describes what has not shipped yet.
 
 ## Summary
 
-Nothing has merged since the third 30 September release.
+### The Ring Day map opens on each day's own area
+
+**[#1230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1230).** The
+October Ring Day map framed both event days with one view, and they cover very different areas. Ring
+Pickup (8 October) now opens close in on the pickup lots and the Williams Alumni Center. Ring Day
+(9–10 October) opens on Aggie Park and the West Campus Garage shuttle loop, centered rather than
+pushed against the right edge.
+
+| | Before | After |
+| --- | --- | --- |
+| Ring Pickup | ![Before: the pickup lots fill a small corner of a wide view](../screenshots/1230-ring-day-framing/before-dev-pickup.png) | ![After: the pickup lots and Williams Alumni Center fill the view](../screenshots/1230-ring-day-framing/after-pickup.png) |
+| Ring Day | ![Before: the Ring Day content sits against the right edge](../screenshots/1230-ring-day-framing/before-dev-ring-day.png) | ![After: Aggie Park and the shuttle loop, centered](../screenshots/1230-ring-day-framing/after-ring-day.png) |
+
+**What to test:** [Ring Pickup](https://dev.aggiemap.tamu.edu/events/ring-day/map?event-day=day1) and
+[Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day/map?event-day=day2) on dev.
 
 ---
 
