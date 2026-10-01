@@ -103,11 +103,41 @@ Esri cannot reproject a tiled layer: the basemap loaded, reported no error, and 
 
 ([#1240](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1240), [#1242](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1242))
 
+### Campus notifications stay on their own campus
+
+AggieMap's alerts — Ring Day, Football, Kickoff at Kyle, the 150th events — are College Station's, and
+they were appearing on the Galveston, McAllen and DC / Bush School maps. They also sat over the map
+and took the click: pressing a building on a campus map could open the Football Transportation map
+instead.
+
+Those campuses are separate places and will have notifications of their own. A map now shows its own
+campus's alerts and nobody else's, and the kiosk maps — which are embedded inside other applications,
+with no one there to dismiss anything — show none at all.
+
+![Before: College Station alerts over the Galveston campus map](../screenshots/1265-campus-notifications/before-toasts-on-galveston.png)
+
+([#1265](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1265))
+
+### Campus maps draw for a visitor who has chosen a basemap before
+
+The Galveston, McAllen and DC / Bush School maps showed building outlines on a white page for anyone
+who had ever picked a basemap on AggieMap — the campus basemap simply did not draw.
+
+Each campus map carries its own basemap, and it was also honouring the basemap choice saved from the
+main map. Those are in different projections, and a tiled basemap cannot be redrawn into a map that
+uses another one, so it disappeared while the buildings, which can be redrawn, stayed. The campus maps
+now keep their own basemap. A link that names a basemap still works.
+
+This only ever affected development: the projection the two disagree about is the vector tile basemap,
+which is not published for production.
+
+([#1259](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1259))
+
 ---
 
 ## Not visible, and the reason the rest were found
 
-### The suite now fails a map that draws nothing
+### The suite now fails a map whose layers cannot be drawn
 
 The smoke suite passed all 69 maps while every event map was blank. It asked whether each layer
 loaded and answered yes, because they had — a tiled basemap in the wrong projection loads perfectly
@@ -122,6 +152,20 @@ campus map does exactly that — it reports itself ready with a blank canvas
 ([#1259](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1259)). This check is correct and not yet sufficient.
 
 ([#1241](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1241))
+
+### The suite now checks the picture, not only the layers
+
+The check added this release asks whether every layer *could* be drawn. The campus maps showed that a
+map can satisfy that and still be empty: 34 layers, all loaded, all visible, all drawable, nothing on
+screen.
+
+Each map is now also measured by its picture. A map whose canvas is a single flat colour fails. The
+threshold was set from measurements at both ends — a drawn map covers 26% to 47% of its canvas with
+its most common colour, an empty one 82% to 96% — and it requires the map to stay drawn rather than
+accepting the moment before it empties, which is how the first version of this check passed a map that
+was broken.
+
+([#1259](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1259))
 
 ### Pull requests must now carry before/after images
 
@@ -147,6 +191,8 @@ Every pull request this release carried, and the issue behind each one.
 | The side panel opens when a feature is clicked | [#1255](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1255) | [#1244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1244) |
 | Mobile-only map controls hidden on desktop | [#1256](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1256) | [#1251](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1251) |
 | Pull requests must carry before/after images | [#1263](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1263) | [#1258](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1258) |
+| College Station notifications stay off the campus and kiosk maps | [#1266](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1266) | [#1265](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1265) |
+| Campus maps keep their own basemap, and the suite checks the picture | _pending_ | [#1259](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1259) |
 
 ---
 
