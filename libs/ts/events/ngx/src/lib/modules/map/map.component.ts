@@ -13,7 +13,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-import { AggiemapBasemap, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
+import { aggiemapBasemap, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -165,7 +165,7 @@ export class MapComponent implements OnInit, OnDestroy {
         : settings && settings.basemap
         ? settings.basemap && settings.basemap !== 'aggie_basemap'
           ? settings.basemap
-          : AggiemapBasemap
+          : aggiemapBasemap(this.ts.isTesting)
         : 'topo-vector'
     };
 
