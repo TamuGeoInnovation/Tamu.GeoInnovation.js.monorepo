@@ -1,5 +1,5 @@
 <div
-  *ngIf="groupVisible"
+  *ngIf="groupVisible && !blockedByModal"
   class="notification-grouped-wrapper"
   [ngClass]="[position, groupShowing ? 'show' : '']"
   (mouseover)="pauseGroup()"

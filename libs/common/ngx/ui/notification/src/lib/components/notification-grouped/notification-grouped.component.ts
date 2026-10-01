@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { v4 as guid } from 'uuid';
 import { Angulartics2 } from 'angulartics2';
 
+import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
+
 import { NotificationService } from '../../services/notification.service';
 import { Notification } from '../../helpers/notification.helper';
 
@@ -33,15 +35,28 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   public groupShowing = false;
   public groupTimerPercent = 0;
 
+  /**
+   * Held back because a modal is open.
+   *
+   * An event map can open a venue change or an event-passed warning as it loads, and the toast stack
+   * would otherwise draw underneath it: unreadable, and competing with the thing the visitor has to
+   * read first. The stack is not discarded, and its countdown is stopped rather than left running, so
+   * it is still there to be read once the modal is dismissed instead of having quietly expired behind
+   * it. See #1246.
+   */
+  public blockedByModal = false;
+
   private _groupTimerStep = 50;
   private _groupTimerCurrent = 0;
   private _groupTimerLimit = 10000;
   private _groupTimerInterval: ReturnType<typeof setInterval> | undefined;
   private _groupSubscription: Subscription | undefined;
+  private _modalSubscription: Subscription | undefined;
 
   constructor(
     @Optional() private readonly analytics: Angulartics2,
     @Optional() private readonly router: Router,
+    @Optional() private readonly modal: ModalService,
     private readonly service: NotificationService
   ) {}
 
@@ -76,11 +91,22 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
         this._triggerGroupHide();
       }
     });
+
+    this._modalSubscription = this.modal?.isOpen.subscribe((open) => {
+      this.blockedByModal = open;
+
+      if (open) {
+        this._stopGroupTimer();
+      } else if (this.groupedItems.length > 0) {
+        this._startGroupTimer();
+      }
+    });
   }
 
   public ngOnDestroy() {
     this._stopGroupTimer();
     this._groupSubscription?.unsubscribe();
+    this._modalSubscription?.unsubscribe();
   }
 
   // Forwarded from the grouped entries to the service, same as the plain container does.
@@ -138,13 +164,28 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
     this.service.remove(item);
   }
 
+  /**
+   * Acting on an alert dismisses the whole batch, not only the one clicked.
+   *
+   * The service is root-scoped, so anything left behind outlives the navigation and reappears on the
+   * destination: the user asks to be taken to a map and arrives to be told about that same map again,
+   * alongside everything they did not click. Clicking one alert is a fair signal the batch has been
+   * read, and `remove` is a dismissal rather than an acknowledgement, so they return on the next
+   * visit to the homepage.
+   *
+   * The removals are synchronous, where `closeGroup` animates out over 300ms first. That delay is
+   * long enough for the destination to render the stale toasts, which is the fault being fixed. The
+   * subscription in `ngOnInit` still sees the store empty and animates the group away. See #1246.
+   */
   public actionGroupItem(item: Notification): void {
     if (!item.action) {
       return;
     }
 
     this.action(item);
-    this.service.remove(item);
+
+    this._stopGroupTimer();
+    [...this.groupedItems].forEach((grouped) => this.service.remove(grouped));
 
     if (this.router) {
       this.router.navigate([item.action.value]);

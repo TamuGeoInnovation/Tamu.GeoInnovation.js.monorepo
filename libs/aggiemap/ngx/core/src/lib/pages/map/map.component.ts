@@ -14,7 +14,6 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { BetaPromptComponent, AlertModalComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
-import { EventNotificationsService } from '../../services/event-notifications/event-notifications.service';
 
 import esri = __esri;
 @Component({
@@ -41,16 +40,12 @@ export class MapComponent implements OnInit, OnDestroy {
     private env: EnvironmentService,
     private readonly ms: ModalService,
     private readonly ss: SettingsService,
-    private readonly ts: TestingService,
-    private readonly eventNotificationsService: EventNotificationsService
+    private readonly ts: TestingService
   ) {}
 
   public ngOnInit() {
     this._connections = this.env.value('Connections');
     this.isDev = this.ts.get('isTesting');
-
-    // Check for active events and trigger notifications if needed
-    this.eventNotificationsService.checkAndTriggerEventNotifications();
 
     // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.
     // https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/274
