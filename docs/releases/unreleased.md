@@ -3,18 +3,143 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**The [1 October release](2026-10-01.md) is cleared and on its way to production.**
-
-If you followed a link here expecting the notes for a release that just shipped, they are in a dated
-file now — the Ring Day framing, the basemap loading indicator, the development-only vector tile
-basemap and the dead-project removal in [1 October](2026-10-01.md). Those files are the permanent record of what shipped; this one
-only ever describes what has not shipped yet.
+Four faults in the map's own controls, all of them things a visitor would hit within a minute of
+using a map: alerts that followed you to the map you had just opened, a hamburger that ignored the
+first click, a side panel that swallowed the thing you clicked, and two unexplained icons that threw
+away the map when pressed. A fifth change is not visible at all and matters more than any of them:
+the suite can now tell a map that drew nothing from one that drew correctly.
 
 ---
 
 ## Summary
 
-Nothing has merged since the 1 October release.
+- **Clicking an alert takes you to its map and clears the rest.** They no longer follow you to the
+  destination, and nothing is drawn underneath a venue-change notice.
+- **The hamburger works on the first click.** It used to take two, on every map.
+- **Clicking a feature opens the side panel** instead of appearing to do nothing when the panel is
+  closed.
+- **Two unexplained icons are gone from the desktop maps.** Pressing either used to return you to the
+  root map.
+- **The suite now fails a map that loads everything and draws nothing**, which it previously passed.
+
+---
+
+## Changed
+
+### Alerts no longer follow you to the map you opened
+
+Clicking one alert on the main map took you to the map it named and brought the others along, so you
+arrived to be told about the map you were already looking at, plus everything you had not clicked.
+
+The event maps are routes of AggieMap itself, so the alerts survived the navigation. Acting on one now
+clears the batch. Alerts you have never seen still appear if you open an event map directly, which
+they did not before. Acknowledging one — "Don't show again" — now means everywhere, including the
+Ring Day and event map deployments, which each kept their own record before. And while a venue-change
+notice or an event-passed warning is open, the alerts hold back and stop their countdown, so they are
+not drawn underneath it and have not silently expired behind it.
+
+| Before | After |
+| --- | --- |
+| ![Before: three alerts still showing on the destination event map](../screenshots/1246-toast-batch/before-destination-three-toasts.jpg) | ![After: the destination map with the venue notice and no alerts under it](../screenshots/1246-toast-batch/after-destination-no-toasts.jpg) |
+
+The four alerts as they appear on the main map, for reference:
+
+![The main map with four alerts](../screenshots/1246-toast-batch/before-home-four-toasts.jpg)
+
+([#1246](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1246))
+
+### The hamburger works on the first click
+
+The side panel's tabs ignored the first click and responded to the second, on every map — AggieMap,
+the event maps and Ring Day alike. The panel recorded which view was showing by reading the whole
+browser path, `map/d`, and compared it against tab names like `settings` and the default view, which
+it could never match. The first click only recorded the view; the second finally compared equal.
+
+| Before | After |
+| --- | --- |
+| ![Before: the panel still open after one click](../screenshots/1249-sidebar-first-click/before-panel-open-after-one-click.jpg) | ![After: the panel closed after one click](../screenshots/1249-sidebar-first-click/after-panel-closed-after-one-click.jpg) |
+
+([#1249](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1249))
+
+### Clicking a feature opens the side panel
+
+With the panel closed, clicking a building or a parking lot did nothing you could see. The feature
+popup is rendered inside the panel, so closing the panel closed the popup with it: the click worked,
+the popup drew, and it was behind the panel you had shut.
+
+The panel now opens when a popup opens. It only ever opens — it will not close itself on you while
+you are reading one.
+
+([#1244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1244))
+
+### Two unexplained icons are gone from the desktop maps
+
+A list icon and a layers icon sat at the bottom right of the event and Ring Day maps, partly behind
+the side panel. Pressing either returned you to the root map, losing the map you were looking at.
+
+They were shortcuts to the mobile map's Legend and Layers panels, shown on desktop by mistake: the
+routes they point at exist only on the mobile map, so on a desktop map the link could not resolve and
+fell back to the root. They remain on the mobile map, where they work. On desktop the side panel
+already offers Layers and Legend.
+
+| Before | After |
+| --- | --- |
+| ![Before: two unexplained icons at the bottom right](../screenshots/1251-mobile-only-controls/before-two-stray-icons.jpg) | ![After: the corner is empty](../screenshots/1251-mobile-only-controls/after-no-stray-icons.jpg) |
+
+([#1251](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1251))
+
+### Event maps take their projection from the basemap
+
+Every event and parking map drew an empty canvas on development. The maps pinned themselves to Web
+Mercator while the campus basemap on development is a vector tile cache in Texas State Plane, and
+Esri cannot reproject a tiled layer: the basemap loaded, reported no error, and painted nothing.
+
+([#1240](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1240), [#1242](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1242))
+
+---
+
+## Not visible, and the reason the rest were found
+
+### The suite now fails a map that draws nothing
+
+The smoke suite passed all 69 maps while every event map was blank. It asked whether each layer
+loaded and answered yes, because they had — a tiled basemap in the wrong projection loads perfectly
+and simply cannot be painted.
+
+Each map now also asserts that every visible tiled layer can actually be drawn in that map's
+projection, decided by Esri's own comparison rather than by matching numbers, because the same
+projection has more than one identifier.
+
+**A limit worth recording:** a map can still satisfy every layer assertion and paint nothing. The DC
+campus map does exactly that — it reports itself ready with a blank canvas
+([#1259](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1259)). This check is correct and not yet sufficient.
+
+([#1241](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1241))
+
+### Pull requests must now carry before/after images
+
+A check fails a pull request that changes a template, stylesheet, component or directive and shows no
+image in its body. The rule was already written in the pull request template and was skipped anyway,
+four times in one session, because `gh pr create --body-file` replaces the template rather than
+filling it in. The escape hatch is the `no-visible-change` label.
+
+([#1258](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1258))
+
+---
+
+## What went into this release
+
+Every pull request this release carried, and the issue behind each one.
+
+| Change | Pull request | Issue |
+| --- | --- | --- |
+| Event maps take their projection from the basemap | [#1242](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1242) | [#1240](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1240) |
+| The suite fails a map that loads everything and draws nothing | [#1252](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1252) | [#1241](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1241) |
+| The hamburger moves the panel on the first click | [#1253](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1253) | [#1249](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1249) |
+| Acting on one alert clears the batch | [#1254](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1254) | [#1246](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1246) |
+| The side panel opens when a feature is clicked | [#1255](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1255) | [#1244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1244) |
+| Mobile-only map controls hidden on desktop | [#1256](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1256) | [#1251](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1251) |
+| Pull requests must carry before/after images | [#1263](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1263) | [#1258](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1258) |
 
 ---
 
