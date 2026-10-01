@@ -6,7 +6,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { TsRingdayNgxModule } from '@tamu-gisc/ts/ringday/ngx';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
+import {
+  NotificationModule,
+  notificationStorage,
+  AGGIEMAP_NOTIFICATION_STORE_KEY
+} from '@tamu-gisc/common/ngx/ui/notification';
 
 import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
@@ -39,7 +43,7 @@ WebFont.load({
       provide: env,
       useValue: environment
     },
-    { provide: notificationStorage, useValue: 'ring-day-notifications' }
+    { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY }
   ],
   bootstrap: [AppComponent]
 })

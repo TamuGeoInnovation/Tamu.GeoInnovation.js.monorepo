@@ -7,7 +7,12 @@ import { Angulartics2Module } from 'angulartics2';
 
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { AggiemapNgxCoreModule, EVENT_NOTIFICATION_DEFINITIONS } from '@tamu-gisc/aggiemap/ngx/core';
-import { NotificationGroupedModule, NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
+import {
+  NotificationGroupedModule,
+  NotificationModule,
+  notificationStorage,
+  AGGIEMAP_NOTIFICATION_STORE_KEY
+} from '@tamu-gisc/common/ngx/ui/notification';
 import { EventDefinitions } from '@tamu-gisc/ts/events/ngx';
 import { BUS_STOP_POPUP_COMPONENT } from '@tamu-gisc/maps/feature/trip-planner';
 import { BusStopPopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
@@ -38,7 +43,7 @@ WebFont.load({
   bootstrap: [AppComponent],
   providers: [
     { provide: env, useValue: environment },
-    { provide: notificationStorage, useValue: 'aggiemap-notifications' },
+    { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
     { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: EventDefinitions },
     // Supplies the bus map's stop/route popup at the application root (BusService lives in a low-level
     // lib and cannot import the popup component directly — see BUS_STOP_POPUP_COMPONENT).

@@ -9,7 +9,11 @@ import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
+import {
+  NotificationModule,
+  notificationStorage,
+  AGGIEMAP_NOTIFICATION_STORE_KEY
+} from '@tamu-gisc/common/ngx/ui/notification';
 import { TsEventsNgxModule } from '@tamu-gisc/ts/events/ngx';
 
 import { AppComponent } from './app.component';
@@ -38,7 +42,7 @@ WebFont.load({
       provide: env,
       useValue: environment
     },
-    { provide: notificationStorage, useValue: 'ts-event-notifications' }
+    { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY }
   ],
   bootstrap: [AppComponent]
 })

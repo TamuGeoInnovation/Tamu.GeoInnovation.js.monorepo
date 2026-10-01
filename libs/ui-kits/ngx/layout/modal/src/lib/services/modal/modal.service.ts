@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { ComponentRef, Inject, Injectable, Type, ViewContainerRef } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ModalHostComponent } from '../../components/modal-host/modal-host.component';
 
@@ -8,6 +8,18 @@ import { ModalHostComponent } from '../../components/modal-host/modal-host.compo
 export class ModalService {
   private _viewRef: ViewContainerRef;
   private _modalRef: ComponentRef<ModalHostComponent>;
+
+  private _isOpen = new BehaviorSubject<boolean>(false);
+
+  /**
+   * Whether a modal is currently mounted.
+   *
+   * For anything that must get out of the way of a modal rather than draw over or under it. The
+   * grouped notifications use it: an event map can open a venue change or an event-passed warning the
+   * moment it loads, and a stack of toasts underneath that is both unreadable and beside the point.
+   * See #1246.
+   */
+  public readonly isOpen: Observable<boolean> = this._isOpen.asObservable();
 
   constructor(@Inject(DOCUMENT) private document: Document) {}
 
@@ -38,6 +50,8 @@ export class ModalService {
     // modal host component.
     this.document.body.classList.add('modal-open');
 
+    this._isOpen.next(true);
+
     // Pass in provided data to the host component which will pass it down to the actual inner
     // modal component.
     //
@@ -53,6 +67,8 @@ export class ModalService {
 
       // Re-enable page scrolling
       this.document.body.classList.remove('modal-open');
+
+      this._isOpen.next(false);
     });
   }
 }
