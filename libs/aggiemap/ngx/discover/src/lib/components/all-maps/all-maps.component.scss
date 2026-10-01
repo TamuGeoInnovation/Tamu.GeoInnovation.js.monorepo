@@ -193,8 +193,9 @@
   }
 }
 
-// Neither kiosk nor campus cards navigate on click -- each carries its own copy field and link --
-// so the shared card's pointer cursor and hover border would be misleading.
+// Neither kiosk nor campus cards navigate when the card itself is clicked: a kiosk card carries a
+// copy field and a link, and a campus card carries a copy field and a tile. The shared card's
+// pointer cursor and hover border would promise that the whole card is clickable, which it is not.
 .kiosk-maps-section .application-card,
 .campus-maps-section .application-card {
   cursor: default;
@@ -209,4 +210,40 @@
 // "Aggie Map" crumb, so it is hidden here and revealed at the breakpoint.
 .breadcrumbs > p.breadcrumb-back {
   display: none;
+}
+
+// The campus tile: a picture of the map, which is itself the link (#1245).
+//
+// Borrows the card's own radius and maroon hover rather than introducing a second visual language,
+// and sits inside `.application-card` so the card keeps its border, padding and spacing. The
+// `visit-maps-tile` pattern above is a 6rem column around a square icon and does not stretch to a
+// landscape screenshot, so this extends the card instead of fighting that.
+.campus-tile {
+  display: block;
+  text-decoration: none;
+  color: #500000;
+  margin: -0.25rem 0 0.75rem;
+}
+
+.campus-tile-image {
+  display: block;
+  width: 100%;
+  // The captures are 2:1. Declared so the card does not jump as the image arrives.
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #d1d1d1;
+  background: #f4f4f4;
+
+  .campus-tile:hover &,
+  .campus-tile:focus-visible & {
+    border-color: #500000;
+  }
+}
+
+.campus-tile-label {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  line-height: 1.2;
 }
