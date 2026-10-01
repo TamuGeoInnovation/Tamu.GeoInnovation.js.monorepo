@@ -697,6 +697,17 @@ body.mapping {
   }
 }
 
+// The Compass widget swaps its needle for a dial whenever the view's spatial reference is not Web
+// Mercator or WGS84, because true north is not straight up in a projected coordinate system. The
+// campus basemap is a vector tile cache in EPSG:32139, so the icon changed the moment the map moved
+// onto it, and changes again each time a Web Mercator basemap is selected.
+//
+// Keep the needle. At campus scale the convergence angle is negligible, and an icon that changes
+// when you switch basemap reads as a glitch.
+.esri-compass__icon.esri-icon-dial::before {
+  content: '\e680'; // esri-icon-compass
+}
+
 //  ==========================================================================
 //   Directions Icons
 //  ==========================================================================

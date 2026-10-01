@@ -1,5 +1,6 @@
 @import 'libs/sass/components/sidebar';
 @import 'libs/sass/mixins';
+@import 'libs/sass/modules/loaders';
 
 .basemap {
   margin-bottom: 0.5rem;
@@ -18,6 +19,13 @@
       border-color: #616161;
     }
   }
+}
+
+// Sized down from the shared loader's default; it sits beside a title, not in a panel of its own.
+.spinning-loader {
+  margin: 0 0 0 0.5rem;
+  font-size: 5px;
+  flex-shrink: 0;
 }
 
 img {

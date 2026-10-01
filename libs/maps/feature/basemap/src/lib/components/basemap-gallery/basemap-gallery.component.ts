@@ -20,6 +20,14 @@ export class BasemapGalleryComponent implements OnInit {
   public gallery: Observable<esri.BasemapGalleryViewModel>;
   public isMobile: Observable<boolean>;
 
+  /**
+   * Id of the basemap currently being switched to, or undefined when none is.
+   *
+   * Aerial Imagery is a WMS and takes noticeably longer than the rest, so without this the map looks
+   * unchanged and reads as broken rather than busy.
+   */
+  public loadingBasemapId: string;
+
   constructor(
     private readonly bs: BasemapGalleryService,
     private readonly rs: ResponsiveService,
@@ -34,8 +42,8 @@ export class BasemapGalleryComponent implements OnInit {
     this.isMobile = this.rs.isMobile;
   }
 
-  public selectBasemap(event: esri.BasemapGalleryItem) {
-    this.bs.setBasemap(event.basemap);
+  public async selectBasemap(event: esri.BasemapGalleryItem) {
+    this.loadingBasemapId = event.basemap.id;
 
     this.store.setStorageObjectKeyValue({
       primaryKey: 'user-preferences',
@@ -52,6 +60,12 @@ export class BasemapGalleryComponent implements OnInit {
         gstCustom: event.basemap.id
       }
     });
+
+    try {
+      await this.bs.setBasemap(event.basemap);
+    } finally {
+      this.loadingBasemapId = undefined;
+    }
   }
 
   public backAction(): void {

@@ -86,6 +86,12 @@ const dictionary = [
     name: 'VectorTileLayer'
   },
   {
+    // Required before the view's spatial reference can change, which happens when a basemap in a
+    // different projection is selected. Without it the view's center does not survive the switch.
+    class: 'esri/geometry/projection',
+    name: 'projection'
+  },
+  {
     class: 'esri/Basemap',
     name: 'Basemap'
   },

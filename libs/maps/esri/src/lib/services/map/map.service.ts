@@ -67,29 +67,31 @@ export class EsriMapService {
     // If properties specifies 2d mode, load 2d map view.
     if (viewProperties.mode === '2d') {
       this.moduleProvider
-        .require(['Map', 'MapView', 'TileLayer', 'Basemap'])
+        .require(['Map', 'MapView', 'TileLayer', 'VectorTileLayer', 'Basemap'])
         .then(
-          ([Map, MapView, TileLayer, Basemap]: [
+          ([Map, MapView, TileLayer, VectorTileLayer, Basemap]: [
             esri.MapConstructor,
             esri.MapViewConstructor,
             esri.TileLayerConstructor,
+            esri.VectorTileLayerConstructor,
             esri.BasemapConstructor
           ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, Basemap);
+            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, VectorTileLayer, Basemap);
           }
         );
     } else if (viewProperties.mode === '3d') {
       // If properties specifies 3d mode, load 3d scene view.
       this.moduleProvider
-        .require(['Map', 'SceneView', 'TileLayer', 'Basemap'])
+        .require(['Map', 'SceneView', 'TileLayer', 'VectorTileLayer', 'Basemap'])
         .then(
-          ([Map, MapView, TileLayer, Basemap]: [
+          ([Map, MapView, TileLayer, VectorTileLayer, Basemap]: [
             esri.MapConstructor,
             esri.SceneViewConstructor,
             esri.TileLayerConstructor,
+            esri.VectorTileLayerConstructor,
             esri.BasemapConstructor
           ]) => {
-            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, Basemap);
+            this.next(mapProperties, viewProperties, Map, MapView, TileLayer, VectorTileLayer, Basemap);
           }
         );
     }
@@ -103,6 +105,7 @@ export class EsriMapService {
    * @param {esri.MapConstructor} Map
    * @param {esri.MapViewConstructor} MapView MapView or SceneView depending on mode
    * @param {esri.TileLayerConstructor} TileLayer
+   * @param {esri.VectorTileLayerConstructor} VectorTileLayer
    * @param {esri.BasemapConstructor} Basemap
    */
   private async next(
@@ -111,9 +114,10 @@ export class EsriMapService {
     Map: esri.MapConstructor,
     MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
     TileLayer: esri.TileLayerConstructor,
+    VectorTileLayer: esri.VectorTileLayerConstructor,
     Basemap: esri.BasemapConstructor
   ): Promise<void> {
-    const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
+    const basemap = this.makeBasemap(Properties, TileLayer, VectorTileLayer, Basemap);
     this._modules.map = new Map(basemap);
 
     this._mapContainer = ViewProps.properties.container as HTMLDivElement;
@@ -244,6 +248,7 @@ export class EsriMapService {
   private makeBasemap(
     mapProperties,
     TileLayer: esri.TileLayerConstructor,
+    VectorTileLayer: esri.VectorTileLayerConstructor,
     Basemap: esri.BasemapConstructor
   ): esri.MapProperties {
     if (!mapProperties) {
@@ -274,11 +279,21 @@ export class EsriMapService {
           throw new Error(`Layer type is required.`);
         }
 
-        if (l.type === `TileLayer`) {
-          // Remove the type property because it conflicts as a read-only property when instantiating the class.
-          delete l.type;
-          return new TileLayer(l);
+        // Remove the type property because it conflicts as a read-only property when instantiating the class.
+        const { type, ...props } = l;
+
+        if (type === `TileLayer`) {
+          return new TileLayer(props);
         }
+
+        if (type === `VectorTileLayer`) {
+          return new VectorTileLayer(props);
+        }
+
+        // Anything else used to fall out of this map as `undefined`, which Esri only reports much
+        // later as "Cannot read properties of undefined (reading 'parent')" from deep inside
+        // Basemap.addMany - a stack trace with nothing in it pointing here. Fail where the mistake is.
+        throw new Error(`Unsupported basemap layer type '${type}'. Add a case here to support it.`);
       });
 
       // Create an instance of the basemap.
