@@ -1,6 +1,6 @@
 import { Component, Injectable, Type } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -21,6 +21,18 @@ export class PopupService {
 
   private _suppressed: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public suppressed = this._suppressed.asObservable();
+
+  private _opened: Subject<void> = new Subject();
+
+  /**
+   * Fires when a popup is actually opened for a feature.
+   *
+   * Separate from `show`, which is a `BehaviorSubject` seeded `true` and so reports a popup as
+   * showing before any feature has been clicked. Anything that has to react to the user opening a
+   * popup - rather than to its current visibility - needs this instead, or it acts once on load for
+   * no reason. See #1244.
+   */
+  public readonly opened = this._opened.asObservable();
 
   constructor(private environment: EnvironmentService) {}
 
@@ -108,6 +120,7 @@ export class PopupService {
 
   public showPopup() {
     this._show.next(true);
+    this._opened.next();
   }
 
   public suppressPopups() {
