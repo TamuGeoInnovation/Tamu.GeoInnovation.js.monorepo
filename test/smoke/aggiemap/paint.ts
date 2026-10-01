@@ -70,11 +70,19 @@ export function dominance(png: Buffer): Dominance {
  * | `/campus/dc-bush-school` | 0.33 |
  * | `/events/150th-kickoff` | 0.26 |
  *
- * Healthy maps sit between 0.26 and 0.47; a blank one is effectively 1. The threshold is set well
- * clear of the healthy range rather than snugly above it, because a map legitimately framed over
- * water or open ground is flatter than one over campus, and a check that cries wolf gets disabled.
+ * And against the campus maps while they were broken, which is the other end a threshold needs:
+ *
+ * | State | Dominant share |
+ * | --- | --- |
+ * | Healthy map | 0.26 to 0.47 |
+ * | Blank campus map, buildings drawing but no basemap | 0.815 to 0.82 |
+ * | Nothing drawn at all | 0.955 and up |
+ *
+ * 0.65 sits roughly midway, about 0.17 clear of each. Both ends were measured rather than assumed:
+ * an earlier value of 0.85, set from the healthy range alone, let a blank campus map through at
+ * 0.816 - a threshold chosen from one side only is a guess about the other.
  */
-export const BLANK_ABOVE = 0.85;
+export const BLANK_ABOVE = 0.65;
 
 /**
  * How long a map gets to paint something.
@@ -93,31 +101,51 @@ export interface PaintResult extends Dominance {
 }
 
 /**
- * Polls the map canvas until it is no longer one flat colour.
+ * Consecutive good readings required before a map counts as drawn.
+ *
+ * One is not enough. A campus map carrying a saved basemap preference paints with its default
+ * basemap, then switches to the chosen one and goes blank - so a check that returns on the first
+ * non-blank frame reports a map that ends up empty as healthy. That is exactly how this check passed
+ * `/campus/mcallen` on development while the map was unusable, before this was added.
+ */
+const STABLE_READINGS = 3;
+
+/** Gap between those readings. Three of them plus the gaps puts the earliest pass around 10s. */
+const READING_GAP_MS = 2_000;
+
+/**
+ * Polls the map canvas until it has been something other than one flat colour, consistently.
  *
  * Returns the last measurement either way, so a failure can say what it saw rather than only that it
- * waited.
+ * waited. A run of good readings is reset by any blank one, so a map that paints and then empties is
+ * reported as never having painted - which, for the person looking at it, is the truth.
  */
 export async function waitForPaint(page: Page, timeoutMs = PAINT_TIMEOUT_MS): Promise<PaintResult> {
   const startedAt = Date.now();
   let last: Dominance = { share: 1, colour: '#000000', colours: 0 };
+  let consecutive = 0;
 
   while (Date.now() - startedAt < timeoutMs) {
-    const canvas: Locator = page.locator('.esri-view-surface, canvas').first();
+    // The map surface specifically. A bare `canvas` can match something else on the page, and the
+    // Esri surface is the thing the visitor is looking at.
+    const canvas: Locator = page.locator('.esri-view-surface').first();
+    const target: Locator = (await canvas.count()) > 0 ? canvas : page.locator('canvas').first();
 
-    if ((await canvas.count()) > 0) {
+    if ((await target.count()) > 0) {
       try {
-        last = dominance(await canvas.screenshot({ type: 'png' }));
+        last = dominance(await target.screenshot({ type: 'png' }));
+        consecutive = last.share < BLANK_ABOVE ? consecutive + 1 : 0;
 
-        if (last.share < BLANK_ABOVE) {
+        if (consecutive >= STABLE_READINGS) {
           return { ...last, paintedAfterMs: Date.now() - startedAt };
         }
       } catch {
         // The canvas can be detached mid-screenshot while the view rebuilds; try again.
+        consecutive = 0;
       }
     }
 
-    await page.waitForTimeout(1_000);
+    await page.waitForTimeout(READING_GAP_MS);
   }
 
   return { ...last, paintedAfterMs: null };

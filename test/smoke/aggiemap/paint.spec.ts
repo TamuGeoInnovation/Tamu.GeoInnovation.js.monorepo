@@ -89,14 +89,20 @@ test.describe('blank canvas detection', () => {
     expect(dominance(mostlyBlank(400, 300, 0.05)).share).toBeGreaterThan(BLANK_ABOVE);
   });
 
-  test('a canvas drawn over a third of its area is not blank', () => {
+  test('a canvas drawn over most of its area is not blank', () => {
     // Comfortably inside the healthy range measured on both environments, 0.26 to 0.47 dominant.
-    expect(dominance(mostlyBlank(400, 300, 0.35)).share).toBeLessThan(BLANK_ABOVE);
+    expect(dominance(mostlyBlank(400, 300, 0.55)).share).toBeLessThan(BLANK_ABOVE);
   });
 
-  test('the threshold leaves room on both sides of what was measured', () => {
-    // Healthy maps measured 0.26 to 0.47 on 1 October; a blank canvas is 1.
-    expect(BLANK_ABOVE).toBeGreaterThan(0.47 + 0.2);
-    expect(BLANK_ABOVE).toBeLessThan(1);
+  test('a canvas with only its buildings drawn is blank', () => {
+    // What the campus maps looked like with no basemap: feature outlines on white, measured at 0.816.
+    // The threshold has to be below this, which is what an earlier value of 0.85 was not.
+    expect(dominance(mostlyBlank(400, 300, 0.18)).share).toBeGreaterThan(BLANK_ABOVE);
+  });
+
+  test('the threshold sits between the two states that were measured', () => {
+    // Healthy maps 0.26 to 0.47; blank campus maps 0.815 to 0.955. Both ends measured on 1 October.
+    expect(BLANK_ABOVE).toBeGreaterThan(0.47);
+    expect(BLANK_ABOVE).toBeLessThan(0.815);
   });
 });
