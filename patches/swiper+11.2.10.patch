@@ -1,0 +1,17 @@
+diff --git a/node_modules/swiper/shared/utils.mjs b/node_modules/swiper/shared/utils.mjs
+index f58125d..452f917 100644
+--- a/node_modules/swiper/shared/utils.mjs
++++ b/node_modules/swiper/shared/utils.mjs
+@@ -96,11 +96,10 @@ function isNode(node) {
+ }
+ function extend() {
+   const to = Object(arguments.length <= 0 ? undefined : arguments[0]);
+-  const noExtend = ['__proto__', 'constructor', 'prototype'];
+   for (let i = 1; i < arguments.length; i += 1) {
+     const nextSource = i < 0 || arguments.length <= i ? undefined : arguments[i];
+     if (nextSource !== undefined && nextSource !== null && !isNode(nextSource)) {
+-      const keysArray = Object.keys(Object(nextSource)).filter(key => noExtend.indexOf(key) < 0);
++      const keysArray = Object.keys(Object(nextSource)).filter(key => key !== '__proto__' && key !== 'constructor' && key !== 'prototype');
+       for (let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex += 1) {
+         const nextKey = keysArray[nextIndex];
+         const desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
