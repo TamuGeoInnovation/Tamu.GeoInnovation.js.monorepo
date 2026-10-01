@@ -18,6 +18,10 @@ Closes #
   Required for anything with a visible result - a page, a map, a layer, a legend, a popup. Before and
   after, not just after: a reviewer cannot tell what changed from one image.
 
+  A CI check looks for an image below whenever a template, stylesheet, component or directive
+  changes. If the change genuinely has no visible result, apply the `no-visible-change` label rather
+  than deleting this section.
+
   This is not only documentation. The duplicated 150th Anniversary tile (#1055) was found because
   before/after images were being captured for release notes. It read as correct in the diff and was
   obvious in a picture.

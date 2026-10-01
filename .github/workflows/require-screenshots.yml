@@ -1,0 +1,82 @@
+name: Screenshots
+
+# Anything with a visible result carries before/after images, in the issue and the pull request.
+#
+# The rule was already written down, in `.github/pull_request_template.md`, and was skipped anyway -
+# four pull requests in one session. `gh pr create --body-file` replaces the template, so the
+# checklist is never rendered and nothing notices it is missing. A rule only enforced by the person
+# in a hurry is not enforced. See #1258, and #1056 for the same shape with linked issues.
+#
+# This is not only documentation: the duplicated 150th Anniversary tile (#1055) was found because
+# before/after images were being captured. A duplicated block reads as correct in a diff.
+on:
+  pull_request:
+    # `edited` matters: the usual fix is adding an image to the body, and without it the check would
+    # stay red until an unrelated push.
+    types: [opened, edited, reopened, synchronize, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  screenshots:
+    name: Has before/after images
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      # A check that silently stops detecting reads as a pass, which is worse than no check at all.
+      - name: Prove the detector still works
+        run: node .github/scripts/require-screenshots.mjs --self-test
+
+      - name: Check this pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          BODY: ${{ github.event.pull_request.body }}
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename' > changed.txt
+          echo "Changed files:"; sed 's/^/  /' changed.txt
+
+          node --input-type=module -e '
+            import { evaluate } from "./.github/scripts/require-screenshots.mjs";
+            import { readFileSync } from "node:fs";
+
+            const files = readFileSync("changed.txt", "utf8").split("\n").map((s) => s.trim()).filter(Boolean);
+            const result = evaluate({ files, body: process.env.BODY ?? "", labels: JSON.parse(process.env.LABELS ?? "[]") });
+
+            if (result.ok) {
+              console.log("Pass: " + result.reason + ".");
+              process.exit(0);
+            }
+
+            console.error([
+              "",
+              "This pull request changes something a user can see, and its body has no image.",
+              "",
+              "User-visible files changed:",
+              ...result.visible.map((f) => "  " + f),
+              "",
+              "Add before AND after images to the body. Not just after: a reviewer cannot tell what",
+              "changed from one image.",
+              "",
+              "  - Commit the captures under docs/screenshots/<slug>/ and link them by raw URL pinned",
+              "    to a commit SHA, not a branch name - a branch link 404s once the branch is deleted.",
+              "  - Or drag the images into the body.",
+              "",
+              "The same files serve the issue and the release notes entry, so one capture covers all three.",
+              "",
+              "If the change genuinely has no visible result, apply the `no-visible-change` label. That",
+              "is a deliberate act and stays visible on the pull request, which is the point.",
+              ""
+            ].join("\n"));
+            process.exit(1);
+          '

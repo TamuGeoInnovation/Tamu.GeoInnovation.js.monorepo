@@ -264,7 +264,15 @@ gh project item-edit --id "$item" --project-id <project node id> --field-id <sta
 `gh project view <n> --owner TamuGeoInnovation --format json --jq .id` gives the project node id.
 
 **Anything with a visible result carries before/after screenshots**, in the issue and the pull
-request. Do not wait to be asked.
+request. Do not wait to be asked. A CI check enforces this; the escape hatch is the
+`no-visible-change` label, which is a deliberate act and stays visible afterwards.
+
+**Build the pull request body from [`.github/pull_request_template.md`](.github/pull_request_template.md),
+with every section filled in.** `gh pr create --body-file` *replaces* the template rather than
+pre-filling it, so the checklist is never rendered and nothing notices it is gone - which is exactly
+how four pull requests went out in one session with no images, past a template that had asked for
+them all along. Writing the body to a file is fine; writing it to a file **that was started from the
+template** is the rule. See #1258.
 
 This is not only documentation. The duplicated 150th Anniversary tile (#1055) was found *because*
 before/after images were being captured: a duplicated block reads as correct in a diff, since each
