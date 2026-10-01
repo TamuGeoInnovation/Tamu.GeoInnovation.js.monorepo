@@ -8,7 +8,7 @@ on:
         type: string
 
 env:
-  EXCLUDED_PROJECTS: 'aggiemap-angular-e2e,cpa-angular-e2e,geoservices-angular-e2e,gisday-competitions-angular-e2e,kissingbug-angular-e2e,mailroom-angular-e2e,oidc-admin-angular-e2e,signage-angular-e2e,trees-angular-e2e,two-angular-e2e,two-dashboard-angular-e2e,ues-effluent-angular-e2e,ues-operations-angular-e2e,ues-recycling-angular-e2e,ues-valves-angular-e2e'
+  EXCLUDED_PROJECTS: 'aggiemap-angular-e2e,cpa-angular-e2e,geoservices-angular-e2e,gisday-competitions-angular-e2e,mailroom-angular-e2e,oidc-admin-angular-e2e,signage-angular-e2e,trees-angular-e2e,ues-effluent-angular-e2e,ues-operations-angular-e2e,ues-recycling-angular-e2e,ues-valves-angular-e2e'
 
 jobs:
   lint:
