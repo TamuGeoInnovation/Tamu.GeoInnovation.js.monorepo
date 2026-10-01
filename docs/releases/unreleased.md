@@ -6,30 +6,15 @@
 **The [1 October release](2026-10-01.md) is cleared and on its way to production.**
 
 If you followed a link here expecting the notes for a release that just shipped, they are in a dated
-file now — the Ring Day framing, the basemap loading indicator and the development-only vector tile
-basemap in [1 October](2026-10-01.md). Those files are the permanent record of what shipped; this one
+file now — the Ring Day framing, the basemap loading indicator, the development-only vector tile
+basemap and the dead-project removal in [1 October](2026-10-01.md). Those files are the permanent record of what shipped; this one
 only ever describes what has not shipped yet.
 
 ---
 
 ## Summary
 
-### Dead projects removed
-
-**[#1232](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1232), merged in
-[#1237](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1237).** TWO, COVID,
-Kissing Bug, and the old standalone Football and Move-In apps are gone from the repository, as decided in
-the dead-project survey
-([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)). Nothing
-visible changes on the maps. The Discover page loses its deprecated "Movein" link. The Azure release
-build compiles 7 apps instead of 9, 380 s down to 282 s, and the workspace goes from 201 projects to 173.
-
-Not yet in a `development` build; the 1 October release was built before it merged.
-
-The old Ring Day app is kept until after Ring Day
-([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old
-Move-In app stays deployed at `/movein/` until its server copy is deleted
-([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
+Nothing has merged since the 1 October release.
 
 ---
 
