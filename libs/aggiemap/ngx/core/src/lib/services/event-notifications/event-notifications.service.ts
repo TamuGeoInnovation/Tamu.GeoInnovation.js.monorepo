@@ -29,6 +29,47 @@ interface EventNotificationEntry {
   configuration?: EventToastConfig | null;
 }
 
+/**
+ * The campus a map belongs to, and therefore whose notifications it shows.
+ *
+ * AggieMap is the College Station application: Ring Day, Football, Kickoff at Kyle and the 150th
+ * events are all College Station, and showing them on a satellite campus map is wrong - those
+ * campuses are separate places, and each will have notifications of its own that must stay separate
+ * from College Station's and from each other's. See #1265.
+ *
+ * Expressed as "which campus is this", rather than as a list of maps to suppress, so a campus added
+ * later shows its own notifications and no one else's by default, instead of inheriting College
+ * Station's until somebody remembers to add it to a deny list.
+ */
+export type CampusId = string;
+
+export const COLLEGE_STATION: CampusId = 'college-station';
+
+/** A surface that shows no notifications at all, whoever's they are. */
+export const NO_NOTIFICATIONS: CampusId = 'none';
+
+/**
+ * Whose notifications a route shows.
+ *
+ * - `/campus/:id` is a satellite campus, and shows that campus's own.
+ * - `/kiosk/:id` shows none. Kiosk maps are sidebar-free, preset-layer maps embedded elsewhere, such
+ *   as in a mobile app webview. There is nobody at the screen to dismiss a toast, and it would draw
+ *   over the map inside someone else's application.
+ * - Everything else - the main map, the event, parking and operations maps, the discover pages - is
+ *   College Station.
+ */
+export function campusForRoute(url: string): CampusId {
+  const path = (url || '').split('?')[0].split('#')[0];
+
+  if (/(?:^|\/)kiosk\//.test(path)) {
+    return NO_NOTIFICATIONS;
+  }
+
+  const match = path.match(/(?:^|\/)campus\/([^/]+)/);
+
+  return match ? match[1] : COLLEGE_STATION;
+}
+
 export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificationEntry[]>('EVENT_NOTIFICATION_DEFINITIONS');
 
 @Injectable({
@@ -41,15 +82,28 @@ export class EventNotificationsService {
   ) {}
 
   /**
+   * Ids raised during this page load, so navigating does not stack a second copy of each.
+   *
+   * The shell calls this on every navigation rather than once, because whether notifications belong
+   * here depends on which map is showing. Without this, walking between two College Station maps
+   * would raise the same notifications again each time.
+   */
+  private readonly _raised = new Set<string>();
+
+  /**
    * Checks all event definitions for active events and triggers toast notifications
    * for any that have toast configuration and are currently active/upcoming.
    *
-   * Called once per page load, from the application shell, so that an event map reached by link
+   * Called from the application shell on each navigation, so that an event map reached by link
    * raises them as well - the event maps are lazy routes of this same application. Anything the user
    * has already dismissed during this load is left alone; see `NotificationService`.
+   *
+   * `campus` is the campus whose map is showing. These definitions are College Station's, so nothing
+   * is raised on a satellite campus map. When those campuses get notifications of their own, this is
+   * where they are matched rather than a new mechanism. See #1265.
    */
-  public checkAndTriggerEventNotifications(): void {
-    if (!this.definitions) {
+  public checkAndTriggerEventNotifications(campus: CampusId = COLLEGE_STATION): void {
+    if (!this.definitions || campus !== COLLEGE_STATION) {
       return;
     }
 
@@ -113,12 +167,19 @@ export class EventNotificationsService {
       notificationProps.id = `event-${eventId}-toast`;
     }
 
-    // Already dismissed during this page load, so leave it dismissed. This runs on every route, and
-    // without the check, walking from the main map to an event map would raise the whole stack again
-    // a moment after the user cleared it.
+    // Already dismissed during this page load, so leave it dismissed. This runs on every navigation,
+    // and without the check, walking from the main map to an event map would raise the whole stack
+    // again a moment after the user cleared it.
     if (this.notificationService.wasDismissedThisLoad(notificationProps.id)) {
       return;
     }
+
+    // Already showing from an earlier navigation in this load.
+    if (this._raised.has(notificationProps.id)) {
+      return;
+    }
+
+    this._raised.add(notificationProps.id);
 
     // Trigger the notification
     this.notificationService.toast(notificationProps);

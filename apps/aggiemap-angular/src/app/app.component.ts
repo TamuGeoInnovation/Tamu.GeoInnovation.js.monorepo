@@ -1,16 +1,21 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter, map, startWith } from 'rxjs/operators';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/discover';
-import { EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
+import { campusForRoute, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  private _notifications: Subscription | undefined;
+
   constructor(
     public analytics: Angulartics2GoogleGlobalSiteTag,
     private readonly vcr: ViewContainerRef,
@@ -19,7 +24,8 @@ export class AppComponent implements OnInit {
     // this it would first be constructed on a discover page, by which time the map navigation it
     // needs to observe has already happened and there would be nothing to go back to.
     private readonly lastMap: LastMapService,
-    private readonly eventNotifications: EventNotificationsService
+    private readonly eventNotifications: EventNotificationsService,
+    private readonly router: Router
   ) {
     analytics.startTracking();
   }
@@ -33,7 +39,23 @@ export class AppComponent implements OnInit {
     // opened an event map by link was never told about the other events, and someone who dismissed
     // them on an event map had them raised again on returning to the main map. See #1246.
     //
-    // Once per page load. The service ignores anything already dismissed during this load.
-    this.eventNotifications.checkAndTriggerEventNotifications();
+    // On every navigation rather than once, because whose notifications belong here depends on which
+    // map is showing: College Station's belong on the main map and the event, parking and operations
+    // maps, and nowhere near a satellite campus or an embedded kiosk. The service skips anything
+    // already raised or already dismissed during this page load, so navigating does not stack
+    // duplicates. See #1265.
+    this._notifications = this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.router.url),
+        startWith(this.router.url)
+      )
+      .subscribe((url) => {
+        this.eventNotifications.checkAndTriggerEventNotifications(campusForRoute(url));
+      });
+  }
+
+  public ngOnDestroy(): void {
+    this._notifications?.unsubscribe();
   }
 }
