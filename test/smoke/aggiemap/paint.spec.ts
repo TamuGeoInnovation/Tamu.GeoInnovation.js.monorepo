@@ -145,7 +145,9 @@ test.describe('waiting for a map to paint', () => {
   });
 
   test('a canvas that never draws is still reported as blank', async () => {
-    const paint = await waitForPaint(fakePage([solid(40, 40, [255, 255, 255])]), 8_000);
+    // A short budget on purpose: the fake's `waitForTimeout` returns at once, so the loop spins as
+    // fast as the clock allows and a realistic budget would decode the canvas thousands of times.
+    const paint = await waitForPaint(fakePage([solid(40, 40, [255, 255, 255])]), 500);
 
     expect(paint.paintedAfterMs).toBeNull();
     expect(paint.share).toBeGreaterThanOrEqual(BLANK_ABOVE);
