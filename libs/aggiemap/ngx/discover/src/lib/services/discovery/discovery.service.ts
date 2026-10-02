@@ -51,6 +51,10 @@ export class DiscoveryService {
       status: event.discover?.status,
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
+      // Carried through so a listing can show the map rather than a blank area. Omitting it here
+      // is invisible: the field is optional, so the template still typechecks and simply renders
+      // nothing (#1275).
+      thumbnail: event.discover?.thumbnail,
       configuration: event.configuration,
       keywords: event.discover?.keywords || [],
       labels: event.discover?.labels || []
@@ -148,6 +152,10 @@ export class DiscoveryService {
       quickLinkOrder: undefined,
       name: event.discover?.name || event.configuration.name,
       description: event.discover?.description || event.configuration.introductionText || '',
+      // Carried through so a listing can show the map rather than a blank area. Omitting it here
+      // is invisible: the field is optional, so the template still typechecks and simply renders
+      // nothing (#1275).
+      thumbnail: event.discover?.thumbnail,
       configuration: event.configuration,
       keywords: event.discover?.keywords || [],
       labels: event.discover?.labels || []
