@@ -318,6 +318,18 @@
   gap: 1rem;
 }
 
+// A grid item's automatic minimum size is its min-content width, so a single unbreakable string
+// anywhere inside one widens the track it sits in - and at the phone breakpoint, where these
+// become one `1fr` column, widening the only track widens the page. The copy field holds a map URL
+// with nothing to wrap on, which is how `/all-maps` came to be 199px wider than a 375px screen
+// (#1335). The field already clips its own text; `overflow: hidden` on a descendant does not stop
+// the contribution, so the item has to be told it may shrink. `.map-columns` sets `minmax(0, 1fr)`
+// for the same reason, which is not enough on its own here: the track floor is only half of it.
+.applications-list > *,
+.map-columns > * {
+  min-width: 0;
+}
+
 .application-description {
   font-size: 0.875rem;
   color: #666;
