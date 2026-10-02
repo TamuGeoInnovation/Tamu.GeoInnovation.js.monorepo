@@ -1,7 +1,11 @@
+import { NavigationEnd } from '@angular/router';
+import { Subject } from 'rxjs';
+
 import { NotificationProperties, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import {
   campusForRoute,
+  campusOnNavigation,
   COLLEGE_STATION,
   EventNotificationsService,
   NO_NOTIFICATIONS
@@ -138,5 +142,62 @@ describe('EventNotificationsService campus scoping', () => {
     service.checkAndTriggerEventNotifications();
 
     expect(notifications.toasted).toEqual(['ring-day-toast', 'kickoff-toast']);
+  });
+});
+
+/**
+ * A campus map opened directly must never see College Station's notifications, even briefly (#1265).
+ *
+ * The shell starts before the router has finished its first navigation, while the router's url is still
+ * `/`. #1266 read that url as the starting point, so a campus map opened by link - or by the smoke
+ * suite - was treated as College Station for its first moment and got all of College Station's
+ * notifications, which then stayed. On dev, the DC map's popup test clicked the Football notification
+ * instead of the building and landed on the Football builder.
+ */
+describe('campusOnNavigation', () => {
+  /** A router mid-way through its first navigation: no NavigationEnd yet, and `url` still `/`. */
+  const routerBeforeFirstNavigation = () => {
+    const events = new Subject<unknown>();
+    const router = { events, url: '/' };
+
+    return {
+      router,
+      navigateTo(url: string) {
+        router.url = url;
+        events.next(new NavigationEnd(1, url, url));
+      }
+    };
+  };
+
+  it('reports only the campus actually loaded, when a campus map is the first page', () => {
+    const { router, navigateTo } = routerBeforeFirstNavigation();
+    const seen: string[] = [];
+
+    campusOnNavigation(router as never).subscribe((campus) => seen.push(campus));
+    navigateTo('/campus/dc-bush-school/map/d');
+
+    expect(seen).toEqual(['dc-bush-school']);
+  });
+
+  it('reports College Station when the main map is the first page', () => {
+    const { router, navigateTo } = routerBeforeFirstNavigation();
+    const seen: string[] = [];
+
+    campusOnNavigation(router as never).subscribe((campus) => seen.push(campus));
+    navigateTo('/map/d');
+
+    expect(seen).toEqual([COLLEGE_STATION]);
+  });
+
+  it('follows later navigations', () => {
+    const { router, navigateTo } = routerBeforeFirstNavigation();
+    const seen: string[] = [];
+
+    campusOnNavigation(router as never).subscribe((campus) => seen.push(campus));
+    navigateTo('/campus/galveston');
+    navigateTo('/map/d');
+    navigateTo('/kiosk/memorial-student-center');
+
+    expect(seen).toEqual(['galveston', COLLEGE_STATION, NO_NOTIFICATIONS]);
   });
 });

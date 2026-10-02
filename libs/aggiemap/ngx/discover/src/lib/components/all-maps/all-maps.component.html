@@ -150,13 +150,16 @@
 
       <div class="applications-list" *ngIf="campusApplications.length > 0; else noCampusMaps">
         <div class="application-card" *ngFor="let app of campusApplications">
-          <div class="application-card-header">
-            <h3 class="application-title">{{ app.name }}</h3>
-          </div>
+          <!-- The picture is the link, so the card shows what you are choosing between rather than
+               leaving an empty area above a text link (#1245). The copy field stays: it is how a
+               campus map URL gets shared, and these maps are not linked on production. -->
+          <a class="campus-tile map-entry--pictured" [routerLink]="getApplicationRoute(app)" [attr.aria-label]="'Open the ' + app.name + ' map'">
+            <img class="map-entry-thumbnail" *ngIf="app.thumbnail" [src]="app.thumbnail" [alt]="app.name + ' campus map'" loading="lazy" />
+            <span class="campus-tile-label">{{ app.name }}</span>
+          </a>
           <div class="application-card-content">
             <div class="application-description" *ngIf="app.description">{{ app.description }}</div>
             <tamu-gisc-copy-field [text]="app.url"></tamu-gisc-copy-field>
-            <a [routerLink]="getApplicationRoute(app)">Open map</a>
           </div>
         </div>
       </div>

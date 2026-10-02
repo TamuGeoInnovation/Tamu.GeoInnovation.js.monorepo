@@ -116,7 +116,17 @@ with no one there to dismiss anything — show none at all.
 
 ![Before: College Station alerts over the Galveston campus map](../screenshots/1265-campus-notifications/before-toasts-on-galveston.png)
 
-([#1265](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1265))
+The first fix covered someone arriving at a campus map from another page. Opening one **directly**, from
+a link or a bookmark, still showed College Station's alerts for its first ten seconds: the app read the
+address before it had finished loading, while it still looked like the main map. That is fixed too, and
+every campus map is now checked for it on every run.
+
+| Opened directly, before | Opened directly, after |
+| --- | --- |
+| ![Before: the DC campus map covered by four College Station alerts](../screenshots/1281-campus-notices/before-dev-dc-notices-on-load.png) | ![After: the DC campus map with no alerts](../screenshots/1281-campus-notices/after-local-dc-no-notices.png) |
+
+([#1265](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1265),
+[#1281](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1281))
 
 ### Campus maps draw for a visitor who has chosen a basemap before
 
@@ -223,10 +233,23 @@ Every pull request this release carried, and the issue behind each one.
 | Mobile-only map controls hidden on desktop | [#1256](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1256) | [#1251](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1251) |
 | Pull requests must carry before/after images | [#1263](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1263) | [#1258](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1258) |
 | College Station notifications stay off the campus and kiosk maps | [#1266](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1266) | [#1265](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1265) |
+| Campus maps opened directly stay free of College Station notifications | [#1286](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1286) | [#1281](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1281) |
 | Campus maps keep their own basemap, and the suite checks the picture | [#1269](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1269) | [#1259](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1259) |
 | Each campus map is shown as a picture you can click | [#1270](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1270) | [#1245](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1245) |
 | The campus pictures reach the page they were added for | [#1287](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1287) | [#1275](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1275) |
 | A map is given long enough to draw before it is called broken | [#1288](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1288) | [#1285](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1285) |
+| Contributors reuse components, code and CSS, and build anything new to be reused | [#1284](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1284) | [#1282](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1282) |
+
+**Also carried: the [1 October release](2026-10-01.md), which never reached production on its own.** Its
+notes merged and its build passed on dev, but it was held back and then overtaken by this one, so
+production receives it now. What it brings is described in that file.
+
+| Change | Pull request | Issue |
+| --- | --- | --- |
+| The campus basemap on vector tiles (dev), the basemap loading indicator, and the compass keeps its needle | [#1227](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1227) | [#1222](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1222), [#1223](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1223), [#1224](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1224) |
+| The vector tile basemap stays off production | [#1233](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1233) | [#1229](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1229) |
+| Each Ring Day period opens on its own view | [#1234](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1234) | [#1230](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1230) |
+| The dead TWO, COVID, Kissing Bug, Football and Move-In projects are removed | [#1237](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1237) | [#1232](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1232) |
 
 ---
 

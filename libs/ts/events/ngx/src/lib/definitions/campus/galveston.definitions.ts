@@ -126,6 +126,7 @@ export const GalvestonTs: AggiemapCustomMapConfiguration = {
     description: 'Map of the Texas A&M University at Galveston campus.',
     source: 'internal',
     type: 'satellite-campus',
-    mapType: 'satellite-campus'
+    mapType: 'satellite-campus',
+    thumbnail: './assets/images/campus/galveston.jpg'
   }
 };

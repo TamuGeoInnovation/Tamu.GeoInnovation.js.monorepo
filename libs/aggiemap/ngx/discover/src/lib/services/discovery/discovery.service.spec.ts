@@ -97,6 +97,21 @@ describe('DiscoveryService', () => {
     expect(service.getVisibleInternalDiscoverApplications()).toEqual([visibleApp]);
     expect(service.getQuickLinkApplications()).toEqual([visibleApp]);
   });
+  /**
+   * The campus maps page draws its picture from `app.thumbnail` (#1245). The service builds each
+   * application by copying named fields off the definition, so a field the definition declares but
+   * the copy omits is silently dropped: the page renders a heading with a blank area where the
+   * picture should be, and every definition-side check still passes.
+   *
+   * This asks the question the page asks - does the object the template binds to carry a thumbnail -
+   * rather than whether the definition declares one.
+   */
+  it.each(['galveston', 'mcallen', 'dc-bush-school'])('carries the %s thumbnail through to the page', (id) => {
+    const campus = service.getInternalDiscoverApplications().find((app) => app.id === id);
+
+    expect(campus).toBeDefined();
+    expect(campus?.thumbnail).toBe(`./assets/images/campus/${id}.jpg`);
+  });
 });
 
 function createDiscoverApplication(overrides: Partial<InternalDiscoverApplication> = {}): InternalDiscoverApplication {
