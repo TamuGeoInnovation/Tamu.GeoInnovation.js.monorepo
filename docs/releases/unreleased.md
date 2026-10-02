@@ -3,34 +3,18 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**The [1 October release](2026-10-01.md) is cleared and on its way to production.**
+**The [2 October release](2026-10-02.md) is on dev and goes to production in the morning.** It also
+carries the [first 1 October release](2026-10-01.md), which never shipped on its own.
 
-If you followed a link here expecting the notes for a release that just shipped, they are in a dated
-file now — the Ring Day framing, the basemap loading indicator, the development-only vector tile
-basemap and the dead-project removal in [1 October](2026-10-01.md). Those files are the permanent record of what shipped; this one
-only ever describes what has not shipped yet.
+If you followed a link here expecting the notes for a release that just shipped, they are in those
+dated files now. Those files are the permanent record of what shipped; this one only ever describes
+what has not shipped yet.
 
 ---
 
 ## Summary
 
-### Campus maps no longer flash College Station's notices
-
-**[#1281](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1281).** Opening
-the DC, Galveston or McAllen campus map directly, from a link or a bookmark, showed College Station's
-notices (the Opening Ceremony, Football, Ring Day and Kickoff at Kyle) for the map's first ten seconds.
-Clicking the map in that time could open the Football map instead. Campus maps now show none of them.
-[#1266](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1266) had fixed this
-only for someone arriving from another page.
-
-| Before | After |
-| --- | --- |
-| ![Before: the DC campus map covered by four College Station notices](../screenshots/1281-campus-notices/before-dev-dc-notices-on-load.png) | ![After: the DC campus map with no notices](../screenshots/1281-campus-notices/after-local-dc-no-notices.png) |
-
-**What to test:** open [the DC campus map](https://dev.aggiemap.tamu.edu/campus/dc-bush-school) in a
-new tab and watch it for ten seconds. No notices should appear. The same goes for
-[Galveston](https://dev.aggiemap.tamu.edu/campus/galveston) and
-[McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen). The main map should still show them.
+Nothing has merged since the second 1 October release.
 
 ---
 
@@ -39,6 +23,38 @@ new tab and watch it for ten seconds. No notices should appear. The same goes fo
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
+
+### In progress: removing `ngcc`, the first step of the Angular upgrade
+
+Angular 16 removes `ngcc`, which five installed packages still depend on
+([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220), part of [#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)). Each is a branch on the maintainer's
+fork, with its tests written. The verifications were paused for the 1 October release and are resumed
+afterwards:
+
+| Issue | Change | State |
+| --- | --- | --- |
+| [#1276](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1276) | Remove `ngx-lightbox`, unused since the dead-project removal, which also removes `ngx-filesaver` | verifying |
+| [#1277](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1277) | Upgrade `ngx-webstorage-service` to 5.0.0, its Ivy release | verifying |
+| [#1278](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1278) | Upgrade `ng2-dragula` to 4.0.0, its Ivy release for Angular 15 | verifying |
+| [#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220) | Replace `angular-bootstrap-datetimepicker`, which has no Ivy release, with native inputs inside the shared date-time picker | verifying; before/after screenshots need a GIS Day admin login |
+| [#1279](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1279) | Stop running `ngcc`, and fail the install if any package needs it again | committed; merges last, after the four above |
+
+### Also open from 1 October
+
+- **Code Maroon needs an IIS proxy for its feed.** Dev reads a saved copy of the feed until then
+  ([#1304](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1304), in the 2 October release). The fix is an IIS URL Rewrite and ARR rule
+  with server-side caching, for dev only, to be arranged with the team that manages the server; the
+  saved copy is removed once it is in place.
+- **The browser console's build banner prints `___BUILD_DATE___` and the other placeholders** instead
+  of the build's details ([#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306), low priority).
+- **Smoke checks that an event not yet over is never shown as passed**, on the event maps and in All
+  Maps' Upcoming events ([#1302](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1302)). Unit tests for both landed with their fixes.
+- **The old standalone Ring Day app** is removed after Ring Day, 8 to 10 October
+  ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old Move-In app's deployed copy at `/movein/` still needs deleting
+  ([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
+- **Every map's starting center and zoom** to be checked against its data ([#1231](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1231)).
+- **The dead-project survey** still has `trees-angular` and `correction-lite-angular` to look at
+  ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)). Signage does not build from its current source.
 
 ### Waiting on someone else
 
