@@ -1,3 +1,7 @@
+// Pins the ArcGIS runtime as a side effect of importing this library, so every consumer gets the
+// same version without each call site having to remember (#1219).
+export * from './lib/esri-runtime';
+
 export * from './lib/maps-esri.module';
 
 export * from './lib/services/module-provider/module-provider.service';
