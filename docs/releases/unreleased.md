@@ -24,6 +24,30 @@ Nothing below has merged, so it is not part of a release yet. This section exist
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
 
+### In progress: removing `ngcc`, the first step of the Angular upgrade
+
+Angular 16 removes `ngcc`, which five installed packages still depend on
+([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220), part of [#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)). Each is a branch on the maintainer's
+fork, with its tests written. The verifications were paused for the 1 October release and are resumed
+afterwards:
+
+| Issue | Change | State |
+| --- | --- | --- |
+| [#1276](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1276) | Remove `ngx-lightbox`, unused since the dead-project removal, which also removes `ngx-filesaver` | verifying |
+| [#1277](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1277) | Upgrade `ngx-webstorage-service` to 5.0.0, its Ivy release | verifying |
+| [#1278](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1278) | Upgrade `ng2-dragula` to 4.0.0, its Ivy release for Angular 15 | verifying |
+| [#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220) | Replace `angular-bootstrap-datetimepicker`, which has no Ivy release, with native inputs inside the shared date-time picker | verifying; before/after screenshots need a GIS Day admin login |
+| [#1279](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1279) | Stop running `ngcc`, and fail the install if any package needs it again | committed; merges last, after the four above |
+
+### Also open from 1 October
+
+- **The old standalone Ring Day app** is removed after Ring Day, 8 to 10 October
+  ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old Move-In app's deployed copy at `/movein/` still needs deleting
+  ([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
+- **Every map's starting center and zoom** to be checked against its data ([#1231](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1231)).
+- **The dead-project survey** still has `trees-angular` and `correction-lite-angular` to look at
+  ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)). Signage does not build from its current source.
+
 ### Waiting on someone else
 
 **Bus route stops are a data fix, not a code fix
