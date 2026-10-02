@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
-
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIKeyboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 
@@ -26,15 +24,7 @@ import { AutocompleteComponent } from './components/autocomplete/autocomplete.co
 import { AutocompleteOptionTemplateDirective } from './components/autocomplete/directives/autocomplete-option-template.directive';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    UILayoutModule,
-    DlDateTimePickerDateModule,
-    DlDateTimePickerModule,
-    UIKeyboardModule
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, UILayoutModule, UIKeyboardModule],
   declarations: [
     SelectComponent,
     CheckboxComponent,

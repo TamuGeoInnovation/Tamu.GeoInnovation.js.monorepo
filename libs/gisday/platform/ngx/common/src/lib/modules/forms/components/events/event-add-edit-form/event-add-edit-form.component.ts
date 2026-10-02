@@ -18,7 +18,7 @@ import {
   withLatestFrom
 } from 'rxjs';
 
-import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
+import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { Event, EventBroadcast, EventLocation, SeasonDay, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import {
@@ -302,7 +302,7 @@ export class EventAddEditFormComponent implements OnInit {
     });
   }
 
-  public setEventTime(time: DlDateTimePickerChange<Date>, which: 'start' | 'end') {
+  public setEventTime(time: DateTimePickerChange<Date>, which: 'start' | 'end') {
     // Get only the time portion of the date
     const timeString = time.value.toTimeString();
 

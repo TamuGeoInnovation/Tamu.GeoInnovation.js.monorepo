@@ -3,5 +3,5 @@
     <p><span class="material-icons" *ngIf="showIcon">{{iconName}}</span> {{value | date : formatString}}</p>
   </tamu-gisc-tooltip-trigger>
 
-  <dl-date-time-picker [startDate]="value.getTime()" [maxView]="maxView" [minView]="minView" [startView]="startView" [minuteStep]="minuteStep" (change)="handleDlTimePickerChange($event);"> </dl-date-time-picker>
+  <input class="date-time-picker-input" [type]="inputType" [value]="inputValue" [attr.step]="step" (change)="handleInputChange($any($event.target).value)" />
 </tamu-gisc-tooltip>
