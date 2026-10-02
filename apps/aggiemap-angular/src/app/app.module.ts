@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Angulartics2Module } from 'angulartics2';
 
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import { AggiemapNgxCoreModule, EVENT_NOTIFICATION_DEFINITIONS } from '@tamu-gisc/aggiemap/ngx/core';
+import { AggiemapNgxCoreModule, CodeMaroonAlertModule, EVENT_NOTIFICATION_DEFINITIONS } from '@tamu-gisc/aggiemap/ngx/core';
 import {
   NotificationGroupedModule,
   NotificationModule,
@@ -37,7 +37,9 @@ WebFont.load({
     EnvironmentModule,
     NotificationModule,
     NotificationGroupedModule,
-    AggiemapNgxCoreModule
+    AggiemapNgxCoreModule,
+    // Code Maroon proof of concept (#1289). Development only; renders nothing elsewhere.
+    CodeMaroonAlertModule
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],

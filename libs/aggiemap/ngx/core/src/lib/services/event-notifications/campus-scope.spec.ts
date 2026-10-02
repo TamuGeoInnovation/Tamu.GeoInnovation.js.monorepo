@@ -200,4 +200,20 @@ describe('campusOnNavigation', () => {
 
     expect(seen).toEqual(['galveston', COLLEGE_STATION, NO_NOTIFICATIONS]);
   });
+
+  it.each([
+    '/code-maroon',
+    '/code-maroon/d',
+    '/code-maroon/m',
+    '/code-maroon/d?sample=tornado'
+  ])('raises nothing on %s', (url) => {
+    // An event toast about cake and ice cream stacking under a tornado warning would undermine the
+    // alert it is sitting on. Nothing competes with Code Maroon on that route (#1289).
+    expect(campusForRoute(url)).toBe(NO_NOTIFICATIONS);
+  });
+
+  it('still raises College Station notices on a route that merely mentions the words', () => {
+    // Guards the pattern: the exclusion is the route segment, not the string appearing anywhere.
+    expect(campusForRoute('/map?search=code-maroon')).toBe(COLLEGE_STATION);
+  });
 });
