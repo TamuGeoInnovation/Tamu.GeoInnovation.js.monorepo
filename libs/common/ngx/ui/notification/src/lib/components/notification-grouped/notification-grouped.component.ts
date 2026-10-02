@@ -31,6 +31,15 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
 
   // Grouped mode state
   public groupedItems: Notification[] = [];
+
+  /**
+   * Which notification is on screen. The panel shows one at a time (#1327): with four of them stacked
+   * it ran most of the height of the map, and on a phone rather more than that.
+   *
+   * Kept as an index rather than a copy of the item, so that a notification being removed - actioned,
+   * acknowledged, or cleared by its own service - cannot leave a stale object showing.
+   */
+  public groupIndex = 0;
   public groupVisible = false;
   public groupShowing = false;
   public groupTimerPercent = 0;
@@ -138,6 +147,44 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
   }
 
   // --- Grouped mode methods ---
+
+  /** The notification on screen, or `undefined` while the group is emptying. */
+  public get currentItem(): Notification | undefined {
+    return this.groupedItems[this.groupIndex];
+  }
+
+  /** Whether there is more than one, and so whether the stepper is worth showing at all. */
+  public get hasMultiple(): boolean {
+    return this.groupedItems.length > 1;
+  }
+
+  /**
+   * Steps forward, wrapping at the end.
+   *
+   * Wrapping rather than stopping: the panel is dismissed by its timer or its close button, so a
+   * stepper that dead-ends on the last item would simply look broken for the ten seconds it is up.
+   */
+  public nextItem(event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (this.groupedItems.length === 0) {
+      return;
+    }
+
+    this.groupIndex = (this.groupIndex + 1) % this.groupedItems.length;
+  }
+
+  public previousItem(event?: Event): void {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (this.groupedItems.length === 0) {
+      return;
+    }
+
+    this.groupIndex = (this.groupIndex - 1 + this.groupedItems.length) % this.groupedItems.length;
+  }
 
   public pauseGroup(): void {
     this._stopGroupTimer();

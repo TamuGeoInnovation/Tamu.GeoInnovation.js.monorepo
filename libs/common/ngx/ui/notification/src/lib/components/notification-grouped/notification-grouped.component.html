@@ -6,7 +6,13 @@
   (mouseleave)="resumeGroup()">
   <div class="status" [style.width.%]="groupTimerPercent"></div>
   <div class="close material-icons" tabindex="0" (click)="closeGroup()" title="Close">close</div>
-  <ng-container *ngFor="let item of groupedItems; let last = last">
+
+  <!--
+    One notification at a time (#1327). Stacking every active notification made the panel as tall as
+    the number of them - four of them covered most of the map. The rest are reached with the stepper
+    below rather than by scrolling past them.
+  -->
+  <ng-container *ngIf="currentItem as item">
     <div
       class="grouped-item"
       (click)="actionGroupItem(item)"
@@ -26,6 +32,33 @@
         </div>
       </div>
     </div>
-    <hr *ngIf="!last" class="grouped-separator" />
   </ng-container>
+
+  <!--
+    Only shown when there is more than one, so a single notification looks exactly as it did before.
+    Outside the item, so stepping never triggers the item's own click action.
+  -->
+  <div class="grouped-stepper" *ngIf="hasMultiple">
+    <button
+      type="button"
+      class="grouped-step"
+      (click)="previousItem($event)"
+      [attr.aria-label]="'Show the previous notification'"
+      title="Previous">
+      <span class="material-icons" aria-hidden="true">chevron_left</span>
+    </button>
+
+    <span class="grouped-count" aria-live="polite">
+      {{ groupIndex + 1 }} of {{ groupedItems.length }}
+    </span>
+
+    <button
+      type="button"
+      class="grouped-step"
+      (click)="nextItem($event)"
+      [attr.aria-label]="'Show the next notification'"
+      title="Next">
+      <span class="material-icons" aria-hidden="true">chevron_right</span>
+    </button>
+  </div>
 </div>

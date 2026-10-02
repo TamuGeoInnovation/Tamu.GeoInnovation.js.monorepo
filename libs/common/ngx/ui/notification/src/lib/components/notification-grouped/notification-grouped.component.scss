@@ -135,10 +135,51 @@
     }
   }
 
-  .grouped-separator {
-    border: none;
+  // The separator between stacked notifications is gone with the stack (#1327); the stepper takes its
+  // place at the foot of the panel.
+  .grouped-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0;
     border-top: 1px solid #e0e0e0;
-    margin: 0;
+  }
+
+  .grouped-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #500000;
+    cursor: pointer;
+
+    &:hover {
+      background: #f2eceb;
+    }
+
+    &:focus-visible {
+      outline: 1px solid #500000;
+      outline-offset: 2px;
+    }
+
+    .material-icons {
+      font-size: 1.25rem;
+    }
+  }
+
+  .grouped-count {
+    min-width: 4rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+    // Fixed width so the panel does not shift as the number changes.
+    font-variant-numeric: tabular-nums;
   }
 }
 
