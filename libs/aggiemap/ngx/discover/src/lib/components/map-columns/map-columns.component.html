@@ -11,8 +11,21 @@
 
       <ul class="map-entry-list" *ngIf="column.applications.length > 0">
         <li class="map-entry-item" *ngFor="let app of column.applications">
-          <a class="map-entry" [routerLink]="getApplicationRoute(app)">
-            <span class="map-entry-icon" aria-hidden="true"></span>
+          <!--
+            A map that has a picture shows it in place of the glyph, so the listing shows what you are
+            choosing between. This markup used to exist only on the All Maps page, which is a different
+            component - so the Campus Maps page, the page the campus thumbnails were added for, drew a
+            name over an empty area (#1275).
+          -->
+          <a class="map-entry" [class.map-entry--pictured]="app.thumbnail" [routerLink]="getApplicationRoute(app)">
+            <img
+              class="map-entry-thumbnail"
+              *ngIf="app.thumbnail; else entryGlyph"
+              [src]="app.thumbnail"
+              [alt]="app.name + ' map'"
+              loading="lazy"
+            />
+            <ng-template #entryGlyph><span class="map-entry-icon" aria-hidden="true"></span></ng-template>
             <span class="map-entry-label">{{ app.name }}</span>
           </a>
         </li>
