@@ -8,7 +8,7 @@ import { discoverRoutes } from '../../discover.module';
 import { EventMapsComponent } from './event-maps.component';
 
 /**
- * The Campus Maps page carries no College Station quick links (#1291).
+ * The Campus Maps page carries no College Station quick links or Main Campus Parking Map button (#1291).
  *
  * Every All Maps category page is this one component, configured by its route's `data`. The quick links
  * are College Station's most-used parking maps, which belong on College Station's pages and not on the
@@ -52,6 +52,18 @@ describe('EventMapsComponent quick links', () => {
     expect(fixture.nativeElement.querySelector('tamu-gisc-quick-links')).toBeNull();
   });
 
+  it('hides the Main Campus Parking Map button on the Campus Maps page', async () => {
+    const fixture = await render({ mapType: 'satellite-campus', title: 'Campus Maps', mainParking: false });
+
+    expect(fixture.componentInstance.showMainParking).toBe(false);
+  });
+
+  it('still shows the Main Campus Parking Map button on a College Station category page', async () => {
+    const fixture = await render({ mapType: 'campus', title: 'Campus Events' });
+
+    expect(fixture.componentInstance.showMainParking).toBe(true);
+  });
+
   it('still shows them on a College Station category page', async () => {
     // Both directions: a check that only proved them absent would pass just as well if the quick links
     // had stopped working everywhere.
@@ -67,5 +79,11 @@ describe('All Maps routes', () => {
     const withoutQuickLinks = discoverRoutes.filter((route) => route.data?.['quickLinks'] === false).map((route) => route.path);
 
     expect(withoutQuickLinks).toEqual(['campus']);
+  });
+
+  it('hide the Main Campus Parking Map button on the Campus Maps page, and only there', () => {
+    const withoutButton = discoverRoutes.filter((route) => route.data?.['mainParking'] === false).map((route) => route.path);
+
+    expect(withoutButton).toEqual(['campus']);
   });
 });

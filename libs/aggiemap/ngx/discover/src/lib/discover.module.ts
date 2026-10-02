@@ -74,9 +74,10 @@ export const discoverRoutes: Routes = [
       mapType: 'satellite-campus',
       title: 'Campus Maps',
       intro: 'Browse single-basemap maps for TAMU campuses outside of College Station.',
-      // The quick links are College Station's parking maps, which have nothing to do with the other
-      // campuses (#1291).
-      quickLinks: false
+      // The quick links and the Main Campus Parking Map button are College Station's, and have
+      // nothing to do with the other campuses (#1291).
+      quickLinks: false,
+      mainParking: false
     }
   }
 ];
