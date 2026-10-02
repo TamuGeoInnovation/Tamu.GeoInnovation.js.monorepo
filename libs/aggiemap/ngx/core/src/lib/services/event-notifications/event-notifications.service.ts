@@ -1,7 +1,7 @@
 import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { NotificationService, NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 interface EventToastConfig {
@@ -113,13 +113,16 @@ export class EventNotificationsService {
   ) {}
 
   /**
-   * Ids raised during this page load, so navigating does not stack a second copy of each.
+   * Ids shown in this browser session, so each notice appears once per session (#1307).
    *
-   * The shell calls this on every navigation rather than once, because whether notifications belong
-   * here depends on which map is showing. Without this, walking between two College Station maps
-   * would raise the same notifications again each time.
+   * Kept in session storage, so a reload or a return to a map does not show it again, and a new
+   * session does. The shell calls this on every navigation, so without it walking between two College
+   * Station maps would also stack a second copy of each.
    */
-  private readonly _raised = new Set<string>();
+  private readonly _seen = readSeen();
+
+  /** Ids this service put on screen during this page load, so it can take them down again. */
+  private readonly _shown = new Set<string>();
 
   /**
    * Checks all event definitions for active events and triggers toast notifications
@@ -134,7 +137,14 @@ export class EventNotificationsService {
    * where they are matched rather than a new mechanism. See #1265.
    */
   public checkAndTriggerEventNotifications(campus: CampusId = COLLEGE_STATION): void {
-    if (!this.definitions || campus !== COLLEGE_STATION) {
+    if (campus !== COLLEGE_STATION) {
+      // Notices belong on a College Station map. Ones raised on the map the visitor just left would
+      // otherwise stay over the page they moved to until they timed out (#1307).
+      this.takeDownShown();
+      return;
+    }
+
+    if (!this.definitions) {
       return;
     }
 
@@ -205,14 +215,51 @@ export class EventNotificationsService {
       return;
     }
 
-    // Already showing from an earlier navigation in this load.
-    if (this._raised.has(notificationProps.id)) {
+    // Already shown this session, whether on this page load or before a reload (#1307).
+    if (this._seen.has(notificationProps.id)) {
       return;
     }
 
-    this._raised.add(notificationProps.id);
+    this._seen.add(notificationProps.id);
+    this._shown.add(notificationProps.id);
+    writeSeen(this._seen);
 
     // Trigger the notification
     this.notificationService.toast(notificationProps);
+  }
+
+  /** Takes down the notices this service put on screen, leaving any other notification alone. */
+  private takeDownShown(): void {
+    if (this._shown.size === 0) {
+      return;
+    }
+
+    this.notificationService.notifications
+      .pipe(take(1))
+      .subscribe((showing) =>
+        showing.filter((n) => this._shown.has(n.id)).forEach((n) => this.notificationService.remove(n))
+      );
+
+    this._shown.clear();
+  }
+}
+
+/** Where the ids of notices already shown this session are kept (#1307). */
+const SEEN_KEY = 'aggiemap-event-notices-seen';
+
+/** Session storage can be missing or refuse access, as in a private window; then it is per page load. */
+function readSeen(): Set<string> {
+  try {
+    return new Set<string>(JSON.parse(sessionStorage.getItem(SEEN_KEY) ?? '[]'));
+  } catch {
+    return new Set<string>();
+  }
+}
+
+function writeSeen(seen: Set<string>): void {
+  try {
+    sessionStorage.setItem(SEEN_KEY, JSON.stringify([...seen]));
+  } catch {
+    // Not available: notices are then shown once per page load, as before.
   }
 }

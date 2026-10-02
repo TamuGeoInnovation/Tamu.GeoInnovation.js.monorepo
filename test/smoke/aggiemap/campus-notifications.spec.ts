@@ -97,3 +97,32 @@ test.describe('All Maps notifications', () => {
     });
   }
 });
+
+/**
+ * Notices raised on the main map are taken down on leaving it for All Maps (#1307).
+ *
+ * #1292 stopped them being raised on the All Maps pages, but ones already on screen stayed there until
+ * they timed out: land on the map, click All Maps within ten seconds, and they covered the list.
+ */
+test.describe('leaving a map', () => {
+  test('notices on the main map are gone after clicking through to All Maps', async ({ page }) => {
+    await blockAnalytics(page);
+    await page.goto('/map');
+    await expect(page.locator(APP_ROOT)).not.toBeEmpty();
+
+    const notices = page.locator(NOTIFICATIONS);
+
+    try {
+      await notices.first().waitFor({ state: 'visible', timeout: 15_000 });
+    } catch {
+      // No College Station event is close enough to raise one today, so there is nothing to carry over.
+      test.skip(true, 'no notices are raised on the main map today');
+    }
+
+    await page.getByRole('link', { name: /all maps/i }).first().click();
+    await page.waitForURL(/\/all-maps/);
+    await page.waitForTimeout(1_000);
+
+    expect(await notices.allInnerTexts(), 'notices from the main map are still showing over All Maps').toEqual([]);
+  });
+});
