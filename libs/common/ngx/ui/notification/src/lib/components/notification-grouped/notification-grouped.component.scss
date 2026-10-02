@@ -137,6 +137,23 @@
 
   // The separator between stacked notifications is gone with the stack (#1327); the stepper takes its
   // place at the foot of the panel.
+  // Every notification occupies the same grid cell, so the panel is as tall as the tallest of them
+  // and stays that height while stepping. Without this the box jumps as you step, because the first
+  // notice is considerably taller than the three that follow it (#1327).
+  .grouped-stack {
+    display: grid;
+
+    > .grouped-item {
+      grid-area: 1 / 1;
+    }
+  }
+
+  // Hidden, but still taking up its space - that is the whole point. `visibility` also makes it
+  // unclickable and removes it from the accessibility tree, which `opacity: 0` would not.
+  .grouped-item--hidden {
+    visibility: hidden;
+  }
+
   .grouped-stepper {
     display: flex;
     align-items: center;

@@ -90,6 +90,13 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
       const hadItems = this.groupedItems.length > 0;
       this.groupedItems = NotificationGroupedComponent.byPriority(items);
 
+      // The list changes underneath this component - a notification is actioned, acknowledged, or
+      // cleared by its own service - so the index is clamped rather than trusted. Without this,
+      // removing the notification currently on screen leaves the panel rendering nothing (#1327).
+      if (this.groupIndex > this.groupedItems.length - 1) {
+        this.groupIndex = Math.max(0, this.groupedItems.length - 1);
+      }
+
       if (items.length > 0 && !this.groupVisible) {
         this.groupVisible = true;
         setTimeout(() => {
