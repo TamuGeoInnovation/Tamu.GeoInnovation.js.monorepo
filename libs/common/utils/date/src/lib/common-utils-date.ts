@@ -69,3 +69,18 @@ export function eventHasPassed(
 
   return now >= over.getTime();
 }
+
+/**
+ * An event's next date: the soonest one whose whole local day has not yet ended, as epoch milliseconds,
+ * or `null` when every date is over. An event is on all day on each of its dates, so one dated today is
+ * still next at a minute to midnight (#1301).
+ */
+export function nextEventDate(dates: Array<string | Date | number> | undefined, now: number = Date.now()): number | null {
+  const startOfToday = new Date(now);
+
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const remaining = (dates || []).map(parseEventDate).filter((time) => !isNaN(time) && time >= startOfToday.getTime());
+
+  return remaining.length > 0 ? Math.min(...remaining) : null;
+}

@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, timer, of } from 'rxjs';
 import { switchMap, map, catchError, tap } from 'rxjs/operators';
 
 import { parseCodeMaroonFeed } from './code-maroon.parser';
+import { CODE_MAROON_SNAPSHOT } from './code-maroon.snapshot';
 import { CodeMaroonAlert, CodeMaroonState } from './code-maroon.types';
 
 /**
@@ -14,6 +15,9 @@ import { CodeMaroonAlert, CodeMaroonState } from './code-maroon.types';
  * caches the response for fifteen seconds - which is what keeps the load on Code Maroon fixed at
  * roughly four requests a minute however many people have a map open. That matters most during an
  * emergency, when visitors spike and their system must not.
+ *
+ * **Dev and production are IIS, not nginx**, and have no such rule yet (#1304). There the request falls
+ * through to the application's route fallback and returns AggieMap's own page; see `read`.
  */
 export const CODE_MAROON_FEED = '/code-maroon/feed.xml';
 
@@ -55,14 +59,19 @@ export class CodeMaroonService {
   /** One read. Never throws: a failure is a state, not an exception. */
   public read(): Observable<CodeMaroonState> {
     return this.http.get(CODE_MAROON_FEED, { responseType: 'text' }).pipe(
-      map((xml) => {
-        const alerts = parseCodeMaroonFeed(xml);
+      map((body) => {
+        // An HTML page is this server answering for itself because it has no proxy for the feed, not
+        // Code Maroon answering (#1304). Read the saved copy of the real feed instead. Anything else
+        // that does not parse, and any failed request, is still unreachable below.
+        const snapshot = isHtmlPage(body);
+        const alerts = parseCodeMaroonFeed(snapshot ? CODE_MAROON_SNAPSHOT : body);
 
         return {
           status: alerts.length > 0 ? ('active' as const) : ('clear' as const),
           alerts,
           checkedAt: new Date(),
-          sample: false
+          sample: false,
+          snapshot
         };
       }),
       catchError((error) =>
@@ -73,7 +82,8 @@ export class CodeMaroonService {
           alerts: [],
           checkedAt: new Date(),
           error: error?.message ?? 'The Code Maroon feed could not be read',
-          sample: false
+          sample: false,
+          snapshot: false
         })
       )
     );
@@ -94,4 +104,9 @@ export class CodeMaroonService {
       sample: true
     });
   }
+}
+
+/** Whether a response is a web page rather than a feed: the server's own page served in its place. */
+function isHtmlPage(body: string): boolean {
+  return /^\s*(<!doctype html|<html[\s>])/i.test(body);
 }

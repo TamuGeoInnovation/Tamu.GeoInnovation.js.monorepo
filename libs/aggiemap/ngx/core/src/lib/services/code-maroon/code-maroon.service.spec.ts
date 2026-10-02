@@ -3,6 +3,8 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 
 import { CodeMaroonService, CODE_MAROON_FEED } from './code-maroon.service';
 import { CODE_MAROON_SAMPLES } from './code-maroon.samples';
+import { CODE_MAROON_SNAPSHOT } from './code-maroon.snapshot';
+import { parseCodeMaroonFeed } from './code-maroon.parser';
 
 const EMPTY_FEED = `<rss version='2.0'><channel><title>Code Maroon Active Alerts</title></channel></rss>`;
 const ACTIVE_FEED = `<rss version='2.0'><channel><item><title>Tornado Warning</title></item></channel></rss>`;
@@ -70,6 +72,57 @@ describe('CodeMaroonService', () => {
     });
 
     http.expectOne(CODE_MAROON_FEED).flush('<rss><channel><item>');
+  });
+
+  describe('when this server has no proxy for the feed (#1304)', () => {
+    // Dev and production are IIS, which has no rule for the feed address, so the request falls
+    // through to the application's route fallback and comes back as AggieMap's own index.html. That
+    // is a missing proxy, not a Code Maroon failure, so the map reads the saved copy of the real feed.
+    const INDEX_HTML = `<!DOCTYPE html><html lang="en"><head><title>Aggie Map</title></head><body><tamu-gisc-root></tamu-gisc-root></body></html>`;
+
+    it('reads the saved copy of the real feed, which parses and is clear', (done) => {
+      service.read().subscribe((state) => {
+        expect(state.status).toBe('clear');
+        expect(state.error).toBeUndefined();
+        expect(state.snapshot).toBe(true);
+        done();
+      });
+
+      http.expectOne(CODE_MAROON_FEED).flush(INDEX_HTML, { headers: { 'Content-Type': 'text/html' } });
+    });
+
+    it('keeps the saved copy as the real feed parses it', () => {
+      expect(parseCodeMaroonFeed(CODE_MAROON_SNAPSHOT)).toEqual([]);
+      expect(CODE_MAROON_SNAPSHOT).toContain('<title>Code Maroon Active Alerts</title>');
+    });
+
+    it('does not mark a live read as the saved copy', (done) => {
+      service.read().subscribe((state) => {
+        expect(state.snapshot).toBe(false);
+        done();
+      });
+
+      http.expectOne(CODE_MAROON_FEED).flush(EMPTY_FEED);
+    });
+
+    it('still reports malformed XML as unreachable, not as the saved copy', (done) => {
+      service.read().subscribe((state) => {
+        expect(state.status).toBe('unreachable');
+        expect(state.snapshot).toBe(false);
+        done();
+      });
+
+      http.expectOne(CODE_MAROON_FEED).flush('<rss><channel><item>');
+    });
+
+    it('still reports a server error as unreachable, even when its body is HTML', (done) => {
+      service.read().subscribe((state) => {
+        expect(state.status).toBe('unreachable');
+        done();
+      });
+
+      http.expectOne(CODE_MAROON_FEED).flush(INDEX_HTML, { status: 502, statusText: 'Bad Gateway' });
+    });
   });
 
   it('marks sample data as a sample', (done) => {
