@@ -13,6 +13,13 @@ interface EventMapsRouteData {
   title: string;
   intro?: string;
   columns?: Array<MapColumnDefinition>;
+  /**
+   * Whether the page shows the quick links. They are College Station's most-used maps, so a category
+   * that is not about College Station, such as the satellite campuses, turns them off. Defaults to on.
+   */
+  quickLinks?: boolean;
+  /** Whether the header shows the Main Campus Parking Map button, for the same reason. Defaults to on. */
+  mainParking?: boolean;
 }
 
 /**
@@ -31,6 +38,7 @@ export class EventMapsComponent implements OnInit {
   public applications: InternalDiscoverApplication[] = [];
   public applicationColumns: MapColumnGroup[] = [];
   public quickLinks: QuickLinkItem[] = [];
+  public showMainParking = true;
   public readonly getApplicationRoute = getApplicationRoute;
 
   constructor(private readonly route: ActivatedRoute, private readonly discoveryService: DiscoveryService) {}
@@ -39,10 +47,14 @@ export class EventMapsComponent implements OnInit {
     const data = this.route.snapshot.data as EventMapsRouteData;
     this.title = data.title;
     this.intro = data.intro;
-    this.quickLinks = this.discoveryService.getQuickLinkApplications().map((app) => ({
-      label: app.name,
-      routerLink: getApplicationRoute(app)
-    }));
+    this.showMainParking = data.mainParking !== false;
+    this.quickLinks =
+      data.quickLinks === false
+        ? []
+        : this.discoveryService.getQuickLinkApplications().map((app) => ({
+            label: app.name,
+            routerLink: getApplicationRoute(app)
+          }));
 
     // Category pages are a navigation directory of every map of this type, not an upcoming-only list.
     this.applications = sortApplicationsByName(
