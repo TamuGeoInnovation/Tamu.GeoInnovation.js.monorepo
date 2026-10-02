@@ -12,7 +12,8 @@ import { commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
  * - no legend entry;
  * - **no labels.** The basemap already labels the buildings, and the service's own labelling is not
  *   ours to show. The DC service labels with `[Number] CONCAT NEWLINE CONCAT [Abbrev]`, an ArcMap-era
- *   expression this API does not evaluate, so it drew that text literally over the building (#1283).
+ *   expression this API does not evaluate, so it drew that text literally over the building; McAllen's
+ *   labels with `[Abbrev]`, which drew a second copy over the basemap's own label (#1283).
  *
  * The three campuses each had an identical copy of this before; one definition means a campus added
  * later gets all of it, and a fix reaches every campus at once.

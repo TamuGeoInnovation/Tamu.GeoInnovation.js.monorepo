@@ -8,8 +8,9 @@ import { McAllenLayerSources } from './mcallen.definitions';
  * The overlay is a near-invisible `FeatureLayer` that exists only so a click on a building opens its
  * popup; the vector tile basemap labels the buildings. Left to its service's labelling, the DC overlay
  * drew `F002 CONCAT NEWLINE CONCAT TAMUDC` over the building, because the service labels with an
- * ArcMap-era expression this API prints literally. Galveston's and McAllen's services have no labelling
- * today, which is exactly why this checks every campus rather than the one that showed it.
+ * ArcMap-era expression this API prints literally. McAllen's overlay drew its service's `[Abbrev]` labels on
+ * top of the basemap's own, doubling them. Galveston's service has no labelling today, which is exactly
+ * why this checks every campus rather than the ones that showed it.
  */
 const CAMPUSES = {
   'DC / Bush School': DCBushSchoolLayerSources,
