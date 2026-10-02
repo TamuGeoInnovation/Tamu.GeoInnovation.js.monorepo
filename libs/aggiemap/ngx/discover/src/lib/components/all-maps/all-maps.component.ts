@@ -5,6 +5,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, shareReplay, startWith } from 'rxjs/operators';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { nextEventDate } from '@tamu-gisc/common/utils/date';
 
 import {
   DiscoverApplication,
@@ -13,7 +14,7 @@ import {
 } from '../../interfaces/discover-application.interface';
 import { DiscoveryService, FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 import { LastMapService } from '../../services/last-map/last-map.service';
-import { getApplicationRoute, getEventDateRange, parseEventDate } from '../discover.utils';
+import { getApplicationRoute, getEventDateRange } from '../discover.utils';
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 /**
@@ -144,22 +145,16 @@ export class AllMapsComponent implements OnInit {
   private getUpcomingApplications(): InternalDiscoverApplication[] {
     const now = Date.now();
 
-    return this.discoveryService
-      .getVisibleInternalDiscoverApplications()
-      .map((app) => ({
-        app,
-        earliestUpcomingDate: this.getEarliestUpcomingDate(app.configuration.eventDates, now)
-      }))
-      .filter(({ earliestUpcomingDate }) => earliestUpcomingDate !== Number.POSITIVE_INFINITY)
-      .sort((a, b) => a.earliestUpcomingDate - b.earliestUpcomingDate || a.app.name.localeCompare(b.app.name))
-      .slice(0, 3)
-      .map(({ app }) => app);
-  }
-
-  private getEarliestUpcomingDate(dates: Array<string | Date | number>, now: number): number {
-    const upcomingDates = dates.map((date) => parseEventDate(date)).filter((time) => Number.isFinite(time) && time >= now);
-
-    return upcomingDates.length > 0 ? Math.min(...upcomingDates) : Number.POSITIVE_INFINITY;
+    return (
+      this.discoveryService
+        .getVisibleInternalDiscoverApplications()
+        // Each event's next date, counting today's: an event is on for its whole day (#1301).
+        .map((app) => ({ app, next: nextEventDate(app.configuration.eventDates, now) }))
+        .filter((upcoming): upcoming is { app: InternalDiscoverApplication; next: number } => upcoming.next !== null)
+        .sort((a, b) => a.next - b.next || a.app.name.localeCompare(b.app.name))
+        .slice(0, 3)
+        .map(({ app }) => app)
+    );
   }
 
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
