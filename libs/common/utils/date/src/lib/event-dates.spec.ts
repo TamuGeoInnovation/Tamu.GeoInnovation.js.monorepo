@@ -1,4 +1,4 @@
-import { eventHasPassed, parseEventDate } from './common-utils-date';
+import { eventHasPassed, nextEventDate, parseEventDate } from './common-utils-date';
 
 /**
  * An event is not "over" until its last day is (#1298).
@@ -56,5 +56,29 @@ describe('event dates in College Station time', () => {
     expect(eventHasPassed([], at(2026, 10, 1))).toBe(false);
     expect(eventHasPassed(undefined, at(2026, 10, 1))).toBe(false);
     expect(eventHasPassed(['not a date'], at(2026, 10, 1))).toBe(false);
+  });
+});
+
+/** An event's next date counts today's, all day (#1301). */
+describe('next event date in College Station time', () => {
+  const at = (y: number, m: number, d: number, h = 0, min = 0) => new Date(y, m - 1, d, h, min).getTime();
+  const season = ['2026-09-05', '2026-10-02', '2026-10-10'];
+
+  it("is today's date just after midnight", () => {
+    expect(nextEventDate(season, at(2026, 10, 2, 0, 12))).toBe(at(2026, 10, 2));
+  });
+
+  it("is still today's date at a minute to midnight", () => {
+    expect(nextEventDate(season, at(2026, 10, 2, 23, 59))).toBe(at(2026, 10, 2));
+  });
+
+  it('moves to the following date the next day', () => {
+    expect(nextEventDate(season, at(2026, 10, 3, 0, 1))).toBe(at(2026, 10, 10));
+  });
+
+  it('is null once every date is over, or there are none', () => {
+    expect(nextEventDate(season, at(2026, 10, 11))).toBeNull();
+    expect(nextEventDate([], at(2026, 10, 1))).toBeNull();
+    expect(nextEventDate(undefined, at(2026, 10, 1))).toBeNull();
   });
 });
