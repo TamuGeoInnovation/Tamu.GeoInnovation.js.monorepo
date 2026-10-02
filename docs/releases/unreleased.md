@@ -135,6 +135,24 @@ which is not published for production.
 
 ---
 
+### The campus maps show a picture of themselves
+
+The Campus Maps page listed DC / Bush School, Galveston and McAllen as names over an empty area. Each
+now shows a picture of the campus it opens, so you can see what you are choosing between.
+
+![Before — names over empty space](../screenshots/1275-campus-thumbnails/before-no-pictures.jpg)
+
+![After — the three campus pictures](../screenshots/1275-campus-thumbnails/after-pictures-on-campus-page.jpg)
+
+The pictures were added in the previous change, to the All Maps page. The Campus Maps page is a
+different component, so the page they were added for never showed them — and a second fault meant the
+picture a map declares never reached either listing. Both are fixed, and the styles now live in one
+place the two listings share, so a campus added later appears with its picture in both.
+
+([#1275](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1275))
+
+---
+
 ## Not visible, and the reason the rest were found
 
 ### The suite now fails a map whose layers cannot be drawn
@@ -178,6 +196,19 @@ filling it in. The escape hatch is the `no-visible-change` label.
 
 ---
 
+### A map is given long enough to draw before it is called broken
+
+Not visible, but it decides whether a release can go out. The picture check added in this release gave
+each map thirty seconds. CLAUDE.md has always said that a canvas blank for twenty to forty seconds is
+Esri still drawing, so the budget was shorter than the normal case, and on development it failed four
+maps that had drawn — including the main map, reported blank while the measurement beside it said
+otherwise. It is ninety seconds now, and a timeout says which of its two causes happened: a canvas
+that stayed blank, or one that drew but never settled.
+
+([#1285](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1285))
+
+---
+
 ## What went into this release
 
 Every pull request this release carried, and the issue behind each one.
@@ -192,7 +223,10 @@ Every pull request this release carried, and the issue behind each one.
 | Mobile-only map controls hidden on desktop | [#1256](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1256) | [#1251](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1251) |
 | Pull requests must carry before/after images | [#1263](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1263) | [#1258](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1258) |
 | College Station notifications stay off the campus and kiosk maps | [#1266](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1266) | [#1265](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1265) |
-| Campus maps keep their own basemap, and the suite checks the picture | _pending_ | [#1259](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1259) |
+| Campus maps keep their own basemap, and the suite checks the picture | [#1269](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1269) | [#1259](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1259) |
+| Each campus map is shown as a picture you can click | [#1270](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1270) | [#1245](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1245) |
+| The campus pictures reach the page they were added for | [#1287](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1287) | [#1275](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1275) |
+| A map is given long enough to draw before it is called broken | [#1288](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1288) | [#1285](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1285) |
 
 ---
 
