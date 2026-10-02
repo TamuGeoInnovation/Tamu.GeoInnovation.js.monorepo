@@ -1,9 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { Connections, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
+import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
 import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
+import { campusClickOverlayNative } from './campus-overlay.definitions';
 
 /**
  * Layer ids used by the DC/Bush School satellite-campus map. `BASEMAP` is the visual vector-tile
@@ -45,21 +46,7 @@ export const DCBushSchoolLayerSources: LayerSource[] = [
     listMode: 'hide',
     visible: true,
     essential: true,
-    native: {
-      ...commonLayerProps,
-      legendEnabled: false,
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [0, 0, 0, 0.01],
-          outline: {
-            width: '0'
-          }
-        }
-      }
-    }
+    native: campusClickOverlayNative
   }
 ];
 
