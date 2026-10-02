@@ -108,7 +108,6 @@
     "mysql": "^2.17.1",
     "ng2-dragula": "^4.0.0",
     "ngx-highlightjs": "^6.1.3",
-    "ngx-lightbox": "^2.4.1",
     "ngx-webstorage-service": "^5.0.0",
     "node-jose": "^2.0.0",
     "nodemailer": "^6.4.16",
