@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { APP_ROOT } from './global-setup';
 
 /**
  * The build banner names the build a page is running (#1306).
@@ -22,12 +21,15 @@ import { APP_ROOT } from './global-setup';
 /** Any token the banner is built from, left unsubstituted. */
 const PLACEHOLDER = /___[A-Z_]+___/;
 
+/** The environment under test, as every other helper here resolves it. */
+const BASE_URL = (process.env.AGGIEMAP_SMOKE_BASE_URL ?? 'https://aggiemap.tamu.edu').replace(/\/$/, '');
+
 function allowance(): string | undefined {
   const environments = JSON.parse(fs.readFileSync(path.join(__dirname, 'environments.json'), 'utf8')) as Record<
     string,
     { baseUrl: string; allowedBuildBannerPlaceholders?: string }
   >;
-  const base = APP_ROOT.replace(/\/$/, '');
+  const base = BASE_URL;
   const match = Object.values(environments).find((env) => env.baseUrl.replace(/\/$/, '') === base);
 
   return match?.allowedBuildBannerPlaceholders;
@@ -45,7 +47,7 @@ test.describe('the build banner', () => {
       }
     });
 
-    await page.goto(`${APP_ROOT}/map`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${BASE_URL}/map`, { waitUntil: 'domcontentloaded' });
     // The banner is printed while the environment module initialises, which is early, but the console
     // listener has to be given the turn of the event loop to receive it.
     await page.waitForTimeout(3_000);
