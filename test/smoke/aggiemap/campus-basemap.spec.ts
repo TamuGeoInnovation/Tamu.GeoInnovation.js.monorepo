@@ -3,6 +3,7 @@ import * as fs from 'fs';
 
 import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { developmentSectionsVisible } from './development-only';
 import { BLANK_ABOVE, waitForPaint } from './paint';
 
 /**
@@ -37,6 +38,17 @@ test.describe('satellite campus basemaps', () => {
   test('the environment lists some campus maps to check', () => {
     // Without this, a discovery change that stops listing them would empty this file and still be
     // reported as green.
+    //
+    // Only where development sections are shown. All Maps lists the Campus Maps section on
+    // development alone, so discovery finds none on production *by design* - and this guard, which
+    // exists to catch an accidental emptying, was reporting that deliberate one as a failure on
+    // every production run. Two failures that are always there are two failures nobody reads, which
+    // is how a real one gets missed (#1313).
+    test.skip(
+      !developmentSectionsVisible(),
+      'All Maps lists the campus maps only where development sections are shown, so there are none to discover here'
+    );
+
     expect(campusMaps.length, 'no /campus/ maps were discovered, so nothing below ran').toBeGreaterThan(0);
   });
 
