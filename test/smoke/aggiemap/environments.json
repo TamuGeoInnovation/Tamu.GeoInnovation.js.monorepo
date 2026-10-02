@@ -1,6 +1,7 @@
 {
   "development": {
     "baseUrl": "https://dev.aggiemap.tamu.edu",
+    "allowedBuildBannerPlaceholders": "#1306: tokenSubstitute.sh runs only in the Dockerfile, and this environment is served by IIS",
     "gtag": "G-71VY0QZS5P",
     "healthLabel": "dev-health",
     "directionsAvailable": true,
@@ -40,6 +41,7 @@
   },
   "production": {
     "baseUrl": "https://aggiemap.tamu.edu",
+    "allowedBuildBannerPlaceholders": "#1306: tokenSubstitute.sh runs only in the Dockerfile, and this environment is served by IIS",
     "gtag": "G-GNS4JMVEZW",
     "healthLabel": "prod-health",
     "directionsAvailable": false,
