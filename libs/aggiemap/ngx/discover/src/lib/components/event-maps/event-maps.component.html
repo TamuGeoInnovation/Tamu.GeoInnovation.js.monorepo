@@ -5,7 +5,7 @@
       <tamu-gisc-aggiemap-map-columns [columns]="applicationColumns" [getApplicationRoute]="getApplicationRoute" noMapsMessage="No event maps are available right now."></tamu-gisc-aggiemap-map-columns>
     </div>
 
-    <tamu-gisc-quick-links [links]="quickLinks"></tamu-gisc-quick-links>
+    <tamu-gisc-quick-links *ngIf="quickLinks.length > 0" [links]="quickLinks"></tamu-gisc-quick-links>
 </div>
 
 <tamu-gisc-footer></tamu-gisc-footer>

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 import * as fs from 'fs';
 
 import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
@@ -15,6 +15,9 @@ import { blockAnalytics } from './analytics';
  *
  * Found by `popup.spec.ts`, whose click on the DC building landed on the Football notice instead. That
  * caught it on one campus and by accident; this checks every campus the environment lists, on purpose.
+ *
+ * The All Maps pages are checked the same way: notices belong on a page showing a map, not over a list
+ * of maps (#1290).
  */
 
 const manifest: MapManifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
@@ -31,6 +34,44 @@ const NOTIFICATIONS = 'tamu-gisc-notification-item, tamu-gisc-notification-group
  */
 const WATCH_MS = 12_000;
 
+/** The All Maps pages: listings of maps, which show no notices of anyone's. */
+const ALL_MAPS_PAGES = [
+  '/all-maps',
+  '/all-maps/campus',
+  '/all-maps/parking',
+  '/all-maps/campus-events',
+  '/all-maps/athletics-events',
+  '/all-maps/operations',
+  '/all-maps/150'
+];
+
+/** Opens a page directly and returns the first line of every notification seen while watching it. */
+async function noticesSeenOn(page: Page, path: string): Promise<string[]> {
+  await blockAnalytics(page);
+
+  const response = await page.goto(path);
+
+  expect(response?.status(), `${path} did not return 200`).toBe(200);
+  await expect(page.locator(APP_ROOT)).not.toBeEmpty();
+
+  const seen: string[] = [];
+  const until = Date.now() + WATCH_MS;
+
+  while (Date.now() < until) {
+    for (const text of await page.locator(NOTIFICATIONS).allInnerTexts()) {
+      const line = text.trim().split('\n')[0];
+
+      if (line && !seen.includes(line)) {
+        seen.push(line);
+      }
+    }
+
+    await page.waitForTimeout(250);
+  }
+
+  return seen;
+}
+
 test.describe('satellite campus notifications', () => {
   test('the environment lists some campus maps to check', () => {
     // Without this, a discovery change that stops listing them would empty this file and still be
@@ -40,31 +81,19 @@ test.describe('satellite campus notifications', () => {
 
   for (const mapPath of campusMaps) {
     test(`${mapPath} opened directly shows no College Station notifications`, async ({ page }) => {
-      await blockAnalytics(page);
-
-      const response = await page.goto(mapPath);
-
-      expect(response?.status(), `${mapPath} did not return 200`).toBe(200);
-      await expect(page.locator(APP_ROOT)).not.toBeEmpty();
-
-      const seen: string[] = [];
-      const until = Date.now() + WATCH_MS;
-
-      while (Date.now() < until) {
-        const texts = await page.locator(NOTIFICATIONS).allInnerTexts();
-
-        for (const text of texts) {
-          const line = text.trim().split('\n')[0];
-
-          if (line && !seen.includes(line)) {
-            seen.push(line);
-          }
-        }
-
-        await page.waitForTimeout(250);
-      }
+      const seen = await noticesSeenOn(page, mapPath);
 
       expect(seen, `${mapPath} showed notifications that belong to College Station's maps`).toEqual([]);
+    });
+  }
+});
+
+test.describe('All Maps notifications', () => {
+  for (const path of ALL_MAPS_PAGES) {
+    test(`${path} shows no notifications`, async ({ page }) => {
+      const seen = await noticesSeenOn(page, path);
+
+      expect(seen, `${path} lists maps and should show no notifications, but showed these`).toEqual([]);
     });
   }
 });
