@@ -15,6 +15,7 @@ import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { aggiemapBasemap, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { eventHasPassed } from '@tamu-gisc/common/utils/date';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 import { EventService } from '../../services/event/event.service';
@@ -22,6 +23,9 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { EventPassedWarningComponent, MapNoticeComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import esri = __esri;
+
+/** Full days after an event's last date before its map says the event has passed (#1298). */
+const EVENT_PASSED_GRACE_DAYS = 1;
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -102,46 +106,29 @@ export class MapComponent implements OnInit, OnDestroy {
     this.isDev = this.ts.get?.('isTesting') ?? of(false);
 
 
+    // Whether this map's event is over: every one of its dates has fully ended, in local time. Shared
+    // with the rest of AggieMap through `eventHasPassed`; reading `'2026-10-02'` as UTC midnight here
+    // called the 150th Opening Ceremony over on the evening of 1 October (#1298).
+    // The popup waits one full day after the last date, so an event is never called over while people
+    // may still be using its map on the day, or the morning after.
+    const passed = eventHasPassed(root?.configuration?.eventDates, Date.now(), EVENT_PASSED_GRACE_DAYS);
+
+    // Either the passed-event warning or this map's one-off notice (a venue change, a closure), never
+    // both. A map whose event is over should say so rather than announce a change to something that
+    // has already happened - and two modals opened together left the second one as an empty box with
+    // only its close button. This no longer relies on a notice being removed before its event ends.
     try {
-      const eventDates = root?.configuration?.eventDates || [];
+      if (passed) {
+        this.ms.open<boolean>(EventPassedWarningComponent);
+      } else {
+        const notice = root?.configuration?.notice;
 
-      const parsed = (eventDates || [])
-        .map((d) => {
-          if (typeof d === 'string' || typeof d === 'number') {
-            return new Date(d).getTime();
-          } else if (d instanceof Date) {
-            return d.getTime();
-          }
-
-          return NaN;
-        })
-        .filter((t) => !isNaN(t));
-
-      if (parsed.length > 0) {
-        const latest = Math.max(...parsed);
-        const now = Date.now();
-
-        if (latest < now) {
-          this.ms.open<boolean>(EventPassedWarningComponent);
+        if (notice && !MapNoticeComponent.isDismissed(notice.sessionKey)) {
+          this.ms.open<boolean>(MapNoticeComponent, { data: notice });
         }
       }
     } catch (err) {
-      console.warn('Failed to evaluate event dates for event-passed warning.', err);
-    }
-
-    // A one-off notice for this map - a venue change, a closure - shown once per browser session.
-    //
-    // After the passed-event check on purpose: a map whose event is over should say so rather than
-    // announce a change to something that has already happened. The two never stack, because that
-    // check only fires once the last event date is behind us and a notice is removed by then.
-    try {
-      const notice = root?.configuration?.notice;
-
-      if (notice && !MapNoticeComponent.isDismissed(notice.sessionKey)) {
-        this.ms.open<boolean>(MapNoticeComponent, { data: notice });
-      }
-    } catch (err) {
-      console.warn('Failed to show the map notice.', err);
+      console.warn('Failed to show the event-passed warning or the map notice.', err);
     }
 
     // TODO: This needs to be updated when settings service is updated to support settings branch get without feature component/module being loaded.

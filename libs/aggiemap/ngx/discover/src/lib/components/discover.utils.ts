@@ -1,4 +1,5 @@
 import { DiscoverApplication, InternalDiscoverApplication } from '../interfaces/discover-application.interface';
+import { parseEventDate } from '@tamu-gisc/common/utils/date';
 
 /**
  * Builds the router commands used to navigate to a map application. Events live under `/events`,
@@ -131,26 +132,10 @@ export function sortApplicationsByName<T extends DiscoverApplication>(apps: T[])
 }
 
 /**
- * Parses the various supported event date representations (epoch, Date, or string) into epoch ms.
- * Date-only strings (`YYYY-MM-DD`) are parsed in local time to avoid timezone drift.
+ * Parses an event date into epoch ms, reading `YYYY-MM-DD` in local time. Shared with the event maps'
+ * passed-event check, so both read event dates the same way (#1298).
  */
-export function parseEventDate(date: string | Date | number): number {
-  if (typeof date === 'number') {
-    return date;
-  }
-
-  if (date instanceof Date) {
-    return date.getTime();
-  }
-
-  const dateOnlyMatch = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (dateOnlyMatch) {
-    const [, year, month, day] = dateOnlyMatch;
-    return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
-  }
-
-  return new Date(date).getTime();
-}
+export { parseEventDate };
 
 /**
  * Returns a human-readable date range (or single date) for an event's configured dates.
