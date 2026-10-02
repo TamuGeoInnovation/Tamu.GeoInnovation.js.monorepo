@@ -1,4 +1,7 @@
 import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { NotificationService, NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 interface EventToastConfig {
@@ -68,6 +71,22 @@ export function campusForRoute(url: string): CampusId {
   const match = path.match(/(?:^|\/)campus\/([^/]+)/);
 
   return match ? match[1] : COLLEGE_STATION;
+}
+
+/**
+ * The campus each map shown belongs to, as the router navigates. The application shell raises
+ * notifications from this.
+ *
+ * Driven by `NavigationEnd` alone, which the router also emits for the first page. Not seeded with
+ * `router.url`: the shell subscribes before the first navigation finishes, when that is still `/`,
+ * which reads as College Station - so a campus map opened directly got College Station's notifications
+ * for its first moment, and they stayed (#1265).
+ */
+export function campusOnNavigation(router: Pick<Router, 'events' | 'url'>): Observable<CampusId> {
+  return router.events.pipe(
+    filter((event) => event instanceof NavigationEnd),
+    map(() => campusForRoute(router.url))
+  );
 }
 
 export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificationEntry[]>('EVENT_NOTIFICATION_DEFINITIONS');

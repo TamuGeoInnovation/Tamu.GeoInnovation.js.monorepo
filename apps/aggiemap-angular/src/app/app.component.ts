@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { filter, map, startWith } from 'rxjs/operators';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { LastMapService } from '@tamu-gisc/aggiemap/ngx/discover';
-import { campusForRoute, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
+import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
 
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
@@ -44,15 +43,9 @@ export class AppComponent implements OnInit, OnDestroy {
     // maps, and nowhere near a satellite campus or an embedded kiosk. The service skips anything
     // already raised or already dismissed during this page load, so navigating does not stack
     // duplicates. See #1265.
-    this._notifications = this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map(() => this.router.url),
-        startWith(this.router.url)
-      )
-      .subscribe((url) => {
-        this.eventNotifications.checkAndTriggerEventNotifications(campusForRoute(url));
-      });
+    this._notifications = campusOnNavigation(this.router).subscribe((campus) => {
+      this.eventNotifications.checkAndTriggerEventNotifications(campus);
+    });
   }
 
   public ngOnDestroy(): void {
