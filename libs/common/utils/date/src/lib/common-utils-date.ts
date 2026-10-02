@@ -18,3 +18,54 @@ export function timeStringForDate(date: Date): string {
   const minutes = date.getMinutes().toString().padStart(2, '0');
   return hours.toString().padStart(2, '0') + ':' + minutes + ' ' + ampm;
 }
+
+/**
+ * An event date as epoch milliseconds. Date-only strings (`YYYY-MM-DD`) are read as local midnight, not
+ * UTC midnight: `new Date('2026-10-02')` is 1 October 19:00 in College Station, which made event maps
+ * call a 2 October event over on the evening of the 1st (#1298).
+ */
+export function parseEventDate(date: string | Date | number): number {
+  if (typeof date === 'number') {
+    return date;
+  }
+
+  if (date instanceof Date) {
+    return date.getTime();
+  }
+
+  const dateOnly = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (dateOnly) {
+    const [, year, month, day] = dateOnly;
+
+    return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+  }
+
+  return new Date(date).getTime();
+}
+
+/**
+ * Whether an event is over: its last date's whole local day has ended, and then `graceDays` more full
+ * days. With no grace, an event on 2 October is over from midnight on 3 October; with one day, from
+ * midnight on 4 October. No dates, or none that parse, means it has not passed.
+ */
+export function eventHasPassed(
+  dates: Array<string | Date | number> | undefined,
+  now: number = Date.now(),
+  graceDays = 0
+): boolean {
+  const parsed = (dates || []).map(parseEventDate).filter((time) => !isNaN(time));
+
+  if (parsed.length === 0) {
+    return false;
+  }
+
+  // Midnight after the last date, then the grace days, in local time: setDate keeps this right across
+  // a daylight-saving change, where adding 24 hours of milliseconds would not.
+  const over = new Date(Math.max(...parsed));
+
+  over.setHours(0, 0, 0, 0);
+  over.setDate(over.getDate() + 1 + graceDays);
+
+  return now >= over.getTime();
+}
