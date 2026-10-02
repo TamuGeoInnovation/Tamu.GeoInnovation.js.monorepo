@@ -5,7 +5,7 @@ import * as path from 'path';
 import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';
-import { BLANK_ABOVE, waitForPaint } from './paint';
+import { describePaint, waitForPaint } from './paint';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
@@ -387,11 +387,7 @@ for (const { mapPath, loadPath, title } of cases) {
         `paintedAfter=${paint.paintedAfterMs === null ? 'never' : paint.paintedAfterMs + 'ms'}`
     });
 
-    expect(
-      paint.paintedAfterMs,
-      `${mapPath} never painted: the canvas is ${paint.share.toFixed(3)} ${paint.colour}, and a map ` +
-        `that has drawn is below ${BLANK_ABOVE}`
-    ).not.toBeNull();
+    expect(paint.paintedAfterMs, describePaint(mapPath, paint)).not.toBeNull();
 
     // While routing is unavailable, no map may offer directions: no Directions tab, and no
     // "Directions To Here" left on the page (#1003). Whether a map offers them when routing is

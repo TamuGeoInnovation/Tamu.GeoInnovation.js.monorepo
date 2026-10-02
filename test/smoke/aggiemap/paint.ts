@@ -87,17 +87,33 @@ export const BLANK_ABOVE = 0.65;
 /**
  * How long a map gets to paint something.
  *
- * Measured the same day: maps painted between 6 and 13 seconds on both environments, development
- * consistently 2-3 seconds behind production. Thirty seconds is comfortably clear of that and still
- * fails in reasonable time.
+ * Ninety seconds, which is not the time a healthy map takes - it is the time one is allowed before
+ * being called broken, and those are different numbers.
+ *
+ * The first value here was thirty seconds, from maps that painted in 6 to 13 seconds when measured on
+ * one warm afternoon. That is the best case. CLAUDE.md has said all along, under "Things that look
+ * broken but are not", that a canvas blank for 20 to 40 seconds is Esri still drawing; on top of that
+ * the stability readings below need about six more, and a server pool that has not warmed up is
+ * slower again. Thirty seconds was therefore shorter than the documented normal case, and on
+ * 1 October it failed four maps that had drawn - `/map` among them, reported blank while its canvas
+ * measured 0.484 against a 0.65 threshold. See #1285.
  *
  * Deliberately not keyed to the probe's `ready`, which was observed never to become true within 80
- * seconds on most maps, on both environments. See #1259.
+ * seconds on most maps, on both environments. See #1259 and #1267.
  */
-export const PAINT_TIMEOUT_MS = 30_000;
+export const PAINT_TIMEOUT_MS = 90_000;
 
 export interface PaintResult extends Dominance {
   paintedAfterMs: number | null;
+  /**
+   * Consecutive good readings in hand when the clock ran out, so a caller can tell the two failures
+   * apart: a canvas that stayed blank is a broken map, and one that kept reading as drawn without
+   * settling is a slow one. Both used to arrive as `paintedAfterMs: null` and be reported as "never
+   * painted", which was true of only the first (#1285).
+   */
+  steadyReadings: number;
+  /** How many readings were taken in total, so a timeout can say whether it sampled at all. */
+  readings: number;
 }
 
 /**
@@ -124,6 +140,7 @@ export async function waitForPaint(page: Page, timeoutMs = PAINT_TIMEOUT_MS): Pr
   const startedAt = Date.now();
   let last: Dominance = { share: 1, colour: '#000000', colours: 0 };
   let consecutive = 0;
+  let readings = 0;
 
   while (Date.now() - startedAt < timeoutMs) {
     // The map surface specifically. A bare `canvas` can match something else on the page, and the
@@ -134,10 +151,11 @@ export async function waitForPaint(page: Page, timeoutMs = PAINT_TIMEOUT_MS): Pr
     if ((await target.count()) > 0) {
       try {
         last = dominance(await target.screenshot({ type: 'png' }));
+          readings += 1;
         consecutive = last.share < BLANK_ABOVE ? consecutive + 1 : 0;
 
         if (consecutive >= STABLE_READINGS) {
-          return { ...last, paintedAfterMs: Date.now() - startedAt };
+            return { ...last, paintedAfterMs: Date.now() - startedAt, steadyReadings: consecutive, readings };
         }
       } catch {
         // The canvas can be detached mid-screenshot while the view rebuilds; try again.
@@ -148,5 +166,31 @@ export async function waitForPaint(page: Page, timeoutMs = PAINT_TIMEOUT_MS): Pr
     await page.waitForTimeout(READING_GAP_MS);
   }
 
-  return { ...last, paintedAfterMs: null };
+  return { ...last, paintedAfterMs: null, steadyReadings: consecutive, readings };
+}
+
+/**
+ * Says what a result means, so a failure message matches what was measured.
+ *
+ * The old message said "never painted" for every timeout, including ones whose own quoted number was
+ * below the blank threshold - telling the reader the map was blank while printing the evidence that
+ * it was not (#1285).
+ */
+export function describePaint(mapPath: string, paint: PaintResult, timeoutMs = PAINT_TIMEOUT_MS): string {
+  const seconds = Math.round(timeoutMs / 1000);
+  const canvas = `the canvas is ${paint.share.toFixed(3)} ${paint.colour}`;
+
+  if (paint.readings === 0) {
+    return `${mapPath} never produced a canvas to measure within ${seconds}s`;
+  }
+
+  if (paint.share >= BLANK_ABOVE) {
+    return `${mapPath} stayed blank for ${seconds}s: ${canvas}, and a map that has drawn is below ${BLANK_ABOVE}`;
+  }
+
+  return (
+    `${mapPath} drew but never settled within ${seconds}s: ${canvas}, which is below ${BLANK_ABOVE}, but it held ` +
+    `that for only ${paint.steadyReadings} of the ${STABLE_READINGS} consecutive readings required. A map that ` +
+    `paints and then empties looks like this, and so does one that is simply slow`
+  );
 }
