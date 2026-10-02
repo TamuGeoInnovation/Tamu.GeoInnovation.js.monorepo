@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 
-import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
+import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -47,7 +47,7 @@ export class SeasonsDayTileComponent {
   /**
    * Emit event to notify parent to handle updating the emitted day
    */
-  public update(event: DlDateTimePickerChange<Date>) {
+  public update(event: DateTimePickerChange<Date>) {
     if (this.interactive !== false) {
       this.updated.emit({
         guid: this.day.guid,

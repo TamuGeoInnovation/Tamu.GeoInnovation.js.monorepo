@@ -61,7 +61,6 @@
     "@types/auth0": "^3.3.8",
     "@types/luxon": "^2.0.5",
     "angular-auth-oidc-client": "^14.1.0",
-    "angular-bootstrap-datetimepicker": "^2.2.1",
     "angulartics2": "^13.1.0",
     "auth0": "^3.7.1",
     "axios": "^1.7.7",

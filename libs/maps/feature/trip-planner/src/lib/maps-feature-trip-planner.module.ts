@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { DlDateTimePickerModule, DlDateTimePickerDateModule } from 'angular-bootstrap-datetimepicker';
-
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { TripPlannerConnectionsSelectComponent } from './components/trip-planner-connection-select/containers/base/base.component';
@@ -29,17 +27,7 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { RouteDirectionTransformerPipe } from './core/route-direction-transformer.pipe';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    DlDateTimePickerModule,
-    DlDateTimePickerDateModule,
-    UIFormsModule,
-    UILayoutModule,
-    UIClipboardModule,
-    PipesModule
-  ],
+  imports: [CommonModule, RouterModule, FormsModule, UIFormsModule, UILayoutModule, UIClipboardModule, PipesModule],
   declarations: [
     TripPlannerConnectionsSelectComponent,
     TripPlannerDirectionsComponent,

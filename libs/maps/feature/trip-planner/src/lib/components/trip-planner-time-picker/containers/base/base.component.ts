@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, shareReplay, pluck } from 'rxjs/operators';
 
-import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
+import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { TimeModeOption, TripPlannerService } from '../../../../services/trip-planner.service';
 
@@ -75,8 +75,8 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    * Once the update is made in the trip planner service state, the component subscriber will be
    * notified and update it here.
    */
-  public setRequestedTime(newRequestedTime: DlDateTimePickerChange<Date> | Date): void {
-    if (newRequestedTime instanceof DlDateTimePickerChange) {
+  public setRequestedTime(newRequestedTime: DateTimePickerChange<Date> | Date): void {
+    if (newRequestedTime instanceof DateTimePickerChange) {
       if (newRequestedTime.value && this.oldTime !== newRequestedTime.value.getTime()) {
         this.plannerService.updateTravelOptions({ requested_time: new Date(newRequestedTime.value.getTime()) });
         this.dateTimePickerVisible = false;

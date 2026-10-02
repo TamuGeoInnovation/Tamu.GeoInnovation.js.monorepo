@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
-
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
@@ -170,8 +168,6 @@ const routes: Routes = [
     SearchModule,
     TestingModule,
     ResponsiveModule,
-    DlDateTimePickerDateModule,
-    DlDateTimePickerModule,
     SidebarModule,
     UITamuBrandingModule,
     UIFormsModule,
