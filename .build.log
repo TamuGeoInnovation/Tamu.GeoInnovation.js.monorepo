@@ -1,0 +1,58 @@
+
+> nx run ues-operations-angular:build
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+- Generating browser application bundles (phase: setup)...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Browserslist: browsers data (caniuse-lite) is 12 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+- Copying assets...
+✔ Copying assets complete.
+- Generating index html...
+✔ Index html generation complete.
+
+Initial Chunk Files | Names         |  Raw Size
+vendor.js           | vendor        |   4.15 MB |
+main.js             | main          |   3.41 MB |
+polyfills.js        | polyfills     | 109.17 kB |
+styles.css          | styles        |  39.26 kB |
+runtime.js          | runtime       |   6.73 kB |
+
+| Initial Total |   7.72 MB
+
+Build at: 2026-10-02T16:45:18.793Z - Hash: 64f83d10c4a0ac0a - Time: 446604ms
+
+Warning: /w/libs/maps/esri/src/lib/services/layer-sources/layer-sources.service.ts depends on 'deepmerge'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: /w/libs/maps/feature/trip-planner/src/lib/services/transportation/bus/bus.service.ts depends on 'colornames'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: /w/libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts depends on 'geojson-utils'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: /w/libs/maps/feature/trip-planner/src/lib/services/trip-planner.service.ts depends on 'lodash'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: /w/libs/ues/operations/ngx/src/lib/modules/map/map.component.ts depends on 'esri-loader'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: /w/libs/ui-kits/ngx/interactions/clipboard/src/lib/directives/copy/copy.directive.ts depends on 'clipboard'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: /w/libs/ui-kits/ngx/interactions/draggable/src/lib/directives/drag/drag.directive.ts depends on 'interactjs'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+
+ 
+
+ >  NX   Successfully ran target build for project ues-operations-angular
+
+
+EXIT=0
