@@ -16,7 +16,8 @@ import { MapsPageHeaderComponent } from './components/maps-page-header/maps-page
 import { MapColumnsComponent } from './components/map-columns/map-columns.component';
 import { QuickLinksComponent } from './components/quick-links/quick-links.component';
 
-const routes: Routes = [
+/** The All Maps pages. Exported so the category pages' settings can be tested as configured. */
+export const discoverRoutes: Routes = [
   {
     path: '',
     component: AllMapsComponent
@@ -72,7 +73,10 @@ const routes: Routes = [
     data: {
       mapType: 'satellite-campus',
       title: 'Campus Maps',
-      intro: 'Browse single-basemap maps for TAMU campuses outside of College Station.'
+      intro: 'Browse single-basemap maps for TAMU campuses outside of College Station.',
+      // The quick links are College Station's parking maps, which have nothing to do with the other
+      // campuses (#1291).
+      quickLinks: false
     }
   }
 ];
@@ -84,7 +88,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     UIFormsModule,
     UILayoutModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(discoverRoutes),
     AggiemapNgxSharedUiStructuralModule,
     PipesModule,
     UIClipboardModule
