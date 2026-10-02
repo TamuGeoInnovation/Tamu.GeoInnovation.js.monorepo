@@ -58,8 +58,10 @@ export const NO_NOTIFICATIONS: CampusId = 'none';
  * - `/kiosk/:id` shows none. Kiosk maps are sidebar-free, preset-layer maps embedded elsewhere, such
  *   as in a mobile app webview. There is nobody at the screen to dismiss a toast, and it would draw
  *   over the map inside someone else's application.
- * - Everything else - the main map, the event, parking and operations maps, the discover pages - is
- *   College Station.
+ * - College Station's maps - the main map (`/map`), and an event, parking or operations map
+ *   (`/events/:id/map`, and so on) - show College Station's.
+ * - Everything else shows none: the All Maps pages, the builders, about and the like. Notices belong
+ *   on a page showing a map, not over a list of maps or a form (#1290).
  */
 export function campusForRoute(url: string): CampusId {
   const path = (url || '').split('?')[0].split('#')[0];
@@ -70,8 +72,15 @@ export function campusForRoute(url: string): CampusId {
 
   const match = path.match(/(?:^|\/)campus\/([^/]+)/);
 
-  return match ? match[1] : COLLEGE_STATION;
+  if (match) {
+    return match[1];
+  }
+
+  return COLLEGE_STATION_MAP.test(path) ? COLLEGE_STATION : NO_NOTIFICATIONS;
 }
+
+/** A College Station map page: `/map`, or an event, parking or operations map. */
+const COLLEGE_STATION_MAP = /^\/(?:(?:events|parking|operations)\/[^/]+\/)?map(?:\/|$)/;
 
 /**
  * The campus each map shown belongs to, as the router navigates. The application shell raises

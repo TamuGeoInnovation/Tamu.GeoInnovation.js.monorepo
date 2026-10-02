@@ -41,16 +41,30 @@ class FakeNotificationService {
 
 describe('campusForRoute', () => {
   it.each([
+    ['/map', COLLEGE_STATION],
     ['/map/d', COLLEGE_STATION],
     ['/map/m', COLLEGE_STATION],
-    ['/', COLLEGE_STATION],
+    ['/map/d/settings?basemap=x', COLLEGE_STATION],
     ['/events/150th-kickoff/map/d', COLLEGE_STATION],
     ['/parking/avp-parking/map', COLLEGE_STATION],
-    ['/operations/ues-valves/map/d', COLLEGE_STATION],
-    ['/all-maps', COLLEGE_STATION],
-    ['/all-maps/campus', COLLEGE_STATION]
-  ])('treats %s as College Station', (url, expected) => {
+    ['/operations/ues-valves/map/d', COLLEGE_STATION]
+  ])('treats the College Station map %s as College Station', (url, expected) => {
     expect(campusForRoute(url)).toBe(expected);
+  });
+
+  // Notices belong on a page showing a map, not over a list of maps or a form (#1290).
+  it.each([
+    '/',
+    '/all-maps',
+    '/all-maps/campus',
+    '/all-maps/parking',
+    '/all-maps/campus-events',
+    '/about',
+    '/directory',
+    '/events/ring-day/builder/accommodations/event-day',
+    '/events/150th-kickoff'
+  ])('shows nothing on %s, which is not a map page', (url) => {
+    expect(campusForRoute(url)).toBe(NO_NOTIFICATIONS);
   });
 
   it.each([
@@ -66,14 +80,16 @@ describe('campusForRoute', () => {
   });
 
   it('is not confused by a path that merely contains the words', () => {
-    // `/all-maps/campus` is the campus maps listing, not a campus map.
-    expect(campusForRoute('/all-maps/campus')).toBe(COLLEGE_STATION);
+    // `/all-maps/campus` is the campus maps listing, not a campus map - and, as a listing rather than a
+    // map, it shows no notices at all (#1290).
+    expect(campusForRoute('/all-maps/campus')).toBe(NO_NOTIFICATIONS);
     expect(campusForRoute('/events/campus-wide-thing/map')).toBe(COLLEGE_STATION);
   });
 
   it('survives an empty or odd url', () => {
-    expect(campusForRoute('')).toBe(COLLEGE_STATION);
-    expect(campusForRoute(undefined as unknown as string)).toBe(COLLEGE_STATION);
+    // No address means no map page to put notices on (#1290). The router never reports one in practice.
+    expect(campusForRoute('')).toBe(NO_NOTIFICATIONS);
+    expect(campusForRoute(undefined as unknown as string)).toBe(NO_NOTIFICATIONS);
   });
 });
 
