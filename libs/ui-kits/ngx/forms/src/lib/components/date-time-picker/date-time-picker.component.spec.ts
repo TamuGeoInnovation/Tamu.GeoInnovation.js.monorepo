@@ -88,6 +88,10 @@ describe('DateTimePickerComponent', () => {
       component.minView = 'day';
       fixture.detectChanges();
 
+      // The input lives in the tooltip, which renders its content only once opened - as a user does.
+      fixture.nativeElement.querySelector('tamu-gisc-tooltip-trigger').click();
+      fixture.detectChanges();
+
       const input: HTMLInputElement = fixture.nativeElement.querySelector('input.date-time-picker-input');
 
       expect(input).not.toBeNull();
