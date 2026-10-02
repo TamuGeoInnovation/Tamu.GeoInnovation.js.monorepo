@@ -21,7 +21,9 @@ const OVERLAY = '.code-maroon';
 const LOADING = 'Checking Code Maroon';
 
 test.describe(`Code Maroon ${VISIBLE ? 'reads its feed here' : 'stays off this environment'}`, () => {
-  test(`/code-maroon ${VISIBLE ? 'shows the feed state, not an error' : 'shows no Code Maroon overlay'}`, async ({ page }) => {
+  test(`/code-maroon ${VISIBLE ? 'shows the feed state, not an error' : 'shows no Code Maroon overlay'}`, async ({
+    page
+  }) => {
     await blockAnalytics(page);
 
     const response = await page.goto('/code-maroon');
