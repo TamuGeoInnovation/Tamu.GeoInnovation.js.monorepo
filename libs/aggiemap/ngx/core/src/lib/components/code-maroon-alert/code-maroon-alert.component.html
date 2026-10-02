@@ -9,7 +9,9 @@
       separately. Fabricated emergency wording that could be screenshotted and passed on is a hazard,
       so it is labelled where the label travels with the content.
     -->
-    <p class="code-maroon-sample" *ngIf="current.sample">SAMPLE DATA — this is a demonstration, not a real alert</p>
+    <p class="code-maroon-sample" *ngIf="current.sample">
+      SAMPLE DATA — this is a demonstration, not a real alert
+    </p>
 
     <ng-container [ngSwitch]="current.status">
       <!-- An alert is running. -->
@@ -22,7 +24,9 @@
           </p>
 
           <h2 class="code-maroon-title">{{ alert.title }}</h2>
-          <p class="code-maroon-body" *ngIf="alert.description && alert.description !== alert.title">{{ alert.description }}</p>
+          <p class="code-maroon-body" *ngIf="alert.description && alert.description !== alert.title">
+            {{ alert.description }}
+          </p>
 
           <!--
             Fields the feed carried that we did not expect. Shown rather than dropped: no real alert
@@ -36,9 +40,19 @@
           </dl>
 
           <p class="code-maroon-actions">
-            <a class="button maroon" [href]="procedureFor(alert)" target="_blank" rel="noopener"> What to do </a>
-            <a class="button" *ngIf="alert.link" [href]="alert.link" target="_blank" rel="noopener"> Full notice </a>
-            <tamu-gisc-button *ngIf="canDismiss(current, alert)" fit="snug" look="secondary" value="Dismiss" (go)="dismiss()"></tamu-gisc-button>
+            <a class="button maroon" [href]="procedureFor(alert)" target="_blank" rel="noopener">
+              What to do
+            </a>
+            <a class="button" *ngIf="alert.link" [href]="alert.link" target="_blank" rel="noopener">
+              Full notice
+            </a>
+            <tamu-gisc-button
+              *ngIf="canDismiss(current, alert)"
+              fit="snug"
+              look="secondary"
+              value="Dismiss"
+              (go)="dismiss()"
+            ></tamu-gisc-button>
           </p>
 
           <p class="code-maroon-meta">
@@ -53,7 +67,9 @@
         <p class="code-maroon-kicker"><span class="code-maroon-mark">Code Maroon</span></p>
         <p class="code-maroon-body">No active alerts.</p>
         <p class="code-maroon-meta" *ngIf="current.checkedAt">Checked {{ current.checkedAt | date: 'mediumTime' }}.</p>
-        <p class="code-maroon-meta code-maroon-snapshot" *ngIf="current.snapshot">From a saved copy of the Code Maroon feed until this server's feed proxy is set up.</p>
+        <p class="code-maroon-meta code-maroon-snapshot" *ngIf="current.snapshot">
+          From a saved copy of the Code Maroon feed until this server's feed proxy is set up.
+        </p>
       </div>
 
       <!--
