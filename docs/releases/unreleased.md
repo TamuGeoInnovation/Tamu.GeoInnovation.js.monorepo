@@ -14,7 +14,23 @@ only ever describes what has not shipped yet.
 
 ## Summary
 
-Nothing has merged since the 1 October release.
+### Campus maps no longer flash College Station's notices
+
+**[#1281](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1281).** Opening
+the DC, Galveston or McAllen campus map directly, from a link or a bookmark, showed College Station's
+notices (the Opening Ceremony, Football, Ring Day and Kickoff at Kyle) for the map's first ten seconds.
+Clicking the map in that time could open the Football map instead. Campus maps now show none of them.
+[#1266](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1266) had fixed this
+only for someone arriving from another page.
+
+| Before | After |
+| --- | --- |
+| ![Before: the DC campus map covered by four College Station notices](../screenshots/1281-campus-notices/before-dev-dc-notices-on-load.png) | ![After: the DC campus map with no notices](../screenshots/1281-campus-notices/after-local-dc-no-notices.png) |
+
+**What to test:** open [the DC campus map](https://dev.aggiemap.tamu.edu/campus/dc-bush-school) in a
+new tab and watch it for ten seconds. No notices should appear. The same goes for
+[Galveston](https://dev.aggiemap.tamu.edu/campus/galveston) and
+[McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen). The main map should still show them.
 
 ---
 
