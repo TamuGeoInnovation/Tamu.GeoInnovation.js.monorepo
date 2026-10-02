@@ -130,10 +130,24 @@ routes and the vector tile basemap are. Add it to `DEVELOPMENT_ONLY_SERVICES` in
 `test/smoke/aggiemap/development-only.ts`, so the smoke suite fails if production ever requests it.
 The maintainer decides when it moves to production. See #1229.
 
-**Reuse before building.** Check `libs/ui-kits/ngx/**` for an existing component, and
-`libs/sass/` plus the app's global `styles.scss` for existing classes, before writing any
-CSS. There is a shared copy-field component, a shared `.button` with variants, spacing
-utilities and a flexbox mixin set. Purpose-built CSS is unwanted.
+**Reuse before building; build to be reused.** No one-offs: not components, not services, not
+utilities, not styles, not test helpers. This is the maintainer's standing rule for every change, by
+anyone.
+
+- **Look first, and say where you looked.** Components: `libs/ui-kits/ngx/**`. Services, pipes and
+  helpers: `libs/common/**`. Map features: `libs/maps/feature/**`. Styles: `libs/sass/` and the app's
+  global `styles.scss`. Smoke-suite helpers: the shared modules in `test/smoke/aggiemap/`. There is a
+  shared copy-field component, a shared `.button` with variants, spacing utilities and a flexbox
+  mixin set. Purpose-built CSS is unwanted.
+- **Extend what exists rather than copy it.** If a shared piece nearly fits, add the input, option
+  or variant it lacks. A second near-identical component is a future bug fixed in one copy only.
+- **Change a shared piece behind its existing interface** where you can, so its callers do not have to
+  change. #1220 replaced the date-time picker's internals and left every caller as it was.
+- **When nothing exists, put the new piece where the next caller will find it**, in the shared
+  library for its kind and exported from its index, not inside the feature that first needed it.
+- **Follow the patterns already in the repository**: how definitions declare things (for example,
+  the per-choice `mapView` used by the event maps), how modules are wired, how tests are written.
+  A new way of doing something the repository already does needs a reason in the pull request.
 
 **Shared component styles are imported by the component, not the app.** Only
 globally-applied widget styles belong in an app's `styles.scss`.

@@ -225,22 +225,6 @@
   margin: -0.25rem 0 0.75rem;
 }
 
-.campus-tile-image {
-  display: block;
-  width: 100%;
-  // The captures are 2:1. Declared so the card does not jump as the image arrives.
-  aspect-ratio: 2 / 1;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #d1d1d1;
-  background: #f4f4f4;
-
-  .campus-tile:hover &,
-  .campus-tile:focus-visible & {
-    border-color: #500000;
-  }
-}
-
 .campus-tile-label {
   display: block;
   margin-top: 0.5rem;

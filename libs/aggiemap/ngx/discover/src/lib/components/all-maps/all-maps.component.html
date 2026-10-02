@@ -153,8 +153,8 @@
           <!-- The picture is the link, so the card shows what you are choosing between rather than
                leaving an empty area above a text link (#1245). The copy field stays: it is how a
                campus map URL gets shared, and these maps are not linked on production. -->
-          <a class="campus-tile" [routerLink]="getApplicationRoute(app)" [attr.aria-label]="'Open the ' + app.name + ' map'">
-            <img class="campus-tile-image" *ngIf="app.thumbnail" [src]="app.thumbnail" [alt]="app.name + ' campus map'" loading="lazy" />
+          <a class="campus-tile map-entry--pictured" [routerLink]="getApplicationRoute(app)" [attr.aria-label]="'Open the ' + app.name + ' map'">
+            <img class="map-entry-thumbnail" *ngIf="app.thumbnail" [src]="app.thumbnail" [alt]="app.name + ' campus map'" loading="lazy" />
             <span class="campus-tile-label">{{ app.name }}</span>
           </a>
           <div class="application-card-content">

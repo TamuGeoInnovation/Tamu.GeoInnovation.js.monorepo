@@ -1,4 +1,7 @@
 import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { NotificationService, NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 interface EventToastConfig {
@@ -55,8 +58,10 @@ export const NO_NOTIFICATIONS: CampusId = 'none';
  * - `/kiosk/:id` shows none. Kiosk maps are sidebar-free, preset-layer maps embedded elsewhere, such
  *   as in a mobile app webview. There is nobody at the screen to dismiss a toast, and it would draw
  *   over the map inside someone else's application.
- * - Everything else - the main map, the event, parking and operations maps, the discover pages - is
- *   College Station.
+ * - College Station's maps - the main map (`/map`), and an event, parking or operations map
+ *   (`/events/:id/map`, and so on) - show College Station's.
+ * - Everything else shows none: the All Maps pages, the builders, about and the like. Notices belong
+ *   on a page showing a map, not over a list of maps or a form (#1290).
  */
 export function campusForRoute(url: string): CampusId {
   const path = (url || '').split('?')[0].split('#')[0];
@@ -67,7 +72,30 @@ export function campusForRoute(url: string): CampusId {
 
   const match = path.match(/(?:^|\/)campus\/([^/]+)/);
 
-  return match ? match[1] : COLLEGE_STATION;
+  if (match) {
+    return match[1];
+  }
+
+  return COLLEGE_STATION_MAP.test(path) ? COLLEGE_STATION : NO_NOTIFICATIONS;
+}
+
+/** A College Station map page: `/map`, or an event, parking or operations map. */
+const COLLEGE_STATION_MAP = /^\/(?:(?:events|parking|operations)\/[^/]+\/)?map(?:\/|$)/;
+
+/**
+ * The campus each map shown belongs to, as the router navigates. The application shell raises
+ * notifications from this.
+ *
+ * Driven by `NavigationEnd` alone, which the router also emits for the first page. Not seeded with
+ * `router.url`: the shell subscribes before the first navigation finishes, when that is still `/`,
+ * which reads as College Station - so a campus map opened directly got College Station's notifications
+ * for its first moment, and they stayed (#1265).
+ */
+export function campusOnNavigation(router: Pick<Router, 'events' | 'url'>): Observable<CampusId> {
+  return router.events.pipe(
+    filter((event) => event instanceof NavigationEnd),
+    map(() => campusForRoute(router.url))
+  );
 }
 
 export const EVENT_NOTIFICATION_DEFINITIONS = new InjectionToken<EventNotificationEntry[]>('EVENT_NOTIFICATION_DEFINITIONS');
