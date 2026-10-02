@@ -1,5 +1,5 @@
 import { NavigationEnd } from '@angular/router';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { NotificationProperties, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -19,6 +19,9 @@ import {
  * likely to cause.
  */
 
+// A notice shown once is not shown again this session (#1307), so each test starts a new session.
+afterEach(() => sessionStorage.clear());
+
 const oneDay = 24 * 60 * 60 * 1000;
 
 const definition = (id: string) => ({
@@ -31,6 +34,10 @@ const definition = (id: string) => ({
 
 class FakeNotificationService {
   public readonly toasted: string[] = [];
+  public readonly notifications = of([]);
+  public remove(): void {
+    return;
+  }
   public wasDismissedThisLoad(): boolean {
     return false;
   }
@@ -217,16 +224,14 @@ describe('campusOnNavigation', () => {
     expect(seen).toEqual(['galveston', COLLEGE_STATION, NO_NOTIFICATIONS]);
   });
 
-  it.each([
-    '/code-maroon',
-    '/code-maroon/d',
-    '/code-maroon/m',
-    '/code-maroon/d?sample=tornado'
-  ])('raises nothing on %s', (url) => {
-    // An event toast about cake and ice cream stacking under a tornado warning would undermine the
-    // alert it is sitting on. Nothing competes with Code Maroon on that route (#1289).
-    expect(campusForRoute(url)).toBe(NO_NOTIFICATIONS);
-  });
+  it.each(['/code-maroon', '/code-maroon/d', '/code-maroon/m', '/code-maroon/d?sample=tornado'])(
+    'raises nothing on %s',
+    (url) => {
+      // An event toast about cake and ice cream stacking under a tornado warning would undermine the
+      // alert it is sitting on. Nothing competes with Code Maroon on that route (#1289).
+      expect(campusForRoute(url)).toBe(NO_NOTIFICATIONS);
+    }
+  );
 
   it('still raises College Station notices on a route that merely mentions the words', () => {
     // Guards the pattern: the exclusion is the route segment, not the string appearing anywhere.

@@ -15,6 +15,9 @@ import { EventNotificationsService } from './event-notifications.service';
  * definitions reach `NotificationService.toast`.
  */
 
+// A notice shown once is not shown again this session (#1307), so each test starts a new session.
+afterEach(() => sessionStorage.clear());
+
 const oneDay = 24 * 60 * 60 * 1000;
 
 const definition = (id: string, dayOffset: number, toast?: Partial<NotificationProperties>) => ({
