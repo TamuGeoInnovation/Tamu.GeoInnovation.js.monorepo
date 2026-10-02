@@ -67,6 +67,9 @@
         <p class="code-maroon-kicker"><span class="code-maroon-mark">Code Maroon</span></p>
         <p class="code-maroon-body">No active alerts.</p>
         <p class="code-maroon-meta" *ngIf="current.checkedAt">Checked {{ current.checkedAt | date: 'mediumTime' }}.</p>
+        <p class="code-maroon-meta code-maroon-snapshot" *ngIf="current.snapshot">
+          From a saved copy of the Code Maroon feed until this server's feed proxy is set up.
+        </p>
       </div>
 
       <!--

@@ -47,4 +47,10 @@ export interface CodeMaroonState {
   error?: string;
   /** True when the alerts are a demonstration sample rather than live data. */
   sample: boolean;
+  /**
+   * True when this server has no proxy for the feed and the state comes from the saved copy of the
+   * real feed instead (#1304). Only an HTML answer, the server's own page, leads here; a failed
+   * request or a malformed feed is still `unreachable`.
+   */
+  snapshot?: boolean;
 }
