@@ -138,7 +138,8 @@
       },
       "options": {
         "browserTarget": "aggiemap-angular:build",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "proxyConfig": "apps/aggiemap-angular/proxy.conf.json"
       }
     },
     "test": {

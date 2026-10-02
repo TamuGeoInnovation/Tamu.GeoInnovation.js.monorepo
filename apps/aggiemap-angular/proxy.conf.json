@@ -1,0 +1,10 @@
+{
+  "/code-maroon/feed.xml": {
+    "target": "https://codemaroon.tamu.edu",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/code-maroon/feed.xml": "/feed.xml"
+    }
+  }
+}

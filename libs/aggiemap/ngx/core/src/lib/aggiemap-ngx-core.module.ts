@@ -52,6 +52,16 @@ const hybridRoutes: Routes = [
     loadChildren: () => import('@tamu-gisc/ts/events/ngx').then((m) => m.TsEventsNgxModule)
   },
   {
+    // Code Maroon proof of concept (#1289): the ordinary map, with the live emergency feed shown
+    // over it. Loads the map module unchanged - the alert is an overlay in the application shell, so
+    // nothing about the map has to know this route exists.
+    //
+    // Development only. The overlay checks `isTesting` itself before it renders or fetches anything,
+    // so reaching this path on production shows the plain map and nothing else.
+    path: 'code-maroon',
+    loadChildren: () => import('./pages/map/map.module').then((m) => m.MapModule)
+  },
+  {
     path: '**',
     redirectTo: 'map'
   }

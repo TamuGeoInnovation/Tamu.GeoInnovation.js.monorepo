@@ -25,7 +25,11 @@ export const DEVELOPMENT_ONLY_SECTIONS = ['Directions', 'Bus Routes', 'Experimen
  * production, take it out of this list and out of the code's development-only gate together.
  */
 export const DEVELOPMENT_ONLY_SERVICES: Record<string, string> = {
-  'Hosted/VTBase/VectorTileServer': '#1229: the vector tile campus basemap'
+  'Hosted/VTBase/VectorTileServer': '#1229: the vector tile campus basemap',
+  // The Code Maroon emergency feed, proxied through this origin. Production must never request it:
+  // the proof of concept is not something to show the public, and an emergency alert drawn by an
+  // unfinished feature is a worse failure than most. #1289.
+  '/code-maroon/feed.xml': '#1289: the Code Maroon proof of concept'
 };
 
 /** Whether the environment under test renders the development variant. */
