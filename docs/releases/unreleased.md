@@ -3,7 +3,7 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**The [second 1 October release](2026-10-01-2.md) is cleared and on its way to production.** It also
+**The [2 October release](2026-10-02.md) is on dev and goes to production in the morning.** It also
 carries the [first 1 October release](2026-10-01.md), which never shipped on its own.
 
 If you followed a link here expecting the notes for a release that just shipped, they are in those
@@ -41,6 +41,14 @@ afterwards:
 
 ### Also open from 1 October
 
+- **Code Maroon needs an IIS proxy for its feed.** Dev reads a saved copy of the feed until then
+  ([#1304](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1304), in the 2 October release). The fix is an IIS URL Rewrite and ARR rule
+  with server-side caching, for dev only, to be arranged with the team that manages the server; the
+  saved copy is removed once it is in place.
+- **The browser console's build banner prints `___BUILD_DATE___` and the other placeholders** instead
+  of the build's details ([#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306), low priority).
+- **Smoke checks that an event not yet over is never shown as passed**, on the event maps and in All
+  Maps' Upcoming events ([#1302](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1302)). Unit tests for both landed with their fixes.
 - **The old standalone Ring Day app** is removed after Ring Day, 8 to 10 October
   ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old Move-In app's deployed copy at `/movein/` still needs deleting
   ([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
