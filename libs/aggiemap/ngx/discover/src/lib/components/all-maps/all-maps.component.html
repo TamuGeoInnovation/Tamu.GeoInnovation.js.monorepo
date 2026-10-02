@@ -83,6 +83,23 @@
           </span>
           <span class="visit-maps-label">Campus Maps</span>
         </a>
+
+        <!--
+          Code Maroon proof of concept (#1289). Development only, on the same `isDev` gate as the
+          campus maps above, so it is never a tile the public can see. A warning triangle rather than
+          anything branded: a demonstration should not look like an official emergency notice sitting
+          on the page.
+        -->
+        <a class="visit-maps-tile" routerLink="/code-maroon" aria-label="Code Maroon" *ngIf="(isDev | async) === true">
+          <span class="visit-maps-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 2.2c.62 0 1.2.33 1.51.87l9.3 16.1c.31.54.31 1.2 0 1.74-.31.54-.89.87-1.51.87H2.7c-.62 0-1.2-.33-1.51-.87a1.74 1.74 0 0 1 0-1.74l9.3-16.1c.31-.54.89-.87 1.51-.87Zm0 2.93L3.56 19.78h16.88L12 5.13Zm0 4.12c.6 0 1.08.49 1.08 1.08v4.3a1.08 1.08 0 0 1-2.16 0v-4.3c0-.6.49-1.08 1.08-1.08Zm0 8.2a1.26 1.26 0 1 1 0-2.52 1.26 1.26 0 0 1 0 2.52Z"
+              />
+            </svg>
+          </span>
+          <span class="visit-maps-label">Code Maroon</span>
+        </a>
       </div>
     </div>
 
