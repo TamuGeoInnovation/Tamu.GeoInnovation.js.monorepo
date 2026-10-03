@@ -24,6 +24,9 @@ Merged since the 2 October release, none of it deployed yet:
 
 - Not visible: `ngx-webstorage-service` 5.0.0 ([#1309](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1309)) and `ng2-dragula` 4.0.0
   ([#1310](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1310)), the Ivy releases of both.
+- **Angular 16** ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)): Angular 15.2 to 16.2, Nx 16.0 to 16.10, TypeScript 4.9 to
+  5.1. Nothing is meant to look or behave differently, so test dev as normal; anything that does is a
+  bug in this upgrade. NestJS stays on 9 for now.
 - Not visible: `correction-lite-angular` removed, with its library and the tables library only it used
   ([#1339](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1339)). It was part of the Geoservices site, which no longer serves it; what it was
   is recorded in [`docs/applications/correction-lite.md`](../applications/correction-lite.md).

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EventEntryGuard implements CanActivate {
+export class EventEntryGuard  {
   constructor(
     private readonly router: Router,
     private readonly eventSettingsService: EventSettingsService
