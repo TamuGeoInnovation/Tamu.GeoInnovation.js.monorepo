@@ -11,7 +11,8 @@
         "outputPath": "dist/libs/gisday/common",
         "main": "libs/gisday/common/src/index.ts",
         "tsConfig": "libs/gisday/common/tsconfig.lib.json",
-        "assets": ["libs/gisday/common/*.md"]
+        "assets": ["libs/gisday/common/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

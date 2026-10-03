@@ -1,16 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRoute,
-  ActivatedRouteSnapshot,
-  CanActivate,
-  CanActivateChild,
-  CanLoad,
-  Route,
-  Router,
-  RouterStateSnapshot,
-  UrlSegment,
-  UrlTree
-} from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
@@ -18,7 +7,7 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Injectable({
   providedIn: 'root'
 })
-export class RouteParamsGuard implements CanActivate, CanLoad, CanActivateChild {
+export class RouteParamsGuard  {
   constructor(
     private readonly ar: ActivatedRoute,
     private readonly es: EventSettingsService,

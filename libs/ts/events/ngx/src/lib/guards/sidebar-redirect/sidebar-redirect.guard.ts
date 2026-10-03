@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 
 import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
 
@@ -18,7 +18,7 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
 @Injectable({
   providedIn: 'root'
 })
-export class SidebarRedirectGuard implements CanActivate {
+export class SidebarRedirectGuard  {
   constructor(private readonly router: Router, private readonly eventSettingsService: EventSettingsService) {}
 
   public canActivate(route: ActivatedRouteSnapshot): boolean {

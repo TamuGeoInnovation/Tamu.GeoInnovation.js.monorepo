@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateChild, Router, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 
 import { EventSettingsService } from '../../services/settings/event-settings.service';
 
@@ -16,7 +16,7 @@ export const ENDED_PATH = 'ended';
 @Injectable({
   providedIn: 'root'
 })
-export class RetiredEventGuard implements CanActivateChild {
+export class RetiredEventGuard  {
   constructor(private readonly router: Router, private readonly eventSettingsService: EventSettingsService) {}
 
   public canActivateChild(childRoute: ActivatedRouteSnapshot): boolean | UrlTree {
