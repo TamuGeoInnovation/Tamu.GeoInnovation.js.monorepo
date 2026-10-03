@@ -1,3 +1,5 @@
+@use 'libs/sass/mixins' as m;
+
 .notification-grouped-wrapper {
   position: fixed;
   bottom: 0;
@@ -155,18 +157,22 @@
   }
 
   .grouped-stepper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include m.flexbox();
+    @include m.align-items(center);
+    @include m.justify-content(center);
     gap: 0.5rem;
     padding: 0.35rem 0;
     border-top: 1px solid #e0e0e0;
   }
 
+  // Matches the table paginator's control, which is the existing pattern for stepping through a set:
+  // same material icon names, same muted grey, same hit area. Not reusing the component itself -
+  // `tamu-gisc-table-paginator` is built around paged table data, with page sizes, discrete page
+  // numbers and a `pageState` observable, none of which a four-item notification set has.
   .grouped-step {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    @include m.flexbox-inline();
+    @include m.align-items(center);
+    @include m.justify-content(center);
     width: 2rem;
     height: 2rem;
     padding: 0;
