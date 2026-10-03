@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, Event } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { filter, pluck, last, mergeMap, take } from 'rxjs/operators';
 
@@ -13,7 +13,9 @@ export class RouterHistoryService {
   constructor(private router: Router) {
     router.events
       .pipe(
-        filter((event) => {
+        // Typed as the NavigationEnd it is, so subscribers can read its url. Angular 16 widened the router's
+        // Event union to include events that have none (#1343). The check itself is unchanged.
+        filter((event): event is NavigationEnd => {
           return event.constructor.name === 'NavigationEnd';
         })
       )
@@ -32,7 +34,7 @@ export class RouterHistoryService {
   /**
    * Returns an observable with the
    */
-  public last(): Observable<Event> {
+  public last(): Observable<NavigationEnd> {
     return this.history.pipe(
       pluck('historyEvents'),
       mergeMap((arr) => from(arr.reverse())),
@@ -43,5 +45,5 @@ export class RouterHistoryService {
 }
 
 export interface RouterHistoryState {
-  historyEvents: Array<Event>;
+  historyEvents: Array<NavigationEnd>;
 }
