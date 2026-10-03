@@ -75,10 +75,19 @@ exit code on its own line, then filter the file.
 **Do not edit files while a Docker run is in flight.** The bind mount is live, so a run picks
 up partial edits and reports on a state that never existed. Kill it and restart.
 
-**Files are LF.** If you edit with a script, write LF endings explicitly. A script that
-writes CRLF turns a ten-line change into a thousand-line diff. Compare `git diff --stat`
-with `git diff --stat --ignore-all-space`; if they disagree wildly, normalize before
-committing.
+**Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
+turns git's end-of-line normalization off for every file: git stores the bytes it is given, and
+`core.autocrlf` has no effect however a machine is configured. Endings are per-file and permanent
+until someone changes them deliberately.
+
+Every text file is LF except `libs/assets/batch/startup.bat`, which stays CRLF because Windows
+batch files can mishandle `goto` and labels with LF endings.
+
+So if you edit with a script, write LF explicitly. A script that writes CRLF turns a ten-line
+change into a thousand-line diff and the real change becomes impossible to review. Check before
+committing by comparing `git diff --stat` with `git diff --stat --ignore-all-space`; if they
+disagree wildly you have rewritten endings, and should normalize before going further. The counts
+are `git ls-files --eol | awk '{print $1}' | sort | uniq -c`.
 
 ## Checking a deployed environment
 
