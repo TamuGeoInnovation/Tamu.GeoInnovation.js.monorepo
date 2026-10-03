@@ -25,6 +25,16 @@ Merged since the 2 October release, none of it deployed yet:
 - Not visible: `ngx-webstorage-service` 5.0.0 ([#1309](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1309)) and `ng2-dragula` 4.0.0
   ([#1310](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1310)), the Ivy releases of both.
 
+- **All Maps fits a phone again** ([#1335](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1335), pull request
+  [#1337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1337)). The Campus Maps cards were 208px wider than a 375px screen, cutting
+  off each card and pushing its **Copy** button off-screen - and copying the URL is the only way
+  these maps get shared, since production does not list them. Found by the new phone-width suite
+  ([#1331](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1331)) on its first run.
+
+  ![Before: Campus Maps cards cut off at the right edge of a phone screen](../screenshots/all-maps-mobile-overflow/before.png)
+
+  ![After: the cards fit, with the Copy button reachable](../screenshots/all-maps-mobile-overflow/after.png)
+
 ### How the 2 October release tested on production
 
 Full suite against production after the deploy: **207 passed, 2 failed, 21 skipped**. Both failures
