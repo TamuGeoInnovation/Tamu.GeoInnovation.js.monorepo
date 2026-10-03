@@ -16,7 +16,7 @@ import { Notification } from '../../helpers/notification.helper';
  * Its own component, and its own module, so the apps that do not use it do not ship it. Fourteen
  * applications render a notification container; one groups. Carrying ~5kB of grouping into the other
  * thirteen pushed `correction-lite-angular` past its 1MB budget - a budget five times tighter than its
- * siblings, and deliberately so.
+ * siblings, and deliberately so. That application has since been removed (#1339); the reason stands.
  *
  * Grouping originates in #693. Priority ordering and the high-priority marker are #1195.
  */
