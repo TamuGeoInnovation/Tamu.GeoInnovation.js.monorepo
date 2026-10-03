@@ -24,6 +24,9 @@ Merged since the 2 October release, none of it deployed yet:
 
 - Not visible: `ngx-webstorage-service` 5.0.0 ([#1309](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1309)) and `ng2-dragula` 4.0.0
   ([#1310](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1310)), the Ivy releases of both.
+- **Angular 16** ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)): Angular 15.2 to 16.2, Nx 16.0 to 16.10, TypeScript 4.9 to
+  5.1. Nothing is meant to look or behave differently, so test dev as normal; anything that does is a
+  bug in this upgrade. NestJS stays on 9 for now.
 
 - **All Maps fits a phone again** ([#1335](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1335), pull request
   [#1337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1337)). The Campus Maps cards were 208px wider than a 375px screen, cutting
