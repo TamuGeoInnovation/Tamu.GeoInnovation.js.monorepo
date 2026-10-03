@@ -75,6 +75,15 @@ exit code on its own line, then filter the file.
 **Do not edit files while a Docker run is in flight.** The bind mount is live, so a run picks
 up partial edits and reports on a state that never existed. Kill it and restart.
 
+**After a dependency change, prove the lock file with a clean `npm ci` before pushing.** CI installs
+with `npm ci`, which installs only what `package-lock.json` records and refuses when it disagrees
+with `package.json`. A local `npm install` quietly adds what is missing to `node_modules` without
+writing it to the lock, so every local check passes and CI fails before running anything. #1345 did
+exactly that: a full local verify passed, then four checks failed on `Missing: @types/dragula from
+lock file`, a peer of the upgraded `ng2-dragula`. Sync the lock with
+`npm install --package-lock-only --ignore-scripts`, then run `npm ci --ignore-scripts` in Docker in
+an empty directory holding only `package.json` and `package-lock.json`. See #1347.
+
 **Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
 turns git's end-of-line normalization off for every file: git stores the bytes it is given, and
 `core.autocrlf` has no effect however a machine is configured. Endings are per-file and permanent
