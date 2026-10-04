@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AbstractValueAccessorFormComponent } from './abstract-value-accessor-form.component';
 
@@ -6,7 +6,7 @@ describe('AbstractValueAccessorFormComponent', () => {
   let component: AbstractValueAccessorFormComponent<boolean>;
   let fixture: ComponentFixture<AbstractValueAccessorFormComponent<boolean>>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AbstractValueAccessorFormComponent]
     }).compileComponents();

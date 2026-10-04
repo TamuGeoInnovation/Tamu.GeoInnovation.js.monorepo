@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { TsRingdayNgxModule } from '@tamu-gisc/ts/ringday/ngx';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
@@ -26,10 +26,11 @@ WebFont.load({
 });
 
 @NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     Angulartics2Module.forRoot(),
     EnvironmentModule,
     SettingsModule,
@@ -37,14 +38,13 @@ WebFont.load({
     TsRingdayNgxModule,
     RouterModule.forRoot([])
   ],
-  declarations: [AppComponent],
   providers: [
     {
       provide: env,
       useValue: environment
     },
-    { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY }
-  ],
-  bootstrap: [AppComponent]
+    { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}

@@ -1,8 +1,8 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { OrderByPipe } from './order-by.pipe';
 
 describe('orderBy.pipe', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [OrderByPipe]
     }).compileComponents();

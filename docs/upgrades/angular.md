@@ -37,11 +37,11 @@ unattended.
 | 4. Install new versions | ~8 min | 6 min 23 s | 9 min 51 s |
 | 5. Clean `npm ci` | skipped (cost a CI round trip) | 43 s | 2 min |
 | 6. Code migrations | 70 min (25 listed, 10 changed files) | 91 min (24 listed, 12 changed files) | 98 min (22 listed, 18 files) |
-| 7. Commit, rebase, lock resync | ~10 min | ~15 min | ~10 min |
-| 8. Full lint, test and build | 95 min | 77 min | ~105 min |
-| 9. Fix newly broken | ~30 min | ~90 min | to record |
-| 10. Pull request and CI-only fixes | ~40 min | ~60 min | to record |
-| **Total, steps 1-10** | **~4 h 50 min** | **~6 h** | **to record** |
+| 7. Commit, rebase, lock resync | ~10 min | ~15 min | ~15 min |
+| 8. Full lint, test and build | 95 min | 77 min | 109 min |
+| 9. Fix newly broken | ~30 min | ~90 min | ~25 min |
+| 10. Pull request and CI-only fixes | ~40 min | ~60 min | recorded after merge |
+| **Total, steps 1-10** | **~4 h 50 min** | **~6 h** | **~5 h before CI** |
 | 11. Dev build, deploy and full suite | ~1 h | ~1 h | to record |
 
 ## What each one hit
@@ -71,6 +71,10 @@ The variable cost is steps 3, 9 and 10. Recording what caused it is what makes t
 - **Nx 19.8.15 cannot be installed** - its `@nrwl/*` twins were never published - so 19.8.14.
 - The migrations edited `package.json`, leaving the lock out of step; resynced.
 - `HttpClientModule` becomes `provideHttpClient(withInterceptorsFromDi())` in every app module.
+- **16 libraries' test suites broke:** Angular 18 removes the `async` test helper, deprecated since
+  Angular 10. 33 spec files moved to `waitForAsync`, a one-for-one replacement.
+- Nx 19 warns that the workspace is not connected to Nx Cloud. It fails nothing; `NX_NO_CLOUD=true`
+  silences it locally.
 
 ## Forecast for the rest
 

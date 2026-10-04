@@ -1,5 +1,5 @@
 import { ElementRef } from '@angular/core';
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
@@ -10,7 +10,7 @@ import { EsriMapModule } from '../../maps-esri.module';
 import { EsriMapComponent } from './esri-map.component';
 
 describe('EsriMapComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         EsriMapComponent,

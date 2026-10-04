@@ -1,4 +1,4 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 
 import {
   BarChartConfiguration,
@@ -8,7 +8,7 @@ import {
 } from './chart-container.component';
 
 describe('ChartContainerComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [ChartContainerComponent]
     }).compileComponents();

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { Angulartics2Module } from 'angulartics2';
@@ -26,10 +26,10 @@ WebFont.load({
 
 @NgModule({
   declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     RouterModule,
     Angulartics2Module.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
@@ -39,7 +39,6 @@ WebFont.load({
     SettingsModule,
     GisdayCompetitionsNgxCoreModule
   ],
-  providers: [NotificationService, { provide: env, useValue: environment }],
-  bootstrap: [AppComponent]
+  providers: [NotificationService, { provide: env, useValue: environment }, provideHttpClient(withInterceptorsFromDi())]
 })
 export class AppModule {}

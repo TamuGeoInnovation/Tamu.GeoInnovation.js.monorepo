@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -13,8 +13,9 @@ import { CodeMaroonAlertComponent } from './code-maroon-alert.component';
  * the ordinary map without the map module knowing anything about it.
  */
 @NgModule({
-  imports: [CommonModule, HttpClientModule, RouterModule, UIFormsModule, TestingModule],
   declarations: [CodeMaroonAlertComponent],
-  exports: [CodeMaroonAlertComponent]
+  exports: [CodeMaroonAlertComponent],
+  imports: [CommonModule, RouterModule, UIFormsModule, TestingModule],
+  providers: [provideHttpClient(withInterceptorsFromDi())]
 })
 export class CodeMaroonAlertModule {}

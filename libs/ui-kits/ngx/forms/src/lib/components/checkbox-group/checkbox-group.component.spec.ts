@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckboxGroupComponent } from './checkbox-group.component';
 
@@ -6,7 +6,7 @@ describe('CheckboxGroupComponent', () => {
   let component: CheckboxGroupComponent;
   let fixture: ComponentFixture<CheckboxGroupComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CheckboxGroupComponent]
     }).compileComponents();

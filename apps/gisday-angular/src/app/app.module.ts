@@ -1,7 +1,7 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -44,6 +44,8 @@ const routeOptions: ExtraOptions = {
 };
 
 @NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     Angulartics2Module.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
@@ -70,12 +72,10 @@ const routeOptions: ExtraOptions = {
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
     EnvironmentModule,
-    HttpClientModule,
     NotificationModule,
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [AppComponent],
   providers: [
     Title,
     {
@@ -90,8 +90,8 @@ const routeOptions: ExtraOptions = {
     {
       provide: ROLES_CLAIM,
       useValue: environment.auth0.roles_claim
-    }
-  ],
-  bootstrap: [AppComponent]
+    },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}

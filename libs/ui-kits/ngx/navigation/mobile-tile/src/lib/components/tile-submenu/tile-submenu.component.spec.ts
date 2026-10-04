@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BehaviorSubject } from 'rxjs';
 
@@ -17,7 +17,7 @@ describe('TileSubmenuComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TileSubmenuComponent],
       providers: [{ provide: TileService, useValue: TileServiceStub }]
