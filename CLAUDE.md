@@ -133,12 +133,18 @@ docker unpause <container>...
 
 A paused container loses nothing; it only stops competing for the CPU.
 
-**The pre-push check for a bug fix is narrower, and the pull request opens as a draft:**
+**The pre-push check for a bug fix covers only the projects it edits, and the pull request opens as a
+draft:**
 
 ```bash
-node node_modules/nx/bin/nx.js affected -t lint,test --base=origin/development
+node node_modules/nx/bin/nx.js run-many -t lint,test -p <each project the fix edits>
 node node_modules/nx/bin/nx.js build <the app the bug is in>
 ```
+
+Not `affected`: a fix in a shared library makes nearly everything affected. #1379 edited
+`libs/maps/esri`, and `affected -t lint,test` meant 52 projects and over 25 minutes; the two projects it
+edited took about 5. Run the two commands one after the other, not at once: two Nx processes over the
+same read-only install crashed with exit 135 and reported nothing.
 
 CI runs the full `affected -t lint,test,build` on every pull request anyway, so running it locally as
 well doubled the wait without adding a check. What CI alone catches - another app's bundle budget,
