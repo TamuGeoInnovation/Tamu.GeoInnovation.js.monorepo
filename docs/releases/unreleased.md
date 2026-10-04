@@ -28,6 +28,8 @@ Merged since the 3 October release was cut, and on dev in Release-443:
 - **Angular 17** ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)): Angular 16.2 to 17.1, Nx 16.10 to 17.3, TypeScript 5.1 to
   5.3. Nothing is meant to look or behave differently; anything that does is a bug in this upgrade.
   On dev in build 20261004.4.
+- **Angular 18** ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)): Angular 17.1 to 18.2, Nx 17.3 to 19.8, TypeScript 5.3 to
+  5.5. Nothing is meant to look or behave differently. Not on dev until the build after it merges.
 
 ---
 
@@ -58,6 +60,15 @@ It is the candidate for production on Monday 5 October.
 ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by this build, so they reach users when GIS
 Day next deploys.
 
+
+
+### For the next build
+
+Merged, but not in the build on dev yet. Test these once the next build is deployed.
+
+| Change | Open this on dev | Look for |
+| --- | --- | --- |
+| Angular 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), and anything that loads data: search, popups, the side panel | **nothing different**. Every app's HTTP setup changed form in this upgrade, so anything that fails to load data is the first thing to report |
 
 ---
 
