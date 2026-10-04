@@ -46,7 +46,10 @@ async function openMap(page, path: string): Promise<void> {
   await expect
     .poll(
       async () =>
-        await page.evaluate((n) => (window as unknown as Record<string, { ready?: boolean }>)[n]?.ready === true, PROBE_GLOBAL),
+        await page.evaluate(
+          (n) => (window as unknown as Record<string, { ready?: boolean }>)[n]?.ready === true,
+          PROBE_GLOBAL
+        ),
       { message: `the map on ${path} never finished loading`, timeout: 90_000, intervals: [1_000] }
     )
     .toBe(true);
