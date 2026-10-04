@@ -188,7 +188,9 @@ test.describe('every map opens where it does on production', () => {
       const { framing, settled } = await waitForSettledFraming(page, route);
 
       if (framing === null) {
-        throw new Error(`${route} has no map view, so where it opens could not be read`);
+        throw new Error(
+          `${route} reported no usable framing (no map view, or a probe from before #1380 on a projected view)`
+        );
       }
 
       if (!settled) {

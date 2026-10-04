@@ -14,86 +14,53 @@ export interface Framing {
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
 /**
- * The view's framing, or `null` when there is no map view.
+ * The view's framing, or `null` when there is no map view or its framing cannot be read.
  *
- * The map probe's `framing` (#1379) when the build has it. Builds whose probe predates it - production
- * until its first deploy after #1379 - fall back to Esri's own list of live views: the apps load ArcGIS
- * through esri-loader, so its AMD `require` is on `window`, and `esri/views/View`'s `views` holds every
- * view the page has created. The map is the 2D one.
+ * The map probe's `framing` (#1379), which reports a WGS 84 center in any spatial reference (#1380).
+ * Builds whose probe predates it - production until its first deploy after #1379 - fall back to Esri's
+ * own list of live views: the apps load ArcGIS through esri-loader, so its AMD `require` is on
+ * `window`, and `esri/views/View`'s `views` holds every view the page has created. The map is the 2D
+ * one. Those builds frame every map in geographic or Web Mercator coordinates, which carry a longitude
+ * and latitude, so the fallback has nothing to project.
  *
- * The fallback is also used when the probe's center has no longitude and latitude. Esri only fills
- * those in for geographic and Web Mercator views, and a view in a projected reference - dev's main map
- * with the Texas Centric vector tile basemap (wkid 32139) - reports `[null, null]`. The fallback
- * projects the center to WGS 84 instead.
+ * A probe with `framing` but from before #1380 reports `[null, null]` for a view in a projected
+ * reference (dev's main map, Texas Centric, wkid 32139). That reads as `null` here, not as a framing.
  */
 export async function readFraming(page: Page): Promise<Framing | null> {
   return await page.evaluate(async (probeName) => {
+    const usable = (framing: Framing | null | undefined): Framing | null =>
+      framing && [framing.zoom, ...framing.center].every((value) => typeof value === 'number' && Number.isFinite(value))
+        ? framing
+        : null;
+
     const probe = (window as unknown as Record<string, { framing?: Framing | null }>)[probeName];
-    const usable = (framing: Framing | null | undefined): framing is Framing =>
-      !!framing && [framing.zoom, ...framing.center].every((value) => typeof value === 'number' && Number.isFinite(value));
 
-    if (usable(probe?.framing)) {
-      return probe.framing;
-    }
-
-    interface Point {
-      x: number;
-      y: number;
-      longitude: number | null;
-      latitude: number | null;
+    if (probe && 'framing' in probe) {
+      return usable(probe.framing);
     }
 
     interface EsriView {
       type: string;
       zoom: number;
-      center?: Point;
+      center?: { longitude: number; latitude: number };
     }
 
-    interface Projection {
-      load(): Promise<void>;
-      project(point: Point, to: { wkid: number }): Point;
-    }
-
-    const amd = (
-      window as unknown as { require?: (deps: string[], ok: (...modules: unknown[]) => void, fail?: () => void) => void }
-    ).require;
+    const amd = (window as unknown as { require?: (deps: string[], ok: (View: unknown) => void, fail?: () => void) => void })
+      .require;
 
     if (typeof amd !== 'function') {
       return null;
     }
 
     return await new Promise<Framing | null>((resolve) => {
-      setTimeout(() => resolve(null), 10_000);
+      setTimeout(() => resolve(null), 5_000);
       amd(
-        ['esri/views/View', 'esri/geometry/projection'],
-        // Not an async callback: one never settled on dev's main map, where `.then` does.
-        (View, projection) => {
+        ['esri/views/View'],
+        (View) => {
           const views = (View as { views?: { toArray(): EsriView[] } }).views?.toArray() ?? [];
           const view = views.find((v) => v.type === '2d');
-          const center = view?.center;
 
-          if (!view || !center) {
-            return resolve(null);
-          }
-
-          const settle = (longitude: number | null, latitude: number | null) => {
-            const framing = { zoom: view.zoom, center: [longitude, latitude] } as Framing;
-
-            resolve(usable(framing) ? framing : null);
-          };
-
-          if (center.longitude !== null && center.latitude !== null) {
-            return settle(center.longitude, center.latitude);
-          }
-
-          (projection as Projection).load().then(
-            () => {
-              const geographic = (projection as Projection).project(center, { wkid: 4326 });
-
-              settle(geographic.x, geographic.y);
-            },
-            () => resolve(null)
-          );
+          resolve(view?.center ? usable({ zoom: view.zoom, center: [view.center.longitude, view.center.latitude] }) : null);
         },
         () => resolve(null)
       );

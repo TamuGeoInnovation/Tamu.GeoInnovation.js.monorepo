@@ -1,3 +1,5 @@
+import { loadModules } from 'esri-loader';
+
 import esri = __esri;
 
 // Type-only: `map.service.ts` imports `registerMapProbe` from here, so a value import would create
@@ -108,6 +110,7 @@ export interface MapProbe {
 
   /**
    * Whether a map is registered and all of its layers have finished loading, successfully or not.
+   * Also waits, briefly, until `framing` can be read: see there.
    *
    * This is the signal tests poll before taking a snapshot: it means "layer state is now worth
    * reading", which is exactly what the layer assertions need. Esri takes tens of seconds to get
@@ -116,8 +119,16 @@ export interface MapProbe {
   readonly ready: boolean;
 
   /**
-   * Where the view is looking: its zoom and its `[longitude, latitude]` center, or `null` before a
-   * view exists.
+   * Where the view is looking: its zoom and its WGS 84 `[longitude, latitude]` center, or `null`
+   * before a view exists.
+   *
+   * In any spatial reference. Esri fills in a point's `longitude` and `latitude` only for geographic
+   * and Web Mercator references; dev's main map, on the Texas Centric vector tile basemap (wkid
+   * 32139), reported `[null, null]`. Such a center is projected with Esri's projection engine, which
+   * is synchronous once loaded but loads asynchronously. So the first read of a view in another
+   * reference starts loading it and reports `null`, and `ready` stays false until it has loaded:
+   * after `ready`, a map with a view always has a framing. The basemap gallery has usually loaded
+   * the engine already, since a view needs it to change spatial reference at all.
    *
    * How a test sees that a map opened where it was meant to. An event map framed by its builder
    * choice opened at the default zoom once ArcGIS 4.27 started dropping a `goTo` made before the
@@ -188,7 +199,7 @@ export function registerMapProbe(instance: MapServiceInstance | undefined, owner
   if (target[MAP_PROBE_GLOBAL] === undefined) {
     target[MAP_PROBE_GLOBAL] = {
       get ready(): boolean {
-        return layersSettled();
+        return probeReady();
       },
       get drawing(): boolean {
         // True only when a view exists and says it is updating. With no view there is nothing being
@@ -197,17 +208,61 @@ export function registerMapProbe(instance: MapServiceInstance | undefined, owner
         return (current?.view as unknown as { updating?: boolean })?.updating === true;
       },
       get framing(): MapFraming | null {
-        const view = current?.view as esri.MapView | undefined;
-
-        if (!view?.center) {
-          return null;
-        }
-
-        return { zoom: view.zoom, center: [view.center.longitude, view.center.latitude] };
+        return framing();
       },
       snapshot: takeSnapshot
     };
   }
+}
+
+/** Esri's projection engine once loaded; see `MapProbe.framing`. */
+let projection: typeof esri.projection | undefined;
+let projectionRequested = false;
+
+function framing(): MapFraming | null {
+  const view = current?.view as esri.MapView | undefined;
+  const center = view?.center;
+
+  if (!view || !center) {
+    return null;
+  }
+
+  if (typeof center.longitude === 'number' && typeof center.latitude === 'number') {
+    return { zoom: view.zoom, center: [center.longitude, center.latitude] };
+  }
+
+  if (!projection) {
+    requestProjection();
+
+    return null;
+  }
+
+  const geographic = projection.project(center, { wkid: 4326 }) as esri.Point;
+
+  return { zoom: view.zoom, center: [geographic.x, geographic.y] };
+}
+
+function requestProjection(): void {
+  if (projectionRequested) {
+    return;
+  }
+
+  projectionRequested = true;
+
+  loadModules<[typeof esri.projection]>(['esri/geometry/projection'])
+    .then(async ([engine]) => {
+      await engine.load();
+      projection = engine;
+    })
+    .catch(() => {
+      // Asked again on the next read.
+      projectionRequested = false;
+    });
+}
+
+/** Layers settled, and `framing` readable if there is a view to frame. */
+function probeReady(): boolean {
+  return layersSettled() && (!current?.view?.center || framing() !== null);
 }
 
 /**
@@ -275,7 +330,7 @@ async function takeSnapshot(): Promise<MapProbeSnapshot> {
   }
 
   return {
-    ready: layersSettled(),
+    ready: probeReady(),
     viewReady: current.view?.ready === true,
     spatialReference: readSpatialReference(current.view),
     layers: await Promise.all(layers.map(probeLayer))
