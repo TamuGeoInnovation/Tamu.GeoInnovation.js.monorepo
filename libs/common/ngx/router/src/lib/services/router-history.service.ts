@@ -13,21 +13,15 @@ export class RouterHistoryService {
   constructor(private router: Router) {
     router.events
       .pipe(
-        // Typed as the NavigationEnd it is, so subscribers can read its url. Angular 16 widened the router's
-        // Event union to include events that have none (#1343). The check itself is unchanged.
-        filter((event): event is NavigationEnd => {
-          return event.constructor.name === 'NavigationEnd';
-        })
+        // instanceof, not the class name: production builds minify class names, so NavigationEnd is
+        // called something like `Wn` there and a name check never matched. The history stayed empty on
+        // production while working in development builds (#1348).
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd)
       )
       .subscribe((navigationEndEvent) => {
-        // Copy the state
-        const nst = { ...this._$state.value };
-
-        // Push shallow copy of current navigation event to new state history events array.
-        nst.historyEvents.push({ ...navigationEndEvent });
-
-        // Set new state value
-        this._$state.next(nst);
+        // A new array each time. Pushing onto the existing one mutated `initial`, which every instance
+        // of this service starts from, so a second instance inherited the first one's history (#1348).
+        this._$state.next({ historyEvents: [...this._$state.value.historyEvents, { ...navigationEndEvent }] });
       });
   }
 
