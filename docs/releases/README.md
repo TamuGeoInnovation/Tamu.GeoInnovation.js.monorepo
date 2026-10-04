@@ -195,6 +195,18 @@ at step 6 then guarantees nothing.
 
 If the suite failed and a tag was already pushed, delete it: `git push origin :dev-2026-09-29`.
 
+### 3a. The team tests on dev
+
+The suite proves the maps load and draw; it does not prove a change does what it was meant to. Before
+production, the team works through **What to test on dev** in [`unreleased.md`](unreleased.md): one
+row per visible change, each with a dev link and what to look for. Each pull request with a visible
+result adds its own row, in the same pull request, so the list is complete by the time a release is
+cut and nobody has to reconstruct it (#1360).
+
+Update the line above the table naming the build on dev, so testers know which build they are looking
+at. Anything they find is fixed and the release re-cut from step 1, or recorded in the notes as known.
+Production waits until the team has tested; a release can sit on dev over a weekend.
+
 ### 4. Merge the release notes
 
 **Write them as soon as step 2 passes, without being asked.** This step belongs to whoever is running
@@ -207,7 +219,8 @@ Open one pull request that:
 1. **Renames** `unreleased.md` to `YYYY-MM-DD.md` for the day it will ship. If the deploy slips, rename
    before merging.
 2. **Records the dev run from step 2** - the numbers that cleared it.
-3. **Points the *What to test* links at production**, since that is where anyone following them will
+3. **Moves the *What to test on dev* rows into the notes**, recording who tested them on dev and what
+   they found, and points the links at production, since that is where anyone following them will
    look once it is out. Anything deliberately not on production keeps its dev link and says why.
 4. **Ends with the "What went into this release" table** - every pull request and the issue behind it
    (#1139).

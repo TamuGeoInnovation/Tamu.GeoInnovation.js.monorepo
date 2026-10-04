@@ -3,8 +3,12 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**The last release on production is the [3 October release](2026-10-03.md)**, tagged
-`prod-2026-10-03`. It carried Angular 16.
+**On production: the [2 October release](2026-10-02.md)**, tagged `prod-2026-10-02`.
+
+**On dev, being tested: the [3 October release](2026-10-03.md)**, which carries Angular 16. Its notes
+are written and it passed the full suite, but it is **not on production yet**: the team tests it on dev
+first, and it is planned for production on Monday 5 October. The `prod-*` tag, not this file, will
+record when it ships.
 
 If you followed a link here expecting the notes for a release that just shipped, they are in those
 dated files now. Those files are the permanent record of what shipped; this one only ever describes
@@ -14,7 +18,32 @@ what has not shipped yet.
 
 ## Summary
 
-Nothing has merged since the 3 October release.
+Nothing has merged since the 3 October release was cut.
+
+---
+
+## What to test on dev
+
+**The team tests these on dev before a release goes to production.** Dev is
+[dev.aggiemap.tamu.edu](https://dev.aggiemap.tamu.edu). Each row is a change on dev and not yet on
+production. A pull request with a visible result adds its own row; at release, the rows move into the
+dated notes as what was tested, and this table empties.
+
+**Currently on dev for testing:** the 3 October release, Azure build 20261003.14 (`6e0025d5`),
+Release-442, tagged `dev-2026-10-03`. It passed the full suite on 3 October. Production deploy planned
+for Monday 5 October.
+
+| Change | Open this on dev | Look for |
+| --- | --- | --- |
+| Alerts show one at a time ([#1327](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1327)) | [The main map](https://dev.aggiemap.tamu.edu/map) | the alerts in **one** card with a stepper, the most important first; stepping through them, and dismissing one, works |
+| All Maps fits a phone ([#1335](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1335)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) and [Campus Maps](https://dev.aggiemap.tamu.edu/all-maps/campus) on a phone | nothing cut off at the right edge, no sideways scroll, each campus card's **Copy** button reachable |
+| Angular 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | Any map you use: the [main map](https://dev.aggiemap.tamu.edu/map), an [event map](https://dev.aggiemap.tamu.edu/events/150th-kickoff), [parking](https://dev.aggiemap.tamu.edu/all-maps/parking), a [campus map](https://dev.aggiemap.tamu.edu/campus/galveston) | **nothing different**: maps draw, search works, popups open, the side panel opens and closes. Anything that looks or behaves differently is a bug in this upgrade |
+| ArcGIS 4.27 ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)) | The same maps | layers, labels and basemaps draw as before; route arrows on event maps still point the right way |
+| Closing the "Report a bad route" form ([#1348](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1348)) | Directions on a phone, then **Report a bad route**, then close | it returns to the directions you came from. Directions are hidden on production, so this is a dev-only check for now |
+
+**Not testable on dev in this release:** GIS Day's native date and time pickers
+([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by Release-442, so they reach users when GIS
+Day next deploys.
 
 ---
 
