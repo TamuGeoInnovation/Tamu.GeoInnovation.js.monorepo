@@ -30,6 +30,8 @@ Merged since the 2 October release, none of it deployed yet:
 - Not visible: `correction-lite-angular` removed, with its library and the tables library only it used
   ([#1339](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1339)). It was part of the Geoservices site, which no longer serves it; what it was
   is recorded in [`docs/applications/correction-lite.md`](../applications/correction-lite.md).
+- Not visible: `trees-angular` removed, an unused experiment from 2019 ([#1352](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1352)). What it was
+  is recorded in [`docs/applications/trees.md`](../applications/trees.md).
 
 - **All Maps fits a phone again** ([#1335](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1335), pull request
   [#1337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1337)). The Campus Maps cards were 208px wider than a 375px screen, cutting
@@ -86,7 +88,7 @@ mid-run: every Angular build then fails waiting on `ngcc`'s lock file.
 | 3 | ArcGIS runtime off 4.23 ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)) | not started; independent, can move earlier |
 | 4 | Angular 16 to 22, one major per pull request | later |
 | 5 | `esri-loader` to `@arcgis/core`, 134 files | last |
-| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226), [#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) | mostly done; `trees-angular` to survey, the old Ring Day app after 10 October |
+| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226), [#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) | mostly done; nothing left to survey, the old Ring Day app after 10 October |
 
 ### Decisions waiting on the maintainer
 
@@ -109,7 +111,7 @@ mid-run: every Angular build then fails waiting on `ngcc`'s lock file.
   ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old Move-In app's deployed copy at `/movein/` still needs deleting
   ([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
 - **Every map's starting center and zoom** to be checked against its data ([#1231](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1231)).
-- **The dead-project survey** still has `trees-angular` to look at
+- **The dead-project survey** has no applications left to look at
   ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)). Signage does not build from its current source.
 
 ### Waiting on someone else
