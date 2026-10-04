@@ -27,7 +27,7 @@ Merged since the 3 October release was cut, and on dev in Release-443:
   [#1364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1364)), matching the 4.27 runtime. Nothing is meant to look different.
 - **Angular 17** ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)): Angular 16.2 to 17.1, Nx 16.10 to 17.3, TypeScript 5.1 to
   5.3. Nothing is meant to look or behave differently; anything that does is a bug in this upgrade.
-  Not on dev until the build after it merges.
+  On dev in build 20261004.4.
 
 ---
 
@@ -38,10 +38,10 @@ Merged since the 3 October release was cut, and on dev in Release-443:
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** Azure build **20261003.24** (`fcad0891`), **Release-443**, deployed on
-3 October at 22:54. It is the 3 October release (Release-442, which passed the full suite) plus NestJS
-10 and the ArcGIS 4.27 types; its own full suite run is under way. Production deploy planned for Monday
-5 October, of this build or a later one.
+**Currently on dev for testing:** Azure build **20261004.4** (`5c54f844`), tagged `dev-2026-10-04`,
+deployed on 4 October. It is Release-443 (Angular 16, NestJS 10, the ArcGIS 4.27 types) plus Angular 17
+and Mailroom's optimized build, and passed the full suite on 4 October: 324 passed, 0 failed, 7 skipped.
+It is the candidate for production on Monday 5 October.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
@@ -52,19 +52,12 @@ dated notes as what was tested, and this table empties.
 | Closing the "Report a bad route" form ([#1348](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1348)) | Directions on a phone, then **Report a bad route**, then close | it returns to the directions you came from. Directions are hidden on production, so this is a dev-only check for now |
 | NestJS 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | Nothing on AggieMap | nothing to test on dev.aggiemap: the NestJS APIs deploy separately, so check them where each one runs |
 | ArcGIS types 4.27 ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322)) | [An event map with routes](https://dev.aggiemap.tamu.edu/events/150th-kickoff), and clicking features on the [main map](https://dev.aggiemap.tamu.edu/map) | route arrows still drawn and pointing the right way; clicking a building or lot still opens its popup |
+| Angular 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | Any map you use: the [main map](https://dev.aggiemap.tamu.edu/map), an [event map](https://dev.aggiemap.tamu.edu/events/150th-kickoff), [parking](https://dev.aggiemap.tamu.edu/all-maps/parking), a [campus map](https://dev.aggiemap.tamu.edu/campus/galveston), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | **nothing different**, as for Angular 16: maps draw, search works, popups open, the side panel opens and closes, alerts step through |
 
 **Not testable on dev in this release:** GIS Day's native date and time pickers
-([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by Release-443, so they reach users when GIS
+([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by this build, so they reach users when GIS
 Day next deploys.
 
-
-### For the next build
-
-Merged, but not in the build on dev yet. Test these once the next build is deployed.
-
-| Change | Open this on dev | Look for |
-| --- | --- | --- |
-| Angular 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | Any map you use: the [main map](https://dev.aggiemap.tamu.edu/map), an [event map](https://dev.aggiemap.tamu.edu/events/150th-kickoff), [parking](https://dev.aggiemap.tamu.edu/all-maps/parking), a [campus map](https://dev.aggiemap.tamu.edu/campus/galveston), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | **nothing different**, as for Angular 16: maps draw, search works, popups open, the side panel opens and closes, alerts step through |
 
 ---
 
