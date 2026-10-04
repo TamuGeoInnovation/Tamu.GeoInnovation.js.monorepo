@@ -3,8 +3,8 @@
 > **Not on production.** This file collects what has merged since the last production release. Each
 > entry says where it can be seen.
 
-**The last release on production is the [2 October release](2026-10-02.md)**, tagged
-`prod-2026-10-02` on `648f45d8`. It also carried the [first 1 October release](2026-10-01.md).
+**The last release on production is the [3 October release](2026-10-03.md)**, tagged
+`prod-2026-10-03`. It carried Angular 16.
 
 If you followed a link here expecting the notes for a release that just shipped, they are in those
 dated files now. Those files are the permanent record of what shipped; this one only ever describes
@@ -14,95 +14,45 @@ what has not shipped yet.
 
 ## Summary
 
-Merged since the 2 October release, none of it deployed yet:
-
-- **Closing a window returns to the page you came from** ([#1348](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1348)). On production the
-  app never recorded where you had been: it recognised navigations by a class name that production builds
-  shorten. So closing a modal fell back to the browser's Back, which leaves AggieMap entirely when the
-  modal was opened from a link. Development builds keep class names, which is why it was never seen there.
-
-- **The date-time picker uses the browser's own inputs** ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220), pull request
-  [#1312](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1312)). GIS Day's event and season pickers show the browser's time and date inputs
-  instead of the hour grid. Not yet on dev; the after capture is taken there.
-
-  ![Before: the old hour grid for a GIS Day event start time](../screenshots/1220-native-date-time-picker/before-gisday-event-start-time-picker.png)
-
-- Not visible: `ngx-webstorage-service` 5.0.0 ([#1309](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1309)) and `ng2-dragula` 4.0.0
-  ([#1310](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1310)), the Ivy releases of both.
-- **Angular 16** ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)): Angular 15.2 to 16.2, Nx 16.0 to 16.10, TypeScript 4.9 to
-  5.1. Nothing is meant to look or behave differently, so test dev as normal; anything that does is a
-  bug in this upgrade. NestJS stays on 9 for now.
-- Not visible: `correction-lite-angular` removed, with its library and the tables library only it used
-  ([#1339](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1339)). It was part of the Geoservices site, which no longer serves it; what it was
-  is recorded in [`docs/applications/correction-lite.md`](../applications/correction-lite.md).
-- Not visible: `trees-angular` removed, an unused experiment from 2019 ([#1352](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1352)). What it was
-  is recorded in [`docs/applications/trees.md`](../applications/trees.md).
-
-- **All Maps fits a phone again** ([#1335](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1335), pull request
-  [#1337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1337)). The Campus Maps cards were 208px wider than a 375px screen, cutting
-  off each card and pushing its **Copy** button off-screen - and copying the URL is the only way
-  these maps get shared, since production does not list them. Found by the new phone-width suite
-  ([#1331](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1331)) on its first run.
-
-  ![Before: Campus Maps cards cut off at the right edge of a phone screen](../screenshots/all-maps-mobile-overflow/before.png)
-
-  ![After: the cards fit, with the Copy button reachable](../screenshots/all-maps-mobile-overflow/after.png)
-
-### How the 2 October release tested on production
-
-Full suite against production after the deploy: **207 passed, 2 failed, 21 skipped**. Both failures
-are a fault in the suite, not the release: two guards require campus maps to be listed, and production
-deliberately lists none ([#1313](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1313)). By hand on production: All Maps clears the main map's
-notices, and `/code-maroon` shows no overlay.
+Nothing has merged since the 3 October release.
 
 ---
 
-## Work in flight — 2 October
+## Work in flight — 3 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
 file would say the work had stopped.
 
-### In progress: removing `ngcc`, the first step of the Angular upgrade
+### The Angular upgrade ([#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)), in order
 
-Angular 16 removes `ngcc`, which five installed packages depended on ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220), part of
-[#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218)). In the order they are being done:
-
-| Order | Issue | Change | State |
-| --- | --- | --- | --- |
-| 1 | [#1277](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1277) | Upgrade `ngx-webstorage-service` to 5.0.0 | merged, [#1309](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1309) |
-| 2 | [#1278](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1278) | Upgrade `ng2-dragula` to 4.0.0 | merged, [#1310](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1310) |
-| 3 | [#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220) | Replace `angular-bootstrap-datetimepicker` with native inputs inside the shared picker | merged, [#1312](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1312); after capture on dev |
-| 4 | [#1276](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1276) | Remove `ngx-lightbox` and `ngx-filesaver` | [#1311](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1311) open, rebased after #1309 and #1310; mergeable, checks re-running |
-| 5 | [#1279](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1279) | Stop running `ngcc`, and fail the install if a package needs it again | branch `chore/1279-no-ngcc` pushed; pull request opens once #1311 merges. Must be last |
+| Order | Step | State |
+| --- | --- | --- |
+| 1 | Remove `ngcc` ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)) | done |
+| 2 | ArcGIS runtime off 4.23 ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)) | done: 4.27 |
+| 3 | Angular 15 to 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | done, in the 3 October release |
+| 4 | NestJS 9 to 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | branch `chore/1350-nestjs-10`, verifying; merges after Angular 16 is on production |
+| 5 | ArcGIS type definitions 4.23 to 4.27 ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322)) | branch `chore/1322-arcgis-types-4-27`, all 18 errors fixed, verifying |
+| 6 | Angular 16 to 22, one major per pull request | next after NestJS 10 |
+| 7 | `esri-loader` to `@arcgis/core`, 134 files | last |
+| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | done apart from the old Ring Day app, after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) |
 
 **A local `nx affected` on a `package.json` change fails on projects that already fail on
 `development`.** Every project counts as affected. Measured on 2 October: `cpa-angular`,
 `ues-recycling-angular`, `signage-angular`, `ues-valves-angular` and `oidc-admin-angular` fail to build
 on unchanged `development` (TypeORM and NestJS typings, signage typings, a missing `secrets` file);
 NestJS builds fail on missing `ormconfig` files; three NestJS projects fail stale generator specs. CI
-excludes all of them. Compare against this list, not the exit code. And do not pause a verification
-mid-run: every Angular build then fails waiting on `ngcc`'s lock file.
+excludes all of them. Compare against this list, not the exit code. After any dependency change, prove
+the lock file with a clean `npm ci` before pushing (CLAUDE.md, [#1347](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1347)).
 
-### Then, the rest of the upgrade ([#1218](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1218))
+### Also open
 
-| Order | Step | State |
-| --- | --- | --- |
-| 1 | Finish removing `ngcc`, above | in progress |
-| 2 | Angular 15 to 16: `nx migrate`, every affected app built, full suite on dev | next |
-| 3 | ArcGIS runtime off 4.23 ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)) | not started; independent, can move earlier |
-| 4 | Angular 16 to 22, one major per pull request | later |
-| 5 | `esri-loader` to `@arcgis/core`, 134 files | last |
-| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226), [#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) | mostly done; nothing left to survey, the old Ring Day app after 10 October |
+- **The shared flex mixins emit dead vendor prefixes** ([#1340](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1340), low priority), which makes
+  reused CSS larger than hand-written.
+- **Angular 16's parallel Sass compilation failed once on Azure** with "This file is already being
+  loaded", on stylesheets that built cleanly before and since. If it recurs, it becomes its own issue.
 
-### Decisions waiting on the maintainer
-
-1. **Priority of [#1313](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1313)**, the production smoke guards. Recommended High: the daily
-   production run fails until it is fixed.
-2. **When #1311 merges, open #1279 straight away**, or hold it until #1312 has been checked on dev.
-   Recommended: open it straight away.
-
-### Also open from 1 October
+### Also open from 1 and 2 October
 
 - **Code Maroon needs an IIS proxy for its feed.** Dev reads a saved copy of the feed until then
   ([#1304](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1304), in the 2 October release). The fix is an IIS URL Rewrite and ARR rule
@@ -110,14 +60,11 @@ mid-run: every Angular build then fails waiting on `ngcc`'s lock file.
   saved copy is removed once it is in place.
 - **The browser console's build banner prints `___BUILD_DATE___` and the other placeholders** instead
   of the build's details ([#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306), low priority).
-- **Smoke checks that an event not yet over is never shown as passed**, on the event maps and in All
-  Maps' Upcoming events ([#1302](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1302)). Unit tests for both landed with their fixes.
 - **The old standalone Ring Day app** is removed after Ring Day, 8 to 10 October
   ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)). The old Move-In app's deployed copy at `/movein/` still needs deleting
   ([#1235](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1235)).
 - **Every map's starting center and zoom** to be checked against its data ([#1231](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1231)).
-- **The dead-project survey** has no applications left to look at
-  ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)). Signage does not build from its current source.
+- **Signage does not build from its current source** ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)).
 
 ### Waiting on someone else
 
