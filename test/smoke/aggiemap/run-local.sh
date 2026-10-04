@@ -48,7 +48,7 @@ fi
 
 echo "Smoke suite: $env_name, $image"
 
-docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -w /work -e SMOKE_ENV="$env_name" "$image" \
+docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -w /work -e SMOKE_ENV="$env_name" -e UPDATE_FRAMING_BASELINE "$image" \
   node -e '
     const settings = require("./test/smoke/aggiemap/environments.json")[process.env.SMOKE_ENV];
     const env = {
