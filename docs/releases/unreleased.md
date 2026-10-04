@@ -16,6 +16,11 @@ what has not shipped yet.
 
 Merged since the 2 October release, none of it deployed yet:
 
+- **Closing a window returns to the page you came from** ([#1348](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1348)). On production the
+  app never recorded where you had been: it recognised navigations by a class name that production builds
+  shorten. So closing a modal fell back to the browser's Back, which leaves AggieMap entirely when the
+  modal was opened from a link. Development builds keep class names, which is why it was never seen there.
+
 - **The date-time picker uses the browser's own inputs** ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220), pull request
   [#1312](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1312)). GIS Day's event and season pickers show the browser's time and date inputs
   instead of the hour grid. Not yet on dev; the after capture is taken there.
