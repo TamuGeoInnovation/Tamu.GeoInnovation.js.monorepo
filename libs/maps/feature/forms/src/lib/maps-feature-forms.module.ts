@@ -7,6 +7,10 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { LayerConfigurationComponent } from './components/layer-configuration/layer-configuration.component';
 
-@NgModule({ declarations: [LayerConfigurationComponent],
-    exports: [LayerConfigurationComponent], imports: [CommonModule, FormsModule, ReactiveFormsModule, UIFormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [LayerConfigurationComponent],
+  exports: [LayerConfigurationComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, UIFormsModule],
+  providers: [provideHttpClient(withInterceptorsFromDi())]
+})
 export class MapsFormsModule {}

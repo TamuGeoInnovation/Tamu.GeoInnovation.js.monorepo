@@ -26,14 +26,20 @@ const hybridRoutes: Routes = [
   }
 ];
 
-@NgModule({ declarations: [],
-    exports: [RouterModule], imports: [RouterModule.forRoot(hybridRoutes, { initialNavigation: 'enabledBlocking' }),
-        BrowserModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        ResponsiveModule,
-        CommonNgxRouterModule,
-        TestingModule,
-        UITamuBrandingModule,
-        AuthModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [],
+  exports: [RouterModule],
+  imports: [
+    RouterModule.forRoot(hybridRoutes, { initialNavigation: 'enabledBlocking' }),
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ResponsiveModule,
+    CommonNgxRouterModule,
+    TestingModule,
+    UITamuBrandingModule,
+    AuthModule
+  ],
+  providers: [provideHttpClient(withInterceptorsFromDi())]
+})
 export class AppRoutingModule {}

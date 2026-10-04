@@ -24,26 +24,37 @@ import * as WebFont from 'webfontloader';
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Material Icons Outlined', 'Open Sans:300,400,600,700,800', 'Oswald:200,300,400,500,600,700']
+    families: [
+      'Material Icons',
+      'Material Icons Outlined',
+      'Open Sans:300,400,600,700,800',
+      'Oswald:200,300,400,500,600,700'
+    ]
   }
 });
 
-@NgModule({ declarations: [AppComponent],
-    bootstrap: [AppComponent], imports: [Angulartics2Module.forRoot(),
-        BrowserModule,
-        BrowserAnimationsModule,
-        EnvironmentModule,
-        NotificationModule,
-        NotificationGroupedModule,
-        AggiemapNgxCoreModule,
-        // Code Maroon proof of concept (#1289). Development only; renders nothing elsewhere.
-        CodeMaroonAlertModule], providers: [
-        { provide: env, useValue: environment },
-        { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
-        { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: EventDefinitions },
-        // Supplies the bus map's stop/route popup at the application root (BusService lives in a low-level
-        // lib and cannot import the popup component directly — see BUS_STOP_POPUP_COMPONENT).
-        { provide: BUS_STOP_POPUP_COMPONENT, useValue: BusStopPopupComponent },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    Angulartics2Module.forRoot(),
+    BrowserModule,
+    BrowserAnimationsModule,
+    EnvironmentModule,
+    NotificationModule,
+    NotificationGroupedModule,
+    AggiemapNgxCoreModule,
+    // Code Maroon proof of concept (#1289). Development only; renders nothing elsewhere.
+    CodeMaroonAlertModule
+  ],
+  providers: [
+    { provide: env, useValue: environment },
+    { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
+    { provide: EVENT_NOTIFICATION_DEFINITIONS, useValue: EventDefinitions },
+    // Supplies the bus map's stop/route popup at the application root (BusService lives in a low-level
+    // lib and cannot import the popup component directly — see BUS_STOP_POPUP_COMPONENT).
+    { provide: BUS_STOP_POPUP_COMPONENT, useValue: BusStopPopupComponent },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+})
 export class AppModule {}

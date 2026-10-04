@@ -14,6 +14,10 @@ const routes: Routes = [
   }
 ];
 
-@NgModule({ declarations: [MapComponent],
-    exports: [MapComponent], imports: [RouterModule.forChild(routes), CommonModule, EsriMapModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [MapComponent],
+  exports: [MapComponent],
+  imports: [RouterModule.forChild(routes), CommonModule, EsriMapModule],
+  providers: [provideHttpClient(withInterceptorsFromDi())]
+})
 export class MapModule {}

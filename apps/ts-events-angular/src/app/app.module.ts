@@ -24,20 +24,26 @@ WebFont.load({
     families: ['Material Icons', 'Material Icons Outlined', 'Open Sans:300,400,600', 'Oswald']
   }
 });
-@NgModule({ declarations: [AppComponent],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        Angulartics2Module.forRoot(),
-        EnvironmentModule,
-        SettingsModule,
-        NotificationModule,
-        TsEventsNgxModule,
-        RouterModule.forRoot([])], providers: [
-        {
-            provide: env,
-            useValue: environment
-        },
-        { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    Angulartics2Module.forRoot(),
+    EnvironmentModule,
+    SettingsModule,
+    NotificationModule,
+    TsEventsNgxModule,
+    RouterModule.forRoot([])
+  ],
+  providers: [
+    {
+      provide: env,
+      useValue: environment
+    },
+    { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+})
 export class AppModule {}

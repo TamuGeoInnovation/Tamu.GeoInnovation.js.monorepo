@@ -26,18 +26,24 @@ const routes: Routes = [
   }
 ];
 
-@NgModule({ declarations: [AppComponent],
-    bootstrap: [AppComponent], imports: [Angulartics2Module.forRoot(),
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
-        EnvironmentModule,
-        NotificationModule], providers: [
-        NotificationService,
-        {
-            provide: env,
-            useValue: environment
-        },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    Angulartics2Module.forRoot(),
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+    EnvironmentModule,
+    NotificationModule
+  ],
+  providers: [
+    NotificationService,
+    {
+      provide: env,
+      useValue: environment
+    },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+})
 export class AppModule {}

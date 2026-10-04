@@ -39,40 +39,46 @@ const routes: Routes = [
   }
 ];
 
-@NgModule({ declarations: [AppComponent],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        AuthModule.forRoot({
-            config: {
-                authority: environment.idp_url,
-                redirectUrl: window.location.origin + '/auth/callback',
-                postLogoutRedirectUri: window.location.origin,
-                clientId: environment.idp_client_id,
-                scope: 'openid offline_access profile email',
-                responseType: 'code',
-                silentRenew: true,
-                useRefreshToken: true,
-                logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
-                autoUserInfo: false,
-                secureRoutes: [environment.api_url]
-            }
-        }),
-        RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
-        AuthRoutingModule,
-        EnvironmentModule,
-        LocalStoreModule,
-        NotificationModule,
-        Angulartics2Module.forRoot()], providers: [
-        Title,
-        {
-            provide: env,
-            useValue: environment
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthInterceptor,
-            multi: true
-        },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    AuthModule.forRoot({
+      config: {
+        authority: environment.idp_url,
+        redirectUrl: window.location.origin + '/auth/callback',
+        postLogoutRedirectUri: window.location.origin,
+        clientId: environment.idp_client_id,
+        scope: 'openid offline_access profile email',
+        responseType: 'code',
+        silentRenew: true,
+        useRefreshToken: true,
+        logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
+        autoUserInfo: false,
+        secureRoutes: [environment.api_url]
+      }
+    }),
+    RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
+    AuthRoutingModule,
+    EnvironmentModule,
+    LocalStoreModule,
+    NotificationModule,
+    Angulartics2Module.forRoot()
+  ],
+  providers: [
+    Title,
+    {
+      provide: env,
+      useValue: environment
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+})
 export class AppModule {}

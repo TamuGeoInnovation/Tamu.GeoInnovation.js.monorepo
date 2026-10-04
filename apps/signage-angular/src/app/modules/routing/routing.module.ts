@@ -21,14 +21,16 @@ WebFont.load({
   }
 });
 
-@NgModule({ declarations: [],
-    exports: [RouterModule], imports: [CommonModule,
-        RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
-        EnvironmentModule], providers: [
-        {
-            provide: env,
-            useValue: environment
-        },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+@NgModule({
+  declarations: [],
+  exports: [RouterModule],
+  imports: [CommonModule, RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }), EnvironmentModule],
+  providers: [
+    {
+      provide: env,
+      useValue: environment
+    },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+})
 export class RoutingModule {}

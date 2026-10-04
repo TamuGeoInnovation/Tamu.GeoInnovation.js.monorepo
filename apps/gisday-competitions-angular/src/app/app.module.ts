@@ -24,15 +24,21 @@ WebFont.load({
   }
 });
 
-@NgModule({ declarations: [AppComponent],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule,
-        Angulartics2Module.forRoot(),
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
-        EnvironmentModule,
-        NotificationModule,
-        ResponsiveModule,
-        SettingsModule,
-        GisdayCompetitionsNgxCoreModule], providers: [NotificationService, { provide: env, useValue: environment }, provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule,
+    Angulartics2Module.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
+    EnvironmentModule,
+    NotificationModule,
+    ResponsiveModule,
+    SettingsModule,
+    GisdayCompetitionsNgxCoreModule
+  ],
+  providers: [NotificationService, { provide: env, useValue: environment }, provideHttpClient(withInterceptorsFromDi())]
+})
 export class AppModule {}

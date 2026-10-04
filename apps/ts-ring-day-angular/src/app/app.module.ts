@@ -25,20 +25,26 @@ WebFont.load({
   }
 });
 
-@NgModule({ declarations: [AppComponent],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        Angulartics2Module.forRoot(),
-        EnvironmentModule,
-        SettingsModule,
-        NotificationModule,
-        TsRingdayNgxModule,
-        RouterModule.forRoot([])], providers: [
-        {
-            provide: env,
-            useValue: environment
-        },
-        { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    Angulartics2Module.forRoot(),
+    EnvironmentModule,
+    SettingsModule,
+    NotificationModule,
+    TsRingdayNgxModule,
+    RouterModule.forRoot([])
+  ],
+  providers: [
+    {
+      provide: env,
+      useValue: environment
+    },
+    { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+})
 export class AppModule {}

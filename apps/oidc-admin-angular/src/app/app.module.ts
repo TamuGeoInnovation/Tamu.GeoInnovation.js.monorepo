@@ -59,37 +59,43 @@ export function getHighlightLanguages() {
   };
 }
 
-@NgModule({ declarations: [AppComponent],
-    bootstrap: [AppComponent], imports: [Angulartics2Module.forRoot(),
-        AuthModule.forRoot({
-            config: {
-                authority: environment.idp_url,
-                redirectUrl: window.location.origin + '/auth/callback',
-                secureRoutes: [environment.api_url],
-                postLogoutRedirectUri: window.location.origin,
-                clientId: environment.client_id,
-                scope: 'openid offline_access profile email',
-                responseType: 'code',
-                silentRenew: true,
-                useRefreshToken: true,
-                logLevel: environment.production ? LogLevel.None : LogLevel.Debug,
-                autoUserInfo: false
-            }
-        }),
-        BrowserModule,
-        RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
-        BrowserAnimationsModule,
-        EnvironmentModule,
-        LocalStoreModule,
-        NotificationModule,
-        UILayoutModule,
-        AuthRoutingModule], providers: [
-        NotificationService,
-        {
-            provide: env,
-            useValue: environment
-        },
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+@NgModule({
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    Angulartics2Module.forRoot(),
+    AuthModule.forRoot({
+      config: {
+        authority: environment.idp_url,
+        redirectUrl: window.location.origin + '/auth/callback',
+        secureRoutes: [environment.api_url],
+        postLogoutRedirectUri: window.location.origin,
+        clientId: environment.client_id,
+        scope: 'openid offline_access profile email',
+        responseType: 'code',
+        silentRenew: true,
+        useRefreshToken: true,
+        logLevel: environment.production ? LogLevel.None : LogLevel.Debug,
+        autoUserInfo: false
+      }
+    }),
+    BrowserModule,
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+    BrowserAnimationsModule,
+    EnvironmentModule,
+    LocalStoreModule,
+    NotificationModule,
+    UILayoutModule,
+    AuthRoutingModule
+  ],
+  providers: [
+    NotificationService,
+    {
+      provide: env,
+      useValue: environment
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+})
 export class AppModule {}
