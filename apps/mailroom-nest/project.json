@@ -12,6 +12,7 @@
         "outputPath": "dist/apps/mailroom-nest",
         "main": "apps/mailroom-nest/src/main.ts",
         "tsConfig": "apps/mailroom-nest/tsconfig.app.json",
+        "webpackConfig": "apps/mailroom-nest/webpack.config.js",
         "assets": [
           "apps/mailroom-nest/src/assets",
           "apps/mailroom-nest/src/Dockerfile",
@@ -61,17 +62,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/mailroom-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/mailroom-nest"],
       "options": {
-        "jestConfig": "apps/mailroom-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/mailroom-nest/jest.config.ts"
       }
     }
   },

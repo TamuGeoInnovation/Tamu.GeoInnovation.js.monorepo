@@ -8,16 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/accessibility/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/maps/feature/accessibility/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/accessibility"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/maps/feature/accessibility/src/**/*.ts", "libs/maps/feature/accessibility/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/discover"],
       "options": {
-        "jestConfig": "libs/aggiemap/ngx/discover/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "libs/aggiemap/ngx/discover/jest.config.js"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/aggiemap/ngx/discover/src/**/*.ts", "libs/aggiemap/ngx/discover/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

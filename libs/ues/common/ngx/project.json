@@ -8,16 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ues/common/ngx/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/ues/common/ngx/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ues/common/ngx"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/ues/common/ngx/src/**/*.ts", "libs/ues/common/ngx/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

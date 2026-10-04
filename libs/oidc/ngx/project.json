@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/oidc/ngx"],
       "options": {
-        "jestConfig": "libs/oidc/ngx/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/oidc/ngx/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/oidc/ngx/src/**/*.ts", "libs/oidc/ngx/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

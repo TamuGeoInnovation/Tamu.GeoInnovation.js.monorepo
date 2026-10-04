@@ -5,16 +5,12 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/cpa/data-api/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/cpa/data-api/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/cpa/data-api/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/cpa/data-api"]
     }

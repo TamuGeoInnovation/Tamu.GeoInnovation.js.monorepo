@@ -5,16 +5,12 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/cpa/common/entities/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/cpa/common/entities/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/cpa/common/entities/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/cpa/common/entities"]
     }

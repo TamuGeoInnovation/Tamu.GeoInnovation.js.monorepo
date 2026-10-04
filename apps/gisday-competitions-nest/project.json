@@ -12,6 +12,7 @@
         "outputPath": "dist/apps/gisday-competitions-nest",
         "main": "apps/gisday-competitions-nest/src/main.ts",
         "tsConfig": "apps/gisday-competitions-nest/tsconfig.app.json",
+        "webpackConfig": "apps/gisday-competitions-nest/webpack.config.js",
         "assets": [
           "apps/gisday-competitions-nest/src/assets",
           "apps/gisday-competitions-nest/src/package.json",
@@ -46,17 +47,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/gisday-competitions-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-nest"],
       "options": {
-        "jestConfig": "apps/gisday-competitions-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/gisday-competitions-nest/jest.config.ts"
       }
     }
   },

@@ -25,6 +25,9 @@ Merged since the 3 October release was cut, and on dev in Release-443:
   maps are Angular apps and do not change.
 - Not visible: **the ArcGIS type definitions move to 4.27** ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322), pull request
   [#1364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1364)), matching the 4.27 runtime. Nothing is meant to look different.
+- **Angular 17** ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)): Angular 16.2 to 17.1, Nx 16.10 to 17.3, TypeScript 5.1 to
+  5.3. Nothing is meant to look or behave differently; anything that does is a bug in this upgrade.
+  Not on dev until the build after it merges.
 
 ---
 
@@ -54,6 +57,15 @@ dated notes as what was tested, and this table empties.
 ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by Release-443, so they reach users when GIS
 Day next deploys.
 
+
+### For the next build
+
+Merged, but not in the build on dev yet. Test these once the next build is deployed.
+
+| Change | Open this on dev | Look for |
+| --- | --- | --- |
+| Angular 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | Any map you use: the [main map](https://dev.aggiemap.tamu.edu/map), an [event map](https://dev.aggiemap.tamu.edu/events/150th-kickoff), [parking](https://dev.aggiemap.tamu.edu/all-maps/parking), a [campus map](https://dev.aggiemap.tamu.edu/campus/galveston), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | **nothing different**, as for Angular 16: maps draw, search works, popups open, the side panel opens and closes, alerts step through |
+
 ---
 
 ## Work in flight — 3 October
@@ -71,7 +83,8 @@ file would say the work had stopped.
 | 3 | Angular 15 to 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | done, in the 3 October release |
 | 4 | NestJS 9 to 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | done: [#1363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1363), in the next release |
 | 5 | ArcGIS type definitions 4.23 to 4.27 ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322)) | done: [#1364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1364), in the next release |
-| 6 | Angular 16 to 22, one major per pull request | next after NestJS 10 |
+| 6 | Angular 16 to 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | done: in the next release |
+| 6b | Angular 17 to 22, one major per pull request | next |
 | 7 | `esri-loader` to `@arcgis/core`, 134 files | last |
 | — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | done apart from the old Ring Day app, after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) |
 

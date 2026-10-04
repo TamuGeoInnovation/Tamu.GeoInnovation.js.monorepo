@@ -11,6 +11,7 @@
         "outputPath": "dist/apps/cpa-nest",
         "main": "apps/cpa-nest/src/main.ts",
         "tsConfig": "apps/cpa-nest/tsconfig.app.json",
+        "webpackConfig": "apps/cpa-nest/webpack.config.js",
         "assets": [
           "apps/cpa-nest/src/assets",
           "apps/cpa-nest/src/package.json",
@@ -58,17 +59,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/cpa-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/cpa-nest"],
       "options": {
-        "jestConfig": "apps/cpa-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/cpa-nest/jest.config.ts"
       }
     }
   },

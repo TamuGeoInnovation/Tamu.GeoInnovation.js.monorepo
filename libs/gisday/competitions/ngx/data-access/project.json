@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/gisday/competitions/ngx/data-access"],
       "options": {
-        "jestConfig": "libs/gisday/competitions/ngx/data-access/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/gisday/competitions/ngx/data-access/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/gisday/competitions/ngx/data-access/src/**/*.ts",
-          "libs/gisday/competitions/ngx/data-access/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

@@ -101,37 +101,33 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "ues-operations-angular:build",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "buildTarget": "ues-operations-angular:build"
       },
       "configurations": {
         "production": {
-          "browserTarget": "ues-operations-angular:build:production"
+          "buildTarget": "ues-operations-angular:build:production"
         },
         "development": {
-          "browserTarget": "ues-operations-angular:build:development"
+          "buildTarget": "ues-operations-angular:build:development"
         }
       }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "ues-operations-angular:build"
+        "buildTarget": "ues-operations-angular:build"
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/ues-operations-angular/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/ues-operations-angular/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-angular"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/ues-operations-angular/src/**/*.ts", "apps/ues-operations-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": [],

@@ -96,37 +96,33 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "signage-angular:build",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "buildTarget": "signage-angular:build"
       },
       "configurations": {
         "production": {
-          "browserTarget": "signage-angular:build:production"
+          "buildTarget": "signage-angular:build:production"
         },
         "development": {
-          "browserTarget": "signage-angular:build:development"
+          "buildTarget": "signage-angular:build:development"
         }
       }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "signage-angular:build"
+        "buildTarget": "signage-angular:build"
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/signage-angular/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/signage-angular/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/signage-angular"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/signage-angular/src/**/*.ts", "apps/signage-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": [],

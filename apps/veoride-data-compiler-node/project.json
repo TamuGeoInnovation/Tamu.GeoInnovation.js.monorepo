@@ -12,6 +12,7 @@
         "outputPath": "dist/apps/veoride-data-compiler-node",
         "main": "apps/veoride-data-compiler-node/src/main.ts",
         "tsConfig": "apps/veoride-data-compiler-node/tsconfig.app.json",
+        "webpackConfig": "apps/veoride-data-compiler-node/webpack.config.js",
         "assets": [
           "apps/veoride-data-compiler-node/src/assets",
           "apps/veoride-data-compiler-node/src/package.json",
@@ -57,17 +58,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/veoride-data-compiler-node/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/veoride-data-compiler-node"],
       "options": {
-        "jestConfig": "apps/veoride-data-compiler-node/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/veoride-data-compiler-node/jest.config.ts"
       }
     }
   },

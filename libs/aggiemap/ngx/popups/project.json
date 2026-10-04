@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/popups"],
       "options": {
-        "jestConfig": "libs/aggiemap/ngx/popups/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/aggiemap/ngx/popups/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/aggiemap/ngx/popups/src/**/*.ts", "libs/aggiemap/ngx/popups/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

@@ -37,6 +37,7 @@
         "main": "apps/oidc-admin-nest/src/main.ts",
         "outputPath": "dist/apps/oidc-admin-nest",
         "tsConfig": "apps/oidc-admin-nest/tsconfig.app.json",
+        "webpackConfig": "apps/oidc-admin-nest/webpack.config.js",
         "assets": [
           "apps/oidc-admin-nest/src/assets",
           {
@@ -67,16 +68,12 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/oidc-admin-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/oidc-admin-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/oidc-admin-nest/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-nest"]
     }

@@ -9,14 +9,12 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/gisday/platform/ngx/core"],
       "options": {
-        "jestConfig": "libs/gisday/platform/ngx/core/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/gisday/platform/ngx/core/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": ["libs/gisday/platform/ngx/core/src/**/*.ts", "libs/gisday/platform/ngx/core/src/**/*.html"],
         "force": true
       }
     }

@@ -12,6 +12,7 @@
         "outputPath": "dist/apps/ues-operations-nest",
         "main": "apps/ues-operations-nest/src/main.ts",
         "tsConfig": "apps/ues-operations-nest/tsconfig.app.json",
+        "webpackConfig": "apps/ues-operations-nest/webpack.config.js",
         "assets": [
           "apps/ues-operations-nest/src/assets",
           "apps/ues-operations-nest/src/package.json",
@@ -65,17 +66,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/ues-operations-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-nest"],
       "options": {
-        "jestConfig": "apps/ues-operations-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/ues-operations-nest/jest.config.ts"
       }
     }
   },

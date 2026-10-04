@@ -9,18 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/keyboard"],
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/interactions/keyboard/jest.config.js",
-        "passWithNoTests": true
+        "jestConfig": "libs/ui-kits/ngx/interactions/keyboard/jest.config.js"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/ui-kits/ngx/interactions/keyboard/src/**/*.ts",
-          "libs/ui-kits/ngx/interactions/keyboard/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

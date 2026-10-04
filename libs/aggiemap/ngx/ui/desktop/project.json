@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/aggiemap/ngx/ui/desktop"],
       "options": {
-        "jestConfig": "libs/aggiemap/ngx/ui/desktop/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/aggiemap/ngx/ui/desktop/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/aggiemap/ngx/ui/desktop/src/**/*.ts", "libs/aggiemap/ngx/ui/desktop/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

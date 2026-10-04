@@ -8,16 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/esri/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/maps/esri/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/esri"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/maps/esri/src/**/*.ts", "libs/maps/esri/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

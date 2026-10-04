@@ -8,19 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/navigation/breadcrumb/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/ui-kits/ngx/navigation/breadcrumb/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/breadcrumb"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/ui-kits/ngx/navigation/breadcrumb/src/**/*.ts",
-          "libs/ui-kits/ngx/navigation/breadcrumb/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

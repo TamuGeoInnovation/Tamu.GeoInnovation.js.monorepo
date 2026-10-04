@@ -5,17 +5,13 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/veoride/common/entities/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/veoride/common/entities"],
       "options": {
-        "jestConfig": "libs/veoride/common/entities/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/veoride/common/entities/jest.config.ts"
       }
     }
   },

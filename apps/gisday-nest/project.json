@@ -82,9 +82,8 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": ["apps/gisday-nest/**/*.ts"],
         "force": true
       }
     },
@@ -92,8 +91,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/gisday-nest"],
       "options": {
-        "jestConfig": "apps/gisday-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/gisday-nest/jest.config.ts"
       }
     }
   },
