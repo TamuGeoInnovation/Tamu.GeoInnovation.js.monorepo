@@ -1,8 +1,8 @@
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '20.19.5'
-    displayName: 'Install Node.js 20.19.5'
+      versionSpec: '22.23.3'
+    displayName: 'Install Node.js 22.23.3'
 
   - task: Cache@2
     inputs:

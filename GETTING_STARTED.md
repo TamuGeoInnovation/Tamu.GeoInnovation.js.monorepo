@@ -184,14 +184,14 @@ The repository defines the Node.js version used by CI and the devcontainer. Pref
 
 Canonical locations to check for the version:
 
-- CI (exact version): `.github/workflows/build.yml` — look for `node-version` (e.g. `20.18.1`).
-- Devcontainer (image major): `.devcontainer/devcontainer.json` — image like `mcr.microsoft.com/devcontainers/typescript-node:20` (Node 20).
+- CI (exact version): `.github/workflows/build.yml` — look for `node-version` (e.g. `22.23.3`).
+- Devcontainer (image major): `.devcontainer/devcontainer.json` — image like `mcr.microsoft.com/devcontainers/typescript-node:22` (Node 22).
 
 Install and use the exact CI version with nvm (example uses the value currently in `build.yml`).
 
 ```powershell
-nvm install 20.18.1
-nvm use 20.18.1
+nvm install 22.23.3
+nvm use 22.23.3
 ```
 
 Check:
@@ -286,8 +286,8 @@ nvm --version
 As above for macOS/Linux: prefer the exact CI Node.js patch version from `.github/workflows/build.yml`. Example (current CI value):
 
 ```bash
-nvm install 20.18.1
-nvm use 20.18.1
+nvm install 22.23.3
+nvm use 22.23.3
 ```
 
 Check:
@@ -404,7 +404,7 @@ git@github.com:TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo.git
 
 # Path 5: Windows with Docker Only (No Local Node.js)
 
-Runs every Node command in a throwaway `node:20.18.1` container against your checkout, so nothing but Docker Desktop and Git is needed on the host. Use this if you don't want a devcontainer or a local Node install. It is also the setup Claude Code uses; see [Working with Claude Code](#working-with-claude-code).
+Runs every Node command in a throwaway `node:22.23.3` container against your checkout, so nothing but Docker Desktop and Git is needed on the host. Use this if you don't want a devcontainer or a local Node install. It is also the setup Claude Code uses; see [Working with Claude Code](#working-with-claude-code).
 
 ## Prerequisites
 
@@ -419,14 +419,14 @@ Run the commands from **Git Bash**. `MSYS_NO_PATHCONV=1` stops Git Bash from rew
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -m 8g -e CYPRESS_INSTALL_BINARY=0 \
-  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -w /w node:20.18.1 \
+  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -w /w node:22.23.3 \
   sh -c "npm ci --no-audit --no-fund"
 ```
 
 **What to Expect:** `added ~2200 packages`, then the repo's `postinstall` (`ngcc`) runs for a few minutes.
 **Notes:**
 
-- The first run also downloads the `node:20.18.1` image, which is several hundred MB.
+- The first run also downloads the `node:22.23.3` image, which is several hundred MB.
 - `CYPRESS_INSTALL_BINARY=0` skips the ~800 MB Cypress download. It would be thrown away with the container on every run anyway, and serving the app doesn't need it. Leave the flag off if you run Cypress tests.
 - A full-tunnel VPN can slow these downloads badly. Disconnect it if you can.
 
@@ -434,7 +434,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -m 8g -e CYPRESS_INSTALL_BINARY=0 \
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 \
-  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -w /w node:20.18.1 \
+  -v "C:\TAMU\Tamu.GeoInnovation.js.monorepo:/w" -w /w node:22.23.3 \
   sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
