@@ -66,8 +66,10 @@ with the number of maps and services.
 
 ### What it checks
 
-The counts are a snapshot: **758 tests, measured on dev on 4 October 2026** against the Angular 18
-build (331 measured, plus the 420 in `framing.spec.ts`, the 4 in `kiosk.spec.ts` and the 3 in `isolation.spec.ts`, measured on dev that day). Production lists fewer
+The counts are a snapshot: **758 tests on dev on 4 October 2026**. That's the full run that cleared the
+[5 October release](releases/2026-10-05.md#what-cleared-it), 335 tests (328 passed, 7 skipped, in 1.1
+hours), plus checks that merged after that run and were measured on dev the same day: the 420 in
+`framing.spec.ts`, the 4 in `kiosk.spec.ts` and the 3 in `isolation.spec.ts`. Production lists fewer
 maps than dev, so it runs fewer.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
@@ -107,7 +109,7 @@ The suite started on 27 September 2026 and grew with nearly every bug found sinc
 | 30 September | ~212 | Map notices, bus routes, directions, development-only features |
 | 1 October | ~241 | Campus notices, blank-canvas detection, campus basemaps. **Measured: 242** on 2 October at 02:03, in 33 minutes |
 | 2 October | ~331 | Event dates, phone layout, ArcGIS version, Code Maroon, build banner. **Measured: 331** in every full run from 3 October, in 36 to 45 minutes |
-| 4 October | 758 | Map framing, against a production baseline of every map and builder choice; kiosk maps; map isolation |
+| 4 October | 758 | Map framing against a production baseline of every map and builder choice; kiosk maps; map isolation. **Measured: 335** in the run that cleared the 5 October release (328 passed, 7 skipped, 1.1 hours), before these merged |
 
 Numbers marked ~ are estimates: today's count for each spec, added up by the date the spec first
 appeared. Bold numbers are real runs. The early estimates are approximate, because the per-map checks
