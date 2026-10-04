@@ -3,6 +3,7 @@ import * as fs from 'fs';
 
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { developmentSectionsVisible } from './development-only';
 
 /**
  * Every class of page works at phone width (#1331).
@@ -40,16 +41,21 @@ function representative(prefix: string): string | undefined {
   return manifest.maps.find((route) => route.startsWith(prefix));
 }
 
-const classes: { name: string; route: string | undefined }[] = [
+const classes: { name: string; route: string | undefined; developmentOnly?: boolean }[] = [
   { name: 'the main map', route: '/map' },
   { name: 'an event map', route: representative('/events/') },
   { name: 'a parking map', route: representative('/parking/') },
   { name: 'an operations map', route: representative('/operations/') },
-  { name: 'a campus map', route: representative('/campus/') },
-  { name: 'a kiosk map', route: representative('/kiosk/') },
+  // All Maps lists the satellite campus and kiosk sections only in the development variant, so
+  // production has no representative of either to find (see global-setup.ts, #1393).
+  { name: 'a campus map', route: representative('/campus/'), developmentOnly: true },
+  { name: 'a kiosk map', route: representative('/kiosk/'), developmentOnly: true },
   { name: 'All Maps', route: '/all-maps' },
   { name: 'a discover listing', route: '/all-maps/parking' }
 ];
+
+/** The classes this environment lists, from `developmentSectionsVisible` in environments.json. */
+const expected = classes.filter((c) => developmentSectionsVisible() || !c.developmentOnly);
 
 const covered = classes.filter((c): c is { name: string; route: string } => Boolean(c.route));
 
@@ -68,7 +74,7 @@ test.describe('every class of page at phone width', () => {
     // Without this, a discovery change that stopped listing a whole class would empty those checks
     // and still report green.
     expect(covered.map((c) => c.name).sort(), 'some classes of page had no representative').toEqual(
-      classes.map((c) => c.name).sort()
+      expected.map((c) => c.name).sort()
     );
   });
 
