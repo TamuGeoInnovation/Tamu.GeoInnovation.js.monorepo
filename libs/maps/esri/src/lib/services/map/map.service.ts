@@ -230,7 +230,10 @@ export class EsriMapService {
         // This is because we don't want to shop popup when trying to click
         // on map to set route which will overlay on top of trip planner controls
         if (!this.router.url.includes('trip')) {
-          this._hitTest.next({ graphics: res.results.map((r) => r.graphic) });
+          // A hit can also be a media or route hit, which carries no graphic (ArcGIS 4.27, #1322).
+          this._hitTest.next({
+            graphics: res.results.filter((r): r is esri.GraphicHit => r.type === 'graphic').map((r) => r.graphic)
+          });
         }
       });
     });
@@ -907,32 +910,32 @@ export class EsriMapService {
   } | null {
     const parsedRoute = this.router.parseUrl(this.router.url);
     const queryParameters = parsedRoute.queryParams;
-    
+
     // Get search sources from environment
     const searchSources = this.environment.value('SearchSources');
-    
+
     if (!searchSources || !Array.isArray(searchSources)) {
       return null;
     }
-    
+
     // Find the first search source that matches any URL parameter
     for (const searchSource of searchSources) {
       if (!searchSource.urlQueryParam) {
         continue;
       }
-      
+
       // Build list of all parameters to check (primary + aliases)
       const paramsToCheck = [searchSource.urlQueryParam];
       if (searchSource.urlQueryParamAliases) {
         paramsToCheck.push(...searchSource.urlQueryParamAliases);
       }
-      
+
       // Check if any of these parameters exist in the URL
-      const matchedParam = paramsToCheck.find(param => queryParameters[param]);
-      
+      const matchedParam = paramsToCheck.find((param) => queryParameters[param]);
+
       if (matchedParam) {
         const parameterValue = queryParameters[matchedParam];
-        
+
         if (parameterValue?.trim()) {
           // Numeric-field sources (e.g. OBJECTID) must pass unquoted values; strict MapServer layers
           // reject a quoted integer. String sources are left as-is.
@@ -954,7 +957,7 @@ export class EsriMapService {
         }
       }
     }
-    
+
     return null;
   }
 

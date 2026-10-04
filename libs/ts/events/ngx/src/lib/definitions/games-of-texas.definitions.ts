@@ -5,7 +5,11 @@ import esri = __esri;
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 
-import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../interfaces/special-event.interface';
+import {
+  AggiemapCustomMapConfiguration,
+  EventConfiguration,
+  SpecialEventOptions
+} from '../interfaces/special-event.interface';
 
 // Flat display map (no builder/sessions). The published service is four feature layers, drawn
 // points-on-top: Points of Interest (0), Routes (1), Road Closures (2), Parking (3).
@@ -52,7 +56,7 @@ const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
           type: 'simple-line',
           color: [230, 0, 0, 255],
           width: 2,
-          marker: { style: 'arrow', color: [230, 0, 0, 255], placement: 'end' }
+          marker: { type: 'line-marker', style: 'arrow', color: [230, 0, 0, 255], placement: 'end' }
         } as unknown as esri.SimpleLineSymbolProperties
       },
       {
@@ -62,7 +66,7 @@ const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
           type: 'simple-line',
           color: [0, 115, 76, 255],
           width: 2,
-          marker: { style: 'arrow', color: [0, 115, 76, 255], placement: 'end' }
+          marker: { type: 'line-marker', style: 'arrow', color: [0, 115, 76, 255], placement: 'end' }
         } as unknown as esri.SimpleLineSymbolProperties
       }
     ]

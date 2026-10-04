@@ -88,6 +88,7 @@ export const MS150ColdLayerSources: LayerSource[] = [
           width: 2.5,
           style: 'solid',
           marker: {
+            type: 'line-marker',
             style: 'arrow',
             color: 'rgb(56, 168, 0)',
             placement: 'end'

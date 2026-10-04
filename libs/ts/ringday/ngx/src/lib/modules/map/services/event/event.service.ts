@@ -229,7 +229,7 @@ export class EventService {
     featureLayerProperties?: esri.FeatureLayerProperties
   ): Promise<unknown> {
     const [QueryTask, Query, FeatureLayer, SpatialReference, Polygon]: [
-      esri.QueryTaskConstructor,
+      LegacyQueryTaskConstructor,
       esri.QueryConstructor,
       esri.FeatureLayerConstructor,
       esri.SpatialReferenceConstructor,
@@ -352,4 +352,14 @@ export class EventService {
 
     return expression;
   }
+}
+
+/**
+ * The shape of the `esri/tasks/QueryTask` this app loads. ArcGIS removed the module, and its types left
+ * with @types/arcgis-js-api 4.27 (#1322); the 4.27 runtime no longer serves it either. This app is not
+ * deployed and is removed after Ring Day (#1236), so it is described here rather than ported to
+ * `esri/rest/query`.
+ */
+interface LegacyQueryTaskConstructor {
+  new (properties: { url: string }): { execute(query: esri.Query): Promise<esri.FeatureSet> };
 }

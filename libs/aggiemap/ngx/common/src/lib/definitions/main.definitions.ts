@@ -78,7 +78,7 @@ export const commonLayerProps = {
   outFields: ['*'],
   minScale: 100000,
   maxScale: 0,
-  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerBaseElevationInfo,
   popupEnabled: false
 };
 
@@ -862,6 +862,7 @@ export function MainMapLayerSources(
                     width: 2,
                     style: 'solid',
                     marker: {
+                      type: 'line-marker',
                       style: 'arrow',
                       color: 'rgb(38, 115, 0)',
                       placement: 'end'

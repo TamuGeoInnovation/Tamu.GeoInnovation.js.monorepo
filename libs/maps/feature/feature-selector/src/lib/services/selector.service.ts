@@ -43,7 +43,8 @@ export class FeatureSelectorService {
             return from(view.hitTest(event) as unknown as Promise<esri.HitTestResult>);
           }),
           switchMap((hitTestResult: esri.HitTestResult) => {
-            return of(hitTestResult.results.map((v) => v.graphic));
+            // A hit can also be a media or route hit, which carries no graphic (ArcGIS 4.27, #1322).
+            return of(hitTestResult.results.filter((v): v is esri.GraphicHit => v.type === 'graphic').map((v) => v.graphic));
           })
         );
       })

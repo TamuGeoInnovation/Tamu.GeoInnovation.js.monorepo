@@ -1251,7 +1251,7 @@ export class TripPlannerService implements OnDestroy {
     return pipe(
       map(
         (
-          res: Array<Array<{ result: esri.RouteSolveResult; trip: TripResult; params: esri.supportRouteParameters }>>
+          res: Array<Array<{ result: esri.RouteSolveResult; trip: TripResult; params: esri.RouteParameters }>>
         ): SuccessTripResultWithOriginalTaskParams => {
           const flattened = res.flat(3);
 
@@ -2724,7 +2724,7 @@ export interface TripResultProperties {
   /**
    * Original route parameters used in the trip request.
    */
-  params?: esri.supportRouteParameters;
+  params?: esri.RouteParameters;
 
   /**
    * If trip request succeeded, property will be populated with aggregated directions.
@@ -2919,8 +2919,7 @@ interface CollectionConstructor {
 }
 
 interface TripPlannerModules {
-  TripTask: esri.RouteTaskConstructor;
-  RouteParameters: esri.supportRouteParametersConstructor;
+  RouteParameters: esri.RouteParametersConstructor;
   FeatureSet: esri.FeatureSetConstructor;
   Graphic: esri.GraphicConstructor;
   route: esri.route;

@@ -151,7 +151,7 @@ const entryRouteNative = {
       type: 'simple-line',
       color: [38, 115, 0, 255],
       width: 4,
-      marker: { style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
+      marker: { type: 'line-marker', style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
     }
   }
 } as unknown as NonNullable<FeatureLayerSourceProperties['native']>;
@@ -213,8 +213,7 @@ export const TCampConfiguration: EventConfiguration = {
   name: 'T Camp',
   applicationName: 'T Camp Parking & Transportation Map',
   shortApplicationName: 'T Camp Map',
-  introductionText:
-    'Find parking, entry routes, and closures for T Camp. Use the map to plan your drop-off and pickup.',
+  introductionText: 'Find parking, entry routes, and closures for T Camp. Use the map to plan your drop-off and pickup.',
   eventDates: [],
   scheduleUrl: 'https://transport.tamu.edu/Parking/Events/camp.aspx',
   // The Williams Alumni Center sits ~570m southwest of the lots, so the initial view has to cover the
