@@ -14,10 +14,23 @@ import { blockAnalytics } from './analytics';
  * merely annoying; one that never reappears in a new session is a notice nobody sees on the day.
  */
 
+/**
+ * The clock every test here runs on, in College Station time (#1356).
+ *
+ * A notice shows only while its event is upcoming; from a day after the event the map shows "this event
+ * has passed" instead (#1299). These tests used the real clock, so they expired with the event - and,
+ * running in UTC, five hours early. A fixed date well before any event keeps them about the mechanism,
+ * as `event-dates.spec.ts` does for the dates themselves.
+ */
+const BEFORE_THE_EVENT = new Date('2020-01-15T12:00:00');
+const TIMEZONE = 'America/Chicago';
+
+test.use({ timezoneId: TIMEZONE });
+
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 const NOTICE = 'tamu-gisc-map-notice';
 
-/** The event whose map carries a notice today. */
+/** An event whose map carries a notice. The clock above keeps it upcoming. */
 const MAP_WITH_NOTICE = '/events/150th-kickoff';
 // Kickoff at Kyle deliberately: it is an event map like the one above, on the same date, with a toast
 // but no notice. So a pass proves the trigger is conditional rather than simply not firing - which a
@@ -26,6 +39,9 @@ const MAP_WITHOUT_NOTICE = '/events/kickoff-at-kyle';
 
 async function openMap(page, path: string): Promise<void> {
   await blockAnalytics(page);
+  // install, not setFixedTime: the clock starts at this date and then runs, which the map needs to
+  // finish loading. A frozen clock never lets it report ready.
+  await page.clock.install({ time: BEFORE_THE_EVENT });
   await page.goto(path);
   await expect
     .poll(
@@ -61,11 +77,10 @@ test('a dismissed notice stays dismissed for the session, and returns in a new o
   await expect(page.locator(NOTICE), 'the notice came back in the same session').toHaveCount(0);
 
   // A new context is a new session, so it must show again - otherwise nobody sees it on the day.
-  const fresh = await context.browser().newContext();
+  // A context made by hand does not inherit test.use, so it gets the same time zone explicitly.
+  const fresh = await context.browser().newContext({ timezoneId: TIMEZONE });
   const freshPage = await fresh.newPage();
   await openMap(freshPage, MAP_WITH_NOTICE);
-  await expect(page.locator(NOTICE) && freshPage.locator(NOTICE), 'the notice should show again in a new session').toBeVisible({
-    timeout: 30_000
-  });
+  await expect(freshPage.locator(NOTICE), 'the notice should show again in a new session').toBeVisible({ timeout: 30_000 });
   await fresh.close();
 });
