@@ -1,0 +1,39 @@
+name: Testing Page
+
+# docs/testing.md is what people outside the team are pointed at when they ask what testing this
+# project does. A smoke spec it does not mention is testing nobody can see, so a new one fails here
+# until the page describes it. See #1386.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'test/smoke/**'
+      - 'docs/testing.md'
+      - '.github/workflows/testing-page.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  lists-every-spec:
+    name: Lists every smoke spec
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check docs/testing.md names every smoke spec
+        shell: bash
+        run: |
+          missing=0
+          for spec in test/smoke/aggiemap/*.spec.ts; do
+            name=$(basename "$spec")
+            # In backticks, as the page writes it, so one name cannot pass as part of a longer one.
+            if ! grep -qF "\`$name\`" docs/testing.md; then
+              echo "::error file=docs/testing.md::$name is not mentioned in docs/testing.md. Add it to the smoke suite table, with its test count, what it catches and the issue behind it."
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ] && echo "docs/testing.md names every smoke spec."
+          exit "$missing"
