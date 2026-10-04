@@ -1,4 +1,4 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 
 import { NotificationContainerComponent } from './notification-container.component';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
@@ -11,7 +11,7 @@ import { Notification } from '../../helpers/notification.helper';
 describe('ContainerComponent', () => {
   const testNotification = new Notification({ id: '1', title: 'test', message: 'no' });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         NotificationContainerComponent,
