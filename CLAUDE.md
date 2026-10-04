@@ -54,7 +54,8 @@ may not be populated. CLAUDE_SETUP.md has the full command.
 `nx build <library>` answers `Cannot find configuration for task` and checks nothing. `nx test` only
 compiles what the specs import, and `nx lint` does not typecheck at all.
 
-**Run this before every push, and read its exit code:**
+**Run this before every push, and read its exit code** (a bug fix may run less; see
+[Fixing a bug quickly](#fixing-a-bug-quickly)):
 
 ```bash
 docker run --rm -m 8g -v "$(pwd -W):/w" -w /w node:20.18.1 sh -c "node node_modules/nx/bin/nx.js affected -t lint,test,build --base=origin/development"
@@ -97,6 +98,56 @@ change into a thousand-line diff and the real change becomes impossible to revie
 committing by comparing `git diff --stat` with `git diff --stat --ignore-all-space`; if they
 disagree wildly you have rewritten endings, and should normalize before going further. The counts
 are `git ls-files --eol | awk '{print $1}' | sort | uniq -c`.
+
+## Fixing a bug quickly
+
+A bug the team finds should go from cause found to pull request in about fifteen minutes. On 4 October
+a one-line fix (#1379) was forecast at 45, and none of that was the fix: a dev server started from
+cold, twice, on a stale install; two upgrades sharing the machine; and a full affected build that CI
+then ran again. These rules hold on every machine (#1381).
+
+**Keep the main checkout installed, and a dev server running from it.** The main checkout tracks
+`development`, so after anything changes `package.json` there, run `npm ci` in it straight away. A
+bug worktree does not install its own: it mounts the main checkout's `node_modules` read-only, which
+needs a tmpfs where Nx writes its cache:
+
+```bash
+docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo/node_modules:/w/node_modules:ro" --tmpfs /w/node_modules/.cache -w /w -e NX_DAEMON=false node:20.18.1 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+```
+
+Check what it holds before trusting it: `node_modules/@angular/core/package.json` must show the
+version `development` uses. On 4 October the main checkout still held Angular 15 and Nx 16, two
+upgrades behind, and Nx failed with a misleading error. The dev server recompiles on save, so after
+the first compile, a fix reaches the browser in under a minute.
+
+**Do not set `NX_NO_CLOUD=true`.** With Nx 19 and an `nxCloudId` in `nx.json`, every command fails
+with `Could not find any runner configurations in nx.json`.
+
+**A bug fix pre-empts upgrades.** Long-running upgrade or verification containers are paused while a
+bug fix runs, and resumed when its pull request is open:
+
+```bash
+docker pause <container>...
+docker unpause <container>...
+```
+
+A paused container loses nothing; it only stops competing for the CPU.
+
+**The pre-push check for a bug fix is narrower, and the pull request opens as a draft:**
+
+```bash
+node node_modules/nx/bin/nx.js affected -t lint,test --base=origin/development
+node node_modules/nx/bin/nx.js build <the app the bug is in>
+```
+
+CI runs the full `affected -t lint,test,build` on every pull request anyway, so running it locally as
+well doubled the wait without adding a check. What CI alone catches - another app's bundle budget,
+as on 30 September - is caught before merging, because the pull request stays a **draft until CI is
+green** and is only then marked ready. Anything that is not a bug fix (an upgrade, a dependency
+change, a shared-library refactor) still runs the full check before pushing.
+
+The rest is unchanged: the issue first, a regression test proven red against the unfixed code, then
+green, before and after screenshots, and a row in the release notes.
 
 ## Checking a deployed environment
 
