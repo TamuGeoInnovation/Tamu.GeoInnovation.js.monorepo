@@ -12,6 +12,7 @@
         "outputPath": "dist/apps/veoride-data-compiler-node",
         "main": "apps/veoride-data-compiler-node/src/main.ts",
         "tsConfig": "apps/veoride-data-compiler-node/tsconfig.app.json",
+        "webpackConfig": "apps/veoride-data-compiler-node/webpack.config.js",
         "assets": [
           "apps/veoride-data-compiler-node/src/assets",
           "apps/veoride-data-compiler-node/src/package.json",

@@ -12,6 +12,7 @@
         "outputPath": "dist/apps/gisday-competitions-nest",
         "main": "apps/gisday-competitions-nest/src/main.ts",
         "tsConfig": "apps/gisday-competitions-nest/tsconfig.app.json",
+        "webpackConfig": "apps/gisday-competitions-nest/webpack.config.js",
         "assets": [
           "apps/gisday-competitions-nest/src/assets",
           "apps/gisday-competitions-nest/src/package.json",

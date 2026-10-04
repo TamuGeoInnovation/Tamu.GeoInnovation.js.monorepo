@@ -11,6 +11,7 @@
         "main": "apps/oidc-provider-nest/src/main.ts",
         "outputPath": "dist/apps/oidc-provider-nest",
         "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
+        "webpackConfig": "apps/oidc-provider-nest/webpack.config.js",
         "assets": [
           "apps/oidc-provider-nest/src/assets",
           "apps/oidc-provider-nest/src/package.json",

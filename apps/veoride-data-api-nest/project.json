@@ -12,6 +12,7 @@
         "outputPath": "dist/apps/veoride-data-api-nest",
         "main": "apps/veoride-data-api-nest/src/main.ts",
         "tsConfig": "apps/veoride-data-api-nest/tsconfig.app.json",
+        "webpackConfig": "apps/veoride-data-api-nest/webpack.config.js",
         "assets": [
           "apps/veoride-data-api-nest/src/assets",
           "apps/veoride-data-api-nest/src/package.json",
