@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/perspective"],
       "options": {
-        "jestConfig": "libs/maps/feature/perspective/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/maps/feature/perspective/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/maps/feature/perspective/src/**/*.ts", "libs/maps/feature/perspective/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

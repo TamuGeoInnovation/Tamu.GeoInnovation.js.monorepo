@@ -113,37 +113,33 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "gisday-angular:build",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "buildTarget": "gisday-angular:build"
       },
       "configurations": {
         "production": {
-          "browserTarget": "gisday-angular:build:production"
+          "buildTarget": "gisday-angular:build:production"
         },
         "development": {
-          "browserTarget": "gisday-angular:build:development"
+          "buildTarget": "gisday-angular:build:development"
         }
       }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "gisday-angular:build"
+        "buildTarget": "gisday-angular:build"
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/gisday-angular/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/gisday-angular/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/gisday-angular/src/**/*.ts", "apps/gisday-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": [],

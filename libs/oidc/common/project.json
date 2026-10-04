@@ -5,16 +5,12 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/oidc/common/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/oidc/common/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/oidc/common/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/oidc/common"]
     }

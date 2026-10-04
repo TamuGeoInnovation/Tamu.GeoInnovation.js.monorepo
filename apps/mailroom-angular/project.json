@@ -76,10 +76,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "mailroom-angular:build:production"
+          "buildTarget": "mailroom-angular:build:production"
         },
         "development": {
-          "browserTarget": "mailroom-angular:build:development"
+          "buildTarget": "mailroom-angular:build:development"
         }
       },
       "defaultConfiguration": "development",
@@ -90,21 +90,17 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "mailroom-angular:build"
+        "buildTarget": "mailroom-angular:build"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/mailroom-angular/src/**/*.ts", "apps/mailroom-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/mailroom-angular"],
       "options": {
-        "jestConfig": "apps/mailroom-angular/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/mailroom-angular/jest.config.ts"
       }
     }
   },

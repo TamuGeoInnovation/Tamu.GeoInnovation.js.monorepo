@@ -8,19 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/feature-highlight/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/maps/feature/feature-highlight/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/feature-highlight"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/maps/feature/feature-highlight/src/**/*.ts",
-          "libs/maps/feature/feature-highlight/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

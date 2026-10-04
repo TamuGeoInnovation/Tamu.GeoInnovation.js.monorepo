@@ -1,3 +1,4 @@
 test/setupJest.ts
 dist/
 node_modules/
+/.nx/cache

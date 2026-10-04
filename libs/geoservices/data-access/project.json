@@ -8,16 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/geoservices/data-access/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/geoservices/data-access/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-access"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/geoservices/data-access/src/**/*.ts", "libs/geoservices/data-access/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

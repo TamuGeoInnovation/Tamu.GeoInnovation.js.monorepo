@@ -100,38 +100,34 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "geoservices-angular:build",
         "proxyConfig": "apps/geoservices-angular/proxy.conf.json",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "buildTarget": "geoservices-angular:build"
       },
       "configurations": {
         "production": {
-          "browserTarget": "geoservices-angular:build:production"
+          "buildTarget": "geoservices-angular:build:production"
         },
         "development": {
-          "browserTarget": "geoservices-angular:build:development"
+          "buildTarget": "geoservices-angular:build:development"
         }
       }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "geoservices-angular:build"
+        "buildTarget": "geoservices-angular:build"
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/geoservices-angular/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/geoservices-angular/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/geoservices-angular/src/**/*.ts", "apps/geoservices-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": [],

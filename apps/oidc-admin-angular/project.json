@@ -98,37 +98,33 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "oidc-admin-angular:build",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "buildTarget": "oidc-admin-angular:build"
       },
       "configurations": {
         "production": {
-          "browserTarget": "oidc-admin-angular:build:production"
+          "buildTarget": "oidc-admin-angular:build:production"
         },
         "development": {
-          "browserTarget": "oidc-admin-angular:build:development"
+          "buildTarget": "oidc-admin-angular:build:development"
         }
       }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "oidc-admin-angular:build"
+        "buildTarget": "oidc-admin-angular:build"
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/oidc-admin-angular/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/oidc-admin-angular/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-angular"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/oidc-admin-angular/src/**/*.ts", "apps/oidc-admin-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": [],

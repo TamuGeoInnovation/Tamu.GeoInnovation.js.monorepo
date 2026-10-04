@@ -8,19 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/mobile-tab"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/ui-kits/ngx/navigation/mobile-tab/src/**/*.ts",
-          "libs/ui-kits/ngx/navigation/mobile-tab/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

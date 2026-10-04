@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/charts"],
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/charts/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/ui-kits/ngx/charts/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/ui-kits/ngx/charts/src/**/*.ts", "libs/ui-kits/ngx/charts/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

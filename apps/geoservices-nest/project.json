@@ -42,18 +42,14 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/geoservices-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/geoservices-nest"],
       "options": {
-        "jestConfig": "apps/geoservices-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/geoservices-nest/jest.config.ts"
       }
     }
   },

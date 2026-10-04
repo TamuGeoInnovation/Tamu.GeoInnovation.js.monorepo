@@ -8,16 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/mapbox/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/maps/mapbox/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/mapbox"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/maps/mapbox/src/**/*.ts", "libs/maps/mapbox/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

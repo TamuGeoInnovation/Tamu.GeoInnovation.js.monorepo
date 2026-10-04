@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/cpa/ngx/data-access"],
       "options": {
-        "jestConfig": "libs/cpa/ngx/data-access/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/cpa/ngx/data-access/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/cpa/ngx/data-access/src/**/*.ts", "libs/cpa/ngx/data-access/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

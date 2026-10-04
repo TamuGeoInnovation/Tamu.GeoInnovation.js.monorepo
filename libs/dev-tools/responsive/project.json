@@ -8,16 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/dev-tools/responsive/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/dev-tools/responsive/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/responsive"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/dev-tools/responsive/src/**/*.ts", "libs/dev-tools/responsive/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

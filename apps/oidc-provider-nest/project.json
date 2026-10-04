@@ -68,16 +68,12 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/oidc-provider-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/oidc-provider-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/oidc-provider-nest/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/oidc-provider-nest"]
     }

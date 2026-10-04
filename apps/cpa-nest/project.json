@@ -58,17 +58,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/cpa-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/cpa-nest"],
       "options": {
-        "jestConfig": "apps/cpa-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/cpa-nest/jest.config.ts"
       }
     }
   },

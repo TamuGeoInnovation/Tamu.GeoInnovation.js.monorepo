@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/data"],
       "options": {
-        "jestConfig": "libs/maps/feature/data/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/maps/feature/data/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/maps/feature/data/src/**/*.ts", "libs/maps/feature/data/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

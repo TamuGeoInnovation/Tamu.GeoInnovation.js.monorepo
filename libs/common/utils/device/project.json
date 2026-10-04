@@ -7,16 +7,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/common/utils/device/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/common/utils/device/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/common/utils/device"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/common/utils/device/src/**/*.ts", "libs/common/utils/device/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

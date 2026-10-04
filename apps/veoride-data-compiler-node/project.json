@@ -57,17 +57,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/veoride-data-compiler-node/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/veoride-data-compiler-node"],
       "options": {
-        "jestConfig": "apps/veoride-data-compiler-node/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/veoride-data-compiler-node/jest.config.ts"
       }
     }
   },

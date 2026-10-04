@@ -64,10 +64,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "ts-ring-day-angular:build:production"
+          "buildTarget": "ts-ring-day-angular:build:production"
         },
         "development": {
-          "browserTarget": "ts-ring-day-angular:build:development"
+          "buildTarget": "ts-ring-day-angular:build:development"
         }
       },
       "defaultConfiguration": "development",
@@ -78,21 +78,17 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "ts-ring-day-angular:build"
+        "buildTarget": "ts-ring-day-angular:build"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/ts-ring-day-angular/src/**/*.ts", "apps/ts-ring-day-angular/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ts-ring-day-angular"],
       "options": {
-        "jestConfig": "apps/ts-ring-day-angular/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/ts-ring-day-angular/jest.config.ts"
       }
     }
   },

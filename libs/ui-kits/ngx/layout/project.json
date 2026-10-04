@@ -8,16 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/layout/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/ui-kits/ngx/layout/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/layout"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/ui-kits/ngx/layout/src/**/*.ts", "libs/ui-kits/ngx/layout/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

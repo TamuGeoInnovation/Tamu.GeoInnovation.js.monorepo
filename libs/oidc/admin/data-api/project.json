@@ -5,17 +5,13 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/oidc/admin/data-api/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/oidc/admin/data-api"],
       "options": {
-        "jestConfig": "libs/oidc/admin/data-api/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/oidc/admin/data-api/jest.config.ts"
       }
     }
   },

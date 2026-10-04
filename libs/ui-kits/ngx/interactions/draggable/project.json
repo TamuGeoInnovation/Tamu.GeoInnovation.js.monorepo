@@ -8,19 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/draggable"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/ui-kits/ngx/interactions/draggable/src/**/*.ts",
-          "libs/ui-kits/ngx/interactions/draggable/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

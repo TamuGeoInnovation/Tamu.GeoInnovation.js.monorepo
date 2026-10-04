@@ -8,16 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/draw/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/maps/feature/draw/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/draw"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/maps/feature/draw/src/**/*.ts", "libs/maps/feature/draw/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

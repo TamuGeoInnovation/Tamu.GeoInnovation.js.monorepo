@@ -5,9 +5,8 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": ["libs/gisday/platform/data-api/**/*.ts"],
         "force": true
       }
     },
@@ -15,8 +14,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/gisday/platform/data-api"],
       "options": {
-        "jestConfig": "libs/gisday/platform/data-api/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/gisday/platform/data-api/jest.config.ts"
       }
     }
   },

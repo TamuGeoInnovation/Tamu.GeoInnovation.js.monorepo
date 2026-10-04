@@ -8,19 +8,12 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/dev-tools/application-testing/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/dev-tools/application-testing/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/application-testing"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/dev-tools/application-testing/src/**/*.ts",
-          "libs/dev-tools/application-testing/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

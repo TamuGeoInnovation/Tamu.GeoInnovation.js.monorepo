@@ -93,40 +93,33 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "gisday-competitions-angular:build"
+        "buildTarget": "gisday-competitions-angular:build"
       }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "gisday-competitions-angular:build:production"
+          "buildTarget": "gisday-competitions-angular:build:production"
         },
         "development": {
-          "browserTarget": "gisday-competitions-angular:build:development"
+          "buildTarget": "gisday-competitions-angular:build:development"
         }
       },
       "options": {
-        "browserTarget": "gisday-competitions-angular:build",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "buildTarget": "gisday-competitions-angular:build"
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/gisday-competitions-angular/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/gisday-competitions-angular/jest.config.ts"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-angular"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "apps/gisday-competitions-angular/src/**/*.ts",
-          "apps/gisday-competitions-angular/src/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": [],

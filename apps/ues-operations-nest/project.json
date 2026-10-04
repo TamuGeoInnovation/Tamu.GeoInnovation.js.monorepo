@@ -65,17 +65,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/ues-operations-nest/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-nest"],
       "options": {
-        "jestConfig": "apps/ues-operations-nest/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/ues-operations-nest/jest.config.ts"
       }
     }
   },

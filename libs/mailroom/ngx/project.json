@@ -9,15 +9,11 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/mailroom/ngx"],
       "options": {
-        "jestConfig": "libs/mailroom/ngx/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/mailroom/ngx/jest.config.ts"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/mailroom/ngx/src/**/*.ts", "libs/mailroom/ngx/src/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []
