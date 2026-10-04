@@ -200,6 +200,11 @@ the same pull request**, with its before/after screenshots linked from `docs/scr
 pull request: on 28 September that left the notes without images when the pull request merged, and
 meant going back for them after the release reached production (#1132).
 
+**It also adds a row to the *What to test on dev* table in `unreleased.md`**: a dev link and what to
+look for. The team works from that table before a release goes to production, so a visible change
+without a row is one nobody is asked to check. If it cannot be checked on dev, say so in the row and
+why. At release the rows move into the dated notes (#1360).
+
 **The release notes merge before production, not after.** They describe what a release contains and
 what cleared it; they do not assert that it is deployed. The `prod-*` tag records that, which is a
 fact rather than a claim someone has to remember to make true. Writing them after the deploy left the
