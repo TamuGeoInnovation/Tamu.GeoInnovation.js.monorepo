@@ -18,7 +18,11 @@ what has not shipped yet.
 
 ## Summary
 
-Nothing has merged since the 3 October release was cut.
+Merged since the 3 October release was cut, for the next release:
+
+- Not visible: **NestJS 9 to 10** ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350), pull request [#1363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1363)) for the
+  NestJS APIs: GIS Day, OIDC, Mailroom, VeoRide, Geoservices and UES Operations. AggieMap and the event
+  maps are Angular apps and do not change.
 
 ---
 
@@ -45,6 +49,16 @@ for Monday 5 October.
 ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by Release-442, so they reach users when GIS
 Day next deploys.
 
+
+### For the next release
+
+Merged after the 3 October release was cut, so **not in Release-442**. These reach dev with the next
+build; test them then.
+
+| Change | Open this on dev | Look for |
+| --- | --- | --- |
+| NestJS 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | Nothing on AggieMap | nothing to test on dev.aggiemap: the NestJS APIs deploy separately, so check them where each one runs |
+
 ---
 
 ## Work in flight — 3 October
@@ -60,7 +74,7 @@ file would say the work had stopped.
 | 1 | Remove `ngcc` ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)) | done |
 | 2 | ArcGIS runtime off 4.23 ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)) | done: 4.27 |
 | 3 | Angular 15 to 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | done, in the 3 October release |
-| 4 | NestJS 9 to 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | branch `chore/1350-nestjs-10`, verifying; merges after Angular 16 is on production |
+| 4 | NestJS 9 to 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | done: [#1363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1363), in the next release |
 | 5 | ArcGIS type definitions 4.23 to 4.27 ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322)) | branch `chore/1322-arcgis-types-4-27`, all 18 errors fixed, verifying |
 | 6 | Angular 16 to 22, one major per pull request | next after NestJS 10 |
 | 7 | `esri-loader` to `@arcgis/core`, 134 files | last |
