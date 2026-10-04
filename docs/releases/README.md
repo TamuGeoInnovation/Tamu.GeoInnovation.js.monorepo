@@ -227,6 +227,9 @@ Open one pull request that:
 5. **Leaves a pointer in a fresh `unreleased.md`**, because links to it get shared while people are
    testing on dev and the rename alone leaves them on an empty page. Carry forward anything not part
    of this release, such as a work-in-flight section.
+6. **Refreshes [`docs/testing.md`](../testing.md)**: its smoke suite counts and their date, from the
+   step 2 run. That page is what people outside the team are pointed at, so its numbers say when
+   they were measured.
 
 Then **merge it**. Nothing about the notes happens after this point.
 

@@ -171,6 +171,9 @@ each with its own README:
 Both need the map probe (`window.__tamuGiscMapProbe`) in the deployed build. If layer data comes back
 empty, the environment is running something older.
 
+[`docs/testing.md`](docs/testing.md) describes all of the testing for readers outside the team, with
+dated counts; a check fails if a smoke spec is missing from it.
+
 ### What "run the tests" means
 
 Map the request to one of these. Only the environment named decides which; if none is named and it
