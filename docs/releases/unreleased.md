@@ -30,6 +30,14 @@ Merged since the 3 October release was cut, and on dev in Release-443:
   On dev in build 20261004.4.
 - **Angular 18** ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)): Angular 17.1 to 18.2, Nx 17.3 to 19.8, TypeScript 5.3 to
   5.5. Nothing is meant to look or behave differently. Not on dev until the build after it merges.
+- **Event maps open on the chosen day or session again** ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)). Since the ArcGIS
+  4.27 runtime ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)), Ring Day, Fish Camp and Move-In opened zoomed out at the
+  default campus view on dev instead of on the location their builder choice frames. Production was never
+  affected: it still runs ArcGIS 4.23. A new smoke check opens each choice and checks where it lands.
+
+  | Before (dev, Ring Day day 1) | After |
+  | --- | --- |
+  | ![Ring Day day 1 zoomed out at the campus view](../screenshots/1379-choice-view-zoom/before-dev-ring-day-day1.png) | ![Ring Day day 1 framed on the ring pickup](../screenshots/1379-choice-view-zoom/after-local-ring-day-day1.png) |
 
 ---
 
@@ -69,6 +77,7 @@ Merged, but not in the build on dev yet. Test these once the next build is deplo
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
 | Angular 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), and anything that loads data: search, popups, the side panel | **nothing different**. Every app's HTTP setup changed form in this upgrade, so anything that fails to load data is the first thing to report |
+| Event maps open on the chosen day or session ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) | [Ring Day, day 1](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1), [Ring Day, day 2](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day2), [Fish Camp, sessions B, C, E and F](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=sessions-a-f), [Fish Camp, sessions A, D and G](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=session-g) | each opens **close in** on its own location (day 1 on the ring pickup by the Williams Alumni Center, day 2 on Aggie Park), not zoomed out over campus. Compare with [production](https://aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1) |
 
 ---
 

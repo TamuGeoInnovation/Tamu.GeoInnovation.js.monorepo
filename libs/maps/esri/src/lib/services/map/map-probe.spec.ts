@@ -241,5 +241,23 @@ describe('map probe', () => {
         nowSpy.mockRestore();
       }
     });
+
+    it("reports the view's zoom and center, and null before a view exists (#1379)", () => {
+      registerMapProbe(
+        {
+          map: { allLayers: { toArray: () => [] } },
+          view: { ready: true, zoom: 18, center: { longitude: -96.3354, latitude: 30.6095 } }
+        } as unknown as Parameters<typeof registerMapProbe>[0],
+        owner
+      );
+
+      const probe = (window as unknown as Record<string, { framing: unknown }>)[MAP_PROBE_GLOBAL];
+
+      expect(probe.framing).toEqual({ zoom: 18, center: [-96.3354, 30.6095] });
+
+      registerMapProbe(undefined, owner);
+
+      expect(probe.framing).toBeNull();
+    });
   });
 });

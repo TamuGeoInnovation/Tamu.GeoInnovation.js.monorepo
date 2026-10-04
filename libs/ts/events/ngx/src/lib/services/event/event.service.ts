@@ -352,6 +352,9 @@ export class EventService {
 
       if (view?.center) {
         try {
+          // Wait for the view first: since ArcGIS 4.27 a goTo made before the view is ready resolves
+          // without moving it (#1379). 4.23 queued it, so this used to work by accident.
+          await this._view.when();
           await this._view.goTo({ center: view.center, zoom: view.zoom ?? this._view.zoom });
         } catch (err) {
           console.error('EventService: Failed to apply selected choice view', err);

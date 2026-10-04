@@ -87,6 +87,11 @@ export interface MapProbeSnapshot {
   layers: MapLayerProbe[];
 }
 
+export interface MapFraming {
+  zoom: number;
+  center: [number, number];
+}
+
 export interface MapProbe {
   /**
    * Whether the view is still drawing.
@@ -109,6 +114,16 @@ export interface MapProbe {
    * here on a cold load.
    */
   readonly ready: boolean;
+
+  /**
+   * Where the view is looking: its zoom and its `[longitude, latitude]` center, or `null` before a
+   * view exists.
+   *
+   * How a test sees that a map opened where it was meant to. An event map framed by its builder
+   * choice opened at the default zoom once ArcGIS 4.27 started dropping a `goTo` made before the
+   * view was ready - silently, with every layer loaded and drawn (#1379).
+   */
+  readonly framing: MapFraming | null;
 
   /** Resolves layer health. Queries feature counts, so it performs network requests. */
   snapshot(): Promise<MapProbeSnapshot>;
@@ -180,6 +195,15 @@ export function registerMapProbe(instance: MapServiceInstance | undefined, owner
         // drawn, which is reported as "not drawing" rather than as unknown - a caller waiting for
         // drawing to finish should not wait forever on a page that has no map.
         return (current?.view as unknown as { updating?: boolean })?.updating === true;
+      },
+      get framing(): MapFraming | null {
+        const view = current?.view as esri.MapView | undefined;
+
+        if (!view?.center) {
+          return null;
+        }
+
+        return { zoom: view.zoom, center: [view.center.longitude, view.center.latitude] };
       },
       snapshot: takeSnapshot
     };
