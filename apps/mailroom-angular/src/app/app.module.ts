@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
 import { Angulartics2Module } from 'angulartics2';
@@ -26,24 +26,18 @@ const routes: Routes = [
   }
 ];
 
-@NgModule({
-  imports: [
-    Angulartics2Module.forRoot(),
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
-    EnvironmentModule,
-    NotificationModule,
-    HttpClientModule
-  ],
-  declarations: [AppComponent],
-  providers: [
-    NotificationService,
-    {
-      provide: env,
-      useValue: environment
-    }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [AppComponent],
+    bootstrap: [AppComponent], imports: [Angulartics2Module.forRoot(),
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+        EnvironmentModule,
+        NotificationModule], providers: [
+        NotificationService,
+        {
+            provide: env,
+            useValue: environment
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {}

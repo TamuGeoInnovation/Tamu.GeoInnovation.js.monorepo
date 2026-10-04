@@ -24,19 +24,27 @@
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
+      }
     },
     {
       "files": ["src/**/**.ts"],
       "extends": ["plugin:@nx/typescript"],
       "rules": {
-        "@typescript-eslint/triple-slash-reference": "off"
+        "@typescript-eslint/triple-slash-reference": "off",
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
       }
     },
     {
       "files": ["*.js", "*.jsx"],
       "extends": ["plugin:@nx/javascript"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
+      }
     }
   ]
 }

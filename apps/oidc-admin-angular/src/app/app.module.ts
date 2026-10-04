@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
@@ -59,43 +59,37 @@ export function getHighlightLanguages() {
   };
 }
 
-@NgModule({
-  imports: [
-    Angulartics2Module.forRoot(),
-    AuthModule.forRoot({
-      config: {
-        authority: environment.idp_url,
-        redirectUrl: window.location.origin + '/auth/callback',
-        secureRoutes: [environment.api_url],
-        postLogoutRedirectUri: window.location.origin,
-        clientId: environment.client_id,
-        scope: 'openid offline_access profile email',
-        responseType: 'code',
-        silentRenew: true,
-        useRefreshToken: true,
-        logLevel: environment.production ? LogLevel.None : LogLevel.Debug,
-        autoUserInfo: false
-      }
-    }),
-    BrowserModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
-    BrowserAnimationsModule,
-    EnvironmentModule,
-    LocalStoreModule,
-    NotificationModule,
-    UILayoutModule,
-    HttpClientModule,
-    AuthRoutingModule
-  ],
-  declarations: [AppComponent],
-  providers: [
-    NotificationService,
-    {
-      provide: env,
-      useValue: environment
-    },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [AppComponent],
+    bootstrap: [AppComponent], imports: [Angulartics2Module.forRoot(),
+        AuthModule.forRoot({
+            config: {
+                authority: environment.idp_url,
+                redirectUrl: window.location.origin + '/auth/callback',
+                secureRoutes: [environment.api_url],
+                postLogoutRedirectUri: window.location.origin,
+                clientId: environment.client_id,
+                scope: 'openid offline_access profile email',
+                responseType: 'code',
+                silentRenew: true,
+                useRefreshToken: true,
+                logLevel: environment.production ? LogLevel.None : LogLevel.Debug,
+                autoUserInfo: false
+            }
+        }),
+        BrowserModule,
+        RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+        BrowserAnimationsModule,
+        EnvironmentModule,
+        LocalStoreModule,
+        NotificationModule,
+        UILayoutModule,
+        AuthRoutingModule], providers: [
+        NotificationService,
+        {
+            provide: env,
+            useValue: environment
+        },
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {}

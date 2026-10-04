@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
 
@@ -21,20 +21,14 @@ WebFont.load({
   }
 });
 
-@NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
-    HttpClientModule,
-    EnvironmentModule
-  ],
-  declarations: [],
-  providers: [
-    {
-      provide: env,
-      useValue: environment
-    }
-  ],
-  exports: [RouterModule]
-})
+@NgModule({ declarations: [],
+    exports: [RouterModule], imports: [CommonModule,
+        RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
+        EnvironmentModule], providers: [
+        {
+            provide: env,
+            useValue: environment
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class RoutingModule {}

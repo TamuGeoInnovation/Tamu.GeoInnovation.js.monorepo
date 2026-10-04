@@ -1,7 +1,7 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -43,55 +43,49 @@ const routeOptions: ExtraOptions = {
   anchorScrolling: 'enabled'
 };
 
-@NgModule({
-  imports: [
-    Angulartics2Module.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
-    AuthModule.forRoot({
-      domain: environment.auth0.domain,
-      clientId: environment.auth0.client_id,
-      authorizationParams: {
-        audience: environment.auth0.audience,
-        redirect_uri: environment.auth0.redirect_uri
-      },
-      httpInterceptor: {
-        allowedList: [
-          {
-            allowAnonymous: true,
-            uriMatcher: (url) => {
-              // Type assertion because the static value is a token replaced at runtime
-              return (environment.auth0.urls as unknown as Array<string>).some((u) => url.startsWith(u));
+@NgModule({ declarations: [AppComponent],
+    bootstrap: [AppComponent], imports: [Angulartics2Module.forRoot(),
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
+        AuthModule.forRoot({
+            domain: environment.auth0.domain,
+            clientId: environment.auth0.client_id,
+            authorizationParams: {
+                audience: environment.auth0.audience,
+                redirect_uri: environment.auth0.redirect_uri
+            },
+            httpInterceptor: {
+                allowedList: [
+                    {
+                        allowAnonymous: true,
+                        uriMatcher: (url) => {
+                            // Type assertion because the static value is a token replaced at runtime
+                            return (environment.auth0.urls as unknown as Array<string>).some((u) => url.startsWith(u));
+                        }
+                    }
+                ]
             }
-          }
-        ]
-      }
-    }),
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterModule.forRoot(routes, routeOptions),
-    EnvironmentModule,
-    HttpClientModule,
-    NotificationModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  declarations: [AppComponent],
-  providers: [
-    Title,
-    {
-      provide: env,
-      useValue: environment
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthHttpInterceptor,
-      multi: true
-    },
-    {
-      provide: ROLES_CLAIM,
-      useValue: environment.auth0.roles_claim
-    }
-  ],
-  bootstrap: [AppComponent]
-})
+        }),
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot(routes, routeOptions),
+        EnvironmentModule,
+        NotificationModule,
+        FormsModule,
+        ReactiveFormsModule], providers: [
+        Title,
+        {
+            provide: env,
+            useValue: environment
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthHttpInterceptor,
+            multi: true
+        },
+        {
+            provide: ROLES_CLAIM,
+            useValue: environment.auth0.roles_claim
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {}
