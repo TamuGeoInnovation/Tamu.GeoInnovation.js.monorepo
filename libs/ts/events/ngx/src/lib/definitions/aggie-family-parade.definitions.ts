@@ -125,6 +125,7 @@ export const AggieFamilyParadeLayerSources: LayerSource[] = [
           width: 2,
           style: 'solid',
           marker: {
+            type: 'line-marker',
             style: 'arrow',
             color: 'rgb(0, 115, 76)',
             placement: 'end'

@@ -29,7 +29,7 @@ const preferredRouteNative = {
       type: 'simple-line',
       color: [38, 115, 0, 255],
       width: 2,
-      marker: { style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
+      marker: { type: 'line-marker', style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
     }
   }
 } as unknown as NonNullable<FeatureLayerSourceProperties['native']>;
@@ -103,8 +103,7 @@ export const FireSchoolConfiguration: EventConfiguration = {
   name: 'Municipal Fire School Vendor Show',
   applicationName: 'Municipal Fire School Vendor Show Map',
   shortApplicationName: 'Fire School Vendor Show',
-  introductionText:
-    'Preferred route, road closures, and parking lot information for the Municipal Fire School Vendor Show.',
+  introductionText: 'Preferred route, road closures, and parking lot information for the Municipal Fire School Vendor Show.',
   eventDates: ['2026-07-17', '2026-07-19'],
   mapCenter: [-96.34426, 30.6067],
   zoom: 17,

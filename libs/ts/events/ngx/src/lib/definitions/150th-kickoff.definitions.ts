@@ -170,6 +170,7 @@ export const Kickoff150thLayerSources: LayerSource[] = [
           width: 2,
           style: 'solid',
           marker: {
+            type: 'line-marker',
             style: 'arrow',
             color: 'rgb(38, 115, 0)',
             placement: 'end'

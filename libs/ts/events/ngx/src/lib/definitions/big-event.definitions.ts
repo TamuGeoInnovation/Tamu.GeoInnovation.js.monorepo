@@ -14,7 +14,7 @@ import esri = __esri;
 export enum BIG_EVENT_LAYERS {
   TRAFFIC = 'big-event-traffic',
   ROAD_CLOSURES = 'big-event-road-closures',
-  PARKING_LOTS = 'big-event-parking-lots',
+  PARKING_LOTS = 'big-event-parking-lots'
 }
 
 export enum BIG_EVENT_MAP_TYPE_OPTIONS {
@@ -88,6 +88,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
               color: 'rgb(56, 168, 0)',
               width: 2.5,
               marker: {
+                type: 'line-marker',
                 style: 'arrow',
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
@@ -111,6 +112,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
               color: 'rgb(230, 0, 0)',
               width: 2.5,
               marker: {
+                type: 'line-marker',
                 style: 'arrow',
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
@@ -125,6 +127,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
               color: 'rgb(56, 168, 0)',
               width: 2.5,
               marker: {
+                type: 'line-marker',
                 style: 'arrow',
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'
@@ -148,6 +151,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
               color: 'rgb(230, 0, 0)',
               width: 2.5,
               marker: {
+                type: 'line-marker',
                 style: 'arrow',
                 color: 'rgb(230, 0, 0)',
                 placement: 'end'
@@ -162,6 +166,7 @@ export const BigEventColdLayerSources: LayerSource[] = [
               color: 'rgb(56, 168, 0)',
               width: 2.5,
               marker: {
+                type: 'line-marker',
                 style: 'arrow',
                 color: 'rgb(56, 168, 0)',
                 placement: 'end'

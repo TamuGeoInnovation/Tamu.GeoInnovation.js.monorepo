@@ -11,19 +11,17 @@ import { setDefaultOptions } from 'esri-loader';
  * 4.27 is as far as the runtime goes for now. Every release through 4.34 still serves the AMD build
  * `esri-loader` needs, so the ceiling is not technical - it is the types.
  *
- * **The types stay at 4.23 deliberately.** Moving `@types/arcgis-js-api` to 4.27 fails the build with
- * 18 errors across 8 files: renderer and symbol literals stop being assignable, `supportRouteParameters`
- * and `RouteTaskConstructor` are gone, `ViewHit.graphic` no longer exists. That is a migration with
- * judgement in it, not a rename, and it is tracked separately - see the issue linked from #1219.
- *
- * So the types describe 4.23 while 4.27 runs. That drift is real and worth stating plainly: a type
- * error this workspace cannot see is one Esri has already fixed or changed. It is accepted because the
- * runtime is what carries the fixes to visitors, and because the alternative is staying on a 2022
- * release until the migration is done.
+ * **The types match the runtime: `@types/arcgis-js-api` 4.27** (#1322). Moving them from 4.23 took 18
+ * build errors across 8 files: arrow markers on lines now need `type: 'line-marker'`, a hit test can
+ * return media and route hits that carry no graphic, `FeatureLayerElevationInfo` became
+ * `FeatureLayerBaseElevationInfo`, and the task classes (`QueryTask`, `RouteTask` and their support
+ * types) are gone in favour of `esri/rest/*`. The 4.27 runtime no longer serves the task modules at
+ * all, so anything still loading them fails at runtime; only the old standalone Ring Day app does
+ * (#1236).
  *
  * Note also that `@types/arcgis-js-api` 4.28 and later are deprecated stubs carrying no types at all -
- * they depend on `arcgis-js-api: *`. 4.27.0 is the last real one, so 4.27 is the ceiling for matched
- * types whenever that migration happens.
+ * they depend on `arcgis-js-api: *`. 4.27 is the last real one, so 4.27 is the ceiling for matched
+ * types until the move to `@arcgis/core`.
  */
 export const ESRI_RUNTIME_VERSION = '4.27';
 

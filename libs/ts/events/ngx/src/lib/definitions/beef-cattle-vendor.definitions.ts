@@ -40,7 +40,7 @@ const routesNative = {
           type: 'simple-line',
           color: [38, 115, 0, 255],
           width: 2,
-          marker: { style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
+          marker: { type: 'line-marker', style: 'arrow', color: [38, 115, 0, 255], placement: 'end' }
         }
       },
       {
@@ -50,7 +50,7 @@ const routesNative = {
           type: 'simple-line',
           color: [0, 112, 255, 255],
           width: 2,
-          marker: { style: 'arrow', color: [0, 112, 255, 255], placement: 'end' }
+          marker: { type: 'line-marker', style: 'arrow', color: [0, 112, 255, 255], placement: 'end' }
         }
       }
     ]
@@ -163,8 +163,7 @@ export const BeefCattleConfiguration: EventConfiguration = {
   name: 'Beef Cattle Vendor Load In',
   applicationName: 'Beef Cattle Vendor Load In Map',
   shortApplicationName: 'Beef Cattle Vendor Load In',
-  introductionText:
-    'Routes, loading/unloading zones, and parking restrictions for the Beef Cattle Vendor Load In.',
+  introductionText: 'Routes, loading/unloading zones, and parking restrictions for the Beef Cattle Vendor Load In.',
   eventDates: ['2026-08-02', '2026-08-05'],
   mapCenter: [-96.34092, 30.61332],
   zoom: 17,

@@ -127,6 +127,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               color: 'blue',
               width: 3.5,
               marker: {
+                type: 'line-marker',
                 style: 'arrow',
                 color: 'blue',
                 placement: 'end'
@@ -141,6 +142,7 @@ export const AggielandSaturdayEventColdLayerSources: LayerSource[] = [
               color: 'red',
               width: 3.5,
               marker: {
+                type: 'line-marker',
                 style: 'arrow',
                 color: 'red',
                 placement: 'end'

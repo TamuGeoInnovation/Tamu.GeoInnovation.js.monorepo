@@ -90,7 +90,7 @@ const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
           type: 'simple-line',
           color: [0, 115, 76, 255],
           width: 4,
-          marker: { style: 'arrow', color: [0, 115, 76, 255], placement: 'end' }
+          marker: { type: 'line-marker', style: 'arrow', color: [0, 115, 76, 255], placement: 'end' }
         } as unknown as esri.SimpleLineSymbolProperties
       },
       {
@@ -102,7 +102,7 @@ const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
           color: [0, 92, 230, 255],
           width: 3,
           style: 'dash',
-          marker: { style: 'arrow', color: [0, 92, 230, 255], placement: 'end' }
+          marker: { type: 'line-marker', style: 'arrow', color: [0, 92, 230, 255], placement: 'end' }
         } as unknown as esri.SimpleLineSymbolProperties
       }
     ]
@@ -114,11 +114,14 @@ const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
  * exposes the same shape (Parking Information, Routes, Parking Lots) for both phases at different
  * sub-layer indexes.
  */
-function buildPhaseChildren(ids: {
-  parkingInfo: FISH_CAMP_LAYERS;
-  routes: FISH_CAMP_LAYERS;
-  parkingLots: FISH_CAMP_LAYERS;
-}, indexes: { parkingInfo: number; routes: number; parkingLots: number }): LayerSource[] {
+function buildPhaseChildren(
+  ids: {
+    parkingInfo: FISH_CAMP_LAYERS;
+    routes: FISH_CAMP_LAYERS;
+    parkingLots: FISH_CAMP_LAYERS;
+  },
+  indexes: { parkingInfo: number; routes: number; parkingLots: number }
+): LayerSource[] {
   // Order matters: later entries draw on top. Parking Lots (polygons) sit at the bottom, Routes
   // (lines) above them, and Parking Information (points) on top.
   return [
@@ -258,7 +261,7 @@ export const FishCampOptions: SpecialEventOptions = [
         value: FishCampSessionChoices.LOT_40,
         label: 'Sessions A, D, & G',
         // Lot 40b. Tune center/zoom here to adjust framing.
-        mapView: { center: [-96.33380, 30.61118], zoom: 17 }
+        mapView: { center: [-96.3338, 30.61118], zoom: 17 }
       }
     ],
     effects: {

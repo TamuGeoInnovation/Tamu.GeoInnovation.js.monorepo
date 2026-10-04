@@ -36,6 +36,7 @@ const GREEN_PATH_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
   color: 'rgb(56, 168, 0)',
   width: 2,
   marker: {
+    type: 'line-marker',
     style: 'arrow',
     color: 'rgb(56, 168, 0)',
     placement: 'end'
@@ -47,6 +48,7 @@ const EASTBOUND_BUS_ROUTE_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
   color: 'blue',
   width: 3.5,
   marker: {
+    type: 'line-marker',
     style: 'arrow',
     color: 'blue',
     placement: 'end'
@@ -58,6 +60,7 @@ const WESTBOUND_BUS_ROUTE_ARROW_SYMBOL: AutoCastSimpleLineSymbol = {
   color: 'red',
   width: 3.5,
   marker: {
+    type: 'line-marker',
     style: 'arrow',
     color: 'red',
     placement: 'end'

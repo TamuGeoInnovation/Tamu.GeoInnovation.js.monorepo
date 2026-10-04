@@ -4,6 +4,7 @@ export const commonSymbols = {
     color: 'rgb(56, 168, 0)',
     width: 2,
     marker: {
+      type: 'line-marker',
       style: 'arrow',
       color: 'rgb(56, 168, 0)',
       placement: 'end'
@@ -14,6 +15,7 @@ export const commonSymbols = {
     color: 'rgb(230, 0, 0)',
     width: 2,
     marker: {
+      type: 'line-marker',
       style: 'arrow',
       color: 'rgb(230, 0, 0)',
       placement: 'end'

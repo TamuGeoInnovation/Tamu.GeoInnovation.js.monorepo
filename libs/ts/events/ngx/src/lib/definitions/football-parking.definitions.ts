@@ -208,7 +208,7 @@ const arrowLineSymbol = (color: string, width = 3): esri.SimpleLineSymbolPropert
   color,
   width,
   style: 'solid',
-  marker: { style: 'arrow', color, placement: 'end' }
+  marker: { type: 'line-marker', style: 'arrow', color, placement: 'end' }
 });
 
 /** Renderer for a route layer whose features are all a single travel type. */
@@ -767,15 +767,7 @@ export const FootballParkingConfiguration: EventConfiguration = {
   // 2026 home schedule (7 home dates at Kyle Field), per the SEC-released schedule:
   // 9/5 Missouri State, 9/12 Arizona State, 9/19 Kentucky, 10/3 Arkansas, 10/17 The Citadel,
   // 11/14 Tennessee, 11/27 Texas (Black Friday). https://12thman.com/news/2025/12/11/2026-texas-am-football-schedule-announced
-  eventDates: [
-    '2026-09-05',
-    '2026-09-12',
-    '2026-09-19',
-    '2026-10-03',
-    '2026-10-17',
-    '2026-11-14',
-    '2026-11-27'
-  ],
+  eventDates: ['2026-09-05', '2026-09-12', '2026-09-19', '2026-10-03', '2026-10-17', '2026-11-14', '2026-11-27'],
   scheduleUrl: 'https://12thman.com/sports/football/schedule',
   mapCenter: [-96.34344, 30.61011],
   zoom: 16,
@@ -1011,7 +1003,7 @@ export const FootballParkingOptions: SpecialEventOptions = [
           // Micromobility exit routes come from the exit service; hide them on the entry map.
           layerId: FOOTBALL_PARKING_LAYERS.FP_MICROMOBILITY_EXIT_ROUTES,
           conversions: [{ input: Direction.ENTRY, propOverrides: HIDE }]
-        },
+        }
         // Bike Lanes is withheld - see the note on its layer definition and #1036. This hid it on the
         // exit map; with no layer to hide, the rule has nothing to act on.
         // {
