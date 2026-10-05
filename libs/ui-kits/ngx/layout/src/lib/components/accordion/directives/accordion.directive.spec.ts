@@ -14,7 +14,8 @@ import { AccordionDirective } from './accordion.directive';
  * passed regardless of whether the directive worked.
  */
 @Component({
-  template: `<div *giscAccordion>accordion content</div>`
+  template: `<div *giscAccordion>accordion content</div>`,
+  standalone: false
 })
 class HostComponent {}
 

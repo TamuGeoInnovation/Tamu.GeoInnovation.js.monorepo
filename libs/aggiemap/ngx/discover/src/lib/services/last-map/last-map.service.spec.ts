@@ -72,5 +72,6 @@ describe('LastMapService', () => {
     // All Maps is a page about the maps, so the back link must still point at the bus map.
     expect(service.path).toBe('/map/d/bus');
     expect(service.queryParams).toEqual({ busstop: '4718' });
-  });
+  });,
+  standalone: false
 });

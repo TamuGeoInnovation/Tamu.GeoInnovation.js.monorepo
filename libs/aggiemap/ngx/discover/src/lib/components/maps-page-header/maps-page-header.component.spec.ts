@@ -69,5 +69,6 @@ describe('MapsPageHeaderComponent', () => {
     // Nothing on this header reads LastMapService any more; if that changes, the destinations above
     // stop being fixed and this test is the one that should be revisited.
     expect(fixture.nativeElement.querySelectorAll('.breadcrumbs p a').length).toBe(3);
-  });
+  });,
+  standalone: false
 });
