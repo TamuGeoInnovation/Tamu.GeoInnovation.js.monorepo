@@ -4,14 +4,17 @@
   "projectType": "application",
   "sourceRoot": "apps/cpa-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "cpa-sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
       "options": {
-        "outputPath": "dist/apps/cpa-angular",
+        "outputPath": {
+          "base": "dist/apps/cpa-angular"
+        },
         "index": "apps/cpa-angular/src/index.html",
-        "main": "apps/cpa-angular/src/main.ts",
-        "polyfills": "apps/cpa-angular/src/polyfills.ts",
+        "polyfills": ["apps/cpa-angular/src/polyfills.ts"],
         "tsConfig": "apps/cpa-angular/tsconfig.app.json",
         "aot": false,
         "assets": [
@@ -25,12 +28,11 @@
         ],
         "styles": ["apps/cpa-angular/src/styles.scss"],
         "scripts": [],
-        "vendorChunk": true,
         "extractLicenses": false,
-        "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "browser": "apps/cpa-angular/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -46,8 +48,6 @@
           "namedChunks": false,
           "aot": true,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -74,8 +74,6 @@
           "namedChunks": false,
           "aot": true,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -90,7 +88,7 @@
           ]
         }
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": ""
     },
     "serve": {
@@ -124,7 +122,5 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets", "sass", "cpa-sass"]
+  }
 }

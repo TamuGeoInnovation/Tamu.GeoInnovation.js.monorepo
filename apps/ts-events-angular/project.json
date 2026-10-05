@@ -4,15 +4,17 @@
   "projectType": "application",
   "sourceRoot": "apps/ts-events-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
       "options": {
-        "outputPath": "dist/apps/ts-events-angular",
+        "outputPath": {
+          "base": "dist/apps/ts-events-angular"
+        },
         "index": "apps/ts-events-angular/src/index.html",
-        "main": "apps/ts-events-angular/src/main.ts",
-        "polyfills": "apps/ts-events-angular/src/polyfills.ts",
+        "polyfills": ["apps/ts-events-angular/src/polyfills.ts"],
         "tsConfig": "apps/ts-events-angular/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -25,7 +27,8 @@
           }
         ],
         "styles": ["apps/ts-events-angular/src/styles.scss"],
-        "scripts": []
+        "scripts": [],
+        "browser": "apps/ts-events-angular/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -50,9 +53,7 @@
           "outputHashing": "all"
         },
         "development": {
-          "buildOptimizer": false,
           "optimization": false,
-          "vendorChunk": true,
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
@@ -91,6 +92,5 @@
         "jestConfig": "apps/ts-events-angular/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }
