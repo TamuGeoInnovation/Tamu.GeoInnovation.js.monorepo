@@ -58,7 +58,7 @@ compiles what the specs import, and `nx lint` does not typecheck at all.
 [Fixing a bug quickly](#fixing-a-bug-quickly)):
 
 ```bash
-docker run --rm -m 8g -v "$(pwd -W):/w" -w /w node:20.18.1 sh -c "node node_modules/nx/bin/nx.js affected -t lint,test,build --base=origin/development"
+docker run --rm -m 8g -v "$(pwd -W):/w" -w /w node:22.23.3 sh -c "node node_modules/nx/bin/nx.js affected -t lint,test,build --base=origin/development"
 ```
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
@@ -112,7 +112,7 @@ bug worktree does not install its own: it mounts the main checkout's `node_modul
 needs a tmpfs where Nx writes its cache:
 
 ```bash
-docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo/node_modules:/w/node_modules:ro" --tmpfs /w/node_modules/.cache -w /w -e NX_DAEMON=false node:20.18.1 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo/node_modules:/w/node_modules:ro" --tmpfs /w/node_modules/.cache -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 Check what it holds before trusting it: `node_modules/@angular/core/package.json` must show the

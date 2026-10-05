@@ -143,7 +143,7 @@ npx nx run [app]-e2e:e2e --watch         # Headed mode for debugging
 ### Dependency Management
 
 - **Package manager:** npm (use `npm ci` to install, not `npm install`)
-- **Node version:** Matches `.github/workflows/build.yml` `node-version` (currently 20.18.1)
+- **Node version:** Matches `.github/workflows/build.yml` `node-version` (currently 22.23.3)
 - **Database drivers:** MySQL, MSSQL, and SQLite are supported via TypeORM
 - **Session storage:** `better-sqlite3-session-store` for Express sessions
 - **Validation:** `class-validator` + `class-transformer` for DTO validation (NestJS)
