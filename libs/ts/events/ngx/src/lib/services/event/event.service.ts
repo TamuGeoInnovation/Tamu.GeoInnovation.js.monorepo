@@ -66,6 +66,11 @@ export class EventService {
       });
     }
 
+    // A kiosk map shows exactly what its own definition says: none of the main map's layers (#1392).
+    if (this.eventSettingsService.eventConfiguration()?.discover?.type === 'kiosk') {
+      this.mapService.withoutMainLayers();
+    }
+
     this.eventOptions = this.eventSettingsService.eventOptions();
     this.settings = this.eventSettingsService.settings() || {};
     this.visibleOptions = this.eventSettingsService.getVisibleOptions(this.settings);

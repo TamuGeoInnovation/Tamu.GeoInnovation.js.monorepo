@@ -41,6 +41,9 @@ export class EsriMapService {
 
   private _viewClickHandle: IHandle;
 
+  /** Whether the map loads the main map's layer set. See `withoutMainLayers`. */
+  private _mainLayers = true;
+
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
@@ -815,6 +818,20 @@ export class EsriMapService {
   }
 
   /**
+   * Builds the map without the main map's layer set (the environment's `LayerSources`), so it draws
+   * only the layers its caller adds. Call before the map loads.
+   *
+   * For kiosk maps, which show exactly what their own definition says. Loading the main set as well
+   * drew campus layers a kiosk has no use for, and let the main map's copy of a layer the kiosk also
+   * defines race the kiosk's own: the dining kiosk drew no dining on most loads (#1392).
+   *
+   * The service is scoped to its map component, so this cannot reach another map.
+   */
+  public withoutMainLayers(): void {
+    this._mainLayers = false;
+  }
+
+  /**
    * Returns a list of layer sources, applying various filters if specified. This is used
    * to limit the number of layers that are loaded on map load when requested.
    *
@@ -824,6 +841,10 @@ export class EsriMapService {
    * the current application route contains 'layers' query params.
    */
   public filterLayerSources(sources?: LayerSource[], filters?: { params?: boolean }): Array<LayerSource> {
+    if (!sources && !this._mainLayers) {
+      return [];
+    }
+
     // Get the layer sources from the layer sources service, with overrides applied
     let ret: Array<LayerSource> = sources || this.layerSourcesService.getLayerSourcesWithOverrides();
 
