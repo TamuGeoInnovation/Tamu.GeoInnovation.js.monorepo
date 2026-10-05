@@ -736,8 +736,11 @@ export function MainMapLayerSources(
     // Each event set's date is shown after its name in the layer list (`listNote`, #1126).
     //
     // Esri's layer list shows a group's children in reverse draw order (the last source is listed
-    // first), so these sources are written in reverse of the order they appear in the list:
-    // Opening Ceremony, Kickoff at Kyle, 150 Cake & Ice Cream.
+    // first), so these sources are written in reverse of the order they appear in the list.
+    //
+    // An event set is listed while it is still to come or is happening today, and comes out once it
+    // has passed: Opening Ceremony and Kickoff at Kyle were both on 2 October and were removed on
+    // 5 October (#1413). 150 Cake & Ice Cream is the last of them.
     //
     // Live at the Station is not a 150th event, so it is not listed here (#1125). Its own map is
     // unchanged.
@@ -768,101 +771,6 @@ export function MainMapLayerSources(
           },
           native: {
             ...commonLayerProps
-          }
-        },
-        {
-          type: 'feature',
-          id: definitions.EVENT_150_KICKOFF_AT_KYLE.layerId,
-          title: definitions.EVENT_150_KICKOFF_AT_KYLE.name,
-          listNote: 'Oct. 2, 2026',
-          url: definitions.EVENT_150_KICKOFF_AT_KYLE.url,
-          popupComponent: definitions.EVENT_150_KICKOFF_AT_KYLE.popupComponent,
-          listMode: 'show',
-          visible: false,
-          // Lots carry `name` (lot numbers) and `description` ("Free Event Parking" and similar).
-          popupData: {
-            name: '{attributes.name}',
-            description: '{attributes.description}'
-          },
-          native: {
-            ...commonLayerProps
-          }
-        },
-        {
-          // The Opening Ceremony service has three layers, kept together in one group that the layer
-          // list shows as a single entry. Parking is listed first so it draws beneath the other two.
-          type: 'group',
-          id: 'event-150-opening-ceremony-group-layer',
-          title: 'Opening Ceremony',
-          listNote: 'Oct. 2, 2026',
-          listMode: 'show',
-          visible: false,
-          sources: [
-            {
-              type: 'feature',
-              id: definitions.EVENT_150_OPENING_PARKING.layerId,
-              title: definitions.EVENT_150_OPENING_PARKING.name,
-              url: definitions.EVENT_150_OPENING_PARKING.url,
-              popupComponent: definitions.EVENT_150_OPENING_PARKING.popupComponent,
-              listMode: 'show',
-              visible: true,
-              popupData: {
-                name: '{attributes.name}',
-                description: '{attributes.description}'
-              },
-              native: {
-                ...commonLayerProps
-              }
-            },
-            {
-              type: 'feature',
-              id: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.layerId,
-              title: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.name,
-              url: definitions.EVENT_150_OPENING_SHUTTLE_ROUTE.url,
-              listMode: 'show',
-              visible: true,
-              native: {
-                ...commonLayerProps,
-                // Same symbol as the standalone Opening Ceremony map: the route is digitized from the
-                // PRG shuttle stop to the Lot 54 stop, so an arrowhead at the end shows the direction.
-                renderer: {
-                  type: 'simple',
-                  label: 'Shuttle Route',
-                  symbol: {
-                    type: 'simple-line',
-                    color: 'rgb(38, 115, 0)',
-                    width: 2,
-                    style: 'solid',
-                    marker: {
-                      type: 'line-marker',
-                      style: 'arrow',
-                      color: 'rgb(38, 115, 0)',
-                      placement: 'end'
-                    }
-                  }
-                }
-              }
-            },
-            {
-              type: 'feature',
-              id: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.layerId,
-              title: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.name,
-              url: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.url,
-              popupComponent: definitions.EVENT_150_OPENING_EVENT_LOCATIONS.popupComponent,
-              listMode: 'show',
-              visible: true,
-              popupData: {
-                name: '{attributes.name}',
-                description: '{attributes.description}'
-              },
-              native: {
-                ...commonLayerProps
-              }
-            }
-          ],
-          // One toggle for all three layers, like Sustainable Transportation.
-          native: {
-            listMode: 'hide-children'
           }
         }
       ]

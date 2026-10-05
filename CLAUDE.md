@@ -22,11 +22,12 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Three places, each with one job.
+Four places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
 | This file | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month. |
+| [`docs/build-times.md`](docs/build-times.md) | How long runs take, recorded as they happen, so a change meant to speed the work up can be shown to have done it. Measurements, not rules. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The maintainer's handoff page | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt. |
 
@@ -97,6 +98,16 @@ file read crosses the Windows-to-Linux boundary. Measured on a quiet machine on 
 On its first real use, a full affected check ran 131 tasks in its first four minutes, against about 42
 an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
 with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
+
+**Record how long it took, in [`docs/build-times.md`](docs/build-times.md).** Every check, build,
+install or deploy, whatever its length: the date, the machine, what ran, the approach and the
+elapsed time. The scripts already print the elapsed time, so the measurement costs nothing; what
+costs something is wanting a number later that was only ever on screen.
+
+Record the run you are not trying to make faster, too. A single duration proves nothing on its own —
+the same run measured before and after a change is what shows whether the work paid off, and the
+"before" cannot be taken afterwards. The volume migration is provably 5 to 12 times faster only
+because someone measured the slow way first. See #1415.
 
 **After a dependency change, prove the lock file with a clean `npm ci` before pushing.** CI installs
 with `npm ci`, which installs only what `package-lock.json` records and refuses when it disagrees

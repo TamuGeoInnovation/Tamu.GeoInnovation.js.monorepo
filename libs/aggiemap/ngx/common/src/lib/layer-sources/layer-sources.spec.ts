@@ -232,31 +232,37 @@ describe('LayerSources', () => {
     const result = LayerSources(connections, definitions);
     const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
     const children = eventsGroup?.sources ?? [];
-    const openingCeremony = children.find((layer) => layer.id === 'event-150-opening-ceremony-group-layer') as
-      | GroupLayerSource
-      | undefined;
 
     expect(eventsGroup?.type).toBe('group');
     expect(eventsGroup?.title).toBe('150th Events');
     expect(eventsGroup?.listHeading).toBe(true);
     expect(children.every((layer) => layer.visible === false)).toBe(true);
 
-    // Opening Ceremony is one list entry that toggles all three of its layers together.
-    expect(openingCeremony?.native?.listMode).toBe('hide-children');
-
     // Esri's layer list shows a group's children in reverse source order, so reversing the sources
     // gives the order visitors see.
     // Live at the Station is not a 150th event (#1125), so it is not in this group.
-    expect([...children].reverse().map((layer) => layer.title)).toEqual([
-      'Opening Ceremony',
-      'Kickoff at Kyle',
-      '150 Cake & Ice Cream'
-    ]);
-    expect([...(openingCeremony?.sources ?? [])].reverse().map((layer) => layer.title)).toEqual([
-      'Event Locations',
-      'Shuttle Route',
-      'Parking'
-    ]);
+    //
+    // Opening Ceremony and Kickoff at Kyle were both on 2 October and came out once they had
+    // happened (#1413). An event is listed while it is still to come or is today, and not after.
+    expect([...children].reverse().map((layer) => layer.title)).toEqual(['150 Cake & Ice Cream']);
+  });
+
+  it('should not offer any 150th event that has already happened', () => {
+    const result = LayerSources(connections, definitions);
+    const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
+
+    // The two 2 October sets were still offered three days after they finished, which is what #1413
+    // was raised for. Named rather than computed from the clock: the remaining set comes out on its
+    // own day, and a date-driven assertion would fail the build that morning before anyone had
+    // chance to remove it.
+    const titles = (eventsGroup?.sources ?? []).map((layer) => layer.title);
+
+    expect(titles).not.toContain('Opening Ceremony');
+    expect(titles).not.toContain('Kickoff at Kyle');
+
+    const ids = (eventsGroup?.sources ?? []).map((layer) => layer.id);
+
+    expect(ids).not.toContain('event-150-opening-ceremony-group-layer');
   });
 
   it("should show each 150th event's date next to its name in the layer list", () => {
@@ -265,8 +271,6 @@ describe('LayerSources', () => {
 
     // Shown in the layer list rather than in the layers themselves (#1126).
     expect([...(eventsGroup?.sources ?? [])].reverse().map((layer) => [layer.title, layer.listNote])).toEqual([
-      ['Opening Ceremony', 'Oct. 2, 2026'],
-      ['Kickoff at Kyle', 'Oct. 2, 2026'],
       ['150 Cake & Ice Cream', 'Oct. 5, 2026']
     ]);
   });
