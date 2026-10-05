@@ -109,6 +109,26 @@ the same run measured before and after a change is what shows whether the work p
 "before" cannot be taken afterwards. The volume migration is provably 5 to 12 times faster only
 because someone measured the slow way first. See #1415.
 
+**Times are US Central, and `TZ=America/Chicago` will lie to you.** Every clock time reported to the
+maintainer, and every timestamp written into an issue, a pull request, release notes or
+`docs/build-times.md`, is US Central with the zone named — not UTC, and not whatever a container's
+clock says. Elapsed durations are just durations and need no zone.
+
+Git Bash on these machines has no tz database, so `TZ=America/Chicago date` **silently returns UTC
+and labels it `GMT`**. It gives a wrong answer that looks like a right one, with nothing to warn you.
+Convert with PowerShell, which has Windows' own timezone data and applies daylight saving itself, so
+the same call is right in CDT and CST:
+
+```powershell
+[System.TimeZoneInfo]::ConvertTimeFromUtc(
+  [DateTime]::UtcNow,
+  [System.TimeZoneInfo]::FindSystemTimeZoneById('Central Standard Time'))
+```
+
+The id stays `Central Standard Time` all year; Windows handles the summer change. Playwright
+containers run in UTC for the same reason, which is why a capture shows the wrong time unless
+`timezoneId: 'America/Chicago'` is passed to `newPage`. See #1423.
+
 **After a dependency change, prove the lock file with a clean `npm ci` before pushing.** CI installs
 with `npm ci`, which installs only what `package-lock.json` records and refuses when it disagrees
 with `package.json`. A local `npm install` quietly adds what is missing to `node_modules` without

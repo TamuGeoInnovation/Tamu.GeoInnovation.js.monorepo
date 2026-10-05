@@ -24,6 +24,11 @@ Add a row. Keep the newest at the top of its section.
 - **Elapsed** - wall clock. Say if the machine was doing something else at the time; a contended run
   is still worth recording, but it is not comparable.
 
+**Any clock time written here is US Central**, with the zone named — a start, a finish, or the time
+of day a run was taken. Elapsed durations are just durations and need no zone. `TZ=America/Chicago`
+does not work in Git Bash on these machines and silently returns UTC; CLAUDE.md gives the PowerShell
+call that does convert (#1423).
+
 Anything unusual goes in a note under the table rather than being squeezed into a cell.
 
 ## Checks and builds
