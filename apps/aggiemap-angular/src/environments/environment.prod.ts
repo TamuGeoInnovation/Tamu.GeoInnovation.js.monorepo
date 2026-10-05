@@ -14,12 +14,7 @@ export { SelectionSymbols, Polygons } from '@tamu-gisc/aggiemap/ngx/common';
 
 export * from './notification-events';
 
-const sources = factory({
-  environment: 'prod',
-  layerSources: {
-    exclude: ['BIKE_LOCATIONS']
-  }
-});
+const sources = factory({ environment: 'prod' });
 
 export const { Definitions, SearchSources, ThreeDLayers, LayerSources } = sources;
 

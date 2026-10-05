@@ -13,7 +13,6 @@ function createConnections(gisHost: string): IComposedConnections {
     // Bike racks are layer 1 of TS/BikeMap, which the main map's Bike Racks layer already uses (#1122).
     bikeRacksUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer/1`,
     bikeMapUrl: `https://${gisHost}/arcgis/rest/services/TS/BikeMap/MapServer`,
-    bikeLocationsUrl: `https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson`,
     routingBaseUrl: `https://${gisHost}/arcgis/rest/services/Routing`,
     poiUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Points_of_Interest_view/FeatureServer',
     diningLocationsUrl: `https://api.aggiemap.tamu.edu/dining/locations/geojson`,
@@ -141,7 +140,6 @@ export interface IComposedConnections {
   nightParkingUrl: string;
   bikeRacksUrl: string;
   bikeMapUrl: string;
-  bikeLocationsUrl: string;
   routingBaseUrl: string;
   poiUrl: string;
   diningLocationsUrl: string;

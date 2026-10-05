@@ -124,11 +124,7 @@
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tab": ["libs/ui-kits/ngx/navigation/mobile-tab/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tile": ["libs/ui-kits/ngx/navigation/mobile-tile/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/triggers": ["libs/ui-kits/ngx/navigation/triggers/src/index.ts"],
-      "@tamu-gisc/ui-kits/ngx/search": ["libs/ui-kits/ngx/search/src/index.ts"],
-      "@tamu-gisc/veoride/common/entities": ["libs/veoride/common/entities/src/index.ts"],
-      "@tamu-gisc/veoride/data-api": ["libs/veoride/data-api/src/index.ts"],
-      "@tamu-gisc/veoride/data-compiler": ["libs/veoride/data-compiler/src/index.ts"],
-      "@tamu-gisc/veoride/scraper": ["libs/veoride/scraper/src/index.ts"]
+      "@tamu-gisc/ui-kits/ngx/search": ["libs/ui-kits/ngx/search/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
