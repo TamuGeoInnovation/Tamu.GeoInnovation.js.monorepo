@@ -6,7 +6,7 @@ import { loadModules } from 'esri-loader';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService, LayerSourcesService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -31,7 +31,18 @@ const EVENT_PASSED_GRACE_DAYS = 1;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService]
+  // `LayerSourcesService` holds this map's `defaultLayerOverrides`. Provided here, so they live and die
+  // with this map; from the application's shared instance they reached every map opened after it in
+  // the same tab, the main map included (#1397).
+  providers: [
+    EventService,
+    EsriMapService,
+    LayerSourcesService,
+    LayerListService,
+    LegendService,
+    TripPlannerService,
+    BasemapGalleryService
+  ]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
