@@ -29,8 +29,9 @@ Read these before starting. Each one exists because it has cost real debugging t
   looks like. If the check does not match, stop and diagnose rather than continuing.
 - **Stop and ask the user for anything needing credentials or a browser.** You cannot add an
   SSH key to GitHub or authorize SSO; those steps belong to the user.
-- **Never edit files while a Docker run is in flight.** The bind mount is live, so a run
-  picks up partial edits and reports on a state that never existed. Kill it and restart.
+- **Never edit files while the dev server is compiling them.** Its source is bind-mounted
+  live, so a build picks up partial edits and reports on a state that never existed. Checks
+  run by `scripts/check-in-volume.sh` are unaffected: they run on a fetched commit.
 - **Do not pipe `nx` output into `tail`, `head` or `grep`.** The pipeline's exit code hides
   the task's, so a task that never ran still looks like a pass. Redirect to a file, capture
   the exit code on its own line, then filter the file.
@@ -140,18 +141,21 @@ write access. Do not try to change access yourself.
 
 ## Phase 3 - Install dependencies
 
-Run from the repository root, substituting the real path in `-v`.
+This installs the dev server's `node_modules` into a Docker volume, `tamu-js-dev-nm`, rather
+than into the Windows checkout: file reads across the Windows-to-Linux bind mount are several
+times slower (CLAUDE.md, "Why checks run in a volume"). Run from the repository root,
+substituting the real path in `-v`.
 
 Git Bash:
 
 ```
-MSYS_NO_PATHCONV=1 docker run --rm -m 8g -v "C:\path\to\repo:/w" -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 sh -c "npm ci"
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:\path\to\repo:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 npm ci --no-audit --no-fund
 ```
 
 PowerShell, where `MSYS_NO_PATHCONV` is unnecessary:
 
 ```
-docker run --rm -m 8g -v "${PWD}:/w" -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 sh -c "npm ci"
+docker run --rm -m 16g -v "${PWD}:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 npm ci --no-audit --no-fund
 ```
 
 **Expect:** roughly 2,200 packages. Budget real time - the first run also pulls the
@@ -164,14 +168,24 @@ docker run --rm -m 8g -v "${PWD}:/w" -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.2
 
 ## Phase 4 - Prove the toolchain
 
-Use `node node_modules/nx/bin/nx.js`, never bare `nx` or `npx nx` - `node_modules/.bin` may
-not be populated.
+Run the first check, from Git Bash in the repository root:
 
 ```
-docker run --rm -m 8g -v "<path>:/w" -w /w node:22.23.3 sh -c "node node_modules/nx/bin/nx.js build aggiemap-angular --skip-nx-cache"
+scripts/check-in-volume.sh development aggiemap-angular
+echo "exit $?"
 ```
 
-**Expect:** `Successfully ran target build`, after a few minutes.
+It clones the committed `development` branch into its own Docker volume (`tamu-js-development`),
+runs `npm ci` there, then lints, tests and builds `aggiemap-angular`. This is how every check
+runs here; CLAUDE.md has the rest (`affected`, `all`, a list of projects).
+
+**Expect:** `exit 0`, after a few minutes, and a log at
+`check-tamu-js-development-aggiemap-angular.log` in the repository root that
+reports `Successfully ran targets lint, test, build`. A later run reuses the volume, skips `npm ci` unless
+the lock changed, and replays unchanged tasks from the Nx cache in about a second.
+
+Inside the containers, Nx runs as `node node_modules/nx/bin/nx.js`, never bare `nx` or
+`npx nx` - `node_modules/.bin` may not be populated.
 
 **Build, not just test.** Most libraries have no `build` target at all, so
 `nx build <library>` answers `Cannot find configuration for task` and typechecks nothing. To
@@ -182,7 +196,7 @@ only compiles what the specs import, and `nx lint` does not typecheck at all.
 ## Phase 5 - Run the app
 
 ```
-docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -w /w node:22.23.3 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -d --name aggiemap-dev -m 8g -p 4200:4200 -v "<path>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 **Expect:** compiled in roughly three to four minutes, then the app answers on port 4200.

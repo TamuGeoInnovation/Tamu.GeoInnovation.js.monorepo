@@ -54,12 +54,18 @@ may not be populated. CLAUDE_SETUP.md has the full command.
 `nx build <library>` answers `Cannot find configuration for task` and checks nothing. `nx test` only
 compiles what the specs import, and `nx lint` does not typecheck at all.
 
-**Run this before every push, and read its exit code** (a bug fix may run less; see
+**Commit, then run this before every push, and read its exit code** (a bug fix may run less; see
 [Fixing a bug quickly](#fixing-a-bug-quickly)):
 
 ```bash
-docker run --rm -m 8g -v "$(pwd -W):/w" -w /w node:22.23.3 sh -c "node node_modules/nx/bin/nx.js affected -t lint,test,build --base=origin/development"
+scripts/check-in-volume.sh <branch>
 ```
+
+From Git Bash, in the main checkout or any worktree. It runs `nx affected -t lint,test,build` against
+`origin/development` in a Linux clone of the branch kept in a Docker volume (`tamu-js-<issue>`), skips
+the projects CI excludes (read from `.github/workflows/build.yml`), writes a log, and exits with the
+check's exit code. **It checks only what is committed**; uncommitted edits are not seen. `all` in place
+of `affected` checks every project. Run `git fetch origin` first if `origin/development` is old.
 
 **Not one app you picked — every affected app.** Building only the app you were working in is what the
 advice used to say, and it is not enough: a change to a shared library can break an application you
@@ -73,8 +79,24 @@ Budgets are part of the build, so a purely additive change can fail it without a
 task's, so a task that never ran still looks like a pass. Redirect to a file, capture the
 exit code on its own line, then filter the file.
 
-**Do not edit files while a Docker run is in flight.** The bind mount is live, so a run picks
-up partial edits and reports on a state that never existed. Kill it and restart.
+**Do not edit files while the dev server is compiling them.** Its source is bind-mounted live, so a
+build picks up partial edits and reports on a state that never existed. Checks are unaffected: they run
+on a fetched commit, so editing while one runs is safe.
+
+**Why checks run in a volume.** With the source and `node_modules` bind-mounted from Windows, every
+file read crosses the Windows-to-Linux boundary. Measured on a quiet machine on 4 October (#1402):
+
+| Task | Bind-mounted | `node_modules` in a volume | Whole clone in a volume |
+| --- | --- | --- | --- |
+| `test maps-esri` | 80-180 s | 113 s | 15 s |
+| `lint ts-events-ngx` | 54-59 s | 18 s | 5 s |
+| `build mailroom-angular` | 95-162 s | 19 s | 29 s |
+| 4 projects' tests, `--parallel=8` | 199 s | - | 24 s |
+| `npm ci` | 43 min (under load) | 105 s | 116 s |
+
+On its first real use, a full affected check ran 131 tasks in its first four minutes, against about 42
+an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
+with `-m 16g` and `--parallel=8` (peak memory measured: 10.4 GB). Do not add `--skip-nx-cache`.
 
 **After a dependency change, prove the lock file with a clean `npm ci` before pushing.** CI installs
 with `npm ci`, which installs only what `package-lock.json` records and refuses when it disagrees
@@ -82,8 +104,9 @@ with `package.json`. A local `npm install` quietly adds what is missing to `node
 writing it to the lock, so every local check passes and CI fails before running anything. #1345 did
 exactly that: a full local verify passed, then four checks failed on `Missing: @types/dragula from
 lock file`, a peer of the upgraded `ng2-dragula`. Sync the lock with
-`npm install --package-lock-only --ignore-scripts`, then run `npm ci --ignore-scripts` in Docker in
-an empty directory holding only `package.json` and `package-lock.json`. See #1347.
+`npm install --package-lock-only --ignore-scripts` and commit it. `scripts/check-in-volume.sh` then
+proves it: whenever the committed `package.json` or `package-lock.json` changes, it runs `npm ci` from
+those files alone, as CI does. See #1347.
 
 **Files are LF, and `.gitattributes` will not fix a mistake for you.** It sets `* -text`, which
 turns git's end-of-line normalization off for every file: git stores the bytes it is given, and
@@ -106,19 +129,20 @@ a one-line fix (#1379) was forecast at 45, and none of that was the fix: a dev s
 cold, twice, on a stale install; two upgrades sharing the machine; and a full affected build that CI
 then ran again. These rules hold on every machine (#1381).
 
-**Keep the main checkout installed, and a dev server running from it.** The main checkout tracks
-`development`, so after anything changes `package.json` there, run `npm ci` in it straight away. A
-bug worktree does not install its own: it mounts the main checkout's `node_modules` read-only, which
-needs a tmpfs where Nx writes its cache:
+**Keep a dev server's install current, and the dev server running.** The dev server (`aggiemap-dev`)
+bind-mounts the source, so edits on Windows reach it, but its `node_modules` lives in the Docker volume
+`tamu-js-dev-nm`, installed inside the container. Install it once, and again whenever
+`package-lock.json` changes:
 
 ```bash
-docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v "C:/TAMU/Tamu.GeoInnovation.js.monorepo/node_modules:/w/node_modules:ro" --tmpfs /w/node_modules/.cache -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 npm ci --no-audit --no-fund
+MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
-Check what it holds before trusting it: `node_modules/@angular/core/package.json` must show the
-version `development` uses. On 4 October the main checkout still held Angular 15 and Nx 16, two
-upgrades behind, and Nx failed with a misleading error. The dev server recompiles on save, so after
-the first compile, a fix reaches the browser in under a minute.
+One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before
+trusting it: `node_modules/@angular/core/package.json` must show the version the checkout uses. On 4
+October an install two upgrades behind made Nx fail with a misleading error. The dev server recompiles
+on save, so after the first compile, a fix reaches the browser in under a minute.
 
 **Do not set `NX_NO_CLOUD=true`.** With Nx 19 and an `nxCloudId` in `nx.json`, every command fails
 with `Could not find any runner configurations in nx.json`.
@@ -137,14 +161,13 @@ A paused container loses nothing; it only stops competing for the CPU.
 draft:**
 
 ```bash
-node node_modules/nx/bin/nx.js run-many -t lint,test -p <each project the fix edits>
-node node_modules/nx/bin/nx.js build <the app the bug is in>
+scripts/check-in-volume.sh <branch> <each project the fix edits>,<the app the bug is in>
 ```
 
-Not `affected`: a fix in a shared library makes nearly everything affected. #1379 edited
-`libs/maps/esri`, and `affected -t lint,test` meant 52 projects and over 25 minutes; the two projects it
-edited took about 5. Run the two commands one after the other, not at once: two Nx processes over the
-same read-only install crashed with exit 135 and reported nothing.
+The comma-separated list runs `lint,test,build` on those projects only (a library without a `build`
+target just skips it), in the same volume as the full check. Not `affected`: a fix in a shared library
+makes nearly everything affected. #1379 edited `libs/maps/esri`, and `affected -t lint,test` meant 52
+projects and over 25 minutes; the two projects it edited took about 5.
 
 CI runs the full `affected -t lint,test,build` on every pull request anyway, so running it locally as
 well doubled the wait without adding a check. What CI alone catches - another app's bundle budget,
