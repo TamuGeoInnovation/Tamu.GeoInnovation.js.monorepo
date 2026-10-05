@@ -134,11 +134,24 @@ jobs:
               *) url="$base/$script" ;;
             esac
 
-            if curl -fsSL --max-time 120 "$url" | grep -q '__tamuGiscMapProbe'; then
-              echo "Map probe found in $script"
-              found=true
-              break
-            fi
+            # Not `curl | grep -q`. Steps run under `set -o pipefail`, and `grep -q` exits the
+            # moment it matches, so curl is left unable to write the rest and exits 23 - which
+            # pipefail turns into a failed pipeline. The probe was found and the check still said
+            # it was absent. Verified against production: the pipeline reports "Failure writing
+            # output to destination", the same fetch without a pipe returns 786,629 bytes
+            # containing the probe (#1435).
+            body=$(curl -fsSL --max-time 120 "$url") || {
+              echo "Could not fetch $script"
+              continue
+            }
+
+            case "$body" in
+              *__tamuGiscMapProbe*)
+                echo "Map probe found in $script"
+                found=true
+                break
+                ;;
+            esac
           done
 
           if [ "$found" = true ]; then
