@@ -3,10 +3,6 @@
   "compilerOptions": {
     "outDir": "../../../../../dist/out-tsc",
     "module": "commonjs",
-    // clipboard is CJS and exports a class directly. tsconfig.base sets allowSyntheticDefaultImports
-    // but not esModuleInterop, so `import Clipboard from` emits `clipboard_1.default` under ts-jest,
-    // which is undefined. The Angular build applies its own interop. As in libs/maps/esri.
-    "esModuleInterop": true,
     "types": ["jest", "node"],
     "target": "es2016"
   },
