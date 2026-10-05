@@ -6,9 +6,10 @@
 **On production: the [2 October release](2026-10-02.md)**, tagged `prod-2026-10-02`.
 
 **On dev, being tested: the [5 October release](2026-10-05.md)**, which takes the maps from Angular 15
-to 18, with NestJS 10 and ArcGIS 4.27. Its notes are written and it passed the full suite, but it is
-**not on production yet**: the team tests it on dev first, and it is planned for production on Monday
-5 October. The `prod-*` tag, not this file, will record when it ships.
+to 19 on Node 22, built with esbuild, and brings NestJS 10 and ArcGIS 4.27. Its notes are written and
+it passed the full suite, but it is **not on production yet**: the team tests it on dev first, and it
+is planned for production on Monday 5 October. The `prod-*` tag, not this file, will record when it
+ships.
 
 **If you followed a link here** expecting the notes for a release that just shipped, they are in those
 dated files now. Everything that was listed here, including the Angular 16 release first written up for
