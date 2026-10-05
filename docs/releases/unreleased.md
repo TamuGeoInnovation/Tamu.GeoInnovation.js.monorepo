@@ -53,6 +53,16 @@ Merged since the 3 October release was cut, and on dev in Release-443:
   | Before (production) | After |
   | --- | --- |
   | ![The dining kiosk showing the basemap and no dining locations](../screenshots/1392-dining-kiosk/before-production.png) | ![The dining kiosk with its dining locations drawn](../screenshots/1392-dining-kiosk/after-local.png) |
+- **A map's layer settings stay on that map** ([#1397](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1397)). Some event and kiosk maps change
+  how they show a main-map layer: Break/Summer parking turns off the surface lots' popups, and the Ring Days, SEC Grounds and football hide construction.
+  Those settings were kept for the whole browser tab, so going back to the main map without reloading,
+  with the Back button for example, showed it with the other map's settings until the page was
+  reloaded. Each map now keeps its own. A new smoke check opens the main map, moves to such a map,
+  goes Back, and checks the main map is as it was.
+
+  | Before (dev: the main map after Back from the dining kiosk) | After |
+  | --- | --- |
+  | ![The main map with Dining Locations switched on, after visiting the dining kiosk](../screenshots/1397-override-leak/before-dev.png) | ![The main map after the same steps, with Dining Locations off as it opens](../screenshots/1397-override-leak/after-local.png) |
 
 ---
 
@@ -94,6 +104,7 @@ Merged, but not in the build on dev yet. Test these once the next build is deplo
 | Angular 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), and anything that loads data: search, popups, the side panel | **nothing different**. Every app's HTTP setup changed form in this upgrade, so anything that fails to load data is the first thing to report |
 | Event maps open on the chosen day or session ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) | [Ring Day, day 1](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1), [Ring Day, day 2](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day2), [Fish Camp, sessions B, C, E and F](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=sessions-a-f), [Fish Camp, sessions A, D and G](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=session-g) | each opens **close in** on its own location (day 1 on the ring pickup by the Williams Alumni Center, day 2 on Aggie Park), not zoomed out over campus. Compare with [production](https://aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1) |
 | The dining kiosk shows its dining locations ([#1392](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1392)) | [The dining kiosk on dev](https://dev.aggiemap.tamu.edu/kiosk/dining/map); after release, [on production](https://aggiemap.tamu.edu/kiosk/dining/map) by direct link | the dining locations drawn as markers across campus, no sidebar, and nothing else over the basemap: no parking lot shading, space numbers or 150th event layers. Reload a few times: before the fix the dining appeared on some loads only. All Maps still lists it on dev only, by design |
+| A map's layer settings stay on that map ([#1397](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1397)) | [The main map](https://dev.aggiemap.tamu.edu/map), then **All Maps** and the [dining kiosk](https://dev.aggiemap.tamu.edu/kiosk/dining/map) or [Break / Summer parking](https://dev.aggiemap.tamu.edu/parking/break-summer), then the browser's **Back** button | back on the main map, **Dining Locations** is off in the layer list as it is when the main map opens, and clicking a surface lot still opens its popup. Before the fix, the main map kept the other map's settings until a reload |
 
 ---
 
