@@ -100,10 +100,71 @@ This is the first build recorded with the esbuild `application` builder (#1403).
 recorded here can be compared stage by stage: a change to how the apps are built should move Build
 development and Build production and leave Setup and Dependencies alone.
 
+### The whole history, from Azure directly
+
+Per-build totals can be pulled from Azure DevOps with the read-only PAT on the work machines. This
+is how the table below was produced, and how to regenerate it rather than typing numbers by hand:
+
+```bash
+PAT=$(tr -d '\r\n' < /c/TAMU/gsvcs-local-secrets/ado_pat.txt)
+AUTH=$(printf ":%s" "$PAT" | base64 -w0)
+ORG=tamugeoinnovation
+PROJ=d752bbdb-b2f5-492d-b50c-8817f8804ce8
+curl -s -H "Authorization: Basic $AUTH" \
+  "https://dev.azure.com/$ORG/$PROJ/_apis/build/builds?definitions=19&\$top=200&queryOrder=finishTimeDescending&api-version=7.1"
+```
+
+`$top` caps at 200, so older history needs `minTime` and `maxTime` windows. Azure retains about two
+weeks; 21 September is as far back as it goes.
+
+**287 successful builds, 21 September to 5 October**, median 5.6 minutes
+overall, fastest 1.8, slowest 28.5:
+
+| Day | Builds | Median | Fastest | Slowest |
+| --- | ---: | ---: | ---: | ---: |
+| 2026-09-21 | 2 | 9.6 | 5.6 | 13.7 |
+| 2026-09-22 | 2 | 8.6 | 8.3 | 8.9 |
+| 2026-09-23 | 2 | 10.3 | 5.5 | 15.1 |
+| 2026-09-24 | 6 | 9.0 | 5.9 | 14.3 |
+| 2026-09-25 | 20 | 5.9 | 2.9 | 13.0 |
+| 2026-09-26 | 5 | 8.3 | 3.0 | 8.6 |
+| 2026-09-27 | 9 | 8.8 | 3.7 | 12.3 |
+| 2026-09-28 | 48 | 4.6 | 1.9 | 14.7 |
+| 2026-09-29 | 11 | 4.9 | 1.8 | 9.1 |
+| 2026-09-30 | 33 | 4.8 | 2.2 | 10.0 |
+| 2026-10-01 | 28 | 7.6 | 2.6 | 18.9 |
+| 2026-10-02 | 44 | 6.0 | 2.1 | 28.5 |
+| 2026-10-03 | 6 | 11.7 | 2.1 | 15.5 |
+| 2026-10-04 | 33 | 2.9 | 2.0 | 13.9 |
+| 2026-10-05 | 38 | 4.9 | 2.1 | 15.4 |
+
+**This is not a trend line, and should not be read as one.** A build's duration depends on what that
+commit affected, so a day's median mostly reflects what was being worked on. Reading an esbuild win
+into 4 October against 5 October would be wrong in both directions: esbuild only merged on
+5 October, and 5 October is the slower of the two by that measure.
+
+What the table is good for is spotting a day that is out of character, and giving a baseline that a
+deliberate change can be measured against stage by stage.
+
+**Cross-checked against a second source.** Azure reports build 20261005.12 as 5.8 minutes; the same
+build derived from GitHub's check-runs came to 5 min 47 s. Two independent routes agreeing is what
+makes both methods here trustworthy.
+
 ## Releases
 
 The Azure DevOps release that puts a build on dev or on production. These are **not** visible in
-GitHub's checks - only the build is - so the times have to come from whoever runs the release.
+GitHub's checks - only the build is.
+
+They cannot currently be pulled from Azure either. The Release Management API answers **HTTP 401**
+with the PAT described above:
+
+```
+https://vsrm.dev.azure.com/tamugeoinnovation/<project>/_apis/release/deployments?definitionId=13
+```
+
+The PAT carries Build (read) but not **Release (read)**. Adding that scope would let these be
+pulled directly and is the one thing standing between this table and filling itself in. Until then
+the numbers have to come from whoever ran the release.
 
 | Date | Release | Build | Elapsed |
 | --- | --- | --- | ---: |
@@ -119,7 +180,7 @@ every layer, so its duration says as much about the GIS services as about this c
 | --- | --- | --- | --- | ---: |
 | 5 Oct 2026 | home | dev, build 20261005.6 | 743 passed, 0 failed, 14 skipped | ~1.3 h |
 | 5 Oct 2026 | home | dev, build 20261004.44 | 743 passed, 0 failed, 14 skipped | ~1.9 h |
-| 5 Oct 2026 | office | dev, release candidate on `7e1aa0fc` | running | to record |
+| 5 Oct 2026 | office | dev, build 20261005.12 on `7e1aa0fc` | 743 passed, 0 failed, 14 skipped, 0 flaky | **1 h 36 min** |
 
 The two home figures are reported to one decimal place because that is how they were recorded at the
 time; they are not precise to the minute. Record the clock times from now on, not a rounded total.
@@ -127,6 +188,15 @@ time; they are not precise to the minute. Record the clock times from now on, no
 Even allowing for that, the same suite against the same environment differed by something like half
 an hour between those two runs, so treat a single number as weak evidence. Much of what it measures
 is how fast the hosted GIS services answer that morning, not anything in this repository.
+
+The 5 October office run is the first measured to the minute: 12:07 PM to 1:43 PM Central, two
+workers, 743 tests. Its counts are identical to the home machine's run on the previous candidate,
+which is what cleared the release.
+
+**The same suite is two to three times faster on GitHub's runners than on a workstation.** Six
+scheduled workflow runs, wall clock: 25, 32, 36, 37, 42 and 43 minutes, against 1.3 to 1.6 hours
+locally. Development and production jobs run in parallel inside one workflow run, so a run's
+duration is the slower of the two. Which of the two should gate a release is #1421.
 
 Only a run on GitHub opens or closes a health issue. A local run, however it goes, does neither.
 
