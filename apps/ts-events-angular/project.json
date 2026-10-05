@@ -11,7 +11,8 @@
       "outputs": ["{options.outputPath.base}"],
       "options": {
         "outputPath": {
-          "base": "dist/apps/ts-events-angular"
+          "base": "dist/apps/ts-events-angular",
+          "browser": ""
         },
         "index": "apps/ts-events-angular/src/index.html",
         "polyfills": ["apps/ts-events-angular/src/polyfills.ts"],

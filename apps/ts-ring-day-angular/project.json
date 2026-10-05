@@ -11,7 +11,8 @@
       "outputs": ["{options.outputPath.base}"],
       "options": {
         "outputPath": {
-          "base": "dist/apps/ts-ring-day-angular"
+          "base": "dist/apps/ts-ring-day-angular",
+          "browser": ""
         },
         "index": "apps/ts-ring-day-angular/src/index.html",
         "polyfills": ["apps/ts-ring-day-angular/src/polyfills.ts"],

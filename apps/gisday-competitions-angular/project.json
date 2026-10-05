@@ -60,7 +60,8 @@
       "options": {
         "index": "apps/gisday-competitions-angular/src/index.html",
         "outputPath": {
-          "base": "dist/apps/gisday-competitions-angular"
+          "base": "dist/apps/gisday-competitions-angular",
+          "browser": ""
         },
         "polyfills": ["apps/gisday-competitions-angular/src/polyfills.ts"],
         "tsConfig": "apps/gisday-competitions-angular/tsconfig.app.json",

@@ -12,7 +12,8 @@
       "options": {
         "crossOrigin": "anonymous",
         "outputPath": {
-          "base": "dist/apps/gisday-angular"
+          "base": "dist/apps/gisday-angular",
+          "browser": ""
         },
         "index": "apps/gisday-angular/src/index.html",
         "polyfills": ["apps/gisday-angular/src/polyfills.ts"],

@@ -11,7 +11,8 @@
       "executor": "@angular-devkit/build-angular:application",
       "options": {
         "outputPath": {
-          "base": "dist/apps/signage-angular"
+          "base": "dist/apps/signage-angular",
+          "browser": ""
         },
         "index": "apps/signage-angular/src/index.html",
         "polyfills": ["apps/signage-angular/src/polyfills.ts"],

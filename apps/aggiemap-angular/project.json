@@ -77,7 +77,8 @@
       "options": {
         "index": "apps/aggiemap-angular/src/index.html",
         "outputPath": {
-          "base": "dist/apps/aggiemap-angular"
+          "base": "dist/apps/aggiemap-angular",
+          "browser": ""
         },
         "polyfills": ["apps/aggiemap-angular/src/polyfills.ts"],
         "tsConfig": "apps/aggiemap-angular/tsconfig.app.json",

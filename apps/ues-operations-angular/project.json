@@ -12,7 +12,8 @@
       "options": {
         "crossOrigin": "anonymous",
         "outputPath": {
-          "base": "dist/apps/ues-operations-angular"
+          "base": "dist/apps/ues-operations-angular",
+          "browser": ""
         },
         "index": "apps/ues-operations-angular/src/index.html",
         "polyfills": ["apps/ues-operations-angular/src/polyfills.ts"],
