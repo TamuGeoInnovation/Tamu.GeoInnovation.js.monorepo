@@ -11,7 +11,8 @@ import { RingDaySettingsService } from '../../../map/services/settings/ring-day-
 @Component({
   selector: 'tamu-gisc-review',
   templateUrl: './review.component.html',
-  styleUrls: ['./review.component.scss']
+  styleUrls: ['./review.component.scss'],
+  standalone: false
 })
 export class ReviewComponent implements OnInit {
   public settings: RingDaySettings;

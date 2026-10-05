@@ -5,7 +5,8 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 @Component({
   selector: 'tamu-gisc-speaker-card',
   templateUrl: './speaker-card.component.html',
-  styleUrls: ['./speaker-card.component.scss']
+  styleUrls: ['./speaker-card.component.scss'],
+  standalone: false
 })
 export class SpeakerCardComponent implements OnInit {
   @Input()

@@ -11,7 +11,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       useExisting: forwardRef(() => FileComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class FileComponent implements ControlValueAccessor {
   // eslint-disable-next-line @angular-eslint/no-input-rename

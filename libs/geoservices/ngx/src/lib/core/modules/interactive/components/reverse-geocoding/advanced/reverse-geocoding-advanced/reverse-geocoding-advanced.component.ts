@@ -5,6 +5,7 @@ import { ReverseGeocodingBasicComponent } from '../../basic/reverse-geocoding-ba
 @Component({
   selector: 'tamu-gisc-reverse-geocoding-advanced',
   templateUrl: './reverse-geocoding-advanced.component.html',
-  styleUrls: ['./reverse-geocoding-advanced.component.scss']
+  styleUrls: ['./reverse-geocoding-advanced.component.scss'],
+  standalone: false
 })
 export class ReverseGeocodingAdvancedComponent extends ReverseGeocodingBasicComponent {}

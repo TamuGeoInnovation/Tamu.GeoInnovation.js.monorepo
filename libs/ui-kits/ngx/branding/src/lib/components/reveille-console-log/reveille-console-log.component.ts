@@ -57,7 +57,8 @@ export const REV_ASCII = `                                                      
 @Component({
   selector: 'tamu-gisc-reveille-console-log',
   templateUrl: './reveille-console-log.component.html',
-  styleUrls: ['./reveille-console-log.component.scss']
+  styleUrls: ['./reveille-console-log.component.scss'],
+  standalone: false
 })
 export class ReveilleConsoleLogComponent {
   constructor(private testing: TestingService) {

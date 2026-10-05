@@ -5,7 +5,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-base-popup-component',
   templateUrl: './base.component.html',
-  styleUrls: ['../../containers/base/base.component.scss']
+  styleUrls: ['../../containers/base/base.component.scss'],
+  standalone: false
 })
 export class BasePopupComponent {
   /**

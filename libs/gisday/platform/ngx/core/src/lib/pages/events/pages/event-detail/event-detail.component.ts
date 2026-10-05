@@ -25,7 +25,8 @@ import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/co
 @Component({
   selector: 'tamu-gisc-event-detail',
   templateUrl: './event-detail.component.html',
-  styleUrls: ['./event-detail.component.scss']
+  styleUrls: ['./event-detail.component.scss'],
+  standalone: false
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   public appRoles = GISDayRoles;

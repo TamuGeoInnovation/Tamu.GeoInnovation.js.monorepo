@@ -11,7 +11,8 @@ import {
 
 @Component({
   template: '',
-  styleUrls: ['base.component.scss']
+  styleUrls: ['base.component.scss'],
+  standalone: false
 })
 export class BaseChartComponent implements OnInit, AfterViewInit {
   /**

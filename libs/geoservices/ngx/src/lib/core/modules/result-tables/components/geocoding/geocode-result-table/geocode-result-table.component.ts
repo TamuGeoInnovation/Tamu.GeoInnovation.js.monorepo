@@ -8,7 +8,8 @@ import { GeocodeFieldLabel, GeocodeNaaccrFieldLabel } from '../../../../../util/
 @Component({
   selector: 'tamu-gisc-geocode-result-table',
   templateUrl: './geocode-result-table.component.html',
-  styleUrls: ['./geocode-result-table.component.scss']
+  styleUrls: ['./geocode-result-table.component.scss'],
+  standalone: false
 })
 export class GeocodeResultTableComponent implements OnInit {
   @Input()

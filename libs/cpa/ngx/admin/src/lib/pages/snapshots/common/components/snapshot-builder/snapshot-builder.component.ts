@@ -16,7 +16,8 @@ import esri = __esri;
   selector: 'tamu-gisc-snapshot-builder',
   templateUrl: './snapshot-builder.component.html',
   styleUrls: ['./snapshot-builder.component.scss'],
-  providers: [EsriMapService]
+  providers: [EsriMapService],
+  standalone: false
 })
 export class SnapshotBuilderComponent implements OnInit, OnDestroy {
   public builderForm: UntypedFormGroup;

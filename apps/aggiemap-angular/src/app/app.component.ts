@@ -10,7 +10,8 @@ import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiem
 @Component({
   selector: 'tamu-gisc-aggiemap-app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {
   private _notifications: Subscription | undefined;

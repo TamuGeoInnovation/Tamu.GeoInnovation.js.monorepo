@@ -15,7 +15,8 @@ import esri = __esri;
   selector: 'tamu-gisc-trip-planner-top',
   templateUrl: './trip-planner-top.component.html',
   styleUrls: ['./trip-planner-top.component.scss'],
-  animations: [offCanvasSlideUpFromTop]
+  animations: [offCanvasSlideUpFromTop],
+  standalone: false
 })
 export class TripPlannerTopComponent implements OnInit, OnDestroy {
   /**

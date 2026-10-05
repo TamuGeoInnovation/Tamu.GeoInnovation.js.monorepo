@@ -8,7 +8,8 @@ import { TileService } from '../../services/tile.service';
 @Component({
   selector: 'tamu-gisc-tile-submenu',
   templateUrl: './tile-submenu.component.html',
-  styleUrls: ['./tile-submenu.component.scss']
+  styleUrls: ['./tile-submenu.component.scss'],
+  standalone: false
 })
 export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
   @Input()

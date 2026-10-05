@@ -5,6 +5,7 @@ import { CensusIntersectionBasicComponent } from '../../basic/census-intersectio
 @Component({
   selector: 'tamu-gisc-census-intersection-advanced',
   templateUrl: './census-intersection-advanced.component.html',
-  styleUrls: ['./census-intersection-advanced.component.scss']
+  styleUrls: ['./census-intersection-advanced.component.scss'],
+  standalone: false
 })
 export class CensusIntersectionAdvancedComponent extends CensusIntersectionBasicComponent {}

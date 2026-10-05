@@ -6,7 +6,8 @@ import { AccordionService } from './services/accordion.service';
   selector: 'tamu-gisc-accordion',
   templateUrl: './accordion.component.html',
   styleUrls: ['./accordion.component.scss'],
-  providers: [AccordionService]
+  providers: [AccordionService],
+  standalone: false
 })
 export class AccordionComponent implements AfterContentInit {
   /**

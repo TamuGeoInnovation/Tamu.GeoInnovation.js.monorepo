@@ -25,7 +25,8 @@ import esri = __esri;
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService]
+  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService],
+  standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

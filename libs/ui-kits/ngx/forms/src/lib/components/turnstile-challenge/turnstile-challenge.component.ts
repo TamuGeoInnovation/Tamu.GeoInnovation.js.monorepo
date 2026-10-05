@@ -16,7 +16,8 @@ import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-
       useExisting: forwardRef(() => TurnstileChallengeComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class TurnstileChallengeComponent extends AbstractValueAccessorFormComponent<string> implements OnInit {
   constructor(

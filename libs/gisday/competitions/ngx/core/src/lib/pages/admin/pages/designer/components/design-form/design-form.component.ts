@@ -12,7 +12,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-design-form',
   templateUrl: './design-form.component.html',
-  styleUrls: ['./design-form.component.scss']
+  styleUrls: ['./design-form.component.scss'],
+  standalone: false
 })
 export class DesignFormComponent implements OnInit {
   @Output()

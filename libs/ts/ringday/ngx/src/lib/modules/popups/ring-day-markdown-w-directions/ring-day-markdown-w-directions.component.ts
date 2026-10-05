@@ -5,7 +5,8 @@ import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 @Component({
   selector: 'tamu-gisc-ring-day-markdown-w-directions',
   templateUrl: './ring-day-markdown-w-directions.component.html',
-  styleUrls: ['./ring-day-markdown-w-directions.component.scss']
+  styleUrls: ['./ring-day-markdown-w-directions.component.scss'],
+  standalone: false
 })
 export class RingDayMarkdownWDirectionsComponent extends BaseDirectionsComponent implements OnInit {
   public title: string;

@@ -11,7 +11,8 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 @Component({
   selector: 'tamu-gisc-speaker-list',
   templateUrl: './speaker-list.component.html',
-  styleUrls: ['./speaker-list.component.scss']
+  styleUrls: ['./speaker-list.component.scss'],
+  standalone: false
 })
 export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
   constructor(

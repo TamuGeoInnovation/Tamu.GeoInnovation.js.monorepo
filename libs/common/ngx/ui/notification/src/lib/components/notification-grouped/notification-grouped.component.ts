@@ -23,7 +23,8 @@ import { Notification } from '../../helpers/notification.helper';
 @Component({
   selector: 'tamu-gisc-notification-grouped',
   templateUrl: './notification-grouped.component.html',
-  styleUrls: ['./notification-grouped.component.scss']
+  styleUrls: ['./notification-grouped.component.scss'],
+  standalone: false
 })
 export class NotificationGroupedComponent implements OnInit, OnDestroy {
   @Input()

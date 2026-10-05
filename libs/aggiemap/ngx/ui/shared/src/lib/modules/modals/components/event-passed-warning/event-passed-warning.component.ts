@@ -10,7 +10,8 @@ export interface EventPassedData {
 @Component({
   selector: 'tamu-gisc-event-passed-warning',
   templateUrl: './event-passed-warning.component.html',
-  styleUrls: ['./event-passed-warning.component.scss']
+  styleUrls: ['./event-passed-warning.component.scss'],
+  standalone: false
 })
 export class EventPassedWarningComponent {
   public title: string;
@@ -21,10 +22,8 @@ export class EventPassedWarningComponent {
   constructor(private readonly mr: ModalRefService, @Inject(MODAL_DATA) private readonly data: EventPassedData) {
     this.title = data?.title || 'This event has passed';
     this.message =
-      data?.message ||
-      'The information on this map may be outdated and should be used for informational purposes only.';
-    this.followupMessage =
-      'A new map will be released as we get closer to the next upcoming date for this event.';
+      data?.message || 'The information on this map may be outdated and should be used for informational purposes only.';
+    this.followupMessage = 'A new map will be released as we get closer to the next upcoming date for this event.';
     this.acknowledgeText = data?.acknowledgeText || 'OK';
   }
 

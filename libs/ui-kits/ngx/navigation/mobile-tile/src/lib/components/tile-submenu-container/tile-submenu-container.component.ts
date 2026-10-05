@@ -13,7 +13,8 @@ import { submenuListStagger } from '../../animations/animations';
   // This animation apparently needs to be in a parent component, and not
   // in the self-component otherwise it can't query anything entering into view
   // because the whole thing is entering into view.
-  animations: [submenuListStagger]
+  animations: [submenuListStagger],
+  standalone: false
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   @ViewChild('container', { static: true, read: ViewContainerRef })

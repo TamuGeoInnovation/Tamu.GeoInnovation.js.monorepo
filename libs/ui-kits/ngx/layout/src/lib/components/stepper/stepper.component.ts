@@ -6,7 +6,8 @@ import { StepComponent } from './components/step/step.component';
 @Component({
   selector: 'tamu-gisc-stepper',
   templateUrl: './stepper.component.html',
-  styleUrls: ['./stepper.component.scss']
+  styleUrls: ['./stepper.component.scss'],
+  standalone: false
 })
 export class StepperComponent extends AbstractContentReplacerComponent implements AfterContentInit {
   @ContentChildren(StepComponent)

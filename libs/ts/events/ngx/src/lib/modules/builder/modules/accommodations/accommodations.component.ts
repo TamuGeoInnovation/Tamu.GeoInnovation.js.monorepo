@@ -5,7 +5,11 @@ import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, switc
 import { Angulartics2 } from 'angulartics2';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
-import { EventAccommodationOption, SpecialEventOption, SpecialEventOptions } from '../../../../interfaces/special-event.interface';
+import {
+  EventAccommodationOption,
+  SpecialEventOption,
+  SpecialEventOptions
+} from '../../../../interfaces/special-event.interface';
 
 interface AccommodationChoiceGroup {
   label: string;
@@ -15,7 +19,8 @@ interface AccommodationChoiceGroup {
 @Component({
   selector: 'tamu-gisc-accommodations',
   templateUrl: './accommodations.component.html',
-  styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss']
+  styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+  standalone: false
 })
 export class AccommodationsComponent implements OnInit {
   public config = this.eventSettingsService.eventConfiguration()?.configuration;

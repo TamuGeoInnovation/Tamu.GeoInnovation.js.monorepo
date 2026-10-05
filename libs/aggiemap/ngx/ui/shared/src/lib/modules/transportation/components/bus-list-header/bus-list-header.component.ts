@@ -4,7 +4,8 @@ import { AccordionHeaderComponent, AccordionService } from '@tamu-gisc/ui-kits/n
 @Component({
   selector: 'tamu-gisc-bus-list-header',
   templateUrl: './bus-list-header.component.html',
-  styleUrls: ['./bus-list-header.component.scss']
+  styleUrls: ['./bus-list-header.component.scss'],
+  standalone: false
 })
 export class BusListHeaderComponent extends AccordionHeaderComponent {
   constructor(private c: AccordionService) {

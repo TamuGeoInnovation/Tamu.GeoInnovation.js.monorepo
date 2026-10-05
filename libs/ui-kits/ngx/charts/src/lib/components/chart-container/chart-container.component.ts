@@ -9,7 +9,8 @@ import 'chartjs-plugin-colorschemes';
 @Component({
   selector: 'tamu-gisc-chart-container',
   templateUrl: './chart-container.component.html',
-  styleUrls: ['./chart-container.component.scss']
+  styleUrls: ['./chart-container.component.scss'],
+  standalone: false
 })
 export class ChartContainerComponent implements OnDestroy {
   @ViewChild('chartContainer', { static: true })

@@ -13,7 +13,8 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-dining-popup-component',
   templateUrl: './dining.component.html',
-  styleUrls: ['../base/base.popup.component.scss', './dining.component.scss']
+  styleUrls: ['../base/base.popup.component.scss', './dining.component.scss'],
+  standalone: false
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
   public menu: Observable<IDiningLocationMenu>;

@@ -7,7 +7,8 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 @Component({
   selector: 'tamu-gisc-reverse-geocoding',
   templateUrl: './reverse-geocoding.component.html',
-  styleUrls: ['./reverse-geocoding.component.scss']
+  styleUrls: ['./reverse-geocoding.component.scss'],
+  standalone: false
 })
 export class ReverseGeocodingComponent implements OnInit {
   private geocoder: ReverseGeocode;

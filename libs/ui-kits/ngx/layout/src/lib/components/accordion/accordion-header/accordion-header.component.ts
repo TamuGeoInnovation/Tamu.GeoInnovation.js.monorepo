@@ -5,7 +5,8 @@ import { AccordionService } from '../services/accordion.service';
 @Component({
   selector: 'tamu-gisc-accordion-header',
   templateUrl: './accordion-header.component.html',
-  styleUrls: ['./accordion-header.component.scss']
+  styleUrls: ['./accordion-header.component.scss'],
+  standalone: false
 })
 export class AccordionHeaderComponent {
   public state = this.comm.state;

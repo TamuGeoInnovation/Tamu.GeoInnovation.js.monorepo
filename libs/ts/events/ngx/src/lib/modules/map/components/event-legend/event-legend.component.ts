@@ -6,7 +6,8 @@ import { SidebarInfoPanel } from '../../../../interfaces/special-event.interface
 @Component({
   selector: 'tamu-gisc-event-legend',
   templateUrl: './event-legend.component.html',
-  styleUrls: ['./event-legend.component.scss']
+  styleUrls: ['./event-legend.component.scss'],
+  standalone: false
 })
 export class EventLegendComponent implements OnInit {
   public deduplicate = true;

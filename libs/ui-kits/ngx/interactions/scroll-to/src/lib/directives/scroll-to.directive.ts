@@ -2,7 +2,8 @@ import { Directive, HostListener, Input, HostBinding } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[scrollTo]'
+  selector: '[scrollTo]',
+  standalone: false
 })
 export class ScrollToDirective {
   @Input()

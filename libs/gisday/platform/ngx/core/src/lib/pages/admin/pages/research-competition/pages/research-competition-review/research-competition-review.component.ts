@@ -10,7 +10,8 @@ import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platfor
 @Component({
   selector: 'tamu-gisc-research-competition-review',
   templateUrl: './research-competition-review.component.html',
-  styleUrls: ['./research-competition-review.component.scss']
+  styleUrls: ['./research-competition-review.component.scss'],
+  standalone: false
 })
 export class ResearchCompetitionReviewComponent implements OnInit {
   public entity$: Observable<Partial<Submission>>;

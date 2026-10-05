@@ -9,7 +9,8 @@ import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-acce
 @Component({
   selector: 'tamu-gisc-gallery',
   templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss']
+  styleUrls: ['./gallery.component.scss'],
+  standalone: false
 })
 export class GalleryComponent implements OnInit {
   public $posters: Observable<Array<Partial<Submission>>>;

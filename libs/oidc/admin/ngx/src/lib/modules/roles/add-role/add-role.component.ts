@@ -7,7 +7,8 @@ import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 @Component({
   selector: 'tamu-gisc-add',
   templateUrl: './add-role.component.html',
-  styleUrls: ['./add-role.component.scss']
+  styleUrls: ['./add-role.component.scss'],
+  standalone: false
 })
 export class AddRoleComponent implements OnInit {
   public form: UntypedFormGroup;

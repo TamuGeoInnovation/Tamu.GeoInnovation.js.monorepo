@@ -9,7 +9,8 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 @Component({
   selector: 'tamu-gisc-people-details',
   templateUrl: './people-details.component.html',
-  styleUrls: ['./people-details.component.scss']
+  styleUrls: ['./people-details.component.scss'],
+  standalone: false
 })
 export class PeopleDetailsComponent implements OnInit {
   public speakerGuid: string;

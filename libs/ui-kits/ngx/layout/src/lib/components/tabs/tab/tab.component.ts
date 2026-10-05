@@ -5,7 +5,8 @@ import { AbstractContentReplacerToggleComponent } from '../../../abstracts/abstr
 @Component({
   selector: 'tamu-gisc-tab',
   templateUrl: './tab.component.html',
-  styleUrls: ['./tab.component.scss']
+  styleUrls: ['./tab.component.scss'],
+  standalone: false
 })
 export class TabComponent extends AbstractContentReplacerToggleComponent {
   @Input()

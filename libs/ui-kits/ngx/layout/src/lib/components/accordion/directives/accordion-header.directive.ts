@@ -3,7 +3,8 @@ import { AccordionDirective } from './accordion.directive';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[giscAccordionHeader]'
+  selector: '[giscAccordionHeader]',
+  standalone: false
 })
 export class AccordionHeaderDirective {
   public parent: AccordionDirective;

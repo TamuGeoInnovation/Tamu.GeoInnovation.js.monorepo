@@ -30,7 +30,8 @@ import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
   providers: [SearchService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SearchComponent implements OnInit, OnDestroy {
   /**

@@ -3,7 +3,8 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-service-attribute-accordion',
   templateUrl: './service-attribute-accordion.component.html',
-  styleUrls: ['./service-attribute-accordion.component.scss']
+  styleUrls: ['./service-attribute-accordion.component.scss'],
+  standalone: false
 })
 export class ServiceAttributeAccordionComponent {
   /**

@@ -9,7 +9,8 @@ import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
 @Component({
   selector: 'tamu-gisc-parsed-address-result-table',
   templateUrl: './parsed-address-result-table.component.html',
-  styleUrls: ['./parsed-address-result-table.component.scss']
+  styleUrls: ['./parsed-address-result-table.component.scss'],
+  standalone: false
 })
 export class ParsedAddressResultTableComponent implements OnInit {
   /**

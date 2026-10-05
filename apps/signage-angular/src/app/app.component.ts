@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  standalone: false
 })
 export class AppComponent {
   public title = 'signage-angular';

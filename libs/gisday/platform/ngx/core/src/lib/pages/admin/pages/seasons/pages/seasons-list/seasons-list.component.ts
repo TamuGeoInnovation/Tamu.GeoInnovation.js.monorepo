@@ -12,7 +12,8 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 @Component({
   selector: 'tamu-gisc-seasons-list',
   templateUrl: './seasons-list.component.html',
-  styleUrls: ['./seasons-list.component.scss']
+  styleUrls: ['./seasons-list.component.scss'],
+  standalone: false
 })
 export class SeasonsListComponent extends BaseAdminListComponent<Season> implements OnInit {
   public dateRange$: Observable<Array<SeasonDay>>;

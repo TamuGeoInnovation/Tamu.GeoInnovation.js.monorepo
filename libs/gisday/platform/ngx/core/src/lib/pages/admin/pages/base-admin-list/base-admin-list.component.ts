@@ -17,7 +17,8 @@ import {
 
 @Component({
   selector: 'tamu-gisc-base-admin-edit',
-  template: ''
+  template: '',
+  standalone: false
 })
 export abstract class BaseAdminListComponent<T extends GuidIdentity> implements IBaseAdminEditComponent, OnInit, OnDestroy {
   public seasons$ = this.seasonService.seasons$;

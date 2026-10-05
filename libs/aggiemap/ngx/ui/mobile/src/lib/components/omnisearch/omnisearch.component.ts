@@ -19,7 +19,8 @@ import esri = __esri;
   templateUrl: './omnisearch.component.html',
   styleUrls: ['./omnisearch.component.scss'],
   animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
-  providers: [AltSearchHelper]
+  providers: [AltSearchHelper],
+  standalone: false
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
   /**

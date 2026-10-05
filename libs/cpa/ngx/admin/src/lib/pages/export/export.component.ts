@@ -16,7 +16,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-export',
   templateUrl: './export.component.html',
-  styleUrls: ['./export.component.scss']
+  styleUrls: ['./export.component.scss'],
+  standalone: false
 })
 export class ExportComponent implements OnInit {
   private zip: JSZip;

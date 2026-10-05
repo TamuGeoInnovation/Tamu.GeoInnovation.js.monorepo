@@ -11,7 +11,8 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 @Component({
   selector: 'tamu-gisc-university-list',
   templateUrl: './university-list.component.html',
-  styleUrls: ['./university-list.component.scss']
+  styleUrls: ['./university-list.component.scss'],
+  standalone: false
 })
 export class UniversityListComponent extends BaseAdminListComponent<University> {
   constructor(

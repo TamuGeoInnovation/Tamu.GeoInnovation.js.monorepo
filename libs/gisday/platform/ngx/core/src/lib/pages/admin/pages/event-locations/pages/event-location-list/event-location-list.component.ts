@@ -11,7 +11,8 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 @Component({
   selector: 'tamu-gisc-event-location-list',
   templateUrl: './event-location-list.component.html',
-  styleUrls: ['./event-location-list.component.scss']
+  styleUrls: ['./event-location-list.component.scss'],
+  standalone: false
 })
 export class EventLocationListComponent extends BaseAdminListComponent<EventLocation> {
   constructor(

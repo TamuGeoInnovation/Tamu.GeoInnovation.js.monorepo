@@ -9,7 +9,8 @@ import { TripPlannerService } from '../../../../services//trip-planner.service';
 @Component({
   selector: 'tamu-gisc-trip-planner-mode-picker',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss']
+  styleUrls: ['./base.component.scss'],
+  standalone: false
 })
 export class TripPlannerModePickerComponent implements OnInit {
   public isDev: Observable<boolean>;

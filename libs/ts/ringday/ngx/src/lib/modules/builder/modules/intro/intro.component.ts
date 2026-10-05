@@ -6,7 +6,8 @@ import { Angulartics2 } from 'angulartics2';
 @Component({
   selector: 'tamu-gisc-intro',
   templateUrl: './intro.component.html',
-  styleUrls: ['./intro.component.scss']
+  styleUrls: ['./intro.component.scss'],
+  standalone: false
 })
 export class IntroComponent {
   constructor(private readonly router: Router, private readonly anl: Angulartics2) {}

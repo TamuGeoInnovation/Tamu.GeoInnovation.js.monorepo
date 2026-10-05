@@ -13,7 +13,8 @@ import { SearchComponent } from '../search/search.component';
   templateUrl: './search-mobile.component.html',
   styleUrls: ['../search/search.component.scss', './search-mobile.component.scss'],
   providers: [SearchService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SearchMobileComponent extends SearchComponent {
   constructor(

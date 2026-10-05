@@ -14,7 +14,8 @@ import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TextboxComponent extends AbstractValueAccessorFormComponent<string> implements AfterViewInit {
   @ViewChild('inputElement', { static: false }) inputElement: ElementRef<HTMLInputElement | HTMLTextAreaElement>;

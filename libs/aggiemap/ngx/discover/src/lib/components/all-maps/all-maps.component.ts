@@ -24,7 +24,8 @@ import { QuickLinkItem } from '../quick-links/quick-links.component';
 @Component({
   selector: 'tamu-gisc-aggiemap-all-maps',
   templateUrl: './all-maps.component.html',
-  styleUrls: ['./all-maps.component.scss']
+  styleUrls: ['./all-maps.component.scss'],
+  standalone: false
 })
 export class AllMapsComponent implements OnInit {
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];

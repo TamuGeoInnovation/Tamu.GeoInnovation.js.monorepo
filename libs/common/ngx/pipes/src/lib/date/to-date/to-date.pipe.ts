@@ -5,7 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
  * Returns null for invalid or empty inputs.
  */
 @Pipe({
-  name: 'toDate'
+  name: 'toDate',
+  standalone: false
 })
 export class ToDatePipe implements PipeTransform {
   /**

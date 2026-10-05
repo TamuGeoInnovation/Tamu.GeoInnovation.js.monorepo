@@ -13,7 +13,8 @@ import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enu
 @Component({
   selector: 'tamu-gisc-app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  standalone: false
 })
 export class HeaderComponent implements OnInit {
   public loggedIn$: Observable<boolean>;

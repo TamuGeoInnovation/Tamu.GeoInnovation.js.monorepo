@@ -1,7 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
-@Pipe({ name: 'orderBy' })
+@Pipe({
+  name: 'orderBy',
+  standalone: false
+})
 export class OrderByPipe implements PipeTransform {
   /**
    * Orders a collection by a key and direction.

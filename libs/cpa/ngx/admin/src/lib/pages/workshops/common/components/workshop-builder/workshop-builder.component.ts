@@ -13,7 +13,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-workshop-builder',
   templateUrl: './workshop-builder.component.html',
   styleUrls: ['./workshop-builder.component.scss'],
-  providers: [WorkshopService, SnapshotService]
+  providers: [WorkshopService, SnapshotService],
+  standalone: false
 })
 export class WorkshopBuilderComponent implements OnInit {
   public form: UntypedFormGroup;

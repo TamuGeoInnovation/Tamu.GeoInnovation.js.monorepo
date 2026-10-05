@@ -11,7 +11,8 @@ import { TripPlannerRuleMode, TripPlannerService } from '../../../../services/tr
 
 @Component({
   selector: 'tamu-gisc-trip-planner-options-base',
-  template: ''
+  template: '',
+  standalone: false
 })
 export class TripPlannerOptionsBaseComponent implements OnInit {
   /**

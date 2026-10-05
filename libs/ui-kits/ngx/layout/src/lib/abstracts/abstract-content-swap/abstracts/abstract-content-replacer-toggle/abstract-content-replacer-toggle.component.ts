@@ -2,7 +2,8 @@ import { Component, Input, ViewChild, TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-abstract-content-replacer-toggle',
-  template: ''
+  template: '',
+  standalone: false
 })
 export class AbstractContentReplacerToggleComponent {
   @Input()

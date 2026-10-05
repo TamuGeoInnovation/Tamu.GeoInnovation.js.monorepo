@@ -9,7 +9,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 @Component({
   selector: 'tamu-gisc-edit',
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.scss']
+  styleUrls: ['./edit.component.scss'],
+  standalone: false
 })
 export class EditComponent implements OnInit {
   private _$refresh: Subject<boolean> = new Subject();

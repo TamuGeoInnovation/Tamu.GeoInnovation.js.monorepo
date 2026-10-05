@@ -10,7 +10,8 @@ import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
 @Component({
   selector: 'tamu-gisc-bus-list',
   templateUrl: './bus-list.component.html',
-  styleUrls: ['./bus-list.component.scss']
+  styleUrls: ['./bus-list.component.scss'],
+  standalone: false
 })
 export class BusListComponent implements OnInit, OnDestroy {
   @Input()

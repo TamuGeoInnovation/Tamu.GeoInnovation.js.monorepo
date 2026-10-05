@@ -8,7 +8,8 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 @Component({
   selector: 'tamu-gisc-people-view',
   templateUrl: './people-view.component.html',
-  styleUrls: ['./people-view.component.scss']
+  styleUrls: ['./people-view.component.scss'],
+  standalone: false
 })
 export class PeopleViewComponent implements OnInit {
   public people$: Observable<Array<Partial<Speaker>>>;

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-login-post',
   templateUrl: './login-post.component.html',
-  styleUrls: ['./login-post.component.scss']
+  styleUrls: ['./login-post.component.scss'],
+  standalone: false
 })
 export class LoginPostComponent {}

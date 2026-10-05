@@ -14,7 +14,8 @@ import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-inte
 @Component({
   selector: 'tamu-gisc-reverse-geocoding-basic',
   templateUrl: './reverse-geocoding-basic.component.html',
-  styleUrls: ['./reverse-geocoding-basic.component.scss']
+  styleUrls: ['./reverse-geocoding-basic.component.scss'],
+  standalone: false
 })
 export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<
   ReverseGeocodeResult,

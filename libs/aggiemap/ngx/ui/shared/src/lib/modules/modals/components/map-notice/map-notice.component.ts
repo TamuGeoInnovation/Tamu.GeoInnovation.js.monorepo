@@ -31,7 +31,8 @@ export const MAP_NOTICE_SESSION_PREFIX = 'map-notice:';
 @Component({
   selector: 'tamu-gisc-map-notice',
   templateUrl: './map-notice.component.html',
-  styleUrls: ['./map-notice.component.scss']
+  styleUrls: ['./map-notice.component.scss'],
+  standalone: false
 })
 export class MapNoticeComponent {
   public title: string;

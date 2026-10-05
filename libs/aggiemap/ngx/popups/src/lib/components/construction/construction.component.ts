@@ -11,7 +11,8 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-construction-popup-component',
   templateUrl: './construction.component.html',
-  styleUrls: ['../base/base.popup.component.scss']
+  styleUrls: ['../base/base.popup.component.scss'],
+  standalone: false
 })
 export class ConstructionPopupComponent extends BaseDirectionsComponent implements OnInit {
   public showContactName = false;

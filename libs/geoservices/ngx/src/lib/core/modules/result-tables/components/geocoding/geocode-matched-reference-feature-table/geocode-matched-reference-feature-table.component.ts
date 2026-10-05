@@ -9,7 +9,8 @@ import { GeocodeReferenceFeatureLabel } from '../../../../../util/dictionaries';
 @Component({
   selector: 'tamu-gisc-geocode-matched-reference-feature-table',
   templateUrl: './geocode-matched-reference-feature-table.component.html',
-  styleUrls: ['./geocode-matched-reference-feature-table.component.scss']
+  styleUrls: ['./geocode-matched-reference-feature-table.component.scss'],
+  standalone: false
 })
 export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {
   @Input()

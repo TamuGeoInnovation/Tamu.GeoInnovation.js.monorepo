@@ -13,7 +13,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-legend',
   templateUrl: './legend.component.html',
-  styleUrls: ['./legend.component.scss']
+  styleUrls: ['./legend.component.scss'],
+  standalone: false
 })
 export class LegendComponent implements OnInit, OnDestroy {
   /**
@@ -70,8 +71,7 @@ export class LegendComponent implements OnInit, OnDestroy {
       this.excludedLayerIds = routeData['excludedLayerIds'] ?? this.excludedLayerIds;
       this.allowedLayerIds = routeData['allowedLayerIds'] ?? this.allowedLayerIds;
       this.forceShowLayerIds = routeData['forceShowLayerIds'] ?? this.forceShowLayerIds;
-      this.combineChildrenUnderPrimary =
-        routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
+      this.combineChildrenUnderPrimary = routeData['combineChildrenUnderPrimary'] ?? this.combineChildrenUnderPrimary;
     }
 
     this.legend = this.legendService.legend({

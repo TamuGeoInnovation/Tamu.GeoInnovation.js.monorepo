@@ -16,7 +16,8 @@ export const formExporter = () => {
 @Component({
   selector: 'tamu-gisc-admin-add-rsvp-type',
   templateUrl: './admin-add-rsvp-type.component.html',
-  styleUrls: ['./admin-add-rsvp-type.component.scss']
+  styleUrls: ['./admin-add-rsvp-type.component.scss'],
+  standalone: false
 })
 export class AdminAddRsvpTypeComponent extends BaseAdminAddComponent<RsvpType> implements OnInit {
   constructor(private rsvpTypeService: RsvpTypeService) {

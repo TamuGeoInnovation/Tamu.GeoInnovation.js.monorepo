@@ -4,7 +4,8 @@ import { ControlValueAccessor } from '@angular/forms';
 @Component({
   selector: 'tamu-gisc-abstract-value-accessor-form',
   template: '',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AbstractValueAccessorFormComponent<T> implements ControlValueAccessor {
   @Input()

@@ -11,7 +11,8 @@ import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.co
 @Component({
   selector: 'tamu-gisc-admin-edit-submission-types',
   templateUrl: './admin-edit-submission-types.component.html',
-  styleUrls: ['./admin-edit-submission-types.component.scss']
+  styleUrls: ['./admin-edit-submission-types.component.scss'],
+  standalone: false
 })
 export class AdminEditSubmissionTypesComponent extends BaseAdminListComponent<SubmissionType> {
   constructor(

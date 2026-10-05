@@ -6,7 +6,8 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 @Component({
   selector: 'tamu-gisc-basic-summary-blurb',
   templateUrl: './basic-summary-blurb.component.html',
-  styleUrls: ['./basic-summary-blurb.component.scss']
+  styleUrls: ['./basic-summary-blurb.component.scss'],
+  standalone: false
 })
 export class BasicSummaryBlurbComponent implements OnInit {
   @Input()

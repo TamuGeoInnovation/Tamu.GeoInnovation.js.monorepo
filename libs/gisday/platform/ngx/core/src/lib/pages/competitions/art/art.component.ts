@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-art',
   templateUrl: './art.component.html',
-  styleUrls: ['./art.component.scss']
+  styleUrls: ['./art.component.scss'],
+  standalone: false
 })
 export class ArtComponent {}

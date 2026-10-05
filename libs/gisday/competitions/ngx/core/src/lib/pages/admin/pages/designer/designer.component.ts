@@ -5,7 +5,8 @@ import { ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions/d
 @Component({
   selector: 'tamu-gisc-designer',
   templateUrl: './designer.component.html',
-  styleUrls: ['./designer.component.scss']
+  styleUrls: ['./designer.component.scss'],
+  standalone: false
 })
 export class DesignerComponent {
   public formModel: ICompetitionSeasonFormQuestion[];

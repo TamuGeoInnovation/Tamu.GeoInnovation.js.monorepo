@@ -8,7 +8,8 @@ import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
 @Component({
   selector: 'tamu-gisc-my-checkins',
   templateUrl: './my-checkins.component.html',
-  styleUrls: ['./my-checkins.component.scss']
+  styleUrls: ['./my-checkins.component.scss'],
+  standalone: false
 })
 export class MyCheckinsComponent implements OnInit {
   public checkins$: Observable<Array<Partial<CheckIn>>>;

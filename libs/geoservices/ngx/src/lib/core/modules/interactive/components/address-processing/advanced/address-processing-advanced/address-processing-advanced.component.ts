@@ -5,6 +5,7 @@ import { AddressProcessingBasicComponent } from '../../basic/address-processing-
 @Component({
   selector: 'tamu-gisc-address-processing-advanced',
   templateUrl: './address-processing-advanced.component.html',
-  styleUrls: ['./address-processing-advanced.component.scss']
+  styleUrls: ['./address-processing-advanced.component.scss'],
+  standalone: false
 })
 export class AddressProcessingAdvancedComponent extends AddressProcessingBasicComponent {}

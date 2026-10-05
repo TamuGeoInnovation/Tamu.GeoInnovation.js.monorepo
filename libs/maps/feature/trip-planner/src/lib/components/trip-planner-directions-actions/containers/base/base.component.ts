@@ -12,7 +12,8 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
   selector: 'tamu-gisc-trip-planner-directions-actions',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy {
   /**

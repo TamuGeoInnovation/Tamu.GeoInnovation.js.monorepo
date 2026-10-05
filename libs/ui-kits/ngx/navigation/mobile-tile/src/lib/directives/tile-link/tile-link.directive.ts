@@ -2,7 +2,8 @@ import { Directive, ElementRef, EventEmitter, HostListener, Input, Output, Rende
 import { Router } from '@angular/router';
 
 @Directive({
-  selector: '[tamuGiscTileLink]'
+  selector: '[tamuGiscTileLink]',
+  standalone: false
 })
 export class TileLinkDirective {
   /**

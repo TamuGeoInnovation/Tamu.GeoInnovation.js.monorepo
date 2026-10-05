@@ -14,7 +14,8 @@ import { AbstractValueAccessorFormComponent } from '@tamu-gisc/ui-kits/ngx/forms
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PlaceLinkFormComponent extends AbstractValueAccessorFormComponent<PlaceLinkControlSchema> {
   @Output()

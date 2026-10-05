@@ -27,7 +27,8 @@ import {
 @Component({
   selector: 'tamu-gisc-code-maroon-alert',
   templateUrl: './code-maroon-alert.component.html',
-  styleUrls: ['./code-maroon-alert.component.scss']
+  styleUrls: ['./code-maroon-alert.component.scss'],
+  standalone: false
 })
 export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
   public state: Observable<CodeMaroonState>;

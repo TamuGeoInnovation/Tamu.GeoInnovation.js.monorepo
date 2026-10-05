@@ -9,7 +9,8 @@ import { StatsService } from '@tamu-gisc/oidc/admin/data-access';
 @Component({
   selector: 'tamu-gisc-stats',
   templateUrl: './stats.component.html',
-  styleUrls: ['./stats.component.scss']
+  styleUrls: ['./stats.component.scss'],
+  standalone: false
 })
 export class StatsComponent implements OnInit {
   public $countOfLoggedInUsers: Observable<number>;

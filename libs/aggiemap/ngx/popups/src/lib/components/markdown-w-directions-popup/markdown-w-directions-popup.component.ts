@@ -5,7 +5,8 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-markdown-w-directions-popup',
   templateUrl: './markdown-w-directions-popup.component.html',
-  styleUrls: ['./markdown-w-directions-popup.component.scss']
+  styleUrls: ['./markdown-w-directions-popup.component.scss'],
+  standalone: false
 })
 export class MarkdownWDirectionsPopupComponent extends BaseDirectionsComponent implements OnInit {
   public title: string;

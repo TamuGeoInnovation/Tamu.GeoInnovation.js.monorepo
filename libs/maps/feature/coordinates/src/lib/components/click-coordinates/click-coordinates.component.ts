@@ -9,7 +9,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-click-coordinates',
   templateUrl: './click-coordinates.component.html',
-  styleUrls: ['./click-coordinates.component.scss']
+  styleUrls: ['./click-coordinates.component.scss'],
+  standalone: false
 })
 export class ClickCoordinatesComponent implements OnInit {
   public coords: Observable<ClickCoordinates>;

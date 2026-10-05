@@ -9,7 +9,8 @@ import { TimeModeOption, TripPlannerService } from '../../../../services/trip-pl
 @Component({
   selector: 'tamu-gisc-trip-planner-time-picker',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss']
+  styleUrls: ['./base.component.scss'],
+  standalone: false
 })
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**

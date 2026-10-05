@@ -10,7 +10,8 @@ import { TripPlannerModePickerComponent } from '../base/base.component';
 @Component({
   selector: 'tamu-gisc-trip-planner-mode-picker-mobile',
   templateUrl: './mobile.component.html',
-  styleUrls: ['../base/base.component.scss', './mobile.component.scss']
+  styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
+  standalone: false
 })
 export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerComponent implements OnInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();

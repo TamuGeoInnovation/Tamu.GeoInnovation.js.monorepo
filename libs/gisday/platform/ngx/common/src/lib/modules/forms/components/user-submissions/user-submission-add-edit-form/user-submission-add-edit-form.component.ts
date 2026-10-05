@@ -10,7 +10,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'tamu-gisc-user-submission-add-edit-form',
   templateUrl: './user-submission-add-edit-form.component.html',
-  styleUrls: ['./user-submission-add-edit-form.component.scss']
+  styleUrls: ['./user-submission-add-edit-form.component.scss'],
+  standalone: false
 })
 export class UserSubmissionAddEditFormComponent implements OnInit, OnDestroy {
   @Input()

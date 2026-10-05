@@ -12,7 +12,8 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 @Component({
   selector: 'tamu-gisc-research-competition-list',
   templateUrl: './research-competition-list.component.html',
-  styleUrls: ['./research-competition-list.component.scss']
+  styleUrls: ['./research-competition-list.component.scss'],
+  standalone: false
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> {
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;

@@ -6,7 +6,8 @@ import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
 @Component({
   selector: 'tamu-gisc-preferences',
   templateUrl: './preferences.component.html',
-  styleUrls: ['./preferences.component.scss']
+  styleUrls: ['./preferences.component.scss'],
+  standalone: false
 })
 export class PreferencesComponent implements OnInit {
   public form: UntypedFormGroup;

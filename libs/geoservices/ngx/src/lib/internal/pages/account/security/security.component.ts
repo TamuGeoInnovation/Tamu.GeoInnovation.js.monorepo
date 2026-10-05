@@ -7,7 +7,8 @@ import { AccountSecurityService, ISecretQuestion } from '@tamu-gisc/geoservices/
 @Component({
   selector: 'tamu-gisc-security',
   templateUrl: './security.component.html',
-  styleUrls: ['./security.component.scss']
+  styleUrls: ['./security.component.scss'],
+  standalone: false
 })
 export class SecurityComponent implements OnInit {
   public questions: Observable<Array<ISecretQuestion>>;

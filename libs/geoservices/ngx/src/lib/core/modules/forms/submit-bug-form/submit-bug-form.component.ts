@@ -8,7 +8,8 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
 @Component({
   selector: 'tamu-gisc-submit-bug-form',
   templateUrl: './submit-bug-form.component.html',
-  styleUrls: ['./submit-bug-form.component.scss']
+  styleUrls: ['./submit-bug-form.component.scss'],
+  standalone: false
 })
 export class SubmitBugFormComponent implements OnInit {
   public form: UntypedFormGroup;

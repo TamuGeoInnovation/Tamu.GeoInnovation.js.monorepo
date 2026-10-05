@@ -8,7 +8,8 @@ import { DatabaseService, DatabaseRecord } from '@tamu-gisc/geoservices/data-acc
 @Component({
   selector: 'tamu-gisc-uploaded',
   templateUrl: './uploaded.component.html',
-  styleUrls: ['./uploaded.component.scss']
+  styleUrls: ['./uploaded.component.scss'],
+  standalone: false
 })
 export class UploadedComponent implements OnInit {
   public databases: Observable<Array<DatabaseRecord>>;

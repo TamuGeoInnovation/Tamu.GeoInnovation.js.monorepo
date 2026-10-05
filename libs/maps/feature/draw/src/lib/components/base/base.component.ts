@@ -9,7 +9,8 @@ import esri = __esri;
 
 @Component({
   template: '',
-  providers: [FeatureSelectorService]
+  providers: [FeatureSelectorService],
+  standalone: false
 })
 export class BaseDrawComponent implements OnInit, OnDestroy {
   public model: ISketchViewModel;

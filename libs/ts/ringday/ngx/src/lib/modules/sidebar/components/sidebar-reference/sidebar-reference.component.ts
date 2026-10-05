@@ -12,7 +12,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-sidebar-reference',
   templateUrl: './sidebar-reference.component.html',
-  styleUrls: ['./sidebar-reference.component.scss']
+  styleUrls: ['./sidebar-reference.component.scss'],
+  standalone: false
 })
 export class SidebarReferenceComponent implements OnInit {
   public shareUrl: string;

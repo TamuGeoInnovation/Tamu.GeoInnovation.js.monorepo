@@ -9,7 +9,8 @@ import { CensusIntersectionFeatureLabel } from '../../../../../util/dictionaries
 @Component({
   selector: 'tamu-gisc-census-intersection-result-table',
   templateUrl: './census-intersection-result-table.component.html',
-  styleUrls: ['./census-intersection-result-table.component.scss']
+  styleUrls: ['./census-intersection-result-table.component.scss'],
+  standalone: false
 })
 export class CensusIntersectionResultTableComponent implements OnInit {
   @Input()

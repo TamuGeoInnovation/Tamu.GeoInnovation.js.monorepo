@@ -5,7 +5,8 @@ import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/ge
 @Component({
   selector: 'tamu-gisc-address-processing',
   templateUrl: './address-processing.component.html',
-  styleUrls: ['./address-processing.component.scss']
+  styleUrls: ['./address-processing.component.scss'],
+  standalone: false
 })
 export class AddressProcessingComponent {
   public apiVersion = '5.0';

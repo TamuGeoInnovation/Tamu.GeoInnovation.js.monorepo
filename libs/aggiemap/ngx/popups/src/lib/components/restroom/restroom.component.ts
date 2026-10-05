@@ -11,7 +11,8 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-restroom-popup-component',
   templateUrl: './restroom.component.html',
-  styleUrls: ['../base/base.popup.component.scss']
+  styleUrls: ['../base/base.popup.component.scss'],
+  standalone: false
 })
 export class RestroomPopupComponent extends BaseDirectionsComponent {
   constructor(

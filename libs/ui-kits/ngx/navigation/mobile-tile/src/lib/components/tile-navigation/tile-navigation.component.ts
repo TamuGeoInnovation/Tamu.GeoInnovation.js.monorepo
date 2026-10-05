@@ -10,7 +10,8 @@ import { baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation }
   templateUrl: './tile-navigation.component.html',
   styleUrls: ['./tile-navigation.component.scss'],
   providers: [TileService],
-  animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation]
+  animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation],
+  standalone: false
 })
 export class TileNavigationComponent implements OnInit, OnDestroy {
   @Input()

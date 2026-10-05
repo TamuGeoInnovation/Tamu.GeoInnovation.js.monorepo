@@ -11,7 +11,8 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-parking-lot-popup-component',
   templateUrl: './parking-lot.component.html',
-  styleUrls: ['../base/base.popup.component.scss']
+  styleUrls: ['../base/base.popup.component.scss'],
+  standalone: false
 })
 export class ParkingLotPopupComponent extends BaseDirectionsComponent {
   private get lotIdentifier(): string | number | null {

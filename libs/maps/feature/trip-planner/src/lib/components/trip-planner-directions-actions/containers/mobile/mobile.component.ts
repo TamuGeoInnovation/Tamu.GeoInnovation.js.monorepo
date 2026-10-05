@@ -9,7 +9,8 @@ import { TripPlannerDirectionsActionsComponent } from '../base/base.component';
 @Component({
   selector: 'tamu-gisc-trip-planner-directions-actions-mobile',
   templateUrl: './mobile.component.html',
-  styleUrls: ['../base/base.component.scss', './mobile.component.scss']
+  styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
+  standalone: false
 })
 export class TripPlannerDirectionsActionsMobileComponent extends TripPlannerDirectionsActionsComponent {
   constructor(

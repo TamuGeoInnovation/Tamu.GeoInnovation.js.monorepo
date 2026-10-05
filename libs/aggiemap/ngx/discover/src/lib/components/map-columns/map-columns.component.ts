@@ -6,7 +6,8 @@ import { MapColumnGroup } from '../discover.utils';
 @Component({
   selector: 'tamu-gisc-aggiemap-map-columns',
   templateUrl: './map-columns.component.html',
-  styleUrls: ['./map-columns.component.scss']
+  styleUrls: ['./map-columns.component.scss'],
+  standalone: false
 })
 export class MapColumnsComponent {
   @Input() public columns: MapColumnGroup[] = [];

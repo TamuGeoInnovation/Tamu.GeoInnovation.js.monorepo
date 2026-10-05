@@ -8,7 +8,8 @@ import { GeocodeInputParameterLabel } from '../../../../../util/dictionaries';
 @Component({
   selector: 'tamu-gisc-geocode-input-parameters',
   templateUrl: './geocode-input-parameters.component.html',
-  styleUrls: ['./geocode-input-parameters.component.scss']
+  styleUrls: ['./geocode-input-parameters.component.scss'],
+  standalone: false
 })
 export class GeocodeInputParametersComponent implements OnInit {
   @Input()

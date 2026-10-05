@@ -19,7 +19,8 @@ import { formToFormData } from '../../../../../utils/form-to-form-data';
 @Component({
   selector: 'tamu-gisc-speaker-add-edit-form',
   templateUrl: './speaker-add-edit-form.component.html',
-  styleUrls: ['./speaker-add-edit-form.component.scss']
+  styleUrls: ['./speaker-add-edit-form.component.scss'],
+  standalone: false
 })
 export class SpeakerAddEditFormComponent implements OnInit {
   @Input()

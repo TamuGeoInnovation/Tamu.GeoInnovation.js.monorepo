@@ -13,7 +13,8 @@ import { formToFormData } from '../../../../../utils/form-to-form-data';
 @Component({
   selector: 'tamu-gisc-sponsor-add-edit-form',
   templateUrl: './sponsor-add-edit-form.component.html',
-  styleUrls: ['./sponsor-add-edit-form.component.scss']
+  styleUrls: ['./sponsor-add-edit-form.component.scss'],
+  standalone: false
 })
 export class SponsorAddEditFormComponent implements OnInit {
   @Input()

@@ -7,7 +7,8 @@ import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 @Component({
   selector: 'tamu-gisc-sponsors-main',
   templateUrl: './sponsors-main.component.html',
-  styleUrls: ['./sponsors-main.component.scss']
+  styleUrls: ['./sponsors-main.component.scss'],
+  standalone: false
 })
 export class SponsorsMainComponent implements OnInit {
   private _sponsors$: Observable<Array<Partial<Sponsor>>>;

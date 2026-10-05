@@ -3,7 +3,8 @@ import { Component, OnInit, Input, Renderer2, ElementRef, Output, EventEmitter }
 @Component({
   selector: 'tamu-gisc-backdrop',
   templateUrl: './backdrop.component.html',
-  styleUrls: ['./backdrop.component.scss']
+  styleUrls: ['./backdrop.component.scss'],
+  standalone: false
 })
 export class BackdropComponent implements OnInit {
   /**

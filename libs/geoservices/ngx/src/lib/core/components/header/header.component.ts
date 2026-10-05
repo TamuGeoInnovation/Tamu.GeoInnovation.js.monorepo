@@ -14,7 +14,8 @@ import { RevivalModalComponent } from '../modals/revival-modal/revival-modal.com
   selector: 'tamu-gisc-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  animations: [growAnimationBuilder(250)]
+  animations: [growAnimationBuilder(250)],
+  standalone: false
 })
 export class HeaderComponent implements OnInit {
   public mobileNavToggle: Subject<boolean> = new Subject();

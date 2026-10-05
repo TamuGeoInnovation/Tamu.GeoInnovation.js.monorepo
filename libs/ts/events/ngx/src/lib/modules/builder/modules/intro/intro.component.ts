@@ -10,7 +10,8 @@ import { BuilderModuleBaseComponent } from '../builder-module-base/builder-modul
 @Component({
   selector: 'tamu-gisc-intro',
   templateUrl: './intro.component.html',
-  styleUrls: ['./intro.component.scss', '../builder-module-base/builder-module-base.component.scss']
+  styleUrls: ['./intro.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+  standalone: false
 })
 export class IntroComponent extends BuilderModuleBaseComponent implements OnInit {
   public settings: EventConfiguration | null;

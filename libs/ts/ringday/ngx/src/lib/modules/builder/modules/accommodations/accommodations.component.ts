@@ -9,7 +9,8 @@ import { RingDaySettingsService } from '../../../map/services/settings/ring-day-
 @Component({
   selector: 'tamu-gisc-accommodations',
   templateUrl: './accommodations.component.html',
-  styleUrls: ['./accommodations.component.scss']
+  styleUrls: ['./accommodations.component.scss'],
+  standalone: false
 })
 export class AccommodationsComponent implements OnInit {
   public savedAccessible: Observable<boolean>;

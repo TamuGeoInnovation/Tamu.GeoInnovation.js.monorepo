@@ -9,7 +9,8 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-base-admin-detail',
-  template: ''
+  template: '',
+  standalone: false
 })
 export abstract class BaseAdminDetailComponent<T> implements OnInit {
   public entity: Observable<Partial<T>>;

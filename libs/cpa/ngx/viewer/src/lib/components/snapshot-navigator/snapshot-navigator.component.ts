@@ -8,7 +8,8 @@ import { TypedSnapshotOrScenario, ViewerService } from '../../services/viewer.se
 @Component({
   selector: 'tamu-gisc-snapshot-navigator',
   templateUrl: './snapshot-navigator.component.html',
-  styleUrls: ['./snapshot-navigator.component.scss']
+  styleUrls: ['./snapshot-navigator.component.scss'],
+  standalone: false
 })
 export class SnapshotNavigatorComponent implements OnInit {
   public snapshots: Observable<Array<TypedSnapshotOrScenario>> = this.vs.snapshotsAndScenarios;

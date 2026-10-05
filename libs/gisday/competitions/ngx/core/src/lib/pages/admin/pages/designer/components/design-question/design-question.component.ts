@@ -4,7 +4,8 @@ import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 @Component({
   selector: 'tamu-gisc-design-question',
   templateUrl: './design-question.component.html',
-  styleUrls: ['./design-question.component.scss']
+  styleUrls: ['./design-question.component.scss'],
+  standalone: false
 })
 export class DesignQuestionComponent {
   /**

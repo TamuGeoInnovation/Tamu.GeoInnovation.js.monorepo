@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { LastMapService } from './last-map.service';
 
-@Component({ selector: 'tamu-gisc-test-page', template: 'page' })
+@Component({ selector: 'tamu-gisc-test-page', template: 'page', standalone: false })
 class TestPageComponent {}
 
 /**

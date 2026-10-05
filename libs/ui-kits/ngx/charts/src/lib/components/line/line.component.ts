@@ -7,7 +7,8 @@ import { LineChartConfiguration } from '../chart-container/chart-container.compo
   selector: 'tamu-gisc-line-chart',
   templateUrl: './line.component.html',
   styleUrls: ['../base/base.component.scss', './line.component.scss'],
-  providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => LineChartComponent) }]
+  providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => LineChartComponent) }],
+  standalone: false
 })
 export class LineChartComponent extends BaseChartComponent implements AfterViewInit {
   constructor() {

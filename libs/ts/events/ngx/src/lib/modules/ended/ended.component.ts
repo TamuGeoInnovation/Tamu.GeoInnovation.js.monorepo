@@ -9,7 +9,8 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
  */
 @Component({
   selector: 'tamu-gisc-event-ended',
-  templateUrl: './ended.component.html'
+  templateUrl: './ended.component.html',
+  standalone: false
 })
 export class EndedComponent {
   public readonly name: string;

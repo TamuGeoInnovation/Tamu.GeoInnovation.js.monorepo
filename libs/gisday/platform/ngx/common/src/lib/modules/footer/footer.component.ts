@@ -9,7 +9,8 @@ import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enu
 @Component({
   selector: 'tamu-gisc-app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
+  styleUrls: ['./footer.component.scss'],
+  standalone: false
 })
 export class FooterComponent implements OnInit {
   public activeSeason$: Observable<Partial<Season>>;

@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'tamu-gisc-code-runner',
   templateUrl: './code-runner.component.html',
-  styleUrls: ['./code-runner.component.scss']
+  styleUrls: ['./code-runner.component.scss'],
+  standalone: false
 })
 export class CodeRunnerComponent implements OnInit {
   @Input()

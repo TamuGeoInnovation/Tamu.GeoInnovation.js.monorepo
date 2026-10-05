@@ -14,7 +14,8 @@ import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-op
 @Component({
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
-  styleUrls: ['./place-location-add-edit-form.component.scss']
+  styleUrls: ['./place-location-add-edit-form.component.scss'],
+  standalone: false
 })
 export class PlaceLocationAddEditFormComponent implements OnInit {
   @Input()

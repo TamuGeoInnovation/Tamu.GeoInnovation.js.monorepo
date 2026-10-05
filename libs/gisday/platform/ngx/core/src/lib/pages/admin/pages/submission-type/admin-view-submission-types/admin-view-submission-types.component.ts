@@ -7,7 +7,8 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
 @Component({
   selector: 'tamu-gisc-admin-view-submission-types',
   templateUrl: './admin-view-submission-types.component.html',
-  styleUrls: ['./admin-view-submission-types.component.scss']
+  styleUrls: ['./admin-view-submission-types.component.scss'],
+  standalone: false
 })
 export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<SubmissionType> {
   constructor(private readonly submissionTypeService: SubmissionTypeService) {

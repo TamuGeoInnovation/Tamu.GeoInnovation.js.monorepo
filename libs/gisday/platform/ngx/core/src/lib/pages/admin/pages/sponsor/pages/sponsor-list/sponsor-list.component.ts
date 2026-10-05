@@ -11,7 +11,8 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 @Component({
   selector: 'tamu-gisc-sponsor-list',
   templateUrl: './sponsor-list.component.html',
-  styleUrls: ['./sponsor-list.component.scss']
+  styleUrls: ['./sponsor-list.component.scss'],
+  standalone: false
 })
 export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
   constructor(

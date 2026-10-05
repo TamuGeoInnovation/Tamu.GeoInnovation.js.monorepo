@@ -9,7 +9,8 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   selector: 'tamu-gisc-feature-mobile-popup',
   templateUrl: './mobile.component.html',
   styleUrls: ['./mobile.component.scss'],
-  providers: [PopupService]
+  providers: [PopupService],
+  standalone: false
 })
 export class PopupMobileComponent extends PopupComponent implements OnDestroy {
   /**

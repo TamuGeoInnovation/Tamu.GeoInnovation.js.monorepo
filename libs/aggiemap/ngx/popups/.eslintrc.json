@@ -9,6 +9,7 @@
         "project": ["libs/aggiemap/ngx/popups/tsconfig.*?.json"]
       },
       "rules": {
+        "@angular-eslint/prefer-standalone": "off",
         "@angular-eslint/directive-selector": [
           "error",
           {

@@ -11,7 +11,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-map-viewfinder',
   templateUrl: './viewfinder.component.html',
-  styleUrls: ['./viewfinder.component.scss']
+  styleUrls: ['./viewfinder.component.scss'],
+  standalone: false
 })
 export class MapViewfinderComponent implements OnInit, OnDestroy {
   /**

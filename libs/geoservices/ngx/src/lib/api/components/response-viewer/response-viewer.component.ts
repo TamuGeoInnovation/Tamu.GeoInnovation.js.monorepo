@@ -5,7 +5,8 @@ import { ApiBase, TransformersMap } from '@tamu-gisc/geoprocessing-core';
 @Component({
   selector: 'tamu-gisc-response-viewer',
   templateUrl: './response-viewer.component.html',
-  styleUrls: ['./response-viewer.component.scss']
+  styleUrls: ['./response-viewer.component.scss'],
+  standalone: false
 })
 export class ResponseViewerComponent<Type extends object, Res extends object> implements OnInit {
   @Input()

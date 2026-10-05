@@ -8,7 +8,8 @@ import {
 @Component({
   selector: 'tamu-gisc-interactive-mode-toggle',
   templateUrl: './interactive-mode-toggle.component.html',
-  styleUrls: ['./interactive-mode-toggle.component.scss']
+  styleUrls: ['./interactive-mode-toggle.component.scss'],
+  standalone: false
 })
 export class InteractiveModeToggleComponent {
   @Input()

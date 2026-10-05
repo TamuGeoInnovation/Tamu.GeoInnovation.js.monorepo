@@ -18,7 +18,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-base-directions',
   templateUrl: './base-directions.component.html',
-  styleUrls: ['./base-directions.component.scss']
+  styleUrls: ['./base-directions.component.scss'],
+  standalone: false
 })
 export class BaseDirectionsComponent extends BasePopupComponent implements OnInit, OnDestroy {
   /**

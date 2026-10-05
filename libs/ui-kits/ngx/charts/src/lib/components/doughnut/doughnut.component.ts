@@ -7,7 +7,8 @@ import { DoughnutChartConfiguration } from '../chart-container/chart-container.c
   selector: 'tamu-gisc-doughnut-chart',
   templateUrl: './doughnut.component.html',
   styleUrls: ['../base/base.component.scss', './doughnut.component.scss'],
-  providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => DoughnutChartComponent) }]
+  providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => DoughnutChartComponent) }],
+  standalone: false
 })
 export class DoughnutChartComponent extends BaseChartComponent implements AfterViewInit {
   constructor() {

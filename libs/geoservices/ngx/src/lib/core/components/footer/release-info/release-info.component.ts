@@ -5,7 +5,8 @@ import { EnvironmentService, ReleaseMetadata } from '@tamu-gisc/common/ngx/envir
 @Component({
   selector: 'tamu-gisc-release-info',
   templateUrl: './release-info.component.html',
-  styleUrls: ['./release-info.component.scss']
+  styleUrls: ['./release-info.component.scss'],
+  standalone: false
 })
 export class ReleaseInfoComponent implements OnInit {
   public release_meta: ReleaseMetadata;

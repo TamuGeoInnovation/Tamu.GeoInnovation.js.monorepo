@@ -11,7 +11,8 @@ import { SidebarTabComponent } from '../tab/tab.component';
   selector: 'tamu-gisc-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  animations: [slide]
+  animations: [slide],
+  standalone: false
 })
 export class SidebarComponent extends AbstractSlidingDrawerComponent implements AfterContentInit, OnDestroy {
   public currentView: string;
@@ -64,7 +65,10 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
    * including `/map/d`, resolves to the default view.
    */
   private _currentTabRoute(): string {
-    const segments = this.router.url.split('?')[0].split('/').filter((segment) => segment.length > 0);
+    const segments = this.router.url
+      .split('?')[0]
+      .split('/')
+      .filter((segment) => segment.length > 0);
     const last = segments[segments.length - 1];
 
     const match = this.tabs.find((tab) => tab.route !== undefined && tab.route.length > 0 && tab.route === last);

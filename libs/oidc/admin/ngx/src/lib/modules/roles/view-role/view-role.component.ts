@@ -8,7 +8,8 @@ import { Role } from '@tamu-gisc/oidc/common';
 @Component({
   selector: 'tamu-gisc-view',
   templateUrl: './view-role.component.html',
-  styleUrls: ['./view-role.component.scss']
+  styleUrls: ['./view-role.component.scss'],
+  standalone: false
 })
 export class ViewRoleComponent {
   public $roles: Observable<Array<Partial<Role>>>;

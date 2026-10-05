@@ -11,7 +11,8 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
 @Component({
   selector: 'tamu-gisc-tags-list',
   templateUrl: './tags-list.component.html',
-  styleUrls: ['./tags-list.component.scss']
+  styleUrls: ['./tags-list.component.scss'],
+  standalone: false
 })
 export class TagsListComponent extends BaseAdminListComponent<Tag> {
   constructor(

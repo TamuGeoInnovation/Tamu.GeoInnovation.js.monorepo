@@ -3,7 +3,8 @@ import { Component, HostListener, EventEmitter, Input } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-tooltip-trigger',
   templateUrl: './tooltip-trigger.component.html',
-  styleUrls: ['./tooltip-trigger.component.scss']
+  styleUrls: ['./tooltip-trigger.component.scss'],
+  standalone: false
 })
 export class TooltipTriggerComponent {
   @Input()

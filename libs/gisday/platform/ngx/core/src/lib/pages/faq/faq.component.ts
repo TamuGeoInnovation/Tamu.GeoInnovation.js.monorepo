@@ -4,7 +4,8 @@ import { Title } from '@angular/platform-browser';
 @Component({
   selector: 'tamu-gisc-faq',
   templateUrl: './faq.component.html',
-  styleUrls: ['./faq.component.scss']
+  styleUrls: ['./faq.component.scss'],
+  standalone: false
 })
 export class FaqComponent {
   constructor(private titleService: Title) {

@@ -4,7 +4,8 @@ import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-base-popup-component',
-  templateUrl: './base.popup.component.html'
+  templateUrl: './base.popup.component.html',
+  standalone: false
 })
 export class BasePopupComponent {
   /**

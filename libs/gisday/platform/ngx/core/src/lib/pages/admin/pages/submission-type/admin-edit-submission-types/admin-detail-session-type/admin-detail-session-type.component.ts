@@ -11,7 +11,8 @@ import { formExporter } from '../../admin-add-submission-types/admin-add-submiss
 @Component({
   selector: 'tamu-gisc-admin-detail-session-type',
   templateUrl: './admin-detail-session-type.component.html',
-  styleUrls: ['./admin-detail-session-type.component.scss']
+  styleUrls: ['./admin-detail-session-type.component.scss'],
+  standalone: false
 })
 export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType> implements OnInit {
   constructor(

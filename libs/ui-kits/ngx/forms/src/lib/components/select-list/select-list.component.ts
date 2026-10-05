@@ -22,7 +22,8 @@ import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith 
       useExisting: forwardRef(() => SelectListComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {
   /**

@@ -19,7 +19,8 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-bus-stop-popup-component',
   templateUrl: './bus-stop.component.html',
-  styleUrls: ['../base/base.popup.component.scss']
+  styleUrls: ['../base/base.popup.component.scss'],
+  standalone: false
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
   /**

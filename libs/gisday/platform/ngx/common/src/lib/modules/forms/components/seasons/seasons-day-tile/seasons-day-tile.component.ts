@@ -7,7 +7,8 @@ import { SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
 @Component({
   selector: 'tamu-gisc-seasons-day-tile',
   templateUrl: './seasons-day-tile.component.html',
-  styleUrls: ['./seasons-day-tile.component.scss']
+  styleUrls: ['./seasons-day-tile.component.scss'],
+  standalone: false
 })
 export class SeasonsDayTileComponent {
   @Input()

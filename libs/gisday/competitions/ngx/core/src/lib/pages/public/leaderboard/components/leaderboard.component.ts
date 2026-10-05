@@ -11,7 +11,8 @@ import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
 @Component({
   selector: 'tamu-gisc-leaderboard',
   templateUrl: './leaderboard.component.html',
-  styleUrls: ['./leaderboard.component.scss']
+  styleUrls: ['./leaderboard.component.scss'],
+  standalone: false
 })
 export class LeaderboardComponent implements OnInit {
   public me$: Observable<string>;

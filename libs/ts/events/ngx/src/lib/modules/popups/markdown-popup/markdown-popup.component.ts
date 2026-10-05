@@ -12,7 +12,8 @@ import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.co
 @Component({
   selector: 'tamu-gisc-markdown-popup',
   templateUrl: './markdown-popup.component.html',
-  styleUrls: ['./markdown-popup.component.scss']
+  styleUrls: ['./markdown-popup.component.scss'],
+  standalone: false
 })
 export class MarkdownPopupComponent extends BaseEventPopupComponent implements OnInit {
   public title: string;

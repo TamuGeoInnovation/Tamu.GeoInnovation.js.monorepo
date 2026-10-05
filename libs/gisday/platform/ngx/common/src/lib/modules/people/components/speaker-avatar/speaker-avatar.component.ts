@@ -7,7 +7,8 @@ import { AssetsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 @Component({
   selector: 'tamu-gisc-speaker-avatar',
   templateUrl: './speaker-avatar.component.html',
-  styleUrls: ['./speaker-avatar.component.scss']
+  styleUrls: ['./speaker-avatar.component.scss'],
+  standalone: false
 })
 export class SpeakerAvatarComponent implements OnInit {
   @Input()

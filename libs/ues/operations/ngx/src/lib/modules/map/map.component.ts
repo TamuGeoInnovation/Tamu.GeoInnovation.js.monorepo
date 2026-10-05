@@ -13,7 +13,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

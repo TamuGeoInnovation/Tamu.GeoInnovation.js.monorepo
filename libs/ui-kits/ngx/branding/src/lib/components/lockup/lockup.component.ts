@@ -3,7 +3,8 @@ import { Component, HostBinding, Input } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-lockup',
   templateUrl: './lockup.component.html',
-  styleUrls: ['./lockup.component.scss']
+  styleUrls: ['./lockup.component.scss'],
+  standalone: false
 })
 export class LockupComponent {
   @Input()

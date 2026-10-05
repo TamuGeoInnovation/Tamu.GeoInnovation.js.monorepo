@@ -8,7 +8,8 @@ import { DatabaseService } from '@tamu-gisc/geoservices/data-access';
 @Component({
   selector: 'tamu-gisc-upload',
   templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.scss']
+  styleUrls: ['./upload.component.scss'],
+  standalone: false
 })
 export class UploadComponent implements OnInit {
   public form: UntypedFormGroup;

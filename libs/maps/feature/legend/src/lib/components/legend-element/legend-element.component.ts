@@ -37,7 +37,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-legend-element',
   templateUrl: './legend-element.component.html',
-  styleUrls: ['./legend-element.component.scss']
+  styleUrls: ['./legend-element.component.scss'],
+  standalone: false
 })
 export class LegendElementComponent implements OnInit {
   constructor(
@@ -189,10 +190,9 @@ export class LegendElementComponent implements OnInit {
    * override applies for either top-level feature layers or sublayers of map-image layers.
    */
   public get legendOverride(): LayerLegendOverride | undefined {
-    const candidateIds = [
-      this.layer?.id,
-      (this.layer as unknown as esri.Sublayer)?.layer?.id
-    ].filter((id): id is string => typeof id === 'string');
+    const candidateIds = [this.layer?.id, (this.layer as unknown as esri.Sublayer)?.layer?.id].filter(
+      (id): id is string => typeof id === 'string'
+    );
 
     for (const id of candidateIds) {
       const match = this.layerSourcesService?.getLegendOverride?.(id);
@@ -491,7 +491,6 @@ export class LegendElementComponent implements OnInit {
       return of(null);
     }
   }
-
 }
 
 // Browser doesn't like direct esri types for inputs.

@@ -13,7 +13,8 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
       useExisting: forwardRef(() => RadioGroupComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class RadioGroupComponent<Option extends object, Value> implements ControlValueAccessor {
   @Input()

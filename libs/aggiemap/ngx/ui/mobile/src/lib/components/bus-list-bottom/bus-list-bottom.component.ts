@@ -6,7 +6,8 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 @Component({
   selector: 'tamu-gisc-bus-list-bottom',
   templateUrl: './bus-list-bottom.component.html',
-  styleUrls: ['./bus-list-bottom.component.scss']
+  styleUrls: ['./bus-list-bottom.component.scss'],
+  standalone: false
 })
 export class BusListBottomComponent implements OnInit, OnDestroy {
   public identifier: string;

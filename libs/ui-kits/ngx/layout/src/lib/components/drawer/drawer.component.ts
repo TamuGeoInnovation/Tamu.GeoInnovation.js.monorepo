@@ -7,6 +7,7 @@ import { slide } from '../../animations/drawer';
   selector: 'tamu-gisc-drawer',
   templateUrl: './drawer.component.html',
   styleUrls: ['./drawer.component.scss'],
-  animations: [slide]
+  animations: [slide],
+  standalone: false
 })
 export class DrawerComponent extends AbstractSlidingDrawerComponent {}

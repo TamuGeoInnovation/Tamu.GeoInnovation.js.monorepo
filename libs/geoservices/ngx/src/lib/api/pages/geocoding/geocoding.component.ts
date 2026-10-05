@@ -4,7 +4,8 @@ import { Geocode, CensusYear, GeocodeReferenceFeature } from '@tamu-gisc/geoproc
 @Component({
   selector: 'tamu-gisc-geocoding',
   templateUrl: './geocoding.component.html',
-  styleUrls: ['./geocoding.component.scss']
+  styleUrls: ['./geocoding.component.scss'],
+  standalone: false
 })
 export class GeocodingComponent {
   public apiVersion = '5.0';

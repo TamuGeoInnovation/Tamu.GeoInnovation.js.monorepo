@@ -10,7 +10,8 @@ import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.co
 @Component({
   selector: 'tamu-gisc-admin-edit-rsvp-type',
   templateUrl: './admin-edit-rsvp-type.component.html',
-  styleUrls: ['./admin-edit-rsvp-type.component.scss']
+  styleUrls: ['./admin-edit-rsvp-type.component.scss'],
+  standalone: false
 })
 export class AdminEditRsvpTypeComponent extends BaseAdminListComponent<RsvpType> {
   constructor(

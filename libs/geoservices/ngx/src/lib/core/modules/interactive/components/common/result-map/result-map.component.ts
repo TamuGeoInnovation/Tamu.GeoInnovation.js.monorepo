@@ -9,7 +9,8 @@ import esri = __esri;
   selector: 'tamu-gisc-result-map',
   templateUrl: './result-map.component.html',
   styleUrls: ['./result-map.component.scss'],
-  providers: [EsriMapService]
+  providers: [EsriMapService],
+  standalone: false
 })
 export class ResultMapComponent implements OnInit {
   @Input()

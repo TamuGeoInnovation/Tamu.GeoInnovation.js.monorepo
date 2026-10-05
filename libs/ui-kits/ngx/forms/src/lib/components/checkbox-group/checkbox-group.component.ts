@@ -25,7 +25,8 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
       useExisting: forwardRef(() => CheckboxGroupComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentInit, ControlValueAccessor {
   @ContentChildren(CheckboxComponent)

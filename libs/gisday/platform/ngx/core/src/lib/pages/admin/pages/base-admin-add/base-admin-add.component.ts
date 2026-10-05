@@ -7,7 +7,8 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-base-admin-add',
-  template: ''
+  template: '',
+  standalone: false
 })
 export abstract class BaseAdminAddComponent<T> implements IBaseAdminAddComponent, OnDestroy {
   public form: UntypedFormGroup;

@@ -10,7 +10,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 @Component({
   selector: 'tamu-gisc-detail-role',
   templateUrl: './detail-role.component.html',
-  styleUrls: ['./detail-role.component.scss']
+  styleUrls: ['./detail-role.component.scss'],
+  standalone: false
 })
 export class DetailRoleComponent implements OnInit {
   public roleGuid: string;

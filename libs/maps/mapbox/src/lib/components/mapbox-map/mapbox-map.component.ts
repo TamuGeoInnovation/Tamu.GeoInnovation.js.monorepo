@@ -7,7 +7,8 @@ import { MapboxMapService } from '../../services/mapbox-map.service';
 @Component({
   selector: 'tamu-gisc-mapbox-map',
   templateUrl: './mapbox-map.component.html',
-  styleUrls: ['./mapbox-map.component.scss']
+  styleUrls: ['./mapbox-map.component.scss'],
+  standalone: false
 })
 export class MapboxMapComponent implements OnInit {
   @ViewChild('map', { static: true })

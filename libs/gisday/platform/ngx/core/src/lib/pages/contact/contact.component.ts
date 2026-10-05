@@ -9,7 +9,8 @@ import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 @Component({
   selector: 'tamu-gisc-contact',
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss']
+  styleUrls: ['./contact.component.scss'],
+  standalone: false
 })
 export class ContactComponent implements OnInit {
   public form: UntypedFormGroup;

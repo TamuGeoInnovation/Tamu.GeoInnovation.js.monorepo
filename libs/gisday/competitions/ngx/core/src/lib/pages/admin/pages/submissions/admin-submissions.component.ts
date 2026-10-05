@@ -7,7 +7,8 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
 @Component({
   selector: 'tamu-gisc-admin-submissions',
   templateUrl: './admin-submissions.component.html',
-  styleUrls: ['./admin-submissions.component.scss']
+  styleUrls: ['./admin-submissions.component.scss'],
+  standalone: false
 })
 export class AdminSubmissionsComponent implements OnInit {
   public submissions$: Observable<SubmissionReviewDto[]>;

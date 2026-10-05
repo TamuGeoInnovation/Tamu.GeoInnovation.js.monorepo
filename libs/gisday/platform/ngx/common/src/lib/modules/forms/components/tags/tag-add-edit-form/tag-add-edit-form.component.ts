@@ -10,7 +10,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 @Component({
   selector: 'tamu-gisc-tag-add-edit-form',
   templateUrl: './tag-add-edit-form.component.html',
-  styleUrls: ['./tag-add-edit-form.component.scss']
+  styleUrls: ['./tag-add-edit-form.component.scss'],
+  standalone: false
 })
 export class TagAddEditFormComponent implements OnInit {
   @Input()

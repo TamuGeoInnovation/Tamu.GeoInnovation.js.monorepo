@@ -4,7 +4,8 @@ import { Title } from '@angular/platform-browser';
 @Component({
   selector: 'tamu-gisc-app-event',
   templateUrl: './event.component.html',
-  styleUrls: ['./event.component.scss']
+  styleUrls: ['./event.component.scss'],
+  standalone: false
 })
 export class EventComponent {
   constructor(private titleService: Title) {

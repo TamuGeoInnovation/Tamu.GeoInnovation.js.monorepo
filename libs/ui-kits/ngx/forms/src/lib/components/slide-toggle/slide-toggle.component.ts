@@ -14,7 +14,8 @@ import { RadioGroupComponent } from '../radio-group/radio-group.component';
       useExisting: forwardRef(() => SlideToggleComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class SlideToggleComponent<Option extends object, Value>
   extends RadioGroupComponent<Option, Value>

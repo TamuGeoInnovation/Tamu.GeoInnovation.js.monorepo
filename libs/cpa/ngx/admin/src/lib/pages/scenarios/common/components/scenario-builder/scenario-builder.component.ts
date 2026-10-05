@@ -40,7 +40,8 @@ import esri = __esri;
   selector: 'tamu-gisc-scenario-builder',
   templateUrl: './scenario-builder.component.html',
   styleUrls: ['./scenario-builder.component.scss'],
-  providers: [EsriMapService]
+  providers: [EsriMapService],
+  standalone: false
 })
 export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public builderForm: UntypedFormGroup;

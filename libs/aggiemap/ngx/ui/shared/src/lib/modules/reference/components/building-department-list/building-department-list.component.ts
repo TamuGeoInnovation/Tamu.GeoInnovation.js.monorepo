@@ -12,7 +12,8 @@ const searchReference = 'university-departments-exact';
   selector: 'tamu-gisc-building-department-list',
   templateUrl: './building-department-list.component.html',
   styleUrls: ['./building-department-list.component.scss'],
-  providers: [SearchService]
+  providers: [SearchService],
+  standalone: false
 })
 export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
   @Input()

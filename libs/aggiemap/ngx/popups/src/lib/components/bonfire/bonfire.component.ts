@@ -16,7 +16,8 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-bonfire',
   templateUrl: './bonfire.component.html',
-  styleUrls: ['./bonfire.component.scss']
+  styleUrls: ['./bonfire.component.scss'],
+  standalone: false
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);

@@ -7,7 +7,8 @@ import { v4 as guid } from 'uuid';
 @Component({
   selector: 'tamu-gisc-copy-field',
   templateUrl: './copy.component.html',
-  styleUrls: ['./copy.component.scss']
+  styleUrls: ['./copy.component.scss'],
+  standalone: false
 })
 export class CopyComponent {
   @Input()

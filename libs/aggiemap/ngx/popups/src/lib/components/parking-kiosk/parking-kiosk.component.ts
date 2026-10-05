@@ -11,7 +11,8 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
 @Component({
   selector: 'tamu-gisc-parking-kiosk-popup-component',
   templateUrl: './parking-kiosk.component.html',
-  styleUrls: ['../base/base.popup.component.scss']
+  styleUrls: ['../base/base.popup.component.scss'],
+  standalone: false
 })
 export class ParkingKioskPopupComponent extends BaseDirectionsComponent {
   constructor(

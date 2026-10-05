@@ -20,7 +20,8 @@ import { PopupService } from '../../services/popup.service';
  * have every one of these maps open its panel on load.
  */
 @Directive({
-  selector: '[tamuGiscRevealSidebarOnPopup]'
+  selector: '[tamuGiscRevealSidebarOnPopup]',
+  standalone: false
 })
 export class RevealSidebarOnPopupDirective implements OnInit, OnDestroy {
   private _subscription: Subscription | undefined;

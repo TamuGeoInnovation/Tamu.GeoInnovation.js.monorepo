@@ -9,7 +9,8 @@ import { WorkshopService } from '@tamu-gisc/cpa/ngx/data-access';
 @Component({
   selector: 'tamu-gisc-workshops-list',
   templateUrl: './workshops-list.component.html',
-  styleUrls: ['./workshops-list.component.scss']
+  styleUrls: ['./workshops-list.component.scss'],
+  standalone: false
 })
 export class WorkshopsListComponent implements OnInit {
   public workshops: Observable<IWorkshopRequestPayload[]>;

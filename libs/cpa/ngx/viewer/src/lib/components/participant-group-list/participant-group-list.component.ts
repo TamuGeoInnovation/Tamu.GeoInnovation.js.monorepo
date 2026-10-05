@@ -10,7 +10,8 @@ import { ViewerService } from '../../services/viewer.service';
 @Component({
   selector: 'tamu-gisc-participant-group-list',
   templateUrl: './participant-group-list.component.html',
-  styleUrls: ['./participant-group-list.component.scss']
+  styleUrls: ['./participant-group-list.component.scss'],
+  standalone: false
 })
 export class ParticipantGroupListComponent implements OnInit {
   public participants: Observable<Array<IParticipant>>;

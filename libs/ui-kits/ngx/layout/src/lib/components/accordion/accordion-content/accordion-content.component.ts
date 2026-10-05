@@ -6,7 +6,8 @@ import { IAccordionModel } from '../services/accordion.service';
 @Component({
   selector: 'tamu-gisc-accordion-content',
   templateUrl: './accordion-content.component.html',
-  styleUrls: ['./accordion-content.component.scss']
+  styleUrls: ['./accordion-content.component.scss'],
+  standalone: false
 })
 export class AccordionContentComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input()

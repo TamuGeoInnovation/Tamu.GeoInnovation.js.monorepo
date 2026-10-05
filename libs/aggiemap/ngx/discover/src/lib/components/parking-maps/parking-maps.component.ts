@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { buildMapColumnGroups, getApplicationRoute, MapColumnDefinition, MapColumnGroup, sortApplicationsByName } from '../discover.utils';
+import {
+  buildMapColumnGroups,
+  getApplicationRoute,
+  MapColumnDefinition,
+  MapColumnGroup,
+  sortApplicationsByName
+} from '../discover.utils';
 
 /**
  * Parking Maps page. Renders the parking maps grouped into the General / Business / Permit columns
@@ -10,7 +16,8 @@ import { buildMapColumnGroups, getApplicationRoute, MapColumnDefinition, MapColu
 @Component({
   selector: 'tamu-gisc-aggiemap-parking-maps',
   templateUrl: './parking-maps.component.html',
-  styleUrls: ['./parking-maps.component.scss']
+  styleUrls: ['./parking-maps.component.scss'],
+  standalone: false
 })
 export class ParkingMapsComponent implements OnInit {
   public columns: MapColumnGroup[] = [];

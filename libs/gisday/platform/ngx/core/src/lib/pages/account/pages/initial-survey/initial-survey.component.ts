@@ -10,7 +10,8 @@ import { InitialSurveyQuestion } from '@tamu-gisc/gisday/platform/data-api';
 @Component({
   selector: 'tamu-gisc-initial-survey',
   templateUrl: './initial-survey.component.html',
-  styleUrls: ['./initial-survey.component.scss']
+  styleUrls: ['./initial-survey.component.scss'],
+  standalone: false
 })
 export class InitialSurveyComponent implements OnInit, OnDestroy {
   public dataGroup: UntypedFormGroup;

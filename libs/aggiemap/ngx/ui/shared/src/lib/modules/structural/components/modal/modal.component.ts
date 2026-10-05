@@ -10,7 +10,8 @@ import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 @Component({
   selector: 'tamu-gisc-modal',
   templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss']
+  styleUrls: ['./modal.component.scss'],
+  standalone: false
 })
 export class ModalComponent implements OnInit, OnDestroy {
   public isMobile: boolean;

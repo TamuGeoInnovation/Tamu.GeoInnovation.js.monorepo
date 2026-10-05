@@ -53,7 +53,8 @@ import { switchMap } from 'rxjs/operators';
       ),
       transition('* <=> *', [animate('.3s ease')])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class HamburgerTriggerComponent implements OnChanges {
   /**

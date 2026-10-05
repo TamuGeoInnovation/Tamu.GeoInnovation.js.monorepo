@@ -18,7 +18,8 @@ import { AutocompleteOptionTemplateDirective } from './directives/autocomplete-o
   selector: 'tamu-gisc-autocomplete',
   templateUrl: './autocomplete.component.html',
   styleUrls: ['./autocomplete.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   /**

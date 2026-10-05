@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-my-submissions',
   templateUrl: './my-submissions.component.html',
-  styleUrls: ['./my-submissions.component.scss']
+  styleUrls: ['./my-submissions.component.scss'],
+  standalone: false
 })
 export class MySubmissionsComponent {}

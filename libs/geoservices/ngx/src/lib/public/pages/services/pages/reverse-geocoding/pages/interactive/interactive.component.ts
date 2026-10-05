@@ -5,7 +5,8 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 @Component({
   selector: 'tamu-gisc-interactive',
   templateUrl: './interactive.component.html',
-  styleUrls: ['./interactive.component.scss']
+  styleUrls: ['./interactive.component.scss'],
+  standalone: false
 })
 export class InteractiveComponent implements OnInit {
   public url: string;

@@ -15,7 +15,8 @@ import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-
   selector: 'tamu-gisc-trip-planner-options',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TripPlannerOptionsComponent implements OnInit {
   public readonly isDev = this.testingService.get('isTesting').pipe(shareReplay(1)) as Observable<boolean>;

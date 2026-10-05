@@ -6,7 +6,8 @@ import { TripPlannerConnectionService, TripPlannerConnection } from '../../../..
 @Component({
   selector: 'tamu-gisc-trip-planner-connection-select',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss']
+  styleUrls: ['./base.component.scss'],
+  standalone: false
 })
 export class TripPlannerConnectionsSelectComponent implements OnInit {
   /**

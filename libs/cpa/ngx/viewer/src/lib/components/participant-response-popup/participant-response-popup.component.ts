@@ -8,7 +8,8 @@ import { ViewerService } from '../../services/viewer.service';
 @Component({
   selector: 'tamu-gisc-participant-response-popup',
   templateUrl: './participant-response-popup.component.html',
-  styleUrls: ['./participant-response-popup.component.scss']
+  styleUrls: ['./participant-response-popup.component.scss'],
+  standalone: false
 })
 export class ParticipantResponsePopupComponent extends BasePopupComponent implements OnInit {
   public form: UntypedFormGroup;

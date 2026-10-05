@@ -5,7 +5,8 @@ import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
 @Component({
   selector: 'tamu-gisc-reverse-geocoding',
   templateUrl: './reverse-geocoding.component.html',
-  styleUrls: ['./reverse-geocoding.component.scss']
+  styleUrls: ['./reverse-geocoding.component.scss'],
+  standalone: false
 })
 export class ReverseGeocodingComponent {
   public apiVersion = '5.0';

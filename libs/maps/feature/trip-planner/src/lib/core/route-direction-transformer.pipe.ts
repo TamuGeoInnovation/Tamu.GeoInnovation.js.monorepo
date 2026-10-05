@@ -5,7 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 //
 
 @Pipe({
-  name: 'routeDirectionTransformer'
+  name: 'routeDirectionTransformer',
+  standalone: false
 })
 export class RouteDirectionTransformerPipe implements PipeTransform {
   public transform(value) {

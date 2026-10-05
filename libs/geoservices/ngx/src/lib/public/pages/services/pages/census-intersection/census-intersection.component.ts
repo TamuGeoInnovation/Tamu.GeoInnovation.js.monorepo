@@ -7,7 +7,8 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 @Component({
   selector: 'tamu-gisc-census-intersection',
   templateUrl: './census-intersection.component.html',
-  styleUrls: ['./census-intersection.component.scss']
+  styleUrls: ['./census-intersection.component.scss'],
+  standalone: false
 })
 export class CensusIntersectionComponent implements OnInit {
   private intersection: CensusIntersection;

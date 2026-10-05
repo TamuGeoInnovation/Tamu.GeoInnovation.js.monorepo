@@ -3,7 +3,8 @@ import { Component, Input, Output, EventEmitter, HostBinding } from '@angular/co
 @Component({
   selector: 'tamu-gisc-button',
   templateUrl: './button.component.html',
-  styleUrls: ['./button.component.scss']
+  styleUrls: ['./button.component.scss'],
+  standalone: false
 })
 export class ButtonComponent {
   /**

@@ -96,7 +96,8 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
       useExisting: forwardRef(() => DateTimePickerComponent),
       multi: true
     }
-  ]
+  ],
+  standalone: false
 })
 export class DateTimePickerComponent implements ControlValueAccessor {
   // Get reference for the tooltip component rendered inside this date time picker component.

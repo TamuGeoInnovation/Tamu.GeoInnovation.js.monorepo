@@ -11,7 +11,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 @Component({
   selector: 'tamu-gisc-detail',
   templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.scss']
+  styleUrls: ['./detail.component.scss'],
+  standalone: false
 })
 export class DetailComponent implements OnInit {
   public form: UntypedFormGroup;

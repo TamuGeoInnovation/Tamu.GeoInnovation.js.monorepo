@@ -11,7 +11,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 @Component({
   selector: 'tamu-gisc-class-edit',
   templateUrl: './class-edit.component.html',
-  styleUrls: ['./class-edit.component.scss']
+  styleUrls: ['./class-edit.component.scss'],
+  standalone: false
 })
 export class ClassEditComponent implements OnInit {
   public students$: Observable<Array<Partial<UserClass>>>;

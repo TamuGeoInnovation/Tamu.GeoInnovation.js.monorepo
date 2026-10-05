@@ -6,7 +6,8 @@ import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/ma
 @Component({
   selector: 'tamu-gisc-esri-map',
   templateUrl: './esri-map.component.html',
-  styleUrls: ['./esri-map.component.scss']
+  styleUrls: ['./esri-map.component.scss'],
+  standalone: false
 })
 export class EsriMapComponent implements OnInit, OnDestroy {
   @Input()

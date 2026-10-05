@@ -3,7 +3,8 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-sponsors-tamu',
   templateUrl: './sponsors-tamu.component.html',
-  styleUrls: ['./sponsors-tamu.component.scss']
+  styleUrls: ['./sponsors-tamu.component.scss'],
+  standalone: false
 })
 export class SponsorsTamuComponent implements OnInit {
   public ngOnInit(): void {

@@ -14,7 +14,8 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-basemap-gallery',
   templateUrl: './basemap-gallery.component.html',
-  styleUrls: ['./basemap-gallery.component.scss']
+  styleUrls: ['./basemap-gallery.component.scss'],
+  standalone: false
 })
 export class BasemapGalleryComponent implements OnInit {
   public gallery: Observable<esri.BasemapGalleryViewModel>;

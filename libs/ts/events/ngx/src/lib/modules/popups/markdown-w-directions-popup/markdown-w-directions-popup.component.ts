@@ -12,7 +12,8 @@ import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.co
 @Component({
   selector: 'tamu-gisc-markdown-w-directions-popup',
   templateUrl: './markdown-w-directions-popup.component.html',
-  styleUrls: ['./markdown-w-directions-popup.component.scss']
+  styleUrls: ['./markdown-w-directions-popup.component.scss'],
+  standalone: false
 })
 export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent implements OnInit {
   public title: string;
