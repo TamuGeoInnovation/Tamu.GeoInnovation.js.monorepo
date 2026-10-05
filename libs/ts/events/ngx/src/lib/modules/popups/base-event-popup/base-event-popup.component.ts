@@ -9,12 +9,12 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 
-import { EventSettingsService } from '../../../services/settings/event-settings.service';
+import { EventSettingsQuery } from '../../../services/settings/event-settings-query';
 
 import esri = __esri;
 
 export abstract class BaseEventPopupComponent extends BaseDirectionsComponent {
-  private readonly _eventSettingsService = inject(EventSettingsService);
+  private readonly _eventSettingsService = inject(EventSettingsQuery);
 
   constructor(
     router: Router,

@@ -15,11 +15,12 @@ import {
   SpecialEventOptions
 } from '../../interfaces/special-event.interface';
 import { EventDefinitions } from '../../definitions/all.definitions';
+import { EventSettingsQuery } from './event-settings-query';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EventSettingsService {
+export class EventSettingsService implements EventSettingsQuery {
   private _settingsPrimaryKey: string;
   private _settingsSecondaryKey: string;
 
