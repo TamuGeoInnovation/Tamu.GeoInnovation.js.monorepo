@@ -116,7 +116,10 @@ jobs:
             exit 1
           }
 
-          bundle=$(printf '%s' "$html" | grep -o 'main\.[0-9a-f]*\.js' | head -n 1)
+          # Both builders' naming: webpack wrote main.<lowercase hex>.js, and the esbuild
+          # `application` builder (#1403) writes main-<mixed case hash>.js. Matching only the first
+          # made every run fail here the day esbuild reached dev and production (#1435).
+          bundle=$(printf '%s' "$html" | grep -oE 'main[.-][A-Za-z0-9]+\.js' | head -n 1)
           if [ -z "$bundle" ]; then
             echo "::error::No main bundle referenced by $base/, so the build cannot be checked for the map probe"
             exit 1
@@ -187,19 +190,22 @@ jobs:
         shell: bash
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          existing=$(gh issue list --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
+          # `--repo` explicitly: this step runs on failure, and when the failure happened before
+          # `Checkout repo` there is no repository for gh to infer from. Without it the reporter dies
+          # with "fatal: not a git repository" and hides the real failure entirely (#1435).
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
 
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body "Still failing on ${{ matrix.name }} (\`${{ matrix.base_url }}\`). [Run]($run_url)"
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "Still failing on ${{ matrix.name }} (\`${{ matrix.base_url }}\`). [Run]($run_url)"
           else
             # `gh issue create` fails outright on a label that does not exist, which would break this
             # handler on the very first real failure. Created here so the workflow needs no manual
             # setup; harmless once it exists.
-            gh label create '${{ matrix.label }}' \
+            gh label create --repo "$GITHUB_REPOSITORY" '${{ matrix.label }}' \
               --description 'A scheduled AggieMap smoke run is failing against this environment' \
               --color 'B60205' 2>/dev/null || true
 
-            gh issue create \
+            gh issue create --repo "$GITHUB_REPOSITORY" \
               --title "AggieMap smoke failing on ${{ matrix.name }}" \
               --label '${{ matrix.label }}' \
               --body "The scheduled smoke run is failing against \`${{ matrix.base_url }}\`.
@@ -223,8 +229,8 @@ jobs:
         shell: bash
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          existing=$(gh issue list --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
 
           if [ -n "$existing" ]; then
-            gh issue close "$existing" --comment "Passing again on ${{ matrix.name }}. [Run]($run_url)"
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "Passing again on ${{ matrix.name }}. [Run]($run_url)"
           fi
