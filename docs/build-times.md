@@ -62,6 +62,68 @@ record for the volume work (#1402), because nothing but the destination differed
 | --- | --- | --- | --- | ---: |
 | 5 Oct 2026 | office | `nx serve aggiemap-angular` to first answer on `:4200` | Angular 19, Vite dev server, volume `node_modules` | 5 min 02 s |
 
+## Azure builds
+
+Recorded per stage rather than as one number, because a single total cannot show where the time
+goes or which change moved it. **No Azure DevOps access is needed** - GitHub carries a start and an
+end for every stage:
+
+```
+gh api repos/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/commits/<sha>/check-runs \
+  --jq '.check_runs[] | "\(.name)  \(.started_at)  \(.completed_at)"'
+```
+
+### 5 October 2026, build on `7e1aa0fc` (the release candidate carrying #1413 and #1415)
+
+| Stage | Elapsed |
+| --- | ---: |
+| **Monorepo, the whole build** | **5 min 47 s** |
+| Setup Last SHA | 14 s |
+| Dependencies Cache or Restore | 37 s |
+| Lint Lint Affected | 1 min 23 s |
+| Build development | 3 min 19 s |
+| Build production | 3 min 24 s |
+| Tag Add Build Tags | 48 s |
+| GitHub `Lint / Affected` | 31 s |
+| GitHub `Build / Affected` | 1 min 31 s |
+
+**Do not add the stage times up.** Build development and Build production start one second apart and
+run in parallel, as do the two GitHub checks, so the whole build is well under their sum.
+
+This is the first build recorded with the esbuild `application` builder (#1403). The next one
+recorded here can be compared stage by stage: a change to how the apps are built should move Build
+development and Build production and leave Setup and Dependencies alone.
+
+## Releases
+
+The Azure DevOps release that puts a build on dev or on production. These are **not** visible in
+GitHub's checks - only the build is - so the times have to come from whoever runs the release.
+
+| Date | Release | Build | Elapsed |
+| --- | --- | --- | ---: |
+| 5 Oct 2026 | to dev | 5 October candidate on `7e1aa0fc` | to record |
+| 5 Oct 2026 | to production | the same build | to record |
+
+## Smoke suite runs
+
+The longest-running thing here. A run against a deployed environment loads every map and checks
+every layer, so its duration says as much about the GIS services as about this code.
+
+| Date | Machine | Environment | Result | Elapsed |
+| --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | home | dev, build 20261005.6 | 743 passed, 0 failed, 14 skipped | ~1.3 h |
+| 5 Oct 2026 | home | dev, build 20261004.44 | 743 passed, 0 failed, 14 skipped | ~1.9 h |
+| 5 Oct 2026 | office | dev, release candidate on `7e1aa0fc` | running | to record |
+
+The two home figures are reported to one decimal place because that is how they were recorded at the
+time; they are not precise to the minute. Record the clock times from now on, not a rounded total.
+
+Even allowing for that, the same suite against the same environment differed by something like half
+an hour between those two runs, so treat a single number as weak evidence. Much of what it measures
+is how fast the hosted GIS services answer that morning, not anything in this repository.
+
+Only a run on GitHub opens or closes a health issue. A local run, however it goes, does neither.
+
 ## Where the other records are
 
 This file is for runs as they happen. Two existing records keep their own shape and are not folded
