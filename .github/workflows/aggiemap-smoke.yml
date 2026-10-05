@@ -116,17 +116,50 @@ jobs:
             exit 1
           }
 
-          bundle=$(printf '%s' "$html" | grep -o 'main\.[0-9a-f]*\.js' | head -n 1)
-          if [ -z "$bundle" ]; then
-            echo "::error::No main bundle referenced by $base/, so the build cannot be checked for the map probe"
+          # Every script the page references, not just the main bundle. Webpack kept the probe in
+          # main.<hash>.js; the esbuild `application` builder (#1403) splits it into a chunk, and on
+          # 5 October production carried it in chunk-V7S5FEPB.js while main-D6SZA4LL.js had none of
+          # it. Reading one file made a present probe look absent and skipped the whole suite (#1435).
+          scripts=$(printf '%s' "$html" | grep -oE '(src|href)="[^"]+\.js"' | sed -E 's/^(src|href)="//; s/"$//' | sort -u)
+          if [ -z "$scripts" ]; then
+            echo "::error::No scripts referenced by $base/, so the build cannot be checked for the map probe"
             exit 1
           fi
 
-          if curl -fsSL --max-time 120 "$base/$bundle" | grep -q '__tamuGiscMapProbe'; then
+          found=false
+          for script in $scripts; do
+            case "$script" in
+              http*) url="$script" ;;
+              /*) url="$base$script" ;;
+              *) url="$base/$script" ;;
+            esac
+
+            # Not `curl | grep -q`. Steps run under `set -o pipefail`, and `grep -q` exits the
+            # moment it matches, so curl is left unable to write the rest and exits 23 - which
+            # pipefail turns into a failed pipeline. The probe was found and the check still said
+            # it was absent. Verified against production: the pipeline reports "Failure writing
+            # output to destination", the same fetch without a pipe returns 786,629 bytes
+            # containing the probe (#1435).
+            body=$(curl -fsSL --max-time 120 "$url") || {
+              echo "Could not fetch $script"
+              continue
+            }
+
+            case "$body" in
+              *__tamuGiscMapProbe*)
+                echo "Map probe found in $script"
+                found=true
+                break
+                ;;
+            esac
+          done
+
+          if [ "$found" = true ]; then
             echo "present=true" >> "$GITHUB_OUTPUT"
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
-            message="The build deployed to ${{ matrix.name }} ($bundle) predates the map probe, so the smoke suite cannot check it. Skipped; it runs again once a newer build is deployed."
+            count=$(printf '%s\n' "$scripts" | wc -l | tr -d ' ')
+            message="The build deployed to ${{ matrix.name }} predates the map probe, so the smoke suite cannot check it. Searched $count script(s) referenced by $base/. Skipped; it runs again once a newer build is deployed."
             echo "::warning::$message"
             echo "$message" >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -187,19 +220,22 @@ jobs:
         shell: bash
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          existing=$(gh issue list --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
+          # `--repo` explicitly: this step runs on failure, and when the failure happened before
+          # `Checkout repo` there is no repository for gh to infer from. Without it the reporter dies
+          # with "fatal: not a git repository" and hides the real failure entirely (#1435).
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
 
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body "Still failing on ${{ matrix.name }} (\`${{ matrix.base_url }}\`). [Run]($run_url)"
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "Still failing on ${{ matrix.name }} (\`${{ matrix.base_url }}\`). [Run]($run_url)"
           else
             # `gh issue create` fails outright on a label that does not exist, which would break this
             # handler on the very first real failure. Created here so the workflow needs no manual
             # setup; harmless once it exists.
-            gh label create '${{ matrix.label }}' \
+            gh label create --repo "$GITHUB_REPOSITORY" '${{ matrix.label }}' \
               --description 'A scheduled AggieMap smoke run is failing against this environment' \
               --color 'B60205' 2>/dev/null || true
 
-            gh issue create \
+            gh issue create --repo "$GITHUB_REPOSITORY" \
               --title "AggieMap smoke failing on ${{ matrix.name }}" \
               --label '${{ matrix.label }}' \
               --body "The scheduled smoke run is failing against \`${{ matrix.base_url }}\`.
@@ -223,8 +259,8 @@ jobs:
         shell: bash
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          existing=$(gh issue list --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
 
           if [ -n "$existing" ]; then
-            gh issue close "$existing" --comment "Passing again on ${{ matrix.name }}. [Run]($run_url)"
+            gh issue close "$existing" --repo "$GITHUB_REPOSITORY" --comment "Passing again on ${{ matrix.name }}. [Run]($run_url)"
           fi

@@ -7,6 +7,15 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
 
+/**
+ * Whether a layer gets a legend entry. A layer hidden from the Layers list never does, and a listed
+ * layer can opt out with the Maps SDK's own `legendEnabled: false`, for something worth toggling
+ * that needs no key of its own.
+ */
+export function showsInLegend(layer: esri.Layer): boolean {
+  return layer.listMode !== 'hide' && (layer as esri.FeatureLayer).legendEnabled !== false;
+}
+
 @Injectable()
 export class LegendService {
   private _legendItems: ReplaySubject<Array<esri.ActiveLayerInfo>> = new ReplaySubject(1);
@@ -47,7 +56,7 @@ export class LegendService {
           startWith({ target: model.activeLayerInfos }),
           map((event: IActiveLayerInfosChangeEvent) => {
             return event.target
-              .filter((l) => l.layer.listMode !== 'hide')
+              .filter((l) => showsInLegend(l.layer))
               .filter((l) => !excludedLayerIds.has(l.layer.id))
               .filter((l) => allowedLayerIds.length === 0 || allowedLayerIds.includes(l.layer.id))
               .toArray();

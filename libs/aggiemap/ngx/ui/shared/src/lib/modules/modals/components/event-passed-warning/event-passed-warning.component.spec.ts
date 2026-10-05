@@ -31,4 +31,22 @@ describe('EventPassedWarningComponent', () => {
 
     expect(fixture.nativeElement.querySelector('tamu-gisc-button')).toBeTruthy();
   });
+
+  it('should keep the default follow-up message when none is provided', () => {
+    const fixture = TestBed.createComponent(EventPassedWarningComponent);
+
+    expect(fixture.componentInstance.followupMessage).toBe(
+      'A new map will be released as we get closer to the next upcoming date for this event.'
+    );
+  });
+
+  it('should use a provided follow-up message', () => {
+    TestBed.overrideProvider(MODAL_DATA, {
+      useValue: { followupMessage: 'Tailgate zones are subject to change before next season.' }
+    });
+
+    const fixture = TestBed.createComponent(EventPassedWarningComponent);
+
+    expect(fixture.componentInstance.followupMessage).toBe('Tailgate zones are subject to change before next season.');
+  });
 });

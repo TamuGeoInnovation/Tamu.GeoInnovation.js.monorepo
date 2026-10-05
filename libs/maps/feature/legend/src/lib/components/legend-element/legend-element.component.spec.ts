@@ -70,4 +70,36 @@ describe('LegendElementComponent', () => {
     expect(component.useGroupTitleLabel).toBe(true);
     expect(component.displayGroupTitle).toBe('Baseball Symbols');
   });
+
+  it('lists the classes of a unique value group, as ArcGIS Pro publishes them', async () => {
+    // A unique value renderer published from ArcGIS Pro carries `uniqueValueGroups`, headed by the
+    // field name. The legend view model nests its classes one level down, under that heading.
+    component.groupTitle = 'West Campus Tailgating';
+    component.element = {
+      type: 'symbol-table',
+      infos: [
+        {
+          type: 'symbol-table',
+          title: 'type',
+          infos: [
+            { label: 'Lot E Tailgating', src: 'lot-e', value: 'Lot E Tailgating' },
+            { label: 'Open Access', src: 'open-access', value: 'Open Access' }
+          ]
+        }
+      ]
+    } as unknown as __esri.LegendElement;
+
+    await component.ngOnInit();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const text: string = fixture.nativeElement.textContent;
+
+    expect(text).not.toContain('Unsupported legend element type');
+    expect(text).toContain('Lot E Tailgating');
+    expect(text).toContain('Open Access');
+    // The layer's title belongs to the collection header above; it is not a class of its own.
+    expect(text).not.toContain('West Campus Tailgating');
+  });
 });

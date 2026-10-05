@@ -5,100 +5,42 @@
 
 **On production: the [2 October release](2026-10-02.md)**, tagged `prod-2026-10-02`.
 
-**On dev, being tested: Azure build 20261004.44**, the candidate for production on Monday 5 October. It
-carries Angular 16 to 19, Node 22, NestJS 10, ArcGIS 4.27 and everything else merged since 2 October. It
-passed the full suite, but it is **not on production yet**: the team tests it on dev first. Its release
-notes are in [#1391](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1391), and merge before the deploy. The `prod-*` tag, not this file, will
-record when it ships.
+**On dev, being tested: the [5 October release](2026-10-05.md)**, which takes the maps from Angular 15
+to 19 on Node 22, built with esbuild, and brings NestJS 10 and ArcGIS 4.27. Its notes are written and
+it passed the full suite, but it is **not on production yet**: the team tests it on dev first, and it
+is planned for production on Monday 5 October. The `prod-*` tag, not this file, will record when it
+ships.
 
-If you followed a link here expecting the notes for a release that just shipped, they are in those
-dated files now. Those files are the permanent record of what shipped; this one only ever describes
+**If you followed a link here** expecting the notes for a release that just shipped, they are in those
+dated files now. Everything that was listed here, including the Angular 16 release first written up for
+3 October, is in the [5 October release](2026-10-05.md), which is named for the day it is planned to
+reach production. Those files are the permanent record of what shipped; this one only ever describes
 what has not shipped yet.
 
 ---
 
 ## Summary
 
-Merged since the 3 October release was cut, and on dev in Release-443:
+- **A Football Tailgating map, on dev only** ([#1422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1422), pull request
+  [#1424](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1424)).
+  Listed under **Football** on the Athletics Events page, it shows the Aggie Park and West Campus
+  tailgating zones with their circled numbers, the Revel XP tent numbers on Performance Lawn once zoomed
+  in, and only the construction that affects tailgating (Aplin Center and SUP 1). After the last home
+  game it says the season is over and the zones are subject to change, rather than taking the map
+  down. The zones are a hosted layer in TAMU's ArcGIS Online organization with no production
+  counterpart, so production does not list or open the map. Two legend fixes came with it, and apply
+  to every map: a layer whose symbology was published from ArcGIS Pro no longer prints "Unsupported
+  legend element type", and a layer that can be toggled but has no key of its own stays out of the
+  legend.
 
-- **The two 150th events that have happened are off the main map**
-  ([#1413](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1413), pull request
-  [#1414](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1414)). Opening Ceremony and Kickoff at Kyle were both on
-  2 October and were still offered in the map's **150th Events** list three days later, with parking,
-  shuttle routes and event locations for things that had finished. 150 Cake & Ice Cream is today and
-  stays; it comes out tomorrow, on its own issue.
-
-  ![Before: the 150th Events list offering all three events](../screenshots/1413-past-150th-events/before-production.png)
-
-  ![After: only 150 Cake & Ice Cream remains](../screenshots/1413-past-150th-events/after-local.png)
-
-- Not visible: **NestJS 9 to 10** ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350), pull request [#1363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1363)) for the
-  NestJS APIs: GIS Day, OIDC, Mailroom, VeoRide, Geoservices and UES Operations. AggieMap and the event
-  maps are Angular apps and do not change.
-- Not visible: **the ArcGIS type definitions move to 4.27** ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322), pull request
-  [#1364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1364)), matching the 4.27 runtime. Nothing is meant to look different.
-- **Angular 17** ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)): Angular 16.2 to 17.1, Nx 16.10 to 17.3, TypeScript 5.1 to
-  5.3. Nothing is meant to look or behave differently; anything that does is a bug in this upgrade.
-  On dev in build 20261004.4.
-- **Angular 18** ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)): Angular 17.1 to 18.2, Nx 17.3 to 19.8, TypeScript 5.3 to
-  5.5. Nothing is meant to look or behave differently. Not on dev until the build after it merges.
-- **Angular 19** ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)): Angular 18.2 to 19.2, Nx 19.8 to 20.8, TypeScript 5.5 to
-  5.7. Nothing is meant to look or behave differently. Components are now marked `standalone: false`
-  explicitly, as Angular 19 makes standalone the default. Not on dev until the build after it merges.
-- Not visible: **the Angular apps build with esbuild** ([#1403](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1403)). All 11 move from
-  Angular's webpack builder to its esbuild-based `application` builder, the default since Angular 17,
-  and `nx serve` uses its Vite dev server. A cold production build of AggieMap took 18 seconds instead
-  of 2 minutes 15. The built files land where they always did, in `dist/apps/<app>/`, so the Azure
-  DevOps releases and the image builds need no change. The initial download is 1 to 6% smaller, split
-  into more, smaller files. Nothing is meant to look or behave differently. Two things changed in code
-  to get there, so watch them: the **Copy** buttons, whose library is loaded differently, and the
-  link an **event map's popup** copies, which still carries the builder's choices but reads them
-  another way (the old way left AggieMap blank under esbuild). Not on dev until the build after it
-  merges.
-- **Event maps open on the chosen day or session again** ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)). Since the ArcGIS
-  4.27 runtime ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)), Ring Day, Fish Camp and Move-In opened zoomed out at the
-  default campus view on dev instead of on the location their builder choice frames. Production was never
-  affected: it still runs ArcGIS 4.23. A new smoke check opens each choice and checks where it lands.
-
-  | Before (dev, Ring Day day 1) | After |
+  | Before (and production, unchanged) | After (dev) |
   | --- | --- |
-  | ![Ring Day day 1 zoomed out at the campus view](../screenshots/1379-choice-view-zoom/before-dev-ring-day-day1.png) | ![Ring Day day 1 framed on the ring pickup](../screenshots/1379-choice-view-zoom/after-local-ring-day-day1.png) |
-- **The dining kiosk map shows its dining locations** ([#1392](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1392)). The
-  sidebar-free dining map at [`/kiosk/dining/map`](https://aggiemap.tamu.edu/kiosk/dining/map), meant
-  for embedding elsewhere, opened on the basemap with no dining locations, on dev and production. Like
-  every event map it loads the main map's layers as well as its own, and both define a dining layer.
-  The kiosk's setting that turned dining on reached only the main map's copy, and whichever copy loaded
-  first was drawn: on most loads the kiosk's own, still hidden. Kiosk maps now load none of the main
-  map's layers: the dining kiosk draws the basemap, buildings and dining locations, and nothing else,
-  so parking lots, space numbers and the 150th event layers are gone from it too. Its dining layer is on
-  in its own definition. On production it is reached by direct link only; All Maps lists kiosk maps on
-  dev only, as before. A new smoke check opens it by link on both environments, several times, since
-  the fault came and went between loads, and checks it holds no main-map layers.
+  | ![The Athletics Events list without Football Tailgating](../screenshots/1422-football-tailgating-map/before-athletics-events.png) | ![The Athletics Events list with Football Tailgating under Football](../screenshots/1422-football-tailgating-map/after-athletics-events.png) |
 
-  | Before (production) | After |
-  | --- | --- |
-  | ![The dining kiosk showing the basemap and no dining locations](../screenshots/1392-dining-kiosk/before-production.png) | ![The dining kiosk with its dining locations drawn](../screenshots/1392-dining-kiosk/after-local.png) |
-- **A map's layer settings stay on that map** ([#1397](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1397)). Some event and kiosk maps change
-  how they show a main-map layer: Break/Summer parking turns off the surface lots' popups, and the Ring Days, SEC Grounds and football hide construction.
-  Those settings were kept for the whole browser tab, so going back to the main map without reloading,
-  with the Back button for example, showed it with the other map's settings until the page was
-  reloaded. Each map now keeps its own. A new smoke check opens the main map, moves to such a map,
-  goes Back, and checks the main map is as it was.
+  ![The Football Tailgating map with its zones, zone numbers, construction and legend](../screenshots/1422-football-tailgating-map/after-tailgating-map.png)
 
-  | Before (dev: the main map after Back from the dining kiosk) | After |
-  | --- | --- |
-  | ![The main map with Dining Locations switched on, after visiting the dining kiosk](../screenshots/1397-override-leak/before-dev.png) | ![The main map after the same steps, with Dining Locations off as it opens](../screenshots/1397-override-leak/after-local.png) |
-- **VeoRide retired** ([#1398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1398)). The **VeoRide Bikes** layer is gone from the main
-  map's layer list, and from the event maps and the Ring Day app, which share its definitions. VeoRide
-  was an experiment and is no longer needed. Its three applications, its library and five npm packages
-  used only by them went with it, recorded first in [`docs/applications/veoride.md`](../applications/veoride.md). The
-  **Sustainable Transportation** group, listed next to it, is unchanged. The API at
-  `veoride.geoservices.tamu.edu` keeps running until someone decides to shut it down. With the group
-  turned on, a local build still draws its bike lanes, racks and stations ([capture](../screenshots/1398-retire-veoride/after-sustainable-transportation-on-local.png)).
+  ![Tent numbers on Performance Lawn, zoomed in](../screenshots/1422-football-tailgating-map/after-tent-numbers.png)
 
-  | Before (dev) | After |
-  | --- | --- |
-  | ![The layer list with VeoRide Bikes listed below Sustainable Transportation](../screenshots/1398-retire-veoride/before-layer-list-dev.png) | ![The layer list without VeoRide Bikes](../screenshots/1398-retire-veoride/after-layer-list-local.png) |
 
 ---
 
@@ -109,31 +51,13 @@ Merged since the 3 October release was cut, and on dev in Release-443:
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** Azure build **20261004.44** (`f23a992a`, the Angular 19 merge), tagged
-`dev-2026-10-05`, deployed late on 4 October. It passed the full suite on 5 October: 743 passed, 0 failed,
-14 skipped, in 1.9 hours. Every row below is in it.
+**Currently on dev for testing:** the [5 October release](2026-10-05.md), from
+[`cc809f63`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/commit/cc809f63),
+tagged `dev-2026-10-04-3`, which passed the full suite on 4 October: 328 passed, 0 failed, 7 skipped.
+What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| Alerts show one at a time ([#1327](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1327)) | [The main map](https://dev.aggiemap.tamu.edu/map) | the alerts in **one** card with a stepper, the most important first; stepping through them, and dismissing one, works |
-| All Maps fits a phone ([#1335](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1335)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) and [Campus Maps](https://dev.aggiemap.tamu.edu/all-maps/campus) on a phone | nothing cut off at the right edge, no sideways scroll, each campus card's **Copy** button reachable |
-| Angular 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | Any map you use: the [main map](https://dev.aggiemap.tamu.edu/map), an [event map](https://dev.aggiemap.tamu.edu/events/150th-kickoff), [parking](https://dev.aggiemap.tamu.edu/all-maps/parking), a [campus map](https://dev.aggiemap.tamu.edu/campus/galveston) | **nothing different**: maps draw, search works, popups open, the side panel opens and closes. Anything that looks or behaves differently is a bug in this upgrade |
-| ArcGIS 4.27 ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)) | The same maps | layers, labels and basemaps draw as before; route arrows on event maps still point the right way |
-| Closing the "Report a bad route" form ([#1348](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1348)) | Directions on a phone, then **Report a bad route**, then close | it returns to the directions you came from. Directions are hidden on production, so this is a dev-only check for now |
-| NestJS 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | Nothing on AggieMap | nothing to test on dev.aggiemap: the NestJS APIs deploy separately, so check them where each one runs |
-| ArcGIS types 4.27 ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322)) | [An event map with routes](https://dev.aggiemap.tamu.edu/events/150th-kickoff), and clicking features on the [main map](https://dev.aggiemap.tamu.edu/map) | route arrows still drawn and pointing the right way; clicking a building or lot still opens its popup |
-| Angular 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | Any map you use: the [main map](https://dev.aggiemap.tamu.edu/map), an [event map](https://dev.aggiemap.tamu.edu/events/150th-kickoff), [parking](https://dev.aggiemap.tamu.edu/all-maps/parking), a [campus map](https://dev.aggiemap.tamu.edu/campus/galveston), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | **nothing different**, as for Angular 16: maps draw, search works, popups open, the side panel opens and closes, alerts step through |
-| Angular 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), and anything that loads data: search, popups, the side panel | **nothing different**. Every app's HTTP setup changed form in this upgrade, so anything that fails to load data is the first thing to report |
-| Angular 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the [dining kiosk](https://dev.aggiemap.tamu.edu/kiosk/dining/map), and anything with a popup, the side panel or a builder | **nothing different**. Every component changed form in this upgrade, so a page or panel that fails to appear is the first thing to report |
-| Built with esbuild ([#1403](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1403)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), a **Copy** button on All Maps or in a building's popup, and a popup's **Copy** link on [Ring Day, day 1](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1) | **nothing different**: every page loads, maps draw, styles look as before. **Copy** still copies and shows its confirmation, and the Ring Day popup's link, opened in a new tab, opens day 1 on that feature, not the builder. A Copy button that does nothing is the first thing to report |
-| Event maps open on the chosen day or session ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) | [Ring Day, day 1](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1), [Ring Day, day 2](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day2), [Fish Camp, sessions B, C, E and F](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=sessions-a-f), [Fish Camp, sessions A, D and G](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=session-g) | each opens **close in** on its own location (day 1 on the ring pickup by the Williams Alumni Center, day 2 on Aggie Park), not zoomed out over campus. Compare with [production](https://aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1) |
-| The dining kiosk shows its dining locations ([#1392](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1392)) | [The dining kiosk on dev](https://dev.aggiemap.tamu.edu/kiosk/dining/map); after release, [on production](https://aggiemap.tamu.edu/kiosk/dining/map) by direct link | the dining locations drawn as markers across campus, no sidebar, and nothing else over the basemap: no parking lot shading, space numbers or 150th event layers. Reload a few times: before the fix the dining appeared on some loads only. All Maps still lists it on dev only, by design |
-| A map's layer settings stay on that map ([#1397](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1397)) | [The main map](https://dev.aggiemap.tamu.edu/map), then **All Maps** and the [dining kiosk](https://dev.aggiemap.tamu.edu/kiosk/dining/map) or [Break / Summer parking](https://dev.aggiemap.tamu.edu/parking/break-summer), then the browser's **Back** button | back on the main map, **Dining Locations** is off in the layer list as it is when the main map opens, and clicking a surface lot still opens its popup. Before the fix, the main map kept the other map's settings until a reload |
-| VeoRide retired ([#1398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1398)) | [The main map](https://dev.aggiemap.tamu.edu/map), **Layers** | no **VeoRide Bikes** in the list; **Sustainable Transportation** still turns on and draws its bike lanes, dismount zones, fix stations, racks and EV charging stations |
-
-**Not testable on dev in this release:** GIS Day's native date and time pickers
-([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by this build, so they reach users when GIS
-Day next deploys.
 
 ---
 
@@ -155,8 +79,8 @@ file would say the work had stopped.
 | 6 | Angular 16 to 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | done: [#1370](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1370) |
 | 7 | Angular 17 to 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | done: [#1377](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1377) |
 | 8 | Node 20.18 to 22.23.3 ([#1376](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1376)) | done: [#1401](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1401) |
-| 9 | Angular 18 to 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) | done: [#1406](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1406). Steps 3 to 9 are all in build 20261004.44, on dev for Monday's release |
-| 9b | esbuild-based `application` builder ([#1403](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1403)) | ready: [#1408](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1408), to merge **after** Monday's production deploy, so production ships exactly what was tested |
+| 9 | Angular 18 to 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) | done: [#1406](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1406). Steps 2 to 9b are all in the 5 October release |
+| 9b | esbuild-based `application` builder ([#1403](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1403)) | done: [#1408](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1408), in the 5 October release |
 | 10 | Angular 19 to 22, one major per pull request | next. Forecast about 2 to 3 hours each in the new check setup ([`docs/upgrades/angular.md`](../upgrades/angular.md)) |
 | 11 | `esri-loader` to `@arcgis/core`, 134 files | last |
 | — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app goes after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) |
