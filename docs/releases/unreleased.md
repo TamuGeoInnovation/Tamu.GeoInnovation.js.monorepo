@@ -21,6 +21,17 @@ what has not shipped yet.
 
 Merged since the 3 October release was cut, and on dev in Release-443:
 
+- **The two 150th events that have happened are off the main map**
+  ([#1413](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1413), pull request
+  [#1414](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1414)). Opening Ceremony and Kickoff at Kyle were both on
+  2 October and were still offered in the map's **150th Events** list three days later, with parking,
+  shuttle routes and event locations for things that had finished. 150 Cake & Ice Cream is today and
+  stays; it comes out tomorrow, on its own issue.
+
+  ![Before: the 150th Events list offering all three events](../screenshots/1413-past-150th-events/before-production.png)
+
+  ![After: only 150 Cake & Ice Cream remains](../screenshots/1413-past-150th-events/after-local.png)
+
 - Not visible: **NestJS 9 to 10** ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350), pull request [#1363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1363)) for the
   NestJS APIs: GIS Day, OIDC, Mailroom, VeoRide, Geoservices and UES Operations. AggieMap and the event
   maps are Angular apps and do not change.
