@@ -93,9 +93,12 @@ src="$(cd "$main" && pwd -W)"
 
 echo "Checking $branch ($mode) in volume $volume; log: $log"
 set +e
+# Every `docker run` is a new machine as far as Nx can tell, so it would refuse the cache the previous
+# check left in the volume ("was not generated on this machine") and fail the run. Only this script's
+# containers ever write that cache, so it is trusted.
 docker run --rm -m 16g \
   -v "$volume:/w" -v "$src:/src:ro" -w /w \
-  -e CYPRESS_INSTALL_BINARY=0 -e NX_DAEMON=false \
+  -e CYPRESS_INSTALL_BINARY=0 -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 \
   node:22.23.3 sh -c "$inner" check "$branch" "$mode" >"$log" 2>&1
 code=$?
 set -e
