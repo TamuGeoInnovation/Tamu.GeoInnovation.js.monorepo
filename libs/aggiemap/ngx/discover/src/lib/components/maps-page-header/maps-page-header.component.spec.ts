@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { MapsPageHeaderComponent } from './maps-page-header.component';
 
-@Component({ selector: 'tamu-gisc-test-page', template: 'page' })
+@Component({ selector: 'tamu-gisc-test-page', template: 'page', standalone: false })
 class TestPageComponent {}
 
 /**
@@ -69,6 +69,5 @@ describe('MapsPageHeaderComponent', () => {
     // Nothing on this header reads LastMapService any more; if that changes, the destinations above
     // stop being fixed and this test is the one that should be revisited.
     expect(fixture.nativeElement.querySelectorAll('.breadcrumbs p a').length).toBe(3);
-  });,
-  standalone: false
+  });
 });
