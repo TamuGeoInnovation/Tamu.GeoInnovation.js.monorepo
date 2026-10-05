@@ -23,6 +23,7 @@ import { TroubadourTs } from './troubadour-festival.definitions';
 import { KickoffAtKyleTs } from './kickoff-at-kyle.definitions';
 import { LiveAtTheStationTs } from './live-at-the-station.definitions';
 import { FootballParkingEvent } from './football-parking.definitions';
+import { TailgatingTs } from './tailgating.definitions';
 import { NovemberRingDayEvent } from './november-ring-day.definitions';
 import { RingDayEvent } from './october-ring-day.definitions';
 import { AprilRingDayEvent } from './april-ring-day.definitions';
@@ -71,6 +72,22 @@ import { Kickoff150thTs } from './150th-kickoff.definitions';
 import { GalvestonTs } from './campus/galveston.definitions';
 import { McAllenTs } from './campus/mcallen.definitions';
 import { DCBushSchoolTs } from './campus/dc-bush-school.definitions';
+
+/**
+ * Uses the same rule as the application `TestingService`: a host containing `dev`, or localhost.
+ */
+function isDevelopmentHost(): boolean {
+  const host = globalThis.location?.host ?? '';
+
+  return host.includes('dev') || host.includes('localhost');
+}
+
+/**
+ * Maps that exist on development hosts only. Production leaves them out of the registry entirely,
+ * so their links do not resolve and they never appear in search or the map listings. Use this for
+ * prototypes; `discover.visible: false` only keeps a map off production's lists.
+ */
+const DevelopmentOnlyEventDefinitions: Array<AggiemapCustomMapConfiguration> = [TailgatingTs];
 
 export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   FourHRoundupTs,
@@ -144,5 +161,6 @@ export const EventDefinitions: Array<AggiemapCustomMapConfiguration> = [
   DCBushSchoolTs,
   DiningKioskTs,
   KickoffAtKyleTs,
-  LiveAtTheStationTs
+  LiveAtTheStationTs,
+  ...(isDevelopmentHost() ? DevelopmentOnlyEventDefinitions : [])
 ];

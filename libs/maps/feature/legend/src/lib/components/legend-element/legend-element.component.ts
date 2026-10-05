@@ -104,6 +104,24 @@ export class LegendElementComponent implements OnInit {
     return this.groupTitle;
   }
 
+  /**
+   * Whether a nested symbol table holds more symbol tables, rather than the classes themselves.
+   *
+   * A unique value renderer published from ArcGIS Pro carries `uniqueValueGroups` headed by the field
+   * name, so its classes arrive one level down, as plain legend infos. Those are rendered as one
+   * element; only nested tables are recursed into one by one.
+   */
+  public holdsNestedTables(info: unknown): boolean {
+    const infos = (info as { infos?: Array<{ type?: string }> })?.infos ?? [];
+
+    return infos.some((child) => child?.type === 'symbol-table');
+  }
+
+  /** A nested symbol table whose entries are the classes themselves (see `holdsNestedTables`). */
+  public isGroupOfClasses(info: unknown): boolean {
+    return (info as { type?: string })?.type === 'symbol-table' && !this.holdsNestedTables(info);
+  }
+
   public toggleExpanded(): void {
     if (this.showGroupHeader) {
       this.expanded = !this.expanded;

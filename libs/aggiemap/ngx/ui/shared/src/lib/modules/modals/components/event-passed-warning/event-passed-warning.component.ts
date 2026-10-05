@@ -4,6 +4,7 @@ import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal
 export interface EventPassedData {
   title?: string;
   message?: string;
+  followupMessage?: string;
   acknowledgeText?: string;
 }
 
@@ -23,7 +24,8 @@ export class EventPassedWarningComponent {
     this.title = data?.title || 'This event has passed';
     this.message =
       data?.message || 'The information on this map may be outdated and should be used for informational purposes only.';
-    this.followupMessage = 'A new map will be released as we get closer to the next upcoming date for this event.';
+    this.followupMessage =
+      data?.followupMessage || 'A new map will be released as we get closer to the next upcoming date for this event.';
     this.acknowledgeText = data?.acknowledgeText || 'OK';
   }
 

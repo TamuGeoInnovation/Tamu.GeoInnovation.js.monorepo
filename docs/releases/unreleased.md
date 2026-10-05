@@ -21,10 +21,26 @@ what has not shipped yet.
 
 ## Summary
 
-Nothing has merged since the 5 October release was cut.
+- **A Football Tailgating map, on dev only** ([#1422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1422), pull request
+  [#1424](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1424)).
+  Listed under **Football** on the Athletics Events page, it shows the Aggie Park and West Campus
+  tailgating zones with their circled numbers, the Revel XP tent numbers on Performance Lawn once zoomed
+  in, and only the construction that affects tailgating (Aplin Center and SUP 1). After the last home
+  game it says the season is over and the zones are subject to change, rather than taking the map
+  down. The zones are a hosted layer in TAMU's ArcGIS Online organization with no production
+  counterpart, so production does not list or open the map. Two legend fixes came with it, and apply
+  to every map: a layer whose symbology was published from ArcGIS Pro no longer prints "Unsupported
+  legend element type", and a layer that can be toggled but has no key of its own stays out of the
+  legend.
 
-<!-- Node 22 ([#1376](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1376)) and Angular 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) are in progress. If either merges before the
-5 October deploy, it goes into 2026-10-05.md (see the comment under that file's Summary), not here. -->
+  | Before (and production, unchanged) | After (dev) |
+  | --- | --- |
+  | ![The Athletics Events list without Football Tailgating](../screenshots/1422-football-tailgating-map/before-athletics-events.png) | ![The Athletics Events list with Football Tailgating under Football](../screenshots/1422-football-tailgating-map/after-athletics-events.png) |
+
+  ![The Football Tailgating map with its zones, zone numbers, construction and legend](../screenshots/1422-football-tailgating-map/after-tailgating-map.png)
+
+  ![Tent numbers on Performance Lawn, zoomed in](../screenshots/1422-football-tailgating-map/after-tent-numbers.png)
+
 
 ---
 

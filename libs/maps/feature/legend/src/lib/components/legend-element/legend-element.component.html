@@ -33,15 +33,30 @@ of the table -->
           <div [ngSwitch]="$any(info).type">
             <!-- Support for infos with nested infos. This case will continue to recursively iterate through n-nested infos until reaching the last node. -->
             <div *ngSwitchCase="'symbol-table'">
-              <tamu-gisc-legend-element
-                *ngFor="let subInfo of $any(info).infos"
-                [element]="subInfo"
-                [layer]="layer"
-                [groupTitle]="$any(info).title"
-                [deduplicateChildren]="deduplicateChildren"
-                [respectDefinitionExpression]="respectDefinitionExpression"
-                [hideGroupHeader]="hideGroupHeader"
-              ></tamu-gisc-legend-element>
+              <ng-container *ngIf="holdsNestedTables(info); else groupOfClasses">
+                <tamu-gisc-legend-element
+                  *ngFor="let subInfo of $any(info).infos"
+                  [element]="subInfo"
+                  [layer]="layer"
+                  [groupTitle]="$any(info).title"
+                  [deduplicateChildren]="deduplicateChildren"
+                  [respectDefinitionExpression]="respectDefinitionExpression"
+                  [hideGroupHeader]="hideGroupHeader"
+                ></tamu-gisc-legend-element>
+              </ng-container>
+
+              <!-- A unique value group's classes, listed under the layer's own title. The group heading is
+              the renderer's field name, which means nothing to a visitor, so it is not shown. -->
+              <ng-template #groupOfClasses>
+                <tamu-gisc-legend-element
+                  [element]="info"
+                  [layer]="layer"
+                  [groupTitle]="groupTitle"
+                  [deduplicateChildren]="deduplicateChildren"
+                  [respectDefinitionExpression]="respectDefinitionExpression"
+                  [hideGroupHeader]="true"
+                ></tamu-gisc-legend-element>
+              </ng-template>
             </div>
 
             <!-- This case will be reached of every info node and will terminate either with an info.preview or info.src -->
@@ -63,11 +78,14 @@ of the table -->
             </div>
           </div>
 
-          <!-- Apply the legend item from the parent group or child -->
-          <div *ngIf="useGroupTitleLabel; else legendInfoLabel" class="group-title">{{ displayGroupTitle }}</div>
-          <ng-template #legendInfoLabel>
-            <div class="label">{{ info?.label }}</div>
-          </ng-template>
+          <!-- Apply the legend item from the parent group or child. A group of classes labels each class
+          itself, so it gets no label of its own. -->
+          <ng-container *ngIf="!isGroupOfClasses(info)">
+            <div *ngIf="useGroupTitleLabel; else legendInfoLabel" class="group-title">{{ displayGroupTitle }}</div>
+            <ng-template #legendInfoLabel>
+              <div class="label">{{ info?.label }}</div>
+            </ng-template>
+          </ng-container>
         </div>
       </div>
 
