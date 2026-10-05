@@ -61,6 +61,27 @@ what the bus layer drew from the map probe's `graphicTypes`. Routes known to fai
 environment under `allowedBusRouteFailures`, tied to their issue. Where bus routes are not offered yet,
 or the deployed build's probe predates `graphicTypes`, it skips.
 
+`framing.spec.ts` checks every map opens where it opens on production: the same zoom (within 0.05) and
+center (within 0.0001 degrees, about ten metres) as recorded in
+[`framing-baseline.json`](framing-baseline.json), at the suite's viewport (#1380). It covers every
+listed map plus every builder destination in `tools/builder-inventory`, by its direct link, so a map
+framed per builder choice (Ring Day days, Fish Camp sessions, Move-In halls) is checked per choice.
+It exists because of #1379: after the ArcGIS 4.27 upgrade those choice-framed maps opened at the
+default campus zoom on dev while every layer loaded and drew, so nothing else here noticed. A route
+in only one of the baseline and the environment is reported in the output and annotations, not
+failed. Framing is read from the map probe's `framing`, or on builds whose probe predates it, from
+Esri's own list of views.
+
+**The baseline must come from production**, the known-good reference; captured from dev it would
+record the build under test. Refresh it after a deliberate framing change reaches production, and
+review the diff (one line per route):
+
+```bash
+UPDATE_FRAMING_BASELINE=1 test/smoke/aggiemap/run-local.sh production framing.spec --workers=4
+```
+
+Update mode refuses any environment but production. A full capture is about 430 map loads.
+
 ## Running it
 
 **From a workstation, use the script.** It runs the suite in the Playwright container with the same
@@ -131,6 +152,7 @@ and a local run skips them while still passing (#1114).
 | `AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES` | none | layer titles whose failure is expected here; still reported in annotations |
 | `AGGIEMAP_SMOKE_MIN_MAPS` | `55` | floor below which discovery is treated as broken |
 | `AGGIEMAP_SMOKE_ANALYTICS` | `block` | `allow` lets analytics requests through for a deliberate run |
+| `UPDATE_FRAMING_BASELINE` | unset | `1` makes `framing.spec.ts` record `framing-baseline.json` instead of comparing; production only |
 
 ## Analytics is blocked by default
 

@@ -1,4 +1,9 @@
+import { loadModules } from 'esri-loader';
+
 import { MAP_PROBE_GLOBAL, registerMapProbe } from './map-probe';
+
+// Esri's projection engine, which the probe loads only for a view in a projected reference.
+jest.mock('esri-loader', () => ({ loadModules: jest.fn() }));
 
 /**
  * The smoke suite cannot import this module -- doing so pulls the Angular dependency graph into the
@@ -258,6 +263,46 @@ describe('map probe', () => {
       registerMapProbe(undefined, owner);
 
       expect(probe.framing).toBeNull();
+    });
+
+    it('projects a center in a projected reference to WGS 84, and is not ready until it can (#1380)', async () => {
+      // Dev's main map is in Texas Centric (wkid 32139), where Esri leaves longitude and latitude null.
+      const center = { x: 1082345.89, y: 3111767.64, longitude: null, latitude: null };
+      const project = jest.fn(() => ({ x: -96.34467, y: 30.61306 }));
+
+      (loadModules as jest.Mock).mockResolvedValue([{ load: () => Promise.resolve(), project }]);
+
+      const nowSpy = jest.spyOn(Date, 'now');
+
+      try {
+        nowSpy.mockReturnValue(10_000);
+        registerMapProbe(
+          {
+            map: { allLayers: { toArray: () => [{ id: 'l0', title: 'L0', type: 'feature', visible: true, loaded: true }] } },
+            view: { ready: true, zoom: 16, center }
+          } as unknown as Parameters<typeof registerMapProbe>[0],
+          owner
+        );
+
+        const probe = (window as unknown as Record<string, { framing: unknown; ready: boolean }>)[MAP_PROBE_GLOBAL];
+
+        expect(probe.framing).toBeNull();
+
+        // Layers settled, but the engine is still loading, so not ready yet.
+        expect(probe.ready).toBe(false);
+        nowSpy.mockReturnValue(12_000);
+        expect(probe.ready).toBe(false);
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(probe.framing).toEqual({ zoom: 16, center: [-96.34467, 30.61306] });
+        expect(project).toHaveBeenCalledWith(center, { wkid: 4326 });
+        expect(probe.ready).toBe(true);
+        expect(loadModules).toHaveBeenCalledTimes(1);
+      } finally {
+        nowSpy.mockRestore();
+        registerMapProbe(undefined, owner);
+      }
     });
   });
 });
