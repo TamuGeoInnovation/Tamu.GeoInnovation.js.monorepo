@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { BasePopupComponent } from '../base/base.popup.component';
 
 @Component({
-  selector: 'tamu-gisc-markdown-popup',
-  templateUrl: './markdown-popup.component.html',
-  styleUrls: ['./markdown-popup.component.scss']
+    selector: 'tamu-gisc-markdown-popup',
+    templateUrl: './markdown-popup.component.html',
+    styleUrls: ['./markdown-popup.component.scss'],
+    standalone: false
 })
 export class MarkdownPopupComponent extends BasePopupComponent implements OnInit {
   public title: string;

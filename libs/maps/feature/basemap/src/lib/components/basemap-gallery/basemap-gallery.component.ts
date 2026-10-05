@@ -12,9 +12,10 @@ import { BasemapGalleryService } from '../../services/basemap-gallery/basemap-ga
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-basemap-gallery',
-  templateUrl: './basemap-gallery.component.html',
-  styleUrls: ['./basemap-gallery.component.scss']
+    selector: 'tamu-gisc-basemap-gallery',
+    templateUrl: './basemap-gallery.component.html',
+    styleUrls: ['./basemap-gallery.component.scss'],
+    standalone: false
 })
 export class BasemapGalleryComponent implements OnInit {
   public gallery: Observable<esri.BasemapGalleryViewModel>;

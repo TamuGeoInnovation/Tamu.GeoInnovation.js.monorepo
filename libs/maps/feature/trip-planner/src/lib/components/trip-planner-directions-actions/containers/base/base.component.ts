@@ -9,10 +9,11 @@ import { v4 as guid } from 'uuid';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-directions-actions',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tamu-gisc-trip-planner-directions-actions',
+    templateUrl: './base.component.html',
+    styleUrls: ['./base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy {
   /**

@@ -23,9 +23,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
-  selector: 'tamu-gisc-event-detail',
-  templateUrl: './event-detail.component.html',
-  styleUrls: ['./event-detail.component.scss']
+    selector: 'tamu-gisc-event-detail',
+    templateUrl: './event-detail.component.html',
+    styleUrls: ['./event-detail.component.scss'],
+    standalone: false
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   public appRoles = GISDayRoles;

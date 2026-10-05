@@ -9,9 +9,10 @@ import { LayerListService } from '../../services/layer-list.service';
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-layer-list',
-  templateUrl: './layer-list.component.html',
-  styleUrls: ['./layer-list.component.scss']
+    selector: 'tamu-gisc-layer-list',
+    templateUrl: './layer-list.component.html',
+    styleUrls: ['./layer-list.component.scss'],
+    standalone: false
 })
 export class LayerListComponent implements OnInit {
   @Input() public allowedLayerIds: string[] = [];

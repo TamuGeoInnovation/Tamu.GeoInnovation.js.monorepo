@@ -8,8 +8,9 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
  * `RetiredEventGuard` sends a retired event's links here.
  */
 @Component({
-  selector: 'tamu-gisc-event-ended',
-  templateUrl: './ended.component.html'
+    selector: 'tamu-gisc-event-ended',
+    templateUrl: './ended.component.html',
+    standalone: false
 })
 export class EndedComponent {
   public readonly name: string;

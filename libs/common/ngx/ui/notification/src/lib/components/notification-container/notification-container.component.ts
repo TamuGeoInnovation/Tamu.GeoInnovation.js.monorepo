@@ -8,9 +8,10 @@ import { NotificationService } from '../../services/notification.service';
 import { Notification } from '../../helpers/notification.helper';
 
 @Component({
-  selector: 'tamu-gisc-notification-container',
-  templateUrl: './notification-container.component.html',
-  styleUrls: ['./notification-container.component.scss']
+    selector: 'tamu-gisc-notification-container',
+    templateUrl: './notification-container.component.html',
+    styleUrls: ['./notification-container.component.scss'],
+    standalone: false
 })
 export class NotificationContainerComponent implements OnInit {
   @Input()

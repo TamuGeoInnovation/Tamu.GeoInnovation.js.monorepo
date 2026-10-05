@@ -3,9 +3,10 @@ import { Component, Input } from '@angular/core';
 import { ITransactionData } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
-  selector: 'tamu-gisc-status-result-table',
-  templateUrl: './status-result-table.component.html',
-  styleUrls: ['./status-result-table.component.scss']
+    selector: 'tamu-gisc-status-result-table',
+    templateUrl: './status-result-table.component.html',
+    styleUrls: ['./status-result-table.component.scss'],
+    standalone: false
 })
 export class StatusResultTableComponent {
   @Input()

@@ -18,9 +18,10 @@ import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
 @Component({
-  selector: 'tamu-gisc-event-view',
-  templateUrl: './event-view.component.html',
-  styleUrls: ['./event-view.component.scss']
+    selector: 'tamu-gisc-event-view',
+    templateUrl: './event-view.component.html',
+    styleUrls: ['./event-view.component.scss'],
+    standalone: false
 })
 export class EventViewComponent implements OnInit, OnDestroy {
   public activeSeason$: Observable<ActiveSeasonDto>;

@@ -12,9 +12,10 @@ import { formToFormData } from '../../../../../utils/form-to-form-data';
 import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-options.enum';
 
 @Component({
-  selector: 'tamu-gisc-place-location-add-edit-form',
-  templateUrl: './place-location-add-edit-form.component.html',
-  styleUrls: ['./place-location-add-edit-form.component.scss']
+    selector: 'tamu-gisc-place-location-add-edit-form',
+    templateUrl: './place-location-add-edit-form.component.html',
+    styleUrls: ['./place-location-add-edit-form.component.scss'],
+    standalone: false
 })
 export class PlaceLocationAddEditFormComponent implements OnInit {
   @Input()

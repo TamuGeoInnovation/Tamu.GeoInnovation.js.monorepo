@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'tamu-gisc-design-question',
-  templateUrl: './design-question.component.html',
-  styleUrls: ['./design-question.component.scss']
+    selector: 'tamu-gisc-design-question',
+    templateUrl: './design-question.component.html',
+    styleUrls: ['./design-question.component.scss'],
+    standalone: false
 })
 export class DesignQuestionComponent {
   /**

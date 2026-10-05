@@ -10,9 +10,10 @@ import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
 
 @Component({
-  selector: 'tamu-gisc-bus-route',
-  templateUrl: './bus-route.component.html',
-  styleUrls: ['./bus-route.component.scss']
+    selector: 'tamu-gisc-bus-route',
+    templateUrl: './bus-route.component.html',
+    styleUrls: ['./bus-route.component.scss'],
+    standalone: false
 })
 export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {
   /**

@@ -5,9 +5,10 @@ import { Observable } from 'rxjs';
 import { AccountSecurityService, ISecretQuestion } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
-  selector: 'tamu-gisc-security',
-  templateUrl: './security.component.html',
-  styleUrls: ['./security.component.scss']
+    selector: 'tamu-gisc-security',
+    templateUrl: './security.component.html',
+    styleUrls: ['./security.component.scss'],
+    standalone: false
 })
 export class SecurityComponent implements OnInit {
   public questions: Observable<Array<ISecretQuestion>>;

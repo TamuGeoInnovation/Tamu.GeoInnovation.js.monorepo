@@ -6,9 +6,10 @@ import { debounceTime, skip, takeUntil } from 'rxjs/operators';
 import { IParticipant } from '@tamu-gisc/cpa/common/entities';
 
 @Component({
-  selector: 'tamu-gisc-participant-list-item',
-  templateUrl: './participant-list-item.component.html',
-  styleUrls: ['./participant-list-item.component.scss']
+    selector: 'tamu-gisc-participant-list-item',
+    templateUrl: './participant-list-item.component.html',
+    styleUrls: ['./participant-list-item.component.scss'],
+    standalone: false
 })
 export class ParticipantListItemComponent implements OnInit, OnDestroy {
   @Input()

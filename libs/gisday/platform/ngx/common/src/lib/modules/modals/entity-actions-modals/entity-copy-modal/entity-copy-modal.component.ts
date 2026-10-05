@@ -6,9 +6,10 @@ import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
-  selector: 'tamu-gisc-entity-copy-modal',
-  templateUrl: './entity-copy-modal.component.html',
-  styleUrls: ['./entity-copy-modal.component.scss']
+    selector: 'tamu-gisc-entity-copy-modal',
+    templateUrl: './entity-copy-modal.component.html',
+    styleUrls: ['./entity-copy-modal.component.scss'],
+    standalone: false
 })
 export class EntityCopyModalComponent implements OnInit {
   public season$: Observable<Partial<Season>>;

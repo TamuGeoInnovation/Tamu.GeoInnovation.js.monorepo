@@ -3,9 +3,10 @@ import { Component } from '@angular/core';
 import { AuthService } from '@tamu-gisc/gisday/competitions/ngx/common';
 
 @Component({
-  selector: 'tamu-gisc-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'tamu-gisc-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent {
   public loginContext: Window;

@@ -9,9 +9,10 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-directions',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss']
+    selector: 'tamu-gisc-trip-planner-directions',
+    templateUrl: './base.component.html',
+    styleUrls: ['./base.component.scss'],
+    standalone: false
 })
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
   public result: TripResult;

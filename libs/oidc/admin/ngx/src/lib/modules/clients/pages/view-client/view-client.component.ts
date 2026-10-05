@@ -6,9 +6,10 @@ import { ClientService } from '@tamu-gisc/oidc/admin/data-access';
 import { IClientData } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'tamu-gisc-view-client',
-  templateUrl: './view-client.component.html',
-  styleUrls: ['./view-client.component.scss']
+    selector: 'tamu-gisc-view-client',
+    templateUrl: './view-client.component.html',
+    styleUrls: ['./view-client.component.scss'],
+    standalone: false
 })
 export class ViewClientComponent implements OnInit {
   public $clients: Observable<Array<Partial<IClientData>>>;

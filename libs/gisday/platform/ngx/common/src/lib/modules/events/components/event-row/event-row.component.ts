@@ -5,9 +5,10 @@ import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
-  selector: 'tamu-gisc-event-row',
-  templateUrl: './event-row.component.html',
-  styleUrls: ['./event-row.component.scss']
+    selector: 'tamu-gisc-event-row',
+    templateUrl: './event-row.component.html',
+    styleUrls: ['./event-row.component.scss'],
+    standalone: false
 })
 export class EventRowComponent implements OnChanges, OnInit {
   @Input()

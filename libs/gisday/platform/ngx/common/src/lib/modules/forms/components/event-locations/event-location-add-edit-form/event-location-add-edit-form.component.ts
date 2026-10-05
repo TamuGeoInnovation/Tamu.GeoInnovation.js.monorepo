@@ -8,9 +8,10 @@ import { LocationService, PlaceService, SeasonService } from '@tamu-gisc/gisday/
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-  selector: 'tamu-gisc-event-location-add-edit-form',
-  templateUrl: './event-location-add-edit-form.component.html',
-  styleUrls: ['./event-location-add-edit-form.component.scss']
+    selector: 'tamu-gisc-event-location-add-edit-form',
+    templateUrl: './event-location-add-edit-form.component.html',
+    styleUrls: ['./event-location-add-edit-form.component.scss'],
+    standalone: false
 })
 export class EventLocationAddEditFormComponent implements OnInit {
   @Input()

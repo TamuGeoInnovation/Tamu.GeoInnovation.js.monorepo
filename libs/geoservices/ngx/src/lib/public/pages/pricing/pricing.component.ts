@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-  selector: 'tamu-gisc-pricing',
-  templateUrl: './pricing.component.html',
-  styleUrls: ['./pricing.component.scss']
+    selector: 'tamu-gisc-pricing',
+    templateUrl: './pricing.component.html',
+    styleUrls: ['./pricing.component.scss'],
+    standalone: false
 })
 export class PricingComponent implements OnInit {
   public url: string;

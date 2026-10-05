@@ -14,9 +14,10 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
 @Component({
-  selector: 'tamu-gisc-bonfire',
-  templateUrl: './bonfire.component.html',
-  styleUrls: ['./bonfire.component.scss']
+    selector: 'tamu-gisc-bonfire',
+    templateUrl: './bonfire.component.html',
+    styleUrls: ['./bonfire.component.scss'],
+    standalone: false
 })
 export class BonfirePopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);

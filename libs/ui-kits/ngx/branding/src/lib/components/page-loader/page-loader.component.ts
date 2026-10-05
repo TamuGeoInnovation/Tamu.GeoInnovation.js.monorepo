@@ -1,9 +1,10 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
-  selector: 'tamu-gisc-page-loader',
-  templateUrl: './page-loader.component.html',
-  styleUrls: ['./page-loader.component.scss']
+    selector: 'tamu-gisc-page-loader',
+    templateUrl: './page-loader.component.html',
+    styleUrls: ['./page-loader.component.scss'],
+    standalone: false
 })
 export class PageLoaderComponent implements OnInit, OnChanges {
   /**

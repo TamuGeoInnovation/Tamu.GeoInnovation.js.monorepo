@@ -12,9 +12,10 @@ import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
  * `bus-timetable` to avoid rippling the module + mobile usages.)
  */
 @Component({
-  selector: 'tamu-gisc-bus-timetable',
-  templateUrl: './bus-timetable.component.html',
-  styleUrls: ['./bus-timetable.component.scss']
+    selector: 'tamu-gisc-bus-timetable',
+    templateUrl: './bus-timetable.component.html',
+    styleUrls: ['./bus-timetable.component.scss'],
+    standalone: false
 })
 export class BusTimetableComponent implements OnInit {
   @Input()

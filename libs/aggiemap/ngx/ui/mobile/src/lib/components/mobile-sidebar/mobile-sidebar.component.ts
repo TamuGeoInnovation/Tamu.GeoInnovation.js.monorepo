@@ -3,9 +3,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
 
 @Component({
-  selector: 'tamu-gisc-mobile-sidebar',
-  templateUrl: './mobile-sidebar.component.html',
-  styleUrls: ['./mobile-sidebar.component.scss']
+    selector: 'tamu-gisc-mobile-sidebar',
+    templateUrl: './mobile-sidebar.component.html',
+    styleUrls: ['./mobile-sidebar.component.scss'],
+    standalone: false
 })
 export class MobileSidebarComponent {
   constructor(private router: Router, private route: ActivatedRoute) {}

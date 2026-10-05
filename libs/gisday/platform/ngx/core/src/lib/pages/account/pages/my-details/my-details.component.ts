@@ -45,9 +45,10 @@ const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key
 };
 
 @Component({
-  selector: 'tamu-gisc-my-details',
-  templateUrl: './my-details.component.html',
-  styleUrls: ['./my-details.component.scss']
+    selector: 'tamu-gisc-my-details',
+    templateUrl: './my-details.component.html',
+    styleUrls: ['./my-details.component.scss'],
+    standalone: false
 })
 export class MyDetailsComponent implements OnInit {
   public form: UntypedFormGroup;

@@ -3,9 +3,10 @@ import { Component, Input } from '@angular/core';
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-layer-list-item',
-  templateUrl: './layer-list-item.component.html',
-  styleUrls: ['./layer-list-item.component.scss']
+    selector: 'tamu-gisc-layer-list-item',
+    templateUrl: './layer-list-item.component.html',
+    styleUrls: ['./layer-list-item.component.scss'],
+    standalone: false
 })
 export class LayerListItemComponent {
   @Input()

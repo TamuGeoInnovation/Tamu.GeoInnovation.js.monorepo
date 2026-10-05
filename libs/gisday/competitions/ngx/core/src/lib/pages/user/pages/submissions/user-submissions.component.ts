@@ -8,9 +8,10 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-  selector: 'tamu-gisc-user-submissions',
-  templateUrl: './user-submissions.component.html',
-  styleUrls: ['./user-submissions.component.scss']
+    selector: 'tamu-gisc-user-submissions',
+    templateUrl: './user-submissions.component.html',
+    styleUrls: ['./user-submissions.component.scss'],
+    standalone: false
 })
 export class UserSubmissionsComponent implements OnInit {
   public submissions$: Observable<SubmissionReviewDto[]>;

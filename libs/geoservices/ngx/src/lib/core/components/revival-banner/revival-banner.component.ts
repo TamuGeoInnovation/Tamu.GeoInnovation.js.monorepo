@@ -5,9 +5,10 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-  selector: 'tamu-gisc-revival-banner',
-  templateUrl: './revival-banner.component.html',
-  styleUrls: ['./revival-banner.component.scss']
+    selector: 'tamu-gisc-revival-banner',
+    templateUrl: './revival-banner.component.html',
+    styleUrls: ['./revival-banner.component.scss'],
+    standalone: false
 })
 export class RevivalBannerComponent implements OnInit {
   private _acknowledged$: BehaviorSubject<boolean> = new BehaviorSubject(false);

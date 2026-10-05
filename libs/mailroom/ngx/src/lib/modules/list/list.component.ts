@@ -11,9 +11,10 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { DeleteEmailModalComponent } from './modal/delete-email-modal.component';
 
 @Component({
-  selector: 'tamu-gisc-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+    selector: 'tamu-gisc-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.scss'],
+    standalone: false
 })
 export class ListComponent implements OnInit {
   private _$refresh: Subject<boolean> = new Subject();

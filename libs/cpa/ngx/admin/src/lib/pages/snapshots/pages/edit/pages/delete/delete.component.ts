@@ -5,9 +5,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { SnapshotService } from '@tamu-gisc/cpa/ngx/data-access';
 
 @Component({
-  selector: 'tamu-gisc-delete',
-  templateUrl: './delete.component.html',
-  styleUrls: ['./delete.component.scss']
+    selector: 'tamu-gisc-delete',
+    templateUrl: './delete.component.html',
+    styleUrls: ['./delete.component.scss'],
+    standalone: false
 })
 export class DeleteComponent implements OnInit {
   public guid: string;

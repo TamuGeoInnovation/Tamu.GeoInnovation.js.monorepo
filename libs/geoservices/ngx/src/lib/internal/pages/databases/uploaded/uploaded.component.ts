@@ -6,9 +6,10 @@ import { shareReplay } from 'rxjs/operators';
 import { DatabaseService, DatabaseRecord } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
-  selector: 'tamu-gisc-uploaded',
-  templateUrl: './uploaded.component.html',
-  styleUrls: ['./uploaded.component.scss']
+    selector: 'tamu-gisc-uploaded',
+    templateUrl: './uploaded.component.html',
+    styleUrls: ['./uploaded.component.scss'],
+    standalone: false
 })
 export class UploadedComponent implements OnInit {
   public databases: Observable<Array<DatabaseRecord>>;

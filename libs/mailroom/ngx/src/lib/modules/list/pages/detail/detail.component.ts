@@ -13,9 +13,10 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { DeleteEmailModalComponent } from '../../modal/delete-email-modal.component';
 
 @Component({
-  selector: 'tamu-gisc-detail',
-  templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.scss']
+    selector: 'tamu-gisc-detail',
+    templateUrl: './detail.component.html',
+    styleUrls: ['./detail.component.scss'],
+    standalone: false
 })
 export class DetailComponent implements OnInit {
   public $email: Observable<MailroomEmail>;

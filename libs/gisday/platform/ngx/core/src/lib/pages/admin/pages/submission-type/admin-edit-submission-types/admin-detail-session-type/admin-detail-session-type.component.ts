@@ -9,9 +9,10 @@ import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-
 import { formExporter } from '../../admin-add-submission-types/admin-add-submission-types.component';
 
 @Component({
-  selector: 'tamu-gisc-admin-detail-session-type',
-  templateUrl: './admin-detail-session-type.component.html',
-  styleUrls: ['./admin-detail-session-type.component.scss']
+    selector: 'tamu-gisc-admin-detail-session-type',
+    templateUrl: './admin-detail-session-type.component.html',
+    styleUrls: ['./admin-detail-session-type.component.scss'],
+    standalone: false
 })
 export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType> implements OnInit {
   constructor(

@@ -11,9 +11,10 @@ export interface AlertModalData {
 }
 
 @Component({
-  selector: 'tamu-gisc-alert-modal',
-  templateUrl: './alert-modal.component.html',
-  styleUrls: ['./alert-modal.component.scss']
+    selector: 'tamu-gisc-alert-modal',
+    templateUrl: './alert-modal.component.html',
+    styleUrls: ['./alert-modal.component.scss'],
+    standalone: false
 })
 export class AlertModalComponent {
   public title: string;

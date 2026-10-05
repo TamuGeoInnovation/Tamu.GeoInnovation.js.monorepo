@@ -7,9 +7,10 @@ import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/util
 import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
 
 @Component({
-  selector: 'tamu-gisc-parsed-address-result-table',
-  templateUrl: './parsed-address-result-table.component.html',
-  styleUrls: ['./parsed-address-result-table.component.scss']
+    selector: 'tamu-gisc-parsed-address-result-table',
+    templateUrl: './parsed-address-result-table.component.html',
+    styleUrls: ['./parsed-address-result-table.component.scss'],
+    standalone: false
 })
 export class ParsedAddressResultTableComponent implements OnInit {
   /**

@@ -16,8 +16,9 @@ import {
 } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
-  selector: 'tamu-gisc-base-admin-edit',
-  template: ''
+    selector: 'tamu-gisc-base-admin-edit',
+    template: '',
+    standalone: false
 })
 export abstract class BaseAdminListComponent<T extends GuidIdentity> implements IBaseAdminEditComponent, OnInit, OnDestroy {
   public seasons$ = this.seasonService.seasons$;

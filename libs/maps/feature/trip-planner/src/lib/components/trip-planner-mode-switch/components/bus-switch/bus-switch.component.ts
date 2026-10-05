@@ -7,9 +7,10 @@ import { TripModeSwitch } from '../../../../services/trip-planner.service';
 import { BusStop, TimetableRow, BusService } from '../../../../services/transportation/bus/bus.service';
 
 @Component({
-  selector: 'tamu-gisc-gisc-bus-switch',
-  templateUrl: './bus-switch.component.html',
-  styleUrls: ['../../containers/base/base.component.scss', './bus-switch.component.scss']
+    selector: 'tamu-gisc-gisc-bus-switch',
+    templateUrl: './bus-switch.component.html',
+    styleUrls: ['../../containers/base/base.component.scss', './bus-switch.component.scss'],
+    standalone: false
 })
 export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   @Input()

@@ -6,8 +6,9 @@ import { mapTo, startWith } from 'rxjs/operators';
 import * as Clipboard from 'clipboard';
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[clipboard-copy]'
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: '[clipboard-copy]',
+    standalone: false
 })
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   /**

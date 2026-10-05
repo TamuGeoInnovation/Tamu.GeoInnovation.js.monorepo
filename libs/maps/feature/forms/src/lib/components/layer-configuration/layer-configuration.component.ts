@@ -12,9 +12,10 @@ import { v4 as guid } from 'uuid';
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-layer-configuration',
-  templateUrl: './layer-configuration.component.html',
-  styleUrls: ['./layer-configuration.component.scss']
+    selector: 'tamu-gisc-layer-configuration',
+    templateUrl: './layer-configuration.component.html',
+    styleUrls: ['./layer-configuration.component.scss'],
+    standalone: false
 })
 export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges {
   /**

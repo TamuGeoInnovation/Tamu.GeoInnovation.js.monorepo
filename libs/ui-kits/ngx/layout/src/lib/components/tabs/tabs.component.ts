@@ -4,9 +4,10 @@ import { AbstractContentReplacerComponent } from '../../abstracts/abstract-conte
 import { TabComponent } from './tab/tab.component';
 
 @Component({
-  selector: 'tamu-gisc-tabs',
-  templateUrl: './tabs.component.html',
-  styleUrls: ['./tabs.component.scss']
+    selector: 'tamu-gisc-tabs',
+    templateUrl: './tabs.component.html',
+    styleUrls: ['./tabs.component.scss'],
+    standalone: false
 })
 export class TabsComponent extends AbstractContentReplacerComponent implements AfterContentInit {
   @ContentChildren(TabComponent)

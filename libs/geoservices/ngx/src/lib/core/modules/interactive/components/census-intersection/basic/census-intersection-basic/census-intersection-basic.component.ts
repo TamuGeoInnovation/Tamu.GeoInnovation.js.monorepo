@@ -18,9 +18,10 @@ import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-inte
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
 
 @Component({
-  selector: 'tamu-gisc-census-intersection-basic',
-  templateUrl: './census-intersection-basic.component.html',
-  styleUrls: ['./census-intersection-basic.component.scss']
+    selector: 'tamu-gisc-census-intersection-basic',
+    templateUrl: './census-intersection-basic.component.html',
+    styleUrls: ['./census-intersection-basic.component.scss'],
+    standalone: false
 })
 export class CensusIntersectionBasicComponent extends BaseInteractiveGeoprocessingComponent<
   CensusIntersectionResult,

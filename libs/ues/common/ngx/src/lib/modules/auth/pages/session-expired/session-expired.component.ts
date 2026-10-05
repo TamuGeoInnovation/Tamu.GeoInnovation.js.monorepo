@@ -6,9 +6,10 @@ import { LegacyAuthService } from '@tamu-gisc/common/ngx/auth';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'tamu-gisc-session-expired',
-  templateUrl: './session-expired.component.html',
-  styleUrls: ['./session-expired.component.scss']
+    selector: 'tamu-gisc-session-expired',
+    templateUrl: './session-expired.component.html',
+    styleUrls: ['./session-expired.component.scss'],
+    standalone: false
 })
 export class SessionExpiredComponent {
   constructor(private auth: LegacyAuthService, private route: ActivatedRoute) {}

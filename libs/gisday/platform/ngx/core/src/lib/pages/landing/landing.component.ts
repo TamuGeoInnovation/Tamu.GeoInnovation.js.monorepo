@@ -35,9 +35,10 @@ const numberDictionary = {
 };
 
 @Component({
-  selector: 'tamu-gisc-landing',
-  templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.scss']
+    selector: 'tamu-gisc-landing',
+    templateUrl: './landing.component.html',
+    styleUrls: ['./landing.component.scss'],
+    standalone: false
 })
 export class LandingComponent implements OnInit {
   private title = 'TxGIS Day';

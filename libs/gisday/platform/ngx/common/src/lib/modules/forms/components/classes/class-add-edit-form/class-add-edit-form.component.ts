@@ -8,9 +8,10 @@ import { ClassService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-  selector: 'tamu-gisc-class-add-edit-form',
-  templateUrl: './class-add-edit-form.component.html',
-  styleUrls: ['./class-add-edit-form.component.scss']
+    selector: 'tamu-gisc-class-add-edit-form',
+    templateUrl: './class-add-edit-form.component.html',
+    styleUrls: ['./class-add-edit-form.component.scss'],
+    standalone: false
 })
 export class ClassAddEditFormComponent implements OnInit {
   @Input()

@@ -7,9 +7,10 @@ import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-perspective-toggle',
-  templateUrl: './perspective-toggle.component.html',
-  styleUrls: ['./perspective-toggle.component.scss']
+    selector: 'tamu-gisc-perspective-toggle',
+    templateUrl: './perspective-toggle.component.html',
+    styleUrls: ['./perspective-toggle.component.scss'],
+    standalone: false
 })
 export class PerspectiveToggleComponent implements OnInit {
   /**

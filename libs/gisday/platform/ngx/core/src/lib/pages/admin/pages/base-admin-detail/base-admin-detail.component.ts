@@ -8,8 +8,9 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
-  selector: 'tamu-gisc-base-admin-detail',
-  template: ''
+    selector: 'tamu-gisc-base-admin-detail',
+    template: '',
+    standalone: false
 })
 export abstract class BaseAdminDetailComponent<T> implements OnInit {
   public entity: Observable<Partial<T>>;

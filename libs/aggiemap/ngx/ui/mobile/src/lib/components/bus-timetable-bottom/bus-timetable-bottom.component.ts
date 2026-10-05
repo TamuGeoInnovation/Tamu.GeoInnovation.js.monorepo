@@ -6,9 +6,10 @@ import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 @Component({
-  selector: 'tamu-gisc-bus-timetable-bottom',
-  templateUrl: './bus-timetable-bottom.component.html',
-  styleUrls: ['./bus-timetable-bottom.component.scss']
+    selector: 'tamu-gisc-bus-timetable-bottom',
+    templateUrl: './bus-timetable-bottom.component.html',
+    styleUrls: ['./bus-timetable-bottom.component.scss'],
+    standalone: false
 })
 export class BusTimetableBottomComponent implements OnInit, OnDestroy {
   public identifier: string;

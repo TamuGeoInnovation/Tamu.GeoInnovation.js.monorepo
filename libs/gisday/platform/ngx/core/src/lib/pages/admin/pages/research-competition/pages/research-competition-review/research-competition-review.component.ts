@@ -8,9 +8,10 @@ import { Submission } from '@tamu-gisc/gisday/platform/data-api';
 import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
-  selector: 'tamu-gisc-research-competition-review',
-  templateUrl: './research-competition-review.component.html',
-  styleUrls: ['./research-competition-review.component.scss']
+    selector: 'tamu-gisc-research-competition-review',
+    templateUrl: './research-competition-review.component.html',
+    styleUrls: ['./research-competition-review.component.scss'],
+    standalone: false
 })
 export class ResearchCompetitionReviewComponent implements OnInit {
   public entity$: Observable<Partial<Submission>>;

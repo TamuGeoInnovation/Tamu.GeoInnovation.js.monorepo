@@ -14,9 +14,10 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
 @Component({
-  selector: 'tamu-gisc-poi-popup-component',
-  templateUrl: './poi.component.html',
-  styleUrls: ['../base/base.popup.component.scss']
+    selector: 'tamu-gisc-poi-popup-component',
+    templateUrl: './poi.component.html',
+    styleUrls: ['../base/base.popup.component.scss'],
+    standalone: false
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public load: ReplaySubject<boolean> = new ReplaySubject(1);

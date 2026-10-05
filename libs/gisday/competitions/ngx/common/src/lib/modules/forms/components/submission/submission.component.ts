@@ -14,9 +14,10 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
 import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
-  selector: 'tamu-gisc-submission',
-  templateUrl: './submission.component.html',
-  styleUrls: ['./submission.component.scss']
+    selector: 'tamu-gisc-submission',
+    templateUrl: './submission.component.html',
+    styleUrls: ['./submission.component.scss'],
+    standalone: false
 })
 export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   @Input()

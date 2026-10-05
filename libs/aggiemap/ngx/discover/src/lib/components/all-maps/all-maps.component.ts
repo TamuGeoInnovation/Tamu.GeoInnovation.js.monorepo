@@ -22,9 +22,10 @@ import { QuickLinkItem } from '../quick-links/quick-links.component';
  * events. The dev-only "All Events" and "Experimental Applications" sections are preserved here.
  */
 @Component({
-  selector: 'tamu-gisc-aggiemap-all-maps',
-  templateUrl: './all-maps.component.html',
-  styleUrls: ['./all-maps.component.scss']
+    selector: 'tamu-gisc-aggiemap-all-maps',
+    templateUrl: './all-maps.component.html',
+    styleUrls: ['./all-maps.component.scss'],
+    standalone: false
 })
 export class AllMapsComponent implements OnInit {
   public readonly mainParkingRoute = ['/parking', FEATURED_PARKING_ID];

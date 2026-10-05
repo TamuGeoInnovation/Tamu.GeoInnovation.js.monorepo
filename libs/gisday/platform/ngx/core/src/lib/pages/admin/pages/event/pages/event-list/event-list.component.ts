@@ -9,9 +9,10 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
 @Component({
-  selector: 'tamu-gisc-event-list',
-  templateUrl: './event-list.component.html',
-  styleUrls: ['./event-list.component.scss']
+    selector: 'tamu-gisc-event-list',
+    templateUrl: './event-list.component.html',
+    styleUrls: ['./event-list.component.scss'],
+    standalone: false
 })
 export class EventListComponent extends BaseAdminListComponent<Event> {
   constructor(

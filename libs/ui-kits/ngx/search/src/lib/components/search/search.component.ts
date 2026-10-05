@@ -26,11 +26,12 @@ import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
 
 @Component({
-  selector: 'tamu-gisc-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
-  providers: [SearchService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tamu-gisc-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    providers: [SearchService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SearchComponent implements OnInit, OnDestroy {
   /**

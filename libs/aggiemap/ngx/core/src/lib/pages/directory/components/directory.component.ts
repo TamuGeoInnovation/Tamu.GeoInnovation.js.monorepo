@@ -19,9 +19,10 @@ import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angul
 import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
 
 @Component({
-  selector: 'tamu-gisc-aggiemap-directory',
-  templateUrl: './directory.component.html',
-  styleUrls: ['./directory.component.scss']
+    selector: 'tamu-gisc-aggiemap-directory',
+    templateUrl: './directory.component.html',
+    styleUrls: ['./directory.component.scss'],
+    standalone: false
 })
 export class DirectoryComponent implements OnInit {
   public form: UntypedFormGroup;

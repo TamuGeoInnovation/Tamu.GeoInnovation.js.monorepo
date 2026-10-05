@@ -2,9 +2,10 @@ import { Component, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@a
 import { ControlValueAccessor } from '@angular/forms';
 
 @Component({
-  selector: 'tamu-gisc-abstract-value-accessor-form',
-  template: '',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tamu-gisc-abstract-value-accessor-form',
+    template: '',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class AbstractValueAccessorFormComponent<T> implements ControlValueAccessor {
   @Input()

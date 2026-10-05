@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'tamu-gisc-manhole-mapping',
-  templateUrl: './manhole-mapping.component.html',
-  styleUrls: ['./manhole-mapping.component.scss']
+    selector: 'tamu-gisc-manhole-mapping',
+    templateUrl: './manhole-mapping.component.html',
+    styleUrls: ['./manhole-mapping.component.scss'],
+    standalone: false
 })
 export class ManholeMappingComponent {}

@@ -8,9 +8,10 @@ import { LastMapService } from '@tamu-gisc/aggiemap/ngx/discover';
 import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiemap/ngx/core';
 
 @Component({
-  selector: 'tamu-gisc-aggiemap-app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'tamu-gisc-aggiemap-app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {
   private _notifications: Subscription | undefined;

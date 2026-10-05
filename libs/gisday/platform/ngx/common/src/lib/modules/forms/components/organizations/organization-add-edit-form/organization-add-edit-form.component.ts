@@ -11,9 +11,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { formToFormData } from '../../../../../utils/form-to-form-data';
 
 @Component({
-  selector: 'tamu-gisc-organization-add-edit-form',
-  templateUrl: './organization-add-edit-form.component.html',
-  styleUrls: ['./organization-add-edit-form.component.scss']
+    selector: 'tamu-gisc-organization-add-edit-form',
+    templateUrl: './organization-add-edit-form.component.html',
+    styleUrls: ['./organization-add-edit-form.component.scss'],
+    standalone: false
 })
 export class OrganizationAddEditFormComponent implements OnInit {
   @Input()

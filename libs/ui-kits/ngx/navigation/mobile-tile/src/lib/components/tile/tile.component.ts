@@ -7,9 +7,10 @@ import { TileService } from '../../services/tile.service';
 import { TileLinkDirective } from '../../directives/tile-link/tile-link.directive';
 
 @Component({
-  selector: 'tamu-gisc-tile',
-  templateUrl: './tile.component.html',
-  styleUrls: ['./tile.component.scss']
+    selector: 'tamu-gisc-tile',
+    templateUrl: './tile.component.html',
+    styleUrls: ['./tile.component.scss'],
+    standalone: false
 })
 export class TileComponent implements AfterContentInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();

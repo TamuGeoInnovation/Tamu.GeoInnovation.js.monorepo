@@ -6,9 +6,10 @@ import { CheckinService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
-  selector: 'tamu-gisc-my-checkins',
-  templateUrl: './my-checkins.component.html',
-  styleUrls: ['./my-checkins.component.scss']
+    selector: 'tamu-gisc-my-checkins',
+    templateUrl: './my-checkins.component.html',
+    styleUrls: ['./my-checkins.component.scss'],
+    standalone: false
 })
 export class MyCheckinsComponent implements OnInit {
   public checkins$: Observable<Array<Partial<CheckIn>>>;

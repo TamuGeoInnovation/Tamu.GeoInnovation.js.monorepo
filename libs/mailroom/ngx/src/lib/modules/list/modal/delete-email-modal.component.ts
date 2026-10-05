@@ -6,9 +6,10 @@ import { EmailService } from '@tamu-gisc/mailroom/data-access';
 import { ModalRefService, MODAL_DATA } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
-  selector: 'tamu-gisc-modal',
-  templateUrl: './delete-email-modal.component.html',
-  styleUrls: ['./delete-email-modal.component.scss']
+    selector: 'tamu-gisc-modal',
+    templateUrl: './delete-email-modal.component.html',
+    styleUrls: ['./delete-email-modal.component.scss'],
+    standalone: false
 })
 export class DeleteEmailModalComponent {
   constructor(

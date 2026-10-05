@@ -4,56 +4,39 @@ import { BehaviorSubject, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'tamu-gisc-hamburger-trigger',
-  templateUrl: './hamburger-trigger.component.html',
-  styleUrls: ['./hamburger-trigger.component.scss'],
-  animations: [
-    trigger('topBun', [
-      state(
-        'up',
-        style({
-          transform: 'rotate3d(0, 0, 1, -135deg) translate3d(-0.45rem, -0.4rem, 0rem)'
-        })
-      ),
-      state(
-        'down',
-        style({
-          transform: 'none'
-        })
-      ),
-      transition('* <=> *', [animate('.3s ease')])
-    ]),
-    trigger('patty', [
-      state(
-        'up',
-        style({
-          width: '0rem'
-        })
-      ),
-      state(
-        'down',
-        style({
-          width: '*'
-        })
-      ),
-      transition('* <=> *', [animate('.2s 100ms ease')])
-    ]),
-    trigger('bottomBun', [
-      state(
-        'up',
-        style({
-          transform: 'rotate3d(0, 0, 1, 135deg) translate3d(-2.0rem, -0.3rem, 0rem)'
-        })
-      ),
-      state(
-        'down',
-        style({
-          transform: 'none'
-        })
-      ),
-      transition('* <=> *', [animate('.3s ease')])
-    ])
-  ]
+    selector: 'tamu-gisc-hamburger-trigger',
+    templateUrl: './hamburger-trigger.component.html',
+    styleUrls: ['./hamburger-trigger.component.scss'],
+    animations: [
+        trigger('topBun', [
+            state('up', style({
+                transform: 'rotate3d(0, 0, 1, -135deg) translate3d(-0.45rem, -0.4rem, 0rem)'
+            })),
+            state('down', style({
+                transform: 'none'
+            })),
+            transition('* <=> *', [animate('.3s ease')])
+        ]),
+        trigger('patty', [
+            state('up', style({
+                width: '0rem'
+            })),
+            state('down', style({
+                width: '*'
+            })),
+            transition('* <=> *', [animate('.2s 100ms ease')])
+        ]),
+        trigger('bottomBun', [
+            state('up', style({
+                transform: 'rotate3d(0, 0, 1, 135deg) translate3d(-2.0rem, -0.3rem, 0rem)'
+            })),
+            state('down', style({
+                transform: 'none'
+            })),
+            transition('* <=> *', [animate('.3s ease')])
+        ])
+    ],
+    standalone: false
 })
 export class HamburgerTriggerComponent implements OnChanges {
   /**

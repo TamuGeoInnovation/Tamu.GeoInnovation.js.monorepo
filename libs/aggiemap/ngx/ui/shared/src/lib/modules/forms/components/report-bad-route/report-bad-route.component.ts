@@ -11,9 +11,10 @@ import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
 
 @Component({
-  selector: 'tamu-gisc-report-bad-route',
-  templateUrl: './report-bad-route.component.html',
-  styleUrls: ['./report-bad-route.component.scss']
+    selector: 'tamu-gisc-report-bad-route',
+    templateUrl: './report-bad-route.component.html',
+    styleUrls: ['./report-bad-route.component.scss'],
+    standalone: false
 })
 export class ReportBadRouteComponent implements OnInit, OnDestroy {
   public result: TripResult;

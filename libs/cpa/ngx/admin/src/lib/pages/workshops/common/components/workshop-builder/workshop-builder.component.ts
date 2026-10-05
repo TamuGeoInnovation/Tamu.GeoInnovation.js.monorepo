@@ -10,10 +10,11 @@ import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cp
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-  selector: 'tamu-gisc-workshop-builder',
-  templateUrl: './workshop-builder.component.html',
-  styleUrls: ['./workshop-builder.component.scss'],
-  providers: [WorkshopService, SnapshotService]
+    selector: 'tamu-gisc-workshop-builder',
+    templateUrl: './workshop-builder.component.html',
+    styleUrls: ['./workshop-builder.component.scss'],
+    providers: [WorkshopService, SnapshotService],
+    standalone: false
 })
 export class WorkshopBuilderComponent implements OnInit {
   public form: UntypedFormGroup;

@@ -9,10 +9,11 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 const searchReference = 'university-departments-exact';
 
 @Component({
-  selector: 'tamu-gisc-building-department-list',
-  templateUrl: './building-department-list.component.html',
-  styleUrls: ['./building-department-list.component.scss'],
-  providers: [SearchService]
+    selector: 'tamu-gisc-building-department-list',
+    templateUrl: './building-department-list.component.html',
+    styleUrls: ['./building-department-list.component.scss'],
+    providers: [SearchService],
+    standalone: false
 })
 export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
   @Input()

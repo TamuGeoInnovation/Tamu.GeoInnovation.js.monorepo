@@ -7,9 +7,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
-  selector: 'tamu-gisc-contact-form',
-  templateUrl: './contact-form.component.html',
-  styleUrls: ['./contact-form.component.scss']
+    selector: 'tamu-gisc-contact-form',
+    templateUrl: './contact-form.component.html',
+    styleUrls: ['./contact-form.component.scss'],
+    standalone: false
 })
 export class ContactFormComponent implements OnInit {
   public form: UntypedFormGroup;

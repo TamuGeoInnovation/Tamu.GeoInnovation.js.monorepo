@@ -9,9 +9,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
 @Component({
-  selector: 'tamu-gisc-class-list',
-  templateUrl: './class-list.component.html',
-  styleUrls: ['./class-list.component.scss']
+    selector: 'tamu-gisc-class-list',
+    templateUrl: './class-list.component.html',
+    styleUrls: ['./class-list.component.scss'],
+    standalone: false
 })
 export class ClassListComponent extends BaseAdminListComponent<Class> {
   constructor(

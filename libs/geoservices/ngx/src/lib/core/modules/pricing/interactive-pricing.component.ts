@@ -8,9 +8,10 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
-  selector: 'tamu-gisc-interactive-pricing',
-  templateUrl: './interactive-pricing.component.html',
-  styleUrls: ['./interactive-pricing.component.scss']
+    selector: 'tamu-gisc-interactive-pricing',
+    templateUrl: './interactive-pricing.component.html',
+    styleUrls: ['./interactive-pricing.component.scss'],
+    standalone: false
 })
 export class InteractivePricingComponent implements OnInit {
   public form: UntypedFormGroup;

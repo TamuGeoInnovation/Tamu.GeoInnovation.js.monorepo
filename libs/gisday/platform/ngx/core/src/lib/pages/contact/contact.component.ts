@@ -7,9 +7,10 @@ import { ContactService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 @Component({
-  selector: 'tamu-gisc-contact',
-  templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss']
+    selector: 'tamu-gisc-contact',
+    templateUrl: './contact.component.html',
+    styleUrls: ['./contact.component.scss'],
+    standalone: false
 })
 export class ContactComponent implements OnInit {
   public form: UntypedFormGroup;

@@ -9,9 +9,10 @@ import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-  selector: 'tamu-gisc-class-edit',
-  templateUrl: './class-edit.component.html',
-  styleUrls: ['./class-edit.component.scss']
+    selector: 'tamu-gisc-class-edit',
+    templateUrl: './class-edit.component.html',
+    styleUrls: ['./class-edit.component.scss'],
+    standalone: false
 })
 export class ClassEditComponent implements OnInit {
   public students$: Observable<Array<Partial<UserClass>>>;

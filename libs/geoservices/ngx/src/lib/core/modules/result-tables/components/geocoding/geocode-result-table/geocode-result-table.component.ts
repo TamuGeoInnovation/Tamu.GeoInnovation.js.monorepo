@@ -6,9 +6,10 @@ import { GeocodeNAACCRField, GeocodeRecordField, IGeocodeRecord } from '@tamu-gi
 import { GeocodeFieldLabel, GeocodeNaaccrFieldLabel } from '../../../../../util/dictionaries';
 
 @Component({
-  selector: 'tamu-gisc-geocode-result-table',
-  templateUrl: './geocode-result-table.component.html',
-  styleUrls: ['./geocode-result-table.component.scss']
+    selector: 'tamu-gisc-geocode-result-table',
+    templateUrl: './geocode-result-table.component.html',
+    styleUrls: ['./geocode-result-table.component.scss'],
+    standalone: false
 })
 export class GeocodeResultTableComponent implements OnInit {
   @Input()

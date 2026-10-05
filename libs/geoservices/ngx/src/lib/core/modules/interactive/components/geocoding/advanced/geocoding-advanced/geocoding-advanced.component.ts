@@ -21,9 +21,10 @@ import {
 } from '../../../../../../util/dictionaries';
 
 @Component({
-  selector: 'tamu-gisc-geocoding-advanced',
-  templateUrl: './geocoding-advanced.component.html',
-  styleUrls: ['./geocoding-advanced.component.scss']
+    selector: 'tamu-gisc-geocoding-advanced',
+    templateUrl: './geocoding-advanced.component.html',
+    styleUrls: ['./geocoding-advanced.component.scss'],
+    standalone: false
 })
 export class GeocodingAdvancedComponent extends GeocodingBasicComponent implements OnInit, OnDestroy {
   public tieBreakingStrategies = TIE_BREAKING_STRATEGIES;

@@ -3,9 +3,10 @@ import { Component } from '@angular/core';
 import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
-  selector: 'tamu-gisc-address-processing',
-  templateUrl: './address-processing.component.html',
-  styleUrls: ['./address-processing.component.scss']
+    selector: 'tamu-gisc-address-processing',
+    templateUrl: './address-processing.component.html',
+    styleUrls: ['./address-processing.component.scss'],
+    standalone: false
 })
 export class AddressProcessingComponent {
   public apiVersion = '5.0';

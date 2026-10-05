@@ -6,10 +6,11 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-mode-toggle',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tamu-gisc-trip-planner-mode-toggle',
+    templateUrl: './base.component.html',
+    styleUrls: ['./base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
   /**

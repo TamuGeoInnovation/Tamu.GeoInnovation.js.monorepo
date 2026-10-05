@@ -17,9 +17,10 @@ import { BetaPromptComponent, AlertModalComponent } from '@tamu-gisc/aggiemap/ng
 
 import esri = __esri;
 @Component({
-  selector: 'tamu-gisc-aggiemap-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+    selector: 'tamu-gisc-aggiemap-map',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.scss'],
+    standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

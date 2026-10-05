@@ -5,9 +5,10 @@ import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api'
 import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
-  selector: 'tamu-gisc-season-day-card',
-  templateUrl: './season-day-card.component.html',
-  styleUrls: ['./season-day-card.component.scss']
+    selector: 'tamu-gisc-season-day-card',
+    templateUrl: './season-day-card.component.html',
+    styleUrls: ['./season-day-card.component.scss'],
+    standalone: false
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {
   @Input()

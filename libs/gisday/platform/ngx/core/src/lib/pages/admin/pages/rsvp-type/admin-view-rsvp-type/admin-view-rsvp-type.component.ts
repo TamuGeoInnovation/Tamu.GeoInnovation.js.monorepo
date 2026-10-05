@@ -6,9 +6,10 @@ import { RsvpType } from '@tamu-gisc/gisday/platform/data-api';
 import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';
 
 @Component({
-  selector: 'tamu-gisc-admin-view-rsvp-type',
-  templateUrl: './admin-view-rsvp-type.component.html',
-  styleUrls: ['./admin-view-rsvp-type.component.scss']
+    selector: 'tamu-gisc-admin-view-rsvp-type',
+    templateUrl: './admin-view-rsvp-type.component.html',
+    styleUrls: ['./admin-view-rsvp-type.component.scss'],
+    standalone: false
 })
 export class AdminViewRsvpTypeComponent extends BaseAdminViewComponent<RsvpType> {
   constructor(private readonly rsvpTypeService: RsvpTypeService) {

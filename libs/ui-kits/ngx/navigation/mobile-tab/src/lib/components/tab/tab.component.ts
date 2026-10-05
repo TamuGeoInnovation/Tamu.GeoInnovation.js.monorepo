@@ -4,9 +4,10 @@ import { Observable, of } from 'rxjs';
 import { switchMap, distinctUntilChanged, shareReplay, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'tamu-gisc-mobile-nav-tab',
-  templateUrl: './tab.component.html',
-  styleUrls: ['./tab.component.scss']
+    selector: 'tamu-gisc-mobile-nav-tab',
+    templateUrl: './tab.component.html',
+    styleUrls: ['./tab.component.scss'],
+    standalone: false
 })
 export class MobileTabNavigationTabComponent implements OnInit {
   @Input()

@@ -15,11 +15,12 @@ import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../anima
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-omnisearch',
-  templateUrl: './omnisearch.component.html',
-  styleUrls: ['./omnisearch.component.scss'],
-  animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
-  providers: [AltSearchHelper]
+    selector: 'tamu-gisc-omnisearch',
+    templateUrl: './omnisearch.component.html',
+    styleUrls: ['./omnisearch.component.scss'],
+    animations: [offCanvasSlideInFromBottom, offCanvasSlideUpFromTop],
+    providers: [AltSearchHelper],
+    standalone: false
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
   /**

@@ -13,16 +13,17 @@ import { UntypedFormBuilder, UntypedFormGroup, NG_VALUE_ACCESSOR } from '@angula
 import { BehaviorSubject, debounceTime, map, Observable, shareReplay, startWith } from 'rxjs';
 
 @Component({
-  selector: 'tamu-gisc-select-list',
-  templateUrl: './select-list.component.html',
-  styleUrls: ['./select-list.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectListComponent),
-      multi: true
-    }
-  ]
+    selector: 'tamu-gisc-select-list',
+    templateUrl: './select-list.component.html',
+    styleUrls: ['./select-list.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SelectListComponent),
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class SelectListComponent<T extends Record<string, unknown>> implements OnInit, OnChanges {
   /**

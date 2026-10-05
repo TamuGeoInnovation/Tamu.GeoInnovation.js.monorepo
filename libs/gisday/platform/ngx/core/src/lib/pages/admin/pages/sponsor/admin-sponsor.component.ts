@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'tamu-gisc-admin-sponsor',
-  templateUrl: './admin-sponsor.component.html',
-  styleUrls: ['./admin-sponsor.component.scss']
+    selector: 'tamu-gisc-admin-sponsor',
+    templateUrl: './admin-sponsor.component.html',
+    styleUrls: ['./admin-sponsor.component.scss'],
+    standalone: false
 })
 export class AdminSponsorComponent {}

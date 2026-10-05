@@ -7,9 +7,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ContactService } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
-  selector: 'tamu-gisc-geocode-correction-form',
-  templateUrl: './geocode-correction-form.component.html',
-  styleUrls: ['./geocode-correction-form.component.scss']
+    selector: 'tamu-gisc-geocode-correction-form',
+    templateUrl: './geocode-correction-form.component.html',
+    styleUrls: ['./geocode-correction-form.component.scss'],
+    standalone: false
 })
 export class GeocodeCorrectionFormComponent implements OnInit {
   public form: UntypedFormGroup;

@@ -13,9 +13,10 @@ interface AccommodationChoiceGroup {
 }
 
 @Component({
-  selector: 'tamu-gisc-accommodations',
-  templateUrl: './accommodations.component.html',
-  styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss']
+    selector: 'tamu-gisc-accommodations',
+    templateUrl: './accommodations.component.html',
+    styleUrls: ['./accommodations.component.scss', '../builder-module-base/builder-module-base.component.scss'],
+    standalone: false
 })
 export class AccommodationsComponent implements OnInit {
   public config = this.eventSettingsService.eventConfiguration()?.configuration;

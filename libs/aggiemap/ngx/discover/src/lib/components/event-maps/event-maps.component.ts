@@ -27,9 +27,10 @@ interface EventMapsRouteData {
  * category is supplied via the route `data` so a single component serves all of these routes.
  */
 @Component({
-  selector: 'tamu-gisc-aggiemap-event-maps',
-  templateUrl: './event-maps.component.html',
-  styleUrls: ['./event-maps.component.scss']
+    selector: 'tamu-gisc-aggiemap-event-maps',
+    templateUrl: './event-maps.component.html',
+    styleUrls: ['./event-maps.component.scss'],
+    standalone: false
 })
 export class EventMapsComponent implements OnInit {
   public title: string;

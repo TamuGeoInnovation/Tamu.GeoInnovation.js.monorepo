@@ -2,9 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'tamu-gisc-code-runner',
-  templateUrl: './code-runner.component.html',
-  styleUrls: ['./code-runner.component.scss']
+    selector: 'tamu-gisc-code-runner',
+    templateUrl: './code-runner.component.html',
+    styleUrls: ['./code-runner.component.scss'],
+    standalone: false
 })
 export class CodeRunnerComponent implements OnInit {
   @Input()

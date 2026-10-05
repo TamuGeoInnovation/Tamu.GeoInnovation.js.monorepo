@@ -15,10 +15,11 @@ import { Observable, of } from 'rxjs';
 import { AutocompleteOptionTemplateDirective } from './directives/autocomplete-option-template.directive';
 
 @Component({
-  selector: 'tamu-gisc-autocomplete',
-  templateUrl: './autocomplete.component.html',
-  styleUrls: ['./autocomplete.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'tamu-gisc-autocomplete',
+    templateUrl: './autocomplete.component.html',
+    styleUrls: ['./autocomplete.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class AutocompleteComponent<T> implements OnInit, OnDestroy {
   /**

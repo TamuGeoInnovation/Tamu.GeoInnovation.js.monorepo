@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'tamu-gisc-footer-legal',
-  templateUrl: './legal.component.html',
-  styleUrls: ['./legal.component.scss']
+    selector: 'tamu-gisc-footer-legal',
+    templateUrl: './legal.component.html',
+    styleUrls: ['./legal.component.scss'],
+    standalone: false
 })
 export class FooterLegalComponent implements OnInit {
   public currentYear: number;

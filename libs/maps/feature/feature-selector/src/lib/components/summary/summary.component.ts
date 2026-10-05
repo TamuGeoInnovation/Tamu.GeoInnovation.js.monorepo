@@ -8,10 +8,11 @@ import { FeatureCollectorService } from '../../services/collector.service';
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-selection-summary',
-  templateUrl: './summary.component.html',
-  styleUrls: ['./summary.component.scss'],
-  providers: [FeatureCollectorService]
+    selector: 'tamu-gisc-selection-summary',
+    templateUrl: './summary.component.html',
+    styleUrls: ['./summary.component.scss'],
+    providers: [FeatureCollectorService],
+    standalone: false
 })
 export class SelectionSummaryComponent implements OnInit, AfterContentInit {
   @Input()

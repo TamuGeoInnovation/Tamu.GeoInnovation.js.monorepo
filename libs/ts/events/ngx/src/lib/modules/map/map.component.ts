@@ -42,7 +42,8 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     LegendService,
     TripPlannerService,
     BasemapGalleryService
-  ]
+  ],
+  standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

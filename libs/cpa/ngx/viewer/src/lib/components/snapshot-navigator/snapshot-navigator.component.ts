@@ -6,9 +6,10 @@ import { distinctUntilChanged, map, startWith, switchMap, take } from 'rxjs/oper
 import { TypedSnapshotOrScenario, ViewerService } from '../../services/viewer.service';
 
 @Component({
-  selector: 'tamu-gisc-snapshot-navigator',
-  templateUrl: './snapshot-navigator.component.html',
-  styleUrls: ['./snapshot-navigator.component.scss']
+    selector: 'tamu-gisc-snapshot-navigator',
+    templateUrl: './snapshot-navigator.component.html',
+    styleUrls: ['./snapshot-navigator.component.scss'],
+    standalone: false
 })
 export class SnapshotNavigatorComponent implements OnInit {
   public snapshots: Observable<Array<TypedSnapshotOrScenario>> = this.vs.snapshotsAndScenarios;

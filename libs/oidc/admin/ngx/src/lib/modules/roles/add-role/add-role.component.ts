@@ -5,9 +5,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'tamu-gisc-add',
-  templateUrl: './add-role.component.html',
-  styleUrls: ['./add-role.component.scss']
+    selector: 'tamu-gisc-add',
+    templateUrl: './add-role.component.html',
+    styleUrls: ['./add-role.component.scss'],
+    standalone: false
 })
 export class AddRoleComponent implements OnInit {
   public form: UntypedFormGroup;

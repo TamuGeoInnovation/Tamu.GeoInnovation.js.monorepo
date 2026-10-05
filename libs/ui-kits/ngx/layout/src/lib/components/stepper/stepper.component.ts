@@ -4,9 +4,10 @@ import { AbstractContentReplacerComponent } from '../../abstracts/abstract-conte
 import { StepComponent } from './components/step/step.component';
 
 @Component({
-  selector: 'tamu-gisc-stepper',
-  templateUrl: './stepper.component.html',
-  styleUrls: ['./stepper.component.scss']
+    selector: 'tamu-gisc-stepper',
+    templateUrl: './stepper.component.html',
+    styleUrls: ['./stepper.component.scss'],
+    standalone: false
 })
 export class StepperComponent extends AbstractContentReplacerComponent implements AfterContentInit {
   @ContentChildren(StepComponent)

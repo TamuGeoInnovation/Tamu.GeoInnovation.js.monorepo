@@ -9,9 +9,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
 @Component({
-  selector: 'tamu-gisc-broadcast-list',
-  templateUrl: './broadcast-list.component.html',
-  styleUrls: ['./broadcast-list.component.scss']
+    selector: 'tamu-gisc-broadcast-list',
+    templateUrl: './broadcast-list.component.html',
+    styleUrls: ['./broadcast-list.component.scss'],
+    standalone: false
 })
 export class BroadcastListComponent extends BaseAdminListComponent<EventBroadcast> {
   constructor(

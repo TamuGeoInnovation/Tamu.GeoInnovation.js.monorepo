@@ -7,9 +7,10 @@ import { Workshop } from '@tamu-gisc/cpa/common/entities';
 import { ISnapshotPartial } from '@tamu-gisc/cpa/data-api';
 
 @Component({
-  selector: 'tamu-gisc-snapshot-list-item',
-  templateUrl: './snapshot-list-item.component.html',
-  styleUrls: ['./snapshot-list-item.component.scss']
+    selector: 'tamu-gisc-snapshot-list-item',
+    templateUrl: './snapshot-list-item.component.html',
+    styleUrls: ['./snapshot-list-item.component.scss'],
+    standalone: false
 })
 export class SnapshotListItemComponent implements OnInit {
   @Input()

@@ -2,16 +2,17 @@ import { Component, forwardRef, Input, Output, EventEmitter } from '@angular/cor
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-  selector: 'tamu-gisc-file',
-  templateUrl: './file.component.html',
-  styleUrls: ['./file.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FileComponent),
-      multi: true
-    }
-  ]
+    selector: 'tamu-gisc-file',
+    templateUrl: './file.component.html',
+    styleUrls: ['./file.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => FileComponent),
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class FileComponent implements ControlValueAccessor {
   // eslint-disable-next-line @angular-eslint/no-input-rename

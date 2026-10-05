@@ -8,9 +8,10 @@ import { buildMapColumnGroups, getApplicationRoute, MapColumnDefinition, MapColu
  * from the comp, with placeholder accordion content below.
  */
 @Component({
-  selector: 'tamu-gisc-aggiemap-parking-maps',
-  templateUrl: './parking-maps.component.html',
-  styleUrls: ['./parking-maps.component.scss']
+    selector: 'tamu-gisc-aggiemap-parking-maps',
+    templateUrl: './parking-maps.component.html',
+    styleUrls: ['./parking-maps.component.scss'],
+    standalone: false
 })
 export class ParkingMapsComponent implements OnInit {
   public columns: MapColumnGroup[] = [];

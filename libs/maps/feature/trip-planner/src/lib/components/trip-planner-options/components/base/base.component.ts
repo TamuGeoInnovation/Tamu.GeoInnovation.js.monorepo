@@ -10,8 +10,9 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerRuleMode, TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-  selector: 'tamu-gisc-trip-planner-options-base',
-  template: ''
+    selector: 'tamu-gisc-trip-planner-options-base',
+    template: '',
+    standalone: false
 })
 export class TripPlannerOptionsBaseComponent implements OnInit {
   /**

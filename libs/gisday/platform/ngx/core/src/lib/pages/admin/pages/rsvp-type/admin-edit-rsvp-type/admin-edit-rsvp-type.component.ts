@@ -8,9 +8,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.component';
 @Component({
-  selector: 'tamu-gisc-admin-edit-rsvp-type',
-  templateUrl: './admin-edit-rsvp-type.component.html',
-  styleUrls: ['./admin-edit-rsvp-type.component.scss']
+    selector: 'tamu-gisc-admin-edit-rsvp-type',
+    templateUrl: './admin-edit-rsvp-type.component.html',
+    styleUrls: ['./admin-edit-rsvp-type.component.scss'],
+    standalone: false
 })
 export class AdminEditRsvpTypeComponent extends BaseAdminListComponent<RsvpType> {
   constructor(
