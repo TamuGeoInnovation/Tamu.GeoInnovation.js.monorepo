@@ -4,9 +4,9 @@ import { SidebarReferenceComponent as AggiemapSidebarReferenceComponent } from '
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-sidebar-reference',
-    templateUrl: './sidebar-reference.component.html',
-    styleUrls: ['./sidebar-reference.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-sidebar-reference',
+  templateUrl: './sidebar-reference.component.html',
+  styleUrls: ['./sidebar-reference.component.scss'],
+  standalone: false
 })
 export class SidebarReferenceComponent<T extends esri.Graphic> extends AggiemapSidebarReferenceComponent<T> {}

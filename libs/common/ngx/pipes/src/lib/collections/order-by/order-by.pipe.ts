@@ -2,8 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
 @Pipe({
-    name: 'orderBy',
-    standalone: false
+  name: 'orderBy',
+  standalone: false
 })
 export class OrderByPipe implements PipeTransform {
   /**

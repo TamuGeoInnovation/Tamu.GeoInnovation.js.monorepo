@@ -9,10 +9,10 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
 @Component({
-    selector: 'tamu-gisc-sponsor-list',
-    templateUrl: './sponsor-list.component.html',
-    styleUrls: ['./sponsor-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-sponsor-list',
+  templateUrl: './sponsor-list.component.html',
+  styleUrls: ['./sponsor-list.component.scss'],
+  standalone: false
 })
 export class SponsorListComponent extends BaseAdminListComponent<Sponsor> {
   constructor(

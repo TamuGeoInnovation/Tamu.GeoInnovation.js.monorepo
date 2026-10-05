@@ -26,10 +26,10 @@ import { ViewerService } from '../../services/viewer.service';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-participant',
-    templateUrl: './participant.component.html',
-    styleUrls: ['./participant.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-participant',
+  templateUrl: './participant.component.html',
+  styleUrls: ['./participant.component.scss'],
+  standalone: false
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
   @Output()

@@ -5,10 +5,10 @@ import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/ge
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-    selector: 'tamu-gisc-address-processing',
-    templateUrl: './address-processing.component.html',
-    styleUrls: ['./address-processing.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-address-processing',
+  templateUrl: './address-processing.component.html',
+  styleUrls: ['./address-processing.component.scss'],
+  standalone: false
 })
 export class AddressProcessingComponent implements OnInit {
   private address: AddressProcessing;

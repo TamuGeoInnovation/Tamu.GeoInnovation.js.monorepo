@@ -11,10 +11,10 @@ interface MenuItem {
 }
 
 @Component({
-    selector: 'tamu-gisc-main-mobile-sidebar',
-    templateUrl: './main-mobile-sidebar.component.html',
-    styleUrls: ['./main-mobile-sidebar.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-main-mobile-sidebar',
+  templateUrl: './main-mobile-sidebar.component.html',
+  styleUrls: ['./main-mobile-sidebar.component.scss'],
+  standalone: false
 })
 export class MainMobileSidebarComponent {
   public menu: MenuItem[] = [

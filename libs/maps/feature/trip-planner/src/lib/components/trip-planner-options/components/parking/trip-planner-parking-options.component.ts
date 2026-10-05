@@ -9,10 +9,10 @@ import { TripPlannerOptionsBaseComponent } from '../base/base.component';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-parking-options-component',
-    templateUrl: './trip-planner-parking-options.component.html',
-    styleUrls: ['../../containers/base/base.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-trip-planner-parking-options-component',
+  templateUrl: './trip-planner-parking-options.component.html',
+  styleUrls: ['../../containers/base/base.component.scss'],
+  standalone: false
 })
 export class TripPlannerParkingOptionsComponent extends TripPlannerOptionsBaseComponent {
   /**

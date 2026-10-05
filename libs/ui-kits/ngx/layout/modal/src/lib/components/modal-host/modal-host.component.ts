@@ -15,11 +15,11 @@ import { MODAL_DATA } from '../../..';
 import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
 
 @Component({
-    selector: 'tamu-gisc-modal-host',
-    templateUrl: './modal-host.component.html',
-    styleUrls: ['./modal-host.component.scss'],
-    providers: [ModalRefService],
-    standalone: false
+  selector: 'tamu-gisc-modal-host',
+  templateUrl: './modal-host.component.html',
+  styleUrls: ['./modal-host.component.scss'],
+  providers: [ModalRefService],
+  standalone: false
 })
 export class ModalHostComponent implements OnInit, OnDestroy {
   @ViewChild('modal', { static: true, read: ViewContainerRef })

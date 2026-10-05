@@ -9,10 +9,10 @@ import { LayerListService } from '../../services/layer-list.service';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-layer-list',
-    templateUrl: './layer-list.component.html',
-    styleUrls: ['./layer-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-layer-list',
+  templateUrl: './layer-list.component.html',
+  styleUrls: ['./layer-list.component.scss'],
+  standalone: false
 })
 export class LayerListComponent implements OnInit {
   @Input() public allowedLayerIds: string[] = [];
@@ -47,7 +47,9 @@ export class LayerListComponent implements OnInit {
         if (this.orderBy === 'allowed' && this.allowedLayerIds.length > 0) {
           // `filtered` only contains allowed ids here, so order by their position in the list to
           // match an external draw order (e.g. the legend).
-          return filtered.sort((a, b) => this.allowedLayerIds.indexOf(a.layer.id) - this.allowedLayerIds.indexOf(b.layer.id));
+          return filtered.sort(
+            (a, b) => this.allowedLayerIds.indexOf(a.layer.id) - this.allowedLayerIds.indexOf(b.layer.id)
+          );
         }
 
         // Order layers by title

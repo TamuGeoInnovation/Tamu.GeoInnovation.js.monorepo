@@ -6,10 +6,10 @@ import { TileLinkDirective } from '../../directives/tile-link/tile-link.directiv
 import { TileService } from '../../services/tile.service';
 
 @Component({
-    selector: 'tamu-gisc-tile-submenu',
-    templateUrl: './tile-submenu.component.html',
-    styleUrls: ['./tile-submenu.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-tile-submenu',
+  templateUrl: './tile-submenu.component.html',
+  styleUrls: ['./tile-submenu.component.scss'],
+  standalone: false
 })
 export class TileSubmenuComponent implements AfterContentInit, OnDestroy {
   @Input()

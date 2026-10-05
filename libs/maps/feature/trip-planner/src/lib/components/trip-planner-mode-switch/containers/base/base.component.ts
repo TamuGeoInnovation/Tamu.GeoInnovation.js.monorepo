@@ -5,10 +5,10 @@ import { TripModeSwitch, TripPlannerService } from '../../../../services/trip-pl
 import { BusService } from '../../../../services/transportation/bus/bus.service';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-mode-switch',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-trip-planner-mode-switch',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  standalone: false
 })
 export class TripPlannerModeSwitchComponent implements OnInit {
   @Input()

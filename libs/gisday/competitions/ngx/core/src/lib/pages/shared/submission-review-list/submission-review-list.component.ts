@@ -15,10 +15,10 @@ interface SwimlaneNgxDatatableActivateEvent {
 }
 
 @Component({
-    selector: 'tamu-gisc-submission-review-list',
-    templateUrl: './submission-review-list.component.html',
-    styleUrls: ['./submission-review-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-submission-review-list',
+  templateUrl: './submission-review-list.component.html',
+  styleUrls: ['./submission-review-list.component.scss'],
+  standalone: false
 })
 export class SubmissionReviewListComponent implements OnInit {
   @Input() public submissions$: Observable<SubmissionReviewDto[]>;

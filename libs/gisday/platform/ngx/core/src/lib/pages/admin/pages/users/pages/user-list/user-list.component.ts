@@ -5,10 +5,10 @@ import { UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Auth0UserProfile } from '@tamu-gisc/common/nest/auth';
 
 @Component({
-    selector: 'tamu-gisc-user-list',
-    templateUrl: './user-list.component.html',
-    styleUrls: ['./user-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-user-list',
+  templateUrl: './user-list.component.html',
+  styleUrls: ['./user-list.component.scss'],
+  standalone: false
 })
 export class UserListComponent implements OnInit {
   public users$: Observable<Array<Auth0UserProfile>>;

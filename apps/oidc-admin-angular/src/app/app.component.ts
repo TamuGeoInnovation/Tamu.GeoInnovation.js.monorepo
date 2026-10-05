@@ -4,10 +4,10 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { environment } from '../environments/environment';
 
 @Component({
-    selector: 'tamu-gisc-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  standalone: false
 })
 export class AppComponent implements OnInit {
   constructor(public oidcSecurityService: OidcSecurityService) {}

@@ -13,11 +13,11 @@ import { SnapshotService } from '@tamu-gisc/cpa/ngx/data-access';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-snapshot-builder',
-    templateUrl: './snapshot-builder.component.html',
-    styleUrls: ['./snapshot-builder.component.scss'],
-    providers: [EsriMapService],
-    standalone: false
+  selector: 'tamu-gisc-snapshot-builder',
+  templateUrl: './snapshot-builder.component.html',
+  styleUrls: ['./snapshot-builder.component.scss'],
+  providers: [EsriMapService],
+  standalone: false
 })
 export class SnapshotBuilderComponent implements OnInit, OnDestroy {
   public builderForm: UntypedFormGroup;

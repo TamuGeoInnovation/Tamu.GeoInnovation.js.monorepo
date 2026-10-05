@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'nearestDate',
-    standalone: false
+  name: 'nearestDate',
+  standalone: false
 })
 export class NearestDatePipe implements PipeTransform {
   public transform(dates: Array<Date | null>): Date | null {

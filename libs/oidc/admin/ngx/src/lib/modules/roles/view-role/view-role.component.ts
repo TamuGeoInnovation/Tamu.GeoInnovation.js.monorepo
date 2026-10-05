@@ -6,10 +6,10 @@ import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 import { Role } from '@tamu-gisc/oidc/common';
 
 @Component({
-    selector: 'tamu-gisc-view',
-    templateUrl: './view-role.component.html',
-    styleUrls: ['./view-role.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-view',
+  templateUrl: './view-role.component.html',
+  styleUrls: ['./view-role.component.scss'],
+  standalone: false
 })
 export class ViewRoleComponent {
   public $roles: Observable<Array<Partial<Role>>>;

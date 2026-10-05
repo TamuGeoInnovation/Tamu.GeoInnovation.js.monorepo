@@ -5,9 +5,9 @@ import { Observable, Subject } from 'rxjs';
 import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
-    selector: 'tamu-gisc-base-admin-view',
-    template: '',
-    standalone: false
+  selector: 'tamu-gisc-base-admin-view',
+  template: '',
+  standalone: false
 })
 export abstract class BaseAdminViewComponent<T> implements IBaseAdminViewComponent, OnDestroy {
   public $entities: Observable<Array<Partial<T>>>;

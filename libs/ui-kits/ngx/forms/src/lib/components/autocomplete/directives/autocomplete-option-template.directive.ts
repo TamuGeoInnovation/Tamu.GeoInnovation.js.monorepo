@@ -8,8 +8,8 @@ import { Directive, Input, TemplateRef } from '@angular/core';
  * </ng-template>
  */
 @Directive({
-    selector: '[tamuGiscAutocompleteOption]',
-    standalone: false
+  selector: '[tamuGiscAutocompleteOption]',
+  standalone: false
 })
 export class AutocompleteOptionTemplateDirective<T = unknown> {
   /**

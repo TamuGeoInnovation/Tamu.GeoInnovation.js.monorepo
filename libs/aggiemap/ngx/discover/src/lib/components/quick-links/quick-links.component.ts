@@ -6,10 +6,10 @@ export interface QuickLinkItem {
 }
 
 @Component({
-    selector: 'tamu-gisc-quick-links',
-    templateUrl: './quick-links.component.html',
-    styleUrls: ['./quick-links.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-quick-links',
+  templateUrl: './quick-links.component.html',
+  styleUrls: ['./quick-links.component.scss'],
+  standalone: false
 })
 export class QuickLinksComponent {
   @Input()

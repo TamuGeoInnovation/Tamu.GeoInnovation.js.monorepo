@@ -17,10 +17,10 @@ import { PopupService } from '../../services/popup.service';
 import { BasePopupComponent } from '../../components/base/base.component';
 
 @Component({
-    selector: 'tamu-gisc-feature-popup',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-feature-popup',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  standalone: false
 })
 export class PopupComponent implements OnInit, OnDestroy {
   /**

@@ -3,8 +3,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
 @Pipe({
-    name: 'lookup',
-    standalone: false
+  name: 'lookup',
+  standalone: false
 })
 export class LookupPipe<T> implements PipeTransform {
   /**

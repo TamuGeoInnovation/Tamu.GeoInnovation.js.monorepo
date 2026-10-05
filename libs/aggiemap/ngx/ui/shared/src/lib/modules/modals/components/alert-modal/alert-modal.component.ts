@@ -11,10 +11,10 @@ export interface AlertModalData {
 }
 
 @Component({
-    selector: 'tamu-gisc-alert-modal',
-    templateUrl: './alert-modal.component.html',
-    styleUrls: ['./alert-modal.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-alert-modal',
+  templateUrl: './alert-modal.component.html',
+  styleUrls: ['./alert-modal.component.scss'],
+  standalone: false
 })
 export class AlertModalComponent {
   public title: string;
@@ -22,7 +22,11 @@ export class AlertModalComponent {
   public primaryText: string;
   public secondaryText?: string;
 
-  constructor(private readonly mr: ModalRefService, private readonly ss: SettingsService, @Inject(MODAL_DATA) private readonly data: AlertModalData) {
+  constructor(
+    private readonly mr: ModalRefService,
+    private readonly ss: SettingsService,
+    @Inject(MODAL_DATA) private readonly data: AlertModalData
+  ) {
     this.title = data?.title || '';
     this.message = data?.message || '';
     this.primaryText = data?.primaryText || 'OK';

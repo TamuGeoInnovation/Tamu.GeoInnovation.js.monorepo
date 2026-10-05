@@ -8,10 +8,10 @@ import { ClassService, UserClassesService } from '@tamu-gisc/gisday/platform/ngx
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-    selector: 'tamu-gisc-my-classes',
-    templateUrl: './my-classes.component.html',
-    styleUrls: ['./my-classes.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-my-classes',
+  templateUrl: './my-classes.component.html',
+  styleUrls: ['./my-classes.component.scss'],
+  standalone: false
 })
 export class MyClassesComponent implements OnInit {
   public classes$: Observable<Array<Partial<Class>>>;

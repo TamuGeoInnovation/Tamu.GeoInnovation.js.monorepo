@@ -9,10 +9,10 @@ import { AuthService } from '@tamu-gisc/common/ngx/auth';
 import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
-    selector: 'tamu-gisc-leaderboard',
-    templateUrl: './leaderboard.component.html',
-    styleUrls: ['./leaderboard.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-leaderboard',
+  templateUrl: './leaderboard.component.html',
+  styleUrls: ['./leaderboard.component.scss'],
+  standalone: false
 })
 export class LeaderboardComponent implements OnInit {
   public me$: Observable<string>;

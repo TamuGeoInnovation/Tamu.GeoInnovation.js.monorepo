@@ -6,10 +6,10 @@ import { Geocode, CensusYear, GeocodeReferenceFeature } from '@tamu-gisc/geoproc
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-    selector: 'tamu-gisc-geocoding',
-    templateUrl: './geocoding.component.html',
-    styleUrls: ['./geocoding.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-geocoding',
+  templateUrl: './geocoding.component.html',
+  styleUrls: ['./geocoding.component.scss'],
+  standalone: false
 })
 export class GeocodingComponent implements OnInit {
   private geocode: Geocode;

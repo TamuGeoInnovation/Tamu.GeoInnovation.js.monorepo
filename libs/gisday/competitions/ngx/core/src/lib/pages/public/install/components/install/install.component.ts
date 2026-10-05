@@ -7,10 +7,10 @@ import { Device, IDeviceOSVersion } from '@tamu-gisc/common/utils/device';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
 
 @Component({
-    selector: 'tamu-gisc-install',
-    templateUrl: './install.component.html',
-    styleUrls: ['./install.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-install',
+  templateUrl: './install.component.html',
+  styleUrls: ['./install.component.scss'],
+  standalone: false
 })
 export class InstallComponent implements OnInit {
   public device: Device;

@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-    selector: 'tamu-gisc-landing',
-    templateUrl: './landing.component.html',
-    styleUrls: ['./landing.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-landing',
+  templateUrl: './landing.component.html',
+  styleUrls: ['./landing.component.scss'],
+  standalone: false
 })
 export class LandingComponent implements OnInit {
   public url: string;

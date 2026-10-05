@@ -8,10 +8,10 @@ import { ISnapshotPartial } from '@tamu-gisc/cpa/data-api';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-    selector: 'tamu-gisc-snapshots-list',
-    templateUrl: './snapshots-list.component.html',
-    styleUrls: ['./snapshots-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-snapshots-list',
+  templateUrl: './snapshots-list.component.html',
+  styleUrls: ['./snapshots-list.component.scss'],
+  standalone: false
 })
 export class SnapshotsListComponent implements OnInit {
   public snapshots: Observable<ISnapshotPartial[]>;

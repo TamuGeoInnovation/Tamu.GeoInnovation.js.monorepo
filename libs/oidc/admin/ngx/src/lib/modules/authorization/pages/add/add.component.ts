@@ -8,10 +8,10 @@ import { ClientService, RolesService, UserRoleService, UsersService } from '@tam
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-    selector: 'tamu-gisc-add',
-    templateUrl: './add.component.html',
-    styleUrls: ['./add.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-add',
+  templateUrl: './add.component.html',
+  styleUrls: ['./add.component.scss'],
+  standalone: false
 })
 export class AddComponent implements OnInit {
   public form: UntypedFormGroup;

@@ -7,10 +7,10 @@ import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
-    selector: 'tamu-gisc-sponsors-detail',
-    templateUrl: './sponsors-detail.component.html',
-    styleUrls: ['./sponsors-detail.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-sponsors-detail',
+  templateUrl: './sponsors-detail.component.html',
+  styleUrls: ['./sponsors-detail.component.scss'],
+  standalone: false
 })
 export class SponsorsDetailComponent implements OnInit {
   public $sponsor: Observable<Partial<Sponsor>>;

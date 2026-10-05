@@ -7,10 +7,10 @@ import { TripPlannerDirectionsComponent } from '../base/base.component';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-directions-mobile',
-    templateUrl: './mobile.component.html',
-    styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-trip-planner-directions-mobile',
+  templateUrl: './mobile.component.html',
+  styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
+  standalone: false
 })
 export class TripPlannerDirectionsMobileComponent extends TripPlannerDirectionsComponent {
   constructor(private rt: Router, private ps: TripPlannerService, private al: Angulartics2) {

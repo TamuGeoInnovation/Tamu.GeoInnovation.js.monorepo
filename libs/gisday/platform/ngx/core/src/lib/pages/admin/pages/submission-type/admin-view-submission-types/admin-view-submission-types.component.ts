@@ -5,10 +5,10 @@ import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';
 
 @Component({
-    selector: 'tamu-gisc-admin-view-submission-types',
-    templateUrl: './admin-view-submission-types.component.html',
-    styleUrls: ['./admin-view-submission-types.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-admin-view-submission-types',
+  templateUrl: './admin-view-submission-types.component.html',
+  styleUrls: ['./admin-view-submission-types.component.scss'],
+  standalone: false
 })
 export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<SubmissionType> {
   constructor(private readonly submissionTypeService: SubmissionTypeService) {

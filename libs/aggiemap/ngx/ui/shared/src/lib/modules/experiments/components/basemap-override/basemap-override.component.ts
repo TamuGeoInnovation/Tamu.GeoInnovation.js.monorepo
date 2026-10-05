@@ -5,10 +5,10 @@ import { debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxj
 import { SettingsInitializationConfig, SettingsService } from '@tamu-gisc/common/ngx/settings';
 
 @Component({
-    selector: 'tamu-gisc-basemap-override',
-    templateUrl: './basemap-override.component.html',
-    styleUrls: ['./basemap-override.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-basemap-override',
+  templateUrl: './basemap-override.component.html',
+  styleUrls: ['./basemap-override.component.scss'],
+  standalone: false
 })
 export class BasemapOverrideComponent implements OnInit, OnDestroy {
   public form: UntypedFormGroup;

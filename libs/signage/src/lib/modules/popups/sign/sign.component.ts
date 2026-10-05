@@ -6,10 +6,10 @@ import { shareReplay, pluck } from 'rxjs/operators';
 import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
 
 @Component({
-    selector: 'tamu-gisc-sign',
-    templateUrl: './sign.component.html',
-    styleUrls: ['./sign.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-sign',
+  templateUrl: './sign.component.html',
+  styleUrls: ['./sign.component.scss'],
+  standalone: false
 })
 export class SignPopupComponent extends BasePopupComponent implements OnInit {
   public details: Observable<ISignagePhoto>;

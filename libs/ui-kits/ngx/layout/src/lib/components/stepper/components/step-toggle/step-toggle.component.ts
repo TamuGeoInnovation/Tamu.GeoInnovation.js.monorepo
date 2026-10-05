@@ -1,10 +1,10 @@
 import { Component, TemplateRef, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
-    selector: 'tamu-gisc-step-toggle',
-    templateUrl: './step-toggle.component.html',
-    styleUrls: ['./step-toggle.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-step-toggle',
+  templateUrl: './step-toggle.component.html',
+  styleUrls: ['./step-toggle.component.scss'],
+  standalone: false
 })
 export class StepToggleComponent {
   @Input()

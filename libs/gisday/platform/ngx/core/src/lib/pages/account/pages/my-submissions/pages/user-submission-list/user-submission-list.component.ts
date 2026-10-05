@@ -6,10 +6,10 @@ import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-acce
 import { SUBMISSION_REVIEW_STATUS } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
-    selector: 'tamu-gisc-user-submission-list',
-    templateUrl: './user-submission-list.component.html',
-    styleUrls: ['./user-submission-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-user-submission-list',
+  templateUrl: './user-submission-list.component.html',
+  styleUrls: ['./user-submission-list.component.scss'],
+  standalone: false
 })
 export class UserSubmissionListComponent implements OnInit {
   public presentationSubmissions$: Observable<Array<Partial<Submission>>>;

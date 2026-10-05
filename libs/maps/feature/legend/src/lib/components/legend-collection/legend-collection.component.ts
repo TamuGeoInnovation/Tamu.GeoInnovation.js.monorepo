@@ -3,10 +3,10 @@ import { Component, Input } from '@angular/core';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-legend-collection',
-    templateUrl: './legend-collection.component.html',
-    styleUrls: ['./legend-collection.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-legend-collection',
+  templateUrl: './legend-collection.component.html',
+  styleUrls: ['./legend-collection.component.scss'],
+  standalone: false
 })
 export class LegendCollectionComponent {
   @Input()
@@ -92,11 +92,7 @@ export class LegendCollectionComponent {
   }
 
   public get childHideElementGroupHeaders(): boolean {
-    if (
-      this.combineChildrenUnderPrimary &&
-      this.hasChildren &&
-      this._isPhysicsFestivalGroup(this.group?.layer?.id)
-    ) {
+    if (this.combineChildrenUnderPrimary && this.hasChildren && this._isPhysicsFestivalGroup(this.group?.layer?.id)) {
       return true;
     }
 
@@ -193,7 +189,11 @@ export class LegendCollectionComponent {
   }
 
   private _shouldHideSportsSafetyFirstChildGroups(): boolean {
-    return this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id) && this.legendElements.length > 0 && this.childGroups.length > 0;
+    return (
+      this._sportsSafetyFirstLayerIds.has(this.group?.layer?.id) &&
+      this.legendElements.length > 0 &&
+      this.childGroups.length > 0
+    );
   }
 
   private _getPhysicsFestivalChildPriority(title?: string): number {

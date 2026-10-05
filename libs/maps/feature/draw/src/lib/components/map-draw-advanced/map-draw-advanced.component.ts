@@ -7,10 +7,10 @@ import { BaseDrawComponent, ISketchViewModelEvent } from '../base/base.component
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-map-draw-advanced',
-    templateUrl: './map-draw-advanced.component.html',
-    styleUrls: ['./map-draw-advanced.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-map-draw-advanced',
+  templateUrl: './map-draw-advanced.component.html',
+  styleUrls: ['./map-draw-advanced.component.scss'],
+  standalone: false
 })
 export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnInit {
   /**

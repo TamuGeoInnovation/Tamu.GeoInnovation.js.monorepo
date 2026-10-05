@@ -32,10 +32,10 @@ import {
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-    selector: 'tamu-gisc-event-add-edit-form',
-    templateUrl: './event-add-edit-form.component.html',
-    styleUrls: ['./event-add-edit-form.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-event-add-edit-form',
+  templateUrl: './event-add-edit-form.component.html',
+  styleUrls: ['./event-add-edit-form.component.scss'],
+  standalone: false
 })
 export class EventAddEditFormComponent implements OnInit {
   @Input()

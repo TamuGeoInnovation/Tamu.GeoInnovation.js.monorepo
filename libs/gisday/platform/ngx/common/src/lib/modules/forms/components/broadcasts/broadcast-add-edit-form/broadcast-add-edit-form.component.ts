@@ -8,10 +8,10 @@ import { BroadcastService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-    selector: 'tamu-gisc-broadcast-add-edit-form',
-    templateUrl: './broadcast-add-edit-form.component.html',
-    styleUrls: ['./broadcast-add-edit-form.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-broadcast-add-edit-form',
+  templateUrl: './broadcast-add-edit-form.component.html',
+  styleUrls: ['./broadcast-add-edit-form.component.scss'],
+  standalone: false
 })
 export class BroadcastAddEditFormComponent implements OnInit {
   @Input()

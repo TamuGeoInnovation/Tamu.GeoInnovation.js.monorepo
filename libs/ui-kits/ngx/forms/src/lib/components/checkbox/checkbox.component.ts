@@ -2,17 +2,17 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, forwardR
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 @Component({
-    selector: 'tamu-gisc-checkbox',
-    templateUrl: './checkbox.component.html',
-    styleUrls: ['./checkbox.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => CheckboxComponent),
-            multi: true
-        }
-    ],
-    standalone: false
+  selector: 'tamu-gisc-checkbox',
+  templateUrl: './checkbox.component.html',
+  styleUrls: ['./checkbox.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CheckboxComponent),
+      multi: true
+    }
+  ],
+  standalone: false
 })
 export class CheckboxComponent implements ControlValueAccessor {
   @ViewChild('checkboxInput', { static: true }) public ref: ElementRef;

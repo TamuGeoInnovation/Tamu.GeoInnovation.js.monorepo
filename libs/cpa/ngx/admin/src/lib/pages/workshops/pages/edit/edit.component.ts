@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
 @Component({
-    selector: 'tamu-gisc-edit',
-    templateUrl: './edit.component.html',
-    styleUrls: ['./edit.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.scss'],
+  standalone: false
 })
 export class EditComponent implements OnInit {
   public guid: Observable<string>;

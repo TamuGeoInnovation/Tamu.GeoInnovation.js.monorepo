@@ -7,10 +7,10 @@ import { IReverseGeocodeRecord, ReverseGeocodeRecordField } from '@tamu-gisc/geo
 import { ReverseGeocodeFieldLabel } from '../../../../../util/dictionaries';
 
 @Component({
-    selector: 'tamu-gisc-reverse-geocoding-result-table',
-    templateUrl: './reverse-geocoding-result-table.component.html',
-    styleUrls: ['./reverse-geocoding-result-table.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-reverse-geocoding-result-table',
+  templateUrl: './reverse-geocoding-result-table.component.html',
+  styleUrls: ['./reverse-geocoding-result-table.component.scss'],
+  standalone: false
 })
 export class ReverseGeocodingResultTableComponent implements OnInit {
   @Input()

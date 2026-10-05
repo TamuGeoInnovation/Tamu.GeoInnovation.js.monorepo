@@ -6,11 +6,11 @@ import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-result-map',
-    templateUrl: './result-map.component.html',
-    styleUrls: ['./result-map.component.scss'],
-    providers: [EsriMapService],
-    standalone: false
+  selector: 'tamu-gisc-result-map',
+  templateUrl: './result-map.component.html',
+  styleUrls: ['./result-map.component.scss'],
+  providers: [EsriMapService],
+  standalone: false
 })
 export class ResultMapComponent implements OnInit {
   @Input()

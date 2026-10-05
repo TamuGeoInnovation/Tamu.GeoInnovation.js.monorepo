@@ -17,10 +17,10 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
  * Extends `BaseDirectionsComponent` for the shared "Directions To Here" + copy-link behavior.
  */
 @Component({
-    selector: 'tamu-gisc-bus-stop-popup-component',
-    templateUrl: './bus-stop.component.html',
-    styleUrls: ['../base/base.popup.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-bus-stop-popup-component',
+  templateUrl: './bus-stop.component.html',
+  styleUrls: ['../base/base.popup.component.scss'],
+  standalone: false
 })
 export class BusStopPopupComponent extends BaseDirectionsComponent implements OnInit {
   /**

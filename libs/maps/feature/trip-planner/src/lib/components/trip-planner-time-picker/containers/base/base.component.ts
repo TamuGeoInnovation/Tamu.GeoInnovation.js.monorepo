@@ -7,10 +7,10 @@ import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TimeModeOption, TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-time-picker',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-trip-planner-time-picker',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  standalone: false
 })
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**

@@ -4,8 +4,8 @@ import { Roles } from '@tamu-gisc/ues/common/nest';
 import { isAuthorized } from '../utils/utils';
 
 @Pipe({
-    name: 'authGroups',
-    standalone: false
+  name: 'authGroups',
+  standalone: false
 })
 export class AuthGroupsPipe implements PipeTransform {
   public transform(userRoles: Array<Roles>, acceptedRoles: Array<Roles>): boolean {

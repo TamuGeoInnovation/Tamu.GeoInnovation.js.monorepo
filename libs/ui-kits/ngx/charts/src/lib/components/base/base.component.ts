@@ -10,9 +10,9 @@ import {
 } from '../chart-container/chart-container.component';
 
 @Component({
-    template: '',
-    styleUrls: ['base.component.scss'],
-    standalone: false
+  template: '',
+  styleUrls: ['base.component.scss'],
+  standalone: false
 })
 export class BaseChartComponent implements OnInit, AfterViewInit {
   /**

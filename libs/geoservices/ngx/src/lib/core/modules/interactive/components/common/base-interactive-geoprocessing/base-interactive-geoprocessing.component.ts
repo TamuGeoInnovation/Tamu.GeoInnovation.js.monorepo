@@ -23,21 +23,21 @@ import { GeoservicesError } from '@tamu-gisc/geoprocessing-core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-    selector: 'tamu-gisc-base-interactive-geoprocessing',
-    template: '',
-    animations: [
-        trigger('inOutAnimation', [
-            transition(':enter', [
-                style({ transform: 'translateY(-1rem)', opacity: 0 }),
-                animate('.3s ease-in', style({ transform: 'translateY(0)', opacity: 1 }))
-            ]),
-            transition(':leave', [
-                style({ transform: 'translateX(0)', opacity: 1 }),
-                animate('.25s ease-out', style({ transform: 'translateX(2.5rem)', opacity: 0, height: 0 }))
-            ])
-        ])
-    ],
-    standalone: false
+  selector: 'tamu-gisc-base-interactive-geoprocessing',
+  template: '',
+  animations: [
+    trigger('inOutAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(-1rem)', opacity: 0 }),
+        animate('.3s ease-in', style({ transform: 'translateY(0)', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ transform: 'translateX(0)', opacity: 1 }),
+        animate('.25s ease-out', style({ transform: 'translateX(2.5rem)', opacity: 0, height: 0 }))
+      ])
+    ])
+  ],
+  standalone: false
 })
 export abstract class BaseInteractiveGeoprocessingComponent<ResultType, ParamType> implements OnInit {
   public form: UntypedFormGroup;

@@ -21,10 +21,10 @@ import { makeWhere } from '@tamu-gisc/common/utils/database';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-layer-filter',
-    templateUrl: './layer-filter.component.html',
-    styleUrls: ['./layer-filter.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-layer-filter',
+  templateUrl: './layer-filter.component.html',
+  styleUrls: ['./layer-filter.component.scss'],
+  standalone: false
 })
 export class LayerFilterComponent implements OnInit, OnDestroy {
   constructor(

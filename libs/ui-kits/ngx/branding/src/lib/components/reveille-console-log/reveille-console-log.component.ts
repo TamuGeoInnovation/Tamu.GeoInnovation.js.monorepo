@@ -55,10 +55,10 @@ export const REV_ASCII = `                                                      
       -/+ssssso+//+osssssoosssso+/-`;
 
 @Component({
-    selector: 'tamu-gisc-reveille-console-log',
-    templateUrl: './reveille-console-log.component.html',
-    styleUrls: ['./reveille-console-log.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-reveille-console-log',
+  templateUrl: './reveille-console-log.component.html',
+  styleUrls: ['./reveille-console-log.component.scss'],
+  standalone: false
 })
 export class ReveilleConsoleLogComponent {
   constructor(private testing: TestingService) {

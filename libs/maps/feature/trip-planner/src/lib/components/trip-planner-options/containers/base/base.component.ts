@@ -12,11 +12,11 @@ import { TripPlannerParkingOptionsComponent } from '../../components/parking/tri
 import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-planner-biking-options.component';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-options',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'tamu-gisc-trip-planner-options',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TripPlannerOptionsComponent implements OnInit {
   public readonly isDev = this.testingService.get('isTesting').pipe(shareReplay(1)) as Observable<boolean>;

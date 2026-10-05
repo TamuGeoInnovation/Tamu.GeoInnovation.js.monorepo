@@ -11,10 +11,10 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
 @Component({
-    selector: 'tamu-gisc-dining-popup-component',
-    templateUrl: './dining.component.html',
-    styleUrls: ['../base/base.popup.component.scss', './dining.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-dining-popup-component',
+  templateUrl: './dining.component.html',
+  styleUrls: ['../base/base.popup.component.scss', './dining.component.scss'],
+  standalone: false
 })
 export class DiningPopupComponent extends BaseDirectionsComponent implements OnInit {
   public menu: Observable<IDiningLocationMenu>;

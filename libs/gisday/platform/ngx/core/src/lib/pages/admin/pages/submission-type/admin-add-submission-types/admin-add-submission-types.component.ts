@@ -14,10 +14,10 @@ export const formExporter = () => {
 };
 
 @Component({
-    selector: 'tamu-gisc-admin-add-submission-types',
-    templateUrl: './admin-add-submission-types.component.html',
-    styleUrls: ['./admin-add-submission-types.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-admin-add-submission-types',
+  templateUrl: './admin-add-submission-types.component.html',
+  styleUrls: ['./admin-add-submission-types.component.scss'],
+  standalone: false
 })
 export class AdminAddSubmissionTypesComponent extends BaseAdminAddComponent<SubmissionType> implements OnInit {
   constructor(private submissionTypeService: SubmissionTypeService) {

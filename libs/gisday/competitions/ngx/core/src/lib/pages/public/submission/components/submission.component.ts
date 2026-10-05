@@ -5,10 +5,10 @@ import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({
-    selector: 'tamu-gisc-submission-complete',
-    templateUrl: './submission.component.html',
-    styleUrls: ['./submission.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-submission-complete',
+  templateUrl: './submission.component.html',
+  styleUrls: ['./submission.component.scss'],
+  standalone: false
 })
 export class SubmissionComponent implements OnInit {
   public model: Observable<CompetitionSeason>;

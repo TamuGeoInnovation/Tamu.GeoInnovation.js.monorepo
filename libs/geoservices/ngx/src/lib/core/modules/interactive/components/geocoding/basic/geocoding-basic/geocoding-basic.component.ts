@@ -13,10 +13,10 @@ import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-inte
 import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
 
 @Component({
-    selector: 'tamu-gisc-geocoding-basic',
-    templateUrl: './geocoding-basic.component.html',
-    styleUrls: ['./geocoding-basic.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-geocoding-basic',
+  templateUrl: './geocoding-basic.component.html',
+  styleUrls: ['./geocoding-basic.component.scss'],
+  standalone: false
 })
 export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<GeocodeResult, IGeocodeOptions> {
   public states = STATES_TITLECASE;

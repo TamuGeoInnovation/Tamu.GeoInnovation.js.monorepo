@@ -6,10 +6,10 @@ import { filter, map, pluck, takeUntil } from 'rxjs/operators';
 import { ViewerService } from './services/viewer.service';
 
 @Component({
-    selector: 'tamu-gisc-viewer',
-    templateUrl: './cpa-ngx-viewer.component.html',
-    styleUrls: ['./cpa-ngx-viewer.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-viewer',
+  templateUrl: './cpa-ngx-viewer.component.html',
+  styleUrls: ['./cpa-ngx-viewer.component.scss'],
+  standalone: false
 })
 export class ViewerComponent implements OnInit, OnDestroy {
   public showAdminControls: Observable<boolean>;

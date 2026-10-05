@@ -8,10 +8,10 @@ import { SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-    selector: 'tamu-gisc-season-add-edit-form',
-    templateUrl: './season-add-edit-form.component.html',
-    styleUrls: ['./season-add-edit-form.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-season-add-edit-form',
+  templateUrl: './season-add-edit-form.component.html',
+  styleUrls: ['./season-add-edit-form.component.scss'],
+  standalone: false
 })
 export class SeasonAddEditFormComponent implements OnInit {
   @Input()

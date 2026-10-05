@@ -6,10 +6,10 @@ import { UserRoleService } from '@tamu-gisc/oidc/admin/data-access';
 import { ISimplifiedUserRoleResponse } from '@tamu-gisc/oidc/common';
 
 @Component({
-    selector: 'tamu-gisc-view',
-    templateUrl: './view.component.html',
-    styleUrls: ['./view.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-view',
+  templateUrl: './view.component.html',
+  styleUrls: ['./view.component.scss'],
+  standalone: false
 })
 export class ViewComponent implements OnInit {
   public $userRoles: Observable<Array<Partial<ISimplifiedUserRoleResponse>>>;

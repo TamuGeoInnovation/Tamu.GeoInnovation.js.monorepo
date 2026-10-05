@@ -11,10 +11,10 @@ import { GISDayRoles } from '../../roles/gisday.roles';
 import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enum';
 
 @Component({
-    selector: 'tamu-gisc-app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  standalone: false
 })
 export class HeaderComponent implements OnInit {
   public loggedIn$: Observable<boolean>;

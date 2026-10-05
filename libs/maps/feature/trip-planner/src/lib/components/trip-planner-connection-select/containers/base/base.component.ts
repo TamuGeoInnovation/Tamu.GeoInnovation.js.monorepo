@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { TripPlannerConnectionService, TripPlannerConnection } from '../../../../services/trip-planner-connection.service';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-connection-select',
-    templateUrl: './base.component.html',
-    styleUrls: ['./base.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-trip-planner-connection-select',
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
+  standalone: false
 })
 export class TripPlannerConnectionsSelectComponent implements OnInit {
   /**

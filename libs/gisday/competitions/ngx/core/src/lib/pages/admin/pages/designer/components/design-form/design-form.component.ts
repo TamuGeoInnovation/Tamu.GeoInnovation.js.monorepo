@@ -10,10 +10,10 @@ import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-design-form',
-    templateUrl: './design-form.component.html',
-    styleUrls: ['./design-form.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-design-form',
+  templateUrl: './design-form.component.html',
+  styleUrls: ['./design-form.component.scss'],
+  standalone: false
 })
 export class DesignFormComponent implements OnInit {
   @Output()

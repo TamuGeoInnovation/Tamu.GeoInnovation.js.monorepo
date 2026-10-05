@@ -13,8 +13,8 @@ import { parseDateStrings } from '../../utils/parse-date-strings';
  * @implements {PipeTransform}
  */
 @Pipe({
-    name: 'parseDateTimeStrings',
-    standalone: false
+  name: 'parseDateTimeStrings',
+  standalone: false
 })
 export class ParseDateTimeStringsPipe implements PipeTransform {
   public transform(dateString: string | Date, timeString: string): Date {

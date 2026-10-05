@@ -19,10 +19,10 @@ import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angul
 import { DatatableComponent, TableColumn } from '@swimlane/ngx-datatable';
 
 @Component({
-    selector: 'tamu-gisc-aggiemap-directory',
-    templateUrl: './directory.component.html',
-    styleUrls: ['./directory.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-aggiemap-directory',
+  templateUrl: './directory.component.html',
+  styleUrls: ['./directory.component.scss'],
+  standalone: false
 })
 export class DirectoryComponent implements OnInit {
   public form: UntypedFormGroup;
@@ -64,7 +64,11 @@ export class DirectoryComponent implements OnInit {
 
     this._rows$ = combineLatest([
       this._data$,
-      (this.form.get('search') as UntypedFormControl).valueChanges.pipe(startWith(null), debounceTime(300), distinctUntilChanged())
+      (this.form.get('search') as UntypedFormControl).valueChanges.pipe(
+        startWith(null),
+        debounceTime(300),
+        distinctUntilChanged()
+      )
     ]).pipe(
       tap(() => {
         this.loadingIndicator = true;

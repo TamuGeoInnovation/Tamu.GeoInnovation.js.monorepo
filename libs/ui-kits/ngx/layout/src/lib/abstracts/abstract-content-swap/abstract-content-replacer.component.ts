@@ -3,9 +3,9 @@ import { Component, Input, ContentChildren, QueryList, AfterContentInit, Templat
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
 @Component({
-    selector: 'tamu-gisc-abstract-content-replacer',
-    template: '',
-    standalone: false
+  selector: 'tamu-gisc-abstract-content-replacer',
+  template: '',
+  standalone: false
 })
 export class AbstractContentReplacerComponent implements AfterContentInit {
   /**

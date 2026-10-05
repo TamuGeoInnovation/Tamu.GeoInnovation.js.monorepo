@@ -14,10 +14,10 @@ import { debounceTime, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 
 @Component({
-    selector: 'tamu-gisc-tooltip',
-    templateUrl: './tooltip.component.html',
-    styleUrls: ['./tooltip.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-tooltip',
+  templateUrl: './tooltip.component.html',
+  styleUrls: ['./tooltip.component.scss'],
+  standalone: false
 })
 export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   private _isVisible: BehaviorSubject<boolean> = new BehaviorSubject(false);

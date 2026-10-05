@@ -87,17 +87,17 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
  * `ngcc` rewrote it, which Angular 16 removes. The inputs and the `changed` output are unchanged.
  */
 @Component({
-    selector: 'tamu-gisc-date-time-picker',
-    templateUrl: './date-time-picker.component.html',
-    styleUrls: ['./date-time-picker.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => DateTimePickerComponent),
-            multi: true
-        }
-    ],
-    standalone: false
+  selector: 'tamu-gisc-date-time-picker',
+  templateUrl: './date-time-picker.component.html',
+  styleUrls: ['./date-time-picker.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DateTimePickerComponent),
+      multi: true
+    }
+  ],
+  standalone: false
 })
 export class DateTimePickerComponent implements ControlValueAccessor {
   // Get reference for the tooltip component rendered inside this date time picker component.

@@ -14,10 +14,10 @@ import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service'
  * link is the only way back; here the parent page is.
  */
 @Component({
-    selector: 'tamu-gisc-maps-page-header',
-    templateUrl: './maps-page-header.component.html',
-    styleUrls: ['./maps-page-header.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-maps-page-header',
+  templateUrl: './maps-page-header.component.html',
+  styleUrls: ['./maps-page-header.component.scss'],
+  standalone: false
 })
 export class MapsPageHeaderComponent {
   /**

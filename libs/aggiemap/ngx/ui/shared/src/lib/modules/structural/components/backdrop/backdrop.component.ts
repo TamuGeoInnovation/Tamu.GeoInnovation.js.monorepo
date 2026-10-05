@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Renderer2, ElementRef, Output, EventEmitter } from '@angular/core';
 
 @Component({
-    selector: 'tamu-gisc-backdrop',
-    templateUrl: './backdrop.component.html',
-    styleUrls: ['./backdrop.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-backdrop',
+  templateUrl: './backdrop.component.html',
+  styleUrls: ['./backdrop.component.scss'],
+  standalone: false
 })
 export class BackdropComponent implements OnInit {
   /**

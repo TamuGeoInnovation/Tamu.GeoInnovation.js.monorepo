@@ -4,10 +4,10 @@ import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 import { SignageService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
-    selector: 'tamu-gisc-signage',
-    templateUrl: './signage.component.html',
-    styleUrls: ['./signage.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-signage',
+  templateUrl: './signage.component.html',
+  styleUrls: ['./signage.component.scss'],
+  standalone: false
 })
 export class SignageComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private signageService: SignageService) {}

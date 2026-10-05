@@ -13,10 +13,10 @@ import { COMPETITION_VALIDATION_STATUS } from '@tamu-gisc/gisday/common';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-submission-detail-modal',
-    templateUrl: './submission-detail-modal.component.html',
-    styleUrls: ['./submission-detail-modal.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-submission-detail-modal',
+  templateUrl: './submission-detail-modal.component.html',
+  styleUrls: ['./submission-detail-modal.component.scss'],
+  standalone: false
 })
 export class SubmissionDetailModalComponent implements OnInit {
   public submission: SubmissionReviewDto;

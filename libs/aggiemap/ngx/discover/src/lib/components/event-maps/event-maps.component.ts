@@ -5,7 +5,13 @@ import { DiscoverMapType } from '@tamu-gisc/ts/events/ngx';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { DiscoveryService } from '../../services/discovery/discovery.service';
-import { buildMapColumnGroups, getApplicationRoute, sortApplicationsByName, MapColumnDefinition, MapColumnGroup } from '../discover.utils';
+import {
+  buildMapColumnGroups,
+  getApplicationRoute,
+  sortApplicationsByName,
+  MapColumnDefinition,
+  MapColumnGroup
+} from '../discover.utils';
 import { QuickLinkItem } from '../quick-links/quick-links.component';
 
 interface EventMapsRouteData {
@@ -27,10 +33,10 @@ interface EventMapsRouteData {
  * category is supplied via the route `data` so a single component serves all of these routes.
  */
 @Component({
-    selector: 'tamu-gisc-aggiemap-event-maps',
-    templateUrl: './event-maps.component.html',
-    styleUrls: ['./event-maps.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-aggiemap-event-maps',
+  templateUrl: './event-maps.component.html',
+  styleUrls: ['./event-maps.component.scss'],
+  standalone: false
 })
 export class EventMapsComponent implements OnInit {
   public title: string;

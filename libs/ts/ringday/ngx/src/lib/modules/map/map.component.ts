@@ -22,11 +22,11 @@ import { RingDaySettingsService } from './services/settings/ring-day-settings.se
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-map',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService],
-    standalone: false
+  selector: 'tamu-gisc-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService],
+  standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;

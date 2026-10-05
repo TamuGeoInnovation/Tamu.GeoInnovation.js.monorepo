@@ -5,17 +5,17 @@ import { Observable, Subject, delay, map, shareReplay } from 'rxjs';
 import { RadioGroupComponent } from '../radio-group/radio-group.component';
 
 @Component({
-    selector: 'tamu-gisc-slide-toggle',
-    templateUrl: './slide-toggle.component.html',
-    styleUrls: ['./slide-toggle.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SlideToggleComponent),
-            multi: true
-        }
-    ],
-    standalone: false
+  selector: 'tamu-gisc-slide-toggle',
+  templateUrl: './slide-toggle.component.html',
+  styleUrls: ['./slide-toggle.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SlideToggleComponent),
+      multi: true
+    }
+  ],
+  standalone: false
 })
 export class SlideToggleComponent<Option extends object, Value>
   extends RadioGroupComponent<Option, Value>

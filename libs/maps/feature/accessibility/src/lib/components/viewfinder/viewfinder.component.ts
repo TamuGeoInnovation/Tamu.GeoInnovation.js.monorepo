@@ -9,10 +9,10 @@ import { EsriModuleProviderService, MapServiceInstance, EsriMapService } from '@
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-map-viewfinder',
-    templateUrl: './viewfinder.component.html',
-    styleUrls: ['./viewfinder.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-map-viewfinder',
+  templateUrl: './viewfinder.component.html',
+  styleUrls: ['./viewfinder.component.scss'],
+  standalone: false
 })
 export class MapViewfinderComponent implements OnInit, OnDestroy {
   /**

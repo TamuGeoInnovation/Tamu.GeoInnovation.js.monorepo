@@ -9,10 +9,10 @@ import { SearchSelection, SearchEvent } from '@tamu-gisc/ui-kits/ngx/search';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-sidebar-trip-planner',
-    templateUrl: './sidebar-trip-planner.component.html',
-    styleUrls: ['./sidebar-trip-planner.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-sidebar-trip-planner',
+  templateUrl: './sidebar-trip-planner.component.html',
+  styleUrls: ['./sidebar-trip-planner.component.scss'],
+  standalone: false
 })
 export class SidebarTripPlannerComponent {
   public dev = this.testing.get('isTesting');

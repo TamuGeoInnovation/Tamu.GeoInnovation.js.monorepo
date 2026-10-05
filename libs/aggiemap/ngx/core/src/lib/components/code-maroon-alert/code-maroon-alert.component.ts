@@ -25,10 +25,10 @@ import {
  * `isTesting` itself rather than trusting that.
  */
 @Component({
-    selector: 'tamu-gisc-code-maroon-alert',
-    templateUrl: './code-maroon-alert.component.html',
-    styleUrls: ['./code-maroon-alert.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-code-maroon-alert',
+  templateUrl: './code-maroon-alert.component.html',
+  styleUrls: ['./code-maroon-alert.component.scss'],
+  standalone: false
 })
 export class CodeMaroonAlertComponent implements OnInit, OnDestroy {
   public state: Observable<CodeMaroonState>;

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'tamu-gisc-presentation',
-    templateUrl: './presentation.component.html',
-    styleUrls: ['./presentation.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-presentation',
+  templateUrl: './presentation.component.html',
+  styleUrls: ['./presentation.component.scss'],
+  standalone: false
 })
 export class PresentationComponent {}

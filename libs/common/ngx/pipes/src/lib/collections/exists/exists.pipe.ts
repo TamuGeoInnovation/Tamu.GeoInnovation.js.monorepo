@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'exists',
-    standalone: false
+  name: 'exists',
+  standalone: false
 })
 export class ExistsPipe implements PipeTransform {
   /**

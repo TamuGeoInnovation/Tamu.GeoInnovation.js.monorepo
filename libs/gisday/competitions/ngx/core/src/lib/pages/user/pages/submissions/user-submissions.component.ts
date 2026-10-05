@@ -8,10 +8,10 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-    selector: 'tamu-gisc-user-submissions',
-    templateUrl: './user-submissions.component.html',
-    styleUrls: ['./user-submissions.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-user-submissions',
+  templateUrl: './user-submissions.component.html',
+  styleUrls: ['./user-submissions.component.scss'],
+  standalone: false
 })
 export class UserSubmissionsComponent implements OnInit {
   public submissions$: Observable<SubmissionReviewDto[]>;
@@ -23,16 +23,14 @@ export class UserSubmissionsComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.submissions$ = this.settings
-      .getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey)
-      .pipe(
-        switchMap((settings) => {
-          const userGuid = settings?.guid;
-          if (!userGuid || typeof userGuid !== 'string') {
-            throw new Error('User GUID not found');
-          }
-          return this.submissionService.getUserSubmissions(userGuid as string);
-        })
-      );
+    this.submissions$ = this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey).pipe(
+      switchMap((settings) => {
+        const userGuid = settings?.guid;
+        if (!userGuid || typeof userGuid !== 'string') {
+          throw new Error('User GUID not found');
+        }
+        return this.submissionService.getUserSubmissions(userGuid as string);
+      })
+    );
   }
 }

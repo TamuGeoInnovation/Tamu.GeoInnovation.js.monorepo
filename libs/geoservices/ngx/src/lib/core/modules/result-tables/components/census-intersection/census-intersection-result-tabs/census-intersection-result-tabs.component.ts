@@ -3,10 +3,10 @@ import { Component, Input } from '@angular/core';
 import { ICensusIntersectionRecord } from '@tamu-gisc/geoprocessing-v5';
 
 @Component({
-    selector: 'tamu-gisc-census-intersection-result-tabs',
-    templateUrl: './census-intersection-result-tabs.component.html',
-    styleUrls: ['./census-intersection-result-tabs.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-census-intersection-result-tabs',
+  templateUrl: './census-intersection-result-tabs.component.html',
+  styleUrls: ['./census-intersection-result-tabs.component.scss'],
+  standalone: false
 })
 export class CensusIntersectionResultTabsComponent {
   @Input()

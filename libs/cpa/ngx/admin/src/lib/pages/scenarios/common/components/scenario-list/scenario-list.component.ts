@@ -7,10 +7,10 @@ import { ScenarioService } from '@tamu-gisc/cpa/ngx/data-access';
 import { IScenarioSimplified } from '@tamu-gisc/cpa/data-api';
 
 @Component({
-    selector: 'tamu-gisc-scenario-list',
-    templateUrl: './scenario-list.component.html',
-    styleUrls: ['./scenario-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-scenario-list',
+  templateUrl: './scenario-list.component.html',
+  styleUrls: ['./scenario-list.component.scss'],
+  standalone: false
 })
 export class ScenarioListComponent implements OnInit {
   public scenarios: Observable<IScenarioSimplified[]>;

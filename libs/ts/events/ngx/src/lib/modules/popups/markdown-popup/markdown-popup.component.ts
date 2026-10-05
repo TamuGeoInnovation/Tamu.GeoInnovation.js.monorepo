@@ -10,10 +10,10 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 
 @Component({
-    selector: 'tamu-gisc-markdown-popup',
-    templateUrl: './markdown-popup.component.html',
-    styleUrls: ['./markdown-popup.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-markdown-popup',
+  templateUrl: './markdown-popup.component.html',
+  styleUrls: ['./markdown-popup.component.scss'],
+  standalone: false
 })
 export class MarkdownPopupComponent extends BaseEventPopupComponent implements OnInit {
   public title: string;

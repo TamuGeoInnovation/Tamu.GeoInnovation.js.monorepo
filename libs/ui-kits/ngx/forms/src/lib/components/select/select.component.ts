@@ -11,18 +11,18 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-    selector: 'tamu-gisc-select',
-    templateUrl: './select.component.html',
-    styleUrls: ['./select.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SelectComponent),
-            multi: true
-        }
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'tamu-gisc-select',
+  templateUrl: './select.component.html',
+  styleUrls: ['./select.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SelectComponent),
+      multi: true
+    }
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**

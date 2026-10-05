@@ -6,10 +6,10 @@ import { filter, map } from 'rxjs/operators';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
-    selector: 'tamu-gisc-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  standalone: false
 })
 export class AppComponent implements OnInit {
   constructor(

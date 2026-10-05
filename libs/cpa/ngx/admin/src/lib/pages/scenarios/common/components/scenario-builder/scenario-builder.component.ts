@@ -37,11 +37,11 @@ import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 import esri = __esri;
 
 @Component({
-    selector: 'tamu-gisc-scenario-builder',
-    templateUrl: './scenario-builder.component.html',
-    styleUrls: ['./scenario-builder.component.scss'],
-    providers: [EsriMapService],
-    standalone: false
+  selector: 'tamu-gisc-scenario-builder',
+  templateUrl: './scenario-builder.component.html',
+  styleUrls: ['./scenario-builder.component.scss'],
+  providers: [EsriMapService],
+  standalone: false
 })
 export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public builderForm: UntypedFormGroup;

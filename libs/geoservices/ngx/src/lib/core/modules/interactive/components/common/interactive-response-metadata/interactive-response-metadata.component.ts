@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-    selector: 'tamu-gisc-interactive-response-metadata',
-    templateUrl: './interactive-response-metadata.component.html',
-    styleUrls: ['./interactive-response-metadata.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-interactive-response-metadata',
+  templateUrl: './interactive-response-metadata.component.html',
+  styleUrls: ['./interactive-response-metadata.component.scss'],
+  standalone: false
 })
 export class InteractiveResponseMetadataComponent {
   @Input()

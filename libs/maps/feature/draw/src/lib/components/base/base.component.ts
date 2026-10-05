@@ -8,9 +8,9 @@ import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector
 import esri = __esri;
 
 @Component({
-    template: '',
-    providers: [FeatureSelectorService],
-    standalone: false
+  template: '',
+  providers: [FeatureSelectorService],
+  standalone: false
 })
 export class BaseDrawComponent implements OnInit, OnDestroy {
   public model: ISketchViewModel;

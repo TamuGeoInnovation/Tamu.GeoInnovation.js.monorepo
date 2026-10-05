@@ -9,10 +9,10 @@ import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-
 import { formExporter } from '../../admin-add-rsvp-type/admin-add-rsvp-type.component';
 
 @Component({
-    selector: 'tamu-gisc-admin-detail-rsvp-type',
-    templateUrl: './admin-detail-rsvp-type.component.html',
-    styleUrls: ['./admin-detail-rsvp-type.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-admin-detail-rsvp-type',
+  templateUrl: './admin-detail-rsvp-type.component.html',
+  styleUrls: ['./admin-detail-rsvp-type.component.scss'],
+  standalone: false
 })
 export class AdminDetailRsvpTypeComponent extends BaseAdminDetailComponent<RsvpType> implements OnInit {
   constructor(private fb1: UntypedFormBuilder, private route1: ActivatedRoute, private rsvpTypeService: RsvpTypeService) {

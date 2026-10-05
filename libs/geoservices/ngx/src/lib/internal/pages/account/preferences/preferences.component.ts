@@ -4,10 +4,10 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
-    selector: 'tamu-gisc-preferences',
-    templateUrl: './preferences.component.html',
-    styleUrls: ['./preferences.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-preferences',
+  templateUrl: './preferences.component.html',
+  styleUrls: ['./preferences.component.scss'],
+  standalone: false
 })
 export class PreferencesComponent implements OnInit {
   public form: UntypedFormGroup;

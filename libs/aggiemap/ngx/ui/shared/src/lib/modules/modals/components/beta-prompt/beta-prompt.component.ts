@@ -3,10 +3,10 @@ import { Component } from '@angular/core';
 import { ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
-    selector: 'tamu-gisc-beta-prompt',
-    templateUrl: './beta-prompt.component.html',
-    styleUrls: ['./beta-prompt.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-beta-prompt',
+  templateUrl: './beta-prompt.component.html',
+  styleUrls: ['./beta-prompt.component.scss'],
+  standalone: false
 })
 export class BetaPromptComponent {
   constructor(private readonly mr: ModalRefService) {}

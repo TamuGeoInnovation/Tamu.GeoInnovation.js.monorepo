@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
 @Component({
-    selector: 'tamu-gisc-markdown-w-directions-popup',
-    templateUrl: './markdown-w-directions-popup.component.html',
-    styleUrls: ['./markdown-w-directions-popup.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-markdown-w-directions-popup',
+  templateUrl: './markdown-w-directions-popup.component.html',
+  styleUrls: ['./markdown-w-directions-popup.component.scss'],
+  standalone: false
 })
 export class MarkdownWDirectionsPopupComponent extends BaseDirectionsComponent implements OnInit {
   public title: string;

@@ -10,10 +10,10 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.component';
 
 @Component({
-    selector: 'tamu-gisc-markdown-w-directions-popup',
-    templateUrl: './markdown-w-directions-popup.component.html',
-    styleUrls: ['./markdown-w-directions-popup.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-markdown-w-directions-popup',
+  templateUrl: './markdown-w-directions-popup.component.html',
+  styleUrls: ['./markdown-w-directions-popup.component.scss'],
+  standalone: false
 })
 export class MarkdownWDirectionsPopupComponent extends BaseEventPopupComponent implements OnInit {
   public title: string;

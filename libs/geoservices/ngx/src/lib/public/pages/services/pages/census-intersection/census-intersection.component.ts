@@ -5,10 +5,10 @@ import { CensusIntersection, CensusYear } from '@tamu-gisc/geoprocessing-v5';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-    selector: 'tamu-gisc-census-intersection',
-    templateUrl: './census-intersection.component.html',
-    styleUrls: ['./census-intersection.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-census-intersection',
+  templateUrl: './census-intersection.component.html',
+  styleUrls: ['./census-intersection.component.scss'],
+  standalone: false
 })
 export class CensusIntersectionComponent implements OnInit {
   private intersection: CensusIntersection;

@@ -8,10 +8,10 @@ import { Role } from '@tamu-gisc/oidc/common';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-    selector: 'tamu-gisc-edit-role',
-    templateUrl: './edit-role.component.html',
-    styleUrls: ['./edit-role.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-edit-role',
+  templateUrl: './edit-role.component.html',
+  styleUrls: ['./edit-role.component.scss'],
+  standalone: false
 })
 export class EditRoleComponent implements OnInit {
   private _$refresh: Subject<boolean> = new Subject();

@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 
 @Component({
-    selector: 'tamu-gisc-experiments-list',
-    templateUrl: './experiments-list.component.html',
-    styleUrls: ['./experiments-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-experiments-list',
+  templateUrl: './experiments-list.component.html',
+  styleUrls: ['./experiments-list.component.scss'],
+  standalone: false
 })
 export class ExperimentsListComponent implements OnInit {
   public responsive: Observable<boolean>;

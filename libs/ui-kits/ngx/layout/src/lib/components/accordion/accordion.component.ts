@@ -3,11 +3,11 @@ import { Component, ElementRef, Input, AfterContentInit } from '@angular/core';
 import { AccordionService } from './services/accordion.service';
 
 @Component({
-    selector: 'tamu-gisc-accordion',
-    templateUrl: './accordion.component.html',
-    styleUrls: ['./accordion.component.scss'],
-    providers: [AccordionService],
-    standalone: false
+  selector: 'tamu-gisc-accordion',
+  templateUrl: './accordion.component.html',
+  styleUrls: ['./accordion.component.scss'],
+  providers: [AccordionService],
+  standalone: false
 })
 export class AccordionComponent implements AfterContentInit {
   /**

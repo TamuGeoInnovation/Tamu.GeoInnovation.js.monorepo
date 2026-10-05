@@ -5,10 +5,10 @@ import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/typ
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({
-    selector: 'tamu-gisc-admin-submissions',
-    templateUrl: './admin-submissions.component.html',
-    styleUrls: ['./admin-submissions.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-admin-submissions',
+  templateUrl: './admin-submissions.component.html',
+  styleUrls: ['./admin-submissions.component.scss'],
+  standalone: false
 })
 export class AdminSubmissionsComponent implements OnInit {
   public submissions$: Observable<SubmissionReviewDto[]>;

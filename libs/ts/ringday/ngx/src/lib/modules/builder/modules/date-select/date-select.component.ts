@@ -8,10 +8,10 @@ import { EventDates } from '../../../../interfaces/ring-day.interface';
 import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
 
 @Component({
-    selector: 'tamu-gisc-date-select',
-    templateUrl: './date-select.component.html',
-    styleUrls: ['./date-select.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-date-select',
+  templateUrl: './date-select.component.html',
+  styleUrls: ['./date-select.component.scss'],
+  standalone: false
 })
 export class DateSelectComponent implements OnInit {
   public dates: EventDates;

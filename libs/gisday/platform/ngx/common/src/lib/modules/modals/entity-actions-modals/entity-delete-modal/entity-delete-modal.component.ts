@@ -5,10 +5,10 @@ import { map, Observable, startWith } from 'rxjs';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
 @Component({
-    selector: 'tamu-gisc-entity-delete-modal',
-    templateUrl: './entity-delete-modal.component.html',
-    styleUrls: ['./entity-delete-modal.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-entity-delete-modal',
+  templateUrl: './entity-delete-modal.component.html',
+  styleUrls: ['./entity-delete-modal.component.scss'],
+  standalone: false
 })
 export class EntityDeleteModalComponent implements OnInit {
   public form: UntypedFormGroup;

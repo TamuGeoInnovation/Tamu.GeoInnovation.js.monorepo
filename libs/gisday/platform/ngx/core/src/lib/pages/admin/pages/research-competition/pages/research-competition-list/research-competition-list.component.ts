@@ -10,10 +10,10 @@ import { SUBMISSION_REVIEW_STATUS } from '@tamu-gisc/gisday/platform/ngx/common'
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
 
 @Component({
-    selector: 'tamu-gisc-research-competition-list',
-    templateUrl: './research-competition-list.component.html',
-    styleUrls: ['./research-competition-list.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-research-competition-list',
+  templateUrl: './research-competition-list.component.html',
+  styleUrls: ['./research-competition-list.component.scss'],
+  standalone: false
 })
 export class ResearchCompetitionListComponent extends BaseAdminListComponent<Submission> {
   public SubmissionReviewStatus = SUBMISSION_REVIEW_STATUS;

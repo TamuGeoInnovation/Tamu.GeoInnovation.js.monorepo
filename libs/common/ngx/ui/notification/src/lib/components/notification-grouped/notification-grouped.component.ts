@@ -21,10 +21,10 @@ import { Notification } from '../../helpers/notification.helper';
  * Grouping originates in #693. Priority ordering and the high-priority marker are #1195.
  */
 @Component({
-    selector: 'tamu-gisc-notification-grouped',
-    templateUrl: './notification-grouped.component.html',
-    styleUrls: ['./notification-grouped.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-notification-grouped',
+  templateUrl: './notification-grouped.component.html',
+  styleUrls: ['./notification-grouped.component.scss'],
+  standalone: false
 })
 export class NotificationGroupedComponent implements OnInit, OnDestroy {
   @Input()

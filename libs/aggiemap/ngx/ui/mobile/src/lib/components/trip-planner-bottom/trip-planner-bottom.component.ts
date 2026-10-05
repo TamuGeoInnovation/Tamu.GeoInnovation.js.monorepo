@@ -7,10 +7,10 @@ import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-pla
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 @Component({
-    selector: 'tamu-gisc-trip-planner-bottom',
-    templateUrl: './trip-planner-bottom.component.html',
-    styleUrls: ['./trip-planner-bottom.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-trip-planner-bottom',
+  templateUrl: './trip-planner-bottom.component.html',
+  styleUrls: ['./trip-planner-bottom.component.scss'],
+  standalone: false
 })
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {
   /**

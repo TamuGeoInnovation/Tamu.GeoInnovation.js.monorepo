@@ -7,10 +7,10 @@ import { Angulartics2 } from 'angulartics2';
 import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
 
 @Component({
-    selector: 'tamu-gisc-accommodations',
-    templateUrl: './accommodations.component.html',
-    styleUrls: ['./accommodations.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-accommodations',
+  templateUrl: './accommodations.component.html',
+  styleUrls: ['./accommodations.component.scss'],
+  standalone: false
 })
 export class AccommodationsComponent implements OnInit {
   public savedAccessible: Observable<boolean>;

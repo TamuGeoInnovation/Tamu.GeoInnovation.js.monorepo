@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { BasePopupComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 
 @Component({
-    selector: 'tamu-gisc-ring-day-markdown',
-    templateUrl: './ring-day-markdown.component.html',
-    styleUrls: ['./ring-day-markdown.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-ring-day-markdown',
+  templateUrl: './ring-day-markdown.component.html',
+  styleUrls: ['./ring-day-markdown.component.scss'],
+  standalone: false
 })
 export class RingDayMarkdownComponent extends BasePopupComponent implements OnInit {
   public title: string;

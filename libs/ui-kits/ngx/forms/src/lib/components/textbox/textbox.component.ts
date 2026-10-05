@@ -4,18 +4,18 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 
 @Component({
-    selector: 'tamu-gisc-textbox',
-    templateUrl: './textbox.component.html',
-    styleUrls: ['./textbox.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => TextboxComponent),
-            multi: true
-        }
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'tamu-gisc-textbox',
+  templateUrl: './textbox.component.html',
+  styleUrls: ['./textbox.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TextboxComponent),
+      multi: true
+    }
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TextboxComponent extends AbstractValueAccessorFormComponent<string> implements AfterViewInit {
   @ViewChild('inputElement', { static: false }) inputElement: ElementRef<HTMLInputElement | HTMLTextAreaElement>;

@@ -9,10 +9,10 @@ import { RingDaySettings } from '../../../../interfaces/ring-day.interface';
 import { RingDaySettingsService } from '../../../map/services/settings/ring-day-settings.service';
 
 @Component({
-    selector: 'tamu-gisc-review',
-    templateUrl: './review.component.html',
-    styleUrls: ['./review.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-review',
+  templateUrl: './review.component.html',
+  styleUrls: ['./review.component.scss'],
+  standalone: false
 })
 export class ReviewComponent implements OnInit {
   public settings: RingDaySettings;

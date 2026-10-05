@@ -12,10 +12,10 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { BaseInteractiveGeoprocessingComponent } from '../../../common/base-interactive-geoprocessing/base-interactive-geoprocessing.component';
 
 @Component({
-    selector: 'tamu-gisc-reverse-geocoding-basic',
-    templateUrl: './reverse-geocoding-basic.component.html',
-    styleUrls: ['./reverse-geocoding-basic.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-reverse-geocoding-basic',
+  templateUrl: './reverse-geocoding-basic.component.html',
+  styleUrls: ['./reverse-geocoding-basic.component.scss'],
+  standalone: false
 })
 export class ReverseGeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<
   ReverseGeocodeResult,

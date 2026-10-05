@@ -18,10 +18,10 @@ import { ADDRESS_FORMAT_TYPES } from '../../../../../../util/dictionaries';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
-    selector: 'tamu-gisc-address-processing-basic',
-    templateUrl: './address-processing-basic.component.html',
-    styleUrls: ['./address-processing-basic.component.scss'],
-    standalone: false
+  selector: 'tamu-gisc-address-processing-basic',
+  templateUrl: './address-processing-basic.component.html',
+  styleUrls: ['./address-processing-basic.component.scss'],
+  standalone: false
 })
 export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessingComponent<
   AddressProcessingResult,
