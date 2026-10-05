@@ -90,6 +90,23 @@ The variable cost is steps 3, 9 and 10. Recording what caused it is what makes t
 - **Steps 8 and later ran in a Docker volume** ([#1402](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1402)): the full check took 9 minutes
   cold and 6 with the cache, against 77 to 109 minutes for 16 to 18.
 
+**The esbuild `application` builder** ([#1403](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1403)), between 19 and 20. Not a version step, but
+it changes the steps after it: from Angular 20 on, the Angular apps build with esbuild and serve with
+Vite, so Angular's migrations for the `application` builder apply to them.
+- `nx g @nx/angular:convert-to-application-executor` converts all 11 apps; committed unedited, then fixed.
+- **Keep `outputPath.browser` at `""`.** The builder otherwise writes to `dist/apps/<app>/browser/`,
+  and the Azure DevOps releases copy `dist/apps/<app>` and run
+  `dist/apps/<app>/assets/powershell/iis_site_rewrite.ps1` from it.
+- **Do not take the converter's `esModuleInterop`.** It fails the browser builds on namespace imports
+  in NestJS libraries they type-check, and those imports are right for the NestJS apps. The one browser
+  import it exposed, `clipboard`, now reads the class from `default` or from the module itself.
+- **Root-relative Sass imports** (`@import 'libs/sass/mixins'`, 157 files) need
+  `stylePreprocessorOptions.includePaths: ["."]` in each app.
+- **A clean build is not proof.** Every check passed while AggieMap threw "Class extends value
+  undefined" on every page: an import cycle (the event popups' base class, the settings service, the
+  event definitions, the popups) that webpack evaluated in a working order and esbuild did not. Load
+  the app.
+
 ## Forecast for the rest
 
 **Fixed cost per version, from 16 to 18:** steps 1, 2, 4, 5 and 7 together about 30 minutes; code

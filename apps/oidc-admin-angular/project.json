@@ -4,14 +4,18 @@
   "projectType": "application",
   "sourceRoot": "apps/oidc-admin-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
       "options": {
-        "outputPath": "dist/apps/oidc-admin-angular",
+        "outputPath": {
+          "base": "dist/apps/oidc-admin-angular",
+          "browser": ""
+        },
         "index": "apps/oidc-admin-angular/src/index.html",
-        "main": "apps/oidc-admin-angular/src/main.ts",
-        "polyfills": "apps/oidc-admin-angular/src/polyfills.ts",
+        "polyfills": ["apps/oidc-admin-angular/src/polyfills.ts"],
         "tsConfig": "apps/oidc-admin-angular/tsconfig.app.json",
         "aot": false,
         "assets": [
@@ -24,13 +28,15 @@
           }
         ],
         "styles": ["apps/oidc-admin-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
-        "vendorChunk": true,
         "extractLicenses": false,
-        "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "browser": "apps/oidc-admin-angular/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -47,8 +53,6 @@
           "aot": true,
           "baseHref": "/admin/",
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -76,8 +80,6 @@
           "aot": true,
           "baseHref": "/admin/",
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -92,7 +94,7 @@
           ]
         }
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": ""
     },
     "serve": {
@@ -126,7 +128,5 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  }
 }

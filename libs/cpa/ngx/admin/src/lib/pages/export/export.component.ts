@@ -4,7 +4,7 @@ import { DeepPartial } from 'typeorm';
 import { Observable } from 'rxjs';
 import { pluck, shareReplay } from 'rxjs/operators';
 
-import * as JSZip from 'jszip';
+import JSZip from 'jszip';
 
 import { ResponseService, WorkshopService } from '@tamu-gisc/cpa/ngx/data-access';
 import { IResponseDto, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';

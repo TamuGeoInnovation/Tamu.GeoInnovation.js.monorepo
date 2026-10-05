@@ -4,14 +4,18 @@
   "projectType": "application",
   "sourceRoot": "apps/geoservices-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
       "options": {
-        "outputPath": "dist/apps/geoservices-angular",
+        "outputPath": {
+          "base": "dist/apps/geoservices-angular",
+          "browser": ""
+        },
         "index": "apps/geoservices-angular/src/index.html",
-        "main": "apps/geoservices-angular/src/main.ts",
-        "polyfills": "apps/geoservices-angular/src/polyfills.ts",
+        "polyfills": ["apps/geoservices-angular/src/polyfills.ts"],
         "tsConfig": "apps/geoservices-angular/tsconfig.app.json",
         "aot": false,
         "assets": [
@@ -28,13 +32,15 @@
           }
         ],
         "styles": ["apps/geoservices-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
-        "vendorChunk": true,
         "extractLicenses": false,
-        "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "browser": "apps/geoservices-angular/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -50,8 +56,6 @@
           "namedChunks": false,
           "aot": true,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -78,8 +82,6 @@
           "namedChunks": false,
           "aot": true,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -94,7 +96,7 @@
           ]
         }
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": ""
     },
     "serve": {
@@ -129,7 +131,5 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  }
 }

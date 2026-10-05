@@ -4,15 +4,19 @@
   "projectType": "application",
   "sourceRoot": "apps/ues-operations-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "ues-sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
       "options": {
         "crossOrigin": "anonymous",
-        "outputPath": "dist/apps/ues-operations-angular",
+        "outputPath": {
+          "base": "dist/apps/ues-operations-angular",
+          "browser": ""
+        },
         "index": "apps/ues-operations-angular/src/index.html",
-        "main": "apps/ues-operations-angular/src/main.ts",
-        "polyfills": "apps/ues-operations-angular/src/polyfills.ts",
+        "polyfills": ["apps/ues-operations-angular/src/polyfills.ts"],
         "tsConfig": "apps/ues-operations-angular/tsconfig.app.json",
         "assets": [
           "apps/ues-operations-angular/src/favicon.ico",
@@ -29,13 +33,15 @@
           }
         ],
         "styles": ["apps/ues-operations-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
-        "vendorChunk": true,
         "extractLicenses": false,
-        "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "browser": "apps/ues-operations-angular/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -51,8 +57,6 @@
           "sourceMap": false,
           "namedChunks": false,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -79,8 +83,6 @@
           "sourceMap": false,
           "namedChunks": false,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -95,7 +97,7 @@
           ]
         }
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": ""
     },
     "serve": {
@@ -129,7 +131,5 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets", "sass", "ues-sass"]
+  }
 }

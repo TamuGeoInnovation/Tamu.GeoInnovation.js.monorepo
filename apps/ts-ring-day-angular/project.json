@@ -4,15 +4,18 @@
   "projectType": "application",
   "sourceRoot": "apps/ts-ring-day-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
       "options": {
-        "outputPath": "dist/apps/ts-ring-day-angular",
+        "outputPath": {
+          "base": "dist/apps/ts-ring-day-angular",
+          "browser": ""
+        },
         "index": "apps/ts-ring-day-angular/src/index.html",
-        "main": "apps/ts-ring-day-angular/src/main.ts",
-        "polyfills": "apps/ts-ring-day-angular/src/polyfills.ts",
+        "polyfills": ["apps/ts-ring-day-angular/src/polyfills.ts"],
         "tsConfig": "apps/ts-ring-day-angular/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -25,7 +28,11 @@
           }
         ],
         "styles": ["apps/ts-ring-day-angular/src/styles.scss"],
-        "scripts": []
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
+        "scripts": [],
+        "browser": "apps/ts-ring-day-angular/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -50,9 +57,7 @@
           "outputHashing": "all"
         },
         "development": {
-          "buildOptimizer": false,
           "optimization": false,
-          "vendorChunk": true,
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
@@ -91,6 +96,5 @@
         "jestConfig": "apps/ts-ring-day-angular/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }

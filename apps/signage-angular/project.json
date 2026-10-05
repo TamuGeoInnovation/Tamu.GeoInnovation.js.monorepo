@@ -4,14 +4,18 @@
   "projectType": "application",
   "sourceRoot": "apps/signage-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
       "options": {
-        "outputPath": "dist/apps/signage-angular",
+        "outputPath": {
+          "base": "dist/apps/signage-angular",
+          "browser": ""
+        },
         "index": "apps/signage-angular/src/index.html",
-        "main": "apps/signage-angular/src/main.ts",
-        "polyfills": "apps/signage-angular/src/polyfills.ts",
+        "polyfills": ["apps/signage-angular/src/polyfills.ts"],
         "tsConfig": "apps/signage-angular/tsconfig.app.json",
         "aot": false,
         "assets": [
@@ -24,13 +28,15 @@
           }
         ],
         "styles": ["apps/signage-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
-        "vendorChunk": true,
         "extractLicenses": false,
-        "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "browser": "apps/signage-angular/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -46,8 +52,6 @@
           "namedChunks": false,
           "aot": true,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -74,8 +78,6 @@
           "namedChunks": false,
           "aot": true,
           "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
           "budgets": [
             {
               "type": "initial",
@@ -90,7 +92,7 @@
           ]
         }
       },
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath.base}"],
       "defaultConfiguration": ""
     },
     "serve": {
@@ -124,7 +126,5 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets", "sass"]
+  }
 }

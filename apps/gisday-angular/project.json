@@ -4,15 +4,20 @@
   "projectType": "application",
   "sourceRoot": "apps/gisday-angular/src",
   "prefix": "tamu-gisc",
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "gisday-sass"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
       "options": {
         "crossOrigin": "anonymous",
-        "outputPath": "dist/apps/gisday-angular",
+        "outputPath": {
+          "base": "dist/apps/gisday-angular",
+          "browser": ""
+        },
         "index": "apps/gisday-angular/src/index.html",
-        "main": "apps/gisday-angular/src/main.ts",
-        "polyfills": "apps/gisday-angular/src/polyfills.ts",
+        "polyfills": ["apps/gisday-angular/src/polyfills.ts"],
         "tsConfig": "apps/gisday-angular/tsconfig.app.json",
         "assets": [
           "apps/gisday-angular/src/favicon.ico",
@@ -29,17 +34,18 @@
           }
         ],
         "styles": ["apps/gisday-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
-        "vendorChunk": true,
         "extractLicenses": false,
-        "buildOptimizer": false,
         "sourceMap": true,
         "optimization": false,
-        "namedChunks": true
+        "namedChunks": true,
+        "browser": "apps/gisday-angular/src/main.ts"
       },
       "configurations": {
         "production": {
-          "ngswConfigPath": "apps/gisday-angular/ngsw-config.json",
           "fileReplacements": [
             {
               "replace": "apps/gisday-angular/src/environments/environment.ts",
@@ -51,9 +57,7 @@
           "sourceMap": false,
           "namedChunks": false,
           "extractLicenses": false,
-          "vendorChunk": false,
-          "buildOptimizer": true,
-          "serviceWorker": true,
+          "serviceWorker": "apps/gisday-angular/ngsw-config.json",
           "budgets": [
             {
               "type": "initial",
@@ -68,7 +72,6 @@
           ]
         },
         "development": {
-          "ngswConfigPath": "apps/gisday-angular/ngsw-config.json",
           "fileReplacements": [
             {
               "replace": "apps/gisday-angular/src/environments/environment.ts",
@@ -80,9 +83,7 @@
           "sourceMap": false,
           "namedChunks": false,
           "extractLicenses": false,
-          "vendorChunk": false,
-          "buildOptimizer": true,
-          "serviceWorker": true,
+          "serviceWorker": "apps/gisday-angular/ngsw-config.json",
           "budgets": [
             {
               "type": "initial",
@@ -141,7 +142,5 @@
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["assets", "sass", "gisday-sass"]
+  }
 }

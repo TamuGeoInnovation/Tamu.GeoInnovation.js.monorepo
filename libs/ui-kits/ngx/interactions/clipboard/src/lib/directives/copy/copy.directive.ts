@@ -3,7 +3,11 @@ import { Directive, ElementRef, Input, OnDestroy, Output, EventEmitter, OnChange
 import { Observable, timer } from 'rxjs';
 import { mapTo, startWith } from 'rxjs/operators';
 
-import * as Clipboard from 'clipboard';
+import * as clipboardModule from 'clipboard';
+
+// `clipboard` is CommonJS and exports its class directly. esbuild hands a namespace import the class as
+// `default`; ts-jest, which compiles to CommonJS without esModuleInterop, hands over the class itself.
+const Clipboard = (clipboardModule as unknown as { default?: typeof clipboardModule }).default ?? clipboardModule;
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -28,7 +32,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    *
    * Reference allows unbinding on component destroy
    */
-  private _clipboard: Clipboard;
+  private _clipboard: InstanceType<typeof Clipboard>;
 
   constructor(private el: ElementRef) {}
 

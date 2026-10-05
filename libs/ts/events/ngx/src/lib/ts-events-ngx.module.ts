@@ -11,6 +11,8 @@ import { EventEntryGuard } from './guards/event-entry/event-entry.guard';
 import { RouteParamsGuard } from './guards/route-params/route-params.guard';
 import { ENDED_PATH, RetiredEventGuard } from './guards/retired-event/retired-event.guard';
 import { EndedComponent } from './modules/ended/ended.component';
+import { EventSettingsQuery } from './services/settings/event-settings-query';
+import { EventSettingsService } from './services/settings/event-settings.service';
 
 const routes: Routes = [
   {
@@ -66,6 +68,7 @@ const routes: Routes = [
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), PipesModule],
   declarations: [BuilderComponent, EndedComponent],
+  providers: [{ provide: EventSettingsQuery, useExisting: EventSettingsService }],
   exports: [RouterModule]
 })
 export class TsEventsNgxModule {}
