@@ -30,6 +30,7 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | office (GEOG-CSA305C-02) | `check-in-volume.sh feat/tailgating-map` (affected: lint, test, build, 17 projects, 3 apps) | volume, cold: clone and `npm ci` (28 s) included | 1 min 54 s |
 | 5 Oct 2026 | office | `check-in-volume.sh … aggiemap-ngx-common` (lint, test) | volume, warm, after a one-line change | **12 s** |
 | 5 Oct 2026 | office | `check-in-volume.sh … aggiemap-ngx-common` (lint, test) | volume, cold: clone and `npm ci` included | 2 min 23 s |
 | 5 Oct 2026 | office | `check-in-volume.sh … aggiemap-angular` (lint, test, build) | volume, warm | 2 min 06 s |
