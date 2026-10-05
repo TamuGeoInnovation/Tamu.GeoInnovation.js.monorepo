@@ -99,7 +99,8 @@ Merged since the 3 October release was cut, and on dev in Release-443:
   | Before (dev) | After |
   | --- | --- |
   | ![The layer list with VeoRide Bikes listed below Sustainable Transportation](../screenshots/1398-retire-veoride/before-layer-list-dev.png) | ![The layer list without VeoRide Bikes](../screenshots/1398-retire-veoride/after-layer-list-local.png) |
-- **A Football Tailgating map, on dev only** ([#1422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1422)).
+- **A Football Tailgating map, on dev only** ([#1422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1422), pull request
+  [#1424](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1424)).
   Listed under **Football** on the Athletics Events page, it shows the Aggie Park and West Campus
   tailgating zones with their circled numbers, the Revel XP tent numbers on Performance Lawn once zoomed
   in, and only the construction that affects tailgating (Aplin Center and SUP 1). After the last home
