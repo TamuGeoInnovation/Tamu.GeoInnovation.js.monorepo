@@ -67,8 +67,8 @@ with the number of maps and services.
 ### What it checks
 
 The counts are a snapshot: **757 tests, measured on dev on 5 October 2026** in the full run that cleared
-the [5 October release](releases/2026-10-05.md#what-cleared-it): 743 passed and 14 skipped, in 1.9 hours,
-against the Angular 19 build. Production lists fewer maps than dev, so it runs fewer.
+the [5 October release](releases/2026-10-05.md#what-cleared-it): 743 passed and 14 skipped, in 1.3 hours,
+against the release candidate built with esbuild. Production lists fewer maps than dev, so it runs fewer.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
 | --- | --- | ---: | --- | --- |
@@ -108,7 +108,7 @@ The suite started on 27 September 2026 and grew with nearly every bug found sinc
 | 1 October | ~241 | Campus notices, blank-canvas detection, campus basemaps. **Measured: 242** on 2 October at 02:03, in 33 minutes |
 | 2 October | ~331 | Event dates, phone layout, ArcGIS version, Code Maroon, build banner. **Measured: 331** in every full run from 3 October, in 36 to 45 minutes |
 | 4 October | 758 | Map framing against a production baseline of every map and builder choice; kiosk maps; map isolation |
-| 5 October | 757 | One fewer GIS service once VeoRide was retired. **Measured: 757** (743 passed, 14 skipped) in 1.9 hours, the run that cleared the 5 October release |
+| 5 October | 757 | One fewer GIS service once VeoRide was retired. **Measured: 757** (743 passed, 14 skipped) in 1.3 hours, the run that cleared the 5 October release |
 
 Numbers marked ~ are estimates: today's count for each spec, added up by the date the spec first
 appeared. Bold numbers are real runs. The early estimates are approximate, because the per-map checks
