@@ -8,7 +8,7 @@ on:
         type: string
 
 env:
-  EXCLUDED_PROJECTS: 'aggiemap-angular-e2e,cpa-angular,cpa-angular-e2e,cpa-nest,geoservices-angular-e2e,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-angular-e2e,gisday-competitions-nest,mailroom-angular-e2e,oidc-admin-angular,oidc-admin-angular-e2e,oidc-admin-nest,oidc-provider-nest,signage-angular,signage-angular-e2e,ues-operations-angular,ues-operations-angular-e2e,ues-operations-nest,veoride-data-api-nest,veoride-data-compiler-node,veoride-scraper-node'
+  EXCLUDED_PROJECTS: 'aggiemap-angular-e2e,cpa-angular,cpa-angular-e2e,cpa-nest,geoservices-angular-e2e,gisday-bridge-nest,gisday-competitions-angular,gisday-competitions-angular-e2e,gisday-competitions-nest,mailroom-angular-e2e,oidc-admin-angular,oidc-admin-angular-e2e,oidc-admin-nest,oidc-provider-nest,signage-angular,signage-angular-e2e,ues-operations-angular,ues-operations-angular-e2e,ues-operations-nest'
 
 jobs:
   test:

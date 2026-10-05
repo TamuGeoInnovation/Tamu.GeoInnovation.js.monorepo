@@ -97,12 +97,6 @@ describe('LayerSources', () => {
         name: 'Bike Racks',
         url: 'bike-racks-url'
       },
-      BIKE_LOCATIONS: {
-        id: 'bike-locations',
-        layerId: 'bike-locations',
-        name: 'Bike Locations',
-        url: 'bike-locations-url'
-      },
       DINING_LOCATIONS: {
         id: 'dining-locations',
         layerId: 'dining-locations',

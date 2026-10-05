@@ -63,6 +63,17 @@ Merged since the 3 October release was cut, and on dev in Release-443:
   | Before (dev: the main map after Back from the dining kiosk) | After |
   | --- | --- |
   | ![The main map with Dining Locations switched on, after visiting the dining kiosk](../screenshots/1397-override-leak/before-dev.png) | ![The main map after the same steps, with Dining Locations off as it opens](../screenshots/1397-override-leak/after-local.png) |
+- **VeoRide retired** ([#1398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1398)). The **VeoRide Bikes** layer is gone from the main
+  map's layer list, and from the event maps and the Ring Day app, which share its definitions. VeoRide
+  was an experiment and is no longer needed. Its three applications, its library and five npm packages
+  used only by them went with it, recorded first in [`docs/applications/veoride.md`](../applications/veoride.md). The
+  **Sustainable Transportation** group, listed next to it, is unchanged. The API at
+  `veoride.geoservices.tamu.edu` keeps running until someone decides to shut it down. With the group
+  turned on, a local build still draws its bike lanes, racks and stations ([capture](../screenshots/1398-retire-veoride/after-sustainable-transportation-on-local.png)).
+
+  | Before (dev) | After |
+  | --- | --- |
+  | ![The layer list with VeoRide Bikes listed below Sustainable Transportation](../screenshots/1398-retire-veoride/before-layer-list-dev.png) | ![The layer list without VeoRide Bikes](../screenshots/1398-retire-veoride/after-layer-list-local.png) |
 
 ---
 
@@ -105,6 +116,7 @@ Merged, but not in the build on dev yet. Test these once the next build is deplo
 | Event maps open on the chosen day or session ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) | [Ring Day, day 1](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1), [Ring Day, day 2](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day2), [Fish Camp, sessions B, C, E and F](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=sessions-a-f), [Fish Camp, sessions A, D and G](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=session-g) | each opens **close in** on its own location (day 1 on the ring pickup by the Williams Alumni Center, day 2 on Aggie Park), not zoomed out over campus. Compare with [production](https://aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1) |
 | The dining kiosk shows its dining locations ([#1392](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1392)) | [The dining kiosk on dev](https://dev.aggiemap.tamu.edu/kiosk/dining/map); after release, [on production](https://aggiemap.tamu.edu/kiosk/dining/map) by direct link | the dining locations drawn as markers across campus, no sidebar, and nothing else over the basemap: no parking lot shading, space numbers or 150th event layers. Reload a few times: before the fix the dining appeared on some loads only. All Maps still lists it on dev only, by design |
 | A map's layer settings stay on that map ([#1397](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1397)) | [The main map](https://dev.aggiemap.tamu.edu/map), then **All Maps** and the [dining kiosk](https://dev.aggiemap.tamu.edu/kiosk/dining/map) or [Break / Summer parking](https://dev.aggiemap.tamu.edu/parking/break-summer), then the browser's **Back** button | back on the main map, **Dining Locations** is off in the layer list as it is when the main map opens, and clicking a surface lot still opens its popup. Before the fix, the main map kept the other map's settings until a reload |
+| VeoRide retired ([#1398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1398)) | [The main map](https://dev.aggiemap.tamu.edu/map), **Layers** | no **VeoRide Bikes** in the list; **Sustainable Transportation** still turns on and draws its bike lanes, dismount zones, fix stations, racks and EV charging stations |
 
 ---
 

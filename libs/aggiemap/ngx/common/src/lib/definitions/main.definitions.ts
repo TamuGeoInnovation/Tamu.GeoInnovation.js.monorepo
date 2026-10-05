@@ -19,7 +19,6 @@ export enum MAIN_MAP_LAYERS {
   ACESSIBLE_ENTRANCES = 'accessible-entrances-layer',
   EMERGENCY_PHONES = 'emergency-phones-layer',
   BIKE_RACKS = 'bike-racks-layer',
-  BIKE_LOCATIONS = 'bike-locations-layer',
   DINING_LOCATIONS = 'dining-locations-layer',
   AGGIEPRINT_LOCATIONS = 'aggieprint-locations-layer',
   SINGLE_OCCUPANCY_RESTROOMS = 'single-occupancy-restroom-locations-layer',
@@ -57,7 +56,6 @@ export interface IComposedIDefinitions {
   ACESSIBLE_ENTRANCES: IDefinition;
   EMERGENCY_PHONES: IDefinition;
   BIKE_RACKS: IDefinition;
-  BIKE_LOCATIONS: IDefinition;
   DINING_LOCATIONS: IDefinition;
   AGGIEPRINT_LOCATIONS: IDefinition;
   SINGLE_OCCUPANCY_RESTROOMS: IDefinition;
@@ -164,12 +162,6 @@ export function MainMapDefinitions(connections: IComposedConnections): IComposed
       layerId: MAIN_MAP_LAYERS.BIKE_RACKS,
       name: 'Bike Racks',
       url: `${connections.bikeRacksUrl}`
-    },
-    BIKE_LOCATIONS: {
-      id: 'bike-locations',
-      layerId: MAIN_MAP_LAYERS.BIKE_LOCATIONS,
-      name: 'VeoRide Bikes',
-      url: `${connections.bikeLocationsUrl}`
     },
     DINING_LOCATIONS: {
       id: 'dining-locations',
@@ -502,26 +494,6 @@ export function MainMapLayerSources(
       visible: true,
       native: {
         ...commonLayerProps
-      }
-    },
-    {
-      type: 'geojson',
-      id: definitions.BIKE_LOCATIONS.layerId,
-      title: definitions.BIKE_LOCATIONS.name,
-      url: definitions.BIKE_LOCATIONS.url,
-      listMode: 'show',
-      visible: false,
-      native: {
-        ...commonLayerProps,
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-marker',
-            style: 'circle',
-            size: 8,
-            color: '#03C4A6'
-          }
-        }
       }
     },
     {

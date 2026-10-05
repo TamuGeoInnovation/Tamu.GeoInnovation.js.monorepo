@@ -20,7 +20,6 @@ describe('SearchSources', () => {
     departmentUrl: 'https://example.com/department',
     bikeRacksUrl: 'https://example.com/bike-racks',
     accessibleUrl: 'https://example.com/accessible',
-    bikeLocationsUrl: 'https://example.com/bike-locations',
     constructionUrl: 'https://example.com/construction',
     inforUrl: 'https://example.com/infor',
     tsMainUrl: 'https://example.com/ts-main',
@@ -89,12 +88,6 @@ describe('SearchSources', () => {
       layerId: 'construction-layer',
       name: 'Construction',
       url: 'https://example.com/construction'
-    },
-    BIKE_LOCATIONS: {
-      id: 'bike-locations',
-      layerId: 'bike-locations-layer',
-      name: 'Bike Locations',
-      url: 'https://example.com/bike-locations'
     },
     BONFIRE: {
       id: 'bonfire',

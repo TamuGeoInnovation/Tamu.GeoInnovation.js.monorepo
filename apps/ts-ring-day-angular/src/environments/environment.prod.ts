@@ -1,11 +1,6 @@
 import { factory } from '@tamu-gisc/aggiemap/ngx/common';
 
-const sources = factory({
-  environment: 'prod',
-  layerSources: {
-    exclude: ['BIKE_LOCATIONS']
-  }
-});
+const sources = factory({ environment: 'prod' });
 
 export const environment = {
   production: true

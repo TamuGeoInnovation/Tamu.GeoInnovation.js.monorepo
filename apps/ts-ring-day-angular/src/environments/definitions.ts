@@ -16,7 +16,6 @@ export const Connections = {
   departmentUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
   bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
-  bikeLocationsUrl: 'https://veoride.geoservices.tamu.edu/api/vehicles/basic/geojson',
   eventUrl: 'https://services1.arcgis.com/oxXAea6csqnDZ6WT/arcgis/rest/services/Ring_Day_2_view/FeatureServer'
 };
 
@@ -75,12 +74,6 @@ export const Definitions = {
     layerId: 'bike-racks-layer',
     name: 'Bike Racks',
     url: `${Connections.bikeRacksUrl}`
-  },
-  BIKE_LOCATIONS: {
-    id: 'bike-locations',
-    layerId: 'bike-locations-layer',
-    name: 'VeoRide Bikes',
-    url: `${Connections.bikeLocationsUrl}`
   },
   RING_DAY_POIS: {
     id: 'ring-day-pois',
