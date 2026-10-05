@@ -5,9 +5,10 @@
 
 **On production: the [2 October release](2026-10-02.md)**, tagged `prod-2026-10-02`.
 
-**On dev, being tested: the [3 October release](2026-10-03.md)**, which carries Angular 16. Its notes
-are written and it passed the full suite, but it is **not on production yet**: the team tests it on dev
-first, and it is planned for production on Monday 5 October. The `prod-*` tag, not this file, will
+**On dev, being tested: Azure build 20261004.44**, the candidate for production on Monday 5 October. It
+carries Angular 16 to 19, Node 22, NestJS 10, ArcGIS 4.27 and everything else merged since 2 October. It
+passed the full suite, but it is **not on production yet**: the team tests it on dev first. Its release
+notes are in [#1391](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1391), and merge before the deploy. The `prod-*` tag, not this file, will
 record when it ships.
 
 If you followed a link here expecting the notes for a release that just shipped, they are in those
@@ -87,10 +88,9 @@ Merged since the 3 October release was cut, and on dev in Release-443:
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** Azure build **20261004.4** (`5c54f844`), tagged `dev-2026-10-04`,
-deployed on 4 October. It is Release-443 (Angular 16, NestJS 10, the ArcGIS 4.27 types) plus Angular 17
-and Mailroom's optimized build, and passed the full suite on 4 October: 324 passed, 0 failed, 7 skipped.
-It is the candidate for production on Monday 5 October.
+**Currently on dev for testing:** Azure build **20261004.44** (`f23a992a`, the Angular 19 merge), tagged
+`dev-2026-10-05`, deployed late on 4 October. It passed the full suite on 5 October: 743 passed, 0 failed,
+14 skipped, in 1.9 hours. Every row below is in it.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
@@ -102,19 +102,6 @@ It is the candidate for production on Monday 5 October.
 | NestJS 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | Nothing on AggieMap | nothing to test on dev.aggiemap: the NestJS APIs deploy separately, so check them where each one runs |
 | ArcGIS types 4.27 ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322)) | [An event map with routes](https://dev.aggiemap.tamu.edu/events/150th-kickoff), and clicking features on the [main map](https://dev.aggiemap.tamu.edu/map) | route arrows still drawn and pointing the right way; clicking a building or lot still opens its popup |
 | Angular 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | Any map you use: the [main map](https://dev.aggiemap.tamu.edu/map), an [event map](https://dev.aggiemap.tamu.edu/events/150th-kickoff), [parking](https://dev.aggiemap.tamu.edu/all-maps/parking), a [campus map](https://dev.aggiemap.tamu.edu/campus/galveston), and [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | **nothing different**, as for Angular 16: maps draw, search works, popups open, the side panel opens and closes, alerts step through |
-
-**Not testable on dev in this release:** GIS Day's native date and time pickers
-([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by this build, so they reach users when GIS
-Day next deploys.
-
-
-
-### For the next build
-
-Merged, but not in the build on dev yet. Test these once the next build is deployed.
-
-| Change | Open this on dev | Look for |
-| --- | --- | --- |
 | Angular 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), and anything that loads data: search, popups, the side panel | **nothing different**. Every app's HTTP setup changed form in this upgrade, so anything that fails to load data is the first thing to report |
 | Angular 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), the [dining kiosk](https://dev.aggiemap.tamu.edu/kiosk/dining/map), and anything with a popup, the side panel or a builder | **nothing different**. Every component changed form in this upgrade, so a page or panel that fails to appear is the first thing to report |
 | Event maps open on the chosen day or session ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) | [Ring Day, day 1](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1), [Ring Day, day 2](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day2), [Fish Camp, sessions B, C, E and F](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=sessions-a-f), [Fish Camp, sessions A, D and G](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=session-g) | each opens **close in** on its own location (day 1 on the ring pickup by the Williams Alumni Center, day 2 on Aggie Park), not zoomed out over campus. Compare with [production](https://aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1) |
@@ -122,9 +109,13 @@ Merged, but not in the build on dev yet. Test these once the next build is deplo
 | A map's layer settings stay on that map ([#1397](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1397)) | [The main map](https://dev.aggiemap.tamu.edu/map), then **All Maps** and the [dining kiosk](https://dev.aggiemap.tamu.edu/kiosk/dining/map) or [Break / Summer parking](https://dev.aggiemap.tamu.edu/parking/break-summer), then the browser's **Back** button | back on the main map, **Dining Locations** is off in the layer list as it is when the main map opens, and clicking a surface lot still opens its popup. Before the fix, the main map kept the other map's settings until a reload |
 | VeoRide retired ([#1398](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1398)) | [The main map](https://dev.aggiemap.tamu.edu/map), **Layers** | no **VeoRide Bikes** in the list; **Sustainable Transportation** still turns on and draws its bike lanes, dismount zones, fix stations, racks and EV charging stations |
 
+**Not testable on dev in this release:** GIS Day's native date and time pickers
+([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)). GIS Day is deployed separately, not by this build, so they reach users when GIS
+Day next deploys.
+
 ---
 
-## Work in flight — 3 October
+## Work in flight — 5 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
@@ -135,14 +126,18 @@ file would say the work had stopped.
 | Order | Step | State |
 | --- | --- | --- |
 | 1 | Remove `ngcc` ([#1220](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1220)) | done |
-| 2 | ArcGIS runtime off 4.23 ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)) | done: 4.27 |
-| 3 | Angular 15 to 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | done, in the 3 October release |
-| 4 | NestJS 9 to 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | done: [#1363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1363), in the next release |
-| 5 | ArcGIS type definitions 4.23 to 4.27 ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322)) | done: [#1364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1364), in the next release |
-| 6 | Angular 16 to 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | done: in the next release |
-| 6b | Angular 17 to 22, one major per pull request | next |
-| 7 | `esri-loader` to `@arcgis/core`, 134 files | last |
-| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | done apart from the old Ring Day app, after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) |
+| 2 | ArcGIS runtime off 4.23 ([#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219)) | done: 4.27, in the 5 October release |
+| 3 | Angular 15 to 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | done, in the 5 October release |
+| 4 | NestJS 9 to 10 ([#1350](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1350)) | done: [#1363](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1363) |
+| 5 | ArcGIS type definitions 4.23 to 4.27 ([#1322](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1322)) | done: [#1364](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1364) |
+| 6 | Angular 16 to 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | done: [#1370](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1370) |
+| 7 | Angular 17 to 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | done: [#1377](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1377) |
+| 8 | Node 20.18 to 22.23.3 ([#1376](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1376)) | done: [#1401](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1401) |
+| 9 | Angular 18 to 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) | done: [#1406](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1406). Steps 3 to 9 are all in build 20261004.44, on dev for Monday's release |
+| 9b | esbuild-based `application` builder ([#1403](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1403)) | ready: [#1408](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1408), to merge **after** Monday's production deploy, so production ships exactly what was tested |
+| 10 | Angular 19 to 22, one major per pull request | next. Forecast about 2 to 3 hours each in the new check setup ([`docs/upgrades/angular.md`](../upgrades/angular.md)) |
+| 11 | `esri-loader` to `@arcgis/core`, 134 files | last |
+| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app goes after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)) |
 
 **A local `nx affected` on a `package.json` change fails on projects that already fail on
 `development`.** Every project counts as affected. Measured on 2 October: `cpa-angular`,
@@ -154,6 +149,14 @@ the lock file with a clean `npm ci` before pushing (CLAUDE.md, [#1347](https://g
 
 ### Also open
 
+- **Pin CI runners to `ubuntu-24.04`** before `ubuntu-latest` moves to Ubuntu 26 on 19 October
+  ([#1407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1407), low).
+- **`gisday-competitions-angular`'s page never answers when served locally** ([#1410](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1410), low);
+  CI and Azure exclude the app.
+- **Clicking a Ring Day popup throws in `TripPlannerConnectionService.connection`**, on production too
+  ([#1411](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1411), medium). The popup still works.
+- **The map probe should report popups**, so a test can see one carried between maps ([#1400](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1400),
+  medium).
 - **The shared flex mixins emit dead vendor prefixes** ([#1340](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1340), low priority), which makes
   reused CSS larger than hand-written.
 - **Angular 16's parallel Sass compilation failed once on Azure** with "This file is already being
