@@ -67,7 +67,7 @@ with the number of maps and services.
 ### What it checks
 
 The counts are a snapshot: **758 tests, measured on dev on 4 October 2026** against the Angular 18
-build (331 measured, plus the 420 in `framing.spec.ts` the 4 in `kiosk.spec.ts` and the 3 in `isolation.spec.ts`, measured on dev that day). Production lists fewer
+build (331 measured, plus the 420 in `framing.spec.ts`, the 4 in `kiosk.spec.ts` and the 3 in `isolation.spec.ts`, measured on dev that day). Production lists fewer
 maps than dev, so it runs fewer.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
