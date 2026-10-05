@@ -203,11 +203,11 @@ npm -v
 
 What to expect: matching version numbers. If the workflow is updated later, re-run the `nvm install <version>` command with the new `node-version` from `.github/workflows/build.yml`.
 
-Fallback: if you want the latest Node 20.x series instead of the exact patch version, you can use:
+Fallback: if you want the latest Node 22.x series instead of the exact patch version, you can use:
 
 ```powershell
-nvm install 20
-nvm use 20
+nvm install 22
+nvm use 22
 ```
 
 **Troubleshooting:** Run `nvm use <version>` if mismatch.
