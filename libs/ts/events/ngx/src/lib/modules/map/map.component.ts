@@ -131,7 +131,7 @@ export class MapComponent implements OnInit, OnDestroy {
     // only its close button. This no longer relies on a notice being removed before its event ends.
     try {
       if (passed) {
-        this.ms.open<boolean>(EventPassedWarningComponent);
+        this.ms.open<boolean>(EventPassedWarningComponent, { data: root?.configuration?.eventPassedWarning });
       } else {
         const notice = root?.configuration?.notice;
 

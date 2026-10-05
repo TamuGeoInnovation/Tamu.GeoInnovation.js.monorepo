@@ -56,6 +56,19 @@ export interface EventConfiguration {
    */
   scheduleUrl?: string;
 
+  /**
+   * Overrides the text of the warning shown once the latest `eventDates` entry has passed. Any field
+   * left out keeps the default wording, and omitting this property keeps the default warning.
+   *
+   * Used by maps that stay useful after their dates, such as a seasonal map that remains published
+   * year-round but should tell users the season is over.
+   */
+  eventPassedWarning?: {
+    title?: string;
+    message?: string;
+    followupMessage?: string;
+  };
+
   mapCenter?: Array<number>;
 
   zoom?: number;
