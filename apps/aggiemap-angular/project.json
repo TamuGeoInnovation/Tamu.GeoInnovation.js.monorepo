@@ -96,6 +96,9 @@
         ],
         "scripts": [],
         "styles": ["apps/aggiemap-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "aot": false,
         "extractLicenses": false,
         "sourceMap": true,

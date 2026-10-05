@@ -9,6 +9,7 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
       "options": {
         "crossOrigin": "anonymous",
         "outputPath": {
@@ -33,6 +34,9 @@
           }
         ],
         "styles": ["apps/gisday-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
         "extractLicenses": false,
         "sourceMap": true,

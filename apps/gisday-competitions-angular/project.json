@@ -77,6 +77,9 @@
         ],
         "scripts": [],
         "styles": ["apps/gisday-competitions-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "aot": false,
         "extractLicenses": false,
         "sourceMap": true,

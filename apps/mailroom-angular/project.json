@@ -27,6 +27,9 @@
           "apps/mailroom-angular/src/.nginx"
         ],
         "styles": ["apps/mailroom-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
         "extractLicenses": false,
         "sourceMap": true,

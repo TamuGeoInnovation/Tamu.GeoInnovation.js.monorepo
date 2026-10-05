@@ -33,6 +33,9 @@
           }
         ],
         "styles": ["apps/ues-operations-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
         "extractLicenses": false,
         "sourceMap": true,

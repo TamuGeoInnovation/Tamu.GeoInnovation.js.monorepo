@@ -32,6 +32,9 @@
           }
         ],
         "styles": ["apps/geoservices-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
         "scripts": [],
         "extractLicenses": false,
         "sourceMap": true,
