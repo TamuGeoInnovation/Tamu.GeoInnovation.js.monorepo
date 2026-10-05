@@ -3,7 +3,7 @@ import { Directive, ElementRef, Input, OnDestroy, Output, EventEmitter, OnChange
 import { Observable, timer } from 'rxjs';
 import { mapTo, startWith } from 'rxjs/operators';
 
-import * as Clipboard from 'clipboard';
+import Clipboard from 'clipboard';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector

@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node", "jest", "arcgis-js-api"],
-    "target": "es2020",
-    "esModuleInterop": true
+    "target": "es2020"
   },
   "include": [],
   "files": [],
