@@ -38,6 +38,21 @@ Merged since the 3 October release was cut, and on dev in Release-443:
   | Before (dev, Ring Day day 1) | After |
   | --- | --- |
   | ![Ring Day day 1 zoomed out at the campus view](../screenshots/1379-choice-view-zoom/before-dev-ring-day-day1.png) | ![Ring Day day 1 framed on the ring pickup](../screenshots/1379-choice-view-zoom/after-local-ring-day-day1.png) |
+- **The dining kiosk map shows its dining locations** ([#1392](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1392)). The
+  sidebar-free dining map at [`/kiosk/dining/map`](https://aggiemap.tamu.edu/kiosk/dining/map), meant
+  for embedding elsewhere, opened on the basemap with no dining locations, on dev and production. Like
+  every event map it loads the main map's layers as well as its own, and both define a dining layer.
+  The kiosk's setting that turned dining on reached only the main map's copy, and whichever copy loaded
+  first was drawn: on most loads the kiosk's own, still hidden. Kiosk maps now load none of the main
+  map's layers: the dining kiosk draws the basemap, buildings and dining locations, and nothing else,
+  so parking lots, space numbers and the 150th event layers are gone from it too. Its dining layer is on
+  in its own definition. On production it is reached by direct link only; All Maps lists kiosk maps on
+  dev only, as before. A new smoke check opens it by link on both environments, several times, since
+  the fault came and went between loads, and checks it holds no main-map layers.
+
+  | Before (production) | After |
+  | --- | --- |
+  | ![The dining kiosk showing the basemap and no dining locations](../screenshots/1392-dining-kiosk/before-production.png) | ![The dining kiosk with its dining locations drawn](../screenshots/1392-dining-kiosk/after-local.png) |
 
 ---
 
@@ -78,6 +93,7 @@ Merged, but not in the build on dev yet. Test these once the next build is deplo
 | --- | --- | --- |
 | Angular 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | Any map you use, [All Maps](https://dev.aggiemap.tamu.edu/all-maps), and anything that loads data: search, popups, the side panel | **nothing different**. Every app's HTTP setup changed form in this upgrade, so anything that fails to load data is the first thing to report |
 | Event maps open on the chosen day or session ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) | [Ring Day, day 1](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1), [Ring Day, day 2](https://dev.aggiemap.tamu.edu/events/ring-day/map/d?event-day=day2), [Fish Camp, sessions B, C, E and F](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=sessions-a-f), [Fish Camp, sessions A, D and G](https://dev.aggiemap.tamu.edu/events/fish-camp/map/d?fish-camp-session=session-g) | each opens **close in** on its own location (day 1 on the ring pickup by the Williams Alumni Center, day 2 on Aggie Park), not zoomed out over campus. Compare with [production](https://aggiemap.tamu.edu/events/ring-day/map/d?event-day=day1) |
+| The dining kiosk shows its dining locations ([#1392](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1392)) | [The dining kiosk on dev](https://dev.aggiemap.tamu.edu/kiosk/dining/map); after release, [on production](https://aggiemap.tamu.edu/kiosk/dining/map) by direct link | the dining locations drawn as markers across campus, no sidebar, and nothing else over the basemap: no parking lot shading, space numbers or 150th event layers. Reload a few times: before the fix the dining appeared on some loads only. All Maps still lists it on dev only, by design |
 
 ---
 

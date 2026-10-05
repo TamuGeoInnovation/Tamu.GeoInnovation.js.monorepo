@@ -66,8 +66,8 @@ with the number of maps and services.
 
 ### What it checks
 
-The counts are a snapshot: **751 tests, measured on dev on 4 October 2026** against the Angular 18
-build (331 measured, plus the 420 in `framing.spec.ts`, measured on dev that day). Production lists fewer
+The counts are a snapshot: **755 tests, measured on dev on 4 October 2026** against the Angular 18
+build (331 measured, plus the 420 in `framing.spec.ts` and the 4 in `kiosk.spec.ts`, measured on dev that day). Production lists fewer
 maps than dev, so it runs fewer.
 
 | Type of check | Spec files | Tests | What it catches | Prompted by |
@@ -84,7 +84,8 @@ maps than dev, so it runs fewer.
 | Build and runtime | `analytics.spec.ts`, `esri-runtime.spec.ts`, `build-banner.spec.ts` | 6 | Each site reports to its own Google Analytics; the maps run the intended ArcGIS version; the page says which build it is | [#1037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1037) (dev was reporting into production's analytics), [#1219](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1219), [#1306](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1306) |
 | Interaction | `bus.spec.ts`, `popup.spec.ts` | 3 | Every bus route draws its stops; clicking a feature opens a popup with its data | [#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174), [#1117](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1117) |
 | Map framing | `framing.spec.ts` | 420 | Every map, and every builder choice, opens at the zoom and center it opens at on production, compared with a baseline recorded from production: 412 routes, plus one report of the routes only one side has. On dev, 7 maps production does not list are reported and skipped | [#1380](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1380), after event maps opened at the default zoom on dev with every layer drawn ([#1379](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1379)) |
-| **Total** | | **751** | | |
+| Kiosk maps | `kiosk.spec.ts` | 4 | The dining kiosk, opened by direct link as production serves it, draws its dining locations with no sidebar, on each of three fresh loads, and holds none of the main map's layers | [#1392](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1392), after it opened on the basemap alone |
+| **Total** | | **755** | | |
 
 A known problem that cannot be fixed yet, such as a service the dev GIS server does not publish, is
 listed against its issue and reported on every run rather than failing it, so it stays visible until
@@ -105,7 +106,7 @@ The suite started on 27 September 2026 and grew with nearly every bug found sinc
 | 30 September | ~212 | Map notices, bus routes, directions, development-only features |
 | 1 October | ~241 | Campus notices, blank-canvas detection, campus basemaps. **Measured: 242** on 2 October at 02:03, in 33 minutes |
 | 2 October | ~331 | Event dates, phone layout, ArcGIS version, Code Maroon, build banner. **Measured: 331** in every full run from 3 October, in 36 to 45 minutes |
-| 4 October | 751 | Map framing, against a production baseline of every map and builder choice |
+| 4 October | 755 | Map framing, against a production baseline of every map and builder choice; kiosk maps |
 
 Numbers marked ~ are estimates: today's count for each spec, added up by the date the spec first
 appeared. Bold numbers are real runs. The early estimates are approximate, because the per-map checks
