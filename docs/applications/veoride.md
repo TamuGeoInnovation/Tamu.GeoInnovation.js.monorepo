@@ -27,8 +27,9 @@ layer of green dots, one per bike, off by default.
 
 The production environment files of AggieMap, the event maps and the Ring Day app passed
 `exclude: ['BIKE_LOCATIONS']` to the shared factory. That was all they set, so they now call it with
-only the environment. The layer showed on production all the same (3,300 bikes on 4 October, per #1398), so the
-exclusion was not in effect in the deployed build.
+only the environment. The exclusion was in effect: production's main map, the dining kiosk and an event
+map, checked on 5 October before this release reached production, did not load the layer. (An earlier note
+on #1398 said production showed it; that came from a misread check and was wrong.)
 
 ## Why it was safe to remove
 
