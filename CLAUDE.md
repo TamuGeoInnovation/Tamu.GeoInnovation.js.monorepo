@@ -189,8 +189,7 @@ docker unpause <container>...
 
 A paused container loses nothing; it only stops competing for the CPU.
 
-**The pre-push check for a bug fix covers only the projects it edits, and the pull request opens as a
-draft:**
+**The pre-push check for a bug fix covers only the projects it edits:**
 
 ```bash
 scripts/check-in-volume.sh <branch> <each project the fix edits>,<the app the bug is in>
@@ -202,10 +201,19 @@ makes nearly everything affected. #1379 edited `libs/maps/esri`, and `affected -
 projects and over 25 minutes; the two projects it edited took about 5.
 
 CI runs the full `affected -t lint,test,build` on every pull request anyway, so running it locally as
-well doubled the wait without adding a check. What CI alone catches - another app's bundle budget,
-as on 30 September - is caught before merging, because the pull request stays a **draft until CI is
-green** and is only then marked ready. Anything that is not a bug fix (an upgrade, a dependency
-change, a shared-library refactor) still runs the full check before pushing.
+well doubled the wait without adding a check. What CI alone catches - another app's bundle budget, as
+on 30 September - is caught before merging, while the run is watched. Anything that is not a bug fix
+(an upgrade, a dependency change, a shared-library refactor) still runs the full check before pushing.
+
+**Owners and maintainers open pull requests ready for review. Everyone else opens a draft** and marks
+it ready once CI is green. The draft exists so nobody is asked to look at a contribution that has not
+passed yet; a maintainer opening their own pull request is already the person watching the run and
+merging it, so it only makes the list harder to read - eight in one batch on 6 October all showed as
+works in progress and each had to be converted by hand (#1494).
+
+Opening ready costs no extra build, and a draft buys none: converting a draft does not re-run
+anything, because no workflow lists `ready_for_review` in its `types:` and `main.yml` runs on
+`[opened, synchronize, reopened]`.
 
 The rest is unchanged: the issue first, a regression test proven red against the unfixed code, then
 green, before and after screenshots, and a row in the release notes.
