@@ -27,7 +27,7 @@ describe('TileSubmenuComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TileSubmenuComponent);
     component = fixture.componentInstance;
-    TileServiceStub = TestBed.get(TileService);
+    TileServiceStub = TestBed.inject(TileService);
     fixture.detectChanges();
   });
 
