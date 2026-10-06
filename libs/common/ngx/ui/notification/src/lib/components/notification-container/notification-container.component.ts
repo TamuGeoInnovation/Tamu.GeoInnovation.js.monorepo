@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Optional } from '@angular/core';
+import { Component, Input, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { v4 as guid } from 'uuid';
@@ -11,6 +11,7 @@ import { Notification } from '../../helpers/notification.helper';
   selector: 'tamu-gisc-notification-container',
   templateUrl: './notification-container.component.html',
   styleUrls: ['./notification-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class NotificationContainerComponent implements OnInit {

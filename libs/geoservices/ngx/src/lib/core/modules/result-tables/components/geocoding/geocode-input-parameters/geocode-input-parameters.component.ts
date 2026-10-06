@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, filter, from, reduce } from 'rxjs';
 
 import { IGeocodeDeserializedInputParametersMap } from '@tamu-gisc/geoprocessing-v5';
@@ -9,6 +9,7 @@ import { GeocodeInputParameterLabel } from '../../../../../util/dictionaries';
   selector: 'tamu-gisc-geocode-input-parameters',
   templateUrl: './geocode-input-parameters.component.html',
   styleUrls: ['./geocode-input-parameters.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GeocodeInputParametersComponent implements OnInit {

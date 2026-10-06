@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { EventSettingsService } from '../../../../services/settings/event-settings.service';
 import { SidebarInfoPanel } from '../../../../interfaces/special-event.interface';
@@ -7,6 +7,7 @@ import { SidebarInfoPanel } from '../../../../interfaces/special-event.interface
   selector: 'tamu-gisc-event-legend',
   templateUrl: './event-legend.component.html',
   styleUrls: ['./event-legend.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventLegendComponent implements OnInit {

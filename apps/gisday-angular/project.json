@@ -10,6 +10,7 @@
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "",
       "options": {
         "crossOrigin": "anonymous",
         "outputPath": {
@@ -97,8 +98,7 @@
             }
           ]
         }
-      },
-      "defaultConfiguration": ""
+      }
     },
     "image-build": {
       "executor": "nx:run-commands",
@@ -113,6 +113,7 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "continuous": true,
       "options": {
         "host": "0.0.0.0",
         "buildTarget": "gisday-angular:build"
@@ -124,8 +125,7 @@
         "development": {
           "buildTarget": "gisday-angular:build:development"
         }
-      },
-      "continuous": true
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -135,11 +135,11 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"],
       "options": {
         "jestConfig": "apps/gisday-angular/jest.config.ts",
         "tsConfig": "apps/gisday-angular/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-angular"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

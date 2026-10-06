@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
 
@@ -6,6 +6,7 @@ import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing
   selector: 'tamu-gisc-mobile-sidebar',
   templateUrl: './mobile-sidebar.component.html',
   styleUrls: ['./mobile-sidebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MobileSidebarComponent {

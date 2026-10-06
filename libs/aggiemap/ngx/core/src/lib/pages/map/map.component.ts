@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
@@ -19,6 +19,7 @@ import esri = __esri;
   selector: 'tamu-gisc-aggiemap-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {

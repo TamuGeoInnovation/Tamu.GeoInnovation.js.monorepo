@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -11,6 +11,6 @@ import { LayerConfigurationComponent } from './components/layer-configuration/la
   declarations: [LayerConfigurationComponent],
   exports: [LayerConfigurationComponent],
   imports: [CommonModule, FormsModule, ReactiveFormsModule, UIFormsModule],
-  providers: [provideHttpClient(withInterceptorsFromDi())]
+  providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
 })
 export class MapsFormsModule {}

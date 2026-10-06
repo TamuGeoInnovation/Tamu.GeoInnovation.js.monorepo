@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-service-attribute-accordion',
   templateUrl: './service-attribute-accordion.component.html',
   styleUrls: ['./service-attribute-accordion.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ServiceAttributeAccordionComponent {

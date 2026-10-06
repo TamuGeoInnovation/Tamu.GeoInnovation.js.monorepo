@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
@@ -28,6 +28,7 @@ import {
   selector: 'tamu-gisc-code-maroon-alert',
   templateUrl: './code-maroon-alert.component.html',
   styleUrls: ['./code-maroon-alert.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CodeMaroonAlertComponent implements OnInit, OnDestroy {

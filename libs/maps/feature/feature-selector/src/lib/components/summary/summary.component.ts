@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
+import { Component, OnInit, Input, ContentChildren, QueryList, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
@@ -12,6 +12,7 @@ import esri = __esri;
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
   providers: [FeatureCollectorService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SelectionSummaryComponent implements OnInit, AfterContentInit {

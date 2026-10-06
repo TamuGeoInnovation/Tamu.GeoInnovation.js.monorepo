@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChildren, forwardRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChildren, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, Subject, delay, map, shareReplay } from 'rxjs';
 
@@ -15,6 +15,7 @@ import { RadioGroupComponent } from '../radio-group/radio-group.component';
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SlideToggleComponent<Option extends object, Value>

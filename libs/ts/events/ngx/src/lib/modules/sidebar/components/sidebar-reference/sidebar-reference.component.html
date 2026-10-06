@@ -28,15 +28,15 @@
 } @if (configuration?.sidebarInfo; as info) { @for (section of info.sections; track section) {
 <div class="sidebar-info-section">
   <div class="sidebar-component-name">
-    <p [ngStyle]="section.styleOverrides?.heading">{{ section.heading }}</p>
+    <p [ngStyle]="$safeNavigationMigration(section.styleOverrides?.heading)">{{ section.heading }}</p>
   </div>
   <div class="sidebar-component-content-container">
     @if (section.subheading) {
-    <p class="sidebar-info-subheading" [ngStyle]="section.styleOverrides?.subheading">{{ section.subheading }}</p>
+    <p class="sidebar-info-subheading" [ngStyle]="$safeNavigationMigration(section.styleOverrides?.subheading)">{{ section.subheading }}</p>
     } @if (section.items?.length) {
-    <ul class="sidebar-info-items" [ngStyle]="section.styleOverrides?.items">
+    <ul class="sidebar-info-items" [ngStyle]="$safeNavigationMigration(section.styleOverrides?.items)">
       @for (item of section.items; track item) {
-      <li [ngStyle]="section.styleOverrides?.item">{{ item }}</li>
+      <li [ngStyle]="$safeNavigationMigration(section.styleOverrides?.item)">{{ item }}</li>
       }
     </ul>
     }

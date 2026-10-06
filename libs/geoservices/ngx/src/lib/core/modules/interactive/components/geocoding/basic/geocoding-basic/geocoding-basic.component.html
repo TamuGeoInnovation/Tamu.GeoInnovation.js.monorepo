@@ -39,7 +39,7 @@
     <tamu-gisc-basic-summary-blurb [keyFragment]="'geocode'" (navigateFull)="navigateToAdvanced(res)"></tamu-gisc-basic-summary-blurb>
     <tamu-gisc-tabs>
       <tamu-gisc-tab [label]="'Geocode'">
-        <tamu-gisc-geocode-result-table [geocode]="res.data?.results[0]"></tamu-gisc-geocode-result-table>
+        <tamu-gisc-geocode-result-table [geocode]="$safeNavigationMigration(res.data?.results[0])"></tamu-gisc-geocode-result-table>
         @if (res?.data?.results?.length > 1) {
         <p class="text-content text-content--center"><i>{{res.data.results.length - 1}} additional result not shown. See full response for details.</i></p>
         }
@@ -51,7 +51,7 @@
       </tamu-gisc-tab>
     </tamu-gisc-tabs>
     <div class="flex flex-row">
-      <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
+      <tamu-gisc-interactive-response-metadata [status]="$safeNavigationMigration(res?.message)" [guid]="$safeNavigationMigration(res?.data?.transactionGuid)" [timeTaken]="$safeNavigationMigration(res?.data?.timeTaken)" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
     </div>
   </div>
   } }

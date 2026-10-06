@@ -21,6 +21,6 @@
   <div class="feature-style-1">
     <p>Image</p>
   </div>
-  <img [src]="'data:image/jpg;base64,' + (details | async)?.imageBase64String" alt="" />
+  <img [src]="'data:image/jpg;base64,' + $safeNavigationMigration((details | async)?.imageBase64String)" alt="" />
 </div>
 }

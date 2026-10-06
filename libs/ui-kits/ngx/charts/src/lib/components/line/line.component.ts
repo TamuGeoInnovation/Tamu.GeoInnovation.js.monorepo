@@ -1,4 +1,4 @@
-import { Component, forwardRef, AfterViewInit } from '@angular/core';
+import { Component, forwardRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { BaseChartComponent } from '../base/base.component';
 import { LineChartConfiguration } from '../chart-container/chart-container.component';
@@ -8,6 +8,7 @@ import { LineChartConfiguration } from '../chart-container/chart-container.compo
   templateUrl: './line.component.html',
   styleUrls: ['../base/base.component.scss', './line.component.scss'],
   providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => LineChartComponent) }],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LineChartComponent extends BaseChartComponent implements AfterViewInit {

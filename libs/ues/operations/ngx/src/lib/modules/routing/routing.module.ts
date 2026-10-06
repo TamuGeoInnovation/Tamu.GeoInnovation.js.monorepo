@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
@@ -40,6 +40,6 @@ const hybridRoutes: Routes = [
     UITamuBrandingModule,
     AuthModule
   ],
-  providers: [provideHttpClient(withInterceptorsFromDi())]
+  providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
 })
 export class AppRoutingModule {}

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
 import { takeUntil, filter, switchMap, take, map } from 'rxjs/operators';
 
@@ -10,6 +10,7 @@ import esri = __esri;
 @Component({
   template: '',
   providers: [FeatureSelectorService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BaseDrawComponent implements OnInit, OnDestroy {

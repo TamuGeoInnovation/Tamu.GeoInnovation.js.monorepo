@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
@@ -10,6 +10,7 @@ import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
   selector: 'tamu-gisc-contact',
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ContactComponent implements OnInit {

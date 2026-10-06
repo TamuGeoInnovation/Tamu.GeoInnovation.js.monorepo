@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { Role } from '@tamu-gisc/oidc/common';
   selector: 'tamu-gisc-view',
   templateUrl: './view-role.component.html',
   styleUrls: ['./view-role.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ViewRoleComponent {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -10,6 +10,7 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 @Component({
   selector: 'tamu-gisc-base-admin-detail',
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export abstract class BaseAdminDetailComponent<T> implements OnInit {

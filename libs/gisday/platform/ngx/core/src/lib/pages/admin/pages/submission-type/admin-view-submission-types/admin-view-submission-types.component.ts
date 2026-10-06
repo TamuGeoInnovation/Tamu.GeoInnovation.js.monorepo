@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -8,6 +8,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   selector: 'tamu-gisc-admin-view-submission-types',
   templateUrl: './admin-view-submission-types.component.html',
   styleUrls: ['./admin-view-submission-types.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<SubmissionType> {

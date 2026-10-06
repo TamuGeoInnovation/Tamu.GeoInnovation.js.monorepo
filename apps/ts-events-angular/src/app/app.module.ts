@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
@@ -43,7 +43,7 @@ WebFont.load({
       useValue: environment
     },
     { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withXhr(), withInterceptorsFromDi())
   ]
 })
 export class AppModule {}

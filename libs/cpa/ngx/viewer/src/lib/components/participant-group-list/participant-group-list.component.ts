@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { interval, Observable } from 'rxjs';
 import { shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
 
@@ -11,6 +11,7 @@ import { ViewerService } from '../../services/viewer.service';
   selector: 'tamu-gisc-participant-group-list',
   templateUrl: './participant-group-list.component.html',
   styleUrls: ['./participant-group-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParticipantGroupListComponent implements OnInit {

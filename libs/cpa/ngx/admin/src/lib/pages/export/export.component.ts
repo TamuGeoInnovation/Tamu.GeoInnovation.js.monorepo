@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { DeepPartial } from 'typeorm';
 import { Observable } from 'rxjs';
@@ -17,6 +17,7 @@ import esri = __esri;
   selector: 'tamu-gisc-export',
   templateUrl: './export.component.html',
   styleUrls: ['./export.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ExportComponent implements OnInit {

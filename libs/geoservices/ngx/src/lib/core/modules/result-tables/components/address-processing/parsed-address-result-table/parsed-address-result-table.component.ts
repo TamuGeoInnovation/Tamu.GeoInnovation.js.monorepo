@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { IParsedAddressRecord, ParsedAddressRecordField } from '@tamu-gisc/geoprocessing-v5';
@@ -10,6 +10,7 @@ import { ParsedAddressFieldLabel } from '../../../../../util/dictionaries';
   selector: 'tamu-gisc-parsed-address-result-table',
   templateUrl: './parsed-address-result-table.component.html',
   styleUrls: ['./parsed-address-result-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParsedAddressResultTableComponent implements OnInit {

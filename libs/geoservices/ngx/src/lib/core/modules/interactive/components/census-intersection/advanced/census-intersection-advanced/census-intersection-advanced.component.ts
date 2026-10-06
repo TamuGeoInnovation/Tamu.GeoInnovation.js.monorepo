@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { CensusIntersectionBasicComponent } from '../../basic/census-intersection-basic/census-intersection-basic.component';
 
@@ -6,6 +6,7 @@ import { CensusIntersectionBasicComponent } from '../../basic/census-intersectio
   selector: 'tamu-gisc-census-intersection-advanced',
   templateUrl: './census-intersection-advanced.component.html',
   styleUrls: ['./census-intersection-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CensusIntersectionAdvancedComponent extends CensusIntersectionBasicComponent {}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
@@ -11,6 +11,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-edit-role',
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EditRoleComponent implements OnInit {

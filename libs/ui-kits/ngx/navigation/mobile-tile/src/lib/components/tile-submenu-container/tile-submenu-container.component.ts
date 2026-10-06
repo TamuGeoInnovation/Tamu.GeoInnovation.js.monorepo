@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy, HostBinding } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -14,6 +14,7 @@ import { submenuListStagger } from '../../animations/animations';
   // in the self-component otherwise it can't query anything entering into view
   // because the whole thing is entering into view.
   animations: [submenuListStagger],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {

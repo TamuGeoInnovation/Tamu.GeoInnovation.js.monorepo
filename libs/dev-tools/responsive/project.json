@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/responsive"],
       "options": {
         "jestConfig": "libs/dev-tools/responsive/jest.config.ts",
         "tsConfig": "libs/dev-tools/responsive/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/responsive"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

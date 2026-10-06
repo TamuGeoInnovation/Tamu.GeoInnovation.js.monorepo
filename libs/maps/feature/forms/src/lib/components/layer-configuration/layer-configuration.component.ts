@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Optional, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Optional, OnDestroy, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
@@ -15,6 +15,7 @@ import esri = __esri;
   selector: 'tamu-gisc-layer-configuration',
   templateUrl: './layer-configuration.component.html',
   styleUrls: ['./layer-configuration.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges {

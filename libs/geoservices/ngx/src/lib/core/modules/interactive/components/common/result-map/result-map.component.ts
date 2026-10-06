@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { take } from 'rxjs';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
@@ -10,6 +10,7 @@ import esri = __esri;
   templateUrl: './result-map.component.html',
   styleUrls: ['./result-map.component.scss'],
   providers: [EsriMapService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ResultMapComponent implements OnInit {

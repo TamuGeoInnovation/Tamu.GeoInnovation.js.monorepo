@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service';
 
@@ -17,6 +17,7 @@ import { FEATURED_PARKING_ID } from '../../services/discovery/discovery.service'
   selector: 'tamu-gisc-maps-page-header',
   templateUrl: './maps-page-header.component.html',
   styleUrls: ['./maps-page-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapsPageHeaderComponent {

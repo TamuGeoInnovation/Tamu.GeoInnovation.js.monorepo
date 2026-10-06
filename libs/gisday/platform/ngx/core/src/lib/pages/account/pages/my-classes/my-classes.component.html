@@ -23,7 +23,7 @@
           @for (class of (classes$ | async); track class) {
           <tr>
             <td id="control">
-              <tamu-gisc-checkbox label="" [checked]="isUserClassSelected$(class?.guid) | async" (changed)="setClassValue($event, class?.guid)"></tamu-gisc-checkbox>
+              <tamu-gisc-checkbox label="" [checked]="isUserClassSelected$($safeNavigationMigration(class?.guid)) | async" (changed)="setClassValue($event, $safeNavigationMigration(class?.guid))"></tamu-gisc-checkbox>
             </td>
             <td>{{class?.code}} {{class?.number}}</td>
             <td>{{class?.section}}</td>

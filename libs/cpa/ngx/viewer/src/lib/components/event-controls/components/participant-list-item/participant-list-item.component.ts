@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, skip, takeUntil } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { IParticipant } from '@tamu-gisc/cpa/common/entities';
   selector: 'tamu-gisc-participant-list-item',
   templateUrl: './participant-list-item.component.html',
   styleUrls: ['./participant-list-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParticipantListItemComponent implements OnInit, OnDestroy {

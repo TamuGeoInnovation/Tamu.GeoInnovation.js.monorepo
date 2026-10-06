@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, shareReplay, startWith, Subject } from 'rxjs';
 
@@ -10,6 +10,7 @@ import { RingDaySettingsService } from '../../../map/services/settings/ring-day-
   selector: 'tamu-gisc-accommodations',
   templateUrl: './accommodations.component.html',
   styleUrls: ['./accommodations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AccommodationsComponent implements OnInit {

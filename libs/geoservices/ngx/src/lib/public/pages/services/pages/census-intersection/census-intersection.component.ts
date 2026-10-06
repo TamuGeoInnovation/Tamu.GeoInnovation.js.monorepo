@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { CensusIntersection, CensusYear } from '@tamu-gisc/geoprocessing-v5';
@@ -8,6 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   selector: 'tamu-gisc-census-intersection',
   templateUrl: './census-intersection.component.html',
   styleUrls: ['./census-intersection.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CensusIntersectionComponent implements OnInit {

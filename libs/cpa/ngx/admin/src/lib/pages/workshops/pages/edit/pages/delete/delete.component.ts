@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -8,6 +8,7 @@ import { WorkshopService } from '@tamu-gisc/cpa/ngx/data-access';
   selector: 'tamu-gisc-delete',
   templateUrl: './delete.component.html',
   styleUrls: ['./delete.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DeleteComponent implements OnInit {

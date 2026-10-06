@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
   selector: 'tamu-gisc-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ModalComponent implements OnInit, OnDestroy {

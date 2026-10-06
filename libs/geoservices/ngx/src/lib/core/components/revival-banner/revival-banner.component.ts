@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, delay } from 'rxjs';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
@@ -8,6 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   selector: 'tamu-gisc-revival-banner',
   templateUrl: './revival-banner.component.html',
   styleUrls: ['./revival-banner.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class RevivalBannerComponent implements OnInit {

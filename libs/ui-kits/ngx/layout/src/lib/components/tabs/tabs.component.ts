@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, Input, HostBinding } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, Input, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { TabComponent } from './tab/tab.component';
@@ -7,6 +7,7 @@ import { TabComponent } from './tab/tab.component';
   selector: 'tamu-gisc-tabs',
   templateUrl: './tabs.component.html',
   styleUrls: ['./tabs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TabsComponent extends AbstractContentReplacerComponent implements AfterContentInit {

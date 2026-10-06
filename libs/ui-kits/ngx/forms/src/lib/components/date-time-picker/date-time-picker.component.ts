@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, Input, forwardRef, ViewChild, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { TooltipComponent } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -97,6 +97,7 @@ export function fromInputValue(raw: string, type: ReturnType<typeof inputTypeFor
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DateTimePickerComponent implements ControlValueAccessor {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import esri = __esri;
 
@@ -6,6 +6,7 @@ import esri = __esri;
   selector: 'tamu-gisc-legend-collection',
   templateUrl: './legend-collection.component.html',
   styleUrls: ['./legend-collection.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LegendCollectionComponent {

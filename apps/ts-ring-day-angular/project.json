@@ -9,6 +9,7 @@
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": {
           "base": "dist/apps/ts-ring-day-angular",
@@ -62,11 +63,15 @@
           "sourceMap": true,
           "namedChunks": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "defaultConfiguration": "development",
+      "continuous": true,
+      "options": {
+        "host": "0.0.0.0"
+      },
       "configurations": {
         "production": {
           "buildTarget": "ts-ring-day-angular:build:production"
@@ -74,12 +79,7 @@
         "development": {
           "buildTarget": "ts-ring-day-angular:build:development"
         }
-      },
-      "defaultConfiguration": "development",
-      "options": {
-        "host": "0.0.0.0"
-      },
-      "continuous": true
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",

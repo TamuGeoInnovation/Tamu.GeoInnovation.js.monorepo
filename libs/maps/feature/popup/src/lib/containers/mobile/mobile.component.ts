@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnDestroy } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { PopupComponent } from '../base/base.component';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
@@ -10,6 +10,7 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   templateUrl: './mobile.component.html',
   styleUrls: ['./mobile.component.scss'],
   providers: [PopupService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PopupMobileComponent extends PopupComponent implements OnDestroy {

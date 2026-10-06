@@ -9,6 +9,8 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "",
       "options": {
         "crossOrigin": "anonymous",
         "outputPath": {
@@ -96,12 +98,11 @@
             }
           ]
         }
-      },
-      "outputs": ["{options.outputPath.base}"],
-      "defaultConfiguration": ""
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "continuous": true,
       "options": {
         "host": "0.0.0.0",
         "buildTarget": "ues-operations-angular:build"
@@ -113,8 +114,7 @@
         "development": {
           "buildTarget": "ues-operations-angular:build:development"
         }
-      },
-      "continuous": true
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -124,11 +124,11 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-angular"],
       "options": {
         "jestConfig": "apps/ues-operations-angular/jest.config.ts",
         "tsConfig": "apps/ues-operations-angular/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/apps/ues-operations-angular"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

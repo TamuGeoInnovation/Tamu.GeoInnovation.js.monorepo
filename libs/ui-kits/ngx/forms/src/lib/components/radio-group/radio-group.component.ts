@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -14,6 +14,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class RadioGroupComponent<Option extends object, Value> implements ControlValueAccessor {

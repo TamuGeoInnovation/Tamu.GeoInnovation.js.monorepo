@@ -5,7 +5,8 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
@@ -20,6 +21,7 @@ import { BasePopupComponent } from '../../components/base/base.component';
   selector: 'tamu-gisc-feature-popup',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PopupComponent implements OnInit, OnDestroy {

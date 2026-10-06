@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, Subject, combineLatest, forkJoin, merge } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
@@ -21,6 +21,7 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
   selector: 'tamu-gisc-event-view',
   templateUrl: './event-view.component.html',
   styleUrls: ['./event-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventViewComponent implements OnInit, OnDestroy {

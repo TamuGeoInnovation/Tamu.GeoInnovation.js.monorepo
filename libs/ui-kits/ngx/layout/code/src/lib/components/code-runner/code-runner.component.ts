@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-code-runner',
   templateUrl: './code-runner.component.html',
   styleUrls: ['./code-runner.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CodeRunnerComponent implements OnInit {

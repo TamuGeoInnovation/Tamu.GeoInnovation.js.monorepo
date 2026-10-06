@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
@@ -7,6 +7,7 @@ import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
   selector: 'tamu-gisc-preferences',
   templateUrl: './preferences.component.html',
   styleUrls: ['./preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PreferencesComponent implements OnInit {

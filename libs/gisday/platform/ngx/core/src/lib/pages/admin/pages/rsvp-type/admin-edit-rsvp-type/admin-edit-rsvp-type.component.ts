@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RsvpTypeService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -11,6 +11,7 @@ import { BaseAdminListComponent } from '../../base-admin-list/base-admin-list.co
   selector: 'tamu-gisc-admin-edit-rsvp-type',
   templateUrl: './admin-edit-rsvp-type.component.html',
   styleUrls: ['./admin-edit-rsvp-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AdminEditRsvpTypeComponent extends BaseAdminListComponent<RsvpType> {

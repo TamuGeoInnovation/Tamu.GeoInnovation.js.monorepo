@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
@@ -10,6 +10,7 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
   selector: 'tamu-gisc-aggiemap-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AggiemapSidebarComponent implements OnInit {

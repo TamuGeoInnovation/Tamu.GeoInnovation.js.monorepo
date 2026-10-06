@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { SubmissionReviewDto } from '@tamu-gisc/gisday/competitions/data-api/types';
@@ -8,6 +8,7 @@ import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-acces
   selector: 'tamu-gisc-admin-submissions',
   templateUrl: './admin-submissions.component.html',
   styleUrls: ['./admin-submissions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AdminSubmissionsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
 
@@ -8,6 +8,7 @@ import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api'
   selector: 'tamu-gisc-event-row',
   templateUrl: './event-row.component.html',
   styleUrls: ['./event-row.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventRowComponent implements OnChanges, OnInit {

@@ -6,7 +6,8 @@ import {
   AfterContentInit,
   Input,
   OnDestroy,
-  forwardRef
+  forwardRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { from, of, Subject, merge } from 'rxjs';
@@ -26,6 +27,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentInit, ControlValueAccessor {

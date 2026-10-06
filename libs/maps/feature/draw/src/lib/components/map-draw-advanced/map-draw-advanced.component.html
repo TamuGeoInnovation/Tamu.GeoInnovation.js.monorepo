@@ -36,9 +36,9 @@
 } @if (versionTools) {
 <div class="tool-set version">
   @if (undoTool) {
-  <p class="material-icons" title="Undo" [ngClass]="{ available: model?.canUndo() }" (click)="versionAction('undo')">undo</p>
+  <p class="material-icons" title="Undo" [ngClass]="{ available: $safeNavigationMigration(model?.canUndo()) }" (click)="versionAction('undo')">undo</p>
   } @if (redoTool) {
-  <p class="material-icons" title="Redo" [ngClass]="{ available: model?.canRedo() }" (click)="versionAction('redo')">redo</p>
+  <p class="material-icons" title="Redo" [ngClass]="{ available: $safeNavigationMigration(model?.canRedo()) }" (click)="versionAction('redo')">redo</p>
   }
 </div>
 } @if (helpTools) {

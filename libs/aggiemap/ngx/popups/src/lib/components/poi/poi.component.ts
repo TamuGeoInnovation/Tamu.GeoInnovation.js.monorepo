@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 
@@ -17,6 +17,7 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   selector: 'tamu-gisc-poi-popup-component',
   templateUrl: './poi.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PoiPopupComponent extends BaseDirectionsComponent implements OnInit, AfterViewInit, AfterViewChecked {

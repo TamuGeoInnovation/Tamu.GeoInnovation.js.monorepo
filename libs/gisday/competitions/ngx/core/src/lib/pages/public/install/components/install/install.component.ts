@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { BehaviorSubject } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
   selector: 'tamu-gisc-install',
   templateUrl: './install.component.html',
   styleUrls: ['./install.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class InstallComponent implements OnInit {

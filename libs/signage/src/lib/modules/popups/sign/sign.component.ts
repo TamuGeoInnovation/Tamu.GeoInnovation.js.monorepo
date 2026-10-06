@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { shareReplay, pluck } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
   selector: 'tamu-gisc-sign',
   templateUrl: './sign.component.html',
   styleUrls: ['./sign.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SignPopupComponent extends BasePopupComponent implements OnInit {

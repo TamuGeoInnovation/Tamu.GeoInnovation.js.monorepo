@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, TemplateRef } from '@angular/core';
+import { Component, Input, ViewChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from '../../../abstracts/abstract-content-swap/abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
@@ -6,6 +6,7 @@ import { AbstractContentReplacerToggleComponent } from '../../../abstracts/abstr
   selector: 'tamu-gisc-tab',
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TabComponent extends AbstractContentReplacerToggleComponent {

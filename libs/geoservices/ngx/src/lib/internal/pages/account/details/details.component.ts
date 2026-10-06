@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { AccountDetailsService, IAccountDetails } from '@tamu-gisc/geoservices/d
   selector: 'tamu-gisc-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DetailsComponent implements OnInit {

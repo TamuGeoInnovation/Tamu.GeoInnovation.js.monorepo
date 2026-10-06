@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, OnInit } from '@angular/core';
+import { Component, Input, HostListener, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, distinctUntilChanged, shareReplay, startWith } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { switchMap, distinctUntilChanged, shareReplay, startWith } from 'rxjs/op
   selector: 'tamu-gisc-mobile-nav-tab',
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MobileTabNavigationTabComponent implements OnInit {

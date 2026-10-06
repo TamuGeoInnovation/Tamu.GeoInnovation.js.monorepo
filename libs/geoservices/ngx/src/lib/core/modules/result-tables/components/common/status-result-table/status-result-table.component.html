@@ -9,7 +9,7 @@
   <tbody>
     <tr>
       <td>Time Taken</td>
-      <td>{{status?.timeTaken | number}}ms</td>
+      <td>{{$safeNavigationMigration(status?.timeTaken) | number}}ms</td>
     </tr>
 
     <tr>

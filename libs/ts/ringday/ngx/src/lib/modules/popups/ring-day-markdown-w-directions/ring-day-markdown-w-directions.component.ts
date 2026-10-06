@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
 
@@ -6,6 +6,7 @@ import { BaseDirectionsComponent } from '@tamu-gisc/aggiemap/ngx/popups';
   selector: 'tamu-gisc-ring-day-markdown-w-directions',
   templateUrl: './ring-day-markdown-w-directions.component.html',
   styleUrls: ['./ring-day-markdown-w-directions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class RingDayMarkdownWDirectionsComponent extends BaseDirectionsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -12,6 +12,7 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
   selector: 'tamu-gisc-event-list',
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventListComponent extends BaseAdminListComponent<Event> {

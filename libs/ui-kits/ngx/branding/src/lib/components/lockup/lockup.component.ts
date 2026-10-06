@@ -1,9 +1,10 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-lockup',
   templateUrl: './lockup.component.html',
   styleUrls: ['./lockup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LockupComponent {

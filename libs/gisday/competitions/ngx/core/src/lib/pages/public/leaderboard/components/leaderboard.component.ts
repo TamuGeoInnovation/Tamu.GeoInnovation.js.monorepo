@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, take } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { GISDayRoles } from '@tamu-gisc/gisday/platform/ngx/common';
   selector: 'tamu-gisc-leaderboard',
   templateUrl: './leaderboard.component.html',
   styleUrls: ['./leaderboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LeaderboardComponent implements OnInit {

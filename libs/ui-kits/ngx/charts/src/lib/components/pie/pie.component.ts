@@ -1,4 +1,4 @@
-import { Component, forwardRef, AfterViewInit } from '@angular/core';
+import { Component, forwardRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { BaseChartComponent } from '../base/base.component';
 import { PieChartConfiguration } from '../chart-container/chart-container.component';
@@ -8,6 +8,7 @@ import { PieChartConfiguration } from '../chart-container/chart-container.compon
   templateUrl: './pie.component.html',
   styleUrls: ['../base/base.component.scss', './pie.component.scss'],
   providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => PieChartComponent) }],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PieChartComponent extends BaseChartComponent implements AfterViewInit {

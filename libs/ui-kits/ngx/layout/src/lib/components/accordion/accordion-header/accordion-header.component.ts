@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, ChangeDetectionStrategy } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 
@@ -6,6 +6,7 @@ import { AccordionService } from '../services/accordion.service';
   selector: 'tamu-gisc-accordion-header',
   templateUrl: './accordion-header.component.html',
   styleUrls: ['./accordion-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AccordionHeaderComponent {

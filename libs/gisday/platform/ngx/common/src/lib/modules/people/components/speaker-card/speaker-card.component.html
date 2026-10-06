@@ -1,10 +1,10 @@
 <div class="profile" [routerLink]="['/presenters/details', speaker.guid]">
   @if (speaker?.university?.acronym && speaker?.graduationYear !== '') {
-  <div class="class-banner" [ngStyle]=" { 'background': '#'+ speaker.university?.hexTriplet+'' }">{{speaker.university.acronym}} {{ graduationYear }}</div>
+  <div class="class-banner" [ngStyle]=" { 'background': '#'+ $safeNavigationMigration(speaker.university?.hexTriplet)+'' }">{{speaker.university.acronym}} {{ graduationYear }}</div>
   }
 
   <div class="avatar-container">
-    <tamu-gisc-speaker-avatar [avatarImageUrl]="speaker?.images?.[0]?.path"></tamu-gisc-speaker-avatar>
+    <tamu-gisc-speaker-avatar [avatarImageUrl]="$safeNavigationMigration(speaker?.images?.[0]?.path)"></tamu-gisc-speaker-avatar>
   </div>
 
   <div class="image-description">

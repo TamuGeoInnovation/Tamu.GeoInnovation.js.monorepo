@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -26,6 +26,7 @@ import esri = __esri;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
   providers: [EventService, EsriMapService, LayerListService, LegendService, TripPlannerService, BasemapGalleryService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {

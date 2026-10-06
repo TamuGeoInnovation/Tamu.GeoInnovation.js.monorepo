@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -12,6 +12,7 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   selector: 'tamu-gisc-buildling-popup-component',
   templateUrl: './building-popup.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BuildingPopupComponent extends BaseDirectionsComponent implements OnInit {

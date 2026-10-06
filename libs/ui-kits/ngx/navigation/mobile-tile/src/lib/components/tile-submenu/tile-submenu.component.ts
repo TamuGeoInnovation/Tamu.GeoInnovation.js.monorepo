@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChildren, Input, OnDestroy, QueryList } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, Input, OnDestroy, QueryList, ChangeDetectionStrategy } from '@angular/core';
 import { from, merge, Subject } from 'rxjs';
 import { mergeMap, pluck, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -9,6 +9,7 @@ import { TileService } from '../../services/tile.service';
   selector: 'tamu-gisc-tile-submenu',
   templateUrl: './tile-submenu.component.html',
   styleUrls: ['./tile-submenu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TileSubmenuComponent implements AfterContentInit, OnDestroy {

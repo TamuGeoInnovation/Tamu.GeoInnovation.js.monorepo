@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { map, Observable, switchMap } from 'rxjs';
@@ -10,6 +10,7 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
   selector: 'tamu-gisc-people-details',
   templateUrl: './people-details.component.html',
   styleUrls: ['./people-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PeopleDetailsComponent implements OnInit {

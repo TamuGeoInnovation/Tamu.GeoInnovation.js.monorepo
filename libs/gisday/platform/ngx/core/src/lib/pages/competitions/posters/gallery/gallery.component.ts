@@ -1,4 +1,4 @@
-import { Component, OnInit, SecurityContext } from '@angular/core';
+import { Component, OnInit, SecurityContext, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs';
@@ -10,6 +10,7 @@ import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-acce
   selector: 'tamu-gisc-gallery',
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GalleryComponent implements OnInit {

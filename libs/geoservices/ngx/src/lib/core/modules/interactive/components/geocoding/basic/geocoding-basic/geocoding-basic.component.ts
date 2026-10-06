@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipe, map, switchMap, withLatestFrom } from 'rxjs';
@@ -16,6 +16,7 @@ import { CENSUS_YEARS } from '../../../../../../util/dictionaries';
   selector: 'tamu-gisc-geocoding-basic',
   templateUrl: './geocoding-basic.component.html',
   styleUrls: ['./geocoding-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GeocodingBasicComponent extends BaseInteractiveGeoprocessingComponent<GeocodeResult, IGeocodeOptions> {

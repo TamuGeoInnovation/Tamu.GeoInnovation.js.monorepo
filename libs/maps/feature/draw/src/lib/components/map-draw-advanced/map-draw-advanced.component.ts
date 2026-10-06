@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -10,6 +10,7 @@ import esri = __esri;
   selector: 'tamu-gisc-map-draw-advanced',
   templateUrl: './map-draw-advanced.component.html',
   styleUrls: ['./map-draw-advanced.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnInit {

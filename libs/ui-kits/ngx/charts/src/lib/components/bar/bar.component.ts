@@ -1,4 +1,4 @@
-import { Component, forwardRef, AfterViewInit } from '@angular/core';
+import { Component, forwardRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { BaseChartComponent } from '../base/base.component';
 import { BarChartConfiguration } from '../chart-container/chart-container.component';
@@ -8,6 +8,7 @@ import { BarChartConfiguration } from '../chart-container/chart-container.compon
   templateUrl: './bar.component.html',
   styleUrls: ['../base/base.component.scss', './bar.component.scss'],
   providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => BarChartComponent) }],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BarChartComponent extends BaseChartComponent implements AfterViewInit {

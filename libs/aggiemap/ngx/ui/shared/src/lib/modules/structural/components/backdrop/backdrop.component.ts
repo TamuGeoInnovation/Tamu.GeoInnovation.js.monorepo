@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, Renderer2, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Renderer2, ElementRef, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-backdrop',
   templateUrl: './backdrop.component.html',
   styleUrls: ['./backdrop.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BackdropComponent implements OnInit {

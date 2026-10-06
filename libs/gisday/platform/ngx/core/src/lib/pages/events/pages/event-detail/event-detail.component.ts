@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -26,6 +26,7 @@ import { GISDayRoles, parseDateStrings } from '@tamu-gisc/gisday/platform/ngx/co
   selector: 'tamu-gisc-event-detail',
   templateUrl: './event-detail.component.html',
   styleUrls: ['./event-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventDetailComponent implements OnInit, OnDestroy {

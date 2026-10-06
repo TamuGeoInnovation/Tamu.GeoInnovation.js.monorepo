@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -10,6 +10,7 @@ import { StatsService } from '@tamu-gisc/oidc/admin/data-access';
   selector: 'tamu-gisc-stats',
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class StatsComponent implements OnInit {

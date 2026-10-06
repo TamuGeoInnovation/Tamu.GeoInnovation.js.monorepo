@@ -1,10 +1,11 @@
-import { Component, Input, ContentChildren, QueryList, AfterContentInit, TemplateRef, HostBinding } from '@angular/core';
+import { Component, Input, ContentChildren, QueryList, AfterContentInit, TemplateRef, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
 @Component({
   selector: 'tamu-gisc-abstract-content-replacer',
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AbstractContentReplacerComponent implements AfterContentInit {

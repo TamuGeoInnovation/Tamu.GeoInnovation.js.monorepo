@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -35,6 +35,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-event-add-edit-form',
   templateUrl: './event-add-edit-form.component.html',
   styleUrls: ['./event-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventAddEditFormComponent implements OnInit {

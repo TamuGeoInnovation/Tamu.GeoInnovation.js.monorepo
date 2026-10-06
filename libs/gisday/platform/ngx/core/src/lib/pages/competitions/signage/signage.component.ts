@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 import { SignageService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -7,6 +7,7 @@ import { SignageService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   selector: 'tamu-gisc-signage',
   templateUrl: './signage.component.html',
   styleUrls: ['./signage.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SignageComponent implements OnInit {

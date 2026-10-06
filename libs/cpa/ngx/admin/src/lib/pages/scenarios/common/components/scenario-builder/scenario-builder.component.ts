@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -41,6 +41,7 @@ import esri = __esri;
   templateUrl: './scenario-builder.component.html',
   styleUrls: ['./scenario-builder.component.scss'],
   providers: [EsriMapService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ScenarioBuilderComponent implements OnInit, OnDestroy {

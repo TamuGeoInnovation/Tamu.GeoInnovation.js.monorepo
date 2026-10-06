@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -19,6 +19,7 @@ import esri = __esri;
   selector: 'tamu-gisc-base-directions',
   templateUrl: './base-directions.component.html',
   styleUrls: ['./base-directions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BaseDirectionsComponent extends BasePopupComponent implements OnInit, OnDestroy {

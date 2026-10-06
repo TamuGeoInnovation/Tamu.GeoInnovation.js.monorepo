@@ -9,6 +9,38 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "",
+      "options": {
+        "index": "apps/gisday-competitions-angular/src/index.html",
+        "outputPath": {
+          "base": "dist/apps/gisday-competitions-angular",
+          "browser": ""
+        },
+        "polyfills": ["apps/gisday-competitions-angular/src/polyfills.ts"],
+        "tsConfig": "apps/gisday-competitions-angular/tsconfig.app.json",
+        "assets": [
+          "apps/gisday-competitions-angular/src/favicon.ico",
+          "apps/gisday-competitions-angular/src/assets",
+          "apps/gisday-competitions-angular/src/manifest.webmanifest",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "scripts": [],
+        "styles": ["apps/gisday-competitions-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
+        "aot": false,
+        "extractLicenses": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true,
+        "browser": "apps/gisday-competitions-angular/src/main.ts"
+      },
       "configurations": {
         "production": {
           "outputHashing": "all",
@@ -56,39 +88,7 @@
           "serviceWorker": "apps/gisday-competitions-angular/ngsw-config.json",
           "sourceMap": false
         }
-      },
-      "options": {
-        "index": "apps/gisday-competitions-angular/src/index.html",
-        "outputPath": {
-          "base": "dist/apps/gisday-competitions-angular",
-          "browser": ""
-        },
-        "polyfills": ["apps/gisday-competitions-angular/src/polyfills.ts"],
-        "tsConfig": "apps/gisday-competitions-angular/tsconfig.app.json",
-        "assets": [
-          "apps/gisday-competitions-angular/src/favicon.ico",
-          "apps/gisday-competitions-angular/src/assets",
-          "apps/gisday-competitions-angular/src/manifest.webmanifest",
-          {
-            "glob": "**/*",
-            "input": "./libs/assets/",
-            "output": "./assets"
-          }
-        ],
-        "scripts": [],
-        "styles": ["apps/gisday-competitions-angular/src/styles.scss"],
-        "stylePreprocessorOptions": {
-          "includePaths": ["."]
-        },
-        "aot": false,
-        "extractLicenses": false,
-        "sourceMap": true,
-        "optimization": false,
-        "namedChunks": true,
-        "browser": "apps/gisday-competitions-angular/src/main.ts"
-      },
-      "outputs": ["{options.outputPath.base}"],
-      "defaultConfiguration": ""
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -98,6 +98,11 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "continuous": true,
+      "options": {
+        "host": "0.0.0.0",
+        "buildTarget": "gisday-competitions-angular:build"
+      },
       "configurations": {
         "production": {
           "buildTarget": "gisday-competitions-angular:build:production"
@@ -105,20 +110,15 @@
         "development": {
           "buildTarget": "gisday-competitions-angular:build:development"
         }
-      },
-      "options": {
-        "host": "0.0.0.0",
-        "buildTarget": "gisday-competitions-angular:build"
-      },
-      "continuous": true
+      }
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-angular"],
       "options": {
         "jestConfig": "apps/gisday-competitions-angular/jest.config.ts",
         "tsConfig": "apps/gisday-competitions-angular/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/apps/gisday-competitions-angular"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

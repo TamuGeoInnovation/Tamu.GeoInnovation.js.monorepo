@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { DiscoveryService } from '../../services/discovery/discovery.service';
 import {
@@ -17,6 +17,7 @@ import {
   selector: 'tamu-gisc-aggiemap-parking-maps',
   templateUrl: './parking-maps.component.html',
   styleUrls: ['./parking-maps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParkingMapsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Place } from '@tamu-gisc/gisday/platform/data-api';
@@ -12,6 +12,7 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
   selector: 'tamu-gisc-place-list',
   templateUrl: './place-list.component.html',
   styleUrls: ['./place-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PlaceListComponent extends BaseAdminListComponent<Place> {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, pipe, map, switchMap, withLatestFrom } from 'rxjs';
@@ -21,6 +21,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   selector: 'tamu-gisc-address-processing-basic',
   templateUrl: './address-processing-basic.component.html',
   styleUrls: ['./address-processing-basic.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AddressProcessingBasicComponent extends BaseInteractiveGeoprocessingComponent<

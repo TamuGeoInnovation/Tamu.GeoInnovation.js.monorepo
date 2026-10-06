@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
@@ -8,6 +8,7 @@ import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
   selector: 'tamu-gisc-submission-complete',
   templateUrl: './submission.component.html',
   styleUrls: ['./submission.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SubmissionComponent implements OnInit {

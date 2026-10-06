@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, shareReplay, switchMap, take } from 'rxjs';
@@ -11,6 +11,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-season-add-edit-form',
   templateUrl: './season-add-edit-form.component.html',
   styleUrls: ['./season-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SeasonAddEditFormComponent implements OnInit {

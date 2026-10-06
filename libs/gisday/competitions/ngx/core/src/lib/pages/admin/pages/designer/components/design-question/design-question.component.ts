@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'tamu-gisc-design-question',
   templateUrl: './design-question.component.html',
   styleUrls: ['./design-question.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DesignQuestionComponent {

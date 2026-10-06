@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { ISimplifiedUserRoleResponse } from '@tamu-gisc/oidc/common';
   selector: 'tamu-gisc-view',
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ViewComponent implements OnInit {

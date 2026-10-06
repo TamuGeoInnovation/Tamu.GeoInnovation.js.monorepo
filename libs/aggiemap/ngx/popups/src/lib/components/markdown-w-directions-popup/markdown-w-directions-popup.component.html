@@ -4,7 +4,7 @@
 
 <div class="popup-section">
   @if (isContentLengthZero === false) {
-  <p class="trailer-1" [innerHTML]="data.attributes?.description"></p>
+  <p class="trailer-1" [innerHTML]="$safeNavigationMigration(data.attributes?.description)"></p>
   } @if (directionsAvailable | async) {
   <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
   }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { EnumeratorKeyValuePairs, FieldEnumerator } from '@tamu-gisc/common/utils/object';
@@ -9,6 +9,7 @@ import { GeocodeFieldLabel, GeocodeNaaccrFieldLabel } from '../../../../../util/
   selector: 'tamu-gisc-geocode-result-table',
   templateUrl: './geocode-result-table.component.html',
   styleUrls: ['./geocode-result-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GeocodeResultTableComponent implements OnInit {

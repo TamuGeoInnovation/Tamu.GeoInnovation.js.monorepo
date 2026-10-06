@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
 
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 
@@ -6,6 +6,7 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AppComponent implements OnInit {

@@ -9,6 +9,7 @@
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/cpa-nest",
         "main": "apps/cpa-nest/src/main.ts",
@@ -49,8 +50,7 @@
             }
           ]
         }
-      },
-      "outputs": ["{options.outputPath}"]
+      }
     },
     "serve": {
       "executor": "@nx/js:node",

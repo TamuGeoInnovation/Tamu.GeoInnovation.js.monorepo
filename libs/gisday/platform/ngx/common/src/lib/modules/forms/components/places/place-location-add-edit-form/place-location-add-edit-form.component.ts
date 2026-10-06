@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -15,6 +15,7 @@ import { PlaceVisibilityOptions } from '../../../../../enums/place-visibility-op
   selector: 'tamu-gisc-place-location-add-edit-form',
   templateUrl: './place-location-add-edit-form.component.html',
   styleUrls: ['./place-location-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PlaceLocationAddEditFormComponent implements OnInit {

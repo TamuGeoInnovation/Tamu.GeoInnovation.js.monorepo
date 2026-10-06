@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-snapshots-list',
   templateUrl: './snapshots-list.component.html',
   styleUrls: ['./snapshots-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SnapshotsListComponent implements OnInit {

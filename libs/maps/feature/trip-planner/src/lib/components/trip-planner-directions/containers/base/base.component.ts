@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil, switchMap, pluck } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { TripResult } from '../../../../core/trip-planner-core';
   selector: 'tamu-gisc-trip-planner-directions',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {

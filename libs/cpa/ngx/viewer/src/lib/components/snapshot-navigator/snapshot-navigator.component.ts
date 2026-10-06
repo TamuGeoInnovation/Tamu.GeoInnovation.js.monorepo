@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostBinding, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostBinding, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest, fromEvent, interval, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, startWith, switchMap, take } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { TypedSnapshotOrScenario, ViewerService } from '../../services/viewer.se
   selector: 'tamu-gisc-snapshot-navigator',
   templateUrl: './snapshot-navigator.component.html',
   styleUrls: ['./snapshot-navigator.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SnapshotNavigatorComponent implements OnInit {

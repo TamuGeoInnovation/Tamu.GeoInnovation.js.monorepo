@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, filter, map, switchMap, take } from 'rxjs';
@@ -11,6 +11,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   selector: 'tamu-gisc-event-location-add-edit-form',
   templateUrl: './event-location-add-edit-form.component.html',
   styleUrls: ['./event-location-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventLocationAddEditFormComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { StepComponent } from './components/step/step.component';
@@ -7,6 +7,7 @@ import { StepComponent } from './components/step/step.component';
   selector: 'tamu-gisc-stepper',
   templateUrl: './stepper.component.html',
   styleUrls: ['./stepper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class StepperComponent extends AbstractContentReplacerComponent implements AfterContentInit {

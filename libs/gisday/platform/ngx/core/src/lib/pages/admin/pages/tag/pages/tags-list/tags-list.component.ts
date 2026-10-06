@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SeasonService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -12,6 +12,7 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
   selector: 'tamu-gisc-tags-list',
   templateUrl: './tags-list.component.html',
   styleUrls: ['./tags-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TagsListComponent extends BaseAdminListComponent<Tag> {

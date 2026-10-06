@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
@@ -8,6 +8,7 @@ import { WorkshopService } from '@tamu-gisc/cpa/ngx/data-access';
   selector: 'tamu-gisc-participant-workshops-list',
   templateUrl: './participant-workshops-list.component.html',
   styleUrls: ['./participant-workshops-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParticipantWorkshopsListComponent implements OnInit {

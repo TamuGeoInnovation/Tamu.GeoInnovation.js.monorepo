@@ -97,7 +97,7 @@
       <div class="icon-grid column12">
         @for (sponsor of sponsors; track sponsor) {
         <div class="icon-item">
-          <img [src]="sponsor?.logos?.[0]?.path | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
+          <img [src]="$safeNavigationMigration(sponsor?.logos?.[0]?.path) | assetUrl | async" [alt]="sponsor.name + 'logo'" [title]="sponsor.name" />
         </div>
         }
       </div>
@@ -121,7 +121,7 @@
       <div class="icon-grid column12">
         @for (org of organizations$ | async; track org) {
         <div class="icon-item">
-          <img [src]="org?.logos?.[0]?.path | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
+          <img [src]="$safeNavigationMigration(org?.logos?.[0]?.path) | assetUrl | async" [alt]="org.name + ' logo'" [title]="org.name" />
           @if (org.website !== null && org.website !== '') {
           <p><a [href]="org.website" target="_blank">{{org.name}}</a></p>
           } @else {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
   selector: 'tamu-gisc-submit-bug-form',
   templateUrl: './submit-bug-form.component.html',
   styleUrls: ['./submit-bug-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SubmitBugFormComponent implements OnInit {

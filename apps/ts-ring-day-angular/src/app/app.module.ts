@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import { TsRingdayNgxModule } from '@tamu-gisc/ts/ringday/ngx';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
@@ -44,7 +44,7 @@ WebFont.load({
       useValue: environment
     },
     { provide: notificationStorage, useValue: AGGIEMAP_NOTIFICATION_STORE_KEY },
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withXhr(), withInterceptorsFromDi())
   ]
 })
 export class AppModule {}

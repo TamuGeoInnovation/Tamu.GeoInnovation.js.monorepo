@@ -31,12 +31,12 @@
     <tamu-gisc-tabs>
       @for (cr of (result | async)?.data?.results; track cr) {
       <tamu-gisc-tab [label]="'Result'">
-        <tamu-gisc-parsed-address-result-table [address]="cr?.parsedAddress"></tamu-gisc-parsed-address-result-table>
+        <tamu-gisc-parsed-address-result-table [address]="$safeNavigationMigration(cr?.parsedAddress)"></tamu-gisc-parsed-address-result-table>
       </tamu-gisc-tab>
       }
     </tamu-gisc-tabs>
     <div class="flex flex-row">
-      <tamu-gisc-interactive-response-metadata [status]="res?.message" [guid]="res?.data?.transactionGuid" [timeTaken]="res?.data?.timeTaken" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
+      <tamu-gisc-interactive-response-metadata [status]="$safeNavigationMigration(res?.message)" [guid]="$safeNavigationMigration(res?.data?.transactionGuid)" [timeTaken]="$safeNavigationMigration(res?.data?.timeTaken)" (resetTrigger)="clearResult()" (redirectTrigger)="navigateToAdvanced(res)"></tamu-gisc-interactive-response-metadata>
     </div>
   </div>
   } }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
 
@@ -8,6 +8,7 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
   selector: 'tamu-gisc-api',
   templateUrl: './geoservices-api.component.html',
   styleUrls: ['./geoservices-api.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GeoservicesApiComponent implements OnInit, OnDestroy {

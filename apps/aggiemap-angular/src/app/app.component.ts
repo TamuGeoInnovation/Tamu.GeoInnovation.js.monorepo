@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Angulartics2GoogleGlobalSiteTag } from 'angulartics2';
@@ -11,6 +11,7 @@ import { campusOnNavigation, EventNotificationsService } from '@tamu-gisc/aggiem
   selector: 'tamu-gisc-aggiemap-app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {

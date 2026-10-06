@@ -8,6 +8,7 @@
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "main": "apps/oidc-provider-nest/src/main.ts",
         "outputPath": "dist/apps/oidc-provider-nest",
@@ -50,8 +51,7 @@
           "optimization": false,
           "generatePackageJson": false
         }
-      },
-      "outputs": ["{options.outputPath}"]
+      }
     },
     "serve": {
       "executor": "@nx/js:node",
@@ -74,10 +74,10 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/oidc-provider-nest"],
       "options": {
         "jestConfig": "apps/oidc-provider-nest/jest.config.ts"
-      },
-      "outputs": ["{workspaceRoot}/coverage/apps/oidc-provider-nest"]
+      }
     }
   }
 }

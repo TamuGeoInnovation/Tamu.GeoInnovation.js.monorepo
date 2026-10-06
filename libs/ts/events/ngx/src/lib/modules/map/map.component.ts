@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -43,6 +43,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     TripPlannerService,
     BasemapGalleryService
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {

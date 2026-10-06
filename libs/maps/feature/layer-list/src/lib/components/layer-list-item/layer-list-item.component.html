@@ -1,4 +1,4 @@
-<div class="layer-item" [ngClass]="{ 'visible': listItem?.visible, 'outside-extent': listItem.visibleAtCurrentScale === false, 'error': listItem?.error, 'has-children': listItem?.children?.length > 0, 'heading': isHeading}">
+<div class="layer-item" [ngClass]="{ 'visible': $safeNavigationMigration(listItem?.visible), 'outside-extent': listItem.visibleAtCurrentScale === false, 'error': $safeNavigationMigration(listItem?.error), 'has-children': $safeNavigationMigration(listItem?.children?.length) > 0, 'heading': isHeading}">
   @if (!isHeading) {
   <div (click)="toggleLayer()">
     @switch (listItem.updating) { @case (false) {
