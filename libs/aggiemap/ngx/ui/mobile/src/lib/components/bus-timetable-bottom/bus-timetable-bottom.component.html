@@ -4,8 +4,8 @@
   <div id="list-results">
     <p class="list-title"><span class="material-icons" (click)="routeReturn()">arrow_back</span> AggieSpirit Bus Route</p>
 
-    <ng-container *ngIf="(busRoute | async) as rt">
-      <tamu-gisc-bus-route [route]="rt" [eagerLoad]="true"></tamu-gisc-bus-route>
-    </ng-container>
+    @if ((busRoute | async); as rt) {
+    <tamu-gisc-bus-route [route]="rt" [eagerLoad]="true"></tamu-gisc-bus-route>
+    }
   </div>
 </div>

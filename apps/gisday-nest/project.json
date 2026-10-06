@@ -4,6 +4,7 @@
   "sourceRoot": "apps/gisday-nest/src",
   "projectType": "application",
   "prefix": "gisday-nest",
+  "tags": ["assets"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -94,6 +95,5 @@
         "jestConfig": "apps/gisday-nest/jest.config.ts"
       }
     }
-  },
-  "tags": ["assets"]
+  }
 }

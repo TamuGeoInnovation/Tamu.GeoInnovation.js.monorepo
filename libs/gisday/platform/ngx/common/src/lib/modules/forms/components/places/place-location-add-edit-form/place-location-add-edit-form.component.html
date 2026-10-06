@@ -1,13 +1,11 @@
 <form [formGroup]="form" (ngSubmit)="handleSubmission()">
   <div class="form-section">
     <div class="form-section-toolbar">
-      <ng-container *ngIf="type === 'create'; else editTitle">
-        <div class="form-section-title">Create Organization</div>
-      </ng-container>
-
-      <ng-template #editTitle>
-        <div class="form-section-title">Update Organization</div>
-      </ng-template>
+      @if (type === 'create') {
+      <div class="form-section-title">Create Organization</div>
+      } @else {
+      <div class="form-section-title">Update Organization</div>
+      }
     </div>
 
     <div class="form-section-body">
@@ -65,7 +63,9 @@
       <p>In many cases, it's not necessary or appropriate to list all organizations in footers, headers, and about pages which generate create flow-breaking content. Select the locations in which this organization should be listed:</p>
       <div class="form-collection column">
         <tamu-gisc-checkbox-group referenceId="value" formControlName="visibilitySettings">
-          <tamu-gisc-checkbox *ngFor="let option of visibilitySettingsOptions" [data]="option" [label]="option.label"></tamu-gisc-checkbox>
+          @for (option of visibilitySettingsOptions; track option) {
+          <tamu-gisc-checkbox [data]="option" [label]="option.label"></tamu-gisc-checkbox>
+          }
         </tamu-gisc-checkbox-group>
       </div>
     </div>
@@ -82,16 +82,18 @@
     <div class="form-section-body" formArrayName="links">
       <p>Organization links are displayed in the header under the "<strong>Organizations</strong>" item. Examples of links are sponsorship and volunteer opportunities/forms and paper/presentation submission portals. Please keep the link label short and descriptive to prevent multi-line spanning.</p>
 
-      <ng-container *ngIf="form.controls['links']['controls']?.length > 0;">
-        <tamu-gisc-place-link-form *ngFor="let control of form.controls['links']['controls']; let i = index" [formControlName]="i" (remove)="removeOrgLink(i)"></tamu-gisc-place-link-form>
-      </ng-container>
+      @if (form.controls['links']['controls']?.length > 0;) { @for (control of form.controls['links']['controls']; track control; let i = $index) {
+      <tamu-gisc-place-link-form [formControlName]="i" (remove)="removeOrgLink(i)"></tamu-gisc-place-link-form>
+      } }
     </div>
   </div>
 
   <div class="form-section">
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-button type="button" look="danger" value="Delete Organization" (click)="deleteEntity()" *ngIf="type === 'edit'"></tamu-gisc-button>
+        @if (type === 'edit') {
+        <tamu-gisc-button type="button" look="danger" value="Delete Organization" (click)="deleteEntity()"></tamu-gisc-button>
+        }
         <tamu-gisc-button type="submit" [value]="type === 'create' ? 'Create' : 'Update'"></tamu-gisc-button>
       </div>
     </div>

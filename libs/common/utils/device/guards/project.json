@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/common/utils/device/guards/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/common/utils/device/guards/jest.config.ts"
+        "jestConfig": "libs/common/utils/device/guards/jest.config.ts",
+        "tsConfig": "libs/common/utils/device/guards/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/common/utils/device/guards"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

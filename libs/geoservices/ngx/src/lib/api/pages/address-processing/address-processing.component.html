@@ -199,12 +199,12 @@
 
   <p>The following represents the response structure when requesting JSON format.</p>
 
-  <!-- 
+  <!--
   <p>Response contents depend with the requested <span class="faux-link" scrollTo="#format">response format</span>.</p>
   <tamu-gisc-tabs>
     <tamu-gisc-tab label="JSON">
-  <div>
-    <tamu-gisc-response-viewer [runner]="runner" [format]="'json'"></tamu-gisc-response-viewer> -->
+      <div>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'json'"></tamu-gisc-response-viewer> -->
   <!-- </div> -->
 
   <tamu-gisc-service-attribute-accordion>
@@ -482,8 +482,11 @@
 
             <div *giscAccordion="let parent;">
               <div class="pill" [giscAccordionHeader]="parent">
-                <div *ngIf="!parent.expanded"><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Fields</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Fields</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">

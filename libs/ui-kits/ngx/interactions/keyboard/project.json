@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/interactions/keyboard/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/keyboard"],
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/interactions/keyboard/jest.config.js"
+        "jestConfig": "libs/ui-kits/ngx/interactions/keyboard/jest.config.js",
+        "tsConfig": "libs/ui-kits/ngx/interactions/keyboard/tsconfig.spec.json"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

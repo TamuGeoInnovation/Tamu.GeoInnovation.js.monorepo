@@ -108,7 +108,8 @@
         "development": {
           "buildTarget": "signage-angular:build:development"
         }
-      }
+      },
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -119,7 +120,8 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/signage-angular/jest.config.ts"
+        "jestConfig": "apps/signage-angular/jest.config.ts",
+        "tsConfig": "apps/signage-angular/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/signage-angular"]
     },

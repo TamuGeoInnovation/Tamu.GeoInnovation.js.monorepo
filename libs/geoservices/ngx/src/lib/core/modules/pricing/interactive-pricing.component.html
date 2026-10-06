@@ -12,22 +12,24 @@
       </div>
 
       <!-- <div class="form-collection column" *ngIf="(isRecurring | async) === false">
-        <p class="byop-question">
-          Are you OK with manually requesting credits in increments of 2,500?
-          <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
-            <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
-            <div id="snap-scen-help-text">
-              <p>Requires enrollment in our partner program which reduces the cost of all services to $0 for unlimited records in batches of 2,500 records at a time. <a [routerLink]="['/pricing']" fragment="partner-program">Learn more about our partner program</a></p>
-            </div>
-          </tamu-gisc-tooltip>
-        </p>
-        <tamu-gisc-radio-group [options]="yesNoOptions" displayPath="label" valuePath="value" formControlName="partnerProgram"></tamu-gisc-radio-group>
-      </div> -->
+      <p class="byop-question">
+        Are you OK with manually requesting credits in increments of 2,500?
+        <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
+          <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
+          <div id="snap-scen-help-text">
+            <p>Requires enrollment in our partner program which reduces the cost of all services to $0 for unlimited records in batches of 2,500 records at a time. <a [routerLink]="['/pricing']" fragment="partner-program">Learn more about our partner program</a></p>
+          </div>
+        </tamu-gisc-tooltip>
+      </p>
+      <tamu-gisc-radio-group [options]="yesNoOptions" displayPath="label" valuePath="value" formControlName="partnerProgram"></tamu-gisc-radio-group>
+    </div> -->
 
-      <div class="form-collection column" *ngIf="(isRecurring | async) === true && (frequencyType | async) === 'RECURRING_YEARLY'">
+      @if ((isRecurring | async) === true && (frequencyType | async) === 'RECURRING_YEARLY') {
+      <div class="form-collection column">
         <p class="byop-question">Are you looking for a service level agreement?</p>
         <tamu-gisc-radio-group [options]="yesNoOptions" displayPath="label" valuePath="value" formControlName="sla"> </tamu-gisc-radio-group>
       </div>
+      }
     </form>
   </div>
 
@@ -50,14 +52,7 @@
 
           <tr>
             <td>Frequency</td>
-            <td>
-              <ng-container *ngIf="(isRecurring | async) else oneTimeText">{{(recurringInterval | async)?.label}} </ng-container>
-              <ng-template #oneTimeText>
-                <ng-container *ngIf="(partnerPricing | async) === false; else batchedReload">One-time</ng-container>
-              </ng-template>
-            </td>
-
-            <ng-template #batchedReload>Manual Reload</ng-template>
+            <td>@if ((isRecurring | async)) { {{(recurringInterval | async)?.label}} } @else { @if ((partnerPricing | async) === false) { One-time } @else { Manual Reload } }</td>
           </tr>
 
           <tr>
@@ -109,19 +104,23 @@
             <td><span class="material-icons success included-feature">check_circle</span></td>
           </tr>
 
-          <tr *ngIf="(isSLA | async) === true">
+          @if ((isSLA | async) === true) {
+          <tr>
             <td>Dedicated server *</td>
             <td><span class="material-icons success optional-feature">check_circle</span></td>
           </tr>
+          }
         </tbody>
       </table>
 
       <div class="flex flex-row justify-between align-end" id="total_cost">
-        <h3 *ngIf="(isSLA | async) === false">
-          <strong>Total cost: {{(selectedTierCost | async) | currency }}<ng-container *ngIf="isRecurring | async"> /{{(recurringInterval | async)?.unit}}</ng-container></strong>
+        @if ((isSLA | async) === false) {
+        <h3>
+          <strong>Total cost: {{(selectedTierCost | async) | currency }}@if (isRecurring | async) { /{{(recurringInterval | async)?.unit}} }</strong>
         </h3>
-
-        <em *ngIf="(isSLA | async) === true"><strong>*</strong> Optional services</em>
+        } @if ((isSLA | async) === true) {
+        <em><strong>*</strong> Optional services</em>
+        }
       </div>
 
       <div class="flex flex-row justify-center leader-2 trailer-1">

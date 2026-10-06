@@ -32,24 +32,18 @@
 
         <div class="form-section-body">
           <div class="form-collection column">
-            <ng-container *ngIf="(mapExtent$ | async) === null">
-              <p>To set the initial map center and zoom adjust the preview map to the desired area and press the button below to record the extent.</p>
-
-              <p>If no extent is recorded for this snapshot, the initial map center and zoom will be that of the previous snapshot/scenario in the workshop. <strong>Do not record a map extent if this is the desired effect.</strong></p>
-
-              <tamu-gisc-button [value]="'Record Initial Map Location'" (go)="recordExtent()"></tamu-gisc-button>
-            </ng-container>
-
-            <ng-container *ngIf="(mapExtent$ | async) !== null">
-              <p>An initial map center and zoom have been set. You can adjust the preview map to the desired area/region and update the recorded extent or clear the recorded extent.</p>
-
-              <p>With an extent recorded, the map view will snap to the saved area whenever the user switches to this snapshot.</p>
-
-              <div class="form-collection row">
-                <tamu-gisc-button [value]="'Update Initial Map Location'" (go)="recordExtent()" [disabled]="(mapViewExtentChanged$ | async) === false"></tamu-gisc-button>
-                <tamu-gisc-button [value]="'Reset Initial Map Location'" look="secondary" (go)="clearExtent()"></tamu-gisc-button>
-              </div>
-            </ng-container>
+            @if ((mapExtent$ | async) === null) {
+            <p>To set the initial map center and zoom adjust the preview map to the desired area and press the button below to record the extent.</p>
+            <p>If no extent is recorded for this snapshot, the initial map center and zoom will be that of the previous snapshot/scenario in the workshop. <strong>Do not record a map extent if this is the desired effect.</strong></p>
+            <tamu-gisc-button [value]="'Record Initial Map Location'" (go)="recordExtent()"></tamu-gisc-button>
+            } @if ((mapExtent$ | async) !== null) {
+            <p>An initial map center and zoom have been set. You can adjust the preview map to the desired area/region and update the recorded extent or clear the recorded extent.</p>
+            <p>With an extent recorded, the map view will snap to the saved area whenever the user switches to this snapshot.</p>
+            <div class="form-collection row">
+              <tamu-gisc-button [value]="'Update Initial Map Location'" (go)="recordExtent()" [disabled]="(mapViewExtentChanged$ | async) === false"></tamu-gisc-button>
+              <tamu-gisc-button [value]="'Reset Initial Map Location'" look="secondary" (go)="clearExtent()"></tamu-gisc-button>
+            </div>
+            }
           </div>
         </div>
       </div>
@@ -66,22 +60,24 @@
         </div>
 
         <div class="form-section-body" id="configurator-container" dragula="LAYERS" [(dragulaModel)]="builderForm['controls'].layers['controls']">
-          <div class="form-collection column layer-configuration" *ngFor="let controlGroup of builderForm['controls'].layers['controls']; let i = index;" [ngClass]="{ valid: controlGroup?.controls?.url?.value?.length > 0 }">
+          @for (controlGroup of builderForm['controls'].layers['controls']; track controlGroup; let i = $index) {
+          <div class="form-collection column layer-configuration" [ngClass]="{ valid: controlGroup?.controls?.url?.value?.length > 0 }">
             <div class="handle"><span class="material-icons">drag_handle</span></div>
-
             <div [formGroup]="controlGroup">
               <tamu-gisc-textbox formControlName="url" placeholder="Service Layer URL" type="text" floatLabel="true">
                 <div class="textbox-actions material-icons-container">
                   <span class="material-icons action error" title="Remove Layer" (click)="removeLayer(i)">close</span>
                 </div>
               </tamu-gisc-textbox>
-
               <tamu-gisc-accordion>
                 <tamu-gisc-accordion-header>
                   <div>
-                    <div [ngSwitch]="controlGroup?.controls?.info?.controls?.name?.value !== ''">
-                      <div *ngSwitchCase="true">{{controlGroup?.controls?.info?.controls?.name?.value}}</div>
-                      <div *ngSwitchDefault>Edit Layer Details</div>
+                    <div>
+                      @switch (controlGroup?.controls?.info?.controls?.name?.value !== '') { @case (true) {
+                      <div>{{controlGroup?.controls?.info?.controls?.name?.value}}</div>
+                      } @default {
+                      <div>Edit Layer Details</div>
+                      } }
                     </div>
                   </div>
                 </tamu-gisc-accordion-header>
@@ -91,9 +87,12 @@
               </tamu-gisc-accordion>
             </div>
           </div>
+          }
         </div>
 
-        <p *ngIf="builderForm['controls'].layers['controls'].length === 0">There are no layers on this snapshot. Click the "+" to add a layer.</p>
+        @if (builderForm['controls'].layers['controls'].length === 0) {
+        <p>There are no layers on this snapshot. Click the "+" to add a layer.</p>
+        }
       </div>
     </div>
 
@@ -115,12 +114,10 @@
   </div>
 
   <div class="form-collection row">
-    <ng-container *ngIf="(isExisting | async) === false">
-      <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
-    </ng-container>
-
-    <ng-container *ngIf="isExisting | async">
-      <tamu-gisc-button type="submit" value="Update" [disabled]="!builderForm.valid"></tamu-gisc-button>
-    </ng-container>
+    @if ((isExisting | async) === false) {
+    <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    } @if (isExisting | async) {
+    <tamu-gisc-button type="submit" value="Update" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    }
   </div>
 </form>

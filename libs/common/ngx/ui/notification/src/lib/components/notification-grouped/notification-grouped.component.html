@@ -1,75 +1,55 @@
-<div
-  *ngIf="groupVisible && !blockedByModal"
-  class="notification-grouped-wrapper"
-  [ngClass]="[position, groupShowing ? 'show' : '']"
-  (mouseover)="pauseGroup()"
-  (mouseleave)="resumeGroup()">
+@if (groupVisible && !blockedByModal) {
+<div class="notification-grouped-wrapper" [ngClass]="[position, groupShowing ? 'show' : '']" (mouseover)="pauseGroup()" (mouseleave)="resumeGroup()">
   <div class="status" [style.width.%]="groupTimerPercent"></div>
   <div class="close material-icons" tabindex="0" (click)="closeGroup()" title="Close">close</div>
-
   <!--
     One notification at a time (#1327). Stacking every active notification made the panel as tall as
     the number of them - four of them covered most of the map.
-
     Every item is rendered, all in the same grid cell, and all but the current one is hidden with
     `visibility` rather than removed. That makes the panel as tall as its tallest notification and
     keeps it there, so stepping through does not make the box jump around under the cursor - the
     first notice is much taller than the three that follow it.
-
     `visibility: hidden` rather than `*ngIf` precisely because the hidden ones must still take up
     space; it also leaves them unclickable and out of the accessibility tree, which `opacity: 0`
     would not.
-  -->
+    -->
   <div class="grouped-stack">
-    <div
-      *ngFor="let item of groupedItems; let i = index"
-      class="grouped-item"
-      [class.grouped-item--hidden]="i !== groupIndex"
-      [attr.aria-hidden]="i !== groupIndex ? 'true' : null"
-      (click)="actionGroupItem(item)"
-      [class.actionable]="item.action"
-      [class.grouped-item--high]="item.priority === 'high'">
-      <div class="grouped-image" *ngIf="item.imgUrl">
+    @for (item of groupedItems; track item; let i = $index) {
+    <div class="grouped-item" [class.grouped-item--hidden]="i !== groupIndex" [attr.aria-hidden]="i !== groupIndex ? 'true' : null" (click)="actionGroupItem(item)" [class.actionable]="item.action" [class.grouped-item--high]="item.priority === 'high'">
+      @if (item.imgUrl) {
+      <div class="grouped-image">
         <img [src]="item.imgUrl" [title]="item.imgAltText" [alt]="item.imgAltText" />
       </div>
+      }
       <div class="grouped-text">
-        <div class="grouped-priority" *ngIf="item.priority === 'high'">Important</div>
+        @if (item.priority === 'high') {
+        <div class="grouped-priority">Important</div>
+        }
         <div class="grouped-title">{{ item.title }}</div>
         <div class="grouped-description" [innerHTML]="item.message"></div>
-        <div class="grouped-ack" *ngIf="item.acknowledge">
-          <a href="#" class="dont-show-again"
-            (click)="acknowledgeGroupItem(item); $event.preventDefault(); $event.stopPropagation();"
-            title="Don't show this notification again">[ Don't show again ]</a>
+        @if (item.acknowledge) {
+        <div class="grouped-ack">
+          <a href="#" class="dont-show-again" (click)="acknowledgeGroupItem(item); $event.preventDefault(); $event.stopPropagation();" title="Don't show this notification again">[ Don't show again ]</a>
         </div>
+        }
       </div>
     </div>
+    }
   </div>
-
   <!--
     Only shown when there is more than one, so a single notification looks exactly as it did before.
     Outside the item, so stepping never triggers the item's own click action.
-  -->
-  <div class="grouped-stepper" *ngIf="hasMultiple">
-    <button
-      type="button"
-      class="grouped-step"
-      (click)="previousItem($event)"
-      [attr.aria-label]="'Show the previous notification'"
-      title="Previous">
+    -->
+  @if (hasMultiple) {
+  <div class="grouped-stepper">
+    <button type="button" class="grouped-step" (click)="previousItem($event)" [attr.aria-label]="'Show the previous notification'" title="Previous">
       <span class="material-icons" aria-hidden="true">navigate_before</span>
     </button>
-
-    <span class="grouped-count" aria-live="polite">
-      {{ groupIndex + 1 }} of {{ groupedItems.length }}
-    </span>
-
-    <button
-      type="button"
-      class="grouped-step"
-      (click)="nextItem($event)"
-      [attr.aria-label]="'Show the next notification'"
-      title="Next">
+    <span class="grouped-count" aria-live="polite"> {{ groupIndex + 1 }} of {{ groupedItems.length }} </span>
+    <button type="button" class="grouped-step" (click)="nextItem($event)" [attr.aria-label]="'Show the next notification'" title="Next">
       <span class="material-icons" aria-hidden="true">navigate_next</span>
     </button>
   </div>
+  }
 </div>
+}

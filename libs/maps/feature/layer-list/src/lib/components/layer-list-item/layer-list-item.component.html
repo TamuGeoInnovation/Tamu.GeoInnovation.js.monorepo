@@ -1,30 +1,36 @@
 <div class="layer-item" [ngClass]="{ 'visible': listItem?.visible, 'outside-extent': listItem.visibleAtCurrentScale === false, 'error': listItem?.error, 'has-children': listItem?.children?.length > 0, 'heading': isHeading}">
-  <div *ngIf="!isHeading" [ngSwitch]="listItem.updating" (click)="toggleLayer()">
-    <div *ngSwitchCase="false" class="layer-visibility-dot"></div>
-
-    <div *ngSwitchDefault>
+  @if (!isHeading) {
+  <div (click)="toggleLayer()">
+    @switch (listItem.updating) { @case (false) {
+    <div class="layer-visibility-dot"></div>
+    } @default {
+    <div>
       <div class="loader-container">
         <div class="spinning-loader"></div>
       </div>
     </div>
+    } }
   </div>
-
-  <span class="expand-toggle material-icons" *ngIf="listItem?.children?.length > 0" (click)="toggleExpanded()">
-    <div [ngSwitch]="expanded">
-      <ng-container *ngSwitchCase="true">arrow_drop_down</ng-container>
-      <ng-container *ngSwitchDefault>arrow_right</ng-container>
-    </div>
+  } @if (listItem?.children?.length > 0) {
+  <span class="expand-toggle material-icons" (click)="toggleExpanded()">
+    <div>@switch (expanded) { @case (true) { arrow_drop_down } @default { arrow_right } }</div>
   </span>
+  }
 
-  <p (click)="toggleLayer()">{{ listItem.title }}<ng-container *ngIf="listItem.layer?.['listNote']"> - {{ listItem.layer['listNote'] }}</ng-container></p>
+  <p (click)="toggleLayer()">{{ listItem.title }}@if (listItem.layer?.['listNote']) { - {{ listItem.layer['listNote'] }} }</p>
 
-  <tamu-gisc-tooltip *ngIf="listItem.layer['description']" width="20rem" height="25rem" [positioningStrategy]="'fixed'">
+  @if (listItem.layer['description']) {
+  <tamu-gisc-tooltip width="20rem" height="25rem" [positioningStrategy]="'fixed'">
     <tamu-gisc-tooltip-trigger><span class="material-icons">info_outlined</span></tamu-gisc-tooltip-trigger>
-
     <div class="layer-description-content"><p>{{listItem.layer['description']}}</p></div>
   </tamu-gisc-tooltip>
+  }
 </div>
 
-<div class="list-item-children" *ngIf="listItem?.children?.length && this.expanded">
-  <tamu-gisc-layer-list-item *ngFor="let child of listItem.children.toArray()" [listItem]="child"></tamu-gisc-layer-list-item>
+@if (listItem?.children?.length && this.expanded) {
+<div class="list-item-children">
+  @for (child of listItem.children.toArray(); track child) {
+  <tamu-gisc-layer-list-item [listItem]="child"></tamu-gisc-layer-list-item>
+  }
 </div>
+}

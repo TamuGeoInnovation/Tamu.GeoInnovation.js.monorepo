@@ -3,13 +3,14 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/ts-events-angular-e2e/src",
   "projectType": "application",
+  "tags": [],
+  "implicitDependencies": ["ts-events-angular"],
   "targets": {
     "e2e": {
       "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/ts-events-angular-e2e/cypress.json",
-        "devServerTarget": "ts-events-angular:serve:development",
-        "tsConfig": "apps/ts-events-angular-e2e/tsconfig.json"
+        "devServerTarget": "ts-events-angular:serve:development"
       },
       "configurations": {
         "production": {
@@ -21,7 +22,5 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["ts-events-angular"]
+  }
 }

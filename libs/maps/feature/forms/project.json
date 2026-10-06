@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/forms/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/forms/jest.config.ts"
+        "jestConfig": "libs/maps/feature/forms/jest.config.ts",
+        "tsConfig": "libs/maps/feature/forms/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/forms"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

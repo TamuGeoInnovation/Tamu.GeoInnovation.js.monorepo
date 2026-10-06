@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/mailroom/ngx/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/mailroom/ngx"],
       "options": {
-        "jestConfig": "libs/mailroom/ngx/jest.config.ts"
+        "jestConfig": "libs/mailroom/ngx/jest.config.ts",
+        "tsConfig": "libs/mailroom/ngx/tsconfig.spec.json"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

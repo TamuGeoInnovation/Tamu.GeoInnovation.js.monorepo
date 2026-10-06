@@ -1,6 +1,10 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0" [title]="data?.layer?.id">{{ data?.layer?.title }}</div>
-  <div class="feature-style-2" tabindex="0"><span *ngIf="data.attributes.Address">{{ data?.attributes?.Address }},</span> College Station, TX 77843</div>
+  <div class="feature-style-2" tabindex="0">
+    @if (data.attributes.Address) {
+    <span>{{ data?.attributes?.Address }},</span>
+    } College Station, TX 77843
+  </div>
 </div>
 
 <div class="popup-section">
@@ -13,10 +17,12 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let prop of (data.attributes | keyvalue)">
+      @for (prop of (data.attributes | keyvalue); track prop) {
+      <tr>
         <td>{{ prop.key }}</td>
         <td>{{ prop.value }}</td>
       </tr>
+      }
     </tbody>
   </table>
 </div>
@@ -26,5 +32,7 @@
   <!-- <copy [text]="shareUrl"></copy> -->
 
   <!-- Directions To Button -->
-  <div *ngIf="directionsAvailable | async" class="button" tabindex="0" role="button" [attr.building-number]="data?.attributes?.Number" (click)="startDirections(data?.attributes?.Number)">Directions To Here</div>
+  @if (directionsAvailable | async) {
+  <div class="button" tabindex="0" role="button" [attr.building-number]="data?.attributes?.Number" (click)="startDirections(data?.attributes?.Number)">Directions To Here</div>
+  }
 </div>

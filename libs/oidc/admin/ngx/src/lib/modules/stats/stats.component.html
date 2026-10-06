@@ -11,7 +11,9 @@
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">
-        <tamu-gisc-pie-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text" *ngFor="let chart of ($countOfUsersByClient | async)"></tamu-gisc-pie-chart>
+        @for (chart of ($countOfUsersByClient | async); track chart) {
+        <tamu-gisc-pie-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text"></tamu-gisc-pie-chart>
+        }
       </div>
     </div>
   </div>

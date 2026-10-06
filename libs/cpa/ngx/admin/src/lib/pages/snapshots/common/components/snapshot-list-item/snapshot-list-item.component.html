@@ -1,19 +1,23 @@
 <div class="floating-row">
   <div class="column">{{snapshot.title}}</div>
 
-  <div class="column" *ngIf="(snapshotWorkshopsCount | async) > 1">
+  @if ((snapshotWorkshopsCount | async) > 1) {
+  <div class="column">
     <a [routerLink]="['/admin/workshops/edit/', (firstWorkshop | async)?.guid]">{{(firstWorkshop | async)?.title}}</a> &nbsp; and &nbsp;
-
     <tamu-gisc-tooltip positioningStrategy="fixed" width="15rem">
       <tamu-gisc-tooltip-trigger><div class="linked-text">{{(snapshotWorkshopsCount | async) -1}} other(s)</div></tamu-gisc-tooltip-trigger>
-
       <div class="remaining-workshops-list">
-        <a [routerLink]="['/admin/workshops/edit/', ws.guid]" *ngFor="let ws of remainingWorkshops | async">{{ws.title}}</a>
+        @for (ws of remainingWorkshops | async; track ws) {
+        <a [routerLink]="['/admin/workshops/edit/', ws.guid]">{{ws.title}}</a>
+        }
       </div>
     </tamu-gisc-tooltip>
   </div>
-  <div class="column" *ngIf="(snapshotWorkshopsCount | async) === 1"><a [routerLink]="['/admin/workshops/edit/', (firstWorkshop | async)?.guid]">{{(firstWorkshop | async)?.title}}</a></div>
-  <div class="column" *ngIf="(snapshotWorkshopsCount | async) === 0"></div>
+  } @if ((snapshotWorkshopsCount | async) === 1) {
+  <div class="column"><a [routerLink]="['/admin/workshops/edit/', (firstWorkshop | async)?.guid]">{{(firstWorkshop | async)?.title}}</a></div>
+  } @if ((snapshotWorkshopsCount | async) === 0) {
+  <div class="column"></div>
+  }
 
   <div class="column table-actions">
     <a [routerLink]="['./edit', snapshot.guid]">Edit</a>

@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { templateGates } from '@tamu-gisc/common/utils/string';
+
 /**
  * No directions entry point is offered without the development-only gate (#1003).
  *
@@ -39,17 +41,19 @@ function templates(): string[] {
  * Each element in a template whose text or tab title offers directions, as its opening tag plus text.
  * Commented-out markup is removed first; it renders nothing.
  */
-function directionsElements(file: string): { tag: string; kind: 'button' | 'tab' }[] {
+function directionsElements(file: string): { tag: string; kind: 'button' | 'tab'; gates: string[] }[] {
   const source = fs.readFileSync(path.join(REPO_ROOT, file), 'utf8').replace(/<!--[\s\S]*?-->/g, '');
 
   const buttons = [...source.matchAll(/<(\w[\w-]*)\b[^>]*>\s*Directions To Here\s*</g)].map((match) => ({
     tag: match[0],
-    kind: 'button' as const
+    kind: 'button' as const,
+    gates: templateGates(source, match.index ?? 0, match[0])
   }));
 
   const tabs = [...source.matchAll(/<tamu-gisc-sidebar-tab\b[^>]*\[title\]="'Directions'"[^>]*>/g)].map((match) => ({
     tag: match[0],
-    kind: 'tab' as const
+    kind: 'tab' as const,
+    gates: templateGates(source, match.index ?? 0, match[0])
   }));
 
   return [...buttons, ...tabs];
@@ -76,8 +80,11 @@ describe('directions entry points while routing is unavailable', () => {
   it('gates every "Directions To Here" button and Directions tab to development', () => {
     const ungated = files.flatMap((file) =>
       directionsElements(file)
-        .filter(({ tag, kind }) =>
-          kind === 'button' ? !/\*ngIf="directionsAvailable \| async"/.test(tag) : !/\(isDev \| async\) === true/.test(tag)
+        // A gate is the element's own *ngIf or an enclosing @if block (Angular 20's control flow, #1447).
+        .filter(({ kind, gates }) =>
+          kind === 'button'
+            ? !gates.some((gate) => gate === 'directionsAvailable | async')
+            : !gates.some((gate) => /\(isDev \| async\) === true/.test(gate))
         )
         .map(({ tag }) => `${file}: ${tag.replace(/\s+/g, ' ').slice(0, 140)}`)
     );

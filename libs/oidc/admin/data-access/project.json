@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/oidc/admin/data-access/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/oidc/admin/data-access"],
       "options": {
-        "jestConfig": "libs/oidc/admin/data-access/jest.config.ts"
+        "jestConfig": "libs/oidc/admin/data-access/jest.config.ts",
+        "tsConfig": "libs/oidc/admin/data-access/tsconfig.spec.json"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

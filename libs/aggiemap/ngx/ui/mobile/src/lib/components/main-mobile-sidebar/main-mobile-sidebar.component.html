@@ -1,11 +1,23 @@
 <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
 
 <div class="list-container">
-  <ng-container *ngFor="let item of menu">
-    <div *ngIf="item.type === 'separator'" class="separator" aria-hidden="true"></div>
-    <div class="list-item" *ngIf="item.type !== 'separator'">
-      <p *ngIf="item.path !== ''" [routerLink]="item.path" (click)="reportNavigation(item.name)">{{ item.name }} <span *ngIf="item.type === 'outlet'" class="material-icons">keyboard_arrow_right</span></p>
-      <a *ngIf="item.url" [href]="item.url" [target]="item.type === 'link-internal' ? '_self' : '_blank'" (click)="reportNavigation(item.name)">{{ item.name }} <span *ngIf="item.type === 'outlet'" class="material-icons">keyboard_arrow_right</span></a>
-    </div>
-  </ng-container>
+  @for (item of menu; track item) { @if (item.type === 'separator') {
+  <div class="separator" aria-hidden="true"></div>
+  } @if (item.type !== 'separator') {
+  <div class="list-item">
+    @if (item.path !== '') {
+    <p [routerLink]="item.path" (click)="reportNavigation(item.name)">
+      {{ item.name }} @if (item.type === 'outlet') {
+      <span class="material-icons">keyboard_arrow_right</span>
+      }
+    </p>
+    } @if (item.url) {
+    <a [href]="item.url" [target]="item.type === 'link-internal' ? '_self' : '_blank'" (click)="reportNavigation(item.name)"
+      >{{ item.name }} @if (item.type === 'outlet') {
+      <span class="material-icons">keyboard_arrow_right</span>
+      }</a
+    >
+    }
+  </div>
+  } }
 </div>

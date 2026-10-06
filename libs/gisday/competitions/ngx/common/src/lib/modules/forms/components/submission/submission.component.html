@@ -1,60 +1,74 @@
 <h1 class="bordered">New Submission</h1>
 
-<ng-container *ngIf="form !== undefined; else loader">
-  <div class="info-block warning" *ngIf="formModel.allowSubmissions === false">
-    <p><strong>Submissions are disabled at this time. Please check back later.</strong></p>
+@if (form !== undefined) { @if (formModel.allowSubmissions === false) {
+<div class="info-block warning">
+  <p><strong>Submissions are disabled at this time. Please check back later.</strong></p>
+</div>
+}
+<form [formGroup]="form" (submit)="submitResponse()" disabled>
+  <div class="block-input">
+    @if ((file | async) === undefined) {
+    <div class="block-input-presentation">
+      <div class="material-icons">photo_camera</div>
+      <p class="title">Upload Photo of Your Submission</p>
+      <p class="description">Tap to take a picture</p>
+    </div>
+    }
+    <input type="file" name="photo" (change)="onPhotoTaken($event, 1)" accept="image/*" capture />
+    @if (file | async) {
+    <div class="image" [ngStyle]="{'background-image': 'url(' + (fileUrl | async) + ')'}"></div>
+    }
   </div>
-
-  <form [formGroup]="form" (submit)="submitResponse()" disabled>
-    <div class="block-input">
-      <div class="block-input-presentation" *ngIf="(file | async) === undefined">
-        <div class="material-icons">photo_camera</div>
-        <p class="title">Upload Photo of Your Submission</p>
-        <p class="description">Tap to take a picture</p>
-      </div>
-
-      <input type="file" name="photo" (change)="onPhotoTaken($event, 1)" accept="image/*" capture />
-      <div class="image" *ngIf="file | async" [ngStyle]="{'background-image': 'url(' + (fileUrl | async) + ')'}"></div>
+  <div class="block-input">
+    @if ((file2 | async) === undefined) {
+    <div class="block-input-presentation">
+      <div class="material-icons">photo_camera</div>
+      <p class="title">Upload Photo of Plaque (If any)</p>
+      <p class="description">Tap to take a picture</p>
     </div>
-
-    <div class="block-input">
-      <div class="block-input-presentation" *ngIf="(file2 | async) === undefined">
-        <div class="material-icons">photo_camera</div>
-        <p class="title">Upload Photo of Plaque (If any)</p>
-        <p class="description">Tap to take a picture</p>
-      </div>
-
-      <input type="file" name="photo2" (change)="onPhotoTaken($event, 2)" accept="image/*" capture />
-      <div class="image" *ngIf="file2 | async" [ngStyle]="{'background-image': 'url(' + (fileUrl2 | async) + ')'}"></div>
-    </div>
-
-    <div class="statused-form-input-container" formArrayName="fields" *ngFor="let c of form.controls?.['fields']['controls']; let i = index">
-      <p class="label">{{c.get('title').value}}</p>
-      <p class="description" *ngIf="c.get('instructions').value !== ''">{{c.get('instructions').value}}</p>
-      <div class="statused-form-input column">
-        <div [ngSwitch]="c.get('type').value">
-          <tamu-gisc-select [formControl]="c.get('value')" [valueTemplate]="'value'" [displayTemplate]="'name'" [data]="c.get('options').value" *ngSwitchCase="'select'"></tamu-gisc-select>
-          <tamu-gisc-textbox [formControl]="c.get('value')" *ngSwitchCase="'text'"></tamu-gisc-textbox>
-          <div *ngSwitchDefault>This question does not have a valid input type.</div>
-        </div>
-      </div>
-    </div>
-
-    <p class="rules-text">By submitting, you agree that you have read and understand the competition <a href="https://txgisday.org/competitions/vgi/" target="_blank" rel="noopener noreferrer">rules and guidelines.</a></p>
-
-    <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1 || formModel.allowSubmissions === false">
-      <div class="progress" *ngIf="(submissionStatus | async) !== -1" [style.width.%]="(submissionProgress | async) * 100"></div>
-      <div class="status-text" [ngSwitch]="(submissionStatus | async)">
-        <div *ngSwitchCase="1">Submitting...</div>
-        <div *ngSwitchCase="-1">Error!</div>
-        <div *ngSwitchDefault>Submit</div>
-      </div>
-    </div>
-  </form>
-</ng-container>
-
-<ng-template #loader>
-  <div class="loader-container">
-    <div class="spinning-loader"></div>
+    }
+    <input type="file" name="photo2" (change)="onPhotoTaken($event, 2)" accept="image/*" capture />
+    @if (file2 | async) {
+    <div class="image" [ngStyle]="{'background-image': 'url(' + (fileUrl2 | async) + ')'}"></div>
+    }
   </div>
-</ng-template>
+  @for (c of form.controls?.['fields']['controls']; track c; let i = $index) {
+  <div class="statused-form-input-container" formArrayName="fields">
+    <p class="label">{{c.get('title').value}}</p>
+    @if (c.get('instructions').value !== '') {
+    <p class="description">{{c.get('instructions').value}}</p>
+    }
+    <div class="statused-form-input column">
+      <div>
+        @switch (c.get('type').value) { @case ('select') {
+        <tamu-gisc-select [formControl]="c.get('value')" [valueTemplate]="'value'" [displayTemplate]="'name'" [data]="c.get('options').value"></tamu-gisc-select>
+        } @case ('text') {
+        <tamu-gisc-textbox [formControl]="c.get('value')"></tamu-gisc-textbox>
+        } @default {
+        <div>This question does not have a valid input type.</div>
+        } }
+      </div>
+    </div>
+  </div>
+  }
+  <p class="rules-text">By submitting, you agree that you have read and understand the competition <a href="https://txgisday.org/competitions/vgi/" target="_blank" rel="noopener noreferrer">rules and guidelines.</a></p>
+  <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || (submissionStatus | async) === 1 || formModel.allowSubmissions === false">
+    @if ((submissionStatus | async) !== -1) {
+    <div class="progress" [style.width.%]="(submissionProgress | async) * 100"></div>
+    }
+    <div class="status-text">
+      @switch ((submissionStatus | async)) { @case (1) {
+      <div>Submitting...</div>
+      } @case (-1) {
+      <div>Error!</div>
+      } @default {
+      <div>Submit</div>
+      } }
+    </div>
+  </div>
+</form>
+} @else {
+<div class="loader-container">
+  <div class="spinning-loader"></div>
+</div>
+}

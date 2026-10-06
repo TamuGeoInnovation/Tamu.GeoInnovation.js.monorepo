@@ -78,7 +78,8 @@
       "defaultConfiguration": "development",
       "options": {
         "host": "0.0.0.0"
-      }
+      },
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -93,7 +94,8 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ts-events-angular"],
       "options": {
-        "jestConfig": "apps/ts-events-angular/jest.config.ts"
+        "jestConfig": "apps/ts-events-angular/jest.config.ts",
+        "tsConfig": "apps/ts-events-angular/tsconfig.spec.json"
       }
     }
   }

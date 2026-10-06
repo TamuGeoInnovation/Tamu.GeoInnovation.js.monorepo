@@ -1,14 +1,19 @@
 <tamu-gisc-reveille-console-log></tamu-gisc-reveille-console-log>
 
 <div class="map-ui bottom left">
-  <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" *ngIf="!isMobile" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
+  @if (!isMobile) {
+  <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
     <span class="material-icons">help</span>
     <div class="topics">
       <p><a routerLink="/all-maps" tabindex="0">All Maps</a></p>
       <p><a routerLink="/about" tabindex="0">About Aggie Map</a></p>
       <p><a routerLink="/instructions" tabindex="0">Map Instructions</a></p>
       <p><a routerLink="/directory" tabindex="0">Building Directory</a></p>
-      <p><a tabindex="0" (click)="openBetaModal(true)" *ngIf="isDev | async">Beta Branch</a></p>
+      <p>
+        @if (isDev | async) {
+        <a tabindex="0" (click)="openBetaModal(true)">Beta Branch</a>
+        }
+      </p>
       <p class="topics-separator" aria-hidden="true"></p>
       <p><a routerLink="/requesting-maps" tabindex="0">Request Maps &amp; Changes</a></p>
       <p><a href="mailto:aggiemap@tamu.edu?subject=Aggiemap%20Feedback" target="_blank" tabindex="0">Submit Feedback</a></p>
@@ -21,32 +26,36 @@
       <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed" target="_blank" tabindex="0">Changelog</a></p>
     </div>
   </div>
+  }
 
   <!-- Map click coordinates, copy to click -->
-  <tamu-gisc-click-coordinates class="map-ui-element" *ngIf="!isMobile"></tamu-gisc-click-coordinates>
+  @if (!isMobile) {
+  <tamu-gisc-click-coordinates class="map-ui-element"></tamu-gisc-click-coordinates>
+  }
 </div>
 
 <!-- Map component -->
-<ng-container *ngIf="(config | async) as c">
-  <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
-    <div class="map-overlay-ui">
-      <div class="overlay-zone top left">
-        <a class="all-maps-button esri-component esri-widget" routerLink="/all-maps" aria-label="Open All Maps">ALL MAPS</a>
-        <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
-      </div>
-
-      <div class="overlay-zone bottom right">
-        <!-- <div routerLink="/map/m/bus" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons">directions_bus</span></div> -->
-      </div>
+@if ((config | async); as c) {
+<tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
+  <div class="map-overlay-ui">
+    <div class="overlay-zone top left">
+      <a class="all-maps-button esri-component esri-widget" routerLink="/all-maps" aria-label="Open All Maps">ALL MAPS</a>
+      <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
     </div>
-  </tamu-gisc-esri-map>
-</ng-container>
+    <div class="overlay-zone bottom right">
+      <!-- <div routerLink="/map/m/bus" class="esri-component esri-track esri-widget--button esri-widget"><span class="material-icons">directions_bus</span></div> -->
+    </div>
+  </div>
+</tamu-gisc-esri-map>
+}
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
 <router-outlet></router-outlet>
 
 <!-- Mobile keyboard viewfinder/feature list -->
-<tamu-gisc-map-viewfinder *ngIf="!isMobile" [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+@if (!isMobile) {
+<tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+}
 
 <!-- Application Loader -->
 <div class="loader flex flex-column justify-center align-center">

@@ -1,15 +1,14 @@
 <div class="navigator-rel-container" #innerContainer>
-  <ng-container *ngFor="let snapshot of (snapshots | async)">
-    <div class="snapshot" [ngClass]="{active: (selection | async)?.guid === snapshot.guid}" (click)="navigate(snapshot.guid)">
-      <p>{{snapshot.title}}</p>
-      <ng-container *ngIf="snapshot.type === 'snapshot'; else scenarioBadge">
-        <span class="snapshot-badge material-icons">circle</span>
-      </ng-container>
-      <ng-template #scenarioBadge>
-        <span class="scenario-badge material-icons">star</span>
-      </ng-template>
-    </div>
-  </ng-container>
+  @for (snapshot of (snapshots | async); track snapshot) {
+  <div class="snapshot" [ngClass]="{active: (selection | async)?.guid === snapshot.guid}" (click)="navigate(snapshot.guid)">
+    <p>{{snapshot.title}}</p>
+    @if (snapshot.type === 'snapshot') {
+    <span class="snapshot-badge material-icons">circle</span>
+    } @else {
+    <span class="scenario-badge material-icons">star</span>
+    }
+  </div>
+  }
 
   <div class="timeline" [style.width.px]="timelineWidth | async" [style.left.px]="(timelineLeftOffset | async)"></div>
 </div>

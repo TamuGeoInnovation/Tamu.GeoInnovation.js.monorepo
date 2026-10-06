@@ -1,6 +1,10 @@
 <tamu-gisc-tooltip [width]="'20rem'" [positioningStrategy]="'fixed'">
   <tamu-gisc-tooltip-trigger>
-    <p><span class="material-icons" *ngIf="showIcon">{{iconName}}</span> {{value | date : formatString}}</p>
+    <p>
+      @if (showIcon) {
+      <span class="material-icons">{{iconName}}</span>
+      } {{value | date : formatString}}
+    </p>
   </tamu-gisc-tooltip-trigger>
 
   <input class="date-time-picker-input" [type]="inputType" [value]="inputValue" [attr.step]="step" (change)="handleInputChange($any($event.target).value)" />

@@ -8,10 +8,15 @@
         <ng-content select="[attr-description]"></ng-content>
       </div>
     </div>
-    <div class="attribute-toggle" *ngIf="collapsable" [giscAccordionHeader]="parent">
-      <span *ngIf="!parent.expanded" class="material-icons action alt">add</span>
-      <span *ngIf="parent.expanded" class="material-icons action alt">remove</span>
+    @if (collapsable) {
+    <div class="attribute-toggle" [giscAccordionHeader]="parent">
+      @if (!parent.expanded) {
+      <span class="material-icons action alt">add</span>
+      } @if (parent.expanded) {
+      <span class="material-icons action alt">remove</span>
+      }
     </div>
+    }
   </div>
 
   <div class="attribute-body" *giscAccordionContent="parent.expanded">

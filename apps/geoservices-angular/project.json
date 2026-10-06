@@ -113,7 +113,8 @@
         "development": {
           "buildTarget": "geoservices-angular:build:development"
         }
-      }
+      },
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -124,7 +125,8 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/geoservices-angular/jest.config.ts"
+        "jestConfig": "apps/geoservices-angular/jest.config.ts",
+        "tsConfig": "apps/geoservices-angular/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/geoservices-angular"]
     },

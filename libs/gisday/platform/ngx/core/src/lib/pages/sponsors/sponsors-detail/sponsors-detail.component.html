@@ -1,4 +1,5 @@
-<section *ngIf="($sponsor | async) as sponsor">
+@if (($sponsor | async); as sponsor) {
+<section>
   <div class="container12 leader-3 trailer-1 flex flex-row">
     <h1 class="session-title">{{sponsor.name}}</h1>
   </div>
@@ -6,3 +7,4 @@
     <p [innerHTML]="sponsor.description | markdownParse"></p>
   </div>
 </section>
+}

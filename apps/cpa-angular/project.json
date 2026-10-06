@@ -108,7 +108,8 @@
         "development": {
           "buildTarget": "cpa-angular:build:development"
         }
-      }
+      },
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -119,7 +120,8 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "apps/cpa-angular/jest.config.ts"
+        "jestConfig": "apps/cpa-angular/jest.config.ts",
+        "tsConfig": "apps/cpa-angular/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/apps/cpa-angular"]
     },

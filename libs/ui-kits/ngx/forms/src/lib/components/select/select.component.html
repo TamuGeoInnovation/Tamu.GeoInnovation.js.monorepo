@@ -1,12 +1,16 @@
 <select [(ngModel)]="value" (change)="changeEvent()" [disabled]="disabled">
   <option value="undefined">{{ placeholder ? placeholder : 'Select an option' }}</option>
-  <ng-container *ngIf="data">
-    <option *ngFor="let item of data" [ngValue]="getDataItemValue(item, valueTemplate)">{{ getDataItemValue(item, displayTemplate) }}</option>
-  </ng-container>
+  @if (data) { @for (item of data; track item) {
+  <option [ngValue]="getDataItemValue(item, valueTemplate)">{{ getDataItemValue(item, displayTemplate) }}</option>
+  } }
 </select>
 
 <!-- Static overhead label -->
-<label [for]="formControlName" *ngIf="!floatLabel && placeholder" class="static">{{ placeholder }}</label>
+@if (!floatLabel && placeholder) {
+<label [for]="formControlName" class="static">{{ placeholder }}</label>
+}
 
 <!-- Floating label -->
-<label [for]="formControlName" *ngIf="floatLabel && placeholder" [ngClass]="{ float: value !== undefined && value.toString().length > 0 }">{{ placeholder }}</label>
+@if (floatLabel && placeholder) {
+<label [for]="formControlName" [ngClass]="{ float: value !== undefined && value.toString().length > 0 }">{{ placeholder }}</label>
+}

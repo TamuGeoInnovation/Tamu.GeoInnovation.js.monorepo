@@ -31,7 +31,7 @@ describe('TileNavigationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TileNavigationComponent);
     component = fixture.componentInstance;
-    TileServiceStub = TestBed.get(TileService);
+    TileServiceStub = TestBed.inject(TileService);
     fixture.detectChanges();
   });
 

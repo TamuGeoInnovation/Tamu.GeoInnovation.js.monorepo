@@ -3,13 +3,14 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/ts-ring-day-angular-e2e/src",
   "projectType": "application",
+  "tags": [],
+  "implicitDependencies": ["ts-ring-day-angular"],
   "targets": {
     "e2e": {
       "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/ts-ring-day-angular-e2e/cypress.json",
-        "devServerTarget": "ts-ring-day-angular:serve:development",
-        "tsConfig": "apps/ts-ring-day-angular-e2e/tsconfig.json"
+        "devServerTarget": "ts-ring-day-angular:serve:development"
       },
       "configurations": {
         "production": {
@@ -21,7 +22,5 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["ts-ring-day-angular"]
+  }
 }

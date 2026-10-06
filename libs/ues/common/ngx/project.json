@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/ues/common/ngx/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ues/common/ngx/jest.config.ts"
+        "jestConfig": "libs/ues/common/ngx/jest.config.ts",
+        "tsConfig": "libs/ues/common/ngx/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ues/common/ngx"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

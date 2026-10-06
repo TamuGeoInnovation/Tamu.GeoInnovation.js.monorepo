@@ -4,6 +4,7 @@
   "sourceRoot": "apps/oidc-admin-nest/src",
   "projectType": "application",
   "prefix": "oidc-admin-nest",
+  "tags": ["assets"],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -77,6 +78,5 @@
       },
       "outputs": ["{workspaceRoot}/coverage/apps/oidc-admin-nest"]
     }
-  },
-  "tags": ["assets"]
+  }
 }

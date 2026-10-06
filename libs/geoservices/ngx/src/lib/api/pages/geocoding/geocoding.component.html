@@ -1191,8 +1191,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-list" defaultDisplay="block">
@@ -1526,8 +1529,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Expand possible values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Collapse possible values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Expand possible values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Collapse possible values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-node" defaultDisplay="block">
@@ -1591,8 +1597,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-node">
@@ -1662,8 +1671,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-node">
@@ -1737,8 +1749,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-node">
@@ -1759,8 +1774,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-node">
@@ -1800,8 +1818,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-list">
@@ -1823,8 +1844,11 @@
 
                     <div *giscAccordion="let parent;">
                       <div [giscAccordionHeader]="parent" class="pill">
-                        <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                        <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                        @if (!parent.expanded) {
+                        <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                        } @if (parent.expanded) {
+                        <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                        }
                       </div>
 
                       <div *giscAccordionContent="parent.expanded" class="attribute-list">
@@ -1955,8 +1979,11 @@
 
                     <div *giscAccordion="let parent;">
                       <div [giscAccordionHeader]="parent" class="pill">
-                        <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                        <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                        @if (!parent.expanded) {
+                        <div><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                        } @if (parent.expanded) {
+                        <div><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                        }
                       </div>
 
                       <div *giscAccordionContent="parent.expanded" class="attribute-list">
@@ -2122,8 +2149,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Possible Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Possible Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Possible Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Possible Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-node">
@@ -2164,8 +2194,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-list">
@@ -2186,8 +2219,11 @@
 
             <div *giscAccordion="let parent;">
               <div [giscAccordionHeader]="parent" class="pill">
-                <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                @if (!parent.expanded) {
+                <div><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                } @if (parent.expanded) {
+                <div><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                }
               </div>
 
               <div *giscAccordionContent="parent.expanded" class="attribute-list">
@@ -2203,31 +2239,31 @@
   <!-- </tamu-gisc-tab> -->
 
   <!-- <tamu-gisc-tab label="CSV/TSV">
-      <div>
-        <tamu-gisc-response-viewer [format]="'tsv'" [runner]="runner"></tamu-gisc-response-viewer>
-      </div>
-    </tamu-gisc-tab>
-    <tamu-gisc-tab label="XML">
-      <div>
-        <tamu-gisc-response-viewer [format]="'xml'" [runner]="runner"></tamu-gisc-response-viewer>
-      </div>
-    </tamu-gisc-tab> -->
+<div>
+  <tamu-gisc-response-viewer [format]="'tsv'" [runner]="runner"></tamu-gisc-response-viewer>
+</div>
+</tamu-gisc-tab>
+<tamu-gisc-tab label="XML">
+  <div>
+    <tamu-gisc-response-viewer [format]="'xml'" [runner]="runner"></tamu-gisc-response-viewer>
+  </div>
+</tamu-gisc-tab> -->
   <!-- </tamu-gisc-tabs> -->
 </section>
 
 <!-- <section id="examples">
-  <h2>Examples</h2>
+<h2>Examples</h2>
 
-  <p>The following represent a collection of examples that highlight the features of our Geocoding API.</p>
+<p>The following represent a collection of examples that highlight the features of our Geocoding API.</p>
 
-  <h3>By Reference Data Source</h3>
+<h3>By Reference Data Source</h3>
 
-  <p><strong>Building/Parcel level files using Microsoft FootPrints as data source</strong></p>
-  <tamu-gisc-request-viewer>
-    <tamu-gisc-geocoding-request></tamu-gisc-geocoding-request>
-  </tamu-gisc-request-viewer>
+<p><strong>Building/Parcel level files using Microsoft FootPrints as data source</strong></p>
+<tamu-gisc-request-viewer>
+  <tamu-gisc-geocoding-request></tamu-gisc-geocoding-request>
+</tamu-gisc-request-viewer>
 </section> -->
 
 <!-- <pre>
-  <code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/test.md' | codeFromUrl | async"></code>
+<code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/test.md' | codeFromUrl | async"></code>
 </pre> -->

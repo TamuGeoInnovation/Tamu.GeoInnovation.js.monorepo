@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { templateGates } from '@tamu-gisc/common/utils/string';
+
 /**
  * No control routes somewhere only the mobile map can reach, unless it is gated to mobile (#1251).
  *
@@ -43,11 +45,17 @@ const TEMPLATES = [
   'libs/aggiemap/ngx/core/src/lib/pages/map/map.component.html'
 ];
 
-/** Opening tags carrying a routerLink, with comments removed. */
-function elementsWithRouterLink(template: string): string[] {
+/**
+ * Opening tags carrying a routerLink, with comments removed, each with the conditions gating it: its own
+ * *ngIf or an enclosing @if block (Angular 20's control flow, #1447).
+ */
+function elementsWithRouterLink(template: string): { tag: string; gates: string[] }[] {
   const markup = template.replace(/<!--[\s\S]*?-->/g, '');
 
-  return (markup.match(/<[a-zA-Z][^>]*routerLink[^>]*>/g) ?? []).map((tag) => tag.replace(/\s+/g, ' '));
+  return [...markup.matchAll(/<[a-zA-Z][^>]*routerLink[^>]*>/g)].map((match) => ({
+    tag: match[0].replace(/\s+/g, ' '),
+    gates: templateGates(markup, match.index ?? 0, match[0])
+  }));
 }
 
 /**
@@ -66,10 +74,13 @@ function isMobileOnlyTarget(tag: string): boolean {
   return target.split('/').includes('m');
 }
 
-function isGatedToMobile(tag: string): boolean {
-  const gate = tag.match(/\*ngIf="([^"]*)"/)?.[1];
+function isGatedToMobile(gates: string[]): boolean {
+  return gates.some((gate) => /\bisMobile\b/.test(gate) && !/!\s*isMobile/.test(gate));
+}
 
-  return gate !== undefined && /\bisMobile\b/.test(gate) && !/!\s*isMobile/.test(gate);
+/** The gates of the one element in a snippet, for the checks below. */
+function gatesOf(snippet: string): string[] {
+  return elementsWithRouterLink(snippet)[0].gates;
 }
 
 describe('mobile-only map controls', () => {
@@ -84,8 +95,9 @@ describe('mobile-only map controls', () => {
     const template = fs.readFileSync(path.join(ROOT, file), 'utf8');
 
     const ungated = elementsWithRouterLink(template)
-      .filter(isMobileOnlyTarget)
-      .filter((tag) => !isGatedToMobile(tag));
+      .filter(({ tag }) => isMobileOnlyTarget(tag))
+      .filter(({ gates }) => !isGatedToMobile(gates))
+      .map(({ tag }) => tag);
 
     // Anything listed here routes to the mobile branch without an isMobile gate. On a desktop map the
     // router cannot resolve those, and falls back to the root map.
@@ -97,8 +109,14 @@ describe('mobile-only map controls', () => {
     const gated = '<div *ngIf="isMobile" routerLink="./m/sidebar/layers" class="x">';
 
     expect(isMobileOnlyTarget(ungated)).toBe(true);
-    expect(isGatedToMobile(ungated)).toBe(false);
-    expect(isGatedToMobile(gated)).toBe(true);
+    expect(isGatedToMobile(gatesOf(ungated))).toBe(false);
+    expect(isGatedToMobile(gatesOf(gated))).toBe(true);
+  });
+
+  it('counts an enclosing @if block as a gate, as Angular 20 writes it (#1447)', () => {
+    const gated = '@if (isMobile | async) {\n  <div routerLink="./m/sidebar/layers" class="x">\n}';
+
+    expect(isGatedToMobile(gatesOf(gated))).toBe(true);
   });
 
   it('does not mistake an ordinary route for a mobile-only one', () => {
@@ -110,10 +128,10 @@ describe('mobile-only map controls', () => {
   it('ignores commented-out markup', () => {
     const template = '<!-- <div routerLink="/map/m/bus"></div> --><a routerLink="/all-maps"></a>';
 
-    expect(elementsWithRouterLink(template)).toEqual(['<a routerLink="/all-maps">']);
+    expect(elementsWithRouterLink(template).map(({ tag }) => tag)).toEqual(['<a routerLink="/all-maps">']);
   });
 
   it('does not count a negated mobile gate as gated to mobile', () => {
-    expect(isGatedToMobile('<div *ngIf="!isMobile" routerLink="./m/sidebar/layers">')).toBe(false);
+    expect(isGatedToMobile(gatesOf('<div *ngIf="!isMobile" routerLink="./m/sidebar/layers">'))).toBe(false);
   });
 });

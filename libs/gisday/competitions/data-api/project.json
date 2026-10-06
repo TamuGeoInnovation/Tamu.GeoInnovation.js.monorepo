@@ -3,6 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/gisday/competitions/data-api/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
@@ -14,6 +15,5 @@
         "jestConfig": "libs/gisday/competitions/data-api/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }

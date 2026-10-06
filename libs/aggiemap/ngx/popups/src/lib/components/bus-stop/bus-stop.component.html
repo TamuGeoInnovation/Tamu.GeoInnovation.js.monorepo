@@ -1,30 +1,31 @@
 <!-- Bus stop -->
-<ng-container *ngIf="data.attributes.type !== 'route'">
-  <div class="popup-section">
-    <div class="feature-style-1" tabindex="0">{{ data.attributes.StopName || 'Bus Stop' }}</div>
-    <div class="feature-style-2" tabindex="0"><strong>Served by route(s)</strong>: {{ data.attributes.Route }}</div>
-    <div class="feature-style-2" tabindex="0" *ngIf="data.attributes.StopType === 'Time'"><strong>Timed Stop</strong></div>
-  </div>
-
-  <div class="popup-section">
-    <!-- Copy link to this stop -->
-    <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-
-    <!-- Development-only while routing is unpublished, like every other directions entry point (#1003). -->
-    <div *ngIf="directionsAvailable | async" class="button" tabindex="0" role="button" (click)="startDirections('Bus stop ' + (data.attributes.StopName || ''))">Directions To Here</div>
-
-    <!--
-      The shared `.button` rather than plain text: with the directions button gone this is the
-      popup's only action, and it read as body copy.
+@if (data.attributes.type !== 'route') {
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.StopName || 'Bus Stop' }}</div>
+  <div class="feature-style-2" tabindex="0"><strong>Served by route(s)</strong>: {{ data.attributes.Route }}</div>
+  @if (data.attributes.StopType === 'Time') {
+  <div class="feature-style-2" tabindex="0"><strong>Timed Stop</strong></div>
+  }
+</div>
+<div class="popup-section">
+  <!-- Copy link to this stop -->
+  <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
+  <!-- Development-only while routing is unpublished, like every other directions entry point (#1003). -->
+  @if (directionsAvailable | async) {
+  <div class="button" tabindex="0" role="button" (click)="startDirections('Bus stop ' + (data.attributes.StopName || ''))">Directions To Here</div>
+  }
+  <!--
+    The shared `.button` rather than plain text: with the directions button gone this is the
+    popup's only action, and it read as body copy.
     -->
-    <a class="button" [href]="transportUrl" target="_blank" rel="noopener">View full schedule</a>
-  </div>
-</ng-container>
+  <a class="button" [href]="transportUrl" target="_blank" rel="noopener">View full schedule</a>
+</div>
+}
 
 <!-- Route line -->
-<ng-container *ngIf="data.attributes.type === 'route'">
-  <div class="popup-section">
-    <div class="feature-style-1" tabindex="0">Route {{ data.attributes.id }}: {{ data.attributes.routeName }}</div>
-    <a class="button" [href]="transportUrl" target="_blank" rel="noopener">View full schedule</a>
-  </div>
-</ng-container>
+@if (data.attributes.type === 'route') {
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0">Route {{ data.attributes.id }}: {{ data.attributes.routeName }}</div>
+  <a class="button" [href]="transportUrl" target="_blank" rel="noopener">View full schedule</a>
+</div>
+}

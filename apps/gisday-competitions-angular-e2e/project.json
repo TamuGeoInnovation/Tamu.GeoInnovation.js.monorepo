@@ -3,6 +3,8 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/gisday-competitions-angular-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["gisday-competitions-angular"],
   "targets": {
     "e2e": {
       "executor": "@nx/cypress:cypress",
@@ -13,15 +15,12 @@
       },
       "options": {
         "cypressConfig": "apps/gisday-competitions-angular-e2e/cypress.json",
-        "devServerTarget": "gisday-competitions-angular:serve",
-        "tsConfig": "apps/gisday-competitions-angular-e2e/tsconfig.e2e.json"
+        "devServerTarget": "gisday-competitions-angular:serve"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["gisday-competitions-angular"]
+  }
 }

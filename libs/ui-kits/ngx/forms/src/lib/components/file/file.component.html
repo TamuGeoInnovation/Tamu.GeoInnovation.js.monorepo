@@ -2,13 +2,13 @@
   <span class="material-icons">attach_file</span>
 </div>
 
-<div class="placeholder" *ngIf="fileName === undefined; else hasFile">
+@if (fileName === undefined) {
+<div class="placeholder">
   <ng-content></ng-content>
 </div>
-
-<ng-template #hasFile>
-  <p>{{fileName}}</p>
-  <p class="inline-link" (click)="reset()">{{clearMessage}}</p>
-</ng-template>
+} @else {
+<p>{{fileName}}</p>
+<p class="inline-link" (click)="reset()">{{clearMessage}}</p>
+}
 
 <input type="file" [accept]="accept" (change)="handleFileChange($event)" />

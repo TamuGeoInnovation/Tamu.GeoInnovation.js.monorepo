@@ -1,18 +1,22 @@
-<label [for]="formControlName" *ngIf="label !== undefined">{{label}}</label>
+@if (label !== undefined) {
+<label [for]="formControlName">{{label}}</label>
+}
 <input #rangeElement type="range" [name]="formControlName" [id]="formControlName + 'range'" [(ngModel)]="value" [disabled]="disabled" [min]="min" [max]="max" [step]="step" />
 <output #liveValue name="liveValue" [for]="formControlName + 'range'"></output>
 
-<div class="labels" *ngIf="limitFormat === 'none'">
+@if (limitFormat === 'none') {
+<div class="labels">
   <div>{{minDisplay}}</div>
   <div>{{maxDisplay}}</div>
 </div>
-
-<div class="labels" *ngIf="limitFormat === 'currency'">
+} @if (limitFormat === 'currency') {
+<div class="labels">
   <div>{{minDisplay | currency}}</div>
   <div>{{maxDisplay | currency}}</div>
 </div>
-
-<div class="labels" *ngIf="limitFormat === 'number'">
+} @if (limitFormat === 'number') {
+<div class="labels">
   <div>{{minDisplay | number}}</div>
   <div>{{maxDisplay | number}}</div>
 </div>
+}

@@ -1,7 +1,8 @@
 <tamu-gisc-reveille-console-log></tamu-gisc-reveille-console-log>
 
 <div class="map-ui bottom left">
-  <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" *ngIf="!isMobile" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
+  @if (!isMobile) {
+  <div class="help map-ui-element" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
     <span class="material-icons">help</span>
     <div class="topics">
       <p><a routerLink="/discover" tabindex="0">All Maps</a></p>
@@ -20,9 +21,12 @@
       <p><a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pulls?q=is%3Apr+is%3Aclosed" target="_blank" tabindex="0">Changelog</a></p>
     </div>
   </div>
+  }
 
   <!-- Map click coordinates, copy to click -->
-  <tamu-gisc-click-coordinates class="map-ui-element" *ngIf="!isMobile"></tamu-gisc-click-coordinates>
+  @if (!isMobile) {
+  <tamu-gisc-click-coordinates class="map-ui-element"></tamu-gisc-click-coordinates>
+  }
 </div>
 
 <!-- Map component -->
@@ -32,7 +36,9 @@
 <router-outlet></router-outlet>
 
 <!-- Mobile keyboard viewfinder/feature list -->
-<tamu-gisc-map-viewfinder *ngIf="!isMobile" [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+@if (!isMobile) {
+<tamu-gisc-map-viewfinder [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>
+}
 
 <!-- Application Loader -->
 <div class="loader flex flex-column justify-center align-center">

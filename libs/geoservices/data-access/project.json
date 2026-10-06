@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/geoservices/data-access/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/geoservices/data-access/jest.config.ts"
+        "jestConfig": "libs/geoservices/data-access/jest.config.ts",
+        "tsConfig": "libs/geoservices/data-access/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-access"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

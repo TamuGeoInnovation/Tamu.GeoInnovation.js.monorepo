@@ -4,17 +4,18 @@
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/popup/src",
   "prefix": "tamu-gisc",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/popup/jest.config.ts"
+        "jestConfig": "libs/maps/feature/popup/jest.config.ts",
+        "tsConfig": "libs/maps/feature/popup/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/popup"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

@@ -2,10 +2,14 @@
   <div class="feature-style-1" tabindex="0" [title]="title">{{ title }}</div>
 </div>
 
-<div class="popup-section" *ngIf="data?.attributes?.description">
-  <p class="trailer-1" *ngIf="data?.attributes?.description" [innerHTML]="data.attributes?.description"></p>
+@if (data?.attributes?.description) {
+<div class="popup-section">
+  @if (data?.attributes?.description) {
+  <p class="trailer-1" [innerHTML]="data.attributes?.description"></p>
+  }
 </div>
-
-<div class="popup-section" *ngIf="shareUrl">
+} @if (shareUrl) {
+<div class="popup-section">
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 </div>
+}

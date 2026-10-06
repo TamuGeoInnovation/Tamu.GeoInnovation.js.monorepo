@@ -7,9 +7,11 @@
   </thead>
 
   <tbody>
-    <tr *ngFor="let item of (filteredProps | async)">
+    @for (item of (filteredProps | async); track item) {
+    <tr>
       <td>{{censusIntersectionDict[item.key]}}</td>
       <td>{{item.value}}</td>
     </tr>
+    }
   </tbody>
 </table>

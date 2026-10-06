@@ -10,7 +10,8 @@
     </div>
   </div>
 
-  <div class="container12 flex flex-column" *ngFor="let poster of ($posters | async); index as i">
+  @for (poster of ($posters | async); track poster; let i = $index) {
+  <div class="container12 flex flex-column">
     <div class="large-partition bg-md-grey-50 flex justify-center align-center trailer-1 poster-submission" [ngClass]="(i + 1) % 2 === 0 ? 'flex-row-reverse': 'flex-row'">
       <div class="column6 clr-md-grey-900">
         <h2 class="trailer-1">{{ poster.title }}</h2>
@@ -21,4 +22,5 @@
       </div>
     </div>
   </div>
+  }
 </section>

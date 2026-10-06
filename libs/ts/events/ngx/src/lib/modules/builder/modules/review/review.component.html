@@ -1,28 +1,27 @@
 <div class="container12">
-  <p class="trailer-2 center-text component-instructions">
-    {{configuration?.reviewText || "Please review that your selections are correct. In doing so, you will receive the best transportation and parking information to assist with traffic and to avoid parking citations."}}
-  </p>
+  <p class="trailer-2 center-text component-instructions">{{configuration?.reviewText || "Please review that your selections are correct. In doing so, you will receive the best transportation and parking information to assist with traffic and to avoid parking citations."}}</p>
 
   <div class="flex flex-row justify-center">
     <div class="column6 flex flex-column" id="settings-table">
       <div class="setting-item"></div>
 
-      <div class="setting-item" *ngFor="let option of mergedSettings">
+      @for (option of mergedSettings; track option) {
+      <div class="setting-item">
         <div>{{option.shortDescription}}</div>
         <div>
-          <p *ngIf="option.option === null">Not Set</p>
-          <p *ngIf="option.option !== null">{{ option.option.label }}</p>
+          @if (option.option === null) {
+          <p>Not Set</p>
+          } @if (option.option !== null) {
+          <p>{{ option.option.label }}</p>
+          }
           <a (click)="goToAccommodationSelection(option.key)" (keyup.space)="goToAccommodationSelection(option.key)" (keyup.enter)="goToAccommodationSelection(option.key)">Change</a>
         </div>
       </div>
-
-      <ng-container *ngIf="settingsValid; else infoTemplate">
-        <tamu-gisc-button value="Take Me To My Map" (go)="navigateToMap()" [look]="'tertiary'"></tamu-gisc-button>
-      </ng-container>
-
-      <ng-template #infoTemplate>
-        <p>Please ensure that all selections are set before proceeding.</p>
-      </ng-template>
+      } @if (settingsValid) {
+      <tamu-gisc-button value="Take Me To My Map" (go)="navigateToMap()" [look]="'tertiary'"></tamu-gisc-button>
+      } @else {
+      <p>Please ensure that all selections are set before proceeding.</p>
+      }
     </div>
   </div>
 </div>

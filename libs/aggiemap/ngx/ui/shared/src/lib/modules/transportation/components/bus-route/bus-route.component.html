@@ -7,8 +7,10 @@
       </div>
     </tamu-gisc-bus-list-header>
 
-    <tamu-gisc-accordion-content *ngIf="isActive">
+    @if (isActive) {
+    <tamu-gisc-accordion-content>
       <tamu-gisc-bus-timetable [route]="route"></tamu-gisc-bus-timetable>
     </tamu-gisc-accordion-content>
+    }
   </tamu-gisc-accordion>
 </div>

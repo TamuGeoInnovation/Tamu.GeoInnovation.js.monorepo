@@ -4,6 +4,7 @@
   "sourceRoot": "apps/mailroom-nest/src",
   "projectType": "application",
   "prefix": "mailroom-nest",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
@@ -71,6 +72,5 @@
         "jestConfig": "apps/mailroom-nest/jest.config.ts"
       }
     }
-  },
-  "tags": []
+  }
 }

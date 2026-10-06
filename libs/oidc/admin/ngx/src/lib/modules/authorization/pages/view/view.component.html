@@ -1,8 +1,12 @@
-<table *ngFor="let clientGroup of ($userRoles | async)">
+@for (clientGroup of ($userRoles | async); track clientGroup) {
+<table>
   <th>{{clientGroup[0].client.clientName}}</th>
-  <tr *ngFor="let userRole of clientGroup">
+  @for (userRole of clientGroup; track userRole) {
+  <tr>
     <td>{{userRole.role.name}}</td>
     <td>{{userRole.user.name}}</td>
     <td>{{userRole.user.email}}</td>
   </tr>
+  }
 </table>
+}

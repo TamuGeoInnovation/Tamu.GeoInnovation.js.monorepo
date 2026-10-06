@@ -4,17 +4,18 @@
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/ui-kits/ngx/navigation/mobile-tab/src",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.ts"
+        "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.ts",
+        "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/mobile-tab"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

@@ -5,7 +5,9 @@
 
   <div class="map-notice-modal__body modal-body-spaced">
     <p>{{ message }}</p>
-    <p *ngFor="let detail of details">{{ detail }}</p>
+    @for (detail of details; track detail) {
+    <p>{{ detail }}</p>
+    }
   </div>
 
   <div class="map-notice-modal__footer modal-actions-centered">

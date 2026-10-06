@@ -1,8 +1,4 @@
-<p class="center-text intro-text">
-  <ng-container *ngIf="settings?.introductionText !== undefined; else noIntroText">{{settings?.introductionText}}</ng-container>
-
-  <ng-template #noIntroText> Get the best transportation and parking information for {{settings?.name}} </ng-template>
-</p>
+<p class="center-text intro-text">@if (settings?.introductionText !== undefined) { {{settings?.introductionText}} } @else { Get the best transportation and parking information for {{settings?.name}} }</p>
 
 <div class="trailer-1 leader-2 flex flex-row justify-center intro-action">
   <a class="button tertiary uppercase no-decor cta-button" (click)="next()" (keyup.space)="next()" (keyup.enter)="next()">Get Started</a>

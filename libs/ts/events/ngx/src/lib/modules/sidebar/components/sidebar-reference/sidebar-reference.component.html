@@ -1,53 +1,48 @@
 <tamu-gisc-search [placeholder]="'Find Building or Parking'" [leftActionIcon]="'search'" [rightActionIcon]="'close'" [sources]="searchSources" (result)="onSearchResult($event)"></tamu-gisc-search>
 
-<div *ngIf="configuration?.applicationName" class="map-title">
+@if (configuration?.applicationName) {
+<div class="map-title">
   <h1>{{ configuration?.applicationName }}</h1>
 </div>
-
-<div *ngIf="hasSettings" class="leader-1">
+} @if (hasSettings) {
+<div class="leader-1">
   <div class="sidebar-component-name">
     <p>Share Map</p>
   </div>
-
   <div class="sidebar-component-content-container">
     <p>Make coordination easy! The following link can be shared with friends and family to load your configured map.</p>
-
     <ul class="settings-list">
-      <li *ngFor="let pair of mergedSettings | keyvalue">
+      @for (pair of mergedSettings | keyvalue; track pair) {
+      <li>
         <strong>{{ pair.value.shortDescription }}: {{ pair.value.option?.label }}</strong>
-        <p *ngIf="showResolvedSettingNotes && pair.value.option?.note" class="setting-note">{{ pair.value.option?.note }}</p>
+        @if (showResolvedSettingNotes && pair.value.option?.note) {
+        <p class="setting-note">{{ pair.value.option?.note }}</p>
+        }
       </li>
+      }
     </ul>
-
     <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
-
     <p class="settings-edit"><a href="javascript:void(0)" (click)="navigateSettingsReview()">Change {{configuration?.shortApplicationName}} Settings</a></p>
   </div>
 </div>
-
-<ng-container *ngIf="configuration?.sidebarInfo as info">
-  <div *ngFor="let section of info.sections" class="sidebar-info-section">
-    <div class="sidebar-component-name">
-      <p [ngStyle]="section.styleOverrides?.heading">{{ section.heading }}</p>
-    </div>
-    <div class="sidebar-component-content-container">
-      <p *ngIf="section.subheading" class="sidebar-info-subheading" [ngStyle]="section.styleOverrides?.subheading">{{ section.subheading }}</p>
-      <ul *ngIf="section.items?.length" class="sidebar-info-items" [ngStyle]="section.styleOverrides?.items">
-        <li *ngFor="let item of section.items" [ngStyle]="section.styleOverrides?.item">{{ item }}</li>
-      </ul>
-    </div>
+} @if (configuration?.sidebarInfo; as info) { @for (section of info.sections; track section) {
+<div class="sidebar-info-section">
+  <div class="sidebar-component-name">
+    <p [ngStyle]="section.styleOverrides?.heading">{{ section.heading }}</p>
   </div>
-</ng-container>
-
-<ng-container *ngIf="!hideLayerToggle">
-  <tamu-gisc-layer-list [allowedLayerIds]="eventLayerIds" [orderBy]="layerListOrderBy"></tamu-gisc-layer-list>
-
-  <tamu-gisc-legend
-    [deduplicate]="true"
-    [respectDefinitionExpression]="true"
-    [allowVisibilityToggle]="legendAllowVisibilityToggle"
-    [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary"
-    [allowedLayerIds]="eventLayerIds"
-    [forceShowLayerIds]="legendForceShowLayerIds"
-  ></tamu-gisc-legend>
-</ng-container>
+  <div class="sidebar-component-content-container">
+    @if (section.subheading) {
+    <p class="sidebar-info-subheading" [ngStyle]="section.styleOverrides?.subheading">{{ section.subheading }}</p>
+    } @if (section.items?.length) {
+    <ul class="sidebar-info-items" [ngStyle]="section.styleOverrides?.items">
+      @for (item of section.items; track item) {
+      <li [ngStyle]="section.styleOverrides?.item">{{ item }}</li>
+      }
+    </ul>
+    }
+  </div>
+</div>
+} } @if (!hideLayerToggle) {
+<tamu-gisc-layer-list [allowedLayerIds]="eventLayerIds" [orderBy]="layerListOrderBy"></tamu-gisc-layer-list>
+<tamu-gisc-legend [deduplicate]="true" [respectDefinitionExpression]="true" [allowVisibilityToggle]="legendAllowVisibilityToggle" [combineChildrenUnderPrimary]="legendCombineChildrenUnderPrimary" [allowedLayerIds]="eventLayerIds" [forceShowLayerIds]="legendForceShowLayerIds"></tamu-gisc-legend>
+}

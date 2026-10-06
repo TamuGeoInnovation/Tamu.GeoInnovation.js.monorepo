@@ -4,17 +4,18 @@
   "prefix": "tamu-gisc",
   "projectType": "library",
   "sourceRoot": "libs/maps/feature/layer-filter/src",
+  "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "libs/maps/feature/layer-filter/jest.config.ts"
+        "jestConfig": "libs/maps/feature/layer-filter/jest.config.ts",
+        "tsConfig": "libs/maps/feature/layer-filter/tsconfig.spec.json"
       },
       "outputs": ["{workspaceRoot}/coverage/libs/maps/feature/layer-filter"]
     },
     "lint": {
       "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

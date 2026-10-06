@@ -9,8 +9,8 @@
       </div>
 
       <!-- <div>
-        <a href="https://urisatexas.org/event-3958981" class="button secondary column4 leader-2 trailer-2" target="_blank">Sponsor through ATX TxGIS Day</a>
-      </div> -->
+      <a href="https://urisatexas.org/event-3958981" class="button secondary column4 leader-2 trailer-2" target="_blank">Sponsor through ATX TxGIS Day</a>
+    </div> -->
 
       <div>
         <a href="https://www.h-gac.com/events/houston-area-gis-day-sponsorship" class="button secondary column4 leader-2 trailer-2" target="_blank">Sponsor through Houston Area TxGIS Day</a>
@@ -33,7 +33,9 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of rasterSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          @for (s of rasterSponsors$ | async; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          }
         </div>
       </div>
     </div>
@@ -49,7 +51,9 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of polygonSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          @for (s of polygonSponsors$ | async; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          }
         </div>
       </div>
     </div>
@@ -65,7 +69,9 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of lineSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          @for (s of lineSponsors$ | async; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          }
         </div>
       </div>
     </div>
@@ -81,7 +87,9 @@
 
       <div class="sponsor-list">
         <div class="icon-grid">
-          <div class="icon-item large" *ngFor="let s of pointSponsors$ | async"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          @for (s of pointSponsors$ | async; track s) {
+          <div class="icon-item large"><a [href]="s.website" target="_blank" [style.background-image]="'url(' + (s?.logos['0']?.path | assetUrl | async) + ')' " [title]="s.name"></a></div>
+          }
         </div>
       </div>
     </div>
@@ -100,7 +108,6 @@
   </div>
 
   <div class="container12 flex flex-column trailer-6">
-
     <div class="trailer-1">
       <h2>Parking Validations</h2>
       <ul>
@@ -120,7 +127,7 @@
     <div class="trailer-1">
       <h2>Tuesday, November 18th</h2>
       <ul>
-        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Gates Ballroom, Room 2400 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
+        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC) Gates Ballroom, Room 2400 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
         <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
         <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
       </ul>
@@ -129,7 +136,7 @@
     <div class="trailer-1">
       <h2>Wednesday, November 19th</h2>
       <ul>
-        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Bethancourt Ballroom, Room 2300 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
+        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC) Bethancourt Ballroom, Room 2300 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
         <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
         <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
         <li>If you are participating in the Career &amp; Resources Fair, setup can take place 30 minutes before-hand in the rooms reserved for the Career Fair events.</li>
@@ -139,7 +146,7 @@
     <div class="trailer-1">
       <h2>Thursday, November 20th</h2>
       <ul>
-        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC)  Gates Ballroom, Room 2400 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
+        <li>The majority of today's events are scheduled at the <a href="https://aggiemap.tamu.edu/?bldg=0454&amp;utm_source=gisday" target="_blank">Texas A&amp;M Memorial Student Center</a> (MSC) Gates Ballroom, Room 2400 located on TAMU Main Campus at 275 Joe Routt Blvd, College Station, TX 77843.</li>
         <li>Plentiful parking is available at any of the TAMU parking garages for TxGIS Day attendees and guests. The closest parking garage to the MSC is the <a href="https://aggiemap.tamu.edu/?bldg=1544&amp;utm_source=gisday" target="_blank">Gene Stallings Blvd Garage</a> (SBG).</li>
         <li>As you cross the street from SBG parking garage toward the MSC there will be exterior stairs into the MSC that will take you straight to the event rooms on the second floor.</li>
       </ul>
