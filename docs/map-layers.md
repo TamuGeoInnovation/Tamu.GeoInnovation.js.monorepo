@@ -64,10 +64,15 @@ leaves the layer alone — the portal item is not consulted at all for it.
 symbology looks wrong to us, is inconsistent with another map, or would be clearer another way - those
 are the owner's calls to make, and the place to raise them is with the owner.
 
-The 150th anniversary marker is the shape of a legitimate one: inlined as base64 because the service's
-own image endpoint returned 400. A real technical constraint, written down, removable when the
-endpoint is fixed. Even that turned out to be unnecessary when tested - the Spirit of 150 Week cake
-markers draw from the service perfectly well.
+No override in this repository turned out to be one. The closest thing to a legitimate case was the
+150th anniversary marker art, inlined as base64 under a comment explaining that the hosted image
+endpoint returns 400 and the markers would otherwise be blank. The endpoint does return 400. It also
+does not matter: all four of those services publish the art as `imageData` inside the renderer JSON,
+so Esri never asks the endpoint. The constraint was real, the conclusion drawn from it was wrong, and
+the copies were never needed - checked on 6 October 2026, four years after the first was pasted in.
+
+The lesson is narrower than "do not override": **ask the service before deciding it cannot answer.**
+One request to `<layer>?f=json` would have settled it at any point.
 
 **The aesthetic cases do not survive being looked at.** Reviewed side by side on 6 October 2026, every
 service-driven version was judged better than its hard-coded replacement, and the exception list came
