@@ -35,6 +35,10 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | home | `check-in-volume.sh chore/1448-prettier-3 affected` (lint, test, build; 118 projects, 246 tasks, 0 failed) | volume, Nx cache cold; `npm ci` (60 s) included; a GitHub smoke run going, nothing heavy locally | **6 min 24 s** |
+| 5 Oct 2026 | home | Prettier 3.9.9 `--list-different` over the whole repository (400 files would change) | volume | 23-27 s |
+| 5 Oct 2026 | home | Prettier 2.8.8 `--list-different` over the whole repository (241 files would change) | volume | 26 s |
+| 5 Oct 2026 | home | Prettier 3.9.9 `--write` on the 160 files only it changes | volume | 3 s |
 | 5 Oct 2026 | office (GEOG-CSA305C-02) | `check-in-volume.sh feat/tailgating-map` (affected: lint, test, build, 17 projects, 3 apps) | volume, cold: clone and `npm ci` (28 s) included | 1 min 54 s |
 | 5 Oct 2026 | office | `check-in-volume.sh … aggiemap-ngx-common` (lint, test) | volume, warm, after a one-line change | **12 s** |
 | 5 Oct 2026 | office | `check-in-volume.sh … aggiemap-ngx-common` (lint, test) | volume, cold: clone and `npm ci` included | 2 min 23 s |
@@ -55,6 +59,8 @@ same output appears when the graph fails to compute. Read the log, not the exit 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | home | `npm ci` after the Prettier 3 bump (lock proof and install) | into the `tamu-js-1448` Docker volume | **59 s** |
+| 5 Oct 2026 | home | `npm ci`, Angular 19 baseline for the Angular 20 upgrade (#1447) | into the `tamu-js-1447` Docker volume | **62 s** |
 | 5 Oct 2026 | office | `npm ci` | into the `tamu-js-dev-nm` Docker volume | **4 min 45 s** |
 | 5 Oct 2026 | office | `npm ci` | into the bind-mounted Windows checkout | **13 min 56 s** |
 
