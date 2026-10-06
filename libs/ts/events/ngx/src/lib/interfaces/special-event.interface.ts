@@ -244,6 +244,47 @@ export interface EventConfiguration {
    * When omitted, the sidebar search falls back to the application-wide search sources as usual.
    */
   searchSources?: SearchSource[];
+
+  /**
+   * Which of this map's building attributes the shared building popup (`CampusBuildingPopupComponent`)
+   * shows. Each satellite campus publishes its buildings with different fields, so each campus declares
+   * its own (#1463).
+   */
+  buildingPopup?: BuildingPopupFields;
+}
+
+/**
+ * A map's building fields, as the shared building popup reads them. Every entry names an attribute
+ * field on the map's buildings layer, except `address.state`, which is the value itself: no campus
+ * layer carries a state field.
+ */
+export interface BuildingPopupFields {
+  /**
+   * The buildings layer's id. A building chosen from search carries no layer, so its copy link names
+   * this one, and opens the building exactly as a link copied from a clicked building does.
+   */
+  layerId: string;
+
+  /**
+   * Fields tried in order for the popup's title; the first with a value wins. List the best name first
+   * and the abbreviation last.
+   */
+  title: string[];
+
+  /**
+   * Field holding the building number, shown as "Building <number>" as on the main map.
+   */
+  number?: string;
+
+  /**
+   * Address fields, where the layer has them.
+   */
+  address?: {
+    street: string;
+    city: string;
+    zip: string;
+    state: string;
+  };
 }
 
 /**

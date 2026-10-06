@@ -1,10 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
-import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
 import { campusClickOverlayNative } from './campus-overlay.definitions';
+import { CampusBuildingPopupComponent } from '../../modules/popups/campus-building-popup/campus-building-popup.component';
 
 /**
  * Layer ids used by the DC/Bush School satellite-campus map. `BASEMAP` is the visual vector-tile
@@ -42,7 +42,7 @@ export const DCBushSchoolLayerSources: LayerSource[] = [
     id: DC_BUSH_SCHOOL_LAYERS.PROPERTY,
     title: 'Property',
     url: `${Connections.dcBushSchoolFeatureServerUrl}/0`,
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: CampusBuildingPopupComponent,
     listMode: 'hide',
     visible: true,
     essential: true,
@@ -79,7 +79,7 @@ export const DCBushSchoolSearchSources: SearchSource[] = [
     scoringKeys: ['attributes.bldgabbr', 'attributes.number', 'attributes.bldgname'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.bldgname} ({attributes.number})',
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: CampusBuildingPopupComponent,
     searchActive: true
   }
 ];
@@ -96,6 +96,13 @@ export const DCBushSchoolConfiguration: EventConfiguration = {
   zoom: 19,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
+  // The DC layer has no `name` field, and its abbreviation field is `bldgabbr`.
+  buildingPopup: {
+    layerId: DC_BUSH_SCHOOL_LAYERS.PROPERTY,
+    title: ['bldgname', 'bldgabbr'],
+    number: 'number',
+    address: { street: 'address', city: 'city', zip: 'zip', state: 'DC' }
+  },
   // TODO: set `brandingIconUrl` to an official Bush School of Government & Public Service (D.C.
   // campus) logo once one is sourced. Until then, the sidebar falls back to the default TAMU
   // branding block.

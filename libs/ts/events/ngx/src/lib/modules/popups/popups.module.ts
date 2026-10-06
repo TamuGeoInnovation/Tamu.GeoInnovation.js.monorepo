@@ -6,8 +6,9 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 
 import { MarkdownWDirectionsPopupComponent } from './markdown-w-directions-popup/markdown-w-directions-popup.component';
 import { MarkdownPopupComponent } from './markdown-popup/markdown-popup.component';
+import { CampusBuildingPopupComponent } from './campus-building-popup/campus-building-popup.component';
 
-const popups = [MarkdownWDirectionsPopupComponent, MarkdownPopupComponent];
+const popups = [MarkdownWDirectionsPopupComponent, MarkdownPopupComponent, CampusBuildingPopupComponent];
 
 @NgModule({
   imports: [CommonModule, AggiemapNgxPopupsModule, UIClipboardModule],
@@ -18,5 +19,6 @@ export class PopupsModule {}
 
 export const Popups = {
   MarkdownWDirectionsPopupComponent: MarkdownWDirectionsPopupComponent,
-  MarkdownPopupComponent: MarkdownPopupComponent
+  MarkdownPopupComponent: MarkdownPopupComponent,
+  CampusBuildingPopupComponent: CampusBuildingPopupComponent
 };

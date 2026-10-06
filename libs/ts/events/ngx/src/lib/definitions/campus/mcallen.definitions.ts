@@ -1,10 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
-import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
 import { campusClickOverlayNative } from './campus-overlay.definitions';
+import { CampusBuildingPopupComponent } from '../../modules/popups/campus-building-popup/campus-building-popup.component';
 
 /**
  * Layer ids used by the McAllen satellite-campus map. `BASEMAP` is the visual vector-tile basemap.
@@ -42,7 +42,7 @@ export const McAllenLayerSources: LayerSource[] = [
     id: MCALLEN_LAYERS.BUILDINGS,
     title: 'Buildings',
     url: `${Connections.mcallenFeatureServerUrl}/2`,
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: CampusBuildingPopupComponent,
     listMode: 'hide',
     visible: true,
     essential: true,
@@ -77,7 +77,7 @@ export const McAllenSearchSources: SearchSource[] = [
     scoringKeys: ['attributes.abbrev', 'attributes.number', 'attributes.name'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.name} ({attributes.number})',
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: CampusBuildingPopupComponent,
     searchActive: true
   }
 ];
@@ -94,6 +94,12 @@ export const McAllenConfiguration: EventConfiguration = {
   zoom: 18,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
+  // The McAllen layer has no address fields.
+  buildingPopup: {
+    layerId: MCALLEN_LAYERS.BUILDINGS,
+    title: ['name', 'abbrev'],
+    number: 'number'
+  },
   // TODO: set `brandingIconUrl` to an official Texas A&M Higher Education Center at McAllen logo
   // once one is sourced. Until then, the sidebar falls back to the default TAMU branding block.
   searchSources: McAllenSearchSources
