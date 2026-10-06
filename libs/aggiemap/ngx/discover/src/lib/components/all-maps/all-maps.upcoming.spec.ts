@@ -46,7 +46,7 @@ describe('AllMapsComponent upcoming events', () => {
     getParkingApplicationsByCategory: () => []
   };
 
-  const upcomingAt = async (now: Date): Promise<string[]> => {
+  const renderAt = async (now: Date) => {
     jest.useFakeTimers({ now, doNotFake: ['nextTick', 'setImmediate', 'setTimeout', 'setInterval', 'queueMicrotask'] });
 
     await TestBed.configureTestingModule({
@@ -64,12 +64,60 @@ describe('AllMapsComponent upcoming events', () => {
 
     fixture.detectChanges();
 
+    return fixture;
+  };
+
+  const upcomingAt = async (now: Date): Promise<string[]> => {
+    const fixture = await renderAt(now);
+
     return fixture.componentInstance.upcomingApplications.map((upcoming) => upcoming.name);
+  };
+
+  /** The dates each upcoming event renders, paired with its name, as a visitor reads them. */
+  const renderedDatesAt = async (now: Date): Promise<Array<[string, string]>> => {
+    const fixture = await renderAt(now);
+
+    return Array.from(fixture.nativeElement.querySelectorAll('.upcoming-events-section .event-card')).map((card) => {
+      const element = card as HTMLElement;
+
+      return [
+        element.querySelector('.event-title')?.textContent?.trim() ?? '',
+        element.querySelector('.event-dates')?.textContent?.replace(/\s+/g, ' ').trim() ?? ''
+      ] as [string, string];
+    });
   };
 
   afterEach(() => {
     TestBed.resetTestingModule();
     jest.useRealTimers();
+  });
+
+  /**
+   * A repeat event showed its whole range rather than the date a visitor is about to turn up for
+   * (#1443). Ring Day runs 8-10 October, and on 6 October the list read "Dates: 10/8/2026 -
+   * 10/10/2026". The range is the wrong answer to "when is the next one": it is three numbers to
+   * read where one will do, and the end of it is the date nobody is going to.
+   *
+   * The dates are compared against `toLocaleDateString()` rather than a written-out string, because
+   * the component formats them that way and the locale this runs under is not the point of the test.
+   */
+  it("shows a repeat event's next date, not the range it spans", async () => {
+    const rendered = await renderedDatesAt(new Date(2026, 9, 6, 9, 0));
+    const ringDay = rendered.find(([name]) => name === 'Ring Day');
+
+    expect(ringDay).toBeDefined();
+    expect(ringDay?.[1]).toBe(`Next: ${new Date(2026, 9, 8).toLocaleDateString()}`);
+    expect(ringDay?.[1]).not.toContain(new Date(2026, 9, 10).toLocaleDateString());
+  });
+
+  it('shows one date on every card, so the list reads the same way down the page', async () => {
+    const rendered = await renderedDatesAt(new Date(2026, 9, 6, 9, 0));
+
+    expect(rendered).toEqual([
+      ['Ring Day', `Next: ${new Date(2026, 9, 8).toLocaleDateString()}`],
+      ['Volleyball', `Next: ${new Date(2026, 10, 15).toLocaleDateString()}`],
+      ['Football', `Next: ${new Date(2026, 10, 27).toLocaleDateString()}`]
+    ]);
   });
 
   it("lists today's events first, just after midnight on the day", async () => {
