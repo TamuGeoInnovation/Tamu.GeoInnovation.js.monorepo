@@ -31,6 +31,19 @@ fi
 
 cd "$(git rev-parse --show-toplevel)"
 
+# The output path is relative to the repository root, because that is the only thing the container can
+# see. An absolute path, or one climbing out of the repository, resolves inside the container instead,
+# where the file is written and then discarded with it - and the capture reports success having
+# produced nothing.
+case "$output" in
+  /* | [A-Za-z]:[/\]* | *..*)
+    echo "The output path must be relative to the repository root, e.g." >&2
+    echo "  docs/screenshots/1418-remove-last-150th/before-layer-list.png" >&2
+    echo "Got: $output" >&2
+    exit 2
+    ;;
+esac
+
 mkdir -p "$(dirname "$output")"
 
 # The Playwright image ships the browsers, not the module, so it resolves `playwright-core` from this
@@ -83,4 +96,11 @@ const { chromium } = require("playwright-core");
 })().catch((error) => { console.error(error.message); process.exit(1); });
 '
 
-echo "Wrote $output"
+# A capture tool that reports success without producing a file is the worst kind: the pull request
+# then links an image that is not there, and nobody notices until review.
+if [ ! -s "$output" ]; then
+  echo "No file was written at $output." >&2
+  exit 1
+fi
+
+echo "Wrote $output ($(wc -c < "$output") bytes)"
