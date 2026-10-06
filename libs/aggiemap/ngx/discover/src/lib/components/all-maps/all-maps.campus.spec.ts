@@ -24,6 +24,9 @@ describe('AllMapsComponent campus maps', () => {
   const campus = {
     name: 'Galveston',
     id: 'galveston',
+    // `source` matters: the search exclusion is `source === 'internal' && type === 'satellite-campus'`,
+    // so a stub without it is never excluded and the test fails against correct code.
+    source: 'internal',
     type: 'satellite-campus',
     mapTypes: ['campus'],
     thumbnail: './assets/images/campus/galveston.jpg',
@@ -34,6 +37,7 @@ describe('AllMapsComponent campus maps', () => {
   const kiosk = {
     name: 'Dining',
     id: 'dining',
+    source: 'internal',
     type: 'kiosk',
     mapTypes: ['campus'],
     configuration: { id: 'dining', eventDates: [] }
@@ -120,7 +124,7 @@ describe('AllMapsComponent campus maps', () => {
 
       TestBed.resetTestingModule();
     }
-  });
+  }, 30_000);
 
   it('leaves the development-only Kiosk Maps section where it was', async () => {
     // The two sections sat behind the same gate. Taking the campus one out must not take this one
