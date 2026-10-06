@@ -21,6 +21,17 @@ what has not shipped yet.
 
 ## Summary
 
+- **Football micromobility follows its services again** ([#996](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/996)): Transportation added an **Entry Routes** layer to
+  the entry service and removed its bike lane markings, and nothing on the map read the new layer - so
+  a cyclist arriving at the game was shown where to park and where to dismount and no way to reach
+  either. The entry map had no route layer at all. Entry Routes now draw, the five layers are listed in
+  the order the services publish them rather than alphabetically, and both route layers draw the
+  symbology the service publishes instead of a colour held in our code.
+
+  | Before (entry) | After (entry) |
+  | --- | --- |
+  | ![The entry map with no routes, layers listed alphabetically](../screenshots/996-micromobility-layers/before-entry-map.png) | ![The entry map with purple entry routes and layers in service order](../screenshots/996-micromobility-layers/after-entry-map.png) |
+  | ![The exit map before](../screenshots/996-micromobility-layers/before-exit-map.png) | ![The exit map after](../screenshots/996-micromobility-layers/after-exit-map.png) |
 - **Satellite campus building popups** ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)): clicking or searching for a building on the
   Galveston, McAllen and DC / Bush School maps now shows a popup like the main map's. It gives the building's
   name, its number, its address where the campus publishes one, and a link to copy that reopens the
@@ -87,6 +98,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Football micromobility ([#996](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/996)) | [Entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), [Exit](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=exit) | The entry map draws **Entry Routes**; the exit map draws **Exit Routes** and not the entry ones. Layers read Micromobility Parking Area, the routes, Bike Dismount Zones, Bike Veo Geofence - the same order as the legend below. **The routes are thicker than before**, because that is the width the service publishes; say so if it is too heavy. Needed before the 17 October home game |
 | Campus building popups ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)) | [Galveston Student Center](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?feature=galveston-buildings-layer:1), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The popup shows a title, "Building N" and the address (Galveston and DC; McAllen has no address in its data), and a copy field, with **no Property/Value table**. Search Galveston for "Williams", open the result, copy its link and paste it in a new tab: it reopens the same building. DC's ZIP shows 00318 until the data is fixed ([#1464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1464)) |
 | Angular 22 ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): click a building, then a parking lot; the side panel's Layers and Legend; an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); the [mobile map](https://dev.aggiemap.tamu.edu/map/m) popups; [directions](https://dev.aggiemap.tamu.edu/map/d/trip) with parking and biking options | **nothing different**. Popups open with their content; the trip planner shows its parking and biking options; turning a layer on or off updates the map and the legend straight away. Anything that only updates after another click is the thing to report |
 | Angular 21 ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), a building popup, and an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); on a phone, the [mobile map](https://dev.aggiemap.tamu.edu/map/m) | **nothing different**. Click a building and press **Copy** in its popup, then paste; press **Escape** to close a popup; open and close the side panel's tabs and any accordion; on a phone, use the menu and the tiles. A click or key that does nothing is the thing to report |
