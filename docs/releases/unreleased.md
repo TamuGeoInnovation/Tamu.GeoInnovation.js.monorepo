@@ -21,6 +21,14 @@ what has not shipped yet.
 
 ## Summary
 
+- **The 150th Events group is gone from the main map** ([#1418](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1418)): the anniversary events ran from 2 to 5 October and are
+  all over. Each was taken out of the layer list on the day after it happened; 150 Cake & Ice Cream was
+  the last of them, so the heading goes with it. Nothing else in the list changes, and each event's own
+  map is untouched.
+
+  | Before | After |
+  | --- | --- |
+  | ![The layer list with a 150th Events heading and 150 Cake & Ice Cream under it](../screenshots/1418-remove-last-150th/before-layer-list.png) | ![The layer list beginning at Accessible Building Entrances, with no 150th Events heading](../screenshots/1418-remove-last-150th/after-layer-list.png) |
 - **Satellite campus building popups** ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)): clicking or searching for a building on the
   Galveston, McAllen and DC / Bush School maps now shows a popup like the main map's. It gives the building's
   name, its number, its address where the campus publishes one, and a link to copy that reopens the
@@ -87,6 +95,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| The 150th Events group ([#1418](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1418)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), side panel, **Layers** | **No 150th Events heading at all**, and the list now starts at Accessible Building Entrances. The 150th event maps themselves still open from their own links |
 | Campus building popups ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)) | [Galveston Student Center](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?feature=galveston-buildings-layer:1), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The popup shows a title, "Building N" and the address (Galveston and DC; McAllen has no address in its data), and a copy field, with **no Property/Value table**. Search Galveston for "Williams", open the result, copy its link and paste it in a new tab: it reopens the same building. DC's ZIP shows 00318 until the data is fixed ([#1464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1464)) |
 | Angular 22 ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): click a building, then a parking lot; the side panel's Layers and Legend; an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); the [mobile map](https://dev.aggiemap.tamu.edu/map/m) popups; [directions](https://dev.aggiemap.tamu.edu/map/d/trip) with parking and biking options | **nothing different**. Popups open with their content; the trip planner shows its parking and biking options; turning a layer on or off updates the map and the legend straight away. Anything that only updates after another click is the thing to report |
 | Angular 21 ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), a building popup, and an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); on a phone, the [mobile map](https://dev.aggiemap.tamu.edu/map/m) | **nothing different**. Click a building and press **Copy** in its popup, then paste; press **Escape** to close a popup; open and close the side panel's tabs and any accordion; on a phone, use the menu and the tiles. A click or key that does nothing is the thing to report |
