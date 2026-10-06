@@ -159,36 +159,6 @@ describe('LayerSources', () => {
         layerId: 'ev-charge-stations',
         name: 'EV Charge Stations',
         url: 'ev-charge-stations-url'
-      },
-      EVENT_150_OPENING_EVENT_LOCATIONS: {
-        id: 'event-150-opening-event-locations',
-        layerId: 'event-150-opening-event-locations',
-        name: 'Event Locations',
-        url: 'opening-ceremony-url/0'
-      },
-      EVENT_150_OPENING_SHUTTLE_ROUTE: {
-        id: 'event-150-opening-shuttle-route',
-        layerId: 'event-150-opening-shuttle-route',
-        name: 'Shuttle Route',
-        url: 'opening-ceremony-url/1'
-      },
-      EVENT_150_OPENING_PARKING: {
-        id: 'event-150-opening-parking',
-        layerId: 'event-150-opening-parking',
-        name: 'Parking',
-        url: 'opening-ceremony-url/2'
-      },
-      EVENT_150_KICKOFF_AT_KYLE: {
-        id: 'event-150-kickoff-at-kyle',
-        layerId: 'event-150-kickoff-at-kyle',
-        name: 'Kickoff at Kyle',
-        url: 'kickoff-at-kyle-url'
-      },
-      EVENT_150_SPIRIT_WEEK: {
-        id: 'event-150-spirit-week',
-        layerId: 'event-150-spirit-week',
-        name: '150 Cake & Ice Cream',
-        url: 'spirit-of-150-week-url'
       }
     };
     options = { exclude: [] };
@@ -197,14 +167,14 @@ describe('LayerSources', () => {
   it('should return all layer sources when no options are provided', () => {
     const result = LayerSources(connections, definitions);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(16);
   });
 
   it('should exclude specified layers', () => {
     options.exclude = ['BUILDINGS', 'CONSTRUCTION'];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(15);
+    expect(result.length).toBe(14);
     expect(result.find((layer) => layer.id === 'buildings')).toBeUndefined();
     expect(result.find((layer) => layer.id === 'construction')).toBeUndefined();
   });
@@ -213,7 +183,7 @@ describe('LayerSources', () => {
     options.exclude = [];
     const result = LayerSources(connections, definitions, options);
 
-    expect(result.length).toBe(17);
+    expect(result.length).toBe(16);
   });
 
   it('should retain only non-definition-backed top-level layers when all definitions are excluded', () => {
@@ -223,56 +193,22 @@ describe('LayerSources', () => {
     expect(resultWithExclusions.map((layer) => layer.id)).toEqual([
       'selection-layer',
       'bus-route-layer',
-      'sustainable-transportation-group-layer',
-      'event-150-group-layer'
+      'sustainable-transportation-group-layer'
     ]);
   });
 
-  it('should list the 150th event sets under a heading, each off by default, in list order', () => {
+  it('should offer no 150th events at all, now that every one of them has passed', () => {
     const result = LayerSources(connections, definitions);
-    const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
-    const children = eventsGroup?.sources ?? [];
 
-    expect(eventsGroup?.type).toBe('group');
-    expect(eventsGroup?.title).toBe('150th Events');
-    expect(eventsGroup?.listHeading).toBe(true);
-    expect(children.every((layer) => layer.visible === false)).toBe(true);
+    // The 150th anniversary events ran from 2 October to 5 October 2026 and are all over, so the
+    // group goes with the last of them (#1418). Each was removed on the day after it happened:
+    // Opening Ceremony and Kickoff at Kyle on 5 October (#1413), 150 Cake & Ice Cream on 6 October.
+    expect(result.find((layer) => layer.id === 'event-150-group-layer')).toBeUndefined();
 
-    // Esri's layer list shows a group's children in reverse source order, so reversing the sources
-    // gives the order visitors see.
-    // Live at the Station is not a 150th event (#1125), so it is not in this group.
-    //
-    // Opening Ceremony and Kickoff at Kyle were both on 2 October and came out once they had
-    // happened (#1413). An event is listed while it is still to come or is today, and not after.
-    expect([...children].reverse().map((layer) => layer.title)).toEqual(['150 Cake & Ice Cream']);
-  });
+    const titles = result.map((layer) => layer.title);
 
-  it('should not offer any 150th event that has already happened', () => {
-    const result = LayerSources(connections, definitions);
-    const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
-
-    // The two 2 October sets were still offered three days after they finished, which is what #1413
-    // was raised for. Named rather than computed from the clock: the remaining set comes out on its
-    // own day, and a date-driven assertion would fail the build that morning before anyone had
-    // chance to remove it.
-    const titles = (eventsGroup?.sources ?? []).map((layer) => layer.title);
-
-    expect(titles).not.toContain('Opening Ceremony');
-    expect(titles).not.toContain('Kickoff at Kyle');
-
-    const ids = (eventsGroup?.sources ?? []).map((layer) => layer.id);
-
-    expect(ids).not.toContain('event-150-opening-ceremony-group-layer');
-  });
-
-  it("should show each 150th event's date next to its name in the layer list", () => {
-    const result = LayerSources(connections, definitions);
-    const eventsGroup = result.find((layer) => layer.id === 'event-150-group-layer') as GroupLayerSource | undefined;
-
-    // Shown in the layer list rather than in the layers themselves (#1126).
-    expect([...(eventsGroup?.sources ?? [])].reverse().map((layer) => [layer.title, layer.listNote])).toEqual([
-      ['150 Cake & Ice Cream', 'Oct. 5, 2026']
-    ]);
+    expect(titles).not.toContain('150th Events');
+    expect(titles).not.toContain('150 Cake & Ice Cream');
   });
 
   it('should split shared bike racks into flat sustainable transportation child layers', () => {

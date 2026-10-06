@@ -21,6 +21,14 @@ what has not shipped yet.
 
 ## Summary
 
+- **The 150th Events group is gone from the main map** ([#1418](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1418)): the anniversary events ran from 2 to 5 October and are
+  all over. Each was taken out of the layer list on the day after it happened; 150 Cake & Ice Cream was
+  the last of them, so the heading goes with it. Nothing else in the list changes, and each event's own
+  map is untouched.
+
+  | Before | After |
+  | --- | --- |
+  | ![The layer list with a 150th Events heading and 150 Cake & Ice Cream under it](../screenshots/1418-remove-last-150th/before-layer-list.png) | ![The layer list beginning at Accessible Building Entrances, with no 150th Events heading](../screenshots/1418-remove-last-150th/after-layer-list.png) |
 - **The campus maps are live on production** ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)): Galveston, McAllen and the DC / Bush School have been
   reachable in production by direct URL all along, but nothing there linked to them, so to everyone
   else they did not exist. The **Campus Maps** section on All Maps and the **Campus Maps** tile in
@@ -123,6 +131,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| The 150th Events group ([#1418](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1418)) | [The main map](https://dev.aggiemap.tamu.edu/map/d), side panel, **Layers** | **No 150th Events heading at all**, and the list now starts at Accessible Building Entrances. The 150th event maps themselves still open from their own links |
 | Campus maps on production ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | A **Campus Maps** section and a **Campus Maps** tile in Visit Maps, each opening Galveston, McAllen and DC / Bush School. Typing "Galveston" in the map search still finds **nothing** - that is deliberate. This is the change to look at on production after the release, since dev showed it already |
 | Campus building links ([#1481](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1481)) | [Galveston](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?bldg=3010), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The link opens the building straight away. Click any building, press **Copy**, and the link reads `?bldg=<number>` - paste it in a new tab and the same building opens. An old `?feature=...` link must still work too |
 | Football micromobility ([#996](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/996)) | [Entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), [Exit](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=exit) | The entry map draws **Entry Routes**; the exit map draws **Exit Routes** and not the entry ones. Layers read Micromobility Parking Area, the routes, Bike Dismount Zones, Bike Veo Geofence - the same order as the legend below. **The routes are thicker than before**, because that is the width the service publishes; say so if it is too heavy. Needed before the 17 October home game |
