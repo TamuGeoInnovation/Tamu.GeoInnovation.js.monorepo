@@ -28,53 +28,39 @@ place they're kept. In short:
        - Tests: <tests expected>
        - Don't touch: <files or areas other work is changing>
 
-## Batch A (prepared 5 October 2026)
+## Batch B (prepared 6 October 2026)
 
-Write your report to `cloud/reports/<yyyy-mm-dd>-batch-a.md` on this branch when done (see the header).
+Write your report to `cloud/reports/<yyyy-mm-dd>-batch-b.md` on this branch when done (see the header).
 Times in the report are US Central, with the zone named.
 
-1. **#1426 (Medium): Make the AggieMap smoke suite fast enough to gate a release**
-   - Goal: the full suite against dev in about 10 to 15 minutes of wall clock instead of about 1 h 45 min,
-     with the same checks before a release and the same failures caught. Measured before and after.
-   - Where: `test/smoke/aggiemap/` (above all `framing.spec.ts` and its settle and probe waits),
-     `playwright.aggiemap-smoke.config.ts`, `test/smoke/aggiemap/environments.json`,
-     `.github/workflows/aggiemap-smoke.yml`, `docs/testing.md`, `docs/build-times.md` ("Smoke suite runs").
-     Read #1426 and #1380 first.
-   - Decided:
-     - **Framing covers one route per map when a release is checked** (about 52 of the 412 routes; the
-       other ~360 are the same maps opened with different builder choices). **The scheduled daily run on
-       GitHub keeps all 412.** Choose by an environment variable or a project in the config, the way the
-       suite already chooses by environment; don't fork the spec.
-     - **6 workers for local runs** (CI stays 4 unless the measurements say otherwise). If 6 makes the GIS
-       services time out on dev, compared with the "before" run below, drop to 4 and say so.
-     - **Cache the ArcGIS SDK between tests** (`page.route` serving `js.arcgis.com` from a cache), and
-       **replace the fixed 1000 ms waits with polling** (the settle loop's three readings, and the probe-ready
-       wait). Test isolation stays: a fresh context per test is fine; only the SDK download is shared.
-   - Before (measured 5 October 2026, 22:10 Central, home workstation, 2 workers, against dev): about
-     770 tests; 164 min of test time; framing 416 tests, 113 min (69%), 16.3 s each; maps 35 tests,
-     17 min; event-dates 68 tests, 13 min. Wall clock about 1 h 50 min.
-   - Tests: run the suite against dev (`https://dev.aggiemap.tamu.edu`) after the change, with the same
-     settings `test/smoke/aggiemap/run-local.sh` takes from `environments.json` (it passes them as
-     environment variables to `playwright test --config=playwright.aggiemap-smoke.config.ts`; you may not
-     have Docker, so run Playwright directly). Record start and end clock times, workers, test counts and
-     failures in `docs/build-times.md`. Every failure must be one that also fails on plain `development`
-     (run that spec there to show it), or explained.
-   - Don't touch: anything outside the files above.
+1. **#1458 (Low): Retire the CPA projects, and remove ng2-dragula with them**
+   - Goal: no CPA code left in the workspace; nothing else changes. The tag `cpa-last` (on `279853c1`,
+     CPA at Angular 22) is already pushed, so CPA can be restored from there.
+   - Where: `apps/cpa-angular`, `apps/cpa-angular-e2e`, `apps/cpa-nest`, `libs/cpa/**` (common, data-api,
+     ngx, sass); their paths in `tsconfig.base.json`; their names in `EXCLUDED_PROJECTS` in
+     `.github/workflows/*.yml`; `ng2-dragula`, `dragula`, `@types/dragula` and the `ng2-dragula` entry in
+     `overrides` in `package.json`; `package-lock.json` resynced with
+     `npm install --package-lock-only --ignore-scripts`. Search the whole repo for `cpa` afterwards
+     (docs, scripts, Azure notes) and update or remove each mention, saying which in the report.
+   - Decided: retire after Angular 22 (done); restore from `cpa-last` if ever needed. Before deleting,
+     confirm nothing outside CPA imports `@tamu-gisc/cpa/*` (on `279853c1` nothing did).
+   - Tests: `npx nx show projects` lists no `cpa-*` project, and the project graph loads; a clean
+     `npm ci` from only `package.json` and the lock passes; lint, test and build of the projects that
+     imported nothing from CPA are unaffected (the desktop session runs the full check).
+   - Don't touch: anything not CPA.
 
-2. **#1456 (High): Run the full smoke suite on dev for the Angular 21 upgrade**
-   - Goal: the full suite, as it is on `development` (not your #1426 branch), against dev once dev serves
-     Angular 21, with every failure explained. This clears Angular 21 for the dev tag.
-   - Where: check first that dev serves Angular 21: one of the JavaScript chunks linked from
-     `https://dev.aggiemap.tamu.edu/` contains `ng-version` and a `"21.` version string. If it is still
-     `"20.`, don't run the suite: say so in the report and stop on this item.
-   - Decided: known failures, not caused by the upgrade: `/events/mens-basketball` (its service answers
-     "499 Token Required", #1431), in both the framing and maps specs. Anything else is new.
-   - Tests: the whole suite, settings as in item 1. Report passed/failed/flaky/skipped, the start and end
-     clock times, and each failure with its error and whether it also fails on production
-     (`https://aggiemap.tamu.edu`, by rerunning just that test there). Run this item **before** item 1's
-     after-run, so the two runs don't share dev at once. Don't commit anything for this item except the
-     report; the desktop session records the timing.
+2. **#1457 (Low): Find the unused projects, libraries and dependencies — a report, no deletions**
+   - Goal: a list the maintainer can decide from. For each candidate: what it is, its last real commit,
+     who imports it (from `nx graph --file=graph.json` and a search), whether a workflow or
+     `azure-pipelines`-style file builds or deploys it, and a recommendation (delete / keep, why).
+   - Where: start from the projects in `EXCLUDED_PROJECTS` in `.github/workflows/build.yml` (CPA aside,
+     covered by item 1), then libraries no deployed app imports, then `package.json` dependencies used
+     only by those.
+   - Decided: nothing is deleted in this batch. Whether a project is deployed can only be confirmed from
+     Azure DevOps and the servers, which the desktop session checks; mark each candidate "deployment
+     unknown" unless the repository itself shows it.
+   - Tests: none; the report is the result. Commit only the report.
    - Don't touch: no branch for this item.
 
-**Don't touch, for the whole batch:** `chore/1456-angular-21` (PR #1465), `feat/1463-campus-building-popup`
-(the satellite campus building popup), and everything under `libs/` and `apps/`.
+**Don't touch, for the whole batch:** there are no open pull requests. Leave everything outside item 1's
+files alone.
