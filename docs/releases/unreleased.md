@@ -1,5 +1,7 @@
 # Unreleased
 
+Nothing has merged since the 6 October release yet.
+
 **The last release is [6 October 2026](2026-10-06.md)**, on production as `main-RKVTA45W.js` from
 `0c8b12df`, tagged `prod-2026-10-06`. It carried the Angular 20 to 22 upgrades, the satellite-campus
 maps going live on production, and five visible fixes. What was tested, and what went into it, are in
@@ -14,42 +16,6 @@ result adds its own entry below, in that pull request**, with its before/after s
 
 ## Summary
 
-- **The campus maps are live on production** ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)): Galveston, McAllen and the DC / Bush School have been
-  reachable in production by direct URL all along, but nothing there linked to them, so to everyone
-  else they did not exist. The **Campus Maps** section on All Maps and the **Campus Maps** tile in
-  Visit Maps now appear on production as well as dev.
-
-  They stay out of the All Maps search, deliberately and on both environments: that search is College
-  Station's, and a Galveston building answering a search made there would be a worse result than no
-  result. The section and the tile are how these maps are reached, which is why each card carries a
-  copy field. No service work was needed - all six campus services are the production ones in both
-  environments, confirmed by loading each map on production and finding no request to a development
-  host.
-
-  | Before (production) | After (production) |
-  | --- | --- |
-  | ![All Maps on production with no Campus Maps section](../screenshots/1482-campus-to-production/before-production-all-maps.png) | ![The Campus Maps section listing Galveston, McAllen and DC / Bush School](../screenshots/1482-campus-to-production/after-campus-section.png) |
-- **Campus building links are readable** ([#1481](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1481)): the copy button on a Galveston, McAllen or DC / Bush School
-  building popup produced `?feature=galveston-buildings-layer:3` - nothing a person could read, and
-  keyed on an ArcGIS object id that is not stable when the service is republished, so a link shared
-  today could come to point at a different building. It now copies `?bldg=3010`, or `?abbrv=OCNG` for a
-  building with no number, the same shape the main map has always used. Links of the old form still
-  open, so anything already shared keeps working.
-
-  | Before | After |
-  | --- | --- |
-  | ![The Galveston library popup, its copy field holding a feature id link](../screenshots/1481-campus-copy-url/before-copy-link.png) | ![The same popup, its copy field holding a bldg link](../screenshots/1481-campus-copy-url/after-copy-link.png) |
-- **Football micromobility follows its services again** ([#996](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/996)): Transportation added an **Entry Routes** layer to
-  the entry service and removed its bike lane markings, and nothing on the map read the new layer - so
-  a cyclist arriving at the game was shown where to park and where to dismount and no way to reach
-  either. The entry map had no route layer at all. Entry Routes now draw, the five layers are listed in
-  the order the services publish them rather than alphabetically, and both route layers draw the
-  symbology the service publishes instead of a colour held in our code.
-
-  | Before (entry) | After (entry) |
-  | --- | --- |
-  | ![The entry map with no routes, layers listed alphabetically](../screenshots/996-micromobility-layers/before-entry-map.png) | ![The entry map with purple entry routes and layers in service order](../screenshots/996-micromobility-layers/after-entry-map.png) |
-  | ![The exit map before](../screenshots/996-micromobility-layers/before-exit-map.png) | ![The exit map after](../screenshots/996-micromobility-layers/after-exit-map.png) |
 - **Maps draw the symbology that was actually drawn for them** ([#1497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497)): a layer styled in ArcGIS Pro keeps its
   symbol on the portal item, while the service publishes a flattened approximation - and the maps were
   drawing the approximation. Across the 36 hosted services, **128 of 128 layers** are affected, which
@@ -65,57 +31,6 @@ result adds its own entry below, in that pull request**, with its before/after s
 
   Maps whose services were already faithful are unchanged - Visitor Parking looks exactly as it did.
 
-- **Satellite campus building popups** ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)): clicking or searching for a building on the
-  Galveston, McAllen and DC / Bush School maps now shows a popup like the main map's. It gives the building's
-  name, its number, its address where the campus publishes one, and a link to copy that reopens the
-  building. Before, it showed a raw table of every database field. This was the last thing holding the
-  campus maps back from production.
-
-  | Before | After |
-  | --- | --- |
-  | ![Galveston Student Center, before](../screenshots/campus-building-popup/before-galveston-student-center.png) | ![Galveston Student Center, after](../screenshots/campus-building-popup/after-galveston-student-center.png) |
-  | ![McAllen Higher Education Center, before](../screenshots/campus-building-popup/before-mcallen-higher-ed-center.png) | ![McAllen Higher Education Center, after](../screenshots/campus-building-popup/after-mcallen-higher-ed-center.png) |
-  | ![DC / Bush School, before](../screenshots/campus-building-popup/before-dc-bush-school.png) | ![DC / Bush School, after](../screenshots/campus-building-popup/after-dc-bush-school.png) |
-- Not visible: **Angular 22** ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)): Angular 21.2 to 22.1, Nx 22.7 to 23.2, TypeScript 5.9
-  to 6.0, ESLint 8 to 9. The last of the version steps. Nothing is meant to look or behave differently.
-  Angular 22 makes components update only on input changes by default; a migration marked every
-  existing component to keep updating as today, so **a panel or list that stops refreshing** is the
-  first thing to report. The **popups** (map and mobile) and the **trip planner's parking and biking
-  options** are now created differently, because the API they used is gone. Not on dev until the build
-  after it merges.
-- Not visible: **Angular 21** ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)): Angular 20.3 to 21.2, Nx 21.6 to 22.7, Jest 29 to 30.
-  Nothing is meant to look or behave differently. The changes most likely to show are in **clicks and
-  keys handled by shared components** (accordions, tooltips, the side panel's tabs, the mobile tiles and
-  menu, Escape to close a popup or modal), whose handlers were adjusted for Angular 21's stricter
-  checking, and the **copy button**, whose clipboard library is now imported differently. Not on dev
-  until the build after it merges.
-- Not visible: **Angular 20** ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)): Angular 19.2 to 20.3, Nx 20.8 to 21.6,
-  TypeScript 5.7 to 5.9, with Prettier 3 ([#1448](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1448)). Nothing is meant to look or behave
-  differently, but **most templates changed form**: Angular's migration rewrote `*ngIf` and `*ngFor` as
-  its built-in `@if` and `@for` blocks. A panel, list or button that fails to appear is the first thing
-  to report. Not on dev until the build after it merges.
-- **A Football Tailgating map, on dev only** ([#1422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1422), pull request
-  [#1424](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1424)).
-  Listed under **Football** on the Athletics Events page, it shows the Aggie Park and West Campus
-  tailgating zones with their circled numbers, the Revel XP tent numbers on Performance Lawn once zoomed
-  in, and only the construction that affects tailgating (Aplin Center and SUP 1). After the last home
-  game it says the season is over and the zones are subject to change, rather than taking the map
-  down. The zones are a hosted layer in TAMU's ArcGIS Online organization with no production
-  counterpart, so production does not list or open the map. Two legend fixes came with it, and apply
-  to every map: a layer whose symbology was published from ArcGIS Pro no longer prints "Unsupported
-  legend element type", and a layer that can be toggled but has no key of its own stays out of the
-  legend.
-
-  | Before (and production, unchanged) | After (dev) |
-  | --- | --- |
-  | ![The Athletics Events list without Football Tailgating](../screenshots/1422-football-tailgating-map/before-athletics-events.png) | ![The Athletics Events list with Football Tailgating under Football](../screenshots/1422-football-tailgating-map/after-athletics-events.png) |
-
-  ![The Football Tailgating map with its zones, zone numbers, construction and legend](../screenshots/1422-football-tailgating-map/after-tailgating-map.png)
-
-  ![Tent numbers on Performance Lawn, zoomed in](../screenshots/1422-football-tailgating-map/after-tent-numbers.png)
-
-_Nothing yet._
-
 ---
 
 ## What to test on dev
@@ -125,23 +40,15 @@ _Nothing yet._
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Currently on dev for testing:** nothing beyond the [6 October release](2026-10-06.md) itself, until
-the next build.
+**Currently on dev for testing:** nothing beyond the [6 October release](2026-10-06.md) itself, until the next build carries the change below.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
-| Campus maps on production ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | A **Campus Maps** section and a **Campus Maps** tile in Visit Maps, each opening Galveston, McAllen and DC / Bush School. Typing "Galveston" in the map search still finds **nothing** - that is deliberate. This is the change to look at on production after the release, since dev showed it already |
-| Campus building links ([#1481](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1481)) | [Galveston](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?bldg=3010), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The link opens the building straight away. Click any building, press **Copy**, and the link reads `?bldg=<number>` - paste it in a new tab and the same building opens. An old `?feature=...` link must still work too |
-| Football micromobility ([#996](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/996)) | [Entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), [Exit](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=exit) | The entry map draws **Entry Routes**; the exit map draws **Exit Routes** and not the entry ones. Layers read Micromobility Parking Area, the routes, Bike Dismount Zones, Bike Veo Geofence - the same order as the legend below. **The routes are thicker than before**, because that is the width the service publishes; say so if it is too heavy. Needed before the 17 October home game |
 | Map symbology ([#1497](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497)) | Any map you know well, and [Football micromobility entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry) | **This one needs the widest look of anything in the release.** Micromobility routes should be a thin line with arrowheads, not a thick slab. Everywhere else, symbols should look the same or better - anything that looks *worse* or has changed unexpectedly is the thing to report, on any map |
-| Campus building popups ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)) | [Galveston Student Center](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?feature=galveston-buildings-layer:1), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The popup shows a title, "Building N" and the address (Galveston and DC; McAllen has no address in its data), and a copy field, with **no Property/Value table**. Search Galveston for "Williams", open the result, copy its link and paste it in a new tab: it reopens the same building. DC's ZIP shows 00318 until the data is fixed ([#1464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1464)) |
-| Angular 22 ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): click a building, then a parking lot; the side panel's Layers and Legend; an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); the [mobile map](https://dev.aggiemap.tamu.edu/map/m) popups; [directions](https://dev.aggiemap.tamu.edu/map/d/trip) with parking and biking options | **nothing different**. Popups open with their content; the trip planner shows its parking and biking options; turning a layer on or off updates the map and the legend straight away. Anything that only updates after another click is the thing to report |
-| Angular 21 ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), a building popup, and an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); on a phone, the [mobile map](https://dev.aggiemap.tamu.edu/map/m) | **nothing different**. Click a building and press **Copy** in its popup, then paste; press **Escape** to close a popup; open and close the side panel's tabs and any accordion; on a phone, use the menu and the tiles. A click or key that does nothing is the thing to report |
-| Angular 20 ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)) | Any map you use; [All Maps](https://dev.aggiemap.tamu.edu/all-maps); an event builder such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); popups, the side panel's Layers and Legend; and GIS Day's pages if you use them | **nothing different**. Templates were rewritten from `*ngIf`/`*ngFor` to `@if`/`@for`, so the thing to look for is something missing: an empty list, a panel that will not open, a button that has gone |
 
 ---
 
-## Work in flight — 6 October
+## Work in flight â€” 6 October
 
 Nothing below has merged, so it is not part of a release yet. This section exists because
 [`CLAUDE_SETUP.md`](../../CLAUDE_SETUP.md) sends a session on another machine here first, and an empty
@@ -164,8 +71,8 @@ file would say the work had stopped.
 | 10 | Angular 19 to 22, one major per pull request | done and merged: 20 ([#1451](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1451)), 21 ([#1465](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1465), dev-tagged `dev-2026-10-06`), 22 ([#1471](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1471)), about 1 to 1.5 hours each ([`docs/upgrades/angular.md`](../upgrades/angular.md)). **Angular 22 is not yet tested on dev**: its dev build was deploying on the morning of 6 October; the full suite, then the dev tag, come next |
 | 10b | Faster smoke suite ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)) | merged ([#1477](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1477)): a release check runs one framing route per map, 6 workers, the ArcGIS library cached; 22 min 44 s on a workstation against about 1 h 50 min. Further cuts: [#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473) (bus test), [#1427](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1427) (maps) |
 | 11 | `esri-loader` to `@arcgis/core`, 134 files | last |
-| — | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app goes after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)); CPA retires next ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458), tagged `cpa-last`), and the other unused projects are being listed ([#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)); both are with the cloud session (Batch B on the `cloud-mailbox` branch) |
-| — | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)), `@defer` ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)); in that order after the cleanups. Ubuntu pins before 19 October: [#1407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1407) (GitHub), [#1468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1468) (Azure) |
+| â€” | Dead projects ([#1226](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1226)) | VeoRide retired ([#1404](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1404)); the old Ring Day app goes after 10 October ([#1236](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1236)); CPA retires next ([#1458](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1458), tagged `cpa-last`), and the other unused projects are being listed ([#1457](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1457)); both are with the cloud session (Batch B on the `cloud-mailbox` branch) |
+| â€” | After Angular 22 | standalone ([#1452](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1452)), `@defer` ([#1454](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1454)), signals and OnPush ([#1455](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1455)), zoneless ([#1478](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1478)), Vitest ([#1479](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1479)), accessibility rules back on ([#1474](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1474)); in that order after the cleanups. Ubuntu pins before 19 October: [#1407](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1407) (GitHub), [#1468](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1468) (Azure) |
 
 **A local `nx affected` on a `package.json` change fails on projects that already fail on
 `development`.** Every project counts as affected. Measured on 2 October: `cpa-angular`,
@@ -208,7 +115,7 @@ the lock file with a clean `npm ci` before pushing (CLAUDE.md, [#1347](https://g
 
 **Bus route stops are a data fix, not a code fix
 ([#1174](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1174)).** Five
-routes draw no stops — NW0104, NW0305, NW4041, 15R and 47/48 — and two draw the wrong number: 40 has
+routes draw no stops â€” NW0104, NW0305, NW4041, 15R and 47/48 â€” and two draw the wrong number: 40 has
 one extra, 47 two missing. The map matches each stop's `Route` field in the Bus Stops layer
 (`TS/Bus_Routes/MapServer/0`) against the route code, and no stop carries those codes. The side panel
 still lists their stops, because that comes from separate text fields.
@@ -220,7 +127,7 @@ entries, so the test holds any bus release until the data is right.
 ### Read this first if you are picking up elsewhere
 
 **726 screenshots exist only on the work machine.** They are in `test/visual/baselines/builder/`,
-untracked and deliberately uncommitted — 363 builder destinations at two viewports, 325MB. They are
+untracked and deliberately uncommitted â€” 363 builder destinations at two viewports, 325MB. They are
 the output of a two-hour crawl against dev and can be regenerated with:
 
 ```bash
@@ -238,7 +145,7 @@ permanently, since git keeps every version. Where they should live is
 
 **A red smoke run is not automatically a code fault.** On the morning of 30 September the scheduled
 run was red on both environments: 57 failures on production, one on dev. Every one of them was the
-new tests running against builds that predated them — neither environment had been redeployed since
+new tests running against builds that predated them â€” neither environment had been redeployed since
 the 29 September release. Checking the deployed bundle settled it in minutes; debugging the
 application would have wasted the morning.
 
@@ -249,15 +156,15 @@ promptly deployed.
 
 ### The decision waiting to be made
 
-**[#1107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1107) — evaluate
+**[#1107](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1107) â€” evaluate
 Visual Regression Tracker on the cluster** as the home for baseline images, with
 [#1119](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1119) to stand it
 up. Phase 0 is five decisions that need no VPN: hostname, TLS issuer, image storage, PVC size, and who
 can log in.
 
 The contained test is in #1107: stand VRT up, point the existing capture at `gameday-parking`'s 14
-destinations, and find out whether its Playwright agent — about two years stale, while the server is
-current — still works before migrating 726 images.
+destinations, and find out whether its Playwright agent â€” about two years stale, while the server is
+current â€” still works before migrating 726 images.
 
 ### Open, none started
 
@@ -297,8 +204,8 @@ current — still works before migrating 726 images.
   ([#1105](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1105)).
 - **A local dev server must be reached at `http://localhost:4200`, not `127.0.0.1`.** `TestingService`
   keys on the host containing `dev` or `localhost`, so `127.0.0.1` renders the *production* variant.
-  That is deliberate and useful — it is the `local-production` test environment, and the way to capture
-  production behaviour before deploying — but it is not what you want for everyday work.
+  That is deliberate and useful â€” it is the `local-production` test environment, and the way to capture
+  production behaviour before deploying â€” but it is not what you want for everyday work.
 - **The builder inventory is environment-specific** and the smoke suite refuses one captured
   elsewhere. Production has no inventory yet, so its builder maps still skip
   ([#1134](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1134)).
