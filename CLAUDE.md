@@ -48,7 +48,7 @@ other machine sees and that is not in git. Whether to turn it off, as the C# rep
 of commits stale. Branch from `development` and target it in pull requests.
 
 **Node runs in Docker, not on the host.** Machines here generally have no usable host Node.
-Run Nx as `node node_modules/nx/bin/nx.js`, not bare `nx` or `npx nx` — `node_modules/.bin`
+Run Nx as `node node_modules/nx/dist/bin/nx.js`, not bare `nx` or `npx nx` — `node_modules/.bin`
 may not be populated. CLAUDE_SETUP.md has the full command.
 
 **Build to typecheck, don't rely on tests.** Most libraries have no `build` target, so
@@ -167,7 +167,7 @@ bind-mounts the source, so edits on Windows reach it, but its `node_modules` liv
 
 ```bash
 MSYS_NO_PATHCONV=1 docker run --rm -m 16g -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e CYPRESS_INSTALL_BINARY=0 node:22.23.3 npm ci --no-audit --no-fund
-MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
+MSYS_NO_PATHCONV=1 docker run -d --name aggiemap-dev -m 8g -p 4200:4200 -v "C:/TAMU/wt-<n>:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false node:22.23.3 sh -c "node node_modules/nx/dist/bin/nx.js serve aggiemap-angular --host 0.0.0.0 --port 4200 --poll=2000"
 ```
 
 One volume serves whichever checkout is mounted, so it must match that checkout's lock. Check before

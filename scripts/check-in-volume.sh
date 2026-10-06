@@ -79,7 +79,9 @@ if [ "$(cat node_modules/.check-sum 2>/dev/null)" != "$sum" ]; then
 fi
 excluded=$(sed -n "s/^ *EXCLUDED_PROJECTS://p" .github/workflows/build.yml | tr -dc "A-Za-z0-9_,-")
 [ -n "$excluded" ] || { echo "No EXCLUDED_PROJECTS in .github/workflows/build.yml"; exit 3; }
-nx="node node_modules/nx/bin/nx.js"
+# Nx 22 moved its entry point into dist/ (#1456); the old path still serves a branch from before it.
+nx="node node_modules/nx/dist/bin/nx.js"
+[ -f node_modules/nx/dist/bin/nx.js ] || nx="node node_modules/nx/bin/nx.js"
 case "$mode" in
   affected) step "affected lint,test,build" $nx affected -t lint,test,build --base=origin/development --exclude="$excluded" --parallel=8 ;;
   all) step "run-many lint,test,build" $nx run-many -t lint,test,build --all --exclude="$excluded" --parallel=8 ;;
