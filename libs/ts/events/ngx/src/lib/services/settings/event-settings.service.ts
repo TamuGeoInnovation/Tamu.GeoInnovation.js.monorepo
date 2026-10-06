@@ -483,6 +483,24 @@ export class EventSettingsService implements EventSettingsQuery {
   }
 
   /**
+   * The search sources a deep link on this map may be addressed by, the map's own first.
+   *
+   * The environment's list is the application's - College Station's buildings, lots and garages. A
+   * map that brings its own, as each satellite campus does, declares them on its configuration and
+   * they never reach the environment, so a link keyed on one of them resolved against nothing and
+   * quietly opened no feature (#1481).
+   *
+   * The map's own come first, so a parameter that appears in both lists - `bldg` does - is matched
+   * against the fields of the map actually open rather than against College Station's.
+   */
+  public configuredSearchSources(): SearchSource[] {
+    const own = this.eventConfiguration()?.configuration?.searchSources ?? [];
+    const environment = this.env.value('SearchSources');
+
+    return [...own, ...(Array.isArray(environment) ? (environment as SearchSource[]) : [])];
+  }
+
+  /**
    * Returns true when the provided query params include a supported feature deep-link
    * such as `?lot=43` or the generic `?feature=<layerId>:<objectId>` emitted by popup share links,
    * allowing maps to open directly without builder selections.
@@ -498,13 +516,7 @@ export class EventSettingsService implements EventSettingsQuery {
       return true;
     }
 
-    const searchSources = this.env.value('SearchSources') as SearchSource[] | null | undefined;
-
-    if (!Array.isArray(searchSources)) {
-      return false;
-    }
-
-    return searchSources.some((searchSource) => {
+    return this.configuredSearchSources().some((searchSource) => {
       if (!searchSource.urlQueryParam) {
         return false;
       }
