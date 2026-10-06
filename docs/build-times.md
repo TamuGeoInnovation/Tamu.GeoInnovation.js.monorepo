@@ -35,6 +35,11 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 6 Oct 2026 | office | `check-in-volume.sh feat/1508-service-symbology` (affected), deleting 90 hard-coded renderers across 42 files, 17:12 Central | volume, cold clone and `npm ci` | 6 min, **failed**: a scripted edit dropped three `commonLayerProps` imports still in use (8 suites, `ReferenceError`) |
+| 6 Oct 2026 | office | The same check after the import fix, plus 71 titles removed, 17:35 Central | volume, warm | 5 min, **failed**: `LayerSource.title` was required, so TS2322 in `aggiemap-angular` and `ts-events-angular` |
+| 6 Oct 2026 | office | `check-in-volume.sh feat/1508-service-symbology aggiemap-angular,ts-events-angular,common-types`, confirming the optional-title fix before repeating the full run, 17:41 Central | volume, warm, 3 projects | **1 min** |
+| 6 Oct 2026 | office | The full affected check, passing: 47 projects, 99 tasks, 17:44 Central | volume, warm | **5 min** |
+| 6 Oct 2026 | office | The same check again after merging the day's four merged PRs into the branch, 17:52 Central | volume, warm | **4 min** (nx run duration 4 min 15 s) |
 | 6 Oct 2026 | office | Full smoke suite against dev, the 6 October release (`0c8b12df`, `main-QFOMWXNR.js`, `dev-2026-10-06-3`), 6 workers, 11:51:12 to 12:20:47 Central | 421 passed, 1 failed, 14 skipped of 436 | **29 min 24 s** |
 | 6 Oct 2026 | office | The same suite's one failure re-run alone, machine quiet: `/map loads and serves its layers` | passed in 43.8 s; it had timed out at 120 s under the full run's load | **1 min 42 s** |
 | 6 Oct 2026 | office | `check-in-volume.sh fix/1497-portal-symbology` (affected), a shared-library change: 87 tasks, 41 projects, 0/87 cache hits | all passing | **3 min 5 s** |
