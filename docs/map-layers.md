@@ -54,14 +54,25 @@ leaves the layer alone — the portal item is not consulted at all for it.
 
 ### When it is right
 
-**When the map means something different from the service.** The Construction layer is the standing
-example: the service colours each zone by its owner, and a map *about* construction wants one
-construction colour, so it replaces the renderer with a single orange hatch. That is a deliberate
-editorial decision, not a workaround, and it should stay.
+Less often than the 95 overrides in this repository would suggest. Reviewed side by side on 6 October
+2026, **every** service-driven version was judged better than the hard-coded one, and the exception
+list came out empty (#1508).
 
-**When the service genuinely cannot supply it.** These exist and are worth distinguishing from the
-first kind, because they can be removed later and the first kind cannot. The 150th anniversary marker
-was inlined as base64 because the service's own image endpoint returned 400.
+That included the case everyone assumed was the exception. The Construction layer replaced the
+service's per-owner colours with a single orange hatch, on the reasoning that a map *about*
+construction wants one construction colour. Looked at properly, the per-owner symbols - SSC, TS, UES,
+TxDOT, Building Projects - are the better map, and the hatch is one more override to remove. An
+argument that sounds right is not evidence; the pictures are.
+
+So the honest answer is: **when the service genuinely cannot supply it.** The 150th anniversary marker
+was inlined as base64 because the service's own image endpoint returned 400 - a real constraint, and
+one that can be removed when the endpoint is fixed. Even that one turned out to be redundant when
+tested: the Spirit of 150 Week cake markers draw from the service perfectly well.
+
+If you think you have a case for the first kind - the map meaning something different from the service
+- capture it both ways and look at the two pictures before deciding. That costs about ten minutes with
+`tools/visual-baselines`, and it is how the Construction assumption was found to be wrong after
+surviving unexamined in #1028 for weeks.
 
 ### When it is not right
 
