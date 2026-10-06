@@ -47,9 +47,11 @@ const classes: { name: string; route: string | undefined; developmentOnly?: bool
   { name: 'an event map', route: representative('/events/') },
   { name: 'a parking map', route: representative('/parking/') },
   { name: 'an operations map', route: representative('/operations/') },
-  // All Maps lists the satellite campus and kiosk sections only in the development variant, so
-  // production has no representative of either to find (see global-setup.ts, #1393).
-  { name: 'a campus map', route: representative('/campus/'), developmentOnly: true },
+  // The campus maps are listed on both environments since #1482, so production has one to find.
+  // Kiosk maps are still listed in the development variant alone, deliberately - they are an
+  // embedding target rather than something to offer a visitor - so production has no representative
+  // of that class (see global-setup.ts, #1393).
+  { name: 'a campus map', route: representative('/campus/') },
   { name: 'a kiosk map', route: representative('/kiosk/'), developmentOnly: true },
   { name: 'All Maps', route: '/all-maps' },
   { name: 'a discover listing', route: '/all-maps/parking' }
