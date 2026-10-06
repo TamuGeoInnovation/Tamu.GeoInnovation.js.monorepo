@@ -1,3 +1,5 @@
+import type { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
+
 import type { AggiemapCustomMapConfiguration } from '../../interfaces/special-event.interface';
 
 /**
@@ -13,4 +15,12 @@ export abstract class EventSettingsQuery {
   public abstract readonly queryParamsFromSettings: URLSearchParams | null;
 
   public abstract eventConfiguration(): AggiemapCustomMapConfiguration;
+
+  /**
+   * The search sources a deep link on this map may be addressed by, the map's own first.
+   *
+   * See `EventSettingsService.configuredSearchSources`. The popups need it to clear a stale
+   * parameter from a copied link, and the event service needs it to resolve one.
+   */
+  public abstract configuredSearchSources(): SearchSource[];
 }

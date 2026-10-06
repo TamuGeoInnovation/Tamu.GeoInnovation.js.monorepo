@@ -2,7 +2,7 @@ import { BuildingPopupFields } from '../../../interfaces/special-event.interface
 import { DCBushSchoolConfiguration } from '../../../definitions/campus/dc-bush-school.definitions';
 import { GalvestonConfiguration } from '../../../definitions/campus/galveston.definitions';
 import { McAllenConfiguration } from '../../../definitions/campus/mcallen.definitions';
-import { buildingPopupContent } from './building-popup-content';
+import { buildingPopupContent, buildingShareIdentity } from './building-popup-content';
 
 /**
  * A satellite campus's building popup shows a title, number and address picked from that campus's own
@@ -14,6 +14,11 @@ import { buildingPopupContent } from './building-popup-content';
 const galveston = GalvestonConfiguration.buildingPopup as BuildingPopupFields;
 const mcallen = McAllenConfiguration.buildingPopup as BuildingPopupFields;
 const dc = DCBushSchoolConfiguration.buildingPopup as BuildingPopupFields;
+
+/** Each campus's own building search source, which is what decides its copy link's parameter names. */
+const galvestonSource = GalvestonConfiguration.searchSources?.[0];
+const mcallenSource = McAllenConfiguration.searchSources?.[0];
+const dcSource = DCBushSchoolConfiguration.searchSources?.[0];
 
 describe('building popup content', () => {
   it('every satellite campus declares its building fields', () => {
@@ -106,5 +111,72 @@ describe('building popup content', () => {
 
       expect(content).toEqual({ title: 'Higher Education Center', number: 'M001', address: undefined });
     });
+  });
+});
+
+/**
+ * The copy link on a campus building popup (#1481).
+ *
+ * It used to copy `?feature=galveston-buildings-layer:3`: unreadable, and keyed on an ArcGIS object
+ * id that is not stable across a republish of the service, so a link shared today could come to point
+ * at a different building. These run against each campus's real declaration, so a campus that stops
+ * declaring the parameters - and silently goes back to the old link - fails here.
+ */
+describe('building copy link', () => {
+  it('names a Galveston building by its number', () => {
+    const identity = buildingShareIdentity(
+      { number: '3004', bldgabbrev: '3004                ', bldgname: 'Mary Moody Northern Student Cent    ' },
+      galveston,
+      galvestonSource
+    );
+
+    expect(identity).toEqual({ param: 'bldg', value: '3004' });
+  });
+
+  it('falls back to the abbreviation, in its own parameter, when a building has no number', () => {
+    const identity = buildingShareIdentity({ number: '   ', bldgabbrev: 'OCNG' }, galveston, galvestonSource);
+
+    expect(identity).toEqual({ param: 'abbrv', value: 'OCNG' });
+  });
+
+  it('trims the padding the campus services return', () => {
+    // Galveston pads its text fields, which is why `buildingPopupContent` trims too. An untrimmed
+    // value would travel into the URL as `%20`s and match nothing when the link was opened.
+    expect(buildingShareIdentity({ number: '  1234  ' }, galveston, galvestonSource)).toEqual({
+      param: 'bldg',
+      value: '1234'
+    });
+  });
+
+  it('works the same way for McAllen and the DC Bush School, on their own field names', () => {
+    expect(buildingShareIdentity({ number: '12', abbrev: 'HEC' }, mcallen, mcallenSource)).toEqual({
+      param: 'bldg',
+      value: '12'
+    });
+
+    expect(buildingShareIdentity({ bldgabbr: 'BUSH' }, mcallen, mcallenSource)).toBeNull();
+
+    expect(buildingShareIdentity({ number: '1', bldgabbr: 'BUSH' }, dc, dcSource)).toEqual({
+      param: 'bldg',
+      value: '1'
+    });
+
+    expect(buildingShareIdentity({ bldgabbr: 'BUSH' }, dc, dcSource)).toEqual({ param: 'abbrv', value: 'BUSH' });
+  });
+
+  it('keeps the generic link for a building with neither a number nor an abbreviation', () => {
+    expect(buildingShareIdentity({ bldgname: 'Storage Shed' }, galveston, galvestonSource)).toBeNull();
+  });
+
+  it('keeps the generic link for a campus that declares no url parameter', () => {
+    expect(buildingShareIdentity({ number: '3004' }, galveston, { urlQueryParamAliases: ['abbrv'] })).toBeNull();
+    expect(buildingShareIdentity({ number: '3004' }, galveston, undefined)).toBeNull();
+  });
+
+  it('every satellite campus declares both parameter names, so every campus link is readable', () => {
+    for (const source of [galvestonSource, mcallenSource, dcSource]) {
+      expect(source?.urlQueryParam).toBe('bldg');
+      expect(source?.urlQueryParamAliases).toEqual(['abbrv']);
+    }
   });
 });
