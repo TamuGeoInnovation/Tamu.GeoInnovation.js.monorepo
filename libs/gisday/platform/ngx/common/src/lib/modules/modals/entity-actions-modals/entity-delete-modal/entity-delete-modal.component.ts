@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 
@@ -8,6 +8,7 @@ import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal
   selector: 'tamu-gisc-entity-delete-modal',
   templateUrl: './entity-delete-modal.component.html',
   styleUrls: ['./entity-delete-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EntityDeleteModalComponent implements OnInit {

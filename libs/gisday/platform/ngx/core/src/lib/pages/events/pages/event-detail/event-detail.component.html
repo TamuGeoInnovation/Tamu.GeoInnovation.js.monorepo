@@ -12,7 +12,7 @@
         <div id="timeAndPlace" class="trailer-1">
           <ng-container *ngIf="event?.day?.date; else noTime">
             <p>
-              <span>{{event?.day?.date | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ event?.day?.date| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</span>
+              <span>{{$safeNavigationMigration(event?.day?.date) | parseDateTimeStrings : event.startTime | date:'MMM d, y, h:mm a'}} - {{ $safeNavigationMigration(event?.day?.date)| parseDateTimeStrings : event.endTime | date:'h:mm a'}}</span>
               <span *ngIf="event?.mode" class="event-type"> - {{event.mode}}</span>
             </p>
           </ng-container>

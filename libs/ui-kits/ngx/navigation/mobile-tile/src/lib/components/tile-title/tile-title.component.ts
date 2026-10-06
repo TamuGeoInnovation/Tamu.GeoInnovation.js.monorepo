@@ -1,9 +1,10 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-tile-title',
   templateUrl: './tile-title.component.html',
   styleUrls: ['./tile-title.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TileTitleComponent implements OnInit {

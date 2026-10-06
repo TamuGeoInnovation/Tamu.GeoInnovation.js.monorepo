@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
@@ -7,6 +7,7 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 @Component({
   selector: 'tamu-gisc-base-admin-view',
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export abstract class BaseAdminViewComponent<T> implements IBaseAdminViewComponent, OnDestroy {

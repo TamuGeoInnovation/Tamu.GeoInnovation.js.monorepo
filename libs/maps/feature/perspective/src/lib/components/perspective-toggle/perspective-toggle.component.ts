@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, HostListener, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { forkJoin, map, Observable, take } from 'rxjs';
 
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -10,6 +10,7 @@ import esri = __esri;
   selector: 'tamu-gisc-perspective-toggle',
   templateUrl: './perspective-toggle.component.html',
   styleUrls: ['./perspective-toggle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PerspectiveToggleComponent implements OnInit {

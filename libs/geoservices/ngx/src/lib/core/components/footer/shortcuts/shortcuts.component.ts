@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -6,6 +6,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   selector: 'tamu-gisc-footer-shortcuts',
   templateUrl: './shortcuts.component.html',
   styleUrls: ['./shortcuts.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FooterShortcutsComponent {

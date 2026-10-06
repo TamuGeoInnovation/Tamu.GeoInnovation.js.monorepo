@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
@@ -8,6 +8,7 @@ import { v4 as guid } from 'uuid';
   selector: 'tamu-gisc-copy-field',
   templateUrl: './copy.component.html',
   styleUrls: ['./copy.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CopyComponent {

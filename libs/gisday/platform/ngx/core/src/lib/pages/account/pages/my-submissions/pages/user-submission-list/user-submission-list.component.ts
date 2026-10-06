@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 
 import { Submission } from '@tamu-gisc/gisday/platform/data-api';
@@ -9,6 +9,7 @@ import { SUBMISSION_REVIEW_STATUS } from '@tamu-gisc/gisday/platform/ngx/common'
   selector: 'tamu-gisc-user-submission-list',
   templateUrl: './user-submission-list.component.html',
   styleUrls: ['./user-submission-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class UserSubmissionListComponent implements OnInit {

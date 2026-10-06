@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subject, forkJoin, interval, Observable, ReplaySubject, from, combineLatest } from 'rxjs';
 import {
@@ -29,6 +29,7 @@ import esri = __esri;
   selector: 'tamu-gisc-participant',
   templateUrl: './participant.component.html',
   styleUrls: ['./participant.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParticipantComponent implements OnInit, OnDestroy {

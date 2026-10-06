@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subject, Observable } from 'rxjs';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged, take, filter } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { AccordionComponent } from '@tamu-gisc/ui-kits/ngx/layout';
   selector: 'tamu-gisc-bus-route',
   templateUrl: './bus-route.component.html',
   styleUrls: ['./bus-route.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BusRouteComponent implements OnInit, AfterViewInit, OnDestroy {

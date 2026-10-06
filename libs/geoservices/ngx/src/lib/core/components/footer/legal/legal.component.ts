@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-footer-legal',
   templateUrl: './legal.component.html',
   styleUrls: ['./legal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FooterLegalComponent implements OnInit {

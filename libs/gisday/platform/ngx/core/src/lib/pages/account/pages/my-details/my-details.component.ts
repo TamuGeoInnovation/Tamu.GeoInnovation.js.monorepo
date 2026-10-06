@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Observable, Subject, map, shareReplay, startWith, switchMap, take } from 'rxjs';
 
@@ -48,6 +48,7 @@ const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key
   selector: 'tamu-gisc-my-details',
   templateUrl: './my-details.component.html',
   styleUrls: ['./my-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MyDetailsComponent implements OnInit {

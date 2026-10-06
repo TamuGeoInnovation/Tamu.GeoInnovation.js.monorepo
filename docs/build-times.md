@@ -35,6 +35,11 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, Angular 22 after its fixes (246 tasks, 0 failed) | volume, warm cache | **3 min 38 s** |
+| 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, run 3 (18 lint failed: rules still on in 15 projects) | volume | 3 min 36 s |
+| 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, first run to reach the tasks (77 failed: 74 lint, 3 build; 0 test) | volume, Nx cache cold | **3 min 1 s** |
+| 6 Oct 2026 | home | `nx migrate --run-migrations`, Angular 22 (47 migrations, 1,037 files) | volume, machine otherwise idle | **28 min 50 s** |
+| 6 Oct 2026 | home | `nx migrate 23.2.1` | volume | 46 s |
 | 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, Angular 21 after its fixes (246 tasks, 0 failed) | volume, warm cache | **3 min 5 s** |
 | 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, run 4 (3 failed: lightgallery under Jest 30) | volume | 4 min 11 s |
 | 5 Oct 2026 | home | `check-in-volume.sh chore/1456-angular-21 all`, run 2 (24 failed: a fix script's own mistake) | volume | 5 min 1 s |
@@ -72,6 +77,10 @@ same output appears when the graph fails to compute. Read the log, not the exit 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 6 Oct 2026 | home | `npm ci` after the Angular 22 migrations (lock unchanged) | clean, from only `package.json` and the lock | 51 s |
+| 6 Oct 2026 | home | `npm ci`, Angular 22 install proof | clean, from only `package.json` and the lock | 48 s |
+| 6 Oct 2026 | home | `npm install`, Angular 22's new versions | into the `tamu-js-ng22` Docker volume | **53 s** |
+| 6 Oct 2026 | home | `npm ci`, Angular 21 baseline before the Angular 22 migrate | volume | 1 min 4 s |
 | 5 Oct 2026 | home | `npm ci` into the new `tamu-js-1456` volume, Angular 21 | check script, clean volume | 1 min 42 s |
 | 5 Oct 2026 | home | `npm ci` after the Angular 21 migrations (lock unchanged) | clean, from only `package.json` and the lock | 1 min 35 s |
 | 5 Oct 2026 | home | `npm ci`, Angular 21 install proof | clean, from only `package.json` and the lock | 47 s |
@@ -205,10 +214,14 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 6 Oct 2026 | home | dev, Angular 21 (`4d7f1d7a`), **#1426 release scope**, 6 workers, 06:51:57 to 07:14:41 Central | 404 passed, 3 failed (Men's Basketball, #1431), 0 flaky, 14 skipped, of 421 | **22 min 44 s** |
 | 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; **#1426 branch**, framing only, the 70 release routes, 2 workers, 3:29 to 3:37 AM Central | 62 passed, 1 failed (#1431), 7 skipped; 9.9 s per passing test | **7.7 min** |
 | 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; **`development`**, framing only, the same 70 routes, 2 workers, 3:18 to 3:29 AM Central | 62 passed, 1 failed (#1431), 7 skipped; 17.0 s per passing test | **11.3 min** |
 | 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; #1426 branch, release scope, **4 workers**, 2:40 to 3:17 AM Central; CPU load median 21 | 421 tests: 399 passed, 3 failed (#1431), 5 flaky, 14 skipped | 37 min |
 | 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; #1426 branch, release scope, **6 workers**, 2:03 to 2:39 AM Central | 421 tests: 395 passed, 4 failed (3 #1431, 1 load), 8 flaky, 14 skipped | 35 min |
+| 5-6 Oct 2026 | cloud | dev, Angular 21 (`4d7f1d7a`), full suite as on `development`, 2 workers, 23:58 to 01:56 Central | 748 passed, 3 failed (#1431, also on production), 5 flaky, 15 skipped, of 771 | **1 h 58 min** |
+| 5 Oct 2026 | home | dev, Angular 20 (`ea4d52e0`; `045f1faf` from about 23:00), 22:10:54 to 23:41:23 Central, 2 workers. **Stopped** when Angular 21 was about to replace it on dev | 582 passed, 5 failed of 770 (2 development-only, fixed by #1461; 2 Men's Basketball, #1431; 1 move-in, during a release swap). 164 min of test time; framing 113 min of it (#1426) | stopped at **1 h 31 min** |
+| 5 Oct 2026 | GitHub | production, run 37399982131, 20:36 to 21:53 Central | 712 passed, 3 failed (Men's Basketball, #1431), 1 flaky, 23 skipped | **1 h 17 min** |
 | 5 Oct 2026 | home | dev, build 20261005.6 | 743 passed, 0 failed, 14 skipped | ~1.3 h |
 | 5 Oct 2026 | home | dev, build 20261004.44 | 743 passed, 0 failed, 14 skipped | ~1.9 h |
 | 5 Oct 2026 | office | dev, build 20261005.12 on `7e1aa0fc` | 743 passed, 0 failed, 14 skipped, 0 flaky | **1 h 36 min** |

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { ReplaySubject } from 'rxjs';
@@ -9,6 +9,7 @@ import { DatabaseService } from '@tamu-gisc/geoservices/data-access';
   selector: 'tamu-gisc-upload',
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class UploadComponent implements OnInit {

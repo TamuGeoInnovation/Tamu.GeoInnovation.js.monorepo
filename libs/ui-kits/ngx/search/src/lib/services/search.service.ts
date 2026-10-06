@@ -302,7 +302,7 @@ export class SearchService {
    * Downstream feature extraction (`r[featuresLocation] ? ... : []`) treats the empty object as a
    * no-results response for that source.
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
   private _safeRequest(url: string, sourceLabel: string): Observable<Object> {
     return this.http.get(url).pipe(
       map((response) => {

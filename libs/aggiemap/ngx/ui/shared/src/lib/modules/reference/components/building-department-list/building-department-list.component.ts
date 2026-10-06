@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -13,6 +13,7 @@ const searchReference = 'university-departments-exact';
   templateUrl: './building-department-list.component.html',
   styleUrls: ['./building-department-list.component.scss'],
   providers: [SearchService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BuildingDepartmentListComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Observable, shareReplay, map } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
   selector: 'tamu-gisc-people-view',
   templateUrl: './people-view.component.html',
   styleUrls: ['./people-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PeopleViewComponent implements OnInit {

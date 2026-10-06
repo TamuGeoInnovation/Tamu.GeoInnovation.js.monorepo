@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/geoprocessing-v5';
 
@@ -6,6 +6,7 @@ import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/ge
   selector: 'tamu-gisc-address-processing',
   templateUrl: './address-processing.component.html',
   styleUrls: ['./address-processing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AddressProcessingComponent {

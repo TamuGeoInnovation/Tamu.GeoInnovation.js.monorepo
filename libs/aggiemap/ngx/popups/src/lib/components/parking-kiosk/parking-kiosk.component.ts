@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
@@ -12,6 +12,7 @@ import { BaseDirectionsComponent } from '../base-directions/base-directions.comp
   selector: 'tamu-gisc-parking-kiosk-popup-component',
   templateUrl: './parking-kiosk.component.html',
   styleUrls: ['../base/base.popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParkingKioskPopupComponent extends BaseDirectionsComponent {

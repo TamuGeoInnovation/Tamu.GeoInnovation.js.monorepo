@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/application-testing"],
       "options": {
         "jestConfig": "libs/dev-tools/application-testing/jest.config.ts",
         "tsConfig": "libs/dev-tools/application-testing/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/dev-tools/application-testing"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

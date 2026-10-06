@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -16,6 +16,6 @@ import { CodeMaroonAlertComponent } from './code-maroon-alert.component';
   declarations: [CodeMaroonAlertComponent],
   exports: [CodeMaroonAlertComponent],
   imports: [CommonModule, RouterModule, UIFormsModule, TestingModule],
-  providers: [provideHttpClient(withInterceptorsFromDi())]
+  providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
 })
 export class CodeMaroonAlertModule {}

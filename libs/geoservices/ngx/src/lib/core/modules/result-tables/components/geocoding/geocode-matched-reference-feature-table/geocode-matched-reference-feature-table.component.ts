@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 
 import { GeocodeReferenceFeatureField, IGeocodeReferenceFeature } from '@tamu-gisc/geoprocessing-v5';
@@ -10,6 +10,7 @@ import { GeocodeReferenceFeatureLabel } from '../../../../../util/dictionaries';
   selector: 'tamu-gisc-geocode-matched-reference-feature-table',
   templateUrl: './geocode-matched-reference-feature-table.component.html',
   styleUrls: ['./geocode-matched-reference-feature-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GeocodeMatchedReferenceFeatureTableComponent implements OnInit {

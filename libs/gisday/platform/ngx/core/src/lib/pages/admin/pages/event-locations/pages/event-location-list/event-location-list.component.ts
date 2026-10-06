@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocationService, SeasonService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -12,6 +12,7 @@ import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list
   selector: 'tamu-gisc-event-location-list',
   templateUrl: './event-location-list.component.html',
   styleUrls: ['./event-location-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EventLocationListComponent extends BaseAdminListComponent<EventLocation> {

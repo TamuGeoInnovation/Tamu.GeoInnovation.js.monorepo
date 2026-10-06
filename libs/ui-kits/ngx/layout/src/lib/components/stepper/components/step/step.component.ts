@@ -1,4 +1,4 @@
-import { Component, ContentChild } from '@angular/core';
+import { Component, ContentChild, ChangeDetectionStrategy } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from '../../../../abstracts/abstract-content-swap/abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 import { StepperToggleDirective } from '../../directives/stepper-toggle.directive';
@@ -7,6 +7,7 @@ import { StepperToggleDirective } from '../../directives/stepper-toggle.directiv
   selector: 'tamu-gisc-step',
   templateUrl: './step.component.html',
   styleUrls: ['./step.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class StepComponent extends AbstractContentReplacerToggleComponent {

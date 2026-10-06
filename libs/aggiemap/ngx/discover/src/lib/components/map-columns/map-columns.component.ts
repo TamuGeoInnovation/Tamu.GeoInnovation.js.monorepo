@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
 import { MapColumnGroup } from '../discover.utils';
@@ -7,6 +7,7 @@ import { MapColumnGroup } from '../discover.utils';
   selector: 'tamu-gisc-aggiemap-map-columns',
   templateUrl: './map-columns.component.html',
   styleUrls: ['./map-columns.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapColumnsComponent {

@@ -125,7 +125,12 @@
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tile": ["libs/ui-kits/ngx/navigation/mobile-tile/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/triggers": ["libs/ui-kits/ngx/navigation/triggers/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/search": ["libs/ui-kits/ngx/search/src/index.ts"]
-    }
+    },
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "tmp"]
 }

@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, mergeMap, startWith, tap, toArray } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { PlaceVisibilityOptions } from '../../enums/place-visibility-options.enu
   selector: 'tamu-gisc-app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HeaderComponent implements OnInit {

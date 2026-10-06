@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { AuthService } from '@tamu-gisc/gisday/competitions/ngx/common';
 
@@ -6,6 +6,7 @@ import { AuthService } from '@tamu-gisc/gisday/competitions/ngx/common';
   selector: 'tamu-gisc-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LoginComponent {

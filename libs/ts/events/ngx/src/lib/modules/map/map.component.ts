@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, ReplaySubject, Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -43,6 +43,7 @@ const EVENT_PASSED_GRACE_DAYS = 1;
     TripPlannerService,
     BasemapGalleryService
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {
@@ -117,7 +118,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this._connections = this.env.value?.('Connections') ?? {};
     this.isDev = this.ts.get?.('isTesting') ?? of(false);
 
-
     // Whether this map's event is over: every one of its dates has fully ended, in local time. Shared
     // with the rest of AggieMap through `eventHasPassed`; reading `'2026-10-02'` as UTC midnight here
     // called the 150th Opening Ceremony over on the evening of 1 October (#1298).
@@ -178,12 +178,12 @@ export class MapComponent implements OnInit, OnDestroy {
       basemap: basemapIdFromUrl
         ? basemapIdFromUrl
         : isSatelliteCampus
-        ? 'topo-vector'
-        : settings && settings.basemap
-        ? settings.basemap && settings.basemap !== 'aggie_basemap'
-          ? settings.basemap
-          : aggiemapBasemap(this.ts.isTesting)
-        : 'topo-vector'
+          ? 'topo-vector'
+          : settings && settings.basemap
+            ? settings.basemap && settings.basemap !== 'aggie_basemap'
+              ? settings.basemap
+              : aggiemapBasemap(this.ts.isTesting)
+            : 'topo-vector'
     };
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {

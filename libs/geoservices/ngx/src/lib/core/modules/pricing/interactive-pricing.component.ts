@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
@@ -11,6 +11,7 @@ import { RangeInputDataMap } from '@tamu-gisc/ui-kits/ngx/forms';
   selector: 'tamu-gisc-interactive-pricing',
   templateUrl: './interactive-pricing.component.html',
   styleUrls: ['./interactive-pricing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class InteractivePricingComponent implements OnInit {

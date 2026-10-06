@@ -1,4 +1,4 @@
-import { Component, ContentChildren, AfterContentInit, QueryList, OnDestroy } from '@angular/core';
+import { Component, ContentChildren, AfterContentInit, QueryList, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { from, Subject } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { SidebarTabComponent } from '../tab/tab.component';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
   animations: [slide],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SidebarComponent extends AbstractSlidingDrawerComponent implements AfterContentInit, OnDestroy {

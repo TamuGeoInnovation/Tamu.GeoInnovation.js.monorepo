@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SidebarReferenceComponent as AggiemapSidebarReferenceComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 
 import esri = __esri;
@@ -7,6 +7,7 @@ import esri = __esri;
   selector: 'tamu-gisc-sidebar-reference',
   templateUrl: './sidebar-reference.component.html',
   styleUrls: ['./sidebar-reference.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SidebarReferenceComponent<T extends esri.Graphic> extends AggiemapSidebarReferenceComponent<T> {}

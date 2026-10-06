@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { interval, Observable } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'tamu-gisc-session-expired',
   templateUrl: './session-expired.component.html',
   styleUrls: ['./session-expired.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SessionExpiredComponent {

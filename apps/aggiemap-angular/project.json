@@ -9,6 +9,40 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "",
+      "options": {
+        "index": "apps/aggiemap-angular/src/index.html",
+        "outputPath": {
+          "base": "dist/apps/aggiemap-angular",
+          "browser": ""
+        },
+        "polyfills": ["apps/aggiemap-angular/src/polyfills.ts"],
+        "tsConfig": "apps/aggiemap-angular/tsconfig.app.json",
+        "assets": [
+          "apps/aggiemap-angular/src/favicon.ico",
+          "apps/aggiemap-angular/src/assets",
+          "apps/aggiemap-angular/src/Dockerfile",
+          "apps/aggiemap-angular/src/.dockerignore",
+          "apps/aggiemap-angular/src/.nginx",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "scripts": [],
+        "styles": ["apps/aggiemap-angular/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["."]
+        },
+        "aot": false,
+        "extractLicenses": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true,
+        "browser": "apps/aggiemap-angular/src/main.ts"
+      },
       "configurations": {
         "production": {
           "outputHashing": "all",
@@ -73,41 +107,7 @@
           "optimization": true,
           "sourceMap": false
         }
-      },
-      "options": {
-        "index": "apps/aggiemap-angular/src/index.html",
-        "outputPath": {
-          "base": "dist/apps/aggiemap-angular",
-          "browser": ""
-        },
-        "polyfills": ["apps/aggiemap-angular/src/polyfills.ts"],
-        "tsConfig": "apps/aggiemap-angular/tsconfig.app.json",
-        "assets": [
-          "apps/aggiemap-angular/src/favicon.ico",
-          "apps/aggiemap-angular/src/assets",
-          "apps/aggiemap-angular/src/Dockerfile",
-          "apps/aggiemap-angular/src/.dockerignore",
-          "apps/aggiemap-angular/src/.nginx",
-          {
-            "glob": "**/*",
-            "input": "./libs/assets/",
-            "output": "./assets"
-          }
-        ],
-        "scripts": [],
-        "styles": ["apps/aggiemap-angular/src/styles.scss"],
-        "stylePreprocessorOptions": {
-          "includePaths": ["."]
-        },
-        "aot": false,
-        "extractLicenses": false,
-        "sourceMap": true,
-        "optimization": false,
-        "namedChunks": true,
-        "browser": "apps/aggiemap-angular/src/main.ts"
-      },
-      "outputs": ["{options.outputPath.base}"],
-      "defaultConfiguration": ""
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -116,7 +116,7 @@
       }
     },
     "image-build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           {
@@ -128,6 +128,12 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "continuous": true,
+      "options": {
+        "host": "0.0.0.0",
+        "proxyConfig": "apps/aggiemap-angular/proxy.conf.json",
+        "buildTarget": "aggiemap-angular:build"
+      },
       "configurations": {
         "production": {
           "buildTarget": "aggiemap-angular:build:production"
@@ -135,21 +141,15 @@
         "development": {
           "buildTarget": "aggiemap-angular:build:development"
         }
-      },
-      "options": {
-        "host": "0.0.0.0",
-        "proxyConfig": "apps/aggiemap-angular/proxy.conf.json",
-        "buildTarget": "aggiemap-angular:build"
-      },
-      "continuous": true
+      }
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/aggiemap-angular"],
       "options": {
         "jestConfig": "apps/aggiemap-angular/jest.config.ts",
         "tsConfig": "apps/aggiemap-angular/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/apps/aggiemap-angular"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

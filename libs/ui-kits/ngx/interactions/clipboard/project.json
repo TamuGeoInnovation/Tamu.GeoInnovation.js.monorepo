@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/clipboard"],
       "options": {
         "jestConfig": "libs/ui-kits/ngx/interactions/clipboard/jest.config.ts",
         "tsConfig": "libs/ui-kits/ngx/interactions/clipboard/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/clipboard"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

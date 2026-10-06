@@ -7,7 +7,8 @@ import {
   OnInit,
   Type,
   ViewChild,
-  ViewContainerRef
+  ViewContainerRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
@@ -19,6 +20,7 @@ import { ModalRefService } from '../../services/modal-ref/modal-ref.service';
   templateUrl: './modal-host.component.html',
   styleUrls: ['./modal-host.component.scss'],
   providers: [ModalRefService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ModalHostComponent implements OnInit, OnDestroy {

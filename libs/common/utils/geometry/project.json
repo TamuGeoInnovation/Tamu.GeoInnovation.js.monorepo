@@ -7,10 +7,10 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/common/utils/geometry"],
       "options": {
         "jestConfig": "libs/common/utils/geometry/jest.config.ts"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/common/utils/geometry"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

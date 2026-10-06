@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
 
@@ -30,7 +30,7 @@ WebFont.load({
       provide: env,
       useValue: environment
     },
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withXhr(), withInterceptorsFromDi())
   ]
 })
 export class RoutingModule {}

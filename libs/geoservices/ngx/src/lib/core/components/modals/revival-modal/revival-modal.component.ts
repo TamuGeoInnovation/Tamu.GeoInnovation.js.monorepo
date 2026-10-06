@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
@@ -7,6 +7,7 @@ import { ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
   selector: 'tamu-gisc-revival-modal',
   templateUrl: './revival-modal.component.html',
   styleUrls: ['./revival-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class RevivalModalComponent {

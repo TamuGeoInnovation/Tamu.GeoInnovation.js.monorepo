@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { DateTimePickerChange } from '@tamu-gisc/ui-kits/ngx/forms';
 
@@ -8,6 +8,7 @@ import { SeasonDay } from '@tamu-gisc/gisday/platform/data-api';
   selector: 'tamu-gisc-seasons-day-tile',
   templateUrl: './seasons-day-tile.component.html',
   styleUrls: ['./seasons-day-tile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SeasonsDayTileComponent {

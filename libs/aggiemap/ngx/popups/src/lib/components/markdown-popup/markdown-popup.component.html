@@ -5,9 +5,9 @@
 @if (data?.attributes?.description || (data?.attributes?.Notes && isContentTheSame === false)) {
 <div class="popup-section">
   @if (data?.attributes?.description) {
-  <p class="trailer-1" [innerHTML]="data.attributes?.description"></p>
+  <p class="trailer-1" [innerHTML]="$safeNavigationMigration(data.attributes?.description)"></p>
   } @if (data?.attributes?.Notes && isContentTheSame === false) {
-  <p class="trailer-1" [innerHTML]="data.attributes?.Notes"></p>
+  <p class="trailer-1" [innerHTML]="$safeNavigationMigration(data.attributes?.Notes)"></p>
   }
 </div>
 }

@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -12,6 +12,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       multi: true
     }
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FileComponent implements ControlValueAccessor {

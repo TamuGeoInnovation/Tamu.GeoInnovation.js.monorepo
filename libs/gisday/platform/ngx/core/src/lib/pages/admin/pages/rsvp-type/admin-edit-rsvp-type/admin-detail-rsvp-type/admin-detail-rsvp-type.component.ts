@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -12,6 +12,7 @@ import { formExporter } from '../../admin-add-rsvp-type/admin-add-rsvp-type.comp
   selector: 'tamu-gisc-admin-detail-rsvp-type',
   templateUrl: './admin-detail-rsvp-type.component.html',
   styleUrls: ['./admin-detail-rsvp-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AdminDetailRsvpTypeComponent extends BaseAdminDetailComponent<RsvpType> implements OnInit {

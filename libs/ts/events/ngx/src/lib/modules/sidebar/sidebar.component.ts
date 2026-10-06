@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
@@ -10,6 +10,7 @@ import { EventSettingsService } from '../../services/settings/event-settings.ser
   selector: 'tamu-gisc-movein-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MoveInOutSidebarComponent implements OnInit {

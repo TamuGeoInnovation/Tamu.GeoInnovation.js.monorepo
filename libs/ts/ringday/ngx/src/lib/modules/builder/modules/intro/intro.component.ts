@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -7,6 +7,7 @@ import { Angulartics2 } from 'angulartics2';
   selector: 'tamu-gisc-intro',
   templateUrl: './intro.component.html',
   styleUrls: ['./intro.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class IntroComponent {

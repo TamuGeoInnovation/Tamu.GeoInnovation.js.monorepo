@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { catchError, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import esri = __esri;
   selector: 'tamu-gisc-design-form',
   templateUrl: './design-form.component.html',
   styleUrls: ['./design-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DesignFormComponent implements OnInit {

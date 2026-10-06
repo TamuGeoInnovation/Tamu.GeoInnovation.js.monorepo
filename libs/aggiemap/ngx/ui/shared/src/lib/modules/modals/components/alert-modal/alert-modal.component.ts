@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
@@ -14,6 +14,7 @@ export interface AlertModalData {
   selector: 'tamu-gisc-alert-modal',
   templateUrl: './alert-modal.component.html',
   styleUrls: ['./alert-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AlertModalComponent {

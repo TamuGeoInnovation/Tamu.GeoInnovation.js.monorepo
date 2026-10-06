@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { EnvironmentService, ReleaseMetadata } from '@tamu-gisc/common/ngx/environment';
 
@@ -6,6 +6,7 @@ import { EnvironmentService, ReleaseMetadata } from '@tamu-gisc/common/ngx/envir
   selector: 'tamu-gisc-release-info',
   templateUrl: './release-info.component.html',
   styleUrls: ['./release-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReleaseInfoComponent implements OnInit {

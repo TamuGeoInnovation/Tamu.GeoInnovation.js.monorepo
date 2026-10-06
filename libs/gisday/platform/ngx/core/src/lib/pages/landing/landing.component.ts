@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
   distinctUntilChanged,
@@ -38,6 +38,7 @@ const numberDictionary = {
   selector: 'tamu-gisc-landing',
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class LandingComponent implements OnInit {

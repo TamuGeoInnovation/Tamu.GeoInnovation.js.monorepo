@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, combineLatest, map, shareReplay, withLatestFrom } from 'rxjs';
 
 import { SeasonDay, SimplifiedEvent } from '@tamu-gisc/gisday/platform/data-api';
@@ -8,6 +17,7 @@ import { SeasonDayService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   selector: 'tamu-gisc-season-day-card',
   templateUrl: './season-day-card.component.html',
   styleUrls: ['./season-day-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SeasonDayCardComponent implements OnInit, OnChanges {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { Subject } from 'rxjs';
@@ -9,6 +9,7 @@ import { ClipboardCopyDirective } from './copy.directive';
   template: `
     <div clipboard-copy [text]="'text to copy'" (err)="copyEvent.next($event)" (copying)="copyEvent.next($event)"></div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class MockCopyDirectiveComponent {

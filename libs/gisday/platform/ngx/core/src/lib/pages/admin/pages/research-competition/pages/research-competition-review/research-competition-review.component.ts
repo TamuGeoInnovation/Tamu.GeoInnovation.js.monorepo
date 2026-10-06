@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, shareReplay, switchMap } from 'rxjs';
@@ -11,6 +11,7 @@ import { SeasonService, UserSubmissionsService } from '@tamu-gisc/gisday/platfor
   selector: 'tamu-gisc-research-competition-review',
   templateUrl: './research-competition-review.component.html',
   styleUrls: ['./research-competition-review.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ResearchCompetitionReviewComponent implements OnInit {

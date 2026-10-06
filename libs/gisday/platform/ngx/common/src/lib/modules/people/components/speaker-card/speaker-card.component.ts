@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -6,6 +6,7 @@ import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
   selector: 'tamu-gisc-speaker-card',
   templateUrl: './speaker-card.component.html',
   styleUrls: ['./speaker-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SpeakerCardComponent implements OnInit {

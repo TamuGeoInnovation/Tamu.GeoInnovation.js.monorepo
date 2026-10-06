@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -14,6 +14,7 @@ import { formToFormData } from '../../../../../utils/form-to-form-data';
   selector: 'tamu-gisc-organization-add-edit-form',
   templateUrl: './organization-add-edit-form.component.html',
   styleUrls: ['./organization-add-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class OrganizationAddEditFormComponent implements OnInit {

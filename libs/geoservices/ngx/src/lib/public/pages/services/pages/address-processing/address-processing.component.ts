@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { AddressProcessing, AddressProcessingAddressFormat } from '@tamu-gisc/geoprocessing-v5';
@@ -8,6 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   selector: 'tamu-gisc-address-processing',
   templateUrl: './address-processing.component.html',
   styleUrls: ['./address-processing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AddressProcessingComponent implements OnInit {

@@ -11,7 +11,7 @@
 <div class="popup-section"></div>
 
 <div class="popup-section">
-  <div [innerHTML]="data?.attributes?.description | markdownParse" class="trailer-2"></div>
+  <div [innerHTML]="$safeNavigationMigration(data?.attributes?.description) | markdownParse" class="trailer-2"></div>
 
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 

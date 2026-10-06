@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -10,6 +10,7 @@ import { WorkshopService } from '@tamu-gisc/cpa/ngx/data-access';
   selector: 'tamu-gisc-workshops-list',
   templateUrl: './workshops-list.component.html',
   styleUrls: ['./workshops-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class WorkshopsListComponent implements OnInit {

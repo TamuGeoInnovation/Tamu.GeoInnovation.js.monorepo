@@ -7,7 +7,8 @@ import {
   ContentChild,
   AfterContentInit,
   OnDestroy,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { TooltipTriggerComponent } from './components/tooltip-trigger/tooltip-trigger.component';
 import { debounceTime, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -17,6 +18,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
   selector: 'tamu-gisc-tooltip',
   templateUrl: './tooltip.component.html',
   styleUrls: ['./tooltip.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { pluck, map } from 'rxjs/operators';
 
@@ -11,6 +11,7 @@ import { TripPlannerModePickerComponent } from '../base/base.component';
   selector: 'tamu-gisc-trip-planner-mode-picker-mobile',
   templateUrl: './mobile.component.html',
   styleUrls: ['../base/base.component.scss', './mobile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerComponent implements OnInit, OnDestroy {

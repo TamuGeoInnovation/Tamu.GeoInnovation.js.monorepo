@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, Optional } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -24,6 +24,7 @@ import { Notification } from '../../helpers/notification.helper';
   selector: 'tamu-gisc-notification-grouped',
   templateUrl: './notification-grouped.component.html',
   styleUrls: ['./notification-grouped.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class NotificationGroupedComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-<div [title]="name" [attr.alt]="label" type="domElement" [ngClass]="{ active: active | async, error: (status | async)?.isError, disabled: (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" (click)="setTravelMode()" tabindex="0">
+<div [title]="name" [attr.alt]="label" type="domElement" [ngClass]="{ active: active | async, error: $safeNavigationMigration((status | async)?.isError), disabled: (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" (click)="setTravelMode()" tabindex="0">
   <i class="material-icons">{{ iconName }}</i>
 
   <!-- If trip result error, show ETA placeholder and apply error class. -->
@@ -13,6 +13,6 @@
 
   <!-- If trip result was successful and directions exist, display ETA. -->
   @if ((status | async)?.isFulfilled && (status | async)?.directions?.totalTime) {
-  <span class="eta">{{ (status | async)?.directions?.totalDriveTime | timeUntil }}</span>
+  <span class="eta">{{ $safeNavigationMigration((status | async)?.directions?.totalDriveTime) | timeUntil }}</span>
   }
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 import { ReverseGeocode } from '@tamu-gisc/geoprocessing-v5';
@@ -8,6 +8,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   selector: 'tamu-gisc-reverse-geocoding',
   templateUrl: './reverse-geocoding.component.html',
   styleUrls: ['./reverse-geocoding.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReverseGeocodingComponent implements OnInit {

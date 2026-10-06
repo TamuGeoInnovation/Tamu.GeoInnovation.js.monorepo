@@ -1,4 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  HostBinding,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 
@@ -25,6 +34,7 @@ import { Notification } from '../../helpers/notification.helper';
       transition('* => *', [animate('250ms 0ms cubic-bezier(.25, 0, .25, 1.0)')])
     ])
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class NotificationItemComponent implements OnInit, OnDestroy {

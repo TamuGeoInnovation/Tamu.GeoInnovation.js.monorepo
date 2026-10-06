@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, AfterContentInit } from '@angular/core';
+import { Component, ElementRef, Input, AfterContentInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { AccordionService } from './services/accordion.service';
 
@@ -7,6 +7,7 @@ import { AccordionService } from './services/accordion.service';
   templateUrl: './accordion.component.html',
   styleUrls: ['./accordion.component.scss'],
   providers: [AccordionService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AccordionComponent implements AfterContentInit {

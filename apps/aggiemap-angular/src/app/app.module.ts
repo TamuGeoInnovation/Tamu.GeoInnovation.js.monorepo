@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import { Angulartics2Module } from 'angulartics2';
 
@@ -54,7 +54,7 @@ WebFont.load({
     // Supplies the bus map's stop/route popup at the application root (BusService lives in a low-level
     // lib and cannot import the popup component directly — see BUS_STOP_POPUP_COMPONENT).
     { provide: BUS_STOP_POPUP_COMPONENT, useValue: BusStopPopupComponent },
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withXhr(), withInterceptorsFromDi())
   ]
 })
 export class AppModule {}

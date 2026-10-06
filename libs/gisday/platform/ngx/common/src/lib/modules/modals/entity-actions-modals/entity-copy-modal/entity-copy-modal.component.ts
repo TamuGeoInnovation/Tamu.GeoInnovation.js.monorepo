@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { map, merge, Observable, shareReplay, Subject, take, withLatestFrom } from 'rxjs';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -9,6 +9,7 @@ import { MODAL_DATA, ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal
   selector: 'tamu-gisc-entity-copy-modal',
   templateUrl: './entity-copy-modal.component.html',
   styleUrls: ['./entity-copy-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class EntityCopyModalComponent implements OnInit {

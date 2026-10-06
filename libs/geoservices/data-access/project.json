@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-access"],
       "options": {
         "jestConfig": "libs/geoservices/data-access/jest.config.ts",
         "tsConfig": "libs/geoservices/data-access/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/geoservices/data-access"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

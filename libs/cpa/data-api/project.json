@@ -10,10 +10,10 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/cpa/data-api"],
       "options": {
         "jestConfig": "libs/cpa/data-api/jest.config.ts"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/cpa/data-api"]
+      }
     }
   }
 }

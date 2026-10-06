@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { BasePopupComponent } from '../base/base.popup.component';
 
@@ -6,6 +6,7 @@ import { BasePopupComponent } from '../base/base.popup.component';
   selector: 'tamu-gisc-markdown-popup',
   templateUrl: './markdown-popup.component.html',
   styleUrls: ['./markdown-popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MarkdownPopupComponent extends BasePopupComponent implements OnInit {

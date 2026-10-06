@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 
@@ -8,6 +8,7 @@ import { AccountSecurityService, ISecretQuestion } from '@tamu-gisc/geoservices/
   selector: 'tamu-gisc-security',
   templateUrl: './security.component.html',
   styleUrls: ['./security.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SecurityComponent implements OnInit {

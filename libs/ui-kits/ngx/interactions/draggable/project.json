@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/draggable"],
       "options": {
         "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.ts",
         "tsConfig": "libs/ui-kits/ngx/interactions/draggable/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/interactions/draggable"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"

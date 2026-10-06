@@ -1,9 +1,10 @@
-import { Component, HostListener, EventEmitter, Input } from '@angular/core';
+import { Component, HostListener, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-tooltip-trigger',
   templateUrl: './tooltip-trigger.component.html',
   styleUrls: ['./tooltip-trigger.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TooltipTriggerComponent {

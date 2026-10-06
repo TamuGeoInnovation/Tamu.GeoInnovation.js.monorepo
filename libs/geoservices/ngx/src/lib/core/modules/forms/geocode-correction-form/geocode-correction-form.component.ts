@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
@@ -10,6 +10,7 @@ import { ContactService } from '@tamu-gisc/geoservices/data-access';
   selector: 'tamu-gisc-geocode-correction-form',
   templateUrl: './geocode-correction-form.component.html',
   styleUrls: ['./geocode-correction-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class GeocodeCorrectionFormComponent implements OnInit {

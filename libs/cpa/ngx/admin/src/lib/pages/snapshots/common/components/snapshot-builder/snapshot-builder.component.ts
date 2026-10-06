@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormArray } from '@angular/forms';
 import { forkJoin, fromEventPattern, Observable, Subject, merge } from 'rxjs';
@@ -17,6 +17,7 @@ import esri = __esri;
   templateUrl: './snapshot-builder.component.html',
   styleUrls: ['./snapshot-builder.component.scss'],
   providers: [EsriMapService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SnapshotBuilderComponent implements OnInit, OnDestroy {

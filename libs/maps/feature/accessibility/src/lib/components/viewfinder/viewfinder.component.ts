@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, ChangeDetectionStrategy } from '@angular/core';
 import { fromEventPattern, Observable, Subject } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
@@ -12,6 +12,7 @@ import esri = __esri;
   selector: 'tamu-gisc-map-viewfinder',
   templateUrl: './viewfinder.component.html',
   styleUrls: ['./viewfinder.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MapViewfinderComponent implements OnInit, OnDestroy {

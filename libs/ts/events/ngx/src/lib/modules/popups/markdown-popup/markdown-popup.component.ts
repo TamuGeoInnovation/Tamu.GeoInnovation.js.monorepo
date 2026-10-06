@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -13,6 +13,7 @@ import { BaseEventPopupComponent } from '../base-event-popup/base-event-popup.co
   selector: 'tamu-gisc-markdown-popup',
   templateUrl: './markdown-popup.component.html',
   styleUrls: ['./markdown-popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MarkdownPopupComponent extends BaseEventPopupComponent implements OnInit {

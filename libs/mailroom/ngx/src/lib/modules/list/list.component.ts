@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
@@ -14,6 +14,7 @@ import { DeleteEmailModalComponent } from './modal/delete-email-modal.component'
   selector: 'tamu-gisc-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ListComponent implements OnInit {

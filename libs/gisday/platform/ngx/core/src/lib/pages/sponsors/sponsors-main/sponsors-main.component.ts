@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, filter, mergeMap, pipe, shareReplay, toArray } from 'rxjs';
 
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
@@ -8,6 +8,7 @@ import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   selector: 'tamu-gisc-sponsors-main',
   templateUrl: './sponsors-main.component.html',
   styleUrls: ['./sponsors-main.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SponsorsMainComponent implements OnInit {

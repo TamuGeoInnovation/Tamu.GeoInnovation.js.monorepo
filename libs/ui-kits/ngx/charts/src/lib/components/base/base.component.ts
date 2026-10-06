@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, Input, AfterViewInit, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, iif, of } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
@@ -12,6 +12,7 @@ import {
 @Component({
   template: '',
   styleUrls: ['base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BaseChartComponent implements OnInit, AfterViewInit {

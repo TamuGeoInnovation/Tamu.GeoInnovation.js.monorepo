@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
@@ -9,6 +9,7 @@ import { ViewerService } from '../../services/viewer.service';
   selector: 'tamu-gisc-participant-response-popup',
   templateUrl: './participant-response-popup.component.html',
   styleUrls: ['./participant-response-popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParticipantResponsePopupComponent extends BasePopupComponent implements OnInit {

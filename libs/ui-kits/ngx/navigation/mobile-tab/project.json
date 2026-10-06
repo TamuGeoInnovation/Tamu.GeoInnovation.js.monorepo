@@ -8,11 +8,11 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/mobile-tab"],
       "options": {
         "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.ts",
         "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json"
-      },
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-kits/ngx/navigation/mobile-tab"]
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
