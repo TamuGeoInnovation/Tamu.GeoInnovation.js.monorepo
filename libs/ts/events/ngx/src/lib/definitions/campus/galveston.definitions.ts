@@ -1,10 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 import { Connections } from '@tamu-gisc/aggiemap/ngx/common';
-import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { AggiemapCustomMapConfiguration, EventConfiguration, SpecialEventOptions } from '../../interfaces/special-event.interface';
 import { campusClickOverlayNative } from './campus-overlay.definitions';
+import { CampusBuildingPopupComponent } from '../../modules/popups/campus-building-popup/campus-building-popup.component';
 
 /**
  * Layer ids used by the Galveston satellite-campus map. `BASEMAP` is the visual vector-tile
@@ -42,7 +42,7 @@ export const GalvestonLayerSources: LayerSource[] = [
     id: GALVESTON_LAYERS.BUILDINGS,
     title: 'Buildings',
     url: `${Connections.galvestonFeatureServerUrl}/0`,
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: CampusBuildingPopupComponent,
     listMode: 'hide',
     visible: true,
     essential: true,
@@ -77,7 +77,7 @@ export const GalvestonSearchSources: SearchSource[] = [
     scoringKeys: ['attributes.bldgabbrev', 'attributes.number', 'attributes.bldgname'],
     featuresLocation: 'features',
     displayTemplate: '{attributes.bldgname} ({attributes.number})',
-    popupComponent: Popups.BasePopupComponent,
+    popupComponent: CampusBuildingPopupComponent,
     searchActive: true
   }
 ];
@@ -94,6 +94,12 @@ export const GalvestonConfiguration: EventConfiguration = {
   zoom: 16,
   hideLayerToggle: true,
   sidebarTabs: ['features'],
+  buildingPopup: {
+    layerId: GALVESTON_LAYERS.BUILDINGS,
+    title: ['name', 'bldgname', 'bldgabbrev', 'abbrev'],
+    number: 'number',
+    address: { street: 'address', city: 'city', zip: 'zip', state: 'TX' }
+  },
   // TODO: set `brandingIconUrl` to an official Texas A&M University at Galveston logo once one is
   // sourced. Until then, the sidebar falls back to the default TAMU branding block.
   searchSources: GalvestonSearchSources
