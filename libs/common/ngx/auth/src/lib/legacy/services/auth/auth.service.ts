@@ -20,7 +20,11 @@ export class LegacyAuthService {
     attach_href: undefined
   };
 
-  constructor(@Inject(DOCUMENT) private document: Document, private http: HttpClient, private env: EnvironmentService) {
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private http: HttpClient,
+    private env: EnvironmentService
+  ) {
     if (this.env.value('auth_url', true)) {
       this.authOptions.url = this.env.value('auth_url', true);
     } else if (this.env.value('auth_options', true)) {

@@ -26,7 +26,10 @@ import { PopupService } from '../../services/popup.service';
 export class RevealSidebarOnPopupDirective implements OnInit, OnDestroy {
   private _subscription: Subscription | undefined;
 
-  constructor(private readonly sidebar: SidebarComponent, private readonly popup: PopupService) {}
+  constructor(
+    private readonly sidebar: SidebarComponent,
+    private readonly popup: PopupService
+  ) {}
 
   public ngOnInit(): void {
     this._subscription = this.popup.opened.subscribe(() => {

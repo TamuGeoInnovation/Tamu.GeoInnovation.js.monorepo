@@ -93,10 +93,10 @@ export class MapComponent implements OnInit, OnDestroy {
       basemap: basemapIdFromUrl
         ? basemapIdFromUrl
         : settings && settings.basemap
-        ? settings.basemap && settings.basemap !== 'aggie_basemap'
-          ? settings.basemap
-          : aggiemapBasemap(this.ts.isTesting)
-        : 'topo-vector'
+          ? settings.basemap && settings.basemap !== 'aggie_basemap'
+            ? settings.basemap
+            : aggiemapBasemap(this.ts.isTesting)
+          : 'topo-vector'
     };
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {

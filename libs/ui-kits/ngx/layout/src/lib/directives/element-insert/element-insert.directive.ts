@@ -9,7 +9,10 @@ export class ElementInsertDirective implements AfterContentInit {
   @Input()
   public elementInsert: Element;
 
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
+  constructor(
+    private renderer: Renderer2,
+    private elementRef: ElementRef
+  ) {}
 
   public ngAfterContentInit() {
     this.renderer.appendChild(this.elementRef.nativeElement, this.elementInsert);

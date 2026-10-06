@@ -19,7 +19,10 @@ export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerC
   public accessible: Observable<boolean>;
   public isAccessibleMode: Observable<boolean>;
 
-  constructor(private tps: TripPlannerService, private dts: TestingService) {
+  constructor(
+    private tps: TripPlannerService,
+    private dts: TestingService
+  ) {
     super(tps, dts);
   }
 

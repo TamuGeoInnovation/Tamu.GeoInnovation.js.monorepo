@@ -17,7 +17,10 @@ export class FooterComponent implements OnInit {
   public organizations$: Observable<Array<Partial<Place>>>;
   public currentYear: number;
 
-  constructor(private readonly ss: SeasonService, private readonly os: PlaceService) {}
+  constructor(
+    private readonly ss: SeasonService,
+    private readonly os: PlaceService
+  ) {}
 
   public ngOnInit(): void {
     this.activeSeason$ = this.ss.activeSeason$;

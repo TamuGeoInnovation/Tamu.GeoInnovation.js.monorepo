@@ -16,7 +16,10 @@ export class DetailsComponent implements OnInit {
 
   public form: UntypedFormGroup;
 
-  constructor(private service: AccountDetailsService, private fb: UntypedFormBuilder) {}
+  constructor(
+    private service: AccountDetailsService,
+    private fb: UntypedFormBuilder
+  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

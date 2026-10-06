@@ -278,8 +278,7 @@ describe('LayerSources', () => {
   it('should split shared bike racks into flat sustainable transportation child layers', () => {
     const result = LayerSources(connections, definitions);
     const sustainableTransportationGroup = result.find((layer) => layer.id === 'sustainable-transportation-group-layer') as
-      | GroupLayerSource
-      | undefined;
+      GroupLayerSource | undefined;
     const childSources = sustainableTransportationGroup?.sources ?? [];
     const childTitles = childSources.map((layer) => layer.title);
     const childIds = childSources.map((layer) => layer.id);

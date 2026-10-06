@@ -12,7 +12,10 @@ import { ModalRefService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
 export class RevivalModalComponent {
   public legacyHost: string = this.env.value('legacy_host');
 
-  constructor(private readonly mr: ModalRefService, private readonly env: EnvironmentService) {}
+  constructor(
+    private readonly mr: ModalRefService,
+    private readonly env: EnvironmentService
+  ) {}
 
   public dismiss() {
     this.mr.close(true);

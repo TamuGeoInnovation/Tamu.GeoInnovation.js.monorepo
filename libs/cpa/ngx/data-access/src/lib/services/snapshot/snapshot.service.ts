@@ -11,7 +11,10 @@ import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 export class SnapshotService {
   private resource: string;
 
-  constructor(private http: HttpClient, private environment: EnvironmentService) {
+  constructor(
+    private http: HttpClient,
+    private environment: EnvironmentService
+  ) {
     this.resource = this.environment.value(`api_url`) + 'snapshots';
   }
 

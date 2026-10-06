@@ -22,7 +22,10 @@ export class SidebarTripPlannerComponent {
    */
   public stops: Observable<TripPoint[]> = this.plannerService.Stops;
 
-  constructor(private plannerService: TripPlannerService, private testing: TestingService) {}
+  constructor(
+    private plannerService: TripPlannerService,
+    private testing: TestingService
+  ) {}
 
   /**
    * Call the planner service to add a result as a trip point to the service stop store

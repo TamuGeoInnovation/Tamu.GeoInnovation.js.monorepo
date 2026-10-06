@@ -9,7 +9,10 @@ import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
   standalone: false
 })
 export class AppComponent implements OnInit {
-  constructor(private readonly vcr: ViewContainerRef, private readonly ms: ModalService) {}
+  constructor(
+    private readonly vcr: ViewContainerRef,
+    private readonly ms: ModalService
+  ) {}
 
   public ngOnInit(): void {
     this.ms.registerGlobalViewRef(this.vcr);

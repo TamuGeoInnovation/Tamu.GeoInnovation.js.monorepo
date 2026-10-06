@@ -10,7 +10,10 @@ import { IScenarioSimplified, IScenarioPartial, IScenarioResolved } from '@tamu-
 export class ScenarioService {
   private resource: string;
 
-  constructor(private http: HttpClient, private environment: EnvironmentService) {
+  constructor(
+    private http: HttpClient,
+    private environment: EnvironmentService
+  ) {
     this.resource = this.environment.value(`api_url`) + 'scenarios';
   }
 

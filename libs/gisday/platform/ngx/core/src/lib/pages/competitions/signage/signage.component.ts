@@ -10,7 +10,10 @@ import { SignageService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   standalone: false
 })
 export class SignageComponent implements OnInit {
-  constructor(private mapService: MapboxMapService, private signageService: SignageService) {}
+  constructor(
+    private mapService: MapboxMapService,
+    private signageService: SignageService
+  ) {}
 
   public ngOnInit(): void {
     // TODO: Finish this -Aaron (1/5/2021)

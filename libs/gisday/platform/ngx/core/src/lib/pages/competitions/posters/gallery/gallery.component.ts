@@ -15,7 +15,10 @@ import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-acce
 export class GalleryComponent implements OnInit {
   public $posters: Observable<Array<Partial<Submission>>>;
 
-  constructor(private submissionService: UserSubmissionsService, private sanitizer: DomSanitizer) {}
+  constructor(
+    private submissionService: UserSubmissionsService,
+    private sanitizer: DomSanitizer
+  ) {}
 
   public ngOnInit() {
     this.$posters = this.submissionService.getPosters();

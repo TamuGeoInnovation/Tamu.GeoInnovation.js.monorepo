@@ -24,7 +24,11 @@ export class TripPlannerOptionsBaseComponent implements OnInit {
 
   public isDev: Observable<boolean>;
 
-  constructor(private anl: Angulartics2, private tripPlanner: TripPlannerService, private devTools: TestingService) {}
+  constructor(
+    private anl: Angulartics2,
+    private tripPlanner: TripPlannerService,
+    private devTools: TestingService
+  ) {}
 
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');

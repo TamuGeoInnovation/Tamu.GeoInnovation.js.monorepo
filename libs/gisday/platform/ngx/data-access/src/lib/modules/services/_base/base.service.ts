@@ -7,7 +7,11 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export abstract class BaseService<T> {
   public resource: string;
 
-  constructor(private environmentService: EnvironmentService, private httpClient: HttpClient, private route: string) {
+  constructor(
+    private environmentService: EnvironmentService,
+    private httpClient: HttpClient,
+    private route: string
+  ) {
     this.resource = this.environmentService.value('api_url') + `/${route}`;
   }
 

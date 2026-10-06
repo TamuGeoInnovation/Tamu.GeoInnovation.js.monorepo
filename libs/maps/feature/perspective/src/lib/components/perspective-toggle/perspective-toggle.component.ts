@@ -147,7 +147,10 @@ export class PerspectiveToggleComponent implements OnInit {
     }
   }
 
-  constructor(private ms: EsriMapService, private mp: EsriModuleProviderService) {}
+  constructor(
+    private ms: EsriMapService,
+    private mp: EsriModuleProviderService
+  ) {}
 }
 
 type PerspectiveType = '2D' | '3D';

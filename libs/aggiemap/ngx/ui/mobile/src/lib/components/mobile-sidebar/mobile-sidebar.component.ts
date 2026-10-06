@@ -9,7 +9,10 @@ import { getUrlSegmentsFromRouteSnapshot } from '@tamu-gisc/common/utils/routing
   standalone: false
 })
 export class MobileSidebarComponent {
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   /**
    * Returns to the parent route, effectively closing the sidebar.

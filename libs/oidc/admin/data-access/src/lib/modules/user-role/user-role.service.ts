@@ -10,7 +10,10 @@ import { ISimplifiedUserRoleResponse, NewUserRole } from '@tamu-gisc/oidc/common
 export class UserRoleService {
   private resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = this.env.value('api_url') + '/user-role';
   }
 

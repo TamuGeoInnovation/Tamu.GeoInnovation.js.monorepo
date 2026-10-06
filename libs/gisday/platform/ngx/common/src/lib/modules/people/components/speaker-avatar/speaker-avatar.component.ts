@@ -59,7 +59,10 @@ export class SpeakerAvatarComponent implements OnInit {
   public imageExists$: Observable<boolean>;
   public initials$: Observable<string>;
 
-  constructor(private readonly http: HttpClient, private readonly as: AssetsService) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly as: AssetsService
+  ) {}
 
   public ngOnInit(): void {
     this.avatarImageUrl$ = of(this.avatarImageUrl).pipe(

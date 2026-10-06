@@ -12,7 +12,11 @@ import { AccountDetailsService } from '../details/account-details.service';
 export class AccountPreferencesService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient, private details: AccountDetailsService) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient,
+    private details: AccountDetailsService
+  ) {
     this.resource = `${this.env.value('legacy_api_url')}userServices/updateNotificationData`;
   }
 

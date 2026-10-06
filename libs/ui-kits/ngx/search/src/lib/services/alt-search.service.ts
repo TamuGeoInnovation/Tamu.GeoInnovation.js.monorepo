@@ -23,7 +23,10 @@ import esri = __esri;
 export class AltSearchHelper {
   private _sources: SearchSource[];
 
-  constructor(private searchService: SearchService, private environment: EnvironmentService) {
+  constructor(
+    private searchService: SearchService,
+    private environment: EnvironmentService
+  ) {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }

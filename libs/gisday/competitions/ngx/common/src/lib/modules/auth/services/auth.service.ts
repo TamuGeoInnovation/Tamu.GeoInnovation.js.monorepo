@@ -11,7 +11,11 @@ import { pluck, switchMap, tap } from 'rxjs/operators';
 export class AuthService {
   public authenticationDetails: Subject<object> = new BehaviorSubject({});
 
-  constructor(private environment: EnvironmentService, private settings: SettingsService, private router: Router) {
+  constructor(
+    private environment: EnvironmentService,
+    private settings: SettingsService,
+    private router: Router
+  ) {
     this.settings
       .init({
         settings: {

@@ -11,7 +11,10 @@ import { Point } from '@tamu-gisc/common/types';
 
 @Injectable({ providedIn: 'root' })
 export class BikeService {
-  constructor(private http: HttpClient, private search: SearchService) {}
+  constructor(
+    private http: HttpClient,
+    private search: SearchService
+  ) {}
 
   /**
    * Returns the coordinates of a nearby bike-share unit.

@@ -48,7 +48,10 @@ export class EventMapsComponent implements OnInit {
   public showMainParking = true;
   public readonly getApplicationRoute = getApplicationRoute;
 
-  constructor(private readonly route: ActivatedRoute, private readonly discoveryService: DiscoveryService) {}
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly discoveryService: DiscoveryService
+  ) {}
 
   public ngOnInit(): void {
     const data = this.route.snapshot.data as EventMapsRouteData;

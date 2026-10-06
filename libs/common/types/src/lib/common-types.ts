@@ -54,8 +54,7 @@ interface LineSymbolAutoCastOptions {
 
 interface MarkerSymbolAutoCastOptions {
   symbol:
-    | (SimpleMarkerSymbol & esri.SimpleMarkerSymbolProperties)
-    | (PictureMarkerSymbol & esri.PictureMarkerSymbolProperties);
+    (SimpleMarkerSymbol & esri.SimpleMarkerSymbolProperties) | (PictureMarkerSymbol & esri.PictureMarkerSymbolProperties);
 }
 
 interface Symbol3DAutoCastOptions {

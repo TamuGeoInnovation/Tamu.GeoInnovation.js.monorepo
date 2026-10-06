@@ -57,7 +57,10 @@ export class MapNoticeComponent {
     }
   }
 
-  constructor(private readonly mr: ModalRefService, @Inject(MODAL_DATA) private readonly data: MapNoticeData) {
+  constructor(
+    private readonly mr: ModalRefService,
+    @Inject(MODAL_DATA) private readonly data: MapNoticeData
+  ) {
     this.title = data?.title ?? '';
     this.message = data?.message ?? '';
     this.details = data?.details ?? [];

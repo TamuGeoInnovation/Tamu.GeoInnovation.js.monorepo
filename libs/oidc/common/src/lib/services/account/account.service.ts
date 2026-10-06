@@ -22,7 +22,10 @@ export class StaticAccountService {
 
 @Injectable()
 export class AccountService {
-  constructor(public readonly accountRepo: AccountRepo, public readonly roleRepo: RoleRepo) {}
+  constructor(
+    public readonly accountRepo: AccountRepo,
+    public readonly roleRepo: RoleRepo
+  ) {}
 
   public get(guid: string) {
     return this.accountRepo.findOne({

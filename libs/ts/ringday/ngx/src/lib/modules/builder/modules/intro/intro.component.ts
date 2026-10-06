@@ -10,7 +10,10 @@ import { Angulartics2 } from 'angulartics2';
   standalone: false
 })
 export class IntroComponent {
-  constructor(private readonly router: Router, private readonly anl: Angulartics2) {}
+  constructor(
+    private readonly router: Router,
+    private readonly anl: Angulartics2
+  ) {}
 
   public next() {
     this.anl.eventTrack.next({

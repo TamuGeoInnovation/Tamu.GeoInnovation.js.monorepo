@@ -11,7 +11,10 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class AccountSecurityService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = `${this.env.value('legacy_api_url')}`;
   }
 

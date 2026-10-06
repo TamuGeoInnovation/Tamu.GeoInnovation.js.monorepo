@@ -10,7 +10,10 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class ContactService {
   private resource: string;
 
-  constructor(private readonly http: HttpClient, private readonly env: EnvironmentService) {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly env: EnvironmentService
+  ) {
     this.resource = `${this.env.value('api_url')}/contact`;
   }
 

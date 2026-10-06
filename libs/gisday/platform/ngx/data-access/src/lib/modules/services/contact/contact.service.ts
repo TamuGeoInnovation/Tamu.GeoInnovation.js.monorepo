@@ -10,7 +10,10 @@ import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 export class ContactService {
   private resource: string;
 
-  constructor(private http: HttpClient, private environment: EnvironmentService) {
+  constructor(
+    private http: HttpClient,
+    private environment: EnvironmentService
+  ) {
     this.resource = `${this.environment.value(`api_url`)}/contact`;
   }
 

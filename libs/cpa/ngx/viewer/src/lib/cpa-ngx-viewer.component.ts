@@ -16,7 +16,10 @@ export class ViewerComponent implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private route: ActivatedRoute, private vs: ViewerService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private vs: ViewerService
+  ) {}
 
   public ngOnInit() {
     this.route.queryParams.pipe(pluck('workshop'), filterFalsy(), takeUntil(this._$destroy)).subscribe((w) => {

@@ -18,7 +18,10 @@ export class MoveInOutSidebarComponent implements OnInit {
   /** Development and localhost only; gates the Directions tab while routing is unpublished (#1003). */
   public isDev: Observable<boolean>;
 
-  constructor(private readonly eventSettingsService: EventSettingsService, private readonly testing: TestingService) {
+  constructor(
+    private readonly eventSettingsService: EventSettingsService,
+    private readonly testing: TestingService
+  ) {
     this.isDev = this.testing.get('isTesting');
   }
 

@@ -13,7 +13,10 @@ import esri = __esri;
   standalone: false
 })
 export class SidebarReferenceComponent<T extends esri.Graphic> {
-  constructor(private helper: AltSearchHelper, private mapService: EsriMapService) {}
+  constructor(
+    private helper: AltSearchHelper,
+    private mapService: EsriMapService
+  ) {}
 
   public onSearchResult(result: SearchSelection<T>) {
     this.helper.handleSearchResultFeatureSelection(result).subscribe((res) => {

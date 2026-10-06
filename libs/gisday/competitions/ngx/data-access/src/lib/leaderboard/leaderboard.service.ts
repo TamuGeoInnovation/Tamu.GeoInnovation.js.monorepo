@@ -12,7 +12,11 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 export class LeaderboardService {
   public resource: string;
 
-  constructor(private http: HttpClient, private environment: EnvironmentService, private readonly ns: NotificationService) {
+  constructor(
+    private http: HttpClient,
+    private environment: EnvironmentService,
+    private readonly ns: NotificationService
+  ) {
     this.resource = `${this.environment.value('api_url')}/competitions/leaderboards`;
   }
 

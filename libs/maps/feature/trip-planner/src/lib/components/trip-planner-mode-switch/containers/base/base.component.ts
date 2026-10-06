@@ -20,7 +20,10 @@ export class TripPlannerModeSwitchComponent implements OnInit {
   public mode_header = '';
   public mode_icon?: string = null;
 
-  constructor(private tripPlanner: TripPlannerService, private busService: BusService) {}
+  constructor(
+    private tripPlanner: TripPlannerService,
+    private busService: BusService
+  ) {}
 
   public ngOnInit(): void {
     if (this.result && !this.result.isError) {

@@ -12,7 +12,10 @@ import { ActivatedRoute } from '@angular/router';
   standalone: false
 })
 export class SessionExpiredComponent {
-  constructor(private auth: LegacyAuthService, private route: ActivatedRoute) {}
+  constructor(
+    private auth: LegacyAuthService,
+    private route: ActivatedRoute
+  ) {}
 
   /**
    * Seconds before redirect

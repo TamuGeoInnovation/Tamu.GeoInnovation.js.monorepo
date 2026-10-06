@@ -10,7 +10,10 @@ import { IParticipant } from '@tamu-gisc/cpa/common/entities';
 export class ParticipantService {
   public resource: string;
 
-  constructor(private environment: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private environment: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = this.environment.value(`api_url`) + 'participants';
   }
 

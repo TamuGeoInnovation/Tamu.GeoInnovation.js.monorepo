@@ -24,7 +24,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private responsiveService: ResponsiveService, private environment: EnvironmentService) {}
+  constructor(
+    private responsiveService: ResponsiveService,
+    private environment: EnvironmentService
+  ) {}
 
   public ngOnInit() {
     const connections = this.environment.value('Connections');

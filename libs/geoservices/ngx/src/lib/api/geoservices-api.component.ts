@@ -19,7 +19,10 @@ export class GeoservicesApiComponent implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private readonly rs: ResponsiveService, private readonly rt: Router) {}
+  constructor(
+    private readonly rs: ResponsiveService,
+    private readonly rt: Router
+  ) {}
   public ngOnInit(): void {
     this.mobile = this.rs.isMobile;
 

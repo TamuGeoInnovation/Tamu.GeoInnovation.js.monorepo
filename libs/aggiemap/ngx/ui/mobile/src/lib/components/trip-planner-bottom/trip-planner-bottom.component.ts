@@ -25,7 +25,11 @@ export class TripPlannerBottomComponent implements OnInit, OnDestroy {
 
   public result: TripResult;
 
-  constructor(private tripPlanner: TripPlannerService, private router: Router, private dragService: DragService) {
+  constructor(
+    private tripPlanner: TripPlannerService,
+    private router: Router,
+    private dragService: DragService
+  ) {
     this.identifier = dragService.register(this);
   }
 

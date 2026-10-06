@@ -39,7 +39,10 @@ export class PartnerProgramFormComponent implements OnInit {
     }
   ];
 
-  constructor(private readonly fb: FormBuilder, private readonly cs: ContactService) {}
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly cs: ContactService
+  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

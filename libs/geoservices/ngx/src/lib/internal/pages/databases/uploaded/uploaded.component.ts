@@ -14,7 +14,10 @@ import { DatabaseService, DatabaseRecord } from '@tamu-gisc/geoservices/data-acc
 export class UploadedComponent implements OnInit {
   public databases: Observable<Array<DatabaseRecord>>;
 
-  constructor(private db: DatabaseService, public route: ActivatedRoute) {}
+  constructor(
+    private db: DatabaseService,
+    public route: ActivatedRoute
+  ) {}
 
   public ngOnInit() {
     this.databases = this.db.getExisting().pipe(shareReplay(1));

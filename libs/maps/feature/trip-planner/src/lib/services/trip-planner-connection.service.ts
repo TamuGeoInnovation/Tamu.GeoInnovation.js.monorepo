@@ -28,7 +28,10 @@ export class TripPlannerConnectionService {
   public readonly currentNetwork: Observable<TripPlannerConnection>;
   public readonly override: Observable<boolean>;
 
-  constructor(private http: HttpClient, private readonly env: EnvironmentService) {
+  constructor(
+    private http: HttpClient,
+    private readonly env: EnvironmentService
+  ) {
     this._serviceURL = this.env.value('Connections', false)?.routingBaseUrl + '?f=pjson';
 
     // Instantiate Subjects and observables from subjects

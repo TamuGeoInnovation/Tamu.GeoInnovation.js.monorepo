@@ -22,7 +22,11 @@ export class TileLinkDirective {
   @Output()
   public clicked: EventEmitter<HTMLElement> = new EventEmitter();
 
-  constructor(private router: Router, private renderer: Renderer2, private el: ElementRef) {}
+  constructor(
+    private router: Router,
+    private renderer: Renderer2,
+    private el: ElementRef
+  ) {}
 
   @HostListener('click', ['$event.target'])
   private _click(target: HTMLElement) {

@@ -12,7 +12,10 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 export class BusListBottomComponent implements OnInit, OnDestroy {
   public identifier: string;
 
-  constructor(private readonly ds: DragService, private readonly router: Router) {}
+  constructor(
+    private readonly ds: DragService,
+    private readonly router: Router
+  ) {}
 
   public ngOnInit(): void {
     this.identifier = this.ds.register(this);

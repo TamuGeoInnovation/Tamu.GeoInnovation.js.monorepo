@@ -12,7 +12,10 @@ import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 export class StatsService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = this.env.value('api_url') + '/stats';
   }
 

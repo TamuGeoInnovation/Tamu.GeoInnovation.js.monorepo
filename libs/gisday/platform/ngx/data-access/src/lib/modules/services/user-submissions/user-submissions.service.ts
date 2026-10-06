@@ -13,7 +13,10 @@ export class UserSubmissionsService extends BaseService<Submission> {
   public withCredentials = true;
   public resource: string;
 
-  constructor(private env1: EnvironmentService, private http1: HttpClient) {
+  constructor(
+    private env1: EnvironmentService,
+    private http1: HttpClient
+  ) {
     super(env1, http1, 'user-submissions');
   }
 

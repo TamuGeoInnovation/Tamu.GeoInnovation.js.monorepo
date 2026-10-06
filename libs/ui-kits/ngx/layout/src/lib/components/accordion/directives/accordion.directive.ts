@@ -17,7 +17,10 @@ export class AccordionDirective implements OnInit {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private templateRef: TemplateRef<unknown>, private viewContainer: ViewContainerRef) {}
+  constructor(
+    private templateRef: TemplateRef<unknown>,
+    private viewContainer: ViewContainerRef
+  ) {}
 
   public ngOnInit(): void {
     this.viewContainer.createEmbeddedView(this.templateRef, {

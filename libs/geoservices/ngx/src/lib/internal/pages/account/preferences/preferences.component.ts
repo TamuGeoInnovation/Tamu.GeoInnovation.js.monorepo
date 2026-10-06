@@ -12,7 +12,10 @@ import { AccountPreferencesService } from '@tamu-gisc/geoservices/data-access';
 export class PreferencesComponent implements OnInit {
   public form: UntypedFormGroup;
 
-  constructor(private service: AccountPreferencesService, private fb: UntypedFormBuilder) {}
+  constructor(
+    private service: AccountPreferencesService,
+    private fb: UntypedFormBuilder
+  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

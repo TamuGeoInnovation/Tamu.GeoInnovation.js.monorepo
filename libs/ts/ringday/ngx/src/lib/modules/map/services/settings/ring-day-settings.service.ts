@@ -28,7 +28,10 @@ export class RingDaySettingsService {
     return this.settings?.accessible;
   }
 
-  constructor(private readonly env: EnvironmentService, private readonly store: LocalStoreService) {}
+  constructor(
+    private readonly env: EnvironmentService,
+    private readonly store: LocalStoreService
+  ) {}
 
   public saveEventDate(date: Date) {
     this.store.setStorageObjectKeyValue({

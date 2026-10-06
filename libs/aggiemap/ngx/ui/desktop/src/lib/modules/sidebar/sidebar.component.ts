@@ -15,7 +15,10 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 export class AggiemapSidebarComponent implements OnInit {
   public isDev: Observable<boolean>;
 
-  constructor(private devTools: TestingService, private readonly analytics: Angulartics2) {}
+  constructor(
+    private devTools: TestingService,
+    private readonly analytics: Angulartics2
+  ) {}
 
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');

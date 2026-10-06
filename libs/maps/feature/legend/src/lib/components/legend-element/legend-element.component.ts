@@ -518,8 +518,4 @@ export class LegendElementComponent implements OnInit {
 type ILegendElement = esri.LegendElement;
 type ILayer = esri.Layer;
 type LegendInfo =
-  | esri.SymbolTableElementType
-  | esri.ColorRampStop
-  | esri.OpacityRampStop
-  | esri.SizeRampStop
-  | esri.HeatmapRampStop;
+  esri.SymbolTableElementType | esri.ColorRampStop | esri.OpacityRampStop | esri.SizeRampStop | esri.HeatmapRampStop;

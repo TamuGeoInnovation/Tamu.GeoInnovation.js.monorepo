@@ -10,7 +10,10 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class RsvpService extends BaseService<UserRsvp> {
-  constructor(private env1: EnvironmentService, private readonly http1: HttpClient) {
+  constructor(
+    private env1: EnvironmentService,
+    private readonly http1: HttpClient
+  ) {
     super(env1, http1, 'rsvps');
   }
 
