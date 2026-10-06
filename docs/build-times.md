@@ -35,6 +35,10 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 6 Oct 2026 | office | `check-in-volume.sh batch/2026-10-06-verify` (affected), the 8-change batch: 29 tasks, lint+test+build, 14 projects, 0/29 cache hits, 09:39 Central | volume, warm clone, cold Nx cache | **1 min 25 s** |
+| 6 Oct 2026 | office | The same check, second of three runs, 09:05 Central (one spec failing: a test fixture, not the app) | volume, warm clone | 1 min 25 s |
+| 6 Oct 2026 | office | `npm ci` into the dev server's `tamu-js-dev-nm` volume, 2,318 packages, after it was found two upgrades stale (Angular 19.2.9 against the checkout's 22.1.8) | bind-mounted source, volume `node_modules` | **1 min 28 s** |
+| 6 Oct 2026 | office | `nx build aggiemap-angular`, to serve a built app for before/after captures because `nx serve` cannot boot it (#1485) | bind-mounted source, volume `node_modules` | **30 s**, and 33 s on a second run |
 | 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, Angular 22 after its fixes (246 tasks, 0 failed) | volume, warm cache | **3 min 38 s** |
 | 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, run 3 (18 lint failed: rules still on in 15 projects) | volume | 3 min 36 s |
 | 6 Oct 2026 | home | `check-in-volume.sh chore/1469-angular-22 all`, first run to reach the tasks (77 failed: 74 lint, 3 build; 0 test) | volume, Nx cache cold | **3 min 1 s** |
