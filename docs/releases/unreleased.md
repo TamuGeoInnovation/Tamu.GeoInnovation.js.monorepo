@@ -21,6 +21,21 @@ what has not shipped yet.
 
 ## Summary
 
+- **The campus maps are live on production** ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)): Galveston, McAllen and the DC / Bush School have been
+  reachable in production by direct URL all along, but nothing there linked to them, so to everyone
+  else they did not exist. The **Campus Maps** section on All Maps and the **Campus Maps** tile in
+  Visit Maps now appear on production as well as dev.
+
+  They stay out of the All Maps search, deliberately and on both environments: that search is College
+  Station's, and a Galveston building answering a search made there would be a worse result than no
+  result. The section and the tile are how these maps are reached, which is why each card carries a
+  copy field. No service work was needed - all six campus services are the production ones in both
+  environments, confirmed by loading each map on production and finding no request to a development
+  host.
+
+  | Before (production) | After (production) |
+  | --- | --- |
+  | ![All Maps on production with no Campus Maps section](../screenshots/1482-campus-to-production/before-production-all-maps.png) | ![The Campus Maps section listing Galveston, McAllen and DC / Bush School](../screenshots/1482-campus-to-production/after-campus-section.png) |
 - **Satellite campus building popups** ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)): clicking or searching for a building on the
   Galveston, McAllen and DC / Bush School maps now shows a popup like the main map's. It gives the building's
   name, its number, its address where the campus publishes one, and a link to copy that reopens the
@@ -87,6 +102,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Campus maps on production ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | A **Campus Maps** section and a **Campus Maps** tile in Visit Maps, each opening Galveston, McAllen and DC / Bush School. Typing "Galveston" in the map search still finds **nothing** - that is deliberate. This is the change to look at on production after the release, since dev showed it already |
 | Campus building popups ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)) | [Galveston Student Center](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?feature=galveston-buildings-layer:1), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The popup shows a title, "Building N" and the address (Galveston and DC; McAllen has no address in its data), and a copy field, with **no Property/Value table**. Search Galveston for "Williams", open the result, copy its link and paste it in a new tab: it reopens the same building. DC's ZIP shows 00318 until the data is fixed ([#1464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1464)) |
 | Angular 22 ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): click a building, then a parking lot; the side panel's Layers and Legend; an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); the [mobile map](https://dev.aggiemap.tamu.edu/map/m) popups; [directions](https://dev.aggiemap.tamu.edu/map/d/trip) with parking and biking options | **nothing different**. Popups open with their content; the trip planner shows its parking and biking options; turning a layer on or off updates the map and the legend straight away. Anything that only updates after another click is the thing to report |
 | Angular 21 ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), a building popup, and an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); on a phone, the [mobile map](https://dev.aggiemap.tamu.edu/map/m) | **nothing different**. Click a building and press **Copy** in its popup, then paste; press **Escape** to close a popup; open and close the side panel's tabs and any accordion; on a phone, use the menu and the tiles. A click or key that does nothing is the thing to report |
