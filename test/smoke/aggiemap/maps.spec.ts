@@ -6,6 +6,7 @@ import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';
 import { describePaint, waitForPaint } from './paint';
+import { environmentIsDevelopment, isDevelopmentHostRequest } from './gis-hosts';
 
 /**
  * Behaviours 1 and 2 of #1034, for every map the target environment lists.
@@ -228,7 +229,21 @@ for (const { mapPath, loadPath, title } of cases) {
     const pageErrors: string[] = [];
     const serverErrors: string[] = [];
 
+    /**
+     * Requests this map made to a development GIS host (#1483).
+     *
+     * Collected here rather than in a spec of its own because this test already loads every map, and
+     * a second crawl of all of them to watch their requests would roughly double the suite for a
+     * question that costs nothing to answer while the page is already open.
+     */
+    const developmentHostRequests: string[] = [];
+
     page.on('pageerror', (error) => pageErrors.push(error.message));
+    page.on('request', (request) => {
+      if (isDevelopmentHostRequest(request.url())) {
+        developmentHostRequests.push(request.url());
+      }
+    });
     page.on('response', (response) => {
       if (response.status() >= 500) {
         serverErrors.push(`${response.status()} ${response.url()}`);
@@ -400,5 +415,18 @@ for (const { mapPath, loadPath, title } of cases) {
     // as an incidental console error.
     expect(pageErrors, `uncaught errors on ${mapPath}`).toEqual([]);
     expect(serverErrors, `server errors on ${mapPath}`).toEqual([]);
+
+    // A map on a production environment must draw only from production services (#1483). A layer
+    // pointed at a development host works for anyone inside the network and is missing or stale for
+    // everyone else, which is the kind of failure nobody reports because it looks fine from here.
+    //
+    // One-directional: development legitimately reaches production services, so nothing is asserted
+    // there. `gis-hosts.ts` carries the rule and its own tests.
+    if (!environmentIsDevelopment(manifest.baseUrl)) {
+      expect(
+        [...new Set(developmentHostRequests)],
+        `${mapPath} requested a development host from ${manifest.baseUrl}`
+      ).toEqual([]);
+    }
   });
 }
