@@ -94,7 +94,9 @@ listed against its issue and reported on every run rather than failing it, so it
 it is fixed.
 
 Map framing loads every map and builder choice again, so it is the largest check: it adds **about 40
-minutes** to each daily run.
+minutes** to each daily run. A release check run from a workstation opens one route per map instead,
+about 70 rather than about 420, since the rest are the same maps with different builder choices; the
+daily run still opens all of them ([#1426](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1426)).
 
 ### How it grew
 
