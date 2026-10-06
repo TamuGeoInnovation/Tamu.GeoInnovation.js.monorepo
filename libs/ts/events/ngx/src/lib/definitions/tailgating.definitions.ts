@@ -19,7 +19,7 @@ import esri = __esri;
  *
  * This service has no production counterpart yet, so the map is development-only
  * (`DevelopmentOnlyEventDefinitions`) and the service is listed in the smoke suite's
- * `DEVELOPMENT_ONLY_SERVICES`.
+ * `DEVELOPMENT_ONLY_SERVICES`, with this map's route (`/events/tailgating`) as the page that uses it.
  *
  * The event service adds these in reverse order, and a layer added later draws above the ones before
  * it, so the first entry draws on top: the circled numbers, then the tents, then the zones.

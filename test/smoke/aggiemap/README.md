@@ -50,9 +50,11 @@ unavailable. When routing returns to production, set `directionsAvailable` to tr
 `development-only.spec.ts` checks development-only work stays off production, both ways, from each
 environment's `developmentSectionsVisible`. The sections listed in `development-only.ts` (Directions,
 Bus Routes, Experiments) must be offered on dev and absent on production (#1090). The GIS services
-listed in `DEVELOPMENT_ONLY_SERVICES` must be requested on dev and never on production (#1229). The
-main map and an event map with Aggieland saved as the basemap are both loaded, and every request is
-recorded. A service with no production counterpart goes on that list. It comes off only when it is
+listed in `DEVELOPMENT_ONLY_SERVICES` must be requested on dev and never on production (#1229). Each
+service lists the pages that use it (the main map, Visitor Parking with Aggieland saved as the
+basemap, the Tailgating map), every one of those pages is loaded and every request recorded. On dev a
+page must request the services that list it; a service one map alone uses is not required of the
+others (#1460). On production no page may request any of them. A service with no production counterpart goes on that list. It comes off only when it is
 published for production, together with the code's gate.
 
 `bus.spec.ts` checks every bus route the bus panel lists draws its line and one stop marker for each
