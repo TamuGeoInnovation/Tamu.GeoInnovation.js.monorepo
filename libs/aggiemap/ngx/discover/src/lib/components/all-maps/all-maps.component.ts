@@ -49,12 +49,13 @@ export class AllMapsComponent implements OnInit {
   public kioskApplications: Array<InternalDiscoverApplication & { url: string }> = [];
 
   /**
-   * Dev-only listing of the satellite-campus maps (Galveston, McAllen, DC Bush School).
+   * The satellite-campus maps (Galveston, McAllen, DC Bush School), listed on every environment
+   * since #1482.
    *
-   * These are deliberately reachable in production by direct URL -- the testing team uses them --
-   * but nothing links to them there, and they are filtered out of the map search in both
-   * environments. This section and the Visit Maps tile are the only entry points, and both are
-   * gated on `isDev`.
+   * They remain filtered out of the map search in both environments, on purpose: that search is
+   * College Station's, and a Galveston building answering a search made there would be a worse
+   * result than no result. This section and the Visit Maps tile are the only entry points, which is
+   * why each card carries a copy field.
    */
   public campusApplications: Array<InternalDiscoverApplication & { url: string }> = [];
 
@@ -100,8 +101,9 @@ export class AllMapsComponent implements OnInit {
     this.internalApplications = this.discoveryService.getInternalDiscoverApplications();
     this.allEventApplications = this.discoveryService.getInternalDiscoverApplications({ includeRetired: true });
     this.externalApplications = this.discoveryService.getExternalDiscoverApplications();
-    // Satellite-campus maps have their own dedicated "Campus Maps" listing page and should not
-    // appear in the general map search results.
+    // Satellite-campus maps have their own dedicated "Campus Maps" listing page and are deliberately
+    // left out of the general map search, on production as well as development (#1482): that search
+    // is College Station's.
     this.allApplications = this.discoveryService
       .getAllDiscoverApplications()
       .filter((app) => !(app.source === 'internal' && app.type === 'satellite-campus'));

@@ -70,7 +70,6 @@
         <span class="visit-maps-label">Operations</span>
       </a>
 
-      @if ((isDev | async) === true) {
       <a class="visit-maps-tile" routerLink="/all-maps/campus" aria-label="Campus Maps">
         <span class="visit-maps-icon">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -79,11 +78,10 @@
         </span>
         <span class="visit-maps-label">Campus Maps</span>
       </a>
-      }
 
       <!--
-      Code Maroon proof of concept (#1289). Development only, on the same `isDev` gate as the
-      campus maps above, so it is never a tile the public can see. A warning triangle rather than
+      Code Maroon proof of concept (#1289). Development only, so it is never a tile the public can
+      see. A warning triangle rather than
       anything branded: a demonstration should not look like an official emergency notice sitting
       on the page.
       -->
@@ -168,17 +166,23 @@
     </div>
     }
   </div>
-  } @if ((isDev | async) === true) {
+  }
   <div class="campus-maps-section trailer-3">
     <h2>Campus Maps</h2>
-    <p class="section-description">Single-basemap maps for TAMU campuses outside College Station. These are reachable in production by direct URL but are not linked or searchable there (development only).</p>
+    <!--
+      Linked on production since #1482. They are still left out of the map search above, on both
+      environments and on purpose: that search is College Station's, and a Galveston building
+      answering a search made there would be a worse result than no result. This section and the
+      Visit Maps tile are how these maps are reached.
+    -->
+    <p class="section-description">Single-basemap maps for TAMU campuses outside College Station.</p>
     @if (campusApplications.length > 0) {
     <div class="applications-list">
       @for (app of campusApplications; track app) {
       <div class="application-card">
         <!-- The picture is the link, so the card shows what you are choosing between rather than
-              leaving an empty area above a text link (#1245). The copy field stays: it is how a
-              campus map URL gets shared, and these maps are not linked on production. -->
+              leaving an empty area above a text link (#1245). The copy field stays: these maps are
+              left out of the map search, so a copied URL is how one gets passed on. -->
         <a class="campus-tile map-entry--pictured" [routerLink]="getApplicationRoute(app)" [attr.aria-label]="'Open the ' + app.name + ' map'">
           @if (app.thumbnail) {
           <img class="map-entry-thumbnail" [src]="app.thumbnail" [alt]="app.name + ' campus map'" loading="lazy" />
@@ -198,7 +202,7 @@
     <p class="section-description">No campus maps are defined.</p>
     }
   </div>
-  } @if ((isDev | async) === true) {
+  @if ((isDev | async) === true) {
   <div class="kiosk-maps-section trailer-3">
     <h2>Kiosk Maps</h2>
     <p class="section-description">Sidebar-free, preset-layer maps meant to be embedded elsewhere (e.g. in a mobile app webview). Open one to check it, or copy its URL to embed it (development only).</p>
