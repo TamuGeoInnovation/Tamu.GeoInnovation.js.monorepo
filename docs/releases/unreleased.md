@@ -21,6 +21,13 @@ what has not shipped yet.
 
 ## Summary
 
+- Not visible: **Angular 22** ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)): Angular 21.2 to 22.1, Nx 22.7 to 23.2, TypeScript 5.9
+  to 6.0, ESLint 8 to 9. The last of the version steps. Nothing is meant to look or behave differently.
+  Angular 22 makes components update only on input changes by default; a migration marked every
+  existing component to keep updating as today, so **a panel or list that stops refreshing** is the
+  first thing to report. The **popups** (map and mobile) and the **trip planner's parking and biking
+  options** are now created differently, because the API they used is gone. Not on dev until the build
+  after it merges.
 - Not visible: **Angular 21** ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)): Angular 20.3 to 21.2, Nx 21.6 to 22.7, Jest 29 to 30.
   Nothing is meant to look or behave differently. The changes most likely to show are in **clicks and
   keys handled by shared components** (accordions, tooltips, the side panel's tabs, the mobile tiles and
@@ -69,6 +76,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Angular 22 ([#1469](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1469)) | The [main map](https://dev.aggiemap.tamu.edu/map/d): click a building, then a parking lot; the side panel's Layers and Legend; an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); the [mobile map](https://dev.aggiemap.tamu.edu/map/m) popups; [directions](https://dev.aggiemap.tamu.edu/map/d/trip) with parking and biking options | **nothing different**. Popups open with their content; the trip planner shows its parking and biking options; turning a layer on or off updates the map and the legend straight away. Anything that only updates after another click is the thing to report |
 | Angular 21 ([#1456](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1456)) | The [main map](https://dev.aggiemap.tamu.edu/map/d), a building popup, and an event map such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); on a phone, the [mobile map](https://dev.aggiemap.tamu.edu/map/m) | **nothing different**. Click a building and press **Copy** in its popup, then paste; press **Escape** to close a popup; open and close the side panel's tabs and any accordion; on a phone, use the menu and the tiles. A click or key that does nothing is the thing to report |
 | Angular 20 ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)) | Any map you use; [All Maps](https://dev.aggiemap.tamu.edu/all-maps); an event builder such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); popups, the side panel's Layers and Legend; and GIS Day's pages if you use them | **nothing different**. Templates were rewritten from `*ngIf`/`*ngFor` to `@if`/`@for`, so the thing to look for is something missing: an empty list, a panel that will not open, a button that has gone |
 
