@@ -49,8 +49,7 @@ Set `renderer` inside a layer source's `native` block:
 }
 ```
 
-`declaresOwnRenderer` in
-[`portal-symbology.ts`](../libs/maps/esri/src/lib/services/map/portal-symbology.ts) sees that and
+`declaresOwnRenderer` in `libs/maps/esri/src/lib/services/map/portal-symbology.ts` sees that and
 leaves the layer alone — the portal item is not consulted at all for it.
 
 ### When it is right
