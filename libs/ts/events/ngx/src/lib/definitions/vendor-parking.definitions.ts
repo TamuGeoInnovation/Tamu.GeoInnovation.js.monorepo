@@ -16,36 +16,6 @@ const eventUrl = Connections.vendorParkingUrl;
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 
-const vendorParkingRenderer: FeatureRenderer = {
-  type: 'unique-value',
-  field: 'GIS.TS.Lot_Use.Vendor_Lot',
-  field2: 'GIS.TS.ParkingLots.LotType',
-  fieldDelimiter: ',',
-  defaultLabel: ' ', // definitely need a better solution for this but this is to prevent the default symbol from showing in the legend
-  defaultSymbol: {
-    type: 'simple-fill',
-    color: [0, 0, 0, 0],
-    outline: null
-  } as unknown as esri.SymbolProperties,
-  uniqueValueInfos: [
-    {
-      value: '1,Street',
-      label: 'Vendor Permit and Vendor+ Permit Authorized',
-      symbol: { type: 'simple-fill', color: [90, 0, 0, 255], outline: null } as unknown as esri.SymbolProperties
-    },
-    {
-      value: '1,Surface',
-      label: 'Vendor Permit and Vendor+ Permit Authorized',
-      symbol: { type: 'simple-fill', color: [90, 0, 0, 255], outline: null } as unknown as esri.SymbolProperties
-    },
-    {
-      value: '1,Garage Visitor',
-      label: 'Only Vendor+ Permit Authorized',
-      symbol: { type: 'simple-fill', color: [232, 190, 255, 255], outline: null } as unknown as esri.SymbolProperties
-    }
-  ]
-};
-
 export const VendorParkingDefinitions = {
   VENDOR_PARKING_DRAW: {
     id: VENDOR_PARKING_LAYERS.VENDOR_PARKING_DRAW,
@@ -84,7 +54,6 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: VendorParkingDefinitions.VENDOR_PARKING_LOTS.id,
-    title: VendorParkingDefinitions.VENDOR_PARKING_LOTS.name,
     url: VendorParkingDefinitions.VENDOR_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
@@ -100,9 +69,8 @@ export const VendorParkingColdLayerSources: LayerSource[] = [
       }
     },
     native: {
-      outFields: ['*'],
-      renderer: vendorParkingRenderer
-    } as unknown as FeatureNative
+      outFields: ['*']
+} as unknown as FeatureNative
   }
 ];
 

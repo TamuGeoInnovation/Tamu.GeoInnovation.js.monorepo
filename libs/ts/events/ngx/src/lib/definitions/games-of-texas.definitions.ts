@@ -42,35 +42,9 @@ const popup = (name: string, description: string) => ({
 });
 
 // Routes are directional. Render each type as an arrow-tipped line so the direction of travel reads
-// on the map. Colors match the published renderer: red = expect delays, green = preferred route.
+// on the map. Colors match the publishedgreen = preferred route.
 const routesNative: NonNullable<FeatureLayerSourceProperties['native']> = {
-  outFields: ['*'],
-  renderer: {
-    type: 'unique-value',
-    field: 'name',
-    uniqueValueInfos: [
-      {
-        value: 'Expect Delays',
-        label: 'Expect Delays',
-        symbol: {
-          type: 'simple-line',
-          color: [230, 0, 0, 255],
-          width: 2,
-          marker: { type: 'line-marker', style: 'arrow', color: [230, 0, 0, 255], placement: 'end' }
-        } as unknown as esri.SimpleLineSymbolProperties
-      },
-      {
-        value: 'Preferred Route',
-        label: 'Preferred Route',
-        symbol: {
-          type: 'simple-line',
-          color: [0, 115, 76, 255],
-          width: 2,
-          marker: { type: 'line-marker', style: 'arrow', color: [0, 115, 76, 255], placement: 'end' }
-        } as unknown as esri.SimpleLineSymbolProperties
-      }
-    ]
-  }
+  outFields: ['*']
 };
 
 // Order matters: later entries draw on top. Parking (polygons) sit at the bottom, Road Closures and

@@ -35,7 +35,6 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MaintenanceParkingDefinitions.MAINTENANCE_SPACES.id,
-    title: MaintenanceParkingDefinitions.MAINTENANCE_SPACES.name,
     url: MaintenanceParkingDefinitions.MAINTENANCE_SPACES.url,
     visible: true,
     listMode: 'show',
@@ -70,7 +69,6 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MaintenanceParkingDefinitions.MAINTENANCE_LOTS.id,
-    title: MaintenanceParkingDefinitions.MAINTENANCE_LOTS.name,
     url: MaintenanceParkingDefinitions.MAINTENANCE_LOTS.url,
     visible: true,
     listMode: 'show',

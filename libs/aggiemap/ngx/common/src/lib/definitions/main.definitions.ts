@@ -237,18 +237,7 @@ export function MainMapLayerSources(
       layerIndex: 1,
       native: {
         ...commonLayerProps,
-        legendEnabled: false,
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-fill',
-            style: 'solid',
-            color: [0, 0, 0, 0.01],
-            outline: {
-              width: '0'
-            }
-          }
-        }
+        legendEnabled: false
       }
     },
     {
@@ -266,21 +255,6 @@ export function MainMapLayerSources(
         // The hosted service has no Status field (unlike the legacy FCOR service), so
         // "currently active" construction is now determined solely by end date.
         definitionExpression: `enddate > CAST('${new Date().toISOString()}' AS DATE )`,
-        // Override the hosted service's own per-owner unique-value renderer so the main
-        // map keeps showing a single, undifferentiated orange/red hatch for all construction,
-        // matching the legacy FCOR service's look.
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-fill',
-            style: 'diagonal-cross',
-            color: [255, 85, 0, 255],
-            outline: {
-              color: [255, 85, 0, 255],
-              width: 1
-            }
-          }
-        }
       }
     },
     {
@@ -292,16 +266,7 @@ export function MainMapLayerSources(
       listMode: 'show',
       visible: false,
       native: {
-        ...commonLayerProps,
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'picture-marker',
-            url: '/assets/images/markers/statue-icon.png',
-            width: '20px',
-            height: '30.2px'
-          }
-        }
+        ...commonLayerProps
       }
     },
     {
@@ -314,17 +279,7 @@ export function MainMapLayerSources(
       visible: true,
       native: {
         ...commonLayerProps,
-        labelingInfo: [],
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-fill',
-            color: [0, 0, 0, 0.0],
-            outline: {
-              width: 0
-            }
-          }
-        }
+        labelingInfo: []
       }
     },
     {
@@ -388,16 +343,6 @@ export function MainMapLayerSources(
       native: {
         ...commonLayerProps,
         legendEnabled: false,
-        renderer: {
-          type: 'simple',
-          symbol: {
-            type: 'simple-marker',
-            style: 'circle',
-            size: 0,
-            color: [0, 0, 0, 0],
-            outline: { width: 0, color: [0, 0, 0, 0] }
-          }
-        },
         labelsVisible: false
       }
     },
@@ -570,54 +515,6 @@ export function MainMapLayerSources(
       popupComponent: definitions.DINING_LOCATIONS.popupComponent,
       native: {
         ...commonLayerProps,
-        renderer: {
-          type: 'unique-value',
-          field: 'label',
-          field2: 'type',
-          fieldDelimiter: ',',
-          uniqueValueInfos: [
-            {
-              value: 'open,food-truck',
-              label: 'Food Truck - Open',
-              symbol: {
-                type: 'picture-marker',
-                url: '/assets/images/icons/FoodTruck_open.png',
-                width: '24px',
-                height: '32px'
-              }
-            },
-            {
-              value: 'closed,food-truck',
-              label: 'Food Truck - Closed',
-              symbol: {
-                type: 'picture-marker',
-                url: '/assets/images/icons/FoodTruck_closed.png',
-                width: '24px',
-                height: '32px'
-              }
-            },
-            {
-              value: 'open,fixed',
-              label: 'Dining - Open',
-              symbol: {
-                type: 'picture-marker',
-                url: '/assets/images/icons/Dining_open.png',
-                width: '24px',
-                height: '32px'
-              }
-            },
-            {
-              value: 'closed,fixed',
-              label: 'Dining - Closed',
-              symbol: {
-                type: 'picture-marker',
-                url: '/assets/images/icons/Dining_closed.png',
-                width: '24px',
-                height: '32px'
-              }
-            }
-          ]
-        } as unknown as esri.UniqueValueRenderer
       }
     },
     {
@@ -633,32 +530,6 @@ export function MainMapLayerSources(
       },
       native: {
         ...commonLayerProps,
-        renderer: {
-          type: 'unique-value',
-          valueExpression: `When($feature.Access == 'Campus Member Accessible', 'all',  'restricted')`,
-          uniqueValueInfos: [
-            {
-              value: 'all',
-              label: 'Campus Member Accessible',
-              symbol: {
-                type: 'picture-marker',
-                url: '/assets/images/icons/services/printer-all-access.png',
-                width: '24px',
-                height: '32px'
-              }
-            },
-            {
-              value: 'restricted',
-              label: 'Restricted Access Printers',
-              symbol: {
-                type: 'picture-marker',
-                url: '/assets/images/icons/services/printer-restricted.png',
-                width: '24px',
-                height: '32px'
-              }
-            }
-          ]
-        } as unknown as esri.UniqueValueRenderer
       }
     },
     {

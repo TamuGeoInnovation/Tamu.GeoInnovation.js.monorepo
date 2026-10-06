@@ -73,148 +73,24 @@ export const BigEventColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: BIG_EVENT_LAYER_INDICES.TRAFFIC,
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'edited',
-        field2: 'name',
-        fieldDelimiter: ',',
-        uniqueValueInfos: [
-          {
-            value: 'Leave Kickoff,Exit Route',
-            label: 'Leave Kickoff - Exit Route',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(56, 168, 0)',
-              width: 2.5,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(56, 168, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Leave Kickoff,Road Closed',
-            label: 'Leave Kickoff - Road Closed',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2.5
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'To Kickoff,Expect Delays',
-            label: 'To Kickoff - Expect Delays',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2.5,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(230, 0, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'To Kickoff,Fast Route ',
-            label: 'To Kickoff - Fast Route',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(56, 168, 0)',
-              width: 2.5,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(56, 168, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'To Kickoff,Road Closed',
-            label: 'To Kickoff - Road Closed',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2.5
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Tool Dropoff,Expect Delays',
-            label: 'Tool Dropoff - Expect Delays',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2.5,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(230, 0, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Tool Dropoff,Fastest Route',
-            label: 'Tool Dropoff - Fastest Route',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(56, 168, 0)',
-              width: 2.5,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(56, 168, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Tool Dropoff,Road Closed',
-            label: 'Tool Dropoff - Road Closed',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2.5
-            } as unknown as esri.SimpleLineSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   },
   {
     type: 'feature',
     id: BigEventDefinitions.ROAD_CLOSURES.id,
-    title: BigEventDefinitions.ROAD_CLOSURES.name,
     url: BigEventDefinitions.ROAD_CLOSURES.url,
     popupComponent: MarkdownPopupComponent,
     visible: true,
     listMode: 'show',
     layerIndex: BIG_EVENT_LAYER_INDICES.ROAD_CLOSURES,
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'diagonal-cross',
-          color: [230, 0, 0, 1],
-          outline: {
-            color: [230, 0, 0, 1],
-            width: 1
-          }
-        } as unknown as esri.SimpleFillSymbolProperties
-      }
+      outFields: ['*']
     }
   } as unknown as LayerSource,
   {
     type: 'feature',
     id: BigEventDefinitions.PARKING_LOTS.id,
-    title: BigEventDefinitions.PARKING_LOTS.name,
     url: BigEventDefinitions.PARKING_LOTS.url,
     popupComponent: MarkdownWDirectionsPopupComponent,
     // popupData: {

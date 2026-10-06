@@ -8,7 +8,6 @@ import {
   EventConfiguration,
   SpecialEventOptions
 } from '../interfaces/special-event.interface';
-import { commonSymbols } from './common.definitions';
 
 import esri = __esri;
 
@@ -114,22 +113,6 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         listMode: 'show',
         native: {
           outFields: ['*'],
-          renderer: {
-            type: 'unique-value',
-            field: 'name',
-            uniqueValueInfos: [
-              {
-                value: 'Fast Route',
-                label: 'Fast Route',
-                symbol: commonSymbols.GREEN_ARROW
-              },
-              {
-                value: 'Expect Delays',
-                label: 'Expect Delays',
-                symbol: commonSymbols.RED_ARROW
-              }
-            ]
-          } as unknown as esri.UniqueValueRendererProperties
         } as unknown as FeatureNative
       },
       {
@@ -207,17 +190,6 @@ export const HsGraduationColdLayerSources: LayerSource[] = [
         listMode: 'show',
         native: {
           outFields: ['*'],
-          renderer: {
-            type: 'unique-value',
-            field: 'name',
-            uniqueValueInfos: [
-              {
-                value: 'Departing - Recommended Route',
-                label: 'Departing - Recommended Route',
-                symbol: commonSymbols.GREEN_ARROW
-              }
-            ]
-          } as unknown as esri.UniqueValueRendererProperties
         } as unknown as FeatureNative
       }
     ],

@@ -35,36 +35,10 @@ export const CrossCountryParkingDefinitions = {
   }
 };
 
-const crossCountryAreaRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-line',
-    color: [137, 112, 68, 255],
-    width: 1.5
-  }
-};
-
-const crossCountryParkingRenderer: FeatureRenderer = {
-  type: 'unique-value',
-  field: 'trackxc',
-  uniqueValueInfos: [
-    {
-      value: 'EventParking',
-      label: 'Event Parking',
-      symbol: {
-        type: 'simple-fill',
-        color: [123, 35, 42, 255],
-        outline: null
-      } as unknown as esri.SymbolProperties
-    }
-  ]
-};
-
 export const CrossCountryParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.id,
-    title: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.name,
     url: CrossCountryParkingDefinitions.CROSS_COUNTRY_AREA.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -75,14 +49,12 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     listMode: 'show',
     layerIndex: 59,
     native: {
-      outFields: ['*'],
-      renderer: crossCountryAreaRenderer
-    } as unknown as FeatureNative
+      outFields: ['*']
+} as unknown as FeatureNative
   },
   {
     type: 'feature',
     id: CrossCountryParkingDefinitions.PARKING.id,
-    title: CrossCountryParkingDefinitions.PARKING.name,
     url: CrossCountryParkingDefinitions.PARKING.url,
     popupComponent: MarkdownPopupComponent,
     popupData: {
@@ -100,9 +72,8 @@ export const CrossCountryParkingColdLayerSources: LayerSource[] = [
     layerIndex: 60,
     native: {
       definitionExpression: `trackxc = 'EventParking'`,
-      outFields: ['*'],
-      renderer: crossCountryParkingRenderer
-    } as unknown as FeatureNative
+      outFields: ['*']
+} as unknown as FeatureNative
   }
 ];
 

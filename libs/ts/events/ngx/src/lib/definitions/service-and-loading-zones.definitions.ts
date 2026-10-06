@@ -34,7 +34,6 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: ServiceLoadingDefinitions.SERVICE_SPACES.id,
-    title: ServiceLoadingDefinitions.SERVICE_SPACES.name,
     url: ServiceLoadingDefinitions.SERVICE_SPACES.url,
     visible: true,
     listMode: 'show',
@@ -65,7 +64,6 @@ export const ServiceLoadingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: ServiceLoadingDefinitions.SERVICE_LOTS.id,
-    title: ServiceLoadingDefinitions.SERVICE_LOTS.name,
     url: ServiceLoadingDefinitions.SERVICE_LOTS.url,
     visible: true,
     listMode: 'show',

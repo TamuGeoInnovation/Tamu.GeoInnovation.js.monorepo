@@ -42,43 +42,7 @@ export const SummerCommencementColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     native: {
-      outFields: ['*'],
-      renderer: {
-        type: 'unique-value',
-        field: 'name',
-        uniqueValueInfos: [
-          {
-            value: 'Fast Route',
-            label: 'Recommended Routes',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(56, 168, 0)',
-              width: 3,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(56, 168, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          },
-          {
-            value: 'Slow Route',
-            label: 'Expect Delays',
-            symbol: {
-              type: 'simple-line',
-              color: 'rgb(230, 0, 0)',
-              width: 2,
-              marker: {
-                type: 'line-marker',
-                style: 'arrow',
-                color: 'rgb(230, 0, 0)',
-                placement: 'end'
-              }
-            } as unknown as esri.SimpleLineSymbolProperties
-          }
-        ]
-      }
+      outFields: ['*']
     }
   },
   {

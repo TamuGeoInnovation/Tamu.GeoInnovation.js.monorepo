@@ -68,118 +68,21 @@ export const TsMainParkingDefinitions = {
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 
-const ROUTE_STOP_MARKER_SIZE = 22;
-
-const createRouteStopMarkerSvg = (routeNum: string, color: [number, number, number, number]): string => {
-  const [r, g, b] = color;
-  const fill = `rgb(${r},${g},${b})`;
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">` +
-    `<circle cx="22" cy="22" r="19" fill="${fill}" stroke="white" stroke-width="2"/>` +
-    `<text x="22" y="22" text-anchor="middle" ` +
-    `fill="white" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="20" dy="0.35em">${routeNum}</text>` +
-    `</svg>`;
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
-};
-
-const createRouteStopSymbol = (
-  routeNum: string,
-  color: [number, number, number, number]
-): esri.SymbolProperties =>
-  ({
-    type: 'picture-marker',
-    url: createRouteStopMarkerSvg(routeNum, color),
-    width: ROUTE_STOP_MARKER_SIZE,
-    height: ROUTE_STOP_MARKER_SIZE
-  } as unknown as esri.SymbolProperties);
-
-const ROUTE_STOP_COLORS: Array<[string, [number, number, number, number]]> = [
-  ['01', [98, 64, 153, 255]],
-  ['03', [52, 52, 52, 255]],
-  ['04', [82, 189, 160, 255]],
-  ['05', [94, 155, 211, 255]],
-  ['06', [20, 178, 75, 255]],
-  ['07', [220, 20, 60, 255]],
-  ['08', [233, 22, 139, 255]],
-  ['12', [0, 84, 166, 255]],
-  ['15', [40, 144, 58, 255]],
-  ['22', [189, 26, 141, 255]],
-  ['26', [0, 111, 59, 255]],
-  ['27', [0, 174, 239, 255]],
-  ['31', [128, 0, 128, 255]],
-  ['34', [247, 147, 30, 255]],
-  ['35', [96, 56, 19, 255]],
-  ['36', [150, 115, 72, 255]],
-  ['40', [170, 0, 0, 255]],
-  ['41', [85, 255, 0, 255]],
-  ['47', [65, 105, 225, 255]],
-  ['48', [0, 0, 120, 255]]
-];
-
-const tsMainRouteStopPointsRenderer: FeatureRenderer = {
-  type: 'unique-value',
-  field: 'Route',
-  defaultSymbol: createRouteStopSymbol('?', [128, 128, 128, 255]),
-  uniqueValueInfos: ROUTE_STOP_COLORS.map(([value, color]) => ({
-    value,
-    label: value,
-    symbol: createRouteStopSymbol(value, color)
-  }))
-};
-
-const tsMainParkingLotsRenderer: FeatureRenderer = {
-  type: 'unique-value',
-  field: 'GIS.TS.ParkingLots.LotType',
-  defaultLabel: 'Valid Texas A&M Permit Required',
-  defaultSymbol: {
-    type: 'simple-fill',
-    color: [204, 204, 204, 255],
-    outline: {
-      type: 'simple-line',
-      color: [110, 110, 110, 255],
-      width: 1
-    }
-  } as unknown as esri.SymbolProperties,
-  uniqueValueInfos: [
-    {
-      value: 'Garage Visitor',
-      label: 'Visitor Parking',
-      symbol: {
-        type: 'simple-fill',
-        color: [0, 92, 230, 255],
-        outline: null
-      } as unknown as esri.SymbolProperties
-    },
-    {
-      value: 'Surface Visitor',
-      label: 'Visitor Parking',
-      symbol: {
-        type: 'simple-fill',
-        color: [0, 92, 230, 255],
-        outline: null
-      } as unknown as esri.SymbolProperties
-    }
-  ]
-};
-
 export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.ROUTE_STOP_START_POINTS.id,
-    title: TsMainParkingDefinitions.ROUTE_STOP_START_POINTS.name,
     url: TsMainParkingDefinitions.ROUTE_STOP_START_POINTS.url,
     visible: true,
     listMode: 'show',
     native: {
       outFields: ['*'],
-      renderer: tsMainRouteStopPointsRenderer,
       labelsVisible: false
     } as unknown as FeatureNative
   },
   {
     type: 'feature',
     id: TsMainParkingDefinitions.CAMPUS_STOPS.id,
-    title: TsMainParkingDefinitions.CAMPUS_STOPS.name,
     url: TsMainParkingDefinitions.CAMPUS_STOPS.url,
     visible: true,
     listMode: 'show',
@@ -208,25 +111,12 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
       outFields: ['*'],
       // Override the hosted service's own per-owner unique-value renderer so this map
       // keeps showing a single, undifferentiated orange/red hatch for all construction.
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-fill',
-          style: 'diagonal-cross',
-          color: [255, 85, 0, 255],
-          outline: {
-            color: [255, 85, 0, 255],
-            width: 1
-          }
-        }
-      }
     } as unknown as FeatureNative
   },
 
   {
     type: 'feature',
     id: TsMainParkingDefinitions.VISITOR_KIOSKS.id,
-    title: TsMainParkingDefinitions.VISITOR_KIOSKS.name,
     url: TsMainParkingDefinitions.VISITOR_KIOSKS.url,
     visible: true,
     listMode: 'show',
@@ -239,7 +129,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.PARKING_LOTS.id,
-    title: TsMainParkingDefinitions.PARKING_LOTS.name,
     url: TsMainParkingDefinitions.PARKING_LOTS.url,
     visible: true,
     listMode: 'show',
@@ -287,7 +176,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
 
     native: {
       outFields: ['*'],
-      renderer: tsMainParkingLotsRenderer,
       popupEnabled: true
     } as unknown as FeatureNative
   },
@@ -295,7 +183,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.LINE_PAINT.id,
-    title: TsMainParkingDefinitions.LINE_PAINT.name,
     url: TsMainParkingDefinitions.LINE_PAINT.url,
     visible: true,
     listMode: 'hide',
@@ -307,7 +194,6 @@ export const TsMainParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: TsMainParkingDefinitions.RNS_SPACES.id,
-    title: TsMainParkingDefinitions.RNS_SPACES.name,
     url: TsMainParkingDefinitions.RNS_SPACES.url,
     visible: true,
     listMode: 'show',

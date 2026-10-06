@@ -1,5 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { commonLayerProps, getDefaultGisHosts } from '@tamu-gisc/aggiemap/ngx/common';
+import { getDefaultGisHosts, commonLayerProps } from '@tamu-gisc/aggiemap/ngx/common';
 
 import { MarkdownPopupComponent } from '../modules/popups/markdown-popup/markdown-popup.component';
 import {
@@ -126,17 +126,6 @@ export const TailgatingColdLayerSources: LayerSource[] = [
     native: {
       outFields: ['*'],
       definitionExpression: `number IN (${TAILGATING_CONSTRUCTION_PROJECTS.map((n) => `'${n}'`).join(', ')})`,
-      // One style and legend entry for every project, instead of the service's per-owner categories.
-      renderer: {
-        type: 'simple',
-        label: 'Construction',
-        symbol: {
-          type: 'simple-fill',
-          style: 'diagonal-cross',
-          color: [220, 30, 30, 1],
-          outline: { color: [220, 30, 30, 1], width: 2 }
-        }
-      } as unknown as esri.SimpleRenderer
     }
   } as unknown as LayerSource,
   {

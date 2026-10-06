@@ -27,7 +27,6 @@ export const AVPParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: AVPParkingDefinitions.AVP_PARKING_LOTS.id,
-    title: AVPParkingDefinitions.AVP_PARKING_LOTS.name,
     url: AVPParkingDefinitions.AVP_PARKING_LOTS.url,
     visible: true,
     listMode: 'show',

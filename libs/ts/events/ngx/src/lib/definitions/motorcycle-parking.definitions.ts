@@ -27,7 +27,6 @@ export const MotorcycleParkingColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: MotorcycleParkingDefinitions.MOTORCYCLE_PARKING_SPACE.id,
-    title: MotorcycleParkingDefinitions.MOTORCYCLE_PARKING_SPACE.name,
     url: MotorcycleParkingDefinitions.MOTORCYCLE_PARKING_SPACE.url,
     visible: true,
     listMode: 'show',

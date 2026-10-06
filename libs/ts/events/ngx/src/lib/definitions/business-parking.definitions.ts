@@ -19,32 +19,6 @@ const eventUrl = Connections.businessParkingUrl;
 type FeatureNative = Extract<LayerSource, { type: 'feature' }>['native'];
 type FeatureRenderer = NonNullable<NonNullable<FeatureNative>['renderer']>;
 
-const ubAndUbPlusRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [90, 0, 0, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
-
-const ubPlusOnlyRenderer: FeatureRenderer = {
-  type: 'simple',
-  symbol: {
-    type: 'simple-fill',
-    color: [232, 190, 255, 255],
-    outline: {
-      type: 'simple-line',
-      color: [0, 0, 0, 0],
-      width: 0
-    }
-  }
-};
-
 export const BusinessParkingDefinitions = {
   UB_2_HOUR_SPACES: {
     id: BUSINESS_PARKING_LAYERS.UB_2_HOUR_SPACES,
@@ -107,9 +81,8 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`,
-      renderer: ubAndUbPlusRenderer
-    }
+      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Street', 'Surface', 'Surface Visitor')`
+}
   },
   {
     type: 'feature',
@@ -131,9 +104,8 @@ export const BusinessParkingColdLayerSources: LayerSource[] = [
     },
     native: {
       outFields: ['*'],
-      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`,
-      renderer: ubPlusOnlyRenderer
-    }
+      definitionExpression: `"GIS.TS.Lot_Use.UB_Lot" = 1 AND "GIS.TS.ParkingLots.LotType" IN ('Garage', 'Garage Visitor')`
+}
   }
 ];
 

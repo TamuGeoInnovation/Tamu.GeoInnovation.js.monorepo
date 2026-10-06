@@ -27,7 +27,6 @@ export const StaffSelectableColdLayerSources: LayerSource[] = [
   {
     type: 'feature',
     id: StaffSelectableDefinitions.STAFF_SELECTABLE.id,
-    title: StaffSelectableDefinitions.STAFF_SELECTABLE.name,
     url: StaffSelectableDefinitions.STAFF_SELECTABLE.url,
     visible: true,
     listMode: 'show',
