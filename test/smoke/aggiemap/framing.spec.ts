@@ -1,7 +1,7 @@
-import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import { Framing, readEsriVersion, waitForSettledFraming } from './framing';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
@@ -19,6 +19,13 @@ import { MANIFEST_PATH, MapManifest } from './global-setup';
  * - Ring Day days, Fish Camp sessions, Move-In halls - is covered without a hand-written list. A map
  * behind a builder is checked through its destinations, not its own route, which only redirects into
  * the builder. A destination whose map this environment does not list is left out.
+ *
+ * **Release runs check one route per map** (#1426). With `AGGIEMAP_SMOKE_FRAMING=release`, which
+ * `run-local.sh` sets unless told otherwise, a map behind a builder is checked through its first
+ * recorded destination only: about 50 routes instead of about 410, since the rest are the same maps
+ * opened with different builder choices. The scheduled run on GitHub sets nothing, so it checks every
+ * route, and so does a baseline refresh, whatever the variable says, since a refresh drops what it does
+ * not visit.
  *
  * **Compared** to within 0.05 zoom and 0.0001 degrees (about ten metres): a `goTo` lands exactly, and
  * the failures this exists for are hundreds of metres or a whole zoom level out. A route missing from
@@ -78,14 +85,28 @@ const inventory: BuilderInventory = fs.existsSync(INVENTORY_PATH)
 const listed = new Set(manifest.maps);
 const builderMaps = new Set(inventory.maps.map((map) => map.route));
 
+const destinationsOf = (map: BuilderInventory['maps'][number]) =>
+  map.destinations.map((destination) => destination.shareTarget);
+
+/** Every route this environment serves, which is what the baseline is compared and refreshed against. */
 const routes = [
   ...new Set([
     ...manifest.maps.filter((route) => !builderMaps.has(route)),
-    ...inventory.maps
-      .filter((map) => listed.has(map.route))
-      .flatMap((map) => map.destinations.map((destination) => destination.shareTarget))
+    ...inventory.maps.filter((map) => listed.has(map.route)).flatMap(destinationsOf)
   ])
 ].sort();
+
+const RELEASE_SCOPE = process.env.AGGIEMAP_SMOKE_FRAMING === 'release' && !UPDATE;
+
+/** The routes this run opens: all of them, or one per map for a release check. */
+const checked = RELEASE_SCOPE
+  ? [
+      ...new Set([
+        ...manifest.maps.filter((route) => !builderMaps.has(route)),
+        ...inventory.maps.filter((map) => listed.has(map.route)).flatMap((map) => destinationsOf(map).slice(0, 1))
+      ])
+    ].sort()
+  : routes;
 
 function readBaseline(): FramingBaseline | null {
   return fs.existsSync(BASELINE_PATH) ? JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf8')) : null;
@@ -153,7 +174,7 @@ test.describe('every map opens where it does on production', () => {
     }
   });
 
-  for (const route of routes) {
+  for (const route of checked) {
     test(`${route} opens where it does on production`, async ({ page, baseURL }) => {
       const expected = baseline?.routes[route];
 

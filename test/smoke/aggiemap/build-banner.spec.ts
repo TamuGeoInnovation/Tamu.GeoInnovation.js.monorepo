@@ -1,7 +1,7 @@
-import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { expect, test } from './fixtures';
 
 /**
  * The build banner names the build a page is running (#1306).

@@ -1,7 +1,8 @@
-import { expect, Locator, Page, test } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 
 /**

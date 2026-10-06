@@ -29,7 +29,9 @@ export default defineConfig({
 
   // Deliberately limited. Each test loads a full Esri map, and ~60 of those at once is enough to
   // make the GIS services the bottleneck, which shows up as timeouts that look like map failures.
-  workers: process.env.CI ? 4 : 2,
+  // Six locally since #1426, measured against dev without that happening; GitHub's runners stay at
+  // four. If dev's services start timing out, go back to four rather than adding retries.
+  workers: process.env.CI ? 4 : 6,
 
   reporter: process.env.CI
     ? [['github'], ['html', { open: 'never' }], ['junit', { outputFile: 'test-results/junit/playwright-aggiemap-smoke.xml' }]]

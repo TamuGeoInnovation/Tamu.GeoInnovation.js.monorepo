@@ -102,6 +102,9 @@ jobs:
       # empty there -- an entry appearing on production would be a real outage. Tolerated failures
       # are still listed in the test's annotations, so this suppresses noise without hiding anything.
       AGGIEMAP_SMOKE_ALLOWED_LAYER_FAILURES: ${{ matrix.allowed_layer_failures }}
+      # Every framing route, not the one per map a release check opens from run-local.sh (#1426). The
+      # daily run is where the ~360 builder-choice routes are still checked.
+      AGGIEMAP_SMOKE_FRAMING: full
 
     steps:
       # The suite inspects each map through the map probe (window.__tamuGiscMapProbe). A deployed

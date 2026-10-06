@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test';
-
 import { ESRI_RUNTIME_VERSION } from '../../../libs/maps/esri/src/lib/esri-runtime';
+import { expect, test } from './fixtures';
 
 /**
  * The deployed site loads the ArcGIS runtime this workspace pins (#1219).
