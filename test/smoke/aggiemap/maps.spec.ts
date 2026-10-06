@@ -1,7 +1,7 @@
-import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { expect, test } from './fixtures';
 import { APP_ROOT, MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { directionsAvailable, directionsEntryPoints } from './directions';

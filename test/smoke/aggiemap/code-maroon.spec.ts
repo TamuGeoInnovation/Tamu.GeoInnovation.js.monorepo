@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test';
-
+import { expect, test } from './fixtures';
 import { APP_ROOT } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { developmentSectionsVisible } from './development-only';

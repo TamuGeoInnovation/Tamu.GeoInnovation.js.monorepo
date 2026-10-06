@@ -1,6 +1,7 @@
-import { expect, test, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 import * as fs from 'fs';
 
+import { expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
 import { developmentSectionsVisible } from './development-only';

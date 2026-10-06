@@ -214,6 +214,12 @@ every layer, so its duration says as much about the GIS services as about this c
 
 | Date | Machine | Environment | Result | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 6 Oct 2026 | home | dev, Angular 21 (`4d7f1d7a`), **#1426 release scope**, 6 workers, 06:51:57 to 07:14:41 Central | 404 passed, 3 failed (Men's Basketball, #1431), 0 flaky, 14 skipped, of 421 | **22 min 44 s** |
+| 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; **#1426 branch**, framing only, the 70 release routes, 2 workers, 3:29 to 3:37 AM Central | 62 passed, 1 failed (#1431), 7 skipped; 9.9 s per passing test | **7.7 min** |
+| 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; **`development`**, framing only, the same 70 routes, 2 workers, 3:18 to 3:29 AM Central | 62 passed, 1 failed (#1431), 7 skipped; 17.0 s per passing test | **11.3 min** |
+| 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; #1426 branch, release scope, **4 workers**, 2:40 to 3:17 AM Central; CPU load median 21 | 421 tests: 399 passed, 3 failed (#1431), 5 flaky, 14 skipped | 37 min |
+| 6 Oct 2026 | cloud (4 CPUs) | dev, Angular 21; #1426 branch, release scope, **6 workers**, 2:03 to 2:39 AM Central | 421 tests: 395 passed, 4 failed (3 #1431, 1 load), 8 flaky, 14 skipped | 35 min |
+| 5-6 Oct 2026 | cloud | dev, Angular 21 (`4d7f1d7a`), full suite as on `development`, 2 workers, 23:58 to 01:56 Central | 748 passed, 3 failed (#1431, also on production), 5 flaky, 15 skipped, of 771 | **1 h 58 min** |
 | 5 Oct 2026 | home | dev, Angular 20 (`ea4d52e0`; `045f1faf` from about 23:00), 22:10:54 to 23:41:23 Central, 2 workers. **Stopped** when Angular 21 was about to replace it on dev | 582 passed, 5 failed of 770 (2 development-only, fixed by #1461; 2 Men's Basketball, #1431; 1 move-in, during a release swap). 164 min of test time; framing 113 min of it (#1426) | stopped at **1 h 31 min** |
 | 5 Oct 2026 | GitHub | production, run 37399982131, 20:36 to 21:53 Central | 712 passed, 3 failed (Men's Basketball, #1431), 1 flaky, 23 skipped | **1 h 17 min** |
 | 5 Oct 2026 | home | dev, build 20261005.6 | 743 passed, 0 failed, 14 skipped | ~1.3 h |
@@ -237,6 +243,26 @@ locally. Development and production jobs run in parallel inside one workflow run
 duration is the slower of the two. Which of the two should gate a release is #1421.
 
 Only a run on GitHub opens or closes a health issue. A local run, however it goes, does neither.
+
+### Making a release check faster (#1426)
+
+Three changes: a release check opens one framing route per map (70 on dev, against 421), the ArcGIS
+SDK is downloaded once per worker instead of once per test, and the framing waits poll every 250 ms
+instead of sleeping a second. Measured on 6 October from the cloud session's container, which has 4
+CPUs, against dev serving Angular 21:
+
+- **The code alone**, with everything else equal (the same 70 framing routes, 2 workers, back to back):
+  **17.0 s to 9.9 s per test**, 42% less, and 11.3 to 7.7 minutes of wall clock. Same failure on both
+  sides (`/events/mens-basketball`, #1431).
+- **The whole release check**, 421 tests: 35 minutes at 6 workers and 37 at 4, against about two hours
+  for the full 771 tests at 2 workers in the same container that night. Framing fell from 139 minutes of
+  test time to 20.
+- **That container cannot show the 10 to 15 minute target.** At 4 and 6 workers its CPU load sat at
+  about 21 on 4 CPUs, every test slowed, framing included, and 6 workers were no faster than 4. The run
+  measured the container, not the suite. A workstation measurement at 6 workers is still to be taken.
+- **What is left is mostly `maps.spec.ts`** (71 tests, about 50 minutes of test time at 2 workers),
+  event dates (13) and `bus.spec.ts`, whose every-route test took 7 to 11 minutes on its own and so is a
+  floor that more workers cannot lower ([#1473](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1473)).
 
 ## Where the other records are
 

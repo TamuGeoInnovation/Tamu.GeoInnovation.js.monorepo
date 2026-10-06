@@ -13,6 +13,15 @@ export interface Framing {
 
 const PROBE_GLOBAL = '__tamuGiscMapProbe';
 
+/** How often the probe and the framing are read while waiting (#1426). */
+const POLL_MS = 250;
+
+/** How long the framing must stay the same to count as settled. */
+const SETTLED_FOR_MS = 1_000;
+
+/** How long to wait for it to settle before giving up and reporting the last reading. */
+const SETTLE_TIMEOUT_MS = 30_000;
+
 /**
  * The view's framing, or `null` when there is no map view or its framing cannot be read.
  *
@@ -109,7 +118,11 @@ export interface SettledFraming {
  *
  * "Loaded" is the probe's `ready`: every layer settled. Framing is not final then - a `goTo` animates
  * for about half a second after the view becomes ready, and a map can frame itself later still - so it
- * is read once a second until three readings in a row agree, for up to 30 seconds.
+ * is read every 250 ms until it has not changed for a second, for up to 30 seconds.
+ *
+ * Until #1426 it was read once a second until three readings agreed, which spent at least two seconds of
+ * every test asleep however early the map had stopped. A second unchanged is still twice the length of a
+ * `goTo`, and readings four times as frequent see a move that the old ones could have slept through.
  *
  * Throws if the map never becomes ready, which is a broken map, not a framing difference.
  */
@@ -118,25 +131,35 @@ export async function waitForSettledFraming(page: Page, route: string): Promise<
     .waitForFunction(
       (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
       PROBE_GLOBAL,
-      { timeout: 90_000, polling: 1_000 }
+      { timeout: 90_000, polling: POLL_MS }
     )
     .catch(() => {
       throw new Error(`${route} never finished loading, so where it opens could not be read`);
     });
 
   const key = (framing: Framing | null) => JSON.stringify(framing && roundFraming(framing));
-  const readings: string[] = [];
+  const deadline = Date.now() + SETTLE_TIMEOUT_MS;
   let last: Framing | null = null;
+  let lastKey: string | null = null;
+  let unchangedSince = 0;
 
-  for (let attempt = 0; attempt < 30; attempt++) {
+  for (;;) {
     last = await readFraming(page);
-    readings.push(key(last));
+    const now = Date.now();
+    const reading = key(last);
 
-    if (readings.length >= 3 && readings.slice(-3).every((reading) => reading === readings[readings.length - 1])) {
+    if (reading !== lastKey) {
+      lastKey = reading;
+      unchangedSince = now;
+    } else if (now - unchangedSince >= SETTLED_FOR_MS) {
       return { framing: last && roundFraming(last), settled: true };
     }
 
-    await page.waitForTimeout(1_000);
+    if (now >= deadline) {
+      break;
+    }
+
+    await page.waitForTimeout(POLL_MS);
   }
 
   return { framing: last && roundFraming(last), settled: false };

@@ -10,6 +10,9 @@
 #                                     # a dev host, so development-only features are hidden
 #
 # Anything after the environment is passed to `playwright test`, e.g. `--grep "gameday"`.
+#
+# A local run checks a release, so framing.spec.ts opens one route per map (#1426). The scheduled
+# workflow on GitHub checks all of them; to do the same here, set AGGIEMAP_SMOKE_FRAMING=full.
 # Needs only Docker and bash (Git Bash on Windows); Node runs inside the container. The first run
 # downloads the Playwright image, about 2 GB.
 set -euo pipefail
@@ -48,7 +51,8 @@ fi
 
 echo "Smoke suite: $env_name, $image"
 
-docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -w /work -e SMOKE_ENV="$env_name" -e UPDATE_FRAMING_BASELINE "$image" \
+docker run --rm ${network_args[@]+"${network_args[@]}"} -v "$mount:/work" -w /work -e SMOKE_ENV="$env_name" -e UPDATE_FRAMING_BASELINE \
+  -e AGGIEMAP_SMOKE_FRAMING="${AGGIEMAP_SMOKE_FRAMING:-release}" "$image" \
   node -e '
     const settings = require("./test/smoke/aggiemap/environments.json")[process.env.SMOKE_ENV];
     const env = {

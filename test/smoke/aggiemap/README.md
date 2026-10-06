@@ -74,6 +74,12 @@ in only one of the baseline and the environment is reported in the output and an
 failed. Framing is read from the map probe's `framing`, or on builds whose probe predates it, from
 Esri's own list of views.
 
+**A release check opens one route per map** (#1426): every listed map, and for a map behind a builder
+its first recorded destination only, about 70 routes on dev instead of about 420. The rest are the same
+maps opened with different builder choices, and the scheduled run on GitHub still opens every one of
+them each day. `run-local.sh` sets `AGGIEMAP_SMOKE_FRAMING=release`; set it to `full` to open every
+route locally. A baseline refresh always opens every route, since it drops the ones it does not visit.
+
 **The baseline must come from production**, the known-good reference; captured from dev it would
 record the build under test. Refresh it after a deliberate framing change reaches production, and
 review the diff (one line per route):
@@ -103,6 +109,12 @@ only Docker and bash (Git Bash on Windows). The first run downloads the Playwrig
 Google Analytics id it should report to, and the layers it is allowed to fail. The workflow and the
 script both read that file, so a change there applies to scheduled, manual and local runs alike.
 Change expectations there, not in a command line.
+
+**A local run uses six workers; the workflow uses four** (#1426). Each test still gets a fresh browser
+context, but the ArcGIS SDK is downloaded once per worker and served from memory after that
+([`fixtures.ts`](fixtures.ts)), so a spec that opens a page imports `test` and `expect` from
+`./fixtures`, not from `@playwright/test`. A context a spec makes by hand with `browser.newContext()`
+does not get the cache; it still works, and downloads the SDK itself.
 
 The commands below are what the script runs, for reference or for running without it. Node runs in
 Docker here, so Playwright runs in a container.
@@ -155,6 +167,7 @@ and a local run skips them while still passing (#1114).
 | `AGGIEMAP_SMOKE_MIN_MAPS` | `55` | floor below which discovery is treated as broken |
 | `AGGIEMAP_SMOKE_ANALYTICS` | `block` | `allow` lets analytics requests through for a deliberate run |
 | `UPDATE_FRAMING_BASELINE` | unset | `1` makes `framing.spec.ts` record `framing-baseline.json` instead of comparing; production only |
+| `AGGIEMAP_SMOKE_FRAMING` | `full` (`release` from `run-local.sh`) | `release` makes `framing.spec.ts` open one route per map; ignored when refreshing the baseline |
 
 ## Analytics is blocked by default
 

@@ -1,9 +1,10 @@
-import { expect, Page, test } from '@playwright/test';
+import { Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
 // connections.ts has no imports, so it loads without the Angular dependency graph (see services.spec.ts).
 import { Connections } from '../../../libs/aggiemap/ngx/common/src/lib/connections';
+import { expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 
 /**

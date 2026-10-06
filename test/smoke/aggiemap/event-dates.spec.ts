@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test';
 import * as fs from 'fs';
 
+import { expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 
 /**
