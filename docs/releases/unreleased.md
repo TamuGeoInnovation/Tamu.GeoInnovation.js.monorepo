@@ -21,6 +21,21 @@ what has not shipped yet.
 
 ## Summary
 
+- **The campus maps are live on production** ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)): Galveston, McAllen and the DC / Bush School have been
+  reachable in production by direct URL all along, but nothing there linked to them, so to everyone
+  else they did not exist. The **Campus Maps** section on All Maps and the **Campus Maps** tile in
+  Visit Maps now appear on production as well as dev.
+
+  They stay out of the All Maps search, deliberately and on both environments: that search is College
+  Station's, and a Galveston building answering a search made there would be a worse result than no
+  result. The section and the tile are how these maps are reached, which is why each card carries a
+  copy field. No service work was needed - all six campus services are the production ones in both
+  environments, confirmed by loading each map on production and finding no request to a development
+  host.
+
+  | Before (production) | After (production) |
+  | --- | --- |
+  | ![All Maps on production with no Campus Maps section](../screenshots/1482-campus-to-production/before-production-all-maps.png) | ![The Campus Maps section listing Galveston, McAllen and DC / Bush School](../screenshots/1482-campus-to-production/after-campus-section.png) |
 - **Campus building links are readable** ([#1481](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1481)): the copy button on a Galveston, McAllen or DC / Bush School
   building popup produced `?feature=galveston-buildings-layer:3` - nothing a person could read, and
   keyed on an ArcGIS object id that is not stable when the service is republished, so a link shared
@@ -108,6 +123,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Campus maps on production ([#1482](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1482)) | [All Maps](https://dev.aggiemap.tamu.edu/all-maps) | A **Campus Maps** section and a **Campus Maps** tile in Visit Maps, each opening Galveston, McAllen and DC / Bush School. Typing "Galveston" in the map search still finds **nothing** - that is deliberate. This is the change to look at on production after the release, since dev showed it already |
 | Campus building links ([#1481](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1481)) | [Galveston](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?bldg=3010), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The link opens the building straight away. Click any building, press **Copy**, and the link reads `?bldg=<number>` - paste it in a new tab and the same building opens. An old `?feature=...` link must still work too |
 | Football micromobility ([#996](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/996)) | [Entry](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=entry), [Exit](https://dev.aggiemap.tamu.edu/events/gameday-parking/map/d?transport-type=micromobility&direction=exit) | The entry map draws **Entry Routes**; the exit map draws **Exit Routes** and not the entry ones. Layers read Micromobility Parking Area, the routes, Bike Dismount Zones, Bike Veo Geofence - the same order as the legend below. **The routes are thicker than before**, because that is the width the service publishes; say so if it is too heavy. Needed before the 17 October home game |
 | Campus building popups ([#1463](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1463)) | [Galveston Student Center](https://dev.aggiemap.tamu.edu/campus/galveston/map/d?feature=galveston-buildings-layer:1), [McAllen](https://dev.aggiemap.tamu.edu/campus/mcallen/map/d), [DC / Bush School](https://dev.aggiemap.tamu.edu/campus/dc-bush-school/map/d) | The popup shows a title, "Building N" and the address (Galveston and DC; McAllen has no address in its data), and a copy field, with **no Property/Value table**. Search Galveston for "Williams", open the result, copy its link and paste it in a new tab: it reopens the same building. DC's ZIP shows 00318 until the data is fixed ([#1464](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1464)) |
