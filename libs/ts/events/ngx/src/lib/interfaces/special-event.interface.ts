@@ -187,6 +187,9 @@ export interface EventConfiguration {
    *   the two surfaces agree.
    *
    * Defaults to `title` when omitted to preserve existing behavior for other events.
+   *
+   * Declaring the sources in the order you want is only half of it - without `source` here the list
+   * sorts alphabetically and the declaration order does nothing. See `docs/map-layers.md`.
    */
   referenceLayerListOrder?: 'title' | 'source';
 

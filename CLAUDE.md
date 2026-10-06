@@ -27,6 +27,8 @@ Five places, each with one job.
 | Where | What belongs there |
 | --- | --- |
 | This file | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month. |
+| [`docs/map-layers.md`](docs/map-layers.md) | Where a layer's symbology, title and order come from, how to override each, and when an override is right. Read before hard-coding anything about how a map looks. |
+| [`docs/testing-maps.md`](docs/testing-maps.md) | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot. |
 | [`docs/build-times.md`](docs/build-times.md) | How long runs take, recorded as they happen, so a change meant to speed the work up can be shown to have done it. Measurements, not rules. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
@@ -290,6 +292,12 @@ anyone.
 - **Follow the patterns already in the repository**: how definitions declare things (for example,
   the per-choice `mapView` used by the event maps), how modules are wired, how tests are written.
   A new way of doing something the repository already does needs a reason in the pull request.
+
+**A layer's symbology, title and order come from its service.** Overriding any of them in a
+definition is a deliberate act that needs a reason written beside it:
+[`docs/map-layers.md`](docs/map-layers.md) says how each one works, when an override is right, and
+what to record. A hard-coded symbol with no comment is indistinguishable from an oversight, and that
+is how 95 of them accumulated (#1028, #1508).
 
 **Shared component styles are imported by the component, not the app.** Only
 globally-applied widget styles belong in an app's `styles.scss`.
