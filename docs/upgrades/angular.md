@@ -28,21 +28,21 @@ unattended.
 
 ## Time per step
 
-| Step | Angular 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | Angular 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | Angular 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | Angular 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) |
-| --- | --- | --- | --- | --- |
-| Versions | Angular 16.2, Nx 16.10, TypeScript 5.1 | Angular 17.1, Nx 17.3, TypeScript 5.3 | Angular 18.2, Nx 19.8, TypeScript 5.5 | Angular 19.2, Nx 20.8, TypeScript 5.7 |
-| 1. Fresh install | 5 min 44 s | 3 min 48 s | 3 min 35 s | 7 min 29 s |
-| 2. `nx migrate` | 2 min 22 s | 3 min 21 s | 2 min 15 s | 2 min 30 s |
-| 3. Fix the install | ~25 min | ~10 min | ~20 min | ~25 min (one retry) |
-| 4. Install new versions | ~8 min | 6 min 23 s | 9 min 51 s | 23 min 35 s, contended |
-| 5. Clean `npm ci` | skipped (cost a CI round trip) | 43 s | 2 min | failed once (`brace-expansion`); resync and pass, 2 min 37 s |
-| 6. Code migrations | 70 min (25 listed, 10 changed files) | 91 min (24 listed, 12 changed files) | 98 min (22 listed, 18 files) | ~5 h 10 min running (6 h 18 min wall, 66 min paused), contended |
-| 7. Commit, rebase, lock resync | ~10 min | ~15 min | ~15 min | ~30 min (formatting restored, lock resynced twice) |
-| 8. Full lint, test and build | 95 min | 77 min | 109 min | **9 min in a volume** (old setup: 87 of 301 tasks in about an hour, stopped) |
-| 9. Fix newly broken | ~30 min | ~90 min | ~25 min | ~45 min |
-| 10. Pull request and CI-only fixes | ~40 min | ~60 min | recorded after merge | recorded after merge |
-| **Total, steps 1-10** | **~4 h 50 min** | **~6 h** | **~5 h before CI** | **not comparable**: see below |
-| 11. Dev build, deploy and full suite | ~1 h | ~1 h | to record | to record |
+| Step | Angular 16 ([#1343](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1343)) | Angular 17 ([#1365](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1365)) | Angular 18 ([#1371](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1371)) | Angular 19 ([#1378](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1378)) | Angular 20 ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)) |
+| --- | --- | --- | --- | --- | --- |
+| Versions | Angular 16.2, Nx 16.10, TypeScript 5.1 | Angular 17.1, Nx 17.3, TypeScript 5.3 | Angular 18.2, Nx 19.8, TypeScript 5.5 | Angular 19.2, Nx 20.8, TypeScript 5.7 | Angular 20.3, Nx 21.6, TypeScript 5.9 |
+| 1. Fresh install | 5 min 44 s | 3 min 48 s | 3 min 35 s | 7 min 29 s | **62 s** (volume) |
+| 2. `nx migrate` | 2 min 22 s | 3 min 21 s | 2 min 15 s | 2 min 30 s | **39 s** |
+| 3. Fix the install | ~25 min | ~10 min | ~20 min | ~25 min (one retry) | ~2 min of fixes, plus Prettier 3 as its own pull request first (~20 min) |
+| 4. Install new versions | ~8 min | 6 min 23 s | 9 min 51 s | 23 min 35 s, contended | **58 s** |
+| 5. Clean `npm ci` | skipped (cost a CI round trip) | 43 s | 2 min | failed once (`brace-expansion`); resync and pass, 2 min 37 s | **55 s** |
+| 6. Code migrations | 70 min (25 listed, 10 changed files) | 91 min (24 listed, 12 changed files) | 98 min (22 listed, 18 files) | ~5 h 10 min running (6 h 18 min wall, 66 min paused), contended | **8 min 55 s** (28 listed, 371 files) |
+| 7. Commit, rebase, lock resync | ~10 min | ~15 min | ~15 min | ~30 min (formatting restored, lock resynced twice) | ~3 min (formatting 3 s; lock resync 68 s) |
+| 8. Full lint, test and build | 95 min | 77 min | 109 min | **9 min in a volume** (old setup: 87 of 301 tasks in about an hour, stopped) | **6 min 22 s** cold; 4 min 9 s after the fixes |
+| 9. Fix newly broken | ~30 min | ~90 min | ~25 min | ~45 min | ~20 min |
+| 10. Pull request and CI-only fixes | ~40 min | ~60 min | recorded after merge | recorded after merge | recorded after merge |
+| **Total, steps 1-10** | **~4 h 50 min** | **~6 h** | **~5 h before CI** | **not comparable**: see below | **~1 h** of wall clock, Prettier included |
+| 11. Dev build, deploy and full suite | ~1 h | ~1 h | to record | to record | to record |
 
 ## What each one hit
 
@@ -107,6 +107,24 @@ Vite, so Angular's migrations for the `application` builder apply to them.
   event definitions, the popups) that webpack evaluated in a working order and esbuild did not. Load
   the app.
 
+**Angular 20**
+- **The whole step ran in a Docker volume** ([#1402](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1402)), migrations included: about an hour
+  of wall clock from fresh install to a passing full check, against 5 to 6 hours for 16 to 18.
+- `@angular/cli` pin left behind, as always. `ng2-dragula` 6.0.0 supports Angular below 20 only; 7.0.0
+  (npm tag `next`) supports 20.
+- **Nx 21 brings `@nestjs/schematics` 11, which needs Prettier 3.** Prettier 2.8.8 to 3.9.9 went first
+  as its own pull request ([#1448](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1448)), reformatting the 160 files Prettier 3 formats
+  differently.
+- The migrations' own install left the lock out of step again; `scripts/check-in-volume.sh` refused it
+  before any task ran, and it was resynced.
+- **`control-flow-migration`** rewrote templates from `*ngIf`/`*ngFor` to `@if`/`@for`. It skipped one
+  template with a duplicate `ng-template` name (GIS Day's event detail), and turned GIS Day's
+  initial survey's `*ngIf=""` (never rendered) into `@if ()`, which does not compile; now `@if (false)`.
+- **Four breaks, 71 tasks:** `@angular-eslint/prefer-inject` (1,152 errors in 65 projects, now off, as
+  `prefer-standalone` was for 19); `TestBed.get` removed, four specs missed by its migration; two
+  template-scanning tests (#1003, #1251) that could not see gates inside `@if` blocks, now read through
+  a shared `templateGates()`; and the GIS Day survey above.
+
 ## Forecast for the rest
 
 **Fixed cost per version, from 16 to 18:** steps 1, 2, 4, 5 and 7 together about 30 minutes; code
@@ -124,8 +142,13 @@ In a Docker volume ([#1402](https://github.com/TamuGeoInnovation/Tamu.GeoInnovat
 `npm ci` about 2 minutes. Running the migrations there too, **expect about 2 to 3 hours per version**,
 most of it step 9. Angular 20 is the first step run entirely in the new setup; check this against it.
 
+**Checked against Angular 20 (5 October 2026): about 1 hour**, Prettier included, against the 2 to 3
+hours forecast. The machine time was under 20 minutes - installs about a minute each, migrations 9
+minutes, the full check 4 to 6 - and most of the hour was reading failures and writing fixes. **Expect
+about 1 to 1.5 hours per remaining version**, plus the dev build and suite.
+
 | Next step | Forecast | Known before starting |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | Angular 19 | 5 to 6.5 h | Node 20.18.1 is enough |
 | **Node 20.18.1 to 22** | to estimate | **Required before Angular 20:** Angular 20 and 21 need Node 20.19 or later, Angular 22 needs Node 22.22 or later. Node 22 covers all three. It changes the Docker images, CI, the Azure pipeline and the setup docs, and needs every project built and tested under it |
 | Angular 20 | 5 to 6.5 h | after Node 22 |

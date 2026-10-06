@@ -21,6 +21,11 @@ what has not shipped yet.
 
 ## Summary
 
+- Not visible: **Angular 20** ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)): Angular 19.2 to 20.3, Nx 20.8 to 21.6,
+  TypeScript 5.7 to 5.9, with Prettier 3 ([#1448](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1448)). Nothing is meant to look or behave
+  differently, but **most templates changed form**: Angular's migration rewrote `*ngIf` and `*ngFor` as
+  its built-in `@if` and `@for` blocks. A panel, list or button that fails to appear is the first thing
+  to report. Not on dev until the build after it merges.
 - **A Football Tailgating map, on dev only** ([#1422](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1422), pull request
   [#1424](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/1424)).
   Listed under **Football** on the Athletics Events page, it shows the Aggie Park and West Campus
@@ -58,6 +63,7 @@ What to test in it is listed in [that file](2026-10-05.md#what-to-test).
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Angular 20 ([#1447](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1447)) | Any map you use; [All Maps](https://dev.aggiemap.tamu.edu/all-maps); an event builder such as [Ring Day](https://dev.aggiemap.tamu.edu/events/ring-day); popups, the side panel's Layers and Legend; and GIS Day's pages if you use them | **nothing different**. Templates were rewritten from `*ngIf`/`*ngFor` to `@if`/`@for`, so the thing to look for is something missing: an empty list, a panel that will not open, a button that has gone |
 
 ---
 

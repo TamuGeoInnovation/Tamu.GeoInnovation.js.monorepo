@@ -35,6 +35,10 @@ Anything unusual goes in a note under the table rather than being squeezed into 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | home | `check-in-volume.sh chore/1447-angular-20 all` after the fixes (246 tasks, 0 failed; 70 from cache) | volume, warm | **4 min 9 s** |
+| 5 Oct 2026 | home | `check-in-volume.sh chore/1447-angular-20 all`, Angular 20 after its migrations (246 tasks; 71 failed) | volume, Nx cache cold; a GitHub smoke run going | **6 min 22 s** |
+| 5 Oct 2026 | home | `nx migrate --run-migrations`, Angular 20 (28 migrations, 371 files) | volume | **8 min 55 s** |
+| 5 Oct 2026 | home | `nx migrate 21.6.11` | volume | 39 s |
 | 5 Oct 2026 | home | `check-in-volume.sh chore/1448-prettier-3 affected` (lint, test, build; 118 projects, 246 tasks, 0 failed) | volume, Nx cache cold; `npm ci` (60 s) included; a GitHub smoke run going, nothing heavy locally | **6 min 24 s** |
 | 5 Oct 2026 | home | Prettier 3.9.9 `--list-different` over the whole repository (400 files would change) | volume | 23-27 s |
 | 5 Oct 2026 | home | Prettier 2.8.8 `--list-different` over the whole repository (241 files would change) | volume | 26 s |
@@ -59,6 +63,9 @@ same output appears when the graph fails to compute. Read the log, not the exit 
 
 | Date | Machine | What ran | Approach | Elapsed |
 | --- | --- | --- | --- | ---: |
+| 5 Oct 2026 | home | `npm ci` from the resynced lock after the Angular 20 migrations | clean, from only `package.json` and the lock | 68 s |
+| 5 Oct 2026 | home | `npm ci`, Angular 20 install proof | clean, from only `package.json` and the lock | 55 s |
+| 5 Oct 2026 | home | `npm install`, Angular 20's new versions | into the `tamu-js-1447` Docker volume | **58 s** |
 | 5 Oct 2026 | home | `npm ci` after the Prettier 3 bump (lock proof and install) | into the `tamu-js-1448` Docker volume | **59 s** |
 | 5 Oct 2026 | home | `npm ci`, Angular 19 baseline for the Angular 20 upgrade (#1447) | into the `tamu-js-1447` Docker volume | **62 s** |
 | 5 Oct 2026 | office | `npm ci` | into the `tamu-js-dev-nm` Docker volume | **4 min 45 s** |
