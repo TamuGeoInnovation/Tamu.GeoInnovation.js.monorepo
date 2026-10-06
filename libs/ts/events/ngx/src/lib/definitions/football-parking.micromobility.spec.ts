@@ -1,6 +1,10 @@
 import { LayerSource } from '@tamu-gisc/common/types';
 
-import { FootballParkingColdLayerSources, FootballParkingOptions } from './football-parking.definitions';
+import {
+  FootballParkingColdLayerSources,
+  FootballParkingConfiguration,
+  FootballParkingOptions
+} from './football-parking.definitions';
 
 /**
  * The Football micromobility maps follow their services (#996).
@@ -42,6 +46,13 @@ describe('football micromobility layers', () => {
       'football-bike-dismount-zones',
       'football-bike-veo-geofence'
     ]);
+  });
+
+  it('orders the layer list by the declaration, not alphabetically', () => {
+    // Declaring the layers in service order achieves nothing on its own: the layer list sorts by
+    // title unless a map asks otherwise, which is why the entry map read Bike Dismount Zones, Bike
+    // Veo Geofence, Micromobility Parking Area while the legend below it read the reverse (#996).
+    expect(FootballParkingConfiguration.referenceLayerListOrder).toBe('source');
   });
 
   it('reads each route layer from the service and sublayer that publishes it', () => {
