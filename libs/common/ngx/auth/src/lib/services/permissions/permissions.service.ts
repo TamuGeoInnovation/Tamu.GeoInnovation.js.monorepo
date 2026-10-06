@@ -9,7 +9,10 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class PermissionsService {
   private _resource: string;
 
-  constructor(private readonly http: HttpClient, private readonly env: EnvironmentService) {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly env: EnvironmentService
+  ) {
     this._resource = `${this.env.value('api_url')}/authorization/permissions`;
   }
 

@@ -20,7 +20,10 @@ export class EventPassedWarningComponent {
   public followupMessage: string;
   public acknowledgeText: string;
 
-  constructor(private readonly mr: ModalRefService, @Inject(MODAL_DATA) private readonly data: EventPassedData) {
+  constructor(
+    private readonly mr: ModalRefService,
+    @Inject(MODAL_DATA) private readonly data: EventPassedData
+  ) {
     this.title = data?.title || 'This event has passed';
     this.message =
       data?.message || 'The information on this map may be outdated and should be used for informational purposes only.';

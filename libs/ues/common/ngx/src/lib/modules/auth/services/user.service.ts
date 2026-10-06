@@ -19,7 +19,10 @@ export class UserService {
     isPublisher: this.isAuthorized(['PUBLISHER'])
   };
 
-  constructor(private http: HttpClient, private env: EnvironmentService) {
+  constructor(
+    private http: HttpClient,
+    private env: EnvironmentService
+  ) {
     this.http.get<IUser>(this.env.value('apiUrl') + '/oidc/userinfo', { withCredentials: true }).subscribe((user) => {
       this.user.next(user);
     });

@@ -15,7 +15,10 @@ export class RevivalBannerComponent implements OnInit {
   public acknowledged$ = this._acknowledged$.asObservable().pipe(delay(25));
   public legacyHost: string;
 
-  constructor(private readonly ss: SettingsService, private readonly env: EnvironmentService) {}
+  constructor(
+    private readonly ss: SettingsService,
+    private readonly env: EnvironmentService
+  ) {}
 
   public ngOnInit(): void {
     this.ss

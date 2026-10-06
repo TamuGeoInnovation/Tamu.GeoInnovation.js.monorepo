@@ -16,7 +16,10 @@ export class PeopleDetailsComponent implements OnInit {
   public speakerGuid: string;
   public $speaker: Observable<Partial<Speaker>>;
 
-  constructor(private route: ActivatedRoute, private speakerService: SpeakerService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private speakerService: SpeakerService
+  ) {}
 
   public ngOnInit(): void {
     this.$speaker = this.route.params.pipe(

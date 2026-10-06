@@ -94,7 +94,7 @@ export abstract class BaseProvider<T extends { guid: string }> {
     // empty array, so the guard below never fired for an empty string and a blank guid reached the
     // delete. An empty array reached neither branch at all and the method resolved undefined --
     // the caller saw a success for a delete that never happened.
-    const guids = (typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : oneOrMoreEntityGuids ?? [])
+    const guids = (typeof oneOrMoreEntityGuids === 'string' ? oneOrMoreEntityGuids.split(',') : (oneOrMoreEntityGuids ?? []))
       .map((guid) => guid.trim())
       .filter((guid) => guid !== '');
 

@@ -21,7 +21,10 @@ export class BreadcrumbComponent implements OnInit {
 
   private routes: Routes;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   public ngOnInit() {
     this.routes = this.extractRoutes(this.route);

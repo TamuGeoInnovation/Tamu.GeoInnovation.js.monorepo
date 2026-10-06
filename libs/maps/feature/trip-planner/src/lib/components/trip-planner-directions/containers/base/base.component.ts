@@ -19,7 +19,11 @@ export class TripPlannerDirectionsComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private router: Router, private plannerService: TripPlannerService, private analytics: Angulartics2) {}
+  constructor(
+    private router: Router,
+    private plannerService: TripPlannerService,
+    private analytics: Angulartics2
+  ) {}
 
   public ngOnInit() {
     // Subscribe to travel mode state in trip planner and fetch trip result for mode.

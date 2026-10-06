@@ -16,7 +16,10 @@ export class AuthService {
   public state: Observable<LoggedInState>;
   public apiKey: Observable<string>;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = this.env.value('legacy_api_url') + 'login';
 
     this.state = this.http

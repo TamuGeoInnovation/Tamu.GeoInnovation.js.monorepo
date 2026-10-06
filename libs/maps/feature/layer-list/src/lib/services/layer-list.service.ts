@@ -10,7 +10,10 @@ import esri = __esri;
 export class LayerListService {
   private _model: esri.LayerListViewModel;
 
-  constructor(private moduleProvider: EsriModuleProviderService, private mapService: EsriMapService) {}
+  constructor(
+    private moduleProvider: EsriModuleProviderService,
+    private mapService: EsriMapService
+  ) {}
 
   public layers() {
     return combineLatest([from(this.moduleProvider.require(['LayerListViewModel'])), this.mapService.store]).pipe(

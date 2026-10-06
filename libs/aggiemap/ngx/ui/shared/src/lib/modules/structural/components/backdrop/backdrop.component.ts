@@ -33,7 +33,10 @@ export class BackdropComponent implements OnInit {
   @Output()
   public voidClick: EventEmitter<MouseEvent> = new EventEmitter();
 
-  constructor(private renderer: Renderer2, private element: ElementRef) {}
+  constructor(
+    private renderer: Renderer2,
+    private element: ElementRef
+  ) {}
 
   public ngOnInit() {
     const rootElement = this.element.nativeElement;

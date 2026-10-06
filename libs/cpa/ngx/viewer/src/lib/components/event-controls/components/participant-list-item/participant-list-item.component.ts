@@ -31,7 +31,10 @@ export class ParticipantListItemComponent implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   public ngOnInit(): void {
     this.editable.pipe(skip(1), debounceTime(0), takeUntil(this._$destroy)).subscribe((value) => {

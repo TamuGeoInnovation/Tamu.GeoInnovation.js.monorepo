@@ -14,7 +14,11 @@ import { formExporter } from '../../admin-add-checkins/admin-add-checkins.compon
   styleUrls: ['./admin-detail-checkin.component.scss']
 })
 export class AdminDetailCheckinComponent extends BaseAdminDetailComponent<CheckIn> implements OnInit {
-  constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private checkinService: CheckinService) {
+  constructor(
+    private fb1: FormBuilder,
+    private route1: ActivatedRoute,
+    private checkinService: CheckinService
+  ) {
     super(fb1, route1, checkinService);
   }
 

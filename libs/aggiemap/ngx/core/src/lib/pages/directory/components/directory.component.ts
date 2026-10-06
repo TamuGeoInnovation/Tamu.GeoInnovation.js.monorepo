@@ -41,7 +41,10 @@ export class DirectoryComponent implements OnInit {
   public loadingIndicator = true;
   private _data$: Observable<Array<BuildingDirectoryEntry>>;
 
-  constructor(private readonly http: HttpClient, private readonly fb: UntypedFormBuilder) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly fb: UntypedFormBuilder
+  ) {}
 
   public ngOnInit(): void {
     this._data$ = this.http.get<Array<BuildingDirectoryEntry>>('/assets/data/building-directory.json').pipe(

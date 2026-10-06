@@ -19,7 +19,10 @@ export class NotificationContainerComponent implements OnInit {
 
   public notifications: Observable<Notification[]>;
 
-  constructor(@Optional() private analytics: Angulartics2, private service: NotificationService) {}
+  constructor(
+    @Optional() private analytics: Angulartics2,
+    private service: NotificationService
+  ) {}
 
   public ngOnInit() {
     this.notifications = this.service.notifications;

@@ -10,7 +10,10 @@ import { IResponseDto, IResponseRequestDto, IResponseResolved } from '@tamu-gisc
 export class ResponseService {
   public resource: string;
 
-  constructor(private environment: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private environment: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = this.environment.value(`api_url`) + 'responses';
   }
 

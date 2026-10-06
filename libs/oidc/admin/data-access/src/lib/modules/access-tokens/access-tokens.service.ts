@@ -12,7 +12,10 @@ import { AccessToken } from '@tamu-gisc/oidc/common';
 export class AccessTokenService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = this.env.value('api_url') + '/access-token';
   }
 

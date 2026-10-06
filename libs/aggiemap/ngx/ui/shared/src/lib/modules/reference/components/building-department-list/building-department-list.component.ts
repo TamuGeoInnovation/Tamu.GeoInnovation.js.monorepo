@@ -27,7 +27,10 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private searchService: SearchService, private environment: EnvironmentService) {
+  constructor(
+    private searchService: SearchService,
+    private environment: EnvironmentService
+  ) {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }

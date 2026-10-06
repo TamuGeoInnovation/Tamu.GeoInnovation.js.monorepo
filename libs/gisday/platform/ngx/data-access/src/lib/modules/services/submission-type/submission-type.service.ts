@@ -12,7 +12,10 @@ import { BaseService } from '../_base/base.service';
 export class SubmissionTypeService extends BaseService<SubmissionType> {
   public resource: string;
 
-  constructor(private env1: EnvironmentService, private http1: HttpClient) {
+  constructor(
+    private env1: EnvironmentService,
+    private http1: HttpClient
+  ) {
     super(env1, http1, 'submission-types');
   }
 }

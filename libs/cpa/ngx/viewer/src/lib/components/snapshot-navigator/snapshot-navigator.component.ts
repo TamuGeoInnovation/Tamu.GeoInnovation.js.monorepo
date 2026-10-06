@@ -54,7 +54,11 @@ export class SnapshotNavigatorComponent implements OnInit {
   @ViewChild('innerContainer', { static: true })
   public innerContainer: ElementRef;
 
-  constructor(private vs: ViewerService, private router: Router, private el: ElementRef) {}
+  constructor(
+    private vs: ViewerService,
+    private router: Router,
+    private el: ElementRef
+  ) {}
 
   @HostBinding('style.maxWidth')
   public get maxContainerWidth() {

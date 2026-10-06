@@ -13,7 +13,10 @@ export class AuthService {
   public isAuthenticated$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
 
-  constructor(@Inject(ROLES_CLAIM) claim: string, private readonly as: AS) {
+  constructor(
+    @Inject(ROLES_CLAIM) claim: string,
+    private readonly as: AS
+  ) {
     this.user$ = this.as.user$.pipe(shareReplay());
 
     this.isAuthenticated$ = this.as.isAuthenticated$.pipe(shareReplay());

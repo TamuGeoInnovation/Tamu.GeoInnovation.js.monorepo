@@ -15,7 +15,11 @@ import { formExporter } from '../../admin-add-rsvp-type/admin-add-rsvp-type.comp
   standalone: false
 })
 export class AdminDetailRsvpTypeComponent extends BaseAdminDetailComponent<RsvpType> implements OnInit {
-  constructor(private fb1: UntypedFormBuilder, private route1: ActivatedRoute, private rsvpTypeService: RsvpTypeService) {
+  constructor(
+    private fb1: UntypedFormBuilder,
+    private route1: ActivatedRoute,
+    private rsvpTypeService: RsvpTypeService
+  ) {
     super(fb1, route1, rsvpTypeService);
   }
 

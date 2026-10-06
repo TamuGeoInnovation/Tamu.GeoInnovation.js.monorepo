@@ -10,7 +10,10 @@ import { forkJoin } from 'rxjs';
 export class AccountDetailsService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = this.env.value('legacy_api_url') + 'userServices/getDetails';
   }
 

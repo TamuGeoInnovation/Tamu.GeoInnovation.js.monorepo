@@ -963,12 +963,15 @@ export class EsriMapService {
           const tokens = parameterValue
             .split(',')
             .map((token) => (searchSource.urlQueryParamNumeric ? Number(token) : token));
-          const deduplicatedTokens = tokens.reduce((uniqueList, token) => {
-            if (!uniqueList.includes(token)) {
-              uniqueList.push(token);
-            }
-            return uniqueList;
-          }, [] as (string | number)[]);
+          const deduplicatedTokens = tokens.reduce(
+            (uniqueList, token) => {
+              if (!uniqueList.includes(token)) {
+                uniqueList.push(token);
+              }
+              return uniqueList;
+            },
+            [] as (string | number)[]
+          );
 
           return {
             dataset: searchSource.source,
@@ -1167,10 +1170,7 @@ export interface BaseMapProperties extends esri.BasemapProperties {
 }
 
 interface LayerProperties
-  extends esri.LayerProperties,
-    esri.TileLayerProperties,
-    esri.VectorTileLayerProperties,
-    esri.WMSLayerProperties {
+  extends esri.LayerProperties, esri.TileLayerProperties, esri.VectorTileLayerProperties, esri.WMSLayerProperties {
   type: string;
 }
 

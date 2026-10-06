@@ -18,7 +18,10 @@ export class StatsComponent implements OnInit {
   public $countOfNewUsers: Observable<Array<IChartConfiguration>>;
   public $totalLoginsPastMonth: Observable<Array<IChartConfiguration>>;
 
-  constructor(private route: ActivatedRoute, private statService: StatsService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private statService: StatsService
+  ) {}
 
   public ngOnInit(): void {
     this.$countOfLoggedInUsers = this.statService.getCountOfLoggedInUsers();

@@ -32,7 +32,10 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
   private lastContentHeight: number;
 
-  constructor(private el: ElementRef, private dragService: DragService) {}
+  constructor(
+    private el: ElementRef,
+    private dragService: DragService
+  ) {}
 
   public ngAfterViewInit() {
     if (!this.identifier) {

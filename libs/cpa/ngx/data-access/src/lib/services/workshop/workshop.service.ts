@@ -10,7 +10,10 @@ import { IScenarioSimplified, IWorkshopRequestPayload } from '@tamu-gisc/cpa/dat
 export class WorkshopService {
   private resource: string;
 
-  constructor(private environment: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private environment: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = this.environment.value('api_url') + 'workshops';
   }
 

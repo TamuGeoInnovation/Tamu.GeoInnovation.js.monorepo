@@ -23,7 +23,10 @@ export class AccordionComponent implements AfterContentInit {
   @Input()
   public animate = false;
 
-  constructor(private el: ElementRef, private comm: AccordionService) {}
+  constructor(
+    private el: ElementRef,
+    private comm: AccordionService
+  ) {}
 
   public ngAfterContentInit() {
     this.comm.update({

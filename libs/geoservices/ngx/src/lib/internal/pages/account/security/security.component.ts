@@ -16,7 +16,10 @@ export class SecurityComponent implements OnInit {
   public password: UntypedFormGroup;
   public question: UntypedFormGroup;
 
-  constructor(private service: AccountSecurityService, private fb: UntypedFormBuilder) {}
+  constructor(
+    private service: AccountSecurityService,
+    private fb: UntypedFormBuilder
+  ) {}
 
   public ngOnInit() {
     this.password = this.fb.group({

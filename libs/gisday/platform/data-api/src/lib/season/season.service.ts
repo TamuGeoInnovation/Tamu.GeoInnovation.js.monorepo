@@ -456,7 +456,7 @@ export class SeasonService extends BaseProvider<Season> {
     const where =
       typeof guidOrOptions === 'string'
         ? { guid: guidOrOptions }
-        : (guidOrOptions as { where?: { guid?: string } })?.where ?? undefined;
+        : ((guidOrOptions as { where?: { guid?: string } })?.where ?? undefined);
 
     const existing = await this.seasonRepo.findOne({
       where,

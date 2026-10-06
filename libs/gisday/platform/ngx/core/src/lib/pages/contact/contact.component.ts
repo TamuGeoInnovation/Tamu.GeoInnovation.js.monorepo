@@ -17,7 +17,11 @@ export class ContactComponent implements OnInit {
   public formStatus: BehaviorSubject<string> = new BehaviorSubject('ready');
   public buttonText: Observable<string>;
 
-  constructor(private titleService: Title, private fb: UntypedFormBuilder, private contactService: ContactService) {
+  constructor(
+    private titleService: Title,
+    private fb: UntypedFormBuilder,
+    private contactService: ContactService
+  ) {
     this.titleService.setTitle('Contact | TxGIS Day');
   }
 

@@ -24,7 +24,10 @@ export class SeasonService extends BaseService<Season> {
     shareReplay(1)
   );
 
-  constructor(private env1: EnvironmentService, private http1: HttpClient) {
+  constructor(
+    private env1: EnvironmentService,
+    private http1: HttpClient
+  ) {
     super(env1, http1, 'seasons');
   }
 

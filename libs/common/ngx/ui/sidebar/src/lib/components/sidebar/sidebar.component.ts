@@ -22,7 +22,10 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
   @ContentChildren(SidebarTabComponent, { descendants: true })
   public tabs: QueryList<SidebarTabComponent>;
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     // Call the Abstract component constructor
     super();
   }

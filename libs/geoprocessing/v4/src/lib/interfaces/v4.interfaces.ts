@@ -212,8 +212,10 @@ export interface IGeocoderThreeZeroOneOptions {
   notStore?: boolean;
 }
 
-export interface IGeocoderFourZeroOneOptions
-  extends Omit<IGeocoderThreeZeroOneOptions, 'version' | 'format' | 'censusYear' | 'format'> {
+export interface IGeocoderFourZeroOneOptions extends Omit<
+  IGeocoderThreeZeroOneOptions,
+  'version' | 'format' | 'censusYear' | 'format'
+> {
   version: '4.01';
   allowTies?: boolean;
   tieBreakingStrategy?: 'flipACoin' | 'revertToHierarchy';
@@ -272,9 +274,7 @@ export interface IAdvancedGeocoderFourZeroOneOptions extends IGeocoderFourZeroOn
 }
 
 export type IGeocoderOptions =
-  | IGeocoderThreeZeroOneOptions
-  | IGeocoderFourZeroOneOptions
-  | IAdvancedGeocoderFourZeroOneOptions;
+  IGeocoderThreeZeroOneOptions | IGeocoderFourZeroOneOptions | IAdvancedGeocoderFourZeroOneOptions;
 
 //
 // Results

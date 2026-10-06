@@ -16,7 +16,11 @@ import esri = __esri;
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
-  constructor(private ms: EsriMapService, private env: EnvironmentService, private at: ActivatedRoute) {}
+  constructor(
+    private ms: EsriMapService,
+    private env: EnvironmentService,
+    private at: ActivatedRoute
+  ) {}
 
   public config = {
     basemap: {

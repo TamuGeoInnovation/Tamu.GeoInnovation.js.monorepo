@@ -195,7 +195,10 @@ export class LayerConfiguration {
   public form: UntypedFormGroup;
   public info: UntypedFormGroup;
 
-  constructor(public fb: UntypedFormBuilder, args: ILayerConfiguration | UntypedFormGroup) {
+  constructor(
+    public fb: UntypedFormBuilder,
+    args: ILayerConfiguration | UntypedFormGroup
+  ) {
     if (args !== undefined) {
       if (args instanceof UntypedFormGroup) {
         this.form = args;

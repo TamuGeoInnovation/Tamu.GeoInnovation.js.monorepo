@@ -27,7 +27,10 @@ export class BasemapOverrideComponent implements OnInit, OnDestroy {
 
   private $destroy: Subject<boolean> = new Subject();
 
-  constructor(private readonly ss: SettingsService, private readonly fb: UntypedFormBuilder) {}
+  constructor(
+    private readonly ss: SettingsService,
+    private readonly fb: UntypedFormBuilder
+  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({

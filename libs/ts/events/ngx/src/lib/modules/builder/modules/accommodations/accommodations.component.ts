@@ -140,17 +140,20 @@ export class AccommodationsComponent implements OnInit {
   };
 
   public getChoiceGroups(choices: Array<EventAccommodationOption>): Array<AccommodationChoiceGroup> {
-    const grouped = choices.reduce((acc, choice) => {
-      const key = choice.group || 'Options';
+    const grouped = choices.reduce(
+      (acc, choice) => {
+        const key = choice.group || 'Options';
 
-      if (!acc[key]) {
-        acc[key] = [];
-      }
+        if (!acc[key]) {
+          acc[key] = [];
+        }
 
-      acc[key].push(choice);
+        acc[key].push(choice);
 
-      return acc;
-    }, {} as Record<string, Array<EventAccommodationOption>>);
+        return acc;
+      },
+      {} as Record<string, Array<EventAccommodationOption>>
+    );
 
     return Object.entries(grouped).map(([label, groupChoices]) => ({
       label,

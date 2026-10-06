@@ -16,7 +16,10 @@ import { ViewerService } from '../../services/viewer.service';
 export class ParticipantGroupListComponent implements OnInit {
   public participants: Observable<Array<IParticipant>>;
 
-  constructor(private readonly ps: ParticipantService, private readonly vs: ViewerService) {}
+  constructor(
+    private readonly ps: ParticipantService,
+    private readonly vs: ViewerService
+  ) {}
 
   public ngOnInit(): void {
     this.participants = interval(3000).pipe(

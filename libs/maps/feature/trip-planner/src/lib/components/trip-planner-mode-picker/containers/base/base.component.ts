@@ -15,7 +15,10 @@ import { TripPlannerService } from '../../../../services//trip-planner.service';
 export class TripPlannerModePickerComponent implements OnInit {
   public isDev: Observable<boolean>;
 
-  constructor(private plannerService: TripPlannerService, private devTools: TestingService) {}
+  constructor(
+    private plannerService: TripPlannerService,
+    private devTools: TestingService
+  ) {}
 
   public ngOnInit() {
     this.isDev = this.devTools.get('isTesting');

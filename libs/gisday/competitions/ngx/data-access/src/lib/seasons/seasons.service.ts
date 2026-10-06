@@ -11,7 +11,10 @@ import { CompetitionSeason, SeasonStatisticsDto } from '@tamu-gisc/gisday/compet
 export class SeasonsService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.resource = `${this.env.value('api_url')}/competitions/seasons`;
   }
 

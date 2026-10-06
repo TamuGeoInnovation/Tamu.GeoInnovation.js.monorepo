@@ -14,7 +14,10 @@ import { ViewerService } from '../../services/viewer.service';
 export class ParticipantResponsePopupComponent extends BasePopupComponent implements OnInit {
   public form: UntypedFormGroup;
 
-  constructor(private readonly vs: ViewerService, private readonly fb: UntypedFormBuilder) {
+  constructor(
+    private readonly vs: ViewerService,
+    private readonly fb: UntypedFormBuilder
+  ) {
     super();
   }
 

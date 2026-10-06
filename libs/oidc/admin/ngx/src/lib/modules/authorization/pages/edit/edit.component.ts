@@ -16,7 +16,10 @@ export class EditComponent implements OnInit {
   private _$refresh: Subject<boolean> = new Subject();
   public $userRoles: Observable<Array<Partial<ISimplifiedUserRoleResponse>>>;
 
-  constructor(private readonly userRoleService: UserRoleService, private notificationService: NotificationService) {}
+  constructor(
+    private readonly userRoleService: UserRoleService,
+    private notificationService: NotificationService
+  ) {}
 
   public ngOnInit() {
     this.$userRoles = this._$refresh.pipe(

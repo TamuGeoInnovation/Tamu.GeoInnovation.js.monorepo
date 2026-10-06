@@ -11,7 +11,10 @@ export class UsersService {
   public userResource: string;
   public questionResource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient
+  ) {
     this.userResource = this.env.value('api_url') + '/user';
     this.questionResource = this.env.value('api_url') + '/secret-question';
   }

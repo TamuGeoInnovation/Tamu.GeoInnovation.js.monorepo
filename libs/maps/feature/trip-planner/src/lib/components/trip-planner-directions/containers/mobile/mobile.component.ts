@@ -13,7 +13,11 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
   standalone: false
 })
 export class TripPlannerDirectionsMobileComponent extends TripPlannerDirectionsComponent {
-  constructor(private rt: Router, private ps: TripPlannerService, private al: Angulartics2) {
+  constructor(
+    private rt: Router,
+    private ps: TripPlannerService,
+    private al: Angulartics2
+  ) {
     super(rt, ps, al);
   }
 }

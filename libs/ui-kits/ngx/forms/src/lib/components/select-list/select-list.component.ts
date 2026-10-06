@@ -73,7 +73,10 @@ export class SelectListComponent<T extends Record<string, unknown>> implements O
   private _displayList$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public displayList$: Observable<boolean> = this._displayList$.asObservable();
 
-  constructor(private readonly fb: UntypedFormBuilder, private readonly renderer: Renderer2) {}
+  constructor(
+    private readonly fb: UntypedFormBuilder,
+    private readonly renderer: Renderer2
+  ) {}
 
   public ngOnInit(): void {
     this.initializeOptions(this.options);

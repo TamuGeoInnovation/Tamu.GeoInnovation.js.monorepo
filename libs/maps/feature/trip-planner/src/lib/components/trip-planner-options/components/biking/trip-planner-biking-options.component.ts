@@ -13,7 +13,11 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
   standalone: false
 })
 export class TripPlannerBikingOptionsComponent extends TripPlannerOptionsBaseComponent {
-  constructor(private analytics: Angulartics2, private tp: TripPlannerService, private dts: TestingService) {
+  constructor(
+    private analytics: Angulartics2,
+    private tp: TripPlannerService,
+    private dts: TestingService
+  ) {
     super(analytics, tp, dts);
   }
 }

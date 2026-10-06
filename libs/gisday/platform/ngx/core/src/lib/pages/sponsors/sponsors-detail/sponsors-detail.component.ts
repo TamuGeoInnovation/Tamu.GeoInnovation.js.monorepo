@@ -15,7 +15,10 @@ import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 export class SponsorsDetailComponent implements OnInit {
   public $sponsor: Observable<Partial<Sponsor>>;
 
-  constructor(private route: ActivatedRoute, private readonly sponsorService: SponsorService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private readonly sponsorService: SponsorService
+  ) {}
 
   public ngOnInit() {
     this.$sponsor = this.route.params.pipe(

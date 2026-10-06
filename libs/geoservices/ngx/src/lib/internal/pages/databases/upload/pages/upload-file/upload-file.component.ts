@@ -19,7 +19,10 @@ export class UploadFileComponent implements OnInit {
 
   public file: ReplaySubject<SelectedFile> = new ReplaySubject(1);
 
-  constructor(private fb: FormBuilder, private db: DatabaseService) {}
+  constructor(
+    private fb: FormBuilder,
+    private db: DatabaseService
+  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({

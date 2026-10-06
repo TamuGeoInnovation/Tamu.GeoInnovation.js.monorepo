@@ -189,7 +189,7 @@ const hiddenNative = (overrides: Partial<FeatureNativeProps> = {}): FeatureNativ
     visible: false,
     listMode: 'hide',
     ...overrides
-  } as unknown as FeatureNativeProps);
+  }) as unknown as FeatureNativeProps;
 
 /**
  * Route arrow colors, keyed by travel type. Every route layer publishes as a flat solid green line
@@ -216,7 +216,7 @@ const routeRenderer = (color: string) =>
   ({
     type: 'simple',
     symbol: arrowLineSymbol(color)
-  } as unknown as FeatureRenderer);
+  }) as unknown as FeatureRenderer;
 
 const createCimHatchPolygonSymbol = (
   outlineColor: number[],

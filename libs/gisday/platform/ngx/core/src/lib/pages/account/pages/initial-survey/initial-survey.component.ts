@@ -19,7 +19,10 @@ export class InitialSurveyComponent implements OnInit, OnDestroy {
   public $initalSurveyQuestions: Observable<Array<Partial<IInitialSurveyQuestionResponse>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private fb: UntypedFormBuilder, private readonly initialSurveyService: InitialSurveyService) {}
+  constructor(
+    private fb: UntypedFormBuilder,
+    private readonly initialSurveyService: InitialSurveyService
+  ) {}
 
   public ngOnInit() {
     this.dataGroup = this.fb.group({});
