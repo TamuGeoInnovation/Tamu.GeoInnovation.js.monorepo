@@ -18,10 +18,11 @@ import { retiredMaps } from './retired';
  * to list some URLs is the wrong shape for a smoke process anyway.
  *
  * Crawling has a real advantage besides. The two environments legitimately list different maps --
- * production does not show the kiosk or satellite-campus sections, a map can be marked
- * `visible: false`, and a retired map (`status: 'retired'`, #1098) is filtered out below -- so a crawl
- * gives each environment the right set automatically, where a
- * committed list would need per-environment exceptions.
+ * production does not show the kiosk section, a map can be marked `visible: false`, and a retired map
+ * (`status: 'retired'`, #1098) is filtered out below -- so a crawl gives each environment the right
+ * set automatically, where a committed list would need per-environment exceptions. The satellite
+ * campus maps were in that list until #1482 listed them on production too, which is the kind of
+ * change a crawl absorbs and a committed list would not.
  *
  * The cost is that a map which disappears from the discovery pages is silently not tested, rather
  * than failing. `maps.spec.ts` guards that with a coverage floor.
